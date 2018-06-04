@@ -1,5 +1,6 @@
 IMMEDIATE:
 
+* make evaluator faster
 * ability to use images
 * start wiring up right gutter
 * look into how rust may be used

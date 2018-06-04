@@ -1,47 +1,34 @@
+import { DependencyGraph, Dependency } from "./graph";
 import {
+  SyntheticDocument,
   SyntheticElement,
-  SyntheticTextNode,
-  createSytheticDocument,
-  createSyntheticElement,
-  createSyntheticTextNode,
   SyntheticVisibleNode,
+  createSyntheticElement,
+  createSytheticDocument,
   SyntheticSource,
-  getSyntheticSourceNode,
-  SyntheticDocument
+  SyntheticTextNode,
+  createSyntheticTextNode
 } from "./synthetic";
 import {
   PCModule,
-  PCComponent,
-  PCVisibleNode,
-  PCSourceTagNames,
-  getComponentTemplate,
-  PCTextNode,
-  PCElement,
-  extendsComponent,
-  getPCNode,
-  PCNode,
-  PCOverride,
   getVisibleChildren,
-  getOverrides,
-  PCStyleOverride,
-  PCAttributesOverride,
-  PCChildrenOverride,
-  PCComponentInstanceElement,
-  getDefaultVariantIds,
+  PCDependency,
   createPCDependency,
   PCOverridablePropertyName,
-  getComponentRefIds,
-  getComponentGraphRefs
+  PCVisibleNode,
+  PCComponent,
+  getComponentGraphRefs,
+  PCNode,
+  PCSourceTagNames,
+  PCElement,
+  PCTextNode,
+  PCComponentInstanceElement,
+  extendsComponent,
+  getComponentGraphRefMap,
+  getOverrides,
+  PCOverride
 } from "./dsl";
-import { DependencyGraph, Dependency } from "./graph";
-import {
-  generateUID,
-  KeyValue,
-  EMPTY_ARRAY,
-  EMPTY_OBJECT,
-  memoize
-} from "tandem-common";
-import { values } from "lodash";
+import { KeyValue, memoize } from "tandem-common";
 
 type EvalOverride = {
   [PCOverridablePropertyName.ATTRIBUTES]: KeyValue<any>;
@@ -51,45 +38,36 @@ type EvalOverride = {
   [PCOverridablePropertyName.TEXT]: string;
 };
 
-type EvalContext = {
-  isContentNode?: boolean;
-  nodesAreImmutable?: boolean;
-  isCreatedFromComponent?: boolean;
-  currentVariantIds: string[];
-  overrides: {
-    [identifier: string]: EvalOverride;
-  };
-  componentRefs: {
-    [identifier: string]: PCComponent;
-  };
+type EvalOverrides = {
+  // instance path
+  [identifier: string]: EvalOverride;
 };
 
-const createContext = memoize((...refs: PCComponent[]) => {
-  const componentRefs = {};
-  for (let i = 0, { length } = refs; i < length; i++) {
-    componentRefs[refs[i].id] = refs[i];
-  }
-  return {
-    overrides: {},
-    currentVariantIds: [],
-    componentRefs
-  };
-});
+type ComponentRefs = {
+  [identifier: string]: PCComponent;
+};
+
+// Note that I'd prefer immutability here, but that's just too damn slow
+// for this function.
 
 export const evaluatePCModule = memoize(
-  (
-    module: PCModule,
-    graph: DependencyGraph = wrapModuleInDependencyGraph(module)
-  ): SyntheticDocument =>
-    createSytheticDocument(
+  (module: PCModule, graph: DependencyGraph) => {
+    const documentChildren: SyntheticVisibleNode[] = new Array(
+      module.children.length
+    );
+    for (let i = 0, { length } = module.children; i < length; i++) {
+      const child = module.children[i];
+      documentChildren[i] = evaluateContentNode(
+        child,
+        getComponentGraphRefMap(child, graph)
+      );
+    }
+
+    return createSytheticDocument(
       createSyntheticSource(module),
-      module.children.map(child => {
-        return evaluateContentNode(
-          child,
-          createContext(...getComponentGraphRefs(child, graph))
-        );
-      })
-    )
+      documentChildren
+    );
+  }
 );
 
 const wrapModuleInDependencyGraph = (module: PCModule): DependencyGraph => ({
@@ -97,212 +75,339 @@ const wrapModuleInDependencyGraph = (module: PCModule): DependencyGraph => ({
 });
 
 const evaluateContentNode = memoize(
-  (root: PCComponent | PCVisibleNode, context: EvalContext) => {
-    context = { ...context, isContentNode: true };
-    switch (root.name) {
-      case PCSourceTagNames.COMPONENT: {
-        return evaluateRootComponent(root, context);
-      }
-      default: {
-        return evaluatePCVisibleNode(root, null, context);
-      }
+  (
+    node: PCVisibleNode | PCComponent,
+    componentMap: ComponentRefs
+  ): SyntheticVisibleNode => {
+    const overrides = {};
+    let syntheticNode: SyntheticVisibleNode;
+    if (node.name === PCSourceTagNames.COMPONENT) {
+      syntheticNode = evaluateComponentInstance(
+        node,
+        node,
+        null,
+        false,
+        true,
+        overrides,
+        componentMap
+      );
+    } else {
+      syntheticNode = evaluateVisibleNode(
+        node,
+        null,
+        false,
+        false,
+        overrides,
+        componentMap
+      );
     }
+    syntheticNode.isContentNode = true;
+    return syntheticNode;
   }
 );
 
-const evaluateRootComponent = (
-  root: PCComponent,
-  context: EvalContext,
-  isContentNode?: boolean
-) => {
-  return evaluateComponentOrElement(root, root, null, context);
-};
-
-const evaluatePCVisibleNode = (
-  node: PCVisibleNode | PCComponent,
+const evaluateComponentInstance = (
+  node: PCComponent | PCComponentInstanceElement,
+  instance: PCComponent | PCComponentInstanceElement,
   instancePath: string,
-  context: EvalContext
-): SyntheticVisibleNode => {
-  switch (node.name) {
-    case PCSourceTagNames.TEXT: {
-      return applyPropertyOverrides(
-        createSyntheticTextNode(
-          (node as PCTextNode).value,
-          createSyntheticSource(node),
-          node.style,
-          node.label,
-          context.isContentNode,
-          context.isCreatedFromComponent,
-          Boolean(context.nodesAreImmutable),
-          node.metadata
-        ),
-        appendPath(instancePath, node.id),
-        context
-      );
-    }
-    default: {
-      const pcElement = node as PCElement;
-
-      return evaluateComponentOrElement(
-        pcElement,
-        pcElement,
-        instancePath,
-        context
-      );
-    }
-  }
-};
-
-// const evaluateComponentOrElementFromInstance = (
-//   elementOrComponent: PCElement | PCComponent,
-//   instanceNode: PCComponent | PCElement | PCComponentInstanceElement,
-//   instancePath: string,
-//   context: EvalContext
-// ): SyntheticElement => {
-//   if (instanceNode.name === PCSourceTagNames.COMPONENT_INSTANCE) {
-//     // TODO - sort variants
-//     context = {
-//       ...context,
-//       currentVariantIds: instanceNode.variant,
-//       isCreatedFromComponent: true
-//     };
-//   } else if (instanceNode.name === PCSourceTagNames.COMPONENT) {
-//     context = {
-//       ...context,
-//       isCreatedFromComponent: true,
-//       currentVariantIds: getDefaultVariantIds(instanceNode)
-//     };
-//   }
-
-//   return evaluateComponentOrElement(
-//     elementOrComponent,
-//     instanceNode,
-//     instancePath,
-//     context
-//   );
-// };
-
-const maybeImmutable = (
-  node: PCNode,
-  instanceNode: PCNode,
-  context: EvalContext
-) => {
-  // parent component children are immutable
-  if (
-    node.name === PCSourceTagNames.COMPONENT &&
-    (instanceNode.name === PCSourceTagNames.COMPONENT ||
-      instanceNode.name === PCSourceTagNames.COMPONENT_INSTANCE) &&
-    node !== instanceNode
-  ) {
-    return { ...context, nodesAreImmutable: true };
-  }
-
-  return context;
-};
-
-const removeisContentNode = (context: EvalContext) =>
-  context.isContentNode ? { ...context, isContentNode: false } : context;
-
-const evaluateComponentOrElement = (
-  elementOrComponent: PCElement | PCComponent,
-  instanceNode: PCComponent | PCElement | PCComponentInstanceElement,
-  instancePath: string,
-  context: EvalContext
+  immutable: boolean,
+  isCreatedFromComponent: boolean,
+  overrides: EvalOverrides,
+  componentMap: ComponentRefs
 ): SyntheticElement => {
-  const selfIdPath = appendPath(instancePath, instanceNode.id);
+  const selfPath = appendPath(instancePath, instance.id);
   const isComponentInstance =
-    instanceNode.name === PCSourceTagNames.COMPONENT_INSTANCE;
-
-  if (elementOrComponent.name === PCSourceTagNames.COMPONENT) {
-    context = { ...context, isCreatedFromComponent: true };
-  }
-
-  context = registerOverrides(
-    elementOrComponent,
-    instanceNode,
-    isComponentInstance ? selfIdPath : instancePath,
-    context
+    instance.name === PCSourceTagNames.COMPONENT_INSTANCE;
+  const childComponentInstancePath = isComponentInstance
+    ? selfPath
+    : instancePath;
+  const childrenAreImmutable = immutable || node !== instance;
+  registerOverrides(
+    node,
+    childComponentInstancePath,
+    selfPath,
+    childrenAreImmutable,
+    true,
+    overrides,
+    componentMap
   );
-  if (extendsComponent(elementOrComponent)) {
-    return evaluateComponentOrElement(
-      context.componentRefs[elementOrComponent.is],
-      instanceNode,
+
+  if (extendsComponent(node)) {
+    return evaluateComponentInstance(
+      componentMap[node.is],
+      instance,
       instancePath,
-      context
+      immutable,
+      true,
+      overrides,
+      componentMap
     );
-  } else {
-    const isContentNode = context.isContentNode;
-    context = removeisContentNode(context);
+  }
 
-    const childInstancePath = isComponentInstance ? selfIdPath : instancePath;
+  const children = overrides[selfPath].children;
 
-    return applyPropertyOverrides(
-      createSyntheticElement(
-        elementOrComponent.is,
-        createSyntheticSource(instanceNode),
-        instanceNode.style,
-        instanceNode.attributes,
-        getChildOverrides(
-          selfIdPath,
-          context,
-          getVisibleChildren(elementOrComponent).map(child =>
-            evaluatePCVisibleNode(child, childInstancePath, context)
-          )
-        ),
-        instanceNode.label || elementOrComponent.label,
-        Boolean(isContentNode),
-        Boolean(context.isCreatedFromComponent),
-        Boolean(isComponentInstance),
-        Boolean(context.nodesAreImmutable),
-        instanceNode.metadata
-      ),
-      selfIdPath,
-      context
+  return createSyntheticElement(
+    node.is,
+    createSyntheticSource(instance),
+    evaluateOverride(
+      node,
+      selfPath,
+      PCOverridablePropertyName.STYLE,
+      overrides
+    ),
+    evaluateOverride(
+      node,
+      selfPath,
+      PCOverridablePropertyName.ATTRIBUTES,
+      overrides
+    ),
+    children,
+    node.label,
+    false,
+    isCreatedFromComponent,
+    isComponentInstance,
+    immutable,
+    instance.metadata
+  );
+};
+
+const evaluateVisibleNode = (
+  node: PCVisibleNode,
+  instancePath: string,
+  immutable: boolean,
+  isCreatedFromComponent: boolean,
+  overrides: EvalOverrides,
+  componentMap: ComponentRefs
+): SyntheticVisibleNode => {
+  if (node.name === PCSourceTagNames.ELEMENT) {
+    return evaluateElement(
+      node,
+      instancePath,
+      immutable,
+      isCreatedFromComponent,
+      overrides,
+      componentMap
+    );
+  } else if (node.name === PCSourceTagNames.COMPONENT_INSTANCE) {
+    return evaluateComponentInstance(
+      node,
+      node,
+      instancePath,
+      immutable,
+      isCreatedFromComponent,
+      overrides,
+      componentMap
+    );
+  } else if (node.name === PCSourceTagNames.TEXT) {
+    return evaluateTextNode(
+      node,
+      instancePath,
+      immutable,
+      isCreatedFromComponent,
+      overrides
     );
   }
 };
 
-const applyPropertyOverrides = <TNode extends SyntheticVisibleNode>(
-  node: TNode,
-  nodePath: string,
-  context: EvalContext
-): TNode => {
-  const overrides = context.overrides[nodePath];
-  if (!overrides) {
-    return node;
-  }
-  if (node.name === PCSourceTagNames.TEXT) {
-    return {
-      ...(node as any),
-      value: overrides.text || (node as SyntheticTextNode).value,
-      style: {
-        ...node.style,
-        ...overrides.style
-      }
-    };
-  }
-  return {
-    ...(node as any),
-    attributes: {
-      ...(node as SyntheticElement).attributes,
-      ...overrides.attributes
-    },
-    style: {
-      ...node.style,
-      ...overrides.style
-    }
-  };
+const evaluateElement = (
+  element: PCComponent | PCElement | PCComponentInstanceElement,
+  instancePath: string,
+  immutable: boolean,
+  isCreatedFromComponent: boolean,
+  overrides: EvalOverrides,
+  componentMap: ComponentRefs
+): SyntheticElement => {
+  const selfPath = appendPath(instancePath, element.id);
+  return createSyntheticElement(
+    element.is,
+    createSyntheticSource(element),
+    evaluateOverride(
+      element,
+      selfPath,
+      PCOverridablePropertyName.STYLE,
+      overrides
+    ),
+    evaluateOverride(
+      element,
+      selfPath,
+      PCOverridablePropertyName.ATTRIBUTES,
+      overrides
+    ),
+    evaluateChildren(
+      element,
+      instancePath,
+      immutable,
+      isCreatedFromComponent,
+      overrides,
+      componentMap
+    ),
+    element.label,
+    false,
+    isCreatedFromComponent,
+    false,
+    immutable,
+    element.metadata
+  );
 };
 
-const getChildOverrides = (
-  nodePath: string,
-  context: EvalContext,
-  defaultChildren: SyntheticVisibleNode[]
+const evaluateOverride = (
+  element: PCComponent | PCElement | PCComponentInstanceElement | PCTextNode,
+  selfPath: string,
+  propertyName: PCOverridablePropertyName,
+  overrides: EvalOverrides
 ) => {
-  const children =
-    context.overrides[nodePath] && context.overrides[nodePath].children;
+  let override;
+  if (!overrides[selfPath] || !(override = overrides[selfPath][propertyName])) {
+    return element[propertyName];
+  }
+  if (typeof override !== "object") {
+    return override;
+  }
+  return Object.assign({}, element[propertyName], override);
+};
 
-  return children && children.length ? children : defaultChildren;
+const evaluateChildren = (
+  parent: PCComponent | PCElement | PCComponentInstanceElement | PCOverride,
+  instancePath: string,
+  immutable: boolean,
+  isCreatedFromComponent: boolean,
+  overrides: EvalOverrides,
+  componentMap: ComponentRefs
+): SyntheticVisibleNode[] => {
+  const selfPath = appendPath(instancePath, parent.id);
+  if (overrides[selfPath] && overrides[selfPath].children) {
+    return overrides[selfPath].children;
+  }
+  const visiblePCChildren = getVisibleChildren(parent);
+  const children: SyntheticVisibleNode[] = new Array(visiblePCChildren.length);
+  for (let i = 0, { length } = visiblePCChildren; i < length; i++) {
+    children[i] = evaluateVisibleNode(
+      visiblePCChildren[i],
+      instancePath,
+      immutable,
+      isCreatedFromComponent,
+      overrides,
+      componentMap
+    );
+  }
+
+  return children;
+};
+
+const evaluateTextNode = (
+  node: PCTextNode,
+  instancePath: string,
+  immutable: boolean,
+  isCreatedFromComponent: boolean,
+  overrides: EvalOverrides
+): SyntheticTextNode => {
+  return createSyntheticTextNode(
+    evaluateOverride(
+      node,
+      appendPath(instancePath, node.id),
+      PCOverridablePropertyName.TEXT,
+      overrides
+    ) || node.value,
+    createSyntheticSource(node),
+    node.style,
+    node.label,
+    false,
+    isCreatedFromComponent,
+    immutable,
+    node.metadata
+  );
+};
+
+const createSyntheticSource = memoize((node: PCNode): SyntheticSource => ({
+  nodeId: node.id
+}));
+
+const appendPath = (instancePath: string, id: string) =>
+  instancePath && id ? instancePath + " " + id : id;
+
+const registerOverrides = (
+  node: PCElement | PCComponent | PCComponentInstanceElement,
+  instancePath: string,
+  selfPath: string,
+  immutable: boolean,
+  isCreatedFromComponent: boolean,
+  overrides: EvalOverrides,
+  componentMap: ComponentRefs
+) => {
+  const overrideNodes = getOverrides(node);
+
+  for (let i = 0, { length } = overrideNodes; i < length; i++) {
+    const overrideNode = overrideNodes[i];
+    const overrideInstancePath = appendPath(
+      instancePath,
+      overrideNode.targetIdPath.join(" ")
+    );
+    if (overrideNode.propertyName === PCOverridablePropertyName.CHILDREN) {
+      if (overrideNode.children.length) {
+        registerOverride(
+          overrideNode.variantId,
+          overrideNode.propertyName,
+          evaluateChildren(
+            overrideNode,
+            instancePath,
+            immutable,
+            isCreatedFromComponent,
+            overrides,
+            componentMap
+          ),
+          overrideInstancePath,
+          overrides
+        );
+      }
+    } else {
+      registerOverride(
+        overrideNode.variantId,
+        overrideNode.propertyName,
+        overrideNode.value,
+        overrideInstancePath,
+        overrides
+      );
+    }
+  }
+
+  if (Object.keys(node.style).length) {
+    registerOverride(
+      null,
+      PCOverridablePropertyName.STYLE,
+      node.style,
+      selfPath,
+      overrides
+    );
+  }
+  if (Object.keys(node.attributes).length) {
+    registerOverride(
+      null,
+      PCOverridablePropertyName.ATTRIBUTES,
+      node.attributes,
+      selfPath,
+      overrides
+    );
+  }
+  if (
+    (node.name === PCSourceTagNames.COMPONENT_INSTANCE ||
+      node.name === PCSourceTagNames.COMPONENT) &&
+    getVisibleChildren(node).length
+  ) {
+    registerOverride(
+      null,
+      PCOverridablePropertyName.CHILDREN,
+      evaluateChildren(
+        node,
+        instancePath,
+        immutable,
+        isCreatedFromComponent,
+        overrides,
+        componentMap
+      ),
+      selfPath,
+      overrides
+    );
+  }
 };
 
 const registerOverride = (
@@ -310,130 +415,36 @@ const registerOverride = (
   propertyName: PCOverridablePropertyName,
   value: any,
   nodePath: string,
-  context: EvalContext
-): EvalContext => {
-  if (variantId && context.currentVariantIds.indexOf(variantId) === -1) {
-    return context;
+  overrides: EvalOverrides
+) => {
+  // TODO - variant check here
+
+  if (!overrides[nodePath]) {
+    overrides[nodePath] = {
+      style: null,
+      attributes: null,
+      children: null,
+      variant: null,
+      text: null
+    };
   }
 
-  const override: EvalOverride = context.overrides[nodePath] || {
-    style: EMPTY_OBJECT,
-    attributes: EMPTY_OBJECT,
-    children: EMPTY_ARRAY,
-    variant: EMPTY_ARRAY,
-    text: null
-  };
+  const override: EvalOverride = overrides[nodePath];
 
   let newValue = value;
 
   if (propertyName === PCOverridablePropertyName.CHILDREN) {
-    newValue = override.children.length || !value ? override.children : value;
+    newValue = override.children ? override.children : value;
   } else if (
     propertyName === PCOverridablePropertyName.ATTRIBUTES ||
     propertyName === PCOverridablePropertyName.STYLE
   ) {
-    newValue = {
-      ...value,
-      ...override[propertyName]
-    };
+    newValue = Object.assign({}, value, override[propertyName] || {});
   } else if (
     propertyName === PCOverridablePropertyName.TEXT &&
     override.text != null
   ) {
     newValue = override[propertyName];
   }
-
-  return {
-    ...context,
-    overrides: {
-      ...context.overrides,
-      [nodePath]: {
-        ...override,
-        [propertyName]: newValue
-      }
-    }
-  };
+  override[propertyName] = newValue;
 };
-
-const registerOverrides = (
-  node: PCElement | PCComponent,
-  instanceNode: PCComponent | PCElement | PCComponentInstanceElement,
-  instancePath: string,
-  context: EvalContext
-) => {
-  const existingOverrides = {};
-  let hasOverride = false;
-
-  const nodePath =
-    instanceNode.name === PCSourceTagNames.COMPONENT_INSTANCE
-      ? instancePath
-      : appendPath(instancePath, instanceNode.id);
-
-  context = getOverrides(node).reduce((context, override: PCOverride) => {
-    const idPathStr = override.targetIdPath.length
-      ? appendPath(instancePath, override.targetIdPath.join(" "))
-      : nodePath;
-    if (override.propertyName === PCOverridablePropertyName.CHILDREN) {
-      return registerOverride(
-        override.variantId,
-        override.propertyName,
-        override.children.map(child =>
-          evaluatePCVisibleNode(
-            child as PCVisibleNode,
-            instancePath,
-            maybeImmutable(node, instanceNode, removeisContentNode(context))
-          )
-        ),
-        idPathStr,
-        context
-      );
-    } else {
-      return registerOverride(
-        override.variantId,
-        override.propertyName,
-        override.value,
-        idPathStr,
-        context
-      );
-    }
-  }, context);
-
-  context = registerOverride(
-    null,
-    PCOverridablePropertyName.STYLE,
-    node.style,
-    nodePath,
-    context
-  );
-
-  context = registerOverride(
-    null,
-    PCOverridablePropertyName.ATTRIBUTES,
-    node.attributes,
-    nodePath,
-    context
-  );
-
-  context = registerOverride(
-    null,
-    PCOverridablePropertyName.CHILDREN,
-    getVisibleChildren(node).map(child =>
-      evaluatePCVisibleNode(
-        child as PCVisibleNode,
-        instancePath,
-        maybeImmutable(node, instanceNode, removeisContentNode(context))
-      )
-    ),
-    nodePath,
-    context
-  );
-
-  return context;
-};
-
-const createSyntheticSource = (node: PCNode): SyntheticSource => ({
-  nodeId: node.id
-});
-
-const appendPath = (instancePath: string, nodeId: string) =>
-  instancePath ? instancePath + " " + nodeId : nodeId;

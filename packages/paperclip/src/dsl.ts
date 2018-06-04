@@ -391,10 +391,13 @@ export const getModuleComponents = memoize((root: PCModule): PCComponent[] =>
   }, [])
 );
 
-export const getVisibleChildren = (node: PCVisibleNode | PCComponent) =>
-  node.children.filter(isVisibleNode) as PCVisibleNode[];
-export const getOverrides = (node: PCNode) =>
-  node.children.filter(isPCOverride) as PCOverride[];
+export const getVisibleChildren = memoize(
+  (node: PCVisibleNode | PCComponent | PCOverride) =>
+    node.children.filter(isVisibleNode) as PCVisibleNode[]
+);
+export const getOverrides = memoize(
+  (node: PCNode) => node.children.filter(isPCOverride) as PCOverride[]
+);
 
 export const getPCImportedChildrenSourceUris = (
   { id: nodeId }: PCNode,
@@ -494,6 +497,21 @@ export const getComponentGraphRefs = memoize(
     }
     return uniq(allRefs);
   }
+);
+
+const componentGraphRefsToMap = memoize((...components: PCComponent[]) => {
+  const componentRefMap = {};
+  for (let i = 0, { length } = components; i < length; i++) {
+    const ref = components[i];
+    componentRefMap[ref.id] = ref;
+  }
+
+  return componentRefMap;
+});
+
+export const getComponentGraphRefMap = memoize(
+  (node: PCNode, graph: DependencyGraph) =>
+    componentGraphRefsToMap(...getComponentGraphRefs(node, graph))
 );
 
 /*------------------------------------------

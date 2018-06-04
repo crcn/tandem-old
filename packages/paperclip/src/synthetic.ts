@@ -90,8 +90,8 @@ export const createSytheticDocument = (
 export const createSyntheticElement = (
   name: string,
   source: SyntheticSource,
-  style: KeyValue<any> = {},
-  attributes: KeyValue<string>,
+  style: KeyValue<any> = EMPTY_OBJECT,
+  attributes: KeyValue<string> = EMPTY_OBJECT,
   children: SyntheticVisibleNode[] = EMPTY_ARRAY,
   label?: string,
   isContentNode?: boolean,
@@ -109,9 +109,9 @@ export const createSyntheticElement = (
   immutable,
   source,
   name,
-  attributes,
-  style,
-  children
+  attributes: attributes || EMPTY_OBJECT,
+  style: style || EMPTY_OBJECT,
+  children: children || EMPTY_ARRAY
 });
 
 export const createSyntheticTextNode = (
