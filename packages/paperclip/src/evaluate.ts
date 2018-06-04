@@ -86,6 +86,7 @@ const evaluateContentNode = memoize(
         node,
         node,
         null,
+        null,
         false,
         true,
         overrides,
@@ -109,6 +110,7 @@ const evaluateContentNode = memoize(
 const evaluateComponentInstance = (
   node: PCComponent | PCComponentInstanceElement,
   instance: PCComponent | PCComponentInstanceElement,
+  label: string,
   instancePath: string,
   immutable: boolean,
   isCreatedFromComponent: boolean,
@@ -124,7 +126,8 @@ const evaluateComponentInstance = (
   const childrenAreImmutable = immutable || node !== instance;
   registerOverrides(
     node,
-    childComponentInstancePath,
+    instance,
+    instancePath,
     selfPath,
     childrenAreImmutable,
     true,
@@ -136,6 +139,7 @@ const evaluateComponentInstance = (
     return evaluateComponentInstance(
       componentMap[node.is],
       instance,
+      label || node.label,
       instancePath,
       immutable,
       true,
@@ -162,7 +166,7 @@ const evaluateComponentInstance = (
       overrides
     ),
     children,
-    node.label,
+    label || node.label,
     false,
     isCreatedFromComponent,
     isComponentInstance,
@@ -192,6 +196,7 @@ const evaluateVisibleNode = (
     return evaluateComponentInstance(
       node,
       node,
+      null,
       instancePath,
       immutable,
       isCreatedFromComponent,
@@ -301,15 +306,12 @@ const evaluateTextNode = (
   isCreatedFromComponent: boolean,
   overrides: EvalOverrides
 ): SyntheticTextNode => {
+  const selfId = appendPath(instancePath, node.id);
   return createSyntheticTextNode(
-    evaluateOverride(
-      node,
-      appendPath(instancePath, node.id),
-      PCOverridablePropertyName.TEXT,
-      overrides
-    ) || node.value,
+    evaluateOverride(node, selfId, PCOverridablePropertyName.TEXT, overrides) ||
+      node.value,
     createSyntheticSource(node),
-    node.style,
+    evaluateOverride(node, selfId, PCOverridablePropertyName.STYLE, overrides),
     node.label,
     false,
     isCreatedFromComponent,
@@ -327,6 +329,7 @@ const appendPath = (instancePath: string, id: string) =>
 
 const registerOverrides = (
   node: PCElement | PCComponent | PCComponentInstanceElement,
+  instance: PCComponent | PCComponentInstanceElement,
   instancePath: string,
   selfPath: string,
   immutable: boolean,
@@ -336,10 +339,13 @@ const registerOverrides = (
 ) => {
   const overrideNodes = getOverrides(node);
 
+  const isComponentInstance =
+    instance.name === PCSourceTagNames.COMPONENT_INSTANCE;
+
   for (let i = 0, { length } = overrideNodes; i < length; i++) {
     const overrideNode = overrideNodes[i];
     const overrideInstancePath = appendPath(
-      instancePath,
+      isComponentInstance ? selfPath : instancePath,
       overrideNode.targetIdPath.join(" ")
     );
     if (overrideNode.propertyName === PCOverridablePropertyName.CHILDREN) {
@@ -398,7 +404,7 @@ const registerOverrides = (
       PCOverridablePropertyName.CHILDREN,
       evaluateChildren(
         node,
-        instancePath,
+        isComponentInstance ? selfPath : instancePath,
         immutable,
         isCreatedFromComponent,
         overrides,

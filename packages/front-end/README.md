@@ -1,18 +1,20 @@
 IMMEDIATE:
 
-* make evaluator faster
 * ability to use images
+* move components to separate files (need to globally load components)
 * start wiring up right gutter
 * look into how rust may be used
 * prohibit immutable children from being deleted
   * **color picker**
 * update code compiler to handle overrides
-* select inserted elements
 * ability to load images & other resources in PC file. (start with ionicons)
+* ability to persist changes to main component
 
-SAFETY:
+BUGS:
 
-* validation that there are no ID collisions.
+* cannot override in some cases (try changing variant text in right gutter component)
+* padding / margins affect pane
+* diffing / patching doesn't work in some re-ordering scenarios
 
 STYLING:
 
