@@ -1,14 +1,10 @@
 IMMEDIATE:
 
 * ability to use images
+  * dnd file images to stage should create component
 * move components to separate files (need to globally load components)
-* start wiring up right gutter
-* look into how rust may be used
-* prohibit immutable children from being deleted
-  * **color picker**
 * update code compiler to handle overrides
-* ability to load images & other resources in PC file. (start with ionicons)
-* ability to persist changes to main component
+* wire up styles panel
 
 BUGS:
 
@@ -16,25 +12,26 @@ BUGS:
 * padding / margins affect pane
 * diffing / patching doesn't work in some re-ordering scenarios
 
-STYLING:
+USEFUL:
 
-* insert new style when element is inserted
-* slurp up styles when element is copied or moved (reduce into one style)
+* ability to load images & other resources in PC file. (start with ionicons)
+* ability to persist instance changes to main component
+* insert rect into layer pane should work
+* drag element layers to canvas
+* when dragging, should display hovering on stage
+* multi selector
+* C for inserting components to stage (needs to show HUD)
+* Minimap of document
+* pasted elements should be added after selected node
+* Measurement tools (not snapping)
 
-HIGH PRIO:
+COMPONENTS:
 
-ideas around importing other design files like Sketch
-
-* **stronger source data type, don't use tree node structure**
-
-LOW PRIO:
-
-* move is\* to synthetic metadata
+* Components (left gutter)
+  * display preview of component
+* Re-design layers panel
+* Re-design files pane
 
 HIGH IMPACT:
 
 * **importing sketch files for translation** - copy attributes from shapes like colors, fonts, shadows, backgrounds. Source of truth for that information stays in Sketch. Separation of concerns between Tandem & design apps. Seems scalable, but need to test.
-
-QUEUE:
-
-styles panel
