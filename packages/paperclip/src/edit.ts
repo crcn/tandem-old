@@ -104,6 +104,7 @@ export type PCNodeClip = {
 
 // namespaced to ensure that key doesn't conflict with others
 export type PCEditorState = {
+  inEdit?: boolean;
   documents: SyntheticDocument[];
 
   // key = frame id, value = evaluated frame
@@ -516,6 +517,10 @@ const persistChanges = <TState extends PCEditorState>(
   updater: (state: TState) => TState
 ) => {
   state = updater(state);
+  if (state.inEdit) {
+    return state;
+  }
+  state = { ...(state as any), inEdit: true };
 
   // sanity check.
   assertValidDependencyGraph(state.graph);
@@ -523,6 +528,7 @@ const persistChanges = <TState extends PCEditorState>(
   for (const uri in state.graph) {
     state = evaluateDependency(uri, state);
   }
+  state = { ...(state as any), inEdit: false };
   return state;
 };
 

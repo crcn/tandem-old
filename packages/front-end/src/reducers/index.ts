@@ -188,7 +188,9 @@ import {
   PC_DEPENDENCY_GRAPH_LOADED,
   PCDependencyGraphLoaded,
   SYNTHETIC_DOCUMENT_NODE_NAME,
-  DEFAULT_FRAME_BOUNDS
+  DEFAULT_FRAME_BOUNDS,
+  isPaperclipUri,
+  evaluateDependency
 } from "paperclip";
 import {
   getTreeNodePath,
@@ -281,7 +283,7 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
     case QUICK_SEARCH_ITEM_CLICKED: {
       const { file } = action as QuickSearchItemClicked;
       const uri = file.uri;
-      state = queueOpenFile(uri, state);
+      state = maybeEvaluateFile(uri, state);
       state = setSelectedFileNodeIds(state, file.id);
       state = setActiveFilePath(uri, state);
       state = upsertOpenFile(uri, false, state);
@@ -1332,6 +1334,13 @@ const isDroppableNode = (node: SyntheticVisibleNode) => {
     node.name !== "text" &&
     !/input/.test(String((node as SyntheticElement).name))
   );
+};
+
+const maybeEvaluateFile = (uri: string, state: RootState) => {
+  if (isPaperclipUri(uri)) {
+    return evaluateDependency(uri, state);
+  }
+  return queueOpenFile(uri, state);
 };
 
 const handleArtboardSelectionFromAction = <

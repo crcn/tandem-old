@@ -11,3 +11,4 @@ export * from "./dom-renderer";
 export * from "./ot";
 export * from "./graph";
 export * from "./edit";
+export * from "./config";

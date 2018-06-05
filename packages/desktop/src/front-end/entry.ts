@@ -5,6 +5,7 @@ import { rootReducer } from "./reducers";
 import { setup } from "tandem-front-end";
 import { DesktopRootState } from "./state";
 import * as path from "path";
+import { openPCConfig, findPaperclipSourceFiles } from "paperclip";
 
 const readFile = uri => {
   return Promise.resolve({
@@ -22,7 +23,19 @@ const writeFile = async (uri: string, content: Buffer) => {
   return true;
 };
 
-setup<DesktopRootState>({ readFile, writeFile }, rootReducer, rootSaga)({
+const getPaperclipUris = async () => {
+  // TODO - need to hit back-end API for this since CWD could be different
+  return findPaperclipSourceFiles(
+    openPCConfig(process.cwd()),
+    process.cwd()
+  ).map(path => "file://" + path);
+};
+
+setup<DesktopRootState>(
+  { readFile, writeFile, getPaperclipUris },
+  rootReducer,
+  rootSaga
+)({
   mount: document.getElementById("application"),
   hoveringNodeIds: [],
   selectedNodeIds: [],

@@ -40,6 +40,11 @@ export const queueOpenFile = <TState extends FSSandboxRootState>(
   };
 };
 
+export const queueOpenFiles = <TState extends FSSandboxRootState>(
+  uris: string[],
+  state: TState
+): TState => uris.reduce((state, uri) => queueOpenFile(uri, state), state);
+
 export const getFSItem = (uri: string, state: FSSandboxRootState) =>
   state.fileCache[uri];
 
@@ -54,6 +59,20 @@ export const queueSaveFile = <TState extends FSSandboxRootState>(
     uri,
     state
   );
+};
+
+export const getFileCacheItemsByMimetype = (
+  mimeType: string,
+  state: FileCache
+) => {
+  const items: FileCacheItem[] = [];
+  for (const uri in state) {
+    const item = state[uri];
+    if (item.mimeType === mimeType) {
+      items.push(item);
+    }
+  }
+  return items;
 };
 
 export const updateFileCacheItem = <TState extends FSSandboxRootState>(

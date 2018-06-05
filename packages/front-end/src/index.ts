@@ -10,7 +10,8 @@ import { rootSaga } from "./sagas";
 import {
   createPaperclipSaga,
   PAPERCLIP_MIME_TYPE,
-  PAPERCLIP_DEFAULT_EXTENSIONS
+  PAPERCLIP_DEFAULT_EXTENSIONS,
+  PaperclipSagaOptions
 } from "paperclip";
 import { RootState } from "./state";
 import { appLoaded } from "./actions";
@@ -20,8 +21,10 @@ import {
   setReaderMimetype
 } from "fsbox";
 
+export type FrontEndOptions = {} & FSSandboxOptions & PaperclipSagaOptions;
+
 export const setup = <TState extends RootState>(
-  { readFile, writeFile }: FSSandboxOptions,
+  { readFile, writeFile, getPaperclipUris }: FrontEndOptions,
   reducer?: Reducer<TState>,
   saga?: () => IterableIterator<any>
 ) => {
@@ -48,7 +51,7 @@ export const setup = <TState extends RootState>(
       if (saga) {
         yield fork(saga);
         yield fork(createFSSandboxSaga({ readFile, writeFile }));
-        yield fork(createPaperclipSaga());
+        yield fork(createPaperclipSaga({ getPaperclipUris }));
       }
     });
 

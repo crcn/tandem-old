@@ -106,6 +106,9 @@ export const convertFlatFilesToNested = (
     let i = 0;
     for (let n = pf.length; i < n - 1; i++) {
       const part = pf[i];
+      if (!part) {
+        continue;
+      }
       prev = current;
       current = current.children.find(
         (child: FSItem) => path.basename(child.uri) === part

@@ -1,10 +1,10 @@
 IMMEDIATE:
 
-* drop file into canvas to import all
-* ability to use images
-  * dnd file images to stage should create component
-* move components to separate files (need to globally load components)
-* update code compiler to handle overrides
+* fix navigator
+  * ability to create files
+* push file changes to app (use chokidar)
+* move components to separate files
+* update code compiler to handle overrides & images
 * wire up styles panel
 
 BUGS:
@@ -27,6 +27,13 @@ USEFUL:
 * Measurement tools (not snapping)
 * drop component to stage to create instance
 * copy & paste images (like components) to create new instances
+* move elements on canvas to other elements (source elements must be statically positioned)
+* tabs model maintaining canvas state of each open file
+
+SAFETY:
+
+* ensure that ids aren't colliding
+  * will happen if a file is copied
 
 COMPONENTS:
 

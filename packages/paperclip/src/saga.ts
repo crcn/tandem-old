@@ -6,7 +6,8 @@ import {
   pcDependencyGraphLoaded,
   pcFrameContainerCreated,
   PC_SYNTHETIC_FRAME_CONTAINER_CREATED,
-  PC_SYNTHETIC_FRAME_RENDERED
+  PC_SYNTHETIC_FRAME_RENDERED,
+  pcSourceFileUrisReceived
 } from "./actions";
 import {
   SyntheticNativeNodeMap,
@@ -38,10 +39,22 @@ import {
 } from "fsbox";
 import { PAPERCLIP_MIME_TYPE } from ".";
 
-export const createPaperclipSaga = () =>
+export type PaperclipSagaOptions = {
+  getPaperclipUris(): Promise<string[]>;
+};
+
+export const createPaperclipSaga = ({
+  getPaperclipUris
+}: PaperclipSagaOptions) =>
   function* paperclipSaga() {
     yield fork(nativeRenderer);
-    yield fork(dependencyLoader);
+    // yield fork(dependencyLoader);
+    yield fork(loadPaperclipFiles);
+
+    function* loadPaperclipFiles() {
+      const paperclipUris = yield call(getPaperclipUris);
+      yield put(pcSourceFileUrisReceived(paperclipUris));
+    }
 
     function* nativeRenderer() {
       yield fork(function* captureFrameChanges() {
@@ -241,14 +254,12 @@ export const createPaperclipSaga = () =>
           continue;
         }
 
+        // const paperclipFiles = fileCache
+
         const updatedFiles = difference(
           values(fileCache),
           values(prevCache)
-        ).filter(
-          file =>
-            file.status === FileCacheItemStatus.LOADED &&
-            file.mimeType === PAPERCLIP_MIME_TYPE
-        );
+        ).filter(file => file.mimeType === PAPERCLIP_MIME_TYPE);
 
         if (!updatedFiles.length) {
           continue;

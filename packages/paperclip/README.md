@@ -2,7 +2,11 @@ Paperclip is DSL for building web UIs visually.
 
 #### TODOS
 
--
+* Move evaluator over to Rust
+* SVG support
+* Eliminate saga dependency
+* Global variables
+* Sketch loader
 
 #### API Example
 
@@ -26,8 +30,3 @@ const pcModule = createPCModule([
 
 const syntheticDocument = evaluatePCModule(pcModule);
 ```
-
-#### TODO
-
-* sketch loader
-* global variables

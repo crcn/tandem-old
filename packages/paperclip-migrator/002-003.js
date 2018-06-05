@@ -21,6 +21,7 @@ module.exports = (module) => {
 
   const mapNode = (node) => Object.assign({}, node, {
     metadata: {},
+    attributes: node.attributes || {},
     children: node.children.map(mapNode)
   });
 

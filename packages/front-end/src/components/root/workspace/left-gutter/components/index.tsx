@@ -2,7 +2,8 @@ import "./index.scss";
 import * as React from "react";
 import { Dispatch } from "redux";
 import { PaneComponent } from "../../../../pane";
-const { Item: BaseItem } = require("./index.pc");
+// const { Item: BaseItem } = require("./index.pc");
+const BaseItem = () => <div />;
 import {
   REGISTERED_COMPONENT,
   RegisteredComponent
