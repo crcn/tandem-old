@@ -1,4 +1,6 @@
 import { memoize } from "tandem-common";
+import { FileCache, FileCacheItem } from "fsbox";
+import { PAPERCLIP_MIME_TYPE } from "./constants";
 
 /*------------------------------------------
  * TYPES
@@ -12,10 +14,6 @@ export type Dependency<TContent> = {
   // URI used here since it could be a url
   uri: string;
 
-  // TODO - json/paperclip
-  contentType?: string;
-  dirty?: boolean; // TRUE if the contents have changed
-  originalContent: TContent;
   content: TContent;
 };
 
@@ -60,6 +58,31 @@ export const getModifiedDependencies = (
     }
   }
   return modified;
+};
+
+export const isPaperclipUri = (uri: string) => {
+  return /\.pc$/.test(uri);
+};
+
+const createDependencyFromFileCacheItem = memoize(
+  ({ uri, content }: FileCacheItem): Dependency<any> => ({
+    uri,
+    content: JSON.parse(content.toString("utf8"))
+  })
+);
+
+export const addFileCacheToDependencyGraph = (
+  fsCache: FileCache,
+  graph: DependencyGraph = {}
+): DependencyGraph => {
+  const newGraph = { ...graph };
+  for (const uri in fsCache) {
+    if (!graph[uri] && fsCache[uri].mimeType === PAPERCLIP_MIME_TYPE) {
+      newGraph[uri] = createDependencyFromFileCacheItem(fsCache[uri]);
+    }
+  }
+
+  return newGraph;
 };
 
 /*------------------------------------------

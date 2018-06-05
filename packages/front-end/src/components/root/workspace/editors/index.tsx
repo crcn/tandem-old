@@ -2,13 +2,15 @@ import "./index.scss";
 import { Dispatch } from "redux";
 import * as React from "react";
 import * as path from "path";
-import { Dependency } from "paperclip";
+import { Dependency, PAPERCLIP_MIME_TYPE } from "paperclip";
 import { compose, pure, withHandlers } from "recompose";
-import { StageComponent } from "./stage";
-import { RootState, Editor } from "../../../../state";
+import { StageComponent as PaperclipStageComponent } from "./paperclip/stage";
+import { ImageEditorComponent } from "./image";
+import { RootState, Editor, isImageMimetype } from "../../../../state";
 import { DragDropContext } from "react-dnd";
 import { TabsComponent, TabItem } from "../../../tabs";
-import { editorTabClicked } from "../../../..";
+import { editorTabClicked } from "../../../../actions";
+import { getFSItem } from "fsbox";
 
 export type EditorOuterProps = {
   editor: Editor;
@@ -34,6 +36,35 @@ const EditorBaseComponent = ({
     value: tabUri
   }));
 
+  const fileCacheItem = getFSItem(editor.activeFilePath, root);
+
+  if (!fileCacheItem.content) {
+    return null;
+  }
+
+  let editorComponent = null;
+
+  if (fileCacheItem.content) {
+    if (fileCacheItem.mimeType === PAPERCLIP_MIME_TYPE) {
+      editorComponent = (
+        <PaperclipStageComponent
+          root={root}
+          dispatch={dispatch}
+          dependency={dependency}
+          editor={editor}
+        />
+      );
+    } else if (isImageMimetype(fileCacheItem.mimeType)) {
+      editorComponent = (
+        <ImageEditorComponent
+          root={root}
+          dispatch={dispatch}
+          fileCacheItem={fileCacheItem}
+        />
+      );
+    }
+  }
+
   return (
     <div className="m-editor">
       <TabsComponent
@@ -41,12 +72,7 @@ const EditorBaseComponent = ({
         items={items}
         onTabClick={onTabClick}
       >
-        <StageComponent
-          root={root}
-          dispatch={dispatch}
-          dependency={dependency}
-          editor={editor}
-        />
+        {editorComponent}
       </TabsComponent>
     </div>
   );

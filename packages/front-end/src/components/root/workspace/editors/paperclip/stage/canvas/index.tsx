@@ -8,11 +8,11 @@ import {
   ToolType,
   REGISTERED_COMPONENT,
   RegisteredComponent
-} from "../../../../../../state";
+} from "../../../../../../../state";
 import { Dependency, getFramesByDependencyUri } from "paperclip";
 import { PreviewLayerComponent } from "./preview-layer";
 import { ToolsLayerComponent } from "./tools-layer";
-import { Isolate } from "../../../../../isolated";
+import { Isolate } from "../../../../../../isolated";
 import {
   canvasWheel,
   canvasContainerMounted,
@@ -21,7 +21,7 @@ import {
   canvasMotionRested,
   canvasDroppedRegisteredComponent,
   canvasDraggedOver
-} from "../../../../../../actions";
+} from "../../../../../../../actions";
 import {
   DropTarget,
   DropTargetCollector,

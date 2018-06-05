@@ -7,7 +7,7 @@ import {
   RootState,
   FILE_NAVIGATOR_ITEM_CLICKED,
   OPEN_FILE_ITEM_CLICKED,
-  PAPERCLIP_EXTENSION_NAME,
+  PAPERCLIP_DEFAULT_EXTENSIONS,
   FILE_NAVIGATOR_NEW_FILE_ENTERED,
   loadEntry,
   SHORTCUT_SAVE_KEY_DOWN,
@@ -50,7 +50,7 @@ export function* rootSaga() {
 //     const newPCEditors = editors.filter(editor => {
 //       return (
 //         !getEditorWithActiveFileUri(editor.activeFilePath, oldState) &&
-//         editor.activeFilePath.indexOf(PAPERCLIP_EXTENSION_NAME) !== -1
+//         editor.activeFilePath.indexOf(PAPERCLIP_DEFAULT_EXTENSIONS) !== -1
 //       );
 //     });
 

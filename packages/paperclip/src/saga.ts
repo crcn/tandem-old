@@ -3,7 +3,7 @@ import { take, fork, select, call, put, spawn } from "redux-saga/effects";
 import { getPCNode } from "./dsl";
 import {
   pcFrameRendered,
-  pcDependencyLoaded,
+  pcDependencyGraphLoaded,
   pcFrameContainerCreated,
   PC_SYNTHETIC_FRAME_CONTAINER_CREATED,
   PC_SYNTHETIC_FRAME_RENDERED
@@ -15,7 +15,12 @@ import {
   computeDisplayInfo
 } from "./dom-renderer";
 import { KeyValue } from "tandem-common";
-import { Dependency, DependencyGraph } from "./graph";
+import { difference, values } from "lodash";
+import {
+  Dependency,
+  DependencyGraph,
+  addFileCacheToDependencyGraph
+} from "./graph";
 import { loadEntry, FileLoader } from "./loader";
 import { diffSyntheticNode } from "./ot";
 import { PCEditorState, Frame, getFrameByContentNodeId } from "./edit";
@@ -24,16 +29,16 @@ import {
   SyntheticDocument,
   SyntheticVisibleNode
 } from "./synthetic";
+import {
+  FS_SANDBOX_ITEM_LOADED,
+  FSSandboxItemLoaded,
+  FSSandboxRootState,
+  FileCache,
+  FileCacheItemStatus
+} from "fsbox";
+import { PAPERCLIP_MIME_TYPE } from ".";
 
-// TODO - remote renderer here (Browsertap)
-
-// TODO - need to have special getState() function here in the
-// future to sandbox this saga from clobbering other state
-export type PaperclipSagaOptions = {
-  openFile: FileLoader;
-};
-
-export const createPaperclipSaga = ({ openFile }: PaperclipSagaOptions) =>
+export const createPaperclipSaga = () =>
   function* paperclipSaga() {
     yield fork(nativeRenderer);
     yield fork(dependencyLoader);
@@ -224,26 +229,45 @@ export const createPaperclipSaga = ({ openFile }: PaperclipSagaOptions) =>
     function* dependencyLoader() {
       let prevUri: string;
 
+      let prevCache: FileCache;
       // TODO - queue uris here
       while (1) {
         yield take();
-        const { openDependencyUri, graph }: PCEditorState = yield select();
-        if (!openDependencyUri || openDependencyUri === prevUri) {
+        const {
+          fileCache,
+          graph
+        }: FSSandboxRootState & PCEditorState = yield select();
+        if (prevCache === fileCache) {
           continue;
         }
 
-        prevUri = openDependencyUri;
-
-        const { entry, graph: newGraph } = yield call(
-          loadEntry,
-          openDependencyUri,
-          {
-            graph,
-            openFile
-          }
+        const updatedFiles = difference(
+          values(fileCache),
+          values(prevCache)
+        ).filter(
+          file =>
+            file.status === FileCacheItemStatus.LOADED &&
+            file.mimeType === PAPERCLIP_MIME_TYPE
         );
 
-        yield put(pcDependencyLoaded(entry.uri, newGraph));
+        if (!updatedFiles.length) {
+          continue;
+        }
+
+        prevCache = fileCache;
+        prevCache = fileCache;
+        // const { graph }: PCEditorState = yield select();
+        // if (!openDependencyUri || openDependencyUri === prevUri) {
+        //   continue;
+        // }
+
+        // prevUri = openDependencyUri;
+
+        yield put(
+          pcDependencyGraphLoaded(
+            addFileCacheToDependencyGraph(fileCache, graph)
+          )
+        );
       }
     }
   };

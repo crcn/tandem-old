@@ -1,13 +1,13 @@
 import "./path.scss";
 import * as React from "react";
 import { compose, pure, withHandlers } from "recompose";
-import { RootState } from "../../../../../../../../state";
+import { RootState } from "../../../../../../../../../state";
 import { Dispatch } from "redux";
 import {
   resizerPathMoved,
   resizerPathStoppedMoving,
   WrappedEvent
-} from "../../../../../../../../actions";
+} from "../../../../../../../../../actions";
 import { startDOMDrag, Point, Bounds } from "tandem-common";
 
 export type PathOuterProps = {

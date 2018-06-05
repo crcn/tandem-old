@@ -104,9 +104,6 @@ export type PCNodeClip = {
 
 // namespaced to ensure that key doesn't conflict with others
 export type PCEditorState = {
-  persisting?: boolean;
-  openDependencyUri?: string;
-
   documents: SyntheticDocument[];
 
   // key = frame id, value = evaluated frame
@@ -270,14 +267,6 @@ export const replaceDependency = <TState extends PCEditorState>(
   persistChanges(state, state =>
     updateDependencyGraph({ [dep.uri]: dep }, state)
   );
-
-export const queueLoadDependencyUri = <TState extends PCEditorState>(
-  uri: string,
-  state: TState
-) =>
-  state.graph[uri]
-    ? state
-    : updatePCEditorState({ openDependencyUri: uri }, state);
 
 export const removeFrame = <TState extends PCEditorState>(
   { contentNodeId }: Frame,
@@ -506,6 +495,15 @@ export const evaluateDependency = memoize(
     );
 
     return upsertFrames(updatePCEditorState({ documents }, state));
+  }
+);
+
+export const evaluateDependencyGraph = memoize(
+  <TState extends PCEditorState>(state: TState) => {
+    for (const dep of values(state.graph)) {
+      state = evaluateDependency(dep.uri, state);
+    }
+    return state;
   }
 );
 

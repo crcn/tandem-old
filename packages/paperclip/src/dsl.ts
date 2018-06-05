@@ -282,7 +282,6 @@ export const createPCDependency = (
   module: PCModule
 ): Dependency<PCModule> => ({
   uri,
-  originalContent: module,
   content: module
 });
 

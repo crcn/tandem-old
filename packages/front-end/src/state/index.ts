@@ -52,7 +52,6 @@ import {
   getSyntheticVisibleNodeRelativeBounds,
   updateDependencyGraph,
   updateSyntheticVisibleNodeMetadata,
-  queueLoadDependencyUri,
   isSyntheticVisibleNodeMovable,
   isSyntheticVisibleNodeResizable,
   updateFrame,
@@ -65,7 +64,8 @@ import {
   SyntheticDocument,
   updateSyntheticDocument,
   getFrameByContentNodeId,
-  getFramesByDependencyUri
+  getFramesByDependencyUri,
+  isPaperclipUri
 } from "paperclip";
 import {
   CanvasToolOverlayMouseMoved,
@@ -80,6 +80,7 @@ import {
   DependencyGraph,
   getModifiedDependencies
 } from "paperclip";
+import { FSSandboxRootState } from "fsbox";
 
 export enum ToolType {
   TEXT,
@@ -155,7 +156,8 @@ export type RootState = {
   insertFileInfo?: InsertFileInfo;
   history: GraphHistory;
   showQuickSearch?: boolean;
-} & PCEditorState;
+} & PCEditorState &
+  FSSandboxRootState;
 
 export type OpenFile = {
   temporary: boolean;
@@ -480,6 +482,8 @@ export const getSyntheticWindowBounds = memoize(
   }
 );
 
+export const isImageMimetype = (mimeType: string) => /^image\//.test(mimeType);
+
 export const openEditorFileUri = (uri: string, state: RootState): RootState => {
   const editor = getEditorWithFileUri(uri, state) || state.editors[0];
 
@@ -505,6 +509,10 @@ export const openEditorFileUri = (uri: string, state: RootState): RootState => {
           }
         ]
   };
+};
+
+const queuePreview = (uri: string, state: RootState): RootState => {
+  return state;
 };
 
 export const setNextOpenFile = (state: RootState): RootState => {
@@ -737,19 +745,6 @@ export const setRootStateFileNodeExpanded = (
     },
     state
   );
-};
-
-export const openSyntheticPCFile = (
-  uri: string,
-  state: RootState
-): RootState => {
-  const graph = state.graph;
-  const entry = graph[uri];
-  if (!entry) {
-    throw new Error(`Cannot open window if graph entry is not loaded`);
-  }
-
-  return queueLoadDependencyUri(uri, state);
 };
 
 export const updateEditor = (

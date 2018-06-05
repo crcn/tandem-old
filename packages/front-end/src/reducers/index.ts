@@ -100,6 +100,7 @@ import {
   SHORTCUT_T_KEY_DOWN,
   SHORTCUT_R_KEY_DOWN
 } from "../actions";
+import { queueOpenFile, fsSandboxReducer } from "fsbox";
 import {
   RootState,
   setActiveFilePath,
@@ -147,8 +148,6 @@ import {
   PCTextNode,
   PCElement,
   paperclipReducer,
-  PC_DEPENDENCY_LOADED,
-  PCDependencyLoaded,
   PC_SYNTHETIC_FRAME_RENDERED,
   SyntheticElement,
   createPCElement,
@@ -159,7 +158,6 @@ import {
   getSyntheticSourceNode,
   getSyntheticNodeById,
   SyntheticVisibleNode,
-  queueLoadDependencyUri,
   getPCNodeDependency,
   updateSyntheticVisibleNodePosition,
   updateFrameBounds,
@@ -184,7 +182,9 @@ import {
   SyntheticBaseNode,
   getFrameSyntheticNode,
   SyntheticDocument,
-  getFrameByContentNodeId
+  getFrameByContentNodeId,
+  PC_DEPENDENCY_GRAPH_LOADED,
+  PCDependencyGraphLoaded
 } from "paperclip";
 import {
   getTreeNodePath,
@@ -250,6 +250,7 @@ const MAX_ZOOM = 6400 / 100;
 const INITIAL_ZOOM_PADDING = 50;
 
 export const rootReducer = (state: RootState, action: Action): RootState => {
+  state = fsSandboxReducer(state, action);
   state = paperclipReducer(state, action);
   state = canvasReducer(state, action);
   state = shortcutReducer(state, action);
@@ -276,7 +277,7 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
     case QUICK_SEARCH_ITEM_CLICKED: {
       const { file } = action as QuickSearchItemClicked;
       const uri = file.uri;
-      state = queueLoadDependencyUri(uri, state);
+      state = queueOpenFile(uri, state);
       state = setSelectedFileNodeIds(state, file.id);
       state = setActiveFilePath(uri, state);
       state = upsertOpenFile(uri, false, state);
@@ -311,6 +312,9 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
 
     case CANVAS_MOUNTED: {
       const { fileUri, element } = action as CanvasMounted;
+      if (!element) {
+        return state;
+      }
 
       const { width = 400, height = 300 } =
         element.getBoundingClientRect() || {};
@@ -622,9 +626,9 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
       const { uri } = action as EditorTabClicked;
       return openEditorFileUri(uri, state);
     }
-    case PC_DEPENDENCY_LOADED: {
-      const { uri, graph } = action as PCDependencyLoaded;
-      state = centerEditorCanvas(state, uri);
+    case PC_DEPENDENCY_GRAPH_LOADED: {
+      const { graph } = action as PCDependencyGraphLoaded;
+      state = centerEditorCanvas(state, state.activeEditorFilePath);
       return state;
     }
   }

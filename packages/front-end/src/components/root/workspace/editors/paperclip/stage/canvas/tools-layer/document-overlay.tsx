@@ -4,8 +4,8 @@ import * as React from "react";
 import * as Hammer from "react-hammerjs";
 // import { Workspace, AVAILABLE_COMPONENT, AvailableComponent, Artboard } from "front-end/state";
 // import { Workspace, AVAILABLE_COMPONENT, AvailableComponent, Artboard } from "front-end/state";
-import { wrapEventToDispatch } from "../../../../../../../utils";
-import { RootState, Editor } from "../../../../../../../state";
+import { wrapEventToDispatch } from "../../../../../../../../utils";
+import { RootState, Editor } from "../../../../../../../../state";
 import { difference } from "lodash";
 import { mapValues, values } from "lodash";
 import {
@@ -32,7 +32,7 @@ import {
   canvasToolOverlayMousePanning,
   canvasToolOverlayMousePanEnd,
   canvasToolOverlayMouseDoubleClicked
-} from "../../../../../../../actions";
+} from "../../../../../../../../actions";
 
 export type VisualToolsProps = {
   editor: Editor;

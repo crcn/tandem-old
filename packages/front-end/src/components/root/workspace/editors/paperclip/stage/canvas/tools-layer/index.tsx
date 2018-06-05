@@ -5,7 +5,11 @@
 import "./index.scss";
 import * as React from "react";
 import { Dispatch } from "redux";
-import { RootState, Editor, getActiveFrames } from "../../../../../../../state";
+import {
+  RootState,
+  Editor,
+  getActiveFrames
+} from "../../../../../../../../state";
 import { SelectableToolsComponent } from "./selectables";
 import { NodeOverlaysTool } from "./document-overlay";
 import { SelectionCanvasTool } from "./selection";

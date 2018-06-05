@@ -4,10 +4,25 @@ import { rootSaga } from "./sagas";
 import { rootReducer } from "./reducers";
 import { setup } from "tandem-front-end";
 import { DesktopRootState } from "./state";
+import * as path from "path";
 
-const openFile = uri => fs.readFileSync(uri.substr("file://".length), "utf8");
+const readFile = uri => {
+  return Promise.resolve({
+    content: fs.readFileSync(uri.substr("file://".length)),
+    mimeType: {
+      ".svg": "image/svg+xml",
+      ".png": "image/png",
+      ".json": "application/json"
+    }[path.extname(uri)]
+  });
+};
 
-setup<DesktopRootState>({ openFile }, rootReducer, rootSaga)({
+const writeFile = async (uri: string, content: Buffer) => {
+  fs.writeFileSync(uri, content);
+  return true;
+};
+
+setup<DesktopRootState>({ readFile, writeFile }, rootReducer, rootSaga)({
   mount: document.getElementById("application"),
   hoveringNodeIds: [],
   selectedNodeIds: [],
@@ -17,5 +32,6 @@ setup<DesktopRootState>({ openFile }, rootReducer, rootSaga)({
   documents: [],
   graph: {},
   history: {},
-  openFiles: []
+  openFiles: [],
+  fileCache: {}
 });

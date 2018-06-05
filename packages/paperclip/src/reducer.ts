@@ -2,10 +2,10 @@ import { Action } from "redux";
 import {
   PC_SYNTHETIC_FRAME_RENDERED,
   PCFrameRendered,
-  PCDependencyLoaded,
-  PC_DEPENDENCY_LOADED,
+  PC_DEPENDENCY_GRAPH_LOADED,
   PC_SYNTHETIC_FRAME_CONTAINER_CREATED,
-  PCFrameContainerCreated
+  PCFrameContainerCreated,
+  PCDependencyGraphLoaded
 } from "./actions";
 import { evaluatePCModule } from "./evaluate";
 import {
@@ -13,7 +13,8 @@ import {
   PCEditorState,
   updatePCEditorState,
   updateFrame,
-  evaluateDependency
+  evaluateDependency,
+  evaluateDependencyGraph
 } from "./edit";
 
 export const paperclipReducer = <TState extends PCEditorState>(
@@ -42,13 +43,11 @@ export const paperclipReducer = <TState extends PCEditorState>(
         state
       );
     }
-    case PC_DEPENDENCY_LOADED: {
-      const { uri, graph } = action as PCDependencyLoaded;
-      return evaluateDependency(
-        uri,
+    case PC_DEPENDENCY_GRAPH_LOADED: {
+      const { graph } = action as PCDependencyGraphLoaded;
+      return evaluateDependencyGraph(
         updatePCEditorState(
           {
-            openDependencyUri: null,
             graph: {
               ...state.graph,
               ...graph

@@ -6,7 +6,7 @@ import { CanvasComponent } from "./canvas";
 import { FooterComponent } from "./footer";
 import { ToolbarComponent } from "./toolbar";
 import { Dependency } from "paperclip";
-import { RootState, Editor } from "../../../../../state";
+import { RootState, Editor } from "../../../../../../state";
 
 export type StageOuterProps = {
   root: RootState;

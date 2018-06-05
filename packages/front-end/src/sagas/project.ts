@@ -10,7 +10,7 @@ import {
   SHORTCUT_SAVE_KEY_DOWN,
   savedFile
 } from "../actions";
-import { PAPERCLIP_EXTENSION_NAME, loadEntry } from "paperclip";
+import { PAPERCLIP_DEFAULT_EXTENSIONS, loadEntry } from "paperclip";
 import {
   File,
   Directory,
@@ -31,7 +31,7 @@ export function* projectSaga() {
 //   while(1) {
 //     yield take(PROJECT_DIRECTORY_LOADED);
 //     // const { projectDirectory }: RootState = yield select();
-//     // const [mainPaperclipFile] = getFilesWithExtension(PAPERCLIP_EXTENSION_NAME, projectDirectory);
+//     // const [mainPaperclipFile] = getFilesWithExtension(PAPERCLIP_DEFAULT_EXTENSIONS, projectDirectory);
 //     // yield put(fileNavigatorItemClicked(getTreeNodePath(mainPaperclipFile.id, projectDirectory)));
 //   }
 // }

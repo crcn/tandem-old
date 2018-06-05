@@ -55,8 +55,7 @@ export const loadEntry = async (
 
 const createDependency = (uri: string, content: PCModule): Dependency<any> => ({
   uri,
-  content,
-  originalContent: content
+  content
 });
 
 const parseNodeSource = (source: string) => {

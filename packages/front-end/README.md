@@ -1,5 +1,8 @@
 IMMEDIATE:
 
+* image preview
+* svg preview
+* drop file into canvas to import all
 * ability to use images
   * dnd file images to stage should create component
 * move components to separate files (need to globally load components)
@@ -24,6 +27,7 @@ USEFUL:
 * Minimap of document
 * pasted elements should be added after selected node
 * Measurement tools (not snapping)
+* drop component to stage to create instance
 
 COMPONENTS:
 

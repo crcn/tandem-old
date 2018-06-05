@@ -9,13 +9,13 @@ import {
   getSelectionBounds,
   isSelectionMovable,
   isSelectionResizable
-} from "../../../../../../../../state";
+} from "../../../../../../../../../state";
 import {
   resizerMoved,
   resizerStoppedMoving,
   resizerMouseDown,
   resizerStartDrag
-} from "../../../../../../../../actions";
+} from "../../../../../../../../../actions";
 import { startDOMDrag, mergeBounds, moveBounds, Point } from "tandem-common";
 import { Dispatch } from "redux";
 import { Path } from "./path";

@@ -10,5 +10,6 @@ init({
   openFiles: [],
   frames: [],
   documents: [],
-  graph: {}
+  graph: {},
+  fileCache: {}
 });

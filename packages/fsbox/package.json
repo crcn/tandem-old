@@ -1,0 +1,21 @@
+{
+  "name": "fsbox",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@types/lodash": "^4.14.109",
+    "@types/node": "^10.3.1",
+    "@types/redux": "^3.6.0",
+    "@types/redux-saga": "^0.10.5",
+    "lodash": "^4.17.10",
+    "redux": "^4.0.0",
+    "redux-saga": "^0.16.0",
+    "tandem-common": "^3.0.0"
+  }
+}

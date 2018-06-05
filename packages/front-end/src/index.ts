@@ -7,15 +7,29 @@ import { default as createSagaMiddleware } from "redux-saga";
 import { fork } from "redux-saga/effects";
 import { rootReducer } from "./reducers";
 import { rootSaga } from "./sagas";
-import { PaperclipSagaOptions, createPaperclipSaga } from "paperclip";
+import {
+  createPaperclipSaga,
+  PAPERCLIP_MIME_TYPE,
+  PAPERCLIP_DEFAULT_EXTENSIONS
+} from "paperclip";
 import { RootState } from "./state";
 import { appLoaded } from "./actions";
+import {
+  FSSandboxOptions,
+  createFSSandboxSaga,
+  setReaderMimetype
+} from "fsbox";
 
 export const setup = <TState extends RootState>(
-  paperclipSagaOptions: PaperclipSagaOptions,
+  { readFile, writeFile }: FSSandboxOptions,
   reducer?: Reducer<TState>,
   saga?: () => IterableIterator<any>
 ) => {
+  readFile = setReaderMimetype(
+    PAPERCLIP_MIME_TYPE,
+    PAPERCLIP_DEFAULT_EXTENSIONS
+  )(readFile);
+
   return (initialState: TState) => {
     const sagaMiddleware = createSagaMiddleware();
     const store = createStore(
@@ -33,7 +47,8 @@ export const setup = <TState extends RootState>(
       yield fork(rootSaga);
       if (saga) {
         yield fork(saga);
-        yield fork(createPaperclipSaga(paperclipSagaOptions));
+        yield fork(createFSSandboxSaga({ readFile, writeFile }));
+        yield fork(createPaperclipSaga());
       }
     });
 

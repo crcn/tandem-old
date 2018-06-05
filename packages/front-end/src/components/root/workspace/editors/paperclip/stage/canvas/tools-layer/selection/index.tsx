@@ -13,8 +13,8 @@ import {
   getBoundedSelection,
   Editor,
   getSelectionBounds
-} from "../../../../../../../../state";
-import { selectorDoubleClicked } from "../../../../../../../../actions";
+} from "../../../../../../../../../state";
+import { selectorDoubleClicked } from "../../../../../../../../../actions";
 import { getSyntheticVisibleNodeRelativeBounds } from "paperclip";
 
 export type SelectionOuterProps = {

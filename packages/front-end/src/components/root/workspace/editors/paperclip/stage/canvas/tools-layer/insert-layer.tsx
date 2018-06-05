@@ -1,11 +1,11 @@
 import "./insert-layer.scss";
 import * as React from "react";
 import { compose, pure, withHandlers, withState } from "recompose";
-import { Canvas, ToolType, Editor } from "../../../../../../../state";
+import { Canvas, ToolType, Editor } from "../../../../../../../../state";
 import {
   CANVAS_MOTION_RESTED,
   insertToolFinished
-} from "../../../../../../../actions";
+} from "../../../../../../../../actions";
 import { Dispatch } from "redux";
 import { startDOMDrag, Bounds, getBoundsSize } from "tandem-common";
 

@@ -3,7 +3,7 @@ import { Action } from "redux";
 import { Dependency, DependencyGraph } from "./graph";
 
 export const PC_SYNTHETIC_FRAME_RENDERED = "PC_SYNTHETIC_FRAME_RENDERED";
-export const PC_DEPENDENCY_LOADED = "PC_DEPENDENCY_LOADED";
+export const PC_DEPENDENCY_GRAPH_LOADED = "PC_DEPENDENCY_GRAPH_LOADED";
 export const PC_SYNTHETIC_FRAME_CONTAINER_CREATED =
   "PC_SYNTHETIC_FRAME_CONTAINER_CREATED";
 
@@ -17,8 +17,7 @@ export type PCFrameRendered = {
   computed: ComputedDisplayInfo;
 } & Action;
 
-export type PCDependencyLoaded = {
-  uri: string;
+export type PCDependencyGraphLoaded = {
   graph: DependencyGraph;
 } & Action;
 
@@ -31,13 +30,11 @@ export const pcFrameRendered = (
   computed
 });
 
-export const pcDependencyLoaded = (
-  uri: string,
+export const pcDependencyGraphLoaded = (
   graph: DependencyGraph
-): PCDependencyLoaded => ({
-  uri,
+): PCDependencyGraphLoaded => ({
   graph,
-  type: PC_DEPENDENCY_LOADED
+  type: PC_DEPENDENCY_GRAPH_LOADED
 });
 
 export const pcFrameContainerCreated = (
