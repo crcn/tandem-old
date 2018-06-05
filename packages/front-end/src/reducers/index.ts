@@ -93,14 +93,15 @@ import {
   SHORTCUT_ZOOM_IN_KEY_DOWN,
   SHORTCUT_ZOOM_OUT_KEY_DOWN,
   CanvasMounted,
-  CANVAS_DROPPED_REGISTERED_COMPONENT,
-  CanvasDroppedRegisteredComponent,
+  CANVAS_DROPPED_ITEM,
+  CanvasDroppedItem,
   CANVAS_DRAGGED_OVER,
   SHORTCUT_CONVERT_TO_COMPONENT_KEY_DOWN,
   SHORTCUT_T_KEY_DOWN,
-  SHORTCUT_R_KEY_DOWN
+  SHORTCUT_R_KEY_DOWN,
+  CanvasDraggingOver
 } from "../actions";
-import { queueOpenFile, fsSandboxReducer } from "fsbox";
+import { queueOpenFile, fsSandboxReducer, isImageUri } from "fsbox";
 import {
   RootState,
   setActiveFilePath,
@@ -140,7 +141,8 @@ import {
   getCanvasMouseTargetNodeIdFromPoint,
   isSelectionMovable,
   SyntheticVisibleNodeMetadataKeys,
-  selectInsertedSyntheticVisibleNodes
+  selectInsertedSyntheticVisibleNodes,
+  RegisteredComponent
 } from "../state";
 import {
   PCSourceTagNames,
@@ -184,7 +186,9 @@ import {
   SyntheticDocument,
   getFrameByContentNodeId,
   PC_DEPENDENCY_GRAPH_LOADED,
-  PCDependencyGraphLoaded
+  PCDependencyGraphLoaded,
+  SYNTHETIC_DOCUMENT_NODE_NAME,
+  DEFAULT_FRAME_BOUNDS
 } from "paperclip";
 import {
   getTreeNodePath,
@@ -747,52 +751,61 @@ export const canvasReducer = (state: RootState, action: Action) => {
       );
     }
 
-    case CANVAS_DROPPED_REGISTERED_COMPONENT: {
-      let {
-        item,
-        point,
-        editorUri
-      } = action as CanvasDroppedRegisteredComponent;
+    case CANVAS_DROPPED_ITEM: {
+      let { item, point, editorUri } = action as CanvasDroppedItem;
       const targetNodeId = getCanvasMouseTargetNodeIdFromPoint(state, point);
 
-      let sourceNode: PCVisibleNode = cloneTreeNode(item.template);
+      let sourceNode: PCVisibleNode;
 
-      let targetSourceId: string;
-
-      if (targetNodeId) {
-        targetSourceId = getSyntheticSourceNode(
-          getSyntheticNodeById(targetNodeId, state.documents),
-          state.graph
-        ).id;
+      if (isFile(item)) {
+        if (isImageUri(item.uri)) {
+          sourceNode = createPCElement(
+            "img",
+            {},
+            {
+              src: path.relative(editorUri, item.uri)
+            }
+          );
+        }
       } else {
-        targetSourceId = state.graph[editorUri].content.id;
-        point = normalizePoint(
-          getEditorWithFileUri(editorUri, state).canvas.translate,
-          point
-        );
-        sourceNode = {
-          ...sourceNode,
-          style: {
-            ...sourceNode.style,
-            left: point.left,
-            top: point.top,
-            width: 200,
-            height: 200
-          }
-        };
+        sourceNode = cloneTreeNode((item as RegisteredComponent).template);
       }
 
-      return state;
-      // return persistRootState(
-      //   browser =>
-      //     persistInsertNode(
-      //       sourceNode,
-      //       targetSourceId,
-      //       TreeMoveOffset.APPEND,
-      //       browser
-      //     ),
-      //   state
-      // );
+      if (!sourceNode) {
+        console.error(`Unrecognized dropped item.`);
+        return state;
+      }
+
+      const targetId = getCanvasMouseTargetNodeIdFromPoint(
+        state,
+        point,
+        node => node.name !== PCSourceTagNames.TEXT
+      );
+      let target: SyntheticVisibleNode | SyntheticDocument = targetId
+        ? getSyntheticNodeById(targetId, state.documents)
+        : getSyntheticDocumentByDependencyUri(
+            editorUri,
+            state.documents,
+            state.graph
+          );
+
+      if (target.name === SYNTHETIC_DOCUMENT_NODE_NAME) {
+        sourceNode = updatePCNodeMetadata(
+          {
+            [PCVisibleNodeMetadataKey.BOUNDS]: moveBounds(
+              DEFAULT_FRAME_BOUNDS,
+              point
+            )
+          },
+          sourceNode
+        );
+      }
+
+      return persistRootState(
+        browser =>
+          persistInsertNode(sourceNode, target, TreeMoveOffset.APPEND, browser),
+        state
+      );
     }
 
     case SHORTCUT_ZOOM_IN_KEY_DOWN: {
@@ -848,11 +861,9 @@ export const canvasReducer = (state: RootState, action: Action) => {
     }
 
     case CANVAS_DRAGGED_OVER: {
-      const {
-        sourceEvent: { pageX, pageY }
-      } = action as WrappedEvent<React.MouseEvent<any>>;
+      const { offset } = action as CanvasDraggingOver;
       state = updateEditorCanvas(
-        { mousePosition: { left: pageX, top: pageY } },
+        { mousePosition: offset },
         state.activeEditorFilePath,
         state
       );
@@ -863,12 +874,11 @@ export const canvasReducer = (state: RootState, action: Action) => {
       let targetNodeId: string;
       const editor = getActiveEditor(state);
 
-      targetNodeId = getCanvasMouseTargetNodeId(
+      targetNodeId = getCanvasMouseTargetNodeIdFromPoint(
         state,
-        action as CanvasToolOverlayMouseMoved,
+        offset,
         node => node.name !== PCSourceTagNames.TEXT
       );
-      const node = getSyntheticNodeById(targetNodeId, state.documents);
 
       state = updateRootState(
         {

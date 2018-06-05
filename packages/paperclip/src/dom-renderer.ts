@@ -245,7 +245,7 @@ const makeElementClickable = (
 ) => {
   const isContentNode = synthetic.isContentNode;
 
-  if (synthetic.name !== "text" && !isContentNode) {
+  if (synthetic.name === "div" && !isContentNode) {
     const style = synthetic.style || {};
     if (target.childNodes.length === 0 && Object.keys(style).length === 0) {
       target.dataset.empty = "1";

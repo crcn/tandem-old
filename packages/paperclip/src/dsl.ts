@@ -485,24 +485,34 @@ export const getComponentRefIds = memoize((node: PCNode): string[] => {
   );
 });
 
+export type ComponentRef = {
+  sourceUri: string;
+  component: PCComponent;
+};
+
 export const getComponentGraphRefs = memoize(
-  (node: PCNode, graph: DependencyGraph) => {
-    const allRefs = [];
+  (node: PCNode, graph: DependencyGraph): ComponentRef[] => {
+    const allRefs: ComponentRef[] = [];
     const refIds = getComponentRefIds(node);
     for (let i = 0, { length } = refIds; i < length; i++) {
-      const ref = getPCNode(refIds[i], graph);
-      allRefs.push(ref);
-      allRefs.push(...getComponentGraphRefs(ref, graph));
+      const component = getPCNode(refIds[i], graph) as PCComponent;
+      allRefs.push({
+        component,
+        sourceUri: getPCNodeDependency(component.id, graph).uri
+      });
+      allRefs.push(...getComponentGraphRefs(component, graph));
     }
     return uniq(allRefs);
   }
 );
 
-const componentGraphRefsToMap = memoize((...components: PCComponent[]) => {
+const componentGraphRefsToMap = memoize((...refs: ComponentRef[]): KeyValue<
+  ComponentRef
+> => {
   const componentRefMap = {};
-  for (let i = 0, { length } = components; i < length; i++) {
-    const ref = components[i];
-    componentRefMap[ref.id] = ref;
+  for (let i = 0, { length } = refs; i < length; i++) {
+    const ref = refs[i];
+    componentRefMap[ref.component.id] = ref;
   }
 
   return componentRefMap;

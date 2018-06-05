@@ -40,7 +40,7 @@ export enum FileAttributeNames {
 
 export type FSItem = File | Directory;
 
-export const isFile = (node: TreeNode<any>) =>
+export const isFile = (node: any): node is File =>
   node.name === FSItemTagNames.FILE;
 export const isDirectory = (node: TreeNode<any>) =>
   node.name === FSItemTagNames.DIRECTORY;

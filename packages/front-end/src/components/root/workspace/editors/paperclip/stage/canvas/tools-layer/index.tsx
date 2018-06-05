@@ -5,6 +5,7 @@
 import "./index.scss";
 import * as React from "react";
 import { Dispatch } from "redux";
+import { pure, compose } from "recompose";
 import {
   RootState,
   Editor,
@@ -61,4 +62,7 @@ const BaseToolsLayerComponent = ({
   );
 };
 
-export const ToolsLayerComponent = BaseToolsLayerComponent;
+export const ToolsLayerComponent = compose<
+  ToolsLayerComponent,
+  ToolsLayerComponent
+>(pure)(BaseToolsLayerComponent);

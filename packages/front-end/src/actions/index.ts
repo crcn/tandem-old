@@ -22,6 +22,7 @@ import {
   Frame
 } from "paperclip";
 import { RegisteredComponent } from "..";
+import { ClientOffset } from "react-dnd";
 
 export const PROJECT_LOADED = "PROJECT_LOADED";
 export const ACTIVE_FILE_CHANGED = "ACTIVE_FILE_CHANGED";
@@ -65,8 +66,7 @@ export const CANVAS_DRAGGED_OVER = "CANVAS_DRAGGED_OVER";
 export const CANVAS_MOUSE_CLICKED = "CANVAS_MOUSE_CLICKED";
 export const CANVAS_WHEEL = "CANVAS_WHEEL";
 export const CANVAS_MOTION_RESTED = "CANVAS_MOTION_RESTED";
-export const CANVAS_DROPPED_REGISTERED_COMPONENT =
-  "CANVAS_DROPPED_REGISTERED_COMPONENT";
+export const CANVAS_DROPPED_ITEM = "CANVAS_DROPPED_ITEM";
 export const RESIZER_PATH_MOUSE_MOVED = "RESIZER_PATH_MOUSE_MOVED";
 export const RESIZER_PATH_MOUSE_STOPPED_MOVING =
   "RESIZER_PATH_MOUSE_STOPPED_MOVING";
@@ -318,10 +318,14 @@ export type EditorTabClicked = {
   uri: string;
 } & Action;
 
-export type CanvasDroppedRegisteredComponent = {
+export type CanvasDroppedItem = {
   editorUri: string;
-  item: RegisteredComponent;
+  item: RegisteredComponent | TreeNode<any>;
   point: Point;
+} & Action;
+
+export type CanvasDraggingOver = {
+  offset: Point;
 } & Action;
 
 export const fileNavigatorDroppedItem = (
@@ -656,10 +660,8 @@ export const canvasMouseMoved = (
   type: CANVAS_MOUSE_MOVED
 });
 
-export const canvasDraggedOver = (
-  sourceEvent: React.MouseEvent<any>
-): WrappedEvent<React.MouseEvent<any>> => ({
-  sourceEvent,
+export const canvasDraggedOver = (offset: Point): CanvasDraggingOver => ({
+  offset,
   type: CANVAS_DRAGGED_OVER
 });
 
@@ -684,15 +686,15 @@ export const canvasWheel = (
   type: CANVAS_WHEEL
 });
 
-export const canvasDroppedRegisteredComponent = (
+export const canvasDroppedItem = (
   item: RegisteredComponent,
   point: Point,
   editorUri: string
-): CanvasDroppedRegisteredComponent => ({
+): CanvasDroppedItem => ({
   editorUri,
   item,
   point,
-  type: CANVAS_DROPPED_REGISTERED_COMPONENT
+  type: CANVAS_DROPPED_ITEM
 });
 
 export const canvasMotionRested = () => ({

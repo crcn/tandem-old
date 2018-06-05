@@ -11,6 +11,7 @@ import {
 } from "../../../../../../../state";
 import { Dependency, getFramesByDependencyUri } from "paperclip";
 import { PreviewLayerComponent } from "./preview-layer";
+import { throttle } from "lodash";
 import { ToolsLayerComponent } from "./tools-layer";
 import { Isolate } from "../../../../../../isolated";
 import {
@@ -19,7 +20,7 @@ import {
   canvasMouseMoved,
   canvasMouseClicked,
   canvasMotionRested,
-  canvasDroppedRegisteredComponent,
+  canvasDroppedItem,
   canvasDraggedOver
 } from "../../../../../../../actions";
 import {
@@ -143,9 +144,6 @@ const enhance = compose<CanvasInnerProps, CanvasOuterProps>(
     onMouseEvent: ({ dispatch }) => (event: React.MouseEvent<any>) => {
       dispatch(canvasMouseMoved(event));
     },
-    onDragOver: ({ dispatch }) => event => {
-      dispatch(canvasDraggedOver(event));
-    },
     onMotionRest: ({ dispatch }) => () => {
       dispatch(canvasMotionRested());
     },
@@ -165,8 +163,18 @@ const enhance = compose<CanvasInnerProps, CanvasOuterProps>(
     }
   }),
   DropTarget(
-    REGISTERED_COMPONENT,
+    [REGISTERED_COMPONENT, "FILE"],
     {
+      hover: throttle(
+        ({ dispatch }: CanvasOuterProps, monitor: DropTargetMonitor) => {
+          if (!monitor.getClientOffset()) {
+            return;
+          }
+          const { x, y } = monitor.getClientOffset();
+          dispatch(canvasDraggedOver({ left: x, top: y }));
+        },
+        100
+      ),
       canDrop: ({ root }: CanvasOuterProps, monitor: DropTargetMonitor) => {
         return true;
       },
@@ -181,11 +189,8 @@ const enhance = compose<CanvasInnerProps, CanvasOuterProps>(
           top: offset.y
         };
 
-        dispatch(
-          canvasDroppedRegisteredComponent(item, point, editor.activeFilePath)
-        );
-      },
-      hover: () => {}
+        dispatch(canvasDroppedItem(item, point, editor.activeFilePath));
+      }
     },
     (connect, monitor) => {
       return {
@@ -194,7 +199,8 @@ const enhance = compose<CanvasInnerProps, CanvasOuterProps>(
         canDrop: !!monitor.canDrop()
       };
     }
-  )
+  ),
+  pure
 );
 
 export const CanvasComponent = enhance(BaseCanvasComponent);

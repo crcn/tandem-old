@@ -43,6 +43,8 @@ export const queueOpenFile = <TState extends FSSandboxRootState>(
 export const getFSItem = (uri: string, state: FSSandboxRootState) =>
   state.fileCache[uri];
 
+export const isImageUri = (uri: string) => /\.(svg|jpeg|png)$/.test(uri);
+
 export const queueSaveFile = <TState extends FSSandboxRootState>(
   uri: string,
   state: TState
