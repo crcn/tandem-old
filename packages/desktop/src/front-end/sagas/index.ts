@@ -4,6 +4,13 @@ import * as fsa from "fs-extra";
 import * as path from "path";
 import { ipcSaga } from "./ipc";
 import {
+  addProtocol,
+  stripProtocol,
+  Directory,
+  FILE_PROTOCOL,
+  FSItemTagNames
+} from "tandem-common";
+import {
   RootState,
   FILE_NAVIGATOR_ITEM_CLICKED,
   OPEN_FILE_ITEM_CLICKED,
@@ -88,9 +95,12 @@ function* handleNewFileEntered() {
       insertFileInfo: { directoryId, type: insertType },
       projectDirectory
     }: RootState = yield select();
-    const directory = getNestedTreeNodeById(directoryId, projectDirectory);
-    const uri = directory.attributes.core;
-    const filePath = uri.replace("file://", "") + basename;
+    const directory: Directory = getNestedTreeNodeById(
+      directoryId,
+      projectDirectory
+    );
+    const uri = directory.uri;
+    const filePath = path.join(stripProtocol(uri), basename);
 
     if (fs.existsSync(filePath)) {
       continue;
@@ -104,9 +114,10 @@ function* handleNewFileEntered() {
 
     yield put(
       newFileAdded(
-        directoryId,
-        basename,
-        insertType === InsertFileType.FILE ? "file" : "directory"
+        addProtocol(FILE_PROTOCOL, filePath),
+        insertType === InsertFileType.FILE
+          ? FSItemTagNames.FILE
+          : FSItemTagNames.DIRECTORY
       )
     );
   }
@@ -121,7 +132,7 @@ function* handleDroppedFile() {
     const newNode = getNestedTreeNodeById(node.id, root.projectDirectory);
     const newUri = newNode.uri;
     const oldUri = node.uri;
-    fsa.moveSync(oldUri.replace("file:/", ""), newUri.replace("file:/", ""));
+    fsa.moveSync(stripProtocol(oldUri), stripProtocol(newUri));
   }
 }
 
@@ -147,7 +158,7 @@ function* handleSaveShortcut() {
 
 const saveFile = (uri: string, content: Buffer) => {
   return new Promise((resolve, reject) => {
-    fs.writeFile(uri.substr("file:/".length), content, err => {
+    fs.writeFile(stripProtocol(uri), content, err => {
       if (err) {
         return reject(err);
       }

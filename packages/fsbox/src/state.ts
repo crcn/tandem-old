@@ -75,6 +75,9 @@ export const getFileCacheItemsByMimetype = (
   return items;
 };
 
+export const hasFileCacheItem = (uri: string, state: FSSandboxRootState) =>
+  Boolean(state.fileCache[uri]);
+
 export const updateFileCacheItem = <TState extends FSSandboxRootState>(
   properties: Partial<FileCacheItem>,
   uri: string,

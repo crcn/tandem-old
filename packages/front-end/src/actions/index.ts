@@ -9,7 +9,8 @@ import {
   TreeNode,
   File,
   TreeMoveOffset,
-  FSItem
+  FSItem,
+  FSItemTagNames
 } from "tandem-common";
 import { publicActionCreator } from "tandem-common";
 import {
@@ -159,9 +160,8 @@ export type CanvasToolOverlayMousePanning = {
 } & Action;
 
 export type NewFileAdded = {
-  directoryId: string;
-  basename: string;
-  fileType: string;
+  uri: string;
+  fileType: FSItemTagNames;
 } & Action;
 
 export type CanvasToolOverlayMousePanEnd = {
@@ -359,12 +359,10 @@ export const fileNavigatorToggleDirectoryClicked = (
 });
 
 export const newFileAdded = (
-  directoryId: string,
-  basename: string,
-  fileType: "directory" | "file"
+  uri: string,
+  fileType: FSItemTagNames
 ): NewFileAdded => ({
-  directoryId,
-  basename,
+  uri,
   fileType,
   type: NEW_FILE_ADDED
 });

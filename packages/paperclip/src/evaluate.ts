@@ -157,7 +157,7 @@ const evaluateComponentInstance = (
     );
   }
 
-  const children = overrides[selfPath].children;
+  const children = overrides[selfPath] && overrides[selfPath].children;
 
   return createSyntheticElement(
     node.is,

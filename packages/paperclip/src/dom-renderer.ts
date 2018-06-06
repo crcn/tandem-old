@@ -92,6 +92,7 @@ const setStyleConstraintsIfRoot = (
     nativeElement.style.minWidth = "unset";
     nativeElement.style.maxWidth = "unset";
     nativeElement.style.maxHeight = "unset";
+    nativeElement.style.boxSizing = "border-box";
   }
 };
 

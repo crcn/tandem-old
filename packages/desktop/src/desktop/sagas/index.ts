@@ -17,7 +17,15 @@ import {
 } from "paperclip";
 import { DesktopState } from "../state";
 import * as globby from "globby";
-import { isPublicAction, convertFlatFilesToNested } from "tandem-common";
+import {
+  isPublicAction,
+  convertFlatFilesToNested,
+  isDirectory,
+  Directory,
+  createDirectory,
+  addProtocol,
+  FILE_PROTOCOL
+} from "tandem-common";
 import { shortcutsSaga } from "./menu";
 import * as fs from "fs";
 import * as path from "path";
@@ -77,12 +85,18 @@ function* handleLoadProject() {
     yield take(APP_LOADED);
     const { pcConfig, projectDirectory }: DesktopState = yield select();
 
-    const files = [];
-    walkPCRootDirectory(pcConfig, projectDirectory, filePath => {
-      files.push(filePath);
+    const files: [string, boolean][] = [];
+    walkPCRootDirectory(pcConfig, projectDirectory, (filePath, isDirectory) => {
+      if (filePath === projectDirectory) {
+        return;
+      }
+      files.push([filePath, isDirectory]);
     });
 
-    const root = convertFlatFilesToNested(projectDirectory, files);
+    const root = createDirectory(
+      addProtocol(FILE_PROTOCOL, projectDirectory),
+      convertFlatFilesToNested(files)
+    );
 
     yield put(projectDirectoryLoaded(root));
   }

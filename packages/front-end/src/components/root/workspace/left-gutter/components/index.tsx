@@ -39,7 +39,7 @@ const BaseNativeElementComponent = ({
 }: NativeElementInnerProps) => {
   return connectDragSource(
     <div>
-      <BaseItem className="m-component-cell" labelChildren={item.label} />
+      {/* <BaseItem className="m-component-cell" labelChildren={item.label} /> */}
     </div>
   );
 };

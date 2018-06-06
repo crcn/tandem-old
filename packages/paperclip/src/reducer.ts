@@ -78,6 +78,11 @@ export const paperclipReducer = <
     }
     case FS_SANDBOX_ITEM_LOADED: {
       const { uri, content, mimeType } = action as FSSandboxItemLoaded;
+
+      if (mimeType !== PAPERCLIP_MIME_TYPE) {
+        return state;
+      }
+
       const graph = addFileCacheItemToDependencyGraph(
         { uri, content },
         state.graph

@@ -20,7 +20,7 @@ import { difference, values } from "lodash";
 import {
   Dependency,
   DependencyGraph,
-  addFileCacheToDependencyGraph
+  addFileCacheItemToDependencyGraph
 } from "./graph";
 import { loadEntry, FileLoader } from "./loader";
 import { diffSyntheticNode } from "./ot";
@@ -48,7 +48,6 @@ export const createPaperclipSaga = ({
 }: PaperclipSagaOptions) =>
   function* paperclipSaga() {
     yield fork(nativeRenderer);
-    // yield fork(dependencyLoader);
     yield fork(loadPaperclipFiles);
 
     function* loadPaperclipFiles() {
@@ -237,49 +236,6 @@ export const createPaperclipSaga = ({
           computeDisplayInfo(frameNodeMap[newFrame.contentNodeId])
         )
       );
-    }
-
-    function* dependencyLoader() {
-      let prevUri: string;
-
-      let prevCache: FileCache;
-      // TODO - queue uris here
-      while (1) {
-        yield take();
-        const {
-          fileCache,
-          graph
-        }: FSSandboxRootState & PCEditorState = yield select();
-        if (prevCache === fileCache) {
-          continue;
-        }
-
-        // const paperclipFiles = fileCache
-
-        const updatedFiles = difference(
-          values(fileCache),
-          values(prevCache)
-        ).filter(file => file.mimeType === PAPERCLIP_MIME_TYPE);
-
-        if (!updatedFiles.length) {
-          continue;
-        }
-
-        prevCache = fileCache;
-        prevCache = fileCache;
-        // const { graph }: PCEditorState = yield select();
-        // if (!openDependencyUri || openDependencyUri === prevUri) {
-        //   continue;
-        // }
-
-        // prevUri = openDependencyUri;
-
-        yield put(
-          pcDependencyGraphLoaded(
-            addFileCacheToDependencyGraph(fileCache, graph)
-          )
-        );
-      }
     }
   };
 

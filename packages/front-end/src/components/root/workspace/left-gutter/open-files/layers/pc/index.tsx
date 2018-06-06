@@ -45,18 +45,7 @@ type PCLayerOuterProps = {
 
 const isMovableNode = ({ node, inComponentInstance }: any) => {
   const sn = node as SyntheticVisibleNode;
-  if (node.immutable) {
-    return false;
-  }
-
-  if (sn.isContentNode) {
-    if (sn.isCreatedFromComponent) {
-      return sn.isComponentInstance;
-    }
-    return true;
-  }
-
-  return true;
+  return !node.immutable;
 };
 
 const canDropNode = (
@@ -64,6 +53,17 @@ const canDropNode = (
   { node, inComponentInstance }: any,
   offset: TreeMoveOffset
 ) => {
+  if (child.isContentNode) {
+    if (child.isCreatedFromComponent) {
+      if (child.isComponentInstance) {
+        return true;
+      } else if (offset !== TreeMoveOffset.APPEND && node.isContentNode) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+  }
   return true;
 };
 

@@ -80,9 +80,11 @@ import { evaluatePCModule } from "./evaluate";
  * CONSTANTS
  *-----------------------------------------*/
 
-const NO_BOUNDS = { left: 0, top: 0, right: 0, bottom: 0 };
+const NO_POINT = { left: 0, top: 0 };
+const NO_BOUNDS = { ...NO_POINT, right: 0, bottom: 0 };
 
 const FRAME_PADDING = 10;
+const MIN_BOUND_SIZE = 1;
 const PASTED_FRAME_OFFSET = { left: FRAME_PADDING, top: FRAME_PADDING };
 
 export const DEFAULT_FRAME_BOUNDS: Bounds = {
@@ -163,13 +165,13 @@ export const getFramesByDependencyUri = memoize(
 );
 
 export const getSyntheticVisibleNodeComputedBounds = (
-  { id }: SyntheticVisibleNode,
+  { id, isContentNode }: SyntheticVisibleNode,
   frame: Frame
 ) => {
-  return (
-    (frame.computed && frame.computed[id] && frame.computed[id].bounds) ||
-    NO_BOUNDS
-  );
+  return isContentNode
+    ? moveBounds(frame.bounds, NO_POINT)
+    : (frame.computed && frame.computed[id] && frame.computed[id].bounds) ||
+        NO_BOUNDS;
 };
 
 export const getSyntheticVisibleNodeFrame = memoize(
@@ -374,6 +376,12 @@ export const updateFrame = <TState extends PCEditorState>(
   );
 };
 
+const clampBounds = (bounds: Bounds) => ({
+  ...bounds,
+  right: Math.max(bounds.right, bounds.left + MIN_BOUND_SIZE),
+  bottom: Math.max(bounds.bottom, bounds.top + MIN_BOUND_SIZE)
+});
+
 export const updateFrameBounds = <TState extends PCEditorState>(
   bounds: Bounds,
   frame: Frame,
@@ -381,7 +389,7 @@ export const updateFrameBounds = <TState extends PCEditorState>(
 ) => {
   return updateFrame(
     {
-      bounds
+      bounds: clampBounds(bounds)
     },
     frame,
     state

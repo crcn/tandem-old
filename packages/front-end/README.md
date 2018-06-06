@@ -1,11 +1,23 @@
 IMMEDIATE:
 
-* fix navigator
-  * ability to create files
-* push file changes to app (use chokidar)
+WED:
+
 * move components to separate files
+
+WED & THUR:
+
 * update code compiler to handle overrides & images
+
+FRI & MON:
+
 * wire up styles panel
+* reset overrides UI
+
+NEXT WEEK:
+
+* breadcrumb view
+* typescript definition generator
+  * use generic type generator
 
 BUGS:
 
@@ -29,6 +41,8 @@ USEFUL:
 * copy & paste images (like components) to create new instances
 * move elements on canvas to other elements (source elements must be statically positioned)
 * tabs model maintaining canvas state of each open file
+* inspector-like UI for editing CSS
+  * display overrides similar to selector overrides
 
 SAFETY:
 

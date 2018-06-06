@@ -101,7 +101,14 @@ import {
   SHORTCUT_R_KEY_DOWN,
   CanvasDraggingOver
 } from "../actions";
-import { queueOpenFile, fsSandboxReducer, isImageUri } from "fsbox";
+import {
+  queueOpenFile,
+  fsSandboxReducer,
+  isImageUri,
+  hasFileCacheItem,
+  FS_SANDBOX_ITEM_LOADED,
+  FSSandboxItemLoaded
+} from "fsbox";
 import {
   RootState,
   setActiveFilePath,
@@ -238,7 +245,10 @@ import {
   FSItemTagNames,
   FSItem,
   getFileFromUri,
-  createFile
+  createFile,
+  stripProtocol,
+  createDirectory,
+  sortFSItems
 } from "tandem-common";
 import { difference, pull, clamp, merge } from "lodash";
 import { select } from "redux-saga/effects";
@@ -274,6 +284,7 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
       state = setFileExpanded(node, true, state);
 
       if (!isDirectory(node)) {
+        state = maybeEvaluateFile(uri, state);
         state = setActiveFilePath(uri, state);
         return state;
       }
@@ -382,15 +393,12 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
       return state;
     }
     case NEW_FILE_ADDED: {
-      const { directoryId, basename, fileType } = action as NewFileAdded;
-      const directory: Directory = getNestedTreeNodeById(
-        directoryId,
+      const { uri, fileType } = action as NewFileAdded;
+      const directory = getFileFromUri(
+        path.dirname(uri),
         state.projectDirectory
       );
-      let uri = directory.uri + basename;
-      if (fileType === "directory") {
-        uri += "/";
-      }
+
       state = updateRootState(
         {
           insertFileInfo: null,
@@ -400,13 +408,35 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
             dir => {
               return {
                 ...dir,
-                children: [...dir.children, createFile(uri)]
+                children: sortFSItems([
+                  ...dir.children,
+                  fileType === FSItemTagNames.FILE
+                    ? createFile(uri)
+                    : createDirectory(uri)
+                ])
               };
             }
           )
         },
         state
       );
+
+      state = setActiveFilePath(uri, state);
+      state = maybeEvaluateFile(uri, state);
+      return state;
+    }
+
+    case FS_SANDBOX_ITEM_LOADED: {
+      const { uri, mimeType } = action as FSSandboxItemLoaded;
+      // const pcState = paperclipReducer(state, action);
+
+      const editor = getEditorWithFileUri(uri, state);
+
+      // TODO - move this to paperclip-tandem package
+      if (editor && editor.activeFilePath === uri) {
+        state = maybeEvaluateFile(uri, state);
+      }
+
       return state;
     }
     case OPEN_FILE_ITEM_CLICKED: {
@@ -1337,7 +1367,7 @@ const isDroppableNode = (node: SyntheticVisibleNode) => {
 };
 
 const maybeEvaluateFile = (uri: string, state: RootState) => {
-  if (isPaperclipUri(uri)) {
+  if (isPaperclipUri(uri) && hasFileCacheItem(uri, state)) {
     return evaluateDependency(uri, state);
   }
   return queueOpenFile(uri, state);

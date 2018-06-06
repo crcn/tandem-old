@@ -11,6 +11,8 @@ import {
 import { memoize } from "../utils/memoization";
 import * as path from "path";
 import { generateUID } from "../utils/uid";
+import { addProtocol, FILE_PROTOCOL } from "../utils/protocol";
+import { arraySplice, EMPTY_ARRAY } from "..";
 
 export enum FSItemNamespaces {
   CORE = "core"
@@ -52,11 +54,14 @@ export const createFile = (uri: string): File => ({
   children: []
 });
 
-export const createDirectory = (uri: string): Directory => ({
+export const createDirectory = (
+  uri: string,
+  children: FSItem[] = []
+): Directory => ({
   id: generateUID(),
   name: FSItemTagNames.DIRECTORY,
   uri,
-  children: []
+  children: children || []
 });
 
 const getFileName = (current: FSItem) => path.basename(current.uri);
@@ -90,47 +95,63 @@ export const getFilesWithExtension = memoize(
   }
 );
 
-export const convertFlatFilesToNested = (
-  rootDir: string,
-  files: string[]
-): Directory => {
-  const partedFiles = files.map(file => {
-    return file.substr(rootDir.length).split("/");
-  });
+type FilePathPair = [string, boolean];
 
-  let root: Directory = createDirectory("file://" + rootDir);
+export const convertFlatFilesToNested = (files: FilePathPair[]): FSItem[] => {
+  const splitParts = files.map(([filePath, isDirectory]) => {
+    return [filePath.split("/"), isDirectory];
+  }) as [string[], boolean][];
 
-  for (const pf of partedFiles) {
-    let current: Directory = root;
-    let prev: Directory;
-    let i = 0;
-    for (let n = pf.length; i < n - 1; i++) {
-      const part = pf[i];
-      if (!part) {
-        continue;
+  const sortedFiles = splitParts
+    .sort((a, b) => {
+      const [ap, aid] = a;
+      const [bp, bid] = b;
+
+      if (ap.length > bp.length) {
+        return -1;
+      } else if (ap.length < bp.length) {
+        return 1;
       }
-      prev = current;
-      current = current.children.find(
-        (child: FSItem) => path.basename(child.uri) === part
-      ) as Directory;
-      if (!current) {
-        let root: Directory = createDirectory(
-          "file://" + path.join(rootDir, pf.slice(0, i + 1).join("/")) + "/"
-        );
 
-        prev.children.push(current, prev);
-      }
+      // same length, just check if it's a directory
+      return aid ? 1 : -1;
+    })
+    .map(([parts, isDirectory]) => {
+      return [parts.join("/"), isDirectory];
+    }) as FilePathPair[];
+
+  const pool = {};
+
+  let highest: FSItem;
+  let highestDirname: string;
+
+  for (const [filePath, isDirectory] of sortedFiles) {
+    const uri = addProtocol(FILE_PROTOCOL, filePath);
+    if (isDirectory) {
+      highest = createDirectory(uri, sortFSItems(pool[uri] || EMPTY_ARRAY));
+    } else {
+      highest = createFile(uri);
     }
 
-    const isFile = /\./.test(pf[i]);
+    highestDirname = path.dirname(uri);
 
-    const childUri =
-      "file://" + path.join(rootDir, pf.join("/")) + (isFile ? "" : "/");
+    if (!pool[highestDirname]) {
+      pool[highestDirname] = [];
+    }
 
-    current.children.push(
-      isFile ? createFile(childUri) : createDirectory(childUri)
-    );
+    pool[highestDirname].push(highest);
   }
 
-  return root;
+  return sortFSItems(pool[highestDirname]);
 };
+
+export const sortFSItems = (files: FSItem[]) =>
+  [...files].sort((a, b) => {
+    return a.name === FSItemTagNames.FILE && b.name === FSItemTagNames.DIRECTORY
+      ? 1
+      : a.name === FSItemTagNames.DIRECTORY && b.name === FSItemTagNames.FILE
+        ? -1
+        : a.uri < b.uri
+          ? -1
+          : 1;
+  });

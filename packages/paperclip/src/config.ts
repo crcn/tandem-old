@@ -50,7 +50,7 @@ export const findPaperclipSourceFiles = (config: PCConfig, cwd: string) => {
 export const walkPCRootDirectory = (
   { rootDir, exclude }: PCConfig,
   cwd: string,
-  each: (filePath: string) => any
+  each: (filePath: string, isDirectory?: boolean) => any
 ) => {
   const excludeRegexp = new RegExp(exclude.join("|"));
   const pcFilePaths: string[] = [];
@@ -59,23 +59,24 @@ export const walkPCRootDirectory = (
     rootDir = path.resolve(cwd, rootDir);
   }
 
-  walkFiles(rootDir, filePath => {
+  walkFiles(rootDir, (filePath, isDirectory) => {
     if (excludeRegexp.test(filePath)) {
       return false;
     }
-    each(filePath);
+    each(filePath, isDirectory);
   });
 };
 
 const walkFiles = (
   filePath: string,
-  each: (filePath: string) => boolean | void
+  each: (filePath: string, isDirectory?: boolean) => boolean | void
 ) => {
-  if (each(filePath) === false) {
+  const isDirectory = fs.lstatSync(filePath).isDirectory();
+  if (each(filePath, isDirectory) === false) {
     return;
   }
 
-  if (!fs.lstatSync(filePath).isDirectory()) {
+  if (!isDirectory) {
     return;
   }
 
