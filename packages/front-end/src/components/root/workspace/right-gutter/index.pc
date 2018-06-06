@@ -6,7 +6,10 @@
     {
       "label": "Right Gutter",
       "is": "div",
-      "style": {},
+      "style": {
+        "width": "250px",
+        "flex-shrink": "0"
+      },
       "attributes": {},
       "id": "8b8bbe2c724435",
       "name": "component",
@@ -330,7 +333,7 @@
       ],
       "metadata": {
         "bounds": {
-          "left": 391,
+          "left": 368.2438030763085,
           "top": 76,
           "right": 668,
           "bottom": 1535.8975564891314
