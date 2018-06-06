@@ -1,0 +1,293 @@
+{
+  "id": "eb0fba972975",
+  "name": "module",
+  "version": "0.0.3",
+  "children": [
+    {
+      "label": "More Icon",
+      "is": "img",
+      "style": {},
+      "attributes": {
+        "src": "./more.svg"
+      },
+      "id": "38fc2a473732",
+      "name": "component",
+      "children": [],
+      "metadata": {
+        "bounds": {
+          "left": 425,
+          "top": 324,
+          "right": 470.88180074742104,
+          "bottom": 360.670832741107
+        }
+      }
+    },
+    {
+      "label": "Code Icon",
+      "is": "img",
+      "style": {},
+      "attributes": {
+        "src": "./code.svg"
+      },
+      "id": "38fc2a474961",
+      "name": "component",
+      "children": [],
+      "metadata": {
+        "bounds": {
+          "left": 356,
+          "top": 151,
+          "right": 401.88180074742104,
+          "bottom": 206.0734968783563
+        }
+      }
+    },
+    {
+      "label": "Align Center Icon",
+      "is": "img",
+      "style": {},
+      "attributes": {
+        "src": "./text-center.svg"
+      },
+      "id": "38fc2a471274",
+      "name": "component",
+      "children": [],
+      "metadata": {
+        "bounds": {
+          "left": 228,
+          "top": 148,
+          "right": 301.1265273439269,
+          "bottom": 214.47866122175174
+        }
+      }
+    },
+    {
+      "label": "Minus Icon",
+      "is": "img",
+      "style": {},
+      "attributes": {
+        "src": "./minus.svg"
+      },
+      "id": "38fc2a476190",
+      "name": "component",
+      "children": [],
+      "metadata": {
+        "bounds": {
+          "left": 202,
+          "top": 373,
+          "right": 247.88180074742104,
+          "bottom": 409.670832741107
+        }
+      }
+    },
+    {
+      "label": "Align Justify Icon",
+      "is": "img",
+      "style": {},
+      "attributes": {
+        "src": "./text-justify.svg"
+      },
+      "id": "38fc2a472503",
+      "name": "component",
+      "children": [],
+      "metadata": {
+        "bounds": {
+          "left": 68,
+          "top": 292,
+          "right": 144.9857741478345,
+          "bottom": 353.65718276522284
+        }
+      }
+    },
+    {
+      "label": "Align Left Icon",
+      "is": "img",
+      "style": {},
+      "attributes": {
+        "src": "./text-left.svg"
+      },
+      "id": "38fc2a4713564",
+      "name": "component",
+      "children": [],
+      "metadata": {
+        "bounds": {
+          "left": 335,
+          "top": 307,
+          "right": 391.97771991269474,
+          "bottom": 347.7372041041981
+        }
+      }
+    },
+    {
+      "label": "Brush Icon",
+      "is": "img",
+      "style": {},
+      "attributes": {
+        "src": "./brush.svg"
+      },
+      "id": "38fc2a477419",
+      "name": "component",
+      "children": [],
+      "metadata": {
+        "bounds": {
+          "left": 229,
+          "top": 239,
+          "right": 274.88180074742104,
+          "bottom": 294.0734968783563
+        }
+      }
+    },
+    {
+      "label": "Trash Icon",
+      "is": "img",
+      "style": {},
+      "attributes": {
+        "src": "./trash.svg"
+      },
+      "id": "38fc2a4714793",
+      "name": "component",
+      "children": [],
+      "metadata": {
+        "bounds": {
+          "left": 329,
+          "top": 225,
+          "right": 374.88180074742104,
+          "bottom": 280.0734968783563
+        }
+      }
+    },
+    {
+      "label": "Wand Icon",
+      "is": "img",
+      "style": {},
+      "attributes": {
+        "src": "./wand.svg"
+      },
+      "id": "38fc2a4716022",
+      "name": "component",
+      "children": [],
+      "metadata": {
+        "bounds": {
+          "left": 514,
+          "top": 378,
+          "right": 558.8622051752559,
+          "bottom": 433.0734968783563
+        }
+      }
+    },
+    {
+      "label": "Plus Icon",
+      "is": "img",
+      "style": {},
+      "attributes": {
+        "src": "./plus.svg"
+      },
+      "id": "8e601d2b23050",
+      "name": "component",
+      "children": [],
+      "metadata": {
+        "bounds": {
+          "left": 418,
+          "top": 229,
+          "right": 520.9234100007366,
+          "bottom": 281.21996205301593
+        }
+      }
+    },
+    {
+      "label": "Align Right Icon",
+      "is": "img",
+      "style": {},
+      "attributes": {
+        "src": "./text-right.svg"
+      },
+      "id": "38fc2a4717251",
+      "name": "component",
+      "children": [],
+      "metadata": {
+        "bounds": {
+          "left": 440,
+          "top": 450,
+          "right": 481.439925504917,
+          "bottom": 481.07994412868766
+        }
+      }
+    },
+    {
+      "label": "Top Right Corner Icon",
+      "is": "img",
+      "style": {},
+      "attributes": {
+        "src": "./top-right-corner.svg"
+      },
+      "id": "38fc2a478648",
+      "name": "component",
+      "children": [],
+      "metadata": {
+        "bounds": {
+          "left": 263,
+          "top": 461,
+          "right": 308.88180074742104,
+          "bottom": 516.0734968783563
+        }
+      }
+    },
+    {
+      "label": "Top Left Corner Icon",
+      "is": "img",
+      "style": {},
+      "attributes": {
+        "src": "./top-left-corner.svg"
+      },
+      "id": "38fc2a479877",
+      "name": "component",
+      "children": [],
+      "metadata": {
+        "bounds": {
+          "left": 568,
+          "top": 278,
+          "right": 616.3221290375247,
+          "bottom": 327.92191178879784
+        }
+      }
+    },
+    {
+      "label": "Bottom Left Corner Icon",
+      "is": "img",
+      "style": {},
+      "attributes": {
+        "src": "./bottom-left-corner.svg"
+      },
+      "id": "38fc2a4711106",
+      "name": "component",
+      "children": [],
+      "metadata": {
+        "bounds": {
+          "left": 565,
+          "top": 148,
+          "right": 610.881800747421,
+          "bottom": 203.0734968783563
+        }
+      }
+    },
+    {
+      "label": "Bottom Right Corner Icon",
+      "is": "img",
+      "style": {},
+      "attributes": {
+        "src": "./bottom-right-corner.svg"
+      },
+      "id": "38fc2a4712335",
+      "name": "component",
+      "children": [],
+      "metadata": {
+        "bounds": {
+          "left": 501,
+          "top": 142,
+          "right": 546.881800747421,
+          "bottom": 197.0734968783563
+        }
+      }
+    }
+  ],
+  "metadata": {}
+}

@@ -1,0 +1,99 @@
+{
+  "id": "b78f10d1027",
+  "name": "module",
+  "version": "0.0.3",
+  "children": [
+    {
+      "label": "Pane",
+      "is": "div",
+      "style": {
+        "font-family": "Helvetica",
+        "display": "flex",
+        "flex-direction": "column",
+        "border-bottom": "1px solid rgba(0,0,0,0.05)",
+        "font-size": "10px",
+        "color": "grey"
+      },
+      "attributes": {},
+      "id": "b6c162d113",
+      "name": "component",
+      "children": [
+        {
+          "id": "b6c162d132",
+          "is": "div",
+          "name": "element",
+          "attributes": {},
+          "style": {
+            "width": "100%",
+            "padding": "8px",
+            "box-sizing": "border-box",
+            "text-transform": "uppercase"
+          },
+          "children": [
+            {
+              "id": "b6c162d1281",
+              "name": "text",
+              "value": "pane",
+              "style": {
+                "text-transform": "uppercase",
+                "font-size": "0.9em",
+                "font-weight": "500"
+              },
+              "children": [
+                {
+                  "id": "cb63bb744322",
+                  "name": "text",
+                  "label": "Text",
+                  "value": "Click to edit",
+                  "style": {},
+                  "children": [],
+                  "metadata": {}
+                }
+              ],
+              "label": "text",
+              "metadata": {}
+            }
+          ],
+          "label": "Title",
+          "metadata": {}
+        },
+        {
+          "id": "b6c162d140",
+          "is": "div",
+          "name": "element",
+          "attributes": {},
+          "style": {
+            "height": "100%",
+            "width": "100%",
+            "padding": "8px",
+            "box-sizing": "border-box",
+            "flex": "1",
+            "position": "relative"
+          },
+          "children": [
+            {
+              "id": "6fd27ae1495",
+              "name": "text",
+              "value": "Content",
+              "style": {},
+              "children": [],
+              "label": "inner",
+              "metadata": {}
+            }
+          ],
+          "label": "Content",
+          "metadata": {}
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": 321,
+          "top": 189,
+          "right": 525,
+          "bottom": 287.3571410945104
+        }
+      }
+    }
+  ],
+  "metadata": {}
+}

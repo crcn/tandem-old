@@ -623,6 +623,11 @@ export const persistInsertNode = <TState extends PCEditorState>(
   persistChanges(state, state => {
     let parentSource: PCVisibleNode;
 
+    if (getPCNodeModule(newChild.id, state.graph)) {
+      // remove the child first
+      state = replaceDependencyGraphPCNode(null, newChild, state);
+    }
+
     if (relative.name === SYNTHETIC_DOCUMENT_NODE_NAME) {
       parentSource = appendChildNode(
         newChild,
@@ -870,30 +875,17 @@ export const persistSyntheticVisibleNodeBounds = <TState extends PCEditorState>(
     }
   });
 
-// TODO - need to
+// aias for inserting node
 export const persistMoveSyntheticVisibleNode = <TState extends PCEditorState>(
   node: SyntheticVisibleNode,
-  newRelative: SyntheticVisibleNode,
+  newRelative: SyntheticVisibleNode | SyntheticDocument,
   offset: TreeMoveOffset,
   state: TState
 ) =>
   persistChanges(state, state => {
     const oldState = state;
-    const sourceNode = getSyntheticSourceNode(node, state.graph);
 
-    // remove the child first
-    if (node.isContentNode) {
-      state = replaceDependencyGraphPCNode(
-        null,
-        getPCNodeContentNode(
-          sourceNode.id,
-          getPCNodeModule(sourceNode.id, state.graph)
-        ),
-        state
-      );
-    } else {
-      state = replaceDependencyGraphPCNode(null, sourceNode, state);
-    }
+    const sourceNode = getSyntheticSourceNode(node, state.graph);
 
     return persistInsertNode(sourceNode, newRelative, offset, state);
   });

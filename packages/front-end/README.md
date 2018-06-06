@@ -1,9 +1,5 @@
 IMMEDIATE:
 
-WED:
-
-* move components to separate files
-
 WED & THUR:
 
 * update code compiler to handle overrides & images
@@ -27,6 +23,7 @@ BUGS:
 
 USEFUL:
 
+* Unhandled notification (allows for console to be hidden)
 * ability to load images & other resources in PC file. (start with ionicons)
 * ability to persist instance changes to main component
 * insert rect into layer pane should work
@@ -43,6 +40,9 @@ USEFUL:
 * tabs model maintaining canvas state of each open file
 * inspector-like UI for editing CSS
   * display overrides similar to selector overrides
+* ability to drop component into EMPTY file
+* ability to navigate to source component
+* alert to save before closing
 
 SAFETY:
 

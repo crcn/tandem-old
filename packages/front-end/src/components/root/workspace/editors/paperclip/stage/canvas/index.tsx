@@ -163,7 +163,7 @@ const enhance = compose<CanvasInnerProps, CanvasOuterProps>(
     }
   }),
   DropTarget(
-    [REGISTERED_COMPONENT, "FILE"],
+    [REGISTERED_COMPONENT, "FILE", "SYNTHETIC_NODE"],
     {
       hover: throttle(
         ({ dispatch }: CanvasOuterProps, monitor: DropTargetMonitor) => {

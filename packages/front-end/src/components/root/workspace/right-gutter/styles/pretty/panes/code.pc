@@ -1,0 +1,63 @@
+{
+  "id": "296b92da21786",
+  "name": "module",
+  "version": "0.0.3",
+  "children": [
+    {
+      "label": "Code",
+      "is": "b6c162d113",
+      "style": {},
+      "attributes": {},
+      "id": "decafdc7265667",
+      "name": "component",
+      "children": [
+        {
+          "id": "decafdc7268416",
+          "propertyName": "text",
+          "targetIdPath": [
+            "b6c162d1281"
+          ],
+          "value": "code",
+          "name": "override",
+          "children": []
+        },
+        {
+          "id": "decafdc7269792",
+          "propertyName": "children",
+          "targetIdPath": [
+            "b6c162d140"
+          ],
+          "name": "override",
+          "children": [
+            {
+              "id": "decafdc7269791",
+              "label": "Element",
+              "is": "div",
+              "name": "element",
+              "attributes": {},
+              "style": {
+                "width": "100%",
+                "height": "150px",
+                "border": "1px solid rgba(0,0,0,0.1)",
+                "border-radius": "2px",
+                "box-sizing": "border-box"
+              },
+              "children": [],
+              "metadata": {}
+            }
+          ],
+          "metadata": {}
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": 784,
+          "top": 275,
+          "right": 1184,
+          "bottom": 575
+        }
+      }
+    }
+  ],
+  "metadata": {}
+}

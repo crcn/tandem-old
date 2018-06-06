@@ -31,7 +31,13 @@ import {
   ComponentRef,
   getPCNodeDependency
 } from "./dsl";
-import { KeyValue, memoize } from "tandem-common";
+import {
+  KeyValue,
+  memoize,
+  stripProtocol,
+  addProtocol,
+  FILE_PROTOCOL
+} from "tandem-common";
 
 type EvalOverride = {
   [PCOverridablePropertyName.ATTRIBUTES]: KeyValue<any>;
@@ -287,14 +293,16 @@ const evaluateAttributes = (
     PCOverridablePropertyName.ATTRIBUTES,
     overrides
   );
-  if (element.is === "img" && attributes.src.substr(0, 1) === ".") {
+
+  if (element.is === "img" && attributes.src.charAt(0) === ".") {
     attributes = {
       ...attributes,
 
       // TODO - will want to use resolver
-      src:
-        "file://" +
-        path.resolve(sourceUri.replace("file://", ""), attributes.src)
+      src: addProtocol(
+        FILE_PROTOCOL,
+        path.resolve(stripProtocol(path.dirname(sourceUri)), attributes.src)
+      )
     };
   }
   return attributes;

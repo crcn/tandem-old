@@ -197,7 +197,10 @@ import {
   SYNTHETIC_DOCUMENT_NODE_NAME,
   DEFAULT_FRAME_BOUNDS,
   isPaperclipUri,
-  evaluateDependency
+  evaluateDependency,
+  isSyntheticDocumentRoot,
+  isSyntheticVisibleNode,
+  getSyntheticDocumentById
 } from "paperclip";
 import {
   getTreeNodePath,
@@ -421,8 +424,10 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
         state
       );
 
-      state = setActiveFilePath(uri, state);
-      state = maybeEvaluateFile(uri, state);
+      if (fileType === FSItemTagNames.FILE) {
+        state = setActiveFilePath(uri, state);
+        state = maybeEvaluateFile(uri, state);
+      }
       return state;
     }
 
@@ -795,10 +800,12 @@ export const canvasReducer = (state: RootState, action: Action) => {
             "img",
             {},
             {
-              src: path.relative(editorUri, item.uri)
+              src: path.relative(path.dirname(editorUri), item.uri)
             }
           );
         }
+      } else if (isSyntheticVisibleNode(item)) {
+        sourceNode = getSyntheticSourceNode(item, state.graph);
       } else {
         sourceNode = cloneTreeNode((item as RegisteredComponent).template);
       }
@@ -825,7 +832,8 @@ export const canvasReducer = (state: RootState, action: Action) => {
         sourceNode = updatePCNodeMetadata(
           {
             [PCVisibleNodeMetadataKey.BOUNDS]: moveBounds(
-              DEFAULT_FRAME_BOUNDS,
+              sourceNode.metadata[PCVisibleNodeMetadataKey.BOUNDS] ||
+                DEFAULT_FRAME_BOUNDS,
               point
             )
           },

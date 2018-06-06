@@ -1,0 +1,46 @@
+{
+  "id": "296b92da31921",
+  "name": "module",
+  "version": "0.0.3",
+  "children": [
+    {
+      "label": "Filters",
+      "is": "b6c162d113",
+      "style": {},
+      "attributes": {},
+      "id": "bcda9fb597947",
+      "name": "component",
+      "children": [
+        {
+          "id": "bcda9fb597946",
+          "propertyName": "text",
+          "targetIdPath": [
+            "b6c162d1281"
+          ],
+          "value": "Filters",
+          "name": "override",
+          "children": []
+        },
+        {
+          "id": "bcda9fb5129573",
+          "propertyName": "text",
+          "targetIdPath": [
+            "6fd27ae1495"
+          ],
+          "value": "   ",
+          "name": "override",
+          "children": []
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": 656,
+          "top": 479,
+          "right": 1056,
+          "bottom": 779
+        }
+      }
+    }
+  ],
+  "metadata": {}
+}

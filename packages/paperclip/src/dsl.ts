@@ -429,7 +429,8 @@ export const getPCNode = (nodeId: string, graph: DependencyGraph) => {
 };
 
 export const getPCNodeModule = (nodeId: string, graph: DependencyGraph) => {
-  return getPCNodeDependency(nodeId, graph).content;
+  const dep = getPCNodeDependency(nodeId, graph);
+  return dep && dep.content;
 };
 
 export const getPCNodeContentNode = (nodeId: string, module: PCModule) => {

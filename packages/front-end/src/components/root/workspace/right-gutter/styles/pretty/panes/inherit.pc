@@ -1,0 +1,159 @@
+{
+  "id": "296b92da26125",
+  "name": "module",
+  "version": "0.0.3",
+  "children": [
+    {
+      "label": "Inherit Item",
+      "is": "div",
+      "style": {
+        "display": "flex",
+        "align-items": "center",
+        "margin-bottom": "8px"
+      },
+      "attributes": {},
+      "id": "9e4a454812260",
+      "name": "component",
+      "children": [
+        {
+          "id": "9e4a454812258",
+          "label": "Element",
+          "is": "div",
+          "name": "element",
+          "attributes": {},
+          "style": {
+            "width": "22px",
+            "height": "22px",
+            "border": "1px solid rgba(0,0,0,0.1)",
+            "border-radius": "2px",
+            "margin-right": "8px"
+          },
+          "children": [],
+          "metadata": {}
+        },
+        {
+          "id": "9e4a454812259",
+          "name": "text",
+          "label": "Text",
+          "value": "Component 1",
+          "style": {
+            "font-family": "Helvetica"
+          },
+          "children": [],
+          "metadata": {}
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": 550,
+          "top": 594,
+          "right": 738,
+          "bottom": 618
+        }
+      }
+    },
+    {
+      "label": "Inherit",
+      "is": "b6c162d113",
+      "style": {},
+      "attributes": {},
+      "id": "9e4a45489771",
+      "name": "component",
+      "children": [
+        {
+          "id": "9e4a45489760",
+          "propertyName": "text",
+          "targetIdPath": [
+            "b6c162d1281"
+          ],
+          "value": "Inherit",
+          "name": "override",
+          "children": []
+        },
+        {
+          "id": "9e4a45489761",
+          "propertyName": "children",
+          "targetIdPath": [
+            "b6c162d140"
+          ],
+          "name": "override",
+          "children": [
+            {
+              "id": "9e4a454812261",
+              "variant": [],
+              "is": "9e4a454812260",
+              "name": "component-instance",
+              "attributes": {},
+              "style": {},
+              "children": [
+                {
+                  "id": "5b95850810210",
+                  "propertyName": "style",
+                  "targetIdPath": [
+                    "9e4a454812259"
+                  ],
+                  "value": {},
+                  "name": "override",
+                  "children": []
+                }
+              ],
+              "metadata": {}
+            },
+            {
+              "id": "9e4a454845972",
+              "variant": [],
+              "is": "9e4a454812260",
+              "name": "component-instance",
+              "attributes": {},
+              "style": {},
+              "children": [
+                {
+                  "id": "9e4a454847605",
+                  "propertyName": "text",
+                  "targetIdPath": [
+                    "9e4a454812259"
+                  ],
+                  "value": "Component 2",
+                  "name": "override",
+                  "children": []
+                }
+              ],
+              "metadata": {}
+            },
+            {
+              "id": "9e4a454846784",
+              "variant": [],
+              "is": "9e4a454812260",
+              "name": "component-instance",
+              "attributes": {},
+              "style": {},
+              "children": [
+                {
+                  "id": "9e4a454848426",
+                  "propertyName": "text",
+                  "targetIdPath": [
+                    "9e4a454812259"
+                  ],
+                  "value": "Component 3",
+                  "name": "override",
+                  "children": []
+                }
+              ],
+              "metadata": {}
+            }
+          ],
+          "metadata": {}
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": 545,
+          "top": 260,
+          "right": 945,
+          "bottom": 560
+        }
+      }
+    }
+  ],
+  "metadata": {}
+}

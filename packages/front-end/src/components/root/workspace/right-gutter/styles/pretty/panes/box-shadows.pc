@@ -1,0 +1,46 @@
+{
+  "id": "296b92da36265",
+  "name": "module",
+  "version": "0.0.3",
+  "children": [
+    {
+      "label": "Box Shadows",
+      "is": "b6c162d113",
+      "style": {},
+      "attributes": {},
+      "id": "bcda9fb597619",
+      "name": "component",
+      "children": [
+        {
+          "id": "bcda9fb597618",
+          "propertyName": "text",
+          "targetIdPath": [
+            "b6c162d1281"
+          ],
+          "value": "Box Shadows",
+          "name": "override",
+          "children": []
+        },
+        {
+          "id": "bcda9fb5128264",
+          "propertyName": "text",
+          "targetIdPath": [
+            "6fd27ae1495"
+          ],
+          "value": "  ",
+          "name": "override",
+          "children": []
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": 500,
+          "top": 289,
+          "right": 900,
+          "bottom": 589
+        }
+      }
+    }
+  ],
+  "metadata": {}
+}

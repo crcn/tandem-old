@@ -28,7 +28,8 @@ import {
   getPCImportedChildrenSourceUris,
   PCTextNode,
   PCElement,
-  PCOverride
+  PCOverride,
+  validatePCModule
 } from "./dsl";
 import { diffSyntheticNode, patchSyntheticNode } from "./ot";
 
@@ -150,6 +151,14 @@ export const isSyntheticVisibleNodeRoot = (
 
 export const isSyntheticDocumentRoot = (node: SyntheticVisibleNode) => {
   return node.isContentNode;
+};
+
+export const isSyntheticVisibleNode = (
+  node: any
+): node is SyntheticVisibleNode => {
+  const sn = node as SyntheticVisibleNode;
+  if (!sn) return false;
+  return Boolean(sn.source.nodeId) && Boolean(sn.name);
 };
 
 export const isSyntheticVisibleNodeMovable = (node: SyntheticVisibleNode) =>
