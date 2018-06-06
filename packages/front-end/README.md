@@ -1,5 +1,3 @@
-IMMEDIATE:
-
 WED & THUR:
 
 * update code compiler to handle overrides & images
