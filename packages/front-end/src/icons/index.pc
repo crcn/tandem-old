@@ -287,6 +287,25 @@
           "bottom": 197.0734968783563
         }
       }
+    },
+    {
+      "label": "Arrow Down Icon",
+      "is": "img",
+      "style": {},
+      "attributes": {
+        "src": "./arrow-down.svg"
+      },
+      "id": "e186b96e4079",
+      "name": "component",
+      "children": [],
+      "metadata": {
+        "bounds": {
+          "left": 340,
+          "top": 508,
+          "right": 412,
+          "bottom": 557
+        }
+      }
     }
   ],
   "metadata": {}

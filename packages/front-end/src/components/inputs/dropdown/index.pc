@@ -54,11 +54,13 @@
           "name": "element",
           "attributes": {},
           "style": {
-            "background": "rgba(0,0,0,0.05)",
             "border-radius": "2px",
             "padding": "4px 8px",
             "box-sizing": "border-box",
-            "font-family": "Helvetica"
+            "font-family": "Helvetica",
+            "border": "1px solid rgba(0,0,0,0.05)",
+            "display": "flex",
+            "align-items": "center"
           },
           "children": [
             {
@@ -67,7 +69,23 @@
               "label": "Text",
               "value": "Label",
               "style": {
-                "color": "grey"
+                "color": "grey",
+                "width": "100%"
+              },
+              "children": [],
+              "metadata": {}
+            },
+            {
+              "id": "628c465922",
+              "variant": [],
+              "is": "e186b96e4079",
+              "name": "component-instance",
+              "attributes": {},
+              "style": {
+                "height": "10px",
+                "position": "relative",
+                "opacity": "0.4",
+                "top": "1px"
               },
               "children": [],
               "metadata": {}

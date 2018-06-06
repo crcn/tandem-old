@@ -795,12 +795,18 @@ export const canvasReducer = (state: RootState, action: Action) => {
       let sourceNode: PCVisibleNode;
 
       if (isFile(item)) {
+        let src = path.relative(path.dirname(editorUri), item.uri);
+
+        if (src.charAt(0) !== ".") {
+          src = "./" + src;
+        }
+
         if (isImageUri(item.uri)) {
           sourceNode = createPCElement(
             "img",
             {},
             {
-              src: path.relative(path.dirname(editorUri), item.uri)
+              src
             }
           );
         }
