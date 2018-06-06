@@ -1,6 +1,9 @@
 WED & THUR:
 
 * update code compiler to handle overrides & images
+* tdproject.json
+  * command to execute when file is saved
+* generate typed definition file when PC file is saved
 
 FRI & MON:
 
@@ -42,6 +45,13 @@ USEFUL:
 * ability to navigate to source component
 * alert to save before closing
 * ability to attach controller to components
+* custom tooling depending on native element
+  * UL - stage UI for adding list item
+
+LOW PRIO TODOS:
+
+* Navigator
+  * auto expand file when opened
 
 SAFETY:
 

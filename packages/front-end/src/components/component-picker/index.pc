@@ -1,0 +1,25 @@
+{
+  "id": "97a34b15931",
+  "name": "module",
+  "version": "0.0.3",
+  "children": [
+    {
+      "label": "Component Picker",
+      "is": "div",
+      "style": {},
+      "attributes": {},
+      "id": "97a34b152996",
+      "name": "component",
+      "children": [],
+      "metadata": {
+        "bounds": {
+          "left": 250.1145548271586,
+          "top": -43.891815164162104,
+          "right": 829.6692548372337,
+          "bottom": 292.0056424459719
+        }
+      }
+    }
+  ],
+  "metadata": {}
+}
