@@ -1,0 +1,54 @@
+{
+  "id": "76b155a0907062",
+  "name": "module",
+  "version": "0.0.3",
+  "children": [
+    {
+      "label": "Text Input",
+      "is": "div",
+      "style": {},
+      "attributes": {},
+      "id": "7149f8199122",
+      "name": "component",
+      "children": [
+        {
+          "id": "7149f8199120",
+          "label": "Element",
+          "is": "div",
+          "name": "element",
+          "attributes": {},
+          "style": {
+            "padding": "4px 8px",
+            "border-radius": "2px",
+            "border": "1px solid rgba(0,0,0,0.05)",
+            "box-sizing": "border-box"
+          },
+          "children": [
+            {
+              "id": "7149f8199121",
+              "name": "text",
+              "label": "Text",
+              "value": "input",
+              "style": {
+                "font-family": "Helvetica",
+                "color": "grey"
+              },
+              "children": [],
+              "metadata": {}
+            }
+          ],
+          "metadata": {}
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": 491,
+          "top": 329,
+          "right": 591,
+          "bottom": 358.0358087589019
+        }
+      }
+    }
+  ],
+  "metadata": {}
+}

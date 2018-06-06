@@ -1,0 +1,192 @@
+{
+  "id": "76b155a0877453",
+  "name": "module",
+  "version": "0.0.3",
+  "children": [
+    {
+      "label": "Button Bar",
+      "is": "div",
+      "style": {
+        "display": "flex",
+        "align-content": "center",
+        "border-radius": "10px"
+      },
+      "attributes": {},
+      "id": "6489655782833",
+      "name": "component",
+      "children": [
+        {
+          "id": "6489655782852",
+          "variant": [],
+          "is": "6489655782851",
+          "name": "component-instance",
+          "attributes": {},
+          "style": {
+            "background": "rgba(0,0,0,0.05)",
+            "padding": "4px 8px",
+            "box-sizing": "border-box",
+            "font-family": "Helvetica",
+            "width": "100%",
+            "text-align": "center",
+            "border-top-left-radius": "2px",
+            "border-bottom-left-radius": "2px",
+            "border-right": "1px solid #DDD"
+          },
+          "children": [
+            {
+              "id": "e5a8a3332761",
+              "variant": [],
+              "is": "38fc2a4713564",
+              "name": "component-instance",
+              "attributes": {},
+              "style": {
+                "height": "100%"
+              },
+              "children": [],
+              "metadata": {}
+            }
+          ],
+          "metadata": {}
+        },
+        {
+          "id": "6489655782886",
+          "variant": [],
+          "is": "6489655782851",
+          "name": "component-instance",
+          "attributes": {},
+          "style": {
+            "background": "#00B5FF",
+            "padding": "4px 8px",
+            "box-sizing": "border-box",
+            "font-family": "Helvetica",
+            "width": "100%",
+            "text-align": "center",
+            "color": "rgba(255,255,255,0.9)"
+          },
+          "children": [
+            {
+              "id": "e5a8a33339544",
+              "variant": [],
+              "is": "38fc2a471274",
+              "name": "component-instance",
+              "attributes": {},
+              "style": {
+                "height": "100%"
+              },
+              "children": [],
+              "metadata": {}
+            }
+          ],
+          "metadata": {}
+        },
+        {
+          "id": "6489655782901",
+          "variant": [],
+          "is": "6489655782851",
+          "name": "component-instance",
+          "attributes": {},
+          "style": {
+            "background": "rgba(0,0,0,0.05)",
+            "padding": "4px 8px",
+            "box-sizing": "border-box",
+            "font-family": "Helvetica",
+            "width": "100%",
+            "text-align": "center",
+            "border-right": "1px solid #DDD"
+          },
+          "children": [
+            {
+              "id": "e5a8a33340919",
+              "variant": [],
+              "is": "38fc2a472503",
+              "name": "component-instance",
+              "attributes": {},
+              "style": {
+                "height": "100%"
+              },
+              "children": [],
+              "metadata": {}
+            }
+          ],
+          "metadata": {}
+        },
+        {
+          "id": "6489655797375",
+          "variant": [],
+          "is": "6489655782851",
+          "name": "component-instance",
+          "attributes": {},
+          "style": {
+            "background": "rgba(0,0,0,0.05)",
+            "padding": "4px 8px",
+            "box-sizing": "border-box",
+            "font-family": "Helvetica",
+            "width": "100%",
+            "border-top-right-radius": "2px",
+            "border-bottom-right-radius": "2px"
+          },
+          "children": [
+            {
+              "id": "e5a8a33342298",
+              "variant": [],
+              "is": "38fc2a4717251",
+              "name": "component-instance",
+              "attributes": {},
+              "style": {
+                "height": "100%"
+              },
+              "children": [],
+              "metadata": {}
+            }
+          ],
+          "metadata": {}
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": 455,
+          "top": 310,
+          "right": 688.4524790701034,
+          "bottom": 372
+        }
+      }
+    },
+    {
+      "label": "Button Bar Item",
+      "is": "div",
+      "style": {
+        "background": "rgba(0,0,0,0.05)",
+        "padding": "4px 8px",
+        "box-sizing": "border-box",
+        "font-family": "Helvetica",
+        "width": "100%",
+        "text-align": "center",
+        "position": "relative",
+        "height": "22px"
+      },
+      "attributes": {},
+      "id": "6489655782851",
+      "name": "component",
+      "children": [
+        {
+          "id": "6489655782850",
+          "name": "text",
+          "label": "Text",
+          "value": "T",
+          "style": {},
+          "children": [],
+          "metadata": {}
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": 454,
+          "top": 415,
+          "right": 554,
+          "bottom": 441
+        }
+      }
+    }
+  ],
+  "metadata": {}
+}

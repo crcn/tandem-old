@@ -1,0 +1,65 @@
+{
+  "id": "76b155a0891181",
+  "name": "module",
+  "version": "0.0.3",
+  "children": [
+    {
+      "label": "Slider",
+      "is": "div",
+      "style": {
+        "height": "11px",
+        "position": "relative"
+      },
+      "attributes": {},
+      "id": "956880c910105",
+      "name": "component",
+      "children": [
+        {
+          "id": "956880c910103",
+          "label": "track",
+          "is": "div",
+          "name": "element",
+          "attributes": {},
+          "style": {
+            "width": "100%",
+            "height": "4px",
+            "background": "rgba(0,0,0,0.05)",
+            "position": "absolute",
+            "transform": "translateY(-50%)",
+            "top": "50%"
+          },
+          "children": [],
+          "metadata": {}
+        },
+        {
+          "id": "956880c910104",
+          "label": "grabber",
+          "is": "div",
+          "name": "element",
+          "attributes": {},
+          "style": {
+            "width": "8px",
+            "height": "8px",
+            "border-radius": "8px",
+            "background": "grey",
+            "position": "absolute",
+            "transform": "translate(-50%, -50%)",
+            "left": "50%",
+            "top": "50%"
+          },
+          "children": [],
+          "metadata": {}
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": 560,
+          "top": 290,
+          "right": 748,
+          "bottom": 296.4870090036885
+        }
+      }
+    }
+  ],
+  "metadata": {}
+}

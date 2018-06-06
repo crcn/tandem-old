@@ -1,0 +1,48 @@
+{
+  "id": "76b155a0869608",
+  "name": "module",
+  "version": "0.0.3",
+  "children": [
+    {
+      "label": "Input Row",
+      "is": "div",
+      "style": {
+        "display": "flex",
+        "align-items": "center"
+      },
+      "attributes": {},
+      "id": "2657ec412855",
+      "name": "component",
+      "children": [],
+      "metadata": {
+        "bounds": {
+          "left": 414,
+          "top": 389,
+          "right": 699,
+          "bottom": 448.471217980185
+        }
+      }
+    },
+    {
+      "label": "Input Row Item",
+      "is": "div",
+      "style": {
+        "margin-right": "8px",
+        "box-sizing": "border-box"
+      },
+      "attributes": {},
+      "id": "bcda9fb551452",
+      "name": "component",
+      "children": [],
+      "metadata": {
+        "bounds": {
+          "left": 640,
+          "top": 435,
+          "right": 868,
+          "bottom": 499.12752069753276
+        }
+      }
+    }
+  ],
+  "metadata": {}
+}

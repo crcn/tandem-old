@@ -41,6 +41,7 @@ USEFUL:
 * ability to drop component into EMPTY file
 * ability to navigate to source component
 * alert to save before closing
+* ability to attach controller to components
 
 SAFETY:
 
