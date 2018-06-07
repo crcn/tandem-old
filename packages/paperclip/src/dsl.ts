@@ -72,6 +72,9 @@ export type PCComponent = {
   label?: string;
   container?: boolean;
   style: KeyValue<any>;
+
+  // controller source js file
+  controller?: string;
   attributes: KeyValue<string>;
   is?: string;
   children: Array<PCVisibleNode | PCVariant | PCOverride>;

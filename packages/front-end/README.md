@@ -4,6 +4,7 @@ Tonight:
 
 FRI & MON:
 
+* ability to attach controllers to components (dnd)
 * wire up styles panel
 * reset overrides UI
 
