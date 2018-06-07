@@ -17,12 +17,31 @@
       "name": "component",
       "children": [
         {
+          "id": "decafdc7517269",
+          "variant": [],
+          "is": "decafdc7265667",
+          "name": "component-instance",
+          "attributes": {},
+          "style": {},
+          "children": [],
+          "metadata": {},
+          "label": "Code Pane"
+        },
+        {
           "id": "9e4a45489816",
           "variant": [],
           "is": "9e4a45489771",
           "name": "component-instance",
           "attributes": {},
-          "style": {},
+          "style": {
+            "height": "100%",
+            "width": "100%",
+            "padding": "8px",
+            "box-sizing": "border-box",
+            "flex": "1",
+            "position": "relative",
+            "display": "none"
+          },
           "children": [
             {
               "id": "9ed18c7c1679",
@@ -35,7 +54,8 @@
               "children": []
             }
           ],
-          "metadata": {}
+          "metadata": {},
+          "label": "Inherit Pane"
         },
         {
           "id": "73b39db4591",
@@ -375,16 +395,6 @@
           "style": {},
           "children": [],
           "metadata": {}
-        },
-        {
-          "id": "decafdc7517269",
-          "variant": [],
-          "is": "decafdc7265667",
-          "name": "component-instance",
-          "attributes": {},
-          "style": {},
-          "children": [],
-          "metadata": {}
         }
       ],
       "metadata": {
@@ -394,7 +404,10 @@
           "right": 576.9970896317676,
           "bottom": 1471.6007815240096
         }
-      }
+      },
+      "controllers": [
+        "./index.tsx"
+      ]
     }
   ]
 }

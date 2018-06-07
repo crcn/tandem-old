@@ -325,6 +325,7 @@ export type CanvasDroppedItem = {
 } & Action;
 
 export type CanvasDraggingOver = {
+  item: any;
   offset: Point;
 } & Action;
 
@@ -658,7 +659,11 @@ export const canvasMouseMoved = (
   type: CANVAS_MOUSE_MOVED
 });
 
-export const canvasDraggedOver = (offset: Point): CanvasDraggingOver => ({
+export const canvasDraggedOver = (
+  item: any,
+  offset: Point
+): CanvasDraggingOver => ({
+  item,
   offset,
   type: CANVAS_DRAGGED_OVER
 });

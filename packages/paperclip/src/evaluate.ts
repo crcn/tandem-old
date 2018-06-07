@@ -153,7 +153,7 @@ const evaluateComponentInstance = (
     return evaluateComponentInstance(
       ref.component,
       instance,
-      label || node.label,
+      null,
       instancePath,
       immutable,
       true,
@@ -176,7 +176,7 @@ const evaluateComponentInstance = (
     ),
     evaluateAttributes(node, selfPath, overrides, sourceUri),
     children,
-    label || node.label,
+    instance.label,
     false,
     isCreatedFromComponent,
     isComponentInstance,

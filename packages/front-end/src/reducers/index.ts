@@ -176,7 +176,7 @@ import {
   removeSyntheticVisibleNode,
   persistSyntheticVisibleNodeBounds,
   persistRemoveSyntheticVisibleNode,
-  getSyntheticVisibleNodeSourceDependency,
+  getSyntheticNodeSourceDependency,
   persistConvertNodeToComponent,
   PCModule,
   persistMoveSyntheticVisibleNode,
@@ -200,7 +200,8 @@ import {
   evaluateDependency,
   isSyntheticDocumentRoot,
   isSyntheticVisibleNode,
-  getSyntheticDocumentById
+  getSyntheticDocumentById,
+  persistAddComponentController
 } from "paperclip";
 import {
   getTreeNodePath,
@@ -626,10 +627,8 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
       if (sourceEvent.altKey) {
         // state = openSyntheticVisibleNodeOriginFile(node.id, state);
       } else {
-        const dep = getSyntheticVisibleNodeSourceDependency(
-          node as SyntheticVisibleNode,
-          state.graph
-        );
+        const doc = getSyntheticVisibleNodeDocument(node.id, state.documents);
+        const dep = getSyntheticNodeSourceDependency(doc, state.graph);
         state = setActiveFilePath(dep.uri, state);
         state = setSelectedSyntheticVisibleNodeIds(
           state,
@@ -790,7 +789,12 @@ export const canvasReducer = (state: RootState, action: Action) => {
 
     case CANVAS_DROPPED_ITEM: {
       let { item, point, editorUri } = action as CanvasDroppedItem;
-      const targetNodeId = getCanvasMouseTargetNodeIdFromPoint(state, point);
+
+      const targetNodeId = getCanvasMouseTargetNodeIdFromPoint(
+        state,
+        point,
+        getDragFilter(item)
+      );
 
       let sourceNode: PCVisibleNode;
 
@@ -809,9 +813,17 @@ export const canvasReducer = (state: RootState, action: Action) => {
               src
             }
           );
+        } else if (isJavaScriptFile(item.uri)) {
+          return persistRootState(state => {
+            return persistAddComponentController(
+              (item as FSItem).uri,
+              getSyntheticNodeById(targetNodeId, state.documents),
+              state
+            );
+          }, state);
         }
       } else if (isSyntheticVisibleNode(item)) {
-        sourceNode = getSyntheticSourceNode(item, state.graph);
+        sourceNode = getSyntheticSourceNode(item, state.graph) as PCVisibleNode;
       } else {
         sourceNode = cloneTreeNode((item as RegisteredComponent).template);
       }
@@ -907,7 +919,8 @@ export const canvasReducer = (state: RootState, action: Action) => {
     }
 
     case CANVAS_DRAGGED_OVER: {
-      const { offset } = action as CanvasDraggingOver;
+      const { item, offset } = action as CanvasDraggingOver;
+
       state = updateEditorCanvas(
         { mousePosition: offset },
         state.activeEditorFilePath,
@@ -923,7 +936,7 @@ export const canvasReducer = (state: RootState, action: Action) => {
       targetNodeId = getCanvasMouseTargetNodeIdFromPoint(
         state,
         offset,
-        node => node.name !== PCSourceTagNames.TEXT
+        getDragFilter(item)
       );
 
       state = updateRootState(
@@ -1145,6 +1158,8 @@ export const canvasReducer = (state: RootState, action: Action) => {
   return state;
 };
 
+const isJavaScriptFile = (file: string) => /(ts|js)x?$/.test(file);
+
 const INSERT_ARTBOARD_WIDTH = 100;
 const INSERT_ARTBOARD_HEIGHT = 100;
 
@@ -1197,6 +1212,23 @@ const persistInsertNodeFromPoint = (
 
   state = setTool(null, state);
   return state;
+};
+
+const getDragFilter = (item: any) => {
+  let filter = (node: SyntheticVisibleNode) =>
+    node.name !== PCSourceTagNames.TEXT;
+
+  if (isFile(item) && isJavaScriptFile(item.uri)) {
+    filter = (node: SyntheticVisibleNode) => {
+      return (
+        node.isContentNode &&
+        node.isCreatedFromComponent &&
+        !node.isComponentInstance
+      );
+    };
+  }
+
+  return filter;
 };
 
 const setFileExpanded = (node: FSItem, value: boolean, state: RootState) => {
@@ -1350,7 +1382,7 @@ const clipboardReducer = (state: RootState, action: Action) => {
       if (state.selectedNodeIds.length) {
         const nodeId = state.selectedNodeIds[0];
         const node = getSyntheticNodeById(nodeId, state.documents);
-        targetNode = getSyntheticSourceNode(node, state.graph);
+        targetNode = getSyntheticSourceNode(node, state.graph) as PCVisibleNode;
         targetNode = getParentTreeNode(
           targetNode.id,
           getPCNodeModule(targetNode.id, state.graph)

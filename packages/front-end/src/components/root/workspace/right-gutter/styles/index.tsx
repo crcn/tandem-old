@@ -4,7 +4,7 @@ import { Dispatch } from "redux";
 import { RootState } from "../../../../../state";
 import { compose, pure, withHandlers, lifecycle, withState } from "recompose";
 import { PaneComponent } from "../../../../pane";
-import { PrettyStylesComponent } from "./pretty";
+// import { PrettyStylesComponent } from "./pretty";
 import { getSyntheticNodeById } from "paperclip";
 import { EMPTY_OBJECT, stringifyStyle } from "tandem-common";
 import { rawCssTextChanged } from "../../../../..";

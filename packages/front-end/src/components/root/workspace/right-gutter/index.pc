@@ -267,7 +267,6 @@
               "name": "component-instance",
               "attributes": {},
               "style": {
-                "height": "100%",
                 "flex-direction": "column",
                 "color": "#666"
               },
@@ -312,6 +311,17 @@
                   },
                   "name": "override",
                   "children": []
+                },
+                {
+                  "id": "ceb14a4f483",
+                  "propertyName": "style",
+                  "targetIdPath": [
+                    "decafdc7517269",
+                    "b6c162d140"
+                  ],
+                  "value": {},
+                  "name": "override",
+                  "children": []
                 }
               ],
               "metadata": {
@@ -321,7 +331,8 @@
                   "right": 165,
                   "bottom": 1481.8895764112922
                 }
-              }
+              },
+              "label": "Styler"
             },
             {
               "id": "76b155a0729336",
@@ -354,7 +365,10 @@
           "right": 668,
           "bottom": 1535.8975564891314
         }
-      }
+      },
+      "controllers": [
+        "./controller.tsx"
+      ]
     },
     {
       "label": "Right Gutter Tab",

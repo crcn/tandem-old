@@ -29,7 +29,8 @@ import {
   PCTextNode,
   PCElement,
   PCOverride,
-  validatePCModule
+  validatePCModule,
+  PCComponent
 } from "./dsl";
 import { diffSyntheticNode, patchSyntheticNode } from "./ot";
 
@@ -177,7 +178,7 @@ export const isSyntheticVisibleNodeResizable = (node: SyntheticVisibleNode) =>
 export const getSyntheticSourceNode = (
   node: SyntheticVisibleNode | SyntheticDocument,
   graph: DependencyGraph
-) => getPCNode(node.source.nodeId, graph) as PCVisibleNode;
+) => getPCNode(node.source.nodeId, graph) as PCVisibleNode | PCComponent;
 
 export const getSyntheticSourceFrame = (
   node: SyntheticVisibleNode,
@@ -241,8 +242,8 @@ export const getSyntheticNodeById = memoize(
   }
 );
 
-export const getSyntheticVisibleNodeSourceDependency = (
-  node: SyntheticVisibleNode,
+export const getSyntheticNodeSourceDependency = (
+  node: SyntheticVisibleNode | SyntheticDocument,
   graph: DependencyGraph
 ) => getPCNodeDependency(node.source.nodeId, graph);
 

@@ -171,7 +171,8 @@ const enhance = compose<CanvasInnerProps, CanvasOuterProps>(
             return;
           }
           const { x, y } = monitor.getClientOffset();
-          dispatch(canvasDraggedOver({ left: x, top: y }));
+          const item = monitor.getItem();
+          dispatch(canvasDraggedOver(item, { left: x, top: y }));
         },
         100
       ),

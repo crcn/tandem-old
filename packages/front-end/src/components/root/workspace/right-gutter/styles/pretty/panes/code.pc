@@ -30,10 +30,10 @@
           "name": "override",
           "children": [
             {
-              "id": "decafdc7269791",
-              "label": "Element",
-              "is": "div",
-              "name": "element",
+              "id": "b408c1ca3960",
+              "variant": [],
+              "is": "d65d17fd4015",
+              "name": "component-instance",
               "attributes": {},
               "style": {
                 "width": "100%",
@@ -43,10 +43,21 @@
                 "box-sizing": "border-box"
               },
               "children": [],
-              "metadata": {}
+              "metadata": {},
+              "label": "textarea"
             }
           ],
           "metadata": {}
+        },
+        {
+          "id": "f46b8deb3979",
+          "propertyName": "style",
+          "targetIdPath": [
+            "b6c162d140"
+          ],
+          "value": {},
+          "name": "override",
+          "children": []
         }
       ],
       "metadata": {
@@ -56,7 +67,10 @@
           "right": 1184,
           "bottom": 575
         }
-      }
+      },
+      "controllers": [
+        "./code.tsx"
+      ]
     }
   ],
   "metadata": {}

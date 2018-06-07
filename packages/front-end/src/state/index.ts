@@ -65,7 +65,8 @@ import {
   updateSyntheticDocument,
   getFrameByContentNodeId,
   getFramesByDependencyUri,
-  isPaperclipUri
+  isPaperclipUri,
+  PCVisibleNode
 } from "paperclip";
 import {
   CanvasToolOverlayMouseMoved,
@@ -554,7 +555,8 @@ export const openSyntheticVisibleNodeOriginFile = (
   const sourceNode = getSyntheticSourceNode(
     node as SyntheticVisibleNode,
     state.graph
-  );
+  ) as PCVisibleNode;
+
   const uri = getPCNodeDependency(sourceNode.id, state.graph).uri;
   state = openEditorFileUri(uri, state);
   const instance = findRootInstanceOfPCNode(sourceNode, state.documents);

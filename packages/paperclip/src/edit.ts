@@ -23,7 +23,8 @@ import {
   pointIntersectsBounds,
   mergeBounds,
   replaceNestedNode,
-  arraySplice
+  arraySplice,
+  stripProtocol
 } from "tandem-common";
 import { values, omit, pickBy, last, identity, uniq } from "lodash";
 import { DependencyGraph, Dependency, updateGraphDependency } from "./graph";
@@ -614,6 +615,35 @@ const moveBoundsToEmptySpace = (bounds: Bounds, frames: Frame[]) => {
 export const getEntireFrameBounds = (frames: Frame[]) =>
   mergeBounds(...values(frames).map(frame => frame.bounds));
 
+export const persistAddComponentController = <TState extends PCEditorState>(
+  uri: string,
+  target: SyntheticVisibleNode,
+  state: TState
+) =>
+  persistChanges(state, state => {
+    let sourceNode = getSyntheticSourceNode(target, state.graph) as PCComponent;
+    const sourceNodeDep = getPCNodeDependency(sourceNode.id, state.graph);
+
+    let relativePath = path.relative(
+      path.dirname(stripProtocol(sourceNodeDep.uri)),
+      stripProtocol(uri)
+    );
+    if (relativePath.charAt(0) !== ".") {
+      relativePath = "./" + relativePath;
+    }
+
+    sourceNode = {
+      ...sourceNode,
+      controllers: uniq(
+        sourceNode.controllers
+          ? [...sourceNode.controllers, relativePath]
+          : [relativePath]
+      )
+    };
+
+    return replaceDependencyGraphPCNode(sourceNode, sourceNode, state);
+  });
+
 export const persistInsertNode = <TState extends PCEditorState>(
   newChild: PCVisibleNode | PCComponent,
   relative: SyntheticVisibleNode | SyntheticDocument,
@@ -629,10 +659,10 @@ export const persistInsertNode = <TState extends PCEditorState>(
     }
 
     if (relative.name === SYNTHETIC_DOCUMENT_NODE_NAME) {
-      parentSource = appendChildNode(
-        newChild,
-        getSyntheticSourceNode(relative, state.graph)
-      );
+      parentSource = appendChildNode(newChild, getSyntheticSourceNode(
+        relative,
+        state.graph
+      ) as PCVisibleNode);
     } else {
       let parent: SyntheticVisibleNode;
       let index: number;
@@ -779,7 +809,7 @@ const maybeOverride = (
   documents: SyntheticDocument[],
   graph: DependencyGraph
 ): PCVisibleNode => {
-  const sourceNode = getSyntheticSourceNode(node, graph);
+  const sourceNode = getSyntheticSourceNode(node, graph) as PCVisibleNode;
 
   if (node.immutable) {
     const document = getSyntheticVisibleNodeDocument(node.id, documents);
@@ -795,7 +825,7 @@ const maybeOverride = (
     const mutableInstanceSourceNode = getSyntheticSourceNode(
       mutableInstance,
       graph
-    );
+    ) as PCVisibleNode;
 
     // source node is an override, so go through the normal updater
     // if (getNestedTreeNodeById(sourceNode.id, furthestInstanceSourceNode)) {

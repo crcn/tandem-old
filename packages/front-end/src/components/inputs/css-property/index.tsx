@@ -8,7 +8,7 @@ input
 import "./index.scss";
 import * as React from "react";
 import { FocusComponent } from "../../focus";
-import { TextInputComponent } from "../../inputs/text";
+// import { TextInputComponent } from "../../inputs/text";
 import { compose, pure, withHandlers, withState } from "recompose";
 
 export type CSSInputComponentOuterProps = {
@@ -45,9 +45,7 @@ const BaseCSSInputComponent = ({
       onBlur={onBlur}
     >
       {active ? (
-        <FocusComponent>
-          <TextInputComponent />
-        </FocusComponent>
+        <FocusComponent>{/* <TextInputComponent /> */}</FocusComponent>
       ) : (
         tokens.map(({ type, value }) => (
           <span className="m-input text">

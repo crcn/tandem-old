@@ -50,17 +50,7 @@
                 "7149f8199120"
               ],
               "name": "override",
-              "children": [
-                {
-                  "id": "bcda9fb5211065",
-                  "name": "text",
-                  "label": "Hex",
-                  "value": "#FF6600",
-                  "style": {},
-                  "children": [],
-                  "metadata": {}
-                }
-              ],
+              "children": [],
               "metadata": {}
             }
           ],
@@ -126,6 +116,16 @@
                         "bcda9fb5211065"
                       ],
                       "value": "#FF66a",
+                      "name": "override",
+                      "children": []
+                    },
+                    {
+                      "id": "3d33898e30",
+                      "propertyName": "style",
+                      "targetIdPath": [
+                        "647e59ac23041"
+                      ],
+                      "value": {},
                       "name": "override",
                       "children": []
                     }

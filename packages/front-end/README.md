@@ -1,10 +1,9 @@
-Tonight:
-
-* wire up images
-
 FRI & MON:
 
-* ability to attach controllers to components (dnd)
+* textarea component
+* code component
+* hide inherit styles
+* layout pane (work down)
 * wire up styles panel
 * reset overrides UI
 

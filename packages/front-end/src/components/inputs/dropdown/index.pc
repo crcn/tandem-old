@@ -195,7 +195,10 @@
           "right": 594,
           "bottom": 308.23603217974676
         }
-      }
+      },
+      "controllers": [
+        "./index.tsx"
+      ]
     }
   ],
   "metadata": {}

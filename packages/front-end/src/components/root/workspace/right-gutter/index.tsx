@@ -1,12 +1,12 @@
 import * as React from "react";
 import { GutterComponent } from "../../../gutter";
 import { StylesPaneComponent } from "./styles";
-import { compose, pure } from "recompose";
+import { compose, pure, withHandlers } from "recompose";
 import { RootState } from "../../../../state";
 import { Dispatch } from "redux";
 import { PrettyAttributesComponent } from "./attributes/pretty";
 import { getSyntheticNodeById } from "paperclip";
-const { RightGutter: BaseRightGutter } = require("./index.pc");
+const { RightGutter } = require("./index.pc");
 // import { BehaviorPaneComponent } from "./behavior";
 // import { VariantsComponent } from "./variants";
 
@@ -22,10 +22,11 @@ const BaseRightGutterComponent = ({ dispatch, root }: RightGutterProps) => {
   const selectedNodes = root.selectedNodeIds.map(id =>
     getSyntheticNodeById(id, root.documents)
   );
+
   return (
     <div>
       {/* <StylesPaneComponent dispatch={dispatch} root={root} /> */}
-      <BaseRightGutter />
+      <RightGutter selectedNodes={selectedNodes} dispatch={dispatch} />
     </div>
   );
   // return (

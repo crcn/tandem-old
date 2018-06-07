@@ -1,6 +1,6 @@
 import "./index.scss";
 import * as React from "react";
-import { TextInputComponent } from "../../../inputs/text";
+// import { TextInputComponent } from "../../../inputs/text/";
 import { compose, pure, withState, withHandlers } from "recompose";
 
 type InputComponentProps = {
@@ -26,8 +26,8 @@ const InputComponent = ({
 }: LabeledInputComponentProps) => {
   return (
     <div className="field">
-      <TextInputComponent onChange={onChange} />
-      <label>{label}</label>
+      {/* <TextInputComponent onChange={onChange} />
+      <label>{label}</label> */}
     </div>
   );
 };

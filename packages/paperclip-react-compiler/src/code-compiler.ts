@@ -271,7 +271,11 @@ const translateContentNode = (
     `\nvar ${internalVarName}DefaultVariant = ["${COMPUTED_OVERRIDE_DEFAULT_KEY}"];`,
     context
   );
-  context = addOpenTag(`\nfunction ${internalVarName}(props) {\n`, context);
+
+  context = addOpenTag(
+    `\nvar ${internalVarName} = function(props) {\n`,
+    context
+  );
   context = addLineItem(`var _${component.id} = props;\n`, context);
   context = addOpenTag(`_${component.id} = Object.assign({\n`, context);
   context = translateElementAttributes(component, context);
@@ -316,17 +320,48 @@ const translateContentNode = (
   context = translateElement(component, context);
   context = addLine(";", context);
 
-  context = addCloseTag(`}`, context);
+  context = addCloseTag(`};`, context);
+
+  context = translateControllers(component, context);
 
   // necessary or other imported modules
   context = addLine(
-    `\n\nexports.${internalVarName} = ${internalVarName};`,
+    `\nexports.${internalVarName} = ${internalVarName};`,
     context
   );
   context = addLine(
     `exports.${publicClassName} = ${internalVarName};`,
     context
   );
+  return context;
+};
+
+const translateControllers = (
+  component: PCComponent,
+  context: TranslateContext
+) => {
+  if (!component.controllers) {
+    return context;
+  }
+
+  const internalVarName = getInternalVarName(component);
+
+  let i = 0;
+
+  for (const relativePath of component.controllers) {
+    const controllerVarName = `${internalVarName}Controller${++i}`;
+
+    // TODO - need to filter based on language (javascript). to be provided in context
+    context = addLine(
+      `\n\nvar ${controllerVarName} = require("${relativePath}");`,
+      context
+    );
+    context = addLine(
+      `${internalVarName} = (${controllerVarName}.default || ${controllerVarName})(${internalVarName});`,
+      context
+    );
+  }
+
   return context;
 };
 
