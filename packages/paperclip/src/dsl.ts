@@ -70,11 +70,23 @@ export type PCModule = {
 
 export type PCComponent = {
   label?: string;
-  container?: boolean;
   style: KeyValue<any>;
 
-  // controller source js file
-  controller?: string;
+  /**
+   * Controller source files, can be any supported language, filtered by compile target.
+   * Example: ["./component.tsx", "./component.vue.ts", "./component.php"]
+   *
+   * Note that controllers can wrap each other. For example:
+   *
+   * ["./enhancer.tsx", "./another-enhancer.tsx"]
+   *
+   * ./noather-enhancer.tsx in this base would wrap around ./enhancer.tsx, which would wrap around the
+   * actual presentational component.
+   *
+   *
+   * @type {string[]}
+   */
+  controllers?: string[];
   attributes: KeyValue<string>;
   is?: string;
   children: Array<PCVisibleNode | PCVariant | PCOverride>;
@@ -137,7 +149,6 @@ export type PCBaseVisibleNode<TName extends PCSourceTagNames> = {
 } & PCBaseSourceNode<TName>;
 
 export type PCBaseElement<TName extends PCSourceTagNames> = {
-  container?: boolean;
   is: string;
   attributes: KeyValue<string>;
   children: (PCBaseVisibleNode<any> | PCOverride)[];
