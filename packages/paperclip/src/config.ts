@@ -1,7 +1,9 @@
 import * as fs from "fs";
 import * as path from "path";
 import { PAPERCLIP_CONFIG_DEFAULT_FILENAME } from "./constants";
-import { isPaperclipUri } from "./graph";
+import { isPaperclipUri, DependencyGraph } from "./graph";
+import { PCModule, createPCDependency } from "./dsl";
+import { addProtocol, FILE_PROTOCOL } from "tandem-common";
 
 // based on tsconfig
 export type PCConfig = {
@@ -88,3 +90,18 @@ const walkFiles = (
     walkFiles(subpaths[i], each);
   }
 };
+
+export const loadFSDependencyGraphSync = (
+  config: PCConfig,
+  cwd: string,
+  mapModule: (module: any) => PCModule
+): DependencyGraph =>
+  findPaperclipSourceFiles(config, cwd).reduce((config, sourceFilePath) => {
+    const uri = addProtocol(FILE_PROTOCOL, sourceFilePath);
+    const content = fs.readFileSync(sourceFilePath, "utf8") || "{}";
+
+    return {
+      ...config,
+      [uri]: createPCDependency(uri, mapModule(JSON.parse(content)))
+    };
+  }, {});

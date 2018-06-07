@@ -15,6 +15,7 @@ NEXT WEEK:
 * breadcrumb view
 * typescript definition generator
   * use generic type generator
+* compile source not to compiler
 
 BUGS:
 

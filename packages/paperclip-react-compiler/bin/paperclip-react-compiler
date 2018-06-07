@@ -3,8 +3,14 @@ const path = require("path");
 const fs = require("fs");
 const { translatePaperclipModuleToReact } = require("..");
 const migrate = require("paperclip-migrator");
+const { openPCConfig, loadFSDependencyGraphSync } = require("paperclip");
+const { addProtocol, FILE_PROTOCOL } = require("tandem-common");
 
 const relPath = process.argv.slice(2)[0];
-const absPath = relPath.charAt(0) === "/" ? relPath : path.join(process.cwd(), relPath);
+const cwd = process.cwd();
+const absPath = relPath.charAt(0) === "/" ? relPath : path.join(cwd, relPath);
+const absUri = addProtocol(FILE_PROTOCOL, absPath);
+const graph = loadFSDependencyGraphSync(openPCConfig(cwd), cwd, migrate);
+const entry = graph[absUri];
 
-console.log(translatePaperclipModuleToReact(migrate(JSON.parse(fs.readFileSync(absPath, "utf8")))));
+console.log(translatePaperclipModuleToReact(entry, graph));

@@ -18,7 +18,11 @@ import {
   isVisibleNode,
   getOverrides,
   getPCNode,
-  isComponent
+  isComponent,
+  PCDependency,
+  DependencyGraph,
+  getComponentRefIds,
+  getPCNodeDependency
 } from "paperclip";
 import { repeat, camelCase, uniq, kebabCase } from "lodash";
 import {
@@ -28,12 +32,19 @@ import {
   arraySplice,
   EMPTY_OBJECT,
   EMPTY_ARRAY,
-  getNestedTreeNodeById
+  getNestedTreeNodeById,
+  stripProtocol
 } from "tandem-common";
+import * as path from "path";
 
-export const compilePaperclipModuleToReact = (module: PCModule) => {
+export const compilePaperclipModuleToReact = (
+  entry: PCDependency,
+  graph: DependencyGraph
+) => {
   const context = { exports: {} };
-  new Function("exports", translatePaperclipModuleToReact(module))(context);
+  new Function("exports", translatePaperclipModuleToReact(entry, graph))(
+    context
+  );
   return context.exports;
 };
 
@@ -41,7 +52,8 @@ type TranslateContext = {
   buffer: string;
   newLine?: boolean;
   currentScope?: string;
-  module: PCModule;
+  entry: PCDependency;
+  graph: DependencyGraph;
   scopedLabelRefs: {
     // scope ID
     [identifier: string]: {
@@ -54,10 +66,14 @@ type TranslateContext = {
 
 const INDENT = "  ";
 
-export const translatePaperclipModuleToReact = (module: PCModule) =>
-  translateModule(module, {
-    module,
+export const translatePaperclipModuleToReact = (
+  entry: PCDependency,
+  graph: DependencyGraph
+) =>
+  translateModule(entry.content, {
+    entry,
     buffer: "",
+    graph,
     scopedLabelRefs: {},
     depth: 0
   }).buffer;
@@ -65,10 +81,27 @@ export const translatePaperclipModuleToReact = (module: PCModule) =>
 const translateModule = (module: PCModule, context: TranslateContext) => {
   context = addLine("\nvar React = require('react');", context);
 
-  // TODO - need to identify imports
-  // if (module.imports.length) {
-  //   context = addLine(`\nvar _imports = {}`, context);
-  // }
+  const imports = getComponentRefIds(module)
+    .map((refId: string) => {
+      return getPCNodeDependency(refId, context.graph);
+    })
+    .filter(dep => dep !== context.entry);
+
+  // console.log(imports);
+
+  if (imports.length) {
+    context = addLine(`\nvar _imports = {};`, context);
+    for (const { uri } of imports) {
+      const relativePath = path.relative(
+        stripProtocol(context.entry.uri),
+        stripProtocol(uri)
+      );
+      context = addLine(
+        `Object.assign(_imports, require("${relativePath}"));`,
+        context
+      );
+    }
+  }
 
   context = addOpenTag(`\nfunction _toNativeProps(props) {\n`, context);
   context = addLine(`var newProps = {};`, context);
@@ -278,7 +311,7 @@ const translateElement = (
   context = addLineItem(
     `${
       extendsComponent(elementOrComponent)
-        ? (getNestedTreeNodeById(elementOrComponent.is, context.module)
+        ? (getNestedTreeNodeById(elementOrComponent.is, context.entry.content)
             ? ""
             : "_imports.") +
           `_` +
