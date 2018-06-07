@@ -1,9 +1,7 @@
 FRI & MON:
 
-* textarea component
-* code component
-* hide inherit styles
-* layout pane (work down)
+* dropdown component
+* layout pane
 * wire up styles panel
 * reset overrides UI
 
