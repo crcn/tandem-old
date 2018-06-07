@@ -1,9 +1,6 @@
-WED & THUR:
+Tonight:
 
-* update code compiler to handle overrides & images
-* tdproject.json
-  * command to execute when file is saved
-* generate typed definition file when PC file is saved
+* wire up images
 
 FRI & MON:
 

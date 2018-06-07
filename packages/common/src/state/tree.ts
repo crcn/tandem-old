@@ -150,6 +150,23 @@ export const findTreeNodeParent = (
   }
 };
 
+export const filterTreeNodeParents = (
+  nodeId: string,
+  root: TreeNode<any>,
+  filter: (node: TreeNode<any>) => boolean
+) => {
+  const parents: TreeNode<any>[] = [];
+  const path = getTreeNodePath(nodeId, root);
+  if (!path.length) return null;
+  for (let i = path.length; i--; ) {
+    const parent = getTreeNodeFromPath(path.slice(0, i), root);
+    if (filter(parent)) {
+      parents.push(parent);
+    }
+  }
+  return parents;
+};
+
 export const findNodeByTagName = memoize(
   (root: TreeNode<any>, name: string, namespace?: string) => {
     return findNestedNode(

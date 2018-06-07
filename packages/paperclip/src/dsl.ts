@@ -13,7 +13,9 @@ import {
   getNestedTreeNodeById,
   replaceNestedNode,
   removeNestedTreeNode,
-  reduceTree
+  reduceTree,
+  findTreeNodeParent,
+  filterTreeNodeParents
 } from "tandem-common";
 import { mapValues, merge, uniq } from "lodash";
 import { Dependency, DependencyGraph, updateGraphDependency } from "./graph";
@@ -47,6 +49,8 @@ export enum PCVisibleNodeMetadataKey {
   // defined when dropped into the root document
   BOUNDS = "bounds"
 }
+
+export const COMPUTED_OVERRIDE_DEFAULT_KEY = "default";
 
 /*------------------------------------------
  * STATE
@@ -153,6 +157,23 @@ export type PCNode =
   | PCVariant
   | PCOverride
   | PCVisibleNode;
+
+export type PCComputedOverrideMap = {
+  [COMPUTED_OVERRIDE_DEFAULT_KEY]: PCComputedOverrideVariantMap;
+
+  // variant id
+  [identifier: string]: PCComputedOverrideVariantMap;
+};
+
+export type PCComputedOverrideVariantMap = {
+  // target node id
+  [identifier: string]: PCComputedNoverOverrideMap;
+};
+
+export type PCComputedNoverOverrideMap = {
+  overrides: PCOverride[];
+  children: PCComputedOverrideVariantMap;
+};
 
 /*------------------------------------------
  * FACTORIES
@@ -292,11 +313,13 @@ export const createPCDependency = (
 export const isVisibleNode = (node: PCNode) =>
   node.name === PCSourceTagNames.ELEMENT ||
   node.name === PCSourceTagNames.TEXT ||
-  node.name === PCSourceTagNames.COMPONENT_INSTANCE;
+  isPCComponentInstance(node);
 export const isPCOverride = (node: PCNode) =>
   node.name === PCSourceTagNames.OVERRIDE;
 export const isComponent = (node: PCNode) =>
   node.name === PCSourceTagNames.COMPONENT;
+export const isPCComponentInstance = (node: PCNode) =>
+  node.name === PCSourceTagNames.COMPONENT_INSTANCE;
 
 export const extendsComponent = (
   element: PCElement | PCComponent | PCComponentInstanceElement
@@ -522,6 +545,95 @@ const componentGraphRefsToMap = memoize((...refs: ComponentRef[]): KeyValue<
 export const getComponentGraphRefMap = memoize(
   (node: PCNode, graph: DependencyGraph) =>
     componentGraphRefsToMap(...getComponentGraphRefs(node, graph))
+);
+
+export const getPCParentComponentInstances = memoize(
+  (node: PCNode, root: PCNode) => {
+    const parents = filterTreeNodeParents(node.id, root, isPCComponentInstance);
+
+    return parents;
+  }
+);
+
+export const filterNestedOverrides = memoize((node: PCNode): PCOverride[] =>
+  filterNestedNodes(node, isPCOverride)
+);
+
+export const getOverrideMap = memoize((node: PCNode) => {
+  const map: PCComputedOverrideMap = {
+    default: {}
+  };
+  const overrides = filterNestedOverrides(node);
+  for (const override of overrides) {
+    if (override.variantId && !map[override.variantId]) {
+      map[override.variantId] = {};
+    }
+
+    let targetOverrides: any;
+
+    if (
+      !(targetOverrides =
+        map[override.variantId || COMPUTED_OVERRIDE_DEFAULT_KEY])
+    ) {
+      targetOverrides = map[
+        override.variantId || COMPUTED_OVERRIDE_DEFAULT_KEY
+      ] = {};
+    }
+
+    const parentComponentInstanceIds = getPCParentComponentInstances(
+      override,
+      node
+    ).map(node => node.id);
+
+    const targetIdPath = uniq([
+      ...(parentComponentInstanceIds.length
+        ? [parentComponentInstanceIds[0]]
+        : []),
+      ...override.targetIdPath
+    ]);
+
+    const targetId = targetIdPath.pop();
+
+    for (const nodeId of targetIdPath) {
+      if (!targetOverrides[nodeId]) {
+        targetOverrides[nodeId] = {
+          overrides: [],
+          children: {}
+        };
+      }
+
+      targetOverrides = targetOverrides[nodeId].children;
+    }
+
+    if (!targetOverrides[targetId]) {
+      targetOverrides[targetId] = {
+        overrides: [],
+        children: {}
+      };
+    }
+
+    targetOverrides[targetId].overrides.push(override);
+  }
+
+  return map;
+});
+
+export const flattenPCOverrideMap = memoize(
+  (
+    map: PCComputedOverrideVariantMap,
+    idPath: string[] = [],
+    flattened: KeyValue<PCOverride[]> = {}
+  ): KeyValue<PCOverride[]> => {
+    for (const nodeId in map) {
+      flattened[[...idPath, nodeId].join(" ")] = map[nodeId].overrides;
+      flattenPCOverrideMap(
+        map[nodeId].children,
+        [...idPath, nodeId],
+        flattened
+      );
+    }
+    return flattened;
+  }
 );
 
 /*------------------------------------------

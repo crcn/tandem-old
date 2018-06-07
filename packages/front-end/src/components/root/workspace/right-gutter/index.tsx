@@ -6,6 +6,7 @@ import { RootState } from "../../../../state";
 import { Dispatch } from "redux";
 import { PrettyAttributesComponent } from "./attributes/pretty";
 import { getSyntheticNodeById } from "paperclip";
+const { RightGutter: BaseRightGutter } = require("./index.pc");
 // import { BehaviorPaneComponent } from "./behavior";
 // import { VariantsComponent } from "./variants";
 
@@ -22,16 +23,22 @@ const BaseRightGutterComponent = ({ dispatch, root }: RightGutterProps) => {
     getSyntheticNodeById(id, root.documents)
   );
   return (
-    <GutterComponent>
-      {/* <VariantsComponent dispatch={dispatch} root={root} /> */}
-      {/* <BehaviorPaneComponent dispatch={dispatch} root={root} /> */}
-      <PrettyAttributesComponent
-        selectedNodes={selectedNodes}
-        dispatch={dispatch}
-      />
-      <StylesPaneComponent dispatch={dispatch} root={root} />
-    </GutterComponent>
+    <div>
+      {/* <StylesPaneComponent dispatch={dispatch} root={root} /> */}
+      <BaseRightGutter />
+    </div>
   );
+  // return (
+  //   <GutterComponent>
+  //     {/* <VariantsComponent dispatch={dispatch} root={root} /> */}
+  //     {/* <BehaviorPaneComponent dispatch={dispatch} root={root} /> */}
+  //     <PrettyAttributesComponent
+  //       selectedNodes={selectedNodes}
+  //       dispatch={dispatch}
+  //     />
+  //     <StylesPaneComponent dispatch={dispatch} root={root} />
+  //   </GutterComponent>
+  // );
 };
 
 export const RightGutterComponent = compose<RightGutterProps, RightGutterProps>(
