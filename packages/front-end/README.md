@@ -13,7 +13,6 @@ IMMEDIATE:
 ```
 
 * Styler
-  * Button bar
   * color input
   * Borders pane
   * Slider Input

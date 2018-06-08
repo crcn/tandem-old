@@ -9,7 +9,9 @@ export const DISPLAY_MENU_OPTIONS: DropdownMenuItem[] = [
   "block",
   "inline-block",
   "flex",
-  "inline-flex"
+  "inline-flex",
+  "none",
+  "inline"
 ].map(value => ({ label: value, value }));
 
 export const POSITION_MENU_OPTIONS: DropdownMenuItem[] = [
