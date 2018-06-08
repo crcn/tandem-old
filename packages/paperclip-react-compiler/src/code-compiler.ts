@@ -596,12 +596,14 @@ const translatePropOverride = (
       return addLine(`text: ${JSON.stringify(override.value)},`, context);
     }
     case PCOverridablePropertyName.ATTRIBUTES: {
+      context = addOpenTag(`attributes: {\n`, context);
       for (const key in override.value) {
         context = addLine(
-          `${camelCase(key)}: ${JSON.stringify(override.value[key])}},`,
+          `${camelCase(key)}: ${JSON.stringify(override.value[key])},`,
           context
         );
       }
+      context = addCloseTag(`},\n`, context);
 
       break;
     }
