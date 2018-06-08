@@ -10,7 +10,7 @@ export const withInputHandlers = (changeOnKeyDown: boolean = true) =>
           return;
         }
         if (changeOnKeyDown || event.key === "Enter") {
-          onChange(event.target.value);
+          onChange(event.target.value || undefined);
         }
       }
     }),
@@ -21,7 +21,7 @@ export const withInputHandlers = (changeOnKeyDown: boolean = true) =>
             this as any
           ) as HTMLTextAreaElement;
           if (document.activeElement !== input) {
-            input.value = this.props.value;
+            input.value = this.props.value || "";
           }
         }
       }

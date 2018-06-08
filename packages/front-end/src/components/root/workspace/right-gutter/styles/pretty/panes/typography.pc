@@ -69,52 +69,33 @@
                   "name": "override",
                   "children": [
                     {
-                      "id": "201dfad710364",
+                      "id": "201dfad710365",
                       "variant": [],
-                      "is": "bcda9fb551452",
+                      "is": "50e32bec2591",
                       "name": "component-instance",
                       "attributes": {},
-                      "style": {
-                        "width": "100%"
-                      },
+                      "style": {},
                       "children": [
                         {
-                          "id": "201dfad710365",
-                          "variant": [],
-                          "is": "50e32bec2591",
-                          "name": "component-instance",
-                          "attributes": {},
-                          "style": {},
-                          "children": [
-                            {
-                              "id": "201dfad710366",
-                              "propertyName": "text",
-                              "targetIdPath": [
-                                "67e386c7935"
-                              ],
-                              "value": "Roboto",
-                              "name": "override",
-                              "children": []
-                            }
+                          "id": "201dfad710366",
+                          "propertyName": "text",
+                          "targetIdPath": [
+                            "67e386c7935"
                           ],
-                          "metadata": {
-                            "bounds": {
-                              "left": 18,
-                              "top": 339,
-                              "right": 218.8212880775559,
-                              "bottom": 439
-                            }
-                          }
+                          "value": "Roboto",
+                          "name": "override",
+                          "children": []
                         }
                       ],
                       "metadata": {
                         "bounds": {
-                          "left": 1152,
-                          "top": 397,
-                          "right": 1252,
-                          "bottom": 497
+                          "left": 18,
+                          "top": 339,
+                          "right": 218.8212880775559,
+                          "bottom": 439
                         }
-                      }
+                      },
+                      "label": "Family Input"
                     }
                   ],
                   "metadata": {}
@@ -201,7 +182,8 @@
                               "right": 218.8212880775559,
                               "bottom": 439
                             }
-                          }
+                          },
+                          "label": "Weight Input"
                         }
                       ],
                       "metadata": {}
@@ -274,7 +256,8 @@
                               "right": 218.8212880775559,
                               "bottom": 439
                             }
-                          }
+                          },
+                          "label": "Decoration Input"
                         }
                       ],
                       "metadata": {}
@@ -353,7 +336,9 @@
                       "targetIdPath": [
                         "7149f8192506"
                       ],
-                      "value": {},
+                      "value": {
+                        "text-alignment": "center"
+                      },
                       "name": "override",
                       "children": []
                     },
@@ -365,6 +350,16 @@
                         "7149f8199121"
                       ],
                       "value": "12pt",
+                      "name": "override",
+                      "children": []
+                    },
+                    {
+                      "id": "72c3a6226511",
+                      "propertyName": "label",
+                      "targetIdPath": [
+                        "7149f8199969"
+                      ],
+                      "value": "Line Input",
                       "name": "override",
                       "children": []
                     }
@@ -420,6 +415,16 @@
                         "7149f8199121"
                       ],
                       "value": "12pt",
+                      "name": "override",
+                      "children": []
+                    },
+                    {
+                      "id": "72c3a6232342",
+                      "propertyName": "label",
+                      "targetIdPath": [
+                        "7149f8199969"
+                      ],
+                      "value": "Spacing Input",
                       "name": "override",
                       "children": []
                     }
@@ -489,7 +494,8 @@
                           "attributes": {},
                           "style": {},
                           "children": [],
-                          "metadata": {}
+                          "metadata": {},
+                          "label": "Alignment Input"
                         }
                       ],
                       "metadata": {}
@@ -603,6 +609,16 @@
                           "value": {},
                           "name": "override",
                           "children": []
+                        },
+                        {
+                          "id": "72c3a6241088",
+                          "propertyName": "label",
+                          "targetIdPath": [
+                            "7149f8199969"
+                          ],
+                          "value": "Size Input",
+                          "name": "override",
+                          "children": []
                         }
                       ],
                       "metadata": {},
@@ -645,7 +661,8 @@
                               "attributes": {},
                               "style": {},
                               "children": [],
-                              "metadata": {}
+                              "metadata": {},
+                              "label": "Color Input"
                             }
                           ],
                           "metadata": {}
@@ -722,7 +739,9 @@
                       "name": "text",
                       "label": "Text",
                       "value": "Typography",
-                      "style": {},
+                      "style": {
+                        "font-weight": "400"
+                      },
                       "children": [],
                       "metadata": {}
                     },
@@ -758,7 +777,10 @@
           "right": 312,
           "bottom": 990
         }
-      }
+      },
+      "controllers": [
+        "./typography-controller.tsx"
+      ]
     }
   ],
   "metadata": {}

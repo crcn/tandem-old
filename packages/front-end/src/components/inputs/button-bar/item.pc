@@ -1,0 +1,48 @@
+{
+  "id": "70ef61a6213",
+  "name": "module",
+  "version": "0.0.3",
+  "children": [
+    {
+      "label": "Button Bar Item",
+      "is": "div",
+      "style": {
+        "background": "rgba(0,0,0,0.05)",
+        "padding": "4px 8px",
+        "box-sizing": "border-box",
+        "font-family": "Helvetica",
+        "width": "100%",
+        "text-align": "center",
+        "position": "relative",
+        "height": "22px"
+      },
+      "attributes": {},
+      "id": "6489655782851",
+      "name": "component",
+      "children": [
+        {
+          "id": "41cb1f8590628",
+          "variant": [],
+          "is": "38fc2a472503",
+          "name": "component-instance",
+          "attributes": {},
+          "style": {
+            "height": "100%"
+          },
+          "children": [],
+          "metadata": {},
+          "label": "icon"
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": 454,
+          "top": 415,
+          "right": 554,
+          "bottom": 441
+        }
+      }
+    }
+  ],
+  "metadata": {}
+}

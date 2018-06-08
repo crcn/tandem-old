@@ -89,9 +89,11 @@
             "background": "rgba(0,0,0,0.05)",
             "padding": "4px 8px",
             "box-sizing": "border-box",
-            "font-family": "Helvetica",
+            "font-family": "Helvetic",
             "width": "100%",
             "text-align": "center",
+            "position": "relative",
+            "height": "22px",
             "border-right": "1px solid #DDD"
           },
           "children": [
@@ -149,41 +151,25 @@
           "right": 688.4524790701034,
           "bottom": 372
         }
-      }
+      },
+      "controllers": [
+        "./controller.tsx"
+      ]
     },
     {
-      "label": "Button Bar Item",
-      "is": "div",
-      "style": {
-        "background": "rgba(0,0,0,0.05)",
-        "padding": "4px 8px",
-        "box-sizing": "border-box",
-        "font-family": "Helvetica",
-        "width": "100%",
-        "text-align": "center",
-        "position": "relative",
-        "height": "22px"
-      },
+      "id": "70ef61a614847",
+      "variant": [],
+      "is": "6489655782851",
+      "name": "component-instance",
       "attributes": {},
-      "id": "6489655782851",
-      "name": "component",
-      "children": [
-        {
-          "id": "6489655782850",
-          "name": "text",
-          "label": "Text",
-          "value": "T",
-          "style": {},
-          "children": [],
-          "metadata": {}
-        }
-      ],
+      "style": {},
+      "children": [],
       "metadata": {
         "bounds": {
-          "left": 454,
-          "top": 415,
-          "right": 554,
-          "bottom": 441
+          "left": 464,
+          "top": 425,
+          "right": 564,
+          "bottom": 451
         }
       }
     }

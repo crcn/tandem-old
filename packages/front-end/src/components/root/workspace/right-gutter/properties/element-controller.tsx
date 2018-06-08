@@ -140,7 +140,7 @@ export default compose(
         fieldsProps={{ children: fieldChild || [] }}
         typeInputProps={{
           value: element.name,
-          items: TYPE_MENU_OPTIONS,
+          options: TYPE_MENU_OPTIONS,
           onChange: onTypeChange
         }}
       />

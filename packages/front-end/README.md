@@ -1,5 +1,17 @@
 IMMEDIATE:
 
+* fix code compiler to be more optimal
+
+```javascript
+// const Component = createPCCOmponent({
+//   default: {
+//     nodeIdhere: {
+//       children: createPCComponent()
+//     }
+//   }
+// })
+```
+
 * Styler
   * Button bar
   * color input

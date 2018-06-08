@@ -10,7 +10,7 @@ export type DropdownMenuItem = {
 
 export type DropdownOuterProps = {
   value?: string;
-  items: DropdownMenuItem[];
+  options: DropdownMenuItem[];
   onChange?: (item: DropdownMenuItem) => any;
 };
 
@@ -38,22 +38,24 @@ export default compose(
   }),
   Base => ({
     value,
-    items = EMPTY_ARRAY,
+    options = EMPTY_ARRAY,
     menuVisible,
     onKeyDown,
     onBlur,
     onChange,
     ...rest
   }) => {
-    const menuItems = items.map(item => {
-      return (
-        <DropdownMenuItem onClick={event => onChange(item, event)}>
-          {item.label}
-        </DropdownMenuItem>
-      );
-    });
+    const menuItems = menuVisible
+      ? options.map((item, i) => {
+          return (
+            <DropdownMenuItem key={i} onClick={event => onChange(item, event)}>
+              {item.label}
+            </DropdownMenuItem>
+          );
+        })
+      : EMPTY_ARRAY;
 
-    const selectedItem = items.find(item => item.value === value);
+    const selectedItem = options.find(item => item.value === value);
 
     return (
       <Base

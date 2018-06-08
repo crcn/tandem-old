@@ -61,12 +61,12 @@ export default compose(
       <Base
         displayInputProps={{
           value: node.style.display,
-          items: DISPLAY_MENU_OPTIONS,
+          options: DISPLAY_MENU_OPTIONS,
           onChange: onDisplayChange
         }}
         positionInputProps={{
           value: node.style.position,
-          items: POSITION_MENU_OPTIONS,
+          options: POSITION_MENU_OPTIONS,
           onChange: onPositionChange
         }}
         leftInputProps={{

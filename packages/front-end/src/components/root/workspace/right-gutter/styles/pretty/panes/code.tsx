@@ -9,7 +9,6 @@ export default compose(
   withHandlers({
     onClick: () => () => {},
     onChange: ({ dispatch }) => value => {
-      console.log(value);
       dispatch(rawCssTextChanged(value));
     }
   }),
