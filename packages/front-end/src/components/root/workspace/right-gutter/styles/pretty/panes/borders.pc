@@ -583,6 +583,30 @@
           "value": "Borders",
           "name": "override",
           "children": []
+        },
+        {
+          "id": "4fdd803e3972",
+          "propertyName": "style",
+          "targetIdPath": [
+            "b6c162d132"
+          ],
+          "value": {
+            "color": "rgba(0,0,0,0.4)",
+            "font-size": "0.9em",
+            "font-weight": "500"
+          },
+          "name": "override",
+          "children": []
+        },
+        {
+          "id": "4fdd803e7853",
+          "propertyName": "style",
+          "targetIdPath": [
+            "b6c162d1281"
+          ],
+          "value": {},
+          "name": "override",
+          "children": []
         }
       ],
       "metadata": {

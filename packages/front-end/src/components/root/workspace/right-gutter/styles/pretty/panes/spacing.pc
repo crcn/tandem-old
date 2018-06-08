@@ -6,7 +6,13 @@
     {
       "label": "Box Model",
       "is": "b6c162d113",
-      "style": {},
+      "style": {
+        "font-family": "Helvetica",
+        "display": "flex",
+        "flex-direction": "column",
+        "border-bottom": "1px solid rgba(0,0,0,0.05)",
+        "font-size": "10px"
+      },
       "attributes": {},
       "id": "bcda9fb597291",
       "name": "component",
@@ -757,6 +763,16 @@
             "6fd27ae1495"
           ],
           "value": " ",
+          "name": "override",
+          "children": []
+        },
+        {
+          "id": "6fd0628f110",
+          "propertyName": "style",
+          "targetIdPath": [
+            "b6c162d132"
+          ],
+          "value": {},
           "name": "override",
           "children": []
         }

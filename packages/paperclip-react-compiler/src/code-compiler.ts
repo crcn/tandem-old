@@ -189,7 +189,12 @@ const translateComponentStyles = (
       if (Object.keys(node.style).length === 0) {
         return context;
       }
-      context = addOpenTag(`" ._${node.id} {" + \n`, context);
+
+      let selector = `._${node.id}`;
+      if (node.id !== component.id) {
+        selector = `._${component.id} ${selector}`;
+      }
+      context = addOpenTag(`" ${selector} {" + \n`, context);
       context = translateStyle(node.style, context);
       context = addCloseTag(`"}" + \n`, context);
       return context;
@@ -219,12 +224,13 @@ const translateStyleOverrides = (
   const map = getOverrideMap(component);
 
   if (map.default) {
-    context = translateStyleVariantOverrides(map.default, context);
+    context = translateStyleVariantOverrides(component, map.default, context);
   }
 
   return context;
 };
 const translateStyleVariantOverrides = (
+  component: PCComponent,
   map: PCComputedOverrideVariantMap,
   context: TranslateContext
 ) => {
@@ -239,7 +245,7 @@ const translateStyleVariantOverrides = (
     }
 
     context = addOpenTag(
-      `" ${idPath
+      `" ._${component.id} ${idPath
         .split(" ")
         .map(id => `._${id}`)
         .join(" ")} {" + \n`,

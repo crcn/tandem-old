@@ -58,9 +58,9 @@
             "padding": "4px 8px",
             "box-sizing": "border-box",
             "font-family": "Helvetica",
-            "border": "1px solid rgba(0,0,0,0.05)",
             "display": "flex",
-            "align-items": "center"
+            "align-items": "center",
+            "border": "1px solid rgba(0,0,0,0.08)"
           },
           "children": [
             {

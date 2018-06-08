@@ -322,6 +322,17 @@
                   "value": {},
                   "name": "override",
                   "children": []
+                },
+                {
+                  "id": "c123fadc517",
+                  "propertyName": "style",
+                  "targetIdPath": [
+                    "af2a67c2930",
+                    "b6c162d132"
+                  ],
+                  "value": {},
+                  "name": "override",
+                  "children": []
                 }
               ],
               "metadata": {

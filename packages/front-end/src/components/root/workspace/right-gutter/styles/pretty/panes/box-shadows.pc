@@ -30,6 +30,16 @@
           "value": "  ",
           "name": "override",
           "children": []
+        },
+        {
+          "id": "6fd0628f2117",
+          "propertyName": "style",
+          "targetIdPath": [
+            "b6c162d132"
+          ],
+          "value": {},
+          "name": "override",
+          "children": []
         }
       ],
       "metadata": {

@@ -27,7 +27,11 @@
             "width": "100%",
             "padding": "8px",
             "box-sizing": "border-box",
-            "text-transform": "uppercase"
+            "text-transform": "uppercase",
+            "color": "rgba(0,0,0,0.4)",
+            "font-size": "0.9em",
+            "font-weight": "500",
+            "display": "no"
           },
           "children": [
             {
