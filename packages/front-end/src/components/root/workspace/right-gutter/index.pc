@@ -93,7 +93,7 @@
           "name": "element",
           "attributes": {},
           "style": {
-            "display": "flex",
+            "display": "none",
             "flex-shrink": "0"
           },
           "children": [
@@ -260,6 +260,17 @@
             "height": "100%"
           },
           "children": [
+            {
+              "id": "9208d19596001",
+              "variant": [],
+              "is": "9208d19593983",
+              "name": "component-instance",
+              "attributes": {},
+              "style": {},
+              "children": [],
+              "metadata": {},
+              "label": "Properties"
+            },
             {
               "id": "8b8bbe2c724434",
               "variant": [],

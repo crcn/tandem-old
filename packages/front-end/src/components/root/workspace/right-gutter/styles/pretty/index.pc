@@ -119,7 +119,8 @@
               "children": []
             }
           ],
-          "metadata": {}
+          "metadata": {},
+          "label": "Layout Pane"
         },
         {
           "id": "73b39db4401",
@@ -152,7 +153,8 @@
               "children": []
             }
           ],
-          "metadata": {}
+          "metadata": {},
+          "label": "Typography Pane"
         },
         {
           "id": "af2a67c2930",
@@ -199,7 +201,8 @@
               "right": 3303,
               "bottom": 560.3571410945103
             }
-          }
+          },
+          "label": "Border Pane"
         },
         {
           "id": "fd77a0a714214",
@@ -331,7 +334,8 @@
               "children": []
             }
           ],
-          "metadata": {}
+          "metadata": {},
+          "label": "Opacity Pane"
         },
         {
           "id": "b6d08a597456",
@@ -364,7 +368,8 @@
               "children": []
             }
           ],
-          "metadata": {}
+          "metadata": {},
+          "label": "Backgrounds Pane"
         },
         {
           "id": "bcda9fb5100963",
@@ -374,7 +379,8 @@
           "attributes": {},
           "style": {},
           "children": [],
-          "metadata": {}
+          "metadata": {},
+          "label": "Spacing Pane"
         },
         {
           "id": "bcda9fb5101342",
@@ -384,7 +390,8 @@
           "attributes": {},
           "style": {},
           "children": [],
-          "metadata": {}
+          "metadata": {},
+          "label": "Box Shadows Pane"
         },
         {
           "id": "bcda9fb5101747",
@@ -394,7 +401,8 @@
           "attributes": {},
           "style": {},
           "children": [],
-          "metadata": {}
+          "metadata": {},
+          "label": "Filters Pane"
         }
       ],
       "metadata": {

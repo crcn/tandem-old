@@ -26,7 +26,7 @@ const writeFile = async (uri: string, content: Buffer) => {
 const getPaperclipUris = async () => {
   // TODO - need to hit back-end API for this since CWD could be different
   return findPaperclipSourceFiles(
-    openPCConfig(process.cwd()),
+    openPCConfig(process.cwd()).config,
     process.cwd()
   ).map(path => "file://" + path);
 };

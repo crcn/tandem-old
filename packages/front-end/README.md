@@ -1,9 +1,33 @@
-FRI & MON:
+IMMEDIATE:
 
-* dropdown component
-* layout pane
-* wire up styles panel
-* reset overrides UI
+* Styler
+  * Button bar
+  * color input
+  * Borders pane
+  * Slider Input
+  * Backgrounds
+  * Spacing
+  * Box Shadows
+  * Filters
+  * Raw input
+* Properties
+  * Type
+  * Attributes (raw)
+* Left Gutter
+
+  * Tree Component
+  * Open Files
+    * Display labels that are exposed for public API
+  * Navigator
+
+* Workspace
+
+* Polish
+
+  * Styles Pane
+    * Gradient input
+
+* Ability to override instance labels. Used to expose layers
 
 NEXT WEEK:
 

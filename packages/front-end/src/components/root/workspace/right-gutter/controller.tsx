@@ -2,5 +2,5 @@ import * as React from "react";
 import { compose, pure, withHandlers } from "recompose";
 
 export default compose(pure, Base => props => {
-  return <Base stylerProps={props} />;
+  return <Base stylerProps={props} propertiesProps={props} />;
 });

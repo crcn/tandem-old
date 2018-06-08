@@ -5,6 +5,11 @@ import { isPaperclipUri, DependencyGraph } from "./graph";
 import { PCModule, createPCDependency } from "./dsl";
 import { addProtocol, FILE_PROTOCOL } from "tandem-common";
 
+export type PCConfigInfo = {
+  directory: string;
+  config: PCConfig;
+};
+
 // based on tsconfig
 export type PCConfig = {
   rootDir: string;
@@ -24,13 +29,16 @@ export const creaPCConfig = (
 export const openPCConfig = (
   dir: string,
   configFileName: string = PAPERCLIP_CONFIG_DEFAULT_FILENAME
-) => {
+): PCConfigInfo => {
   const dirParts = dir.split("/");
   while (dirParts.length) {
     const possibleDir = dirParts.join("/");
     const configPath = path.join(possibleDir, configFileName);
     if (fs.existsSync(configPath)) {
-      return JSON.parse(fs.readFileSync(configPath, "utf8"));
+      return {
+        directory: possibleDir,
+        config: JSON.parse(fs.readFileSync(configPath, "utf8"))
+      };
     }
     dirParts.pop();
   }

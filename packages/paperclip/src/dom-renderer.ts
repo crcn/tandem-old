@@ -177,7 +177,7 @@ export const patchDOM = (
           for (const key in value) {
             target.setAttribute(key, value[key]);
           }
-        } else if (name === "is") {
+        } else if (name === "name") {
           const parent = target.parentNode;
           if (newMap === map) {
             newMap = { ...map };

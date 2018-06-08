@@ -5,8 +5,9 @@ import { compose, pure, withHandlers } from "recompose";
 import { RootState } from "../../../../state";
 import { Dispatch } from "redux";
 import { PrettyAttributesComponent } from "./attributes/pretty";
-import { getSyntheticNodeById } from "paperclip";
+import { getSyntheticNodeById, SyntheticDocument } from "paperclip";
 const { RightGutter } = require("./index.pc");
+import { memoize } from "tandem-common";
 // import { BehaviorPaneComponent } from "./behavior";
 // import { VariantsComponent } from "./variants";
 
@@ -15,13 +16,17 @@ type RightGutterProps = {
   dispatch: Dispatch<any>;
 };
 
+const getSelectedNoded = memoize(
+  (nodeIds: string[], documents: SyntheticDocument[]) => {
+    return nodeIds.map(id => getSyntheticNodeById(id, documents));
+  }
+);
+
 const BaseRightGutterComponent = ({ dispatch, root }: RightGutterProps) => {
   if (!root.selectedNodeIds.length) {
     return null;
   }
-  const selectedNodes = root.selectedNodeIds.map(id =>
-    getSyntheticNodeById(id, root.documents)
-  );
+  const selectedNodes = getSelectedNoded(root.selectedNodeIds, root.documents);
 
   return (
     <div>

@@ -44,18 +44,18 @@ function* initConfig() {
 
   // todo - may want this to be custom
   const configFileName = PAPERCLIP_CONFIG_DEFAULT_FILENAME;
-  let config: PCConfig = openPCConfig(state.projectDirectory);
+  let configResult = openPCConfig(state.projectDirectory);
 
-  if (!config) {
+  if (!configResult) {
     console.log("writing default paperclip config");
     fs.writeFileSync(
       path.join(state.projectDirectory, configFileName),
       JSON.stringify(creaPCConfig("."), null, 2)
     );
-    config = openPCConfig(state.projectDirectory);
+    configResult = openPCConfig(state.projectDirectory);
   }
 
-  yield put(pcConfigLoaded(config));
+  yield put(pcConfigLoaded(configResult.config));
 }
 
 function* openMainWindow() {

@@ -60,7 +60,8 @@
               "attributes": {},
               "style": {},
               "children": [],
-              "metadata": {}
+              "metadata": {},
+              "label": "text"
             }
           ],
           "metadata": {}

@@ -42,7 +42,8 @@ export enum PCOverridablePropertyName {
   CHILDREN = "children",
   VARIANT = "variant",
   STYLE = "style",
-  ATTRIBUTES = "attributes"
+  ATTRIBUTES = "attributes",
+  LABEL = "label"
 }
 
 export enum PCVisibleNodeMetadataKey {
@@ -125,12 +126,16 @@ export type PCAttributesOverride = PCBaseValueOverride<
   PCOverridablePropertyName.ATTRIBUTES,
   KeyValue<any>
 >;
+export type PCLabelOverride = PCBaseValueOverride<
+  PCOverridablePropertyName.LABEL,
+  string
+>;
 export type PCVariantOverride = PCBaseValueOverride<
   PCOverridablePropertyName.VARIANT,
   string[]
 >;
 
-export type PCVisibleNodeOverride = PCStyleOverride;
+export type PCVisibleNodeOverride = PCStyleOverride | PCLabelOverride;
 export type PCTextNodeOverride = PCVisibleNodeOverride | PCTextOverride;
 export type PCParentOverride = PCVisibleNodeOverride | PCChildrenOverride;
 export type PCElementOverride = PCAttributesOverride | PCParentOverride;
@@ -141,7 +146,8 @@ export type PCOverride =
   | PCTextOverride
   | PCChildrenOverride
   | PCAttributesOverride
-  | PCVariantOverride;
+  | PCVariantOverride
+  | PCLabelOverride;
 
 export type PCBaseVisibleNode<TName extends PCSourceTagNames> = {
   label?: string;

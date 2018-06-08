@@ -547,15 +547,16 @@ export const persistChangeLabel = <TState extends PCEditorState>(
   state: TState
 ) =>
   persistChanges(state, state => {
-    const sourceNode = getSyntheticSourceNode(node, state.graph);
-    return replaceDependencyGraphPCNode(
-      {
-        ...sourceNode,
+    const newNode = maybeOverride(
+      PCOverridablePropertyName.LABEL,
+      newLabel,
+      identity,
+      node => ({
+        ...node,
         label: newLabel
-      },
-      sourceNode,
-      state
-    );
+      })
+    )(node, state.documents, state.graph);
+    return replaceDependencyGraphPCNode(newNode, newNode, state);
   });
 
 export const persistConvertNodeToComponent = <TState extends PCEditorState>(
@@ -798,6 +799,22 @@ export const persistChangeSyntheticTextNodeValue = <
   });
 };
 
+export const persistChangeElementType = <TState extends PCEditorState>(
+  value: string,
+  node: SyntheticElement,
+  state: TState
+) => {
+  return persistChanges(state, state => {
+    let sourceNode = getSyntheticSourceNode(node, state.graph) as PCElement;
+    sourceNode = {
+      ...sourceNode,
+      is: value
+    };
+    state = replaceDependencyGraphPCNode(sourceNode, sourceNode, state);
+    return state;
+  });
+};
+
 // TODO: test me, I'm complicated D:
 const maybeOverride = (
   propertyName: PCOverridablePropertyName,
@@ -949,6 +966,83 @@ export const persistRawCSSText = <TState extends PCEditorState>(
   node: SyntheticVisibleNode,
   state: TState
 ) => persistSyntheticVisibleNodeStyle(parseStyle(text), node, state);
+
+export const persistCSSProperty = <TState extends PCEditorState>(
+  name: string,
+  value: string,
+  node: SyntheticVisibleNode,
+  state: TState
+) =>
+  persistChanges(state, state => {
+    const updatedNode = maybeOverride(
+      PCOverridablePropertyName.STYLE,
+      { [name]: value },
+      (style, override) => {
+        const minStyle = {};
+        const overrideStyle = (override && override.value) || EMPTY_OBJECT;
+        for (const key in style) {
+          if (overrideStyle[key] || node.style[key] !== style[key]) {
+            minStyle[key] = style[key];
+          }
+        }
+
+        return {
+          ...overrideStyle,
+          ...style
+        };
+      },
+      sourceNode =>
+        ({
+          ...sourceNode,
+          style: {
+            ...sourceNode.style,
+            [name]: value
+          }
+        } as PCVisibleNode)
+    )(node, state.documents, state.graph);
+
+    return replaceDependencyGraphPCNode(updatedNode, updatedNode, state);
+  });
+
+export const persistAttribute = <TState extends PCEditorState>(
+  name: string,
+  value: string,
+  element: SyntheticElement,
+  state: TState
+) =>
+  persistChanges(state, state => {
+    const updatedNode = maybeOverride(
+      PCOverridablePropertyName.ATTRIBUTES,
+      { [name]: value },
+      (attributes, override) => {
+        const minStyle = {};
+        const overrideAttributes = (override && override.value) || EMPTY_OBJECT;
+        for (const key in attributes) {
+          if (
+            overrideAttributes[key] ||
+            element.style[key] !== attributes[key]
+          ) {
+            minStyle[key] = attributes[key];
+          }
+        }
+
+        return {
+          ...overrideAttributes,
+          ...attributes
+        };
+      },
+      (sourceNode: PCElement) =>
+        ({
+          ...sourceNode,
+          attributes: {
+            ...sourceNode.attributes,
+            [name]: value
+          }
+        } as PCVisibleNode)
+    )(element, state.documents, state.graph);
+
+    return replaceDependencyGraphPCNode(updatedNode, updatedNode, state);
+  });
 
 export const persistSyntheticVisibleNodeStyle = <TState extends PCEditorState>(
   style: any,

@@ -71,6 +71,7 @@ import {
   NATIVE_NODE_TYPE_CHANGED,
   TEXT_VALUE_CHANGED,
   TextValueChanged,
+  ElementTypeChanged,
   NativeNodeTypeChanged,
   SHORTCUT_QUICK_SEARCH_KEY_DOWN,
   QUICK_SEARCH_ITEM_CLICKED,
@@ -99,7 +100,11 @@ import {
   SHORTCUT_CONVERT_TO_COMPONENT_KEY_DOWN,
   SHORTCUT_T_KEY_DOWN,
   SHORTCUT_R_KEY_DOWN,
-  CanvasDraggingOver
+  CanvasDraggingOver,
+  ELEMENT_TYPE_CHANGED,
+  CSS_PROPERTY_CHANGED,
+  ATTRIBUTE_CHANGED,
+  CSSPropertyChanged
 } from "../actions";
 import {
   queueOpenFile,
@@ -200,8 +205,11 @@ import {
   evaluateDependency,
   isSyntheticDocumentRoot,
   isSyntheticVisibleNode,
+  persistChangeElementType,
   getSyntheticDocumentById,
-  persistAddComponentController
+  persistAddComponentController,
+  persistCSSProperty,
+  persistAttribute
 } from "paperclip";
 import {
   getTreeNodePath,
@@ -1069,6 +1077,39 @@ export const canvasReducer = (state: RootState, action: Action) => {
       }, state);
       return state;
     }
+    case CSS_PROPERTY_CHANGED: {
+      const { name, value } = action as CSSPropertyChanged;
+      state = persistRootState(browser => {
+        return state.selectedNodeIds.reduce(
+          (state, nodeId) =>
+            persistCSSProperty(
+              name,
+              value,
+              getSyntheticNodeById(nodeId, state.documents),
+              state
+            ),
+          state
+        );
+      }, state);
+      return state;
+    }
+
+    case ATTRIBUTE_CHANGED: {
+      const { name, value } = action as CSSPropertyChanged;
+      state = persistRootState(browser => {
+        return state.selectedNodeIds.reduce(
+          (state, nodeId) =>
+            persistAttribute(
+              name,
+              value,
+              getSyntheticNodeById(nodeId, state.documents) as SyntheticElement,
+              state
+            ),
+          state
+        );
+      }, state);
+      return state;
+    }
     case SLOT_TOGGLE_CLICK: {
       // state = persistRootState(browser => {
       //   return persistToggleSlotContainer(
@@ -1101,6 +1142,20 @@ export const canvasReducer = (state: RootState, action: Action) => {
             state.selectedNodeIds[0],
             state.documents
           ) as SyntheticTextNode,
+          state
+        );
+      }, state);
+      return state;
+    }
+    case ELEMENT_TYPE_CHANGED: {
+      const { value } = action as ElementTypeChanged;
+      state = persistRootState(state => {
+        return persistChangeElementType(
+          value,
+          getSyntheticNodeById(
+            state.selectedNodeIds[0],
+            state.documents
+          ) as SyntheticElement,
           state
         );
       }, state);

@@ -45,6 +45,7 @@ type EvalOverride = {
   [PCOverridablePropertyName.CHILDREN]: SyntheticVisibleNode[];
   [PCOverridablePropertyName.VARIANT]: string[];
   [PCOverridablePropertyName.TEXT]: string;
+  [PCOverridablePropertyName.LABEL]: string;
 };
 
 type EvalOverrides = {
@@ -176,12 +177,27 @@ const evaluateComponentInstance = (
     ),
     evaluateAttributes(node, selfPath, overrides, sourceUri),
     children,
-    instance.label,
+    evaluateLabel(instance, selfPath, overrides),
     false,
     isCreatedFromComponent,
     isComponentInstance,
     immutable,
     instance.metadata
+  );
+};
+
+const evaluateLabel = (
+  node: PCComponent | PCElement | PCComponentInstanceElement | PCTextNode,
+  selfPath: string,
+  overrides: EvalOverrides
+) => {
+  return (
+    evaluateOverride(
+      node,
+      selfPath,
+      PCOverridablePropertyName.LABEL,
+      overrides
+    ) || node.label
   );
 };
 
@@ -256,7 +272,7 @@ const evaluateElement = (
       componentMap,
       sourceUri
     ),
-    element.label,
+    evaluateLabel(element, selfPath, overrides),
     false,
     isCreatedFromComponent,
     false,
@@ -351,7 +367,7 @@ const evaluateTextNode = (
       node.value,
     createSyntheticSource(node),
     evaluateOverride(node, selfId, PCOverridablePropertyName.STYLE, overrides),
-    node.label,
+    evaluateLabel(node, selfId, overrides),
     false,
     isCreatedFromComponent,
     immutable,
@@ -473,7 +489,8 @@ const registerOverride = (
       attributes: null,
       children: null,
       variant: null,
-      text: null
+      text: null,
+      label: null
     };
   }
 
@@ -491,6 +508,11 @@ const registerOverride = (
   } else if (
     propertyName === PCOverridablePropertyName.TEXT &&
     override.text != null
+  ) {
+    newValue = override[propertyName];
+  } else if (
+    propertyName === PCOverridablePropertyName.LABEL &&
+    override.label != null
   ) {
     newValue = override[propertyName];
   }

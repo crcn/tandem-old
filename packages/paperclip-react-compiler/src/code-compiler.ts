@@ -31,7 +31,8 @@ import {
   PCOverridablePropertyName,
   getComponentVariants,
   PCComputedNoverOverrideMap,
-  flattenPCOverrideMap
+  flattenPCOverrideMap,
+  PCLabelOverride
 } from "paperclip";
 import { repeat, camelCase, uniq, kebabCase } from "lodash";
 import {
@@ -44,7 +45,8 @@ import {
   getNestedTreeNodeById,
   stripProtocol,
   filterNestedNodes,
-  memoize
+  memoize,
+  getParentTreeNode
 } from "tandem-common";
 import * as path from "path";
 
@@ -270,7 +272,7 @@ const translateContentNode = (
   context: TranslateContext
 ) => {
   context = setCurrentScope(module.id, context);
-  context = addScopedLayerLabel(component, context);
+  context = addScopedLayerLabel(component.label, component.id, context);
   const internalVarName = getInternalVarName(component);
   const publicClassName = getPublicComponentClassName(component, context);
   context = addLine(
@@ -297,7 +299,7 @@ const translateContentNode = (
     .filter(isVisibleNode)
     .reduce((context, node: PCVisibleNode | PCComponent) => {
       if (node === component) return context;
-      context = addScopedLayerLabel(node, context);
+      context = addScopedLayerLabel(node.label, node.id, context);
       context = addLine("", context);
 
       const propsVarName = getNodePropsVarName(node, context);
@@ -318,6 +320,25 @@ const translateContentNode = (
 
       return context;
     }, context);
+
+  context = addLine("", context);
+  context = getComponentLabelOverrides(component).reduce(
+    (context, override) => {
+      context = addScopedLayerLabel(override.value, override.id, context);
+      context = addLineItem(
+        `var ${getPCOverrideVarName(override, component)} = _${
+          component.id
+        }.${getPublicLayerVarName(
+          override.value,
+          override.id,
+          context
+        )}Props || _EMPTY_OBJECT;\n`,
+        context
+      );
+      return context;
+    },
+    context
+  );
 
   context = translateContentNodeOverrides(component, context);
 
@@ -341,6 +362,13 @@ const translateContentNode = (
   );
   return context;
 };
+
+const getPCOverrideVarName = memoize(
+  (override: PCOverride, component: PCComponent) => {
+    const parent = getParentTreeNode(override.id, component);
+    return `_${parent.id}_${override.targetIdPath.join("_")}`;
+  }
+);
 
 const translateControllers = (
   component: PCComponent,
@@ -426,34 +454,47 @@ const translatePropsVarOverrideMap = (
 ) => {
   const parentOverideIds = {};
 
-  // self overrides
   for (const nodeId in map) {
     if (!getNestedTreeNodeById(nodeId, component)) {
       parentOverideIds[nodeId] = map[nodeId];
-      continue;
-    }
-
-    const inf = map[nodeId];
-    context = addLine("", context);
-
-    if (mapContainsPropOverrides(inf)) {
-      context = addOpenTag(`Object.assign(_${nodeId}, {\n`, context);
-      context = translatePropsOverrideMap(inf, context);
-      context = addCloseTag(`});\n`, context);
     }
   }
 
-  // parent overrides
+  const overridedNodesInComponent = filterNestedNodes(component, node =>
+    Boolean(map[node.id])
+  ).reverse();
 
+  for (const node of overridedNodesInComponent) {
+    const inf = map[node.id];
+    context = addLine("", context);
+
+    if (mapContainsPropOverrides(inf)) {
+      context = addLineItem(`Object.assign(_${node.id}, `, context);
+      context = translatePropsInnerOverrideMap(
+        [node.id],
+        component,
+        inf,
+        context
+      );
+      context = addLineItem(`);\n`, context);
+    }
+  }
+
+  // parent component overrides
   if (Object.keys(parentOverideIds).length) {
     context = addLine("", context);
     context = addOpenTag(`Object.assign(_${component.id}, {\n`, context);
     for (const nodeId in parentOverideIds) {
       const inf = parentOverideIds[nodeId];
       if (mapContainsPropOverrides(inf)) {
-        context = addOpenTag(`_${nodeId}: {\n`, context);
-        context = translatePropsOverrideMap(inf, context);
-        context = addCloseTag(`},\n`, context);
+        context = addLineItem(`_${nodeId}: `, context);
+        context = translatePropsInnerOverrideMap(
+          [nodeId],
+          component,
+          inf,
+          context
+        );
+        context = addLineItem(`,\n`, context);
       }
     }
     context = addCloseTag(`});\n`, context);
@@ -462,7 +503,52 @@ const translatePropsVarOverrideMap = (
   return context;
 };
 
+const translatePropsInnerOverrideMap = (
+  idPath: string[],
+  component: PCComponent,
+  inf: PCComputedNoverOverrideMap,
+  context: TranslateContext
+) => {
+  const labelOverride = getPCNodeLabelOverride(idPath, component);
+
+  if (labelOverride) {
+    context = addLineItem(`Object.assign(`, context);
+  }
+
+  context = addOpenTag(`{\n`, context);
+  context = translatePropsOverrideMap(idPath, component, inf, context);
+  context = addCloseTag(`}`, context);
+
+  if (labelOverride) {
+    context = addLineItem(
+      `, ${getPCOverrideVarName(labelOverride, component)})`,
+      context
+    );
+  }
+  return context;
+};
+
+const getComponentLabelOverrides = memoize(
+  (component: PCComponent) =>
+    filterNestedNodes(component, (node: PCNode) => {
+      return (
+        node.name === PCSourceTagNames.OVERRIDE &&
+        node.propertyName === PCOverridablePropertyName.LABEL &&
+        Boolean(node.value)
+      );
+    }) as PCLabelOverride[]
+);
+
+const getPCNodeLabelOverride = (idPath: string[], component: PCComponent) =>
+  getComponentLabelOverrides(component).find(
+    node =>
+      idPath.join(" ") ===
+      [getParentTreeNode(node.id, component).id, ...node.targetIdPath].join(" ")
+  );
+
 const translatePropsOverrideMap = (
+  idPath: string[],
+  component: PCComponent,
   { children, overrides }: PCComputedNoverOverrideMap,
   context: TranslateContext
 ) => {
@@ -472,9 +558,17 @@ const translatePropsOverrideMap = (
 
   for (const childId in children) {
     if (mapContainsPropOverrides(children[childId])) {
-      context = addOpenTag(`_${childId}: {\n`, context);
-      context = translatePropsOverrideMap(children[childId], context);
-      context = addCloseTag(`},\n`, context);
+      context = addLineItem(`_${childId}: `, context);
+      context = translatePropsInnerOverrideMap(
+        [...idPath, childId],
+        component,
+        children[childId],
+        context
+      );
+      context = addLineItem(`,\n`, context);
+      // context = addOpenTag(`_${childId}: {\n`, context);
+      // context = translatePropsOverrideMap(children[childId], context);
+      // context = addCloseTag(`},\n`, context);
     }
   }
 
@@ -522,7 +616,7 @@ const getNodePropsVarName = (
 ) => {
   return node.name === PCSourceTagNames.COMPONENT
     ? `props`
-    : `${getPublicLayerVarName(node, context)}Props`;
+    : `${getPublicLayerVarName(node.label, node.id, context)}Props`;
 };
 
 const translateVisibleNode = (
@@ -646,20 +740,22 @@ const getPublicComponentClassName = (
   component: PCComponent,
   context: TranslateContext
 ) => {
-  const varName = getPublicLayerVarName(component, context);
+  const varName = getPublicLayerVarName(component.label, component.id, context);
   return varName.substr(0, 1).toUpperCase() + varName.substr(1);
 };
 
 const getPublicLayerVarName = (
-  layer: PCVisibleNode | PCComponent,
+  label: string,
+  id: string,
   context: TranslateContext
 ) => {
-  const i = getScopedLayerLabelIndex(layer, context);
-  return camelCase(layer.label || "child") + (i === 0 ? "" : i);
+  const i = getScopedLayerLabelIndex(label, id, context);
+  return camelCase(label || "child") + (i === 0 ? "" : i);
 };
 
 const getScopedLayerLabelIndex = (
-  { label, id }: PCVisibleNode | PCComponent,
+  label: string,
+  id: string,
   context: TranslateContext
 ) => {
   return context.scopedLabelRefs[context.currentScope][label].indexOf(id);
@@ -705,7 +801,8 @@ const setCurrentScope = (currentScope: string, context: TranslateContext) => ({
 });
 
 const addScopedLayerLabel = (
-  { label, id }: PCVisibleNode | PCComponent,
+  label: string,
+  id: string,
   context: TranslateContext
 ) => {
   if (context.scopedLabelRefs[id]) {

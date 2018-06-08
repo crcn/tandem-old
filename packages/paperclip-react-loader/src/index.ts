@@ -9,8 +9,8 @@ module.exports = function(source) {
   this.cacheable && this.cacheable();
   const callback = this.async();
   const uri = this.resource;
-  const config = openPCConfig(path.dirname(uri));
-  const graph = loadFSDependencyGraphSync(config, process.cwd(), migrate);
+  const { config, directory } = openPCConfig(path.dirname(uri));
+  const graph = loadFSDependencyGraphSync(config, directory, migrate);
   const entry = graph["file://" + uri];
 
   callback(null, translatePaperclipModuleToReact(entry, graph));

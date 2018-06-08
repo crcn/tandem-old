@@ -1,32 +1,33 @@
 {
-  "id": "d65d17fd64",
+  "id": "76b155a0907062",
   "name": "module",
   "version": "0.0.3",
   "children": [
     {
-      "label": "Textarea",
-      "is": "textarea",
+      "label": "Text Input",
+      "is": "input",
       "style": {
         "width": "100%",
-        "height": "150px",
-        "border": "1px solid rgba(0,0,0,0.1)",
+        "padding": "4px 8px",
         "border-radius": "2px",
+        "border": "1px solid rgba(0,0,0,0.08)",
         "box-sizing": "border-box"
       },
       "attributes": {},
-      "id": "d65d17fd4015",
+      "id": "7149f8199122",
       "name": "component",
-      "children": [],
+      "children": [
+      ],
       "metadata": {
         "bounds": {
-          "left": 681,
-          "top": 263.5,
-          "right": 781,
-          "bottom": 363.5
+          "left": 384,
+          "top": 298,
+          "right": 484,
+          "bottom": 327.0358087589019
         }
       },
       "controllers": [
-        "./index.tsx"
+        "./controller.tsx"
       ]
     }
   ],

@@ -6,7 +6,9 @@
     {
       "label": "More Icon",
       "is": "img",
-      "style": {},
+      "style": {
+        "user-select": "none"
+      },
       "attributes": {
         "src": "./more.svg"
       },
@@ -25,7 +27,9 @@
     {
       "label": "Code Icon",
       "is": "img",
-      "style": {},
+      "style": {
+        "user-select": "none"
+      },
       "attributes": {
         "src": "./code.svg"
       },
@@ -44,7 +48,9 @@
     {
       "label": "Align Center Icon",
       "is": "img",
-      "style": {},
+      "style": {
+        "user-select": "none"
+      },
       "attributes": {
         "src": "./text-center.svg"
       },
@@ -63,7 +69,9 @@
     {
       "label": "Minus Icon",
       "is": "img",
-      "style": {},
+      "style": {
+        "user-select": "none"
+      },
       "attributes": {
         "src": "./minus.svg"
       },
@@ -82,7 +90,9 @@
     {
       "label": "Align Justify Icon",
       "is": "img",
-      "style": {},
+      "style": {
+        "user-select": "none"
+      },
       "attributes": {
         "src": "./text-justify.svg"
       },
@@ -101,7 +111,9 @@
     {
       "label": "Align Left Icon",
       "is": "img",
-      "style": {},
+      "style": {
+        "user-select": "none"
+      },
       "attributes": {
         "src": "./text-left.svg"
       },
@@ -120,7 +132,9 @@
     {
       "label": "Brush Icon",
       "is": "img",
-      "style": {},
+      "style": {
+        "user-select": "none"
+      },
       "attributes": {
         "src": "./brush.svg"
       },
@@ -139,7 +153,9 @@
     {
       "label": "Trash Icon",
       "is": "img",
-      "style": {},
+      "style": {
+        "user-select": "none"
+      },
       "attributes": {
         "src": "./trash.svg"
       },
@@ -158,7 +174,9 @@
     {
       "label": "Wand Icon",
       "is": "img",
-      "style": {},
+      "style": {
+        "user-select": "none"
+      },
       "attributes": {
         "src": "./wand.svg"
       },
@@ -177,7 +195,9 @@
     {
       "label": "Plus Icon",
       "is": "img",
-      "style": {},
+      "style": {
+        "user-select": "none"
+      },
       "attributes": {
         "src": "./plus.svg"
       },
@@ -196,7 +216,9 @@
     {
       "label": "Align Right Icon",
       "is": "img",
-      "style": {},
+      "style": {
+        "user-select": "none"
+      },
       "attributes": {
         "src": "./text-right.svg"
       },
@@ -215,7 +237,9 @@
     {
       "label": "Top Right Corner Icon",
       "is": "img",
-      "style": {},
+      "style": {
+        "user-select": "none"
+      },
       "attributes": {
         "src": "./top-right-corner.svg"
       },
@@ -234,7 +258,9 @@
     {
       "label": "Top Left Corner Icon",
       "is": "img",
-      "style": {},
+      "style": {
+        "user-select": "none"
+      },
       "attributes": {
         "src": "./top-left-corner.svg"
       },
@@ -253,7 +279,9 @@
     {
       "label": "Bottom Left Corner Icon",
       "is": "img",
-      "style": {},
+      "style": {
+        "user-select": "none"
+      },
       "attributes": {
         "src": "./bottom-left-corner.svg"
       },
@@ -272,7 +300,9 @@
     {
       "label": "Bottom Right Corner Icon",
       "is": "img",
-      "style": {},
+      "style": {
+        "user-select": "none"
+      },
       "attributes": {
         "src": "./bottom-right-corner.svg"
       },
@@ -291,7 +321,9 @@
     {
       "label": "Arrow Down Icon",
       "is": "img",
-      "style": {},
+      "style": {
+        "user-select": "none"
+      },
       "attributes": {
         "src": "./arrow-down.svg"
       },

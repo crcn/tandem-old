@@ -8,8 +8,9 @@ export default compose(
   pure,
   withHandlers({
     onClick: () => () => {},
-    onChange: ({ dispatch }) => event => {
-      dispatch(rawCssTextChanged(event.target.value));
+    onChange: ({ dispatch }) => value => {
+      console.log(value);
+      dispatch(rawCssTextChanged(value));
     }
   }),
   Base => ({ onChange, selectedNodes, ...rest }) => {
