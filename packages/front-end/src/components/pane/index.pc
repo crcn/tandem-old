@@ -25,7 +25,8 @@
           "attributes": {},
           "style": {
             "width": "100%",
-            "padding": "8px",
+            "padding": "16px",
+            "padding-bottom": "8px",
             "box-sizing": "border-box",
             "text-transform": "uppercase",
             "color": "rgba(0,0,0,0.4)",
@@ -70,6 +71,7 @@
             "height": "100%",
             "width": "100%",
             "padding": "16px",
+            "padding-top": "8px",
             "box-sizing": "border-box",
             "flex": "1",
             "position": "relative"
