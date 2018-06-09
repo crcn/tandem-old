@@ -303,17 +303,13 @@ const translateContentNode = (
       context = addLine("", context);
 
       const propsVarName = getNodePropsVarName(node, context);
-      context = addLineItem(
-        `var _${node.id} = _${component.id}.${propsVarName} || _${
+      context = addLine(
+        `var _${node.id} = Object.assign({}, _${component.id}._${node.id}, _${
           component.id
-        }._${node.id} || _EMPTY_OBJECT;\n`,
+        }.${propsVarName});`,
         context
       );
-      context = addLineItem(
-        `_${node.id} = Object.assign({}, _${node.id}, `,
-        context
-      );
-      context = addOpenTag("{\n", context);
+      context = addOpenTag(`Object.assign(_${node.id}, {\n`, context);
       context = translateElementFinalAttributes(node, context);
       context = addCloseTag("}", context);
       context = addLineItem(");\n", context);

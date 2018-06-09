@@ -965,7 +965,7 @@ export const persistRawCSSText = <TState extends PCEditorState>(
   text: string,
   node: SyntheticVisibleNode,
   state: TState
-) => persistSyntheticVisibleNodeStyle(parseStyle(text), node, state);
+) => persistSyntheticVisibleNodeStyle(parseStyle(text || ""), node, state);
 
 export const persistCSSProperty = <TState extends PCEditorState>(
   name: string,

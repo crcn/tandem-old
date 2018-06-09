@@ -1,16 +1,9 @@
 IMMEDIATE:
 
+* color picker
 * fix code compiler to be more optimal
 
-```javascript
-// const Component = createPCCOmponent({
-//   default: {
-//     nodeIdhere: {
-//       children: createPCComponent()
-//     }
-//   }
-// })
-```
+  * variants only apply to styles
 
 * Styler
   * color input

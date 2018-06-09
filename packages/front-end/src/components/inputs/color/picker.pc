@@ -4,23 +4,6 @@
   "version": "0.0.3",
   "children": [
     {
-      "id": "b5f797ed34252",
-      "label": "Element",
-      "is": "div",
-      "name": "element",
-      "attributes": {},
-      "style": {},
-      "children": [],
-      "metadata": {
-        "bounds": {
-          "left": 50.547784968086376,
-          "top": 180.08602331619468,
-          "right": 150.54778496808638,
-          "bottom": 280.08602331619466
-        }
-      }
-    },
-    {
       "label": "Color Picker",
       "is": "div",
       "style": {
@@ -30,7 +13,8 @@
         "flex-direction": "column",
         "font-family": "Helvetica",
         "color": "grey",
-        "width": "calc(255px + 16px)",
+        "width": "255px",
+        "position": "relative",
         "height": "255px"
       },
       "attributes": {},
@@ -49,7 +33,27 @@
             "background": "rgba(0,0,0,0.05)",
             "border-radius": "2px"
           },
-          "children": [],
+          "children": [
+            {
+              "id": "5c08964d24626",
+              "variant": [],
+              "is": "5c08964d24625",
+              "name": "component-instance",
+              "attributes": {},
+              "style": {
+                "border": "1px solid rgba(0,0,0,0.5)",
+                "width": "10px",
+                "height": "10px",
+                "position": "absolute",
+                "box-sizing": "border-box",
+                "background": "transparent",
+                "border-radius": "10px",
+                "transform": "translate(-50%, -50%)"
+              },
+              "children": [],
+              "metadata": {}
+            }
+          ],
           "metadata": {}
         },
         {
@@ -63,9 +67,21 @@
             "height": "20px",
             "background": "rgba(0,0,0,0.05)",
             "flex-shrink": "0",
-            "border-radius": "2px"
+            "border-radius": "2px",
+            "position": "relative"
           },
-          "children": [],
+          "children": [
+            {
+              "id": "42b6b8ad389100",
+              "variant": [],
+              "is": "5c08964d900983",
+              "name": "component-instance",
+              "attributes": {},
+              "style": {},
+              "children": [],
+              "metadata": {}
+            }
+          ],
           "metadata": {}
         },
         {
@@ -79,9 +95,23 @@
             "height": "20px",
             "background": "rgba(0,0,0,0.05)",
             "flex-shrink": "0",
-            "border-radius": "2px"
+            "border-radius": "2px",
+            "position": "relative"
           },
-          "children": [],
+          "children": [
+            {
+              "id": "42b6b8ad395235",
+              "variant": [],
+              "is": "5c08964d900983",
+              "name": "component-instance",
+              "attributes": {},
+              "style": {
+                "left": "50%"
+              },
+              "children": [],
+              "metadata": {}
+            }
+          ],
           "metadata": {}
         },
         {
@@ -98,10 +128,10 @@
       ],
       "metadata": {
         "bounds": {
-          "left": 125,
-          "top": 346,
-          "right": 432.7928111413887,
-          "bottom": 594.3866802446275
+          "left": 71,
+          "top": 355,
+          "right": 360.0470628523325,
+          "bottom": 603.3866802446275
         }
       },
       "controllers": [
@@ -402,6 +432,119 @@
           "top": 344,
           "right": 862.7382461427483,
           "bottom": 444
+        }
+      }
+    },
+    {
+      "label": "Element",
+      "is": "div",
+      "style": {},
+      "attributes": {},
+      "id": "5c08964d18532",
+      "name": "component",
+      "children": [],
+      "metadata": {
+        "bounds": {
+          "left": 2049.96875,
+          "top": -122,
+          "right": 2337.96875,
+          "bottom": -72
+        }
+      }
+    },
+    {
+      "label": "Grabber",
+      "is": "5c08964d18532",
+      "style": {
+        "border": "1px solid rgba(0,0,0,0.5)",
+        "width": "10px",
+        "height": "10px",
+        "position": "absolute",
+        "box-sizing": "border-box",
+        "background": "transparent",
+        "transform": "translate(-50%, -50%)"
+      },
+      "attributes": {},
+      "id": "5c08964d24625",
+      "name": "component",
+      "children": [],
+      "metadata": {
+        "bounds": {
+          "left": 899,
+          "top": 470,
+          "right": 1187,
+          "bottom": 520
+        }
+      }
+    },
+    {
+      "label": "Slider",
+      "is": "5c08964d24625",
+      "style": {
+        "border": "1px solid rgba(0,0,0,0.5)",
+        "width": "10px",
+        "height": "100%",
+        "position": "absolute",
+        "box-sizing": "border-box",
+        "background": "transparent",
+        "transform": "translateX(-50%)",
+        "border-radius": "2px"
+      },
+      "attributes": {},
+      "id": "5c08964d900983",
+      "name": "component",
+      "children": [],
+      "metadata": {
+        "bounds": {
+          "left": 1193,
+          "top": 471,
+          "right": 1203,
+          "bottom": 491
+        }
+      }
+    },
+    {
+      "id": "236ecf1a47759",
+      "label": "Preview",
+      "is": "div",
+      "name": "element",
+      "attributes": {},
+      "style": {},
+      "children": [
+        {
+          "id": "236ecf1a44568",
+          "variant": [],
+          "is": "67e386c762",
+          "name": "component-instance",
+          "attributes": {},
+          "style": {
+            "padding": "10px",
+            "box-sizing": "border-box",
+            "display": "flex",
+            "flex-direction": "column",
+            "font-family": "Helvetica",
+            "color": "grey",
+            "width": "255px",
+            "position": "relative",
+            "height": "255px"
+          },
+          "children": [],
+          "metadata": {
+            "bounds": {
+              "left": 81,
+              "top": 365,
+              "right": 370.0470628523325,
+              "bottom": 613.3866802446275
+            }
+          }
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": 22.231048299505915,
+          "top": 769.8581451345065,
+          "right": 804.3231434240976,
+          "bottom": 1340.4488154142637
         }
       }
     }

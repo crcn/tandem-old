@@ -839,6 +839,97 @@
           "bottom": 601.7868872648622
         }
       }
+    },
+    {
+      "id": "9b7b527f58489",
+      "variant": [],
+      "is": "97a34b151010442",
+      "name": "component-instance",
+      "attributes": {},
+      "style": {},
+      "children": [
+        {
+          "id": "9b7b527f58490",
+          "propertyName": "children",
+          "targetIdPath": [
+            "97a34b151010440"
+          ],
+          "name": "override",
+          "children": [
+            {
+              "id": "9b7b527f58491",
+              "label": "Element",
+              "is": "ul",
+              "name": "element",
+              "attributes": {},
+              "style": {},
+              "children": [
+                {
+                  "id": "9b7b527f58492",
+                  "label": "Element",
+                  "is": "li",
+                  "name": "element",
+                  "attributes": {},
+                  "style": {},
+                  "children": [
+                    {
+                      "id": "9b7b527f58493",
+                      "name": "text",
+                      "label": "Text",
+                      "value": "[Components] bindings UI for compiling",
+                      "style": {},
+                      "children": [],
+                      "metadata": {}
+                    }
+                  ],
+                  "metadata": {}
+                },
+                {
+                  "id": "9b7b527f86185",
+                  "label": "Element",
+                  "is": "li",
+                  "name": "element",
+                  "attributes": {},
+                  "style": {},
+                  "children": [
+                    {
+                      "id": "9b7b527f86186",
+                      "name": "text",
+                      "label": "Text",
+                      "value": "[Content node] frame sizing (mobile, web, etc)",
+                      "style": {},
+                      "children": [],
+                      "metadata": {}
+                    }
+                  ],
+                  "metadata": {}
+                }
+              ],
+              "metadata": {}
+            }
+          ],
+          "metadata": {}
+        },
+        {
+          "id": "9b7b527f58494",
+          "propertyName": "text",
+          "targetIdPath": [
+            "97a34b151010439"
+          ],
+          "value": " ",
+          "name": "override",
+          "children": []
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": -96,
+          "top": 350,
+          "right": 197.65422704948787,
+          "bottom": 550.7213373757045
+        }
+      },
+      "label": "TODO"
     }
   ],
   "metadata": {}

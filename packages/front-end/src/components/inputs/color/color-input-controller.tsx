@@ -5,25 +5,43 @@ const { ColorPicker } = require("./picker.pc");
 
 export default compose(
   pure,
-  withState("visible", "setVisible", false),
+  withState("open", "setOpen", false),
   withHandlers({
-    onButtonClick: ({ visible, setVisible }) => () => {
-      setVisible(!visible);
+    onButtonClick: ({ open, setOpen }) => () => {
+      setOpen(!open);
+    },
+    onFocus: ({ setOpen }) => () => {
+      setOpen(true);
+    },
+    onBlur: ({ setOpen }) => () => {
+      setOpen(false);
     }
   }),
-  Base => ({ visible, value, onButtonClick }) => {
-    let popdownChildren = EMPTY_ARRAY;
+  Base => ({ open, value, onButtonClick, onFocus, onBlur }) => {
+    let popdownChildren: any = EMPTY_ARRAY;
 
-    if (visible) {
-      popdownChildren = [<ColorPicker />];
+    if (open) {
+      popdownChildren = <ColorPicker />;
     }
 
     return (
       <Base
-        buttonProps={{ onClick: onButtonClick, style: { background: value } }}
-        popdownProps={{
+        buttonProps={{
+          tabIndex: 0,
+          onClick: onButtonClick,
+          onFocus,
+          onBlur,
           style: {
-            display: visible ? "block" : "none"
+            background: value
+          }
+        }}
+        popoverProps={{
+          open,
+          focusable: true
+        }}
+        contentProps={{
+          style: {
+            display: open ? "block" : "none"
           },
           children: popdownChildren
         }}
