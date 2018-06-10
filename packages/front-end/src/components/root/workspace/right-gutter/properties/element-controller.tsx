@@ -19,6 +19,7 @@ const TYPE_MENU_OPTIONS: DropdownMenuItem[] = [
   "blockquote",
   "br",
   "button",
+  "canvas",
   "caption",
   "cite",
   "code",

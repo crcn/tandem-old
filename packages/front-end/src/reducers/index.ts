@@ -103,6 +103,7 @@ import {
   CanvasDraggingOver,
   ELEMENT_TYPE_CHANGED,
   CSS_PROPERTY_CHANGED,
+  CSS_PROPERTY_CHANGE_COMPLETED,
   ATTRIBUTE_CHANGED,
   CSSPropertyChanged
 } from "../actions";
@@ -209,7 +210,8 @@ import {
   getSyntheticDocumentById,
   persistAddComponentController,
   persistCSSProperty,
-  persistAttribute
+  persistAttribute,
+  updateSyntheticVisibleNode
 } from "paperclip";
 import {
   getTreeNodePath,
@@ -1078,6 +1080,27 @@ export const canvasReducer = (state: RootState, action: Action) => {
       return state;
     }
     case CSS_PROPERTY_CHANGED: {
+      const { name, value } = action as CSSPropertyChanged;
+      const now = Date.now();
+      state = state.selectedNodeIds.reduce((state, nodeId) => {
+        return updateSyntheticVisibleNode(
+          getSyntheticNodeById(nodeId, state.documents),
+          state,
+          node => {
+            return {
+              ...node,
+              style: {
+                ...node.style,
+                [name]: value
+              }
+            };
+          }
+        );
+      }, state);
+      return state;
+    }
+
+    case CSS_PROPERTY_CHANGE_COMPLETED: {
       const { name, value } = action as CSSPropertyChanged;
       state = persistRootState(browser => {
         return state.selectedNodeIds.reduce(

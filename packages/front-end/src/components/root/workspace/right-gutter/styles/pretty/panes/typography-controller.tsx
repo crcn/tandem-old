@@ -2,7 +2,7 @@ import * as React from "react";
 import { compose, pure, withHandlers } from "recompose";
 import { DropdownMenuItem } from "../../../../../../inputs/dropdown/controller";
 import { ButtonBarOption } from "../../../../../../inputs/button-bar/controller";
-import { cssPropertyChanged } from "actions";
+import { cssPropertyChangeCompleted, cssPropertyChanged } from "actions";
 import { PCSourceTagNames } from "paperclip";
 
 const FONT_FAMILIES: DropdownMenuItem[] = ["Helvetica", "Roboto"].map(
@@ -42,28 +42,31 @@ export default compose(
   pure,
   withHandlers({
     onFamilyChange: ({ dispatch }) => value => {
-      dispatch(cssPropertyChanged("font-family", value));
+      dispatch(cssPropertyChangeCompleted("font-family", value));
     },
     onWeightChange: ({ dispatch }) => value => {
-      dispatch(cssPropertyChanged("font-weight", value));
+      dispatch(cssPropertyChangeCompleted("font-weight", value));
     },
     onDecorationChange: ({ dispatch }) => value => {
-      dispatch(cssPropertyChanged("text-decoration", value));
+      dispatch(cssPropertyChangeCompleted("text-decoration", value));
     },
     onLineChange: ({ dispatch }) => value => {
-      dispatch(cssPropertyChanged("line-height", value));
+      dispatch(cssPropertyChangeCompleted("line-height", value));
     },
     onSpacingChange: ({ dispatch }) => value => {
-      dispatch(cssPropertyChanged("letter-spacing", value));
+      dispatch(cssPropertyChangeCompleted("letter-spacing", value));
     },
     onSizeChange: ({ dispatch }) => value => {
-      dispatch(cssPropertyChanged("font-size", value));
+      dispatch(cssPropertyChangeCompleted("font-size", value));
     },
     onColorChange: ({ dispatch }) => value => {
       dispatch(cssPropertyChanged("color", value));
     },
+    onColorChangeComplete: ({ dispatch }) => value => {
+      dispatch(cssPropertyChangeCompleted("color", value));
+    },
     onAlignmentChange: ({ dispatch }) => value => {
-      dispatch(cssPropertyChanged("text-alignment", value));
+      dispatch(cssPropertyChangeCompleted("text-alignment", value));
     }
   }),
   Base => ({
@@ -71,6 +74,7 @@ export default compose(
     onFamilyChange,
     onWeightChange,
     onDecorationChange,
+    onColorChangeComplete,
     onSizeChange,
     onColorChange,
     onAlignmentChange,
@@ -118,7 +122,8 @@ export default compose(
         colorInputProps={{
           options: FONT_FAMILIES,
           value: node.style.color,
-          onChange: onColorChange
+          onChange: onColorChange,
+          onChangeComplete: onColorChangeComplete
         }}
       />
     );

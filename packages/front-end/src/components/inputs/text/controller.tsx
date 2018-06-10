@@ -1,15 +1,20 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import { compose, pure, withHandlers, lifecycle } from "recompose";
+import { compose, pure, withHandlers, lifecycle, withProps } from "recompose";
 
 export const withInputHandlers = (changeOnKeyDown: boolean = true) =>
   compose(
     withHandlers({
-      onKeyDown: ({ onChange }) => event => {
+      onKeyDown: ({ onChange, changeOnKeyDown }) => event => {
         if (!onChange) {
           return;
         }
         if (changeOnKeyDown || event.key === "Enter") {
+          onChange(event.target.value || undefined);
+        }
+      },
+      onBlur: ({ onChange }) => event => {
+        if (onChange) {
           onChange(event.target.value || undefined);
         }
       }
@@ -21,7 +26,7 @@ export const withInputHandlers = (changeOnKeyDown: boolean = true) =>
             this as any
           ) as HTMLTextAreaElement;
           if (document.activeElement !== input) {
-            input.value = this.props.value || "";
+            input.value = this.props.value == null ? "" : this.props.value;
           }
         }
       }
@@ -31,7 +36,7 @@ export const withInputHandlers = (changeOnKeyDown: boolean = true) =>
 export default compose<any, any>(
   pure,
   withInputHandlers(false),
-  Base => ({ value, onKeyDown }) => {
-    return <Base defaultValue={value} onKeyDown={onKeyDown} />;
+  Base => ({ value, onChange, ...rest }) => {
+    return <Base {...rest} defaultValue={value} />;
   }
 );

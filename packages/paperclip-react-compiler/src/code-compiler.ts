@@ -126,7 +126,7 @@ const translateModule = (module: PCModule, context: TranslateContext) => {
   context = addLine(`var value = props[key];`, context);
   context = addLine(`var tov = typeof value;`, context);
   context = addOpenTag(
-    `if((tov !== "object" && key !== "text" && (tov !== "function" || key.substr(0, 2) === "on")) || key === "style") {\n`,
+    `if((tov !== "object" && key !== "text" && (tov !== "function" || key === "ref" || key.substr(0, 2) === "on")) || key === "style") {\n`,
     context
   );
   context = addLine(`newProps[key] = value;`, context);

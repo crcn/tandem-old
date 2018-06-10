@@ -97,6 +97,7 @@ export const NEW_FILE_ENTERED = "NEW_FILE_ENTERED";
 export const NEW_DIRECTORY_ENTERED = "NEW_DIRECTORY_ENTERED";
 export const RAW_CSS_TEXT_CHANGED = "RAW_CSS_TEXT_CHANGED";
 export const CSS_PROPERTY_CHANGED = "CSS_PROPERTY_CHANGED";
+export const CSS_PROPERTY_CHANGE_COMPLETED = "CSS_PROPERTY_CHANGE_COMPLETED";
 export const ATTRIBUTE_CHANGED = "ATTRIBUTE_CHANGED";
 export const SLOT_TOGGLE_CLICK = "SLOT_TOGGLE_CLICK";
 export const NATIVE_NODE_TYPE_CHANGED = "NATIVE_NODE_TYPE_CHANGED";
@@ -551,6 +552,15 @@ export const cssPropertyChanged = (
   name,
   value,
   type: CSS_PROPERTY_CHANGED
+});
+
+export const cssPropertyChangeCompleted = (
+  name: string,
+  value: string
+): CSSPropertyChanged => ({
+  name,
+  value,
+  type: CSS_PROPERTY_CHANGE_COMPLETED
 });
 
 export const attributeChanged = (

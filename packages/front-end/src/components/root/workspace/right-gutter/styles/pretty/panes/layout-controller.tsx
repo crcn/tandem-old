@@ -2,7 +2,7 @@ import * as React from "react";
 import { compose, pure, withHandlers } from "recompose";
 import { RootState } from "state";
 import { stringifyStyle, EMPTY_OBJECT } from "tandem-common";
-import { cssPropertyChanged } from "../../../../../../../actions";
+import { cssPropertyChangeCompleted } from "../../../../../../../actions";
 import { DropdownMenuItem } from "../../../../../../inputs/dropdown/controller";
 
 export const DISPLAY_MENU_OPTIONS: DropdownMenuItem[] = [
@@ -26,23 +26,23 @@ export default compose(
   withHandlers({
     onClick: () => () => {},
     onDisplayChange: ({ dispatch }) => value => {
-      dispatch(cssPropertyChanged("display", value));
+      dispatch(cssPropertyChangeCompleted("display", value));
     },
     onPositionChange: ({ dispatch }) => value => {
       console.log(value);
-      dispatch(cssPropertyChanged("position", value));
+      dispatch(cssPropertyChangeCompleted("position", value));
     },
     onLeftChange: ({ dispatch }) => value => {
-      dispatch(cssPropertyChanged("left", value));
+      dispatch(cssPropertyChangeCompleted("left", value));
     },
     onTopChange: ({ dispatch }) => value => {
-      dispatch(cssPropertyChanged("top", value));
+      dispatch(cssPropertyChangeCompleted("top", value));
     },
     onWidthChange: ({ dispatch }) => value => {
-      dispatch(cssPropertyChanged("width", value));
+      dispatch(cssPropertyChangeCompleted("width", value));
     },
     onHeightChange: ({ dispatch }) => value => {
-      dispatch(cssPropertyChanged("height", value));
+      dispatch(cssPropertyChangeCompleted("height", value));
     }
   }),
   Base => ({

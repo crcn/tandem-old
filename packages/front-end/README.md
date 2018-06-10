@@ -3,7 +3,7 @@ IMMEDIATE:
 * color picker
 * fix code compiler to be more optimal
 
-  * variants only apply to styles
+  * variants only apply to styles.
 
 * Styler
   * color input
@@ -30,6 +30,7 @@ IMMEDIATE:
 
   * Styles Pane
     * Gradient input
+  * Rust port
 
 * Ability to override instance labels. Used to expose layers
 

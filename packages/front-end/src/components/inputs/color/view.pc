@@ -141,6 +141,16 @@
               "value": "Anchor",
               "name": "override",
               "children": []
+            },
+            {
+              "id": "659da073141",
+              "propertyName": "label",
+              "targetIdPath": [
+                "ddec6a12139578"
+              ],
+              "value": "Content",
+              "name": "override",
+              "children": []
             }
           ],
           "metadata": {

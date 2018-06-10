@@ -13,15 +13,27 @@ export default compose(
     onFocus: ({ setOpen }) => () => {
       setOpen(true);
     },
-    onBlur: ({ setOpen }) => () => {
-      setOpen(false);
-    }
+    onBlur: ({ setOpen }) => () => {}
   }),
-  Base => ({ open, value, onButtonClick, onFocus, onBlur }) => {
+  Base => ({
+    open,
+    value,
+    onButtonClick,
+    onFocus,
+    onBlur,
+    onChange,
+    onChangeComplete
+  }) => {
     let popdownChildren: any = EMPTY_ARRAY;
 
     if (open) {
-      popdownChildren = <ColorPicker />;
+      popdownChildren = (
+        <ColorPicker
+          value={value || "#0000"}
+          onChange={onChange}
+          onChangeComplete={onChangeComplete}
+        />
+      );
     }
 
     return (
@@ -32,7 +44,7 @@ export default compose(
           onFocus,
           onBlur,
           style: {
-            background: value
+            background: value || "transparent"
           }
         }}
         popoverProps={{
@@ -40,9 +52,6 @@ export default compose(
           focusable: true
         }}
         contentProps={{
-          style: {
-            display: open ? "block" : "none"
-          },
           children: popdownChildren
         }}
       />
