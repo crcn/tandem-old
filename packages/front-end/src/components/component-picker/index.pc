@@ -10,7 +10,7 @@
       "name": "element",
       "attributes": {},
       "style": {
-        "color": "red",
+        "color": "rgba(240, 8, 8, 1)",
         "width": "100px",
         "display": "block"
       },

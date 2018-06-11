@@ -29,7 +29,7 @@ export default compose(
     if (open) {
       popdownChildren = (
         <ColorPicker
-          value={value || "#0000"}
+          value={value || "#FF0000"}
           onChange={onChange}
           onChangeComplete={onChangeComplete}
         />

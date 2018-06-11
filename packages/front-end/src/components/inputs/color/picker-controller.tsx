@@ -3,8 +3,9 @@ import { pure, compose, lifecycle, withState, withHandlers } from "recompose";
 import { memoize } from "tandem-common";
 import { DraggableComponent } from "../../draggable";
 import { GrabberAxis } from "./canvas-controller";
+import { throttle } from "lodash";
 
-const SPECTRUM_HEIGHT = 30;
+const CHANGE_THROTTLE_MS = 1000 / 20;
 
 type RGBA = [number, number, number, number];
 type HSLA = [number, number, number, number];
@@ -30,16 +31,13 @@ export default compose(
     }
   }),
   withHandlers(() => {
-    const colorChangeCallback = updater => ({
-      onChange,
-      hsla,
-      setHSLA
-    }) => rgba => {
-      setHSLA((hsla = updater(rgba, hsla)));
-      if (onChange) {
-        onChange(stringifyRgba(hslaToRgba(hsla)));
-      }
-    };
+    const colorChangeCallback = updater => ({ onChange, hsla, setHSLA }) =>
+      throttle(rgba => {
+        setHSLA((hsla = updater(rgba, hsla)));
+        if (onChange) {
+          onChange(stringifyRgba(hslaToRgba(hsla)));
+        }
+      }, CHANGE_THROTTLE_MS);
 
     const colorChangeCompleteCallback = updater => ({
       onChangeComplete,
@@ -183,11 +181,11 @@ const opacityDrawer = memoize(
 
 const updateOpacity = (rgba: RGBA, [h, s, l]: HSLA) => {
   const l2 = rgbaToHsla(rgba)[2];
-  return [h, s, l, lToA(l2) / 255];
+  return [h, s, l, lToA(l2)];
 };
 
 const lToA = l =>
-  Math.round(255 * (1 - Math.min(0.5, Math.max(0, l - 0.5)) / 0.5));
+  Number((1 - Math.min(0.5, Math.max(0, l - 0.5)) / 0.5).toFixed(2));
 
 const updateHue = (rgba: RGBA, [, s, l, a]: HSLA) => [
   rgbaToHsla(rgba)[0],
@@ -206,7 +204,7 @@ const calcGGBAHueFromString = memoize((value: string) =>
 const calcGGBAHue = (rgba: RGBA) => rgbaToHsla(rgba)[0] * 360;
 
 const rgbaToHsla = ([r, g, b, a]: RGBA) => {
-  (r /= 255), (g /= 255), (b /= 255), (a /= 255);
+  (r /= 255), (g /= 255), (b /= 255);
   let max = Math.max(r, g, b),
     min = Math.min(r, g, b);
   let h,
@@ -256,12 +254,7 @@ const hslaToRgba = ([h, s, l, a]: HSLA): RGBA => {
     b = hueToRgb(p, q, h - 1 / 3);
   }
 
-  return [
-    Math.round(r * 255),
-    Math.round(g * 255),
-    Math.round(b * 255),
-    Math.round(a * 255)
-  ];
+  return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255), a];
 };
 
 const rgbToHsv = ([r, g, b]: RGBA) => {
