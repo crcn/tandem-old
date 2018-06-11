@@ -1,19 +1,12 @@
 IMMEDIATE:
 
-* color picker
-* fix code compiler to be more optimal
-  * variants only apply to styles.
-* performance. Color picker shouldn't be sluggish.
-
 * Styler
-  * color input
-  * Borders pane
-  * Slider Input
-  * Backgrounds
+  * Backgrounds (solid colors for now)
   * Spacing
   * Box Shadows
-  * Filters
-  * Raw input
+  * code tab
+    * raw input
+  * Borders pane
 * Properties
   * Type
   * Attributes (raw)
@@ -37,18 +30,18 @@ IMMEDIATE:
 NEXT WEEK:
 
 * breadcrumb view
-* typescript definition generator
-  * use generic type generator
-* compile source not to compiler
+* mobile size preset (when selecting content node)
 
 BUGS:
 
 * cannot override in some cases (try changing variant text in right gutter component)
 * padding / margins affect pane
 * diffing / patching doesn't work in some re-ordering scenarios
+* Typography needs to be inherited
 
 USEFUL:
 
+* Function for explicitly defining cascading styles
 * Unhandled notification (allows for console to be hidden)
 * ability to load images & other resources in PC file. (start with ionicons)
 * ability to persist instance changes to main component

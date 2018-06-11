@@ -10,10 +10,11 @@ export default compose(
     onButtonClick: ({ open, setOpen }) => () => {
       setOpen(!open);
     },
-    onFocus: ({ setOpen }) => () => {
-      setOpen(true);
-    },
-    onBlur: ({ setOpen }) => () => {}
+    onFocus: ({ setOpen }) => () => {},
+    onBlur: ({ setOpen }) => () => {},
+    onEmptySpaceClick: ({ setOpen }) => () => {
+      setOpen(false);
+    }
   }),
   Base => ({
     open,
@@ -22,7 +23,8 @@ export default compose(
     onFocus,
     onBlur,
     onChange,
-    onChangeComplete
+    onChangeComplete,
+    onEmptySpaceClick
   }) => {
     let popdownChildren: any = EMPTY_ARRAY;
 
@@ -49,7 +51,8 @@ export default compose(
         }}
         popoverProps={{
           open,
-          focusable: true
+          focusable: true,
+          onEmptySpaceClick
         }}
         contentProps={{
           children: popdownChildren

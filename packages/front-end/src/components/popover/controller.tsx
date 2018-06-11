@@ -6,6 +6,7 @@ import { compose, pure, lifecycle, withState } from "recompose";
 export type PopoverOuterProps = {
   open: boolean;
   anchorRect: Point;
+  onEmptySpaceClick: any;
 };
 
 export type PopoverInnerProps = {
@@ -15,7 +16,7 @@ export type PopoverInnerProps = {
 export default compose<PopoverInnerProps, PopoverOuterProps>(
   pure,
   withState("anchorRect", "setAnchorRect", null),
-  lifecycle({
+  lifecycle<PopoverInnerProps, any>({
     componentWillUpdate({ open }: PopoverInnerProps) {
       if (!this.props.open && open) {
         const anchor = ReactDOM.findDOMNode(this as any);
@@ -23,7 +24,12 @@ export default compose<PopoverInnerProps, PopoverOuterProps>(
       }
     }
   }),
-  Base => ({ open, anchorRect, ...rest }: PopoverOuterProps) => {
+  Base => ({
+    open,
+    onEmptySpaceClick,
+    anchorRect,
+    ...rest
+  }: PopoverOuterProps) => {
     let overrideProps: any = {};
 
     if (!open) {
@@ -35,6 +41,7 @@ export default compose<PopoverInnerProps, PopoverOuterProps>(
     } else if (anchorRect) {
       overrideProps = {
         contentProps: {
+          onEmptySpaceClick,
           anchorRect,
           style: {
             display: "block",

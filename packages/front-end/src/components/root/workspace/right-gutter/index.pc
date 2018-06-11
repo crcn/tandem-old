@@ -434,6 +434,30 @@
                   },
                   "name": "override",
                   "children": []
+                },
+                {
+                  "id": "97a4657148658",
+                  "propertyName": "style",
+                  "targetIdPath": [
+                    "af2a67c2930"
+                  ],
+                  "value": {
+                    "display": "none"
+                  },
+                  "name": "override",
+                  "children": []
+                },
+                {
+                  "id": "c0b66eff756",
+                  "propertyName": "style",
+                  "targetIdPath": [
+                    "bcda9fb5101747"
+                  ],
+                  "value": {
+                    "display": "none"
+                  },
+                  "name": "override",
+                  "children": []
                 }
               ],
               "metadata": {
@@ -923,10 +947,10 @@
       ],
       "metadata": {
         "bounds": {
-          "left": -96,
-          "top": 350,
-          "right": 197.65422704948787,
-          "bottom": 550.7213373757045
+          "left": -123,
+          "top": 158,
+          "right": 170.65422704948787,
+          "bottom": 358.7213373757045
         }
       },
       "label": "TODO"

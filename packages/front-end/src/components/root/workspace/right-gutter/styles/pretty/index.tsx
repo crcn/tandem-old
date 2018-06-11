@@ -8,6 +8,7 @@ export default compose(pure, Base => props => {
       codePaneProps={props}
       layoutPaneProps={props}
       typographyPaneProps={props}
+      opacityPaneProps={props}
     />
   );
 });

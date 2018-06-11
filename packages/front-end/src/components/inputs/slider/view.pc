@@ -58,7 +58,10 @@
           "right": 748,
           "bottom": 296.4870090036885
         }
-      }
+      },
+      "controllers": [
+        "./controller.tsx"
+      ]
     }
   ],
   "metadata": {}
