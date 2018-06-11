@@ -482,9 +482,7 @@
                       "targetIdPath": [
                         "7149f8199969"
                       ],
-                      "value": {
-                        "placeholder": "ab"
-                      },
+                      "value": {},
                       "name": "override",
                       "children": []
                     }

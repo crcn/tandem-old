@@ -175,7 +175,11 @@ export const patchDOM = (
           makeElementClickable(target, syntheticTarget);
         } else if (name === "attributes") {
           for (const key in value) {
-            target.setAttribute(key, value[key]);
+            if (!value[key]) {
+              target.removeAttribute(key);
+            } else {
+              target.setAttribute(key, value[key]);
+            }
           }
         } else if (name === "name") {
           const parent = target.parentNode;

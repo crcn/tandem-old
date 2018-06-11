@@ -579,11 +579,10 @@ export const filterNestedOverrides = memoize((node: PCNode): PCOverride[] =>
   filterNestedNodes(node, isPCOverride)
 );
 
-export const getOverrideMap = memoize((node: PCNode) => {
+export const getOverrideMap = memoize((overrides: PCOverride[]) => {
   const map: PCComputedOverrideMap = {
     default: {}
   };
-  const overrides = filterNestedOverrides(node);
   for (const override of overrides) {
     if (override.variantId && !map[override.variantId]) {
       map[override.variantId] = {};
@@ -600,17 +599,7 @@ export const getOverrideMap = memoize((node: PCNode) => {
       ] = {};
     }
 
-    const parentComponentInstanceIds = getPCParentComponentInstances(
-      override,
-      node
-    ).map(node => node.id);
-
-    const targetIdPath = uniq([
-      ...(parentComponentInstanceIds.length
-        ? [parentComponentInstanceIds[0]]
-        : []),
-      ...override.targetIdPath
-    ]);
+    const targetIdPath = [...override.targetIdPath];
 
     const targetId = targetIdPath.pop();
 

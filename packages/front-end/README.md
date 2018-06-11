@@ -2,8 +2,8 @@ IMMEDIATE:
 
 * color picker
 * fix code compiler to be more optimal
-
   * variants only apply to styles.
+* performance. Color picker shouldn't be sluggish.
 
 * Styler
   * color input

@@ -2,6 +2,38 @@
   "id": "97a34b15931",
   "name": "module",
   "version": "0.0.3",
-  "children": [],
+  "children": [
+    {
+      "id": "b6fbf124",
+      "label": "Element",
+      "is": "div",
+      "name": "element",
+      "attributes": {},
+      "style": {
+        "color": "red",
+        "width": "100px",
+        "display": "block"
+      },
+      "children": [
+        {
+          "id": "b6fbf123299",
+          "name": "text",
+          "label": "Text",
+          "value": "Click to edit",
+          "style": {},
+          "children": [],
+          "metadata": {}
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": 394,
+          "top": 241,
+          "right": 494,
+          "bottom": 341
+        }
+      }
+    }
+  ],
   "metadata": {}
 }
