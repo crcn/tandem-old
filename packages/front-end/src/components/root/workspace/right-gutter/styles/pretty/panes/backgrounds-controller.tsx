@@ -9,12 +9,16 @@ const DEFAULT_COLOR = "rgba(200, 200, 200, 1)";
 export default compose(
   pure,
   withHandlers({
-    onChange: ({ value, dispatch }) => (item, index) => {
+    onChange: ({ dispatch, selectedNodes }) => (item, index) => {
+      const node = selectedNodes[0];
+      const value = node.style.background;
       dispatch(
         cssPropertyChanged("background", replaceBackground(value, item, index))
       );
     },
-    onChangeComplete: ({ value, dispatch }) => (item, index) => {
+    onChangeComplete: ({ dispatch, selectedNodes }) => (item, index) => {
+      const node = selectedNodes[0];
+      const value = node.style.background;
       dispatch(
         cssPropertyChangeCompleted(
           "background",
@@ -22,7 +26,9 @@ export default compose(
         )
       );
     },
-    onPlusButtonClick: ({ dispatch, value }) => () => {
+    onPlusButtonClick: ({ dispatch, selectedNodes, value }) => () => {
+      const node = selectedNodes[0];
+      const value = node.style.background;
       dispatch(
         cssPropertyChangeCompleted(
           "background",
@@ -35,8 +41,7 @@ export default compose(
     onChange,
     onChangeComplete,
     onPlusButtonClick,
-    selectedNodes,
-    dispatch
+    selectedNodes
   }) => {
     const node = selectedNodes[0];
     const children = splitBackgrounds(node.style.background).map(
@@ -60,7 +65,8 @@ export default compose(
   }
 );
 
-const splitBackgrounds = value => (value || "").match(/rgba\(.*?\)/g) || [];
+const splitBackgrounds = value =>
+  (value || "").match(/(rgba\(.*?\)|\w+|#[^,])/g) || [];
 
 // TODO - validation here
 const replaceBackground = (oldValue, replacement, index) =>

@@ -17,6 +17,8 @@ IMMEDIATE:
     * Display labels that are exposed for public API
   * Navigator
 
+* tab bar (canvas)
+
 * Workspace
 
 * Polish
@@ -25,6 +27,7 @@ IMMEDIATE:
   * Typed generation files
   * Styles Pane
     * Gradient input
+  * split view
   * Rust port
 
 * Ability to override instance labels. Used to expose layers
@@ -36,8 +39,6 @@ NEXT WEEK:
 
 BUGS:
 
-* cannot override in some cases (try changing variant text in right gutter component)
-* padding / margins affect pane
 * diffing / patching doesn't work in some re-ordering scenarios
 * Typography needs to be inherited
 
