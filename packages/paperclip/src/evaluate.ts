@@ -133,9 +133,6 @@ const evaluateComponentInstance = (
   const selfPath = appendPath(instancePath, instance.id);
   const isComponentInstance =
     instance.name === PCSourceTagNames.COMPONENT_INSTANCE;
-  const childComponentInstancePath = isComponentInstance
-    ? selfPath
-    : instancePath;
   const childrenAreImmutable = immutable || node !== instance;
   registerOverrides(
     node,
@@ -395,13 +392,13 @@ const registerOverrides = (
 ) => {
   const overrideNodes = getOverrides(node);
 
-  const isComponentInstance =
-    instance.name === PCSourceTagNames.COMPONENT_INSTANCE;
-
   for (let i = 0, { length } = overrideNodes; i < length; i++) {
     const overrideNode = overrideNodes[i];
+    const childPath =
+      node.name === PCSourceTagNames.COMPONENT ? selfPath : instancePath;
+
     const overrideInstancePath = appendPath(
-      isComponentInstance ? selfPath : instancePath,
+      selfPath,
       overrideNode.targetIdPath.join(" ")
     );
     if (overrideNode.propertyName === PCOverridablePropertyName.CHILDREN) {
@@ -411,7 +408,7 @@ const registerOverrides = (
           overrideNode.propertyName,
           evaluateChildren(
             overrideNode,
-            instancePath,
+            childPath,
             immutable,
             isCreatedFromComponent,
             overrides,
@@ -452,16 +449,21 @@ const registerOverrides = (
     );
   }
   if (
-    (node.name === PCSourceTagNames.COMPONENT_INSTANCE ||
-      node.name === PCSourceTagNames.COMPONENT) &&
+    (node.name === PCSourceTagNames.COMPONENT ||
+      node.name === PCSourceTagNames.COMPONENT_INSTANCE) &&
     getVisibleChildren(node).length
   ) {
+    const childPath =
+      node.name === PCSourceTagNames.COMPONENT_INSTANCE
+        ? instancePath
+        : selfPath;
+
     registerOverride(
       null,
       PCOverridablePropertyName.CHILDREN,
       evaluateChildren(
         node,
-        isComponentInstance ? selfPath : instancePath,
+        childPath,
         immutable,
         isCreatedFromComponent,
         overrides,

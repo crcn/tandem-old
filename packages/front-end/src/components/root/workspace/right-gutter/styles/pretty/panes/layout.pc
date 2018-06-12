@@ -576,42 +576,6 @@
       "controllers": [
         "./layout-controller.tsx"
       ]
-    },
-    {
-      "id": "89259b1438150",
-      "label": "Element",
-      "is": "div",
-      "name": "element",
-      "attributes": {},
-      "style": {},
-      "children": [
-        {
-          "id": "89259b1443991",
-          "label": "Element",
-          "is": "input",
-          "name": "element",
-          "attributes": {
-            "placeholder": "hello"
-          },
-          "style": {
-            "display": "inline-block",
-            "position": "absolute",
-            "top": "5px",
-            "left": "5px",
-            "width": "50px"
-          },
-          "children": [],
-          "metadata": {}
-        }
-      ],
-      "metadata": {
-        "bounds": {
-          "left": -13,
-          "top": 314,
-          "right": 87,
-          "bottom": 414
-        }
-      }
     }
   ],
   "metadata": {}

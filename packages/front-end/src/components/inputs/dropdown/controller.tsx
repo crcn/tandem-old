@@ -21,9 +21,15 @@ export default compose(
     onClick: ({ menuVisible, setMenuVisible }) => () => {
       setMenuVisible(!menuVisible);
     },
-    onChange: ({ onChange, setMenuVisible }) => (item, event) => {
+    onItemClick: ({ onChange, onChangeComplete, setMenuVisible }) => (
+      item,
+      event
+    ) => {
       if (onChange) {
         onChange(item.value);
+      }
+      if (onChangeComplete) {
+        onChangeComplete(item.value);
       }
       setMenuVisible(false);
     },
@@ -42,13 +48,16 @@ export default compose(
     menuVisible,
     onKeyDown,
     onBlur,
-    onChange,
+    onItemClick,
     ...rest
   }) => {
     const menuItems = menuVisible
       ? options.map((item, i) => {
           return (
-            <DropdownMenuItem key={i} onClick={event => onChange(item, event)}>
+            <DropdownMenuItem
+              key={i}
+              onClick={event => onItemClick(item, event)}
+            >
               {item.label}
             </DropdownMenuItem>
           );

@@ -10,7 +10,6 @@ export default compose(
   pure,
   withHandlers({
     onChange: ({ dispatch }) => value => {
-      console.log(value);
       dispatch(cssPropertyChanged("opacity", value));
     },
     onChangeComplete: ({ dispatch }) => value => {

@@ -1,9 +1,9 @@
 import * as React from "react";
-import { compose, pure, withHandlers } from "recompose";
-import { DropdownMenuItem } from "../../../../../../inputs/dropdown/controller";
+import { memoize } from "tandem-common";
 import { ButtonBarOption } from "../../../../../../inputs/button-bar/controller";
+import { DropdownMenuItem } from "../../../../../../inputs/dropdown/controller";
+import { compose, pure, withHandlers } from "recompose";
 import { cssPropertyChangeCompleted, cssPropertyChanged } from "actions";
-import { PCSourceTagNames } from "paperclip";
 
 const FONT_FAMILIES: DropdownMenuItem[] = ["Helvetica", "Roboto"].map(
   value => ({ label: value, value })
@@ -41,91 +41,92 @@ const ALIGNMENTS: ButtonBarOption[] = [
 export default compose(
   pure,
   withHandlers({
-    onFamilyChange: ({ dispatch }) => value => {
-      dispatch(cssPropertyChangeCompleted("font-family", value));
+    onPropertyChange: ({ dispatch }) => (name, value) => {
+      dispatch(cssPropertyChanged(name, value));
     },
-    onWeightChange: ({ dispatch }) => value => {
-      dispatch(cssPropertyChangeCompleted("font-weight", value));
-    },
-    onDecorationChange: ({ dispatch }) => value => {
-      dispatch(cssPropertyChangeCompleted("text-decoration", value));
-    },
-    onLineChange: ({ dispatch }) => value => {
-      dispatch(cssPropertyChangeCompleted("line-height", value));
-    },
-    onSpacingChange: ({ dispatch }) => value => {
-      dispatch(cssPropertyChangeCompleted("letter-spacing", value));
-    },
-    onSizeChange: ({ dispatch }) => value => {
-      dispatch(cssPropertyChangeCompleted("font-size", value));
-    },
-    onColorChange: ({ dispatch }) => value => {
-      dispatch(cssPropertyChanged("color", value));
-    },
-    onColorChangeComplete: ({ dispatch }) => value => {
-      dispatch(cssPropertyChangeCompleted("color", value));
-    },
-    onAlignmentChange: ({ dispatch }) => value => {
-      dispatch(cssPropertyChangeCompleted("text-alignment", value));
+    onPropertyChangeComplete: ({ dispatch }) => (name, value) => {
+      dispatch(cssPropertyChangeCompleted(name, value));
     }
   }),
-  Base => ({
-    selectedNodes,
-    onFamilyChange,
-    onWeightChange,
-    onDecorationChange,
-    onColorChangeComplete,
-    onSizeChange,
-    onColorChange,
-    onAlignmentChange,
-    onLineChange,
-    onSpacingChange
-  }) => {
+  Base => ({ selectedNodes, onPropertyChange, onPropertyChangeComplete }) => {
     const node = selectedNodes[0];
     return (
       <Base
         familyInputProps={{
           options: FONT_FAMILIES,
           value: node.style["font-family"],
-          onChange: onFamilyChange
+          onChange: propertyChangeCallback("font-family", onPropertyChange),
+          onChangeComplete: propertyChangeCallback(
+            "font-family",
+            onPropertyChangeComplete
+          )
         }}
         weightInputProps={{
           options: FONT_WEIGHTS,
           value: node.style["font-weight"],
-          onChange: onWeightChange
+          onChange: propertyChangeCallback("font-weight", onPropertyChange),
+          onChangeComplete: propertyChangeCallback(
+            "font-weight",
+            onPropertyChangeComplete
+          )
         }}
         decorationInputProps={{
           options: FONT_WEIGHTS,
           value: node.style["text-decoration"],
-          onChange: onDecorationChange
+          onChange: propertyChangeCallback("text-decoration", onPropertyChange),
+          onChangeComplete: propertyChangeCallback(
+            "text-decoration",
+            onPropertyChangeComplete
+          )
         }}
         lineInputProps={{
           options: FONT_WEIGHTS,
           value: node.style["line-height"],
-          onChange: onLineChange
+          onChange: propertyChangeCallback("line-height", onPropertyChange),
+          onChangeComplete: propertyChangeCallback(
+            "line-height",
+            onPropertyChangeComplete
+          )
         }}
         spacingInputProps={{
           options: FONT_WEIGHTS,
           value: node.style["letter-spacing"],
-          onChange: onSpacingChange
+          onChange: propertyChangeCallback("letter-spacing", onPropertyChange),
+          onChangeComplete: propertyChangeCallback(
+            "letter-spacing",
+            onPropertyChangeComplete
+          )
         }}
         alignmentInputProps={{
           options: ALIGNMENTS,
           value: node.style["text-alignment"],
-          onChange: onAlignmentChange
+          onChange: propertyChangeCallback("text-alignment", onPropertyChange),
+          onChangeComplete: propertyChangeCallback(
+            "text-alignment",
+            onPropertyChangeComplete
+          )
         }}
         sizeInputProps={{
           options: FONT_FAMILIES,
           value: node.style["font-size"],
-          onChange: onSizeChange
+          onChange: propertyChangeCallback("font-size", onPropertyChange),
+          onChangeComplete: propertyChangeCallback(
+            "font-size",
+            onPropertyChangeComplete
+          )
         }}
         colorInputProps={{
-          options: FONT_FAMILIES,
           value: node.style.color,
-          onChange: onColorChange,
-          onChangeComplete: onColorChangeComplete
+          onChange: propertyChangeCallback("color", onPropertyChange),
+          onChangeComplete: propertyChangeCallback(
+            "color",
+            onPropertyChangeComplete
+          )
         }}
       />
     );
   }
+);
+const propertyChangeCallback = memoize((name: string, listener) => value =>
+  listener(name, value)
 );

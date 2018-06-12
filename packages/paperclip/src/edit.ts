@@ -1,12 +1,7 @@
 import {
-  KeyValue,
-  generateUID,
-  EMPTY_ARRAY,
   TreeNodeUpdater,
   EMPTY_OBJECT,
-  getNestedTreeNodeById,
   memoize,
-  TreeNode,
   Bounds,
   updateNestedNode,
   shiftBounds,
@@ -15,8 +10,6 @@ import {
   TreeMoveOffset,
   insertChildNode,
   removeNestedTreeNode,
-  getTreeNodePath,
-  getTreeNodeFromPath,
   getParentTreeNode,
   appendChildNode,
   cloneTreeNode,
@@ -24,10 +17,13 @@ import {
   mergeBounds,
   replaceNestedNode,
   arraySplice,
-  stripProtocol
+  stripProtocol,
+  filterTreeNodeParents,
+  getTreeNodeFromPath,
+  getNestedTreeNodeById
 } from "tandem-common";
-import { values, omit, pickBy, last, identity, uniq } from "lodash";
-import { DependencyGraph, Dependency, updateGraphDependency } from "./graph";
+import { values, identity, uniq } from "lodash";
+import { DependencyGraph, Dependency } from "./graph";
 import {
   PCNode,
   getPCNode,
@@ -42,10 +38,8 @@ import {
   PCElement,
   createPCComponentInstance,
   getPCNodeModule,
-  PCModule,
   PCTextNode,
   PCOverride,
-  createPCTextNode,
   createPCOverride,
   PCOverridablePropertyName,
   PCVisibleNodeMetadataKey,
@@ -58,11 +52,8 @@ import {
   upsertSyntheticDocument,
   getSyntheticSourceNode,
   getSyntheticDocumentByDependencyUri,
-  getSyntheticDocumentDependencyUri,
   SyntheticElement,
   SyntheticTextNode,
-  findFurthestParentComponentInstance,
-  getAllParentComponentInstance,
   SyntheticDocument,
   getSyntheticSourceUri,
   SYNTHETIC_DOCUMENT_NODE_NAME,
@@ -830,6 +821,7 @@ const maybeOverride = (
 
   if (node.immutable) {
     const document = getSyntheticVisibleNodeDocument(node.id, documents);
+
     const nearestComponentInstances = getNearestComponentInstances(
       node,
       document
@@ -849,13 +841,23 @@ const maybeOverride = (
     //   return updater(sourceNode, value);
     // }
 
-    const overrideIdPath = uniq([
+    let overrideIdPath = uniq([
       ...nearestComponentInstances
         .slice(0, nearestComponentInstances.indexOf(mutableInstance))
         .reverse()
         .map((node: SyntheticVisibleNode) => node.source.nodeId),
       sourceNode.id
     ]);
+
+    // ensure that we skip overrides
+    overrideIdPath = overrideIdPath.filter((id, index, path: string[]) => {
+      // is the target
+      if (index === path.length - 1) {
+        return true;
+      }
+
+      return !getNestedTreeNodeById(path[index + 1], getPCNode(id, graph));
+    });
 
     let existingOverride = mutableInstanceSourceNode.children.find(
       (child: PCOverride) => {

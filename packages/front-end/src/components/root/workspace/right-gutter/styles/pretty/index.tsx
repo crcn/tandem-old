@@ -9,6 +9,7 @@ export default compose(pure, Base => props => {
       layoutPaneProps={props}
       typographyPaneProps={props}
       opacityPaneProps={props}
+      backgroundsPaneProps={props}
     />
   );
 });

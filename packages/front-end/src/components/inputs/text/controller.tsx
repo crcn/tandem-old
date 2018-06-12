@@ -2,20 +2,21 @@ import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { compose, pure, withHandlers, lifecycle, withProps } from "recompose";
 
-export const withInputHandlers = (changeOnKeyDown: boolean = true) =>
+export const withInputHandlers = () =>
   compose(
     withHandlers({
-      onKeyDown: ({ onChange, changeOnKeyDown }) => event => {
-        if (!onChange) {
-          return;
-        }
-        if (changeOnKeyDown || event.key === "Enter") {
-          onChange(event.target.value || undefined);
-        }
-      },
-      onBlur: ({ onChange }) => event => {
+      onKeyDown: ({ onChange, onChangeComplete }) => event => {
         if (onChange) {
           onChange(event.target.value || undefined);
+        }
+
+        if (event.key === "Enter" && onChangeComplete) {
+          onChangeComplete(event.target.value || "");
+        }
+      },
+      onBlur: ({ onChangeComplete }) => event => {
+        if (onChangeComplete) {
+          onChangeComplete(event.target.value);
         }
       }
     }),
@@ -35,7 +36,7 @@ export const withInputHandlers = (changeOnKeyDown: boolean = true) =>
 
 export default compose<any, any>(
   pure,
-  withInputHandlers(false),
+  withInputHandlers(),
   Base => ({ value, onChange, ...rest }) => {
     return <Base {...rest} defaultValue={value} />;
   }

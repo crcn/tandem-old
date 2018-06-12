@@ -100,7 +100,21 @@
           "name": "component-instance",
           "attributes": {},
           "style": {},
-          "children": [],
+          "children": [
+            {
+              "id": "392dc094038",
+              "propertyName": "style",
+              "targetIdPath": [
+                "e83bcac1724101",
+                "b6c162d140"
+              ],
+              "value": {
+                "opacity": 0.968
+              },
+              "name": "override",
+              "children": []
+            }
+          ],
           "metadata": {
             "bounds": {
               "left": 401,
@@ -116,7 +130,7 @@
           "left": 60,
           "top": -15,
           "right": 1219.3692512173031,
-          "bottom": 979.0474624969929
+          "bottom": 784.339452788255
         }
       }
     },

@@ -1,7 +1,7 @@
 IMMEDIATE:
 
 * Styler
-  * Backgrounds (solid colors for now)
+  * right gutter drawer
   * Spacing
   * Box Shadows
   * code tab
@@ -21,6 +21,8 @@ IMMEDIATE:
 
 * Polish
 
+  * "Live" button connecting to HMR
+  * Typed generation files
   * Styles Pane
     * Gradient input
   * Rust port
@@ -41,6 +43,7 @@ BUGS:
 
 USEFUL:
 
+* switch tabs using cmd+shift+[/]
 * Function for explicitly defining cascading styles
 * Unhandled notification (allows for console to be hidden)
 * ability to load images & other resources in PC file. (start with ionicons)

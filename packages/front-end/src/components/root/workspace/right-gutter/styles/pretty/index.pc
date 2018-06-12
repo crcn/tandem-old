@@ -151,6 +151,19 @@
               },
               "name": "override",
               "children": []
+            },
+            {
+              "id": "7f6fc7f78765",
+              "propertyName": "style",
+              "targetIdPath": [
+                "d227ff68835744",
+                "d227ff68826765"
+              ],
+              "value": {
+                "background": "green"
+              },
+              "name": "override",
+              "children": []
             }
           ],
           "metadata": {},

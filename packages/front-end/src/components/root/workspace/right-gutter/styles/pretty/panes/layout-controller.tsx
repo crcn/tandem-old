@@ -1,8 +1,10 @@
 import * as React from "react";
+import { memoize } from "tandem-common";
 import { compose, pure, withHandlers } from "recompose";
-import { RootState } from "state";
-import { stringifyStyle, EMPTY_OBJECT } from "tandem-common";
-import { cssPropertyChangeCompleted } from "../../../../../../../actions";
+import {
+  cssPropertyChangeCompleted,
+  cssPropertyChanged
+} from "../../../../../../../actions";
 import { DropdownMenuItem } from "../../../../../../inputs/dropdown/controller";
 
 export const DISPLAY_MENU_OPTIONS: DropdownMenuItem[] = [
@@ -25,36 +27,14 @@ export default compose(
   pure,
   withHandlers({
     onClick: () => () => {},
-    onDisplayChange: ({ dispatch }) => value => {
-      dispatch(cssPropertyChangeCompleted("display", value));
+    onPropertyChange: ({ dispatch }) => (name, value) => {
+      dispatch(cssPropertyChanged(name, value));
     },
-    onPositionChange: ({ dispatch }) => value => {
-      console.log(value);
-      dispatch(cssPropertyChangeCompleted("position", value));
-    },
-    onLeftChange: ({ dispatch }) => value => {
-      dispatch(cssPropertyChangeCompleted("left", value));
-    },
-    onTopChange: ({ dispatch }) => value => {
-      dispatch(cssPropertyChangeCompleted("top", value));
-    },
-    onWidthChange: ({ dispatch }) => value => {
-      dispatch(cssPropertyChangeCompleted("width", value));
-    },
-    onHeightChange: ({ dispatch }) => value => {
-      dispatch(cssPropertyChangeCompleted("height", value));
+    onPropertyChangeComplete: ({ dispatch }) => (name, value) => {
+      dispatch(cssPropertyChangeCompleted(name, value));
     }
   }),
-  Base => ({
-    onDisplayChange,
-    onPositionChange,
-    onLeftChange,
-    onTopChange,
-    onWidthChange,
-    onHeightChange,
-    selectedNodes,
-    ...rest
-  }) => {
+  Base => ({ onPropertyChange, onPropertyChangeComplete, selectedNodes }) => {
     if (!selectedNodes) {
       return null;
     }
@@ -64,30 +44,54 @@ export default compose(
         displayInputProps={{
           value: node.style.display,
           options: DISPLAY_MENU_OPTIONS,
-          onChange: onDisplayChange
+          onChangeComplete: propertyChangeCallback(
+            "display",
+            onPropertyChangeComplete
+          )
         }}
         positionInputProps={{
           value: node.style.position,
           options: POSITION_MENU_OPTIONS,
-          onChange: onPositionChange
+          onChangeComplete: propertyChangeCallback(
+            "position",
+            onPropertyChangeComplete
+          )
         }}
         leftInputProps={{
           value: node.style.left,
-          onChange: onLeftChange
+          onChangeComplete: propertyChangeCallback(
+            "left",
+            onPropertyChangeComplete
+          )
         }}
         topInputProps={{
           value: node.style.top,
-          onChange: onTopChange
+          onChangeComplete: propertyChangeCallback(
+            "top",
+            onPropertyChangeComplete
+          )
         }}
         widthInputProps={{
           value: node.style.width,
-          onChange: onWidthChange
+          onChange: propertyChangeCallback("width", onPropertyChange),
+          onChangeComplete: propertyChangeCallback(
+            "width",
+            onPropertyChangeComplete
+          )
         }}
         heightInputProps={{
           value: node.style.height,
-          onChange: onHeightChange
+          onChange: propertyChangeCallback("height", onPropertyChange),
+          onChangeComplete: propertyChangeCallback(
+            "height",
+            onPropertyChangeComplete
+          )
         }}
       />
     );
   }
+);
+
+const propertyChangeCallback = memoize((name: string, listener) => value =>
+  listener(name, value)
 );

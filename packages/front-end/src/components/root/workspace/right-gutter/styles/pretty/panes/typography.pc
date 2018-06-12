@@ -660,7 +660,20 @@
                               "name": "component-instance",
                               "attributes": {},
                               "style": {},
-                              "children": [],
+                              "children": [
+                                {
+                                  "id": "55a1ceea233",
+                                  "propertyName": "style",
+                                  "targetIdPath": [
+                                    "d227ff68826765"
+                                  ],
+                                  "value": {
+                                    "background": "purple"
+                                  },
+                                  "name": "override",
+                                  "children": []
+                                }
+                              ],
                               "metadata": {},
                               "label": "Color Input"
                             }
