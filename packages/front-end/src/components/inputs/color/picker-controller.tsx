@@ -16,7 +16,7 @@ export default compose(
   },
   pure,
   withState(`hsla`, `setHSLA`, ({ value }) => {
-    const rgba = parseRGBA(value);
+    const rgba = parseRGBA(value || "#FF0000");
     return rgbaToHsla(rgba);
   }),
   lifecycle({

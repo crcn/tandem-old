@@ -1,10 +1,10 @@
 IMMEDIATE:
 
-* Previewer
+* Preview button in Tandem
 
-  * Should hook up with custom build process
-  * HMR supported
-  * Ability to open outside of Tandem
+  * should persist as metadata
+
+* text editing support (use monaco)
 
 * preview mode should be persisted for components ()
 

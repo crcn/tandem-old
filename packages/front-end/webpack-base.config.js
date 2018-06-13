@@ -1,9 +1,5 @@
 const {resolve} = require('path');
 const webpack   = require('webpack');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-
-
 
 module.exports = {
   entry: {
@@ -12,11 +8,7 @@ module.exports = {
   output: {
     path: resolve(__dirname, 'lib', 'front-end'),
     libraryTarget: "umd",
-    filename: 'index.bundle.js'
-  },
-  devServer: {
-    hot: true,
-    inline: true
+    filename: '[name].bundle.js'
   },
   resolve: {
     extensions: ['.js', '.ts', '.tsx'],
@@ -31,9 +23,6 @@ module.exports = {
       resolve(__dirname, 'node_modules')
     ]
   },
-  plugins: [
-    new ExtractTextPlugin('[name].bundle.css')
-  ],
   module: {
     rules: [
       {
@@ -42,28 +31,26 @@ module.exports = {
       },
       {
         test: /\.scss$/,
-        use: ExtractTextPlugin.extract({
-          fallback: 'style-loader',
-          use: [
-            { loader: 'css-loader'   },
-            {
-              loader: 'sass-loader',
-              options: {
-                includePaths: [__dirname + '/src']
-              }
+        use: [
+          { loader: 'style-loader'   },
+          { loader: 'css-loader'   },
+          {
+            loader: 'sass-loader',
+            options: {
+              includePaths: [__dirname + '/src']
             }
-          ]
-        })
+          }
+        ]
       },
       {
         test: /\.css$/,
-        use: ExtractTextPlugin.extract({
-          fallback: 'style-loader',
-          use: [
-            { loader: 'css-loader'   }
-          ]
-        })
+        use: [
+          { loader: 'style-loader'   },
+          { loader: 'css-loader'   }
+        ]
       },
+      { test: /\.pc$/, use: ['paperclip-react-loader']},
+      { test: /\.tsx?$/, use: ['ts-loader'] }
     ]
   }
 };

@@ -37,11 +37,17 @@ export default compose(
           const point = {
             left:
               grabberAxis & GrabberAxis.X
-                ? Math.max(0, Math.min(rect.width, event.clientX - rect.left))
+                ? Math.max(
+                    0,
+                    Math.min(rect.width - 1, event.clientX - rect.left)
+                  )
                 : 0,
             top:
               grabberAxis & GrabberAxis.Y
-                ? Math.max(0, Math.min(rect.height, event.clientY - rect.top))
+                ? Math.max(
+                    0,
+                    Math.min(rect.height - 1, event.clientY - rect.top)
+                  )
                 : 0
           };
           if (callback) {
