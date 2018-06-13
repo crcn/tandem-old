@@ -1,5 +1,13 @@
 IMMEDIATE:
 
+* Previewer
+
+  * Should hook up with custom build process
+  * HMR supported
+  * Ability to open outside of Tandem
+
+* preview mode should be persisted for components ()
+
 * Styler
   * right gutter drawer
   * Spacing
@@ -11,6 +19,7 @@ IMMEDIATE:
   * Type
   * Attributes (raw)
 * Left Gutter
+* Media query tool
 
   * Tree Component
   * Open Files

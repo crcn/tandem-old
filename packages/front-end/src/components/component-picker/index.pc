@@ -10,9 +10,12 @@
       "name": "element",
       "attributes": {},
       "style": {
-        "color": "rgba(240, 8, 8, 1)",
+        "color": "rgba(200, 162, 162, 1)",
         "width": "100px",
-        "display": "block"
+        "display": "block",
+        "backgrounds": "orange",
+        "font-family": "Helvetica",
+        "font-weight": "100"
       },
       "children": [
         {

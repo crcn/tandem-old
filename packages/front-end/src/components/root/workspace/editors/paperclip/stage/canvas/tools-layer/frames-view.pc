@@ -1,0 +1,179 @@
+{
+  "id": "11188f860",
+  "name": "module",
+  "version": "0.0.3",
+  "children": [
+    {
+      "label": "Frame",
+      "is": "div",
+      "style": {
+        "position": "absolute"
+      },
+      "attributes": {},
+      "id": "11188f863945",
+      "name": "component",
+      "children": [
+        {
+          "id": "11188f8619482",
+          "label": "Element",
+          "is": "div",
+          "name": "element",
+          "attributes": {},
+          "style": {
+            "width": "100%",
+            "height": "100%",
+            "background": "rgba(164, 163, 163, 1)",
+            "top": "0px",
+            "position": "absolute"
+          },
+          "children": [],
+          "metadata": {}
+        },
+        {
+          "id": "b0a6d2a262324",
+          "label": "top bar",
+          "is": "div",
+          "name": "element",
+          "attributes": {},
+          "style": {
+            "transform": "translateY(-100%)",
+            "top": "-4px",
+            "position": "absolute",
+            "width": "100%"
+          },
+          "children": [
+            {
+              "id": "11188f8623368",
+              "name": "text",
+              "label": "Title",
+              "value": "Title",
+              "style": {
+                "font-family": "Helvetica",
+                "color": "rgba(160, 155, 155, 1)"
+              },
+              "children": [],
+              "metadata": {}
+            },
+            {
+              "id": "b0a6d2a258432",
+              "variant": [],
+              "is": "b0a6d2a231192",
+              "name": "component-instance",
+              "attributes": {},
+              "style": {
+                "color": "rgba(213, 167, 167, 1)",
+                "height": "30px",
+                "position": "absolute",
+                "right": "0px",
+                "top": "0px",
+                "display": "inline",
+                "width": "20px"
+              },
+              "children": [],
+              "metadata": {
+                "bounds": {
+                  "left": 524,
+                  "top": 575,
+                  "right": 621,
+                  "bottom": 671
+                }
+              },
+              "label": "Play Icon"
+            }
+          ],
+          "metadata": {}
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": 105,
+          "top": 104,
+          "right": 334.20946226573534,
+          "bottom": 294.3911688811796
+        }
+      }
+    },
+    {
+      "id": "11188f8635027",
+      "label": "Frame Preview",
+      "is": "div",
+      "name": "element",
+      "attributes": {},
+      "style": {
+        "background": "rgba(108, 107, 107, 1)"
+      },
+      "children": [
+        {
+          "id": "11188f8638912",
+          "variant": [],
+          "is": "11188f863945",
+          "name": "component-instance",
+          "attributes": {},
+          "style": {
+            "width": "400px",
+            "left": "100px",
+            "top": "100px",
+            "position": "absolute",
+            "height": "300px"
+          },
+          "children": [
+            {
+              "id": "b0a6d2a2647173",
+              "propertyName": "style",
+              "targetIdPath": [
+                "b0a6d2a258432"
+              ],
+              "value": {
+                "height": "30px",
+                "width": "30px",
+                "top": "0px"
+              },
+              "name": "override",
+              "children": []
+            }
+          ],
+          "metadata": {
+            "bounds": {
+              "left": 115,
+              "top": 114,
+              "right": 344.20946226573534,
+              "bottom": 304.3911688811796
+            }
+          }
+        },
+        {
+          "id": "11188f86431739",
+          "variant": [],
+          "is": "11188f863945",
+          "name": "component-instance",
+          "attributes": {},
+          "style": {
+            "width": "400px",
+            "left": "800px",
+            "top": "300px",
+            "position": "absolute",
+            "height": "300px"
+          },
+          "children": [],
+          "metadata": {
+            "bounds": {
+              "left": 115,
+              "top": 114,
+              "right": 344.20946226573534,
+              "bottom": 304.3911688811796
+            }
+          }
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": 636.861979428597,
+          "top": 215.96265408114402,
+          "right": 2027.1768769781188,
+          "bottom": 1046.638444204093
+        }
+      }
+    }
+  ],
+  "metadata": {}
+}

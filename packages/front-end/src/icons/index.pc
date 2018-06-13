@@ -334,8 +334,27 @@
         "bounds": {
           "left": 340,
           "top": 508,
-          "right": 412,
-          "bottom": 557
+          "right": 425,
+          "bottom": 563
+        }
+      }
+    },
+    {
+      "label": "Play Icon",
+      "is": "img",
+      "style": {},
+      "attributes": {
+        "src": "./play.svg"
+      },
+      "id": "b0a6d2a231192",
+      "name": "component",
+      "children": [],
+      "metadata": {
+        "bounds": {
+          "left": 514,
+          "top": 565,
+          "right": 616,
+          "bottom": 663
         }
       }
     }

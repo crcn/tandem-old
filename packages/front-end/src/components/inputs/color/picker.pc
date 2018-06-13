@@ -128,10 +128,10 @@
       ],
       "metadata": {
         "bounds": {
-          "left": -586,
-          "top": 890,
-          "right": -155.77594754084498,
-          "bottom": 1246.984364557568
+          "left": -328,
+          "top": 1702,
+          "right": 102.22405245915502,
+          "bottom": 2058.984364557568
         }
       },
       "controllers": [
@@ -741,6 +741,25 @@
         }
       },
       "label": "TODO"
+    },
+    {
+      "label": "Color Picker Preview",
+      "is": "img",
+      "style": {},
+      "attributes": {
+        "src": "../../../screenshots/Screenshot 2018-06-12 21.58.14.png"
+      },
+      "id": "acda559e7886",
+      "name": "component",
+      "children": [],
+      "metadata": {
+        "bounds": {
+          "left": 713,
+          "top": 1698,
+          "right": 1113,
+          "bottom": 1998
+        }
+      }
     }
   ],
   "metadata": {}
