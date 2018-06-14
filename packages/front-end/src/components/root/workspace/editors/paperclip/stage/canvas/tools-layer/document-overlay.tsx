@@ -5,11 +5,8 @@ import * as Hammer from "react-hammerjs";
 // import { Workspace, AVAILABLE_COMPONENT, AvailableComponent, Artboard } from "front-end/state";
 // import { Workspace, AVAILABLE_COMPONENT, AvailableComponent, Artboard } from "front-end/state";
 import { wrapEventToDispatch } from "../../../../../../../../utils";
-import { RootState, Editor } from "../../../../../../../../state";
-import { difference } from "lodash";
-import { mapValues, values } from "lodash";
+import { RootState, Editor, FrameMode } from "../../../../../../../../state";
 import {
-  SyntheticVisibleNode,
   Frame,
   getFramesByDependencyUri,
   getSyntheticNodeById
@@ -229,6 +226,13 @@ export const NodeOverlaysToolBase = ({
   return (
     <div className="visual-tools-layer-component">
       {activeFrames.map((frame, i) => {
+        const contentNode = getSyntheticNodeById(
+          frame.contentNodeId,
+          root.documents
+        );
+        if (contentNode.metadata.mode === FrameMode.PREVIEW) {
+          return null;
+        }
         return (
           <ArtboardOverlayTools
             key={frame.contentNodeId}

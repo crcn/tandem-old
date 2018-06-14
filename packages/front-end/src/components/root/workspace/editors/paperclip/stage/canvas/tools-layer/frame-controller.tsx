@@ -1,10 +1,12 @@
+import "./frame-controller.scss";
 import * as React from "react";
 import { compose, pure, withHandlers } from "recompose";
 import { SyntheticDocument, SyntheticVisibleNode, Frame } from "paperclip";
 import { getBoundsSize, Translate } from "tandem-common";
 import {
   canvasToolDocumentTitleClicked,
-  frameModeChangeComplete
+  frameModeChangeComplete,
+  canvasToolPreviewButtonClicked
 } from "actions";
 import {
   DropdownMenuOption,
@@ -38,7 +40,7 @@ export default compose<FrameOuterProps, FrameInnerProps>(
     onPreviewButtonClick: ({ dispatch, frame }) => (
       event: React.MouseEvent<any>
     ) => {
-      dispatch(canvasToolDocumentTitleClicked(frame, event));
+      dispatch(canvasToolPreviewButtonClicked(frame, event));
     },
     onModeChangeComplete: ({ dispatch, frame }) => (mode: FrameMode) => {
       dispatch(frameModeChangeComplete(frame, mode));
@@ -49,7 +51,8 @@ export default compose<FrameOuterProps, FrameInnerProps>(
     translate,
     contentNode,
     onTitleClick,
-    onModeChangeComplete
+    onModeChangeComplete,
+    onPreviewButtonClick
   }: FrameInnerProps) => {
     const { width, height } = getBoundsSize(frame.bounds);
 
@@ -80,13 +83,21 @@ export default compose<FrameOuterProps, FrameInnerProps>(
 
     return (
       <Base
+        className="m-frame"
         style={style}
         topBarProps={{
-          style: titleStyle
+          style: titleStyle,
+          className: "top-bar"
         }}
         titleProps={{
           text: contentNode.label || "Untitled",
           onClick: onTitleClick
+        }}
+        controlsProps={{
+          className: "controls"
+        }}
+        previewButtonProps={{
+          onClick: onPreviewButtonClick
         }}
         modeToggleInputProps={{
           options: MODE_TOGGLE_OPTIONS,

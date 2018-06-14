@@ -73,70 +73,26 @@
               },
               "children": [
                 {
-                  "id": "77a7a2c122",
-                  "variant": [],
-                  "is": "50e32bec2591",
-                  "name": "component-instance",
+                  "id": "3041a301274",
+                  "label": "preview button",
+                  "is": "div",
+                  "name": "element",
                   "attributes": {},
                   "style": {
-                    "width": "100%",
-                    "position": "relative",
-                    "outline": "none",
-                    "opacity": "0.4"
+                    "cursor": "pointer"
                   },
                   "children": [
                     {
-                      "id": "77a7a2c8645",
-                      "propertyName": "text",
-                      "targetIdPath": [
-                        "67e386c7935"
-                      ],
-                      "value": "Design",
-                      "name": "override",
-                      "children": []
-                    },
-                    {
-                      "id": "77a7a2c42502",
-                      "propertyName": "style",
-                      "targetIdPath": [
-                        "8b8bbe2c232831"
-                      ],
-                      "value": {
-                        "padding": "unset",
-                        "border": "none",
-                        "background": "transparent"
-                      },
-                      "name": "override",
-                      "children": []
-                    },
-                    {
-                      "id": "77a7a2c160999",
-                      "propertyName": "style",
-                      "targetIdPath": [
-                        "67e386c7935"
-                      ],
-                      "value": {
-                        "color": "inherit",
-                        "padding-right": "4px"
-                      },
-                      "name": "override",
-                      "children": []
-                    },
-                    {
-                      "id": "605b550639207",
-                      "propertyName": "style",
-                      "targetIdPath": [
-                        "782254018619"
-                      ],
-                      "value": {
-                        "position": "static"
-                      },
-                      "name": "override",
-                      "children": []
+                      "id": "3041a3018981",
+                      "name": "text",
+                      "label": "Text",
+                      "value": "preview",
+                      "style": {},
+                      "children": [],
+                      "metadata": {}
                     }
                   ],
-                  "metadata": {},
-                  "label": "mode toggle input"
+                  "metadata": {}
                 }
               ],
               "metadata": {}

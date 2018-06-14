@@ -1,15 +1,12 @@
 IMMEDIATE:
 
-* Preview button in Tandem
+* Preview
 
-  * should persist as metadata
-  * preview needs to work for all content nodes
-  * tdconfig.json holds information
-  * button for opening controller file in vscode
+  * start preview server, store url state (stored in tdconfig.json)
+  * button opening browser window
+  * UI for loading, and exceptions
 
-* Styler
-
-  * Only present Flexbox options.
+* fix styles not being inherited
 
 * Styler
   * right gutter drawer

@@ -451,6 +451,18 @@
           },
           "name": "override",
           "children": []
+        },
+        {
+          "id": "3041a301150368",
+          "propertyName": "style",
+          "targetIdPath": [
+            "782254018619",
+            "ddec6a12139578",
+            "8b8bbe2c237350"
+          ],
+          "value": {},
+          "name": "override",
+          "children": []
         }
       ],
       "metadata": {

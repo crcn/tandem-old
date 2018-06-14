@@ -1,0 +1,10 @@
+.m-frame {
+  .controls {
+    display: none;
+  }
+  .top-bar:hover {
+    .controls {
+      display: inline-block;
+    }
+  }
+}

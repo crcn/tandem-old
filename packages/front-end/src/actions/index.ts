@@ -47,6 +47,8 @@ export const CANVAS_TOOL_WINDOW_BACKGROUND_CLICKED =
 export const CANVAS_TOOL_WINDOW_KEY_DOWN = "CANVAS_TOOL_WINDOW_KEY_DOWN";
 export const CANVAS_TOOL_ARTBOARD_TITLE_CLICKED =
   "CANVAS_TOOL_ARTBOARD_TITLE_CLICKED";
+export const CANVAS_TOOL_PREVIEW_BUTTON_CLICKED =
+  "CANVAS_TOOL_PREVIEW_BUTTON_CLICKED";
 export const FILE_NAVIGATOR_ITEM_CLICKED = "FILE_NAVIGATOR_ITEM_CLICKED";
 export const FILE_NAVIGATOR_ITEM_DOUBLE_CLICKED =
   "FILE_NAVIGATOR_ITEM_DOUBLE_CLICKED";
@@ -798,6 +800,15 @@ export const canvasToolDocumentTitleClicked = (
   sourceEvent: React.MouseEvent<any>
 ): CanvasToolArtboardTitleClicked => ({
   type: CANVAS_TOOL_ARTBOARD_TITLE_CLICKED,
+  frame,
+  sourceEvent
+});
+
+export const canvasToolPreviewButtonClicked = (
+  frame: Frame,
+  sourceEvent: React.MouseEvent<any>
+): CanvasToolArtboardTitleClicked => ({
+  type: CANVAS_TOOL_PREVIEW_BUTTON_CLICKED,
   frame,
   sourceEvent
 });

@@ -120,6 +120,7 @@ const BaseCanvasComponent = ({
                 <PreviewLayerComponent
                   frames={activeFrames}
                   dependency={dependency}
+                  documents={root.documents}
                 />
                 <ToolsLayerComponent
                   root={root}

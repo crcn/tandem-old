@@ -1,37 +1,32 @@
 import "./document.scss";
 import * as React from "react";
 import { compose, pure, lifecycle } from "recompose";
-import { Frame, Dependency, DependencyGraph } from "paperclip";
+import { FrameMode } from "../../../../../../../../state";
+import {
+  Frame,
+  Dependency,
+  DependencyGraph,
+  SyntheticVisibleNode,
+  getFrameByContentNodeId
+} from "paperclip";
+import { stripProtocol } from "tandem-common";
 
 export type DocumentPreviewOuterProps = {
   frame: Frame;
   dependency: Dependency<any>;
+  contentNode: SyntheticVisibleNode;
 };
 
-type DocumentPreviewInnerProps = {} & DocumentPreviewOuterProps;
-
-const BaseDocumentPreviewComponent = ({ frame }) => {
-  const bounds = frame.bounds;
-  if (!bounds) {
-    return null;
-  }
-  const style = {
-    position: "absolute",
-    left: bounds.left,
-    top: bounds.top,
-    width: bounds.right - bounds.left,
-    height: bounds.bottom - bounds.top,
-    background: "white"
-  } as any;
-
-  return (
-    <div className="m-preview-document" style={style}>
-      <div ref="container" />
-    </div>
-  );
+type DesignPreviewOuterProps = {
+  frame: Frame;
+  dependency: Dependency<any>;
 };
 
-const enhance = compose<DocumentPreviewOuterProps, DocumentPreviewOuterProps>(
+const BaseDesignPreview = ({ frame }: DesignPreviewOuterProps) => {
+  return <div ref="container" />;
+};
+
+const DesignPreview = compose<DesignPreviewOuterProps, DesignPreviewOuterProps>(
   pure,
   lifecycle({
     componentDidUpdate({ frame: oldFrame }: DocumentPreviewOuterProps) {
@@ -55,6 +50,52 @@ const enhance = compose<DocumentPreviewOuterProps, DocumentPreviewOuterProps>(
       }
     }
   })
-);
+)(BaseDesignPreview);
 
-export const DocumentPreviewComponent = enhance(BaseDocumentPreviewComponent);
+type LivePreviewOuterProps = {
+  livePreviewUrl: string;
+  dependencyUri: string;
+  contentNodeSourceId: string;
+};
+
+const LivePreview = ({
+  livePreviewUrl,
+  dependencyUri,
+  contentNodeSourceId
+}: LivePreviewOuterProps) => {
+  const location =
+    livePreviewUrl +
+    "?entryPath=" +
+    stripProtocol(dependencyUri) +
+    "&componentId=" +
+    contentNodeSourceId;
+  console.log(location);
+  return <iframe src={location} />;
+};
+
+export const DocumentPreviewComponent = compose<DocumentPreviewOuterProps, any>(
+  pure
+)(({ contentNode, frame, dependency }: DocumentPreviewOuterProps) => {
+  if (!contentNode) {
+    return null;
+  }
+
+  const bounds = frame.bounds;
+  if (!bounds) {
+    return null;
+  }
+  const style = {
+    position: "absolute",
+    left: bounds.left,
+    top: bounds.top,
+    width: bounds.right - bounds.left,
+    height: bounds.bottom - bounds.top,
+    background: "white"
+  } as any;
+
+  return (
+    <div className="m-preview-document" style={style}>
+      <DesignPreview frame={frame} dependency={dependency} />}
+    </div>
+  );
+});
