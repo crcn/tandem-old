@@ -4,7 +4,6 @@ import { BrowserWindow } from "electron";
 import { APP_READY, mainWindowOpened, pcConfigLoaded } from "../actions";
 import { FRONT_END_ENTRY_FILE_PATH } from "../constants";
 import { ipcSaga, pid } from "./ipc";
-import { APP_LOADED, projectDirectoryLoaded } from "tandem-front-end";
 import {
   PAPERCLIP_CONFIG_DEFAULT_FILENAME,
   creaPCConfig,
@@ -24,7 +23,8 @@ import {
   Directory,
   createDirectory,
   addProtocol,
-  FILE_PROTOCOL
+  FILE_PROTOCOL,
+  publicActionCreator
 } from "tandem-common";
 import { shortcutsSaga } from "./menu";
 import * as fs from "fs";
@@ -38,6 +38,11 @@ export function* rootSaga() {
   yield fork(handleLoadProject);
   yield fork(shortcutsSaga);
 }
+
+const projectDirectoryLoaded = publicActionCreator((directory: Directory) => ({
+  directory,
+  type: "PROJECT_DIRECTORY_LOADED"
+}));
 
 function* initConfig() {
   const state: DesktopState = yield select();
@@ -82,7 +87,7 @@ function* openMainWindow() {
 
 function* handleLoadProject() {
   while (1) {
-    yield take(APP_LOADED);
+    yield take("APP_LOADED");
     const { pcConfig, projectDirectory }: DesktopState = yield select();
 
     const files: [string, boolean][] = [];

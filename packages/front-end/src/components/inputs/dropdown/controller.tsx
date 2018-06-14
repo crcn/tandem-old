@@ -3,55 +3,56 @@ import { compose, pure, withHandlers, withState } from "recompose";
 const { DropdownMenuItem } = require("./view.pc");
 import { EMPTY_ARRAY } from "tandem-common";
 
-export type DropdownMenuItem = {
+export type DropdownMenuOption = {
   label: string;
   value: any;
 };
 
+export const dropdownMenuOptionFromValue = (
+  value: string
+): DropdownMenuOption => ({ label: value, value });
+
 export type DropdownOuterProps = {
   value?: string;
-  options: DropdownMenuItem[];
-  onChange?: (item: DropdownMenuItem) => any;
+  options: DropdownMenuOption[];
+  onChange?: (item: DropdownMenuOption) => any;
 };
 
 export default compose(
   pure,
-  withState("menuVisible", "setMenuVisible", false),
+  withState("open", "setOpen", false),
   withHandlers({
-    onClick: ({ menuVisible, setMenuVisible }) => () => {
-      setMenuVisible(!menuVisible);
+    onClick: ({ open, setOpen }) => () => {
+      setOpen(!open);
     },
-    onItemClick: ({ onChange, onChangeComplete, setMenuVisible }) => (
-      item,
-      event
-    ) => {
+    onItemClick: ({ onChange, onChangeComplete, setOpen }) => (item, event) => {
       if (onChange) {
         onChange(item.value);
       }
       if (onChangeComplete) {
         onChangeComplete(item.value);
       }
-      setMenuVisible(false);
+      setOpen(false);
     },
-    onKeyDown: ({ setMenuVisible }) => event => {
+    onKeyDown: ({ setOpen }) => event => {
       if (event.key === "Enter") {
-        setMenuVisible(true);
+        setOpen(true);
       }
     },
-    onBlur: ({ setMenuVisible }) => () => {
-      setMenuVisible(false);
+    onBlur: ({ setOpen }) => () => {
+      // setOpen(false);
     }
   }),
   Base => ({
     value,
     options = EMPTY_ARRAY,
-    menuVisible,
+    open,
     onKeyDown,
     onBlur,
     onItemClick,
     ...rest
   }) => {
-    const menuItems = menuVisible
+    const menuItems = open
       ? options.map((item, i) => {
           return (
             <DropdownMenuItem
@@ -68,14 +69,12 @@ export default compose(
 
     return (
       <Base
+        popoverProps={{
+          open
+        }}
         tabIndex={0}
         onKeyDown={onKeyDown}
         onBlur={onBlur}
-        menuOuterProps={{
-          style: {
-            display: menuItems.length && menuVisible ? "block" : "none"
-          }
-        }}
         menuProps={{ children: menuItems }}
         labelProps={{ text: (selectedItem && selectedItem.label) || "--" }}
         {...rest}

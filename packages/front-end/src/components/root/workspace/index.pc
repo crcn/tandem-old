@@ -94,65 +94,18 @@
           },
           "children": [
             {
-              "id": "b0a6d2a2725188",
+              "id": "bae08a2e621514",
               "variant": [],
-              "is": "11188f863945",
+              "is": "bae08a2e609807",
               "name": "component-instance",
               "attributes": {},
-              "style": {
-                "width": "200px",
-                "height": "150px",
-                "left": "400px",
-                "top": "100px",
-                "position": "absolute"
-              },
-              "children": [
-                {
-                  "id": "16af507b24362",
-                  "propertyName": "style",
-                  "targetIdPath": [
-                    "11188f8619482"
-                  ],
-                  "value": {
-                    "background": "rgba(253, 251, 251, 1)"
-                  },
-                  "name": "override",
-                  "children": []
-                }
-              ],
-              "metadata": {}
-            },
-            {
-              "id": "16af507b4815",
-              "variant": [],
-              "is": "11188f863945",
-              "name": "component-instance",
-              "attributes": {},
-              "style": {
-                "width": "200px",
-                "height": "150px",
-                "left": "100px",
-                "top": "400px",
-                "position": "absolute"
-              },
-              "children": [
-                {
-                  "id": "16af507b20452",
-                  "propertyName": "style",
-                  "targetIdPath": [
-                    "11188f8619482"
-                  ],
-                  "value": {
-                    "background": "rgba(255, 253, 253, 1)"
-                  },
-                  "name": "override",
-                  "children": []
-                }
-              ],
+              "style": {},
+              "children": [],
               "metadata": {}
             }
           ],
-          "metadata": {}
+          "metadata": {},
+          "label": "Frames Layer"
         },
         {
           "id": "33b1b6b171359",
@@ -190,8 +143,8 @@
         "bounds": {
           "left": 60,
           "top": -15,
-          "right": 1219.3692512173031,
-          "bottom": 784.339452788255
+          "right": 2022.851823332688,
+          "bottom": 968.4100056728704
         }
       }
     },
@@ -348,10 +301,10 @@
       "children": [],
       "metadata": {
         "bounds": {
-          "left": 1302,
-          "top": -17,
-          "right": 2039.96875,
-          "bottom": 638
+          "left": 788,
+          "top": 1140,
+          "right": 1525.96875,
+          "bottom": 1795
         }
       }
     }

@@ -1,22 +1,12 @@
 import { Menu, MenuItem, MenuItemConstructorOptions, app } from "electron";
 import { fork, put, take } from "redux-saga/effects";
 import { eventChannel } from "redux-saga";
-import { APP_READY, MAIN_WINDOW_OPENED } from "../actions";
-import {
-  APP_LOADED,
-  shortcutKeyDown,
-  SHORTCUT_DELETE_KEY_DOWN,
-  SHORTCUT_ESCAPE_KEY_DOWN,
-  SHORTCUT_SAVE_KEY_DOWN,
-  SHORTCUT_UNDO_KEY_DOWN,
-  SHORTCUT_REDO_KEY_DOWN,
-  SHORTCUT_QUICK_SEARCH_KEY_DOWN,
-  SHORTCUT_ZOOM_IN_KEY_DOWN,
-  SHORTCUT_ZOOM_OUT_KEY_DOWN,
-  SHORTCUT_CONVERT_TO_COMPONENT_KEY_DOWN,
-  SHORTCUT_R_KEY_DOWN,
-  SHORTCUT_T_KEY_DOWN
-} from "tandem-front-end";
+import { MAIN_WINDOW_OPENED } from "../actions";
+import { publicActionCreator } from "tandem-common";
+
+const shortcutKeyDown = publicActionCreator((type: string) => ({
+  type
+}));
 
 export function* shortcutsSaga() {
   yield take(MAIN_WINDOW_OPENED);
@@ -48,21 +38,21 @@ export function* shortcutsSaga() {
             label: "Undo",
             accelerator: "meta+z",
             click: () => {
-              emit(shortcutKeyDown(SHORTCUT_UNDO_KEY_DOWN));
+              emit(shortcutKeyDown("SHORTCUT_UNDO_KEY_DOWN"));
             }
           },
           {
             label: "Redo",
             accelerator: "meta+y",
             click: () => {
-              emit(shortcutKeyDown(SHORTCUT_REDO_KEY_DOWN));
+              emit(shortcutKeyDown("SHORTCUT_REDO_KEY_DOWN"));
             }
           },
           {
             label: "Convert to component",
             accelerator: "alt+c",
             click: () => {
-              emit(shortcutKeyDown(SHORTCUT_CONVERT_TO_COMPONENT_KEY_DOWN));
+              emit(shortcutKeyDown("SHORTCUT_CONVERT_TO_COMPONENT_KEY_DOWN"));
             }
           },
           { type: "separator" },
@@ -74,14 +64,14 @@ export function* shortcutsSaga() {
             label: "Delete",
             accelerator: "Backspace",
             click: () => {
-              emit(shortcutKeyDown(SHORTCUT_DELETE_KEY_DOWN));
+              emit(shortcutKeyDown("SHORTCUT_DELETE_KEY_DOWN"));
             }
           },
           {
             label: "Escape",
             accelerator: "Escape",
             click: () => {
-              emit(shortcutKeyDown(SHORTCUT_ESCAPE_KEY_DOWN));
+              emit(shortcutKeyDown("SHORTCUT_ESCAPE_KEY_DOWN"));
             }
           },
           { role: "selectall" }
@@ -94,14 +84,14 @@ export function* shortcutsSaga() {
             label: "Save",
             accelerator: "meta+s",
             click: () => {
-              emit(shortcutKeyDown(SHORTCUT_SAVE_KEY_DOWN));
+              emit(shortcutKeyDown("SHORTCUT_SAVE_KEY_DOWN"));
             }
           },
           {
             label: "Search",
             accelerator: "meta+t",
             click: () => {
-              emit(shortcutKeyDown(SHORTCUT_QUICK_SEARCH_KEY_DOWN));
+              emit(shortcutKeyDown("SHORTCUT_QUICK_SEARCH_KEY_DOWN"));
             }
           }
         ]
@@ -113,14 +103,14 @@ export function* shortcutsSaga() {
             label: "Text",
             accelerator: "t",
             click: () => {
-              emit(shortcutKeyDown(SHORTCUT_T_KEY_DOWN));
+              emit(shortcutKeyDown("SHORTCUT_T_KEY_DOWN"));
             }
           },
           {
             label: "Div",
             accelerator: "r",
             click: () => {
-              emit(shortcutKeyDown(SHORTCUT_R_KEY_DOWN));
+              emit(shortcutKeyDown("SHORTCUT_R_KEY_DOWN"));
             }
           }
         ]
@@ -139,14 +129,14 @@ export function* shortcutsSaga() {
             label: "Zoom In",
             accelerator: "meta+=",
             click: (a, window, event) => {
-              emit(shortcutKeyDown(SHORTCUT_ZOOM_IN_KEY_DOWN));
+              emit(shortcutKeyDown("SHORTCUT_ZOOM_IN_KEY_DOWN"));
             }
           },
           {
             label: "Zoom Out",
             accelerator: "meta+-",
             click: () => {
-              emit(shortcutKeyDown(SHORTCUT_ZOOM_OUT_KEY_DOWN));
+              emit(shortcutKeyDown("SHORTCUT_ZOOM_OUT_KEY_DOWN"));
             }
           },
           { type: "separator" },

@@ -672,6 +672,18 @@
                                   },
                                   "name": "override",
                                   "children": []
+                                },
+                                {
+                                  "id": "85ea6073447",
+                                  "propertyName": "style",
+                                  "targetIdPath": [
+                                    "ff4f91e03148"
+                                  ],
+                                  "value": {
+                                    "width": "100%"
+                                  },
+                                  "name": "override",
+                                  "children": []
                                 }
                               ],
                               "metadata": {},

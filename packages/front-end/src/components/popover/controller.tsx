@@ -1,16 +1,16 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import { Point } from "tandem-common";
+import { Bounds, shiftBounds, shiftPoint } from "tandem-common";
 import { compose, pure, lifecycle, withState } from "recompose";
 
 export type PopoverOuterProps = {
   open: boolean;
-  anchorRect: Point;
+  anchorRect: Bounds;
   onEmptySpaceClick: any;
 };
 
 export type PopoverInnerProps = {
-  setAnchorRect(rect: ClientRect);
+  setAnchorRect(rect: Bounds);
 } & PopoverOuterProps;
 
 export default compose<PopoverInnerProps, PopoverOuterProps>(
@@ -19,8 +19,9 @@ export default compose<PopoverInnerProps, PopoverOuterProps>(
   lifecycle<PopoverInnerProps, any>({
     componentWillUpdate({ open }: PopoverInnerProps) {
       if (!this.props.open && open) {
-        const anchor = ReactDOM.findDOMNode(this as any);
-        this.props.setAnchorRect(anchor.getBoundingClientRect());
+        const anchor: HTMLDivElement = ReactDOM.findDOMNode(this as any);
+        const rect = getRealElementBounds(anchor);
+        this.props.setAnchorRect(rect);
       }
     }
   }),
@@ -54,3 +55,31 @@ export default compose<PopoverInnerProps, PopoverOuterProps>(
     return <Base {...rest} {...overrideProps} />;
   }
 );
+
+const getRealElementBounds = (element: HTMLElement) => {
+  const parentIframes = [];
+
+  let current = element;
+  while (1) {
+    const ownerDocument = current.ownerDocument;
+    if (ownerDocument === document) {
+      break;
+    }
+    const iframe = Array.prototype.find.call(
+      ownerDocument.defaultView.parent.document.querySelectorAll("iframe"),
+      (iframe: HTMLIFrameElement) => {
+        return iframe.contentDocument === ownerDocument;
+      }
+    );
+
+    current = iframe;
+    parentIframes.push(iframe);
+  }
+
+  const offset = parentIframes.reduce(
+    (point, iframe) => shiftPoint(point, iframe.getBoundingClientRect()),
+    { left: 0, top: 0 }
+  );
+
+  return shiftBounds(element.getBoundingClientRect(), offset);
+};

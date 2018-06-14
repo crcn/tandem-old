@@ -192,7 +192,6 @@ const _diffSyntheticNode = (
         );
       }
     } else {
-      // console.log("NOT FOUND", oldNode, newNode);
       ots.push(
         createSyntheticRemoveChildOperationalTransform(nodePath, oldIndex)
       );

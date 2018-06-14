@@ -5,9 +5,9 @@ import {
   cssPropertyChangeCompleted,
   cssPropertyChanged
 } from "../../../../../../../actions";
-import { DropdownMenuItem } from "../../../../../../inputs/dropdown/controller";
+import { DropdownMenuOption } from "../../../../../../inputs/dropdown/controller";
 
-export const DISPLAY_MENU_OPTIONS: DropdownMenuItem[] = [
+export const DISPLAY_MENU_OPTIONS: DropdownMenuOption[] = [
   "block",
   "inline-block",
   "flex",
@@ -16,7 +16,7 @@ export const DISPLAY_MENU_OPTIONS: DropdownMenuItem[] = [
   "inline"
 ].map(value => ({ label: value, value }));
 
-export const POSITION_MENU_OPTIONS: DropdownMenuItem[] = [
+export const POSITION_MENU_OPTIONS: DropdownMenuOption[] = [
   "static",
   "relative",
   "absolute",

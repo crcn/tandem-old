@@ -20,7 +20,8 @@ import {
   stripProtocol,
   filterTreeNodeParents,
   getTreeNodeFromPath,
-  getNestedTreeNodeById
+  getNestedTreeNodeById,
+  KeyValue
 } from "tandem-common";
 import { values, identity, uniq } from "lodash";
 import { DependencyGraph, Dependency } from "./graph";
@@ -57,7 +58,9 @@ import {
   SyntheticDocument,
   getSyntheticSourceUri,
   SYNTHETIC_DOCUMENT_NODE_NAME,
-  getNearestComponentInstances
+  getNearestComponentInstances,
+  SyntheticBaseNode,
+  isSyntheticVisibleNode
 } from "./synthetic";
 import * as path from "path";
 import {
@@ -937,6 +940,27 @@ export const persistMoveSyntheticVisibleNode = <TState extends PCEditorState>(
     const sourceNode = getSyntheticSourceNode(node, state.graph);
 
     return persistInsertNode(sourceNode, newRelative, offset, state);
+  });
+
+export const persistSyntheticNodeMetadata = <TState extends PCEditorState>(
+  metadata: KeyValue<any>,
+  node: SyntheticVisibleNode | SyntheticDocument,
+  state: TState
+) =>
+  persistChanges(state, state => {
+    const oldState = state;
+    if (isSyntheticVisibleNode(node)) {
+      state = updateSyntheticVisibleNode(node, state, node => ({
+        ...node,
+        metadata: {
+          ...node.metadata,
+          ...metadata
+        }
+      }));
+    }
+    let sourceNode = getSyntheticSourceNode(node, state.graph);
+    sourceNode = updatePCNodeMetadata(metadata, sourceNode);
+    return replaceDependencyGraphPCNode(sourceNode, sourceNode, state);
   });
 
 const addBoundsMetadata = (

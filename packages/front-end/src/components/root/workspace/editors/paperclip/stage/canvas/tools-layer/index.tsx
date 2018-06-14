@@ -14,7 +14,7 @@ import {
 import { SelectableToolsComponent } from "./selectables";
 import { NodeOverlaysTool } from "./document-overlay";
 import { SelectionCanvasTool } from "./selection";
-import { DocumentsCanvasTool } from "./documents";
+const { Frames } = require("./frames-view.pc");
 import { InsertLayer } from "./insert-layer";
 
 export type ToolsLayerComponent = {
@@ -37,7 +37,7 @@ const BaseToolsLayerComponent = ({
         toolType={root.toolType}
         dispatch={dispatch}
       />
-      <DocumentsCanvasTool
+      <Frames
         root={root}
         translate={editor.canvas.translate}
         dispatch={dispatch}

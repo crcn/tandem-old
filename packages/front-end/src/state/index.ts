@@ -89,6 +89,11 @@ export enum ToolType {
   ARTBOARD
 }
 
+export enum FrameMode {
+  PREVIEW = "preview",
+  DESIGN = "design"
+}
+
 export const REGISTERED_COMPONENT = "REGISTERED_COMPONENT";
 
 export enum SyntheticVisibleNodeMetadataKeys {

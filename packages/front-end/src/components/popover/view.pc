@@ -6,10 +6,7 @@
     {
       "label": "Popover",
       "is": "div",
-      "style": {
-        "position": "absolute",
-        "width": "100%"
-      },
+      "style": {},
       "attributes": {},
       "id": "9b7b527f175442",
       "name": "component",
@@ -64,7 +61,7 @@
           "targetIdPath": [
             "97a34b151010441"
           ],
-          "value": "This component is used whenever there is a popup/popdown to a UI which includes dropdowns, color pickers, and tooltips",
+          "value": "Use this component for any UI that needs to \"pop over\" ALLL of the UI",
           "name": "override",
           "children": []
         },

@@ -3,7 +3,7 @@ const webpack   = require('webpack');
 
 module.exports = {
   entry: {
-    entry: ['react-hot-loader/patch', __dirname + '/src/index.ts']
+    index: ['react-hot-loader/patch', __dirname + '/src/index.ts']
   },
   output: {
     path: resolve(__dirname, 'lib', 'front-end'),

@@ -3,23 +3,26 @@ IMMEDIATE:
 * Preview button in Tandem
 
   * should persist as metadata
+  * preview needs to work for all content nodes
+  * tdconfig.json holds information
+  * button for opening controller file in vscode
 
-* text editing support (use monaco)
+* Styler
 
-* preview mode should be persisted for components ()
+  * Only present Flexbox options.
 
 * Styler
   * right gutter drawer
   * Spacing
   * Box Shadows
   * code tab
-    * raw input
+    * raw input (inspector style)
   * Borders pane
 * Properties
   * Type
   * Attributes (raw)
 * Left Gutter
-* Media query tool
+* Variants
 
   * Tree Component
   * Open Files

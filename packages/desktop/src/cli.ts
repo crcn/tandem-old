@@ -1,4 +1,5 @@
 import * as path from "path";
+
 import { init } from "./desktop";
 
 let dir = process.argv[2] || ".";

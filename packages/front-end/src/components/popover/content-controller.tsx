@@ -3,14 +3,17 @@ import * as ReactDOM from "react-dom";
 import { compose, pure, lifecycle, withState, withHandlers } from "recompose";
 import { portal } from "../portal/controller";
 import { isEqual } from "lodash";
+import { Bounds, mergeBounds, getBoundsSize } from "tandem-common";
 
-const calcPortalStyle = (anchorRect: ClientRect, portalRect: ClientRect) => {
+const calcPortalStyle = (anchorRect: Bounds, portalRect: Bounds) => {
+  const portalSize = getBoundsSize(portalRect);
+  const anchorSize = getBoundsSize(anchorRect);
   return {
     position: "absolute",
-    left: Math.min(anchorRect.left, window.innerWidth - portalRect.width),
+    left: Math.min(anchorRect.left, window.innerWidth - portalSize.width),
     top: Math.min(
-      anchorRect.top + anchorRect.height,
-      window.innerHeight - portalRect.height
+      anchorRect.top + anchorSize.height,
+      window.innerHeight - portalSize.height
     )
   };
 };
@@ -42,7 +45,12 @@ export default compose(
     return ({ setContainer, children, anchorRect, ...rest }) => {
       return anchorRect ? (
         <Base anchorRect={anchorRect} {...rest}>
-          <span ref={setContainer}>{children}</span>
+          <div
+            ref={setContainer}
+            style={{ width: anchorRect.right - anchorRect.left }}
+          >
+            {children}
+          </div>
         </Base>
       ) : null;
     };
@@ -53,9 +61,26 @@ export default compose(
     didMount: ({ anchorRect, setStyle }) => portalMount => {
       const newStyle = calcPortalStyle(
         anchorRect,
-        portalMount.children[0].children[0].getBoundingClientRect()
+        calcInnerBounds(portalMount.children[0].children[0] as HTMLElement)
       );
       setStyle(newStyle);
     }
   })
 );
+
+const calcInnerBounds = (
+  element: HTMLElement,
+  maxDepth: number = 3,
+  depth: number = 0
+): Bounds => {
+  const rect: ClientRect = element.getBoundingClientRect();
+  if (depth > maxDepth) return rect;
+  return mergeBounds(
+    ...Array.from(element.children).reduce(
+      (rects, child: HTMLElement) => {
+        return [...rects, calcInnerBounds(child)];
+      },
+      [rect]
+    )
+  );
+};

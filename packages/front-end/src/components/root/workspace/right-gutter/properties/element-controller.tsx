@@ -6,10 +6,10 @@ import {
   SyntheticElement
 } from "paperclip";
 import { elementTypeChanged } from "actions";
-import { DropdownMenuItem } from "../../../../inputs/dropdown/controller";
+import { DropdownMenuOption } from "../../../../inputs/dropdown/controller";
 const { InputProperties } = require("./input.pc");
 
-const TYPE_MENU_OPTIONS: DropdownMenuItem[] = [
+const TYPE_MENU_OPTIONS: DropdownMenuOption[] = [
   "a",
   "abbr",
   "acronym",

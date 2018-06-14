@@ -1,19 +1,19 @@
 import * as React from "react";
 import { memoize } from "tandem-common";
 import { ButtonBarOption } from "../../../../../../inputs/button-bar/controller";
-import { DropdownMenuItem } from "../../../../../../inputs/dropdown/controller";
+import { DropdownMenuOption } from "../../../../../../inputs/dropdown/controller";
 import { compose, pure, withHandlers } from "recompose";
 import { cssPropertyChangeCompleted, cssPropertyChanged } from "actions";
 
-const FONT_FAMILIES: DropdownMenuItem[] = ["Helvetica", "Roboto"].map(
+const FONT_FAMILIES: DropdownMenuOption[] = ["Helvetica", "Roboto"].map(
   value => ({ label: value, value })
 );
 
-const FONT_WEIGHTS: DropdownMenuItem[] = ["100", "200", "300", "400"].map(
+const FONT_WEIGHTS: DropdownMenuOption[] = ["100", "200", "300", "400"].map(
   value => ({ label: value, value })
 );
 
-const DECORATIONS: DropdownMenuItem[] = [
+const DECORATIONS: DropdownMenuOption[] = [
   "underline",
   "overline",
   "line-through"

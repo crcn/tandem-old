@@ -24,6 +24,7 @@ import {
 } from "paperclip";
 import { RegisteredComponent } from "..";
 import { ClientOffset } from "react-dnd";
+import { FrameMode } from "../state";
 
 export const PROJECT_LOADED = "PROJECT_LOADED";
 export const ACTIVE_FILE_CHANGED = "ACTIVE_FILE_CHANGED";
@@ -68,6 +69,7 @@ export const CANVAS_MOUSE_CLICKED = "CANVAS_MOUSE_CLICKED";
 export const CANVAS_WHEEL = "CANVAS_WHEEL";
 export const CANVAS_MOTION_RESTED = "CANVAS_MOTION_RESTED";
 export const CANVAS_DROPPED_ITEM = "CANVAS_DROPPED_ITEM";
+export const FRAME_MODE_CHANGE_COMPLETE = "FRAME_MODE_CHANGE_COMPLETE";
 export const RESIZER_PATH_MOUSE_MOVED = "RESIZER_PATH_MOUSE_MOVED";
 export const RESIZER_PATH_MOUSE_STOPPED_MOVING =
   "RESIZER_PATH_MOUSE_STOPPED_MOVING";
@@ -293,6 +295,11 @@ export type ResizerMouseDown = {} & WrappedEvent<React.MouseEvent<any>>;
 
 export type ResizerPathStoppedMoving = {} & ResizerPathMoved;
 
+export type FrameModeChangeComplete = {
+  frame: Frame;
+  mode: FrameMode;
+} & Action;
+
 export type SelectorDoubleClicked = {
   nodeId: string;
 } & WrappedEvent<React.MouseEvent<any>>;
@@ -432,6 +439,15 @@ export const openFilesItemCloseClick = (uri: string): OpenFilesItemClick => ({
   uri,
   sourceEvent: null,
   type: OPEN_FILE_ITEM_CLOSE_CLICKED
+});
+
+export const frameModeChangeComplete = (
+  frame: Frame,
+  mode: FrameMode
+): FrameModeChangeComplete => ({
+  type: FRAME_MODE_CHANGE_COMPLETE,
+  frame,
+  mode
 });
 
 export const fileNavigatorItemDoubleClicked = (

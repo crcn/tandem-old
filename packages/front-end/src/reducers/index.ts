@@ -105,7 +105,9 @@ import {
   CSS_PROPERTY_CHANGED,
   CSS_PROPERTY_CHANGE_COMPLETED,
   ATTRIBUTE_CHANGED,
-  CSSPropertyChanged
+  CSSPropertyChanged,
+  FRAME_MODE_CHANGE_COMPLETE,
+  FrameModeChangeComplete
 } from "../actions";
 import {
   queueOpenFile,
@@ -211,7 +213,8 @@ import {
   persistAddComponentController,
   persistCSSProperty,
   persistAttribute,
-  updateSyntheticVisibleNode
+  updateSyntheticVisibleNode,
+  persistSyntheticNodeMetadata
 } from "paperclip";
 import {
   getTreeNodePath,
@@ -1081,7 +1084,6 @@ export const canvasReducer = (state: RootState, action: Action) => {
     }
     case CSS_PROPERTY_CHANGED: {
       const { name, value } = action as CSSPropertyChanged;
-      const now = Date.now();
       state = state.selectedNodeIds.reduce((state, nodeId) => {
         return updateSyntheticVisibleNode(
           getSyntheticNodeById(nodeId, state.documents),
@@ -1095,6 +1097,18 @@ export const canvasReducer = (state: RootState, action: Action) => {
               }
             };
           }
+        );
+      }, state);
+      return state;
+    }
+
+    case FRAME_MODE_CHANGE_COMPLETE: {
+      const { frame, mode } = action as FrameModeChangeComplete;
+      state = persistRootState(state => {
+        return persistSyntheticNodeMetadata(
+          { mode },
+          getSyntheticNodeById(frame.contentNodeId, state.documents),
+          state
         );
       }, state);
       return state;

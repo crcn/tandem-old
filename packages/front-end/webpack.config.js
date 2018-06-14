@@ -9,6 +9,7 @@ const base = require("./webpack-base.config.js");
 
 
 module.exports = merge({}, base, {
+  mode: "development",
   plugins: [
     new HtmlWebpackPlugin({
       title: "Aerial Playground",
