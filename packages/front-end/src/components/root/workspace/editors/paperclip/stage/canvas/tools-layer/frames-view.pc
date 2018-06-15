@@ -73,26 +73,22 @@
               },
               "children": [
                 {
-                  "id": "3041a301274",
-                  "label": "preview button",
-                  "is": "div",
-                  "name": "element",
+                  "id": "5b2acf9d8078",
+                  "variant": [],
+                  "is": "5b2acf9d22",
+                  "name": "component-instance",
                   "attributes": {},
                   "style": {
-                    "cursor": "pointer"
+                    "display": "inline-block",
+                    "width": "22px",
+                    "height": "20px",
+                    "cursor": "pointer",
+                    "position": "relative",
+                    "opacity": "0.853"
                   },
-                  "children": [
-                    {
-                      "id": "3041a3018981",
-                      "name": "text",
-                      "label": "Text",
-                      "value": "preview",
-                      "style": {},
-                      "children": [],
-                      "metadata": {}
-                    }
-                  ],
-                  "metadata": {}
+                  "children": [],
+                  "metadata": {},
+                  "label": "preview button"
                 }
               ],
               "metadata": {}
@@ -346,6 +342,29 @@
                     "77a7a2c122"
                   ],
                   "value": "mode toggle input",
+                  "name": "override",
+                  "children": []
+                },
+                {
+                  "id": "5b2acf9d88333",
+                  "propertyName": "style",
+                  "targetIdPath": [
+                    "b0a6d2a262324"
+                  ],
+                  "value": {},
+                  "name": "override",
+                  "children": []
+                },
+                {
+                  "id": "5b2acf9d200670",
+                  "propertyName": "style",
+                  "targetIdPath": [
+                    "5b2acf9d8078"
+                  ],
+                  "value": {
+                    "position": "relative",
+                    "top": "2px"
+                  },
                   "name": "override",
                   "children": []
                 }

@@ -2,6 +2,7 @@ const {resolve} = require('path');
 const webpack   = require('webpack');
 
 module.exports = {
+  devtool: 'none',
   entry: {
     index: ['react-hot-loader/patch', __dirname + '/src/index.ts']
   },
@@ -27,7 +28,7 @@ module.exports = {
     rules: [
       {
         test: /\.(png|jpg|gif|eot|ttf|woff|woff2|svg)$/,
-        use: 'url-loader?limit=1000'
+        use: 'url-loader?limit=10000'
       },
       {
         test: /\.scss$/,

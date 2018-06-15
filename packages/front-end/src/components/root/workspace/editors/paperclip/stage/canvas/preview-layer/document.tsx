@@ -95,7 +95,7 @@ export const DocumentPreviewComponent = compose<DocumentPreviewOuterProps, any>(
 
   return (
     <div className="m-preview-document" style={style}>
-      <DesignPreview frame={frame} dependency={dependency} />}
+      <DesignPreview frame={frame} dependency={dependency} />
     </div>
   );
 });

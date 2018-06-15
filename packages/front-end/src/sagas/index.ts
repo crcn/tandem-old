@@ -1,48 +1,54 @@
-import { fork, put, take, select } from "redux-saga/effects";
-import { RootComponent } from "../components/root";
+import { fork, put, take, select, call } from "redux-saga/effects";
 import { reactSaga } from "./react";
 import { RootState } from "../state";
 import {
-  projectLoaded,
   CANVAS_TOOL_PREVIEW_BUTTON_CLICKED,
   CanvasToolArtboardTitleClicked
 } from "../actions";
-// import { PaperclipStateSaga } from "./synthetic-browser";
 import { projectSaga } from "./project";
 import { shortcutSaga } from "./shortcuts";
 import { copyPasteSaga } from "./copy-paste";
 import {
   getSyntheticNodeById,
   getSyntheticSourceNode,
-  getPCNodeDependency
+  getPCNodeDependency,
+  Frame
 } from "paperclip";
-import { stripProtocol } from "tandem-common";
 
-export function* rootSaga() {
-  yield fork(copyPasteSaga);
-  yield fork(reactSaga);
-  // yield fork(PaperclipStateSaga);
-  yield fork(projectSaga);
-  yield fork(shortcutSaga);
-  yield fork(previewSaga);
-}
+export type FrontEndSagaOptions = {
+  openPreview(frame: Frame, state: RootState);
+};
 
-function* previewSaga() {
-  while (1) {
-    const { frame }: CanvasToolArtboardTitleClicked = yield take(
-      CANVAS_TOOL_PREVIEW_BUTTON_CLICKED
-    );
-    const state: RootState = yield select();
+export const createRootSaga = (options: FrontEndSagaOptions) => {
+  return function* rootSaga() {
+    yield fork(copyPasteSaga);
+    yield fork(reactSaga);
+    // yield fork(PaperclipStateSaga);
+    yield fork(projectSaga);
+    yield fork(shortcutSaga);
+    yield fork(createPreviewSaga(options));
+  };
+};
+const createPreviewSaga = ({ openPreview }: FrontEndSagaOptions) => {
+  return function* previewSaga() {
+    while (1) {
+      const { frame }: CanvasToolArtboardTitleClicked = yield take(
+        CANVAS_TOOL_PREVIEW_BUTTON_CLICKED
+      );
+      const state: RootState = yield select();
 
-    const sourceNode = getSyntheticSourceNode(
-      getSyntheticNodeById(frame.contentNodeId, state.documents),
-      state.graph
-    );
-    const dep = getPCNodeDependency(sourceNode.id, state.graph);
-    window.open(
-      `http://localhost:60431/preview.html?entryPath=${stripProtocol(
-        dep.uri
-      )}&componentId=${sourceNode.id}`
-    );
-  }
-}
+      const sourceNode = getSyntheticSourceNode(
+        getSyntheticNodeById(frame.contentNodeId, state.documents),
+        state.graph
+      );
+      const dep = getPCNodeDependency(sourceNode.id, state.graph);
+
+      const opening = yield call(openPreview, frame, state);
+
+      if (!opening) {
+        // TODO - need to add instructions here
+        alert(`Preview server is not currently configured`);
+      }
+    }
+  };
+};

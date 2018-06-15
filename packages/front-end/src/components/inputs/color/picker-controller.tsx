@@ -46,7 +46,11 @@ export default compose(
     }) => rgba => {
       setHSLA((hsla = updater(rgba, hsla)));
       if (onChangeComplete) {
-        onChangeComplete(stringifyRgba(hslaToRgba(hsla)));
+        setTimeout(
+          onChangeComplete,
+          CHANGE_THROTTLE_MS * 2,
+          stringifyRgba(hslaToRgba(hsla))
+        );
       }
     };
 

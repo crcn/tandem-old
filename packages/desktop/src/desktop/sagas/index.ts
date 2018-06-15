@@ -1,9 +1,19 @@
 import { fork, call, take, select, put } from "redux-saga/effects";
 import { electronSaga } from "./electron";
 import { BrowserWindow } from "electron";
-import { APP_READY, mainWindowOpened, pcConfigLoaded } from "../actions";
-import { FRONT_END_ENTRY_FILE_PATH } from "../constants";
+import {
+  APP_READY,
+  mainWindowOpened,
+  pcConfigLoaded,
+  tdConfigLoaded,
+  TD_CONFIG_LOADED,
+  previewServerStarted
+} from "../actions";
+import { FRONT_END_ENTRY_FILE_PATH, TD_CONFIG_FILE_NAME } from "../constants";
 import { ipcSaga, pid } from "./ipc";
+import * as getPort from "get-port";
+import * as qs from "querystring";
+import { spawn } from "child_process";
 import {
   PAPERCLIP_CONFIG_DEFAULT_FILENAME,
   creaPCConfig,
@@ -31,12 +41,14 @@ import * as fs from "fs";
 import * as path from "path";
 
 export function* rootSaga() {
-  yield call(initConfig);
   yield fork(openMainWindow);
   yield fork(electronSaga);
   yield fork(ipcSaga);
   yield fork(handleLoadProject);
   yield fork(shortcutsSaga);
+  yield fork(previewServer);
+  yield call(loadTDConfig);
+  yield call(initPCConfig);
 }
 
 const projectDirectoryLoaded = publicActionCreator((directory: Directory) => ({
@@ -44,7 +56,7 @@ const projectDirectoryLoaded = publicActionCreator((directory: Directory) => ({
   type: "PROJECT_DIRECTORY_LOADED"
 }));
 
-function* initConfig() {
+function* initPCConfig() {
   const state: DesktopState = yield select();
 
   // todo - may want this to be custom
@@ -63,15 +75,40 @@ function* initConfig() {
   yield put(pcConfigLoaded(configResult.config));
 }
 
+function* loadTDConfig() {
+  const state: DesktopState = yield select();
+  const tdConfigPath = path.join(state.projectDirectory, TD_CONFIG_FILE_NAME);
+  if (!fs.existsSync(tdConfigPath)) {
+    console.warn(`Tandem config file not found`);
+    return;
+  }
+
+  const config = JSON.parse(fs.readFileSync(tdConfigPath, "utf8"));
+
+  // TODO - validate config here
+  yield put(tdConfigLoaded(config));
+}
+
 function* openMainWindow() {
   yield take(APP_READY);
+  const state: DesktopState = yield select();
 
   const mainWindow = new BrowserWindow({
     width: 800,
     height: 600
   });
 
-  mainWindow.loadURL(FRONT_END_ENTRY_FILE_PATH);
+  let url = FRONT_END_ENTRY_FILE_PATH;
+
+  const query: any = {};
+
+  if (state.info.previewServer) {
+    query.previewHost = `localhost:${state.info.previewServer.port}`;
+  }
+
+  mainWindow.loadURL(
+    url + (Object.keys(query).length ? "?" + qs.stringify(query) : "")
+  );
 
   yield fork(function*() {
     while (1) {
@@ -105,4 +142,30 @@ function* handleLoadProject() {
 
     yield put(projectDirectoryLoaded(root));
   }
+}
+
+function* previewServer() {
+  yield take(TD_CONFIG_LOADED);
+  const state: DesktopState = yield select();
+  if (
+    !state.tdConfig ||
+    !state.tdConfig.scripts ||
+    !state.tdConfig.scripts.previewServer
+  ) {
+    return;
+  }
+  const port = yield call(getPort);
+  let [bin, ...args] = state.tdConfig.scripts.previewServer.split(" ");
+  const proc = spawn(bin, args, {
+    cwd: state.projectDirectory,
+    env: {
+      ...process.env,
+      ELECTRON_RUN_AS_NODE: true,
+      PORT: port
+    }
+  });
+  proc.stderr.pipe(process.stderr);
+  proc.stdout.pipe(process.stdout);
+
+  yield put(previewServerStarted(port));
 }

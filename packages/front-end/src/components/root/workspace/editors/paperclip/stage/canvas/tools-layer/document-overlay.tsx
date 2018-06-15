@@ -230,9 +230,6 @@ export const NodeOverlaysToolBase = ({
           frame.contentNodeId,
           root.documents
         );
-        if (contentNode.metadata.mode === FrameMode.PREVIEW) {
-          return null;
-        }
         return (
           <ArtboardOverlayTools
             key={frame.contentNodeId}

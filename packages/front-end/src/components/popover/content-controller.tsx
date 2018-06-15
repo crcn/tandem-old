@@ -61,7 +61,8 @@ export default compose(
     didMount: ({ anchorRect, setStyle }) => portalMount => {
       const newStyle = calcPortalStyle(
         anchorRect,
-        calcInnerBounds(portalMount.children[0].children[0] as HTMLElement)
+        calcInnerBounds(portalMount.children[0].children[0]
+          .children[0] as HTMLElement)
       );
       setStyle(newStyle);
     }
@@ -70,11 +71,11 @@ export default compose(
 
 const calcInnerBounds = (
   element: HTMLElement,
-  maxDepth: number = 3,
+  maxDepth: number = 0,
   depth: number = 0
 ): Bounds => {
   const rect: ClientRect = element.getBoundingClientRect();
-  if (depth > maxDepth) return rect;
+  if (depth >= maxDepth) return rect;
   return mergeBounds(
     ...Array.from(element.children).reduce(
       (rects, child: HTMLElement) => {

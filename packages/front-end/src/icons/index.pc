@@ -357,6 +357,25 @@
           "bottom": 663
         }
       }
+    },
+    {
+      "label": "Open Icon",
+      "is": "img",
+      "style": {},
+      "attributes": {
+        "src": "./open.svg"
+      },
+      "id": "5b2acf9d22",
+      "name": "component",
+      "children": [],
+      "metadata": {
+        "bounds": {
+          "left": 121,
+          "top": 526,
+          "right": 278.29771207205295,
+          "bottom": 679.0667229841617
+        }
+      }
     }
   ],
   "metadata": {}

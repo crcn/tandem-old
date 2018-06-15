@@ -1,13 +1,5 @@
 IMMEDIATE:
 
-* Preview
-
-  * start preview server, store url state (stored in tdconfig.json)
-  * button opening browser window
-  * UI for loading, and exceptions
-
-* fix styles not being inherited
-
 * Styler
   * right gutter drawer
   * Spacing

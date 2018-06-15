@@ -25,7 +25,7 @@
           "attributes": {},
           "style": {
             "font-family": "Helvetica",
-            "display": "flex",
+            "display": "none",
             "flex-direction": "column",
             "border-bottom": "1px solid rgba(0,0,0,0.05)",
             "font-size": "10px",

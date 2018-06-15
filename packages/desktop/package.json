@@ -24,6 +24,7 @@
     "express": "^4.16.3",
     "fs-extra": "^6.0.1",
     "fsbox": "^1.0.0",
+    "get-port": "^3.2.0",
     "glob": "^7.1.2",
     "globby": "^8.0.1",
     "paperclip": "^9.0.0",

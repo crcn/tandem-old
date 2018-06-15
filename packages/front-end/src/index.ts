@@ -1,17 +1,16 @@
 import "./scss/all.scss";
-import * as React from "react";
-import * as ReactDOM from "react-dom";
-import { RootComponent } from "./components/root";
 import { applyMiddleware, createStore, Reducer, Action } from "redux";
 import { default as createSagaMiddleware } from "redux-saga";
-import { fork } from "redux-saga/effects";
+import { fork, call } from "redux-saga/effects";
 import { rootReducer } from "./reducers";
-import { rootSaga } from "./sagas";
+import { createRootSaga, FrontEndSagaOptions } from "./sagas";
 import {
   createPaperclipSaga,
   PAPERCLIP_MIME_TYPE,
   PAPERCLIP_DEFAULT_EXTENSIONS,
-  PaperclipSagaOptions
+  PaperclipSagaOptions,
+  Frame,
+  DependencyGraph
 } from "paperclip";
 import { RootState } from "./state";
 import { appLoaded } from "./actions";
@@ -21,18 +20,16 @@ import {
   setReaderMimetype
 } from "fsbox";
 
-export type FrontEndOptions = {} & FSSandboxOptions & PaperclipSagaOptions;
+export type FrontEndOptions = FrontEndSagaOptions &
+  FSSandboxOptions &
+  PaperclipSagaOptions;
+export type SideEffectCreator = () => IterableIterator<FrontEndOptions>;
 
 export const setup = <TState extends RootState>(
-  { readFile, writeFile, getPaperclipUris }: FrontEndOptions,
+  createSideEffects: SideEffectCreator,
   reducer?: Reducer<TState>,
   saga?: () => IterableIterator<any>
 ) => {
-  readFile = setReaderMimetype(
-    PAPERCLIP_MIME_TYPE,
-    PAPERCLIP_DEFAULT_EXTENSIONS
-  )(readFile);
-
   return (initialState: TState) => {
     const sagaMiddleware = createSagaMiddleware();
     const store = createStore(
@@ -47,7 +44,16 @@ export const setup = <TState extends RootState>(
       applyMiddleware(sagaMiddleware)
     );
     sagaMiddleware.run(function*() {
-      yield fork(rootSaga);
+      let { readFile, writeFile, openPreview, getPaperclipUris } = yield call(
+        createSideEffects
+      );
+
+      readFile = setReaderMimetype(
+        PAPERCLIP_MIME_TYPE,
+        PAPERCLIP_DEFAULT_EXTENSIONS
+      )(readFile);
+
+      yield fork(createRootSaga({ openPreview }));
       if (saga) {
         yield fork(saga);
         yield fork(createFSSandboxSaga({ readFile, writeFile }));

@@ -9,5 +9,6 @@ if (dir.charAt(0) !== "/") {
 }
 
 init({
-  projectDirectory: dir
+  projectDirectory: dir,
+  info: {}
 });

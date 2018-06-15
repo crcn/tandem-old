@@ -15,12 +15,8 @@ const WEBPACK_HOT_CLIENT_PATH = require.resolve(
 
 export type TandemWebpackPluginOptions = {
   includeScripts?: string[];
-  port?: number;
+  port: number;
   config: webpack.Configuration;
-};
-
-const DEFAULT_OPTIONS: Partial<TandemWebpackPluginOptions> = {
-  port: 60431
 };
 
 class TandemWebpackPreviewPlugin {
@@ -34,7 +30,7 @@ class TandemWebpackPreviewPlugin {
   readonly options: TandemWebpackPluginOptions;
 
   constructor(options: TandemWebpackPluginOptions) {
-    this.options = merge({}, DEFAULT_OPTIONS, options);
+    this.options = options;
     this._entries = {};
   }
 
@@ -111,7 +107,7 @@ class TandemWebpackPreviewPlugin {
               <body>
               </body>
               <script>
-                var _ENTRY_COMPONENT_ID = "${req.query.componentId}";
+                var _ENTRY_COMPONENT_ID = "${req.query.contentNodeId}";
               </script>
               <script type="text/javascript" src="/${hash}.js"></script>
           </html>
