@@ -1,28 +1,31 @@
 IMMEDIATE:
 
-* Styler
+* Select inserted elements
+* canvas buttons
+
+- Styler
   * right gutter drawer
   * Spacing
   * Box Shadows
   * code tab
     * raw input (inspector style)
   * Borders pane
-* Properties
+- Properties
   * Type
   * Attributes (raw)
-* Left Gutter
-* Variants
+- Left Gutter
+- Variants
 
   * Tree Component
   * Open Files
     * Display labels that are exposed for public API
   * Navigator
 
-* tab bar (canvas)
+- tab bar (canvas)
 
-* Workspace
+- Workspace
 
-* Polish
+- Polish
 
   * "Live" button connecting to HMR
   * Typed generation files
@@ -31,7 +34,7 @@ IMMEDIATE:
   * split view
   * Rust port
 
-* Ability to override instance labels. Used to expose layers
+- Ability to override instance labels. Used to expose layers
 
 NEXT WEEK:
 

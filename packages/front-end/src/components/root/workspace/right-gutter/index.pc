@@ -954,6 +954,181 @@
         }
       },
       "label": "TODO"
+    },
+    {
+      "label": "Drawer",
+      "is": "div",
+      "style": {},
+      "attributes": {},
+      "id": "63257bfd4943",
+      "name": "component",
+      "children": [
+        {
+          "id": "63257bfd32988",
+          "variant": [],
+          "is": "b6c162d113",
+          "name": "component-instance",
+          "attributes": {},
+          "style": {
+            "height": "100%"
+          },
+          "children": [
+            {
+              "id": "63257bfd49032",
+              "propertyName": "text",
+              "targetIdPath": [
+                "b6c162d1281"
+              ],
+              "value": "drawer",
+              "name": "override",
+              "children": []
+            },
+            {
+              "id": "63257bfd85132",
+              "propertyName": "text",
+              "targetIdPath": [
+                "6fd27ae1495"
+              ],
+              "value": "t",
+              "name": "override",
+              "children": []
+            },
+            {
+              "id": "63257bfd97167",
+              "propertyName": "children",
+              "targetIdPath": [
+                "b6c162d140"
+              ],
+              "name": "override",
+              "children": [
+                {
+                  "id": "63257bfd101179",
+                  "variant": [],
+                  "is": "7149f8192509",
+                  "name": "component-instance",
+                  "attributes": {},
+                  "style": {},
+                  "children": [
+                    {
+                      "id": "63257bfd101180",
+                      "propertyName": "text",
+                      "targetIdPath": [
+                        "7149f8192506"
+                      ],
+                      "value": "Display",
+                      "name": "override",
+                      "children": []
+                    },
+                    {
+                      "id": "63257bfd101181",
+                      "propertyName": "children",
+                      "targetIdPath": [
+                        "7149f81937818"
+                      ],
+                      "name": "override",
+                      "children": [
+                        {
+                          "id": "63257bfd101182",
+                          "variant": [],
+                          "is": "50e32bec2591",
+                          "name": "component-instance",
+                          "attributes": {},
+                          "style": {},
+                          "children": [
+                            {
+                              "id": "63257bfd101183",
+                              "propertyName": "text",
+                              "targetIdPath": [
+                                "67e386c7935"
+                              ],
+                              "value": "inline-block",
+                              "name": "override",
+                              "children": []
+                            }
+                          ],
+                          "metadata": {
+                            "bounds": {
+                              "left": 18,
+                              "top": 339,
+                              "right": 218.8212880775559,
+                              "bottom": 439
+                            }
+                          },
+                          "label": "Display Input"
+                        }
+                      ],
+                      "metadata": {}
+                    }
+                  ],
+                  "metadata": {}
+                }
+              ],
+              "metadata": {}
+            },
+            {
+              "id": "63257bfd121486",
+              "propertyName": "children",
+              "targetIdPath": [
+                "b6c162d132"
+              ],
+              "name": "override",
+              "children": [
+                {
+                  "id": "63257bfd121485",
+                  "label": "Element",
+                  "is": "div",
+                  "name": "element",
+                  "attributes": {},
+                  "style": {
+                    "display": "block"
+                  },
+                  "children": [
+                    {
+                      "id": "63257bfd125547",
+                      "name": "text",
+                      "label": "Text",
+                      "value": "drawer",
+                      "style": {},
+                      "children": [],
+                      "metadata": {}
+                    },
+                    {
+                      "id": "63257bfd198648",
+                      "name": "text",
+                      "label": "Close Button",
+                      "value": "×",
+                      "style": {
+                        "float": "right",
+                        "cursor": "button"
+                      },
+                      "children": [],
+                      "metadata": {}
+                    }
+                  ],
+                  "metadata": {}
+                }
+              ],
+              "metadata": {}
+            }
+          ],
+          "metadata": {
+            "bounds": {
+              "left": 331,
+              "top": 199,
+              "right": 535,
+              "bottom": 297.3571410945104
+            }
+          }
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": 122.90514277469708,
+          "top": 384,
+          "right": 368,
+          "bottom": 608.6589618414574
+        }
+      }
     }
   ],
   "metadata": {}

@@ -6,13 +6,20 @@ export const withInputHandlers = () =>
   compose(
     withHandlers({
       onKeyDown: ({ onChange, onChangeComplete }) => event => {
-        if (onChange) {
-          onChange(event.target.value || undefined);
-        }
+        const nativeEvent = event.nativeEvent;
+        setImmediate(() => {
+          const {
+            key,
+            target: { value }
+          } = nativeEvent;
+          if (onChange) {
+            onChange(value || undefined);
+          }
 
-        if (event.key === "Enter" && onChangeComplete) {
-          onChangeComplete(event.target.value || "");
-        }
+          if (key === "Enter" && onChangeComplete) {
+            onChangeComplete(value || "");
+          }
+        });
       },
       onBlur: ({ onChangeComplete }) => event => {
         if (onChangeComplete) {

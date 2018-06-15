@@ -73,47 +73,16 @@ export const QuickSearchComponent = compose<
   if (!root.showQuickSearch) {
     return null;
   }
-
-  const allFiles = flattenTreeNode(root.projectDirectory) as File[];
-
-  const results = filter
-    ? allFiles
-        .filter(file => {
-          if (!isFile(file)) {
-            return false;
-          }
-          const uri = file.uri;
-          let lastIndex = 0;
-          for (const part of filter) {
-            const i = uri.indexOf(part);
-            if (i < lastIndex) {
-              return false;
-            }
-          }
-          return true;
-        })
-        .map(file => {
-          return (
-            <SearchResult
-              file={file}
-              key={file.id}
-              textProps={{
-                children: file.uri
-              }}
-              dispatch={dispatch}
-            />
-          );
-        })
-    : [];
-
   return (
     <div className="m-quick-search">
       <div className="background" onClick={onBackgroundClick} />
       <BaseQuickSearch
         className="modal"
-        searchResultsProps={{
-          children: results
-        }}
+        searchResultsProps={
+          {
+            // children: results
+          }
+        }
         inputWrapperProps={{
           children: (
             <FocusComponent>

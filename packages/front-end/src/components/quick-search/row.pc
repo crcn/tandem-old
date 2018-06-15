@@ -1,0 +1,100 @@
+{
+  "id": "28fcdf040",
+  "name": "module",
+  "version": "0.0.3",
+  "children": [
+    {
+      "id": "808486bb13",
+      "name": "component",
+      "is": "div",
+      "style": {
+        "width": "100%",
+        "background": "rgba(91, 91, 91, 0.15)",
+        "color": "rgba(122, 122, 122, 1)",
+        "fontSize": "11px",
+        "fontFamily": "Helvetica",
+        "padding": "4px 8px",
+        "boxSizing": "border-box",
+        "marginTop": "1px",
+        "cursor": "pointer",
+        "vertical-align": "center",
+        "display": "flex"
+      },
+      "attributes": {},
+      "label": "Search Result",
+      "children": [
+        {
+          "id": "808486bb15",
+          "name": "element",
+          "label": "basename",
+          "style": {
+            "display": "inline-block",
+            "margin-right": "8px"
+          },
+          "container": "container5ab7d6b5",
+          "attributes": {},
+          "is": "div",
+          "children": [
+            {
+              "id": "808486bb16",
+              "name": "text",
+              "label": "Search result item",
+              "value": "basename.tsx",
+              "style": {
+                "display": "inline-block",
+                "position": "relative",
+                "height": "18",
+                "vertical-align": "center"
+              },
+              "children": [],
+              "metadata": {},
+              "attributes": {}
+            }
+          ],
+          "metadata": {}
+        },
+        {
+          "id": "63257bfd1439557",
+          "name": "element",
+          "label": "directory",
+          "style": {
+            "display": "inline-block",
+            "flex": "1",
+            "width": "100%",
+            "white-space": "nowrap",
+            "overflow": "hidden",
+            "text-overflow": "ellipsis"
+          },
+          "container": "container5ab7d6b5",
+          "attributes": {},
+          "is": "div",
+          "children": [
+            {
+              "id": "63257bfd1439558",
+              "name": "text",
+              "label": "Search result item",
+              "value": "super/nested/directory/path/that/will/wa",
+              "style": {},
+              "children": [],
+              "metadata": {},
+              "attributes": {}
+            }
+          ],
+          "metadata": {}
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": 395,
+          "top": 260,
+          "right": 663.470266729453,
+          "bottom": 327
+        }
+      },
+      "controllers": [
+        "./search-result-controller.tsx"
+      ]
+    }
+  ],
+  "metadata": {}
+}

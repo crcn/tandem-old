@@ -257,7 +257,10 @@ const translateStyle = (style: KeyValue<any>, context: TranslateContext) => {
   // TODO - add vendor prefix stuff here
   for (const key in style) {
     context = addLineItem(
-      `" ${kebabCase(key)}: ${translateStyleValue(key, style[key])};" + \n`,
+      `" ${kebabCase(key)}: ${translateStyleValue(key, style[key]).replace(
+        /[\n\r]/g,
+        " "
+      )};" + \n`,
       context
     );
   }
