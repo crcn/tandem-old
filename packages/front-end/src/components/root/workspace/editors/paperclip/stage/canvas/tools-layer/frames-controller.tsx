@@ -25,7 +25,6 @@ export default compose<FramesOuterProps, any>(
     const { backgroundColor } = editor.canvas;
 
     const backgroundStyle = {
-      backgroundColor: backgroundColor || "rgba(0, 0, 0, 0.05)",
       transform: `translate(${-translate.left /
         translate.zoom}px, ${-translate.top / translate.zoom}px) scale(${1 /
         translate.zoom}) translateZ(0)`,

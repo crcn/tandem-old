@@ -72,7 +72,7 @@ import {
   CanvasToolOverlayMouseMoved,
   CanvasToolOverlayClicked
 } from "../actions";
-import { uniq, pull, values } from "lodash";
+import { uniq, pull, values, clamp } from "lodash";
 import { stat } from "fs";
 import {
   replaceDependency,
@@ -524,10 +524,71 @@ const queuePreview = (uri: string, state: RootState): RootState => {
   return state;
 };
 
+export const shiftActiveEditorTab = (
+  delta: number,
+  state: RootState
+): RootState => {
+  const editor = getActiveEditor(state);
+
+  // nothing open
+  if (!editor) {
+    return state;
+  }
+  const index = editor.tabUris.indexOf(editor.activeFilePath);
+  let newIndex = index + delta;
+  if (newIndex < 0) {
+    newIndex = editor.tabUris.length + delta;
+  } else if (newIndex >= editor.tabUris.length) {
+    newIndex = -1 + delta;
+  }
+  newIndex = clamp(newIndex, 0, editor.tabUris.length - 1);
+
+  return openEditorFileUri(editor.tabUris[newIndex], state);
+};
+
+const removeEditor = (
+  { activeFilePath }: Editor,
+  state: RootState
+): RootState => {
+  const editor = getEditorWithActiveFileUri(activeFilePath, state);
+  return {
+    ...state,
+    editors: arraySplice(state.editors, state.editors.indexOf(editor), 1)
+  };
+};
+
+export const closeFile = (uri: string, state: RootState): RootState => {
+  const editor = getEditorWithFileUri(uri, state);
+
+  if (editor.tabUris.length === 1) {
+    state = removeEditor(editor, state);
+  } else {
+    state = updateEditor(
+      {
+        tabUris: editor.tabUris.filter(furi => furi !== uri)
+      },
+      uri,
+      state
+    );
+  }
+
+  state = updateRootState(
+    {
+      openFiles: state.openFiles.filter(openFile => openFile.uri !== uri)
+    },
+    state
+  );
+
+  state = setNextOpenFile(state);
+
+  return state;
+};
+
 export const setNextOpenFile = (state: RootState): RootState => {
   const hasOpenFile = state.openFiles.find(openFile =>
     Boolean(getEditorWithActiveFileUri(openFile.uri, state))
   );
+
   if (hasOpenFile) {
     return state;
   }
@@ -540,11 +601,6 @@ export const setNextOpenFile = (state: RootState): RootState => {
   if (state.openFiles.length) {
     state = openEditorFileUri(state.openFiles[0].uri, state);
   }
-
-  state = {
-    ...state,
-    editors: []
-  };
 
   return state;
 };

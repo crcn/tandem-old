@@ -109,7 +109,11 @@ import {
   FRAME_MODE_CHANGE_COMPLETE,
   FrameModeChangeComplete,
   TOOLBAR_TOOL_CLICKED,
-  ToolbarToolClicked
+  ToolbarToolClicked,
+  EDITOR_TAB_CLOSE_BUTTON_CLICKED,
+  SHORTCUT_SELECT_NEXT_TAB,
+  SHORTCUT_SELECT_PREVIOUS_TAB,
+  SHORTCUT_CLOSE_CURRENT_TAB
 } from "../actions";
 import {
   queueOpenFile,
@@ -159,7 +163,9 @@ import {
   isSelectionMovable,
   SyntheticVisibleNodeMetadataKeys,
   selectInsertedSyntheticVisibleNodes,
-  RegisteredComponent
+  RegisteredComponent,
+  closeFile,
+  shiftActiveEditorTab
 } from "../state";
 import {
   PCSourceTagNames,
@@ -681,18 +687,15 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
     case OPEN_FILE_ITEM_CLOSE_CLICKED: {
       // TODO - flag confirm remove state
       const { uri } = action as OpenFilesItemClick;
-      return setNextOpenFile(
-        updateRootState(
-          {
-            openFiles: state.openFiles.filter(openFile => openFile.uri !== uri)
-          },
-          state
-        )
-      );
+      return closeFile(uri, state);
     }
     case EDITOR_TAB_CLICKED: {
       const { uri } = action as EditorTabClicked;
       return openEditorFileUri(uri, state);
+    }
+    case EDITOR_TAB_CLOSE_BUTTON_CLICKED: {
+      const { uri } = action as EditorTabClicked;
+      return closeFile(uri, state);
     }
     case PC_DEPENDENCY_GRAPH_LOADED: {
       const { graph } = action as PCDependencyGraphLoaded;
@@ -927,6 +930,16 @@ export const canvasReducer = (state: RootState, action: Action) => {
         state
       );
       return state;
+    }
+
+    case SHORTCUT_SELECT_NEXT_TAB: {
+      return shiftActiveEditorTab(1, state);
+    }
+    case SHORTCUT_SELECT_PREVIOUS_TAB: {
+      return shiftActiveEditorTab(-1, state);
+    }
+    case SHORTCUT_CLOSE_CURRENT_TAB: {
+      return closeFile(state.activeEditorFilePath, state);
     }
 
     case CANVAS_MOUSE_MOVED: {
@@ -1482,7 +1495,7 @@ const shortcutReducer = (state: RootState, action: Action): RootState => {
       if (isInputSelected(state)) {
         return state;
       }
-      if (state.toolType) {
+      if (state.toolType != null) {
         return setTool(null, state);
       } else {
         state = setSelectedSyntheticVisibleNodeIds(state);

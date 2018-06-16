@@ -1,0 +1,59 @@
+{
+  "id": "1273009774",
+  "name": "module",
+  "version": "0.0.3",
+  "children": [
+    {
+      "label": "Editor Tab",
+      "is": "div",
+      "style": {
+        "box-sizing": "border-box",
+        "font-family": "Helvetica",
+        "padding": "8px 16px",
+        "align-items": "center",
+        "background": "rgba(219, 219, 219, 1)",
+        "color": "rgba(112, 112, 112, 1)",
+        "cursor": "pointer",
+        "padding-left": "20px",
+        "height": "100%"
+      },
+      "attributes": {},
+      "id": "fde5849e96847",
+      "name": "component",
+      "children": [
+        {
+          "id": "fde5849e113917",
+          "name": "text",
+          "label": "label",
+          "value": "tab",
+          "style": {},
+          "children": [],
+          "metadata": {}
+        },
+        {
+          "id": "f0d3191523498",
+          "name": "text",
+          "label": "x button",
+          "value": "×",
+          "style": {
+            "float": "right",
+            "margin-left": "8px",
+            "visibility": "hidden",
+            "cursor": "pointer"
+          },
+          "children": [],
+          "metadata": {}
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": 409,
+          "top": 207,
+          "right": 1269.793564786476,
+          "bottom": 487.39435041328807
+        }
+      }
+    }
+  ],
+  "metadata": {}
+}

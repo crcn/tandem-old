@@ -140,7 +140,28 @@ export function* shortcutsSaga() {
             }
           },
           { type: "separator" },
-          { role: "togglefullscreen" }
+          { role: "togglefullscreen" },
+          {
+            label: "Select Next Tab",
+            accelerator: "meta+shift+]",
+            click: (a, window, event) => {
+              emit(shortcutKeyDown("SHORTCUT_SELECT_NEXT_TAB"));
+            }
+          },
+          {
+            label: "Select Previous Tab",
+            accelerator: "meta+shift+[",
+            click: (a, window, event) => {
+              emit(shortcutKeyDown("SHORTCUT_SELECT_PREVIOUS_TAB"));
+            }
+          },
+          {
+            label: "Close Current Tab",
+            accelerator: "meta+w",
+            click: (a, window, event) => {
+              emit(shortcutKeyDown("SHORTCUT_CLOSE_CURRENT_TAB"));
+            }
+          }
         ]
       }
     ];

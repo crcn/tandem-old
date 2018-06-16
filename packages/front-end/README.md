@@ -1,6 +1,6 @@
 IMMEDIATE:
 
-* canvas tooling
+* canvas specific to each open file
 * Component picker
 * content nodes must be compilable for preview
 * refactor left gutter
@@ -53,7 +53,6 @@ BUGS:
 USEFUL:
 
 * Prohibit component from being deleted until all references are
-* switch tabs using cmd+shift+[/]
 * Function for explicitly defining cascading styles
 * Unhandled notification (allows for console to be hidden, necessary for Alpha too & reporting)
 * ability to load images & other resources in PC file. (start with ionicons)
