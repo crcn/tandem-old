@@ -3,12 +3,12 @@ import * as path from "path";
 import { compose, pure, withHandlers } from "recompose";
 import { Dispatch } from "redux";
 import { quickSearchItemClicked } from "actions";
-import { File } from "tandem-common";
+import { File, memoize } from "tandem-common";
 
 export type SearchResultsOuterProps = {
   file: File;
   cwd: string;
-  filter: RegExp;
+  filter: string[];
   dispatch: Dispatch<any>;
 };
 
@@ -23,12 +23,15 @@ export default compose<SearchResultsInnerProps, SearchResultsOuterProps>(
       dispatch(quickSearchItemClicked(file));
     }
   }),
-  Base => ({ onClick, file, cwd }: SearchResultsInnerProps) => {
-    const basename = path.basename(file.uri);
-    const directory = path
-      .dirname(file.uri)
-      .replace(cwd, "")
-      .substr(1);
+  Base => ({ filter, onClick, file, cwd }: SearchResultsInnerProps) => {
+    const basename = highlightFilterMatches(path.basename(file.uri), filter);
+    const directory = highlightFilterMatches(
+      path
+        .dirname(file.uri)
+        .replace(cwd, "")
+        .substr(1),
+      filter
+    );
 
     return (
       <Base
@@ -39,3 +42,24 @@ export default compose<SearchResultsInnerProps, SearchResultsOuterProps>(
     );
   }
 );
+
+const MATCH_STYLE: any = { fontWeight: 600, color: "#5f87cd" };
+
+const getFilterReplacer = memoize(
+  (filter: string[]) => new RegExp(filter.join("|"), "g")
+);
+
+const highlightFilterMatches = (str, filter: string[]) =>
+  str
+    .replace(getFilterReplacer(filter), match => {
+      return `%%MATCH%%${match}%%MATCH%%`;
+    })
+    .split("%%MATCH%%")
+    .map(
+      match =>
+        getFilterReplacer(filter).test(match) ? (
+          <span style={MATCH_STYLE}>{match}</span>
+        ) : (
+          match
+        )
+    );

@@ -91,7 +91,8 @@
                 "background": "rgba(0,0,0,0.05)",
                 "boxSizing": "border-box",
                 "overflow": "scroll",
-                "position": "relative"
+                "position": "relative",
+                "max-height": "200px"
               },
               "container": "containerb0459d53",
               "attributes": {},
@@ -174,6 +175,96 @@
                 },
                 {
                   "id": "33e083be10",
+                  "name": "component-instance",
+                  "is": "808486bb13",
+                  "variant": [],
+                  "style": {
+                    "left": 0,
+                    "top": 0,
+                    "right": 400,
+                    "bottom": 300
+                  },
+                  "children": [],
+                  "metadata": {},
+                  "attributes": {}
+                },
+                {
+                  "id": "8657e40e81",
+                  "name": "component-instance",
+                  "is": "808486bb13",
+                  "variant": [],
+                  "style": {
+                    "left": 0,
+                    "top": 0,
+                    "right": 400,
+                    "bottom": 300
+                  },
+                  "children": [],
+                  "metadata": {},
+                  "attributes": {}
+                },
+                {
+                  "id": "8657e40e4262",
+                  "name": "component-instance",
+                  "is": "808486bb13",
+                  "variant": [],
+                  "style": {
+                    "left": 0,
+                    "top": 0,
+                    "right": 400,
+                    "bottom": 300
+                  },
+                  "children": [],
+                  "metadata": {},
+                  "attributes": {}
+                },
+                {
+                  "id": "8657e40e8399",
+                  "name": "component-instance",
+                  "is": "808486bb13",
+                  "variant": [],
+                  "style": {
+                    "left": 0,
+                    "top": 0,
+                    "right": 400,
+                    "bottom": 300
+                  },
+                  "children": [],
+                  "metadata": {},
+                  "attributes": {}
+                },
+                {
+                  "id": "8657e40e12546",
+                  "name": "component-instance",
+                  "is": "808486bb13",
+                  "variant": [],
+                  "style": {
+                    "left": 0,
+                    "top": 0,
+                    "right": 400,
+                    "bottom": 300
+                  },
+                  "children": [],
+                  "metadata": {},
+                  "attributes": {}
+                },
+                {
+                  "id": "8657e40e16703",
+                  "name": "component-instance",
+                  "is": "808486bb13",
+                  "variant": [],
+                  "style": {
+                    "left": 0,
+                    "top": 0,
+                    "right": 400,
+                    "bottom": 300
+                  },
+                  "children": [],
+                  "metadata": {},
+                  "attributes": {}
+                },
+                {
+                  "id": "8657e40e20870",
                   "name": "component-instance",
                   "is": "808486bb13",
                   "variant": [],
@@ -292,8 +383,7 @@
           "name": "element",
           "attributes": {},
           "style": {
-            "width": "400px",
-            "height": "200px",
+            "width": "500px",
             "left": "50%",
             "position": "absolute",
             "transform": "translate(-50%)"
