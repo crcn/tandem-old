@@ -2,6 +2,7 @@ IMMEDIATE:
 
 * content nodes must be compilable for preview
 * refactor left gutter
+* fix pasting behavior (see sketch)
 * variants
 
 - Styler
@@ -46,6 +47,7 @@ Polish:
 * alert to save before closing
 * fail safe for clobbered tree IDs
 * ability to navigate to source component
+* show info when component doesn't exist
 
 - Ability to override instance labels. Used to expose layers
 
