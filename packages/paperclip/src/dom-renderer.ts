@@ -1,11 +1,16 @@
-import { mapValues } from "lodash";
+import { mapValues, omit } from "lodash";
 import {
   SyntheticVisibleNode,
   SyntheticElement,
   SyntheticTextNode
 } from "./synthetic";
 import { ComputedDisplayInfo } from "./edit";
-import { getTreeNodeFromPath, roundBounds, EMPTY_OBJECT } from "tandem-common";
+import {
+  getTreeNodeFromPath,
+  roundBounds,
+  EMPTY_OBJECT,
+  memoize
+} from "tandem-common";
 import {
   SyntheticOperationalTransformType,
   SyntheticMoveChildOperationalTransform,
@@ -244,6 +249,8 @@ export const patchDOM = (
   return newMap;
 };
 
+const stripEmptyElement = memoize(style => omit(style, ["box-sizing"]));
+
 const makeElementClickable = (
   target: HTMLElement,
   synthetic: SyntheticVisibleNode
@@ -251,8 +258,11 @@ const makeElementClickable = (
   const isContentNode = synthetic.isContentNode;
 
   if (synthetic.name === "div" && !isContentNode) {
-    const style = synthetic.style || {};
-    if (target.childNodes.length === 0 && Object.keys(style).length === 0) {
+    const style = synthetic.style || EMPTY_OBJECT;
+    if (
+      target.childNodes.length === 0 &&
+      Object.keys(stripEmptyElement(style)).length === 0
+    ) {
       target.dataset.empty = "1";
       Object.assign(target.style, {
         width: `100%`,

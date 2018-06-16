@@ -977,7 +977,6 @@ export const canvasReducer = (state: RootState, action: Action) => {
 
       // alt key opens up a new link
       const altKey = sourceEvent.altKey;
-      const metaKey = sourceEvent.metaKey;
 
       const editor = getActiveEditor(state);
 
@@ -1228,7 +1227,13 @@ export const canvasReducer = (state: RootState, action: Action) => {
       switch (toolType) {
         case ToolType.ELEMENT: {
           return persistInsertNodeFromPoint(
-            createPCElement("div", null, null, null, "Element"),
+            createPCElement(
+              "div",
+              { "box-sizing": "border-box" },
+              null,
+              null,
+              "Element"
+            ),
             fileUri,
             point,
             state
@@ -1520,12 +1525,7 @@ const handleArtboardSelectionFromAction = <
 ) => {
   const { sourceEvent } = event;
   state = setRootStateSyntheticVisibleNodeExpanded(nodeId, true, state);
-  return setSelectedSyntheticVisibleNodeIds(
-    state,
-    ...(event.sourceEvent.shiftKey
-      ? [...state.selectedNodeIds, nodeId]
-      : [nodeId])
-  );
+  return setSelectedSyntheticVisibleNodeIds(state, nodeId);
 };
 
 const setCanvasZoom = (

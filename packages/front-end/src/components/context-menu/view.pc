@@ -17,16 +17,6 @@
       "name": "component",
       "children": [
         {
-          "id": "8c06472179580",
-          "label": "Element",
-          "is": "div",
-          "name": "element",
-          "attributes": {},
-          "style": {},
-          "children": [],
-          "metadata": {}
-        },
-        {
           "id": "8c064721397692",
           "variant": [],
           "is": "8c064721397691",
@@ -201,6 +191,38 @@
           "top": 292.34499325373525,
           "right": 2615.1662068012306,
           "bottom": 392.34499325373525
+        }
+      }
+    },
+    {
+      "id": "4f9aac854719",
+      "label": "Element",
+      "is": "div",
+      "name": "element",
+      "attributes": {},
+      "style": {
+        "box-sizing": "border-box"
+      },
+      "children": [
+        {
+          "id": "4f9aac8513970",
+          "label": "Element",
+          "is": "div",
+          "name": "element",
+          "attributes": {},
+          "style": {
+            "box-sizing": "border-box"
+          },
+          "children": [],
+          "metadata": {}
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": 1506.7089592848984,
+          "top": 166.02497244169342,
+          "right": 1606.7089592848984,
+          "bottom": 266.0249724416934
         }
       }
     }
