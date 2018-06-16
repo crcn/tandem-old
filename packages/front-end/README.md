@@ -3,6 +3,7 @@ IMMEDIATE:
 * content nodes must be compilable for preview
 * refactor left gutter
 * fix pasting behavior (see sketch)
+* breadcrumbs
 * variants
 
 - Styler
