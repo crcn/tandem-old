@@ -11,17 +11,19 @@ import { mergeBounds } from "tandem-common";
 import {
   RootState,
   getBoundedSelection,
-  Editor,
-  getSelectionBounds
+  EditorWindow,
+  getSelectionBounds,
+  Canvas
 } from "../../../../../../../../../state";
 import { selectorDoubleClicked } from "../../../../../../../../../actions";
 import { getSyntheticVisibleNodeRelativeBounds } from "paperclip";
 
 export type SelectionOuterProps = {
+  canvas: Canvas;
   dispatch: Dispatch<any>;
   zoom: number;
   root: RootState;
-  editor: Editor;
+  editorWindow: EditorWindow;
 };
 
 export type SelectionInnerProps = {
@@ -30,13 +32,13 @@ export type SelectionInnerProps = {
 } & SelectionOuterProps;
 
 const SelectionBounds = ({
-  editor,
+  editorWindow,
   root,
   zoom
 }: {
   root: RootState;
   zoom: number;
-  editor: Editor;
+  editorWindow: EditorWindow;
 }) => {
   const selection = getBoundedSelection(root);
   const entireBounds = getSelectionBounds(root);
@@ -57,19 +59,26 @@ const SelectionBounds = ({
 };
 
 export const SelectionCanvasToolBase = ({
-  editor,
+  canvas,
+  editorWindow,
   root,
   dispatch,
   onDoubleClick,
   zoom
 }: SelectionInnerProps) => {
   const selection = getBoundedSelection(root);
-  if (!selection.length || editor.canvas.secondarySelection) return null;
+  if (!selection.length || editorWindow.secondarySelection) return null;
 
   return (
     <div className="m-stage-selection-tool" onDoubleClick={onDoubleClick}>
-      <SelectionBounds root={root} zoom={zoom} editor={editor} />
-      <Resizer root={root} editor={editor} dispatch={dispatch} zoom={zoom} />
+      <SelectionBounds root={root} zoom={zoom} editorWindow={editorWindow} />
+      <Resizer
+        root={root}
+        editorWindow={editorWindow}
+        canvas={canvas}
+        dispatch={dispatch}
+        zoom={zoom}
+      />
     </div>
   );
 };

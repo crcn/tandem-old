@@ -9,12 +9,12 @@ import {
   editorTabClicked,
   editorTabCloseButtonClicked
 } from "actions";
-import { ToolType, Editor } from "../../../../../state";
+import { ToolType, EditorWindow } from "../../../../../state";
 import { Dispatch } from "redux";
 const { EditorTab } = require("./tab.pc");
 
 export type ToolbarOuterProps = {
-  editor: Editor;
+  editorWindow: EditorWindow;
   dispatch: Dispatch<any>;
 };
 
@@ -51,7 +51,7 @@ export default compose<ToolbarInnerProps, ToolbarOuterProps>(
     }
   }),
   Base => ({
-    editor,
+    editorWindow,
     onTabClick,
     onTabCloseButtonClick,
     onPointerClick,
@@ -59,10 +59,12 @@ export default compose<ToolbarInnerProps, ToolbarOuterProps>(
     onComponentClick,
     onElementClick
   }: ToolbarInnerProps) => {
-    const tabs = editor.tabUris.map(uri => {
+    const tabs = editorWindow.tabUris.map(uri => {
       return (
         <EditorTab
-          className={cx("tab", { selected: editor.activeFilePath === uri })}
+          className={cx("tab", {
+            selected: editorWindow.activeFilePath === uri
+          })}
           xButtonProps={{
             className: "x-button",
             onClick: event => onTabCloseButtonClick(uri, event)

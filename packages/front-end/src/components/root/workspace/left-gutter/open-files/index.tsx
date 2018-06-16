@@ -9,7 +9,7 @@ TODOS:
 import "./index.scss";
 import * as React from "react";
 import { Dispatch } from "redux";
-import { OpenFile, RootState, Editor } from "../../../../../state";
+import { OpenFile, RootState, EditorWindow } from "../../../../../state";
 import { compose, pure, withHandlers } from "recompose";
 import { PaneComponent } from "../../../../pane";
 import * as cx from "classnames";
@@ -75,7 +75,7 @@ const OpenFileComponent = compose<OpenFileInnerProps, OpenFileOuterProps>(
 )(BaseOpenFileComponent);
 
 type OpenFilesPaneOuterProps = {
-  editors: Editor[];
+  editorWindows: EditorWindow[];
   dispatch: Dispatch<any>;
   root: RootState;
 };
@@ -83,7 +83,7 @@ type OpenFilesPaneOuterProps = {
 type OpenFilesPaneInnerProps = {} & OpenFilesPaneOuterProps;
 
 const BaseOpenFilesPaneComponent = ({
-  editors,
+  editorWindows,
   root,
   dispatch
 }: OpenFilesPaneInnerProps) => {
@@ -96,8 +96,8 @@ const BaseOpenFilesPaneComponent = ({
             key={openFile.uri}
             openFile={openFile}
             dispatch={dispatch}
-            active={editors.some(
-              editor => editor.activeFilePath === openFile.uri
+            active={editorWindows.some(
+              editorWindow => editorWindow.activeFilePath === openFile.uri
             )}
           />
         );

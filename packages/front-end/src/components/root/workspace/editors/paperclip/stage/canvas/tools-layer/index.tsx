@@ -8,8 +8,8 @@ import { Dispatch } from "redux";
 import { pure, compose } from "recompose";
 import {
   RootState,
-  Editor,
-  getActiveFrames
+  EditorWindow,
+  getOpenFile
 } from "../../../../../../../../state";
 import { SelectableToolsComponent } from "./selectables";
 import { NodeOverlaysTool } from "./document-overlay";
@@ -18,45 +18,49 @@ const { Frames } = require("./frames-view.pc");
 import { InsertLayer } from "./insert-layer";
 
 export type ToolsLayerComponent = {
-  editor: Editor;
+  editorWindow: EditorWindow;
   root: RootState;
   zoom: number;
   dispatch: Dispatch<any>;
 };
 
 const BaseToolsLayerComponent = ({
-  editor,
+  editorWindow,
   root,
   zoom,
   dispatch
 }: ToolsLayerComponent) => {
+  const canvas = getOpenFile(editorWindow.activeFilePath, root).canvas;
   return (
     <div className="m-tools-layer">
       <InsertLayer
-        editor={editor}
+        canvas={canvas}
+        editorWindow={editorWindow}
         toolType={root.toolType}
         dispatch={dispatch}
       />
       <Frames
         root={root}
-        translate={editor.canvas.translate}
+        canvas={canvas}
+        translate={canvas.translate}
         dispatch={dispatch}
-        editor={editor}
+        editorWindow={editorWindow}
       />
       <NodeOverlaysTool
         root={root}
         zoom={zoom}
         dispatch={dispatch}
-        editor={editor}
+        editorWindow={editorWindow}
       />
       {/* {activeWindow && (
         <SelectableToolsComponent documents={activeWindow.documents} />
       )} */}
       <SelectionCanvasTool
+        canvas={canvas}
         root={root}
         dispatch={dispatch}
         zoom={zoom}
-        editor={editor}
+        editorWindow={editorWindow}
       />
     </div>
   );

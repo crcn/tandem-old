@@ -5,17 +5,17 @@ import { RootState } from "../../../../../state";
 import { compose, pure } from "recompose";
 import { FileCacheItem, getFileCacheItemDataUrl } from "fsbox";
 
-export type ImageEditorOuterProps = {
+export type ImageEditorWindowOuterProps = {
   root: RootState;
   fileCacheItem: FileCacheItem;
   dispatch: Dispatch<any>;
 };
 
-export type ImageEditorInnerProps = {} & ImageEditorOuterProps;
+export type ImageEditorWindowInnerProps = {} & ImageEditorWindowOuterProps;
 
-export const BaseImageEditorComponent = ({
+export const BaseImageEditorWindowComponent = ({
   fileCacheItem
-}: ImageEditorInnerProps) => {
+}: ImageEditorWindowInnerProps) => {
   return (
     <div className="m-image-editor">
       <img src={getFileCacheItemDataUrl(fileCacheItem)} />
@@ -23,7 +23,7 @@ export const BaseImageEditorComponent = ({
   );
 };
 
-export const ImageEditorComponent = compose<
-  ImageEditorInnerProps,
-  ImageEditorOuterProps
->(pure)(BaseImageEditorComponent);
+export const ImageEditorWindowComponent = compose<
+  ImageEditorWindowInnerProps,
+  ImageEditorWindowOuterProps
+>(pure)(BaseImageEditorWindowComponent);

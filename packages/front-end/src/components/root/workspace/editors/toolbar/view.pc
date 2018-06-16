@@ -10,7 +10,8 @@
         "display": "flex",
         "background": "rgba(209, 209, 209, 1)",
         "position": "relative",
-        "flex-grow": "0"
+        "flex-grow": "0",
+        "height": "30px"
       },
       "attributes": {},
       "id": "ab406a6b770940",

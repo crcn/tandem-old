@@ -5,18 +5,18 @@ import { pure, compose } from "recompose";
 import { CanvasComponent } from "./canvas";
 import { FooterComponent } from "./footer";
 import { Dependency } from "paperclip";
-import { RootState, Editor } from "../../../../../../state";
+import { RootState, EditorWindow } from "../../../../../../state";
 
 export type StageOuterProps = {
   root: RootState;
-  editor: Editor;
+  editorWindow: EditorWindow;
   dependency: Dependency<any>;
   dispatch: Dispatch<any>;
 };
 
 const BaseStageComponent = ({
   root,
-  editor,
+  editorWindow,
   dependency,
   dispatch
 }: StageOuterProps) => (
@@ -25,7 +25,7 @@ const BaseStageComponent = ({
       root={root}
       dependency={dependency}
       dispatch={dispatch}
-      editor={editor}
+      editorWindow={editorWindow}
     />
     {/* <FooterComponent /> */}
   </div>

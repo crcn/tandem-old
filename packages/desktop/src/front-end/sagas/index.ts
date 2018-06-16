@@ -35,7 +35,7 @@ import {
   SyntheticVisibleNode,
   QUICK_SEARCH_ITEM_CLICKED,
   getEditorWithActiveFileUri,
-  getActiveEditor
+  getActiveEditorWindow
 } from "tandem-front-end";
 
 export function* rootSaga() {
@@ -140,7 +140,7 @@ function* handleSaveShortcut() {
   while (1) {
     yield take(SHORTCUT_SAVE_KEY_DOWN);
     const state: RootState = yield select();
-    const activeEditor = getActiveEditor(state);
+    const activeEditor = getActiveEditorWindow(state);
     const uri = activeEditor.activeFilePath;
 
     // TODO - post save

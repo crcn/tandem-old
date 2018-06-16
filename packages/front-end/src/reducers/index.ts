@@ -127,7 +127,7 @@ import {
   RootState,
   setActiveFilePath,
   updateRootState,
-  updateEditorCanvas,
+  updateOpenFileCanvas,
   getCanvasMouseTargetNodeId,
   setSelectedSyntheticVisibleNodeIds,
   getSelectionBounds,
@@ -154,9 +154,9 @@ import {
   getEditorWithActiveFileUri,
   openEditorFileUri,
   openSecondEditor,
-  getActiveEditor,
-  getEditorWithFileUri,
-  updateEditor,
+  getActiveEditorWindow,
+  getEditorWindowWithFileUri,
+  updateEditorWindow,
   getSyntheticWindowBounds,
   centerEditorCanvas,
   getCanvasMouseTargetNodeIdFromPoint,
@@ -361,7 +361,7 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
       const { width = 400, height = 300 } =
         element.getBoundingClientRect() || {};
 
-      state = updateEditorCanvas(
+      state = updateEditorWindow(
         {
           container: element
         },
@@ -457,7 +457,7 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
       const { uri, mimeType } = action as FSSandboxItemLoaded;
       // const pcState = paperclipReducer(state, action);
 
-      const editor = getEditorWithFileUri(uri, state);
+      const editor = getEditorWindowWithFileUri(uri, state);
 
       // TODO - move this to paperclip-tandem package
       if (editor && editor.activeFilePath === uri) {
@@ -710,7 +710,7 @@ export const canvasReducer = (state: RootState, action: Action) => {
   switch (action.type) {
     case RESIZER_MOVED: {
       const { point: newPoint } = action as ResizerMoved;
-      state = updateEditorCanvas(
+      state = updateEditorWindow(
         {
           movingOrResizing: true
         },
@@ -779,7 +779,7 @@ export const canvasReducer = (state: RootState, action: Action) => {
         }, state);
       }
 
-      state = updateEditorCanvas(
+      state = updateEditorWindow(
         {
           movingOrResizing: false
         },
@@ -798,9 +798,10 @@ export const canvasReducer = (state: RootState, action: Action) => {
         canvasHeight,
         canvasWidth
       } = action as CanvasWheel;
-      const editor = getActiveEditor(state);
+      const editorWindow = getActiveEditorWindow(state);
+      const openFile = getOpenFile(editorWindow.activeFilePath, state);
 
-      let translate = editor.canvas.translate;
+      let translate = openFile.canvas.translate;
 
       if (metaKey || ctrlKey) {
         translate = centerTransformZoom(
@@ -814,7 +815,7 @@ export const canvasReducer = (state: RootState, action: Action) => {
             MIN_ZOOM,
             MAX_ZOOM
           ),
-          editor.canvas.mousePosition
+          editorWindow.mousePosition
         );
       } else {
         translate = {
@@ -824,11 +825,21 @@ export const canvasReducer = (state: RootState, action: Action) => {
         };
       }
 
-      return updateEditorCanvas(
-        { translate, smooth: false },
-        editor.activeFilePath,
+      state = updateEditorWindow(
+        { smooth: false },
+        editorWindow.activeFilePath,
         state
       );
+
+      state = updateOpenFileCanvas(
+        {
+          translate
+        },
+        editorWindow.activeFilePath,
+        state
+      );
+
+      return state;
     }
 
     case CANVAS_DROPPED_ITEM: {
@@ -911,9 +922,10 @@ export const canvasReducer = (state: RootState, action: Action) => {
     }
 
     case SHORTCUT_ZOOM_IN_KEY_DOWN: {
-      const editor = getActiveEditor(state);
+      const editor = getActiveEditorWindow(state);
+      const openFile = getOpenFile(editor.activeFilePath, state);
       state = setCanvasZoom(
-        normalizeZoom(editor.canvas.translate.zoom) * 2,
+        normalizeZoom(openFile.canvas.translate.zoom) * 2,
         false,
         editor.activeFilePath,
         state
@@ -922,9 +934,10 @@ export const canvasReducer = (state: RootState, action: Action) => {
     }
 
     case SHORTCUT_ZOOM_OUT_KEY_DOWN: {
-      const editor = getActiveEditor(state);
+      const editor = getActiveEditorWindow(state);
+      const openFile = getOpenFile(editor.activeFilePath, state);
       state = setCanvasZoom(
-        normalizeZoom(editor.canvas.translate.zoom) / 2,
+        normalizeZoom(openFile.canvas.translate.zoom) / 2,
         false,
         editor.activeFilePath,
         state
@@ -946,16 +959,17 @@ export const canvasReducer = (state: RootState, action: Action) => {
       const {
         sourceEvent: { pageX, pageY }
       } = action as WrappedEvent<React.MouseEvent<any>>;
-      state = updateEditorCanvas(
+      state = updateEditorWindow(
         { mousePosition: { left: pageX, top: pageY } },
         state.activeEditorFilePath,
         state
       );
 
       let targetNodeId: string;
-      const editor = getActiveEditor(state);
+      const editorWindow = getActiveEditorWindow(state);
+      const openFile = getOpenFile(editorWindow.activeFilePath, state);
 
-      if (!editor.canvas.movingOrResizing) {
+      if (!editorWindow.movingOrResizing) {
         targetNodeId = getCanvasMouseTargetNodeId(
           state,
           action as CanvasToolOverlayMouseMoved
@@ -975,7 +989,7 @@ export const canvasReducer = (state: RootState, action: Action) => {
     case CANVAS_DRAGGED_OVER: {
       const { item, offset } = action as CanvasDraggingOver;
 
-      state = updateEditorCanvas(
+      state = updateEditorWindow(
         { mousePosition: offset },
         state.activeEditorFilePath,
         state
@@ -988,7 +1002,7 @@ export const canvasReducer = (state: RootState, action: Action) => {
       // they can drop the element.
 
       let targetNodeId: string;
-      const editor = getActiveEditor(state);
+      const editor = getActiveEditorWindow(state);
 
       targetNodeId = getCanvasMouseTargetNodeIdFromPoint(
         state,
@@ -1022,10 +1036,12 @@ export const canvasReducer = (state: RootState, action: Action) => {
       // alt key opens up a new link
       const altKey = sourceEvent.altKey;
 
-      const editor = getActiveEditor(state);
+      const editorWindow = getActiveEditorWindow(state);
+      const openFile = getOpenFile(editorWindow.activeFilePath, state);
 
       // do not allow selection while window is panning (scrolling)
-      if (editor.canvas.panning || editor.canvas.movingOrResizing) return state;
+      if (openFile.canvas.panning || editorWindow.movingOrResizing)
+        return state;
 
       const targetNodeId = getCanvasMouseTargetNodeId(
         state,
@@ -1047,11 +1063,11 @@ export const canvasReducer = (state: RootState, action: Action) => {
           targetNodeId,
           action as CanvasToolOverlayMouseMoved
         );
-        state = updateEditorCanvas(
+        state = updateEditorWindow(
           {
             secondarySelection: false
           },
-          editor.activeFilePath,
+          editorWindow.activeFilePath,
           state
         );
         return state;
@@ -1059,7 +1075,7 @@ export const canvasReducer = (state: RootState, action: Action) => {
       return state;
     }
     case RESIZER_PATH_MOUSE_MOVED: {
-      state = updateEditorCanvas(
+      state = updateEditorWindow(
         {
           movingOrResizing: true
         },
@@ -1084,7 +1100,7 @@ export const canvasReducer = (state: RootState, action: Action) => {
       return state;
     }
     case RESIZER_PATH_MOUSE_STOPPED_MOVING: {
-      state = updateEditorCanvas(
+      state = updateEditorWindow(
         {
           movingOrResizing: false
         },
@@ -1245,7 +1261,7 @@ export const canvasReducer = (state: RootState, action: Action) => {
       const { frame, sourceEvent } = action as CanvasToolArtboardTitleClicked;
       sourceEvent.stopPropagation();
       const contentNode = getFrameSyntheticNode(frame, state.documents);
-      state = updateEditorCanvas(
+      state = updateEditorWindow(
         { smooth: false },
         getPCNodeDependency(
           getSyntheticSourceNode(contentNode, state.graph).id,
@@ -1317,10 +1333,7 @@ const persistInsertNodeFromPoint = (
 
   if (!targetNode) {
     const newPoint = shiftPoint(
-      normalizePoint(
-        getEditorWithFileUri(fileUri, state).canvas.translate,
-        point
-      ),
+      normalizePoint(getOpenFile(fileUri, state).canvas.translate, point),
       {
         left: -(INSERT_ARTBOARD_WIDTH / 2),
         top: -(INSERT_ARTBOARD_HEIGHT / 2)
@@ -1594,15 +1607,15 @@ const setCanvasZoom = (
   uri: string,
   state: RootState
 ) => {
-  const editor = getEditorWithFileUri(uri, state);
-
-  return updateEditorCanvas(
+  const editorWindow = getEditorWindowWithFileUri(uri, state);
+  const openFile = getOpenFile(uri, state);
+  return updateOpenFileCanvas(
     {
       translate: centerTransformZoom(
-        editor.canvas.translate,
-        editor.canvas.container.getBoundingClientRect(),
+        openFile.canvas.translate,
+        editorWindow.container.getBoundingClientRect(),
         clamp(zoom, MIN_ZOOM, MAX_ZOOM),
-        editor.canvas.mousePosition
+        editorWindow.mousePosition
       )
     },
     uri,

@@ -110,14 +110,8 @@ export type RegisteredComponent = {
 
 export type Canvas = {
   backgroundColor: string;
-  mousePosition?: Point;
-  movingOrResizing?: boolean;
-  container?: HTMLElement;
   panning?: boolean;
   translate: Translate;
-  secondarySelection?: boolean;
-  fullScreen?: boolean;
-  smooth?: boolean;
 };
 
 export enum InsertFileType {
@@ -140,13 +134,22 @@ export type GraphHistory = {
 };
 
 export type Editor = {
-  activeFilePath?: string;
-  tabUris: string[];
   canvas: Canvas;
 };
 
+export type EditorWindow = {
+  tabUris: string[];
+  activeFilePath?: string;
+  mousePosition?: Point;
+  movingOrResizing?: boolean;
+  smooth?: boolean;
+  secondarySelection?: boolean;
+  fullScreen?: boolean;
+  container?: HTMLElement;
+};
+
 export type RootState = {
-  editors: Editor[];
+  editorWindows: EditorWindow[];
   mount: Element;
   openFiles: OpenFile[];
   toolType?: ToolType;
@@ -170,6 +173,7 @@ export type OpenFile = {
   temporary: boolean;
   newContent?: Buffer;
   uri: string;
+  canvas: Canvas;
 };
 
 export const updateRootState = (
@@ -335,13 +339,13 @@ const DEFAULT_CANVAS: Canvas = {
 };
 
 export const undo = (root: RootState) =>
-  root.editors.reduce(
+  root.editorWindows.reduce(
     (state, editor) =>
       moveDependencyRecordHistory(editor.activeFilePath, -1, root),
     root
   );
 export const redo = (root: RootState) =>
-  root.editors.reduce(
+  root.editorWindows.reduce(
     (state, editor) =>
       moveDependencyRecordHistory(editor.activeFilePath, 1, root),
     root
@@ -368,7 +372,7 @@ export const updateOpenFileContent = (
   );
 };
 
-export const getActiveEditor = (state: RootState) =>
+export const getActiveEditorWindow = (state: RootState) =>
   getEditorWithActiveFileUri(state.activeEditorFilePath, state);
 
 export const updateOpenFile = (
@@ -411,20 +415,23 @@ export const upsertOpenFile = (
   return addOpenFile(uri, temporary, state);
 };
 
-export const getEditorWithFileUri = (uri: string, state: RootState): Editor => {
-  return state.editors.find(editor => editor.tabUris.indexOf(uri) !== -1);
+export const getEditorWindowWithFileUri = (
+  uri: string,
+  state: RootState
+): EditorWindow => {
+  return state.editorWindows.find(window => window.tabUris.indexOf(uri) !== -1);
 };
 
 export const getEditorWithActiveFileUri = (
   uri: string,
   state: RootState
-): Editor => {
-  return state.editors.find(editor => editor.activeFilePath === uri);
+): EditorWindow => {
+  return state.editorWindows.find(editor => editor.activeFilePath === uri);
 };
 
 export const openSecondEditor = (uri: string, state: RootState) => {
-  const editor = getEditorWithFileUri(uri, state);
-  const i = state.editors.indexOf(editor);
+  const editor = getEditorWindowWithFileUri(uri, state);
+  const i = state.editorWindows.indexOf(editor);
   if (i === 1) {
     return openEditorFileUri(uri, state);
   }
@@ -441,7 +448,7 @@ export const openSecondEditor = (uri: string, state: RootState) => {
 
   state = {
     ...state,
-    editors: arraySplice(state.editors, i, 1, {
+    editorWindows: arraySplice(state.editorWindows, i, 1, {
       ...editor,
       tabUris: newTabUris,
       activeFilePath:
@@ -451,23 +458,23 @@ export const openSecondEditor = (uri: string, state: RootState) => {
     })
   };
 
-  if (state.editors.length === 1) {
+  if (state.editorWindows.length === 1) {
     state = {
       ...state,
-      editors: [
-        ...state.editors,
+      editorWindows: [
+        ...state.editorWindows,
 
-        { tabUris: [], activeFilePath: null, canvas: DEFAULT_CANVAS }
+        { tabUris: [], activeFilePath: null }
       ]
     };
   }
 
-  const secondEditor = state.editors[1];
+  const secondEditor = state.editorWindows[1];
   return {
     ...state,
     editors: arraySplice(
-      state.editors,
-      state.editors.indexOf(secondEditor),
+      state.editorWindows,
+      state.editorWindows.indexOf(secondEditor),
       1,
       {
         ...secondEditor,
@@ -494,27 +501,32 @@ export const getSyntheticWindowBounds = memoize(
 export const isImageMimetype = (mimeType: string) => /^image\//.test(mimeType);
 
 export const openEditorFileUri = (uri: string, state: RootState): RootState => {
-  const editor = getEditorWithFileUri(uri, state) || state.editors[0];
+  const editor =
+    getEditorWindowWithFileUri(uri, state) || state.editorWindows[0];
 
   return {
     ...state,
     hoveringNodeIds: [],
     selectedNodeIds: [],
     activeEditorFilePath: uri,
-    editors: editor
-      ? arraySplice(state.editors, state.editors.indexOf(editor), 1, {
-          ...editor,
-          tabUris:
-            editor.tabUris.indexOf(uri) === -1
-              ? [...editor.tabUris, uri]
-              : editor.tabUris,
-          activeFilePath: uri
-        })
+    editorWindows: editor
+      ? arraySplice(
+          state.editorWindows,
+          state.editorWindows.indexOf(editor),
+          1,
+          {
+            ...editor,
+            tabUris:
+              editor.tabUris.indexOf(uri) === -1
+                ? [...editor.tabUris, uri]
+                : editor.tabUris,
+            activeFilePath: uri
+          }
+        )
       : [
           {
             tabUris: [uri],
-            activeFilePath: uri,
-            canvas: DEFAULT_CANVAS
+            activeFilePath: uri
           }
         ]
   };
@@ -528,7 +540,7 @@ export const shiftActiveEditorTab = (
   delta: number,
   state: RootState
 ): RootState => {
-  const editor = getActiveEditor(state);
+  const editor = getActiveEditorWindow(state);
 
   // nothing open
   if (!editor) {
@@ -546,26 +558,30 @@ export const shiftActiveEditorTab = (
   return openEditorFileUri(editor.tabUris[newIndex], state);
 };
 
-const removeEditor = (
-  { activeFilePath }: Editor,
+const removeEditorWindow = (
+  { activeFilePath }: EditorWindow,
   state: RootState
 ): RootState => {
   const editor = getEditorWithActiveFileUri(activeFilePath, state);
   return {
     ...state,
-    editors: arraySplice(state.editors, state.editors.indexOf(editor), 1)
+    editorWindows: arraySplice(
+      state.editorWindows,
+      state.editorWindows.indexOf(editor),
+      1
+    )
   };
 };
 
 export const closeFile = (uri: string, state: RootState): RootState => {
-  const editor = getEditorWithFileUri(uri, state);
+  const editorWindow = getEditorWindowWithFileUri(uri, state);
 
-  if (editor.tabUris.length === 1) {
-    state = removeEditor(editor, state);
+  if (editorWindow.tabUris.length === 1) {
+    state = removeEditorWindow(editorWindow, state);
   } else {
-    state = updateEditor(
+    state = updateEditorWindow(
       {
-        tabUris: editor.tabUris.filter(furi => furi !== uri)
+        tabUris: editorWindow.tabUris.filter(furi => furi !== uri)
       },
       uri,
       state
@@ -647,7 +663,8 @@ export const addOpenFile = (
       ...state.openFiles,
       {
         uri,
-        temporary
+        temporary,
+        canvas: DEFAULT_CANVAS
       }
     ]
   };
@@ -813,17 +830,17 @@ export const setRootStateFileNodeExpanded = (
   );
 };
 
-export const updateEditor = (
-  properties: Partial<Editor>,
+export const updateEditorWindow = (
+  properties: Partial<EditorWindow>,
   uri: string,
   root: RootState
 ) => {
-  const editor = getEditorWithFileUri(uri, root);
-  const i = root.editors.indexOf(editor);
+  const window = getEditorWindowWithFileUri(uri, root);
+  const i = root.editorWindows.indexOf(window);
   return updateRootState(
     {
-      editors: arraySplice(root.editors, i, 1, {
-        ...editor,
+      editorWindows: arraySplice(root.editorWindows, i, 1, {
+        ...window,
         ...properties
       })
     },
@@ -864,7 +881,7 @@ export const centerEditorCanvas = (
     0
   ) {
     console.warn(` Cannot center when bounds has no size`);
-    return updateEditorCanvas(
+    return updateOpenFileCanvas(
       {
         translate: { left: 0, top: 0, zoom: 1 }
       },
@@ -873,15 +890,18 @@ export const centerEditorCanvas = (
     );
   }
 
-  const editor = getEditorWithFileUri(editorFileUri, state);
+  const editorWindow = getEditorWindowWithFileUri(editorFileUri, state);
+  const openFile = getOpenFile(editorFileUri, state);
+  const { container } = editorWindow;
 
-  const {
-    canvas: { container, translate }
-  } = editor;
   if (!container) {
     console.warn("cannot center canvas without a container");
     return state;
   }
+
+  const {
+    canvas: { translate }
+  } = openFile;
 
   const { width, height } = container.getBoundingClientRect();
 
@@ -902,9 +922,16 @@ export const centerEditorCanvas = (
         ? zoomOrZoomToFit
         : translate.zoom;
 
-  state = updateEditorCanvas(
+  state = updateEditorWindow(
     {
-      smooth,
+      smooth
+    },
+    editorFileUri,
+    state
+  );
+
+  state = updateOpenFileCanvas(
+    {
       translate: centerTransformZoom(
         {
           ...centered,
@@ -934,16 +961,16 @@ export const setActiveFilePath = (
   return root;
 };
 
-export const updateEditorCanvas = (
+export const updateOpenFileCanvas = (
   properties: Partial<Canvas>,
   uri: string,
   root: RootState
 ) => {
-  const editor = getEditorWithFileUri(uri, root);
-  return updateEditor(
+  const openFile = getOpenFile(uri, root);
+  return updateOpenFile(
     {
       canvas: {
-        ...editor.canvas,
+        ...openFile.canvas,
         ...properties
       }
     },
@@ -971,7 +998,7 @@ export const setInsertFile = (type: InsertFileType, state: RootState) => {
 };
 
 export const setTool = (toolType: ToolType, root: RootState) => {
-  if (!root.editors.length) {
+  if (!root.editorWindows.length) {
     return root;
   }
   root = updateRootState({ toolType }, root);
@@ -981,7 +1008,7 @@ export const setTool = (toolType: ToolType, root: RootState) => {
 
 export const getActiveFrames = (root: RootState): Frame[] =>
   values(root.frames).filter(frame =>
-    root.editors.some(
+    root.editorWindows.some(
       editor =>
         editor.activeFilePath ===
         getSyntheticDocumentDependencyUri(
@@ -997,7 +1024,7 @@ export const getScaledMouseCanvasPosition = (
   state: RootState,
   point: Point
 ) => {
-  const canvas = getActiveEditor(state).canvas;
+  const canvas = getOpenFile(state.activeEditorFilePath, state).canvas;
   const translate = getCanvasTranslate(canvas);
 
   const scaledPageX = (point.left - translate.left) / translate.zoom;
@@ -1025,8 +1052,8 @@ export const getCanvasMouseTargetNodeIdFromPoint = (
   point: Point,
   filter?: (node: TreeNode<any>) => boolean
 ): string => {
-  const editor = getActiveEditor(state);
-  const canvas = editor.canvas;
+  const editor = getActiveEditorWindow(state);
+  const canvas = getOpenFile(editor.activeFilePath, state).canvas;
   const translate = getCanvasTranslate(canvas);
   const toolType = state.toolType;
 

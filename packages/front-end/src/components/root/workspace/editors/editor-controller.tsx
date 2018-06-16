@@ -1,28 +1,28 @@
 import * as React from "react";
 import { compose, pure } from "recompose";
-import { Editor, RootState, isImageMimetype } from "../../../../state";
+import { EditorWindow, RootState, isImageMimetype } from "../../../../state";
 import { Dispatch } from "redux";
 import { StageComponent as PaperclipStageComponent } from "./paperclip/stage";
-import { ImageEditorComponent } from "./image";
+import { ImageEditorWindowComponent } from "./image";
 import { PAPERCLIP_MIME_TYPE } from "paperclip";
 import { getFSItem } from "fsbox";
 
-export type EditorOuterProps = {
-  editor: Editor;
+export type EditorWindowOuterProps = {
+  editorWindow: EditorWindow;
   root: RootState;
   dispatch: Dispatch<any>;
 };
 
-type EditorInnerProps = {
+type EditorWindowInnerProps = {
   onTabClick: () => any;
-} & EditorOuterProps;
+} & EditorWindowOuterProps;
 
 export default compose(
   pure,
-  Base => ({ editor, root, dispatch }: EditorInnerProps) => {
+  Base => ({ editorWindow, root, dispatch }: EditorWindowInnerProps) => {
     const dependency =
-      window && root.graph && root.graph[editor.activeFilePath];
-    const fileCacheItem = getFSItem(editor.activeFilePath, root);
+      window && root.graph && root.graph[editorWindow.activeFilePath];
+    const fileCacheItem = getFSItem(editorWindow.activeFilePath, root);
 
     if (!fileCacheItem.content) {
       return null;
@@ -37,12 +37,12 @@ export default compose(
             root={root}
             dispatch={dispatch}
             dependency={dependency}
-            editor={editor}
+            editorWindow={editorWindow}
           />
         );
       } else if (isImageMimetype(fileCacheItem.mimeType)) {
         stage = (
-          <ImageEditorComponent
+          <ImageEditorWindowComponent
             root={root}
             dispatch={dispatch}
             fileCacheItem={fileCacheItem}
@@ -55,7 +55,7 @@ export default compose(
       <Base
         toolbarProps={{
           dispatch,
-          editor
+          editorWindow
         }}
         contentProps={{ children: stage }}
       />

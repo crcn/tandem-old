@@ -1,28 +1,31 @@
 import * as React from "react";
 import { compose, pure } from "recompose";
-import { RootState, Editor } from "../../../../../../../../state";
+import { RootState, EditorWindow, Canvas } from "../../../../../../../../state";
 import { wrapEventToDispatch } from "../../../../../../../../utils";
 import { Dispatch } from "redux";
 import { Translate } from "tandem-common";
 import { getFramesByDependencyUri, getSyntheticNodeById } from "paperclip";
 const { Frame } = require("./frames-view.pc");
-import {
-  canvasToolDocumentTitleClicked,
-  canvasToolWindowKeyDown,
-  canvasToolWindowBackgroundClicked
-} from "../../../../../../../../actions";
+import { canvasToolWindowBackgroundClicked } from "../../../../../../../../actions";
 
 export type FramesOuterProps = {
   root: RootState;
-  editor: Editor;
+  editorWindow: EditorWindow;
   dispatch: Dispatch<any>;
   translate: Translate;
+  canvas: Canvas;
 };
 
 export default compose<FramesOuterProps, any>(
   pure,
-  Base => ({ translate, editor, root, dispatch }: FramesOuterProps) => {
-    const { backgroundColor } = editor.canvas;
+  Base => ({
+    canvas,
+    translate,
+    editorWindow,
+    root,
+    dispatch
+  }: FramesOuterProps) => {
+    const { backgroundColor } = canvas;
 
     const backgroundStyle = {
       transform: `translate(${-translate.left /
@@ -32,7 +35,7 @@ export default compose<FramesOuterProps, any>(
     };
 
     const activeFrames = getFramesByDependencyUri(
-      editor.activeFilePath,
+      editorWindow.activeFilePath,
       root.frames,
       root.documents,
       root.graph

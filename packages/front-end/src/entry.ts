@@ -3,7 +3,7 @@ import { init } from "./index";
 init({
   mount: document.getElementById("application"),
   hoveringNodeIds: [],
-  editors: [],
+  editorWindows: [],
   selectedNodeIds: [],
   selectedFileNodeIds: [],
   history: {},

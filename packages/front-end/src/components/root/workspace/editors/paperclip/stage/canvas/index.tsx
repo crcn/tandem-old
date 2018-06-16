@@ -4,10 +4,11 @@ import { Dispatch } from "redux";
 import { compose, pure, withState, withHandlers } from "recompose";
 import {
   RootState,
-  Editor,
+  EditorWindow,
   ToolType,
   REGISTERED_COMPONENT,
-  RegisteredComponent
+  RegisteredComponent,
+  getOpenFile
 } from "../../../../../../../state";
 import { Dependency, getFramesByDependencyUri } from "paperclip";
 import { PreviewLayerComponent } from "./preview-layer";
@@ -32,7 +33,7 @@ import {
 
 export type CanvasOuterProps = {
   root: RootState;
-  editor: Editor;
+  editorWindow: EditorWindow;
   dependency: Dependency<any>;
   dispatch: Dispatch<any>;
 };
@@ -59,26 +60,25 @@ const BaseCanvasComponent = ({
   dispatch,
   dependency,
   setCanvasOuter,
-  editor,
+  editorWindow,
   setCanvasContainer,
   onWheel,
   onDrop,
   onMouseEvent,
-  shouldTransitionZoom,
   onDragOver,
   onMouseClick,
   connectDropTarget,
-  onMotionRest,
   onDragExit
 }: CanvasInnerProps) => {
   const activeFrames = getFramesByDependencyUri(
-    editor.activeFilePath,
+    editorWindow.activeFilePath,
     root.frames,
     root.documents,
     root.graph
   );
 
-  const translate = editor.canvas.translate;
+  const canvas = getOpenFile(editorWindow.activeFilePath, root).canvas;
+  const translate = canvas.translate;
 
   return (
     <div className="m-canvas" ref={setCanvasContainer}>
@@ -126,7 +126,7 @@ const BaseCanvasComponent = ({
                   root={root}
                   dispatch={dispatch}
                   zoom={translate.zoom}
-                  editor={editor}
+                  editorWindow={editorWindow}
                 />
               </div>
             )}
@@ -151,8 +151,10 @@ const enhance = compose<CanvasInnerProps, CanvasOuterProps>(
     onMouseClick: ({ dispatch }) => (event: React.MouseEvent<any>) => {
       dispatch(canvasMouseClicked(event));
     },
-    setCanvasContainer: ({ dispatch, editor }) => (element: HTMLDivElement) => {
-      dispatch(canvasContainerMounted(element, editor.activeFilePath));
+    setCanvasContainer: ({ dispatch, editorWindow }) => (
+      element: HTMLDivElement
+    ) => {
+      dispatch(canvasContainerMounted(element, editorWindow.activeFilePath));
     },
     onWheel: ({ root, dispatch, canvasOuter }: CanvasInnerProps) => (
       event: React.WheelEvent<any>
@@ -181,7 +183,7 @@ const enhance = compose<CanvasInnerProps, CanvasOuterProps>(
         return true;
       },
       drop: (
-        { root, dispatch, editor }: CanvasOuterProps,
+        { root, dispatch, editorWindow }: CanvasOuterProps,
         monitor: DropTargetMonitor
       ) => {
         const item = monitor.getItem() as RegisteredComponent;
@@ -191,7 +193,7 @@ const enhance = compose<CanvasInnerProps, CanvasOuterProps>(
           top: offset.y
         };
 
-        dispatch(canvasDroppedItem(item, point, editor.activeFilePath));
+        dispatch(canvasDroppedItem(item, point, editorWindow.activeFilePath));
       }
     },
     (connect, monitor) => {

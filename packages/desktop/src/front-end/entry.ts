@@ -35,7 +35,7 @@ setup<DesktopRootState>(
   hoveringNodeIds: [],
   selectedNodeIds: [],
   selectedFileNodeIds: [],
-  editors: [],
+  editorWindows: [],
   frames: [],
   documents: [],
   graph: {},

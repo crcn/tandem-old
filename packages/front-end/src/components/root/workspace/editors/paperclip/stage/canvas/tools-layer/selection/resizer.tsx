@@ -4,11 +4,12 @@ import { debounce } from "lodash";
 import { pure, compose, withHandlers } from "recompose";
 import {
   RootState,
-  Editor,
+  EditorWindow,
   getBoundedSelection,
   getSelectionBounds,
   isSelectionMovable,
-  isSelectionResizable
+  isSelectionResizable,
+  Canvas
 } from "../../../../../../../../../state";
 import {
   resizerMoved,
@@ -21,7 +22,8 @@ import { Dispatch } from "redux";
 import { Path } from "./path";
 
 export type ResizerOuterProps = {
-  editor: Editor;
+  canvas: Canvas;
+  editorWindow: EditorWindow;
   dispatch: Dispatch<any>;
   root: RootState;
   zoom: number;
@@ -98,12 +100,15 @@ export const ResizerBase = ({
 const enhanceResizer = compose<ResizerInnerProps, ResizerOuterProps>(
   pure,
   withHandlers({
-    onMouseDown: ({ dispatch, root, editor }: ResizerOuterProps) => (
-      event: React.MouseEvent<any>
-    ) => {
+    onMouseDown: ({
+      dispatch,
+      root,
+      editorWindow,
+      canvas
+    }: ResizerOuterProps) => (event: React.MouseEvent<any>) => {
       dispatch(resizerMouseDown(event));
 
-      const translate = editor.canvas.translate;
+      const translate = canvas.translate;
       const bounds = getSelectionBounds(root);
       const translateLeft = translate.left;
       const translateTop = translate.top;

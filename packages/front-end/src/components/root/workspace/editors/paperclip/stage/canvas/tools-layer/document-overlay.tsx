@@ -5,7 +5,11 @@ import * as Hammer from "react-hammerjs";
 // import { Workspace, AVAILABLE_COMPONENT, AvailableComponent, Artboard } from "front-end/state";
 // import { Workspace, AVAILABLE_COMPONENT, AvailableComponent, Artboard } from "front-end/state";
 import { wrapEventToDispatch } from "../../../../../../../../utils";
-import { RootState, Editor, FrameMode } from "../../../../../../../../state";
+import {
+  RootState,
+  EditorWindow,
+  FrameMode
+} from "../../../../../../../../state";
 import {
   Frame,
   getFramesByDependencyUri,
@@ -24,7 +28,6 @@ import { compose, pure, withHandlers } from "recompose";
 // import { Dispatcher, Bounds, wrapEventToDispatch, weakMemo, StructReference } from "aerial-common2";
 import { Dispatch } from "redux";
 import {
-  canvasToolOverlayMouseLeave,
   canvasToolOverlayMousePanStart,
   canvasToolOverlayMousePanning,
   canvasToolOverlayMousePanEnd,
@@ -32,7 +35,7 @@ import {
 } from "../../../../../../../../actions";
 
 export type VisualToolsProps = {
-  editor: Editor;
+  editorWindow: EditorWindow;
   zoom: number;
   root: RootState;
   dispatch: Dispatch<any>;
@@ -212,12 +215,12 @@ const getHoveringSyntheticVisibleNodes = memoize(
 
 export const NodeOverlaysToolBase = ({
   root,
-  editor,
+  editorWindow,
   dispatch,
   zoom
 }: VisualToolsProps) => {
   const activeFrames = getFramesByDependencyUri(
-    editor.activeFilePath,
+    editorWindow.activeFilePath,
     root.frames,
     root.documents,
     root.graph

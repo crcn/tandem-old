@@ -1,17 +1,15 @@
 import "./insert-layer.scss";
 import * as React from "react";
 import { compose, pure, withHandlers, withState } from "recompose";
-import { Canvas, ToolType, Editor } from "../../../../../../../../state";
-import {
-  CANVAS_MOTION_RESTED,
-  insertToolFinished
-} from "../../../../../../../../actions";
+import { Canvas, ToolType, EditorWindow } from "../../../../../../../../state";
+import { insertToolFinished } from "../../../../../../../../actions";
 import { Dispatch } from "redux";
 import { startDOMDrag, Bounds, getBoundsSize } from "tandem-common";
 
 type InsertLayerOuterProps = {
   toolType: ToolType;
-  editor: Editor;
+  canvas: Canvas;
+  editorWindow: EditorWindow;
   dispatch: Dispatch<any>;
 };
 
@@ -30,15 +28,16 @@ const CURSOR_MAP = {
 const TEXT_PADDING = 5;
 
 const BaseInsertLayer = ({
+  canvas,
   toolType,
-  editor,
+  editorWindow,
   onMouseDown,
   previewBounds
 }: InsertLayerInnerProps) => {
   if (toolType == null) {
     return null;
   }
-  const translate = editor.canvas.translate;
+  const translate = canvas.translate;
 
   const outerStyle = {
     cursor: CURSOR_MAP[toolType] || "default",
@@ -91,12 +90,9 @@ const enhance = compose<InsertLayerInnerProps, InsertLayerOuterProps>(
   pure,
   withState("previewBounds", "setPreviewBounds", null),
   withHandlers({
-    onMouseDown: ({
-      toolType,
-      editor,
-      setPreviewBounds,
-      dispatch
-    }: InsertLayerInnerProps) => (startEvent: React.MouseEvent<any>) => {
+    onMouseDown: ({ editorWindow, dispatch }: InsertLayerInnerProps) => (
+      startEvent: React.MouseEvent<any>
+    ) => {
       const startX = startEvent.clientX;
       const startY = startEvent.clientY;
       dispatch(
@@ -105,7 +101,7 @@ const enhance = compose<InsertLayerInnerProps, InsertLayerOuterProps>(
             left: startX,
             top: startY
           },
-          editor.activeFilePath
+          editorWindow.activeFilePath
         )
       );
     }
