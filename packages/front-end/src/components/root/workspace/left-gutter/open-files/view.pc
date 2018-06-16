@@ -1,0 +1,377 @@
+{
+  "id": "b34e7ef42461334",
+  "name": "module",
+  "version": "0.0.3",
+  "children": [
+    {
+      "label": "Open Files",
+      "is": "b6c162d113",
+      "style": {},
+      "attributes": {},
+      "id": "b34e7ef42482727",
+      "name": "component",
+      "children": [
+        {
+          "id": "b34e7ef42491282",
+          "propertyName": "text",
+          "targetIdPath": [
+            "b6c162d1281"
+          ],
+          "value": "open files",
+          "name": "override",
+          "children": []
+        },
+        {
+          "id": "b34e7ef42868476",
+          "propertyName": "children",
+          "targetIdPath": [
+            "b6c162d140"
+          ],
+          "name": "override",
+          "children": [
+            {
+              "id": "b34e7ef42864191",
+              "variant": [],
+              "is": "b34e7ef42585379",
+              "name": "component-instance",
+              "attributes": {},
+              "style": {},
+              "children": [
+                {
+                  "id": "317401b1327982",
+                  "propertyName": "text",
+                  "targetIdPath": [
+                    "b34e7ef42662439"
+                  ],
+                  "value": "src/components/component/component-picker/super-long/directory",
+                  "name": "override",
+                  "children": []
+                }
+              ],
+              "metadata": {
+                "bounds": {
+                  "left": 36,
+                  "top": 204,
+                  "right": 250.0323137980123,
+                  "bottom": 304
+                }
+              }
+            },
+            {
+              "id": "b34e7ef42915591",
+              "variant": [],
+              "is": "b34e7ef42585379",
+              "name": "component-instance",
+              "attributes": {},
+              "style": {},
+              "children": [],
+              "metadata": {
+                "bounds": {
+                  "left": 36,
+                  "top": 204,
+                  "right": 250.0323137980123,
+                  "bottom": 304
+                }
+              }
+            },
+            {
+              "id": "b34e7ef42919882",
+              "variant": [],
+              "is": "b34e7ef42585379",
+              "name": "component-instance",
+              "attributes": {},
+              "style": {},
+              "children": [],
+              "metadata": {
+                "bounds": {
+                  "left": 36,
+                  "top": 204,
+                  "right": 250.0323137980123,
+                  "bottom": 304
+                }
+              }
+            }
+          ],
+          "metadata": {}
+        },
+        {
+          "id": "b34e7ef42877043",
+          "propertyName": "style",
+          "targetIdPath": [
+            "b6c162d140"
+          ],
+          "value": {
+            "padding": "none"
+          },
+          "name": "override",
+          "children": []
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": 320,
+          "top": 150,
+          "right": 659.6734828399708,
+          "bottom": 614.6903757530276
+        }
+      }
+    },
+    {
+      "label": "Open File",
+      "is": "div",
+      "style": {},
+      "attributes": {},
+      "id": "b34e7ef42585379",
+      "name": "component",
+      "children": [
+        {
+          "id": "b34e7ef42598214",
+          "label": "header",
+          "is": "div",
+          "name": "element",
+          "attributes": {},
+          "style": {
+            "display": "flex",
+            "font-family": "Helvetica",
+            "padding": "4px 8px",
+            "background": "rgba(231, 230, 230, 1)"
+          },
+          "children": [
+            {
+              "id": "b34e7ef42628177",
+              "label": "basename",
+              "is": "div",
+              "name": "element",
+              "attributes": {},
+              "style": {
+                "padding-right": "4px"
+              },
+              "children": [
+                {
+                  "id": "b34e7ef42658155",
+                  "name": "text",
+                  "label": "Text",
+                  "value": "view.pc",
+                  "style": {},
+                  "children": [],
+                  "metadata": {}
+                }
+              ],
+              "metadata": {}
+            },
+            {
+              "id": "b34e7ef42636742",
+              "label": "directory",
+              "is": "div",
+              "name": "element",
+              "attributes": {},
+              "style": {
+                "width": "100%",
+                "flex": "1",
+                "overflow": "hidden",
+                "white-space": "nowrap",
+                "text-overflow": "ellipsis"
+              },
+              "children": [
+                {
+                  "id": "b34e7ef42662439",
+                  "name": "text",
+                  "label": "Text",
+                  "value": "src/components/component/component-picker",
+                  "style": {},
+                  "children": [],
+                  "metadata": {}
+                }
+              ],
+              "metadata": {}
+            }
+          ],
+          "metadata": {}
+        },
+        {
+          "id": "b34e7ef42606773",
+          "label": "layers",
+          "is": "div",
+          "name": "element",
+          "attributes": {},
+          "style": {},
+          "children": [
+            {
+              "id": "b34e7ef42971516",
+              "variant": [],
+              "is": "b34e7ef42958603",
+              "name": "component-instance",
+              "attributes": {},
+              "style": {},
+              "children": [],
+              "metadata": {
+                "bounds": {
+                  "left": -323.72117321409064,
+                  "top": 212.34394510408123,
+                  "right": -223.72117321409064,
+                  "bottom": 312.34394510408123
+                }
+              }
+            }
+          ],
+          "metadata": {}
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": 26,
+          "top": 194,
+          "right": 240.0323137980123,
+          "bottom": 294
+        }
+      }
+    },
+    {
+      "label": "PC Layers",
+      "is": "div",
+      "style": {},
+      "attributes": {},
+      "id": "b34e7ef42958603",
+      "name": "component",
+      "children": [
+        {
+          "id": "b34e7ef42937085",
+          "variant": [],
+          "is": "b34e7ef429680",
+          "name": "component-instance",
+          "attributes": {},
+          "style": {},
+          "children": [
+            {
+              "id": "b34e7ef42984537",
+              "propertyName": "children",
+              "targetIdPath": [
+                "b34e7ef4710988"
+              ],
+              "name": "override",
+              "children": [
+                {
+                  "id": "b34e7ef42980167",
+                  "variant": [],
+                  "is": "b34e7ef429680",
+                  "name": "component-instance",
+                  "attributes": {},
+                  "style": {
+                    "font-family": "Helvetica",
+                    "position": "relative"
+                  },
+                  "children": [
+                    {
+                      "id": "b34e7ef43111361",
+                      "propertyName": "style",
+                      "targetIdPath": [
+                        "b34e7ef4338028"
+                      ],
+                      "value": {
+                        "padding-left": "16px"
+                      },
+                      "name": "override",
+                      "children": []
+                    }
+                  ],
+                  "metadata": {
+                    "bounds": {
+                      "left": -94,
+                      "top": 354,
+                      "right": 125.50785531785732,
+                      "bottom": 508.82678088853527
+                    }
+                  }
+                },
+                {
+                  "id": "b34e7ef43207480",
+                  "variant": [],
+                  "is": "b34e7ef429680",
+                  "name": "component-instance",
+                  "attributes": {},
+                  "style": {
+                    "font-family": "Helvetica",
+                    "position": "relative"
+                  },
+                  "children": [
+                    {
+                      "id": "b34e7ef43207481",
+                      "propertyName": "style",
+                      "targetIdPath": [
+                        "b34e7ef4338028"
+                      ],
+                      "value": {
+                        "padding-left": "16px"
+                      },
+                      "name": "override",
+                      "children": []
+                    }
+                  ],
+                  "metadata": {
+                    "bounds": {
+                      "left": -94,
+                      "top": 354,
+                      "right": 125.50785531785732,
+                      "bottom": 508.82678088853527
+                    }
+                  }
+                },
+                {
+                  "id": "b34e7ef43211881",
+                  "variant": [],
+                  "is": "b34e7ef429680",
+                  "name": "component-instance",
+                  "attributes": {},
+                  "style": {
+                    "font-family": "Helvetica",
+                    "position": "relative"
+                  },
+                  "children": [
+                    {
+                      "id": "b34e7ef43211882",
+                      "propertyName": "style",
+                      "targetIdPath": [
+                        "b34e7ef4338028"
+                      ],
+                      "value": {
+                        "padding-left": "16px"
+                      },
+                      "name": "override",
+                      "children": []
+                    }
+                  ],
+                  "metadata": {
+                    "bounds": {
+                      "left": -94,
+                      "top": 354,
+                      "right": 125.50785531785732,
+                      "bottom": 508.82678088853527
+                    }
+                  }
+                }
+              ],
+              "metadata": {}
+            }
+          ],
+          "metadata": {
+            "bounds": {
+              "left": -94,
+              "top": 354,
+              "right": 125.50785531785732,
+              "bottom": 508.82678088853527
+            }
+          }
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": -333.72117321409064,
+          "top": 202.34394510408123,
+          "right": -233.72117321409064,
+          "bottom": 302.34394510408123
+        }
+      }
+    }
+  ],
+  "metadata": {}
+}
