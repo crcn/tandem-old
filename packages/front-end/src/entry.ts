@@ -11,5 +11,6 @@ init({
   frames: [],
   documents: [],
   graph: {},
-  fileCache: {}
+  fileCache: {},
+  selectedComponentId: null
 });

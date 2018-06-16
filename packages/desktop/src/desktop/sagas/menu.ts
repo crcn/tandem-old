@@ -107,10 +107,17 @@ export function* shortcutsSaga() {
             }
           },
           {
-            label: "Div",
+            label: "Element",
             accelerator: "r",
             click: () => {
               emit(shortcutKeyDown("SHORTCUT_R_KEY_DOWN"));
+            }
+          },
+          {
+            label: "Component",
+            accelerator: "c",
+            click: () => {
+              emit(shortcutKeyDown("SHORTCUT_C_KEY_DOWN"));
             }
           }
         ]

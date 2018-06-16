@@ -166,9 +166,11 @@ export type RootState = {
   insertFileInfo?: InsertFileInfo;
   history: GraphHistory;
   showQuickSearch?: boolean;
+  selectedComponentId: string;
 } & PCEditorState &
   FSSandboxRootState;
 
+// TODO - change this to Editor
 export type OpenFile = {
   temporary: boolean;
   newContent?: Buffer;
@@ -1000,6 +1002,9 @@ export const setInsertFile = (type: InsertFileType, state: RootState) => {
 export const setTool = (toolType: ToolType, root: RootState) => {
   if (!root.editorWindows.length) {
     return root;
+  }
+  if (toolType == null) {
+    root = { ...root, selectedComponentId: null };
   }
   root = updateRootState({ toolType }, root);
   root = setSelectedSyntheticVisibleNodeIds(root);

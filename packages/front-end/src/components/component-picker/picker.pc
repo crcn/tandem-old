@@ -30,7 +30,7 @@
           "style": {},
           "children": [],
           "metadata": {},
-          "label": "Filter"
+          "label": "filter input"
         },
         {
           "id": "dcd2c13f1458755",
@@ -41,7 +41,8 @@
           "style": {
             "box-sizing": "border-box",
             "height": "100%",
-            "width": "100%"
+            "width": "100%",
+            "overflow": "scroll"
           },
           "children": [
             {
@@ -86,6 +87,156 @@
             },
             {
               "id": "33949bb8197235",
+              "variant": [],
+              "is": "dcd2c13f1453155",
+              "name": "component-instance",
+              "attributes": {},
+              "style": {},
+              "children": [],
+              "metadata": {}
+            },
+            {
+              "id": "29ae594c90",
+              "variant": [],
+              "is": "dcd2c13f1453155",
+              "name": "component-instance",
+              "attributes": {},
+              "style": {},
+              "children": [],
+              "metadata": {}
+            },
+            {
+              "id": "29ae594c6062",
+              "variant": [],
+              "is": "dcd2c13f1453155",
+              "name": "component-instance",
+              "attributes": {},
+              "style": {},
+              "children": [],
+              "metadata": {}
+            },
+            {
+              "id": "29ae594c11978",
+              "variant": [],
+              "is": "dcd2c13f1453155",
+              "name": "component-instance",
+              "attributes": {},
+              "style": {},
+              "children": [],
+              "metadata": {}
+            },
+            {
+              "id": "29ae594c17906",
+              "variant": [],
+              "is": "dcd2c13f1453155",
+              "name": "component-instance",
+              "attributes": {},
+              "style": {},
+              "children": [],
+              "metadata": {}
+            },
+            {
+              "id": "29ae594c23846",
+              "variant": [],
+              "is": "dcd2c13f1453155",
+              "name": "component-instance",
+              "attributes": {},
+              "style": {},
+              "children": [],
+              "metadata": {}
+            },
+            {
+              "id": "29ae594c29798",
+              "variant": [],
+              "is": "dcd2c13f1453155",
+              "name": "component-instance",
+              "attributes": {},
+              "style": {},
+              "children": [],
+              "metadata": {}
+            },
+            {
+              "id": "29ae594c35762",
+              "variant": [],
+              "is": "dcd2c13f1453155",
+              "name": "component-instance",
+              "attributes": {},
+              "style": {},
+              "children": [],
+              "metadata": {}
+            },
+            {
+              "id": "29ae594c41738",
+              "variant": [],
+              "is": "dcd2c13f1453155",
+              "name": "component-instance",
+              "attributes": {},
+              "style": {},
+              "children": [],
+              "metadata": {}
+            },
+            {
+              "id": "29ae594c47726",
+              "variant": [],
+              "is": "dcd2c13f1453155",
+              "name": "component-instance",
+              "attributes": {},
+              "style": {},
+              "children": [],
+              "metadata": {}
+            },
+            {
+              "id": "29ae594c53726",
+              "variant": [],
+              "is": "dcd2c13f1453155",
+              "name": "component-instance",
+              "attributes": {},
+              "style": {},
+              "children": [],
+              "metadata": {}
+            },
+            {
+              "id": "29ae594c59738",
+              "variant": [],
+              "is": "dcd2c13f1453155",
+              "name": "component-instance",
+              "attributes": {},
+              "style": {},
+              "children": [],
+              "metadata": {}
+            },
+            {
+              "id": "29ae594c65762",
+              "variant": [],
+              "is": "dcd2c13f1453155",
+              "name": "component-instance",
+              "attributes": {},
+              "style": {},
+              "children": [],
+              "metadata": {}
+            },
+            {
+              "id": "29ae594c71798",
+              "variant": [],
+              "is": "dcd2c13f1453155",
+              "name": "component-instance",
+              "attributes": {},
+              "style": {},
+              "children": [],
+              "metadata": {}
+            },
+            {
+              "id": "29ae594c77846",
+              "variant": [],
+              "is": "dcd2c13f1453155",
+              "name": "component-instance",
+              "attributes": {},
+              "style": {},
+              "children": [],
+              "metadata": {}
+            },
+            {
+              "id": "29ae594c83906",
               "variant": [],
               "is": "dcd2c13f1453155",
               "name": "component-instance",

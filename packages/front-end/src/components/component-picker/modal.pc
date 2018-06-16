@@ -92,6 +92,16 @@
               },
               "name": "override",
               "children": []
+            },
+            {
+              "id": "ef1c422369",
+              "propertyName": "label",
+              "targetIdPath": [
+                "33949bb81531103"
+              ],
+              "value": "filter input",
+              "name": "override",
+              "children": []
             }
           ],
           "metadata": {
@@ -107,10 +117,10 @@
       ],
       "metadata": {
         "bounds": {
-          "left": 428,
-          "top": 273,
-          "right": 1488.745578674279,
-          "bottom": 1037.10984700987
+          "left": 340,
+          "top": 336,
+          "right": 1400.745578674279,
+          "bottom": 1100.10984700987
         }
       },
       "controllers": [

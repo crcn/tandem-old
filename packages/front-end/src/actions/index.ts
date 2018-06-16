@@ -20,7 +20,8 @@ import {
   SyntheticNativeNodeMap,
   SyntheticVisibleNode,
   PCNodeClip,
-  Frame
+  Frame,
+  PCComponent
 } from "paperclip";
 import { RegisteredComponent } from "..";
 import { ClientOffset } from "react-dnd";
@@ -80,6 +81,9 @@ export const RESIZER_PATH_MOUSE_STOPPED_MOVING =
   "RESIZER_PATH_MOUSE_STOPPED_MOVING";
 export const RESIZER_MOVED = "RESIZER_MOVED";
 export const RESIZER_STOPPED_MOVING = "RESIZER_STOPPED_MOVING";
+export const COMPONENT_PICKER_BACKGROUND_CLICK =
+  "COMPONENT_PICKER_BACKGROUND_CLICK";
+export const COMPONENT_PICKER_ITEM_CLICK = "COMPONENT_PICKER_ITEM_CLICK";
 export const RESIZER_MOUSE_DOWN = "RESIZER_MOUSE_DOWN";
 export const RESIZER_START_DRGG = "RESIZER_START_DRGG";
 export const SELECTOR_DOUBLE_CLICKED = "SELECTOR_DOUBLE_CLICKED";
@@ -92,6 +96,7 @@ export const SHORTCUT_DELETE_KEY_DOWN = "SHORTCUT_DELETE_KEY_DOWN";
 export const SHORTCUT_UNDO_KEY_DOWN = "SHORTCUT_UNDO_KEY_DOWN";
 export const SHORTCUT_REDO_KEY_DOWN = "SHORTCUT_REDO_KEY_DOWN";
 export const SHORTCUT_R_KEY_DOWN = "SHORTCUT_R_KEY_DOWN";
+export const SHORTCUT_C_KEY_DOWN = "SHORTCUT_C_KEY_DOWN";
 export const SHORTCUT_T_KEY_DOWN = "SHORTCUT_T_KEY_DOWN";
 export const SHORTCUT_SELECT_NEXT_TAB = "SHORTCUT_SELECT_NEXT_TAB";
 export const SHORTCUT_SELECT_PREVIOUS_TAB = "SHORTCUT_SELECT_PREVIOUS_TAB";
@@ -322,6 +327,10 @@ export type QuickSearchItemClicked = {
   file: File;
 } & Action;
 
+export type ComponentPickerItemClick = {
+  component: PCComponent;
+} & Action;
+
 export type SavedFile = {
   uri: string;
 } & Action;
@@ -425,6 +434,17 @@ export const fileNavigatorNewFileClicked = (): Action => ({
 
 export const fileNavigatorNewDirectoryClicked = (): Action => ({
   type: FILE_NAVIGATOR_NEW_DIRECTORY_CLICKED
+});
+
+export const componentPickerBackgroundClick = (): Action => ({
+  type: COMPONENT_PICKER_BACKGROUND_CLICK
+});
+
+export const componentPickerItemClick = (
+  component: PCComponent
+): ComponentPickerItemClick => ({
+  component,
+  type: COMPONENT_PICKER_ITEM_CLICK
 });
 
 export const quickSearchItemClicked = (file: File): QuickSearchItemClicked => ({

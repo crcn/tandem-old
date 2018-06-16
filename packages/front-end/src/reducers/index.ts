@@ -113,7 +113,11 @@ import {
   EDITOR_TAB_CLOSE_BUTTON_CLICKED,
   SHORTCUT_SELECT_NEXT_TAB,
   SHORTCUT_SELECT_PREVIOUS_TAB,
-  SHORTCUT_CLOSE_CURRENT_TAB
+  SHORTCUT_CLOSE_CURRENT_TAB,
+  COMPONENT_PICKER_BACKGROUND_CLICK,
+  ComponentPickerItemClick,
+  COMPONENT_PICKER_ITEM_CLICK,
+  SHORTCUT_C_KEY_DOWN
 } from "../actions";
 import {
   queueOpenFile,
@@ -221,8 +225,10 @@ import {
   persistAddComponentController,
   persistCSSProperty,
   persistAttribute,
+  getPCNode,
   updateSyntheticVisibleNode,
-  persistSyntheticNodeMetadata
+  persistSyntheticNodeMetadata,
+  createPCComponentInstance
 } from "paperclip";
 import {
   getTreeNodePath,
@@ -751,12 +757,22 @@ export const canvasReducer = (state: RootState, action: Action) => {
       return state;
     }
 
+    case COMPONENT_PICKER_BACKGROUND_CLICK: {
+      return setTool(null, state);
+    }
+
+    case COMPONENT_PICKER_ITEM_CLICK: {
+      const { component } = action as ComponentPickerItemClick;
+      return {
+        ...state,
+        selectedComponentId: component.id
+      };
+    }
+
     case TOOLBAR_TOOL_CLICKED: {
       const { toolType } = action as ToolbarToolClicked;
       if (toolType === ToolType.POINTER) {
         state = setTool(null, state);
-      } else if (toolType === ToolType.COMPONENT) {
-        throw new Error("OPEN HUD TODO");
       } else {
         state = setTool(toolType, state);
       }
@@ -1285,6 +1301,25 @@ export const canvasReducer = (state: RootState, action: Action) => {
       const toolType = state.toolType;
 
       switch (toolType) {
+        case ToolType.COMPONENT: {
+          const componentId = state.selectedComponentId;
+          state = { ...state, selectedComponentId: null };
+          const component = getPCNode(componentId, state.graph);
+
+          return persistInsertNodeFromPoint(
+            createPCComponentInstance(
+              componentId,
+              [],
+              null,
+              null,
+              null,
+              component.metadata
+            ),
+            fileUri,
+            point,
+            state
+          );
+        }
         case ToolType.ELEMENT: {
           return persistInsertNodeFromPoint(
             createPCElement(
@@ -1340,13 +1375,19 @@ const persistInsertNodeFromPoint = (
       }
     );
 
+    let bounds = {
+      left: 0,
+      top: 0,
+      right: INSERT_ARTBOARD_WIDTH,
+      bottom: INSERT_ARTBOARD_HEIGHT,
+      ...(node.metadata[PCVisibleNodeMetadataKey.BOUNDS] || {})
+    };
+
+    bounds = moveBounds(bounds, newPoint);
+
     node = updatePCNodeMetadata(
       {
-        [PCVisibleNodeMetadataKey.BOUNDS]: {
-          ...newPoint,
-          right: newPoint.left + INSERT_ARTBOARD_WIDTH,
-          bottom: newPoint.top + INSERT_ARTBOARD_HEIGHT
-        }
+        [PCVisibleNodeMetadataKey.BOUNDS]: bounds
       },
       node
     );
@@ -1475,6 +1516,11 @@ const shortcutReducer = (state: RootState, action: Action): RootState => {
     }
     case SHORTCUT_R_KEY_DOWN: {
       return isInputSelected(state) ? state : setTool(ToolType.ELEMENT, state);
+    }
+    case SHORTCUT_C_KEY_DOWN: {
+      return isInputSelected(state)
+        ? state
+        : setTool(ToolType.COMPONENT, state);
     }
     case SHORTCUT_CONVERT_TO_COMPONENT_KEY_DOWN: {
       // TODO - should be able to conver all selected nodes to components

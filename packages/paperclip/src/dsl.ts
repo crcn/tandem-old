@@ -260,7 +260,8 @@ export const createPCComponentInstance = (
   variant?: string[],
   style: KeyValue<any> = {},
   attributes: KeyValue<string> = {},
-  children: PCVisibleNode[] = []
+  children: PCVisibleNode[] = [],
+  metadata?: KeyValue<any>
 ): PCComponentInstanceElement => ({
   id: generateUID(),
   variant: variant || [],
@@ -269,7 +270,7 @@ export const createPCComponentInstance = (
   attributes: attributes || {},
   style: style || {},
   children: children || [],
-  metadata: {}
+  metadata: metadata || {}
 });
 
 export const createPCTextNode = (
@@ -468,6 +469,9 @@ export const getPCNodeDependency = memoize(
 
 export const getPCNode = (nodeId: string, graph: DependencyGraph) => {
   const dep = getPCNodeDependency(nodeId, graph);
+  if (!dep) {
+    return null;
+  }
   return getNestedTreeNodeById(nodeId, dep.content) as PCNode;
 };
 
@@ -509,6 +513,19 @@ export const getDefaultVariantIds = (component: PCComponent) =>
 export const getNodeSourceComponent = memoize(
   (node: PCComponentInstanceElement, graph: DependencyGraph) =>
     getPCNodeContentNode(node.name, getPCNodeModule(node.id, graph))
+);
+
+export const getAllPCComponents = memoize(
+  (graph: DependencyGraph): PCComponent[] => {
+    const components: PCComponent[] = [];
+
+    for (const uri in graph) {
+      const dep = graph[uri];
+      components.push(...filterNestedNodes(dep.content, isComponent));
+    }
+
+    return components;
+  }
 );
 
 export const getComponentRefIds = memoize((node: PCNode): string[] => {

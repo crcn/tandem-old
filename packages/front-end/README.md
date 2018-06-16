@@ -1,9 +1,7 @@
 IMMEDIATE:
 
-* Component picker
 * content nodes must be compilable for preview
 * refactor left gutter
-* inherit styles
 * variants
 
 - Styler
@@ -38,6 +36,7 @@ Polish:
   * Gradient input
 * split view
 * Rust port
+* component preview
 * context menu
 * insert rect into layer pane should work
 * drag element layers to canvas

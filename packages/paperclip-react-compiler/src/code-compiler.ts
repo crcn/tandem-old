@@ -70,6 +70,7 @@ type TranslateContext = {
   currentScope?: string;
   entry: PCDependency;
   graph: DependencyGraph;
+  warnings: Error[];
   scopedLabelRefs: {
     // scope ID
     [identifier: string]: {
@@ -91,7 +92,8 @@ export const translatePaperclipModuleToReact = (
     buffer: "",
     graph,
     scopedLabelRefs: {},
-    depth: 0
+    depth: 0,
+    warnings: []
   }).buffer;
   return buffer;
 };
@@ -882,6 +884,9 @@ const translateInnerAttributes = (
   context: TranslateContext
 ) => {
   const node = getPCNode(nodeId, context.graph) as PCComponentInstanceElement;
+  if (!node) {
+    return addWarning(new Error(`cannot find PC node`), context);
+  }
   for (const key in attributes) {
     let value = JSON.stringify(attributes[key]);
     if (key === "src" && node.is === "img") {
@@ -891,6 +896,11 @@ const translateInnerAttributes = (
   }
   return context;
 };
+
+const addWarning = (warning: Error, context: TranslateContext) => ({
+  ...context,
+  warnings: [...context.warnings, warning]
+});
 
 const getNodePropsVarName = (
   node: PCVisibleNode | PCComponent,
