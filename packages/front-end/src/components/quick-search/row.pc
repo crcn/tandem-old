@@ -9,7 +9,6 @@
       "is": "div",
       "style": {
         "width": "100%",
-        "background": "rgba(91, 91, 91, 0.15)",
         "color": "rgba(122, 122, 122, 1)",
         "fontSize": "11px",
         "fontFamily": "Helvetica",
@@ -94,53 +93,6 @@
       "controllers": [
         "./search-result-controller.tsx"
       ]
-    },
-    {
-      "id": "df7edf6a72",
-      "variant": [],
-      "is": "808486bb13",
-      "name": "component-instance",
-      "attributes": {},
-      "style": {},
-      "children": [],
-      "metadata": {
-        "bounds": {
-          "left": 387,
-          "top": 404,
-          "right": 655.470266729453,
-          "bottom": 471
-        }
-      }
-    },
-    {
-      "label": "Match",
-      "is": "div",
-      "style": {
-        "font-family": "Helvetica",
-        "color": "rgba(0, 145, 255, 1)"
-      },
-      "attributes": {},
-      "id": "df7edf6a12666",
-      "name": "component",
-      "children": [
-        {
-          "id": "df7edf6a21031",
-          "name": "text",
-          "label": "Text",
-          "value": "Click to edit",
-          "style": {},
-          "children": [],
-          "metadata": {}
-        }
-      ],
-      "metadata": {
-        "bounds": {
-          "left": 739.7625632634038,
-          "top": 282.311260126513,
-          "right": 839.7625632634038,
-          "bottom": 382.311260126513
-        }
-      }
     }
   ],
   "metadata": {}

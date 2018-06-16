@@ -24,7 +24,8 @@
             "width": "300px",
             "position": "relative",
             "display": "flex",
-            "flex-direction": "column"
+            "flex-direction": "column",
+            "background": "rgba(255, 255, 255, 1)"
           },
           "children": [
             {
@@ -90,7 +91,8 @@
           "name": "component-instance",
           "attributes": {},
           "style": {
-            "position": "relative"
+            "position": "relative",
+            "background": "rgba(237, 236, 236, 1)"
           },
           "children": [
             {
@@ -113,7 +115,9 @@
           "is": "8b8bbe2c724435",
           "name": "component-instance",
           "attributes": {},
-          "style": {},
+          "style": {
+            "background": "rgba(255, 255, 255, 1)"
+          },
           "children": [
             {
               "id": "392dc094038",

@@ -1,7 +1,10 @@
 IMMEDIATE:
 
 * Select inserted elements
-* canvas buttons
+* content nodes must be compilable for preview
+* refactor left gutter
+* inherit styles
+* variants
 
 - Styler
   * right gutter drawer
@@ -27,12 +30,12 @@ IMMEDIATE:
 
 - Polish
 
-  * "Live" button connecting to HMR
   * Typed generation files
   * Styles Pane
     * Gradient input
   * split view
   * Rust port
+  * context menu
 
 - Ability to override instance labels. Used to expose layers
 
@@ -50,7 +53,7 @@ USEFUL:
 
 * switch tabs using cmd+shift+[/]
 * Function for explicitly defining cascading styles
-* Unhandled notification (allows for console to be hidden)
+* Unhandled notification (allows for console to be hidden, necessary for Alpha too & reporting)
 * ability to load images & other resources in PC file. (start with ionicons)
 * ability to persist instance changes to main component
 * insert rect into layer pane should work

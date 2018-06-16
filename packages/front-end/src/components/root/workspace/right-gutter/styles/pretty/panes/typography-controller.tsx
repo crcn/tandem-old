@@ -99,10 +99,10 @@ export default compose(
         }}
         alignmentInputProps={{
           options: ALIGNMENTS,
-          value: node.style["text-alignment"],
-          onChange: propertyChangeCallback("text-alignment", onPropertyChange),
+          value: node.style["text-align"],
+          onChange: propertyChangeCallback("text-align", onPropertyChange),
           onChangeComplete: propertyChangeCallback(
-            "text-alignment",
+            "text-align",
             onPropertyChangeComplete
           )
         }}
