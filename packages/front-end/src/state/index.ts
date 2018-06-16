@@ -85,8 +85,9 @@ import { FSSandboxRootState } from "fsbox";
 
 export enum ToolType {
   TEXT,
-  ELEMENT,
-  ARTBOARD
+  POINTER,
+  COMPONENT,
+  ELEMENT
 }
 
 export enum FrameMode {
@@ -189,7 +190,8 @@ export const deselectRootProjectFiles = (state: RootState) =>
 
 export const persistRootState = (
   persistPaperclipState: (state: RootState) => RootState,
-  state: RootState
+  state: RootState,
+  newSelectionScope?: SyntheticVisibleNode | SyntheticDocument
 ) => {
   const oldState = state;
   const oldGraph = state.graph;
@@ -207,47 +209,48 @@ export const persistRootState = (
 
 const getUpdatedSyntheticVisibleNodes = (
   newState: RootState,
-  oldState: RootState
+  oldState: RootState,
+  scope: SyntheticVisibleNode | SyntheticDocument
 ) => {
+  const MAX_DEPTH = 0;
+  const oldScope = getSyntheticNodeById(scope.id, oldState.documents);
+  const newScope = getSyntheticNodeById(scope.id, newState.documents);
+
   let newSyntheticVisibleNodes: SyntheticVisibleNode[] = [];
-  for (const newDocument of newState.documents) {
-    const oldDocument = getSyntheticDocumentById(
-      newDocument.id,
-      oldState.documents
-    );
-    if (!oldDocument) {
-      continue;
+  let model = oldScope;
+  diffSyntheticNode(oldScope, newScope).forEach(ot => {
+    const target = getTreeNodeFromPath(ot.nodePath, model);
+    model = patchSyntheticNode([ot], model);
+
+    if (ot.nodePath.length > MAX_DEPTH) {
+      return;
     }
 
-    let model: SyntheticDocument = oldDocument;
-
-    diffSyntheticNode(oldDocument, newDocument).forEach(ot => {
-      const target = getTreeNodeFromPath(ot.nodePath, model);
-      model = patchSyntheticNode([ot], model);
-
-      // TODO - will need to check if new parent is not in an instance of a component.
-      // Will also need to consider child overrides though.
-      if (ot.type === SyntheticOperationalTransformType.INSERT_CHILD) {
-        newSyntheticVisibleNodes.push(ot.child);
-      } else if (
-        ot.type === SyntheticOperationalTransformType.SET_PROPERTY &&
-        ot.name === "source"
-      ) {
-        newSyntheticVisibleNodes.push(target);
-      }
-    });
-  }
+    // TODO - will need to check if new parent is not in an instance of a component.
+    // Will also need to consider child overrides though.
+    if (ot.type === SyntheticOperationalTransformType.INSERT_CHILD) {
+      newSyntheticVisibleNodes.push(ot.child);
+    } else if (
+      ot.type === SyntheticOperationalTransformType.SET_PROPERTY &&
+      ot.name === "source"
+    ) {
+      newSyntheticVisibleNodes.push(target);
+    }
+  });
 
   return uniq(newSyntheticVisibleNodes);
 };
 
 export const selectInsertedSyntheticVisibleNodes = (
   oldState: RootState,
-  newState: RootState
+  newState: RootState,
+  scope: SyntheticVisibleNode | SyntheticDocument
 ) => {
   return setSelectedSyntheticVisibleNodeIds(
     newState,
-    ...getUpdatedSyntheticVisibleNodes(newState, oldState).map(node => node.id)
+    ...getUpdatedSyntheticVisibleNodes(newState, oldState, scope).map(
+      node => node.id
+    )
   );
 };
 

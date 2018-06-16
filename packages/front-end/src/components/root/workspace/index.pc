@@ -36,20 +36,43 @@
           "label": "Left Gutter"
         },
         {
-          "id": "de86f033487547",
+          "id": "f2929651030",
           "variant": [],
           "is": "de86f033487546",
           "name": "component-instance",
           "attributes": {},
-          "style": {
-            "position": "relative",
-            "background": "rgba(237, 236, 236, 1)"
-          },
+          "style": {},
           "children": [
             {
-              "id": "bae08a2e621514",
+              "id": "de86f033487547",
               "variant": [],
-              "is": "bae08a2e609807",
+              "is": "de86f033487546",
+              "name": "component-instance",
+              "attributes": {},
+              "style": {
+                "position": "relative",
+                "background": "rgba(237, 236, 236, 1)",
+                "display": "none"
+              },
+              "children": [
+                {
+                  "id": "bae08a2e621514",
+                  "variant": [],
+                  "is": "bae08a2e609807",
+                  "name": "component-instance",
+                  "attributes": {},
+                  "style": {},
+                  "children": [],
+                  "metadata": {}
+                }
+              ],
+              "metadata": {},
+              "label": "Frames Layer"
+            },
+            {
+              "id": "ab406a6b770941",
+              "variant": [],
+              "is": "ab406a6b770940",
               "name": "component-instance",
               "attributes": {},
               "style": {},
@@ -57,8 +80,14 @@
               "metadata": {}
             }
           ],
-          "metadata": {},
-          "label": "Frames Layer"
+          "metadata": {
+            "bounds": {
+              "left": 2450,
+              "top": 1085,
+              "right": 3187.96875,
+              "bottom": 1740
+            }
+          }
         },
         {
           "id": "33b1b6b171359",

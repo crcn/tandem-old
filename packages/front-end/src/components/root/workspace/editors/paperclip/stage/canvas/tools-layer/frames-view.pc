@@ -124,7 +124,7 @@
           "name": "element",
           "attributes": {},
           "style": {
-            "background": "rgba(231, 230, 230, 1)",
+            "background": "transparent",
             "width": "100%",
             "height": "100%",
             "position": "fixed",
@@ -393,6 +393,26 @@
       "controllers": [
         "./frames-controller.tsx"
       ]
+    },
+    {
+      "id": "9f86ffa611495",
+      "variant": [],
+      "is": "bae08a2e609807",
+      "name": "component-instance",
+      "attributes": {},
+      "style": {
+        "background": "rgba(200, 200, 200, 1)"
+      },
+      "children": [],
+      "metadata": {
+        "bounds": {
+          "left": 1368,
+          "top": 1161,
+          "right": 2788.3626850974215,
+          "bottom": 2080.4356137775667
+        }
+      },
+      "label": "Frames Preview"
     }
   ],
   "metadata": {}

@@ -4,8 +4,8 @@ import * as React from "react";
 import { pure, compose } from "recompose";
 import { CanvasComponent } from "./canvas";
 import { FooterComponent } from "./footer";
-import { ToolbarComponent } from "./toolbar";
 import { Dependency } from "paperclip";
+const { Toolbar } = require("./toolbar/view.pc");
 import { RootState, Editor } from "../../../../../../state";
 
 export type StageOuterProps = {
@@ -22,6 +22,7 @@ const BaseStageComponent = ({
   dispatch
 }: StageOuterProps) => (
   <div className="m-stage">
+    <Toolbar dispatch={dispatch} />
     <CanvasComponent
       root={root}
       dependency={dependency}

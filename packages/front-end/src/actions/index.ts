@@ -24,7 +24,7 @@ import {
 } from "paperclip";
 import { RegisteredComponent } from "..";
 import { ClientOffset } from "react-dnd";
-import { FrameMode } from "../state";
+import { FrameMode, ToolType } from "../state";
 
 export const PROJECT_LOADED = "PROJECT_LOADED";
 export const ACTIVE_FILE_CHANGED = "ACTIVE_FILE_CHANGED";
@@ -61,6 +61,7 @@ export const FILE_NAVIGATOR_TOGGLE_DIRECTORY_CLICKED =
 export const FILE_NAVIGATOR_NEW_FILE_ENTERED =
   "FILE_NAVIGATOR_NEW_FILE_ENTERED";
 export const FILE_NAVIGATOR_DROPPED_ITEM = "FILE_NAVIGATOR_DROPPED_ITEM";
+export const TOOLBAR_TOOL_CLICKED = "TOOLBAR_TOOL_CLICKED";
 export const EDITOR_TAB_CLICKED = "EDITOR_TAB_CLICKED";
 export const OPEN_FILE_ITEM_CLICKED = "OPEN_FILE_ITEM_CLICKED";
 export const OPEN_FILE_ITEM_CLOSE_CLICKED = "OPEN_FILE_ITEM_CLOSE_CLICKED";
@@ -147,6 +148,10 @@ export type FileNavigatorItemClicked = {
 export type OpenFilesItemClick = {
   uri: string;
 } & WrappedEvent<React.MouseEvent<any>>;
+
+export type ToolbarToolClicked = {
+  toolType: ToolType;
+} & Action;
 
 export type RawCSSTextChanged = {
   value: string;
@@ -450,6 +455,11 @@ export const frameModeChangeComplete = (
   type: FRAME_MODE_CHANGE_COMPLETE,
   frame,
   mode
+});
+
+export const toolbarToolClicked = (toolType: ToolType): ToolbarToolClicked => ({
+  type: TOOLBAR_TOOL_CLICKED,
+  toolType
 });
 
 export const fileNavigatorItemDoubleClicked = (

@@ -107,7 +107,9 @@ import {
   ATTRIBUTE_CHANGED,
   CSSPropertyChanged,
   FRAME_MODE_CHANGE_COMPLETE,
-  FrameModeChangeComplete
+  FrameModeChangeComplete,
+  TOOLBAR_TOOL_CLICKED,
+  ToolbarToolClicked
 } from "../actions";
 import {
   queueOpenFile,
@@ -627,7 +629,20 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
         state
       );
 
-      state = selectInsertedSyntheticVisibleNodes(oldState, state);
+      const document = getSyntheticVisibleNodeDocument(
+        targetNode.id,
+        state.documents
+      );
+      const mutatedTarget =
+        offset === TreeMoveOffset.APPEND
+          ? targetNode
+          : getParentTreeNode(targetNode.id, document);
+
+      state = selectInsertedSyntheticVisibleNodes(
+        oldState,
+        state,
+        mutatedTarget
+      );
       return state;
     }
     case PC_LAYER_MOUSE_OUT: {
@@ -732,6 +747,19 @@ export const canvasReducer = (state: RootState, action: Action) => {
       }
       return state;
     }
+
+    case TOOLBAR_TOOL_CLICKED: {
+      const { toolType } = action as ToolbarToolClicked;
+      if (toolType === ToolType.POINTER) {
+        state = setTool(null, state);
+      } else if (toolType === ToolType.COMPONENT) {
+        throw new Error("OPEN HUD TODO");
+      } else {
+        state = setTool(toolType, state);
+      }
+      return state;
+    }
+
     case RESIZER_STOPPED_MOVING: {
       const { point } = action as ResizerMoved;
       const oldGraph = state.graph;
@@ -939,6 +967,9 @@ export const canvasReducer = (state: RootState, action: Action) => {
         state.activeEditorFilePath,
         state
       );
+
+      // remove selection so that hovering state is visible
+      state = setSelectedSyntheticVisibleNodeIds(state);
 
       // TODO - in the future, we'll probably want to be able to highlight hovered nodes as the user is moving an element around to indicate where
       // they can drop the element.
@@ -1301,13 +1332,17 @@ const persistInsertNodeFromPoint = (
     );
   }
 
-  state = persistRootState(browser => {
-    return persistInsertNode(node, targetNode, TreeMoveOffset.APPEND, state);
-  }, state);
-
-  state = selectInsertedSyntheticVisibleNodes(oldState, state);
+  state = persistRootState(
+    browser => {
+      return persistInsertNode(node, targetNode, TreeMoveOffset.APPEND, state);
+    },
+    state,
+    targetNode
+  );
 
   state = setTool(null, state);
+  state = selectInsertedSyntheticVisibleNodes(oldState, state, targetNode);
+
   return state;
 };
 
@@ -1431,7 +1466,16 @@ const shortcutReducer = (state: RootState, action: Action): RootState => {
           ),
         state
       );
-      state = selectInsertedSyntheticVisibleNodes(oldState, state);
+
+      state = selectInsertedSyntheticVisibleNodes(
+        oldState,
+        state,
+        getSyntheticDocumentByDependencyUri(
+          state.activeEditorFilePath,
+          state.documents,
+          state.graph
+        )
+      );
       return state;
     }
     case SHORTCUT_ESCAPE_KEY_DOWN: {
@@ -1474,18 +1518,21 @@ const clipboardReducer = (state: RootState, action: Action) => {
       const { clips } = action as SyntheticVisibleNodesPasted;
       const oldState = state;
 
-      let targetNode: PCVisibleNode | PCModule;
+      let targetNode: SyntheticVisibleNode | SyntheticDocument;
 
       if (state.selectedNodeIds.length) {
         const nodeId = state.selectedNodeIds[0];
-        const node = getSyntheticNodeById(nodeId, state.documents);
-        targetNode = getSyntheticSourceNode(node, state.graph) as PCVisibleNode;
+        targetNode = getSyntheticNodeById(nodeId, state.documents);
         targetNode = getParentTreeNode(
           targetNode.id,
-          getPCNodeModule(targetNode.id, state.graph)
+          getSyntheticVisibleNodeDocument(targetNode.id, state.documents)
         );
       } else {
-        targetNode = state.graph[state.activeEditorFilePath].content;
+        targetNode = getSyntheticDocumentByDependencyUri(
+          state.activeEditorFilePath,
+          state.documents,
+          state.graph
+        );
       }
 
       state = persistRootState(
@@ -1493,7 +1540,7 @@ const clipboardReducer = (state: RootState, action: Action) => {
         state
       );
 
-      state = selectInsertedSyntheticVisibleNodes(oldState, state);
+      state = selectInsertedSyntheticVisibleNodes(oldState, state, targetNode);
 
       return state;
     }

@@ -1,0 +1,142 @@
+{
+  "id": "a5bde25041538",
+  "name": "module",
+  "version": "0.0.3",
+  "children": [
+    {
+      "label": "Picker",
+      "is": "div",
+      "style": {
+        "box-sizing": "border-box",
+        "width": "400px",
+        "height": "300px",
+        "background": "rgba(227, 227, 227, 1)",
+        "padding": "8px",
+        "border-radius": "2px",
+        "display": "flex",
+        "flex-direction": "column",
+        "border": "1px solid rgba(0,0,0,0.1)"
+      },
+      "attributes": {},
+      "id": "dcd2c13f21458",
+      "name": "component",
+      "children": [
+        {
+          "id": "33949bb81531103",
+          "variant": [],
+          "is": "33949bb81531102",
+          "name": "component-instance",
+          "attributes": {},
+          "style": {},
+          "children": [],
+          "metadata": {},
+          "label": "Filter"
+        },
+        {
+          "id": "dcd2c13f1458755",
+          "label": "options",
+          "is": "div",
+          "name": "element",
+          "attributes": {},
+          "style": {
+            "box-sizing": "border-box",
+            "height": "100%",
+            "width": "100%"
+          },
+          "children": [
+            {
+              "id": "33949bb8981",
+              "variant": [],
+              "is": "dcd2c13f1453155",
+              "name": "component-instance",
+              "attributes": {},
+              "style": {},
+              "children": [],
+              "metadata": {}
+            },
+            {
+              "id": "33949bb8180402",
+              "variant": [],
+              "is": "dcd2c13f1453155",
+              "name": "component-instance",
+              "attributes": {},
+              "style": {},
+              "children": [],
+              "metadata": {}
+            },
+            {
+              "id": "33949bb8186010",
+              "variant": [],
+              "is": "dcd2c13f1453155",
+              "name": "component-instance",
+              "attributes": {},
+              "style": {},
+              "children": [],
+              "metadata": {}
+            },
+            {
+              "id": "33949bb8191621",
+              "variant": [],
+              "is": "dcd2c13f1453155",
+              "name": "component-instance",
+              "attributes": {},
+              "style": {},
+              "children": [],
+              "metadata": {}
+            },
+            {
+              "id": "33949bb8197235",
+              "variant": [],
+              "is": "dcd2c13f1453155",
+              "name": "component-instance",
+              "attributes": {},
+              "style": {},
+              "children": [],
+              "metadata": {}
+            }
+          ],
+          "metadata": {}
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": 503,
+          "top": 395,
+          "right": 1434.5520794519923,
+          "bottom": 931.9620799668112
+        }
+      },
+      "controllers": [
+        "./picker-controller.tsx"
+      ]
+    },
+    {
+      "label": "filter",
+      "is": "7149f8199122",
+      "style": {
+        "width": "100%",
+        "padding": "4px 8px",
+        "border-radius": "2px",
+        "border": "1px solid rgba(0,0,0,0.08)",
+        "box-sizing": "border-box",
+        "margin-bottom": "8px"
+      },
+      "attributes": {},
+      "id": "33949bb81531102",
+      "name": "component",
+      "children": [],
+      "metadata": {
+        "bounds": {
+          "left": 662,
+          "top": 294,
+          "right": 1576,
+          "bottom": 317
+        }
+      },
+      "controllers": [
+        "../focus/controller.tsx"
+      ]
+    }
+  ],
+  "metadata": {}
+}

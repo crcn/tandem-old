@@ -695,13 +695,14 @@ export const persistInsertNode = <TState extends PCEditorState>(
 
 export const persistAppendPCClips = <TState extends PCEditorState>(
   clips: PCNodeClip[],
-  parent: PCNode,
+  parent: SyntheticVisibleNode | SyntheticDocument,
   state: TState
 ): TState =>
   persistChanges(state, state => {
-    const targetDep = getPCNodeDependency(parent.id, state.graph);
+    const parentSourceNode = getSyntheticSourceNode(parent, state.graph);
+    const targetDep = getPCNodeDependency(parentSourceNode.id, state.graph);
 
-    const targetNodeIsModule = parent === targetDep.content;
+    const targetNodeIsModule = parentSourceNode === targetDep.content;
     const moduleInfo = targetDep.content;
 
     let content = targetDep.content;
@@ -735,8 +736,8 @@ export const persistAppendPCClips = <TState extends PCEditorState>(
           );
         } else {
           content = replaceNestedNode(
-            appendChildNode(componentInstance, parent),
-            parent.id,
+            appendChildNode(componentInstance, parentSourceNode),
+            parentSourceNode.id,
             content
           );
         }
@@ -758,8 +759,8 @@ export const persistAppendPCClips = <TState extends PCEditorState>(
         }
 
         content = replaceNestedNode(
-          appendChildNode(clonedChild, parent),
-          parent.id,
+          appendChildNode(clonedChild, parentSourceNode),
+          parentSourceNode.id,
           content
         );
       }

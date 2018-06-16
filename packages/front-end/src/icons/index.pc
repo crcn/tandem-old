@@ -376,6 +376,82 @@
           "bottom": 679.0667229841617
         }
       }
+    },
+    {
+      "label": "Puzzle Icon",
+      "is": "img",
+      "style": {},
+      "attributes": {
+        "src": "./puzzle.svg"
+      },
+      "id": "bc641d484882",
+      "name": "component",
+      "children": [],
+      "metadata": {
+        "bounds": {
+          "left": -125,
+          "top": 325,
+          "right": -28,
+          "bottom": 403
+        }
+      }
+    },
+    {
+      "label": "Poiner Icon",
+      "is": "img",
+      "style": {},
+      "attributes": {
+        "src": "./pointer.svg"
+      },
+      "id": "bc641d4124463",
+      "name": "component",
+      "children": [],
+      "metadata": {
+        "bounds": {
+          "left": -119,
+          "top": 449,
+          "right": -54,
+          "bottom": 530
+        }
+      }
+    },
+    {
+      "label": "Rectangle Icon",
+      "is": "img",
+      "style": {},
+      "attributes": {
+        "src": "./rectangle.svg"
+      },
+      "id": "bc641d4118808",
+      "name": "component",
+      "children": [],
+      "metadata": {
+        "bounds": {
+          "left": -165,
+          "top": 74,
+          "right": 58,
+          "bottom": 222
+        }
+      }
+    },
+    {
+      "label": "Text Icon",
+      "is": "img",
+      "style": {},
+      "attributes": {
+        "src": "./text.svg"
+      },
+      "id": "bc641d4113153",
+      "name": "component",
+      "children": [],
+      "metadata": {
+        "bounds": {
+          "left": -81,
+          "top": 597,
+          "right": -2,
+          "bottom": 662
+        }
+      }
     }
   ],
   "metadata": {}

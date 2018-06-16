@@ -1,0 +1,51 @@
+{
+  "id": "a5bde25012342",
+  "name": "module",
+  "version": "0.0.3",
+  "children": [
+    {
+      "label": "Component Option",
+      "is": "div",
+      "style": {
+        "box-sizing": "border-box",
+        "width": "33.333%",
+        "height": "100px",
+        "display": "inline-block",
+        "padding": "8px"
+      },
+      "attributes": {},
+      "id": "dcd2c13f1453155",
+      "name": "component",
+      "children": [
+        {
+          "id": "33949bb8539851",
+          "label": "inner",
+          "is": "div",
+          "name": "element",
+          "attributes": {},
+          "style": {
+            "box-sizing": "border-box",
+            "border": "1px solid rgba(0,0,0,0.1)",
+            "width": "100%",
+            "height": "100%",
+            "border-radius": "2px"
+          },
+          "children": [],
+          "metadata": {}
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": 437,
+          "top": 305,
+          "right": 537,
+          "bottom": 405
+        }
+      },
+      "controllers": [
+        "./cell-controller.tsx"
+      ]
+    }
+  ],
+  "metadata": {}
+}
