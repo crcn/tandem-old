@@ -5,6 +5,9 @@ IMMEDIATE:
   * install & link deps
   * prohibit push if package is touched without publish
 
+* test setup from clean run
+* possibly setup docker
+
 * open file page
 * SVG options
 * clean up build process

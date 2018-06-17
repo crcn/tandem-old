@@ -4,12 +4,12 @@
   "description": "",
   "main": "index.js",
   "bin": {
-    "tandem-webpack-preview-server": "./bin/tandem-webpack-preview-server",
-    "clean": "rm -rf lib; rm -rf node_modules"
+    "tandem-webpack-preview-server": "./bin/tandem-webpack-preview-server"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "tsc"
+    "build": "tsc",
+    "clean": "rm -rf lib; rm -rf node_modules"
   },
   "author": "",
   "license": "ISC",
