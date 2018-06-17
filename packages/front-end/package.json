@@ -1,6 +1,6 @@
 {
   "name": "tandem-front-end",
-  "version": "3.0.1",
+  "version": "10.0.1",
   "description": "Visual editor for web components",
   "main": "index.js",
   "scripts": {
@@ -41,12 +41,12 @@
     "mocha": "^3.4.2",
     "node-sass": "^4.7.2",
     "null-loader": "^0.1.1",
-    "paperclip-react-loader": "^2.0.0",
+    "paperclip-react-loader": "^10.0.1",
     "react-hot-loader": "^3.1.2",
     "sass-loader": "^7.0.3",
     "source-map": "^0.5.7",
     "style-loader": "^0.18.2",
-    "tandem-webpack-preview-server": "^1.0.0",
+    "tandem-webpack-preview-server": "^10.0.1",
     "text-loader": "^0.0.1",
     "ts-loader": "^4.4.1",
     "typescript": "2.7.x",
@@ -62,14 +62,14 @@
     "@types/socket.io-client": "^1.4.30",
     "classnames": "^2.2.5",
     "crc32": "^0.2.2",
-    "fsbox": "^1.0.0",
+    "fsbox": "^10.0.1",
     "glob": "^7.1.2",
     "http-proxy": "^1.16.2",
     "lodash": "^4.17.5",
     "md5": "^2.2.1",
     "mousetrap": "^1.6.1",
-    "paperclip": "^9.0.0",
-    "paperclip-migrator": "^1.0.1",
+    "paperclip": "^10.0.1",
+    "paperclip-migrator": "^10.0.1",
     "prop-types": "^15.6.1",
     "react": "^15.6.1",
     "react-dnd": "^2.6.0",
@@ -84,6 +84,6 @@
     "request": "^2.81.0",
     "socket.io": "^2.0.3",
     "socket.io-client": "^2.0.3",
-    "tandem-common": "^3.0.0"
+    "tandem-common": "^10.0.1"
   }
 }
