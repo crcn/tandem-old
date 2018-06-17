@@ -212,7 +212,30 @@
               "name": "component-instance",
               "attributes": {},
               "style": {},
-              "children": [],
+              "children": [
+                {
+                  "id": "2081a903497394",
+                  "propertyName": "label",
+                  "targetIdPath": [
+                    "8419ce0726549",
+                    "7149f8199969"
+                  ],
+                  "value": "Top Input",
+                  "name": "override",
+                  "children": []
+                },
+                {
+                  "id": "2081a903505561",
+                  "propertyName": "label",
+                  "targetIdPath": [
+                    "8419ce0726543",
+                    "7149f8199969"
+                  ],
+                  "value": "Left input",
+                  "name": "override",
+                  "children": []
+                }
+              ],
               "metadata": {
                 "bounds": {
                   "left": -503.2976357717894,

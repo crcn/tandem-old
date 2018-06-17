@@ -5,12 +5,12 @@
   "children": [
     {
       "label": "More Icon",
-      "is": "img",
+      "is": "object",
       "style": {
         "user-select": "none"
       },
       "attributes": {
-        "src": "./more.svg"
+        "data": "./more.svg"
       },
       "id": "38fc2a473732",
       "name": "component",
@@ -450,6 +450,44 @@
           "top": 597,
           "right": -2,
           "bottom": 662
+        }
+      }
+    },
+    {
+      "id": "b101b3b089",
+      "label": "Element",
+      "is": "div",
+      "name": "element",
+      "attributes": {},
+      "style": {
+        "box-sizing": "border-box",
+        "color": "rgba(217, 75, 75, 1)"
+      },
+      "children": [
+        {
+          "id": "b101b3b08230",
+          "variant": [],
+          "is": "38fc2a473732",
+          "name": "component-instance",
+          "attributes": {},
+          "style": {},
+          "children": [],
+          "metadata": {
+            "bounds": {
+              "left": 425,
+              "top": 324,
+              "right": 470.88180074742104,
+              "bottom": 360.670832741107
+            }
+          }
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": 671.0072334290002,
+          "top": 280.4217235252019,
+          "right": 771.0072334290002,
+          "bottom": 380.4217235252019
         }
       }
     }

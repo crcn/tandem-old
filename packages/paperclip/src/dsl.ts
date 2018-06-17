@@ -33,6 +33,7 @@ export enum PCSourceTagNames {
   ELEMENT = "element",
   COMPONENT_INSTANCE = "component-instance",
   VARIANT = "variant",
+  INCLUDE = "include",
   OVERRIDE = "override",
   TEXT = "text"
 }
@@ -92,6 +93,10 @@ export type PCComponent = {
   is?: string;
   children: Array<PCVisibleNode | PCVariant | PCOverride>;
 } & PCBaseSourceNode<PCSourceTagNames.COMPONENT>;
+
+export type PCInclude = {
+  src: string;
+} & PCBaseSourceNode<PCSourceTagNames.INCLUDE>;
 
 export type PCVariant = {
   label: string;
@@ -176,7 +181,8 @@ export type PCNode =
   | PCComponent
   | PCVariant
   | PCOverride
-  | PCVisibleNode;
+  | PCVisibleNode
+  | PCInclude;
 
 export type PCComputedOverrideMap = {
   [COMPUTED_OVERRIDE_DEFAULT_KEY]: PCComputedOverrideVariantMap;
@@ -346,7 +352,7 @@ export const isPCComponentInstance = (
 export const isPCComponentOrInstance = (
   node: PCNode
 ): node is PCComponent | PCComponentInstanceElement =>
-  isPCComponentOrInstance(node) || isComponent(node);
+  isPCComponentInstance(node) || isComponent(node);
 
 export const extendsComponent = (
   element: PCElement | PCComponent | PCComponentInstanceElement

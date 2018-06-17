@@ -742,6 +742,91 @@
         }
       },
       "label": "TODO"
+    },
+    {
+      "id": "b471f07a92977",
+      "name": "text",
+      "label": "Text",
+      "value": "Click to edit",
+      "style": {},
+      "children": [
+        {
+          "id": "b471f07a101416",
+          "name": "text",
+          "label": "Text",
+          "value": "Click to edit",
+          "style": {},
+          "children": [],
+          "metadata": {
+            "bounds": {
+              "left": -1089.7856533494144,
+              "top": 566.6172932399484,
+              "right": -989.7856533494144,
+              "bottom": 666.6172932399484
+            }
+          }
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": -1089.7856533494144,
+          "top": 566.6172932399484,
+          "right": -989.7856533494144,
+          "bottom": 666.6172932399484
+        }
+      }
+    },
+    {
+      "id": "832805368",
+      "label": "Element",
+      "is": "div",
+      "name": "element",
+      "attributes": {},
+      "style": {
+        "box-sizing": "border-box"
+      },
+      "children": [
+        {
+          "id": "83280538579",
+          "name": "text",
+          "label": "Text",
+          "value": "Click to edit",
+          "style": {},
+          "children": [],
+          "metadata": {
+            "bounds": {
+              "left": -1089.7856533494144,
+              "top": 566.6172932399484,
+              "right": -989.7856533494144,
+              "bottom": 666.6172932399484
+            }
+          }
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": -892.3919936899786,
+          "top": 489.8733145492989,
+          "right": -792.3919936899786,
+          "bottom": 589.8733145492989
+        }
+      }
+    },
+    {
+      "id": "b471f07a84538",
+      "name": "text",
+      "label": "Text",
+      "value": "Click to edit",
+      "style": {},
+      "children": [],
+      "metadata": {
+        "bounds": {
+          "left": -1089.7856533494144,
+          "top": 566.6172932399484,
+          "right": -989.7856533494144,
+          "bottom": 666.6172932399484
+        }
+      }
     }
   ],
   "metadata": {}

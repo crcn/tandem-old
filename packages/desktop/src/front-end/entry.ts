@@ -41,7 +41,8 @@ setup<DesktopRootState>(
   graph: {},
   history: {},
   openFiles: [],
-  fileCache: {}
+  fileCache: {},
+  selectedComponentId: null
 });
 
 function* openPreview(frame: Frame) {

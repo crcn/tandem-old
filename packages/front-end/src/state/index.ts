@@ -1003,9 +1003,7 @@ export const setTool = (toolType: ToolType, root: RootState) => {
   if (!root.editorWindows.length) {
     return root;
   }
-  if (toolType == null) {
-    root = { ...root, selectedComponentId: null };
-  }
+  root = { ...root, selectedComponentId: null };
   root = updateRootState({ toolType }, root);
   root = setSelectedSyntheticVisibleNodeIds(root);
   return root;

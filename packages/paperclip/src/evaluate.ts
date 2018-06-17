@@ -307,14 +307,28 @@ const evaluateAttributes = (
     overrides
   );
 
-  if (element.is === "img" && attributes.src.charAt(0) === ".") {
+  if (
+    element.is === "img" &&
+    attributes.src &&
+    attributes.src.charAt(0) === "."
+  ) {
     attributes = {
       ...attributes,
-
-      // TODO - will want to use resolver
       src: addProtocol(
         FILE_PROTOCOL,
         path.resolve(stripProtocol(path.dirname(sourceUri)), attributes.src)
+      )
+    };
+  } else if (
+    element.is === "object" &&
+    attributes.data &&
+    attributes.data.charAt(0) === "."
+  ) {
+    attributes = {
+      ...attributes,
+      data: addProtocol(
+        FILE_PROTOCOL,
+        path.resolve(stripProtocol(path.dirname(sourceUri)), attributes.data)
       )
     };
   }

@@ -1,7 +1,6 @@
 import "./index.scss";
 import * as React from "react";
 import * as cx from "classnames";
-import { RootState } from "../../state";
 import { identity } from "lodash";
 import { compose, pure, withHandlers, withState, withProps } from "recompose";
 import {
@@ -17,7 +16,7 @@ import { FocusComponent } from "../focus";
 export type TreeLayerDroppedNodeActionCreator = (
   child: TreeNode<any>,
   targetNode: TreeNode<any>,
-  offset: 0 | -1 | 1
+  offset: TreeMoveOffset
 ) => any;
 export type TreeLayerMouseActionCreator = (
   node: TreeNode<any>,
@@ -222,12 +221,12 @@ export const createTreeLayerComponents = <
 
   const InsertBeforeComponent = compose<InsertInnerProps, InsertOuterProps>(
     pure,
-    withNodeDropTarget(-1)
+    withNodeDropTarget(TreeMoveOffset.BEFORE)
   )(BaseInsertComponent);
 
   const InsertAfterComponent = compose<InsertInnerProps, InsertOuterProps>(
     pure,
-    withNodeDropTarget(1)
+    withNodeDropTarget(TreeMoveOffset.AFTER)
   )(BaseInsertComponent);
 
   const BaseTreeNodeLayerLabelComponent = (
@@ -353,7 +352,7 @@ export const createTreeLayerComponents = <
         isDragging: monitor.isDragging()
       })
     ),
-    withNodeDropTarget(0)
+    withNodeDropTarget(TreeMoveOffset.PREPEND)
   )(BaseTreeNodeLayerLabelComponent);
 
   type TreeNodeLayerInnerProps = {} & TTreeLayerOuterProps & any;

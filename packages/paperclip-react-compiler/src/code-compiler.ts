@@ -35,7 +35,8 @@ import {
   PCLabelOverride,
   isPCComponentInstance,
   isPCOverride,
-  isComponentOrInstance
+  isComponentOrInstance,
+  isPCComponentOrInstance
 } from "paperclip";
 import { repeat, camelCase, uniq, kebabCase, last, negate } from "lodash";
 import {
@@ -52,8 +53,6 @@ import {
   getParentTreeNode
 } from "tandem-common";
 import * as path from "path";
-import { isPCComponentOrInstance } from "../../paperclip/src";
-
 export const compilePaperclipModuleToReact = (
   entry: PCDependency,
   graph: DependencyGraph
@@ -771,15 +770,7 @@ const translatePropsInnerOverrideMap = (
   context: TranslateContext
 ) => {
   const labelOverride = getPCNodeLabelOverride(idPath, component);
-
   if (labelOverride) {
-    if (!mapContainsDynamicOverrides(inf)) {
-      context = addLineItem(
-        `${getPCOverrideVarName(labelOverride, component)}`,
-        context
-      );
-      return context;
-    }
     context = addLineItem(`Object.assign(`, context);
   }
 
@@ -788,6 +779,7 @@ const translatePropsInnerOverrideMap = (
   context = addCloseTag(`}`, context);
 
   if (labelOverride) {
+    context = addLineItem(`, ${getIdPathPropRef(idPath)}`, context);
     context = addLineItem(
       `, ${getPCOverrideVarName(labelOverride, component)})`,
       context
@@ -795,6 +787,11 @@ const translatePropsInnerOverrideMap = (
   }
   return context;
 };
+
+const getIdPathPropRef = (idPath: string[]) =>
+  idPath.slice(1).reduce((ref, id, index, ary) => {
+    return ref + " && " + ref + "._" + ary.slice(0, index + 1).join("._");
+  }, "_" + idPath[0] + "Props");
 
 const getComponentLabelOverrides = memoize(
   (component: ContentNode) =>

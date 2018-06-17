@@ -7,7 +7,12 @@ import {
   updateNestedNode,
   updateNestedNodeFromPath,
   arraySplice,
-  memoize
+  memoize,
+  diffArray,
+  ArrayOperationalTransformType,
+  ArrayDeleteMutation,
+  ArrayUpdateMutation,
+  ArrayInsertMutation
 } from "tandem-common";
 
 export enum SyntheticOperationalTransformType {
@@ -152,61 +157,106 @@ const _diffSyntheticNode = (
     }
   }
 
-  const modelChildren = [...oldNode.children] as SyntheticVisibleNode[];
-  const oldChildIds = {};
+  const childOts = diffArray(
+    oldNode.children as SyntheticVisibleNode[],
+    newNode.children as SyntheticVisibleNode[],
+    (a, b) => (a.source.nodeId === b.source.nodeId ? 0 : -1)
+  );
 
-  // DELETE
-  for (let i = oldNode.children.length; i--; ) {
-    let found: SyntheticVisibleNode;
-    let foundIndex: number;
-    const oldChild = oldNode.children[i] as SyntheticVisibleNode;
-    oldChildIds[oldChild.source.nodeId] = 1;
+  for (const ot of childOts) {
+    if (ot.type === ArrayOperationalTransformType.DELETE) {
+      ots.push(
+        createSyntheticRemoveChildOperationalTransform(
+          nodePath,
+          (ot as ArrayDeleteMutation).index
+        )
+      );
+    } else if (ot.type === ArrayOperationalTransformType.UPDATE) {
+      const uot = ot as ArrayUpdateMutation<any>;
+      const oldChild = oldNode.children[
+        uot.originalOldIndex
+      ] as SyntheticVisibleNode;
 
-    for (let j = newNode.children.length; j--; ) {
-      const newChild = newNode.children[j] as SyntheticVisibleNode;
-      if (newChild.source.nodeId === oldChild.source.nodeId) {
-        found = newChild;
-        foundIndex = j;
-        break;
-      }
-    }
-
-    const oldIndex = modelChildren.indexOf(oldChild);
-
-    if (found) {
       _diffSyntheticNode(
         oldChild,
-        found,
-        [...nodePath, modelChildren.indexOf(oldChild)],
+        uot.newValue,
+        [...nodePath, uot.patchedOldIndex],
         ots
       );
-      if (foundIndex !== i) {
-        modelChildren.splice(oldIndex, 1);
-        modelChildren.splice(foundIndex, 0, oldChild);
+
+      if (uot.index !== uot.patchedOldIndex) {
         ots.push(
           createSyntheticMoveChildOperationalTransform(
             nodePath,
-            oldIndex,
-            foundIndex
+            uot.originalOldIndex,
+            uot.index
           )
         );
       }
-    } else {
+    } else if (ot.type === ArrayOperationalTransformType.INSERT) {
+      const iot = ot as ArrayInsertMutation<any>;
       ots.push(
-        createSyntheticRemoveChildOperationalTransform(nodePath, oldIndex)
+        createSyntheticInsertChildOperationalTransform(
+          nodePath,
+          iot.value,
+          iot.index
+        )
       );
-      modelChildren.splice(oldIndex, 1);
     }
   }
 
-  for (let i = 0, { length } = newNode.children; i < length; i++) {
-    const child = newNode.children[i] as SyntheticVisibleNode;
-    if (!oldChildIds[child.source.nodeId]) {
-      ots.push(
-        createSyntheticInsertChildOperationalTransform(nodePath, child, i)
-      );
-    }
-  }
+  // // DELETE
+  // for (let i = oldNode.children.length; i--; ) {
+  //   let found: SyntheticVisibleNode;
+  //   let foundIndex: number;
+  //   const oldChild = oldNode.children[i] as SyntheticVisibleNode;
+  //   oldChildIds[oldChild.source.nodeId] = 1;
+
+  //   for (let j = newNode.children.length; j--; ) {
+  //     const newChild = newNode.children[j] as SyntheticVisibleNode;
+  //     if (newChild.source.nodeId === oldChild.source.nodeId) {
+  //       found = newChild;
+  //       foundIndex = j;
+  //       break;
+  //     }
+  //   }
+
+  //   const oldIndex = modelChildren.indexOf(oldChild);
+
+  //   if (found) {
+  //     _diffSyntheticNode(
+  //       oldChild,
+  //       found,
+  //       [...nodePath, modelChildren.indexOf(oldChild)],
+  //       ots
+  //     );
+  //     if (foundIndex !== i) {
+  //       modelChildren.splice(oldIndex, 1);
+  //       modelChildren.splice(foundIndex, 0, oldChild);
+  //       ots.push(
+  //         createSyntheticMoveChildOperationalTransform(
+  //           nodePath,
+  //           oldIndex,
+  //           foundIndex
+  //         )
+  //       );
+  //     }
+  //   } else {
+  //     ots.push(
+  //       createSyntheticRemoveChildOperationalTransform(nodePath, oldIndex)
+  //     );
+  //     modelChildren.splice(oldIndex, 1);
+  //   }
+  // }
+
+  // for (let i = 0, { length } = newNode.children; i < length; i++) {
+  //   const child = newNode.children[i] as SyntheticVisibleNode;
+  //   if (!oldChildIds[child.source.nodeId]) {
+  //     ots.push(
+  //       createSyntheticInsertChildOperationalTransform(nodePath, child, i)
+  //     );
+  //   }
+  // }
 
   return ots;
 };

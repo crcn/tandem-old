@@ -125,7 +125,8 @@ import {
   isImageUri,
   hasFileCacheItem,
   FS_SANDBOX_ITEM_LOADED,
-  FSSandboxItemLoaded
+  FSSandboxItemLoaded,
+  isSvgUri
 } from "fsbox";
 import {
   RootState,
@@ -646,7 +647,7 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
         state.documents
       );
       const mutatedTarget =
-        offset === TreeMoveOffset.APPEND
+        offset === TreeMoveOffset.APPEND || offset === TreeMoveOffset.PREPEND
           ? targetNode
           : getParentTreeNode(targetNode.id, document);
 
@@ -884,6 +885,17 @@ export const canvasReducer = (state: RootState, action: Action) => {
               src
             }
           );
+          if (isSvgUri(item.uri)) {
+            sourceNode = createPCElement(
+              "object",
+              {},
+              {
+                data: src,
+                type: "image/svg+xml"
+              },
+              [sourceNode]
+            );
+          }
         } else if (isJavaScriptFile(item.uri)) {
           return persistRootState(state => {
             return persistAddComponentController(
@@ -1569,6 +1581,17 @@ const shortcutReducer = (state: RootState, action: Action): RootState => {
       }
 
       return persistRootState(state => {
+        const firstNode = getSyntheticNodeById(
+          state.selectedNodeIds[0],
+          state.documents
+        );
+        const document = getSyntheticVisibleNodeDocument(
+          firstNode.id,
+          state.documents
+        );
+        let parent = getParentTreeNode(firstNode.id, document);
+        const index = parent.children.indexOf(firstNode);
+
         state = state.selectedNodeIds.reduce((state, nodeId) => {
           return persistRemoveSyntheticVisibleNode(
             getSyntheticNodeById(nodeId, state.documents),
@@ -1576,7 +1599,14 @@ const shortcutReducer = (state: RootState, action: Action): RootState => {
           );
         }, state);
 
-        state = setSelectedSyntheticVisibleNodeIds(state);
+        parent = getSyntheticNodeById(parent.id, state.documents);
+
+        state = setSelectedSyntheticVisibleNodeIds(
+          state,
+          ...(parent.children.length
+            ? [parent.children[Math.min(index, parent.children.length - 1)].id]
+            : [parent.id])
+        );
         return state;
       }, state);
     }
@@ -1590,17 +1620,29 @@ const clipboardReducer = (state: RootState, action: Action) => {
       const { clips } = action as SyntheticVisibleNodesPasted;
       const oldState = state;
 
+      let offset: TreeMoveOffset = TreeMoveOffset.AFTER;
       let targetNode: SyntheticVisibleNode | SyntheticDocument;
+      let scopeNode: SyntheticVisibleNode | SyntheticDocument;
 
       if (state.selectedNodeIds.length) {
         const nodeId = state.selectedNodeIds[0];
-        targetNode = getSyntheticNodeById(nodeId, state.documents);
-        targetNode = getParentTreeNode(
-          targetNode.id,
-          getSyntheticVisibleNodeDocument(targetNode.id, state.documents)
+        scopeNode = targetNode = getSyntheticNodeById(nodeId, state.documents);
+        const clipsContainTarget = clips.some(
+          clip => clip.node.id === targetNode.source.nodeId
         );
+
+        // if selected node is the pasted element, then paste
+        if (!clipsContainTarget) {
+          offset = TreeMoveOffset.PREPEND;
+        } else {
+          scopeNode = getParentTreeNode(
+            scopeNode.id,
+            getSyntheticVisibleNodeDocument(scopeNode.id, state.documents)
+          );
+        }
       } else {
-        targetNode = getSyntheticDocumentByDependencyUri(
+        offset = TreeMoveOffset.PREPEND;
+        scopeNode = targetNode = getSyntheticDocumentByDependencyUri(
           state.activeEditorFilePath,
           state.documents,
           state.graph
@@ -1608,11 +1650,13 @@ const clipboardReducer = (state: RootState, action: Action) => {
       }
 
       state = persistRootState(
-        state => persistAppendPCClips(clips, targetNode, state),
+        state => persistAppendPCClips(clips, targetNode, offset, state),
         state
       );
 
-      state = selectInsertedSyntheticVisibleNodes(oldState, state, targetNode);
+      if (scopeNode === targetNode) {
+        state = selectInsertedSyntheticVisibleNodes(oldState, state, scopeNode);
+      }
 
       return state;
     }

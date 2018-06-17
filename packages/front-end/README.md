@@ -1,7 +1,6 @@
 IMMEDIATE:
 
-* refactor left gutter
-* fix pasting behavior (see sketch)
+* _import_ SVG file when dropped, don't include it
 * breadcrumbs
 * variants
 
@@ -17,6 +16,10 @@ IMMEDIATE:
   * Attributes (raw)
 - Left Gutter
 - Variants
+
+* Layers
+
+  * Possibly represent AST instead of synthetic nodes
 
 * breadcrumb view
 * mobile size preset (when selecting content node)

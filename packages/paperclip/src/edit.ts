@@ -661,9 +661,12 @@ export const persistInsertNode = <TState extends PCEditorState>(
     } else {
       let parent: SyntheticVisibleNode;
       let index: number;
-      if (offset === TreeMoveOffset.APPEND) {
+      if (
+        offset === TreeMoveOffset.APPEND ||
+        offset === TreeMoveOffset.PREPEND
+      ) {
         parent = relative as SyntheticVisibleNode;
-        index = parent.children.length;
+        index = offset === TreeMoveOffset.PREPEND ? 0 : parent.children.length;
       } else {
         const document = getSyntheticVisibleNodeDocument(
           relative.id,
@@ -675,7 +678,7 @@ export const persistInsertNode = <TState extends PCEditorState>(
         parent = getParentTreeNode(relative.id, document);
         index =
           parent.children.indexOf(relative) +
-          (offset === TreeMoveOffset.BEFORE ? 0 : TreeMoveOffset.APPEND);
+          (offset === TreeMoveOffset.BEFORE ? 0 : 1);
       }
 
       parentSource = maybeOverride(
@@ -695,21 +698,31 @@ export const persistInsertNode = <TState extends PCEditorState>(
 
 export const persistAppendPCClips = <TState extends PCEditorState>(
   clips: PCNodeClip[],
-  parent: SyntheticVisibleNode | SyntheticDocument,
+  target: SyntheticVisibleNode | SyntheticDocument,
+  offset: TreeMoveOffset,
   state: TState
 ): TState =>
   persistChanges(state, state => {
-    const parentSourceNode = getSyntheticSourceNode(parent, state.graph);
-    const targetDep = getPCNodeDependency(parentSourceNode.id, state.graph);
+    const targetSourceNode = getSyntheticSourceNode(target, state.graph);
+    const targetDep = getPCNodeDependency(targetSourceNode.id, state.graph);
+    const parentSourceNode: PCNode =
+      offset === TreeMoveOffset.BEFORE || offset === TreeMoveOffset.AFTER
+        ? getParentTreeNode(targetSourceNode.id, targetDep.content)
+        : targetSourceNode;
+    const insertIndex =
+      offset === TreeMoveOffset.BEFORE
+        ? parentSourceNode.children.indexOf(targetSourceNode)
+        : offset === TreeMoveOffset.AFTER
+          ? parentSourceNode.children.indexOf(targetSourceNode) + 1
+          : offset === TreeMoveOffset.APPEND
+            ? parentSourceNode.children.length
+            : 0;
 
     const targetNodeIsModule = parentSourceNode === targetDep.content;
-    const moduleInfo = targetDep.content;
 
     let content = targetDep.content;
-    let graph = state.graph;
 
     for (const { uri, node, fixedBounds } of clips) {
-      const sourceDep = state.graph[uri];
       const sourceNode = node;
 
       // If there is NO source node, then possibly create a detached node and add to target component
@@ -722,7 +735,7 @@ export const persistAppendPCClips = <TState extends PCEditorState>(
         const componentInstance = createPCComponentInstance(sourceNode.id);
 
         if (targetNodeIsModule) {
-          content = appendChildNode(
+          content = insertChildNode(
             updatePCNodeMetadata(
               {
                 [PCVisibleNodeMetadataKey.BOUNDS]: shiftBounds(
@@ -732,11 +745,12 @@ export const persistAppendPCClips = <TState extends PCEditorState>(
               },
               componentInstance
             ),
+            insertIndex,
             content
           );
         } else {
           content = replaceNestedNode(
-            appendChildNode(componentInstance, parentSourceNode),
+            insertChildNode(componentInstance, insertIndex, parentSourceNode),
             parentSourceNode.id,
             content
           );
@@ -759,7 +773,7 @@ export const persistAppendPCClips = <TState extends PCEditorState>(
         }
 
         content = replaceNestedNode(
-          appendChildNode(clonedChild, parentSourceNode),
+          insertChildNode(clonedChild, insertIndex, parentSourceNode),
           parentSourceNode.id,
           content
         );

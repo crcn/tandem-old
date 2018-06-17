@@ -8,7 +8,8 @@ import { EMPTY_ARRAY, EMPTY_OBJECT } from "../utils/object";
 import { RecursivePartial } from "../utils/types";
 
 export enum TreeMoveOffset {
-  APPEND = 0,
+  PREPEND = 0,
+  APPEND = Number.MAX_SAFE_INTEGER,
   BEFORE = -1,
   AFTER = 1
 }
