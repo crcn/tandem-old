@@ -3,7 +3,8 @@ IMMEDIATE:
 * Build tools
 
   * install & link deps
-  * prohibit push if package is touched without publish
+  * build script with lerna
+
 
 * test setup from clean run
 * possibly setup docker

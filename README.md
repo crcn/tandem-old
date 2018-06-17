@@ -19,6 +19,6 @@ npm run setup-development;
 👆🏻 This script will install, link, and build all packages. Further usage for this script:
 
 ```
-WATCH=1 ONLY=build/link npm run setup-development; # run only build & link scripts
-WATCH=1 NO=install/link npm run setup-development; # do not run install or link scripts
+WATCH=1 ONLY=bootstrap/build npm run setup-development; # only run bootstrap or build
+WATCH=1 NO=build npm run setup-development; # do not run build
 ```

@@ -12,9 +12,11 @@ async function clean(context) {
 }
 
 async function cleanPackages(packages) {
+  const promises = [];
   for (const filePath in packages) {
-    await cleanPackage(filePath, packages[filePath]);
+    promises.push(cleanPackage(filePath, packages[filePath]));
   }
+  await Promise.all(promises);
 }
 
 async function cleanPackage(filePath, package) {

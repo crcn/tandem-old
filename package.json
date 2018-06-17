@@ -2,8 +2,7 @@
   "name": "aerial",
   "version": "1.0.0",
   "private": true,
-  "description":
-    "Aerial is a virtual browser for visually creating web applications.",
+  "description": "Aerial is a virtual browser for visually creating web applications.",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/crcn/aerial.git"
@@ -15,13 +14,19 @@
     "test": "gulp test",
     "precommit": "lint-staged",
     "setup-development": "node ./scripts/development/setup.js",
-    "clean": "node ./scripts/development/clean.js"
+    "clean": "node ./scripts/development/clean.js",
+    "bootstrap": "lerna bootstrap",
+    "build": "lerna exec --parallel -- npm run build -- --watch"
   },
   "lint-staged": {
-    "*.{ts,tsx,json,css,md}": ["prettier --write", "git add"]
+    "*.{ts,tsx,json,css,md}": [
+      "prettier --write",
+      "git add"
+    ]
   },
   "devDependencies": {
     "husky": "^0.14.3",
+    "lerna": "^2.11.0",
     "lint-staged": "^7.1.2"
   },
   "dependencies": {

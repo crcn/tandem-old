@@ -17,7 +17,6 @@ module.exports = merge({}, base, {
   module: {
     rules: [
       ...base.module.rules,
-      { test: /\.pc$/, use: [__dirname + '/../paperclip-react-transpiler/webpack-loader' ]},
       { test: /\.tsx?$/, use: ['ts-loader'] }
     ]
   }

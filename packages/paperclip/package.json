@@ -7,17 +7,19 @@
   "scripts": {
     "test": "mocha lib/**/*-test.js",
     "build": "tsc",
-    "clean": "rm -rf lib; rm -rf node_modules"
+    "clean": "rm -rf lib; rm -rf node_modules",
+    "prepare": "npm run build"
   },
   "license": "ISC",
   "dependencies": {
     "@types/mocha": "^5.2.0",
-    "@types/node": "^10.1.2",
+    "@types/node": "^10.3.3",
     "@types/redux": "^3.6.0",
     "@types/redux-saga": "^0.10.5",
     "chai": "^4.1.2",
     "fsbox": "^1.0.0",
     "lodash": "^4.17.10",
+    "paperclip-migrator": "^1.0.1",
     "redux": "^4.0.0",
     "redux-saga": "^0.16.0",
     "tandem-common": "^3.0.0"
@@ -25,6 +27,7 @@
   "devDependencies": {
     "husky": "^0.14.3",
     "lint-staged": "^7.1.2",
-    "mocha": "^5.2.0"
+    "mocha": "^5.2.0",
+    "typescript": "^2.9.2"
   }
 }

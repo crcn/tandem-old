@@ -3,8 +3,6 @@ import { PCExpression, PCParent, PCFragment, PCElement, PCString, PCExpressionTy
 import { repeat } from "lodash";
 import { ExpressionLocation, CSSGroupingRule, CSSStyleRule, PCTextNode, PCBlock } from "./ast";
 import { Mutation, SetPropertyMutation, StringMutation, InsertChildMutation, RemoveChildMutation, SetValueMutation, REMOVE_CHILD_MUTATION, INSERT_CHILD_MUTATION, createStringMutation } from "source-mutation";
-// import { CSS_STYLE_RULE_SET_STYLE, SET_ELEMENT_ATTRIBUTE_EDIT, INSERT_CHILD_NODE_EDIT, UPDATE_VALUE_NODE, REMOVE_CHILD_NODE_EDIT, INSERT_HTML_EDIT, CSS_INSERT_CSS_RULE_TEXT, CSS_PARENT_DELETE_RULE, CSS_STYLE_RULE_SET_STYLE_PROPERTY, CSS_STYLE_RULE_SET_SELECTOR_TEXT } from "slim-dom";
-// import { InsertHTMLMutation, createInsertHTMLMutation } from "aerial-browser-sandbox/mutation";
 import { PC_REMOVE_CHILD_NODE, PC_REMOVE_NODE, PCRemoveNodeMutation, PCRemoveChildNodeMutation } from "./mutation";
 
 export const editPaperclipSource = (content: string, mutation: Mutation<PCExpression>): StringMutation[] => {
@@ -21,7 +19,7 @@ export const editPaperclipSource = (content: string, mutation: Mutation<PCExpres
   if (!targetNode) {
     return [createStringMutation(0, 0, ``)]
   }
-  
+
   // switch(mutation.type) {
   //   case UPDATE_VALUE_NODE: {
   //     return editNodeValue(targetNode as PCTextNode, mutation as SetValueMutation<any>);
@@ -46,7 +44,7 @@ export const editPaperclipSource = (content: string, mutation: Mutation<PCExpres
   //   case PC_REMOVE_NODE: {
   //     return removeNode(targetNode);
   //   }
-    
+
   //   case CSS_INSERT_CSS_RULE_TEXT: {
   //     // TODO
   //   }
@@ -71,7 +69,7 @@ const findTargetNode = (ast: PCExpression, location: ExpressionLocation) => {
   if (astLocationEquals(ast, location)) {
     return ast;
   }
-  
+
   if (ast.type === PCExpressionType.FRAGMENT || ast.type === PCExpressionType.ELEMENT) {
     for (const child of (ast as PCFragment).childNodes) {
       const found = findTargetNode(child, location);
@@ -92,13 +90,13 @@ const findTargetSheetRule = (ast: any, location: ExpressionLocation) => {
 }
 
 const findTargetNodeFromSub = (ast: PCExpression, location: ExpressionLocation) => {
-  
+
   // TODO - need to check target kind as well
   // check if we're editing a string value (there may be a sep parser involved)
   if (ast.type === PCExpressionType.STRING && ((ast.location.start.line === location.start.line && ast.location.start.column <= location.start.column) || ast.location.start.line < location.start.line) && ((ast.location.end.line === location.end.line && ast.location.end.column >= location.end.column) || ast.location.end.line > location.end.line)) {
     return ast;
   }
-  
+
   if (ast.type === PCExpressionType.FRAGMENT || ast.type === PCExpressionType.ELEMENT) {
     for (const child of (ast as PCFragment).childNodes) {
       const found = findTargetNodeFromSub(child, location);
@@ -144,7 +142,7 @@ const editNodeValue = (target: PCTextNode, { newValue }: SetValueMutation<any>) 
 }
 
 const editElementAttribute = (target: PCExpression, mutation: SetPropertyMutation<any>) => {
-  
+
   let startTag: PCSelfClosingElement | PCStartTag;
 
   if (target.type === PCExpressionType.SELF_CLOSING_ELEMENT) {
@@ -154,7 +152,7 @@ const editElementAttribute = (target: PCExpression, mutation: SetPropertyMutatio
   }
 
   let found;
-  
+
   let mutations: StringMutation[] = [];
 
   const mutateAttrName = mutation.name;
@@ -183,7 +181,7 @@ const editElementAttribute = (target: PCExpression, mutation: SetPropertyMutatio
     return [createStringMutation(insertIndex, insertIndex, mutation.newValue === true ? mutateAttrName : ` ${mutateAttrName}=${mutateAttrValue}`)];
   }
 };
-  
+
 const editStyleRuleDeclaration = (target: CSSStyleRule, { newValue }: SetPropertyMutation<any>) => {
 
   const prettyStyleText = newValue.split(/\s*;\s*/g).join(";\n");
