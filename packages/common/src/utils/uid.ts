@@ -1,4 +1,4 @@
-import * as crc32 from "crc32";
+const crc32 = require("crc32");
 
 export type UIDGenerator = () => string;
 // export type ChecksumGenerator<TObject> = (value: TObject) => string;
