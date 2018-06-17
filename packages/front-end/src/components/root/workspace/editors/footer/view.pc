@@ -1,0 +1,63 @@
+{
+  "id": "174f96bb0",
+  "name": "module",
+  "version": "0.0.3",
+  "children": [
+    {
+      "label": "Editor Footer",
+      "is": "div",
+      "style": {
+        "box-sizing": "border-box",
+        "font-family": "Helvetica",
+        "padding": "8px 16px"
+      },
+      "attributes": {},
+      "id": "174f96bb76034",
+      "name": "component",
+      "children": [
+        {
+          "id": "174f96bb143549",
+          "label": "zoom",
+          "is": "div",
+          "name": "element",
+          "attributes": {},
+          "style": {
+            "box-sizing": "border-box"
+          },
+          "children": [
+            {
+              "id": "174f96bb151990",
+              "name": "text",
+              "label": "Zoom",
+              "value": "Zoom:",
+              "style": {
+                "margin-right": "4px"
+              },
+              "children": [],
+              "metadata": {}
+            },
+            {
+              "id": "174f96bb261724",
+              "name": "text",
+              "label": "Text",
+              "value": "100%",
+              "style": {},
+              "children": [],
+              "metadata": {}
+            }
+          ],
+          "metadata": {}
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": 351,
+          "top": 225,
+          "right": 750.416464903152,
+          "bottom": 264.90914667257584
+        }
+      }
+    }
+  ],
+  "metadata": {}
+}

@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "bin": {
-    "paperclip-migrator": "./bin/paperclip-migrator"
+    "paperclip-migrator": "./bin/paperclip-migrator",
+    "clean": "rm -rf node_modules"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

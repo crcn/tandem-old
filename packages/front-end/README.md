@@ -1,8 +1,19 @@
 IMMEDIATE:
 
+* Build tools
+
+  * install & link deps
+  * prohibit push if package is touched without publish
+
+* open file page
+* SVG options
+* clean up build process
+* increase speed of build
+* ability to load fonts
+* flexbox
+* variables
+* Refactor layers pane to mirror AST
 * _import_ SVG file when dropped, don't include it
-* breadcrumbs
-* variants
 
 - Styler
   * right gutter drawer

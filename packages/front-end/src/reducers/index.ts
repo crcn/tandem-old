@@ -1605,7 +1605,9 @@ const shortcutReducer = (state: RootState, action: Action): RootState => {
           state,
           ...(parent.children.length
             ? [parent.children[Math.min(index, parent.children.length - 1)].id]
-            : [parent.id])
+            : parent.name !== SYNTHETIC_DOCUMENT_NODE_NAME
+              ? [parent.id]
+              : [])
         );
         return state;
       }, state);

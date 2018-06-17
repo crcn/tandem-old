@@ -5,7 +5,9 @@
   "main": "index.js",
   "author": "",
   "scripts": {
-    "test": "mocha lib/**/*-test.js"
+    "test": "mocha lib/**/*-test.js",
+    "build": "tsc",
+    "clean": "rm -rf lib; rm -rf node_modules"
   },
   "license": "ISC",
   "dependencies": {

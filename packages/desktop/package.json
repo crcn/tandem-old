@@ -9,7 +9,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "electron .",
-    "build-front-end": "webpack"
+    "build": "tsc; webpack",
+    "build-front-end": "webpack",
+    "clean": "rm -rf lib; rm -rf node_modules"
   },
   "author": "",
   "license": "ISC",
@@ -21,6 +23,7 @@
     "electron": "^2.0.2",
     "electron-builder": "^20.11.1",
     "electron-devtools-installer": "^2.2.3",
+    "electron-packager": "^12.1.0",
     "express": "^4.16.3",
     "fs-extra": "^6.0.1",
     "fsbox": "^1.0.0",
