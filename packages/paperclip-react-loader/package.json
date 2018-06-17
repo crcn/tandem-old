@@ -1,20 +1,20 @@
 {
   "name": "paperclip-react-loader",
-  "version": "10.0.1",
+  "version": "10.0.2",
   "description": "",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc",
     "clean": "rm -rf lib; rm -rf node_modules",
-    "prepare": "npm run build"
+    "prepublish": "npm run build"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "loader-utils": "^1.1.0",
-    "paperclip": "^10.0.1",
-    "paperclip-migrator": "^10.0.1",
-    "paperclip-react-compiler": "^10.0.1"
+    "paperclip": "^10.0.2",
+    "paperclip-migrator": "^10.0.2",
+    "paperclip-react-compiler": "^10.0.2"
   }
 }
