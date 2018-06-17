@@ -2,7 +2,7 @@ Tandem is a component editor designed for most web platforms. The editor is stil
 
 ## Development
 
-Run:
+To install, run:
 
 ```
 git clone git@github.com:crcn/tandem.git;
