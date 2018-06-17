@@ -17,10 +17,15 @@ async function linkPackage(filePath, package, packages) {
     });
   });
 
+  const promises = [];
+
   for (const depName of localDependencyNames) {
-    await exec(PM_BIN, ["link", depName]);
+    promises.push(exec(PM_BIN, ["link", depName], {
+      cwd: path.dirname(filePath)
+    }));
   }
 
+  await Promise.all(promises);
 }
 
 module.exports = linkPackages;

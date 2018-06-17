@@ -26,7 +26,6 @@
   },
   "dependencies": {
     "fs-extra": "^6.0.1",
-    "fsa": "^0.5.1",
     "linklocal": "^2.8.2"
   }
 }

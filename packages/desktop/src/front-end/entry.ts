@@ -1,4 +1,3 @@
-import "tandem-front-end/lib/front-end/entry.bundle.css";
 import * as fs from "fs";
 import { rootSaga } from "./sagas";
 import { take, select } from "redux-saga/effects";

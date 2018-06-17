@@ -8,8 +8,7 @@
     "start-dev": "./node_modules/.bin/webpack-dev-server --hot",
     "build": "webpack",
     "start": "node lib/back-end/entry",
-    "tandem-preview-server":
-      "tandem-webpack-preview-server --config=webpack-tandem-preview.config.js --include-script=node_modules/react/dist/react.min.js --include-script=node_modules/react-dom/dist/react-dom.min.js",
+    "tandem-preview-server": "tandem-webpack-preview-server --config=webpack-tandem-preview.config.js --include-script=node_modules/react/dist/react.min.js --include-script=node_modules/react-dom/dist/react-dom.min.js",
     "clean": "rm -rf lib; rm -rf node_modules"
   },
   "repository": {
@@ -126,6 +125,7 @@
     "socket.io-client": "^2.0.3",
     "systemjs": "^0.20.14",
     "tandem-common": "^3.0.0",
+    "tandem-webpack-preview-server": "^1.0.0",
     "tinycolor2": "^1.4.1",
     "void-elements": "^3.1.0",
     "xml-js": "^1.6.2"

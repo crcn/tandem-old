@@ -3,7 +3,6 @@ const {merge} = require('lodash');
 const webpack = require('webpack');
 
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const TandemWebpackPreviewPlugin = require('tandem-webpack-preview-plugin');
 
 const base = require("./webpack-base.config.js");
 
