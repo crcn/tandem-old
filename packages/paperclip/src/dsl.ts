@@ -337,10 +337,16 @@ export const isVisibleNode = (node: PCNode) =>
   isPCComponentInstance(node);
 export const isPCOverride = (node: PCNode) =>
   node.name === PCSourceTagNames.OVERRIDE;
-export const isComponent = (node: PCNode) =>
+export const isComponent = (node: PCNode): node is PCComponent =>
   node.name === PCSourceTagNames.COMPONENT;
-export const isPCComponentInstance = (node: PCNode) =>
+export const isPCComponentInstance = (
+  node: PCNode
+): node is PCComponentInstanceElement =>
   node.name === PCSourceTagNames.COMPONENT_INSTANCE;
+export const isPCComponentOrInstance = (
+  node: PCNode
+): node is PCComponent | PCComponentInstanceElement =>
+  isPCComponentOrInstance(node) || isComponent(node);
 
 export const extendsComponent = (
   element: PCElement | PCComponent | PCComponentInstanceElement
