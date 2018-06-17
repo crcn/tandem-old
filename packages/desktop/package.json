@@ -13,7 +13,7 @@
     "build": "tsc; webpack",
     "build-front-end": "webpack",
     "clean": "rm -rf lib; rm -rf node_modules",
-    "prepublish": "npm run build",
+    "prepare": "npm run build",
     "build-dist": "electron-packager . Tandem --out=dist"
   },
   "author": "",
