@@ -1,6 +1,6 @@
 import * as React from "react";
 import { compose, pure, withHandlers, withState } from "recompose";
-const { DropdownMenuItem } = require("./view.pc");
+const { DropdownMenuItem } = require("./menu.pc");
 import { EMPTY_ARRAY } from "tandem-common";
 
 export type DropdownMenuOption = {

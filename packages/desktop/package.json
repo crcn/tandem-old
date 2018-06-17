@@ -9,11 +9,12 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "electron .",
+    "start": "electron lib/index.js",
     "build": "tsc; webpack",
     "build-front-end": "webpack",
     "clean": "rm -rf lib; rm -rf node_modules",
-    "prepare": "npm run build"
+    "prepublish": "npm run build",
+    "build-dist": "electron-packager . Tandem --out=dist"
   },
   "author": "",
   "license": "ISC",

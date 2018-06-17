@@ -2,7 +2,7 @@ Tandem is a component editor designed for most web platforms. The editor is stil
 
 ## Development
 
-To get started, first clone & install the repository:
+Run:
 
 ```
 git clone git@github.com:crcn/tandem.git;
@@ -10,15 +10,25 @@ cd tandem;
 yarn install;
 ```
 
-Next, run the `development` script:
+Then run:
 
 ```
-npm run setup-development;
+npm run build-watch;
 ```
 
-👆🏻 This script will install, link, and build all packages. Further usage for this script:
+👆🏻 This will start build processes for _all_ packages. Finally, run:
 
 ```
-WATCH=1 ONLY=bootstrap/build npm run setup-development; # only run bootstrap or build
-WATCH=1 NO=build npm run setup-development; # do not run build
+npm run design-front-end;
+```
+
+👆🏻 To start building Tandem in Tandem.
+
+#### Development scripts
+
+
+```
+npm run build-watch; # build & watch all packages
+npm run design-front-end; # start Tandem for front-end
+npm run build-desktop-dist; # build desktop app
 ```

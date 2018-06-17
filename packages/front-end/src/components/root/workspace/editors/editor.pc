@@ -10,7 +10,8 @@
         "box-sizing": "border-box",
         "display": "flex",
         "flex-direction": "column",
-        "width": "100%"
+        "width": "100%",
+        "height": "100%"
       },
       "attributes": {},
       "id": "483373f987277",
@@ -27,7 +28,8 @@
             "background": "rgba(209, 209, 209, 1)",
             "position": "relative",
             "flex-grow": "0",
-            "height": "34px"
+            "height": "34px",
+            "flex-shrink": "0"
           },
           "children": [
             {
@@ -91,10 +93,10 @@
       ],
       "metadata": {
         "bounds": {
-          "left": 323,
-          "top": 951,
-          "right": 1529.7505661263158,
-          "bottom": 1720.8733593566596
+          "left": 352,
+          "top": 963,
+          "right": 1558.7505661263158,
+          "bottom": 1732.8733593566594
         }
       },
       "controllers": [

@@ -1,7 +1,7 @@
 import "./index.scss";
 import * as React from "react";
 import { Dispatch } from "redux";
-import { WorkspaceComponent } from "./workspace";
+const { Workspace } = require("./workspace/index.pc");
 import { RootState } from "../../state";
 import { compose, pure } from "recompose";
 
@@ -13,7 +13,7 @@ export type RootOuterProps = {
 const RootBaseComponent = ({ root, dispatch }: RootOuterProps) => {
   return (
     <div className="m-root">
-      <WorkspaceComponent root={root} dispatch={dispatch} />
+      <Workspace root={root} dispatch={dispatch} />
     </div>
   );
 };

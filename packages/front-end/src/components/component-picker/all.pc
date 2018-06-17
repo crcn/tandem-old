@@ -14,23 +14,6 @@
       },
       "children": [
         {
-          "id": "dcd2c13f4695",
-          "variant": [],
-          "is": "33b1b6b133319",
-          "name": "component-instance",
-          "attributes": {},
-          "style": {},
-          "children": [],
-          "metadata": {
-            "bounds": {
-              "left": 784,
-              "top": 290,
-              "right": 2746.8518233326877,
-              "bottom": 1273.4100056728703
-            }
-          }
-        },
-        {
           "id": "dcd2c13f1369180",
           "variant": [],
           "is": "dcd2c13f1117488",

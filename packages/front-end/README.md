@@ -1,18 +1,12 @@
 IMMEDIATE:
 
-* Build tools
+* navigator redesign
+* open folder UI in navigator
+* empty stage giving instructions
+* monaco editor (experimental)
+* performance
 
-  * install & link deps
-  * build script with lerna
-
-
-* test setup from clean run
-* possibly setup docker
-
-* open file page
 * SVG options
-* clean up build process
-* increase speed of build
 * ability to load fonts
 * flexbox
 * variables
@@ -50,6 +44,9 @@ IMMEDIATE:
 
 Polish:
 
+* experimental features
+  * code editor in Tandem
+  * preview mode in Tandem
 * Typed generation files
 * Styles Pane
   * Gradient input

@@ -20,6 +20,9 @@ type EditorWindowInnerProps = {
 export default compose(
   pure,
   Base => ({ editorWindow, root, dispatch }: EditorWindowInnerProps) => {
+    if (!editorWindow) {
+      return null;
+    }
     const dependency =
       window && root.graph && root.graph[editorWindow.activeFilePath];
     const fileCacheItem = getFSItem(editorWindow.activeFilePath, root);

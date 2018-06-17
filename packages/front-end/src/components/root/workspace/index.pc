@@ -7,7 +7,9 @@
       "label": "Workspace",
       "is": "div",
       "style": {
-        "display": "flex"
+        "display": "flex",
+        "width": "100vw",
+        "height": "100vh"
       },
       "attributes": {},
       "id": "33b1b6b133319",
@@ -36,56 +38,55 @@
           "label": "Left Gutter"
         },
         {
-          "id": "f2929651030",
-          "variant": [],
-          "is": "de86f033487546",
-          "name": "component-instance",
+          "id": "1ecbd352054",
+          "label": "Center",
+          "is": "div",
+          "name": "element",
           "attributes": {},
-          "style": {},
+          "style": {
+            "box-sizing": "border-box",
+            "width": "100%",
+            "flex": "1"
+          },
           "children": [
             {
-              "id": "de86f033487547",
+              "id": "1ecbd3338125",
               "variant": [],
-              "is": "de86f033487546",
+              "is": "1ecbd3329725",
               "name": "component-instance",
               "attributes": {},
               "style": {
-                "position": "relative",
-                "background": "rgba(237, 236, 236, 1)",
                 "display": "none"
               },
-              "children": [
-                {
-                  "id": "bae08a2e621514",
-                  "variant": [],
-                  "is": "bae08a2e609807",
-                  "name": "component-instance",
-                  "attributes": {},
-                  "style": {},
-                  "children": [],
-                  "metadata": {}
+              "children": [],
+              "metadata": {
+                "bounds": {
+                  "left": 523,
+                  "top": 1112,
+                  "right": 623,
+                  "bottom": 1212
                 }
-              ],
-              "metadata": {},
-              "label": "Frames Layer"
+              },
+              "label": "Welcome"
             },
             {
-              "id": "ab406a6b770941",
+              "id": "5d6bd010473728",
               "variant": [],
-              "is": "ab406a6b770940",
+              "is": "5d6bd010465271",
               "name": "component-instance",
               "attributes": {},
               "style": {},
               "children": [],
-              "metadata": {}
+              "metadata": {},
+              "label": "editor windows"
             }
           ],
           "metadata": {
             "bounds": {
-              "left": 2450,
-              "top": 1085,
-              "right": 3187.96875,
-              "bottom": 1740
+              "left": -1061,
+              "top": -228,
+              "right": 33.78534890426067,
+              "bottom": 942.2193090107448
             }
           }
         },
@@ -98,7 +99,7 @@
           "style": {
             "width": "250px",
             "flex-shrink": "0",
-            "display": "flex",
+            "display": "block",
             "flex-direction": "column",
             "height": "100vh",
             "background": "rgba(255, 255, 255, 1)"
@@ -125,38 +126,126 @@
               "right": 678,
               "bottom": 1545.8975564891314
             }
-          }
+          },
+          "label": "Right Gutter"
         }
       ],
       "metadata": {
         "bounds": {
-          "left": 60,
-          "top": -15,
-          "right": 2022.851823332688,
-          "bottom": 968.4100056728704
+          "left": 7,
+          "top": 1141,
+          "right": 1969.8518233326877,
+          "bottom": 2124.4100056728703
+        }
+      },
+      "controllers": [
+        "./controller.tsx"
+      ]
+    },
+    {
+      "id": "1ecbd3354925",
+      "variant": [],
+      "is": "33b1b6b133319",
+      "name": "component-instance",
+      "attributes": {},
+      "style": {},
+      "children": [
+        {
+          "id": "1ecbd3403722",
+          "propertyName": "style",
+          "targetIdPath": [
+            "1ecbd3338125"
+          ],
+          "value": {
+            "display": "block"
+          },
+          "name": "override",
+          "children": []
+        },
+        {
+          "id": "1ecbd3520865",
+          "propertyName": "style",
+          "targetIdPath": [
+            "1ecbd360494"
+          ],
+          "value": {
+            "display": "none"
+          },
+          "name": "override",
+          "children": []
+        },
+        {
+          "id": "1ecbd3530628",
+          "propertyName": "style",
+          "targetIdPath": [
+            "33b1b6b171359"
+          ],
+          "value": {
+            "display": "none"
+          },
+          "name": "override",
+          "children": []
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": 70,
+          "top": -5,
+          "right": 2032.851823332688,
+          "bottom": 978.4100056728704
         }
       }
     },
     {
-      "label": "Stage",
+      "label": "Welcome",
       "is": "div",
       "style": {
-        "width": "100%",
-        "height": "100%",
-        "background": "rgba(0,0,0,0.1)",
-        "border-right": "1px solid rgba(0,0,0,0.05)",
-        "border-left": "1px solid rgba(0,0,0,0.05)"
+        "box-sizing": "border-box",
+        "padding": "10px",
+        "font-family": "Helvetica"
       },
       "attributes": {},
-      "id": "de86f033487546",
+      "id": "1ecbd3329725",
       "name": "component",
-      "children": [],
+      "children": [
+        {
+          "id": "1ecbd3725907",
+          "label": "Header",
+          "is": "h4",
+          "name": "element",
+          "attributes": {},
+          "style": {
+            "box-sizing": "border-box"
+          },
+          "children": [
+            {
+              "id": "1ecbd3745444",
+              "name": "text",
+              "label": "Text",
+              "value": "Tandem Preview",
+              "style": {},
+              "children": [],
+              "metadata": {}
+            }
+          ],
+          "metadata": {}
+        },
+        {
+          "id": "885720672882",
+          "name": "text",
+          "label": "Text",
+          "value": "TODO - instructions here",
+          "style": {},
+          "children": [],
+          "metadata": {}
+        }
+      ],
       "metadata": {
         "bounds": {
-          "left": 788,
-          "top": 1140,
-          "right": 1525.96875,
-          "bottom": 1795
+          "left": 2235,
+          "top": 170,
+          "right": 3255.0909190405564,
+          "bottom": 792.4636876963959
         }
       }
     }

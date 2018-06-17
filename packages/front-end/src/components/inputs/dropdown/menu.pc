@@ -1,0 +1,45 @@
+{
+  "id": "5d6bd01099",
+  "name": "module",
+  "version": "0.0.3",
+  "children": [
+    {
+      "label": "Dropdown Menu Item",
+      "is": "div",
+      "style": {
+        "padding": "4px",
+        "font-family": "Helvetica",
+        "color": "grey",
+        "border-bottom": "1px solid rgba(0,0,0,0.05)",
+        "user-select": "none",
+        "cursor": "default",
+        "background": "rgba(250, 250, 250, 1)"
+      },
+      "attributes": {},
+      "id": "8b8bbe2c859177",
+      "name": "component",
+      "children": [
+        {
+          "id": "8b8bbe2c859176",
+          "name": "text",
+          "label": "Text",
+          "value": "menu item 1",
+          "style": {
+            "padding": "8px"
+          },
+          "children": [],
+          "metadata": {}
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": 381,
+          "top": 313,
+          "right": 582,
+          "bottom": 347
+        }
+      }
+    }
+  ],
+  "metadata": {}
+}
