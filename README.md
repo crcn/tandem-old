@@ -24,8 +24,7 @@ npm run design-front-end;
 
 👆🏻 To start building Tandem in Tandem.
 
-#### Development scripts
-
+#### Development commands
 
 ```
 npm run build-watch; # build & watch all packages
