@@ -1,5 +1,5 @@
 import { memoize } from "../utils/memoization";
-import * as crc32 from "crc32";
+const crc32 = require("crc32");
 import { merge } from "lodash";
 import { arraySplice } from "../utils/array";
 import { UIDGenerator, createUIDGenerator } from "../utils/uid";
