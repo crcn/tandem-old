@@ -10,9 +10,11 @@ import {
   FILE_PROTOCOL,
   FSItemTagNames
 } from "tandem-common";
+import { findPaperclipSourceFiles, openPCConfig, pcSourceFileUrisReceived } from "paperclip";
 import {
   RootState,
   FILE_NAVIGATOR_ITEM_CLICKED,
+  PROJECT_DIRECTORY_LOADED,
   OPEN_FILE_ITEM_CLICKED,
   PAPERCLIP_DEFAULT_EXTENSIONS,
   FILE_NAVIGATOR_NEW_FILE_ENTERED,
@@ -21,20 +23,10 @@ import {
   savedFile,
   getOpenFile,
   FileNavigatorNewFileEntered,
-  getTreeNodeFromPath,
   getNestedTreeNodeById,
-  FileAttributeNames,
   newFileAdded,
   InsertFileType,
   FILE_NAVIGATOR_DROPPED_ITEM,
-  Dependency,
-  DependencyGraph,
-  PC_LAYER_EXPAND_TOGGLE_CLICK,
-  PC_LAYER_CLICK,
-  TreeLayerClick,
-  SyntheticVisibleNode,
-  QUICK_SEARCH_ITEM_CLICKED,
-  getEditorWithActiveFileUri,
   getActiveEditorWindow
 } from "tandem-front-end";
 
@@ -44,6 +36,29 @@ export function* rootSaga() {
   // yield fork(handleActivePaperclipFile);
   yield fork(handleNewFileEntered);
   yield fork(handleDroppedFile);
+  yield fork(handleProjectDirectory);
+}
+
+function* handleProjectDirectory() {
+  while(1) {
+    yield take(PROJECT_DIRECTORY_LOADED);
+    yield call(loadPCFiles);
+  }
+}
+
+function* loadPCFiles() {
+  const state: RootState = yield select();
+  if (!state.projectDirectory) {
+    return [];
+  }
+
+  // TODO - need to hit back-end API for this since CWD could be different
+  const sourceFiles = findPaperclipSourceFiles(
+    openPCConfig(stripProtocol(state.projectDirectory.uri)).config,
+    stripProtocol(state.projectDirectory.uri)
+  ).map(path => "file://" + path);
+
+  yield put(pcSourceFileUrisReceived(sourceFiles));
 }
 
 // function* handleActivePaperclipFile() {

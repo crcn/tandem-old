@@ -30,6 +30,35 @@
           "bottom": 297.3571410945104
         }
       }
+    },
+    {
+      "id": "7c1c804876665",
+      "variant": [],
+      "is": "b34e7ef429680",
+      "name": "component-instance",
+      "attributes": {},
+      "style": {},
+      "children": [
+        {
+          "id": "7c1c804893692",
+          "propertyName": "text",
+          "targetIdPath": [
+            "b34e7ef4338028",
+            "b34e7ef4147857"
+          ],
+          "value": "File",
+          "name": "override",
+          "children": []
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": 577,
+          "top": 158,
+          "right": 796.5078553178573,
+          "bottom": 312.8267808885354
+        }
+      }
     }
   ],
   "metadata": {}

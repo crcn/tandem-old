@@ -1,10 +1,10 @@
 IMMEDIATE:
 
-* navigator redesign
-* open folder UI in navigator
-* empty stage giving instructions
+* menu not showing up for dist
+* styles panel - flex
 * monaco editor (experimental)
-* performance
+* fix temp open file & tab syncing (exception thrown when tab selected but open file not)
+* move tab reference to open file instead
 
 * SVG options
 * ability to load fonts

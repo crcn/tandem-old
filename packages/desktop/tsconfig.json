@@ -20,7 +20,8 @@
     "*-test",
     "lib",
     "index.d.ts",
-    "../front-end/**"
+    "../front-end/**",
+    "dist"
   ],
   "filesGlob": [
     "./src/**/*.ts"

@@ -18,13 +18,15 @@ export type PCConfig = {
 
 const DEFAULT_EXCLUDES = ["node_modules"];
 
-export const creaPCConfig = (
+export const createPCConfig = (
   rootDir: string,
   exclude: string[] = DEFAULT_EXCLUDES
 ): PCConfig => ({
   rootDir,
   exclude
 });
+
+export const DEFAULT_CONFIG = createPCConfig(".");
 
 export const openPCConfig = (
   dir: string,
@@ -43,7 +45,7 @@ export const openPCConfig = (
     dirParts.pop();
   }
 
-  return null;
+  return { directory: dir, config: DEFAULT_CONFIG };
 };
 
 export const findPaperclipSourceFiles = (config: PCConfig, cwd: string) => {

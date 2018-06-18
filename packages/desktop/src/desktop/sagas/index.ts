@@ -1,13 +1,18 @@
 import { fork, call, take, select, put } from "redux-saga/effects";
 import { electronSaga } from "./electron";
-import { BrowserWindow } from "electron";
+import { BrowserWindow, dialog } from "electron";
 import {
   APP_READY,
   mainWindowOpened,
   pcConfigLoaded,
   tdConfigLoaded,
   TD_CONFIG_LOADED,
-  previewServerStarted
+  previewServerStarted,
+  OPEN_WORKSPACE_MENU_ITEM_CLICKED,
+  WORKSPACE_DIRECTORY_OPENED,
+  WorkspaceDirectoryOpened,
+  projectDirectoryLoaded,
+  workspaceDirectoryOpened,
 } from "../actions";
 import { FRONT_END_ENTRY_FILE_PATH, TD_CONFIG_FILE_NAME } from "../constants";
 import { ipcSaga, pid } from "./ipc";
@@ -16,25 +21,18 @@ import * as qs from "querystring";
 import { spawn } from "child_process";
 import {
   PAPERCLIP_CONFIG_DEFAULT_FILENAME,
-  creaPCConfig,
-  pcFrameContainerCreated,
-  PCConfig,
+  createPCConfig,
   openPCConfig,
-  createPCDependency,
-  findPaperclipSourceFiles,
-  walkPCRootDirectory
+  walkPCRootDirectory,
+  DEFAULT_CONFIG
 } from "paperclip";
 import { DesktopState } from "../state";
-import * as globby from "globby";
 import {
   isPublicAction,
   convertFlatFilesToNested,
-  isDirectory,
-  Directory,
   createDirectory,
   addProtocol,
   FILE_PROTOCOL,
-  publicActionCreator
 } from "tandem-common";
 import { shortcutsSaga } from "./menu";
 import * as fs from "fs";
@@ -47,29 +45,30 @@ export function* rootSaga() {
   yield fork(handleLoadProject);
   yield fork(shortcutsSaga);
   yield fork(previewServer);
-  yield call(loadTDConfig);
-  yield call(initPCConfig);
+  yield fork(handleOpenWorkspace);
+  yield fork(initWorkspaceDirectory);
+  yield fork(handleOpenedWorkspaceDirectory);
 }
 
-const projectDirectoryLoaded = publicActionCreator((directory: Directory) => ({
-  directory,
-  type: "PROJECT_DIRECTORY_LOADED"
-}));
+function* initWorkspaceDirectory() {
+  const state: DesktopState = yield select();
+  if (!state.projectDirectory) {
+    return;
+  }
+  yield call(loadTDConfig);
+  yield call(initPCConfig);
+  yield call(loadProjectDirectory);
+}
 
 function* initPCConfig() {
   const state: DesktopState = yield select();
-
   // todo - may want this to be custom
   const configFileName = PAPERCLIP_CONFIG_DEFAULT_FILENAME;
   let configResult = openPCConfig(state.projectDirectory);
 
   if (!configResult) {
-    console.log("writing default paperclip config");
-    fs.writeFileSync(
-      path.join(state.projectDirectory, configFileName),
-      JSON.stringify(creaPCConfig("."), null, 2)
-    );
-    configResult = openPCConfig(state.projectDirectory);
+    console.warn("paperclip config not found, reading default");
+    return yield put(pcConfigLoaded(DEFAULT_CONFIG));
   }
 
   yield put(pcConfigLoaded(configResult.config));
@@ -125,23 +124,31 @@ function* openMainWindow() {
 function* handleLoadProject() {
   while (1) {
     yield take("APP_LOADED");
-    const { pcConfig, projectDirectory }: DesktopState = yield select();
-
-    const files: [string, boolean][] = [];
-    walkPCRootDirectory(pcConfig, projectDirectory, (filePath, isDirectory) => {
-      if (filePath === projectDirectory) {
-        return;
-      }
-      files.push([filePath, isDirectory]);
-    });
-
-    const root = createDirectory(
-      addProtocol(FILE_PROTOCOL, projectDirectory),
-      convertFlatFilesToNested(files)
-    );
-
-    yield put(projectDirectoryLoaded(root));
+    yield call(loadProjectDirectory);
   }
+}
+
+function* loadProjectDirectory() {
+  const { pcConfig, projectDirectory }: DesktopState = yield select();
+
+  if (!projectDirectory || !pcConfig) {
+    return;
+  }
+
+  const files: [string, boolean][] = [];
+  walkPCRootDirectory(pcConfig, projectDirectory, (filePath, isDirectory) => {
+    if (filePath === projectDirectory) {
+      return;
+    }
+    files.push([filePath, isDirectory]);
+  });
+
+  const root = createDirectory(
+    addProtocol(FILE_PROTOCOL, projectDirectory),
+    files.length ? convertFlatFilesToNested(files) : []
+  );
+
+  yield put(projectDirectoryLoaded(root));
 }
 
 function* previewServer() {
@@ -168,4 +175,23 @@ function* previewServer() {
   proc.stdout.pipe(process.stdout);
 
   yield put(previewServerStarted(port));
+}
+
+function* handleOpenWorkspace() {
+  while(1) {
+    yield take(OPEN_WORKSPACE_MENU_ITEM_CLICKED);
+    const [directory] = dialog.showOpenDialog({properties: ['openDirectory']}) || [undefined];
+    if (!directory) {
+      continue;
+    }
+
+    yield put(workspaceDirectoryOpened(directory));
+  }
+}
+
+function* handleOpenedWorkspaceDirectory() {
+  while(1) {
+    const { directory }: WorkspaceDirectoryOpened = yield take(WORKSPACE_DIRECTORY_OPENED);
+    yield call(initWorkspaceDirectory);
+  }
 }

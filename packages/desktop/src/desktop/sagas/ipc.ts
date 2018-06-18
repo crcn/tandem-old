@@ -1,7 +1,6 @@
 import { fork, call, take, put, spawn } from "redux-saga/effects";
 import { eventChannel } from "redux-saga";
 import { ipcMain } from "electron";
-import { isPublicAction } from "tandem-common";
 export const pid = Date.now() + "_" + Math.random();
 
 export function* ipcSaga() {

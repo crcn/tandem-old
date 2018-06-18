@@ -1,7 +1,7 @@
 import { Menu, MenuItem, MenuItemConstructorOptions, app } from "electron";
 import { fork, put, take } from "redux-saga/effects";
 import { eventChannel } from "redux-saga";
-import { MAIN_WINDOW_OPENED } from "../actions";
+import { MAIN_WINDOW_OPENED, OPEN_WORKSPACE_MENU_ITEM_CLICKED } from "../actions";
 import { publicActionCreator } from "tandem-common";
 
 const shortcutKeyDown = publicActionCreator((type: string) => ({
@@ -10,7 +10,6 @@ const shortcutKeyDown = publicActionCreator((type: string) => ({
 
 export function* shortcutsSaga() {
   yield take(MAIN_WINDOW_OPENED);
-
   const menu = new Menu();
 
   const chan = eventChannel(emit => {
@@ -92,6 +91,12 @@ export function* shortcutsSaga() {
             accelerator: "meta+t",
             click: () => {
               emit(shortcutKeyDown("SHORTCUT_QUICK_SEARCH_KEY_DOWN"));
+            }
+          },
+          {
+            label: "Open Workspace...",
+            click: () => {
+              emit(shortcutKeyDown(OPEN_WORKSPACE_MENU_ITEM_CLICKED));
             }
           }
         ]

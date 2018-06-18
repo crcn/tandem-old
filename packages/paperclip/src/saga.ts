@@ -40,20 +40,12 @@ import {
 import { PAPERCLIP_MIME_TYPE } from ".";
 
 export type PaperclipSagaOptions = {
-  getPaperclipUris(): Promise<string[]>;
 };
 
 export const createPaperclipSaga = ({
-  getPaperclipUris
 }: PaperclipSagaOptions) =>
   function* paperclipSaga() {
     yield fork(nativeRenderer);
-    yield fork(loadPaperclipFiles);
-
-    function* loadPaperclipFiles() {
-      const paperclipUris = yield call(getPaperclipUris);
-      yield put(pcSourceFileUrisReceived(paperclipUris));
-    }
 
     function* nativeRenderer() {
       yield fork(function* captureFrameChanges() {

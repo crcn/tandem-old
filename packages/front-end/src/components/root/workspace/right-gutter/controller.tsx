@@ -17,12 +17,10 @@ export default compose(pure, Base => ({ root, dispatch }) => {
   const selectedNodes = getSelectedNoded(root.selectedNodeIds, root.documents);
 
   return <Base stylerProps={{
-    root,
     dispatch,
     selectedNodes
   }}
   propertiesProps={{
-    root,
     dispatch,
     selectedNodes
   }} />;

@@ -7,7 +7,9 @@ import {
   TD_CONFIG_LOADED,
   TDConfigLoaded,
   PREVIEW_SERVER_STARTED,
-  PreviewServerStarted
+  PreviewServerStarted,
+  WORKSPACE_DIRECTORY_OPENED,
+  WorkspaceDirectoryOpened
 } from "../actions";
 
 export const rootReducer = (
@@ -15,6 +17,10 @@ export const rootReducer = (
   action: Action
 ): DesktopState => {
   switch (action.type) {
+    case WORKSPACE_DIRECTORY_OPENED: {
+      const { directory: projectDirectory } = action as WorkspaceDirectoryOpened;
+      return { ...state, projectDirectory };
+    }
     case PC_CONFIG_LOADED: {
       const { config: pcConfig } = action as PCConfigLoaded;
       return { ...state, pcConfig };

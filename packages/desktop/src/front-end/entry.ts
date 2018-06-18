@@ -23,7 +23,6 @@ setup<DesktopRootState>(
     return {
       readFile,
       writeFile,
-      getPaperclipUris,
       openPreview
     };
   },
@@ -80,12 +79,4 @@ function readFile(uri) {
 async function writeFile(uri: string, content: Buffer) {
   fs.writeFileSync(uri, content);
   return true;
-}
-
-async function getPaperclipUris() {
-  // TODO - need to hit back-end API for this since CWD could be different
-  return findPaperclipSourceFiles(
-    openPCConfig(process.cwd()).config,
-    process.cwd()
-  ).map(path => "file://" + path);
 }
