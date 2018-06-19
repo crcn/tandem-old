@@ -55,11 +55,11 @@ import {
   isSyntheticVisibleNodeMovable,
   isSyntheticVisibleNodeResizable,
   updateFrame,
-  diffSyntheticNode,
-  SyntheticOperationalTransformType,
-  SyntheticInsertChildOperationalTransform,
+  diffTreeNode,
+  TreeNodeOperationalTransformType,
+  InsertChildNodeOperationalTransform,
   PCSourceTagNames,
-  patchSyntheticNode,
+  patchTreeNode,
   getSyntheticDocumentById,
   SyntheticDocument,
   updateSyntheticDocument,
@@ -167,6 +167,10 @@ export type RootState = {
   history: GraphHistory;
   showQuickSearch?: boolean;
   selectedComponentId: string;
+  queuedScopeSelect?: {
+    previousState: RootState;
+    scope: SyntheticVisibleNode | SyntheticDocument;
+  }
 } & PCEditorState &
   FSSandboxRootState;
 
@@ -224,9 +228,9 @@ const getUpdatedSyntheticVisibleNodes = (
 
   let newSyntheticVisibleNodes: SyntheticVisibleNode[] = [];
   let model = oldScope;
-  diffSyntheticNode(oldScope, newScope).forEach(ot => {
+  diffTreeNode(oldScope, newScope).forEach(ot => {
     const target = getTreeNodeFromPath(ot.nodePath, model);
-    model = patchSyntheticNode([ot], model);
+    model = patchTreeNode([ot], model);
 
     if (ot.nodePath.length > MAX_DEPTH) {
       return;
@@ -234,10 +238,10 @@ const getUpdatedSyntheticVisibleNodes = (
 
     // TODO - will need to check if new parent is not in an instance of a component.
     // Will also need to consider child overrides though.
-    if (ot.type === SyntheticOperationalTransformType.INSERT_CHILD) {
-      newSyntheticVisibleNodes.push(ot.child);
+    if (ot.type === TreeNodeOperationalTransformType.INSERT_CHILD) {
+      newSyntheticVisibleNodes.push(ot.child as SyntheticVisibleNode);
     } else if (
-      ot.type === SyntheticOperationalTransformType.SET_PROPERTY &&
+      ot.type === TreeNodeOperationalTransformType.SET_PROPERTY &&
       ot.name === "source"
     ) {
       newSyntheticVisibleNodes.push(target);
@@ -245,6 +249,15 @@ const getUpdatedSyntheticVisibleNodes = (
   });
 
   return uniq(newSyntheticVisibleNodes);
+};
+
+export const queueSelectInsertedSyntheticVisibleNodes = (oldState: RootState, newState: RootState, scope: SyntheticVisibleNode | SyntheticDocument) => {
+  return updateRootState({
+    queuedScopeSelect: {
+      previousState: oldState,
+      scope
+    }
+  }, newState);
 };
 
 export const selectInsertedSyntheticVisibleNodes = (

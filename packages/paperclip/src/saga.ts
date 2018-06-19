@@ -1,137 +1,109 @@
 import { eventChannel } from "redux-saga";
 import { take, fork, select, call, put, spawn } from "redux-saga/effects";
-import { getPCNode } from "./dsl";
 import {
   pcFrameRendered,
-  pcDependencyGraphLoaded,
   pcFrameContainerCreated,
   PC_SYNTHETIC_FRAME_CONTAINER_CREATED,
   PC_SYNTHETIC_FRAME_RENDERED,
-  pcSourceFileUrisReceived
+  pcRuntimeEvaluated,
+  PC_RUNTIME_EVALUATED,
+  PCRuntimeEvaluated,
 } from "./actions";
+import { uniq } from "lodash";
 import {
   SyntheticNativeNodeMap,
   renderDOM,
   patchDOM,
   computeDisplayInfo
 } from "./dom-renderer";
-import { KeyValue } from "tandem-common";
-import { difference, values } from "lodash";
+import { KeyValue, getNestedTreeNodeById, EMPTY_ARRAY } from "tandem-common";
 import {
-  Dependency,
   DependencyGraph,
-  addFileCacheItemToDependencyGraph
 } from "./graph";
-import { loadEntry, FileLoader } from "./loader";
-import { diffSyntheticNode } from "./ot";
-import { PCEditorState, Frame, getFrameByContentNodeId } from "./edit";
+import { diffTreeNode, TreeNodeOperationalTransform } from "./ot";
+import { PCEditorState, Frame, getFrameByContentNodeId, getSyntheticDocumentFrames } from "./edit";
 import {
   getSyntheticNodeById,
   SyntheticDocument,
-  SyntheticVisibleNode
+  SyntheticVisibleNode,
+  getSyntheticDocumentByDependencyUri,
+  getSyntheticDocumentDependencyUri
 } from "./synthetic";
-import {
-  FS_SANDBOX_ITEM_LOADED,
-  FSSandboxItemLoaded,
-  FSSandboxRootState,
-  FileCache,
-  FileCacheItemStatus
-} from "fsbox";
-import { PAPERCLIP_MIME_TYPE } from ".";
+import { PCRuntime } from "./runtime";
 
 export type PaperclipSagaOptions = {
+  createRuntime(): PCRuntime;
 };
 
 export const createPaperclipSaga = ({
+  createRuntime
 }: PaperclipSagaOptions) =>
   function* paperclipSaga() {
+    yield fork(runtime);
     yield fork(nativeRenderer);
 
-    function* nativeRenderer() {
-      yield fork(function* captureFrameChanges() {
-        let currFrames: Frame[];
-        let currDocuments: SyntheticDocument[];
-        while (1) {
-          yield take(
-            action =>
-              action.type !== PC_SYNTHETIC_FRAME_CONTAINER_CREATED &&
-              action.type !== PC_SYNTHETIC_FRAME_RENDERED
-          );
-          const { documents, frames, graph }: PCEditorState = yield select();
+    function* runtime() {
+      const rt = createRuntime();
 
-          if (frames == currFrames) {
-            continue;
-          }
+      const chan = eventChannel((emit) => {
+        rt.on("evaluate", (newDocuments, diffs) => {
+          emit(pcRuntimeEvaluated(newDocuments, diffs, rt.syntheticDocuments));
+        });
+        return () => {
 
-          const prevFrames = currFrames;
-          const prevDocuments = currDocuments;
-          currFrames = frames;
-          currDocuments = documents;
+        };
+      });
 
-          for (const currFrame of currFrames) {
-            const contentNode = getSyntheticNodeById(
-              currFrame.contentNodeId,
-              documents
-            );
-            const prevContentNode = getSyntheticNodeById(
-              currFrame.contentNodeId,
-              prevDocuments
-            );
-
-            const oldFrame = getFrameByContentNodeId(
-              currFrame.contentNodeId,
-              prevFrames
-            );
-
-            // if navigator is present, then we want to point to a remote renderer
-            if (
-              contentNode &&
-              prevContentNode === contentNode &&
-              currFrame === oldFrame
-            ) {
-              continue;
-            }
-
-            yield call(
-              renderContainer,
-              currFrame,
-              oldFrame,
-              contentNode,
-              prevContentNode,
-              graph
-            );
-          }
-
-          yield call(
-            () => new Promise(resolve => requestAnimationFrame(resolve))
-          );
+      yield fork(function*() {
+        while(1) {
+          yield put(yield take(chan));
         }
       });
 
-      const initedFrames = {};
-
-      function* renderContainer(
-        newFrame: Frame,
-        oldFrame: Frame,
-        newContentNode: SyntheticVisibleNode,
-        oldContentNode: SyntheticVisibleNode,
-        graph: DependencyGraph
-      ) {
-        if (!initedFrames[newFrame.contentNodeId] || !oldContentNode) {
-          initedFrames[newFrame.contentNodeId] = 1;
-          yield spawn(initContainer, newFrame, graph);
-        } else {
-          yield call(
-            patchContainer,
-            newFrame,
-            oldFrame,
-            newContentNode,
-            oldContentNode,
-            graph
-          );
-        }
+      while(1) {
+        yield take();
+        const state:PCEditorState = yield select();
+        rt.graph = state.graph;
       }
     }
+
+    const initedFrames = {};
+
+    function* nativeRenderer() {
+      yield fork(function* captureFrameChanges() {
+        while (1) {
+          const { newDocuments, diffs }: PCRuntimeEvaluated = yield take(PC_RUNTIME_EVALUATED);
+          const state: PCEditorState = yield select();
+
+          const updatedDocUris = uniq([...Object.keys(newDocuments), ...Object.keys(diffs)]);
+
+          for (const uri of updatedDocUris) {
+            const document = getSyntheticDocumentByDependencyUri(uri, state.documents, state.graph);
+            const ots = diffs[uri] || EMPTY_ARRAY;
+
+            for (const frame of getSyntheticDocumentFrames(document, state.frames)) {
+              if (!initedFrames[frame.contentNodeId]) {
+                initedFrames[frame.contentNodeId]= 1;
+                yield spawn(initContainer, frame, state.graph);
+              } else if (ots.length) {
+                const frameOts = mapContentNodeOperationalTransforms(frame.contentNodeId, document, ots);
+                if (frameOts.length) {
+                  yield spawn(patchContainer, frame, getNestedTreeNodeById(frame.contentNodeId, document), frameOts);
+                }
+              }
+            }
+          }
+        }
+      });
+    }
+
+    const mapContentNodeOperationalTransforms = (contentNodeId: string, document: SyntheticDocument, ots: TreeNodeOperationalTransform[]) => {
+      const index = document.children.findIndex(child => child.id === contentNodeId);
+      return ots.filter(ot => ot.nodePath[0] === index).map(ot => ({
+        ...ot,
+        nodePath: ot.nodePath.slice(1)
+      }));
+    };
 
     const frameNodeMap: KeyValue<SyntheticNativeNodeMap> = {};
 
@@ -197,35 +169,28 @@ export const createPaperclipSaga = ({
     }
 
     function* patchContainer(
-      newFrame: Frame,
-      oldFrame: Frame,
-      newContentNode: SyntheticVisibleNode,
-      oldContentNode: SyntheticVisibleNode
+      frame: Frame,
+      contentNode: SyntheticVisibleNode,
+      ots: TreeNodeOperationalTransform[]
     ) {
-      if (newContentNode === oldContentNode && newFrame === oldFrame) {
-        return;
-      }
-      const container: HTMLElement = newFrame.$container;
+      const container: HTMLElement = frame.$container;
       const iframe = container.children[0] as HTMLIFrameElement;
       const body = iframe.contentDocument && iframe.contentDocument.body;
       if (!body) {
         return;
       }
 
-      if (oldContentNode !== newContentNode) {
-        const ots = diffSyntheticNode(oldContentNode, newContentNode);
-        frameNodeMap[newFrame.contentNodeId] = patchDOM(
-          ots,
-          oldContentNode,
-          body,
-          frameNodeMap[newFrame.contentNodeId]
-        );
-      }
+      frameNodeMap[frame.contentNodeId] = patchDOM(
+        ots,
+        contentNode,
+        body,
+        frameNodeMap[frame.contentNodeId]
+      );
 
       yield put(
         pcFrameRendered(
-          newFrame,
-          computeDisplayInfo(frameNodeMap[newFrame.contentNodeId])
+          frame,
+          computeDisplayInfo(frameNodeMap[frame.contentNodeId])
         )
       );
     }

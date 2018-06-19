@@ -1,6 +1,6 @@
 import { expect } from "chai";
 import {
-  evaluateDependency,
+  // evaluateDependency,
   PCEditorState,
   createPCDependency,
   PCModule,
@@ -29,7 +29,7 @@ describe(__filename + "#", () => {
       frames: []
     };
 
-    state = evaluateDependency("0", state);
+    // state = evaluateDependency("0", state);
     return state;
   };
 

@@ -4,13 +4,12 @@ import { default as createSagaMiddleware } from "redux-saga";
 import { fork, call } from "redux-saga/effects";
 import { rootReducer } from "./reducers";
 import { createRootSaga, FrontEndSagaOptions } from "./sagas";
+const PaperclipWorker = require("./paperclip.worker");
+
 import {
   createPaperclipSaga,
   PAPERCLIP_MIME_TYPE,
   PAPERCLIP_DEFAULT_EXTENSIONS,
-  PaperclipSagaOptions,
-  Frame,
-  DependencyGraph
 } from "paperclip";
 import { RootState } from "./state";
 import { appLoaded } from "./actions";
@@ -19,10 +18,10 @@ import {
   createFSSandboxSaga,
   setReaderMimetype
 } from "fsbox";
+import { createRemotePCRuntime } from "paperclip";
 
 export type FrontEndOptions = FrontEndSagaOptions &
-  FSSandboxOptions &
-  PaperclipSagaOptions;
+  FSSandboxOptions;
 export type SideEffectCreator = () => IterableIterator<FrontEndOptions>;
 
 export const setup = <TState extends RootState>(
@@ -44,7 +43,7 @@ export const setup = <TState extends RootState>(
       applyMiddleware(sagaMiddleware)
     );
     sagaMiddleware.run(function*() {
-      let { readFile, writeFile, openPreview, getPaperclipUris } = yield call(
+      let { readFile, writeFile, openPreview } = yield call(
         createSideEffects
       );
 
@@ -57,7 +56,11 @@ export const setup = <TState extends RootState>(
       if (saga) {
         yield fork(saga);
         yield fork(createFSSandboxSaga({ readFile, writeFile }));
-        yield fork(createPaperclipSaga({ getPaperclipUris }));
+        yield fork(createPaperclipSaga({
+          createRuntime: () => {
+            return createRemotePCRuntime(new PaperclipWorker());
+          }
+        }));
       }
     });
 

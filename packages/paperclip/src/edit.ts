@@ -18,8 +18,6 @@ import {
   replaceNestedNode,
   arraySplice,
   stripProtocol,
-  filterTreeNodeParents,
-  getTreeNodeFromPath,
   getNestedTreeNodeById,
   KeyValue
 } from "tandem-common";
@@ -30,7 +28,6 @@ import {
   getPCNode,
   PCVisibleNode,
   createPCComponent,
-  getPCNodeContentNode,
   getPCNodeDependency,
   PCSourceTagNames,
   replacePCNode,
@@ -63,11 +60,6 @@ import {
   isSyntheticVisibleNode
 } from "./synthetic";
 import * as path from "path";
-import {
-  diffSyntheticNode,
-  patchSyntheticNode,
-  SyntheticOperationalTransformType
-} from "./ot";
 import { convertFixedBoundsToRelative } from "./synthetic-layout";
 import { evaluatePCModule } from "./evaluate";
 
@@ -465,7 +457,7 @@ const assertValidDependencyGraph = memoize((graph: DependencyGraph) => {
   }
 });
 
-const upsertFrames = <TState extends PCEditorState>(state: TState) => {
+export const upsertFrames = <TState extends PCEditorState>(state: TState) => {
   const frames: Frame[] = [];
 
   const framesByContentNodeId = getFramesContentNodeIdMap(state.frames);
@@ -488,28 +480,28 @@ const upsertFrames = <TState extends PCEditorState>(state: TState) => {
   return updatePCEditorState({ frames }, state);
 };
 
-export const evaluateDependency = memoize(
-  <TState extends PCEditorState>(uri: string, state: TState) => {
-    // re-evaluate the updated dependency graph and merge those changes into the existing frames to ensure
-    // that references are still maintianed.
-    const documents = upsertSyntheticDocument(
-      evaluatePCModule(state.graph[uri].content, state.graph),
-      state.documents,
-      state.graph
-    );
+// export const evaluateDependency = memoize(
+//   <TState extends PCEditorState>(uri: string, state: TState) => {
+//     // re-evaluate the updated dependency graph and merge those changes into the existing frames to ensure
+//     // that references are still maintianed.
+//     const documents = upsertSyntheticDocument(
+//       evaluatePCModule(state.graph[uri].content, state.graph),
+//       state.documents,
+//       state.graph
+//     );
 
-    return upsertFrames(updatePCEditorState({ documents }, state));
-  }
-);
+//     return upsertFrames(updatePCEditorState({ documents }, state));
+//   }
+// );
 
-export const evaluateDependencyGraph = memoize(
-  <TState extends PCEditorState>(state: TState) => {
-    for (const dep of values(state.graph)) {
-      state = evaluateDependency(dep.uri, state);
-    }
-    return state;
-  }
-);
+// export const evaluateDependencyGraph = memoize(
+//   <TState extends PCEditorState>(state: TState) => {
+//     for (const dep of values(state.graph)) {
+//       state = evaluateDependency(dep.uri, state);
+//     }
+//     return state;
+//   }
+// );
 
 /*------------------------------------------
  * PERSISTING
@@ -520,18 +512,18 @@ const persistChanges = <TState extends PCEditorState>(
   updater: (state: TState) => TState
 ) => {
   state = updater(state);
-  if (state.inEdit) {
-    return state;
-  }
-  state = { ...(state as any), inEdit: true };
+  // if (state.inEdit) {
+  //   return state;
+  // }
+  // state = { ...(state as any), inEdit: true };
 
-  // sanity check.
-  assertValidDependencyGraph(state.graph);
+  // // sanity check.
+  // assertValidDependencyGraph(state.graph);
 
-  for (const uri in state.graph) {
-    state = evaluateDependency(uri, state);
-  }
-  state = { ...(state as any), inEdit: false };
+  // for (const uri in state.graph) {
+  //   state = evaluateDependency(uri, state);
+  // }
+  // state = { ...(state as any), inEdit: false };
   return state;
 };
 
@@ -638,6 +630,11 @@ export const persistAddComponentController = <TState extends PCEditorState>(
 
     return replaceDependencyGraphPCNode(sourceNode, sourceNode, state);
   });
+
+export const setSyntheticDocuments = <TState extends PCEditorState>(documents: SyntheticDocument[], state: TState) => upsertFrames({
+  ...(state as any),
+  documents
+})
 
 export const persistInsertNode = <TState extends PCEditorState>(
   newChild: PCVisibleNode | PCComponent,

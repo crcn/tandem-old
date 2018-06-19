@@ -51,7 +51,13 @@ module.exports = {
         ]
       },
       { test: /\.pc$/, use: ['paperclip-react-loader']},
-      { test: /\.tsx?$/, use: ['ts-loader'] }
+      { test: /\.tsx?$/, use: ['ts-loader'] },
+      { test: /\.worker.ts?$/, use: [{
+        loader: 'worker-loader',
+        options: {
+          inline: true
+        }
+      }] }
     ]
   }
 };

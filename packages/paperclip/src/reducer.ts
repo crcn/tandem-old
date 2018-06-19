@@ -4,9 +4,6 @@ import {
   FSSandboxRootState,
   FS_SANDBOX_ITEM_LOADED,
   FSSandboxItemLoaded,
-  fsSandboxReducer,
-  getFileCacheItemsByMimetype,
-  FileCacheItemStatus
 } from "fsbox";
 import {
   PC_SYNTHETIC_FRAME_RENDERED,
@@ -16,16 +13,16 @@ import {
   PCFrameContainerCreated,
   PCDependencyGraphLoaded,
   PC_SOURCE_FILE_URIS_RECEIVED,
-  PCSourceFileUrisReceived
+  PCSourceFileUrisReceived,
+  PC_RUNTIME_EVALUATED,
+  PCRuntimeEvaluated
 } from "./actions";
-import { evaluatePCModule } from "./evaluate";
 import {
-  updateSyntheticVisibleNode,
   PCEditorState,
   updatePCEditorState,
   updateFrame,
-  evaluateDependency,
-  evaluateDependencyGraph
+  setSyntheticDocuments,
+  // evaluateDependencyGraph
 } from "./edit";
 import { addFileCacheItemToDependencyGraph } from "./graph";
 import { PAPERCLIP_MIME_TYPE } from "./constants";
@@ -48,6 +45,10 @@ export const paperclipReducer = <
         state
       );
     }
+    case PC_RUNTIME_EVALUATED: {
+      const { allDocuments } = action as PCRuntimeEvaluated;
+      return setSyntheticDocuments(allDocuments, state);
+    }
     case PC_SOURCE_FILE_URIS_RECEIVED: {
       const { uris } = action as PCSourceFileUrisReceived;
       return queueOpenFiles(uris, state);
@@ -62,20 +63,20 @@ export const paperclipReducer = <
         state
       );
     }
-    case PC_DEPENDENCY_GRAPH_LOADED: {
-      const { graph } = action as PCDependencyGraphLoaded;
-      return evaluateDependencyGraph(
-        updatePCEditorState(
-          {
-            graph: {
-              ...state.graph,
-              ...graph
-            }
-          },
-          state
-        )
-      );
-    }
+    // case PC_DEPENDENCY_GRAPH_LOADED: {
+    //   const { graph } = action as PCDependencyGraphLoaded;
+    //   return evaluateDependencyGraph(
+    //     updatePCEditorState(
+    //       {
+    //         graph: {
+    //           ...state.graph,
+    //           ...graph
+    //         }
+    //       },
+    //       state
+    //     )
+    //   );
+    // }
     case FS_SANDBOX_ITEM_LOADED: {
       const { uri, content, mimeType } = action as FSSandboxItemLoaded;
 

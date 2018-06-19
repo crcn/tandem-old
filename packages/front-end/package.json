@@ -85,6 +85,7 @@
     "request": "^2.81.0",
     "socket.io": "^2.0.3",
     "socket.io-client": "^2.0.3",
-    "tandem-common": "^10.0.2"
+    "tandem-common": "^10.0.2",
+    "worker-loader": "^2.0.0"
   }
 }

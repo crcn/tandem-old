@@ -170,6 +170,7 @@ import {
   selectInsertedSyntheticVisibleNodes,
   RegisteredComponent,
   closeFile,
+  queueSelectInsertedSyntheticVisibleNodes,
   shiftActiveEditorTab
 } from "../state";
 import {
@@ -218,12 +219,13 @@ import {
   SYNTHETIC_DOCUMENT_NODE_NAME,
   DEFAULT_FRAME_BOUNDS,
   isPaperclipUri,
-  evaluateDependency,
+  // evaluateDependency,
   isSyntheticDocumentRoot,
   isSyntheticVisibleNode,
   persistChangeElementType,
   getSyntheticDocumentById,
   persistAddComponentController,
+  PC_RUNTIME_EVALUATED,
   persistCSSProperty,
   persistAttribute,
   getPCNode,
@@ -651,7 +653,7 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
           ? targetNode
           : getParentTreeNode(targetNode.id, document);
 
-      state = selectInsertedSyntheticVisibleNodes(
+      state = queueSelectInsertedSyntheticVisibleNodes(
         oldState,
         state,
         mutatedTarget
@@ -1234,15 +1236,17 @@ export const canvasReducer = (state: RootState, action: Action) => {
       }, state);
       return state;
     }
-    case SLOT_TOGGLE_CLICK: {
-      // state = persistRootState(browser => {
-      //   return persistToggleSlotContainer(
-      //     getSyntheticSourceNode(state.selectedNodeIds[0], state.paperclip).id,
-      //     browser
-      //   );
-      // }, state);
-      return state;
+    case PC_RUNTIME_EVALUATED: {
+
+      const queuedScopeSelect = state.queuedScopeSelect;
+
+      if (queuedScopeSelect) {
+        state = selectInsertedSyntheticVisibleNodes(queuedScopeSelect.previousState, state, queuedScopeSelect.scope);
+      }
+
+      return updateRootState({ queuedScopeSelect: null }, state);
     }
+
     case NATIVE_NODE_TYPE_CHANGED: {
       const { nativeType } = action as NativeNodeTypeChanged;
       // state = persistRootState(browser => {
@@ -1420,7 +1424,7 @@ const persistInsertNodeFromPoint = (
   );
 
   state = setTool(null, state);
-  state = selectInsertedSyntheticVisibleNodes(oldState, state, targetNode);
+  state = queueSelectInsertedSyntheticVisibleNodes(oldState, state, targetNode);
 
   return state;
 };
@@ -1551,7 +1555,7 @@ const shortcutReducer = (state: RootState, action: Action): RootState => {
         state
       );
 
-      state = selectInsertedSyntheticVisibleNodes(
+      state = queueSelectInsertedSyntheticVisibleNodes(
         oldState,
         state,
         getSyntheticDocumentByDependencyUri(
@@ -1601,14 +1605,15 @@ const shortcutReducer = (state: RootState, action: Action): RootState => {
 
         parent = getSyntheticNodeById(parent.id, state.documents);
 
-        state = setSelectedSyntheticVisibleNodeIds(
-          state,
-          ...(parent.children.length
-            ? [parent.children[Math.min(index, parent.children.length - 1)].id]
-            : parent.name !== SYNTHETIC_DOCUMENT_NODE_NAME
-              ? [parent.id]
-              : [])
-        );
+        state = setSelectedSyntheticVisibleNodeIds(state);
+        // state = setSelectedSyntheticVisibleNodeIds(
+        //   state,
+        //   ...(parent.children.length
+        //     ? [parent.children[Math.min(index, parent.children.length - 1)].id]
+        //     : parent.name !== SYNTHETIC_DOCUMENT_NODE_NAME
+        //       ? [parent.id]
+        //       : [])
+        // );
         return state;
       }, state);
     }
@@ -1657,7 +1662,7 @@ const clipboardReducer = (state: RootState, action: Action) => {
       );
 
       if (scopeNode === targetNode) {
-        state = selectInsertedSyntheticVisibleNodes(oldState, state, scopeNode);
+        state = queueSelectInsertedSyntheticVisibleNodes(oldState, state, scopeNode);
       }
 
       return state;
@@ -1675,9 +1680,9 @@ const isDroppableNode = (node: SyntheticVisibleNode) => {
 };
 
 const maybeEvaluateFile = (uri: string, state: RootState) => {
-  if (isPaperclipUri(uri) && hasFileCacheItem(uri, state)) {
-    return evaluateDependency(uri, state);
-  }
+  // if (isPaperclipUri(uri) && hasFileCacheItem(uri, state)) {
+  //   return evaluateDependency(uri, state);
+  // }
   return queueOpenFile(uri, state);
 };
 

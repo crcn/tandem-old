@@ -29,4 +29,13 @@ const pcModule = createPCModule([
 ]);
 
 const syntheticDocument = evaluatePCModule(pcModule);
+
+const runtime = createRuntime(graph, () => {
+
+}, onPatch);
+runtime.patchDependencyGraph(graph);
+runtime.on("evaluate", () => {
+
+});
+
 ```

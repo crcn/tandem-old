@@ -1,6 +1,5 @@
 import {
   SyntheticVisibleNode,
-  SyntheticSource,
   SyntheticBaseNode
 } from "./synthetic";
 import {
@@ -14,105 +13,106 @@ import {
   ArrayUpdateMutation,
   ArrayInsertMutation
 } from "tandem-common";
+import { PCNode } from "./dsl";
 
-export enum SyntheticOperationalTransformType {
+export enum TreeNodeOperationalTransformType {
   SET_PROPERTY,
   MOVE_CHILD,
   REMOVE_CHILD,
   INSERT_CHILD
 }
 
-export type BaseSyntheticOperationalTransform<
-  TType extends SyntheticOperationalTransformType
+export type BaseTreeNodeOperationalTransform<
+  TType extends TreeNodeOperationalTransformType
 > = {
   nodePath: number[];
   type: TType;
 };
 
-export type SyntheticInsertChildOperationalTransform = {
+export type InsertChildNodeOperationalTransform = {
   nodePath: number[];
   index: number;
-  child: SyntheticVisibleNode;
-} & BaseSyntheticOperationalTransform<
-  SyntheticOperationalTransformType.INSERT_CHILD
+  child: SyntheticVisibleNode | PCNode;
+} & BaseTreeNodeOperationalTransform<
+  TreeNodeOperationalTransformType.INSERT_CHILD
 >;
 
-export type SyntheticRemoveChildOperationalTransform = {
+export type RemoveChildNodeOperationalTransform = {
   nodePath: number[];
   index: number;
-} & BaseSyntheticOperationalTransform<
-  SyntheticOperationalTransformType.REMOVE_CHILD
+} & BaseTreeNodeOperationalTransform<
+  TreeNodeOperationalTransformType.REMOVE_CHILD
 >;
 
-export type SyntheticMoveChildOperationalTransform = {
+export type MoveChildNodeOperationalTransform = {
   nodePath: number[];
   oldIndex: number;
   newIndex: number;
-} & BaseSyntheticOperationalTransform<
-  SyntheticOperationalTransformType.MOVE_CHILD
+} & BaseTreeNodeOperationalTransform<
+  TreeNodeOperationalTransformType.MOVE_CHILD
 >;
 
-export type SyntheticSetPropertyOperationalTransform = {
+export type SetNodePropertyOperationalTransform = {
   nodePath: number[];
   name: string;
   value: any;
-} & BaseSyntheticOperationalTransform<
-  SyntheticOperationalTransformType.SET_PROPERTY
+} & BaseTreeNodeOperationalTransform<
+  TreeNodeOperationalTransformType.SET_PROPERTY
 >;
 
-export type SyntheticOperationalTransform =
-  | SyntheticInsertChildOperationalTransform
-  | SyntheticRemoveChildOperationalTransform
-  | SyntheticMoveChildOperationalTransform
-  | SyntheticSetPropertyOperationalTransform;
+export type TreeNodeOperationalTransform =
+  | InsertChildNodeOperationalTransform
+  | RemoveChildNodeOperationalTransform
+  | MoveChildNodeOperationalTransform
+  | SetNodePropertyOperationalTransform;
 
-const createSyntheticInsertChildOperationalTransform = (
+const createInsertChildNodeOperationalTransform = (
   nodePath: number[],
-  child: SyntheticVisibleNode,
+  child: SyntheticVisibleNode | PCNode,
   index: number
-): SyntheticInsertChildOperationalTransform => ({
-  type: SyntheticOperationalTransformType.INSERT_CHILD,
+): InsertChildNodeOperationalTransform => ({
+  type: TreeNodeOperationalTransformType.INSERT_CHILD,
   nodePath,
   child,
   index
 });
 
-const createSyntheticRemoveChildOperationalTransform = (
+const createRemoveChildNodeOperationalTransform = (
   nodePath: number[],
   index: number
-): SyntheticRemoveChildOperationalTransform => ({
-  type: SyntheticOperationalTransformType.REMOVE_CHILD,
+): RemoveChildNodeOperationalTransform => ({
+  type: TreeNodeOperationalTransformType.REMOVE_CHILD,
   nodePath,
   index
 });
 
-const createSyntheticMoveChildOperationalTransform = (
+const createMoveChildNodeOperationalTransform = (
   nodePath: number[],
   oldIndex: number,
   newIndex: number
-): SyntheticMoveChildOperationalTransform => ({
-  type: SyntheticOperationalTransformType.MOVE_CHILD,
+): MoveChildNodeOperationalTransform => ({
+  type: TreeNodeOperationalTransformType.MOVE_CHILD,
   nodePath,
   oldIndex,
   newIndex
 });
 
-const createSyntheticSetPropertyOperationalTransform = (
+const createSetNodePropertyOperationalTransform = (
   nodePath: number[],
   name: string,
   value: any
-): SyntheticSetPropertyOperationalTransform => ({
-  type: SyntheticOperationalTransformType.SET_PROPERTY,
+): SetNodePropertyOperationalTransform => ({
+  type: TreeNodeOperationalTransformType.SET_PROPERTY,
   nodePath,
   name,
   value
 });
 
-const _diffSyntheticNodeMemos = {};
+const _diffTreeNodeMemos = {};
 
-export const diffSyntheticNode = memoize(
-  (oldNode: SyntheticBaseNode, newNode: SyntheticBaseNode) => {
-    const ots = _diffSyntheticNode(oldNode, newNode, []);
+export const diffTreeNode = memoize(
+  (oldNode: SyntheticBaseNode | PCNode, newNode: SyntheticBaseNode | PCNode) => {
+    const ots = _diffTreeNode(oldNode, newNode, []);
     return ots;
   }
 );
@@ -123,18 +123,18 @@ const PROHIBITED_DIFF_KEYS = {
   metadata: true
 };
 
-const _diffSyntheticNode = (
-  oldNode: SyntheticBaseNode,
-  newNode: SyntheticBaseNode,
+const _diffTreeNode = (
+  oldNode: SyntheticBaseNode | PCNode,
+  newNode: SyntheticBaseNode | PCNode,
   nodePath: number[],
-  ots: SyntheticOperationalTransform[] = []
-): SyntheticOperationalTransform[] => {
+  ots: TreeNodeOperationalTransform[] = []
+): TreeNodeOperationalTransform[] => {
   if (oldNode === newNode) {
     return ots;
   }
   const memoKey = oldNode.id + newNode.id;
-  if (_diffSyntheticNodeMemos[memoKey]) {
-    return _diffSyntheticNodeMemos[memoKey];
+  if (_diffTreeNodeMemos[memoKey]) {
+    return _diffTreeNodeMemos[memoKey];
   }
 
   for (const key in newNode) {
@@ -152,7 +152,7 @@ const _diffSyntheticNode = (
       )
     ) {
       ots.push(
-        createSyntheticSetPropertyOperationalTransform(nodePath, key, newValue)
+        createSetNodePropertyOperationalTransform(nodePath, key, newValue)
       );
     }
   }
@@ -160,13 +160,13 @@ const _diffSyntheticNode = (
   const childOts = diffArray(
     oldNode.children as SyntheticVisibleNode[],
     newNode.children as SyntheticVisibleNode[],
-    (a, b) => (a.source.nodeId === b.source.nodeId ? 0 : -1)
+    (a, b) => ((a.source ? a.source.nodeId === b.source.nodeId : a.id === b.id) ? 0 : -1)
   );
 
   for (const ot of childOts) {
     if (ot.type === ArrayOperationalTransformType.DELETE) {
       ots.push(
-        createSyntheticRemoveChildOperationalTransform(
+        createRemoveChildNodeOperationalTransform(
           nodePath,
           (ot as ArrayDeleteMutation).index
         )
@@ -177,7 +177,7 @@ const _diffSyntheticNode = (
         uot.originalOldIndex
       ] as SyntheticVisibleNode;
 
-      _diffSyntheticNode(
+      _diffTreeNode(
         oldChild,
         uot.newValue,
         [...nodePath, uot.patchedOldIndex],
@@ -186,7 +186,7 @@ const _diffSyntheticNode = (
 
       if (uot.index !== uot.patchedOldIndex) {
         ots.push(
-          createSyntheticMoveChildOperationalTransform(
+          createMoveChildNodeOperationalTransform(
             nodePath,
             uot.originalOldIndex,
             uot.index
@@ -196,7 +196,7 @@ const _diffSyntheticNode = (
     } else if (ot.type === ArrayOperationalTransformType.INSERT) {
       const iot = ot as ArrayInsertMutation<any>;
       ots.push(
-        createSyntheticInsertChildOperationalTransform(
+        createInsertChildNodeOperationalTransform(
           nodePath,
           iot.value,
           iot.index
@@ -205,65 +205,12 @@ const _diffSyntheticNode = (
     }
   }
 
-  // // DELETE
-  // for (let i = oldNode.children.length; i--; ) {
-  //   let found: SyntheticVisibleNode;
-  //   let foundIndex: number;
-  //   const oldChild = oldNode.children[i] as SyntheticVisibleNode;
-  //   oldChildIds[oldChild.source.nodeId] = 1;
-
-  //   for (let j = newNode.children.length; j--; ) {
-  //     const newChild = newNode.children[j] as SyntheticVisibleNode;
-  //     if (newChild.source.nodeId === oldChild.source.nodeId) {
-  //       found = newChild;
-  //       foundIndex = j;
-  //       break;
-  //     }
-  //   }
-
-  //   const oldIndex = modelChildren.indexOf(oldChild);
-
-  //   if (found) {
-  //     _diffSyntheticNode(
-  //       oldChild,
-  //       found,
-  //       [...nodePath, modelChildren.indexOf(oldChild)],
-  //       ots
-  //     );
-  //     if (foundIndex !== i) {
-  //       modelChildren.splice(oldIndex, 1);
-  //       modelChildren.splice(foundIndex, 0, oldChild);
-  //       ots.push(
-  //         createSyntheticMoveChildOperationalTransform(
-  //           nodePath,
-  //           oldIndex,
-  //           foundIndex
-  //         )
-  //       );
-  //     }
-  //   } else {
-  //     ots.push(
-  //       createSyntheticRemoveChildOperationalTransform(nodePath, oldIndex)
-  //     );
-  //     modelChildren.splice(oldIndex, 1);
-  //   }
-  // }
-
-  // for (let i = 0, { length } = newNode.children; i < length; i++) {
-  //   const child = newNode.children[i] as SyntheticVisibleNode;
-  //   if (!oldChildIds[child.source.nodeId]) {
-  //     ots.push(
-  //       createSyntheticInsertChildOperationalTransform(nodePath, child, i)
-  //     );
-  //   }
-  // }
-
   return ots;
 };
 
-export const patchSyntheticNode = (
-  ots: SyntheticOperationalTransform[],
-  oldNode: SyntheticBaseNode
+export const patchTreeNode = (
+  ots: TreeNodeOperationalTransform[],
+  oldNode: SyntheticBaseNode | PCNode
 ) =>
   ots.reduce((node, ot) => {
     return updateNestedNodeFromPath(
@@ -271,25 +218,25 @@ export const patchSyntheticNode = (
       node,
       (target: SyntheticVisibleNode) => {
         switch (ot.type) {
-          case SyntheticOperationalTransformType.SET_PROPERTY: {
+          case TreeNodeOperationalTransformType.SET_PROPERTY: {
             return {
               ...target,
               [ot.name]: ot.value
             };
           }
-          case SyntheticOperationalTransformType.INSERT_CHILD: {
+          case TreeNodeOperationalTransformType.INSERT_CHILD: {
             return {
               ...target,
               children: arraySplice(target.children, ot.index, 0, ot.child)
             };
           }
-          case SyntheticOperationalTransformType.REMOVE_CHILD: {
+          case TreeNodeOperationalTransformType.REMOVE_CHILD: {
             return {
               ...target,
               children: arraySplice(target.children, ot.index, 1)
             };
           }
-          case SyntheticOperationalTransformType.MOVE_CHILD: {
+          case TreeNodeOperationalTransformType.MOVE_CHILD: {
             return {
               ...target,
               children: arraySplice(

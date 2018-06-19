@@ -1,8 +1,8 @@
 // import { expect } from "chai";
 // import {
 //   createPCElement,
-//   diffSyntheticNode,
-//   patchSyntheticNode,
+//   diffTreeNode,
+//   patchTreeNode,
 //   evaluatePCModule,
 //   createPCModule
 // } from "..";
@@ -28,9 +28,9 @@
 //       const oldDocument = evaluatePCModule(module);
 //       const newDocument = evaluatePCModule(updatedModule);
 
-//       const ots = diffSyntheticNode(oldDocument, newDocument);
+//       const ots = diffTreeNode(oldDocument, newDocument);
 
-//       expect(nodeIdCleaner()(patchSyntheticNode(ots, oldDocument))).to.eql(
+//       expect(nodeIdCleaner()(patchTreeNode(ots, oldDocument))).to.eql(
 //         nodeIdCleaner()(newDocument)
 //       );
 //     });

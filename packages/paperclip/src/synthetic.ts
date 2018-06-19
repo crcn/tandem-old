@@ -32,7 +32,7 @@ import {
   validatePCModule,
   PCComponent
 } from "./dsl";
-import { diffSyntheticNode, patchSyntheticNode } from "./ot";
+import { diffTreeNode, patchTreeNode } from "./ot";
 
 /*------------------------------------------
  * STATE
@@ -338,7 +338,7 @@ export const upsertSyntheticDocument = (
     oldDocuments,
     oldDocumentIndex,
     1,
-    patchSyntheticNode(diffSyntheticNode(oldDocument, newDocument), oldDocument)
+    patchTreeNode(diffTreeNode(oldDocument, newDocument), oldDocument)
   );
 };
 
