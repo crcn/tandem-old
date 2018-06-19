@@ -1,7 +1,10 @@
-#### Goals
+## Goals
 
-TODO
+#### Provide a visual way for creating HTML & CSS _where it makes sense_.
+#### Integrate with existing frameworks and languages.
 
-#### Non-goals
+## Non-goals
 
-TODO
+#### Replace hand-written code.
+#### Target non-web platforms.
+####
