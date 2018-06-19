@@ -1,7 +1,0 @@
-<component id="hello">
-	<template>
-		<span>
-			hello [[bind message]]
-		</span>
-	</template>
-</component>

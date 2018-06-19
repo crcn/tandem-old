@@ -11,7 +11,7 @@ type PreviewServerInfo = {
 };
 
 export type DesktopState = {
-  projectDirectory: string;
+  projectDirectory?: string;
   pcConfig?: PCConfig;
   tdConfig?: TDConfig;
   info: {

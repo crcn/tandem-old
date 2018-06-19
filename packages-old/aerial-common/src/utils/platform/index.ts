@@ -1,1 +1,0 @@
-export const ENV_IS_NODE = process && process.versions && process.versions.node;

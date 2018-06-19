@@ -1,1 +1,0 @@
-This is currently a junk drawer of dependencies. Most everything here should be moved into separate repositories eventually.

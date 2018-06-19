@@ -1,10 +1,14 @@
 IMMEDIATE:
 
 * menu not showing up for dist
+* select component instance when pasting component
 * styles panel - flex
 * monaco editor (experimental)
 * fix temp open file & tab syncing (exception thrown when tab selected but open file not)
 * move tab reference to open file instead
+* performance
+  * fix memory leaks (don't attach memoization to objects - keep in weak map)
+  * web worker for dependency graph (replica set)
 
 * SVG options
 * ability to load fonts

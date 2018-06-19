@@ -1,6 +1,0 @@
-<module>
-  <meta name="name" content="Table" />
-  <template name="preview" export>
-    TABLE TODO
-  </template>
-</module>
