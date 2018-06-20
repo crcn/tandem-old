@@ -1598,16 +1598,16 @@ const shortcutReducer = (state: RootState, action: Action): RootState => {
         }, state);
 
         parent = getSyntheticNodeById(parent.id, state.documents);
+        const selectableChildren = parent.children.filter(child => child.id !== firstNode.id);
 
-        state = setSelectedSyntheticVisibleNodeIds(state);
-        // state = setSelectedSyntheticVisibleNodeIds(
-        //   state,
-        //   ...(parent.children.length
-        //     ? [parent.children[Math.min(index, parent.children.length - 1)].id]
-        //     : parent.name !== SYNTHETIC_DOCUMENT_NODE_NAME
-        //       ? [parent.id]
-        //       : [])
-        // );
+        state = setSelectedSyntheticVisibleNodeIds(
+          state,
+          ...(selectableChildren.length
+            ? [selectableChildren[Math.min(index, selectableChildren.length - 1)].id]
+            : parent.name !== SYNTHETIC_DOCUMENT_NODE_NAME
+              ? [parent.id]
+              : [])
+        );
         return state;
       }, state);
     }
