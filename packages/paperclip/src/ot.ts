@@ -211,8 +211,8 @@ const _diffTreeNode = (
 export const patchTreeNode = (
   ots: TreeNodeOperationalTransform[],
   oldNode: SyntheticBaseNode | PCNode
-) =>
-  ots.reduce((node, ot) => {
+) => {
+  return ots.reduce((node, ot) => {
     return updateNestedNodeFromPath(
       ot.nodePath,
       node,

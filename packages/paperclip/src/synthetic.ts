@@ -83,6 +83,7 @@ export const createSytheticDocument = (
   children?: SyntheticVisibleNode[]
 ): SyntheticDocument => ({
   id: generateUID(),
+  checksumHistory: [],
   metadata: EMPTY_OBJECT,
   source,
   name: SYNTHETIC_DOCUMENT_NODE_NAME,

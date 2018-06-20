@@ -1,7 +1,6 @@
 import { Action } from "redux";
 import {
   FSSandboxRootState,
-  queueOpenFile,
   updateFileCacheItem,
   FileCacheItemStatus
 } from "./state";

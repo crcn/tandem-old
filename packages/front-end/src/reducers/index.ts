@@ -66,7 +66,6 @@ import {
   FileNavigatorDroppedItem,
   SHORTCUT_UNDO_KEY_DOWN,
   SHORTCUT_REDO_KEY_DOWN,
-  SLOT_TOGGLE_CLICK,
   PC_LAYER_LABEL_CHANGED,
   NATIVE_NODE_TYPE_CHANGED,
   TEXT_VALUE_CHANGED,
@@ -78,7 +77,6 @@ import {
   QuickSearchItemClicked,
   QUICK_SEARCH_BACKGROUND_CLICK,
   NEW_VARIANT_NAME_ENTERED,
-  NewVariantNameEntered,
   COMPONENT_VARIANT_NAME_DEFAULT_TOGGLE_CLICK,
   ComponentVariantNameDefaultToggleClick,
   COMPONENT_VARIANT_REMOVED,
@@ -87,7 +85,6 @@ import {
   COMPONENT_VARIANT_NAME_CLICKED,
   ComponentVariantNameClicked,
   ELEMENT_VARIANT_TOGGLED,
-  ElementVariantToggled,
   EDITOR_TAB_CLICKED,
   EditorTabClicked,
   CanvasWheel,
@@ -282,7 +279,8 @@ import {
   createFile,
   stripProtocol,
   createDirectory,
-  sortFSItems
+  sortFSItems,
+  stringifyObject
 } from "tandem-common";
 import { difference, pull, clamp, merge } from "lodash";
 import { select } from "redux-saga/effects";
@@ -463,8 +461,13 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
     }
 
     case FS_SANDBOX_ITEM_LOADED: {
-      const { uri, mimeType } = action as FSSandboxItemLoaded;
-      // const pcState = paperclipReducer(state, action);
+      const { uri, content } = action as FSSandboxItemLoaded;
+
+      if (state.queuedDndInfo) {
+        const { item, point, editorUri } = state.queuedDndInfo;
+        console.log("LOADED ");
+        return handleLoadedDroppedItem(item, point, editorUri, { ...state, queuedDndInfo: null }, content);
+      }
 
       const editor = getEditorWindowWithFileUri(uri, state);
 
@@ -504,90 +507,9 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
         state
       );
     }
-    case ELEMENT_VARIANT_TOGGLED: {
-      // const { newVariants } = action as ElementVariantToggled;
-      // const sourceNode = getSyntheticSourceNode(
-      //   state.selectedNodeIds[0],
-      //   state.paperclip
-      // );
-      // state = persistRootState(
-      //   browser =>
-      //     persistSetElementVariants(
-      //       newVariants,
-      //       sourceNode.id,
-      //       state.selectedComponentVariantName,
-      //       browser
-      //     ),
-      //   state
-      // );
-      return state;
-    }
-    case NEW_VARIANT_NAME_ENTERED: {
-      // const { value } = action as NewVariantNameEntered;
-      // const sourceNode = getSyntheticSourceNode(
-      //   state.selectedNodeIds[0],
-      //   state.paperclip
-      // ) as PCComponentNode;
-      // state = persistRootState(
-      //   browser => persistInsertNewComponentVariant(value, sourceNode, browser),
-      //   state
-      // );
-      return state;
-    }
-    case COMPONENT_VARIANT_NAME_DEFAULT_TOGGLE_CLICK: {
-      const { name, value } = action as ComponentVariantNameDefaultToggleClick;
-      // const sourceComponent = getSyntheticVisibleNodeSourceComponent(
-      //   state.selectedNodeIds[0],
-      //   state.paperclip
-      // );
-      // state = persistRootState(
-      //   browser =>
-      //     persistComponentVariantChanged(
-      //       { [PCSourceNamespaces.CORE]: { isDefault: value } },
-      //       name,
-      //       sourceComponent.id,
-      //       browser
-      //     ),
-      //   state
-      // );
-      return state;
-    }
-    case COMPONENT_VARIANT_REMOVED: {
-      const { name, value } = action as ComponentVariantNameDefaultToggleClick;
-      // const sourceComponent = getSyntheticVisibleNodeSourceComponent(
-      //   state.selectedNodeIds[0],
-      //   state.paperclip
-      // );
-      // state = persistRootState(
-      //   browser =>
-      //     persistRemoveComponentVariant(name, sourceComponent.id, browser),
-      //   state
-      // );
-      return state;
-    }
     case COMPONENT_VARIANT_NAME_CLICKED: {
       const { name } = action as ComponentVariantNameClicked;
       state = updateRootState({ selectedComponentVariantName: name }, state);
-      return state;
-    }
-    case COMPONENT_VARIANT_NAME_CHANGED: {
-      const { oldName, newName } = action as ComponentVariantNameChanged;
-      // const sourceComponentNode = getSyntheticVisibleNodeSourceComponent(
-      //   state.selectedNodeIds[0],
-      //   state.paperclip
-      // );
-      // state = persistRootState(
-      //   browser =>
-      //     persistComponentVariantChanged(
-      //       {
-      //         [PCSourceNamespaces.CORE]: { name: newName }
-      //       },
-      //       oldName,
-      //       sourceComponentNode.id,
-      //       browser
-      //     ),
-      //   state
-      // );
       return state;
     }
     case PC_LAYER_MOUSE_OVER: {
@@ -864,91 +786,14 @@ export const canvasReducer = (state: RootState, action: Action) => {
     case CANVAS_DROPPED_ITEM: {
       let { item, point, editorUri } = action as CanvasDroppedItem;
 
-      const targetNodeId = getCanvasMouseTargetNodeIdFromPoint(
-        state,
-        point,
-        getDragFilter(item)
-      );
-
-      let sourceNode: PCVisibleNode;
-
       if (isFile(item)) {
-        let src = path.relative(path.dirname(editorUri), item.uri);
-
-        if (src.charAt(0) !== ".") {
-          src = "./" + src;
-        }
-
-        if (isImageUri(item.uri)) {
-          sourceNode = createPCElement(
-            "img",
-            {},
-            {
-              src
-            }
-          );
-          if (isSvgUri(item.uri)) {
-            sourceNode = createPCElement(
-              "object",
-              {},
-              {
-                data: src,
-                type: "image/svg+xml"
-              },
-              [sourceNode]
-            );
-          }
-        } else if (isJavaScriptFile(item.uri)) {
-          return persistRootState(state => {
-            return persistAddComponentController(
-              (item as FSItem).uri,
-              getSyntheticNodeById(targetNodeId, state.documents),
-              state
-            );
-          }, state);
-        }
-      } else if (isSyntheticVisibleNode(item)) {
-        sourceNode = getSyntheticSourceNode(item, state.graph) as PCVisibleNode;
+        return queueOpenFile(item.uri, {
+          ...(state as any),
+          queuedDndInfo: action
+        });
       } else {
-        sourceNode = cloneTreeNode((item as RegisteredComponent).template);
+        return handleLoadedDroppedItem(item, point, editorUri, state);
       }
-
-      if (!sourceNode) {
-        console.error(`Unrecognized dropped item.`);
-        return state;
-      }
-
-      const targetId = getCanvasMouseTargetNodeIdFromPoint(
-        state,
-        point,
-        node => node.name !== PCSourceTagNames.TEXT
-      );
-      let target: SyntheticVisibleNode | SyntheticDocument = targetId
-        ? getSyntheticNodeById(targetId, state.documents)
-        : getSyntheticDocumentByDependencyUri(
-            editorUri,
-            state.documents,
-            state.graph
-          );
-
-      if (target.name === SYNTHETIC_DOCUMENT_NODE_NAME) {
-        sourceNode = updatePCNodeMetadata(
-          {
-            [PCVisibleNodeMetadataKey.BOUNDS]: moveBounds(
-              sourceNode.metadata[PCVisibleNodeMetadataKey.BOUNDS] ||
-                DEFAULT_FRAME_BOUNDS,
-              point
-            )
-          },
-          sourceNode
-        );
-      }
-
-      return persistRootState(
-        browser =>
-          persistInsertNode(sourceNode, target, TreeMoveOffset.APPEND, browser),
-        state
-      );
     }
 
     case SHORTCUT_ZOOM_IN_KEY_DOWN: {
@@ -1467,6 +1312,95 @@ const getNewSyntheticVisibleNodeBounds = (
   return scaleInnerBounds(innerBounds, currentBounds, newBounds);
 };
 
+
+const handleLoadedDroppedItem = (item, point: Point, editorUri: string, state: RootState, content?: Buffer) => {
+  const targetNodeId = getCanvasMouseTargetNodeIdFromPoint(
+    state,
+    point,
+    getDragFilter(item)
+  );
+
+  let sourceNode: PCVisibleNode;
+
+  if (isFile(item)) {
+    let src = path.relative(path.dirname(editorUri), item.uri);
+
+    if (src.charAt(0) !== ".") {
+      src = "./" + src;
+    }
+
+    if (isImageUri(item.uri)) {
+      sourceNode = createPCElement(
+        "img",
+        {},
+        {
+          src
+        }
+      );
+      if (isSvgUri(item.uri)) {
+        sourceNode = createPCElement(
+          "object",
+          {},
+          {
+            data: src,
+            type: "image/svg+xml"
+          },
+          [sourceNode]
+        );
+      }
+    } else if (isJavaScriptFile(item.uri)) {
+      return persistRootState(state => {
+        return persistAddComponentController(
+          (item as FSItem).uri,
+          getSyntheticNodeById(targetNodeId, state.documents),
+          state
+        );
+      }, state);
+    }
+  } else if (isSyntheticVisibleNode(item)) {
+    sourceNode = getSyntheticSourceNode(item, state.graph) as PCVisibleNode;
+  } else {
+    sourceNode = cloneTreeNode((item as RegisteredComponent).template);
+  }
+
+  if (!sourceNode) {
+    console.error(`Unrecognized dropped item.`);
+    return state;
+  }
+
+  const targetId = getCanvasMouseTargetNodeIdFromPoint(
+    state,
+    point,
+    node => node.name !== PCSourceTagNames.TEXT
+  );
+  let target: SyntheticVisibleNode | SyntheticDocument = targetId
+    ? getSyntheticNodeById(targetId, state.documents)
+    : getSyntheticDocumentByDependencyUri(
+        editorUri,
+        state.documents,
+        state.graph
+      );
+
+  if (target.name === SYNTHETIC_DOCUMENT_NODE_NAME) {
+    sourceNode = updatePCNodeMetadata(
+      {
+        [PCVisibleNodeMetadataKey.BOUNDS]: moveBounds(
+          sourceNode.metadata[PCVisibleNodeMetadataKey.BOUNDS] ||
+            DEFAULT_FRAME_BOUNDS,
+          point
+        )
+      },
+      sourceNode
+    );
+  }
+
+  return persistRootState(
+    browser =>
+      persistInsertNode(sourceNode, target, TreeMoveOffset.APPEND, browser),
+    state
+  );
+};
+
 const getResizeActionBounds = (action: ResizerPathMoved | ResizerMoved) => {
   let {
     anchor,
@@ -1574,7 +1508,7 @@ const shortcutReducer = (state: RootState, action: Action): RootState => {
       }
     }
     case SHORTCUT_DELETE_KEY_DOWN: {
-      if (isInputSelected(state)) {
+      if (isInputSelected(state) || state.selectedNodeIds.length === 0) {
         return state;
       }
 
@@ -1583,6 +1517,7 @@ const shortcutReducer = (state: RootState, action: Action): RootState => {
           state.selectedNodeIds[0],
           state.documents
         );
+
         const document = getSyntheticVisibleNodeDocument(
           firstNode.id,
           state.documents
@@ -1598,12 +1533,10 @@ const shortcutReducer = (state: RootState, action: Action): RootState => {
         }, state);
 
         parent = getSyntheticNodeById(parent.id, state.documents);
-        const selectableChildren = parent.children.filter(child => child.id !== firstNode.id);
-
         state = setSelectedSyntheticVisibleNodeIds(
           state,
-          ...(selectableChildren.length
-            ? [selectableChildren[Math.min(index, selectableChildren.length - 1)].id]
+          ...(parent.children.length
+            ? [parent.children[Math.min(index, parent.children.length - 1)].id]
             : parent.name !== SYNTHETIC_DOCUMENT_NODE_NAME
               ? [parent.id]
               : [])

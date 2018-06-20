@@ -70,7 +70,8 @@ import {
 } from "paperclip";
 import {
   CanvasToolOverlayMouseMoved,
-  CanvasToolOverlayClicked
+  CanvasToolOverlayClicked,
+  CanvasDroppedItem
 } from "../actions";
 import { uniq, pull, values, clamp } from "lodash";
 import { stat } from "fs";
@@ -170,7 +171,8 @@ export type RootState = {
   queuedScopeSelect?: {
     previousState: RootState;
     scope: SyntheticVisibleNode | SyntheticDocument;
-  }
+  };
+  queuedDndInfo?: CanvasDroppedItem;
 } & PCEditorState &
   FSSandboxRootState;
 

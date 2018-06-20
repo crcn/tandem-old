@@ -56,12 +56,11 @@ import {
   getSyntheticSourceUri,
   SYNTHETIC_DOCUMENT_NODE_NAME,
   getNearestComponentInstances,
-  SyntheticBaseNode,
   isSyntheticVisibleNode
 } from "./synthetic";
 import * as path from "path";
 import { convertFixedBoundsToRelative } from "./synthetic-layout";
-import { evaluatePCModule } from "./evaluate";
+import { diffTreeNode, patchTreeNode, TreeNodeOperationalTransformType } from "./ot";
 
 /*------------------------------------------
  * CONSTANTS
@@ -164,7 +163,7 @@ export const getSyntheticVisibleNodeComputedBounds = (
 export const getSyntheticVisibleNodeFrame = memoize(
   (syntheticNode: SyntheticVisibleNode, frames: Frame[]) =>
     frames.find(frame =>
-      Boolean(frame.computed && frame.computed[syntheticNode.id])
+      Boolean(frame.computed && frame.computed[syntheticNode.id]) && frame.contentNodeId === syntheticNode.id
     )
 );
 export const getFrameByContentNodeId = memoize(
@@ -307,7 +306,7 @@ export const removeSyntheticVisibleNode = <TState extends PCEditorState>(
   const document = getSyntheticVisibleNodeDocument(node.id, state.documents);
   if (node.isContentNode) {
     state = removeFrame(
-      getSyntheticVisibleNodeFrame(node, state.frames),
+      getFrameByContentNodeId(node.id, state.frames),
       state
     );
   }
@@ -584,10 +583,51 @@ export const persistAddComponentController = <TState extends PCEditorState>(
     return replaceDependencyGraphPCNode(sourceNode, sourceNode, state);
 }
 
-export const setSyntheticDocuments = <TState extends PCEditorState>(documents: SyntheticDocument[], state: TState) => upsertFrames({
-  ...(state as any),
-  documents
-})
+/**
+ * Synchronizes updated documents from the runtime engine. Updates are likely to be _behind_ in terms of
+ * changes, so the editor state is the source of truth for the synthetic document to ensure that it doesn't
+ * get clobbered with a previous version (which will cause bugs).
+ */
+
+export const syncSyntheticDocuments = <TState extends PCEditorState>(updatedDocuments: SyntheticDocument[], state: TState) => {
+
+  const staleDocumentMap: {
+    [identifier: string]: SyntheticDocument
+  } = state.documents.reduce((map, document: SyntheticDocument) => ({
+    ...map,
+    [document.id]: document
+  }), {});
+
+  state = {
+    ...(state as any),
+    documents: updatedDocuments.map((document) => {
+      const existingDocument = staleDocumentMap[document.id];
+      if (existingDocument) {
+
+        // we need to apply a diff here to ensure that _additive_ operations
+        // are included
+        // inserts don't really work here though since a previously deleted item may be re-added. Damn.
+        // checksum?
+        const ots = diffTreeNode(existingDocument, document).filter(ot => {
+          if (ot.type === TreeNodeOperationalTransformType.SET_PROPERTY) {
+
+            // styles also get set immediately
+            if (ot.name === "style") {
+              return false;
+            }
+          }
+
+          return true;
+        });
+
+        return patchTreeNode(ots, existingDocument);
+      }
+      return document;
+    })
+  };
+
+  return upsertFrames(state);
+};
 
 export const persistInsertNode = <TState extends PCEditorState>(
   newChild: PCVisibleNode | PCComponent,
@@ -1058,6 +1098,7 @@ export const persistRemoveSyntheticVisibleNode = <TState extends PCEditorState>(
   node: SyntheticVisibleNode,
   state: TState
 ) => {
+  state = removeSyntheticVisibleNode(node, state);
   const sourceNode = getPCNode(node.source.nodeId, state.graph);
   return replaceDependencyGraphPCNode(null, sourceNode, state);
 };
