@@ -12,12 +12,13 @@ Paperclip is DSL for building web UIs visually.
 
 ```javascript
 import {
-  DOMRenderer,
-  evaluatePCModule,
   createPCModule,
+  createPCRuntime,
+  renderSyntheticDocumentChanges,
   createPCComponent,
   createPCElement,
   createPCTextNode,
+  createDependencyGraph,
   createPCComponentInstance
 } from "paperclip";
 
@@ -28,14 +29,13 @@ const pcModule = createPCModule([
   createPCComponentInstance(component.id)
 ]);
 
-const syntheticDocument = evaluatePCModule(pcModule);
-
-const runtime = createRuntime(graph, () => {
-
-}, onPatch);
-runtime.patchDependencyGraph(graph);
-runtime.on("evaluate", () => {
-
+const graph = createDependencyGraph({
+  "entry.pc": createPCDependency("entry.pc", pcModule)
 });
+
+const runtime = createPCRuntime();
+runtime.on("evaluate", renderSyntheticDocumentChanges(document.body));
+
+runtime.graph = graph;
 
 ```

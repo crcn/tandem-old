@@ -1171,25 +1171,6 @@ export const canvasReducer = (state: RootState, action: Action) => {
       }, state);
       return state;
     }
-    case CSS_PROPERTY_CHANGED: {
-      const { name, value } = action as CSSPropertyChanged;
-      state = state.selectedNodeIds.reduce((state, nodeId) => {
-        return updateSyntheticVisibleNode(
-          getSyntheticNodeById(nodeId, state.documents),
-          state,
-          node => {
-            return {
-              ...node,
-              style: {
-                ...node.style,
-                [name]: value
-              }
-            };
-          }
-        );
-      }, state);
-      return state;
-    }
 
     case FRAME_MODE_CHANGE_COMPLETE: {
       const { frame, mode } = action as FrameModeChangeComplete;
@@ -1201,6 +1182,39 @@ export const canvasReducer = (state: RootState, action: Action) => {
         );
       }, state);
       return state;
+    }
+
+    // case CSS_PROPERTY_CHANGED: {
+    //   const { name, value } = action as CSSPropertyChanged;
+    //   state = state.selectedNodeIds.reduce((state, nodeId) => {
+    //     return updateSyntheticVisibleNode(
+    //       getSyntheticNodeById(nodeId, state.documents),
+    //       state,
+    //       node => {
+    //         return {
+    //           ...node,
+    //           style: {
+    //             ...node.style,
+    //             [name]: value
+    //           }
+    //         };
+    //       }
+    //     );
+    //   }, state);
+    //   return state;
+    // }
+    case CSS_PROPERTY_CHANGED: {
+      const { name, value } = action as CSSPropertyChanged;
+      return state.selectedNodeIds.reduce(
+        (state, nodeId) =>
+          persistCSSProperty(
+            name,
+            value,
+            getSyntheticNodeById(nodeId, state.documents),
+            state
+          ),
+        state
+      );
     }
 
     case CSS_PROPERTY_CHANGE_COMPLETED: {

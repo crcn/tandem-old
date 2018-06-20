@@ -1,10 +1,12 @@
 IMMEDIATE:
 
+* preview in app
+* coding in app
 * select component instance when pasting component
 * styles panel - flex
-* monaco editor (experimental)
 * fix temp open file & tab syncing (exception thrown when tab selected but open file not)
 * move tab reference to open file instead
+* file navigator refactor
 
 * SVG options
 * ability to load fonts
