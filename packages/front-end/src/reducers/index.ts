@@ -1183,26 +1183,6 @@ export const canvasReducer = (state: RootState, action: Action) => {
       }, state);
       return state;
     }
-
-    // case CSS_PROPERTY_CHANGED: {
-    //   const { name, value } = action as CSSPropertyChanged;
-    //   state = state.selectedNodeIds.reduce((state, nodeId) => {
-    //     return updateSyntheticVisibleNode(
-    //       getSyntheticNodeById(nodeId, state.documents),
-    //       state,
-    //       node => {
-    //         return {
-    //           ...node,
-    //           style: {
-    //             ...node.style,
-    //             [name]: value
-    //           }
-    //         };
-    //       }
-    //     );
-    //   }, state);
-    //   return state;
-    // }
     case CSS_PROPERTY_CHANGED: {
       const { name, value } = action as CSSPropertyChanged;
       return state.selectedNodeIds.reduce(
@@ -1641,26 +1621,17 @@ const clipboardReducer = (state: RootState, action: Action) => {
       const { clips } = action as SyntheticVisibleNodesPasted;
       const oldState = state;
 
-      let offset: TreeMoveOffset = TreeMoveOffset.AFTER;
+      let offset: TreeMoveOffset = TreeMoveOffset.BEFORE;
       let targetNode: SyntheticVisibleNode | SyntheticDocument;
       let scopeNode: SyntheticVisibleNode | SyntheticDocument;
 
       if (state.selectedNodeIds.length) {
         const nodeId = state.selectedNodeIds[0];
         scopeNode = targetNode = getSyntheticNodeById(nodeId, state.documents);
-        const clipsContainTarget = clips.some(
-          clip => clip.node.id === targetNode.source.nodeId
+        scopeNode = getParentTreeNode(
+          scopeNode.id,
+          getSyntheticVisibleNodeDocument(scopeNode.id, state.documents)
         );
-
-        // if selected node is the pasted element, then paste
-        if (!clipsContainTarget) {
-          offset = TreeMoveOffset.PREPEND;
-        } else {
-          scopeNode = getParentTreeNode(
-            scopeNode.id,
-            getSyntheticVisibleNodeDocument(scopeNode.id, state.documents)
-          );
-        }
       } else {
         offset = TreeMoveOffset.PREPEND;
         scopeNode = targetNode = getSyntheticDocumentByDependencyUri(
@@ -1675,9 +1646,7 @@ const clipboardReducer = (state: RootState, action: Action) => {
         state
       );
 
-      if (scopeNode === targetNode) {
-        state = queueSelectInsertedSyntheticVisibleNodes(oldState, state, scopeNode);
-      }
+      state = queueSelectInsertedSyntheticVisibleNodes(oldState, state, scopeNode);
 
       return state;
     }

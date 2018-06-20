@@ -17,7 +17,7 @@ import {
   findTreeNodeParent,
   filterTreeNodeParents
 } from "tandem-common";
-import { mapValues, merge, uniq } from "lodash";
+import { mapValues, merge, uniq, isEqual } from "lodash";
 import { Dependency, DependencyGraph, updateGraphDependency } from "./graph";
 
 export const PAPERCLIP_MODULE_VERSION = "0.0.3";
@@ -29,7 +29,6 @@ export const PAPERCLIP_MODULE_VERSION = "0.0.3";
 export enum PCSourceTagNames {
   MODULE = "module",
   COMPONENT = "component",
-  TEMPLATE = "template",
   ELEMENT = "element",
   COMPONENT_INSTANCE = "component-instance",
   VARIANT = "variant",
@@ -578,6 +577,62 @@ export const getComponentGraphRefs = memoize(
     return uniq(allRefs);
   }
 );
+
+export const pcNodeEquals = (a: PCNode, b: PCNode) => {
+  if (!pcNodeShallowEquals(a, b)) {
+    return false;
+  }
+  if (a.children.length !== b.children.length) {
+    return false;
+  }
+  for (let i = a.children.length; i--;) {
+    if (!pcNodeEquals(a.children[i] as PCNode, b.children[i] as PCNode)) {
+      return false;
+    }
+  }
+}
+
+const pcNodeShallowEquals = (a: PCNode, b: PCNode) => {
+  if (a.name !== b.name) {
+    return false;
+  }
+
+  switch(a.name) {
+    case PCSourceTagNames.ELEMENT: {
+      return elementShallowEquals(a, b as PCElement);
+    }
+    case PCSourceTagNames.COMPONENT_INSTANCE: {
+      return componentInstanceShallowEquals(a, b as PCComponentInstanceElement);
+    }
+    case PCSourceTagNames.COMPONENT: {
+      return componentShallowEquals(a, b as PCComponent);
+    }
+    case PCSourceTagNames.TEXT: {
+      return textEquals(a, b as PCTextNode);
+    }
+    case PCSourceTagNames.OVERRIDE: {
+      return overrideShallowEquals(a, b as PCOverride);
+    }
+  }
+};
+
+const overrideShallowEquals = (a: PCOverride, b: PCOverride) => {
+  return a.propertyName === b.propertyName && ((a as PCBaseValueOverride<any, any>).value == (b as PCBaseValueOverride<any, any>).value) && isEqual(a.targetIdPath, b.targetIdPath);
+};
+
+const textEquals = (a: PCTextNode, b: PCTextNode) => a.value === b.value;
+
+const elementShallowEquals = (a: PCElement | PCComponent | PCComponentInstanceElement, b: PCElement | PCComponent | PCComponentInstanceElement) => {
+  return isEqual(a.attributes, b.attributes);
+};
+
+const componentInstanceShallowEquals = (a: PCComponentInstanceElement, b: PCComponentInstanceElement) => {
+  return elementShallowEquals(a, b);
+};
+
+const componentShallowEquals = (a: PCComponent, b: PCComponent) => {
+  return elementShallowEquals(a, b) && isEqual(a.controllers, b.controllers);
+};
 
 const componentGraphRefsToMap = memoize((...refs: ComponentRef[]): KeyValue<
   ComponentRef
