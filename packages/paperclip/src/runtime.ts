@@ -1,9 +1,9 @@
 import { DependencyGraph, Dependency } from "./graph";
 import { EventEmitter } from "events";
-import { SyntheticDocument } from "./synthetic";
+import { SyntheticDocument, generateSyntheticDocumentChecksum, setDocumentChecksum } from "./synthetic";
 import { evaluatePCModule } from "./evaluate";
 import { KeyValue, TreeNode } from "tandem-common";
-import { patchTreeNode, TreeNodeOperationalTransform, diffTreeNode } from "./ot";
+import { patchTreeNode, TreeNodeOperationalTransform, diffTreeNode, createSetNodePropertyOperationalTransform } from "./ot";
 import { PCModule, PCNode, createPCDependency } from "./dsl";
 
 export interface PCRuntime extends EventEmitter {
@@ -70,11 +70,12 @@ class LocalPCRuntime extends EventEmitter implements PCRuntime {
       if (documentMapItem) {
         const ots = diffTreeNode(documentMapItem, syntheticDocument);
         if (ots.length) {
-          this._syntheticDocuments[uri] = documentMapItem = patchTreeNode(ots, documentMapItem);
-          diffs[uri] = ots;
+
+          this._syntheticDocuments[uri] = documentMapItem = setDocumentChecksum(patchTreeNode(ots, documentMapItem));
+          diffs[uri] = [createSetNodePropertyOperationalTransform([], "checksum", documentMapItem.checksum),...ots];
         }
       } else {
-        newDocuments[uri] = documentMapItem = syntheticDocument;
+        newDocuments[uri] = documentMapItem = setDocumentChecksum(syntheticDocument);
       }
 
       newDocumentMap[uri] = documentMapItem;

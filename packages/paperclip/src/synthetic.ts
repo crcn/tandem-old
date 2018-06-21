@@ -16,7 +16,7 @@ import {
   patchArray,
   arraySplice
 } from "tandem-common";
-import { values } from "lodash";
+import * as crc32 from "crc32";
 import { DependencyGraph, Dependency } from "./graph";
 import {
   PCNode,
@@ -57,6 +57,7 @@ export type SyntheticBaseNode = {
 } & TreeNode<string>;
 
 export type SyntheticDocument = {
+  checksum?: string;
   children: SyntheticVisibleNode[];
 } & SyntheticBaseNode;
 
@@ -73,6 +74,8 @@ export type SyntheticTextNode = {
 } & SyntheticBaseNode;
 
 export type SyntheticVisibleNode = SyntheticElement | SyntheticTextNode;
+export type SyntheticNode = SyntheticDocument | SyntheticVisibleNode;
+export type SyntheticContentNode = SyntheticVisibleNode;
 
 /*------------------------------------------
  * STATE FACTORIES
@@ -80,15 +83,25 @@ export type SyntheticVisibleNode = SyntheticElement | SyntheticTextNode;
 
 export const createSytheticDocument = (
   source: SyntheticSource,
-  children?: SyntheticVisibleNode[]
+  children?: SyntheticVisibleNode[],
 ): SyntheticDocument => ({
   id: generateUID(),
-  checksumHistory: [],
   metadata: EMPTY_OBJECT,
   source,
   name: SYNTHETIC_DOCUMENT_NODE_NAME,
   children: children || EMPTY_ARRAY
 });
+
+export const setDocumentChecksum = (document: SyntheticDocument): SyntheticDocument => {
+  const newChecksum = generateSyntheticDocumentChecksum(document);
+  if (document.checksum === newChecksum) {
+    return document;
+  }
+  return {
+    ...document,
+    checksum: newChecksum
+  };
+}
 
 export const createSyntheticElement = (
   name: string,
@@ -153,6 +166,18 @@ export const isSyntheticVisibleNodeRoot = (
 
 export const isSyntheticDocumentRoot = (node: SyntheticVisibleNode) => {
   return node.isContentNode;
+};
+
+export const isSyntheticDocument = (node: SyntheticNode): node is SyntheticDocument => {
+  return node.name === SYNTHETIC_DOCUMENT_NODE_NAME;
+};
+
+export const isSyntheticElement = (node: SyntheticNode): node is SyntheticElement => {
+  return Boolean((node as SyntheticElement).attributes);
+};
+
+export const isSyntheticTextNode = (node: SyntheticNode): node is SyntheticTextNode => {
+  return (node as SyntheticTextNode).name === PCSourceTagNames.TEXT;
 };
 
 export const isSyntheticVisibleNode = (
@@ -318,6 +343,26 @@ export const getNearestComponentInstances = memoize(
     return instances;
   }
 );
+
+export const generateSyntheticDocumentChecksum = memoize((document: SyntheticDocument) => {
+  return crc32(getPCNodePreChecksum(document));
+});
+
+const getPCNodePreChecksum = memoize((node: SyntheticNode) => {
+  return getShallowPCNodePreChecksum(node) + node.children.map(getPCNodePreChecksum).join("");
+});
+
+const getShallowPCNodePreChecksum = (node: SyntheticNode) => {
+  if (isSyntheticDocument(node)) {
+    return node.name + node.source.nodeId;
+  } else if (isSyntheticElement(node)) {
+    return node.name + node.source.nodeId + JSON.stringify(node.attributes) + JSON.stringify(node.style);
+  } else if (isSyntheticTextNode(node)) {
+    return node.name + node.source.nodeId + node.value;
+  } else {
+    throw new Error(`unsupported synthetic node`);
+  }
+};
 
 /*------------------------------------------
  * SETTERS

@@ -26,7 +26,8 @@ describe(__filename + "#", () => {
     let state: PCEditorState = {
       graph,
       documents: [],
-      frames: []
+      frames: [],
+      documentChecksums: {}
     };
 
     // state = evaluateDependency("0", state);

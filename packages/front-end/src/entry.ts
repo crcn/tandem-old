@@ -12,5 +12,6 @@ init({
   documents: [],
   graph: {},
   fileCache: {},
-  selectedComponentId: null
+  selectedComponentId: null,
+  documentChecksums: {}
 });

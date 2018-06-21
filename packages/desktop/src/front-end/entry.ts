@@ -40,7 +40,8 @@ setup<DesktopRootState>(
   history: {},
   openFiles: [],
   fileCache: {},
-  selectedComponentId: null
+  selectedComponentId: null,
+  documentChecksums: {}
 });
 
 function* openPreview(frame: Frame) {

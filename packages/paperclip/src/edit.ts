@@ -56,7 +56,9 @@ import {
   getSyntheticSourceUri,
   SYNTHETIC_DOCUMENT_NODE_NAME,
   getNearestComponentInstances,
-  isSyntheticVisibleNode
+  isSyntheticVisibleNode,
+  generateSyntheticDocumentChecksum,
+  setDocumentChecksum
 } from "./synthetic";
 import * as path from "path";
 import { convertFixedBoundsToRelative } from "./synthetic-layout";
@@ -68,6 +70,7 @@ import { diffTreeNode, patchTreeNode, TreeNodeOperationalTransformType } from ".
 
 const NO_POINT = { left: 0, top: 0 };
 const NO_BOUNDS = { ...NO_POINT, right: 0, bottom: 0 };
+const MAX_CHECKSUM_COUNT = 40;
 
 const FRAME_PADDING = 10;
 const MIN_BOUND_SIZE = 1;
@@ -99,6 +102,8 @@ export type PCEditorState = {
   frames: Frame[];
 
   graph: DependencyGraph;
+
+  documentChecksums: KeyValue<string[]>;
 };
 
 export type ComputedDisplayInfo = {
@@ -187,6 +192,7 @@ export const getFrameSyntheticNode = memoize(
   (frame: Frame, documents: SyntheticDocument[]) =>
     getSyntheticNodeById(frame.contentNodeId, documents)
 );
+
 export const getSyntheticVisibleNodeFixedBounds = memoize(
   (syntheticNode: SyntheticVisibleNode, frames: Frame[]): Bounds => {
     const frame = getSyntheticVisibleNodeFrame(syntheticNode, frames);
@@ -285,18 +291,37 @@ export const updateSyntheticDocument = <TState extends PCEditorState>(
   if (!document) {
     throw new Error(` document does not exist`);
   }
-  return {
+
+  const newDocument = setDocumentChecksum({
+    ...document,
+    ...properties
+  });
+
+  return addDocumentChecksum(newDocument, {
     ...(state as any),
     documents: arraySplice(
       state.documents,
       state.documents.indexOf(document),
       1,
-      {
-        ...document,
-        ...properties
-      }
-    )
-  };
+      newDocument
+    ),
+  });
+};
+
+const addDocumentChecksum = <TState extends PCEditorState>(newDocument: SyntheticDocument, state: TState) => {
+  return {
+    ...(state as any),
+    documentChecksums: {
+      ...state.documentChecksums,
+      [newDocument.id]: state.documentChecksums[newDocument.id] ? uniq([newDocument.checksum, ...state.documentChecksums[newDocument.id]]).slice(0, MAX_CHECKSUM_COUNT) : [newDocument.checksum]
+    }
+  }
+};
+
+
+
+const addDocumentChecksums = <TState extends PCEditorState>(state: TState) => {
+  return state.documents.reduce((state, document) => addDocumentChecksum(document, state), state);
 };
 
 export const removeSyntheticVisibleNode = <TState extends PCEditorState>(
@@ -604,29 +629,28 @@ export const syncSyntheticDocuments = <TState extends PCEditorState>(updatedDocu
       const existingDocument = staleDocumentMap[document.id];
       if (existingDocument) {
 
-        // we need to apply a diff here to ensure that _additive_ operations
-        // are included
-        // inserts don't really work here though since a previously deleted item may be re-added. Damn.
-        // checksum?
-        const ots = diffTreeNode(existingDocument, document).filter(ot => {
-          if (ot.type === TreeNodeOperationalTransformType.SET_PROPERTY) {
+        // if checksum exists, then the client is a head of the document being synced
+        if (state.documentChecksums[document.id] && state.documentChecksums[document.id].indexOf(document.checksum) !== -1) {
+          return existingDocument;
 
-            // styles also get set immediately
-            if (ot.name === "style") {
-              return false;
-            }
+        // otherwise, use the fail safe for syncing documents
+        } else {
+          console.warn(`Checksum mismatch, patching synthetic document`);
+          const patchedDocument = setDocumentChecksum(patchTreeNode(diffTreeNode(existingDocument, document), existingDocument));
+
+          if (patchedDocument.checksum !== document.checksum) {
+            throw new Error(`Document checksum malformed.`);
           }
 
-          return true;
-        });
-
-        return patchTreeNode(ots, existingDocument);
+          // assert checksum match
+          return patchedDocument;
+        }
       }
       return document;
     })
   };
 
-  return upsertFrames(state);
+  return upsertFrames(addDocumentChecksums(state));
 };
 
 export const persistInsertNode = <TState extends PCEditorState>(

@@ -97,7 +97,7 @@ const createMoveChildNodeOperationalTransform = (
   newIndex
 });
 
-const createSetNodePropertyOperationalTransform = (
+export const createSetNodePropertyOperationalTransform = (
   nodePath: number[],
   name: string,
   value: any
@@ -250,4 +250,5 @@ export const patchTreeNode = (
         }
       }
     );
-  }, oldNode);
+  }, oldNode)
+};
