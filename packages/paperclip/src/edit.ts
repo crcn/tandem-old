@@ -19,9 +19,10 @@ import {
   arraySplice,
   stripProtocol,
   getNestedTreeNodeById,
-  KeyValue
+  KeyValue,
+  dropChildNode
 } from "tandem-common";
-import { values, identity, uniq } from "lodash";
+import { values, identity, uniq, merge } from "lodash";
 import { DependencyGraph, Dependency } from "./graph";
 import {
   PCNode,
@@ -47,22 +48,22 @@ import {
   SyntheticVisibleNode,
   getSyntheticVisibleNodeDocument,
   getSyntheticNodeById,
-  upsertSyntheticDocument,
   getSyntheticSourceNode,
   getSyntheticDocumentByDependencyUri,
   SyntheticElement,
   SyntheticTextNode,
   SyntheticDocument,
   getSyntheticSourceUri,
-  SYNTHETIC_DOCUMENT_NODE_NAME,
   getNearestComponentInstances,
   isSyntheticVisibleNode,
-  generateSyntheticDocumentChecksum,
-  setDocumentChecksum
+  setDocumentChecksum,
+  createSyntheticElement,
+  isSyntheticDocument
 } from "./synthetic";
 import * as path from "path";
 import { convertFixedBoundsToRelative } from "./synthetic-layout";
-import { diffTreeNode, patchTreeNode, TreeNodeOperationalTransformType } from "./ot";
+import { diffTreeNode, patchTreeNode } from "./ot";
+import { evaluateLightPCVisibleNode } from "./evaluate";
 
 /*------------------------------------------
  * CONSTANTS
@@ -168,7 +169,7 @@ export const getSyntheticVisibleNodeComputedBounds = (
 export const getSyntheticVisibleNodeFrame = memoize(
   (syntheticNode: SyntheticVisibleNode, frames: Frame[]) =>
     frames.find(frame =>
-      Boolean(frame.computed && frame.computed[syntheticNode.id]) && frame.contentNodeId === syntheticNode.id
+      Boolean(frame.computed && frame.computed[syntheticNode.id]) || frame.contentNodeId === syntheticNode.id
     )
 );
 export const getFrameByContentNodeId = memoize(
@@ -297,7 +298,7 @@ export const updateSyntheticDocument = <TState extends PCEditorState>(
     ...properties
   });
 
-  return addDocumentChecksum(newDocument, {
+  return upsertFrames(addDocumentChecksum(newDocument, {
     ...(state as any),
     documents: arraySplice(
       state.documents,
@@ -305,7 +306,7 @@ export const updateSyntheticDocument = <TState extends PCEditorState>(
       1,
       newDocument
     ),
-  });
+  }));
 };
 
 const addDocumentChecksum = <TState extends PCEditorState>(newDocument: SyntheticDocument, state: TState) => {
@@ -342,6 +343,13 @@ export const removeSyntheticVisibleNode = <TState extends PCEditorState>(
     state
   );
 };
+
+
+export const replaceSyntheticVisibleNode = <TState extends PCEditorState>(
+  replacement: SyntheticVisibleNode,
+  node: SyntheticVisibleNode,
+  state: TState
+) => updateSyntheticVisibleNode(node, state, () => replacement);
 
 export const updateSyntheticVisibleNode = <TState extends PCEditorState>(
   node: SyntheticVisibleNode,
@@ -653,6 +661,7 @@ export const syncSyntheticDocuments = <TState extends PCEditorState>(updatedDocu
   return upsertFrames(addDocumentChecksums(state));
 };
 
+
 export const persistInsertNode = <TState extends PCEditorState>(
   newChild: PCVisibleNode | PCComponent,
   relative: SyntheticVisibleNode | SyntheticDocument,
@@ -666,7 +675,7 @@ export const persistInsertNode = <TState extends PCEditorState>(
     state = replaceDependencyGraphPCNode(null, newChild, state);
   }
 
-  if (relative.name === SYNTHETIC_DOCUMENT_NODE_NAME) {
+  if (isSyntheticDocument(relative)) {
     parentSource = appendChildNode(newChild, getSyntheticSourceNode(
       relative,
       state.graph
@@ -1059,21 +1068,7 @@ export const persistAttribute = <TState extends PCEditorState>(
     PCOverridablePropertyName.ATTRIBUTES,
     { [name]: value || undefined },
     (attributes, override) => {
-      const minStyle = {};
-      const overrideAttributes = (override && override.value) || EMPTY_OBJECT;
-      for (const key in attributes) {
-        if (
-          overrideAttributes[key] ||
-          element.style[key] !== attributes[key]
-        ) {
-          minStyle[key] = attributes[key];
-        }
-      }
-
-      return {
-        ...overrideAttributes,
-        ...attributes
-      };
+      return overrideKeyValue(element.attributes, (override && override.value) || EMPTY_OBJECT, attributes);
     },
     (sourceNode: PCElement) =>
       ({
@@ -1093,19 +1088,14 @@ export const persistSyntheticVisibleNodeStyle = <TState extends PCEditorState>(
   node: SyntheticVisibleNode,
   state: TState
 ) => {
+
+  state = replaceSyntheticVisibleNode({ ...node, style: merge(node.style, style) }, node, state);
   // TODO - need to move
   const updatedNode = maybeOverride(
     PCOverridablePropertyName.STYLE,
     style,
     (style, override) => {
-      const minStyle = {};
-      const overrideStyle = (override && override.value) || EMPTY_OBJECT;
-      for (const key in style) {
-        if (overrideStyle[key] || node.style[key] !== style[key]) {
-          minStyle[key] = style[key];
-        }
-      }
-      return minStyle;
+      return overrideKeyValue(node.style, (override && override.value) || EMPTY_OBJECT, style);
     },
     sourceNode =>
       ({
@@ -1135,4 +1125,17 @@ const parseStyle = (source: string) => {
     style[key.trim()] = value.trim();
   });
   return style;
+};
+
+const overrideKeyValue = (main, oldOverrides, newOverrides) => {
+  const minOverrides = {};
+  for (const key in newOverrides) {
+    if (
+      oldOverrides[key] != null ||
+      main[key] !== newOverrides[key]
+    ) {
+      minOverrides[key] = newOverrides[key];
+    }
+  }
+  return minOverrides;
 };

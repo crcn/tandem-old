@@ -20,8 +20,8 @@ import { KeyValue, getNestedTreeNodeById, EMPTY_ARRAY } from "tandem-common";
 import {
   DependencyGraph,
 } from "./graph";
-import { diffTreeNode, TreeNodeOperationalTransform } from "./ot";
-import { PCEditorState, Frame, getFrameByContentNodeId, getSyntheticDocumentFrames } from "./edit";
+import { TreeNodeOperationalTransform } from "./ot";
+import { PCEditorState, Frame, getSyntheticDocumentFrames } from "./edit";
 import {
   getSyntheticNodeById,
   SyntheticDocument,

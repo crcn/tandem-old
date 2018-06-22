@@ -100,20 +100,35 @@ const setStyleConstraintsIfRoot = (
   }
 };
 
+const setAttribute = (target: HTMLElement, name: string, value: string) => {
+  if (name.indexOf(":") !== -1) {
+    const [xmlns, key] = name.split(":");
+    target.setAttributeNS(xmlns, key, value);
+  } else {
+    target.setAttribute(name, value);
+  }
+};
+
 const createNativeNode = (
   synthetic: SyntheticVisibleNode,
   document: Document,
-  map: SyntheticNativeNodeMap
+  map: SyntheticNativeNodeMap,
+  xmlns?: string
 ) => {
   const isText = synthetic.name === PCSourceTagNames.TEXT;
-  const nativeElement = document.createElement(
-    isText ? "span" : (synthetic as SyntheticElement).name || "div"
-  );
 
   const attrs = (synthetic as SyntheticElement).attributes || EMPTY_OBJECT;
+  const tagName = isText ? "span" : (synthetic as SyntheticElement).name || "div";
+  if (attrs.xmlns) {
+    xmlns = attrs.xmlns;
+  }
+
+  const nativeElement = (xmlns ? document.createElementNS(xmlns, tagName) : document.createElement(
+    tagName
+  )) as HTMLElement;
+
   for (const name in attrs) {
-    const value = attrs[name];
-    nativeElement.setAttribute(name, value);
+    setAttribute(nativeElement, name, attrs[name]);
   }
   if (synthetic.style) {
     Object.assign(nativeElement.style, normalizeStyle(synthetic.style));
@@ -127,7 +142,7 @@ const createNativeNode = (
     for (let i = 0, { length } = synthetic.children; i < length; i++) {
       const childSynthetic = synthetic.children[i] as SyntheticVisibleNode;
       nativeElement.appendChild(
-        createNativeNode(childSynthetic, document, map)
+        createNativeNode(childSynthetic, document, map, xmlns)
       );
     }
   }
@@ -182,7 +197,7 @@ export const patchDOM = (
             if (!value[key]) {
               target.removeAttribute(key);
             } else {
-              target.setAttribute(key, value[key]);
+              setAttribute(target, key, value[key]);
             }
           }
         } else if (name === "name") {

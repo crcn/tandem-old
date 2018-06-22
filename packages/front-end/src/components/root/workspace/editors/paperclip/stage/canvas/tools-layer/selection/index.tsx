@@ -16,7 +16,7 @@ import {
   Canvas
 } from "../../../../../../../../../state";
 import { selectorDoubleClicked } from "../../../../../../../../../actions";
-import { getSyntheticVisibleNodeRelativeBounds } from "paperclip";
+import { getSyntheticVisibleNodeRelativeBounds, getSyntheticSourceFrame, getSyntheticVisibleNodeFrame, getSyntheticNodeById } from "paperclip";
 
 export type SelectionOuterProps = {
   canvas: Canvas;
@@ -32,17 +32,14 @@ export type SelectionInnerProps = {
 } & SelectionOuterProps;
 
 const SelectionBounds = ({
-  editorWindow,
   root,
   zoom
 }: {
   root: RootState;
   zoom: number;
-  editorWindow: EditorWindow;
 }) => {
-  const selection = getBoundedSelection(root);
   const entireBounds = getSelectionBounds(root);
-  const style = {};
+  const frame = getSyntheticVisibleNodeFrame(getSyntheticNodeById(root.selectedNodeIds[0], root.documents), root.frames);
   const borderWidth = 1 / zoom;
   const boundsStyle = {
     position: "absolute",
@@ -71,7 +68,7 @@ export const SelectionCanvasToolBase = ({
 
   return (
     <div className="m-stage-selection-tool" onDoubleClick={onDoubleClick}>
-      <SelectionBounds root={root} zoom={zoom} editorWindow={editorWindow} />
+      <SelectionBounds root={root} zoom={zoom}  />
       <Resizer
         root={root}
         editorWindow={editorWindow}

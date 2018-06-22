@@ -774,6 +774,7 @@ export const setRootStateSyntheticVisibleNodeExpanded = (
   value: boolean,
   state: RootState
 ) => {
+
   const node = getSyntheticNodeById(nodeId, state.documents);
   const document = getSyntheticVisibleNodeDocument(node.id, state.documents);
 

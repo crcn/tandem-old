@@ -61,6 +61,7 @@
     "@types/http-proxy": "^1.12.1",
     "@types/request": "^2.0.0",
     "@types/socket.io-client": "^1.4.30",
+    "@types/xml-js": "^1.0.0",
     "classnames": "^2.2.5",
     "crc32": "^0.2.2",
     "fsbox": "^10.0.2",
@@ -86,6 +87,7 @@
     "socket.io": "^2.0.3",
     "socket.io-client": "^2.0.3",
     "tandem-common": "^10.0.2",
-    "worker-loader": "^2.0.0"
+    "worker-loader": "^2.0.0",
+    "xml-js": "^1.6.4"
   }
 }

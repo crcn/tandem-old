@@ -345,20 +345,21 @@ export const getNearestComponentInstances = memoize(
 );
 
 export const generateSyntheticDocumentChecksum = memoize((document: SyntheticDocument) => {
-  return crc32(getPCNodePreChecksum(document));
+  return getPCNodePreChecksum(document);
 });
 
 const getPCNodePreChecksum = memoize((node: SyntheticNode) => {
-  return getShallowPCNodePreChecksum(node) + node.children.map(getPCNodePreChecksum).join("");
+  return crc32(getShallowPCNodePreChecksum(node) + node.children.map(getPCNodePreChecksum).join(""));
 });
 
 const getShallowPCNodePreChecksum = (node: SyntheticNode) => {
+  const base = node.name + node.label + node.source.nodeId + node.immutable + node.isComponentInstance + node.isContentNode + node.isCreatedFromComponent;
   if (isSyntheticDocument(node)) {
-    return node.name + node.source.nodeId;
+    return base;
   } else if (isSyntheticElement(node)) {
-    return node.name + node.source.nodeId + JSON.stringify(node.attributes) + JSON.stringify(node.style);
+    return base + JSON.stringify(node.attributes) + JSON.stringify(node.style);
   } else if (isSyntheticTextNode(node)) {
-    return node.name + node.source.nodeId + node.value;
+    return base + node.value;
   } else {
     throw new Error(`unsupported synthetic node`);
   }

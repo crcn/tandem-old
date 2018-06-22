@@ -634,7 +634,7 @@ const componentShallowEquals = (a: PCComponent, b: PCComponent) => {
   return elementShallowEquals(a, b) && isEqual(a.controllers, b.controllers);
 };
 
-const componentGraphRefsToMap = memoize((...refs: ComponentRef[]): KeyValue<
+const componentGraphRefsToMap = memoize((refs: ComponentRef[]): KeyValue<
   ComponentRef
 > => {
   const componentRefMap = {};
@@ -648,7 +648,7 @@ const componentGraphRefsToMap = memoize((...refs: ComponentRef[]): KeyValue<
 
 export const getComponentGraphRefMap = memoize(
   (node: PCNode, graph: DependencyGraph) =>
-    componentGraphRefsToMap(...getComponentGraphRefs(node, graph))
+    componentGraphRefsToMap(getComponentGraphRefs(node, graph))
 );
 
 export const getPCParentComponentInstances = memoize(

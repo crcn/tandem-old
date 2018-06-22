@@ -1,5 +1,6 @@
 import { Action } from "redux";
 import * as path from "path";
+import { xmlToPCNode } from "../utils/paperclip";
 import {
   CanvasToolArtboardTitleClicked,
   NEW_FILE_ADDED,
@@ -465,7 +466,6 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
 
       if (state.queuedDndInfo) {
         const { item, point, editorUri } = state.queuedDndInfo;
-        console.log("LOADED ");
         return handleLoadedDroppedItem(item, point, editorUri, { ...state, queuedDndInfo: null }, content);
       }
 
@@ -1255,7 +1255,7 @@ const persistInsertNodeFromPoint = (
   }
 
   state = persistRootState(
-    browser => {
+    state => {
       return persistInsertNode(node, targetNode, TreeMoveOffset.APPEND, state);
     },
     state,
@@ -1263,6 +1263,7 @@ const persistInsertNodeFromPoint = (
   );
 
   state = setTool(null, state);
+
   state = queueSelectInsertedSyntheticVisibleNodes(oldState, state, targetNode);
 
   return state;
@@ -1313,7 +1314,7 @@ const getNewSyntheticVisibleNodeBounds = (
 };
 
 
-const handleLoadedDroppedItem = (item, point: Point, editorUri: string, state: RootState, content?: Buffer) => {
+const handleLoadedDroppedItem =   (item, point: Point, editorUri: string, state: RootState, content?: Buffer) => {
   const targetNodeId = getCanvasMouseTargetNodeIdFromPoint(
     state,
     point,
@@ -1338,15 +1339,8 @@ const handleLoadedDroppedItem = (item, point: Point, editorUri: string, state: R
         }
       );
       if (isSvgUri(item.uri)) {
-        sourceNode = createPCElement(
-          "object",
-          {},
-          {
-            data: src,
-            type: "image/svg+xml"
-          },
-          [sourceNode]
-        );
+        const source = content.toString("utf8");
+        sourceNode = xmlToPCNode(source);
       }
     } else if (isJavaScriptFile(item.uri)) {
       return persistRootState(state => {

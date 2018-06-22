@@ -79,6 +79,10 @@ export const evaluatePCModule = memoize(
   }
 );
 
+export const evaluateLightPCVisibleNode = (node: PCVisibleNode) => {
+  return evaluateVisibleNode(node, "", false, false, {}, {}, "");
+};
+
 const wrapModuleInDependencyGraph = (module: PCModule): DependencyGraph => ({
   [module.id]: createPCDependency(module.id, module)
 });

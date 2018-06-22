@@ -70,7 +70,6 @@ class LocalPCRuntime extends EventEmitter implements PCRuntime {
       if (documentMapItem) {
         const ots = diffTreeNode(documentMapItem, syntheticDocument);
         if (ots.length) {
-
           this._syntheticDocuments[uri] = documentMapItem = setDocumentChecksum(patchTreeNode(ots, documentMapItem));
           diffs[uri] = [createSetNodePropertyOperationalTransform([], "checksum", documentMapItem.checksum),...ots];
         }
