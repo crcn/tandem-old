@@ -471,11 +471,6 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
 
       const editor = getEditorWindowWithFileUri(uri, state);
 
-      // TODO - move this to paperclip-tandem package
-      if (editor && editor.activeFilePath === uri) {
-        state = maybeEvaluateFile(uri, state);
-      }
-
       return state;
     }
     case OPEN_FILE_ITEM_CLICKED: {

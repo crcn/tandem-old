@@ -3,7 +3,7 @@ import { compose, pure } from "recompose";
 const { ButtonBarItem: ButtonBarItemComponent } = require("./item.pc");
 
 export type ButtonBarOption = {
-  iconSrc: string;
+  icon: any;
   value: any;
 };
 
@@ -17,7 +17,7 @@ export default compose(pure, Base => ({ options, value, onChange }) => {
     return (
       <ButtonBarItemComponent
         key={item.iconSrc}
-        iconProps={{ src: item.iconSrc }}
+        children={item.icon}
         style={style}
         onClick={onChange && (() => onChange(item.value))}
       />

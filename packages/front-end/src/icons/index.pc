@@ -4,497 +4,147 @@
   "version": "0.0.3",
   "children": [
     {
-      "label": "More Icon",
-      "is": "object",
-      "style": {
-        "user-select": "none"
-      },
+      "label": "Arrow Down Icon",
+      "is": "svg",
+      "style": {},
       "attributes": {
-        "data": "./more.svg"
+        "xmlns": "http://www.w3.org/2000/svg",
+        "xmlns:xlink": "http://www.w3.org/1999/xlink",
+        "version": "1.1",
+        "x": "0px",
+        "y": "0px",
+        "viewBox": "0 0 100 125",
+        "enableBackground": "new 0 0 100 100;",
+        "xml:space": "preserve"
       },
-      "id": "38fc2a473732",
+      "id": "e186b96e4079",
       "name": "component",
-      "children": [],
-      "metadata": {
-        "bounds": {
-          "left": 425,
-          "top": 324,
-          "right": 470.88180074742104,
-          "bottom": 360.670832741107
+      "children": [
+        {
+          "id": "64740a778",
+          "is": "style",
+          "name": "element",
+          "attributes": {
+            "type": "text/css"
+          },
+          "style": {},
+          "children": [
+            {
+              "id": "64740a779",
+              "name": "text",
+              "label": "\n\t.st0{fill:grey;}\n",
+              "value": "\n\t.st0{fill:grey;}\n",
+              "style": {},
+              "children": [],
+              "metadata": {}
+            }
+          ],
+          "metadata": {}
+        },
+        {
+          "id": "64740a7710",
+          "is": "path",
+          "name": "element",
+          "attributes": {
+            "fill": "grey",
+            "d": "M3.5,26.8h92.9L50,73.2L3.5,26.8z"
+          },
+          "style": {},
+          "children": [],
+          "metadata": {}
         }
-      }
-    },
-    {
-      "label": "Code Icon",
-      "is": "img",
-      "style": {
-        "user-select": "none"
-      },
-      "attributes": {
-        "src": "./code.svg"
-      },
-      "id": "38fc2a474961",
-      "name": "component",
-      "children": [],
+      ],
       "metadata": {
         "bounds": {
-          "left": 356,
-          "top": 151,
-          "right": 401.88180074742104,
-          "bottom": 206.0734968783563
-        }
-      }
-    },
-    {
-      "label": "Align Center Icon",
-      "is": "img",
-      "style": {
-        "user-select": "none"
-      },
-      "attributes": {
-        "src": "./text-center.svg"
-      },
-      "id": "38fc2a471274",
-      "name": "component",
-      "children": [],
-      "metadata": {
-        "bounds": {
-          "left": 228,
-          "top": 148,
-          "right": 301.1265273439269,
-          "bottom": 214.47866122175174
-        }
-      }
-    },
-    {
-      "label": "Minus Icon",
-      "is": "img",
-      "style": {
-        "user-select": "none"
-      },
-      "attributes": {
-        "src": "./minus.svg"
-      },
-      "id": "38fc2a476190",
-      "name": "component",
-      "children": [],
-      "metadata": {
-        "bounds": {
-          "left": 202,
-          "top": 373,
-          "right": 247.88180074742104,
-          "bottom": 409.670832741107
-        }
-      }
-    },
-    {
-      "label": "Align Justify Icon",
-      "is": "img",
-      "style": {
-        "user-select": "none"
-      },
-      "attributes": {
-        "src": "./text-justify.svg"
-      },
-      "id": "38fc2a472503",
-      "name": "component",
-      "children": [],
-      "metadata": {
-        "bounds": {
-          "left": 68,
-          "top": 292,
-          "right": 144.9857741478345,
-          "bottom": 353.65718276522284
-        }
-      }
-    },
-    {
-      "label": "Align Left Icon",
-      "is": "img",
-      "style": {
-        "user-select": "none"
-      },
-      "attributes": {
-        "src": "./text-left.svg"
-      },
-      "id": "38fc2a4713564",
-      "name": "component",
-      "children": [],
-      "metadata": {
-        "bounds": {
-          "left": 335,
-          "top": 307,
-          "right": 391.97771991269474,
-          "bottom": 347.7372041041981
-        }
-      }
-    },
-    {
-      "label": "Brush Icon",
-      "is": "img",
-      "style": {
-        "user-select": "none"
-      },
-      "attributes": {
-        "src": "./brush.svg"
-      },
-      "id": "38fc2a477419",
-      "name": "component",
-      "children": [],
-      "metadata": {
-        "bounds": {
-          "left": 229,
-          "top": 239,
-          "right": 274.88180074742104,
-          "bottom": 294.0734968783563
-        }
-      }
-    },
-    {
-      "label": "Trash Icon",
-      "is": "img",
-      "style": {
-        "user-select": "none"
-      },
-      "attributes": {
-        "src": "./trash.svg"
-      },
-      "id": "38fc2a4714793",
-      "name": "component",
-      "children": [],
-      "metadata": {
-        "bounds": {
-          "left": 329,
-          "top": 225,
-          "right": 374.88180074742104,
-          "bottom": 280.0734968783563
-        }
-      }
-    },
-    {
-      "label": "Wand Icon",
-      "is": "img",
-      "style": {
-        "user-select": "none"
-      },
-      "attributes": {
-        "src": "./wand.svg"
-      },
-      "id": "38fc2a4716022",
-      "name": "component",
-      "children": [],
-      "metadata": {
-        "bounds": {
-          "left": 514,
-          "top": 378,
-          "right": 558.8622051752559,
-          "bottom": 433.0734968783563
-        }
-      }
-    },
-    {
-      "label": "Plus Icon",
-      "is": "img",
-      "style": {
-        "user-select": "none"
-      },
-      "attributes": {
-        "src": "./plus.svg"
-      },
-      "id": "8e601d2b23050",
-      "name": "component",
-      "children": [],
-      "metadata": {
-        "bounds": {
-          "left": 418,
-          "top": 229,
-          "right": 520.9234100007366,
-          "bottom": 281.21996205301593
-        }
-      }
-    },
-    {
-      "label": "Align Right Icon",
-      "is": "img",
-      "style": {
-        "user-select": "none"
-      },
-      "attributes": {
-        "src": "./text-right.svg"
-      },
-      "id": "38fc2a4717251",
-      "name": "component",
-      "children": [],
-      "metadata": {
-        "bounds": {
-          "left": 440,
-          "top": 450,
-          "right": 481.439925504917,
-          "bottom": 481.07994412868766
-        }
-      }
-    },
-    {
-      "label": "Top Right Corner Icon",
-      "is": "img",
-      "style": {
-        "user-select": "none"
-      },
-      "attributes": {
-        "src": "./top-right-corner.svg"
-      },
-      "id": "38fc2a478648",
-      "name": "component",
-      "children": [],
-      "metadata": {
-        "bounds": {
-          "left": 263,
-          "top": 461,
-          "right": 308.88180074742104,
-          "bottom": 516.0734968783563
-        }
-      }
-    },
-    {
-      "label": "Top Left Corner Icon",
-      "is": "img",
-      "style": {
-        "user-select": "none"
-      },
-      "attributes": {
-        "src": "./top-left-corner.svg"
-      },
-      "id": "38fc2a479877",
-      "name": "component",
-      "children": [],
-      "metadata": {
-        "bounds": {
-          "left": 568,
+          "left": -696,
           "top": 278,
-          "right": 616.3221290375247,
-          "bottom": 327.92191178879784
+          "right": -296,
+          "bottom": 578
         }
       }
     },
     {
-      "label": "Bottom Left Corner Icon",
-      "is": "img",
-      "style": {
-        "user-select": "none"
-      },
+      "label": " Bottom Left Corner Icon",
+      "is": "svg",
+      "style": {},
       "attributes": {
-        "src": "./bottom-left-corner.svg"
+        "xmlns": "http://www.w3.org/2000/svg",
+        "xmlns:xlink": "http://www.w3.org/1999/xlink",
+        "version": "1.1",
+        "x": "0px",
+        "y": "0px",
+        "viewBox": "0 0 100 125",
+        "enable-background": "new 0 0 100 100",
+        "xml:space": "preserve"
       },
       "id": "38fc2a4711106",
       "name": "component",
-      "children": [],
+      "children": [
+        {
+          "id": "64740a7715",
+          "is": "path",
+          "name": "element",
+          "attributes": {
+            "fill": "grey",
+            "d": "M15,20.5v59c0,3,2.5,5.5,5.5,5.5h58.8c2.9,0,5.4-2.1,5.7-5c0.3-3.3-2.3-6-5.5-6H28c-1.1,0-2-0.9-2-2l0-51.3  c0-2.9-2.1-5.4-5-5.7C17.8,14.7,15,17.3,15,20.5z"
+          },
+          "style": {},
+          "children": [],
+          "metadata": {}
+        }
+      ],
       "metadata": {
         "bounds": {
-          "left": 565,
-          "top": 148,
-          "right": 610.881800747421,
-          "bottom": 203.0734968783563
+          "left": -669,
+          "top": 614,
+          "right": -269,
+          "bottom": 914
         }
       }
     },
     {
       "label": "Bottom Right Corner Icon",
-      "is": "img",
-      "style": {
-        "user-select": "none"
-      },
+      "is": "svg",
+      "style": {},
       "attributes": {
-        "src": "./bottom-right-corner.svg"
+        "xmlns": "http://www.w3.org/2000/svg",
+        "xmlns:xlink": "http://www.w3.org/1999/xlink",
+        "version": "1.1",
+        "x": "0px",
+        "y": "0px",
+        "viewBox": "0 0 100 125",
+        "enable-background": "new 0 0 100 100",
+        "xml:space": "preserve"
       },
       "id": "38fc2a4712335",
       "name": "component",
-      "children": [],
-      "metadata": {
-        "bounds": {
-          "left": 501,
-          "top": 142,
-          "right": 546.881800747421,
-          "bottom": 197.0734968783563
-        }
-      }
-    },
-    {
-      "label": "Arrow Down Icon",
-      "is": "img",
-      "style": {
-        "user-select": "none"
-      },
-      "attributes": {
-        "src": "./arrow-down.svg"
-      },
-      "id": "e186b96e4079",
-      "name": "component",
-      "children": [],
-      "metadata": {
-        "bounds": {
-          "left": 340,
-          "top": 508,
-          "right": 425,
-          "bottom": 563
-        }
-      }
-    },
-    {
-      "label": "Play Icon",
-      "is": "img",
-      "style": {},
-      "attributes": {
-        "src": "./play.svg"
-      },
-      "id": "b0a6d2a231192",
-      "name": "component",
-      "children": [],
-      "metadata": {
-        "bounds": {
-          "left": 514,
-          "top": 565,
-          "right": 616,
-          "bottom": 663
-        }
-      }
-    },
-    {
-      "label": "Open Icon",
-      "is": "img",
-      "style": {},
-      "attributes": {
-        "src": "./open.svg"
-      },
-      "id": "5b2acf9d22",
-      "name": "component",
-      "children": [],
-      "metadata": {
-        "bounds": {
-          "left": 121,
-          "top": 526,
-          "right": 278.29771207205295,
-          "bottom": 679.0667229841617
-        }
-      }
-    },
-    {
-      "label": "Puzzle Icon",
-      "is": "img",
-      "style": {},
-      "attributes": {
-        "src": "./puzzle.svg"
-      },
-      "id": "bc641d484882",
-      "name": "component",
-      "children": [],
-      "metadata": {
-        "bounds": {
-          "left": -125,
-          "top": 325,
-          "right": -28,
-          "bottom": 403
-        }
-      }
-    },
-    {
-      "label": "Poiner Icon",
-      "is": "img",
-      "style": {},
-      "attributes": {
-        "src": "./pointer.svg"
-      },
-      "id": "bc641d4124463",
-      "name": "component",
-      "children": [],
-      "metadata": {
-        "bounds": {
-          "left": -119,
-          "top": 449,
-          "right": -54,
-          "bottom": 530
-        }
-      }
-    },
-    {
-      "label": "Rectangle Icon",
-      "is": "img",
-      "style": {},
-      "attributes": {
-        "src": "./rectangle.svg"
-      },
-      "id": "bc641d4118808",
-      "name": "component",
-      "children": [],
-      "metadata": {
-        "bounds": {
-          "left": -165,
-          "top": 74,
-          "right": 58,
-          "bottom": 222
-        }
-      }
-    },
-    {
-      "label": "Text Icon",
-      "is": "img",
-      "style": {},
-      "attributes": {
-        "src": "./text.svg"
-      },
-      "id": "bc641d4113153",
-      "name": "component",
-      "children": [],
-      "metadata": {
-        "bounds": {
-          "left": -81,
-          "top": 597,
-          "right": -2,
-          "bottom": 662
-        }
-      }
-    },
-    {
-      "id": "b101b3b089",
-      "label": "Element",
-      "is": "div",
-      "name": "element",
-      "attributes": {},
-      "style": {
-        "box-sizing": "border-box",
-        "color": "rgba(217, 75, 75, 1)"
-      },
       "children": [
         {
-          "id": "b101b3b08230",
-          "variant": [],
-          "is": "38fc2a473732",
-          "name": "component-instance",
-          "attributes": {},
+          "id": "64740a7720",
+          "is": "path",
+          "name": "element",
+          "attributes": {
+            "fill": "grey",
+            "d": "M20.5,85h59c3,0,5.5-2.5,5.5-5.5V20.7c0-2.9-2.1-5.4-5-5.7c-3.3-0.3-6,2.3-6,5.5V72c0,1.1-0.9,2-2,2l-51.3,0  c-2.9,0-5.4,2.1-5.7,5C14.7,82.2,17.3,85,20.5,85z"
+          },
           "style": {},
           "children": [],
-          "metadata": {
-            "bounds": {
-              "left": 425,
-              "top": 324,
-              "right": 470.88180074742104,
-              "bottom": 360.670832741107
-            }
-          }
+          "metadata": {}
         }
       ],
       "metadata": {
         "bounds": {
-          "left": 671.0072334290002,
-          "top": 280.4217235252019,
-          "right": 771.0072334290002,
-          "bottom": 380.4217235252019
+          "left": -657,
+          "top": 983,
+          "right": -257,
+          "bottom": 1283
         }
       }
     },
     {
-      "id": "8dac8a6d16",
+      "label": "Brush Icon",
       "is": "svg",
-      "name": "element",
+      "style": {},
       "attributes": {
         "xmlns": "http://www.w3.org/2000/svg",
         "data-name": "Layer 1",
@@ -502,17 +152,18 @@
         "x": "0px",
         "y": "0px"
       },
-      "style": {},
+      "id": "38fc2a477419",
+      "name": "component",
       "children": [
         {
-          "id": "8dac8a6d13",
+          "id": "cf54851c10",
           "is": "title",
           "name": "element",
           "attributes": {},
           "style": {},
           "children": [
             {
-              "id": "8dac8a6d12",
+              "id": "cf54851c11",
               "name": "text",
               "label": "BasicUI",
               "value": "BasicUI",
@@ -524,7 +175,7 @@
           "metadata": {}
         },
         {
-          "id": "8dac8a6d14",
+          "id": "cf54851c12",
           "is": "path",
           "name": "element",
           "attributes": {
@@ -536,7 +187,7 @@
           "metadata": {}
         },
         {
-          "id": "8dac8a6d15",
+          "id": "cf54851c13",
           "is": "path",
           "name": "element",
           "attributes": {
@@ -550,10 +201,1548 @@
       ],
       "metadata": {
         "bounds": {
-          "left": -740,
-          "top": 235,
-          "right": -340,
-          "bottom": 535
+          "left": 54,
+          "top": 934,
+          "right": 454,
+          "bottom": 1234
+        }
+      }
+    },
+    {
+      "label": "Code Icon",
+      "is": "svg",
+      "style": {},
+      "attributes": {
+        "xmlns": "http://www.w3.org/2000/svg",
+        "xmlns:xlink": "http://www.w3.org/1999/xlink",
+        "version": "1.1",
+        "x": "0px",
+        "y": "0px",
+        "viewBox": "0 0 96 120",
+        "enable-background": "new 0 0 96 96",
+        "xml:space": "preserve"
+      },
+      "id": "38fc2a474961",
+      "name": "component",
+      "children": [
+        {
+          "id": "cf54851c20",
+          "is": "path",
+          "name": "element",
+          "attributes": {
+            "fill": "grey",
+            "d": "M28.416,76.572c-1.024,0-2.048-0.393-2.832-1.172L1.172,50.844C0.42,50.092,0,49.068,0,48c0-1.068,0.42-2.088,1.176-2.848  l24.412-24.548c1.56-1.568,4.092-1.576,5.656,0.004c1.56,1.58,1.56,4.12-0.004,5.696L9.664,48l21.58,21.704  c1.56,1.571,1.56,4.116,0,5.688C30.464,76.18,29.432,76.572,28.416,76.572L28.416,76.572z"
+          },
+          "style": {},
+          "children": [],
+          "metadata": {}
+        },
+        {
+          "id": "cf54851c21",
+          "is": "path",
+          "name": "element",
+          "attributes": {
+            "fill": "grey",
+            "d": "M67.588,76.572c-1.023,0-2.052-0.393-2.828-1.18c-1.568-1.572-1.568-4.117,0-5.697L86.344,48L64.76,26.304  c-1.568-1.58-1.568-4.12,0-5.696c1.568-1.58,4.088-1.576,5.656-0.008l24.412,24.552C95.58,45.9,96,46.928,96,48  c0,1.068-0.42,2.088-1.172,2.844L70.416,75.393C69.641,76.18,68.611,76.572,67.588,76.572L67.588,76.572z"
+          },
+          "style": {},
+          "children": [],
+          "metadata": {}
+        },
+        {
+          "id": "cf54851c22",
+          "is": "path",
+          "name": "element",
+          "attributes": {
+            "fill": "grey",
+            "d": "M38.348,78c-0.476,0-0.964-0.084-1.436-0.264c-2.06-0.805-3.092-3.133-2.296-5.213l19.868-51.947  c0.795-2.076,3.107-3.096,5.168-2.304c2.06,0.796,3.088,3.124,2.296,5.204L42.072,75.424C41.476,77.016,39.952,78,38.348,78z"
+          },
+          "style": {},
+          "children": [],
+          "metadata": {}
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": -457,
+          "top": 1432,
+          "right": -57,
+          "bottom": 1732
+        }
+      }
+    },
+    {
+      "label": "Minus Icon",
+      "is": "svg",
+      "style": {},
+      "attributes": {
+        "xmlns": "http://www.w3.org/2000/svg",
+        "xmlns:xlink": "http://www.w3.org/1999/xlink",
+        "xml:space": "preserve",
+        "version": "1.1",
+        "viewBox": "0 0 591 187.5",
+        "x": "0px",
+        "y": "0px",
+        "fill-rule": "evenodd",
+        "clip-rule": "evenodd"
+      },
+      "id": "38fc2a476190",
+      "name": "component",
+      "children": [
+        {
+          "id": "cf54851c31",
+          "is": "defs",
+          "name": "element",
+          "attributes": {},
+          "style": {},
+          "children": [
+            {
+              "id": "cf54851c32",
+              "is": "style",
+              "name": "element",
+              "attributes": {
+                "type": "text/css"
+              },
+              "style": {},
+              "children": [
+                {
+                  "id": "cf54851c33",
+                  "name": "text",
+                  "label": "\n\n    .fil0 {fill:grey}\n\n  ",
+                  "value": "\n\n    .fil0 {fill:grey}\n\n  ",
+                  "style": {},
+                  "children": [],
+                  "metadata": {}
+                }
+              ],
+              "metadata": {}
+            }
+          ],
+          "metadata": {}
+        },
+        {
+          "id": "cf54851c34",
+          "is": "g",
+          "name": "element",
+          "attributes": {},
+          "style": {},
+          "children": [
+            {
+              "id": "cf54851c35",
+              "is": "rect",
+              "name": "element",
+              "attributes": {
+                "fill": "grey",
+                "class": "fil0",
+                "width": "591",
+                "height": "150"
+              },
+              "style": {},
+              "children": [],
+              "metadata": {}
+            }
+          ],
+          "metadata": {}
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": 607,
+          "top": 358,
+          "right": 1007,
+          "bottom": 658
+        }
+      }
+    },
+    {
+      "label": "More Icon",
+      "is": "svg",
+      "style": {},
+      "attributes": {
+        "xmlns": "http://www.w3.org/2000/svg",
+        "xmlns:xlink": "http://www.w3.org/1999/xlink",
+        "version": "1.1",
+        "x": "0px",
+        "y": "0px",
+        "viewBox": "0 0 100 125",
+        "xml:space": "preserve"
+      },
+      "id": "38fc2a473732",
+      "name": "component",
+      "children": [
+        {
+          "id": "cf54851c43",
+          "is": "g",
+          "name": "element",
+          "attributes": {},
+          "style": {},
+          "children": [
+            {
+              "id": "cf54851c44",
+              "is": "circle",
+              "name": "element",
+              "attributes": {
+                "fill": "currentColor",
+                "cx": "49.8",
+                "cy": "49.9",
+                "r": "6"
+              },
+              "style": {},
+              "children": [],
+              "metadata": {}
+            },
+            {
+              "id": "cf54851c45",
+              "is": "circle",
+              "name": "element",
+              "attributes": {
+                "fill": "currentColor",
+                "cx": "19.8",
+                "cy": "49.9",
+                "r": "6"
+              },
+              "style": {},
+              "children": [],
+              "metadata": {}
+            },
+            {
+              "id": "cf54851c46",
+              "is": "circle",
+              "name": "element",
+              "attributes": {
+                "fill": "currentColor",
+                "cx": "79.8",
+                "cy": "49.9",
+                "r": "6"
+              },
+              "style": {},
+              "children": [],
+              "metadata": {}
+            }
+          ],
+          "metadata": {}
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": 809,
+          "top": -82,
+          "right": 1209,
+          "bottom": 218
+        }
+      }
+    },
+    {
+      "label": "Open Icon",
+      "is": "svg",
+      "style": {},
+      "attributes": {
+        "xmlns:x": "http://ns.adobe.com/Extensibility/1.0/",
+        "xmlns:i": "http://ns.adobe.com/AdobeIllustrator/10.0/",
+        "xmlns:graph": "http://ns.adobe.com/Graphs/1.0/",
+        "xmlns": "http://www.w3.org/2000/svg",
+        "xmlns:xlink": "http://www.w3.org/1999/xlink",
+        "version": "1.1",
+        "x": "0px",
+        "y": "0px",
+        "viewBox": "-205 207 100 125",
+        "xml:space": "preserve"
+      },
+      "id": "5b2acf9d22",
+      "name": "component",
+      "children": [
+        {
+          "id": "289d8e3413",
+          "is": "switch",
+          "name": "element",
+          "attributes": {},
+          "style": {},
+          "children": [
+            {
+              "id": "289d8e3414",
+              "is": "foreignObject",
+              "name": "element",
+              "attributes": {
+                "requiredExtensions": "http://ns.adobe.com/AdobeIllustrator/10.0/",
+                "x": "0",
+                "y": "0",
+                "width": "1",
+                "height": "1"
+              },
+              "style": {},
+              "children": [],
+              "metadata": {}
+            },
+            {
+              "id": "289d8e3415",
+              "is": "g",
+              "name": "element",
+              "attributes": {
+                "i:extraneous": "self"
+              },
+              "style": {},
+              "children": [
+                {
+                  "id": "289d8e3416",
+                  "is": "path",
+                  "name": "element",
+                  "attributes": {
+                    "fill": "grey",
+                    "d": "M-124.5,228.3v16.6c0,1-0.8,1.7-1.7,1.7c-1,0-1.7-0.8-1.7-1.7v-12.4l-26.8,26.8c-0.3,0.3-0.8,0.5-1.2,0.5    c-0.4,0-0.9-0.2-1.2-0.5c-0.7-0.7-0.7-1.8,0-2.5l26.8-26.8h-12.4c-1,0-1.7-0.8-1.7-1.7c0-1,0.8-1.7,1.7-1.7h16.6    C-125.3,226.5-124.5,227.3-124.5,228.3z M-126.3,256.3c-1,0-1.7,0.8-1.7,1.7v16.9c0,5-4.1,9.1-9.1,9.1h-35.8c-5,0-9.1-4.1-9.1-9.1    v-28.5v-7.4c0-5,4.1-9.1,9.1-9.1h16.7c1,0,1.7-0.8,1.7-1.7c0-1-0.8-1.7-1.7-1.7h-16.7c-6.9,0-12.6,5.6-12.6,12.6v7.4v28.5    c0,6.9,5.6,12.6,12.6,12.6h35.8c6.9,0,12.6-5.6,12.6-12.6v-16.9C-124.5,257.1-125.3,256.3-126.3,256.3z"
+                  },
+                  "style": {},
+                  "children": [],
+                  "metadata": {}
+                }
+              ],
+              "metadata": {}
+            }
+          ],
+          "metadata": {}
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": 620,
+          "top": 696,
+          "right": 1020,
+          "bottom": 996
+        }
+      }
+    },
+    {
+      "label": "Play Icon",
+      "is": "svg",
+      "style": {},
+      "attributes": {
+        "xmlns": "http://www.w3.org/2000/svg",
+        "xmlns:xlink": "http://www.w3.org/1999/xlink",
+        "version": "1.1",
+        "x": "0px",
+        "y": "0px",
+        "viewBox": "NaN NaN NaN 125"
+      },
+      "id": "b0a6d2a231192",
+      "name": "component",
+      "children": [
+        {
+          "id": "289d8e3431",
+          "is": "g",
+          "name": "element",
+          "attributes": {
+            "transform": "translate(0, 0)"
+          },
+          "style": {},
+          "children": [
+            {
+              "id": "289d8e3432",
+              "is": "path",
+              "name": "element",
+              "attributes": {
+                "d": "M28.991,23.033 L29.51,23.064 L30.023,23.281 L72.023,48.281 C73.326,49.057 73.326,50.943 72.023,51.719 L30.023,76.718 C28.69,77.512 27,76.551 27,75 L27,25 C27.056,24.11 27.566,23.308 28.481,23.067 L28.991,23.033 z",
+                "fill": "currentColor"
+              },
+              "style": {},
+              "children": [],
+              "metadata": {}
+            }
+          ],
+          "metadata": {}
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": 577,
+          "top": 1224,
+          "right": 977,
+          "bottom": 1524
+        }
+      }
+    },
+    {
+      "label": "Plus Icon",
+      "is": "svg",
+      "style": {},
+      "attributes": {
+        "xmlns": "http://www.w3.org/2000/svg",
+        "xmlns:xlink": "http://www.w3.org/1999/xlink",
+        "xml:space": "preserve",
+        "version": "1.1",
+        "viewBox": "0 0 847 1058.75",
+        "x": "0px",
+        "y": "0px",
+        "fill-rule": "evenodd",
+        "clip-rule": "evenodd"
+      },
+      "id": "8e601d2b23050",
+      "name": "component",
+      "children": [
+        {
+          "id": "289d8e3425",
+          "is": "defs",
+          "name": "element",
+          "attributes": {},
+          "style": {},
+          "children": [
+            {
+              "id": "289d8e3426",
+              "is": "style",
+              "name": "element",
+              "attributes": {
+                "type": "text/css"
+              },
+              "style": {},
+              "children": [
+                {
+                  "id": "289d8e3427",
+                  "name": "text",
+                  "label": "\n\n    .fil0 {fill:grey}\n\n  ",
+                  "value": "\n\n    .fil0 {fill:grey}\n\n  ",
+                  "style": {},
+                  "children": [],
+                  "metadata": {}
+                }
+              ],
+              "metadata": {}
+            }
+          ],
+          "metadata": {}
+        },
+        {
+          "id": "289d8e3428",
+          "is": "g",
+          "name": "element",
+          "attributes": {},
+          "style": {},
+          "children": [
+            {
+              "id": "289d8e3429",
+              "is": "polygon",
+              "name": "element",
+              "attributes": {
+                "class": "fil0",
+                "points": "393,172 454,172 454,393 675,393 675,454 454,454 454,675 393,675 393,454 172,454 172,393 393,393 ",
+                "fill": "grey"
+              },
+              "style": {},
+              "children": [],
+              "metadata": {}
+            }
+          ],
+          "metadata": {}
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": 145,
+          "top": 1503,
+          "right": 545,
+          "bottom": 1803
+        }
+      }
+    },
+    {
+      "label": "Pointer Icon",
+      "is": "svg",
+      "style": {},
+      "attributes": {
+        "xmlns": "http://www.w3.org/2000/svg",
+        "xmlns:xlink": "http://www.w3.org/1999/xlink",
+        "version": "1.1",
+        "x": "0px",
+        "y": "0px",
+        "viewBox": "0 0 30 37.5",
+        "xml:space": "preserve"
+      },
+      "id": "bc641d4124463",
+      "name": "component",
+      "children": [
+        {
+          "id": "289d8e3438",
+          "is": "g",
+          "name": "element",
+          "attributes": {
+            "transform": "translate(-30 -320)"
+          },
+          "style": {},
+          "children": [
+            {
+              "id": "289d8e3439",
+              "is": "polygon",
+              "name": "element",
+              "attributes": {
+                "fill": "grey",
+                "xmlns": "http://www.w3.org/2000/svg",
+                "xmlns:xlink": "http://www.w3.org/1999/xlink",
+                "points": "55.287,336.168 38,321 38,344 44.299,339.402 48.763,349.428 52.221,347.889 47.757,337.863  "
+              },
+              "style": {},
+              "children": [],
+              "metadata": {}
+            }
+          ],
+          "metadata": {}
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": 79,
+          "top": 405,
+          "right": 479,
+          "bottom": 705
+        }
+      }
+    },
+    {
+      "label": "Puzzle Icon",
+      "is": "svg",
+      "style": {},
+      "attributes": {
+        "xmlns": "http://www.w3.org/2000/svg",
+        "xmlns:xlink": "http://www.w3.org/1999/xlink",
+        "version": "1.1",
+        "x": "0px",
+        "y": "0px",
+        "viewBox": "0 0 100 125",
+        "xml:space": "preserve"
+      },
+      "id": "bc641d484882",
+      "name": "component",
+      "children": [
+        {
+          "id": "289d8e3452",
+          "is": "g",
+          "name": "element",
+          "attributes": {},
+          "style": {},
+          "children": [
+            {
+              "id": "289d8e3453",
+              "is": "path",
+              "name": "element",
+              "attributes": {
+                "fill": "grey",
+                "d": "M73.2,76.4H53.9c-0.4,0-0.8-0.3-1-0.7c-0.1-0.4,0-0.9,0.4-1.1c2.6-1.9,4.5-5.6,4.5-8.7c0-4.4-4.2-6-7.8-6s-7.8,1.6-7.8,6   c0,3.1,1.9,6.8,4.5,8.7c0.3,0.3,0.5,0.7,0.4,1.1s-0.5,0.7-1,0.7H26.8c-1.7,0-3-1.3-3-3V54c0-0.4,0.3-0.8,0.7-1   c0.4-0.1,0.9,0,1.1,0.4c1.9,2.6,5.6,4.5,8.7,4.5c4.4,0,6-4.2,6-7.8s-1.6-7.8-6-7.8c-3.1,0-6.8,1.9-8.7,4.5   c-0.3,0.3-0.7,0.5-1.1,0.4s-0.7-0.5-0.7-1V26.9c0-1.7,1.3-3,3-3h16.8c-2-2.4-3.4-5.6-3.4-8.5c0-4.8,3.9-8,9.8-8s9.8,3.2,9.8,8   c0,2.9-1.3,6.1-3.4,8.5h16.8c1.7,0,3,1.3,3,3v46.5C76.2,75,74.9,76.4,73.2,76.4z"
+              },
+              "style": {},
+              "children": [],
+              "metadata": {}
+            }
+          ],
+          "metadata": {}
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": -1257,
+          "top": 828,
+          "right": -857,
+          "bottom": 1128
+        }
+      }
+    },
+    {
+      "label": "Rectangle Icon",
+      "is": "svg",
+      "style": {},
+      "attributes": {
+        "xmlns": "http://www.w3.org/2000/svg",
+        "version": "1.1",
+        "x": "0px",
+        "y": "0px",
+        "viewBox": "0 0 100 125"
+      },
+      "id": "bc641d4118808",
+      "name": "component",
+      "children": [
+        {
+          "id": "289d8e3449",
+          "is": "g",
+          "name": "element",
+          "attributes": {
+            "transform": "translate(0,-952.36218)"
+          },
+          "style": {
+            "background": "rgba(255, 0, 0, 1)"
+          },
+          "children": [
+            {
+              "id": "289d8e3450",
+              "is": "path",
+              "name": "element",
+              "attributes": {
+                "fill": "grey",
+                "d": "m 8.9997985,959.36232 a 2.000005,2.000005 0 0 0 -1.9997,1.99968 l 0,82.0003 a 2.000005,2.000005 0 0 0 1.9997,1.9997 l 82.0004035,0 a 2.000005,2.000005 0 0 0 1.9997,-1.9997 l 0,-82.0003 a 2.000005,2.000005 0 0 0 -1.9997,-1.99968 l -82.0004035,0 z",
+                "fill-opacity": "1",
+                "fill-rule": "evenodd",
+                "stroke": "none",
+                "marker": "none",
+                "visibility": "visible",
+                "display": "inline",
+                "overflow": "visible"
+              },
+              "style": {
+                "background": "rgba(255, 0, 0, 1)"
+              },
+              "children": [],
+              "metadata": {}
+            }
+          ],
+          "metadata": {}
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": -1170,
+          "top": 200,
+          "right": -770,
+          "bottom": 500
+        }
+      }
+    },
+    {
+      "label": "Text Center Icon",
+      "is": "svg",
+      "style": {},
+      "attributes": {
+        "xmlns": "http://www.w3.org/2000/svg",
+        "version": "1.1",
+        "x": "0px",
+        "y": "0px",
+        "viewBox": "0 0 100 125"
+      },
+      "id": "38fc2a471274",
+      "name": "component",
+      "children": [
+        {
+          "id": "289d8e3477",
+          "is": "g",
+          "name": "element",
+          "attributes": {},
+          "style": {},
+          "children": [
+            {
+              "id": "289d8e3478",
+              "is": "g",
+              "name": "element",
+              "attributes": {},
+              "style": {},
+              "children": [
+                {
+                  "id": "289d8e3479",
+                  "is": "rect",
+                  "name": "element",
+                  "attributes": {
+                    "fill": "grey",
+                    "x": "12.5",
+                    "y": "83.8",
+                    "width": "75",
+                    "height": "3.8"
+                  },
+                  "style": {},
+                  "children": [],
+                  "metadata": {}
+                }
+              ],
+              "metadata": {}
+            },
+            {
+              "id": "289d8e3480",
+              "is": "g",
+              "name": "element",
+              "attributes": {},
+              "style": {},
+              "children": [
+                {
+                  "id": "289d8e3481",
+                  "is": "rect",
+                  "name": "element",
+                  "attributes": {
+                    "fill": "grey",
+                    "x": "25.6",
+                    "y": "60.1",
+                    "width": "48.8",
+                    "height": "3.8"
+                  },
+                  "style": {},
+                  "children": [],
+                  "metadata": {}
+                }
+              ],
+              "metadata": {}
+            },
+            {
+              "id": "289d8e3482",
+              "is": "g",
+              "name": "element",
+              "attributes": {},
+              "style": {},
+              "children": [
+                {
+                  "id": "289d8e3483",
+                  "is": "rect",
+                  "name": "element",
+                  "attributes": {
+                    "fill": "grey",
+                    "x": "12.5",
+                    "y": "36.3",
+                    "width": "75",
+                    "height": "3.8"
+                  },
+                  "style": {},
+                  "children": [],
+                  "metadata": {}
+                }
+              ],
+              "metadata": {}
+            },
+            {
+              "id": "289d8e3484",
+              "is": "g",
+              "name": "element",
+              "attributes": {},
+              "style": {},
+              "children": [
+                {
+                  "id": "289d8e3485",
+                  "is": "rect",
+                  "name": "element",
+                  "attributes": {
+                    "fill": "grey",
+                    "x": "29.4",
+                    "y": "12.5",
+                    "width": "41.3",
+                    "height": "3.8"
+                  },
+                  "style": {},
+                  "children": [],
+                  "metadata": {}
+                }
+              ],
+              "metadata": {}
+            }
+          ],
+          "metadata": {}
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": -1276,
+          "top": 1377,
+          "right": -876,
+          "bottom": 1677
+        }
+      }
+    },
+    {
+      "label": "Text Left Icon",
+      "is": "svg",
+      "style": {},
+      "attributes": {
+        "xmlns": "http://www.w3.org/2000/svg",
+        "version": "1.1",
+        "x": "0px",
+        "y": "0px",
+        "viewBox": "0 0 100 125"
+      },
+      "id": "38fc2a4713564",
+      "name": "component",
+      "children": [
+        {
+          "id": "289d8e3487",
+          "is": "g",
+          "name": "element",
+          "attributes": {},
+          "style": {},
+          "children": [
+            {
+              "id": "289d8e3488",
+              "is": "g",
+              "name": "element",
+              "attributes": {},
+              "style": {},
+              "children": [
+                {
+                  "id": "289d8e3489",
+                  "is": "rect",
+                  "name": "element",
+                  "attributes": {
+                    "fill": "grey",
+                    "x": "12.5",
+                    "y": "12.5",
+                    "width": "75",
+                    "height": "3.8"
+                  },
+                  "style": {},
+                  "children": [],
+                  "metadata": {}
+                }
+              ],
+              "metadata": {}
+            },
+            {
+              "id": "289d8e3490",
+              "is": "g",
+              "name": "element",
+              "attributes": {},
+              "style": {},
+              "children": [
+                {
+                  "id": "289d8e3491",
+                  "is": "rect",
+                  "name": "element",
+                  "attributes": {
+                    "fill": "grey",
+                    "x": "12.5",
+                    "y": "36.2",
+                    "width": "48.8",
+                    "height": "3.8"
+                  },
+                  "style": {},
+                  "children": [],
+                  "metadata": {}
+                }
+              ],
+              "metadata": {}
+            },
+            {
+              "id": "289d8e3492",
+              "is": "g",
+              "name": "element",
+              "attributes": {},
+              "style": {},
+              "children": [
+                {
+                  "id": "289d8e3493",
+                  "is": "rect",
+                  "name": "element",
+                  "attributes": {
+                    "fill": "grey",
+                    "x": "12.5",
+                    "y": "60",
+                    "width": "75",
+                    "height": "3.8"
+                  },
+                  "style": {},
+                  "children": [],
+                  "metadata": {}
+                }
+              ],
+              "metadata": {}
+            },
+            {
+              "id": "289d8e3494",
+              "is": "g",
+              "name": "element",
+              "attributes": {},
+              "style": {},
+              "children": [
+                {
+                  "id": "289d8e3495",
+                  "is": "rect",
+                  "name": "element",
+                  "attributes": {
+                    "fill": "grey",
+                    "x": "12.5",
+                    "y": "83.8",
+                    "width": "41.3",
+                    "height": "3.8"
+                  },
+                  "style": {},
+                  "children": [],
+                  "metadata": {}
+                }
+              ],
+              "metadata": {}
+            }
+          ],
+          "metadata": {}
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": 683,
+          "top": 1584,
+          "right": 1083,
+          "bottom": 1884
+        }
+      }
+    },
+    {
+      "label": "Text Icon",
+      "is": "svg",
+      "style": {},
+      "attributes": {
+        "xmlns": "http://www.w3.org/2000/svg",
+        "version": "1.1",
+        "x": "0px",
+        "y": "0px",
+        "viewBox": "0 0 100 125",
+        "enable-background": "new 0 0 100 100"
+      },
+      "id": "bc641d4113153",
+      "name": "component",
+      "children": [
+        {
+          "id": "289d8e34105",
+          "is": "path",
+          "name": "element",
+          "attributes": {
+            "fill": "grey",
+            "d": "M73.059,26.206H62.063h-7.125h-9.875h-7.125H26.941c-0.761,0-1.379,0.617-1.379,1.379v6.496v7.031  c0,0.762,0.617,1.379,1.379,1.379h1.587c0.738,0,1.356-0.543,1.459-1.274c0.335-2.379,1.776-7.249,7.95-7.136h4.589  c0.762,0,1.379,0.617,1.379,1.379v1.314V47.74v17.563c0,1.625-1.317,2.942-2.942,2.942h-3.901v1.906v0.198v0.552v1.514  c0,0.761,0.617,1.379,1.379,1.379h23.117c0.762,0,1.379-0.617,1.379-1.379v-1.982v-2.188h-3.901c-1.625,0-2.942-1.317-2.942-2.942  V47.74V36.773V35.46c0-0.762,0.617-1.379,1.379-1.379h4.589c6.174-0.112,7.615,4.757,7.95,7.136  c0.103,0.731,0.721,1.274,1.459,1.274h1.587c0.762,0,1.379-0.617,1.379-1.379v-7.031v-6.496  C74.438,26.823,73.82,26.206,73.059,26.206z"
+          },
+          "style": {},
+          "children": [],
+          "metadata": {}
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": 1245,
+          "top": 1121,
+          "right": 1645,
+          "bottom": 1421
+        }
+      }
+    },
+    {
+      "label": "Top Left Corner Icon",
+      "is": "svg",
+      "style": {},
+      "attributes": {
+        "xmlns": "http://www.w3.org/2000/svg",
+        "xmlns:xlink": "http://www.w3.org/1999/xlink",
+        "version": "1.1",
+        "x": "0px",
+        "y": "0px",
+        "viewBox": "0 0 100 125",
+        "enable-background": "new 0 0 100 100",
+        "xml:space": "preserve"
+      },
+      "id": "38fc2a479877",
+      "name": "component",
+      "children": [
+        {
+          "id": "289d8e34103",
+          "is": "path",
+          "name": "element",
+          "attributes": {
+            "fill": "grey",
+            "d": "M79.5,15h-59c-3,0-5.5,2.5-5.5,5.5l0,58.8c0,2.9,2.1,5.4,5,5.7c3.3,0.3,6-2.3,6-5.5V28c0-1.1,0.9-2,2-2l51.3,0  c2.9,0,5.4-2.1,5.7-5C85.3,17.8,82.7,15,79.5,15z"
+          },
+          "style": {},
+          "children": [],
+          "metadata": {}
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": -312,
+          "top": 1927,
+          "right": 88,
+          "bottom": 2227
+        }
+      }
+    },
+    {
+      "label": "Top Right Corner Icon",
+      "is": "svg",
+      "style": {},
+      "attributes": {
+        "xmlns": "http://www.w3.org/2000/svg",
+        "xmlns:xlink": "http://www.w3.org/1999/xlink",
+        "version": "1.1",
+        "x": "0px",
+        "y": "0px",
+        "viewBox": "0 0 100 125",
+        "enable-background": "new 0 0 100 100",
+        "xml:space": "preserve"
+      },
+      "id": "38fc2a478648",
+      "name": "component",
+      "children": [
+        {
+          "id": "289d8e34137",
+          "is": "path",
+          "name": "element",
+          "attributes": {
+            "fill": "grey",
+            "d": "M85,79.5v-59c0-3-2.5-5.5-5.5-5.5l-58.8,0c-2.9,0-5.4,2.1-5.7,5c-0.3,3.3,2.3,6,5.5,6H72c1.1,0,2,0.9,2,2l0,51.3  c0,2.9,2.1,5.4,5,5.7C82.2,85.3,85,82.7,85,79.5z"
+          },
+          "style": {},
+          "children": [],
+          "metadata": {}
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": -1034,
+          "top": 1869,
+          "right": -634,
+          "bottom": 2169
+        }
+      }
+    },
+    {
+      "label": "Trash Icon",
+      "is": "svg",
+      "style": {},
+      "attributes": {
+        "xmlns": "http://www.w3.org/2000/svg",
+        "xmlns:xlink": "http://www.w3.org/1999/xlink",
+        "viewBox": "0 0 100 125",
+        "version": "1.1",
+        "x": "0px",
+        "y": "0px"
+      },
+      "id": "38fc2a4714793",
+      "name": "component",
+      "children": [
+        {
+          "id": "289d8e34124",
+          "is": "title",
+          "name": "element",
+          "attributes": {},
+          "style": {},
+          "children": [
+            {
+              "id": "289d8e34125",
+              "name": "text",
+              "label": "Delete 2.3",
+              "value": "Delete 2.3",
+              "style": {},
+              "children": [],
+              "metadata": {}
+            }
+          ],
+          "metadata": {}
+        },
+        {
+          "id": "289d8e34126",
+          "is": "desc",
+          "name": "element",
+          "attributes": {},
+          "style": {},
+          "children": [
+            {
+              "id": "289d8e34127",
+              "name": "text",
+              "label": "Created with Sketch.",
+              "value": "Created with Sketch.",
+              "style": {},
+              "children": [],
+              "metadata": {}
+            }
+          ],
+          "metadata": {}
+        },
+        {
+          "id": "289d8e34128",
+          "is": "g",
+          "name": "element",
+          "attributes": {
+            "stroke": "none",
+            "stroke-width": "1",
+            "fill": "none",
+            "fill-rule": "evenodd"
+          },
+          "style": {},
+          "children": [
+            {
+              "id": "289d8e34129",
+              "is": "g",
+              "name": "element",
+              "attributes": {
+                "fill-rule": "nonzero",
+                "fill": "#000000"
+              },
+              "style": {},
+              "children": [
+                {
+                  "id": "289d8e34130",
+                  "is": "path",
+                  "name": "element",
+                  "attributes": {
+                    "fill": "grey",
+                    "d": "M70.5010669,26.9434365 L68.6522117,75.938097 C68.5992053,77.3427667 67.3987301,78.5 65.9999745,78.5 L34.0000255,78.5 C32.5981505,78.5 31.4008667,77.3446765 31.3477883,75.938097 L29.4989331,26.9434365 C29.467694,26.1155986 28.7712744,25.4698277 27.9434365,25.5010669 C27.1155986,25.532306 26.4698277,26.2287256 26.5010669,27.0565635 L28.349922,76.051224 C28.4637677,79.068136 30.9839548,81.5 34.0000255,81.5 L65.9999745,81.5 C69.0122556,81.5 71.5362792,79.0668935 71.650078,76.051224 L73.4989331,27.0565635 C73.5301723,26.2287256 72.8844014,25.532306 72.0565635,25.5010669 C71.2287256,25.4698277 70.532306,26.1155986 70.5010669,26.9434365 Z"
+                  },
+                  "style": {},
+                  "children": [],
+                  "metadata": {}
+                },
+                {
+                  "id": "289d8e34131",
+                  "is": "path",
+                  "name": "element",
+                  "attributes": {
+                    "fill": "grey",
+                    "d": "M49,38 L49,72 C49,72.8284271 49.6715729,73.5 50.5,73.5 C51.3284271,73.5 52,72.8284271 52,72 L52,38 C52,37.1715729 51.3284271,36.5 50.5,36.5 C49.6715729,36.5 49,37.1715729 49,38 Z"
+                  },
+                  "style": {},
+                  "children": [],
+                  "metadata": {}
+                },
+                {
+                  "id": "289d8e34132",
+                  "is": "path",
+                  "name": "element",
+                  "attributes": {
+                    "fill": "grey",
+                    "d": "M37.5006484,38.0440986 L38.5006484,72.0440986 C38.5250033,72.8721676 39.2160295,73.5237066 40.0440986,73.4993516 C40.8721676,73.4749967 41.5237066,72.7839705 41.4993516,71.9559014 L40.4993516,37.9559014 C40.4749967,37.1278324 39.7839705,36.4762934 38.9559014,36.5006484 C38.1278324,36.5250033 37.4762934,37.2160295 37.5006484,38.0440986 Z"
+                  },
+                  "style": {},
+                  "children": [],
+                  "metadata": {}
+                },
+                {
+                  "id": "289d8e34133",
+                  "is": "path",
+                  "name": "element",
+                  "attributes": {
+                    "fill": "grey",
+                    "d": "M59.5006484,37.9559014 L58.5006484,71.9559014 C58.4762934,72.7839705 59.1278324,73.4749967 59.9559014,73.4993516 C60.7839705,73.5237066 61.4749967,72.8721676 61.4993516,72.0440986 L62.4993516,38.0440986 C62.5237066,37.2160295 61.8721676,36.5250033 61.0440986,36.5006484 C60.2160295,36.4762934 59.5250033,37.1278324 59.5006484,37.9559014 Z"
+                  },
+                  "style": {},
+                  "children": [],
+                  "metadata": {}
+                },
+                {
+                  "id": "289d8e34134",
+                  "is": "path",
+                  "name": "element",
+                  "attributes": {
+                    "fill": "grey",
+                    "d": "M25,28 L75,28 C75.8284271,28 76.5,27.3284271 76.5,26.5 C76.5,25.6715729 75.8284271,25 75,25 L25,25 C24.1715729,25 23.5,25.6715729 23.5,26.5 C23.5,27.3284271 24.1715729,28 25,28 Z"
+                  },
+                  "style": {},
+                  "children": [],
+                  "metadata": {}
+                },
+                {
+                  "id": "289d8e34135",
+                  "is": "path",
+                  "name": "element",
+                  "attributes": {
+                    "fill": "grey",
+                    "d": "M41.392715,26.557086 L42.462976,23.8814335 C42.7478997,23.1691244 43.7363936,22.5 44.5,22.5 L55.5,22.5 C56.2690864,22.5 57.2501243,23.1641843 57.537024,23.8814335 L58.607285,26.557086 L61.392715,25.442914 L60.322454,22.7672615 C59.579961,20.911029 57.4957913,19.5 55.5,19.5 L44.5,19.5 C42.5097774,19.5 40.4180959,20.9158866 39.677546,22.7672615 L38.607285,25.442914 L41.392715,26.557086 Z"
+                  },
+                  "style": {},
+                  "children": [],
+                  "metadata": {}
+                }
+              ],
+              "metadata": {}
+            }
+          ],
+          "metadata": {}
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": 756,
+          "top": 2237,
+          "right": 1156,
+          "bottom": 2537
+        }
+      }
+    },
+    {
+      "label": "Wand Icon",
+      "is": "svg",
+      "style": {},
+      "attributes": {
+        "xmlns": "http://www.w3.org/2000/svg",
+        "data-name": "Layer 1",
+        "viewBox": "0 0 100 125",
+        "x": "0px",
+        "y": "0px"
+      },
+      "id": "38fc2a4716022",
+      "name": "component",
+      "children": [
+        {
+          "id": "289d8e34171",
+          "is": "title",
+          "name": "element",
+          "attributes": {},
+          "style": {},
+          "children": [
+            {
+              "id": "289d8e34172",
+              "name": "text",
+              "value": "47",
+              "style": {},
+              "children": [],
+              "metadata": {}
+            }
+          ],
+          "metadata": {}
+        },
+        {
+          "id": "289d8e34173",
+          "is": "g",
+          "name": "element",
+          "attributes": {
+            "data-name": "Group"
+          },
+          "style": {},
+          "children": [
+            {
+              "id": "289d8e34174",
+              "is": "path",
+              "name": "element",
+              "attributes": {
+                "fill": "grey",
+                "data-name": "Path",
+                "d": "M13.8,88.2a2,2,0,0,0,1.4-.6L62,40.8A2,2,0,0,0,59.2,38L12.4,84.8a2,2,0,0,0,1.4,3.4Z"
+              },
+              "style": {},
+              "children": [],
+              "metadata": {}
+            },
+            {
+              "id": "289d8e34175",
+              "is": "path",
+              "name": "element",
+              "attributes": {
+                "fill": "grey",
+                "data-name": "Path",
+                "d": "M54.8,13.8V26.6a2,2,0,1,0,4,0V13.8a2,2,0,0,0-4,0Z"
+              },
+              "style": {},
+              "children": [],
+              "metadata": {}
+            },
+            {
+              "id": "289d8e34176",
+              "is": "path",
+              "name": "element",
+              "attributes": {
+                "fill": "grey",
+                "data-name": "Path",
+                "d": "M88.2,43.2a2,2,0,0,0-2-2H73.4a2,2,0,0,0,0,4H86.2A2,2,0,0,0,88.2,43.2Z"
+              },
+              "style": {},
+              "children": [],
+              "metadata": {}
+            },
+            {
+              "id": "289d8e34177",
+              "is": "path",
+              "name": "element",
+              "attributes": {
+                "fill": "grey",
+                "data-name": "Path",
+                "d": "M71.7,31.1l9.5-9.5a2,2,0,0,0-2.8-2.8l-9.5,9.5a2,2,0,1,0,2.8,2.8Z"
+              },
+              "style": {},
+              "children": [],
+              "metadata": {}
+            },
+            {
+              "id": "289d8e34178",
+              "is": "path",
+              "name": "element",
+              "attributes": {
+                "fill": "grey",
+                "data-name": "Path",
+                "d": "M34.5,34.1a2,2,0,0,0,0,4H47.2a2,2,0,0,0,0-4Z"
+              },
+              "style": {},
+              "children": [],
+              "metadata": {}
+            },
+            {
+              "id": "289d8e34179",
+              "is": "path",
+              "name": "element",
+              "attributes": {
+                "fill": "grey",
+                "data-name": "Path",
+                "d": "M65.9,65.5V52.8a2,2,0,0,0-4,0V65.5a2,2,0,0,0,4,0Z"
+              },
+              "style": {},
+              "children": [],
+              "metadata": {}
+            }
+          ],
+          "metadata": {}
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": -1757,
+          "top": 425,
+          "right": -1357,
+          "bottom": 725
+        }
+      }
+    },
+    {
+      "label": "Text Right icon",
+      "is": "svg",
+      "style": {},
+      "attributes": {
+        "xmlns": "http://www.w3.org/2000/svg",
+        "version": "1.1",
+        "x": "0px",
+        "y": "0px",
+        "viewBox": "0 0 100 125"
+      },
+      "id": "38fc2a4717251",
+      "name": "component",
+      "children": [
+        {
+          "id": "289d8e34161",
+          "is": "g",
+          "name": "element",
+          "attributes": {},
+          "style": {},
+          "children": [
+            {
+              "id": "289d8e34162",
+              "is": "g",
+              "name": "element",
+              "attributes": {},
+              "style": {},
+              "children": [
+                {
+                  "id": "289d8e34163",
+                  "is": "rect",
+                  "name": "element",
+                  "attributes": {
+                    "fill": "grey",
+                    "x": "12.5",
+                    "y": "12.5",
+                    "width": "75",
+                    "height": "3.8"
+                  },
+                  "style": {},
+                  "children": [],
+                  "metadata": {}
+                }
+              ],
+              "metadata": {}
+            },
+            {
+              "id": "289d8e34164",
+              "is": "g",
+              "name": "element",
+              "attributes": {},
+              "style": {},
+              "children": [
+                {
+                  "id": "289d8e34165",
+                  "is": "rect",
+                  "name": "element",
+                  "attributes": {
+                    "fill": "grey",
+                    "x": "38.7",
+                    "y": "36.2",
+                    "width": "48.8",
+                    "height": "3.8"
+                  },
+                  "style": {},
+                  "children": [],
+                  "metadata": {}
+                }
+              ],
+              "metadata": {}
+            },
+            {
+              "id": "289d8e34166",
+              "is": "g",
+              "name": "element",
+              "attributes": {},
+              "style": {},
+              "children": [
+                {
+                  "id": "289d8e34167",
+                  "is": "rect",
+                  "name": "element",
+                  "attributes": {
+                    "fill": "grey",
+                    "x": "12.5",
+                    "y": "60",
+                    "width": "75",
+                    "height": "3.8"
+                  },
+                  "style": {},
+                  "children": [],
+                  "metadata": {}
+                }
+              ],
+              "metadata": {}
+            },
+            {
+              "id": "289d8e34168",
+              "is": "g",
+              "name": "element",
+              "attributes": {},
+              "style": {},
+              "children": [
+                {
+                  "id": "289d8e34169",
+                  "is": "rect",
+                  "name": "element",
+                  "attributes": {
+                    "fill": "grey",
+                    "x": "46.2",
+                    "y": "83.8",
+                    "width": "41.3",
+                    "height": "3.8"
+                  },
+                  "style": {},
+                  "children": [],
+                  "metadata": {}
+                }
+              ],
+              "metadata": {}
+            }
+          ],
+          "metadata": {}
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": 1503,
+          "top": 1761,
+          "right": 1903,
+          "bottom": 2061
+        }
+      }
+    },
+    {
+      "id": "38fc2a472503",
+      "label": "Text Justify Icon",
+      "is": "svg",
+      "name": "component",
+      "attributes": {
+        "xmlns": "http://www.w3.org/2000/svg",
+        "version": "1.1",
+        "x": "0px",
+        "y": "0px",
+        "viewBox": "0 0 100 125"
+      },
+      "style": {},
+      "children": [
+        {
+          "id": "289d8e34190",
+          "is": "g",
+          "name": "element",
+          "attributes": {},
+          "style": {},
+          "children": [
+            {
+              "id": "289d8e34183",
+              "is": "g",
+              "name": "element",
+              "attributes": {},
+              "style": {},
+              "children": [
+                {
+                  "id": "289d8e34182",
+                  "is": "rect",
+                  "name": "element",
+                  "attributes": {
+                    "fill": "grey",
+                    "x": "12.5",
+                    "y": "12.5",
+                    "width": "75",
+                    "height": "3.8"
+                  },
+                  "style": {},
+                  "children": [],
+                  "metadata": {}
+                }
+              ],
+              "metadata": {}
+            },
+            {
+              "id": "289d8e34185",
+              "is": "g",
+              "name": "element",
+              "attributes": {},
+              "style": {},
+              "children": [
+                {
+                  "id": "289d8e34184",
+                  "is": "rect",
+                  "name": "element",
+                  "attributes": {
+                    "fill": "grey",
+                    "x": "12.5",
+                    "y": "36.2",
+                    "width": "75",
+                    "height": "3.8"
+                  },
+                  "style": {},
+                  "children": [],
+                  "metadata": {}
+                }
+              ],
+              "metadata": {}
+            },
+            {
+              "id": "289d8e34187",
+              "is": "g",
+              "name": "element",
+              "attributes": {},
+              "style": {},
+              "children": [
+                {
+                  "id": "289d8e34186",
+                  "is": "rect",
+                  "name": "element",
+                  "attributes": {
+                    "fill": "grey",
+                    "x": "12.5",
+                    "y": "60",
+                    "width": "75",
+                    "height": "3.8"
+                  },
+                  "style": {},
+                  "children": [],
+                  "metadata": {}
+                }
+              ],
+              "metadata": {}
+            },
+            {
+              "id": "289d8e34189",
+              "is": "g",
+              "name": "element",
+              "attributes": {},
+              "style": {},
+              "children": [
+                {
+                  "id": "289d8e34188",
+                  "is": "rect",
+                  "name": "element",
+                  "attributes": {
+                    "x": "12.5",
+                    "y": "83.8",
+                    "width": "75",
+                    "height": "3.8",
+                    "fill": "grey"
+                  },
+                  "style": {},
+                  "children": [],
+                  "metadata": {}
+                }
+              ],
+              "metadata": {}
+            }
+          ],
+          "metadata": {}
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": 197,
+          "top": 2152,
+          "right": 597,
+          "bottom": 2452
         }
       }
     }

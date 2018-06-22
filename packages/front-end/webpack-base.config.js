@@ -28,7 +28,7 @@ module.exports = {
     rules: [
       {
         test: /\.(png|jpg|gif|eot|ttf|woff|woff2|svg)$/,
-        use: 'url-loader?limit=10000'
+        use: 'url-loader?limit=100000'
       },
       {
         test: /\.scss$/,

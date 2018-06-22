@@ -26,11 +26,11 @@ export type FileCacheItem = {
 
 export const queueOpenFile = <TState extends FSSandboxRootState>(
   uri: string,
-  state: TState
+  state: TState,
 ): TState => {
-  if (state.fileCache[uri]) {
-    return state;
-  }
+
+  // should always create new file for queueOpen since reducer
+  // code may depend on newly loaded content
   return {
     ...(state as any),
     fileCache: {

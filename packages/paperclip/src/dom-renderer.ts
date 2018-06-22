@@ -2,7 +2,8 @@ import { mapValues, omit } from "lodash";
 import {
   SyntheticVisibleNode,
   SyntheticElement,
-  SyntheticTextNode
+  SyntheticTextNode,
+  SYNTHETIC_DOCUMENT_NODE_NAME
 } from "./synthetic";
 import { ComputedDisplayInfo } from "./edit";
 import {
@@ -21,6 +22,8 @@ import {
   RemoveChildNodeOperationalTransform
 } from "./ot";
 import { PCSourceTagNames, PCTextNode } from "./dsl";
+
+const SVG_XMLNS = "http://www.w3.org/2000/svg";
 
 export type SyntheticNativeNodeMap = {
   [identifier: string]: Node;
@@ -109,6 +112,21 @@ const setAttribute = (target: HTMLElement, name: string, value: string) => {
   }
 };
 
+const SVG_STYlE_KEY_MAP = {
+  "background": "fill"
+}
+
+const setStyle = (target: HTMLElement, style: any) => {
+  const normalizedStyle = normalizeStyle(style);
+  if (target.namespaceURI === SVG_XMLNS) {
+    for (const key in style) {
+      target.setAttribute(SVG_STYlE_KEY_MAP[key] || key, style[key]);
+    }
+  } else {
+    Object.assign(target.style, normalizedStyle);
+  }
+};
+
 const createNativeNode = (
   synthetic: SyntheticVisibleNode,
   document: Document,
@@ -131,7 +149,7 @@ const createNativeNode = (
     setAttribute(nativeElement, name, attrs[name]);
   }
   if (synthetic.style) {
-    Object.assign(nativeElement.style, normalizeStyle(synthetic.style));
+    setStyle(nativeElement, synthetic.style);
   }
   setStyleConstraintsIfRoot(synthetic, nativeElement);
   if (isText) {
@@ -309,10 +327,13 @@ const resetElementStyle = (
   target: HTMLElement,
   synthetic: SyntheticVisibleNode
 ) => {
-  removeClickableStyle(target, synthetic);
-  const style = synthetic.style || {};
-  target.setAttribute("style", "");
-  Object.assign(target.style, normalizeStyle(style));
+  if (target.namespaceURI === SVG_XMLNS) {
+    // TODO - reset SVG info
+  } else {
+    removeClickableStyle(target, synthetic);
+    target.setAttribute("style", "");
+  }
+  setStyle(target, synthetic.style || EMPTY_OBJECT);
 };
 
 const removeClickableStyle = (

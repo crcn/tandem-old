@@ -4,6 +4,7 @@ import { ButtonBarOption } from "../../../../../../inputs/button-bar/controller"
 import { DropdownMenuOption } from "../../../../../../inputs/dropdown/controller";
 import { compose, pure, withHandlers } from "recompose";
 import { cssPropertyChangeCompleted, cssPropertyChanged } from "actions";
+const { TextLeftIcon, TextCenterIcon, TextJustifyIcon, TextRightIcon } = require("../../../../../../../icons/index.pc");
 
 const FONT_FAMILIES: DropdownMenuOption[] = ["Helvetica", "Roboto"].map(
   value => ({ label: value, value })
@@ -22,19 +23,19 @@ const DECORATIONS: DropdownMenuOption[] = [
 const ALIGNMENTS: ButtonBarOption[] = [
   {
     value: "left",
-    iconSrc: require("../../../../../../../icons/text-left.svg")
+    icon: <TextLeftIcon />
   },
   {
     value: "center",
-    iconSrc: require("../../../../../../../icons/text-center.svg")
+    icon: <TextCenterIcon />
   },
   {
     value: "justify",
-    iconSrc: require("../../../../../../../icons/text-justify.svg")
+    icon: <TextJustifyIcon />
   },
   {
     value: "right",
-    iconSrc: require("../../../../../../../icons/text-right.svg")
+    icon: <TextRightIcon />
   }
 ];
 

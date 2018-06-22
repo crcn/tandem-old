@@ -248,44 +248,6 @@
           "bottom": 792.4636876963959
         }
       }
-    },
-    {
-      "id": "1b91452e4",
-      "label": "Element",
-      "is": "div",
-      "name": "element",
-      "attributes": {},
-      "style": {
-        "box-sizing": "border-box"
-      },
-      "children": [],
-      "metadata": {
-        "bounds": {
-          "left": 2510.5013899384717,
-          "top": 1256.136315213554,
-          "right": 2610.5013899384717,
-          "bottom": 1356.136315213554
-        }
-      }
-    },
-    {
-      "id": "1b91452e5",
-      "label": "Element",
-      "is": "div",
-      "name": "element",
-      "attributes": {},
-      "style": {
-        "box-sizing": "border-box"
-      },
-      "children": [],
-      "metadata": {
-        "bounds": {
-          "left": 2916.1806582288555,
-          "top": 1357.5561322861502,
-          "right": 3016.1806582288555,
-          "bottom": 1457.5561322861502
-        }
-      }
     }
   ],
   "metadata": {}
