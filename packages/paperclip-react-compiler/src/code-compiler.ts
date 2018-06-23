@@ -29,30 +29,25 @@ import {
   PCComputedOverrideMap,
   PCOverride,
   PCOverridablePropertyName,
-  getComponentVariants,
   PCComputedNoverOverrideMap,
-  flattenPCOverrideMap,
   PCLabelOverride,
   isPCComponentInstance,
-  isPCOverride,
-  isComponentOrInstance,
   isPCComponentOrInstance
 } from "paperclip";
 import { repeat, camelCase, uniq, kebabCase, last, negate } from "lodash";
 import {
-  Translate,
-  KeyValue,
   flattenTreeNode,
-  arraySplice,
   EMPTY_OBJECT,
   EMPTY_ARRAY,
   getNestedTreeNodeById,
   stripProtocol,
   filterNestedNodes,
   memoize,
-  getParentTreeNode
+  getParentTreeNode,
+  findTreeNodeParent
 } from "tandem-common";
 import * as path from "path";
+import { SyntheticNode, getPCNodeModule } from "paperclip";
 export const compilePaperclipModuleToReact = (
   entry: PCDependency,
   graph: DependencyGraph
@@ -138,11 +133,9 @@ const translateModule = (module: PCModule, context: TranslateContext) => {
 
   context = addToNativePropsFunction(context);
   context = addMergeFunction(context);
-  // context = addBuildPropsFunction(context);
 
   context = addLine("\nvar _EMPTY_OBJECT = {}", context);
 
-  // context = translateModuleStyles(module, context);
 
   context = module.children
     .filter(isComponent)
@@ -206,23 +199,6 @@ const addMergeFunction = (context: TranslateContext) => {
   return context;
 };
 
-// const addBuildPropsFunction = (context: TranslateContext) => {
-//   context = addOpenTag(`\nfunction buildProps(internalProps, publicProps, staticProps) {\n`, context);
-//   context = addLine(`var props = {};`, context);
-//   context = addLine(`if (internalProps || publicProps) Object.assign(props, internalProps, publicProps); `, context);
-//   context = addOpenTag(`if (props && props.className) {\n`, context);
-//   context = addLine
-//   context = addCloseTag(`}\n`, context);
-//   context = addLine(`return Object.assign(props, staticProps, props)`, context);
-//   context = addLine(`if (!target || typeof object !== 'object' || Array.isArray(object)) return object; `, context);
-//   context = addOpenTag(`for (var key in object) {\n`, context);
-//   context = addLine(`target[key] = merge(target[key], object[key]);`, context);
-//   context = addCloseTag(`}\n`, context);
-//   context = addLine(`return target;`, context);
-//   context = addCloseTag(`}\n`, context);
-//   return context;
-// };
-
 const translateComponentStyles = (
   component: ContentNode,
   context: TranslateContext
@@ -265,7 +241,7 @@ const translateComponentStyleInner = (
         return context;
       }
       context = addOpenTag(`"._${node.id} {" + \n`, context);
-      context = translateStyle(node.style, context);
+      context = translateStyle(node, node.style, context);
       context = addCloseTag(`"}" + \n`, context);
       return context;
     }, context);
@@ -274,16 +250,42 @@ const translateComponentStyleInner = (
   return context;
 };
 
-const translateStyle = (style: KeyValue<any>, context: TranslateContext) => {
-  // TODO - add vendor prefix stuff here
-  for (const key in style) {
-    context = addLineItem(
-      `" ${kebabCase(key)}: ${translateStyleValue(key, style[key]).replace(
-        /[\n\r]/g,
-        " "
-      )};" + \n`,
-      context
-    );
+const isSVGPCNode = memoize((node: PCNode, graph: DependencyGraph) => {
+  return node && ((node as PCElement).is === "svg" || isSVGPCNode(getParentTreeNode(node.id, getPCNodeModule(node.id, graph)), graph));
+});
+
+const SVG_STYLE_PROP_MAP = {
+  background: "fill"
+};
+
+const translateStyle = (target: ContentNode, style: any, context: TranslateContext) => {
+
+  const isSVG = isSVGPCNode(target, context.graph);
+
+  if (isSVG) {
+    // TODO - add vendor prefix stuff here
+    for (const key in style) {
+      const propName = kebabCase(key);
+      context = addLineItem(
+        `" ${SVG_STYLE_PROP_MAP[propName] || propName}: ${translateStyleValue(key, style[key]).replace(
+          /[\n\r]/g,
+          " "
+        )};" + \n`,
+        context
+      );
+    }
+  } else {
+
+    // TODO - add vendor prefix stuff here
+    for (const key in style) {
+      context = addLineItem(
+        `" ${kebabCase(key)}: ${translateStyleValue(key, style[key]).replace(
+          /[\n\r]/g,
+          " "
+        )};" + \n`,
+        context
+      );
+    }
   }
 
   return context;
@@ -293,9 +295,6 @@ const translateStyleOverrides = (
   contentNode: ContentNode,
   context: TranslateContext
 ) => {
-  const variants = isComponent(contentNode)
-    ? getComponentVariants(contentNode)
-    : [];
   const instances = filterNestedNodes(
     contentNode,
     node =>
@@ -309,6 +308,7 @@ const translateStyleOverrides = (
 
   return context;
 };
+
 
 const translateStyleVariantOverrides = (
   instance: PCComponentInstanceElement | PCComponent,
@@ -327,7 +327,7 @@ const translateStyleVariantOverrides = (
 
   for (const override of styleOverrides) {
     context = addOpenTag(`"._${override.id} {" + \n`, context);
-    context = translateStyle(override.value, context);
+    context = translateStyle(getPCNode(last(override.targetIdPath), context.graph) as ContentNode, override.value, context);
     context = addCloseTag(`"}" + \n`, context);
   }
   return context;
