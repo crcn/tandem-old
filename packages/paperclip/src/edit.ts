@@ -103,8 +103,6 @@ export type PCEditorState = {
   frames: Frame[];
 
   graph: DependencyGraph;
-
-  documentChecksums: KeyValue<string[]>;
 };
 
 export type ComputedDisplayInfo = {
@@ -298,7 +296,7 @@ export const updateSyntheticDocument = <TState extends PCEditorState>(
     ...properties
   });
 
-  return upsertFrames(addDocumentChecksum(newDocument, {
+  return upsertFrames({
     ...(state as any),
     documents: arraySplice(
       state.documents,
@@ -306,24 +304,9 @@ export const updateSyntheticDocument = <TState extends PCEditorState>(
       1,
       newDocument
     ),
-  }));
+  });
 };
 
-const addDocumentChecksum = <TState extends PCEditorState>(newDocument: SyntheticDocument, state: TState) => {
-  return {
-    ...(state as any),
-    documentChecksums: {
-      ...state.documentChecksums,
-      [newDocument.id]: state.documentChecksums[newDocument.id] ? uniq([newDocument.checksum, ...state.documentChecksums[newDocument.id]]).slice(0, MAX_CHECKSUM_COUNT) : [newDocument.checksum]
-    }
-  }
-};
-
-
-
-const addDocumentChecksums = <TState extends PCEditorState>(state: TState) => {
-  return state.documents.reduce((state, document) => addDocumentChecksum(document, state), state);
-};
 
 export const removeSyntheticVisibleNode = <TState extends PCEditorState>(
   node: SyntheticVisibleNode,
@@ -638,7 +621,7 @@ export const syncSyntheticDocuments = <TState extends PCEditorState>(updatedDocu
       if (existingDocument) {
 
         // if checksum exists, then the client is a head of the document being synced
-        if (state.documentChecksums[document.id] && state.documentChecksums[document.id].indexOf(document.checksum) !== -1) {
+        if (existingDocument.checksum === document.checksum) {
           return existingDocument;
 
         // otherwise, use the fail safe for syncing documents
@@ -658,7 +641,7 @@ export const syncSyntheticDocuments = <TState extends PCEditorState>(updatedDocu
     })
   };
 
-  return upsertFrames(addDocumentChecksums(state));
+  return upsertFrames(state);
 };
 
 
@@ -1089,7 +1072,7 @@ export const persistSyntheticVisibleNodeStyle = <TState extends PCEditorState>(
   state: TState
 ) => {
 
-  state = replaceSyntheticVisibleNode({ ...node, style: merge(node.style, style) }, node, state);
+  // state = replaceSyntheticVisibleNode({ ...node, style: merge(node.style, style) }, node, state);
   // TODO - need to move
   const updatedNode = maybeOverride(
     PCOverridablePropertyName.STYLE,

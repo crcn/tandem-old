@@ -35,6 +35,7 @@ export type PCRuntimeEvaluated = {
   newDocuments: KeyValue<SyntheticDocument>;
   diffs: KeyValue<TreeNodeOperationalTransform[]>;
   allDocuments: SyntheticDocument[];
+  catchingUp: boolean;
 } & Action;
 
 export const pcFrameRendered = (
@@ -73,9 +74,11 @@ export const pcRuntimeEvaluated = (
   newDocuments: KeyValue<SyntheticDocument>,
   diffs: KeyValue<TreeNodeOperationalTransform[]>,
   allDocuments: SyntheticDocument[],
+  catchingUp: boolean
 ): PCRuntimeEvaluated => ({
   newDocuments,
   diffs,
+  catchingUp,
   allDocuments,
   type: PC_RUNTIME_EVALUATED
 })

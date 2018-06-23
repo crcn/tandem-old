@@ -3,8 +3,6 @@ import { take, fork, select, call, put, spawn } from "redux-saga/effects";
 import {
   pcFrameRendered,
   pcFrameContainerCreated,
-  PC_SYNTHETIC_FRAME_CONTAINER_CREATED,
-  PC_SYNTHETIC_FRAME_RENDERED,
   pcRuntimeEvaluated,
   PC_RUNTIME_EVALUATED,
   PCRuntimeEvaluated,
@@ -46,8 +44,8 @@ export const createPaperclipSaga = ({
       const rt = createRuntime();
 
       const chan = eventChannel((emit) => {
-        rt.on("evaluate", (newDocuments, diffs) => {
-          emit(pcRuntimeEvaluated(newDocuments, diffs, rt.syntheticDocuments));
+        rt.on("evaluate", (newDocuments, diffs, deletedDocumentIds, timestamp) => {
+          emit(pcRuntimeEvaluated(newDocuments, diffs, rt.syntheticDocuments, timestamp < rt.lastUpdatedAt));
         });
         return () => {
 
@@ -63,7 +61,7 @@ export const createPaperclipSaga = ({
       while(1) {
         yield take();
         const state:PCEditorState = yield select();
-        rt.graph = state.graph;
+        rt.setGraph(state.graph);
       }
     }
 

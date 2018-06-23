@@ -17,17 +17,6 @@
       "name": "component",
       "children": [
         {
-          "id": "decafdc7517269",
-          "variant": [],
-          "is": "decafdc7265667",
-          "name": "component-instance",
-          "attributes": {},
-          "style": {},
-          "children": [],
-          "metadata": {},
-          "label": "Code Pane"
-        },
-        {
           "id": "9e4a45489816",
           "variant": [],
           "is": "9e4a45489771",
@@ -274,6 +263,17 @@
           "label": "Spacing Pane"
         },
         {
+          "id": "bcda9fb5101747",
+          "variant": [],
+          "is": "bcda9fb597947",
+          "name": "component-instance",
+          "attributes": {},
+          "style": {},
+          "children": [],
+          "metadata": {},
+          "label": "Filters Pane"
+        },
+        {
           "id": "bcda9fb5101342",
           "variant": [],
           "is": "bcda9fb597619",
@@ -285,15 +285,15 @@
           "label": "Box Shadows Pane"
         },
         {
-          "id": "bcda9fb5101747",
+          "id": "decafdc7517269",
           "variant": [],
-          "is": "bcda9fb597947",
+          "is": "decafdc7265667",
           "name": "component-instance",
           "attributes": {},
           "style": {},
           "children": [],
           "metadata": {},
-          "label": "Filters Pane"
+          "label": "Code Pane"
         }
       ],
       "metadata": {

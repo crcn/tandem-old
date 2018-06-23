@@ -1,13 +1,8 @@
 import "./index.scss";
 import * as React from "react";
-import { compose, pure, lifecycle, withHandlers } from "recompose";
+import { compose, pure, withHandlers } from "recompose";
 import { Resizer } from "./resizer";
-// import { SelectionLabel } from "./label";
-// import { Dispatcher, mergeBounds, Bounded, wrapEventToDispatch } from "aerial-common2";
-// import { Workspace, getBoundedWorkspaceSelection, getWorkspaceItemBounds } from "front-end/state";
-// import { selectorDoubleClicked } from "front-end/actions";
 import { Dispatch } from "redux";
-import { mergeBounds } from "tandem-common";
 import {
   RootState,
   getBoundedSelection,
@@ -16,7 +11,7 @@ import {
   Canvas
 } from "../../../../../../../../../state";
 import { selectorDoubleClicked } from "../../../../../../../../../actions";
-import { getSyntheticVisibleNodeRelativeBounds, getSyntheticSourceFrame, getSyntheticVisibleNodeFrame, getSyntheticNodeById } from "paperclip";
+import { getSyntheticVisibleNodeFrame, getSyntheticNodeById } from "paperclip";
 
 export type SelectionOuterProps = {
   canvas: Canvas;

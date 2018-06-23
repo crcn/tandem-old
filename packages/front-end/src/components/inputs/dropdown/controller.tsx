@@ -10,7 +10,7 @@ export type DropdownMenuOption = {
 
 export const dropdownMenuOptionFromValue = (
   value: string
-): DropdownMenuOption => ({ label: value, value });
+): DropdownMenuOption => ({ label: value || "--", value });
 
 export type DropdownOuterProps = {
   value?: string;

@@ -17,7 +17,7 @@ import {
   resizerMouseDown,
   resizerStartDrag
 } from "../../../../../../../../../actions";
-import { startDOMDrag, mergeBounds, moveBounds, Point } from "tandem-common";
+import { startDOMDrag } from "tandem-common";
 import { Dispatch } from "redux";
 import { Path } from "./path";
 

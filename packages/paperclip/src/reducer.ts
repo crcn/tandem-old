@@ -42,7 +42,10 @@ export const paperclipReducer = <
       );
     }
     case PC_RUNTIME_EVALUATED: {
-      const { allDocuments } = action as PCRuntimeEvaluated;
+      const { allDocuments, catchingUp } = action as PCRuntimeEvaluated;
+      if (catchingUp) {
+        return state;
+      }
       return syncSyntheticDocuments(allDocuments, state);
     }
     case PC_SOURCE_FILE_URIS_RECEIVED: {

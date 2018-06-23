@@ -191,9 +191,60 @@
               "name": "component-instance",
               "attributes": {},
               "style": {
-                "display": "none"
+                "display": "block"
               },
-              "children": [],
+              "children": [
+                {
+                  "id": "f6c782d04",
+                  "propertyName": "label",
+                  "targetIdPath": [
+                    "eea2bde6187073"
+                  ],
+                  "value": "Flex direction input",
+                  "name": "override",
+                  "children": []
+                },
+                {
+                  "id": "f6c782d05",
+                  "propertyName": "label",
+                  "targetIdPath": [
+                    "87448da439881"
+                  ],
+                  "value": "flex wrap input",
+                  "name": "override",
+                  "children": []
+                },
+                {
+                  "id": "f6c782d06",
+                  "propertyName": "label",
+                  "targetIdPath": [
+                    "87448da4129288"
+                  ],
+                  "value": "justify content input",
+                  "name": "override",
+                  "children": []
+                },
+                {
+                  "id": "f6c782d07",
+                  "propertyName": "label",
+                  "targetIdPath": [
+                    "87448da41193998"
+                  ],
+                  "value": "align items input",
+                  "name": "override",
+                  "children": []
+                },
+                {
+                  "id": "f6c782d08",
+                  "propertyName": "label",
+                  "targetIdPath": [
+                    "87448da41194004"
+                  ],
+                  "value": "align content input",
+                  "name": "override",
+                  "children": []
+                }
+              ],
               "metadata": {
                 "bounds": {
                   "left": 4.3441598394937415,
@@ -211,9 +262,53 @@
               "name": "component-instance",
               "attributes": {},
               "style": {
-                "display": "none"
+                "display": "block"
               },
-              "children": [],
+              "children": [
+                {
+                  "id": "f6c782d09",
+                  "propertyName": "label",
+                  "targetIdPath": [
+                    "5da9f61b148420",
+                    "7149f8199969"
+                  ],
+                  "value": "flex basis input",
+                  "name": "override",
+                  "children": []
+                },
+                {
+                  "id": "f6c782d010",
+                  "propertyName": "label",
+                  "targetIdPath": [
+                    "5da9f61b148426",
+                    "7149f8199969"
+                  ],
+                  "value": "flex grow input",
+                  "name": "override",
+                  "children": []
+                },
+                {
+                  "id": "f6c782d011",
+                  "propertyName": "label",
+                  "targetIdPath": [
+                    "5da9f61b257033",
+                    "7149f8199969"
+                  ],
+                  "value": "flex shrink input",
+                  "name": "override",
+                  "children": []
+                },
+                {
+                  "id": "f6c782d012",
+                  "propertyName": "label",
+                  "targetIdPath": [
+                    "87448da4744168"
+                  ],
+                  "value": "align self input",
+                  "name": "override",
+                  "children": []
+                }
+              ],
               "metadata": {
                 "bounds": {
                   "left": 5,
@@ -588,7 +683,7 @@
           "left": -308,
           "top": 428,
           "right": -38,
-          "bottom": 704.9295782748386
+          "bottom": 880.9344296324178
         }
       },
       "controllers": [

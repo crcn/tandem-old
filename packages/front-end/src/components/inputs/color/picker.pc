@@ -30,7 +30,7 @@
           "attributes": {},
           "style": {
             "background": "rgba(0,0,0,0.05)",
-            "position": "relative",
+            "position": "static",
             "height": "180px",
             "width": "100%"
           },
@@ -742,35 +742,6 @@
         }
       },
       "label": "TODO"
-    },
-    {
-      "id": "fe1276123",
-      "label": "Element",
-      "is": "div",
-      "name": "element",
-      "attributes": {},
-      "style": {
-        "box-sizing": "border-box"
-      },
-      "children": [
-        {
-          "id": "fe1276124",
-          "name": "text",
-          "label": "Text",
-          "value": "Click to edit",
-          "style": {},
-          "children": [],
-          "metadata": {}
-        }
-      ],
-      "metadata": {
-        "bounds": {
-          "left": -847.2758078239801,
-          "top": 349.9018519947748,
-          "right": -747.2758078239801,
-          "bottom": 449.9018519947748
-        }
-      }
     }
   ],
   "metadata": {}

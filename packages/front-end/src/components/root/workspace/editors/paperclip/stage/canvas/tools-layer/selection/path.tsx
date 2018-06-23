@@ -5,8 +5,7 @@ import { RootState } from "../../../../../../../../../state";
 import { Dispatch } from "redux";
 import {
   resizerPathMoved,
-  resizerPathStoppedMoving,
-  WrappedEvent
+  resizerPathStoppedMoving
 } from "../../../../../../../../../actions";
 import { startDOMDrag, Point, Bounds } from "tandem-common";
 

@@ -458,6 +458,19 @@
                   },
                   "name": "override",
                   "children": []
+                },
+                {
+                  "id": "f02806dc3",
+                  "propertyName": "style",
+                  "targetIdPath": [
+                    "73b39db4591",
+                    "a258f47017678"
+                  ],
+                  "value": {
+                    "display": "flex"
+                  },
+                  "name": "override",
+                  "children": []
                 }
               ],
               "metadata": {

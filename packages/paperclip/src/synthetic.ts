@@ -359,7 +359,7 @@ const getShallowPCNodePreChecksum = (node: SyntheticNode) => {
   } else if (isSyntheticElement(node)) {
     return base + JSON.stringify(node.attributes) + JSON.stringify(node.style);
   } else if (isSyntheticTextNode(node)) {
-    return base + node.value;
+    return base + node.value + JSON.stringify(node.style);
   } else {
     throw new Error(`unsupported synthetic node`);
   }
