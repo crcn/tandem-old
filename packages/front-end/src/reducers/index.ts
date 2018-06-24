@@ -115,7 +115,8 @@ import {
   COMPONENT_PICKER_BACKGROUND_CLICK,
   ComponentPickerItemClick,
   COMPONENT_PICKER_ITEM_CLICK,
-  SHORTCUT_C_KEY_DOWN
+  SHORTCUT_C_KEY_DOWN,
+  ADD_VARIANT_BUTTON_CLICKED
 } from "../actions";
 import {
   queueOpenFile,
@@ -229,7 +230,10 @@ import {
   getPCNode,
   updateSyntheticVisibleNode,
   persistSyntheticNodeMetadata,
-  createPCComponentInstance
+  createPCComponentInstance,
+  getPCNodeContentNode,
+  getSyntheticVisibleNodeFrame,
+  persistAddVariant
 } from "paperclip";
 import {
   getTreeNodePath,
@@ -317,7 +321,7 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
       state = setFileExpanded(node, true, state);
 
       if (!isDirectory(node)) {
-        state = maybeEvaluateFile(uri, state);
+        state = maybeOpenFile(uri, state);
         state = setActiveFilePath(uri, state);
         return state;
       }
@@ -327,7 +331,7 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
     case QUICK_SEARCH_ITEM_CLICKED: {
       const { file } = action as QuickSearchItemClicked;
       const uri = file.uri;
-      state = maybeEvaluateFile(uri, state);
+      state = maybeOpenFile(uri, state);
       state = setSelectedFileNodeIds(state, file.id);
       state = setActiveFilePath(uri, state);
       state = upsertOpenFile(uri, false, state);
@@ -456,7 +460,7 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
 
       if (fileType === FSItemTagNames.FILE) {
         state = setActiveFilePath(uri, state);
-        state = maybeEvaluateFile(uri, state);
+        state = maybeOpenFile(uri, state);
       }
       return state;
     }
@@ -696,6 +700,14 @@ export const canvasReducer = (state: RootState, action: Action) => {
       } else {
         state = setTool(toolType, state);
       }
+      return state;
+    }
+
+    case ADD_VARIANT_BUTTON_CLICKED: {
+      const node = getSyntheticNodeById(state.selectedNodeIds[0], state.documents);
+      const frame = getSyntheticVisibleNodeFrame(node, state.frames);
+      const contentNode = getSyntheticNodeById(frame.contentNodeId, state.documents);
+      state = persistAddVariant(contentNode, state);
       return state;
     }
 
@@ -1584,7 +1596,10 @@ const isDroppableNode = (node: SyntheticVisibleNode) => {
   );
 };
 
-const maybeEvaluateFile = (uri: string, state: RootState) => {
+const maybeOpenFile = (uri: string, state: RootState) => {
+  if (hasFileCacheItem(uri, state)) {
+    return state;
+  }
   // if (isPaperclipUri(uri) && hasFileCacheItem(uri, state)) {
   //   return evaluateDependency(uri, state);
   // }

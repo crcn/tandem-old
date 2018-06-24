@@ -1,0 +1,67 @@
+{
+  "id": "45055e8e1",
+  "name": "module",
+  "version": "0.0.3",
+  "children": [
+    {
+      "label": "Styles",
+      "is": "div",
+      "style": {
+        "box-sizing": "border-box"
+      },
+      "attributes": {},
+      "id": "45055e8e9",
+      "name": "component",
+      "children": [
+        {
+          "id": "45055e8e6",
+          "variant": [],
+          "is": "6a863e8620",
+          "name": "component-instance",
+          "attributes": {},
+          "style": {},
+          "children": [],
+          "metadata": {
+            "bounds": {
+              "left": 738,
+              "top": 208,
+              "right": 1138,
+              "bottom": 508
+            }
+          },
+          "label": "Variants"
+        },
+        {
+          "id": "45055e8e8",
+          "variant": [],
+          "is": "2399b467",
+          "name": "component-instance",
+          "attributes": {},
+          "style": {},
+          "children": [],
+          "metadata": {
+            "bounds": {
+              "left": 327.9970896317676,
+              "top": 112,
+              "right": 576.9970896317676,
+              "bottom": 1674.0742787560873
+            }
+          },
+          "label": "Pretty"
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": 247,
+          "top": 135,
+          "right": 678.1147377325349,
+          "bottom": 1060.3158388258707
+        }
+      },
+      "controllers": [
+        "./controller.tsx"
+      ]
+    }
+  ],
+  "metadata": {}
+}

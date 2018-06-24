@@ -1,0 +1,136 @@
+{
+  "id": "6a863e8637",
+  "name": "module",
+  "version": "0.0.3",
+  "children": [
+    {
+      "label": "Variant option",
+      "is": "div",
+      "style": {
+        "box-sizing": "border-box",
+        "margin-left": "4px",
+        "margin-top": "4px",
+        "margin-right": "4px",
+        "margin-bottom": "4px",
+        "font-family": "Helvetica",
+        "font-size": "12px"
+      },
+      "attributes": {},
+      "id": "1d51efba14",
+      "name": "component",
+      "children": [
+        {
+          "id": "1d51efba15",
+          "label": "Element",
+          "is": "div",
+          "name": "element",
+          "attributes": {},
+          "style": {
+            "box-sizing": "border-box",
+            "display": "flex",
+            "align-items": "center"
+          },
+          "children": [
+            {
+              "id": "6f30576e9",
+              "variant": [],
+              "is": "6f30576e8",
+              "name": "component-instance",
+              "attributes": {},
+              "style": {
+                "margin-right": "8px"
+              },
+              "children": [],
+              "metadata": {
+                "bounds": {
+                  "left": 277,
+                  "top": 316,
+                  "right": 377,
+                  "bottom": 416
+                }
+              },
+              "label": "switch"
+            },
+            {
+              "id": "1d51efba20",
+              "name": "text",
+              "label": "label",
+              "value": "Variant",
+              "style": {
+                "margin-right": "8px"
+              },
+              "children": [],
+              "metadata": {}
+            }
+          ],
+          "metadata": {}
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": 410,
+          "top": 267,
+          "right": 510,
+          "bottom": 293.11895175049244
+        }
+      },
+      "controllers": [
+        "./option-controller.tsx"
+      ]
+    },
+    {
+      "label": "Switch",
+      "is": "div",
+      "style": {
+        "box-sizing": "border-box"
+      },
+      "attributes": {},
+      "id": "6f30576e8",
+      "name": "component",
+      "children": [
+        {
+          "id": "6f30576e6",
+          "label": "track",
+          "is": "div",
+          "name": "element",
+          "attributes": {},
+          "style": {
+            "box-sizing": "border-box",
+            "width": "20px",
+            "height": "10px",
+            "border-radius": "10px",
+            "background": "rgba(200, 200, 200, 1)"
+          },
+          "children": [
+            {
+              "id": "6f30576e7",
+              "label": "dot",
+              "is": "div",
+              "name": "element",
+              "attributes": {},
+              "style": {
+                "box-sizing": "border-box",
+                "width": "10px",
+                "height": "10px",
+                "background": "#333",
+                "border-radius": "10px"
+              },
+              "children": [],
+              "metadata": {}
+            }
+          ],
+          "metadata": {}
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": 277,
+          "top": 316,
+          "right": 377,
+          "bottom": 416
+        }
+      }
+    }
+  ],
+  "metadata": {}
+}

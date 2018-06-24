@@ -56,7 +56,7 @@ function* loadPCFiles() {
   const sourceFiles = findPaperclipSourceFiles(
     openPCConfig(stripProtocol(state.projectDirectory.uri)).config,
     stripProtocol(state.projectDirectory.uri)
-  ).map(path => "file://" + path);
+  ).map(path => addProtocol(FILE_PROTOCOL, path));
 
   yield put(pcSourceFileUrisReceived(sourceFiles));
 }

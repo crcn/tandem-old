@@ -8,8 +8,6 @@ import * as path from "path";
 import * as Url from "url";
 import { exec } from "child_process";
 import {
-  openPCConfig,
-  findPaperclipSourceFiles,
   Frame,
   getSyntheticSourceNode,
   getSyntheticNodeById,
@@ -40,8 +38,7 @@ setup<DesktopRootState>(
   history: {},
   openFiles: [],
   fileCache: {},
-  selectedComponentId: null,
-  documentChecksums: {}
+  selectedComponentId: null
 });
 
 function* openPreview(frame: Frame) {
@@ -68,7 +65,7 @@ function* openPreview(frame: Frame) {
 
 function readFile(uri) {
   return Promise.resolve({
-    content: fs.readFileSync(uri.substr("file://".length)),
+    content: fs.readFileSync(stripProtocol(uri)),
     mimeType: {
       ".svg": "image/svg+xml",
       ".png": "image/png",

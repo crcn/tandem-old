@@ -5,7 +5,8 @@ import { FrameLayersComponent } from "./pc";
 import { RootState, OpenFile } from "../../../../../../state";
 import {
   getFramesByDependencyUri,
-  getSyntheticDocumentByDependencyUri
+  getSyntheticDocumentByDependencyUri,
+  PAPERCLIP_DEFAULT_EXTENSIONS
 } from "paperclip";
 import { Dispatch } from "redux";
 
@@ -27,7 +28,7 @@ export const BaseLayersComponent = ({
   // only PC for now. Ideally this may also support images, and other visual documents.
   return (
     <div className="m-open-file-layers">
-      {ext === ".pc" ? (
+      {ext === PAPERCLIP_DEFAULT_EXTENSIONS[0] ? (
         <FrameLayersComponent
           selectedReferences={root.selectedNodeIds}
           hoveringNodeIds={root.hoveringNodeIds}

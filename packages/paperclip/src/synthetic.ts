@@ -227,6 +227,12 @@ export const getSyntheticDocumentByDependencyUri = memoize(
   }
 );
 
+export const getSyntheticContentNode = memoize((node: SyntheticVisibleNode, documentOrDocuments: SyntheticDocument | SyntheticDocument[]) => {
+  const documents = Array.isArray(documentOrDocuments) ? documentOrDocuments : [documentOrDocuments];
+  const document = getSyntheticVisibleNodeDocument(node.id, documents);
+  return document.children.find(contentNode => contentNode.id === node.id || getNestedTreeNodeById(node.id, contentNode));
+});
+
 export const getSyntheticDocumentDependencyUri = (
   document: SyntheticDocument,
   graph: DependencyGraph

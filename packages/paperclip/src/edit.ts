@@ -42,7 +42,8 @@ import {
   createPCOverride,
   PCOverridablePropertyName,
   PCVisibleNodeMetadataKey,
-  updatePCNodeMetadata
+  updatePCNodeMetadata,
+  createPCVariant
 } from "./dsl";
 import {
   SyntheticVisibleNode,
@@ -644,7 +645,6 @@ export const syncSyntheticDocuments = <TState extends PCEditorState>(updatedDocu
   return upsertFrames(state);
 };
 
-
 export const persistInsertNode = <TState extends PCEditorState>(
   newChild: PCVisibleNode | PCComponent,
   relative: SyntheticVisibleNode | SyntheticDocument,
@@ -699,6 +699,12 @@ export const persistInsertNode = <TState extends PCEditorState>(
   }
 
   return replaceDependencyGraphPCNode(parentSource, parentSource, state);
+};
+
+export const persistAddVariant = <TState extends PCEditorState>(contentNode: SyntheticVisibleNode, state: TState): TState => {
+  const component = getSyntheticSourceNode(contentNode, state.graph);
+  state = replaceDependencyGraphPCNode(appendChildNode(createPCVariant(), component), component, state);
+  return state;
 }
 
 export const persistAppendPCClips = <TState extends PCEditorState>(

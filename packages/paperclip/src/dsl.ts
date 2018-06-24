@@ -98,7 +98,7 @@ export type PCInclude = {
 } & PCBaseSourceNode<PCSourceTagNames.INCLUDE>;
 
 export type PCVariant = {
-  label: string;
+  label?: string;
   isDefault?: boolean;
 } & PCBaseSourceNode<PCSourceTagNames.VARIANT>;
 
@@ -452,6 +452,8 @@ export const getVisibleChildren = memoize(
 export const getOverrides = memoize(
   (node: PCNode) => node.children.filter(isPCOverride) as PCOverride[]
 );
+
+export const getPCVariants = memoize((component: PCComponent): PCVariant[] => component.children.filter(child => child.name === PCSourceTagNames.VARIANT) as PCVariant[]);
 
 export const getPCImportedChildrenSourceUris = (
   { id: nodeId }: PCNode,

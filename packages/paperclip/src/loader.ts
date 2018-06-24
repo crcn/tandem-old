@@ -68,6 +68,10 @@ const loadModule = async (
 ): Promise<PCModule> => {
   const content = await options.openFile(uri);
 
+  if (!content) {
+    return createPCModule();
+  }
+
   // TODO - support other extensions in the future like images
   if (/xml$/.test(uri)) {
     // TODO - transform XML to JSON

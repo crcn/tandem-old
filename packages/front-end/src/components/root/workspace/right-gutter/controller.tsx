@@ -30,14 +30,14 @@ export default compose(
   const selectedNodes = getSelectedNoded(root.selectedNodeIds, root.documents);
 
   const tabs = TAB_NAMES.map(tabName => {
-    return <RightGutterTab onClick={() => setTab(tabName)}>{tabName}</RightGutterTab>;
+    return <RightGutterTab key={tabName} onClick={() => setTab(tabName)}>{tabName}</RightGutterTab>;
   });
-  console.log(TAB_NAMES);
 
-  return <Base stylerProps={{
+  return <Base stylesProps={{
     dispatch,
     syntheticDocument,
     selectedNodes,
+    graph: root.graph,
     style: {
       display: currentTab === TAB_NAMES[0] ? "block": "none"
     }

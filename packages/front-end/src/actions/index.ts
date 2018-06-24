@@ -75,6 +75,7 @@ export const CANVAS_MOUSE_CLICKED = "CANVAS_MOUSE_CLICKED";
 export const CANVAS_WHEEL = "CANVAS_WHEEL";
 export const CANVAS_MOTION_RESTED = "CANVAS_MOTION_RESTED";
 export const CANVAS_DROPPED_ITEM = "CANVAS_DROPPED_ITEM";
+export const ADD_VARIANT_BUTTON_CLICKED = "ADD_VARIANT_BUTTON_CLICKED";
 export const FRAME_MODE_CHANGE_COMPLETE = "FRAME_MODE_CHANGE_COMPLETE";
 export const RESIZER_PATH_MOUSE_MOVED = "RESIZER_PATH_MOUSE_MOVED";
 export const RESIZER_PATH_MOUSE_STOPPED_MOVING =
@@ -438,6 +439,10 @@ export const fileNavigatorNewDirectoryClicked = (): Action => ({
 
 export const componentPickerBackgroundClick = (): Action => ({
   type: COMPONENT_PICKER_BACKGROUND_CLICK
+});
+
+export const addVariantButtonClicked = (): Action => ({
+  type: ADD_VARIANT_BUTTON_CLICKED
 });
 
 export const componentPickerItemClick = (
