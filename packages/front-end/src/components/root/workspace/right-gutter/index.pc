@@ -299,8 +299,21 @@
               "is": "45055e8e9",
               "name": "component-instance",
               "attributes": {},
-              "style": {},
-              "children": [],
+              "style": {
+                "display": "block"
+              },
+              "children": [
+                {
+                  "id": "89ef2c1413",
+                  "propertyName": "label",
+                  "targetIdPath": [
+                    "45055e8e8"
+                  ],
+                  "value": "",
+                  "name": "override",
+                  "children": []
+                }
+              ],
               "metadata": {
                 "bounds": {
                   "left": 107.7724061445283,
@@ -318,24 +331,11 @@
               "name": "component-instance",
               "attributes": {},
               "style": {
-                "display": "none"
+                "display": "block"
               },
               "children": [],
               "metadata": {},
               "label": "Properties"
-            },
-            {
-              "id": "76b155a0729336",
-              "variant": [],
-              "is": "76b155a0727421",
-              "name": "component-instance",
-              "attributes": {},
-              "style": {
-                "margin-top": "16px",
-                "display": "none"
-              },
-              "children": [],
-              "metadata": {}
             }
           ],
           "metadata": {
