@@ -4,6 +4,24 @@
   "version": "0.0.3",
   "children": [
     {
+      "id": "664248a05",
+      "variant": [],
+      "is": "5d7d4069129476",
+      "name": "component-instance",
+      "attributes": {},
+      "style": {},
+      "children": [],
+      "metadata": {
+        "bounds": {
+          "left": 204,
+          "top": 227,
+          "right": 320,
+          "bottom": 249.41000330706493
+        }
+      },
+      "label": "Tab"
+    },
+    {
       "label": "Right Gutter",
       "is": "div",
       "style": {
@@ -17,6 +35,21 @@
       "id": "8b8bbe2c724435",
       "name": "component",
       "children": [
+        {
+          "id": "3cc160c527",
+          "variant": [],
+          "is": "3cc160c526",
+          "name": "component-instance",
+          "attributes": {},
+          "style": {
+            "box-sizing": "border-box",
+            "display": "none",
+            "flex-direction": "column",
+            "max-height": "200px"
+          },
+          "children": [],
+          "metadata": {}
+        },
         {
           "id": "e83bcac1724101",
           "variant": [],
@@ -93,7 +126,7 @@
           "name": "element",
           "attributes": {},
           "style": {
-            "display": "none",
+            "display": "flex",
             "flex-shrink": "0"
           },
           "children": [
@@ -266,7 +299,9 @@
               "is": "9208d19593983",
               "name": "component-instance",
               "attributes": {},
-              "style": {},
+              "style": {
+                "display": "none"
+              },
               "children": [],
               "metadata": {},
               "label": "Properties"
@@ -471,6 +506,18 @@
                   },
                   "name": "override",
                   "children": []
+                },
+                {
+                  "id": "8228f5ca3",
+                  "propertyName": "style",
+                  "targetIdPath": [
+                    "1d51efba7"
+                  ],
+                  "value": {
+                    "background": "rgba(0,0,0,0.1)"
+                  },
+                  "name": "override",
+                  "children": []
                 }
               ],
               "metadata": {
@@ -518,43 +565,6 @@
       "controllers": [
         "./controller.tsx"
       ]
-    },
-    {
-      "label": "Right Gutter Tab",
-      "is": "div",
-      "style": {
-        "font-family": "Helvetica",
-        "color": "grey",
-        "text-transform": "uppercase",
-        "text-align": "center",
-        "width": "100%",
-        "padding": "8px",
-        "font-size": "9px"
-      },
-      "attributes": {},
-      "id": "5d7d4069129476",
-      "name": "component",
-      "children": [
-        {
-          "id": "5d7d4069129475",
-          "name": "text",
-          "label": "Text",
-          "value": "tab",
-          "style": {
-            "font-size": "0.9em"
-          },
-          "children": [],
-          "metadata": {}
-        }
-      ],
-      "metadata": {
-        "bounds": {
-          "left": 228,
-          "top": 183,
-          "right": 344,
-          "bottom": 205.41000330706493
-        }
-      }
     },
     {
       "label": "Table",
@@ -960,10 +970,10 @@
       ],
       "metadata": {
         "bounds": {
-          "left": -123,
-          "top": 158,
-          "right": 170.65422704948787,
-          "bottom": 358.7213373757045
+          "left": -243,
+          "top": -40,
+          "right": 50.65422704948787,
+          "bottom": 160.72133737570448
         }
       },
       "label": "TODO"
@@ -1140,6 +1150,166 @@
           "top": 384,
           "right": 368,
           "bottom": 608.6589618414574
+        }
+      }
+    },
+    {
+      "label": "Component Section",
+      "is": "div",
+      "style": {
+        "box-sizing": "border-box",
+        "display": "flex",
+        "flex-direction": "column"
+      },
+      "attributes": {},
+      "id": "3cc160c526",
+      "name": "component",
+      "children": [
+        {
+          "id": "3cc160c519",
+          "label": "Tabs",
+          "is": "div",
+          "name": "element",
+          "attributes": {},
+          "style": {
+            "box-sizing": "border-box",
+            "display": "flex",
+            "flex-shrink": "0"
+          },
+          "children": [
+            {
+              "id": "3cc160c520",
+              "variant": [],
+              "is": "5d7d4069129476",
+              "name": "component-instance",
+              "attributes": {},
+              "style": {
+                "font-family": "Helvetica",
+                "color": "grey",
+                "text-transform": "uppercase",
+                "text-align": "center",
+                "width": "100%",
+                "padding": "8px",
+                "font-size": "9px",
+                "box-sizing": "border-box",
+                "background": "rgba(207, 207, 207, 1)"
+              },
+              "children": [
+                {
+                  "id": "3cc160c521",
+                  "propertyName": "text",
+                  "targetIdPath": [
+                    "5d7d4069129475"
+                  ],
+                  "value": "variants",
+                  "name": "override",
+                  "children": []
+                }
+              ],
+              "metadata": {
+                "bounds": {
+                  "left": 228,
+                  "top": 183,
+                  "right": 344,
+                  "bottom": 205.41000330706493
+                }
+              }
+            },
+            {
+              "id": "3cc160c522",
+              "variant": [],
+              "is": "5d7d4069129476",
+              "name": "component-instance",
+              "attributes": {},
+              "style": {
+                "font-family": "Helvetica",
+                "text-transform": "uppercase",
+                "text-align": "center",
+                "width": "100%",
+                "padding": "8px",
+                "font-size": "9px",
+                "box-sizing": "border-box",
+                "background": "rgba(227, 227, 227, 1)"
+              },
+              "children": [
+                {
+                  "id": "3cc160c523",
+                  "propertyName": "text",
+                  "targetIdPath": [
+                    "5d7d4069129475"
+                  ],
+                  "value": "Behavior",
+                  "name": "override",
+                  "children": []
+                }
+              ],
+              "metadata": {
+                "bounds": {
+                  "left": 228,
+                  "top": 183,
+                  "right": 344,
+                  "bottom": 205.41000330706493
+                }
+              }
+            }
+          ],
+          "metadata": {}
+        },
+        {
+          "id": "3cc160c524",
+          "label": "Content",
+          "is": "div",
+          "name": "element",
+          "attributes": {},
+          "style": {
+            "box-sizing": "border-box",
+            "display": "block",
+            "height": "100%",
+            "background": "rgba(207, 207, 207, 1)",
+            "padding-left": "10px",
+            "padding-top": "10px",
+            "padding-right": "10px",
+            "padding-bottom": "10px",
+            "color": "rgba(116, 116, 116, 1)",
+            "font-family": "Helvetica"
+          },
+          "children": [
+            {
+              "id": "3cc160c525",
+              "name": "text",
+              "label": "Text",
+              "value": "Click to edit",
+              "style": {},
+              "children": [],
+              "metadata": {}
+            },
+            {
+              "id": "3cc160c531",
+              "variant": [],
+              "is": "e83bcac1717377",
+              "name": "component-instance",
+              "attributes": {},
+              "style": {},
+              "children": [],
+              "metadata": {
+                "bounds": {
+                  "left": 430,
+                  "top": 153,
+                  "right": 634,
+                  "bottom": 283.0639248613311
+                }
+              }
+            }
+          ],
+          "metadata": {}
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": -505,
+          "top": 293,
+          "right": -272.77308501458367,
+          "bottom": 509.17497605965696
         }
       }
     }

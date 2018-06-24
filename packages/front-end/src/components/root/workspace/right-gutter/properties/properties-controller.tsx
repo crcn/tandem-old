@@ -20,5 +20,5 @@ export default compose(pure, Base => props => {
     section = <ElementProperties {...props} />;
   }
 
-  return <Base>{section}</Base>;
+  return <Base {...props}>{section}</Base>;
 });

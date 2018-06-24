@@ -1,0 +1,46 @@
+{
+  "id": "664248a04",
+  "name": "module",
+  "version": "0.0.3",
+  "children": [
+    {
+      "label": "Right Gutter Tab",
+      "is": "div",
+      "style": {
+        "font-family": "Helvetica",
+        "color": "grey",
+        "text-transform": "uppercase",
+        "text-align": "center",
+        "width": "100%",
+        "padding": "8px",
+        "font-size": "9px",
+        "cursor": "pointer"
+      },
+      "attributes": {},
+      "id": "5d7d4069129476",
+      "name": "component",
+      "children": [
+        {
+          "id": "5d7d4069129475",
+          "name": "text",
+          "label": "Text",
+          "value": "tab",
+          "style": {
+            "font-size": "0.9em"
+          },
+          "children": [],
+          "metadata": {}
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": 454,
+          "top": 294,
+          "right": 570,
+          "bottom": 316.4100033070649
+        }
+      }
+    }
+  ],
+  "metadata": {}
+}

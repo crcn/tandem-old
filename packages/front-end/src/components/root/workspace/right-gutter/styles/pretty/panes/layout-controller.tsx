@@ -26,12 +26,12 @@ export const POSITION_MENU_OPTIONS: DropdownMenuOption[] = [
   "fixed"
 ].map(dropdownMenuOptionFromValue);
 
-const FLEX_WRAP_OPTIONS: DropdownMenuOption[] = [undefined, "nowrap"].map(dropdownMenuOptionFromValue);
-const FLEX_DIRECTION_OPTIONS: DropdownMenuOption[] = [undefined, "row", "column"].map(dropdownMenuOptionFromValue);
-const JUSTIFY_CONTENT_OPTIONS: DropdownMenuOption[] = [undefined, "flex-start"].map(dropdownMenuOptionFromValue);
-const ALIGN_ITEMS_OPTIONS: DropdownMenuOption[] = [undefined, "flex-start"].map(dropdownMenuOptionFromValue);
-const ALIGN_CONTENT_OPTIONS: DropdownMenuOption[] = [undefined, "flex-start"].map(dropdownMenuOptionFromValue);
-const ALIGN_SELF_OPTIONS: DropdownMenuOption[] = [undefined, "auto", "flex-start"].map(dropdownMenuOptionFromValue);
+const FLEX_WRAP_OPTIONS: DropdownMenuOption[] = [undefined, "nowrap", "wrap", "wrap-reverse"].map(dropdownMenuOptionFromValue);
+const FLEX_DIRECTION_OPTIONS: DropdownMenuOption[] = [undefined, "row", "row-reverse", "column", "column-reverse"].map(dropdownMenuOptionFromValue);
+const JUSTIFY_CONTENT_OPTIONS: DropdownMenuOption[] = [undefined, "flex-start", "flex-end", "center", "space-between", "space-around", "space-evenly"].map(dropdownMenuOptionFromValue);
+const ALIGN_ITEMS_OPTIONS: DropdownMenuOption[] = [undefined, "flex-start", "flex-end", "center", "stretch", "baseline"].map(dropdownMenuOptionFromValue);
+const ALIGN_CONTENT_OPTIONS: DropdownMenuOption[] = [undefined, "flex-start", "flex-end", "center", "space-between", "space-around", "stretch"].map(dropdownMenuOptionFromValue);
+const ALIGN_SELF_OPTIONS: DropdownMenuOption[] = [undefined, "flex-start", "flex-end", "center", "baseline", "stretch"].map(dropdownMenuOptionFromValue);
 
 export type LayoutControllerOuterProps = {
   selectedNodes: SyntheticVisibleNode[];

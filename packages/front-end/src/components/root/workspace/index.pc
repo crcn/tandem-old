@@ -76,7 +76,22 @@
               "name": "component-instance",
               "attributes": {},
               "style": {},
-              "children": [],
+              "children": [
+                {
+                  "id": "5dee72434",
+                  "propertyName": "style",
+                  "targetIdPath": [
+                    "5d6bd010465269",
+                    "483373f987275",
+                    "fde5849e307480"
+                  ],
+                  "value": {
+                    "color": "rgba(108, 108, 108, 1)"
+                  },
+                  "name": "override",
+                  "children": []
+                }
+              ],
               "metadata": {},
               "label": "editor windows"
             }

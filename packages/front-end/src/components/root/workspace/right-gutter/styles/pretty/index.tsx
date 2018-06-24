@@ -1,5 +1,10 @@
 import * as React from "react";
-import { compose, pure, withHandlers } from "recompose";
+import { compose, pure } from "recompose";
+import { SyntheticNode } from "paperclip";
+
+export type PrettyPaneOuterProps = {
+  syntheticNodes: SyntheticNode[];
+}
 
 export default compose(pure, Base => props => {
   return (
@@ -10,6 +15,7 @@ export default compose(pure, Base => props => {
       typographyPaneProps={props}
       opacityPaneProps={props}
       backgroundsPaneProps={props}
+      spacingPaneProps={props}
     />
   );
 });

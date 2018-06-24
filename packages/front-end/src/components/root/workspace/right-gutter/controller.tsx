@@ -1,7 +1,8 @@
 import * as React from "react";
-import { compose, pure, withHandlers } from "recompose";
+import { compose, pure, withHandlers, withState } from "recompose";
 import { getSyntheticNodeById, SyntheticDocument, getSyntheticVisibleNodeDocument } from "paperclip";
 import { memoize } from "tandem-common";
+const { RightGutterTab } = require("./tab.pc");
 
 const getSelectedNoded = memoize(
   (nodeIds: string[], documents: SyntheticDocument[]) => {
@@ -9,7 +10,17 @@ const getSelectedNoded = memoize(
   }
 );
 
-export default compose(pure, Base => ({ root, dispatch }) => {
+const TAB_NAMES = ["styles", "properties"];
+
+export default compose(
+  pure,
+  withState("currentTab", "setTab", TAB_NAMES[0]),
+  withHandlers({
+    onTabClick: ({ setTab }) => (tabName) => {
+      setTab(tabName);
+    }
+  }),
+  Base => ({ root, dispatch, setTab, currentTab }) => {
 
   if (!root.selectedNodeIds.length) {
     return null;
@@ -18,14 +29,28 @@ export default compose(pure, Base => ({ root, dispatch }) => {
   const syntheticDocument = getSyntheticVisibleNodeDocument(root.selectedNodeIds[0], root.documents);
   const selectedNodes = getSelectedNoded(root.selectedNodeIds, root.documents);
 
+  const tabs = TAB_NAMES.map(tabName => {
+    return <RightGutterTab onClick={() => setTab(tabName)}>{tabName}</RightGutterTab>;
+  });
+  console.log(TAB_NAMES);
+
   return <Base stylerProps={{
     dispatch,
     syntheticDocument,
-    selectedNodes
+    selectedNodes,
+    style: {
+      display: currentTab === TAB_NAMES[0] ? "block": "none"
+    }
+  }}
+  tabsProps={{
+    children: tabs
   }}
   propertiesProps={{
     dispatch,
     syntheticDocument,
-    selectedNodes
+    selectedNodes,
+    style: {
+      display: currentTab === TAB_NAMES[1] ? "block": "none"
+    }
   }} />;
 });
