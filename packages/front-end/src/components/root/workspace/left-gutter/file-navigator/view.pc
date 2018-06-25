@@ -33,7 +33,7 @@
     },
     {
       "id": "7c1c804876665",
-      "variant": [],
+      "variant": null,
       "is": "b34e7ef429680",
       "name": "component-instance",
       "attributes": {},

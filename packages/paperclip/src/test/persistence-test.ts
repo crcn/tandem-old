@@ -26,8 +26,7 @@ describe(__filename + "#", () => {
     let state: PCEditorState = {
       graph,
       documents: [],
-      frames: [],
-      documentChecksums: {}
+      frames: []
     };
 
     // state = evaluateDependency("0", state);
@@ -129,6 +128,7 @@ describe(__filename + "#", () => {
             color: "red"
           },
           instanceChild,
+          null,
           state
         );
         const [newDocument] = state.documents;
@@ -156,6 +156,7 @@ describe(__filename + "#", () => {
             color: "red"
           },
           instance,
+          null,
           state
         );
         const [newDocument] = state.documents;

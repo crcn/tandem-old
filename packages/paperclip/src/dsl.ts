@@ -73,6 +73,9 @@ export type PCComponent = {
   label?: string;
   style: KeyValue<any>;
 
+  // variant of parent
+  variant?: string[];
+
   /**
    * Controller source files, can be any supported language, filtered by compile target.
    * Example: ["./component.tsx", "./component.vue.ts", "./component.php"]
@@ -167,7 +170,7 @@ export type PCBaseElement<TName extends PCSourceTagNames> = {
 export type PCElement = PCBaseElement<PCSourceTagNames.ELEMENT>;
 
 export type PCComponentInstanceElement = {
-  variant: string[];
+  variant?: string[];
 } & PCBaseElement<PCSourceTagNames.COMPONENT_INSTANCE>;
 
 export type PCTextNode = {
@@ -269,7 +272,7 @@ export const createPCComponentInstance = (
   metadata?: KeyValue<any>
 ): PCComponentInstanceElement => ({
   id: generateUID(),
-  variant: variant || [],
+  variant: variant,
   is: is || "div",
   name: PCSourceTagNames.COMPONENT_INSTANCE,
   attributes: attributes || {},
@@ -336,11 +339,15 @@ export const createPCDependency = (
  * TYPE UTILS
  *-----------------------------------------*/
 
+export const isValueOverride = (node: PCOverride): node is PCBaseValueOverride<any, any> => {
+  return node.propertyName !== PCOverridablePropertyName.CHILDREN;
+}
+
 export const isVisibleNode = (node: PCNode) =>
   node.name === PCSourceTagNames.ELEMENT ||
   node.name === PCSourceTagNames.TEXT ||
   isPCComponentInstance(node);
-export const isPCOverride = (node: PCNode) =>
+export const isPCOverride = (node: PCNode): node is PCOverride =>
   node.name === PCSourceTagNames.OVERRIDE;
 export const isComponent = (node: PCNode): node is PCComponent =>
   node.name === PCSourceTagNames.COMPONENT;
@@ -453,7 +460,7 @@ export const getOverrides = memoize(
   (node: PCNode) => node.children.filter(isPCOverride) as PCOverride[]
 );
 
-export const getPCVariants = memoize((component: PCComponent): PCVariant[] => component.children.filter(child => child.name === PCSourceTagNames.VARIANT) as PCVariant[]);
+export const getPCVariants = memoize((component: PCComponent | PCVisibleNode): PCVariant[] => component.children.filter(child => child.name === PCSourceTagNames.VARIANT) as PCVariant[]);
 
 export const getPCImportedChildrenSourceUris = (
   { id: nodeId }: PCNode,
@@ -688,6 +695,7 @@ export const getOverrideMap = memoize((overrides: PCOverride[]) => {
     const targetIdPath = [...override.targetIdPath];
 
     const targetId = targetIdPath.pop();
+
 
     for (const nodeId of targetIdPath) {
       if (!targetOverrides[nodeId]) {

@@ -21,7 +21,8 @@ import {
   SyntheticVisibleNode,
   PCNodeClip,
   Frame,
-  PCComponent
+  PCComponent,
+  PCVariant
 } from "paperclip";
 import { RegisteredComponent } from "..";
 import { ClientOffset } from "react-dnd";
@@ -76,6 +77,12 @@ export const CANVAS_WHEEL = "CANVAS_WHEEL";
 export const CANVAS_MOTION_RESTED = "CANVAS_MOTION_RESTED";
 export const CANVAS_DROPPED_ITEM = "CANVAS_DROPPED_ITEM";
 export const ADD_VARIANT_BUTTON_CLICKED = "ADD_VARIANT_BUTTON_CLICKED";
+export const REMOVE_VARIANT_BUTTON_CLICKED = "REMOVE_VARIANT_BUTTON_CLICKED";
+export const VARIANT_DEFAULT_SWITCH_CLICKED = "VARIANT_DEFAULT_SWITCH_CLICKED";
+export const VARIANT_LABEL_CHANGED = "VARIANT_LABEL_CHANGED";
+export const VARIANT_CLICKED = "VARIANT_CLICKED";
+export const COMPONENT_INSTANCE_VARIANT_TOGGLED = "COMPONENT_INSTANCE_VARIANT_TOGGLED";
+export const INSTANCE_VARIANT_RESET_CLICKED = "INSTANCE_VARIANT_RESET_CLICKED";
 export const FRAME_MODE_CHANGE_COMPLETE = "FRAME_MODE_CHANGE_COMPLETE";
 export const RESIZER_PATH_MOUSE_MOVED = "RESIZER_PATH_MOUSE_MOVED";
 export const RESIZER_PATH_MOUSE_STOPPED_MOVING =
@@ -282,8 +289,8 @@ export type ComponentVariantNameClicked = {
   name: string;
 } & Action;
 
-export type ComponentVariantRemoved = {
-  name: string;
+export type InstanceVariantToggled = {
+  variant: PCVariant;
 } & Action;
 
 export type ComponentVariantNameDefaultToggleClick = {
@@ -371,6 +378,19 @@ export type CanvasDroppedItem = {
   point: Point;
 } & Action;
 
+export type VariantDefaultSwitchClicked = {
+  variant: PCVariant;
+} & Action;
+
+export type VariantClicked = {
+  variant: PCVariant;
+} & Action;
+
+export type VariantLabelChanged = {
+  variant: PCVariant;
+  newLabel?: string;
+} & Action;
+
 export type CanvasDraggingOver = {
   item: any;
   offset: Point;
@@ -443,6 +463,35 @@ export const componentPickerBackgroundClick = (): Action => ({
 
 export const addVariantButtonClicked = (): Action => ({
   type: ADD_VARIANT_BUTTON_CLICKED
+});
+
+export const removeVariantButtonClicked = (): Action => ({
+  type: REMOVE_VARIANT_BUTTON_CLICKED
+});
+
+export const variantDefaultSwitchClicked = (variant: PCVariant): VariantDefaultSwitchClicked => ({
+  variant,
+  type: VARIANT_DEFAULT_SWITCH_CLICKED
+});
+
+export const instanceVariantToggled = (variant: PCVariant): InstanceVariantToggled => ({
+  variant,
+  type: COMPONENT_INSTANCE_VARIANT_TOGGLED
+});
+
+export const instanceVariantResetClicked = (): Action => ({
+  type: INSTANCE_VARIANT_RESET_CLICKED
+});
+
+export const variantLabelChanged = (variant: PCVariant, newLabel: string): VariantLabelChanged => ({
+  variant,
+  newLabel,
+  type: VARIANT_LABEL_CHANGED
+});
+
+export const variantClicked = (variant: PCVariant): VariantClicked => ({
+  variant,
+  type: VARIANT_CLICKED
 });
 
 export const componentPickerItemClick = (
@@ -567,13 +616,6 @@ export const componentComponentVariantNameClicked = (
 ): ComponentVariantNameClicked => ({
   name,
   type: COMPONENT_VARIANT_NAME_CLICKED
-});
-
-export const componentVariantRemoved = (
-  name: string
-): ComponentVariantRemoved => ({
-  name,
-  type: COMPONENT_VARIANT_REMOVED
 });
 
 export const componentVariantNameDefaultToggleClick = (

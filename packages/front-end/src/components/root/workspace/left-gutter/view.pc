@@ -13,7 +13,7 @@
       "children": [
         {
           "id": "317401b1484196",
-          "variant": [],
+          "variant": null,
           "is": "b34e7ef42482727",
           "name": "component-instance",
           "attributes": {},
@@ -30,7 +30,7 @@
         },
         {
           "id": "317401b1702183",
-          "variant": [],
+          "variant": null,
           "is": "317401b1511417",
           "name": "component-instance",
           "attributes": {},

@@ -548,7 +548,7 @@
         "version": "1.1",
         "x": "0px",
         "y": "0px",
-        "viewBox": "NaN NaN NaN 125"
+        "viewBox": "0 0 0 0 125"
       },
       "id": "b0a6d2a231192",
       "name": "component",
@@ -1851,6 +1851,109 @@
           "top": 2152,
           "right": 597,
           "bottom": 2452
+        }
+      }
+    },
+    {
+      "label": "Reset Icon",
+      "is": "svg",
+      "style": {},
+      "attributes": {
+        "xmlns": "http://www.w3.org/2000/svg",
+        "xmlns:xlink": "http://www.w3.org/1999/xlink",
+        "viewBox": "0 0 22 27.5",
+        "version": "1.1",
+        "x": "0px",
+        "y": "0px"
+      },
+      "id": "82eac94a20",
+      "name": "component",
+      "children": [
+        {
+          "id": "82eac94a13",
+          "is": "title",
+          "name": "element",
+          "attributes": {},
+          "style": {},
+          "children": [
+            {
+              "id": "82eac94a14",
+              "name": "text",
+              "label": "reset",
+              "value": "reset",
+              "style": {},
+              "children": [],
+              "metadata": {}
+            }
+          ],
+          "metadata": {}
+        },
+        {
+          "id": "82eac94a15",
+          "is": "desc",
+          "name": "element",
+          "attributes": {},
+          "style": {},
+          "children": [
+            {
+              "id": "82eac94a16",
+              "name": "text",
+              "label": "Created with Sketch.",
+              "value": "Created with Sketch.",
+              "style": {},
+              "children": [],
+              "metadata": {}
+            }
+          ],
+          "metadata": {}
+        },
+        {
+          "id": "82eac94a17",
+          "is": "g",
+          "name": "element",
+          "attributes": {
+            "stroke": "none",
+            "stroke-width": "1",
+            "fill": "none",
+            "fill-rule": "evenodd"
+          },
+          "style": {},
+          "children": [
+            {
+              "id": "82eac94a18",
+              "is": "g",
+              "name": "element",
+              "attributes": {
+                "fill": "#000000"
+              },
+              "style": {
+                "background": "currentColor"
+              },
+              "children": [
+                {
+                  "id": "82eac94a19",
+                  "is": "path",
+                  "name": "element",
+                  "attributes": {
+                    "d": "M12.3535,3 C7.9355,3 4.3535,6.582 4.3535,11 C4.3535,11.487 4.4015,11.962 4.4855,12.425 L1.7075,9.646 L0.9995,10.354 L4.9995,14.354 L5.0025,14.351 L5.3535,14.703 L5.7045,14.351 L5.7075,14.354 L9.7075,10.354 L8.9995,9.646 L5.6445,13.002 C5.4515,12.356 5.3535,11.685 5.3535,11 C5.3535,7.14 8.4935,4 12.3535,4 C16.2135,4 19.3535,7.14 19.3535,11 C19.3535,14.86 16.2135,18 12.3535,18 L12.3535,19 C16.7715,19 20.3535,15.418 20.3535,11 C20.3535,6.582 16.7715,3 12.3535,3"
+                  },
+                  "style": {},
+                  "children": [],
+                  "metadata": {}
+                }
+              ],
+              "metadata": {}
+            }
+          ],
+          "metadata": {}
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": -2109,
+          "top": 1121,
+          "right": -1709,
+          "bottom": 1421
         }
       }
     }

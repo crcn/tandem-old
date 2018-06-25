@@ -7,7 +7,11 @@ export default compose(
     dispatch,
     syntheticDocument,
     selectedNodes,
+    selectedVariant,
     graph, ...rest }) => {
-    return <Base variantsProps={{dispatch, syntheticDocument, selectedNodes, graph}} prettyProps={{dispatch, syntheticDocument, selectedNodes, graph}} {...rest} />
+    return <Base
+      variantsProps={{dispatch, syntheticDocument, selectedNodes, selectedVariant, graph}}
+      instanceVariantProps={{dispatch, syntheticDocument, selectedNodes, graph}}
+      prettyProps={{dispatch, syntheticDocument, selectedNodes, graph}} {...rest} />
   }
 );

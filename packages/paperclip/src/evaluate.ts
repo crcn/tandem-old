@@ -8,7 +8,8 @@ import {
   createSytheticDocument,
   SyntheticSource,
   SyntheticTextNode,
-  createSyntheticTextNode
+  createSyntheticTextNode,
+  createSyntheticInstanceElement
 } from "./synthetic";
 import {
   PCModule,
@@ -29,15 +30,19 @@ import {
   getOverrides,
   PCOverride,
   ComponentRef,
-  getPCNodeDependency
+  getPCNodeDependency,
+  getPCVariants,
+  isPCComponentInstance
 } from "./dsl";
 import {
   KeyValue,
   memoize,
   stripProtocol,
   addProtocol,
-  FILE_PROTOCOL
+  FILE_PROTOCOL,
+  EMPTY_ARRAY
 } from "tandem-common";
+import { uniq } from "lodash";
 
 type EvalOverride = {
   [PCOverridablePropertyName.ATTRIBUTES]: KeyValue<any>;
@@ -46,6 +51,7 @@ type EvalOverride = {
   [PCOverridablePropertyName.VARIANT]: string[];
   [PCOverridablePropertyName.TEXT]: string;
   [PCOverridablePropertyName.LABEL]: string;
+  [PCOverridablePropertyName.VARIANT]: string[];
 };
 
 type EvalOverrides = {
@@ -80,7 +86,7 @@ export const evaluatePCModule = memoize(
 );
 
 export const evaluateLightPCVisibleNode = (node: PCVisibleNode) => {
-  return evaluateVisibleNode(node, "", false, false, {}, {}, "");
+  return evaluateVisibleNode(node, "", false, false, EMPTY_ARRAY, {}, {}, "");
 };
 
 const wrapModuleInDependencyGraph = (module: PCModule): DependencyGraph => ({
@@ -103,6 +109,7 @@ const evaluateContentNode = memoize(
         null,
         false,
         true,
+        [],
         overrides,
         componentMap,
         sourceUri
@@ -113,6 +120,7 @@ const evaluateContentNode = memoize(
         null,
         false,
         false,
+        [],
         overrides,
         componentMap,
         sourceUri
@@ -130,6 +138,7 @@ const evaluateComponentInstance = (
   instancePath: string,
   immutable: boolean,
   isCreatedFromComponent: boolean,
+  variantIds: string[],
   overrides: EvalOverrides,
   componentMap: ComponentRefs,
   sourceUri: string
@@ -137,14 +146,23 @@ const evaluateComponentInstance = (
   const selfPath = appendPath(instancePath, instance.id);
   const isComponentInstance =
     instance.name === PCSourceTagNames.COMPONENT_INSTANCE;
+
+  const selfVariantIds = [...getPCVariants(node).filter(node => node.isDefault).map(node => node.id)];
+
+  if (overrides[selfPath] && overrides[selfPath][PCOverridablePropertyName.VARIANT]) {
+    variantIds = uniq([...overrides[selfPath][PCOverridablePropertyName.VARIANT], ...variantIds]);
+  } else {
+    variantIds = uniq([...selfVariantIds, ...variantIds]);
+  }
+
   const childrenAreImmutable = immutable || node !== instance;
   registerOverrides(
     node,
-    instance,
     instancePath,
     selfPath,
     childrenAreImmutable,
     true,
+    variantIds,
     overrides,
     componentMap,
     sourceUri
@@ -159,6 +177,7 @@ const evaluateComponentInstance = (
       instancePath,
       immutable,
       true,
+      variantIds,
       overrides,
       componentMap,
       ref.sourceUri
@@ -167,7 +186,7 @@ const evaluateComponentInstance = (
 
   const children = overrides[selfPath] && overrides[selfPath].children;
 
-  return createSyntheticElement(
+  return createSyntheticInstanceElement(
     node.is,
     createSyntheticSource(instance),
     evaluateOverride(
@@ -176,6 +195,7 @@ const evaluateComponentInstance = (
       PCOverridablePropertyName.STYLE,
       overrides
     ),
+    variantIds,
     evaluateAttributes(node, selfPath, overrides, sourceUri),
     children,
     evaluateLabel(instance, selfPath, overrides),
@@ -207,6 +227,7 @@ const evaluateVisibleNode = (
   instancePath: string,
   immutable: boolean,
   isCreatedFromComponent: boolean,
+  variantIds: string[],
   overrides: EvalOverrides,
   componentMap: ComponentRefs,
   sourceUri: string
@@ -217,6 +238,7 @@ const evaluateVisibleNode = (
       instancePath,
       immutable,
       isCreatedFromComponent,
+      variantIds,
       overrides,
       componentMap,
       sourceUri
@@ -229,6 +251,7 @@ const evaluateVisibleNode = (
       instancePath,
       immutable,
       isCreatedFromComponent,
+      variantIds,
       overrides,
       componentMap,
       sourceUri
@@ -249,6 +272,7 @@ const evaluateElement = (
   instancePath: string,
   immutable: boolean,
   isCreatedFromComponent: boolean,
+  variantIds: string[],
   overrides: EvalOverrides,
   componentMap: ComponentRefs,
   sourceUri: string
@@ -269,6 +293,7 @@ const evaluateElement = (
       instancePath,
       immutable,
       isCreatedFromComponent,
+      variantIds,
       overrides,
       componentMap,
       sourceUri
@@ -344,6 +369,7 @@ const evaluateChildren = (
   instancePath: string,
   immutable: boolean,
   isCreatedFromComponent: boolean,
+  variantIds: string[],
   overrides: EvalOverrides,
   componentMap: ComponentRefs,
   sourceUri: string
@@ -360,6 +386,7 @@ const evaluateChildren = (
       instancePath,
       immutable,
       isCreatedFromComponent,
+      variantIds,
       overrides,
       componentMap,
       sourceUri
@@ -395,15 +422,15 @@ const createSyntheticSource = memoize((node: PCNode): SyntheticSource => ({
 }));
 
 const appendPath = (instancePath: string, id: string) =>
-  instancePath && id ? instancePath + " " + id : id;
+  instancePath && id ? instancePath + " " + id : (id || instancePath);
 
 const registerOverrides = (
-  node: PCElement | PCComponent | PCComponentInstanceElement,
-  instance: PCComponent | PCComponentInstanceElement,
+  node: PCComponent | PCComponentInstanceElement,
   instancePath: string,
   selfPath: string,
   immutable: boolean,
   isCreatedFromComponent: boolean,
+  variantIds: string[],
   overrides: EvalOverrides,
   componentMap: ComponentRefs,
   sourceUri: string
@@ -412,6 +439,10 @@ const registerOverrides = (
 
   for (let i = 0, { length } = overrideNodes; i < length; i++) {
     const overrideNode = overrideNodes[i];
+    if (overrideNode.variantId && variantIds.indexOf(overrideNode.variantId) === -1) {
+      continue;
+    }
+
     const childPath =
       node.name === PCSourceTagNames.COMPONENT ? selfPath : instancePath;
 
@@ -429,6 +460,7 @@ const registerOverrides = (
             childPath,
             immutable,
             isCreatedFromComponent,
+            [],
             overrides,
             componentMap,
             sourceUri
@@ -449,6 +481,26 @@ const registerOverrides = (
   }
 
   if (Object.keys(node.style).length) {
+    registerOverride(
+      null,
+      PCOverridablePropertyName.STYLE,
+      node.style,
+      selfPath,
+      overrides
+    );
+  }
+
+  if (node.variant) {
+    registerOverride(
+      null,
+      PCOverridablePropertyName.VARIANT,
+      node.variant,
+      selfPath,
+      overrides
+    );
+  }
+
+  if (Object.keys(node).length) {
     registerOverride(
       null,
       PCOverridablePropertyName.STYLE,
@@ -484,6 +536,7 @@ const registerOverrides = (
         childPath,
         immutable,
         isCreatedFromComponent,
+        [],
         overrides,
         componentMap,
         sourceUri

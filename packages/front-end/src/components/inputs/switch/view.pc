@@ -1,0 +1,105 @@
+{
+  "id": "eb4cfb9719",
+  "name": "module",
+  "version": "0.0.3",
+  "children": [
+    {
+      "label": "Switch",
+      "is": "div",
+      "style": {
+        "box-sizing": "border-box",
+        "cursor": "pointer"
+      },
+      "attributes": {},
+      "id": "6f30576e8",
+      "name": "component",
+      "children": [
+        {
+          "id": "6f30576e6",
+          "label": "track",
+          "is": "div",
+          "name": "element",
+          "attributes": {},
+          "style": {
+            "box-sizing": "border-box",
+            "width": "20px",
+            "height": "10px",
+            "border-radius": "10px",
+            "background": "rgba(200, 200, 200, 1)",
+            "position": "relative"
+          },
+          "children": [
+            {
+              "id": "6f30576e7",
+              "label": "dot",
+              "is": "div",
+              "name": "element",
+              "attributes": {},
+              "style": {
+                "box-sizing": "border-box",
+                "width": "10px",
+                "height": "10px",
+                "background": "#333",
+                "border-radius": "10px",
+                "position": "relative",
+                "opacity": "0.4",
+                "top": "r"
+              },
+              "children": [],
+              "metadata": {}
+            }
+          ],
+          "metadata": {}
+        },
+        {
+          "id": "246c305d8",
+          "name": "variant",
+          "label": "on",
+          "isDefault": false,
+          "children": [],
+          "metadata": {}
+        },
+        {
+          "id": "456e01df3",
+          "variantId": "246c305d8",
+          "propertyName": "style",
+          "targetIdPath": [
+            "6f30576e6"
+          ],
+          "value": {
+            "background": "rgba(135, 173, 227, 1)",
+            "position": "relative"
+          },
+          "name": "override",
+          "children": []
+        },
+        {
+          "id": "40d03f593",
+          "variantId": "246c305d8",
+          "propertyName": "style",
+          "targetIdPath": [
+            "6f30576e7"
+          ],
+          "value": {
+            "left": "100%",
+            "transform": "translateX(-100%)"
+          },
+          "name": "override",
+          "children": []
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": 318,
+          "top": 271,
+          "right": 418,
+          "bottom": 371
+        }
+      },
+      "controllers": [
+        "./controller.tsx"
+      ]
+    }
+  ],
+  "metadata": {}
+}

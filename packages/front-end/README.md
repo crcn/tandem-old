@@ -1,13 +1,12 @@
 IMMEDIATE:
 
-* switch component
 * variants
-  * select variants
-  * toggle variants
-  * remove variants
-  * ability to change variant label
-  * define variant for component instance
+  * toggling component variant instance
+  * reset _individual_ variants (must be key value)
+* fix color picker (it's off)
+* ability to load fonts
 * variables
+  * store in pc config
 * measurement input UI
 * make UI consistent
 * file navigator refactor
@@ -17,7 +16,9 @@ IMMEDIATE:
 * context menu
 * drop shadows input
 * monaco editor in app
-* preview in ap
+* preview in app
+  * "preview mode" banner
+  * "click to interact" button
 * component controller UI
 
 
@@ -27,12 +28,17 @@ UX PROBLEMS:
 
 BUGS:
 
+* prohibit immutable elements from being deleted
 * dropdown must close when another opens
 * inherit typography
 
 OPTIMIZATIONS:
 
 * maintain history on editor state. (used for syncing)
+
+SAFETY:
+
+* prevent component instances from being deleted
 
 UX BUGS:
 
@@ -46,5 +52,6 @@ UX ENHANCEMENTS:
 * breadcrumbs
 * ability to hide left gutter
 * component HUD should have native element options
+* screenshot of components
 
 

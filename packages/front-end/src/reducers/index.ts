@@ -77,15 +77,8 @@ import {
   QUICK_SEARCH_ITEM_CLICKED,
   QuickSearchItemClicked,
   QUICK_SEARCH_BACKGROUND_CLICK,
-  NEW_VARIANT_NAME_ENTERED,
-  COMPONENT_VARIANT_NAME_DEFAULT_TOGGLE_CLICK,
-  ComponentVariantNameDefaultToggleClick,
-  COMPONENT_VARIANT_REMOVED,
-  COMPONENT_VARIANT_NAME_CHANGED,
-  ComponentVariantNameChanged,
   COMPONENT_VARIANT_NAME_CLICKED,
   ComponentVariantNameClicked,
-  ELEMENT_VARIANT_TOGGLED,
   EDITOR_TAB_CLICKED,
   EditorTabClicked,
   CanvasWheel,
@@ -116,7 +109,16 @@ import {
   ComponentPickerItemClick,
   COMPONENT_PICKER_ITEM_CLICK,
   SHORTCUT_C_KEY_DOWN,
-  ADD_VARIANT_BUTTON_CLICKED
+  ADD_VARIANT_BUTTON_CLICKED,
+  VARIANT_DEFAULT_SWITCH_CLICKED,
+  VariantDefaultSwitchClicked,
+  VariantLabelChanged,
+  VARIANT_LABEL_CHANGED,
+  VARIANT_CLICKED,
+  VariantClicked,
+  REMOVE_VARIANT_BUTTON_CLICKED,
+  COMPONENT_INSTANCE_VARIANT_TOGGLED,
+  INSTANCE_VARIANT_RESET_CLICKED
 } from "../actions";
 import {
   queueOpenFile,
@@ -153,7 +155,6 @@ import {
   setInsertFile,
   undo,
   redo,
-  openSyntheticVisibleNodeOriginFile,
   setRootStateSyntheticVisibleNodeLabelEditing,
   getEditorWithActiveFileUri,
   openEditorFileUri,
@@ -161,7 +162,6 @@ import {
   getActiveEditorWindow,
   getEditorWindowWithFileUri,
   updateEditorWindow,
-  getSyntheticWindowBounds,
   centerEditorCanvas,
   getCanvasMouseTargetNodeIdFromPoint,
   isSelectionMovable,
@@ -233,7 +233,12 @@ import {
   createPCComponentInstance,
   getPCNodeContentNode,
   getSyntheticVisibleNodeFrame,
-  persistAddVariant
+  persistAddVariant,
+  persistUpdateVariant,
+  persistRemoveVariant,
+  persistInstanceVariant,
+  PCComponentInstanceElement,
+  SyntheticInstanceElement
 } from "paperclip";
 import {
   getTreeNodePath,
@@ -285,10 +290,10 @@ import {
   stripProtocol,
   createDirectory,
   sortFSItems,
-  stringifyObject
+  stringifyObject,
+  arrayRemove
 } from "tandem-common";
-import { difference, pull, clamp, merge } from "lodash";
-import { select } from "redux-saga/effects";
+import {clamp} from "lodash";
 
 const DEFAULT_RECT_COLOR = "#CCC";
 const INSERT_TEXT_OFFSET = {
@@ -707,7 +712,54 @@ export const canvasReducer = (state: RootState, action: Action) => {
       const node = getSyntheticNodeById(state.selectedNodeIds[0], state.documents);
       const frame = getSyntheticVisibleNodeFrame(node, state.frames);
       const contentNode = getSyntheticNodeById(frame.contentNodeId, state.documents);
-      state = persistAddVariant(contentNode, state);
+      state = persistRootState(state => persistAddVariant(contentNode, state), state);
+      return state;
+    }
+
+    case REMOVE_VARIANT_BUTTON_CLICKED: {
+      const variant = state.selectedVariant;
+      state = persistRootState(state => persistRemoveVariant(variant, state), state);
+      state = updateRootState({ selectedVariant: null }, state);
+      return state;
+    }
+
+    case VARIANT_DEFAULT_SWITCH_CLICKED: {
+      const { variant } = action as VariantDefaultSwitchClicked;
+      state = persistRootState(state => persistUpdateVariant({ isDefault: !variant.isDefault }, variant, state), state);
+      return state;
+    }
+
+    case VARIANT_LABEL_CHANGED: {
+      const { variant, newLabel } = action as VariantLabelChanged;
+      state = persistRootState(state => persistUpdateVariant({ label: newLabel }, variant, state), state);
+      return state;
+    }
+
+    case VARIANT_CLICKED: {
+      const { variant } = action as VariantClicked;
+
+      // must be enabled in order to see CSS changes
+      const selectedVariant = state.selectedVariant && state.selectedVariant.id === variant.id ? null : variant;
+      if (selectedVariant) {
+        state = persistRootState(state => persistUpdateVariant({ isDefault: true }, variant, state), state);
+      }
+      state = updateRootState({ selectedVariant }, state);
+      return state;
+    }
+
+    case COMPONENT_INSTANCE_VARIANT_TOGGLED: {
+      const { variant } = action as VariantClicked;
+      const element = getSyntheticNodeById(state.selectedNodeIds[0], state.documents) as SyntheticInstanceElement;
+      const variantIds = element.variant.indexOf(variant.id) !== -1 ? arrayRemove(element.variant, variant.id) : [...element.variant, variant.id];
+      console.log(element.variant, variantIds);
+
+      state = persistRootState(state => persistInstanceVariant(variantIds, element, state.selectedVariant, state), state);
+      return state;
+    }
+
+    case INSTANCE_VARIANT_RESET_CLICKED: {
+      const element = getSyntheticNodeById(state.selectedNodeIds[0], state.documents) as SyntheticInstanceElement;
+      state = persistRootState(state => persistInstanceVariant(null, element, state.selectedVariant, state), state);
       return state;
     }
 
@@ -716,7 +768,6 @@ export const canvasReducer = (state: RootState, action: Action) => {
       const oldGraph = state.graph;
 
       if (isSelectionMovable(state)) {
-        const selectionBounds = getSelectionBounds(state);
         state = persistRootState(state => {
           return state.selectedNodeIds.reduce((state, nodeId) => {
             return persistSyntheticVisibleNodeBounds(
@@ -1016,6 +1067,7 @@ export const canvasReducer = (state: RootState, action: Action) => {
             persistRawCSSText(
               cssText,
               getSyntheticNodeById(nodeId, state.documents),
+              state.selectedVariant,
               state
             ),
           state
@@ -1043,6 +1095,7 @@ export const canvasReducer = (state: RootState, action: Action) => {
             name,
             value,
             getSyntheticNodeById(nodeId, state.documents),
+            state.selectedVariant,
             state
           ),
         state
@@ -1058,6 +1111,7 @@ export const canvasReducer = (state: RootState, action: Action) => {
               name,
               value,
               getSyntheticNodeById(nodeId, state.documents),
+              state.selectedVariant,
               state
             ),
           state

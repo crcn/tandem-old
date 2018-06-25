@@ -8,3 +8,11 @@ export const arraySplice = <T>(
   ...replacements,
   ...target.slice(index + count)
 ];
+
+export const arrayRemove = <T>(
+  target: T[],
+  value: T
+) => {
+  const i = target.indexOf(value);
+  return arraySplice(target, i, 1);
+}

@@ -22,7 +22,7 @@
       "children": [
         {
           "id": "41cb1f8590628",
-          "variant": [],
+          "variant": null,
           "is": "38fc2a472503",
           "name": "component-instance",
           "attributes": {},

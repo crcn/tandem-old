@@ -77,7 +77,7 @@
           "children": [
             {
               "id": "e83bcac1717365",
-              "variant": [],
+              "variant": null,
               "is": "8b8bbe2c15268",
               "name": "component-instance",
               "attributes": {},
@@ -120,7 +120,7 @@
             },
             {
               "id": "e83bcac1717369",
-              "variant": [],
+              "variant": null,
               "is": "8b8bbe2c15268",
               "name": "component-instance",
               "attributes": {},
@@ -161,7 +161,7 @@
             },
             {
               "id": "e83bcac1717373",
-              "variant": [],
+              "variant": null,
               "is": "8b8bbe2c15268",
               "name": "component-instance",
               "attributes": {},

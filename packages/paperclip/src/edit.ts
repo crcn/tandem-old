@@ -20,9 +20,10 @@ import {
   stripProtocol,
   getNestedTreeNodeById,
   KeyValue,
-  dropChildNode
+  dropChildNode,
+  filterNestedNodes
 } from "tandem-common";
-import { values, identity, uniq, merge } from "lodash";
+import { values, identity, uniq, last, intersection } from "lodash";
 import { DependencyGraph, Dependency } from "./graph";
 import {
   PCNode,
@@ -43,7 +44,13 @@ import {
   PCOverridablePropertyName,
   PCVisibleNodeMetadataKey,
   updatePCNodeMetadata,
-  createPCVariant
+  createPCVariant,
+  PCVariant,
+  isComponent,
+  getPCVariants,
+  isPCOverride,
+  isValueOverride,
+  PCComponentInstanceElement,
 } from "./dsl";
 import {
   SyntheticVisibleNode,
@@ -59,12 +66,12 @@ import {
   isSyntheticVisibleNode,
   setDocumentChecksum,
   createSyntheticElement,
-  isSyntheticDocument
+  isSyntheticDocument,
+  getSyntheticContentNode
 } from "./synthetic";
 import * as path from "path";
 import { convertFixedBoundsToRelative } from "./synthetic-layout";
 import { diffTreeNode, patchTreeNode } from "./ot";
-import { evaluateLightPCVisibleNode } from "./evaluate";
 
 /*------------------------------------------
  * CONSTANTS
@@ -507,6 +514,7 @@ export const persistChangeLabel = <TState extends PCEditorState>(
   const newNode = maybeOverride(
     PCOverridablePropertyName.LABEL,
     newLabel,
+    null,
     identity,
     node => ({
       ...node,
@@ -689,6 +697,7 @@ export const persistInsertNode = <TState extends PCEditorState>(
     parentSource = maybeOverride(
       PCOverridablePropertyName.CHILDREN,
       newChild,
+      null,
       (child, override?: PCOverride) => {
         return override
           ? arraySplice(override.children, index, 0, newChild)
@@ -705,7 +714,31 @@ export const persistAddVariant = <TState extends PCEditorState>(contentNode: Syn
   const component = getSyntheticSourceNode(contentNode, state.graph);
   state = replaceDependencyGraphPCNode(appendChildNode(createPCVariant(), component), component, state);
   return state;
-}
+};
+
+export const persistRemoveVariant = <TState extends PCEditorState>(variant: PCVariant, state: TState): TState => {
+  const module = getPCNodeModule(variant.id, state.graph);
+  state = replaceDependencyGraphPCNode(removeNestedTreeNode(variant, module), module, state);
+  return state;
+};
+
+export const persistUpdateVariant = <TState extends PCEditorState>(properties: Partial<PCVariant>, variant: PCVariant, state: TState): TState => {
+  state = replaceDependencyGraphPCNode({ ...variant, ...properties }, variant, state);
+  return state;
+};
+
+export const persistInstanceVariant = <TState extends PCEditorState>(variantIds: string[], instance: SyntheticElement, variant: PCVariant, state: TState): TState => {
+  const node = maybeOverride(
+    PCOverridablePropertyName.VARIANT,
+    variantIds,
+    variant,
+    (value, override) => value,
+    (node) => ({ ...node, variant: variantIds })
+  )(instance, state.documents, state.graph);
+
+  state = replaceDependencyGraphPCNode(node, node, state);
+  return state;
+};
 
 export const persistAppendPCClips = <TState extends PCEditorState>(
   clips: PCNodeClip[],
@@ -805,6 +838,7 @@ export const persistChangeSyntheticTextNodeValue = <
   const updatedNode = maybeOverride(
     PCOverridablePropertyName.TEXT,
     value,
+    null,
     identity,
     (sourceNode: PCTextNode) => ({
       ...sourceNode,
@@ -834,6 +868,7 @@ export const persistChangeElementType = <TState extends PCEditorState>(
 const maybeOverride = (
   propertyName: PCOverridablePropertyName,
   value: any,
+  variant: PCVariant,
   mapOverride: (value, override) => any,
   updater: (node: PCVisibleNode, value: any) => any
 ) => <TState extends PCEditorState>(
@@ -842,8 +877,13 @@ const maybeOverride = (
   graph: DependencyGraph
 ): PCVisibleNode => {
   const sourceNode = getSyntheticSourceNode(node, graph) as PCVisibleNode;
+  const contentNode = getSyntheticContentNode(node, documents);
+  const contentSourceNode = getSyntheticSourceNode(contentNode, graph);
+  const variantId = variant && variant.id;
+  const defaultVariantIds = isComponent(contentSourceNode) ? getPCVariants(contentSourceNode).filter(variant => variant.isDefault).map(variant => variant.id) : [];
+  const variantOverrides = filterNestedNodes(contentSourceNode, (node) => isPCOverride(node) && defaultVariantIds.indexOf(node.variantId) !== -1).filter((override: PCOverride) => last(override.targetIdPath) === sourceNode.id || (override.targetIdPath.length === 0 && sourceNode.id === contentSourceNode.id));
 
-  if (node.immutable) {
+  if (node.immutable || variantId || variantOverrides.length) {
     const document = getSyntheticVisibleNodeDocument(node.id, documents);
 
     const nearestComponentInstances = getNearestComponentInstances(
@@ -869,9 +909,12 @@ const maybeOverride = (
       ...nearestComponentInstances
         .slice(0, nearestComponentInstances.indexOf(mutableInstance))
         .reverse()
-        .map((node: SyntheticVisibleNode) => node.source.nodeId),
-      sourceNode.id
+        .map((node: SyntheticVisibleNode) => node.source.nodeId)
     ]);
+
+    if (sourceNode.id !== contentSourceNode.id) {
+      overrideIdPath.push(sourceNode.id);
+    }
 
     // ensure that we skip overrides
     overrideIdPath = overrideIdPath.filter((id, index, path: string[]) => {
@@ -888,14 +931,21 @@ const maybeOverride = (
         return (
           child.name === PCSourceTagNames.OVERRIDE &&
           child.targetIdPath.join("/") === overrideIdPath.join("/") &&
-          child.propertyName === propertyName
+          child.propertyName === propertyName &&
+          (variantId ? child.variantId == variantId : !isValueOverride(child) ||  typeof value !== "object" || Array.isArray(value) || !value || Boolean(intersection(Object.keys(node[child.propertyName]), Object.keys(value)).length))
         );
       }
     ) as PCOverride;
 
+    console.log(existingOverride, value);
+
     value = mapOverride(value, existingOverride);
 
     if (existingOverride) {
+
+      if (value == null) {
+        return removeNestedTreeNode(existingOverride, mutableInstanceSourceNode);
+      }
       if (
         existingOverride.propertyName === PCOverridablePropertyName.CHILDREN
       ) {
@@ -915,8 +965,8 @@ const maybeOverride = (
         existingOverride.id,
         mutableInstanceSourceNode
       );
-    } else {
-      const override = createPCOverride(overrideIdPath, propertyName, value);
+    } else if (node.immutable || variantId) {
+      const override = createPCOverride(overrideIdPath, propertyName, value, variantId);
       return appendChildNode(override, mutableInstanceSourceNode);
     }
   }
@@ -1008,18 +1058,21 @@ const addBoundsMetadata = (
 export const persistRawCSSText = <TState extends PCEditorState>(
   text: string,
   node: SyntheticVisibleNode,
+  variant: PCVariant,
   state: TState
-) => persistSyntheticVisibleNodeStyle(parseStyle(text || ""), node, state);
+) => persistSyntheticVisibleNodeStyle(parseStyle(text || ""), node, variant, state);
 
 export const persistCSSProperty = <TState extends PCEditorState>(
   name: string,
   value: string,
   node: SyntheticVisibleNode,
+  variant: PCVariant,
   state: TState
 ) => {
   const updatedNode = maybeOverride(
     PCOverridablePropertyName.STYLE,
     { [name]: value || undefined },
+    variant,
     (style, override) => {
       const minStyle = {};
       const overrideStyle = (override && override.value) || EMPTY_OBJECT;
@@ -1056,6 +1109,7 @@ export const persistAttribute = <TState extends PCEditorState>(
   const updatedNode = maybeOverride(
     PCOverridablePropertyName.ATTRIBUTES,
     { [name]: value || undefined },
+    null,
     (attributes, override) => {
       return overrideKeyValue(element.attributes, (override && override.value) || EMPTY_OBJECT, attributes);
     },
@@ -1075,6 +1129,7 @@ export const persistAttribute = <TState extends PCEditorState>(
 export const persistSyntheticVisibleNodeStyle = <TState extends PCEditorState>(
   style: any,
   node: SyntheticVisibleNode,
+  variant: PCVariant,
   state: TState
 ) => {
 
@@ -1083,6 +1138,7 @@ export const persistSyntheticVisibleNodeStyle = <TState extends PCEditorState>(
   const updatedNode = maybeOverride(
     PCOverridablePropertyName.STYLE,
     style,
+    variant,
     (style, override) => {
       return overrideKeyValue(node.style, (override && override.value) || EMPTY_OBJECT, style);
     },

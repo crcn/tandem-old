@@ -3,6 +3,7 @@ import { compose, pure, withHandlers, withState } from "recompose";
 import { getSyntheticNodeById, SyntheticDocument, getSyntheticVisibleNodeDocument } from "paperclip";
 import { memoize } from "tandem-common";
 const { RightGutterTab } = require("./tab.pc");
+import * as cx from "classnames";
 
 const getSelectedNoded = memoize(
   (nodeIds: string[], documents: SyntheticDocument[]) => {
@@ -30,13 +31,14 @@ export default compose(
   const selectedNodes = getSelectedNoded(root.selectedNodeIds, root.documents);
 
   const tabs = TAB_NAMES.map(tabName => {
-    return <RightGutterTab key={tabName} onClick={() => setTab(tabName)}>{tabName}</RightGutterTab>;
+    return <RightGutterTab key={tabName} variant={cx({ selected: currentTab === tabName })} onClick={() => setTab(tabName)}>{tabName}</RightGutterTab>;
   });
 
   return <Base stylesProps={{
     dispatch,
     syntheticDocument,
     selectedNodes,
+    selectedVariant: root.selectedVariant,
     graph: root.graph,
     style: {
       display: currentTab === TAB_NAMES[0] ? "block": "none"

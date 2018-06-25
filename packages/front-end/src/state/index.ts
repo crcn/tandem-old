@@ -66,7 +66,8 @@ import {
   getFrameByContentNodeId,
   getFramesByDependencyUri,
   isPaperclipUri,
-  PCVisibleNode
+  PCVisibleNode,
+  PCVariant
 } from "paperclip";
 import {
   CanvasToolOverlayMouseMoved,
@@ -155,6 +156,9 @@ export type RootState = {
   openFiles: OpenFile[];
   toolType?: ToolType;
   activeEditorFilePath?: string;
+
+  // TODO - may need to be moved to EditorWindow
+  selectedVariant?: PCVariant;
 
   // TODO - should be actual instances for type safety
   hoveringNodeIds: string[];
@@ -970,6 +974,7 @@ export const setActiveFilePath = (
   newActiveFilePath: string,
   root: RootState
 ) => {
+  root = updateRootState({ selectedVariant: null }, root);
   if (getEditorWithActiveFileUri(newActiveFilePath, root)) {
     return root;
   }

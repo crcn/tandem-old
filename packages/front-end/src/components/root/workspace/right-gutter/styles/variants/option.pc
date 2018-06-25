@@ -8,12 +8,12 @@
       "is": "div",
       "style": {
         "box-sizing": "border-box",
-        "margin-left": "4px",
-        "margin-top": "4px",
-        "margin-right": "4px",
-        "margin-bottom": "4px",
         "font-family": "Helvetica",
-        "font-size": "12px"
+        "font-size": "10px",
+        "padding-left": "12px",
+        "padding-top": "2px",
+        "padding-right": "8px",
+        "padding-bottom": "2px"
       },
       "attributes": {},
       "id": "1d51efba14",
@@ -28,19 +28,35 @@
           "style": {
             "box-sizing": "border-box",
             "display": "flex",
-            "align-items": "center"
+            "align-items": "center",
+            "margin-left": "4px",
+            "margin-top": "4px",
+            "margin-right": "4px",
+            "margin-bottom": "4px"
           },
           "children": [
             {
               "id": "6f30576e9",
-              "variant": [],
+              "variant": null,
               "is": "6f30576e8",
               "name": "component-instance",
               "attributes": {},
               "style": {
                 "margin-right": "8px"
               },
-              "children": [],
+              "children": [
+                {
+                  "id": "2a94b5ff3",
+                  "variantId": null,
+                  "propertyName": "style",
+                  "targetIdPath": [
+                    "6f30576e7"
+                  ],
+                  "value": {},
+                  "name": "override",
+                  "children": []
+                }
+              ],
               "metadata": {
                 "bounds": {
                   "left": 277,
@@ -52,18 +68,51 @@
               "label": "switch"
             },
             {
-              "id": "1d51efba20",
-              "name": "text",
-              "label": "label",
-              "value": "Variant",
+              "id": "5b8ce42a3",
+              "label": "Input",
+              "is": "div",
+              "name": "element",
+              "attributes": {},
               "style": {
-                "margin-right": "8px"
+                "box-sizing": "border-box",
+                "border-radius": "2px"
               },
-              "children": [],
+              "children": [
+                {
+                  "id": "1d51efba20",
+                  "name": "text",
+                  "label": "label",
+                  "value": "Variant",
+                  "style": {
+                    "margin-right": "8px"
+                  },
+                  "children": [],
+                  "metadata": {}
+                }
+              ],
               "metadata": {}
             }
           ],
           "metadata": {}
+        },
+        {
+          "id": "c2b44e3f3",
+          "name": "variant",
+          "label": "selected",
+          "children": [],
+          "metadata": {},
+          "isDefault": false
+        },
+        {
+          "id": "6cf317c23",
+          "variantId": "c2b44e3f3",
+          "propertyName": "style",
+          "targetIdPath": [],
+          "value": {
+            "background": "rgba(212, 222, 240, 1)"
+          },
+          "name": "override",
+          "children": []
         }
       ],
       "metadata": {
@@ -77,59 +126,6 @@
       "controllers": [
         "./option-controller.tsx"
       ]
-    },
-    {
-      "label": "Switch",
-      "is": "div",
-      "style": {
-        "box-sizing": "border-box"
-      },
-      "attributes": {},
-      "id": "6f30576e8",
-      "name": "component",
-      "children": [
-        {
-          "id": "6f30576e6",
-          "label": "track",
-          "is": "div",
-          "name": "element",
-          "attributes": {},
-          "style": {
-            "box-sizing": "border-box",
-            "width": "20px",
-            "height": "10px",
-            "border-radius": "10px",
-            "background": "rgba(200, 200, 200, 1)"
-          },
-          "children": [
-            {
-              "id": "6f30576e7",
-              "label": "dot",
-              "is": "div",
-              "name": "element",
-              "attributes": {},
-              "style": {
-                "box-sizing": "border-box",
-                "width": "10px",
-                "height": "10px",
-                "background": "#333",
-                "border-radius": "10px"
-              },
-              "children": [],
-              "metadata": {}
-            }
-          ],
-          "metadata": {}
-        }
-      ],
-      "metadata": {
-        "bounds": {
-          "left": 277,
-          "top": 316,
-          "right": 377,
-          "bottom": 416
-        }
-      }
     }
   ],
   "metadata": {}

@@ -43,6 +43,25 @@
           },
           "children": [],
           "metadata": {}
+        },
+        {
+          "id": "f4e04d3116",
+          "name": "variant",
+          "label": "selected",
+          "isDefault": false,
+          "children": [],
+          "metadata": {}
+        },
+        {
+          "id": "f4e04d3117",
+          "variantId": "f4e04d3116",
+          "propertyName": "style",
+          "targetIdPath": [],
+          "value": {
+            "background": "rgba(248, 247, 247, 1)"
+          },
+          "name": "override",
+          "children": []
         }
       ],
       "metadata": {

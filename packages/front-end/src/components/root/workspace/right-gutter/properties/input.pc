@@ -13,7 +13,7 @@
       "children": [
         {
           "id": "6e2729d443535",
-          "variant": [],
+          "variant": null,
           "is": "7149f8192509",
           "name": "component-instance",
           "attributes": {},

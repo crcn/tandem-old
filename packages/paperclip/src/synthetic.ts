@@ -67,6 +67,10 @@ export type SyntheticElement = {
   children: Array<SyntheticVisibleNode | PCOverride>;
 } & SyntheticBaseNode;
 
+export type SyntheticInstanceElement = {
+  variant: string[];
+} & SyntheticElement;
+
 export type SyntheticTextNode = {
   value: string;
   style: KeyValue<any>;
@@ -129,6 +133,34 @@ export const createSyntheticElement = (
   style: style || EMPTY_OBJECT,
   children: children || EMPTY_ARRAY
 });
+export const createSyntheticInstanceElement = (
+  name: string,
+  source: SyntheticSource,
+  style: KeyValue<any> = EMPTY_OBJECT,
+  variant: string[],
+  attributes: KeyValue<string> = EMPTY_OBJECT,
+  children: SyntheticVisibleNode[] = EMPTY_ARRAY,
+  label?: string,
+  isContentNode?: boolean,
+  isCreatedFromComponent?: boolean,
+  isComponentInstance?: boolean,
+  immutable?: boolean,
+  metadata?: KeyValue<any>
+): SyntheticInstanceElement => ({
+  id: generateUID(),
+  metadata: metadata || EMPTY_OBJECT,
+  label,
+  variant,
+  isComponentInstance,
+  isCreatedFromComponent,
+  isContentNode,
+  immutable,
+  source,
+  name,
+  attributes: attributes || EMPTY_OBJECT,
+  style: style || EMPTY_OBJECT,
+  children: children || EMPTY_ARRAY
+});
 
 export const createSyntheticTextNode = (
   value: string,
@@ -166,6 +198,10 @@ export const isSyntheticVisibleNodeRoot = (
 
 export const isSyntheticDocumentRoot = (node: SyntheticVisibleNode) => {
   return node.isContentNode;
+};
+
+export const isSyntheticInstanceElement = (node: SyntheticNode): node is SyntheticInstanceElement => {
+  return Boolean((node as SyntheticInstanceElement).variant);
 };
 
 export const isSyntheticDocument = (node: SyntheticNode): node is SyntheticDocument => {

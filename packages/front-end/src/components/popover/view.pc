@@ -23,7 +23,7 @@
         },
         {
           "id": "ddec6a12139578",
-          "variant": [],
+          "variant": null,
           "is": "ddec6a12139577",
           "name": "component-instance",
           "attributes": {},
@@ -49,7 +49,7 @@
     },
     {
       "id": "9b7b527f113874",
-      "variant": [],
+      "variant": null,
       "is": "97a34b151010442",
       "name": "component-instance",
       "attributes": {},
