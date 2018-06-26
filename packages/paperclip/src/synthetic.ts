@@ -14,7 +14,9 @@ import {
   findTreeNodeParent,
   diffArray,
   patchArray,
-  arraySplice
+  arraySplice,
+  findNestedNode,
+  filterTreeNodeParents
 } from "tandem-common";
 import * as crc32 from "crc32";
 import { DependencyGraph, Dependency } from "./graph";
@@ -30,7 +32,10 @@ import {
   PCElement,
   PCOverride,
   validatePCModule,
-  PCComponent
+  PCComponent,
+  getPCNodeModule,
+  PCComponentInstanceElement,
+  getOverrides
 } from "./dsl";
 import { diffTreeNode, patchTreeNode } from "./ot";
 
@@ -68,7 +73,7 @@ export type SyntheticElement = {
 } & SyntheticBaseNode;
 
 export type SyntheticInstanceElement = {
-  variant: string[];
+  variant: KeyValue<boolean>;
 } & SyntheticElement;
 
 export type SyntheticTextNode = {
@@ -137,7 +142,7 @@ export const createSyntheticInstanceElement = (
   name: string,
   source: SyntheticSource,
   style: KeyValue<any> = EMPTY_OBJECT,
-  variant: string[],
+  variant: KeyValue<boolean>,
   attributes: KeyValue<string> = EMPTY_OBJECT,
   children: SyntheticVisibleNode[] = EMPTY_ARRAY,
   label?: string,
@@ -236,6 +241,13 @@ export const isSyntheticVisibleNodeResizable = (node: SyntheticVisibleNode) =>
 /*------------------------------------------
  * GETTERS
  *-----------------------------------------*/
+
+export const getInheritedOverrides = memoize((instance: SyntheticElement, document: SyntheticDocument, graph: DependencyGraph, variantId?: string): PCOverride[] => {
+  const parents = filterTreeNodeParents(instance.id, document, () => true) as SyntheticNode[];
+  return parents.reduce((overrides: PCOverride[], parent: SyntheticNode) => {
+    return [...getOverrides(getSyntheticSourceNode(parent, graph)).filter(override => override.variantId == variantId && override.targetIdPath.indexOf(instance.source.nodeId) !== -1), ...overrides];
+  }, EMPTY_ARRAY);
+});
 
 export const getSyntheticSourceNode = (
   node: SyntheticVisibleNode | SyntheticDocument,

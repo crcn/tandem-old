@@ -217,28 +217,22 @@ import {
   PCDependencyGraphLoaded,
   SYNTHETIC_DOCUMENT_NODE_NAME,
   DEFAULT_FRAME_BOUNDS,
-  isPaperclipUri,
-  // evaluateDependency,
-  isSyntheticDocumentRoot,
   isSyntheticVisibleNode,
   persistChangeElementType,
-  getSyntheticDocumentById,
   persistAddComponentController,
   PC_RUNTIME_EVALUATED,
   persistCSSProperty,
   persistAttribute,
   getPCNode,
-  updateSyntheticVisibleNode,
   persistSyntheticNodeMetadata,
   createPCComponentInstance,
-  getPCNodeContentNode,
   getSyntheticVisibleNodeFrame,
   persistAddVariant,
   persistUpdateVariant,
   persistRemoveVariant,
-  persistInstanceVariant,
-  PCComponentInstanceElement,
-  SyntheticInstanceElement
+  SyntheticInstanceElement,
+  persistToggleVariantDefault,
+  persistRemoveVariantOverride
 } from "paperclip";
 import {
   getTreeNodePath,
@@ -750,16 +744,14 @@ export const canvasReducer = (state: RootState, action: Action) => {
     case COMPONENT_INSTANCE_VARIANT_TOGGLED: {
       const { variant } = action as VariantClicked;
       const element = getSyntheticNodeById(state.selectedNodeIds[0], state.documents) as SyntheticInstanceElement;
-      const variantIds = element.variant.indexOf(variant.id) !== -1 ? arrayRemove(element.variant, variant.id) : [...element.variant, variant.id];
-      console.log(element.variant, variantIds);
-
-      state = persistRootState(state => persistInstanceVariant(variantIds, element, state.selectedVariant, state), state);
+      state = persistRootState(state => persistToggleVariantDefault(element, variant.id, state.selectedVariant, state), state);
       return state;
     }
 
     case INSTANCE_VARIANT_RESET_CLICKED: {
+      const { variant } = action as VariantClicked;
       const element = getSyntheticNodeById(state.selectedNodeIds[0], state.documents) as SyntheticInstanceElement;
-      state = persistRootState(state => persistInstanceVariant(null, element, state.selectedVariant, state), state);
+      state = persistRootState(state => persistRemoveVariantOverride(element, variant.id, state.selectedVariant, state), state);
       return state;
     }
 
@@ -1225,7 +1217,6 @@ export const canvasReducer = (state: RootState, action: Action) => {
           return persistInsertNodeFromPoint(
             createPCComponentInstance(
               componentId,
-              [],
               null,
               null,
               null,

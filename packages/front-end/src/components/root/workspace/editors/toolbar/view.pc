@@ -122,17 +122,6 @@
               "value": {},
               "name": "override",
               "children": []
-            },
-            {
-              "id": "c13129874",
-              "variantId": null,
-              "propertyName": "variant",
-              "targetIdPath": [
-                "fde5849e449846"
-              ],
-              "value": {},
-              "name": "override",
-              "children": []
             }
           ],
           "metadata": {},

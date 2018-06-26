@@ -1,11 +1,8 @@
 IMMEDIATE:
 
-* variants
-  * toggling component variant instance
-  * reset _individual_ variants (must be key value)
+* variables
 * fix color picker (it's off)
 * ability to load fonts
-* variables
   * store in pc config
 * measurement input UI
 * make UI consistent

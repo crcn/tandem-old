@@ -51,6 +51,7 @@ import {
   isPCOverride,
   isValueOverride,
   PCComponentInstanceElement,
+  getPCVariantOverrides,
 } from "./dsl";
 import {
   SyntheticVisibleNode,
@@ -65,9 +66,10 @@ import {
   getNearestComponentInstances,
   isSyntheticVisibleNode,
   setDocumentChecksum,
-  createSyntheticElement,
   isSyntheticDocument,
-  getSyntheticContentNode
+  getSyntheticContentNode,
+  SyntheticInstanceElement,
+  getInheritedOverrides
 } from "./synthetic";
 import * as path from "path";
 import { convertFixedBoundsToRelative } from "./synthetic-layout";
@@ -727,17 +729,24 @@ export const persistUpdateVariant = <TState extends PCEditorState>(properties: P
   return state;
 };
 
-export const persistInstanceVariant = <TState extends PCEditorState>(variantIds: string[], instance: SyntheticElement, variant: PCVariant, state: TState): TState => {
-  const node = maybeOverride(
-    PCOverridablePropertyName.VARIANT,
-    variantIds,
-    variant,
-    (value, override) => value,
-    (node) => ({ ...node, variant: variantIds })
-  )(instance, state.documents, state.graph);
+export const persistToggleVariantDefault = <TState extends PCEditorState>(instance: SyntheticInstanceElement, targetVariantId: string, variant: PCVariant, state: TState): TState => {
 
+  const node = maybeOverride(
+    PCOverridablePropertyName.VARIANT_IS_DEFAULT,
+    null,
+    variant,
+    (value, override) => {
+      return !instance.variant[targetVariantId];
+    },
+    (node: PCVariant) => ({ ...node, isDefault: !node.isDefault })
+  )(instance, state.documents, state.graph, targetVariantId);
   state = replaceDependencyGraphPCNode(node, node, state);
   return state;
+
+};
+export const persistRemoveVariantOverride = <TState extends PCEditorState>(instance: SyntheticInstanceElement, targetVariantId: string, variant: PCVariant, state: TState): TState => {
+  const override = getInheritedOverrides(instance, getSyntheticVisibleNodeDocument(instance.id, state.documents), state.graph, variant && variant.id).find(override => last(override.targetIdPath) === targetVariantId);
+  return replaceDependencyGraphPCNode(null, override, state);
 };
 
 export const persistAppendPCClips = <TState extends PCEditorState>(
@@ -870,20 +879,22 @@ const maybeOverride = (
   value: any,
   variant: PCVariant,
   mapOverride: (value, override) => any,
-  updater: (node: PCVisibleNode, value: any) => any
+  updater: (node: PCNode, value: any) => any
 ) => <TState extends PCEditorState>(
   node: SyntheticVisibleNode,
   documents: SyntheticDocument[],
-  graph: DependencyGraph
+  graph: DependencyGraph,
+  targetSourceId: string =  node.source.nodeId
 ): PCVisibleNode => {
-  const sourceNode = getSyntheticSourceNode(node, graph) as PCVisibleNode;
+  const sourceNode = getPCNode(targetSourceId, graph) as PCVisibleNode;
   const contentNode = getSyntheticContentNode(node, documents);
   const contentSourceNode = getSyntheticSourceNode(contentNode, graph);
   const variantId = variant && variant.id;
   const defaultVariantIds = isComponent(contentSourceNode) ? getPCVariants(contentSourceNode).filter(variant => variant.isDefault).map(variant => variant.id) : [];
   const variantOverrides = filterNestedNodes(contentSourceNode, (node) => isPCOverride(node) && defaultVariantIds.indexOf(node.variantId) !== -1).filter((override: PCOverride) => last(override.targetIdPath) === sourceNode.id || (override.targetIdPath.length === 0 && sourceNode.id === contentSourceNode.id));
 
-  if (node.immutable || variantId || variantOverrides.length) {
+
+  if (node.immutable || variantId || variantOverrides.length || targetSourceId !== node.id) {
     const document = getSyntheticVisibleNodeDocument(node.id, documents);
 
     const nearestComponentInstances = getNearestComponentInstances(
@@ -937,8 +948,6 @@ const maybeOverride = (
       }
     ) as PCOverride;
 
-    console.log(existingOverride, value);
-
     value = mapOverride(value, existingOverride);
 
     if (existingOverride) {
@@ -965,7 +974,7 @@ const maybeOverride = (
         existingOverride.id,
         mutableInstanceSourceNode
       );
-    } else if (node.immutable || variantId) {
+    } else if (node.immutable || variantId || node.id !== targetSourceId) {
       const override = createPCOverride(overrideIdPath, propertyName, value, variantId);
       return appendChildNode(override, mutableInstanceSourceNode);
     }
@@ -1074,20 +1083,9 @@ export const persistCSSProperty = <TState extends PCEditorState>(
     { [name]: value || undefined },
     variant,
     (style, override) => {
-      const minStyle = {};
-      const overrideStyle = (override && override.value) || EMPTY_OBJECT;
-      for (const key in style) {
-        if (overrideStyle[key] || node.style[key] !== style[key]) {
-          minStyle[key] = style[key];
-        }
-      }
-
-      return {
-        ...overrideStyle,
-        ...style
-      };
+      return overrideKeyValue(node.style, (override && override.value) || EMPTY_OBJECT, style);
     },
-    sourceNode =>
+    (sourceNode: PCVisibleNode) =>
       ({
         ...sourceNode,
         style: {

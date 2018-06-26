@@ -479,7 +479,8 @@ export const instanceVariantToggled = (variant: PCVariant): InstanceVariantToggl
   type: COMPONENT_INSTANCE_VARIANT_TOGGLED
 });
 
-export const instanceVariantResetClicked = (): Action => ({
+export const instanceVariantResetClicked = (variant: PCVariant): InstanceVariantToggled => ({
+  variant,
   type: INSTANCE_VARIANT_RESET_CLICKED
 });
 

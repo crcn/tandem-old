@@ -64,7 +64,7 @@ export default compose(
       variant={cx({ selected })}
       switchProps={{value: variant.isDefault, onChangeComplete: onSwitchChange}}
       resetButtonProps={{
-        onClick: onReset,
+        onClick: onReset && (() => onReset(variant)),
         style: {
           display: onReset ? "block" : "none"
         }

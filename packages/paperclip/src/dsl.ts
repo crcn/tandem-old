@@ -40,7 +40,7 @@ export enum PCSourceTagNames {
 export enum PCOverridablePropertyName {
   TEXT = "text",
   CHILDREN = "children",
-  VARIANT = "variant",
+  VARIANT_IS_DEFAULT = "isDefault",
   STYLE = "style",
   ATTRIBUTES = "attributes",
   LABEL = "label"
@@ -72,9 +72,6 @@ export type PCModule = {
 export type PCComponent = {
   label?: string;
   style: KeyValue<any>;
-
-  // variant of parent
-  variant: KeyValue<boolean>;
 
   /**
    * Controller source files, can be any supported language, filtered by compile target.
@@ -138,7 +135,7 @@ export type PCLabelOverride = PCBaseValueOverride<
   string
 >;
 export type PCVariantOverride = PCBaseValueOverride<
-  PCOverridablePropertyName.VARIANT,
+  PCOverridablePropertyName.VARIANT_IS_DEFAULT,
   string[]
 >;
 
@@ -170,7 +167,6 @@ export type PCBaseElement<TName extends PCSourceTagNames> = {
 export type PCElement = PCBaseElement<PCSourceTagNames.ELEMENT>;
 
 export type PCComponentInstanceElement = {
-  variant: KeyValue<boolean>;
 } & PCBaseElement<PCSourceTagNames.COMPONENT_INSTANCE>;
 
 export type PCTextNode = {
@@ -229,7 +225,6 @@ export const createPCComponent = (
   style: style || EMPTY_OBJECT,
   attributes: attributes || EMPTY_OBJECT,
   id: generateUID(),
-  variant: EMPTY_OBJECT,
   name: PCSourceTagNames.COMPONENT,
   children: children || EMPTY_ARRAY,
   metadata: EMPTY_OBJECT
@@ -266,14 +261,12 @@ export const createPCElement = (
 
 export const createPCComponentInstance = (
   is: string,
-  variant: KeyValue<boolean> = EMPTY_OBJECT,
   style: KeyValue<any> = EMPTY_OBJECT,
   attributes: KeyValue<string> = EMPTY_OBJECT,
   children: PCVisibleNode[] = EMPTY_ARRAY,
   metadata?: KeyValue<any>
 ): PCComponentInstanceElement => ({
   id: generateUID(),
-  variant: variant,
   is: is || "div",
   name: PCSourceTagNames.COMPONENT_INSTANCE,
   attributes: attributes || {},
@@ -416,8 +409,8 @@ const validatePCVisibleNodeChild = (child: PCVisibleNode | PCOverride) => {
       case PCOverridablePropertyName.TEXT: {
         return typeof child.value === "string";
       }
-      case PCOverridablePropertyName.VARIANT: {
-        return Array.isArray(child.value);
+      case PCOverridablePropertyName.VARIANT_IS_DEFAULT: {
+        return typeof child.value === "boolean";
       }
       case PCOverridablePropertyName.ATTRIBUTES: {
         return typeof child.value === "object";
@@ -462,6 +455,7 @@ export const getOverrides = memoize(
 );
 
 export const getPCVariants = memoize((component: PCComponent | PCVisibleNode): PCVariant[] => component.children.filter(child => child.name === PCSourceTagNames.VARIANT) as PCVariant[]);
+export const getPCVariantOverrides = memoize((instance: PCComponent | PCComponentInstanceElement, variantId: string): PCVariantOverride[] => instance.children.filter(override => isPCOverride(override) && override.propertyName === PCOverridablePropertyName.VARIANT_IS_DEFAULT && override.variantId === variantId) as PCVariantOverride[]);
 
 export const getPCImportedChildrenSourceUris = (
   { id: nodeId }: PCNode,
