@@ -76,7 +76,7 @@
     },
     {
       "id": "d227ff68619417",
-      "variant": null,
+      "variant": {},
       "is": "97a34b151010442",
       "name": "component-instance",
       "attributes": {},
@@ -147,7 +147,7 @@
     },
     {
       "id": "9b7b527f160044",
-      "variant": null,
+      "variant": {},
       "is": "97a34b151010442",
       "name": "component-instance",
       "attributes": {},

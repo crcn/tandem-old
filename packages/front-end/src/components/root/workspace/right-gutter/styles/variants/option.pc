@@ -37,7 +37,7 @@
           "children": [
             {
               "id": "6f30576e9",
-              "variant": null,
+              "variant": {},
               "is": "6f30576e8",
               "name": "component-instance",
               "attributes": {},
@@ -75,7 +75,9 @@
               "attributes": {},
               "style": {
                 "box-sizing": "border-box",
-                "border-radius": "2px"
+                "border-radius": "2px",
+                "display": "block",
+                "flex-grow": "1"
               },
               "children": [
                 {
@@ -91,6 +93,30 @@
                 }
               ],
               "metadata": {}
+            },
+            {
+              "id": "57bf93b03",
+              "variant": [],
+              "is": "82eac94a20",
+              "name": "component-instance",
+              "attributes": {},
+              "style": {
+                "display": "none",
+                "height": "10px",
+                "position": "relative",
+                "top": "3px",
+                "cursor": "pointer"
+              },
+              "children": [],
+              "metadata": {
+                "bounds": {
+                  "left": -2109,
+                  "top": 1121,
+                  "right": -1709,
+                  "bottom": 1421
+                }
+              },
+              "label": "reset button"
             }
           ],
           "metadata": {}
@@ -119,7 +145,7 @@
         "bounds": {
           "left": 410,
           "top": 267,
-          "right": 510,
+          "right": 730,
           "bottom": 293.11895175049244
         }
       },

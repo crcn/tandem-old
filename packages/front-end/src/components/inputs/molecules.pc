@@ -54,7 +54,7 @@
           "children": [
             {
               "id": "7149f8199969",
-              "variant": null,
+              "variant": {},
               "is": "7149f8199122",
               "name": "component-instance",
               "attributes": {},

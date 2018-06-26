@@ -31,7 +31,7 @@
           "children": [
             {
               "id": "b408c1ca3960",
-              "variant": null,
+              "variant": {},
               "is": "d65d17fd4015",
               "name": "component-instance",
               "attributes": {},

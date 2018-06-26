@@ -80,7 +80,7 @@
           "children": [
             {
               "id": "9e4a454812261",
-              "variant": null,
+              "variant": {},
               "is": "9e4a454812260",
               "name": "component-instance",
               "attributes": {},
@@ -101,7 +101,7 @@
             },
             {
               "id": "9e4a454845972",
-              "variant": null,
+              "variant": {},
               "is": "9e4a454812260",
               "name": "component-instance",
               "attributes": {},
@@ -122,7 +122,7 @@
             },
             {
               "id": "9e4a454846784",
-              "variant": null,
+              "variant": {},
               "is": "9e4a454812260",
               "name": "component-instance",
               "attributes": {},

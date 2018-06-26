@@ -19,7 +19,7 @@
       "children": [
         {
           "id": "483373f987275",
-          "variant": null,
+          "variant": {},
           "is": "ab406a6b770940",
           "name": "component-instance",
           "attributes": {},
@@ -92,7 +92,7 @@
         },
         {
           "id": "5dee72437",
-          "variant": null,
+          "variant": {},
           "is": "5dee72436",
           "name": "component-instance",
           "attributes": {},
@@ -124,7 +124,7 @@
     },
     {
       "id": "483373f993093",
-      "variant": null,
+      "variant": {},
       "is": "483373f987277",
       "name": "component-instance",
       "attributes": {},
@@ -140,7 +140,7 @@
           "children": [
             {
               "id": "483373f929122",
-              "variant": null,
+              "variant": {},
               "is": "bae08a2e609807",
               "name": "component-instance",
               "attributes": {},
@@ -223,7 +223,7 @@
       "children": [
         {
           "id": "5dee724315",
-          "variant": null,
+          "variant": {},
           "is": "5dee724311",
           "name": "component-instance",
           "attributes": {},
@@ -233,7 +233,7 @@
         },
         {
           "id": "5dee724316",
-          "variant": null,
+          "variant": {},
           "is": "5dee724311",
           "name": "component-instance",
           "attributes": {},
@@ -243,7 +243,7 @@
         },
         {
           "id": "5dee724314",
-          "variant": null,
+          "variant": {},
           "is": "5dee724311",
           "name": "component-instance",
           "attributes": {},
@@ -253,7 +253,7 @@
         },
         {
           "id": "5dee724313",
-          "variant": null,
+          "variant": {},
           "is": "5dee724311",
           "name": "component-instance",
           "attributes": {},
@@ -263,7 +263,7 @@
         },
         {
           "id": "5dee724312",
-          "variant": null,
+          "variant": {},
           "is": "5dee724311",
           "name": "component-instance",
           "attributes": {},

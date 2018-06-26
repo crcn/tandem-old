@@ -14,6 +14,7 @@ export type OptionControllerOuterProps = {
   onToggle?: any;
   onClick?: any;
   editable?: boolean;
+  onReset?: any;
 };
 
 type OptionControllerInnerProps = {
@@ -54,7 +55,7 @@ export default compose(
       }
     }
   }),
-  Base => ({ onClick, editingLabel, onInputClick, onLabelChange, variant, onSwitchChange, selected, ...rest }: OptionControllerInnerProps) => {
+  Base => ({ onClick, editingLabel, onInputClick, onLabelChange, variant, onReset, onSwitchChange, selected, ...rest }: OptionControllerInnerProps) => {
     if (!variant) {
       return null;
     }
@@ -62,6 +63,12 @@ export default compose(
       onClick={onClick}
       variant={cx({ selected })}
       switchProps={{value: variant.isDefault, onChangeComplete: onSwitchChange}}
+      resetButtonProps={{
+        onClick: onReset,
+        style: {
+          display: onReset ? "block" : "none"
+        }
+      }}
       inputProps={{
         onClick: onInputClick,
         children: editingLabel ? <FocusComponent>{<TextInput value={variant.label} onChangeComplete={onLabelChange} />}</FocusComponent> : (variant.label || "Click to edit")

@@ -149,11 +149,13 @@ const evaluateComponentInstance = (
 
   const selfVariantIds = [...getPCVariants(node).filter(node => node.isDefault).map(node => node.id)];
 
-  if (overrides[selfPath] && overrides[selfPath][PCOverridablePropertyName.VARIANT]) {
-    variantIds = uniq([...overrides[selfPath][PCOverridablePropertyName.VARIANT], ...variantIds]);
-  } else {
-    variantIds = uniq([...selfVariantIds, ...variantIds]);
-  }
+  variantIds = overrideVariantIds(selfPath, selfVariantIds, overrides);
+
+  // if (overrides[selfPath] && overrides[selfPath][PCOverridablePropertyName.VARIANT]) {
+  //   variantIds = uniq([...overrides[selfPath][PCOverridablePropertyName.VARIANT], ...variantIds]);
+  // } else {
+  //   variantIds = uniq([...selfVariantIds, ...variantIds]);
+  // }
 
   const childrenAreImmutable = immutable || node !== instance;
   registerOverrides(
@@ -206,6 +208,7 @@ const evaluateComponentInstance = (
     instance.metadata
   );
 };
+
 
 const evaluateLabel = (
   node: PCComponent | PCElement | PCComponentInstanceElement | PCTextNode,
@@ -321,6 +324,24 @@ const evaluateOverride = (
     return override;
   }
   return Object.assign({}, element[propertyName], override);
+};
+
+const overrideVariantIds = (selfPath: string, variantIds: string[], overrides: EvalOverrides) => {
+  const override = overrides[selfPath];
+  const variantOverride = override && override[PCOverridablePropertyName.VARIANT];
+  if (!variantOverride) {
+    return variantIds;
+  }
+
+  const newVariantIds = variantIds.filter(id => variantOverride[id] !== false);
+
+  for (const variantId in variantOverride) {
+    if (variantOverride[variantId] && newVariantIds.indexOf(variantId) === -1) {
+      newVariantIds.push(variantId);
+    }
+  }
+
+  return newVariantIds;
 };
 
 const evaluateAttributes = (
@@ -575,7 +596,8 @@ const registerOverride = (
     newValue = override.children ? override.children : value;
   } else if (
     propertyName === PCOverridablePropertyName.ATTRIBUTES ||
-    propertyName === PCOverridablePropertyName.STYLE
+    propertyName === PCOverridablePropertyName.STYLE ||
+    propertyName === PCOverridablePropertyName.VARIANT
   ) {
     newValue = Object.assign({}, value, override[propertyName] || {});
   } else if (

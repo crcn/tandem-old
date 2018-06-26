@@ -18,7 +18,7 @@
       "children": [
         {
           "id": "9e4a45489816",
-          "variant": null,
+          "variant": {},
           "is": "9e4a45489771",
           "name": "component-instance",
           "attributes": {},
@@ -48,7 +48,7 @@
         },
         {
           "id": "73b39db4591",
-          "variant": null,
+          "variant": {},
           "is": "73b39db4544",
           "name": "component-instance",
           "attributes": {},
@@ -113,7 +113,7 @@
         },
         {
           "id": "73b39db4401",
-          "variant": null,
+          "variant": {},
           "is": "73b39db4362",
           "name": "component-instance",
           "attributes": {},
@@ -160,7 +160,7 @@
         },
         {
           "id": "af2a67c2930",
-          "variant": null,
+          "variant": {},
           "is": "52309d3e125631",
           "name": "component-instance",
           "attributes": {},
@@ -208,7 +208,7 @@
         },
         {
           "id": "ab9eb3a110018",
-          "variant": null,
+          "variant": {},
           "is": "ab9eb3a110017",
           "name": "component-instance",
           "attributes": {},
@@ -231,7 +231,7 @@
         },
         {
           "id": "bcda9fb5100610",
-          "variant": null,
+          "variant": {},
           "is": "bcda9fb596963",
           "name": "component-instance",
           "attributes": {},
@@ -253,7 +253,7 @@
         },
         {
           "id": "bcda9fb5100963",
-          "variant": null,
+          "variant": {},
           "is": "bcda9fb597291",
           "name": "component-instance",
           "attributes": {},
@@ -264,7 +264,7 @@
         },
         {
           "id": "bcda9fb5101747",
-          "variant": null,
+          "variant": {},
           "is": "bcda9fb597947",
           "name": "component-instance",
           "attributes": {},
@@ -275,7 +275,7 @@
         },
         {
           "id": "bcda9fb5101342",
-          "variant": null,
+          "variant": {},
           "is": "bcda9fb597619",
           "name": "component-instance",
           "attributes": {},
@@ -286,7 +286,7 @@
         },
         {
           "id": "decafdc7517269",
-          "variant": null,
+          "variant": {},
           "is": "decafdc7265667",
           "name": "component-instance",
           "attributes": {},

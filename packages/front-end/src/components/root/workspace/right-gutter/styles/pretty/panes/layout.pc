@@ -5,7 +5,7 @@
   "children": [
     {
       "id": "937339bc3",
-      "variant": null,
+      "variant": {},
       "is": "97a34b151010442",
       "name": "component-instance",
       "attributes": {},
@@ -125,7 +125,7 @@
           "children": [
             {
               "id": "7149f81910505",
-              "variant": null,
+              "variant": {},
               "is": "7149f8192509",
               "name": "component-instance",
               "attributes": {},
@@ -151,7 +151,7 @@
                   "children": [
                     {
                       "id": "aec1d08b2308",
-                      "variant": null,
+                      "variant": {},
                       "is": "50e32bec2591",
                       "name": "component-instance",
                       "attributes": {},
@@ -186,7 +186,7 @@
             },
             {
               "id": "5da9f61b39887",
-              "variant": null,
+              "variant": {},
               "is": "eea2bde6187076",
               "name": "component-instance",
               "attributes": {},
@@ -257,7 +257,7 @@
             },
             {
               "id": "5da9f61b474391",
-              "variant": null,
+              "variant": {},
               "is": "5da9f61b119502",
               "name": "component-instance",
               "attributes": {},
@@ -321,7 +321,7 @@
             },
             {
               "id": "aec1d08b3369",
-              "variant": null,
+              "variant": {},
               "is": "7149f8192509",
               "name": "component-instance",
               "attributes": {},
@@ -347,7 +347,7 @@
                   "children": [
                     {
                       "id": "aec1d08b3373",
-                      "variant": null,
+                      "variant": {},
                       "is": "50e32bec2591",
                       "name": "component-instance",
                       "attributes": {},
@@ -393,7 +393,7 @@
             },
             {
               "id": "8419ce0733073",
-              "variant": null,
+              "variant": {},
               "is": "8419ce0726555",
               "name": "component-instance",
               "attributes": {},
@@ -434,7 +434,7 @@
             },
             {
               "id": "a258f47017678",
-              "variant": null,
+              "variant": {},
               "is": "2657ec412855",
               "name": "component-instance",
               "attributes": {},
@@ -447,7 +447,7 @@
               "children": [
                 {
                   "id": "a258f47017679",
-                  "variant": null,
+                  "variant": {},
                   "is": "7149f8192509",
                   "name": "component-instance",
                   "attributes": {},
@@ -515,7 +515,7 @@
                 },
                 {
                   "id": "a258f47017684",
-                  "variant": null,
+                  "variant": {},
                   "is": "7149f8192509",
                   "name": "component-instance",
                   "attributes": {},
@@ -656,7 +656,7 @@
                 },
                 {
                   "id": "b117fdbf315949",
-                  "variant": null,
+                  "variant": {},
                   "is": "38fc2a473732",
                   "name": "component-instance",
                   "attributes": {},
@@ -702,7 +702,7 @@
       "children": [
         {
           "id": "eea2bde6187070",
-          "variant": null,
+          "variant": {},
           "is": "7149f8192509",
           "name": "component-instance",
           "attributes": {},
@@ -728,7 +728,7 @@
               "children": [
                 {
                   "id": "eea2bde6187073",
-                  "variant": null,
+                  "variant": {},
                   "is": "50e32bec2591",
                   "name": "component-instance",
                   "attributes": {},
@@ -780,7 +780,7 @@
         },
         {
           "id": "87448da4975410",
-          "variant": null,
+          "variant": {},
           "is": "2657ec412855",
           "name": "component-instance",
           "attributes": {},
@@ -793,7 +793,7 @@
           "children": [
             {
               "id": "87448da439878",
-              "variant": null,
+              "variant": {},
               "is": "7149f8192509",
               "name": "component-instance",
               "attributes": {},
@@ -823,7 +823,7 @@
                   "children": [
                     {
                       "id": "87448da439881",
-                      "variant": null,
+                      "variant": {},
                       "is": "50e32bec2591",
                       "name": "component-instance",
                       "attributes": {},
@@ -875,7 +875,7 @@
             },
             {
               "id": "87448da4129285",
-              "variant": null,
+              "variant": {},
               "is": "7149f8192509",
               "name": "component-instance",
               "attributes": {},
@@ -901,7 +901,7 @@
                   "children": [
                     {
                       "id": "87448da4129288",
-                      "variant": null,
+                      "variant": {},
                       "is": "50e32bec2591",
                       "name": "component-instance",
                       "attributes": {},
@@ -963,7 +963,7 @@
         },
         {
           "id": "87448da41193994",
-          "variant": null,
+          "variant": {},
           "is": "2657ec412855",
           "name": "component-instance",
           "attributes": {},
@@ -976,7 +976,7 @@
           "children": [
             {
               "id": "87448da41193995",
-              "variant": null,
+              "variant": {},
               "is": "7149f8192509",
               "name": "component-instance",
               "attributes": {},
@@ -1006,7 +1006,7 @@
                   "children": [
                     {
                       "id": "87448da41193998",
-                      "variant": null,
+                      "variant": {},
                       "is": "50e32bec2591",
                       "name": "component-instance",
                       "attributes": {},
@@ -1058,7 +1058,7 @@
             },
             {
               "id": "87448da41194001",
-              "variant": null,
+              "variant": {},
               "is": "7149f8192509",
               "name": "component-instance",
               "attributes": {},
@@ -1084,7 +1084,7 @@
                   "children": [
                     {
                       "id": "87448da41194004",
-                      "variant": null,
+                      "variant": {},
                       "is": "50e32bec2591",
                       "name": "component-instance",
                       "attributes": {},
@@ -1166,7 +1166,7 @@
       "children": [
         {
           "id": "5da9f61b148419",
-          "variant": null,
+          "variant": {},
           "is": "2657ec412855",
           "name": "component-instance",
           "attributes": {},
@@ -1179,7 +1179,7 @@
           "children": [
             {
               "id": "5da9f61b148420",
-              "variant": null,
+              "variant": {},
               "is": "7149f8192509",
               "name": "component-instance",
               "attributes": {},
@@ -1247,7 +1247,7 @@
             },
             {
               "id": "5da9f61b148426",
-              "variant": null,
+              "variant": {},
               "is": "7149f8192509",
               "name": "component-instance",
               "attributes": {},
@@ -1336,7 +1336,7 @@
             },
             {
               "id": "5da9f61b257033",
-              "variant": null,
+              "variant": {},
               "is": "7149f8192509",
               "name": "component-instance",
               "attributes": {},
@@ -1434,7 +1434,7 @@
         },
         {
           "id": "87448da4744165",
-          "variant": null,
+          "variant": {},
           "is": "7149f8192509",
           "name": "component-instance",
           "attributes": {},
@@ -1460,7 +1460,7 @@
               "children": [
                 {
                   "id": "87448da4744168",
-                  "variant": null,
+                  "variant": {},
                   "is": "50e32bec2591",
                   "name": "component-instance",
                   "attributes": {},
@@ -1532,7 +1532,7 @@
       "children": [
         {
           "id": "8419ce0726542",
-          "variant": null,
+          "variant": {},
           "is": "2657ec412855",
           "name": "component-instance",
           "attributes": {},
@@ -1545,7 +1545,7 @@
           "children": [
             {
               "id": "8419ce0726543",
-              "variant": null,
+              "variant": {},
               "is": "7149f8192509",
               "name": "component-instance",
               "attributes": {},
@@ -1613,7 +1613,7 @@
             },
             {
               "id": "8419ce0726549",
-              "variant": null,
+              "variant": {},
               "is": "7149f8192509",
               "name": "component-instance",
               "attributes": {},

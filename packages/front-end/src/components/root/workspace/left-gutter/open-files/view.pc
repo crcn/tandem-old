@@ -31,7 +31,7 @@
           "children": [
             {
               "id": "b34e7ef42864191",
-              "variant": null,
+              "variant": {},
               "is": "b34e7ef42585379",
               "name": "component-instance",
               "attributes": {},
@@ -59,7 +59,7 @@
             },
             {
               "id": "b34e7ef42915591",
-              "variant": null,
+              "variant": {},
               "is": "b34e7ef42585379",
               "name": "component-instance",
               "attributes": {},
@@ -76,7 +76,7 @@
             },
             {
               "id": "b34e7ef42919882",
-              "variant": null,
+              "variant": {},
               "is": "b34e7ef42585379",
               "name": "component-instance",
               "attributes": {},
@@ -198,7 +198,7 @@
           "children": [
             {
               "id": "b34e7ef42971516",
-              "variant": null,
+              "variant": {},
               "is": "b34e7ef42958603",
               "name": "component-instance",
               "attributes": {},
@@ -250,7 +250,7 @@
       "children": [
         {
           "id": "b34e7ef42937085",
-          "variant": null,
+          "variant": {},
           "is": "b34e7ef429680",
           "name": "component-instance",
           "attributes": {},
@@ -266,7 +266,7 @@
               "children": [
                 {
                   "id": "b34e7ef43207480",
-                  "variant": null,
+                  "variant": {},
                   "is": "b34e7ef429680",
                   "name": "component-instance",
                   "attributes": {},
@@ -297,7 +297,7 @@
                       "children": [
                         {
                           "id": "d4fd2bd2147997",
-                          "variant": null,
+                          "variant": {},
                           "is": "52e4955c1058165",
                           "name": "component-instance",
                           "attributes": {},
@@ -372,7 +372,7 @@
                 },
                 {
                   "id": "dd67e9cc160",
-                  "variant": null,
+                  "variant": {},
                   "is": "b34e7ef429680",
                   "name": "component-instance",
                   "attributes": {},
@@ -403,7 +403,7 @@
                       "children": [
                         {
                           "id": "dd67e9cc163",
-                          "variant": null,
+                          "variant": {},
                           "is": "52e4955c1058165",
                           "name": "component-instance",
                           "attributes": {},
@@ -536,7 +536,7 @@
               "children": [
                 {
                   "id": "2081a903113591",
-                  "variant": null,
+                  "variant": {},
                   "is": "52e4955c1058165",
                   "name": "component-instance",
                   "attributes": {},
@@ -612,7 +612,7 @@
               "children": [
                 {
                   "id": "52e4955c1058162",
-                  "variant": null,
+                  "variant": {},
                   "is": "e186b96e4079",
                   "name": "component-instance",
                   "attributes": {},
@@ -637,7 +637,7 @@
                 },
                 {
                   "id": "52e4955c1058163",
-                  "variant": null,
+                  "variant": {},
                   "is": "e186b96e4079",
                   "name": "component-instance",
                   "attributes": {},
@@ -687,7 +687,7 @@
               "children": [
                 {
                   "id": "dd67e9cc1579147",
-                  "variant": null,
+                  "variant": {},
                   "is": "bc641d484882",
                   "name": "component-instance",
                   "attributes": {},
@@ -706,7 +706,7 @@
                 },
                 {
                   "id": "dd67e9cc1946596",
-                  "variant": null,
+                  "variant": {},
                   "is": "bc641d4118808",
                   "name": "component-instance",
                   "attributes": {},
@@ -728,7 +728,7 @@
                 },
                 {
                   "id": "dd67e9cc1980089",
-                  "variant": null,
+                  "variant": {},
                   "is": "bc641d4113153",
                   "name": "component-instance",
                   "attributes": {},

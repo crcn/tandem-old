@@ -40,7 +40,7 @@
         },
         {
           "id": "dcd2c13f1117487",
-          "variant": null,
+          "variant": {},
           "is": "dcd2c13f21458",
           "name": "component-instance",
           "attributes": {},

@@ -74,7 +74,7 @@ export type PCComponent = {
   style: KeyValue<any>;
 
   // variant of parent
-  variant?: string[];
+  variant: KeyValue<boolean>;
 
   /**
    * Controller source files, can be any supported language, filtered by compile target.
@@ -170,7 +170,7 @@ export type PCBaseElement<TName extends PCSourceTagNames> = {
 export type PCElement = PCBaseElement<PCSourceTagNames.ELEMENT>;
 
 export type PCComponentInstanceElement = {
-  variant?: string[];
+  variant: KeyValue<boolean>;
 } & PCBaseElement<PCSourceTagNames.COMPONENT_INSTANCE>;
 
 export type PCTextNode = {
@@ -208,13 +208,13 @@ export type PCComputedNoverOverrideMap = {
  *-----------------------------------------*/
 
 export const createPCModule = (
-  children: Array<PCComponent | PCVisibleNode> = []
+  children: Array<PCComponent | PCVisibleNode> = EMPTY_ARRAY
 ): PCModule => ({
   id: generateUID(),
   name: PCSourceTagNames.MODULE,
   version: PAPERCLIP_MODULE_VERSION,
   children,
-  metadata: {}
+  metadata: EMPTY_OBJECT
 });
 
 export const createPCComponent = (
@@ -222,16 +222,17 @@ export const createPCComponent = (
   is?: string,
   style?: KeyValue<string>,
   attributes?: KeyValue<string>,
-  children: Array<PCVariant | PCVisibleNode | PCOverride> = []
+  children: Array<PCVariant | PCVisibleNode | PCOverride> = EMPTY_ARRAY,
 ): PCComponent => ({
   label,
   is: is || "div",
   style: style || EMPTY_OBJECT,
   attributes: attributes || EMPTY_OBJECT,
   id: generateUID(),
+  variant: EMPTY_OBJECT,
   name: PCSourceTagNames.COMPONENT,
   children: children || EMPTY_ARRAY,
-  metadata: {}
+  metadata: EMPTY_OBJECT
 });
 
 export const createPCVariant = (
@@ -242,33 +243,33 @@ export const createPCVariant = (
   name: PCSourceTagNames.VARIANT,
   label,
   isDefault,
-  children: [],
-  metadata: {}
+  children: EMPTY_ARRAY,
+  metadata: EMPTY_OBJECT
 });
 
 export const createPCElement = (
   is: string = "div",
-  style: KeyValue<any> = {},
-  attributes: KeyValue<string> = {},
-  children: (PCVisibleNode | PCOverride)[] = [],
+  style: KeyValue<any> = EMPTY_OBJECT,
+  attributes: KeyValue<string> = EMPTY_OBJECT,
+  children: (PCVisibleNode | PCOverride)[] = EMPTY_ARRAY,
   label?: string
 ): PCElement => ({
   id: generateUID(),
   label,
   is: is || "div",
   name: PCSourceTagNames.ELEMENT,
-  attributes: attributes || {},
-  style: style || {},
-  children: children || [],
-  metadata: {}
+  attributes: attributes || EMPTY_OBJECT,
+  style: style || EMPTY_OBJECT,
+  children: children || EMPTY_ARRAY,
+  metadata: EMPTY_OBJECT
 });
 
 export const createPCComponentInstance = (
   is: string,
-  variant?: string[],
-  style: KeyValue<any> = {},
-  attributes: KeyValue<string> = {},
-  children: PCVisibleNode[] = [],
+  variant: KeyValue<boolean> = EMPTY_OBJECT,
+  style: KeyValue<any> = EMPTY_OBJECT,
+  attributes: KeyValue<string> = EMPTY_OBJECT,
+  children: PCVisibleNode[] = EMPTY_ARRAY,
   metadata?: KeyValue<any>
 ): PCComponentInstanceElement => ({
   id: generateUID(),

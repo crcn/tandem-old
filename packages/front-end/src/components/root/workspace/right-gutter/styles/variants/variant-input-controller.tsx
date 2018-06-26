@@ -1,6 +1,6 @@
 import * as React from "react";
 import { compose, pure, withHandlers, withState } from "recompose";
-import { SyntheticDocument, SyntheticNode, DependencyGraph, getSyntheticSourceNode, isComponent, isPCComponentInstance, getPCNode, getPCVariants, PCComponent, SyntheticInstanceElement, isSyntheticInstanceElement } from "paperclip";
+import { SyntheticDocument, SyntheticNode, DependencyGraph, getSyntheticSourceNode, isComponent, isPCComponentInstance, getPCNode, getPCVariants, PCComponent, SyntheticInstanceElement, isSyntheticInstanceElement, PCVariant } from "paperclip";
 import { Dispatch } from "redux";
 const { VariantOption } = require("./option.pc");
 const { VariantPill } = require("./pill.pc");
@@ -22,6 +22,7 @@ type VariantInputControllerInnerProps = {
   onResetClick: any;
   onFocus: any;
   onBlur: any;
+  onVariantReset: any;
 } & VariantInputControllerOuterProps;
 
 export default compose(
@@ -42,13 +43,17 @@ export default compose(
     },
     onBlur: ({ setEditing }) => () => {
       setEditing(false);
+    },
+    onVariantReset: ({ }) => (variant: PCVariant) => {
+
     }
   }),
-  Base => ({ graph, selectedNodes, editing, onVariantToggle, onFocus, onResetClick, onBlur }: VariantInputControllerInnerProps) => {
+  Base => ({ graph, selectedNodes, editing, onVariantToggle, onFocus, onResetClick, onBlur , onVariantReset }: VariantInputControllerInnerProps) => {
     const node = selectedNodes[0];
     if (!isSyntheticInstanceElement(node)) {
       return null;
     }
+
 
     const instance = getSyntheticSourceNode(node, graph);
     if (!isPCComponentInstance(instance)) {
@@ -73,7 +78,7 @@ export default compose(
     });
 
     const optionsChildren = componentVariants.map((variant) => {
-      return <VariantOption variant={{ ...variant, isDefault: node.variant.indexOf(variant.id) !== -1 }} editable={false} onClick={noop} onToggle={onVariantToggle} />;
+      return <VariantOption variant={{ ...variant, isDefault: node.variant.indexOf(variant.id) !== -1 }} editable={false} onClick={noop} onToggle={onVariantToggle} onReset={onVariantReset} />;
     });
 
     return <Base

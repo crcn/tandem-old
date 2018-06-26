@@ -18,7 +18,7 @@
       "children": [
         {
           "id": "5d6bd010465269",
-          "variant": null,
+          "variant": {},
           "is": "483373f987277",
           "name": "component-instance",
           "attributes": {},
@@ -40,7 +40,7 @@
         },
         {
           "id": "5d6bd010465270",
-          "variant": null,
+          "variant": {},
           "is": "483373f987277",
           "name": "component-instance",
           "attributes": {},

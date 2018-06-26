@@ -16,7 +16,7 @@
       "children": [
         {
           "id": "ff4f91e03148",
-          "variant": null,
+          "variant": {},
           "is": "9b7b527f175442",
           "name": "component-instance",
           "attributes": {},
@@ -64,7 +64,7 @@
               "children": [
                 {
                   "id": "d227ff68826767",
-                  "variant": null,
+                  "variant": {},
                   "is": "67e386c762",
                   "name": "component-instance",
                   "attributes": {},
@@ -114,7 +114,7 @@
               "children": [
                 {
                   "id": "ddec6a12260453",
-                  "variant": null,
+                  "variant": {},
                   "is": "67e386c762",
                   "name": "component-instance",
                   "attributes": {},
@@ -209,7 +209,7 @@
       "children": [
         {
           "id": "d227ff68923389",
-          "variant": null,
+          "variant": {},
           "is": "d227ff68826768",
           "name": "component-instance",
           "attributes": {},
@@ -316,7 +316,7 @@
     },
     {
       "id": "d227ff68569222",
-      "variant": null,
+      "variant": {},
       "is": "97a34b151010442",
       "name": "component-instance",
       "attributes": {},
