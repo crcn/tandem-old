@@ -327,6 +327,10 @@ const evaluateVariants = (instancePath: string, variants: PCVariant[], overrides
   for (const variant of variants) {
     const override = overrides[appendPath(instancePath, variant.id)];
     usedVariant[variant.id] = override && override[PCOverridablePropertyName.VARIANT_IS_DEFAULT] != null ? override[PCOverridablePropertyName.VARIANT_IS_DEFAULT] : variant.isDefault;
+
+    // if (variant.id === "15d6c81f3") {
+    //   console.log("EVAL VAR", appendPath(instancePath, variant.id), override && override[PCOverridablePropertyName.VARIANT_IS_DEFAULT]);
+    // }
   }
   return usedVariant;
 };
@@ -478,6 +482,9 @@ const registerOverrides = (
         );
       }
     } else {
+      // if (overrideInstancePath.indexOf("15d6c81f3") !== -1) {
+      //   console.log(overrideInstancePath, selfPath);
+      // }
       registerOverride(
         overrideNode.variantId,
         overrideNode.propertyName,

@@ -1,10 +1,9 @@
 IMMEDIATE:
 
 * variables
-* fix color picker (it's off)
+* measurement input UI
 * ability to load fonts
   * store in pc config
-* measurement input UI
 * make UI consistent
 * file navigator refactor
 * open files refactor

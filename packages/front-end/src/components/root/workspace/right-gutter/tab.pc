@@ -36,7 +36,7 @@
           "id": "66d16f05",
           "name": "variant",
           "label": "selected",
-          "isDefault": false,
+          "isDefault": true,
           "children": [],
           "metadata": {}
         },

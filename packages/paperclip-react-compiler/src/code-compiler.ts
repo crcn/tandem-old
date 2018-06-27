@@ -391,7 +391,7 @@ const translateContentNode = (
     );
   }
 
-  context = addLine(`var variant = props.variant ? props.variant.split(" ").map(function(label) { return VARIANT_LABEL_ID_MAP[label.trim()] || label.trim(); }) : DEFAULT_VARIANT_IDS;`, context);
+  context = addLine(`var variant = props.variant != null ? props.variant.split(" ").map(function(label) { return VARIANT_LABEL_ID_MAP[label.trim()] || label.trim(); }) : DEFAULT_VARIANT_IDS;`, context);
 
   context = setCurrentScope(contentNode.id, context);
   context = flattenTreeNode(contentNode)

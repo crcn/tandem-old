@@ -30,7 +30,7 @@
           "attributes": {},
           "style": {
             "background": "rgba(0,0,0,0.05)",
-            "position": "static",
+            "position": "relative",
             "height": "180px",
             "width": "100%"
           },
@@ -566,7 +566,7 @@
                 "41979411451593"
               ],
               "value": {
-                "height": "140px"
+                "position": "relative"
               },
               "name": "override",
               "children": []

@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as cx from "classnames";
 import { compose, pure } from "recompose";
 const { ButtonBarItem: ButtonBarItemComponent } = require("./item.pc");
 
@@ -9,16 +10,11 @@ export type ButtonBarOption = {
 
 export default compose(pure, Base => ({ options, value, onChange }) => {
   const children = options.map((item, i) => {
-    let style;
-    if (item.value === value) {
-      style = { background: "#00B5FF" };
-    }
-
     return (
       <ButtonBarItemComponent
         key={item.iconSrc}
         children={item.icon}
-        style={style}
+        variant={cx({ selected: item.value === value, last: i === options.length - 1})}
         onClick={onChange && (() => onChange(item.value))}
       />
     );

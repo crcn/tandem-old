@@ -889,12 +889,12 @@ const maybeOverride = (
   const sourceNode = getPCNode(targetSourceId, graph) as PCVisibleNode;
   const contentNode = getSyntheticContentNode(node, documents);
   const contentSourceNode = getSyntheticSourceNode(contentNode, graph);
-  const variantId = variant && variant.id;
+  const variantId = variant && getNestedTreeNodeById(variant.id, contentSourceNode) && variant.id;
   const defaultVariantIds = isComponent(contentSourceNode) ? getPCVariants(contentSourceNode).filter(variant => variant.isDefault).map(variant => variant.id) : [];
   const variantOverrides = filterNestedNodes(contentSourceNode, (node) => isPCOverride(node) && defaultVariantIds.indexOf(node.variantId) !== -1).filter((override: PCOverride) => last(override.targetIdPath) === sourceNode.id || (override.targetIdPath.length === 0 && sourceNode.id === contentSourceNode.id));
 
 
-  if (node.immutable || variantId || variantOverrides.length || targetSourceId !== node.id) {
+  if (node.immutable || variantId || variantOverrides.length || targetSourceId !== node.source.nodeId) {
     const document = getSyntheticVisibleNodeDocument(node.id, documents);
 
     const nearestComponentInstances = getNearestComponentInstances(
