@@ -15,7 +15,7 @@
     "build-front-end": "webpack",
     "clean": "rm -rf lib; rm -rf node_modules",
     "prepare": "npm run build",
-    "build-dist": "electron-packager . Tandem --out=dist"
+    "build-dist": "electron-packager . Tandem --out=dist --overwrite"
   },
   "author": "",
   "license": "ISC",
