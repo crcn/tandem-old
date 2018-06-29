@@ -11,6 +11,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "electron lib/index.js",
     "build": "tsc; webpack",
+    "rebuild-modules": "electron-rebuild",
     "build-front-end": "webpack",
     "clean": "rm -rf lib; rm -rf node_modules",
     "prepare": "npm run build",
@@ -27,6 +28,7 @@
     "electron-devtools-installer": "^2.2.3",
     "electron-packager": "^12.1.0",
     "express": "^4.16.3",
+    "font-manager": "^0.3.0",
     "fs-extra": "^6.0.1",
     "fsbox": "^10.0.2",
     "get-port": "^3.2.0",
@@ -36,10 +38,12 @@
     "redux-saga": "^0.16.0",
     "tandem-common": "^10.0.2",
     "tandem-front-end": "^10.0.3",
-    "webpack-dev-server": "2.x.x"
+    "webpack-dev-server": "2.x.x",
+    "webpack-node-externals": "^1.7.2"
   },
   "devDependencies": {
     "css-loader": "^0.28.11",
+    "electron-rebuild": "^1.7.3",
     "file-loader": "^1.1.11",
     "html-webpack-plugin": "^3.2.0",
     "null-loader": "^0.1.1",

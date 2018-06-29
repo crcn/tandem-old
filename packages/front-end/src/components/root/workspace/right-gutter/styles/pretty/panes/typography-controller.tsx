@@ -4,11 +4,14 @@ import { ButtonBarOption } from "../../../../../../inputs/button-bar/controller"
 import { DropdownMenuOption } from "../../../../../../inputs/dropdown/controller";
 import { compose, pure, withHandlers } from "recompose";
 import { cssPropertyChangeCompleted, cssPropertyChanged } from "actions";
+import { FontFamily } from "state";
 const { TextLeftIcon, TextCenterIcon, TextJustifyIcon, TextRightIcon } = require("../../../../../../../icons/index.pc");
 
 const FONT_FAMILIES: DropdownMenuOption[] = ["Helvetica", "Roboto"].map(
   value => ({ label: value, value })
 );
+
+const getFontFamilyOptions = memoize((fontFamiles: FontFamily[]) => fontFamiles.map(family => ({ label: family.name, value: family.name })).sort((a, b) => a.label > b.label ? 1 : -1));
 
 const FONT_WEIGHTS: DropdownMenuOption[] = ["100", "200", "300", "400"].map(
   value => ({ label: value, value })
@@ -49,12 +52,12 @@ export default compose(
       dispatch(cssPropertyChangeCompleted(name, value));
     }
   }),
-  Base => ({ selectedNodes, onPropertyChange, onPropertyChangeComplete }) => {
+  Base => ({ selectedNodes, onPropertyChange, onPropertyChangeComplete, fontFamilies }) => {
     const node = selectedNodes[0];
     return (
       <Base
         familyInputProps={{
-          options: FONT_FAMILIES,
+          options: getFontFamilyOptions(fontFamilies),
           value: node.style["font-family"],
           onChange: propertyChangeCallback("font-family", onPropertyChange),
           onChangeComplete: propertyChangeCallback(

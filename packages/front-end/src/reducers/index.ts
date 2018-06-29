@@ -1145,6 +1145,16 @@ export const canvasReducer = (state: RootState, action: Action) => {
 
       if (queuedScopeSelect) {
         state = selectInsertedSyntheticVisibleNodes(queuedScopeSelect.previousState, state, queuedScopeSelect.scope);
+      } else {
+
+        // ensure that synthetic nodes still exist, otherwise remove them
+        // from selection.
+        for (const nodeId of state.selectedNodeIds) {
+          if (!getSyntheticNodeById(nodeId, state.documents)) {
+            state = setSelectedSyntheticVisibleNodeIds(state);
+            break;
+          }
+        }
       }
 
       return updateRootState({ queuedScopeSelect: null }, state);

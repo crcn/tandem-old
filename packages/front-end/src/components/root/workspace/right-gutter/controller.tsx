@@ -37,6 +37,7 @@ export default compose(
   return <Base stylesProps={{
     dispatch,
     syntheticDocument,
+    fontFamilies: root.fontFamilies,
     selectedNodes,
     selectedVariant: root.selectedVariant,
     graph: root.graph,

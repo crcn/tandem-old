@@ -1,6 +1,5 @@
 IMMEDIATE:
 
-* history
 * AJ handoff
 * Rust interp
 * more fonts (look up)

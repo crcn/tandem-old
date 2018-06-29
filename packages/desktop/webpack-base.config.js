@@ -1,7 +1,10 @@
 const {resolve} = require('path');
 const webpack   = require('webpack');
+const nodeExternals = require('webpack-node-externals');
+
 
 module.exports = {
+  externals: [nodeExternals()],
   entry: {
     entry: [__dirname + '/src/front-end/entry.ts']
   },

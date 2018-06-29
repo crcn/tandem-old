@@ -49,10 +49,8 @@ import {
   updateSyntheticVisibleNodeMetadata,
   isSyntheticVisibleNodeMovable,
   isSyntheticVisibleNodeResizable,
-  updateFrame,
   diffTreeNode,
   TreeNodeOperationalTransformType,
-  InsertChildNodeOperationalTransform,
   PCSourceTagNames,
   patchTreeNode,
   getSyntheticDocumentById,
@@ -159,6 +157,10 @@ export type Confirm = {
   message: string;
 };
 
+export type FontFamily = {
+  name: string;
+};
+
 export type RootState = {
   editorWindows: EditorWindow[];
   mount: Element;
@@ -176,6 +178,7 @@ export type RootState = {
 
   // TODO - this should be actual node instances
   selectedNodeIds: string[];
+  fontFamilies?: FontFamily[];
   selectedFileNodeIds: string[];
   selectedComponentVariantName?: string;
   projectDirectory?: Directory;
@@ -303,37 +306,26 @@ const setOpenFileContent = (dep: Dependency<any>, state: RootState) =>
 const addHistory = (oldGraph: DependencyGraph, newGraph: DependencyGraph, state: RootState) => {
   const items = state.history.items.slice(0, state.history.index);
 
-  const modifiedDeps = getModifiedDependencies(newGraph, oldGraph);
-
   const prevSnapshotItem: GraphHistoryItem = getNextHistorySnapshot(items);
-  let historyItem: GraphHistoryItem;
 
   if (!items.length || (prevSnapshotItem && items.length - items.indexOf(prevSnapshotItem) > SNAPSHOT_GAP)) {
+    items.push({
+      snapshot: oldGraph
+    });
+  }
 
-    const snapshot = {};
-    for (const dep of modifiedDeps) {
-      snapshot[dep.uri] = dep;
-    }
-
-    historyItem = {
-      snapshot
-    };
-
-  } else {
-    const transforms = {};
-    for (const dep of modifiedDeps) {
-      transforms[dep.uri] = diffTreeNode(oldGraph[dep.uri].content, dep.content, EMPTY_OBJECT);
-    }
-
-    historyItem = {
-      transforms
-    }
+  const modifiedDeps = getModifiedDependencies(newGraph, oldGraph);
+  const transforms = {};
+  for (const dep of modifiedDeps) {
+    transforms[dep.uri] = diffTreeNode(oldGraph[dep.uri].content, dep.content, EMPTY_OBJECT);
   }
 
   return updateRootState({
     history: {
       index: items.length + 1,
-      items: [...items, historyItem]
+      items: [...items, {
+        transforms
+      }]
     }
   }, state);
 };
@@ -352,12 +344,11 @@ const moveDependencyRecordHistory = (
   pos: number,
   state: RootState
 ): RootState => {
-  const newIndex = clamp(state.history.index + pos, 0, state.history.items.length);
-  const items = state.history.items.slice(0, newIndex + 1);
+  const newIndex = clamp(state.history.index + pos, 1, state.history.items.length);
+  const items = state.history.items.slice(0, newIndex);
   const snapshotItem = getNextHistorySnapshot(items);
-  const transformItems = items.slice(items.indexOf(snapshotItem) + 1);
-
-  console.log(items);
+  const snapshotIndex = items.indexOf(snapshotItem);
+  const transformItems = items.slice(snapshotIndex + 1);
 
   const graphSnapshot = transformItems.reduce((graph, { transforms }) => {
     const newGraph = {};
@@ -370,8 +361,6 @@ const moveDependencyRecordHistory = (
 
     return newGraph;
   }, snapshotItem.snapshot);
-
-  console.log("COMP SNAP", graphSnapshot, transformItems);
 
   state = updateDependencyGraph(graphSnapshot, state);
 
