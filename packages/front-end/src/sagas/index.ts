@@ -5,6 +5,7 @@ import {
   CANVAS_TOOL_PREVIEW_BUTTON_CLICKED,
   CanvasToolArtboardTitleClicked
 } from "../actions";
+import { popupSaga } from "./popup";
 import { projectSaga } from "./project";
 import { shortcutSaga } from "./shortcuts";
 import { copyPasteSaga } from "./copy-paste";
@@ -23,6 +24,7 @@ export const createRootSaga = (options: FrontEndSagaOptions) => {
   return function* rootSaga() {
     yield fork(copyPasteSaga);
     yield fork(reactSaga);
+    yield fork(popupSaga);
     // yield fork(PaperclipStateSaga);
     yield fork(projectSaga);
     yield fork(shortcutSaga);

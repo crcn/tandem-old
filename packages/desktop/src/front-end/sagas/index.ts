@@ -156,17 +156,11 @@ function* handleSaveShortcut() {
     yield take(SHORTCUT_SAVE_KEY_DOWN);
     const state: RootState = yield select();
     const activeEditor = getActiveEditorWindow(state);
-    const uri = activeEditor.activeFilePath;
-
-    // TODO - post save
-    if (!uri) {
-      continue;
-    }
-    const openFile = getOpenFile(uri, state);
-
-    if (openFile.newContent) {
-      yield call(saveFile, uri, openFile.newContent);
-      yield put(savedFile(uri));
+    for (const openFile of state.openFiles) {
+      if (openFile.newContent) {
+        yield call(saveFile, openFile.uri, openFile.newContent);
+        yield put(savedFile(openFile.uri));
+      }
     }
   }
 }

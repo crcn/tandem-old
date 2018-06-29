@@ -52,6 +52,8 @@ import {
   isValueOverride,
   PCComponentInstanceElement,
   getPCVariantOverrides,
+  filterPCNodes,
+  isPCComponentInstance,
 } from "./dsl";
 import {
   SyntheticVisibleNode,
@@ -714,7 +716,7 @@ export const persistInsertNode = <TState extends PCEditorState>(
 
 export const persistAddVariant = <TState extends PCEditorState>(contentNode: SyntheticVisibleNode, state: TState): TState => {
   const component = getSyntheticSourceNode(contentNode, state.graph);
-  state = replaceDependencyGraphPCNode(appendChildNode(createPCVariant(), component), component, state);
+  state = replaceDependencyGraphPCNode(appendChildNode(createPCVariant(null, true), component), component, state);
   return state;
 };
 
@@ -1149,6 +1151,24 @@ export const persistSyntheticVisibleNodeStyle = <TState extends PCEditorState>(
 
   // todo - need to consider variants here
   return replaceDependencyGraphPCNode(updatedNode, updatedNode, state);
+};
+
+export const canRemoveSyntheticVisibleNode = <TState extends PCEditorState>(
+  node: SyntheticVisibleNode,
+  state: TState
+) => {
+
+  const sourceNode = getSyntheticSourceNode(node, state.graph);
+
+  if (!isComponent(sourceNode)) {
+    return true;
+  }
+
+  const instancesOfComponent = filterPCNodes(state.graph, node => {
+    return (isPCComponentInstance(node) || isComponent(node)) && node.is === sourceNode.id;
+  });
+
+  return instancesOfComponent.length === 0;
 };
 
 export const persistRemoveSyntheticVisibleNode = <TState extends PCEditorState>(

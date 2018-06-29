@@ -25,17 +25,12 @@ import {
   getBoundsSize,
   centerTransformZoom,
   createZeroBounds,
-  getTreeNodeHeight,
-  flattenTreeNode,
-  shiftBounds,
-  shiftPoint,
-  flipPoint,
-  moveBounds,
   FSItem,
-  FSItemNamespaces,
   getTreeNodePath,
+  KeyValue,
   updateNestedNodeTrail,
-  getTreeNodeFromPath
+  getTreeNodeFromPath,
+  EMPTY_OBJECT
 } from "tandem-common";
 import {
   SyntheticVisibleNode,
@@ -67,7 +62,8 @@ import {
   getFramesByDependencyUri,
   isPaperclipUri,
   PCVisibleNode,
-  PCVariant
+  PCVariant,
+  TreeNodeOperationalTransform
 } from "paperclip";
 import {
   CanvasToolOverlayMouseMoved,
@@ -98,6 +94,7 @@ export enum FrameMode {
 }
 
 export const REGISTERED_COMPONENT = "REGISTERED_COMPONENT";
+export const SNAPSHOT_GAP = 50;
 
 export enum SyntheticVisibleNodeMetadataKeys {
   EDITING_LABEL = "editingLabel",
@@ -126,13 +123,14 @@ export type InsertFileInfo = {
   directoryId: string;
 };
 
-export type DependencyHistory = {
-  index: number;
-  snapshots: Dependency<any>[];
+export type GraphHistoryItem = {
+  snapshot?: DependencyGraph;
+  transforms?: KeyValue<TreeNodeOperationalTransform[]>;
 };
 
 export type GraphHistory = {
-  [identifier: string]: DependencyHistory;
+  index: number;
+  items: GraphHistoryItem[];
 };
 
 export type Editor = {
@@ -150,12 +148,24 @@ export type EditorWindow = {
   container?: HTMLElement;
 };
 
+export enum ConfirmType {
+  ERROR,
+  WARNING,
+  SUCCESS
+};
+
+export type Confirm = {
+  type: ConfirmType;
+  message: string;
+};
+
 export type RootState = {
   editorWindows: EditorWindow[];
   mount: Element;
   openFiles: OpenFile[];
   toolType?: ToolType;
   activeEditorFilePath?: string;
+  confirm?: Confirm;
   showSidebar?: boolean;
 
   // TODO - may need to be moved to EditorWindow
@@ -216,7 +226,7 @@ export const persistRootState = (
     updateRootState(persistPaperclipState(state), state)
   );
   const modifiedDeps = getModifiedDependencies(state.graph, oldGraph);
-  state = addHistory(state, modifiedDeps.map(dep => oldGraph[dep.uri]));
+  state = addHistory(oldGraph, state.graph, state);
   state = modifiedDeps.reduce(
     (state, dep: Dependency<any>) => setOpenFileContent(dep, state),
     state
@@ -290,65 +300,87 @@ const setOpenFileContent = (dep: Dependency<any>, state: RootState) =>
     state
   );
 
-const addHistory = (root: RootState, modifiedDeps: Dependency<any>[]) => {
-  return modifiedDeps.reduce((state, dep) => {
-    const history: DependencyHistory = state.history[dep.uri] || {
-      index: 0,
-      snapshots: EMPTY_ARRAY
+const addHistory = (oldGraph: DependencyGraph, newGraph: DependencyGraph, state: RootState) => {
+  const items = state.history.items.slice(0, state.history.index);
+
+  const modifiedDeps = getModifiedDependencies(newGraph, oldGraph);
+
+  const prevSnapshotItem: GraphHistoryItem = getNextHistorySnapshot(items);
+  let historyItem: GraphHistoryItem;
+
+  if (!items.length || (prevSnapshotItem && items.length - items.indexOf(prevSnapshotItem) > SNAPSHOT_GAP)) {
+
+    const snapshot = {};
+    for (const dep of modifiedDeps) {
+      snapshot[dep.uri] = dep;
+    }
+
+    historyItem = {
+      snapshot
     };
 
-    const snapshots = [...history.snapshots.slice(0, history.index), dep];
+  } else {
+    const transforms = {};
+    for (const dep of modifiedDeps) {
+      transforms[dep.uri] = diffTreeNode(oldGraph[dep.uri].content, dep.content, EMPTY_OBJECT);
+    }
 
-    return updateRootState(
-      {
-        history: {
-          [dep.uri]: {
-            index: snapshots.length,
-            snapshots
-          }
-        }
-      },
-      state
-    );
-  }, root);
-};
-
-const moveDependencyRecordHistory = (
-  uri: string,
-  pos: number,
-  root: RootState
-): RootState => {
-  const record = root.history[uri];
-  if (!record) {
-    return root;
+    historyItem = {
+      transforms
+    }
   }
 
-  const index = Math.max(
-    0,
-    Math.min(record.snapshots.length, record.index + pos)
-  );
+  return updateRootState({
+    history: {
+      index: items.length + 1,
+      items: [...items, historyItem]
+    }
+  }, state);
+};
 
-  // if index exceeds snapshot count, then we're at the end.
-  const dep = record.snapshots[index] || root.graph[uri];
+const getNextHistorySnapshot = (items: GraphHistoryItem[]) => {
 
-  root = updateRootState(
-    {
-      history: {
-        [uri]: {
-          ...record,
-          index
-        }
-      },
-      selectedFileNodeIds: [],
-      selectedNodeIds: [],
-      hoveringNodeIds: []
-    },
-    root
-  );
+  for (let i = items.length; i--;) {
+    const prevHistoryItem = items[i];
+    if (prevHistoryItem.snapshot) {
+      return items[i];
+    }
+  }
+}
 
-  root = setOpenFileContent(dep, root);
-  root = replaceDependency(dep, root);
-  return root;
+const moveDependencyRecordHistory = (
+  pos: number,
+  state: RootState
+): RootState => {
+  const newIndex = clamp(state.history.index + pos, 0, state.history.items.length);
+  const items = state.history.items.slice(0, newIndex + 1);
+  const snapshotItem = getNextHistorySnapshot(items);
+  const transformItems = items.slice(items.indexOf(snapshotItem) + 1);
+
+  console.log(items);
+
+  const graphSnapshot = transformItems.reduce((graph, { transforms }) => {
+    const newGraph = {};
+    for (const uri in transforms) {
+      newGraph[uri] = {
+        ...graph[uri],
+        content: patchTreeNode(transforms[uri], graph[uri].content)
+      };
+    }
+
+    return newGraph;
+  }, snapshotItem.snapshot);
+
+  console.log("COMP SNAP", graphSnapshot, transformItems);
+
+  state = updateDependencyGraph(graphSnapshot, state);
+
+  state = updateRootState({ history: {
+    ...state.history,
+    index: newIndex
+  }}, state);
+
+  return state;
 };
 
 const DEFAULT_CANVAS: Canvas = {
@@ -360,16 +392,18 @@ const DEFAULT_CANVAS: Canvas = {
   }
 };
 
+export const confirm = (message: string, type: ConfirmType, state: RootState) => updateRootState({ confirm: { message, type }}, state);
+
 export const undo = (root: RootState) =>
   root.editorWindows.reduce(
     (state, editor) =>
-      moveDependencyRecordHistory(editor.activeFilePath, -1, root),
+      moveDependencyRecordHistory(-1, root),
     root
   );
 export const redo = (root: RootState) =>
   root.editorWindows.reduce(
     (state, editor) =>
-      moveDependencyRecordHistory(editor.activeFilePath, 1, root),
+      moveDependencyRecordHistory(1, root),
     root
   );
 

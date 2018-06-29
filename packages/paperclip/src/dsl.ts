@@ -15,7 +15,8 @@ import {
   removeNestedTreeNode,
   reduceTree,
   findTreeNodeParent,
-  filterTreeNodeParents
+  filterTreeNodeParents,
+  NodeFilter
 } from "tandem-common";
 import { mapValues, merge, uniq, isEqual } from "lodash";
 import { Dependency, DependencyGraph, updateGraphDependency } from "./graph";
@@ -488,6 +489,16 @@ export const getPCNode = (nodeId: string, graph: DependencyGraph) => {
     return null;
   }
   return getNestedTreeNodeById(nodeId, dep.content) as PCNode;
+};
+
+export const filterPCNodes = (graph: DependencyGraph, filter: NodeFilter<PCNode>): PCNode[] => {
+  const found = [];
+  for (const uri in graph) {
+    const dep = graph[uri];
+    found.push(...filterNestedNodes(dep.content, filter));
+  }
+
+  return found;
 };
 
 export const getPCNodeModule = (nodeId: string, graph: DependencyGraph) => {

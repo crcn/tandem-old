@@ -34,8 +34,12 @@ setup<DesktopRootState>(
   editorWindows: [],
   frames: [],
   documents: [],
-  graph: {},
-  history: {},
+  graph: {
+  },
+  history: {
+    index: 0,
+    items: []
+  },
   openFiles: [],
   fileCache: {},
   selectedComponentId: null

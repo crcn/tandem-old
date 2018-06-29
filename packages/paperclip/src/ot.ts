@@ -111,23 +111,28 @@ export const createSetNodePropertyOperationalTransform = (
 const _diffTreeNodeMemos = {};
 
 export const diffTreeNode = memoize(
-  (oldNode: SyntheticBaseNode | PCNode, newNode: SyntheticBaseNode | PCNode) => {
-    const ots = _diffTreeNode(oldNode, newNode, []);
+  (oldNode: SyntheticBaseNode | PCNode, newNode: SyntheticBaseNode | PCNode, ignoreDiffKeys = IGNORE_DIFF_KEYS) => {
+    const ots = _diffTreeNode(oldNode, newNode, [], [], ignoreDiffKeys);
     return ots;
   }
 );
 
-const PROHIBITED_DIFF_KEYS = {
+const IGNORE_DIFF_KEYS = {
   children: true,
   id: true,
   metadata: true
+};
+
+const PROHIBITED_DIFF_KEYS = {
+  children: true
 };
 
 const _diffTreeNode = (
   oldNode: SyntheticBaseNode | PCNode,
   newNode: SyntheticBaseNode | PCNode,
   nodePath: number[],
-  ots: TreeNodeOperationalTransform[] = []
+  ots: TreeNodeOperationalTransform[] = [],
+  ignoreDiffKeys: any
 ): TreeNodeOperationalTransform[] => {
   if (oldNode === newNode) {
     return ots;
@@ -138,7 +143,7 @@ const _diffTreeNode = (
   }
 
   for (const key in newNode) {
-    if (PROHIBITED_DIFF_KEYS[key]) {
+    if (ignoreDiffKeys[key] || PROHIBITED_DIFF_KEYS[key]) {
       continue;
     }
     const oldValue = oldNode[key];
@@ -181,7 +186,8 @@ const _diffTreeNode = (
         oldChild,
         uot.newValue,
         [...nodePath, uot.patchedOldIndex],
-        ots
+        ots,
+        ignoreDiffKeys
       );
 
       if (uot.index !== uot.patchedOldIndex) {

@@ -6,7 +6,10 @@ init({
   editorWindows: [],
   selectedNodeIds: [],
   selectedFileNodeIds: [],
-  history: {},
+  history: {
+    index: 0,
+    items: []
+  },
   openFiles: [],
   frames: [],
   documents: [],

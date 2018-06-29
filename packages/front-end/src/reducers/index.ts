@@ -171,7 +171,9 @@ import {
   RegisteredComponent,
   closeFile,
   queueSelectInsertedSyntheticVisibleNodes,
-  shiftActiveEditorTab
+  shiftActiveEditorTab,
+  confirm,
+  ConfirmType
 } from "../state";
 import {
   PCSourceTagNames,
@@ -233,7 +235,10 @@ import {
   persistRemoveVariant,
   SyntheticInstanceElement,
   persistToggleVariantDefault,
-  persistRemoveVariantOverride
+  persistRemoveVariantOverride,
+  PCComponent,
+  getPCVariants,
+  canRemoveSyntheticVisibleNode
 } from "paperclip";
 import {
   getTreeNodePath,
@@ -288,13 +293,8 @@ import {
   stringifyObject,
   arrayRemove
 } from "tandem-common";
-import {clamp} from "lodash";
+import {clamp, last} from "lodash";
 
-const DEFAULT_RECT_COLOR = "#CCC";
-const INSERT_TEXT_OFFSET = {
-  left: -5,
-  top: -10
-};
 
 const PANE_SENSITIVITY = process.platform === "win32" ? 0.1 : 1;
 const ZOOM_SENSITIVITY = process.platform === "win32" ? 2500 : 250;
@@ -708,6 +708,7 @@ export const canvasReducer = (state: RootState, action: Action) => {
       const frame = getSyntheticVisibleNodeFrame(node, state.frames);
       const contentNode = getSyntheticNodeById(frame.contentNodeId, state.documents);
       state = persistRootState(state => persistAddVariant(contentNode, state), state);
+      state = updateRootState({ selectedVariant: last(getPCVariants(getSyntheticSourceNode(contentNode, state.graph))) }, state);
       return state;
     }
 
@@ -1567,12 +1568,16 @@ const shortcutReducer = (state: RootState, action: Action): RootState => {
       if (isInputSelected(state) || state.selectedNodeIds.length === 0) {
         return state;
       }
+      const firstNode = getSyntheticNodeById(
+        state.selectedNodeIds[0],
+        state.documents
+      );
+
+      if (!canRemoveSyntheticVisibleNode(firstNode, state)) {
+        return confirm("Please remove all instances of component before deleting it.", ConfirmType.ERROR, state);
+      }
 
       return persistRootState(state => {
-        const firstNode = getSyntheticNodeById(
-          state.selectedNodeIds[0],
-          state.documents
-        );
 
         const document = getSyntheticVisibleNodeDocument(
           firstNode.id,

@@ -1,6 +1,9 @@
 IMMEDIATE:
 
-* connect save to all PC files
+* history
+* AJ handoff
+* Rust interp
+* more fonts (look up)
 * variables
 * measurement input UI
 * ability to load fonts
@@ -8,11 +11,8 @@ IMMEDIATE:
 * make UI consistent
 * file navigator refactor
 * open files refactor
-* variables pane
 * prohibit instance layers from being deleted
-* context menu
 * drop shadows input
-* monaco editor in app
 * preview in app
   * "preview mode" banner
   * "click to interact" button
