@@ -118,7 +118,8 @@ import {
   VariantClicked,
   REMOVE_VARIANT_BUTTON_CLICKED,
   COMPONENT_INSTANCE_VARIANT_TOGGLED,
-  INSTANCE_VARIANT_RESET_CLICKED
+  INSTANCE_VARIANT_RESET_CLICKED,
+  SHORTCUT_TOGGLE_SIDEBAR
 } from "../actions";
 import {
   queueOpenFile,
@@ -855,6 +856,15 @@ export const canvasReducer = (state: RootState, action: Action) => {
         editor.activeFilePath,
         state
       );
+      return state;
+    }
+
+    case SHORTCUT_TOGGLE_SIDEBAR: {
+      state = {
+        ...state,
+        showSidebar: state.showSidebar !== false ? false : true
+      };
+
       return state;
     }
 

@@ -21,7 +21,10 @@ export default compose(
     return <div>
       <Base
         leftGutterProps={{
-          children: <LeftGutterComponent
+          style: {
+            display: root.showSidebar === false ? "none" : "block"
+          },
+          children: root.showSidebar === false ? [] : <LeftGutterComponent
             editorWindows={root.editorWindows}
             rootDirectory={root.projectDirectory}
             dispatch={dispatch}

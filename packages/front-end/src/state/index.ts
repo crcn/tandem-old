@@ -156,6 +156,7 @@ export type RootState = {
   openFiles: OpenFile[];
   toolType?: ToolType;
   activeEditorFilePath?: string;
+  showSidebar?: boolean;
 
   // TODO - may need to be moved to EditorWindow
   selectedVariant?: PCVariant;

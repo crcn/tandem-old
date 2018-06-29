@@ -1,5 +1,6 @@
 IMMEDIATE:
 
+* connect save to all PC files
 * variables
 * measurement input UI
 * ability to load fonts

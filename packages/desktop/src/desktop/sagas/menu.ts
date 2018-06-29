@@ -154,6 +154,13 @@ export function* shortcutsSaga() {
           { type: "separator" },
           { role: "togglefullscreen" },
           {
+            label: "Toggle Side Bar",
+            accelerator: "meta+b",
+            click: () => {
+              emit(shortcutKeyDown("SHORTCUT_TOGGLE_SIDEBAR"));
+            }
+          },
+          {
             label: "Select Next Tab",
             accelerator: "meta+shift+]",
             click: (a, window, event) => {
