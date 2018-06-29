@@ -26,7 +26,6 @@ UX PROBLEMS:
 * hard to find components. Need to include in quick search.
 
 
-
 BUGS:
 
 * prohibit immutable elements from being deleted
@@ -35,6 +34,12 @@ BUGS:
 * tab + open files syncing fix
 * open file modal should have editorWindowId prop instead of EditorWindows holding preferences to open files.
 * Elements should be draggable of their position is absolute|fixed|relative
+
+Stability:
+
+* CI integration
+* istanbul coverage
+* more tests
 
 OPTIMIZATIONS:
 

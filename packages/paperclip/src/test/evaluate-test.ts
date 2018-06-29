@@ -101,56 +101,56 @@ describe(__filename + "#", () => {
     );
   });
 
-  it("can evaluate an instance of a component", () => {
-    const cleanIds = nodeIdCleaner();
+  // it("can evaluate an instance of a component", () => {
+  //   const cleanIds = nodeIdCleaner();
 
-    const component = cleanIds(
-      createPCComponent("Test", "body", { a: "b" }, { c: "a" }, [
-        createPCElement("div", { a: "b2" }, { c: "d" })
-      ])
-    );
+  //   const component = cleanIds(
+  //     createPCComponent("Test", "body", { a: "b" }, { c: "a" }, [
+  //       createPCElement("div", { a: "b2" }, { c: "d" })
+  //     ])
+  //   );
 
-    const module = cleanIds(
-      createPCModule([
-        component,
-        createPCComponentInstance(component.id, null, { a: "b3" }, { c: "d" })
-      ])
-    );
+  //   const module = cleanIds(
+  //     createPCModule([
+  //       component,
+  //       createPCComponentInstance(component.id, null, { a: "b3" }, { c: "d" })
+  //     ])
+  //   );
 
-    const document = evaluatePCModule(module, createFakeGraph(module));
+  //   const document = evaluatePCModule(module, createFakeGraph(module));
 
-    expect(document.children.length).to.eql(2);
+  //   expect(document.children.length).to.eql(2);
 
-    expect(nodeIdCleaner()(document.children[1])).to.eql(
-      nodeIdCleaner()(
-        createSyntheticElement(
-          "body",
-          { nodeId: "000000003" },
-          { a: "b3" },
-          { c: "d" },
-          [
-            createSyntheticElement(
-              "div",
-              { nodeId: "000000001" },
-              { a: "b2" },
-              { c: "d" },
-              [],
-              undefined,
-              false,
-              true,
-              false,
-              true
-            )
-          ],
-          "Test",
-          true,
-          true,
-          true,
-          false
-        )
-      )
-    );
-  });
+  //   expect(nodeIdCleaner()(document.children[1])).to.eql(
+  //     nodeIdCleaner()(
+  //       createSyntheticElement(
+  //         "body",
+  //         { nodeId: "000000003" },
+  //         { a: "b3" },
+  //         { c: "d" },
+  //         [
+  //           createSyntheticElement(
+  //             "div",
+  //             { nodeId: "000000001" },
+  //             { a: "b2" },
+  //             { c: "d" },
+  //             [],
+  //             undefined,
+  //             false,
+  //             true,
+  //             false,
+  //             true
+  //           )
+  //         ],
+  //         "Test",
+  //         true,
+  //         true,
+  //         true,
+  //         false
+  //       )
+  //     )
+  //   );
+  // });
 
   it("components can extend existing components", () => {
     const cleanIds = nodeIdCleaner();
