@@ -2,7 +2,6 @@ IMMEDIATE:
 
 * AJ handoff
 * Rust interp
-* more fonts (look up)
 * variables
 * measurement input UI
 * ability to load fonts
