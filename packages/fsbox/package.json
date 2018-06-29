@@ -1,6 +1,6 @@
 {
   "name": "fsbox",
-  "version": "10.0.2",
+  "version": "10.0.4",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -19,6 +19,6 @@
     "lodash": "^4.17.10",
     "redux": "^4.0.0",
     "redux-saga": "^0.16.0",
-    "tandem-common": "^10.0.2"
+    "tandem-common": "^10.0.4"
   }
 }

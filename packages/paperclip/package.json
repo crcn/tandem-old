@@ -1,6 +1,6 @@
 {
   "name": "paperclip",
-  "version": "10.0.2",
+  "version": "10.0.4",
   "description": "Paperclip DSL specific for visual development.",
   "main": "index.js",
   "author": "",
@@ -14,16 +14,16 @@
   "dependencies": {
     "@types/mocha": "^5.2.0",
     "@types/node": "^10.3.3",
-    "crc32": "^0.2.2",
     "@types/redux": "^3.6.0",
     "@types/redux-saga": "^0.10.5",
     "chai": "^4.1.2",
-    "fsbox": "^10.0.2",
+    "crc32": "^0.2.2",
+    "fsbox": "^10.0.4",
     "lodash": "^4.17.10",
-    "paperclip-migrator": "^10.0.2",
+    "paperclip-migrator": "^10.0.4",
     "redux": "^4.0.0",
     "redux-saga": "^0.16.0",
-    "tandem-common": "^10.0.2"
+    "tandem-common": "^10.0.4"
   },
   "devDependencies": {
     "husky": "^0.14.3",

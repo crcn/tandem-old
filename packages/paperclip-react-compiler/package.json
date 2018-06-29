@@ -1,6 +1,6 @@
 {
   "name": "paperclip-react-compiler",
-  "version": "10.0.2",
+  "version": "10.0.4",
   "description": "",
   "main": "index.js",
   "bin": {
@@ -25,8 +25,8 @@
     "@types/lodash": "^4.14.108",
     "@types/mocha": "^5.2.0",
     "lodash": "^4.17.10",
-    "paperclip": "^10.0.2",
-    "paperclip-migrator": "^10.0.2",
-    "tandem-common": "^10.0.2"
+    "paperclip": "^10.0.4",
+    "paperclip-migrator": "^10.0.4",
+    "tandem-common": "^10.0.4"
   }
 }
