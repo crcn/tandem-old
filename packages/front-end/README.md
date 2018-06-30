@@ -1,5 +1,10 @@
 IMMEDIATE:
 
+* dts
+  * code compiler watcher
+* expose metadata
+* sync frames & metadata
+* show controllers
 * AJ handoff
 * .tdproject source of truth
   * move pc config to here

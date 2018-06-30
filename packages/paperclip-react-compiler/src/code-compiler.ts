@@ -9,8 +9,6 @@ import {
   PCComponent,
   PCComponentInstanceElement,
   PCSourceTagNames,
-  PCBaseVisibleNode,
-  getModuleComponents,
   PCNode,
   extendsComponent,
   getVisibleChildren,
@@ -31,9 +29,10 @@ import {
   PCComputedNoverOverrideMap,
   PCLabelOverride,
   isPCComponentInstance,
-  isPCComponentOrInstance
+  isPCComponentOrInstance,
+  getPCNodeModule, getPCVariants
 } from "paperclip";
-import { repeat, camelCase, uniq, kebabCase, last, negate } from "lodash";
+import { camelCase, uniq, kebabCase, last, negate } from "lodash";
 import {
   flattenTreeNode,
   EMPTY_OBJECT,
@@ -43,10 +42,9 @@ import {
   filterNestedNodes,
   memoize,
   getParentTreeNode,
-  findTreeNodeParent
 } from "tandem-common";
 import * as path from "path";
-import { SyntheticNode, getPCNodeModule, getPCVariants } from "paperclip";
+import { TranslateOptions,  addWarning, ContentNode, getPublicComponentClassName, getPublicLayerVarName, TranslateContext, getScopedLayerLabelIndex, addOpenTag, addCloseTag, addBuffer, addLine, getInternalVarName, addLineItem, setCurrentScope, addScopedLayerLabel } from "./utils";
 export const compilePaperclipModuleToReact = (
   entry: PCDependency,
   graph: DependencyGraph
@@ -56,32 +54,6 @@ export const compilePaperclipModuleToReact = (
     context
   );
   return context.exports;
-};
-
-type ContentNode = PCVisibleNode | PCComponent;
-
-type TranslateContext = {
-  options: TranslateOptions;
-  buffer: string;
-  newLine?: boolean;
-  currentScope?: string;
-  entry: PCDependency;
-  graph: DependencyGraph;
-  warnings: Error[];
-  scopedLabelRefs: {
-    // scope ID
-    [identifier: string]: {
-      // var name
-      [identifier: string]: string[];
-    };
-  };
-  depth: number;
-};
-
-const INDENT = "  ";
-
-export type TranslateOptions = {
-  compileNonComponents?: boolean;
 };
 
 export const translatePaperclipModuleToReact = (
@@ -134,7 +106,6 @@ const translateModule = (module: PCModule, context: TranslateContext) => {
   context = addMergeFunction(context);
 
   context = addLine("\nvar _EMPTY_OBJECT = {}", context);
-
 
   context = module.children
     .filter(isComponent)
@@ -307,7 +278,6 @@ const translateStyleOverrides = (
 
   return context;
 };
-
 
 const translateStyleVariantOverrides = (
   instance: PCComponentInstanceElement | PCComponent,
@@ -986,11 +956,6 @@ const translateInnerAttributes = (
   return context;
 };
 
-const addWarning = (warning: Error, context: TranslateContext) => ({
-  ...context,
-  warnings: [...context.warnings, warning]
-});
-
 const getNodePropsVarName = (
   node: PCVisibleNode | PCComponent,
   context: TranslateContext
@@ -1028,14 +993,6 @@ const translateVisibleNode = (
   }
 
   return context;
-};
-
-const getNodeProp = (
-  name: string,
-  node: PCVisibleNode | PCComponent,
-  context: TranslateContext
-) => {
-  return `_${node.id}.${name}`;
 };
 
 const translateElement = (
@@ -1081,121 +1038,4 @@ const translateElement = (
     hasVisibleChildren
   );
   return context;
-};
-// const translateElementAttributes = (
-//   node: PCVisibleNode | PCComponent,
-//   context: TranslateContext
-// ) => {
-//   if (
-//     node.name === PCSourceTagNames.ELEMENT ||
-//     node.name === PCSourceTagNames.COMPONENT ||
-//     node.name === PCSourceTagNames.COMPONENT_INSTANCE
-//   ) {
-//     for (const key in node.attributes) {
-//       let value = JSON.stringify(node.attributes[key]);
-//       if (key === "src" && node.is === "img") {
-//         value = `require(${value})`;
-//       }
-//       context = addLine(`${key}: ${value},`, context);
-//     }
-//   }
-//   return context;
-// };
-
-const getPublicComponentClassName = (
-  component: ContentNode,
-  context: TranslateContext
-) => {
-  const varName = getPublicLayerVarName(component.label, component.id, context);
-  return varName.substr(0, 1).toUpperCase() + varName.substr(1);
-};
-
-const getPublicLayerVarName = (
-  label: string,
-  id: string,
-  context: TranslateContext
-) => {
-  const i = getScopedLayerLabelIndex(label, id, context);
-  return camelCase(label || "child") + (i === 0 ? "" : i);
-};
-
-const getScopedLayerLabelIndex = (
-  label: string,
-  id: string,
-  context: TranslateContext
-) => {
-  return context.scopedLabelRefs[context.currentScope][label].indexOf(id);
-};
-
-const getInternalVarName = (node: PCNode) => "_" + node.id;
-
-const addBuffer = (buffer: string = "", context: TranslateContext) => ({
-  ...context,
-  buffer: (context.buffer || "") + buffer
-});
-
-const addLineItem = (buffer: string = "", context: TranslateContext) =>
-  addBuffer((context.newLine ? repeat(INDENT, context.depth) : "") + buffer, {
-    ...context,
-    newLine: buffer.lastIndexOf("\n") === buffer.length - 1
-  });
-const addLine = (buffer: string = "", context: TranslateContext) =>
-  addLineItem(buffer + "\n", context);
-
-const addOpenTag = (
-  buffer: string,
-  context: TranslateContext,
-  indent: boolean = true
-) => ({
-  ...addLineItem(buffer, context),
-  depth: indent ? context.depth + 1 : context.depth
-});
-
-const addCloseTag = (
-  buffer: string,
-  context: TranslateContext,
-  indent: boolean = true
-) =>
-  addLineItem(buffer, {
-    ...context,
-    depth: indent ? context.depth - 1 : context.depth
-  });
-
-const setCurrentScope = (currentScope: string, context: TranslateContext) => ({
-  ...context,
-  currentScope
-});
-
-const addScopedLayerLabel = (
-  label: string,
-  id: string,
-  context: TranslateContext
-) => {
-  if (context.scopedLabelRefs[id]) {
-    return context;
-  }
-
-  const scope = context.currentScope;
-
-  if (!context.scopedLabelRefs[scope]) {
-    context = {
-      ...context,
-      scopedLabelRefs: {
-        [context.currentScope]: EMPTY_OBJECT
-      }
-    };
-  }
-
-  return {
-    ...context,
-    scopedLabelRefs: {
-      [scope]: {
-        ...context.scopedLabelRefs[scope],
-        [label]: uniq([
-          ...(context.scopedLabelRefs[scope][label] || EMPTY_ARRAY),
-          id
-        ])
-      }
-    }
-  };
 };
