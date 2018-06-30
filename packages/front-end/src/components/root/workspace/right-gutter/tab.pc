@@ -4,6 +4,33 @@
   "version": "0.0.3",
   "children": [
     {
+      "id": "bfa9209a5",
+      "is": "5d7d4069129476",
+      "name": "component-instance",
+      "attributes": {},
+      "style": {},
+      "children": [
+        {
+          "id": "bfa9209a6",
+          "propertyName": "isDefault",
+          "targetIdPath": [
+            "66d16f05"
+          ],
+          "value": false,
+          "name": "override",
+          "children": []
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": 220,
+          "top": 278,
+          "right": 336,
+          "bottom": 300.4100033070649
+        }
+      }
+    },
+    {
       "label": "Right Gutter Tab",
       "is": "div",
       "style": {

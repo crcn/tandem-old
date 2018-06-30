@@ -91,6 +91,7 @@ export const RESIZER_MOVED = "RESIZER_MOVED";
 export const RESIZER_STOPPED_MOVING = "RESIZER_STOPPED_MOVING";
 export const COMPONENT_PICKER_BACKGROUND_CLICK =
   "COMPONENT_PICKER_BACKGROUND_CLICK";
+export const UNHANDLED_ERROR = "UNHANDLED_ERROR";
 export const COMPONENT_PICKER_ITEM_CLICK = "COMPONENT_PICKER_ITEM_CLICK";
 export const RESIZER_MOUSE_DOWN = "RESIZER_MOUSE_DOWN";
 export const RESIZER_START_DRGG = "RESIZER_START_DRGG";
@@ -307,6 +308,10 @@ export type ElementTypeChanged = {
   value: string;
 } & Action;
 
+export type UnhandledError = {
+  error: Error;
+} & Action;
+
 export type ResizerPathMoved = {
   originalBounds: Bounds;
   newBounds: Bounds;
@@ -464,6 +469,11 @@ export const componentPickerBackgroundClick = (): Action => ({
 
 export const addVariantButtonClicked = (): Action => ({
   type: ADD_VARIANT_BUTTON_CLICKED
+});
+
+export const unhandledError = (error: Error): UnhandledError => ({
+  error,
+  type: UNHANDLED_ERROR,
 });
 
 export const removeVariantButtonClicked = (): Action => ({

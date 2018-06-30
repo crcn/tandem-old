@@ -534,39 +534,43 @@ export const persistConvertNodeToComponent = <TState extends PCEditorState>(
 ) => {
   let sourceNode = getSyntheticSourceNode(node, state.graph);
 
-    let component = createPCComponent(
-      sourceNode.label,
-      (sourceNode as PCElement).is,
-      sourceNode.style,
-      (sourceNode as PCElement).attributes,
-      sourceNode.name === PCSourceTagNames.TEXT
-        ? [cloneTreeNode(sourceNode)]
-        : (sourceNode.children || []).map(node => cloneTreeNode(node))
-    );
-
-    if (node.isContentNode) {
-      component = updatePCNodeMetadata(sourceNode.metadata, component);
-      sourceNode = updatePCNodeMetadata(
-        {
-          [PCVisibleNodeMetadataKey.BOUNDS]: undefined
-        },
-        sourceNode
-      );
-      return replaceDependencyGraphPCNode(component, sourceNode, state);
-    }
-
-    const module = getPCNodeModule(sourceNode.id, state.graph);
-    state = replaceDependencyGraphPCNode(
-      appendChildNode(addBoundsMetadata(node, component, state), module),
-      module,
-      state
-    );
-
-    const componentInstance = createPCComponentInstance(component.id);
-
-    state = replaceDependencyGraphPCNode(componentInstance, sourceNode, state);
-
+  if (isComponent(sourceNode)) {
     return state;
+  }
+
+  let component = createPCComponent(
+    sourceNode.label,
+    (sourceNode as PCElement).is,
+    sourceNode.style,
+    (sourceNode as PCElement).attributes,
+    sourceNode.name === PCSourceTagNames.TEXT
+      ? [cloneTreeNode(sourceNode)]
+      : (sourceNode.children || []).map(node => cloneTreeNode(node))
+  );
+
+  if (node.isContentNode) {
+    component = updatePCNodeMetadata(sourceNode.metadata, component);
+    sourceNode = updatePCNodeMetadata(
+      {
+        [PCVisibleNodeMetadataKey.BOUNDS]: undefined
+      },
+      sourceNode
+    );
+    return replaceDependencyGraphPCNode(component, sourceNode, state);
+  }
+
+  const module = getPCNodeModule(sourceNode.id, state.graph);
+  state = replaceDependencyGraphPCNode(
+    appendChildNode(addBoundsMetadata(node, component, state), module),
+    module,
+    state
+  );
+
+  const componentInstance = createPCComponentInstance(component.id);
+
+  state = replaceDependencyGraphPCNode(componentInstance, sourceNode, state);
+
+  return state;
 }
 
 const moveBoundsToEmptySpace = (bounds: Bounds, frames: Frame[]) => {
@@ -895,7 +899,6 @@ const maybeOverride = (
   const defaultVariantIds = isComponent(contentSourceNode) ? getPCVariants(contentSourceNode).filter(variant => variant.isDefault).map(variant => variant.id) : [];
   const variantOverrides = filterNestedNodes(contentSourceNode, (node) => isPCOverride(node) && defaultVariantIds.indexOf(node.variantId) !== -1).filter((override: PCOverride) => last(override.targetIdPath) === sourceNode.id || (override.targetIdPath.length === 0 && sourceNode.id === contentSourceNode.id));
 
-
   if (node.immutable || variantId || variantOverrides.length || targetSourceId !== node.source.nodeId) {
     const document = getSyntheticVisibleNodeDocument(node.id, documents);
 
@@ -925,7 +928,7 @@ const maybeOverride = (
         .map((node: SyntheticVisibleNode) => node.source.nodeId)
     ]);
 
-    if (sourceNode.id !== contentSourceNode.id) {
+    if (sourceNode.id !== contentSourceNode.id && (!overrideIdPath.length && sourceNode.id !== mutableInstanceSourceNode.id)) {
       overrideIdPath.push(sourceNode.id);
     }
 
@@ -945,10 +948,11 @@ const maybeOverride = (
           child.name === PCSourceTagNames.OVERRIDE &&
           child.targetIdPath.join("/") === overrideIdPath.join("/") &&
           child.propertyName === propertyName &&
-          (variantId ? child.variantId == variantId : !isValueOverride(child) ||  typeof value !== "object" || Array.isArray(value) || !value || Boolean(intersection(Object.keys(node[child.propertyName]), Object.keys(value)).length))
+          (variantId ? child.variantId == variantId : !isValueOverride(child) ||  /string|boolean|number/.test(typeof value) || Array.isArray(value) || !value || Boolean(intersection(Object.keys(node[child.propertyName]), Object.keys(value)).length))
         );
       }
     ) as PCOverride;
+
 
     value = mapOverride(value, existingOverride);
 

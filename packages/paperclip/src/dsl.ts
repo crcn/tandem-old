@@ -452,7 +452,7 @@ export const getVisibleChildren = memoize(
     node.children.filter(isVisibleNode) as PCVisibleNode[]
 );
 export const getOverrides = memoize(
-  (node: PCNode) => node.children.filter(isPCOverride) as PCOverride[]
+  (node: PCNode) => node.children.filter(isPCOverride).sort((a, b) => a.propertyName === PCOverridablePropertyName.CHILDREN ? 1 : a.variantId ? -1 : b.propertyName === PCOverridablePropertyName.CHILDREN ? 0 : 1) as PCOverride[]
 );
 
 export const getPCVariants = memoize((component: PCComponent | PCVisibleNode): PCVariant[] => component.children.filter(child => child.name === PCSourceTagNames.VARIANT) as PCVariant[]);

@@ -1,8 +1,11 @@
 IMMEDIATE:
 
+* do not sync synthetic metadata
+* fetch frame bounds from source metadata
+* controller UI
+* better place to expose properties
 * dts
   * code compiler watcher
-* expose metadata
 * sync frames & metadata
 * show controllers
 * AJ handoff

@@ -132,6 +132,32 @@
               },
               "name": "override",
               "children": []
+            },
+            {
+              "id": "b3afa1483",
+              "variantId": null,
+              "propertyName": "isDefault",
+              "targetIdPath": [
+                "45055e8e10",
+                "2c3291713",
+                "a9046e846",
+                "c2b44e3f3"
+              ],
+              "value": true,
+              "name": "override",
+              "children": []
+            },
+            {
+              "id": "b3afa1486",
+              "variantId": null,
+              "propertyName": "text",
+              "targetIdPath": [
+                "2b3a6c6d2656",
+                "5d7d4069129475"
+              ],
+              "value": "code\n",
+              "name": "override",
+              "children": []
             }
           ],
           "metadata": {

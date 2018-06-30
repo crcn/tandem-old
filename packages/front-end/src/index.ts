@@ -24,13 +24,21 @@ export type FrontEndOptions = FrontEndSagaOptions &
   FSSandboxOptions;
 export type SideEffectCreator = () => IterableIterator<FrontEndOptions>;
 
+// Dirty, but okay for now. Want to eventually display a prettyier message that reports diagnostics, but
+// that needs to happen _outside_ of the application's scope.
+
+const onError = (error) => {
+  alert(`An unknown error occured, please save changes and restart Tandem. Details:\n${error}`);
+};
+window.onerror = onError;
+
 export const setup = <TState extends RootState>(
   createSideEffects: SideEffectCreator,
   reducer?: Reducer<TState>,
   saga?: () => IterableIterator<any>
 ) => {
   return (initialState: TState) => {
-    const sagaMiddleware = createSagaMiddleware();
+    const sagaMiddleware = createSagaMiddleware({ onError });
     const store = createStore(
       (state: TState, event: Action) => {
         state = rootReducer(state, event) as TState;

@@ -1,15 +1,10 @@
 import { fork, take, select, put } from "redux-saga/effects";
 import { eventChannel } from "redux-saga";
 import { RootState } from "../state";
-import * as path from "path";
-import { getPCImportedChildrenSourceUris } from "paperclip";
 import {
   getSyntheticNodeById,
-  SyntheticVisibleNode,
   PCNodeClip,
   getPCNodeClip,
-  getSyntheticSourceUri,
-  getSyntheticSourceNode
 } from "paperclip";
 import { syntheticNodesPasted } from "../actions";
 

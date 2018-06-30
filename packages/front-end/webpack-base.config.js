@@ -57,7 +57,7 @@ module.exports = {
         options: {
           inline: true
         }
-      }] }
+      }, 'ts-loader'] }
     ]
   }
 };

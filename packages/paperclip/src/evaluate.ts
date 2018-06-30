@@ -33,7 +33,8 @@ import {
   getPCNodeDependency,
   getPCVariants,
   isPCComponentInstance,
-  PCVariant
+  PCVariant,
+  isComponent
 } from "./dsl";
 import {
   KeyValue,
@@ -41,7 +42,6 @@ import {
   stripProtocol,
   addProtocol,
   FILE_PROTOCOL,
-  EMPTY_ARRAY,
   EMPTY_OBJECT
 } from "tandem-common";
 import { uniq } from "lodash";
@@ -110,6 +110,7 @@ const evaluateContentNode = memoize(
         null,
         false,
         true,
+        EMPTY_OBJECT,
         overrides,
         componentMap,
         sourceUri
@@ -138,6 +139,7 @@ const evaluateComponentInstance = (
   instancePath: string,
   immutable: boolean,
   isCreatedFromComponent: boolean,
+  variant: KeyValue<boolean>,
   overrides: EvalOverrides,
   componentMap: ComponentRefs,
   sourceUri: string
@@ -145,16 +147,9 @@ const evaluateComponentInstance = (
   const selfPath = appendPath(instancePath, instance.id);
   const isComponentInstance =
     instance.name === PCSourceTagNames.COMPONENT_INSTANCE;
-
-  // if (overrides[selfPath] && overrides[selfPath][PCOverridablePropertyName.VARIANT]) {
-  //   variantIds = uniq([...overrides[selfPath][PCOverridablePropertyName.VARIANT], ...variantIds]);
-  // } else {
-  //   variantIds = uniq([...selfVariantIds, ...variantIds]);
-  // }
-
-  const variant = evaluateVariants(selfPath, getPCVariants(node), overrides);
-
   const childrenAreImmutable = immutable || node !== instance;
+
+  const selfVariant = evaluateVariants(selfPath, getPCVariants(node), overrides);
   registerOverrides(
     node,
     instancePath,
@@ -162,11 +157,11 @@ const evaluateComponentInstance = (
     childrenAreImmutable,
     true,
     variant,
+    selfVariant,
     overrides,
     componentMap,
     sourceUri
   );
-
 
   if (extendsComponent(node)) {
     const ref = componentMap[node.is];
@@ -177,6 +172,7 @@ const evaluateComponentInstance = (
       instancePath,
       immutable,
       true,
+      variant,
       overrides,
       componentMap,
       ref.sourceUri
@@ -194,7 +190,7 @@ const evaluateComponentInstance = (
       PCOverridablePropertyName.STYLE,
       overrides
     ),
-    variant,
+    selfVariant,
     evaluateAttributes(node, selfPath, overrides, sourceUri),
     children,
     evaluateLabel(instance, selfPath, overrides),
@@ -250,6 +246,7 @@ const evaluateVisibleNode = (
       instancePath,
       immutable,
       isCreatedFromComponent,
+      variant,
       overrides,
       componentMap,
       sourceUri
@@ -327,10 +324,6 @@ const evaluateVariants = (instancePath: string, variants: PCVariant[], overrides
   for (const variant of variants) {
     const override = overrides[appendPath(instancePath, variant.id)];
     usedVariant[variant.id] = override && override[PCOverridablePropertyName.VARIANT_IS_DEFAULT] != null ? override[PCOverridablePropertyName.VARIANT_IS_DEFAULT] : variant.isDefault;
-
-    // if (variant.id === "15d6c81f3") {
-    //   console.log("EVAL VAR", appendPath(instancePath, variant.id), override && override[PCOverridablePropertyName.VARIANT_IS_DEFAULT]);
-    // }
   }
   return usedVariant;
 };
@@ -443,25 +436,28 @@ const registerOverrides = (
   immutable: boolean,
   isCreatedFromComponent: boolean,
   variant: KeyValue<boolean>,
+  selfVariant: KeyValue<boolean>,
   overrides: EvalOverrides,
   componentMap: ComponentRefs,
   sourceUri: string
 ) => {
+
   const overrideNodes = getOverrides(node);
+  const nodeIsComponent = isComponent(node);
+  const childOverridePath = nodeIsComponent ? selfPath : instancePath;
+  const childOverrideVariant = nodeIsComponent ? selfVariant : variant;
 
   for (let i = 0, { length } = overrideNodes; i < length; i++) {
     const overrideNode = overrideNodes[i];
-    if (overrideNode.variantId && !variant[overrideNode.variantId]) {
+    if (overrideNode.variantId && !childOverrideVariant[overrideNode.variantId]) {
       continue;
     }
-
-    const childPath =
-      node.name === PCSourceTagNames.COMPONENT ? selfPath : instancePath;
 
     const overrideInstancePath = appendPath(
       selfPath,
       overrideNode.targetIdPath.join(" ")
     );
+
     if (overrideNode.propertyName === PCOverridablePropertyName.CHILDREN) {
       if (overrideNode.children.length) {
         registerOverride(
@@ -469,10 +465,10 @@ const registerOverrides = (
           overrideNode.propertyName,
           evaluateChildren(
             overrideNode,
-            childPath,
+            childOverridePath,
             immutable,
             isCreatedFromComponent,
-            EMPTY_OBJECT,
+            variant,
             overrides,
             componentMap,
             sourceUri
@@ -482,9 +478,6 @@ const registerOverrides = (
         );
       }
     } else {
-      // if (overrideInstancePath.indexOf("15d6c81f3") !== -1) {
-      //   console.log(overrideInstancePath, selfPath);
-      // }
       registerOverride(
         overrideNode.variantId,
         overrideNode.propertyName,
@@ -541,7 +534,7 @@ const registerOverrides = (
         childPath,
         immutable,
         isCreatedFromComponent,
-        EMPTY_OBJECT,
+        selfVariant,
         overrides,
         componentMap,
         sourceUri
