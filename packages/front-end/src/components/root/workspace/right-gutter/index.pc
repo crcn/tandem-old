@@ -259,66 +259,6 @@
                   "bottom": 632.610825819163
                 }
               }
-            },
-            {
-              "id": "2b3a6c6d2656",
-              "variant": {},
-              "is": "5d7d4069129476",
-              "name": "component-instance",
-              "attributes": {},
-              "style": {
-                "font-family": "Helvetica",
-                "color": "grey",
-                "text-transform": "uppercase",
-                "text-align": "center",
-                "width": "100%",
-                "padding": "8px",
-                "font-size": "9px",
-                "cursor": "pointer"
-              },
-              "children": [
-                {
-                  "id": "2b3a6c6d37365",
-                  "propertyName": "text",
-                  "targetIdPath": [
-                    "5d7d4069129475"
-                  ],
-                  "value": "code\n",
-                  "name": "override",
-                  "children": []
-                },
-                {
-                  "id": "d4782a312",
-                  "variantId": null,
-                  "propertyName": "isDefault",
-                  "targetIdPath": [
-                    "66d16f05"
-                  ],
-                  "value": false,
-                  "name": "override",
-                  "children": []
-                },
-                {
-                  "id": "5f14f7813",
-                  "variantId": "5f14f7812",
-                  "propertyName": "isDefault",
-                  "targetIdPath": [
-                    "66d16f05"
-                  ],
-                  "value": true,
-                  "name": "override",
-                  "children": []
-                }
-              ],
-              "metadata": {
-                "bounds": {
-                  "left": -574.2679967438798,
-                  "top": 532.610825819163,
-                  "right": -474.26799674387985,
-                  "bottom": 632.610825819163
-                }
-              },
-              "label": "Variables"
             }
           ],
           "metadata": {
@@ -563,7 +503,7 @@
           "id": "5f14f7812",
           "name": "variant",
           "label": "code tab",
-          "isDefault": true,
+          "isDefault": false,
           "children": [],
           "metadata": {}
         }
