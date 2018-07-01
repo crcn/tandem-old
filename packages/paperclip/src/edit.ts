@@ -948,7 +948,7 @@ const maybeOverride = (
           child.name === PCSourceTagNames.OVERRIDE &&
           child.targetIdPath.join("/") === overrideIdPath.join("/") &&
           child.propertyName === propertyName &&
-          (variantId ? child.variantId == variantId : !isValueOverride(child) ||  /string|boolean|number/.test(typeof value) || Array.isArray(value) || !value || Boolean(intersection(Object.keys(child.value), Object.keys(value)).length))
+          (!variantId || child.variantId == variantId)
         );
       }
     ) as PCOverride;
@@ -1089,7 +1089,8 @@ export const persistCSSProperty = <TState extends PCEditorState>(
     { [name]: value || undefined },
     variant,
     (style, override) => {
-      return overrideKeyValue(node.style, (override && override.value) || EMPTY_OBJECT, style);
+      const prevStyle = (override && override.value) || EMPTY_OBJECT;
+      return overrideKeyValue(node.style, prevStyle, {...prevStyle, ...style});
     },
     (sourceNode: PCVisibleNode) =>
       ({

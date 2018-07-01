@@ -1,10 +1,16 @@
 IMMEDIATE:
 
-* bindings metadata
+* inherit styles from other elements
+  * add components
+    * show component picker
+  * remove components
+
+* special *bind* attribute
 * do not sync synthetic metadata
 * fetch frame bounds from source metadata
 * controller UI
 * better place to expose properties
+*
 * dts
   * code compiler watcher
 * sync frames & metadata

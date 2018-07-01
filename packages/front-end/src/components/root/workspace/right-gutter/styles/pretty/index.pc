@@ -8,7 +8,6 @@
       "label": "Element Styler",
       "is": "div",
       "style": {
-        "height": "100%",
         "flex-direction": "column",
         "color": "#666"
       },
@@ -23,17 +22,32 @@
           "name": "component-instance",
           "attributes": {},
           "style": {
-            "height": "100%",
+            "font-family": "Helvetica",
+            "display": "flex",
+            "flex-direction": "column",
+            "border-bottom": "1px solid rgba(0,0,0,0.05)",
+            "font-size": "10px",
+            "color": "grey",
             "width": "100%",
-            "padding": "8px",
+            "padding": "none",
             "box-sizing": "border-box",
             "flex": "1",
-            "position": "relative",
-            "display": "none"
+            "position": "relative"
           },
           "children": [
             {
               "id": "9ed18c7c1679",
+              "propertyName": "style",
+              "targetIdPath": [
+                "b6c162d140"
+              ],
+              "value": {},
+              "name": "override",
+              "children": []
+            },
+            {
+              "id": "cfd17e435",
+              "variantId": null,
               "propertyName": "style",
               "targetIdPath": [
                 "b6c162d140"

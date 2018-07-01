@@ -386,6 +386,58 @@
                   },
                   "name": "override",
                   "children": []
+                },
+                {
+                  "id": "cfd17e431",
+                  "variantId": null,
+                  "propertyName": "style",
+                  "targetIdPath": [
+                    "45055e8e8",
+                    "9e4a45489816",
+                    "b6c162d140"
+                  ],
+                  "value": {},
+                  "name": "override",
+                  "children": []
+                },
+                {
+                  "id": "cfd17e432",
+                  "variantId": null,
+                  "propertyName": "style",
+                  "targetIdPath": [
+                    "45055e8e8",
+                    "9e4a45489816",
+                    "b6c162d140"
+                  ],
+                  "value": {},
+                  "name": "override",
+                  "children": []
+                },
+                {
+                  "id": "cfd17e433",
+                  "variantId": null,
+                  "propertyName": "style",
+                  "targetIdPath": [
+                    "45055e8e8",
+                    "9e4a45489816",
+                    "b6c162d140"
+                  ],
+                  "value": {},
+                  "name": "override",
+                  "children": []
+                },
+                {
+                  "id": "cfd17e434",
+                  "variantId": null,
+                  "propertyName": "style",
+                  "targetIdPath": [
+                    "45055e8e8",
+                    "9e4a45489816",
+                    "b6c162d140"
+                  ],
+                  "value": {},
+                  "name": "override",
+                  "children": []
                 }
               ],
               "metadata": {
@@ -495,7 +547,7 @@
           "id": "1a11459311",
           "name": "variant",
           "label": "styles tab",
-          "isDefault": false,
+          "isDefault": true,
           "children": [],
           "metadata": {}
         },

@@ -1102,7 +1102,6 @@ export const canvasReducer = (state: RootState, action: Action) => {
       return state;
     }
     case PC_RUNTIME_EVALUATED: {
-      console.log("runtime evaluated");
 
       const queuedScopeSelect = state.queuedScopeSelect;
 
