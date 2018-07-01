@@ -56,9 +56,9 @@ const highlightFilterMatches = (str, filter: string[]) =>
     })
     .split("%%MATCH%%")
     .map(
-      match =>
+      (match, i) =>
         getFilterReplacer(filter).test(match) ? (
-          <span style={MATCH_STYLE}>{match}</span>
+          <span style={MATCH_STYLE} key={i}>{match}</span>
         ) : (
           match
         )
