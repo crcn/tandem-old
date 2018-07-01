@@ -928,7 +928,7 @@ const maybeOverride = (
         .map((node: SyntheticVisibleNode) => node.source.nodeId)
     ]);
 
-    if (sourceNode.id !== contentSourceNode.id && (!overrideIdPath.length && sourceNode.id !== mutableInstanceSourceNode.id)) {
+    if (sourceNode.id !== contentSourceNode.id && !(overrideIdPath.length === 0 && sourceNode.id === mutableInstanceSourceNode.id)) {
       overrideIdPath.push(sourceNode.id);
     }
 
@@ -948,7 +948,7 @@ const maybeOverride = (
           child.name === PCSourceTagNames.OVERRIDE &&
           child.targetIdPath.join("/") === overrideIdPath.join("/") &&
           child.propertyName === propertyName &&
-          (variantId ? child.variantId == variantId : !isValueOverride(child) ||  /string|boolean|number/.test(typeof value) || Array.isArray(value) || !value || Boolean(intersection(Object.keys(node[child.propertyName]), Object.keys(value)).length))
+          (variantId ? child.variantId == variantId : !isValueOverride(child) ||  /string|boolean|number/.test(typeof value) || Array.isArray(value) || !value || Boolean(intersection(Object.keys(child.value), Object.keys(value)).length))
         );
       }
     ) as PCOverride;

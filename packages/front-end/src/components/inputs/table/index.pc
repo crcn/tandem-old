@@ -11,8 +11,8 @@
         "flex-grow": "1",
         "text-align": "center",
         "border-right": "1px solid rgba(0,0,0,0.1)",
-        "padding-top": "8px",
-        "padding-bottom": "8px",
+        "padding-top": "4px",
+        "padding-bottom": "4px",
         "display": "block",
         "width": "100%",
         "padding-left": "16px",
@@ -403,8 +403,8 @@
         "bounds": {
           "left": -21,
           "top": 94,
-          "right": 229.50795530191954,
-          "bottom": 301.6425584867711
+          "right": 308.50795530191954,
+          "bottom": 418.6425584867711
         }
       }
     }

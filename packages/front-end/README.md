@@ -1,5 +1,6 @@
 IMMEDIATE:
 
+* bindings metadata
 * do not sync synthetic metadata
 * fetch frame bounds from source metadata
 * controller UI

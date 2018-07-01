@@ -61,7 +61,8 @@ import {
   isPaperclipUri,
   PCVisibleNode,
   PCVariant,
-  TreeNodeOperationalTransform
+  TreeNodeOperationalTransform,
+  getPCNode
 } from "paperclip";
 import {
   CanvasToolOverlayMouseMoved,
@@ -369,6 +370,12 @@ const moveDependencyRecordHistory = (
     index: newIndex
   }}, state);
 
+  // deselect synthetic nodes if their source is also deleted
+  state = setSelectedSyntheticVisibleNodeIds(state, ...state.selectedNodeIds.filter((nodeId) => {
+    const { source } = getSyntheticNodeById(nodeId, state.documents);
+    return Boolean(getPCNode(source.nodeId, state.graph));
+  }));
+
   return state;
 };
 
@@ -383,18 +390,8 @@ const DEFAULT_CANVAS: Canvas = {
 
 export const confirm = (message: string, type: ConfirmType, state: RootState) => updateRootState({ confirm: { message, type }}, state);
 
-export const undo = (root: RootState) =>
-  root.editorWindows.reduce(
-    (state, editor) =>
-      moveDependencyRecordHistory(-1, root),
-    root
-  );
-export const redo = (root: RootState) =>
-  root.editorWindows.reduce(
-    (state, editor) =>
-      moveDependencyRecordHistory(1, root),
-    root
-  );
+export const undo = (root: RootState) => moveDependencyRecordHistory(-1, root);
+export const redo = (root: RootState) => moveDependencyRecordHistory(1, root);
 
 export const getOpenFile = (uri: string, state: RootState) =>
   state.openFiles.find(openFile => openFile.uri === uri);

@@ -6,17 +6,12 @@ import {
   NEW_FILE_ADDED,
   PC_LAYER_EDIT_LABEL_BLUR,
   CANVAS_TOOL_ARTBOARD_TITLE_CLICKED,
-  PROJECT_LOADED,
   PC_LAYER_DOUBLE_CLICK,
-  ProjectLoaded,
-  SYNTHETIC_WINDOW_OPENED,
   CanvasToolOverlayMouseMoved,
   PROJECT_DIRECTORY_LOADED,
   ProjectDirectoryLoaded,
   FILE_NAVIGATOR_ITEM_CLICKED,
   FileNavigatorItemClicked,
-  DOCUMENT_RENDERED,
-  DocumentRendered,
   CANVAS_WHEEL,
   CANVAS_MOUSE_MOVED,
   CANVAS_MOUNTED,
@@ -143,7 +138,6 @@ import {
   setTool,
   persistRootState,
   getOpenFile,
-  addOpenFile,
   upsertOpenFile,
   removeTemporaryOpenFiles,
   setNextOpenFile,
@@ -179,13 +173,10 @@ import {
   PCSourceTagNames,
   PCVisibleNode,
   PCTextNode,
-  PCElement,
   paperclipReducer,
-  PC_SYNTHETIC_FRAME_RENDERED,
   SyntheticElement,
   createPCElement,
   createPCTextNode,
-  getSyntheticSourceFrame,
   getSyntheticVisibleNodeRelativeBounds,
   getSyntheticVisibleNodeDocument,
   getSyntheticSourceNode,
@@ -193,29 +184,23 @@ import {
   SyntheticVisibleNode,
   getPCNodeDependency,
   updateSyntheticVisibleNodePosition,
-  updateFrameBounds,
   updateSyntheticVisibleNodeBounds,
   persistInsertNode,
   persistChangeLabel,
-  removeSyntheticVisibleNode,
   persistSyntheticVisibleNodeBounds,
   persistRemoveSyntheticVisibleNode,
   getSyntheticNodeSourceDependency,
   persistConvertNodeToComponent,
-  PCModule,
   persistMoveSyntheticVisibleNode,
   persistAppendPCClips,
-  getPCNodeModule,
   persistChangeSyntheticTextNodeValue,
   persistRawCSSText,
   SyntheticTextNode,
   updatePCNodeMetadata,
   PCVisibleNodeMetadataKey,
   getSyntheticDocumentByDependencyUri,
-  SyntheticBaseNode,
   getFrameSyntheticNode,
   SyntheticDocument,
-  getFrameByContentNodeId,
   PC_DEPENDENCY_GRAPH_LOADED,
   PCDependencyGraphLoaded,
   SYNTHETIC_DOCUMENT_NODE_NAME,
@@ -236,62 +221,39 @@ import {
   SyntheticInstanceElement,
   persistToggleVariantDefault,
   persistRemoveVariantOverride,
-  PCComponent,
   getPCVariants,
   canRemoveSyntheticVisibleNode
 } from "paperclip";
 import {
-  getTreeNodePath,
-  getTreeNodeFromPath,
-  File,
-  EMPTY_OBJECT,
-  TreeNode,
-  StructReference,
   roundBounds,
   scaleInnerBounds,
   moveBounds,
   keepBoundsAspectRatio,
   keepBoundsCenter,
-  Bounded,
-  Struct,
   Bounds,
-  getBoundsSize,
   shiftBounds,
-  flipPoint,
-  diffArray,
   isDirectory,
   updateNestedNode,
-  FileAttributeNames,
   Directory,
-  getNestedTreeNodeById,
   isFile,
-  arraySplice,
   getParentTreeNode,
   appendChildNode,
   removeNestedTreeNode,
-  resizeBounds,
-  updateNestedNodeTrail,
   boundsFromRect,
   centerTransformZoom,
   Translate,
   zoomBounds,
-  getBoundsPoint,
   TreeMoveOffset,
   shiftPoint,
   Point,
   zoomPoint,
   cloneTreeNode,
-  createTreeNode,
-  FSItemNamespaces,
   FSItemTagNames,
   FSItem,
   getFileFromUri,
   createFile,
-  stripProtocol,
   createDirectory,
   sortFSItems,
-  stringifyObject,
-  arrayRemove
 } from "tandem-common";
 import {clamp, last} from "lodash";
 
@@ -1140,20 +1102,21 @@ export const canvasReducer = (state: RootState, action: Action) => {
       return state;
     }
     case PC_RUNTIME_EVALUATED: {
+      console.log("runtime evaluated");
 
       const queuedScopeSelect = state.queuedScopeSelect;
 
       if (queuedScopeSelect) {
         state = selectInsertedSyntheticVisibleNodes(queuedScopeSelect.previousState, state, queuedScopeSelect.scope);
-      } else {
+      }
 
-        // ensure that synthetic nodes still exist, otherwise remove them
-        // from selection.
-        for (const nodeId of state.selectedNodeIds) {
-          if (!getSyntheticNodeById(nodeId, state.documents)) {
-            state = setSelectedSyntheticVisibleNodeIds(state);
-            break;
-          }
+
+      // ensure that synthetic nodes still exist, otherwise remove them
+      // from selection.
+      for (const nodeId of state.selectedNodeIds) {
+        if (!getSyntheticNodeById(nodeId, state.documents)) {
+          state = setSelectedSyntheticVisibleNodeIds(state);
+          break;
         }
       }
 
