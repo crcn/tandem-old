@@ -357,7 +357,7 @@
             "b6c162d140"
           ],
           "value": {
-            "padding": "none",
+            "padding": "0px",
             "padding-top": "0px"
           },
           "name": "override",
