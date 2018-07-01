@@ -1179,6 +1179,13 @@ export const persistRemoveSyntheticVisibleNode = <TState extends PCEditorState>(
   node: SyntheticVisibleNode,
   state: TState
 ) => {
+
+  // if the node is immutable, then it is part of an instance, so override the
+  // style instead
+  if (node.immutable) {
+    return persistSyntheticVisibleNodeStyle({ "display": "none" }, node, null, state);
+  }
+
   state = removeSyntheticVisibleNode(node, state);
   const sourceNode = getPCNode(node.source.nodeId, state.graph);
   return replaceDependencyGraphPCNode(null, sourceNode, state);

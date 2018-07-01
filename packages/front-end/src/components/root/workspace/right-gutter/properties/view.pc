@@ -747,6 +747,21 @@
                       "value": "All properties",
                       "name": "override",
                       "children": []
+                    },
+                    {
+                      "id": "9a8719e1",
+                      "variantId": null,
+                      "propertyName": "style",
+                      "targetIdPath": [
+                        "c389e38233",
+                        "c389e38224",
+                        "c389e38220"
+                      ],
+                      "value": {
+                        "color": "rgba(12, 143, 243, 1)"
+                      },
+                      "name": "override",
+                      "children": []
                     }
                   ],
                   "metadata": {
