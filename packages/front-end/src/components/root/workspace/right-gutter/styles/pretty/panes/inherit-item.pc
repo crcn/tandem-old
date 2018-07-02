@@ -201,6 +201,17 @@
           },
           "name": "override",
           "children": []
+        },
+        {
+          "id": "be1fb4993",
+          "variantId": null,
+          "propertyName": "isDefault",
+          "targetIdPath": [
+            "69c680a12"
+          ],
+          "value": true,
+          "name": "override",
+          "children": []
         }
       ],
       "metadata": {

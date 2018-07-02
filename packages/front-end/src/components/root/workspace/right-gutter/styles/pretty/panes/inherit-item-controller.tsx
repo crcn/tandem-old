@@ -26,6 +26,7 @@ export default compose(
   }),
   Base => ({ component, allComponents, onChangeComplete }: InheritItemControllerInnerProps) => {
     return <Base dropdownProps={{
+      filterable: true,
       value: component,
       options: getComponentOptions(allComponents),
       onChangeComplete: onChangeComplete

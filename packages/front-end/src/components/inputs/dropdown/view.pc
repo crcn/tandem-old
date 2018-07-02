@@ -86,13 +86,58 @@
                   },
                   "children": [
                     {
+                      "id": "69c680a11",
+                      "is": "7149f8199122",
+                      "name": "component-instance",
+                      "attributes": {
+                        "placeholder": "filter"
+                      },
+                      "style": {
+                        "width": "100%",
+                        "padding": "4px 8px",
+                        "border-radius": "0px",
+                        "border": "none",
+                        "box-sizing": "border-box",
+                        "display": "none",
+                        "padding-top": "0px",
+                        "padding-right": "0px",
+                        "padding-bottom": "0px",
+                        "padding-left": "0px"
+                      },
+                      "children": [
+                        {
+                          "id": "69c680a13",
+                          "variantId": "69c680a12",
+                          "propertyName": "style",
+                          "targetIdPath": [],
+                          "value": {
+                            "border-radius": "0px",
+                            "border": "none",
+                            "display": "block"
+                          },
+                          "name": "override",
+                          "children": []
+                        }
+                      ],
+                      "metadata": {
+                        "bounds": {
+                          "left": 435.5632830380766,
+                          "top": 172.7598749633466,
+                          "right": 535.5632830380766,
+                          "bottom": 201.7956837222485
+                        }
+                      },
+                      "label": "filter input"
+                    },
+                    {
                       "id": "67e386c7935",
                       "name": "text",
                       "label": "Label",
                       "value": "Label",
                       "style": {
                         "color": "grey",
-                        "width": "100%"
+                        "width": "100%",
+                        "display": "block"
                       },
                       "children": [],
                       "metadata": {}
@@ -341,6 +386,19 @@
                 }
               ],
               "metadata": {}
+            },
+            {
+              "id": "69c680a14",
+              "variantId": "69c680a12",
+              "propertyName": "style",
+              "targetIdPath": [
+                "67e386c7935"
+              ],
+              "value": {
+                "display": "none"
+              },
+              "name": "override",
+              "children": []
             }
           ],
           "metadata": {
@@ -352,6 +410,51 @@
             }
           },
           "label": "Popover"
+        },
+        {
+          "id": "69c680a12",
+          "name": "variant",
+          "label": "filterable",
+          "isDefault": false,
+          "children": [],
+          "metadata": {}
+        },
+        {
+          "id": "be1fb4991",
+          "variantId": "69c680a12",
+          "propertyName": "style",
+          "targetIdPath": [
+            "67e386c7935"
+          ],
+          "value": {
+            "display": "none"
+          },
+          "name": "override",
+          "children": []
+        },
+        {
+          "id": "be1fb4992",
+          "variantId": null,
+          "propertyName": "style",
+          "targetIdPath": [],
+          "value": {
+            "font-size": "11px"
+          },
+          "name": "override",
+          "children": []
+        },
+        {
+          "id": "be1fb4994",
+          "variantId": "69c680a12",
+          "propertyName": "style",
+          "targetIdPath": [
+            "69c680a11"
+          ],
+          "value": {
+            "display": "block"
+          },
+          "name": "override",
+          "children": []
         }
       ],
       "metadata": {

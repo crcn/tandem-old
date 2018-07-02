@@ -1,6 +1,7 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { compose, pure, withHandlers, lifecycle, withProps } from "recompose";
+import { FocusComponent } from "../../focus";
 
 export const withInputHandlers = () =>
   compose(
@@ -44,7 +45,7 @@ export const withInputHandlers = () =>
 export default compose<any, any>(
   pure,
   withInputHandlers(),
-  Base => ({ value, onChange, ...rest }) => {
-    return <Base {...rest} defaultValue={value} />;
+  Base => ({ value, onChange, focus, ...rest }) => {
+    return <FocusComponent focus={Boolean(focus)}><Base {...rest} defaultValue={value} /></FocusComponent>;
   }
 );

@@ -36,7 +36,12 @@
           },
           "children": [],
           "metadata": {},
-          "label": "HSL"
+          "label": "HSL",
+          "inheritStyle": {
+            "1530557051270": {
+              "priority": 0
+            }
+          }
         },
         {
           "id": "41979411464689",
@@ -729,6 +734,17 @@
             "97a34b151010439"
           ],
           "value": " ",
+          "name": "override",
+          "children": []
+        },
+        {
+          "id": "5be2070e1",
+          "variantId": null,
+          "propertyName": "style",
+          "targetIdPath": [
+            "97a34b151010440"
+          ],
+          "value": {},
           "name": "override",
           "children": []
         }

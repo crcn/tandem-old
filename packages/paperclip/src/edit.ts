@@ -962,7 +962,7 @@ const maybeOverride = (
   if (node.immutable || variantId || variantOverrides.length || targetSourceId !== node.source.nodeId) {
     const document = getSyntheticVisibleNodeDocument(node.id, documents);
 
-    const nearestComponentInstances = getNearestComponentInstances(
+    const nearestComponentInstances = !node.immutable ? [contentNode] : getNearestComponentInstances(
       node,
       document
     );
@@ -1012,7 +1012,6 @@ const maybeOverride = (
         );
       }
     ) as PCOverride;
-
 
     value = mapOverride(value, existingOverride);
 

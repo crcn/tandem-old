@@ -1558,6 +1558,8 @@ const shortcutReducer = (state: RootState, action: Action): RootState => {
         state
       );
 
+      state = setSelectedSyntheticVisibleNodeIds(state);
+
       state = queueSelectInsertedSyntheticVisibleNodes(
         oldState,
         state,
