@@ -114,7 +114,13 @@ import {
   REMOVE_VARIANT_BUTTON_CLICKED,
   COMPONENT_INSTANCE_VARIANT_TOGGLED,
   INSTANCE_VARIANT_RESET_CLICKED,
-  SHORTCUT_TOGGLE_SIDEBAR
+  SHORTCUT_TOGGLE_SIDEBAR,
+  INHERIT_PANE_ADD_BUTTON_CLICK,
+  INHERIT_PANE_REMOVE_BUTTON_CLICK,
+  InheritPaneItemClick,
+  INHERIT_PANE_ITEM_CLICK,
+  INHERIT_ITEM_COMPONENT_TYPE_CHANGE_COMPLETE,
+  InheritItemComponentTypeChangeComplete
 } from "../actions";
 import {
   queueOpenFile,
@@ -222,7 +228,9 @@ import {
   persistToggleVariantDefault,
   persistRemoveVariantOverride,
   getPCVariants,
-  canRemoveSyntheticVisibleNode
+  canRemoveSyntheticVisibleNode,
+  persistInheritStyle,
+  persistInheritStyleComponentId
 } from "paperclip";
 import {
   roundBounds,
@@ -254,6 +262,7 @@ import {
   createFile,
   createDirectory,
   sortFSItems,
+  EMPTY_OBJECT,
 } from "tandem-common";
 import {clamp, last} from "lodash";
 
@@ -1101,6 +1110,43 @@ export const canvasReducer = (state: RootState, action: Action) => {
       }, state);
       return state;
     }
+
+    case INHERIT_PANE_REMOVE_BUTTON_CLICK: {
+      console.log("TODO");
+      return state;
+    }
+
+    case INHERIT_PANE_ADD_BUTTON_CLICK: {
+      const { selectedNodeIds } = state;
+      const node = getSyntheticNodeById(selectedNodeIds[0], state.documents);
+      const sourceNode = getSyntheticSourceNode(node, state.graph);
+
+      state = persistRootState((state) => {
+        // undefined so that nothing is selected in dropdown.
+        state = persistInheritStyle({ [Date.now()]: { priority: Object.keys(sourceNode.inheritStyle || EMPTY_OBJECT).length } }, node, state.selectedVariant, state);
+        return state;
+      }, state);
+
+      return state;
+    }
+
+    case INHERIT_PANE_ITEM_CLICK: {
+      const { componentId } = action as InheritPaneItemClick;
+      state = updateRootState({ selectedInheritComponentId: state.selectedInheritComponentId === componentId ? null : componentId }, state);
+      return state;
+    }
+
+    case INHERIT_ITEM_COMPONENT_TYPE_CHANGE_COMPLETE: {
+      const { oldComponentId, newComponentId} = action as InheritItemComponentTypeChangeComplete;
+      const { selectedNodeIds } = state;
+      const node = getSyntheticNodeById(selectedNodeIds[0], state.documents);
+      state = persistRootState((state) => {
+        state = persistInheritStyleComponentId(oldComponentId, newComponentId, node, state.selectedVariant, state);
+        return state;
+      }, state);
+      return state;
+    }
+
     case PC_RUNTIME_EVALUATED: {
 
       const queuedScopeSelect = state.queuedScopeSelect;

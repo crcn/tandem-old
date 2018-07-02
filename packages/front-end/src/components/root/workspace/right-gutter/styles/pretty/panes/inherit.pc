@@ -4,140 +4,6 @@
   "version": "0.0.3",
   "children": [
     {
-      "label": "Inherit Item",
-      "is": "div",
-      "style": {
-        "display": "flex",
-        "align-items": "center",
-        "margin-bottom": "8px",
-        "padding-left": "16px",
-        "padding-top": "4px",
-        "padding-right": "16px",
-        "padding-bottom": "4px"
-      },
-      "attributes": {},
-      "id": "9e4a454812260",
-      "name": "component",
-      "children": [
-        {
-          "id": "9e4a454812258",
-          "label": "Element",
-          "is": "div",
-          "name": "element",
-          "attributes": {},
-          "style": {
-            "width": "22px",
-            "height": "22px",
-            "border": "1px solid rgba(0,0,0,0.1)",
-            "border-radius": "2px",
-            "margin-right": "8px",
-            "padding-left": "4px",
-            "padding-top": "4px",
-            "padding-right": "4px",
-            "padding-bottom": "4px",
-            "box-sizing": "border-box"
-          },
-          "children": [
-            {
-              "id": "308dd31392",
-              "is": "bc641d484882",
-              "name": "component-instance",
-              "attributes": {},
-              "style": {},
-              "children": [
-                {
-                  "id": "308dd31393",
-                  "variantId": null,
-                  "propertyName": "style",
-                  "targetIdPath": [
-                    "289d8e3452"
-                  ],
-                  "value": {
-                    "display": "block"
-                  },
-                  "name": "override",
-                  "children": []
-                },
-                {
-                  "id": "308dd31394",
-                  "variantId": null,
-                  "propertyName": "style",
-                  "targetIdPath": [
-                    "289d8e3452"
-                  ],
-                  "value": {
-                    "height": "100%"
-                  },
-                  "name": "override",
-                  "children": []
-                },
-                {
-                  "id": "308dd31395",
-                  "variantId": null,
-                  "propertyName": "style",
-                  "targetIdPath": [
-                    "289d8e3452"
-                  ],
-                  "value": {
-                    "opacity": 0.45
-                  },
-                  "name": "override",
-                  "children": []
-                }
-              ],
-              "metadata": {
-                "bounds": {
-                  "left": -1257,
-                  "top": 828,
-                  "right": -857,
-                  "bottom": 1128
-                }
-              }
-            }
-          ],
-          "metadata": {}
-        },
-        {
-          "id": "9e4a454812259",
-          "name": "text",
-          "label": "Text",
-          "value": "Component 1",
-          "style": {
-            "font-family": "Helvetica"
-          },
-          "children": [],
-          "metadata": {}
-        },
-        {
-          "id": "308dd31382",
-          "name": "variant",
-          "label": "selected",
-          "isDefault": false,
-          "children": [],
-          "metadata": {}
-        },
-        {
-          "id": "308dd31383",
-          "variantId": "308dd31382",
-          "propertyName": "style",
-          "targetIdPath": [],
-          "value": {
-            "background": "rgba(207, 226, 251, 1)"
-          },
-          "name": "override",
-          "children": []
-        }
-      ],
-      "metadata": {
-        "bounds": {
-          "left": 550,
-          "top": 594,
-          "right": 738,
-          "bottom": 618
-        }
-      }
-    },
-    {
       "label": "Inherit",
       "is": "b6c162d113",
       "style": {},
@@ -283,7 +149,7 @@
                   "children": [
                     {
                       "id": "a4d4c3d74",
-                      "label": "Element",
+                      "label": "Remove Button",
                       "is": "div",
                       "name": "element",
                       "attributes": {},
@@ -292,7 +158,8 @@
                         "position": "relative",
                         "top": "-1px",
                         "margin-right": "8px",
-                        "cursor": "pointer"
+                        "cursor": "pointer",
+                        "display": "none"
                       },
                       "children": [
                         {
@@ -339,7 +206,8 @@
                           "right": 1374.9059463468075,
                           "bottom": 543.5418810730639
                         }
-                      }
+                      },
+                      "label": "Add button"
                     }
                   ],
                   "metadata": {}
@@ -362,6 +230,38 @@
           },
           "name": "override",
           "children": []
+        },
+        {
+          "id": "ff05cf7d1",
+          "name": "variant",
+          "label": "has item selected",
+          "isDefault": false,
+          "children": [],
+          "metadata": {}
+        },
+        {
+          "id": "ff05cf7d2",
+          "variantId": "ff05cf7d1",
+          "propertyName": "style",
+          "targetIdPath": [
+            "a4d4c3d74"
+          ],
+          "value": {
+            "display": "block"
+          },
+          "name": "override",
+          "children": []
+        },
+        {
+          "id": "ff05cf7d3",
+          "variantId": null,
+          "propertyName": "label",
+          "targetIdPath": [
+            "b6c162d140"
+          ],
+          "value": "Content",
+          "name": "override",
+          "children": []
         }
       ],
       "metadata": {
@@ -371,7 +271,10 @@
           "right": 945,
           "bottom": 560
         }
-      }
+      },
+      "controllers": [
+        "./inherit-controller.tsx"
+      ]
     }
   ],
   "metadata": {}

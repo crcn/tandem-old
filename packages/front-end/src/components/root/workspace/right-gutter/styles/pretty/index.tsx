@@ -10,6 +10,7 @@ export default compose(pure, Base => props => {
   return (
     <Base
       {...props}
+      inheritPaneProps={props}
       codePaneProps={props}
       layoutPaneProps={props}
       typographyPaneProps={props}

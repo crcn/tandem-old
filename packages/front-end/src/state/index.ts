@@ -3,22 +3,15 @@ import {
   Directory,
   memoize,
   EMPTY_ARRAY,
-  StructReference,
   Point,
   Translate,
   Bounds,
   pointIntersectsBounds,
   getSmallestBounds,
   mergeBounds,
-  Bounded,
-  Struct,
-  getTreeNodeIdMap,
   getNestedTreeNodeById,
-  boundsFromRect,
-  getFileFromUri,
   File,
   updateNestedNode,
-  FileAttributeNames,
   isDirectory,
   getParentTreeNode,
   TreeNode,
@@ -41,7 +34,6 @@ import {
   findRootInstanceOfPCNode,
   getSyntheticNodeById,
   getSyntheticVisibleNodeDocument,
-  updateSyntheticVisibleNode,
   Frame,
   getSyntheticDocumentDependencyUri,
   getSyntheticVisibleNodeRelativeBounds,
@@ -53,12 +45,9 @@ import {
   TreeNodeOperationalTransformType,
   PCSourceTagNames,
   patchTreeNode,
-  getSyntheticDocumentById,
   SyntheticDocument,
   updateSyntheticDocument,
-  getFrameByContentNodeId,
   getFramesByDependencyUri,
-  isPaperclipUri,
   PCVisibleNode,
   PCVariant,
   TreeNodeOperationalTransform,
@@ -186,7 +175,8 @@ export type RootState = {
   insertFileInfo?: InsertFileInfo;
   history: GraphHistory;
   showQuickSearch?: boolean;
-  selectedComponentId: string;
+  selectedComponentId?: string;
+  selectedInheritComponentId?: string;
   queuedScopeSelect?: {
     previousState: RootState;
     scope: SyntheticVisibleNode | SyntheticDocument;

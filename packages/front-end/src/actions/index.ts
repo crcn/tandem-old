@@ -113,6 +113,10 @@ export const SHORTCUT_CLOSE_CURRENT_TAB = "SHORTCUT_CLOSE_CURRENT_TAB";
 export const SHORTCUT_CONVERT_TO_COMPONENT_KEY_DOWN =
   "SHORTCUT_CONVERT_TO_COMPONENT_KEY_DOWN";
 export const SHORTCUT_TOGGLE_SIDEBAR = "SHORTCUT_TOGGLE_SIDEBAR";
+export const INHERIT_PANE_ADD_BUTTON_CLICK = "INHERIT_PANE_ADD_BUTTON_CLICK";
+export const INHERIT_PANE_REMOVE_BUTTON_CLICK = "INHERIT_PANE_REMOVE_BUTTON_CLICK";
+export const INHERIT_PANE_ITEM_CLICK = "INHERIT_PANE_ITEM_CLICK";
+export const INHERIT_ITEM_COMPONENT_TYPE_CHANGE_COMPLETE = "INHERIT_ITEM_COMPONENT_TYPE_CHANGE_COMPLETE";
 export const INSERT_TOOL_FINISHED = "INSERT_TOOL_FINISHED";
 export const SYNTHETIC_NODES_PASTED = "SYNTHETIC_NODES_PASTED";
 export const APP_LOADED = "APP_LOADED";
@@ -402,6 +406,15 @@ export type CanvasDraggingOver = {
   offset: Point;
 } & Action;
 
+export type InheritPaneItemClick = {
+  componentId: string;
+} & Action;
+
+export type InheritItemComponentTypeChangeComplete = {
+  oldComponentId: string;
+  newComponentId: string;
+} & Action;
+
 export const fileNavigatorDroppedItem = (
   node: File,
   targetNode: Directory,
@@ -461,6 +474,25 @@ export const fileNavigatorNewFileClicked = (): Action => ({
 
 export const fileNavigatorNewDirectoryClicked = (): Action => ({
   type: FILE_NAVIGATOR_NEW_DIRECTORY_CLICKED
+});
+
+export const inheritPaneAddButtonClick = (): Action => ({
+  type: INHERIT_PANE_ADD_BUTTON_CLICK
+});
+
+export const inheritPaneRemoveButtonClick = (): Action => ({
+  type: INHERIT_PANE_REMOVE_BUTTON_CLICK
+});
+
+export const inheritPaneItemClick = (componentId: string): InheritPaneItemClick => ({
+  componentId,
+  type: INHERIT_PANE_ITEM_CLICK
+});
+
+export const inheritItemComponentTypeChangeComplete = (oldComponentId: string, newComponentId: string): InheritItemComponentTypeChangeComplete => ({
+  oldComponentId,
+  newComponentId,
+  type: INHERIT_ITEM_COMPONENT_TYPE_CHANGE_COMPLETE
 });
 
 export const componentPickerBackgroundClick = (): Action => ({

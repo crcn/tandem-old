@@ -54,6 +54,8 @@ import {
   getPCVariantOverrides,
   filterPCNodes,
   isPCComponentInstance,
+  InheritStyle,
+  PCBaseVisibleNode,
 } from "./dsl";
 import {
   SyntheticVisibleNode,
@@ -754,6 +756,64 @@ export const persistRemoveVariantOverride = <TState extends PCEditorState>(insta
   const override = getInheritedOverrides(instance, getSyntheticVisibleNodeDocument(instance.id, state.documents), state.graph, variant && variant.id).find(override => last(override.targetIdPath) === targetVariantId);
   return replaceDependencyGraphPCNode(null, override, state);
 };
+
+export const persistInheritStyle = <TState extends PCEditorState>(
+  inheritStyle: InheritStyle,
+  node: SyntheticVisibleNode,
+  variant: PCVariant,
+  state: TState
+) => {
+  const sourceNode = maybeOverride(
+    PCOverridablePropertyName.INHERIT_STYLE,
+    inheritStyle,
+    variant,
+    (value, override) => {
+      const prevStyle = (override && override.value) || EMPTY_OBJECT;
+      return overrideKeyValue(node.style, prevStyle, {...prevStyle, ...value});
+    },
+    (node: PCBaseVisibleNode<any>) => ({
+      ...node,
+      inheritStyle: {
+        ...(node.inheritStyle || EMPTY_OBJECT),
+        ...inheritStyle
+      }
+    })
+  )(node, state.documents, state.graph);
+
+  state = replaceDependencyGraphPCNode(sourceNode, sourceNode, state);
+
+  return state;
+}
+
+export const persistInheritStyleComponentId = <TState extends PCEditorState>(
+  oldComponentId: string,
+  newComponentId: string,
+  node: SyntheticVisibleNode,
+  variant: PCVariant,
+  state: TState
+) => {
+  const sourceNode = maybeOverride(
+    PCOverridablePropertyName.INHERIT_STYLE,
+    null,
+    variant,
+    (value, override) => {
+      const prevStyle = (override && override.value) || EMPTY_OBJECT;
+      return overrideKeyValue(node.style, prevStyle, {...prevStyle, [oldComponentId]: undefined, [newComponentId]: prevStyle[oldComponentId] || { priority: 0 }});
+    },
+    (node: PCBaseVisibleNode<any>) => ({
+      ...node,
+      inheritStyle: {
+        ...(node.inheritStyle || EMPTY_OBJECT),
+        [oldComponentId]: undefined,
+        [newComponentId]: node.inheritStyle[oldComponentId]
+      }
+    })
+  )(node, state.documents, state.graph);
+
+  state = replaceDependencyGraphPCNode(sourceNode, sourceNode, state);
+
+  return state;
+}
 
 export const persistAppendPCClips = <TState extends PCEditorState>(
   clips: PCNodeClip[],

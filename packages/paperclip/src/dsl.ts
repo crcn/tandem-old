@@ -4,17 +4,13 @@ import {
   EMPTY_ARRAY,
   TreeNode,
   filterNestedNodes,
-  createNodeNameMatcher,
   findNestedNode,
   Bounds,
-  createTreeNode,
   generateUID,
   KeyValue,
   getNestedTreeNodeById,
   replaceNestedNode,
-  removeNestedTreeNode,
   reduceTree,
-  findTreeNodeParent,
   filterTreeNodeParents,
   NodeFilter
 } from "tandem-common";
@@ -33,19 +29,20 @@ export enum PCSourceTagNames {
   ELEMENT = "element",
   COMPONENT_INSTANCE = "component-instance",
   VARIANT = "variant",
-  INCLUDE = "include",
   OVERRIDE = "override",
-  TEXT = "text"
-}
+  TEXT = "text",
+  INHERIT_STYLE = "inherit-style"
+};
 
 export enum PCOverridablePropertyName {
   TEXT = "text",
   CHILDREN = "children",
+  INHERIT_STYLE = "inheritStyle",
   VARIANT_IS_DEFAULT = "isDefault",
   STYLE = "style",
   ATTRIBUTES = "attributes",
   LABEL = "label"
-}
+};
 
 export enum PCVisibleNodeMetadataKey {
   // defined when dropped into the root document
@@ -71,8 +68,6 @@ export type PCModule = {
 } & PCBaseSourceNode<PCSourceTagNames.MODULE>;
 
 export type PCComponent = {
-  label?: string;
-  style: KeyValue<any>;
 
   /**
    * Controller source files, can be any supported language, filtered by compile target.
@@ -89,14 +84,9 @@ export type PCComponent = {
    * @type {string[]}
    */
   controllers?: string[];
-  attributes: KeyValue<string>;
   is?: string;
   children: Array<PCVisibleNode | PCVariant | PCOverride>;
-} & PCBaseSourceNode<PCSourceTagNames.COMPONENT>;
-
-export type PCInclude = {
-  src: string;
-} & PCBaseSourceNode<PCSourceTagNames.INCLUDE>;
+} & PCBaseElement<PCSourceTagNames.COMPONENT>;
 
 export type PCVariant = {
   label?: string;
@@ -154,9 +144,18 @@ export type PCOverride =
   | PCVariantOverride
   | PCLabelOverride;
 
+export type InheritStyleItem = {
+  priority: number;
+};
+
+export type InheritStyle = {
+  [identifier: string]: InheritStyleItem
+};
+
 export type PCBaseVisibleNode<TName extends PCSourceTagNames> = {
   label?: string;
   style: KeyValue<any>;
+  inheritStyle?: InheritStyle;
 } & PCBaseSourceNode<TName>;
 
 export type PCBaseElement<TName extends PCSourceTagNames> = {
@@ -174,14 +173,14 @@ export type PCTextNode = {
   value: string;
 } & PCBaseVisibleNode<PCSourceTagNames.TEXT>;
 
+
 export type PCVisibleNode = PCElement | PCTextNode | PCComponentInstanceElement;
 export type PCNode =
   | PCModule
   | PCComponent
   | PCVariant
   | PCOverride
-  | PCVisibleNode
-  | PCInclude;
+  | PCVisibleNode;
 
 export type PCComputedOverrideMap = {
   [COMPUTED_OVERRIDE_DEFAULT_KEY]: PCComputedOverrideVariantMap;
