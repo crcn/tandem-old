@@ -39,5 +39,5 @@ const getComponentOptions = memoize((components: PCComponent[]): DropdownMenuOpt
       label: component.label,
       value: component
     };
-  });
+  }).sort((a, b) => a.label > b.label ? -1 : 1);
 });
