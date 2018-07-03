@@ -743,6 +743,28 @@
           "priority": 0
         }
       }
+    },
+    {
+      "label": "Center Atom",
+      "is": "div",
+      "style": {
+        "box-sizing": "border-box",
+        "left": "50%",
+        "top": "50%",
+        "transform": "translate(-50%, -50%)"
+      },
+      "attributes": {},
+      "id": "a0687f1d5",
+      "name": "component",
+      "children": [],
+      "metadata": {
+        "bounds": {
+          "left": 436,
+          "top": 1012,
+          "right": 536,
+          "bottom": 1112
+        }
+      }
     }
   ],
   "metadata": {}

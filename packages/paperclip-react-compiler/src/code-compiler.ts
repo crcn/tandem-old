@@ -45,6 +45,7 @@ import {
 } from "tandem-common";
 import * as path from "path";
 import { TranslateOptions,  addWarning, ContentNode, getPublicComponentClassName, getPublicLayerVarName, TranslateContext, getScopedLayerLabelIndex, addOpenTag, addCloseTag, addBuffer, addLine, getInternalVarName, addLineItem, setCurrentScope, addScopedLayerLabel } from "./utils";
+import { InheritStyle } from "paperclip";
 export const compilePaperclipModuleToReact = (
   entry: PCDependency,
   graph: DependencyGraph
@@ -212,7 +213,7 @@ const translateComponentStyleInner = (
         return context;
       }
       context = addOpenTag(`"._${node.id} {" + \n`, context);
-      context = translateStyle(node, node.style, context);
+      context = translateStyle(node, { ...getInheritedStyle(node.inheritStyle, context), ...node.style }, context);
       context = addCloseTag(`"}" + \n`, context);
       return context;
     }, context);
@@ -229,8 +230,20 @@ const SVG_STYLE_PROP_MAP = {
   background: "fill"
 };
 
-const translateStyle = (target: ContentNode, style: any, context: TranslateContext) => {
+const getInheritedStyle = (inheritStyle: InheritStyle, context: TranslateContext, computed = {}) => {
+  if (!inheritStyle) {
+    return {};
+  }
+  const componentIds = Object.keys(inheritStyle).filter(a => Boolean(inheritStyle[a])).sort((a, b) => inheritStyle[a].priority > inheritStyle[b].priority ? 1 : -1);
 
+  return componentIds.reduce((style, componentId) => {
+    const component = getPCNode(componentId, context.graph) as PCComponent;
+    const compStyle = computed[componentId] || (computed[componentId] = { ...component.style, ...getInheritedStyle(component.inheritStyle, context, computed) });
+    return {...style, ...compStyle};
+  }, {});
+};
+
+const translateStyle = (target: ContentNode, style: any, context: TranslateContext) => {
   const isSVG = isSVGPCNode(target, context.graph);
 
   if (isSVG) {

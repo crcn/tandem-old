@@ -1,9 +1,7 @@
 IMMEDIATE:
 
-* make inherit props overridable
 * inherit styles from other elements
-  * update evaluator
-  * update code compiler
+* double click instance -> open in new tab
 * clear overrides functionality (need to reset to inherited styles)
 * special *bind* attribute
 * do not sync synthetic metadata
