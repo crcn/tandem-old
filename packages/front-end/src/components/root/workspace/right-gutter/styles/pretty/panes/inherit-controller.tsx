@@ -17,6 +17,7 @@ type InheritControllerInnerProps = {
   onAddButtonClick: any;
   onRemoveButtonClick: any;
   onItemClick: any;
+  selectedInheritComponentId: string;
 } & InheritControllerOuterProps;
 
 export default compose(
@@ -32,19 +33,18 @@ export default compose(
       dispatch(inheritPaneItemClick(componentId));
     }
   }),
-  Base => ({ selectedNodes, dispatch, graph, onAddButtonClick, onRemoveButtonClick, onItemClick }: InheritControllerInnerProps) => {
+  Base => ({ selectedNodes, dispatch, graph, onAddButtonClick, onRemoveButtonClick, onItemClick, selectedInheritComponentId }: InheritControllerInnerProps) => {
     const node = selectedNodes[0];
     const sourceNode = getSyntheticSourceNode(node, graph);
 
-    const hasItemSelected = false;
+    const hasItemSelected = Boolean(selectedInheritComponentId);
 
     const allComponents = getAllPCComponents(graph);
-
 
     const items = Object.keys(sourceNode.inheritStyle ||  EMPTY_OBJECT).filter(k => Boolean(sourceNode.inheritStyle[k])).sort((a, b) => {
       return sourceNode.inheritStyle[a].priority > sourceNode.inheritStyle[b].priority ? -1 : 1;
     }).map((componentId) => {
-      return <InheritItem key={componentId} componentId={componentId} component={getPCNode(componentId, graph)} allComponents={allComponents} onClick={() => onItemClick(componentId)} dispatch={dispatch} />;
+      return <InheritItem key={componentId} selected={selectedInheritComponentId === componentId} componentId={componentId} component={getPCNode(componentId, graph)} allComponents={allComponents} onClick={() => onItemClick(componentId)} dispatch={dispatch} />;
     });
 
     return <Base

@@ -18,6 +18,13 @@ export type TranslateContext = {
   entry: PCDependency;
   graph: DependencyGraph;
   warnings: Error[];
+  definedObjects: {
+
+    // scope id
+    [identifier: string]: {
+      [identifier: string]: boolean;
+    }
+  }
   scopedLabelRefs: {
     // scope ID
     [identifier: string]: {

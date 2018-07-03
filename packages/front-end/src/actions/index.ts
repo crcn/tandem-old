@@ -117,6 +117,7 @@ export const INHERIT_PANE_ADD_BUTTON_CLICK = "INHERIT_PANE_ADD_BUTTON_CLICK";
 export const INHERIT_PANE_REMOVE_BUTTON_CLICK = "INHERIT_PANE_REMOVE_BUTTON_CLICK";
 export const INHERIT_PANE_ITEM_CLICK = "INHERIT_PANE_ITEM_CLICK";
 export const INHERIT_ITEM_COMPONENT_TYPE_CHANGE_COMPLETE = "INHERIT_ITEM_COMPONENT_TYPE_CHANGE_COMPLETE";
+export const INHERIT_ITEM_CLICK = "INHERIT_ITEM_CLICK";
 export const INSERT_TOOL_FINISHED = "INSERT_TOOL_FINISHED";
 export const SYNTHETIC_NODES_PASTED = "SYNTHETIC_NODES_PASTED";
 export const APP_LOADED = "APP_LOADED";
@@ -415,6 +416,10 @@ export type InheritItemComponentTypeChangeComplete = {
   newComponentId: string;
 } & Action;
 
+export type InheritItemClick = {
+  componentId: string;
+} & Action;
+
 export const fileNavigatorDroppedItem = (
   node: File,
   targetNode: Directory,
@@ -493,6 +498,11 @@ export const inheritItemComponentTypeChangeComplete = (oldComponentId: string, n
   oldComponentId,
   newComponentId,
   type: INHERIT_ITEM_COMPONENT_TYPE_CHANGE_COMPLETE
+});
+
+export const inheritItemClick = (componentId: string): InheritItemClick => ({
+  componentId,
+  type: INHERIT_ITEM_CLICK
 });
 
 export const componentPickerBackgroundClick = (): Action => ({

@@ -120,7 +120,9 @@ import {
   InheritPaneItemClick,
   INHERIT_PANE_ITEM_CLICK,
   INHERIT_ITEM_COMPONENT_TYPE_CHANGE_COMPLETE,
-  InheritItemComponentTypeChangeComplete
+  InheritItemComponentTypeChangeComplete,
+  INHERIT_ITEM_CLICK,
+  InheritItemClick
 } from "../actions";
 import {
   queueOpenFile,
@@ -1112,7 +1114,12 @@ export const canvasReducer = (state: RootState, action: Action) => {
     }
 
     case INHERIT_PANE_REMOVE_BUTTON_CLICK: {
-      console.log("TODO");
+      const { selectedInheritComponentId, selectedNodeIds } = state;
+      const node = getSyntheticNodeById(selectedNodeIds[0], state.documents);
+      const sourceNode = getSyntheticSourceNode(node, state.graph);
+      state = persistRootState((state) => {
+        return persistInheritStyle({ [selectedInheritComponentId]: undefined }, node, state.selectedVariant, state);
+      }, state);
       return state;
     }
 
@@ -1144,6 +1151,12 @@ export const canvasReducer = (state: RootState, action: Action) => {
         state = persistInheritStyleComponentId(oldComponentId, newComponentId, node, state.selectedVariant, state);
         return state;
       }, state);
+      return state;
+    }
+
+    case INHERIT_ITEM_CLICK: {
+      const { componentId } = action as InheritItemClick;
+      state = updateRootState({ selectedInheritComponentId: state.selectedInheritComponentId === componentId ? null : componentId }, state);
       return state;
     }
 

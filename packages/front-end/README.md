@@ -1,10 +1,10 @@
 IMMEDIATE:
 
+* fix code compiler to not use object assignment for nested overrides
 * inherit styles from other elements
   * add components
     * show component picker
   * remove components
-
 * special *bind* attribute
 * do not sync synthetic metadata
 * fetch frame bounds from source metadata
@@ -33,6 +33,7 @@ IMMEDIATE:
 * preview in app
   * "preview mode" banner
   * "click to interact" button
+  * auto save in preview mode
 * component controller UI
 
 

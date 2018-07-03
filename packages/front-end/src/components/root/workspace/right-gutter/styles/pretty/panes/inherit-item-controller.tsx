@@ -1,20 +1,23 @@
 import * as React from "react";
+import * as cx from "classnames";
 import { compose, pure, withHandlers } from "recompose";
 import { PCComponent } from "paperclip";
 import { DropdownMenuOption } from "../../../../../../inputs/dropdown/controller";
 import { memoize } from "tandem-common";
-import { inheritItemComponentTypeChangeComplete } from "actions";
+import { inheritItemComponentTypeChangeComplete, inheritItemClick } from "actions";
 import { Dispatch } from "react-redux";
 
 export type InheritItemControllerOuterProps = {
   dispatch: Dispatch<any>;
   componentId: string;
   component: PCComponent;
+  selected?: boolean;
   allComponents: PCComponent[];
 };
 
 export type InheritItemControllerInnerProps = {
   onChangeComplete: any;
+  onClick: any;
 } & InheritItemControllerOuterProps;
 
 export default compose(
@@ -23,9 +26,13 @@ export default compose(
     onChangeComplete: ({ dispatch, componentId }: InheritItemControllerOuterProps) => (value) => {
       dispatch(inheritItemComponentTypeChangeComplete(componentId, value.id));
     },
+    onClick: ({ dispatch, componentId }) => () => {
+      dispatch(inheritItemClick(componentId));
+    }
   }),
-  Base => ({ component, allComponents, onChangeComplete }: InheritItemControllerInnerProps) => {
-    return <Base dropdownProps={{
+  Base => ({ component, allComponents, selected, onChangeComplete, onClick }: InheritItemControllerInnerProps) => {
+    return <Base onClick={onClick} variant={cx({ selected })} dropdownProps={{
+      onClick: (event) => event.stopPropagation(),
       filterable: true,
       value: component,
       options: getComponentOptions(allComponents),

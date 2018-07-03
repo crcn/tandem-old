@@ -9,10 +9,11 @@ export default compose(
     selectedNodes,
     selectedVariant,
     fontFamilies,
+    selectedInheritComponentId,
     graph, ...rest }) => {
     return <Base
       variantsProps={{dispatch, syntheticDocument, selectedNodes, selectedVariant, graph}}
       instanceVariantProps={{dispatch, syntheticDocument, selectedNodes, graph, selectedVariant}}
-      prettyProps={{dispatch, syntheticDocument, selectedNodes, graph, fontFamilies}} {...rest} />
+      prettyProps={{dispatch, syntheticDocument, selectedNodes, graph, fontFamilies, selectedInheritComponentId}} {...rest} />
   }
 );

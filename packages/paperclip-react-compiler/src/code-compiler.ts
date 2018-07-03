@@ -66,6 +66,7 @@ export const translatePaperclipModuleToReact = (
     entry,
     buffer: "",
     graph,
+    definedObjects: {},
     scopedLabelRefs: {},
     depth: 0,
     warnings: []
@@ -326,7 +327,7 @@ const translateContentNode = (
   context = addOpenTag(`\nfunction ${internalVarName}(overrides) {\n`, context);
 
   context = translatedUsedComponentInstances(contentNode, context);
-  context = translateSelfOverrides(contentNode, context);
+  context = translateStaticOverrides(contentNode, context);
   context = translateComponentStyles(contentNode, context);
 
   const variantLabelMap = getVariantLabelMap(contentNode);
@@ -364,6 +365,7 @@ const translateContentNode = (
   context = addLine(`var variant = props.variant != null ? props.variant.split(" ").map(function(label) { return VARIANT_LABEL_ID_MAP[label.trim()] || label.trim(); }) : DEFAULT_VARIANT_IDS;`, context);
 
   context = setCurrentScope(contentNode.id, context);
+  context = defineNestedObject([`_${contentNode.id}Props`], false, context)
   context = flattenTreeNode(contentNode)
     .filter(isVisibleNode)
     .reduce((context, node: ContentNode) => {
@@ -372,6 +374,8 @@ const translateContentNode = (
       context = addLine("", context);
 
       const propsVarName = getNodePropsVarName(node, context);
+
+      context = defineNestedObject([`_${node.id}Props`], false, context)
       context = addLine(
         `var _${node.id}Props = Object.assign({}, _${contentNode.id}Props._${
           node.id
@@ -394,26 +398,10 @@ const translateContentNode = (
     }, context);
 
   context = addLine("", context);
-  context = getComponentLabelOverrides(contentNode).reduce(
-    (context, override) => {
-      context = addScopedLayerLabel(override.value, override.id, context);
-      context = addLineItem(
-        `var ${getPCOverrideVarName(override, contentNode)} = _${
-          contentNode.id
-        }Props.${getPublicLayerVarName(
-          override.value,
-          override.id,
-          context
-        )}Props;\n`,
-        context
-      );
-      return context;
-    },
-    context
-  );
 
-  context = translateContentNodeOverrides(contentNode, context);
+  // variants need to come first since there may be child overrides that have variant styles
   context = translateContentNodeVariantOverrides(contentNode, context);
+  context = translateContentNodeOverrides(contentNode, context);
 
   context = addLine("", context);
   context = addLineItem("return ", context);
@@ -547,7 +535,7 @@ const translateUsedComponentOverrideMap = (
   return context;
 };
 
-const translateSelfOverrides = (
+const translateStaticOverrides = (
   component: ContentNode,
   context: TranslateContext
 ) => {
@@ -650,16 +638,13 @@ const translateContentNodeOverrides = (
       node.name === PCSourceTagNames.COMPONENT ||
       node.name === PCSourceTagNames.COMPONENT_INSTANCE
   );
+
   for (let i = instances.length; i--; ) {
     const instance = instances[i];
-    const overrideMap = getOverrideMap(getOverrides(instance));
-    context = translatePropsVarOverrideMap(
-      component,
-      instance,
-      overrideMap.default,
-      context
-    );
+    context = translateLabelOverrides(component, instance, context);
+    context = translateDynamicOverrides(component, instance, null, context);
   }
+
 
   return context;
 };
@@ -685,21 +670,7 @@ const translateContentNodeVariantOverrides = (
       if (!overrideMap[variant.id]) {
         continue;
       }
-      if (extendsComponent(instance)) {
-        context = translatePropsVarOverrideMap(
-          component,
-          instance,
-          overrideMap[variant.id],
-          context
-        );
-      } else {
-        for (const id in overrideMap[variant.id]) {
-          const targetId = id === "undefined" ? component.id : id;
-          context = addLineItem(`_${targetId}Props = mergeProps(_${targetId}Props, `, context);
-          context = translatePropsInnerOverrideMap([id], component, overrideMap[variant.id][id], context);
-          context = addLine(`);`, context);
-        }
-      }
+      context = translateDynamicOverrides(component, instance, variant.id, context);
     }
     context = addCloseTag(`}\n`, context);
   }
@@ -738,73 +709,81 @@ const mapContainersOverride = (filter: (override: PCOverride) => boolean) => {
   return check;
 };
 
-const mapContainsDynamicOverrides = mapContainersOverride(
-  override =>
-    (override.propertyName === PCOverridablePropertyName.CHILDREN &&
-    override.children.length > 0) || Boolean(override.variantId)
-);
-const mapContainsStaticOverrides = mapContainersOverride(
-  override => override.propertyName !== PCOverridablePropertyName.CHILDREN && !override.variantId
-);
-const mapContainsLabelOverrides = mapContainersOverride(
-  override => override.propertyName === PCOverridablePropertyName.LABEL
-);
+const isStaticOverride = (override: PCOverride) => override.propertyName !== PCOverridablePropertyName.CHILDREN && !override.variantId;
+const isLabelOverride = (override: PCOverride): override is PCLabelOverride => override.propertyName === PCOverridablePropertyName.LABEL;
+const isDynamicOverride = (override: PCOverride) => (override.propertyName === PCOverridablePropertyName.CHILDREN &&
+  override.children.length > 0) || Boolean(override.variantId)
 
-const translatePropsVarOverrideMap = (
-  component: ContentNode,
-  instance: PCComponent | PCComponentInstanceElement,
-  map: PCComputedOverrideVariantMap,
-  context: TranslateContext,
-) => {
+const mapContainsDynamicOverrides = mapContainersOverride(isDynamicOverride);
+const mapContainsStaticOverrides = mapContainersOverride(isStaticOverride);
+const mapContainsLabelOverrides = mapContainersOverride(isLabelOverride);
 
-  if (mapContainsDynamicOverrides(map) || mapContainsLabelOverrides(map)) {
-    context = addLine("", context);
-    context = addOpenTag(`Object.assign(_${instance.id}Props, {\n`, context);
+const defineNestedObject = (keyPath: string[], setObject: boolean, context: TranslateContext) => {
+  if (!context.definedObjects[context.currentScope]) {
+    context = { ...context, definedObjects: { ...context.definedObjects, [context.currentScope]: {}}};
+  }
 
-    for (const nodeId in map) {
-      const inf = map[nodeId];
-      if (mapContainsDynamicOverrides(inf) || mapContainsLabelOverrides(inf)) {
-        context = addLineItem(`_${nodeId}: `, context);
-        context = translatePropsInnerOverrideMap(
-          instance.name === PCSourceTagNames.COMPONENT
-            ? [nodeId]
-            : [instance.id, nodeId],
-          component,
-          inf,
-          context
-        );
-
-        context = addLineItem(`,\n`, context);
+  for (let i = 0, {length} = keyPath; i < length; i++) {
+    const currentPath = keyPath.slice(0, i + 1);
+    const ref = currentPath.join(".");
+    if (!context.definedObjects[context.currentScope][ref]) {
+      if (setObject) {
+        context = addOpenTag(`if (${ref}) {\n`, context);
+        context = addLine(`${ref} = Object.assign({}, ${ref});`, context);
+        context = addCloseTag(`}`, context);
+        context = addOpenTag(` else {\n`, context);
+        context = addLine(`${ref} = {};`, context);
+        context = addCloseTag(`}\n`, context);
       }
+      context = { ...context, definedObjects: { ...context.definedObjects, [context.currentScope]: {
+        ...context.definedObjects[context.currentScope],
+        [ref]: true
+      }}};
     }
-    context = addCloseTag(`});\n`, context);
   }
 
   return context;
 };
 
-const translatePropsInnerOverrideMap = (
-  idPath: string[],
+const translateLabelOverrides = (
   component: ContentNode,
-  inf: PCComputedNoverOverrideMap,
-  context: TranslateContext
+  instance: PCComponent | PCComponentInstanceElement,
+  context: TranslateContext,
 ) => {
-  const labelOverride = getPCNodeLabelOverride(idPath, component);
-  if (labelOverride) {
-    context = addLineItem(`Object.assign(`, context);
+  const overrides = getOverrides(instance);
+  for (const override of overrides) {
+    if (isLabelOverride(override)) {
+      const keyPath = [instance.id + "Props", ...override.targetIdPath].map(id => `_${id}`);
+      context = defineNestedObject(keyPath.slice(0, keyPath.length - 1), true, context);
+      context = addLine(`${keyPath.join(".")} = _${component.id}Props.${camelCase(override.value)}Props;`, context);
+    }
+  }
+  return context;
+}
+
+const translateDynamicOverrides = (
+  component: ContentNode,
+  instance: PCComponent | PCComponentInstanceElement,
+  variantId: string,
+  context: TranslateContext,
+) => {
+
+  const overrides = getOverrides(instance);
+
+  for (const override of overrides) {
+    if (isDynamicOverride(override) && override.variantId == variantId) {
+      let keyPath: string[];
+
+      if (getNestedTreeNodeById(last(override.targetIdPath), component)) {
+        keyPath =  [`_${last(override.targetIdPath)}Props`];
+      } else {
+        keyPath = [instance.id + "Props", ...override.targetIdPath].map(id => `_${id}`);
+      }
+      context = defineNestedObject(keyPath, true, context);
+      context = translateDynamicOverrideSetter(keyPath.join("."), override, context);
+    }
   }
 
-  context = addOpenTag(`{\n`, context);
-  context = translateDynamicOverrideMap(idPath, component, inf, context);
-  context = addCloseTag(`}`, context);
-
-  if (labelOverride) {
-    context = addLineItem(`, ${getIdPathPropRef(idPath)}`, context);
-    context = addLineItem(
-      `, ${getPCOverrideVarName(labelOverride, component)})`,
-      context
-    );
-  }
   return context;
 };
 
@@ -812,24 +791,6 @@ const getIdPathPropRef = (idPath: string[]) =>
   idPath.slice(1).reduce((ref, id, index, ary) => {
     return ref + " && " + ref + "._" + ary.slice(0, index + 1).join("._");
   }, "_" + idPath[0] + "Props");
-
-const getComponentLabelOverrides = memoize(
-  (component: ContentNode) =>
-    filterNestedNodes(component, (node: PCNode) => {
-      return (
-        node.name === PCSourceTagNames.OVERRIDE &&
-        node.propertyName === PCOverridablePropertyName.LABEL &&
-        Boolean(node.value)
-      );
-    }) as PCLabelOverride[]
-);
-
-const getPCNodeLabelOverride = (idPath: string[], component: ContentNode) =>
-  getComponentLabelOverrides(component).find(
-    node =>
-      idPath.join(" ") ===
-      [getParentTreeNode(node.id, component).id, ...node.targetIdPath].join(" ")
-  );
 
 const hasDynamicOverrides = ({
   children,
@@ -850,50 +811,27 @@ const hasDynamicOverrides = ({
   return false;
 };
 
-const translateDynamicOverrideMap = (
-  idPath: string[],
-  component: ContentNode,
-  { children, overrides }: PCComputedNoverOverrideMap,
-  context: TranslateContext
-) => {
-  for (const override of overrides) {
-    context = translateDynamicOverride(override, context);
-  }
 
-  for (const childId in children) {
-    if (
-      mapContainsDynamicOverrides(children[childId]) ||
-      mapContainsLabelOverrides(children[childId])
-    ) {
-      context = addLineItem(`_${childId}: `, context);
-      context = translatePropsInnerOverrideMap(
-        [...idPath, childId],
-        component,
-        children[childId],
-        context
-      );
-      context = addLineItem(`,\n`, context);
-    }
-  }
-
-  return context;
-};
-
-const translateDynamicOverride = (
+const translateDynamicOverrideSetter = (
+  varName: string,
   override: PCOverride,
   context: TranslateContext
 ) => {
   switch (override.propertyName) {
     case PCOverridablePropertyName.CHILDREN: {
       const visibleChildren = getVisibleChildren(override);
+
+      // may be defined in the upper scope
+      context = addOpenTag(`if (!${varName}.children) {\n`, context);
       if (visibleChildren.length) {
-        context = addOpenTag(`children: [\n`, context);
+        context = addOpenTag(`${varName}.children =  [\n`, context);
         for (const child of visibleChildren) {
           context = translateVisibleNode(child, context);
           context = addLineItem(",\n", context);
         }
-        context = addCloseTag(`],\n`, context);
+        context = addCloseTag(`];\n`, context);
       }
+      context = addCloseTag(`}\n`, context);
       return context;
     }
   }
@@ -901,7 +839,7 @@ const translateDynamicOverride = (
   if (override.variantId) {
     switch(override.propertyName) {
       case PCOverridablePropertyName.STYLE: {
-        context = addLine(`className: "_${override.id} _${override.variantId}",`, context);
+        context = addLine(`${varName}.className = (${varName}.className ? ${varName}.className + " " : "") + "_${override.id} _${override.variantId}";`, context);
         return context;
       }
     }

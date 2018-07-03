@@ -41,6 +41,7 @@ export default compose(
     selectedNodes,
     selectedVariant: root.selectedVariant,
     graph: root.graph,
+    selectedInheritComponentId: root.selectedInheritComponentId,
     style: {
       display: currentTab === TAB_NAMES[0] ? "block": "none"
     }
