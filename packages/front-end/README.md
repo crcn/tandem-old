@@ -1,10 +1,10 @@
 IMMEDIATE:
 
-* fix code compiler to not use object assignment for nested overrides
+* make inherit props overridable
 * inherit styles from other elements
-  * add components
-    * show component picker
-  * remove components
+  * update evaluator
+  * update code compiler
+* clear overrides functionality (need to reset to inherited styles)
 * special *bind* attribute
 * do not sync synthetic metadata
 * fetch frame bounds from source metadata

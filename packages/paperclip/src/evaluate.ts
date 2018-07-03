@@ -34,7 +34,8 @@ import {
   getPCVariants,
   isPCComponentInstance,
   PCVariant,
-  isComponent
+  isComponent,
+  InheritStyle
 } from "./dsl";
 import {
   KeyValue,
@@ -51,6 +52,7 @@ type EvalOverride = {
   [PCOverridablePropertyName.STYLE]: KeyValue<any>;
   [PCOverridablePropertyName.CHILDREN]: SyntheticVisibleNode[];
   [PCOverridablePropertyName.VARIANT_IS_DEFAULT]: boolean;
+  [PCOverridablePropertyName.INHERIT_STYLE]: InheritStyle;
   [PCOverridablePropertyName.TEXT]: string;
   [PCOverridablePropertyName.LABEL]: string;
 };
@@ -184,10 +186,10 @@ const evaluateComponentInstance = (
   return createSyntheticInstanceElement(
     node.is,
     createSyntheticSource(instance),
-    evaluateOverride(
+    evaluateStyle(
       node,
       selfPath,
-      PCOverridablePropertyName.STYLE,
+      componentMap,
       overrides
     ),
     selfVariant,
@@ -200,6 +202,38 @@ const evaluateComponentInstance = (
     immutable,
     instance.metadata
   );
+};
+
+const evaluateStyle = (node: PCVisibleNode | PCComponent, selfPath: string, componentMap: ComponentRefs, overrides: EvalOverrides) => {
+
+  const style = {};
+  const inheritStyle = {};
+
+  if (node.inheritStyle) {
+    Object.assign(inheritStyle, node.inheritStyle);
+  }
+
+  if (overrides[selfPath] && overrides[selfPath].inheritStyle) {
+    Object.assign(inheritStyle, overrides[selfPath].inheritStyle);
+  }
+
+  const componentIds = Object.keys(inheritStyle).filter(b => inheritStyle[b]).sort((a, b) => inheritStyle[a].priority > node.inheritStyle[b].priority ? 1 : -1);
+  for (const componentId of componentIds) {
+    if (!componentMap[componentId]) {
+      continue;
+    }
+    const {component} = componentMap[componentId];
+    Object.assign(style, component.style);
+  }
+
+
+  Object.assign(style, node.style);
+
+  if (overrides[selfPath] && overrides[selfPath].style) {
+    Object.assign(style, overrides[selfPath].style);
+  }
+
+  return style;
 };
 
 const evaluateLabel = (
@@ -257,6 +291,7 @@ const evaluateVisibleNode = (
       instancePath,
       immutable,
       isCreatedFromComponent,
+      componentMap,
       overrides
     );
   }
@@ -276,10 +311,10 @@ const evaluateElement = (
   return createSyntheticElement(
     element.is,
     createSyntheticSource(element),
-    evaluateOverride(
+    evaluateStyle(
       element,
       selfPath,
-      PCOverridablePropertyName.STYLE,
+      componentMap,
       overrides
     ),
     evaluateAttributes(element, selfPath, overrides, sourceUri),
@@ -406,6 +441,7 @@ const evaluateTextNode = (
   instancePath: string,
   immutable: boolean,
   isCreatedFromComponent: boolean,
+  componentMap: ComponentRefs,
   overrides: EvalOverrides
 ): SyntheticTextNode => {
   const selfId = appendPath(instancePath, node.id);
@@ -413,7 +449,7 @@ const evaluateTextNode = (
     evaluateOverride(node, selfId, PCOverridablePropertyName.TEXT, overrides) ||
       node.value,
     createSyntheticSource(node),
-    evaluateOverride(node, selfId, PCOverridablePropertyName.STYLE, overrides),
+    evaluateStyle(node, selfId, componentMap, overrides),
     evaluateLabel(node, selfId, overrides),
     false,
     isCreatedFromComponent,
@@ -498,6 +534,16 @@ const registerOverrides = (
     );
   }
 
+  if (node.inheritStyle) {
+    registerOverride(
+      null,
+      PCOverridablePropertyName.INHERIT_STYLE,
+      node.inheritStyle,
+      selfPath,
+      overrides
+    );
+  }
+
   if (Object.keys(node).length) {
     registerOverride(
       null,
@@ -557,6 +603,7 @@ const registerOverride = (
   if (!overrides[nodePath]) {
     overrides[nodePath] = {
       style: null,
+      inheritStyle: null,
       attributes: null,
       children: null,
       isDefault: null,

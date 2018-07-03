@@ -7,15 +7,14 @@
       "label": "Color Picker",
       "is": "div",
       "style": {
-        "padding": "10px",
         "box-sizing": "border-box",
+        "background": "rgba(255, 255, 255, 1)",
+        "padding": "10px",
         "display": "inline-block",
         "flex-direction": "column",
         "font-family": "Helvetica",
         "color": "grey",
         "position": "relative",
-        "background": "white",
-        "border-radius": "2px",
         "width": "300px"
       },
       "attributes": {},
@@ -29,7 +28,7 @@
           "name": "component-instance",
           "attributes": {},
           "style": {
-            "background": "rgba(0,0,0,0.05)",
+            "box-sizing": "border-box",
             "position": "relative",
             "height": "180px",
             "width": "100%"
@@ -37,11 +36,7 @@
           "children": [],
           "metadata": {},
           "label": "HSL",
-          "inheritStyle": {
-            "1530557051270": {
-              "priority": 0
-            }
-          }
+          "inheritStyle": {}
         },
         {
           "id": "41979411464689",
@@ -50,7 +45,7 @@
           "name": "component-instance",
           "attributes": {},
           "style": {
-            "background": "rgba(0,0,0,0.05)",
+            "box-sizing": "border-box",
             "position": "relative",
             "height": "20px",
             "width": "100%",
@@ -85,7 +80,7 @@
           "name": "component-instance",
           "attributes": {},
           "style": {
-            "background": "rgba(0,0,0,0.05)",
+            "box-sizing": "border-box",
             "position": "relative",
             "height": "20px",
             "width": "100%",
@@ -142,7 +137,15 @@
       },
       "controllers": [
         "./picker-controller.tsx"
-      ]
+      ],
+      "inheritStyle": {
+        "ca6d1d842": {
+          "priority": 0
+        },
+        "ba1504244": {
+          "priority": 2
+        }
+      }
     },
     {
       "label": "RGBA Input",
@@ -256,7 +259,12 @@
       },
       "controllers": [
         "./rgba-input-controller.tsx"
-      ]
+      ],
+      "inheritStyle": {
+        "ca6d1d8433": {
+          "priority": 0
+        }
+      }
     },
     {
       "label": "HSL Input",
@@ -373,6 +381,11 @@
           "right": 831.974934087616,
           "bottom": 759
         }
+      },
+      "inheritStyle": {
+        "ca6d1d8433": {
+          "priority": 0
+        }
       }
     },
     {
@@ -445,7 +458,12 @@
       },
       "controllers": [
         "./hex-input-controller.tsx"
-      ]
+      ],
+      "inheritStyle": {
+        "ca6d1d8433": {
+          "priority": 0
+        }
+      }
     },
     {
       "label": "Element",
@@ -532,14 +550,15 @@
           "name": "component-instance",
           "attributes": {},
           "style": {
-            "padding": "10px",
             "box-sizing": "border-box",
+            "background": "white",
+            "padding": "10px",
             "display": "inline-block",
             "flex-direction": "column",
             "font-family": "Helvetica",
             "color": "grey",
             "position": "relative",
-            "background": "white",
+            "width": "300px",
             "top": "100px",
             "left": "100px"
           },
@@ -600,7 +619,7 @@
       "label": "Picker",
       "is": "div",
       "style": {
-        "background": "rgba(0,0,0,0.05)",
+        "box-sizing": "border-box",
         "position": "relative",
         "height": "100px",
         "width": "100%"
@@ -655,7 +674,12 @@
       },
       "controllers": [
         "./canvas-controller.tsx"
-      ]
+      ],
+      "inheritStyle": {
+        "ca6d1d8431": {
+          "priority": 0
+        }
+      }
     },
     {
       "id": "65e6533276",

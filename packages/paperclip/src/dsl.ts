@@ -562,7 +562,11 @@ export const getComponentRefIds = memoize((node: PCNode): string[] => {
           node.name === PCSourceTagNames.COMPONENT_INSTANCE ||
           (node.name === PCSourceTagNames.COMPONENT && extendsComponent(node))
         ) {
-          return [...iss, node.is];
+          iss = [...iss, node.is];
+        }
+
+        if ((node as PCVisibleNode).inheritStyle) {
+          iss = [...iss, ...Object.keys((node as PCVisibleNode).inheritStyle)];
         }
         return iss;
       },
@@ -582,6 +586,9 @@ export const getComponentGraphRefs = memoize(
     const refIds = getComponentRefIds(node);
     for (let i = 0, { length } = refIds; i < length; i++) {
       const component = getPCNode(refIds[i], graph) as PCComponent;
+      if (!component) {
+        continue;
+      }
       allRefs.push({
         component,
         sourceUri: getPCNodeDependency(component.id, graph).uri

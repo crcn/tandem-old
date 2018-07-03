@@ -82,7 +82,7 @@ const translateModule = (module: PCModule, context: TranslateContext) => {
       .map((refId: string) => {
         return getPCNodeDependency(refId, context.graph);
       })
-      .filter(dep => dep !== context.entry)
+      .filter(dep => dep && dep !== context.entry)
   );
 
   if (imports.length) {

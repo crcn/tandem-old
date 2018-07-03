@@ -1116,10 +1116,10 @@ export const canvasReducer = (state: RootState, action: Action) => {
     case INHERIT_PANE_REMOVE_BUTTON_CLICK: {
       const { selectedInheritComponentId, selectedNodeIds } = state;
       const node = getSyntheticNodeById(selectedNodeIds[0], state.documents);
-      const sourceNode = getSyntheticSourceNode(node, state.graph);
       state = persistRootState((state) => {
         return persistInheritStyle({ [selectedInheritComponentId]: undefined }, node, state.selectedVariant, state);
       }, state);
+      state = updateRootState({ selectedInheritComponentId: null }, state);
       return state;
     }
 
