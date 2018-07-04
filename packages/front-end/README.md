@@ -1,10 +1,10 @@
-KEEP IN MIND:
+OBJECTIVE:
 
-* no more UI features until UI is tidied up.
+* eliminate current friction. Don't focus on UI.
 
 IMMEDIATE:
 
-* when double clicking, pane to selected element
+* fix prettier
 * fix selecting newly inserted frame
 * double click to edit
 * label show showing
@@ -12,6 +12,8 @@ IMMEDIATE:
 
 * tidy tdproject
 * color picker
+  * swatches
+  * other inputs
 * border UI
 * box shadows
 * variables (easier to refactor to this)
@@ -50,6 +52,11 @@ IMMEDIATE:
   * "click to interact" button
   * auto save in preview mode
 * component controller UI
+
+FRICTION POINTS:
+
+* lack of breadcrumbs
+*
 
 
 UX PROBLEMS:

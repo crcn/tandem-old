@@ -641,6 +641,13 @@ export const openSyntheticVisibleNodeOriginFile = (
   const instance = findInstanceOfPCNode(sourceNode, state.documents.filter(document => getSyntheticDocumentDependencyUri(document, state.graph) === uri));
   state = openFile(uri, false, true, state);
   state = setSelectedSyntheticVisibleNodeIds(state, instance.id);
+  state = centerCanvasToSelectedNodes(state);
+  return state;
+};
+
+export const centerCanvasToSelectedNodes = (state: RootState) => {
+  const selectedBounds = getSelectionBounds(state);
+  state = centerEditorCanvas(state, state.activeEditorFilePath, selectedBounds);
   return state;
 };
 

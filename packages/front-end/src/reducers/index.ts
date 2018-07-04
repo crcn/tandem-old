@@ -161,8 +161,6 @@ import {
   redo,
   setRootStateSyntheticVisibleNodeLabelEditing,
   getEditorWithActiveFileUri,
-  openEditorFileUri,
-  openSecondEditor,
   getActiveEditorWindow,
   getEditorWindowWithFileUri,
   updateEditorWindow,
@@ -267,6 +265,7 @@ import {
   createDirectory,
   sortFSItems,
   EMPTY_OBJECT,
+  getNestedTreeNodeById,
 } from "tandem-common";
 import {clamp, last} from "lodash";
 
@@ -349,7 +348,15 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
         state
       );
 
-      return centerEditorCanvas(state, fileUri);
+      const selectedNodeId = state.selectedNodeIds[0];
+      if (selectedNodeId) {
+        const document = getSyntheticDocumentByDependencyUri(fileUri, state.documents, state.graph);
+        if (getNestedTreeNodeById(selectedNodeId, document)) {
+          return centerEditorCanvas(state, fileUri, getSelectionBounds(state));
+        }
+      } else {
+        return centerEditorCanvas(state, fileUri);
+      }
     }
 
     case FILE_NAVIGATOR_DROPPED_ITEM: {
@@ -451,9 +458,7 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
       }
       state = setNextOpenFile(
         removeTemporaryOpenFiles(
-          sourceEvent.metaKey
-            ? openSecondEditor(uri, state)
-            : openFile(uri, false, false, state)
+          openFile(uri, false, false, state)
         )
       );
       return state;
@@ -595,7 +600,6 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
       return closeFile(uri, state);
     }
     case PC_DEPENDENCY_GRAPH_LOADED: {
-      const { graph } = action as PCDependencyGraphLoaded;
       state = centerEditorCanvas(state, state.activeEditorFilePath);
       return state;
     }
