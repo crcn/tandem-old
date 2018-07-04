@@ -327,13 +327,14 @@ export const getSyntheticNodeSourceDependency = (
   graph: DependencyGraph
 ) => getPCNodeDependency(node.source.nodeId, graph);
 
-export const findRootInstanceOfPCNode = memoize(
-  (node: PCVisibleNode, documents: SyntheticDocument[]) => {
+export const findInstanceOfPCNode = memoize(
+  (node: PCVisibleNode | PCComponent, documents: SyntheticDocument[]) => {
     for (const document of documents) {
-      for (const contentNode of document.children) {
-        if (contentNode.source.nodeId === node.id) {
-          return contentNode;
-        }
+      const instance = findNestedNode(document, (instance: SyntheticNode) => {
+        return !instance.isComponentInstance && instance.source.nodeId === node.id;
+      });
+      if (instance) {
+        return instance;
       }
     }
     return null;

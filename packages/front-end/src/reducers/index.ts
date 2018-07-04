@@ -122,7 +122,9 @@ import {
   INHERIT_ITEM_COMPONENT_TYPE_CHANGE_COMPLETE,
   InheritItemComponentTypeChangeComplete,
   INHERIT_ITEM_CLICK,
-  InheritItemClick
+  InheritItemClick,
+  CANVAS_MOUSE_DOUBLE_CLICKED,
+  CanvasMouseMoved
 } from "../actions";
 import {
   queueOpenFile,
@@ -135,7 +137,6 @@ import {
 } from "fsbox";
 import {
   RootState,
-  setActiveFilePath,
   updateRootState,
   updateOpenFileCanvas,
   getCanvasMouseTargetNodeId,
@@ -146,7 +147,7 @@ import {
   setTool,
   persistRootState,
   getOpenFile,
-  upsertOpenFile,
+  openFile,
   removeTemporaryOpenFiles,
   setNextOpenFile,
   updateOpenFile,
@@ -175,7 +176,8 @@ import {
   queueSelectInsertedSyntheticVisibleNodes,
   shiftActiveEditorTab,
   confirm,
-  ConfirmType
+  ConfirmType,
+  openSyntheticVisibleNodeOriginFile,
 } from "../state";
 import {
   PCSourceTagNames,
@@ -268,8 +270,6 @@ import {
 } from "tandem-common";
 import {clamp, last} from "lodash";
 
-
-const PANE_SENSITIVITY = process.platform === "win32" ? 0.1 : 1;
 const ZOOM_SENSITIVITY = process.platform === "win32" ? 2500 : 250;
 const MIN_ZOOM = 0.02;
 const MAX_ZOOM = 6400 / 100;
@@ -294,8 +294,7 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
       state = setFileExpanded(node, true, state);
 
       if (!isDirectory(node)) {
-        state = maybeOpenFile(uri, state);
-        state = setActiveFilePath(uri, state);
+        state = openFile(uri, true, false, state);
         return state;
       }
 
@@ -304,10 +303,7 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
     case QUICK_SEARCH_ITEM_CLICKED: {
       const { file } = action as QuickSearchItemClicked;
       const uri = file.uri;
-      state = maybeOpenFile(uri, state);
-      state = setSelectedFileNodeIds(state, file.id);
-      state = setActiveFilePath(uri, state);
-      state = upsertOpenFile(uri, false, state);
+      state = openFile(uri, false, false, state);
       state = updateRootState({ showQuickSearch: false }, state);
       return state;
     }
@@ -324,8 +320,7 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
       const uri = node.uri;
       const file = getFileFromUri(uri, state.projectDirectory);
       if (isFile(file)) {
-        state = upsertOpenFile(uri, false, state);
-        state = openEditorFileUri(uri, state);
+        state = openFile(uri, false, false, state);
       }
 
       return state;
@@ -432,8 +427,7 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
       );
 
       if (fileType === FSItemTagNames.FILE) {
-        state = setActiveFilePath(uri, state);
-        state = maybeOpenFile(uri, state);
+        state = openFile(uri, false, false, state);
       }
       return state;
     }
@@ -459,7 +453,7 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
         removeTemporaryOpenFiles(
           sourceEvent.metaKey
             ? openSecondEditor(uri, state)
-            : openEditorFileUri(uri, state)
+            : openFile(uri, false, false, state)
         )
       );
       return state;
@@ -566,7 +560,7 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
       } else {
         const doc = getSyntheticVisibleNodeDocument(node.id, state.documents);
         const dep = getSyntheticNodeSourceDependency(doc, state.graph);
-        state = setActiveFilePath(dep.uri, state);
+        state = openFile(dep.uri, false, false, state);
         state = setSelectedSyntheticVisibleNodeIds(
           state,
           ...(sourceEvent.shiftKey
@@ -594,7 +588,7 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
     }
     case EDITOR_TAB_CLICKED: {
       const { uri } = action as EditorTabClicked;
-      return openEditorFileUri(uri, state);
+      return openFile(uri, false, false, state);
     }
     case EDITOR_TAB_CLOSE_BUTTON_CLICKED: {
       const { uri } = action as EditorTabClicked;
@@ -866,8 +860,9 @@ export const canvasReducer = (state: RootState, action: Action) => {
 
     case CANVAS_MOUSE_MOVED: {
       const {
+        editorWindow: { activeFilePath },
         sourceEvent: { pageX, pageY }
-      } = action as WrappedEvent<React.MouseEvent<any>>;
+      } = action as CanvasMouseMoved;
       state = updateEditorWindow(
         { mousePosition: { left: pageX, top: pageY } },
         state.activeEditorFilePath,
@@ -875,8 +870,8 @@ export const canvasReducer = (state: RootState, action: Action) => {
       );
 
       let targetNodeId: string;
-      const editorWindow = getActiveEditorWindow(state);
-      const openFile = getOpenFile(editorWindow.activeFilePath, state);
+      state = updateRootState({ activeEditorFilePath: activeFilePath }, state)
+      const editorWindow = getEditorWindowWithFileUri(activeFilePath, state);
 
       if (!editorWindow.movingOrResizing) {
         targetNodeId = getCanvasMouseTargetNodeId(
@@ -929,7 +924,6 @@ export const canvasReducer = (state: RootState, action: Action) => {
       return state;
     }
 
-    // TODO
     case CANVAS_MOUSE_CLICKED: {
       if (state.toolType != null) {
         return state;
@@ -961,10 +955,6 @@ export const canvasReducer = (state: RootState, action: Action) => {
         return setSelectedSyntheticVisibleNodeIds(state);
       }
 
-      // if (altKey) {
-      //   state = openSyntheticVisibleNodeOriginFile(targetNodeId, state);
-      //   return state;
-      // }
 
       if (!altKey) {
         state = handleArtboardSelectionFromAction(
@@ -983,6 +973,20 @@ export const canvasReducer = (state: RootState, action: Action) => {
       }
       return state;
     }
+    case CANVAS_MOUSE_DOUBLE_CLICKED: {
+      const targetNodeId = getCanvasMouseTargetNodeId(
+        state,
+        action as CanvasToolOverlayMouseMoved
+      );
+
+      if (!targetNodeId) {
+        return state;
+      }
+
+      state = openSyntheticVisibleNodeOriginFile(getSyntheticNodeById(targetNodeId, state.documents), state);
+      return state;
+    }
+
     case RESIZER_PATH_MOUSE_MOVED: {
       state = updateEditorWindow(
         {
@@ -1687,16 +1691,6 @@ const isDroppableNode = (node: SyntheticVisibleNode) => {
     node.name !== "text" &&
     !/input/.test(String((node as SyntheticElement).name))
   );
-};
-
-const maybeOpenFile = (uri: string, state: RootState) => {
-  if (hasFileCacheItem(uri, state)) {
-    return state;
-  }
-  // if (isPaperclipUri(uri) && hasFileCacheItem(uri, state)) {
-  //   return evaluateDependency(uri, state);
-  // }
-  return queueOpenFile(uri, state);
 };
 
 const handleArtboardSelectionFromAction = <

@@ -13,7 +13,8 @@ import {
 import {
   Frame,
   getFramesByDependencyUri,
-  getSyntheticNodeById
+  getSyntheticNodeById,
+  SyntheticDocument
 } from "paperclip";
 import {
   Bounds,
@@ -37,6 +38,7 @@ import {
 export type VisualToolsProps = {
   editorWindow: EditorWindow;
   zoom: number;
+  document: SyntheticDocument;
   root: RootState;
   dispatch: Dispatch<any>;
 };
@@ -200,15 +202,9 @@ const getNodes = memoize(
 
 const getHoveringSyntheticVisibleNodes = memoize(
   (root: RootState, frame: Frame): string[] => {
-    const allNodes =
-      (frame &&
-        getTreeNodeIdMap(
-          getSyntheticNodeById(frame.contentNodeId, root.documents)
-        )) ||
-      {};
     const selectionRefIds = root.selectedNodeIds;
     return root.hoveringNodeIds.filter(
-      nodeId => selectionRefIds.indexOf(nodeId) === -1
+      nodeId => selectionRefIds.indexOf(nodeId) === -1 && (frame.computed[nodeId] || frame.contentNodeId === nodeId)
     );
   }
 );
@@ -229,10 +225,6 @@ export const NodeOverlaysToolBase = ({
   return (
     <div className="visual-tools-layer-component">
       {activeFrames.map((frame, i) => {
-        const contentNode = getSyntheticNodeById(
-          frame.contentNodeId,
-          root.documents
-        );
         return (
           <ArtboardOverlayTools
             key={frame.contentNodeId}

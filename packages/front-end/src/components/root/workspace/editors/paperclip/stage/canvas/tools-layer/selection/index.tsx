@@ -11,12 +11,14 @@ import {
   Canvas
 } from "../../../../../../../../../state";
 import { selectorDoubleClicked } from "../../../../../../../../../actions";
-import { getSyntheticVisibleNodeFrame, getSyntheticNodeById } from "paperclip";
+import { getSyntheticVisibleNodeFrame, getSyntheticNodeById, SyntheticDocument } from "paperclip";
+import { getNestedTreeNodeById } from "tandem-common";
 
 export type SelectionOuterProps = {
   canvas: Canvas;
   dispatch: Dispatch<any>;
   zoom: number;
+  document: SyntheticDocument;
   root: RootState;
   editorWindow: EditorWindow;
 };
@@ -28,13 +30,14 @@ export type SelectionInnerProps = {
 
 const SelectionBounds = ({
   root,
-  zoom
+  zoom,
+  document
 }: {
+  document: SyntheticDocument;
   root: RootState;
   zoom: number;
 }) => {
   const entireBounds = getSelectionBounds(root);
-  const frame = getSyntheticVisibleNodeFrame(getSyntheticNodeById(root.selectedNodeIds[0], root.documents), root.frames);
   const borderWidth = 1 / zoom;
   const boundsStyle = {
     position: "absolute",
@@ -56,14 +59,18 @@ export const SelectionCanvasToolBase = ({
   root,
   dispatch,
   onDoubleClick,
+  document,
   zoom
 }: SelectionInnerProps) => {
   const selection = getBoundedSelection(root);
   if (!selection.length || editorWindow.secondarySelection) return null;
+  if (!getNestedTreeNodeById(root.selectedNodeIds[0], document)) {
+    return null;
+  }
 
   return (
     <div className="m-stage-selection-tool" onDoubleClick={onDoubleClick}>
-      <SelectionBounds root={root} zoom={zoom}  />
+      <SelectionBounds root={root} zoom={zoom} document={document} />
       <Resizer
         root={root}
         editorWindow={editorWindow}

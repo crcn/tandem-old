@@ -26,7 +26,7 @@ import {
 } from "paperclip";
 import { RegisteredComponent } from "..";
 import { ClientOffset } from "react-dnd";
-import { FrameMode, ToolType } from "../state";
+import { FrameMode, ToolType, EditorWindow } from "../state";
 
 export const PROJECT_LOADED = "PROJECT_LOADED";
 export const ACTIVE_FILE_CHANGED = "ACTIVE_FILE_CHANGED";
@@ -73,6 +73,7 @@ export const CANVAS_MOUNTED = "CANVAS_MOUNTED";
 export const CANVAS_MOUSE_MOVED = "CANVAS_MOUSE_MOVED";
 export const CANVAS_DRAGGED_OVER = "CANVAS_DRAGGED_OVER";
 export const CANVAS_MOUSE_CLICKED = "CANVAS_MOUSE_CLICKED";
+export const CANVAS_MOUSE_DOUBLE_CLICKED = "CANVAS_MOUSE_DOUBLE_CLICKED";
 export const CANVAS_WHEEL = "CANVAS_WHEEL";
 export const CANVAS_MOTION_RESTED = "CANVAS_MOTION_RESTED";
 export const CANVAS_DROPPED_ITEM = "CANVAS_DROPPED_ITEM";
@@ -206,6 +207,10 @@ export type CanvasToolOverlayMousePanning = {
   velocityY: number;
   center: Point;
 } & Action;
+
+export type CanvasMouseMoved = {
+  editorWindow: EditorWindow;
+} & WrappedEvent<any>;
 
 export type NewFileAdded = {
   uri: string;
@@ -862,8 +867,10 @@ export const canvasContainerMounted = (
 });
 
 export const canvasMouseMoved = (
+  editorWindow: EditorWindow,
   sourceEvent: React.MouseEvent<any>
-): WrappedEvent<React.MouseEvent<any>> => ({
+): CanvasMouseMoved => ({
+  editorWindow,
   sourceEvent,
   type: CANVAS_MOUSE_MOVED
 });
@@ -882,6 +889,13 @@ export const canvasMouseClicked = (
 ): WrappedEvent<React.MouseEvent<any>> => ({
   sourceEvent,
   type: CANVAS_MOUSE_CLICKED
+});
+
+export const canvasMouseDoubleClicked = (
+  sourceEvent: React.MouseEvent<any>
+): WrappedEvent<React.MouseEvent<any>> => ({
+  sourceEvent,
+  type: CANVAS_MOUSE_DOUBLE_CLICKED
 });
 
 export const canvasWheel = (

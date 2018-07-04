@@ -16,6 +16,7 @@ import { NodeOverlaysTool } from "./document-overlay";
 import { SelectionCanvasTool } from "./selection";
 const { Frames } = require("./frames-view.pc");
 import { InsertLayer } from "./insert-layer";
+import { getSyntheticDocumentByDependencyUri } from "paperclip";
 
 export type ToolsLayerComponent = {
   editorWindow: EditorWindow;
@@ -50,16 +51,15 @@ const BaseToolsLayerComponent = ({
         root={root}
         zoom={zoom}
         dispatch={dispatch}
+        document={getSyntheticDocumentByDependencyUri(editorWindow.activeFilePath, root.documents, root.graph)}
         editorWindow={editorWindow}
       />
-      {/* {activeWindow && (
-        <SelectableToolsComponent documents={activeWindow.documents} />
-      )} */}
       <SelectionCanvasTool
         canvas={canvas}
         root={root}
         dispatch={dispatch}
         zoom={zoom}
+        document={getSyntheticDocumentByDependencyUri(editorWindow.activeFilePath, root.documents, root.graph)}
         editorWindow={editorWindow}
       />
     </div>

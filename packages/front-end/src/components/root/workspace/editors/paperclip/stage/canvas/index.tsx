@@ -22,7 +22,8 @@ import {
   canvasMouseClicked,
   canvasMotionRested,
   canvasDroppedItem,
-  canvasDraggedOver
+  canvasDraggedOver,
+  canvasMouseDoubleClicked
 } from "../../../../../../../actions";
 import {
   DropTarget,
@@ -52,6 +53,7 @@ export type CanvasInnerProps = {
   onDragOver: (event: React.SyntheticEvent<any>) => any;
   onDragExit: (event: React.SyntheticEvent<any>) => any;
   setCanvasOuter: (element: HTMLElement) => any;
+  onMouseDoubleClick: (event: any) => any;
 } & CanvasOuterProps;
 
 const onWheel = () => {};
@@ -66,6 +68,7 @@ const BaseCanvasComponent = ({
   onDrop,
   onMouseEvent,
   onDragOver,
+  onMouseDoubleClick,
   onMouseClick,
   connectDropTarget,
   onDragExit
@@ -104,6 +107,7 @@ const BaseCanvasComponent = ({
             onDragOver={onDragOver}
             onDrop={onDrop}
             onClick={onMouseClick}
+            onDoubleClick={onMouseDoubleClick}
             tabIndex={-1}
             onDragExit={onDragExit}
             className="canvas-inner"
@@ -142,14 +146,17 @@ const enhance = compose<CanvasInnerProps, CanvasOuterProps>(
   withState("canvasOuter", "setCanvasOuter", null),
   withState("canvasContainer", "setCanvasContainer", null),
   withHandlers({
-    onMouseEvent: ({ dispatch }) => (event: React.MouseEvent<any>) => {
-      dispatch(canvasMouseMoved(event));
+    onMouseEvent: ({ dispatch, editorWindow }) => (event: React.MouseEvent<any>) => {
+      dispatch(canvasMouseMoved(editorWindow, event));
     },
     onMotionRest: ({ dispatch }) => () => {
       dispatch(canvasMotionRested());
     },
     onMouseClick: ({ dispatch }) => (event: React.MouseEvent<any>) => {
       dispatch(canvasMouseClicked(event));
+    },
+    onMouseDoubleClick: ({ dispatch }) => (event: React.MouseEvent<any>) => {
+      dispatch(canvasMouseDoubleClicked(event));
     },
     setCanvasContainer: ({ dispatch, editorWindow }) => (
       element: HTMLDivElement

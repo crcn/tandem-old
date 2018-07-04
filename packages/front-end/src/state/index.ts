@@ -23,15 +23,14 @@ import {
   KeyValue,
   updateNestedNodeTrail,
   getTreeNodeFromPath,
-  EMPTY_OBJECT
+  EMPTY_OBJECT,
+  generateUID
 } from "tandem-common";
 import {
   SyntheticVisibleNode,
   PCEditorState,
-  getSyntheticDocumentByDependencyUri,
   getSyntheticSourceNode,
   getPCNodeDependency,
-  findRootInstanceOfPCNode,
   getSyntheticNodeById,
   getSyntheticVisibleNodeDocument,
   Frame,
@@ -51,7 +50,10 @@ import {
   PCVisibleNode,
   PCVariant,
   TreeNodeOperationalTransform,
-  getPCNode
+  getPCNode,
+  findInstanceOfPCNode,
+  isPCComponentInstance,
+  PCComponent
 } from "paperclip";
 import {
   CanvasToolOverlayMouseMoved,
@@ -67,7 +69,7 @@ import {
   DependencyGraph,
   getModifiedDependencies
 } from "paperclip";
-import { FSSandboxRootState } from "fsbox";
+import { FSSandboxRootState, queueOpenFile, hasFileCacheItem } from "fsbox";
 
 export enum ToolType {
   TEXT,
@@ -431,21 +433,40 @@ export const updateOpenFile = (
   );
 };
 
-export const upsertOpenFile = (
+export const openFile = (
   uri: string,
   temporary: boolean,
+  secondaryTab: boolean,
   state: RootState
 ): RootState => {
-  const file = getOpenFile(uri, state);
-  if (file) {
-    if (file.temporary !== temporary) {
-      return updateOpenFile({ temporary }, uri, state);
-    }
-    return state;
+  let file = getOpenFile(uri, state);
+  state = openEditorFileUri(uri, secondaryTab, state);
+  if (!file) {
+    state = addOpenFile(uri, temporary, state);
+    file = getOpenFile(uri, state);
+    state = centerEditorCanvas(state, uri);
   }
 
-  return addOpenFile(uri, temporary, state);
+  if (!hasFileCacheItem(uri, state)) {
+    state = queueOpenFile(uri, state);
+  }
+  return state;
 };
+
+
+
+// export const setActiveFilePath = (
+//   newActiveFilePath: string,
+//   root: RootState
+// ) => {
+//   root = updateRootState({ selectedVariant: null }, root);
+//   if (getEditorWithActiveFileUri(newActiveFilePath, root)) {
+//     return root;
+//   }
+//   root = addOpenFile(newActiveFilePath, true, root);
+//   root = centerEditorCanvas(root, newActiveFilePath);
+//   return root;
+// };
 
 export const getEditorWindowWithFileUri = (
   uri: string,
@@ -461,61 +482,10 @@ export const getEditorWithActiveFileUri = (
   return state.editorWindows.find(editor => editor.activeFilePath === uri);
 };
 
-export const openSecondEditor = (uri: string, state: RootState) => {
-  const editor = getEditorWindowWithFileUri(uri, state);
-  const i = state.editorWindows.indexOf(editor);
-  if (i === 1) {
-    return openEditorFileUri(uri, state);
-  }
-
-  if (i === 0 && editor.tabUris.length === 1) {
-    return state;
-  }
-
-  const newTabUris = arraySplice(
-    editor.tabUris,
-    editor.tabUris.indexOf(uri),
-    1
-  );
-
-  state = {
-    ...state,
-    editorWindows: arraySplice(state.editorWindows, i, 1, {
-      ...editor,
-      tabUris: newTabUris,
-      activeFilePath:
-        editor.activeFilePath === uri
-          ? newTabUris[newTabUris.length - 1]
-          : editor.activeFilePath
-    })
-  };
-
-  if (state.editorWindows.length === 1) {
-    state = {
-      ...state,
-      editorWindows: [
-        ...state.editorWindows,
-
-        { tabUris: [], activeFilePath: null }
-      ]
-    };
-  }
-
-  const secondEditor = state.editorWindows[1];
-  return {
-    ...state,
-    editors: arraySplice(
-      state.editorWindows,
-      state.editorWindows.indexOf(secondEditor),
-      1,
-      {
-        ...secondEditor,
-        tabUris: [...secondEditor.tabUris, uri],
-        activeFilePath: uri
-      }
-    )
-  };
-};
+const createEditorWindow = (tabUris: string[], activeFilePath: string): EditorWindow => ({
+  tabUris,
+  activeFilePath
+});
 
 export const getSyntheticWindowBounds = memoize(
   (uri: string, state: RootState) => {
@@ -532,9 +502,9 @@ export const getSyntheticWindowBounds = memoize(
 
 export const isImageMimetype = (mimeType: string) => /^image\//.test(mimeType);
 
-export const openEditorFileUri = (uri: string, state: RootState): RootState => {
+export const openEditorFileUri = (uri: string, secondaryTab: boolean, state: RootState): RootState => {
   const editor =
-    getEditorWindowWithFileUri(uri, state) || state.editorWindows[0];
+    getEditorWindowWithFileUri(uri, state) || (secondaryTab ? null : state.editorWindows[0]);
 
   return {
     ...state,
@@ -556,16 +526,10 @@ export const openEditorFileUri = (uri: string, state: RootState): RootState => {
           }
         )
       : [
-          {
-            tabUris: [uri],
-            activeFilePath: uri
-          }
+          ...state.editorWindows,
+          createEditorWindow([uri], uri)
         ]
   };
-};
-
-const queuePreview = (uri: string, state: RootState): RootState => {
-  return state;
 };
 
 export const shiftActiveEditorTab = (
@@ -587,7 +551,7 @@ export const shiftActiveEditorTab = (
   }
   newIndex = clamp(newIndex, 0, editor.tabUris.length - 1);
 
-  return openEditorFileUri(editor.tabUris[newIndex], state);
+  return openEditorFileUri(editor.tabUris[newIndex], false, state);
 };
 
 const removeEditorWindow = (
@@ -647,7 +611,7 @@ export const setNextOpenFile = (state: RootState): RootState => {
   };
 
   if (state.openFiles.length) {
-    state = openEditorFileUri(state.openFiles[0].uri, state);
+    state = openEditorFileUri(state.openFiles[0].uri, false, state);
   }
 
   return state;
@@ -664,15 +628,18 @@ export const openSyntheticVisibleNodeOriginFile = (
   node: SyntheticVisibleNode,
   state: RootState
 ) => {
-  const sourceNode = getSyntheticSourceNode(
+  let sourceNode = getSyntheticSourceNode(
     node as SyntheticVisibleNode,
     state.graph
-  ) as PCVisibleNode;
+  ) as PCVisibleNode | PCComponent;
+
+  if (isPCComponentInstance(sourceNode)) {
+    sourceNode = getPCNode(sourceNode.is, state.graph) as PCComponent;
+  }
 
   const uri = getPCNodeDependency(sourceNode.id, state.graph).uri;
-  state = openEditorFileUri(uri, state);
-  const instance = findRootInstanceOfPCNode(sourceNode, state.documents);
-  state = setActiveFilePath(uri, state);
+  const instance = findInstanceOfPCNode(sourceNode, state.documents.filter(document => getSyntheticDocumentDependencyUri(document, state.graph) === uri));
+  state = openFile(uri, false, true, state);
   state = setSelectedSyntheticVisibleNodeIds(state, instance.id);
   return state;
 };
@@ -981,20 +948,6 @@ export const centerEditorCanvas = (
   return state;
 };
 
-export const setActiveFilePath = (
-  newActiveFilePath: string,
-  root: RootState
-) => {
-  root = updateRootState({ selectedVariant: null }, root);
-  if (getEditorWithActiveFileUri(newActiveFilePath, root)) {
-    return root;
-  }
-  root = openEditorFileUri(newActiveFilePath, root);
-  root = addOpenFile(newActiveFilePath, true, root);
-  root = centerEditorCanvas(root, newActiveFilePath);
-  return root;
-};
-
 export const updateOpenFileCanvas = (
   properties: Partial<Canvas>,
   uri: string,
@@ -1043,13 +996,9 @@ export const setTool = (toolType: ToolType, root: RootState) => {
 
 export const getActiveFrames = (root: RootState): Frame[] =>
   values(root.frames).filter(frame =>
-    root.editorWindows.some(
-      editor =>
-        editor.activeFilePath ===
-        getSyntheticDocumentDependencyUri(
-          getSyntheticVisibleNodeDocument(frame.contentNodeId, root.documents),
-          root.graph
-        )
+    getActiveEditorWindow(root).activeFilePath === getSyntheticDocumentDependencyUri(
+      getSyntheticVisibleNodeDocument(frame.contentNodeId, root.documents),
+      root.graph
     )
   );
 
@@ -1072,6 +1021,7 @@ export const getCanvasMouseTargetNodeId = (
   event: CanvasToolOverlayMouseMoved | CanvasToolOverlayClicked,
   filter?: (node: TreeNode<any>) => boolean
 ): string => {
+
   return getCanvasMouseTargetNodeIdFromPoint(
     state,
     {
@@ -1087,9 +1037,6 @@ export const getCanvasMouseTargetNodeIdFromPoint = (
   point: Point,
   filter?: (node: TreeNode<any>) => boolean
 ): string => {
-  const editor = getActiveEditorWindow(state);
-  const canvas = getOpenFile(editor.activeFilePath, state).canvas;
-  const translate = getCanvasTranslate(canvas);
   const toolType = state.toolType;
 
   const scaledMousePos = getScaledMouseCanvasPosition(state, point);
@@ -1104,7 +1051,6 @@ export const getCanvasMouseTargetNodeIdFromPoint = (
 
   const { left: scaledPageX, top: scaledPageY } = scaledMousePos;
 
-  const deadZone = getSelectionBounds(state);
 
   const mouseX = scaledPageX - frame.bounds.left;
   const mouseY = scaledPageY - frame.bounds.top;
@@ -1117,7 +1063,7 @@ export const getCanvasMouseTargetNodeIdFromPoint = (
     const { bounds } = computedInfo[$id];
     if (
       pointIntersectsBounds(mouseFramePoint, bounds) &&
-      !pointIntersectsBounds(scaledMousePos, deadZone) &&
+      // !pointIntersectsBounds(scaledMousePos, deadZone) &&
       (toolType == null ||
         getNestedTreeNodeById($id, contentNode).name !==
           PCSourceTagNames.TEXT) &&

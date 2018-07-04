@@ -1,6 +1,22 @@
+KEEP IN MIND:
+
+* no more UI features until UI is tidied up.
+
 IMMEDIATE:
 
-* inherit styles from other elements
+* when double clicking, pane to selected element
+* fix selecting newly inserted frame
+* double click to edit
+* label show showing
+* drag tabs to other editors
+
+* tidy tdproject
+* color picker
+* border UI
+* box shadows
+* variables (easier to refactor to this)
+* performance
+  * "Welcome" screen picking project
 * double click instance -> open in new tab
 * clear overrides functionality (need to reset to inherited styles)
 * special *bind* attribute
@@ -8,6 +24,7 @@ IMMEDIATE:
 * fetch frame bounds from source metadata
 * controller UI
 * better place to expose properties
+* redesign (see https://dribbble.com/shots/4781001-Figma)
 *
 * dts
   * code compiler watcher
