@@ -17,7 +17,8 @@
     "clean": "lerna exec --parallel -- npm run clean",
     "bootstrap": "lerna bootstrap",
     "build-watch": "lerna exec --parallel -- npm run build -- --watch",
-    "build-desktop-dist": "cd packages/desktop; npm run build-dist;"
+    "build-desktop-dist": "cd packages/desktop; npm run build-dist;",
+    "prepublish": "npm run bootstrap"
   },
   "lint-staged": {
     "*.{ts,tsx,json,css,md}": [

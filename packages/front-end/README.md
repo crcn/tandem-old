@@ -4,7 +4,6 @@ OBJECTIVE:
 
 IMMEDIATE:
 
-- fix prettier
 - fix selecting newly inserted frame
 - double click to edit
 - label show showing
