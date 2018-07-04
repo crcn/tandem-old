@@ -11,7 +11,11 @@ import {
   Canvas
 } from "../../../../../../../../../state";
 import { selectorDoubleClicked } from "../../../../../../../../../actions";
-import { getSyntheticVisibleNodeFrame, getSyntheticNodeById, SyntheticDocument } from "paperclip";
+import {
+  getSyntheticVisibleNodeFrame,
+  getSyntheticNodeById,
+  SyntheticDocument
+} from "paperclip";
 import { getNestedTreeNodeById } from "tandem-common";
 
 export type SelectionOuterProps = {

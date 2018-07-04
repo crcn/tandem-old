@@ -13,7 +13,7 @@ type CheckboxControllerInnerProps = {
 export default compose(
   pure,
   withHandlers({
-    onClick: ({ value, onChange, onChangeComplete }) => (event) => {
+    onClick: ({ value, onChange, onChangeComplete }) => event => {
       event.stopPropagation();
       if (onChange) {
         onChange(value);

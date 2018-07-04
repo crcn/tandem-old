@@ -124,10 +124,13 @@ const hslDrawer = memoize(
 
     for (let row = 0; row <= height; row++) {
       let grad = ctx.createLinearGradient(0, 0, width, 0);
-      grad.addColorStop(1, `hsl(${hv}, 0%, ${(height - row) / height * 100}%)`);
+      grad.addColorStop(
+        1,
+        `hsl(${hv}, 0%, ${((height - row) / height) * 100}%)`
+      );
       grad.addColorStop(
         0,
-        `hsl(${hv}, 100%, ${(height - row) / height * 50}%)`
+        `hsl(${hv}, 100%, ${((height - row) / height) * 50}%)`
       );
       ctx.fillStyle = grad;
       ctx.fillRect(0, row, width, 1);
@@ -151,7 +154,7 @@ const opacityPointer = ([h, s, l, a]: HSLA, width: number, height: number) => {
 
 const huePointer = ([h]: HSLA, width: number, height: number) => {
   return {
-    left: width * (h * 360) / 360
+    left: (width * (h * 360)) / 360
   };
 };
 
@@ -165,7 +168,7 @@ const hueDrawer = (
   canvas.height = height;
 
   for (let row = 0; row <= width; row++) {
-    ctx.fillStyle = `hsl(${(row - width) / width * 360}, 100%, 50%)`;
+    ctx.fillStyle = `hsl(${((row - width) / width) * 360}, 100%, 50%)`;
     ctx.fillRect(row, 0, 1, height);
   }
 };
@@ -177,7 +180,7 @@ const opacityDrawer = memoize(
     canvas.width = width;
     canvas.height = height;
     for (let row = 0; row <= width; row++) {
-      ctx.fillStyle = `hsl(${hv}, 100%, ${(width - row) / width * 50 + 50}%)`;
+      ctx.fillStyle = `hsl(${hv}, 100%, ${((width - row) / width) * 50 + 50}%)`;
       ctx.fillRect(row, 0, 1, height);
     }
   }
@@ -298,24 +301,26 @@ const hslToHsv = (hsl: HSLA) => rgbToHsv(hslaToRgba(hsl));
 
 const getColorHSL = memoize(color => rgbaToHsla(parseRGBA(color)));
 
-const parseRGBA = memoize((value: string): RGBA => {
-  if (value.indexOf("rgba") !== -1) {
-    return ((value.match(/[\d\.]+/g) as any) || [0, 0, 0, 1]).map(Number) as [
-      number,
-      number,
-      number,
-      number
-    ];
+const parseRGBA = memoize(
+  (value: string): RGBA => {
+    if (value.indexOf("rgba") !== -1) {
+      return ((value.match(/[\d\.]+/g) as any) || [0, 0, 0, 1]).map(Number) as [
+        number,
+        number,
+        number,
+        number
+      ];
+    }
+    let result =
+      /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(value) ||
+      /^#?([a-f\d]{1})([a-f\d]{1})([a-f\d]{1})$/i.exec(value);
+    return result
+      ? [
+          parseInt(result[1], 16),
+          parseInt(result[2], 16),
+          parseInt(result[3], 16),
+          1
+        ]
+      : [0, 0, 0, 1];
   }
-  let result =
-    /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(value) ||
-    /^#?([a-f\d]{1})([a-f\d]{1})([a-f\d]{1})$/i.exec(value);
-  return result
-    ? [
-        parseInt(result[1], 16),
-        parseInt(result[2], 16),
-        parseInt(result[3], 16),
-        1
-      ]
-    : [0, 0, 0, 1];
-});
+);

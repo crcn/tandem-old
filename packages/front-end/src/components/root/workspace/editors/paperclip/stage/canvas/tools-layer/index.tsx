@@ -51,7 +51,11 @@ const BaseToolsLayerComponent = ({
         root={root}
         zoom={zoom}
         dispatch={dispatch}
-        document={getSyntheticDocumentByDependencyUri(editorWindow.activeFilePath, root.documents, root.graph)}
+        document={getSyntheticDocumentByDependencyUri(
+          editorWindow.activeFilePath,
+          root.documents,
+          root.graph
+        )}
         editorWindow={editorWindow}
       />
       <SelectionCanvasTool
@@ -59,7 +63,11 @@ const BaseToolsLayerComponent = ({
         root={root}
         dispatch={dispatch}
         zoom={zoom}
-        document={getSyntheticDocumentByDependencyUri(editorWindow.activeFilePath, root.documents, root.graph)}
+        document={getSyntheticDocumentByDependencyUri(
+          editorWindow.activeFilePath,
+          root.documents,
+          root.graph
+        )}
         editorWindow={editorWindow}
       />
     </div>

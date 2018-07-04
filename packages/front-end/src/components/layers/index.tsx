@@ -423,7 +423,10 @@ export const createTreeLayerComponents = <
   const TreeNodeLayerComponent = compose<
     TreeNodeLayerInnerProps,
     TTreeLayerOuterProps
-  >(pure, layerRenderer)(BaseTreeNodeLayerComponent);
+  >(
+    pure,
+    layerRenderer
+  )(BaseTreeNodeLayerComponent);
 
   renderChildren = childRenderer(TreeNodeLayerComponent);
 

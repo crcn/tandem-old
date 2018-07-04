@@ -5,8 +5,17 @@ import {
   cssPropertyChangeCompleted,
   cssPropertyChanged
 } from "../../../../../../../actions";
-import { DropdownMenuOption, dropdownMenuOptionFromValue } from "../../../../../../inputs/dropdown/controller";
-import { SyntheticVisibleNode, isSyntheticVisibleNodeMovable, isSyntheticVisibleNodeResizable, SyntheticDocument, isSyntheticElement } from "paperclip";
+import {
+  DropdownMenuOption,
+  dropdownMenuOptionFromValue
+} from "../../../../../../inputs/dropdown/controller";
+import {
+  SyntheticVisibleNode,
+  isSyntheticVisibleNodeMovable,
+  isSyntheticVisibleNodeResizable,
+  SyntheticDocument,
+  isSyntheticElement
+} from "paperclip";
 
 export const DISPLAY_MENU_OPTIONS: DropdownMenuOption[] = [
   undefined,
@@ -26,12 +35,53 @@ export const POSITION_MENU_OPTIONS: DropdownMenuOption[] = [
   "fixed"
 ].map(dropdownMenuOptionFromValue);
 
-const FLEX_WRAP_OPTIONS: DropdownMenuOption[] = [undefined, "nowrap", "wrap", "wrap-reverse"].map(dropdownMenuOptionFromValue);
-const FLEX_DIRECTION_OPTIONS: DropdownMenuOption[] = [undefined, "row", "row-reverse", "column", "column-reverse"].map(dropdownMenuOptionFromValue);
-const JUSTIFY_CONTENT_OPTIONS: DropdownMenuOption[] = [undefined, "flex-start", "flex-end", "center", "space-between", "space-around", "space-evenly"].map(dropdownMenuOptionFromValue);
-const ALIGN_ITEMS_OPTIONS: DropdownMenuOption[] = [undefined, "flex-start", "flex-end", "center", "stretch", "baseline"].map(dropdownMenuOptionFromValue);
-const ALIGN_CONTENT_OPTIONS: DropdownMenuOption[] = [undefined, "flex-start", "flex-end", "center", "space-between", "space-around", "stretch"].map(dropdownMenuOptionFromValue);
-const ALIGN_SELF_OPTIONS: DropdownMenuOption[] = [undefined, "flex-start", "flex-end", "center", "baseline", "stretch"].map(dropdownMenuOptionFromValue);
+const FLEX_WRAP_OPTIONS: DropdownMenuOption[] = [
+  undefined,
+  "nowrap",
+  "wrap",
+  "wrap-reverse"
+].map(dropdownMenuOptionFromValue);
+const FLEX_DIRECTION_OPTIONS: DropdownMenuOption[] = [
+  undefined,
+  "row",
+  "row-reverse",
+  "column",
+  "column-reverse"
+].map(dropdownMenuOptionFromValue);
+const JUSTIFY_CONTENT_OPTIONS: DropdownMenuOption[] = [
+  undefined,
+  "flex-start",
+  "flex-end",
+  "center",
+  "space-between",
+  "space-around",
+  "space-evenly"
+].map(dropdownMenuOptionFromValue);
+const ALIGN_ITEMS_OPTIONS: DropdownMenuOption[] = [
+  undefined,
+  "flex-start",
+  "flex-end",
+  "center",
+  "stretch",
+  "baseline"
+].map(dropdownMenuOptionFromValue);
+const ALIGN_CONTENT_OPTIONS: DropdownMenuOption[] = [
+  undefined,
+  "flex-start",
+  "flex-end",
+  "center",
+  "space-between",
+  "space-around",
+  "stretch"
+].map(dropdownMenuOptionFromValue);
+const ALIGN_SELF_OPTIONS: DropdownMenuOption[] = [
+  undefined,
+  "flex-start",
+  "flex-end",
+  "center",
+  "baseline",
+  "stretch"
+].map(dropdownMenuOptionFromValue);
 
 export type LayoutControllerOuterProps = {
   selectedNodes: SyntheticVisibleNode[];
@@ -54,7 +104,12 @@ export default compose(
       dispatch(cssPropertyChangeCompleted(name, value));
     }
   }),
-  Base => ({ onPropertyChange, onPropertyChangeComplete, selectedNodes, syntheticDocument }: LayoutControllerInnerProps) => {
+  Base => ({
+    onPropertyChange,
+    onPropertyChangeComplete,
+    selectedNodes,
+    syntheticDocument
+  }: LayoutControllerInnerProps) => {
     if (!selectedNodes) {
       return null;
     }
@@ -62,8 +117,12 @@ export default compose(
     const showMoveInputs = isSyntheticVisibleNodeMovable(node);
     const showSizeInputs = isSyntheticVisibleNodeResizable(node);
     const showParentFlexInputs = node.style.display === "flex";
-    const parentNode: SyntheticVisibleNode = getParentTreeNode(node.id, syntheticDocument);
-    const showChildFlexInputs = isSyntheticElement(parentNode) && parentNode.style.display === "flex";
+    const parentNode: SyntheticVisibleNode = getParentTreeNode(
+      node.id,
+      syntheticDocument
+    );
+    const showChildFlexInputs =
+      isSyntheticElement(parentNode) && parentNode.style.display === "flex";
 
     return (
       <Base
@@ -165,10 +224,7 @@ export default compose(
         }}
         flexBasisInputProps={{
           value: node.style["flex-basis"],
-          onChange: propertyChangeCallback(
-            "flex-basis",
-            onPropertyChange
-          ),
+          onChange: propertyChangeCallback("flex-basis", onPropertyChange),
           onChangeComplete: propertyChangeCallback(
             "flex-basis",
             onPropertyChangeComplete
@@ -176,10 +232,7 @@ export default compose(
         }}
         flexGrowInputProps={{
           value: node.style["flex-grow"],
-          onChange: propertyChangeCallback(
-            "flex-grow",
-            onPropertyChange
-          ),
+          onChange: propertyChangeCallback("flex-grow", onPropertyChange),
           onChangeComplete: propertyChangeCallback(
             "flex-grow",
             onPropertyChangeComplete
@@ -187,10 +240,7 @@ export default compose(
         }}
         flexShrinkInputProps={{
           value: node.style["flex-shrink"],
-          onChange: propertyChangeCallback(
-            "flex-shrink",
-            onPropertyChange
-          ),
+          onChange: propertyChangeCallback("flex-shrink", onPropertyChange),
           onChangeComplete: propertyChangeCallback(
             "flex-shrink",
             onPropertyChangeComplete

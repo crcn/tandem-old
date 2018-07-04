@@ -8,17 +8,23 @@ export type ButtonBarOption = {
   value: any;
 };
 
-export default compose(pure, Base => ({ options, value, onChange }) => {
-  const children = options.map((item, i) => {
-    return (
-      <ButtonBarItemComponent
-        key={item.iconSrc}
-        children={item.icon}
-        variant={cx({ selected: item.value === value, last: i === options.length - 1})}
-        onClick={onChange && (() => onChange(item.value))}
-      />
-    );
-  });
+export default compose(
+  pure,
+  Base => ({ options, value, onChange }) => {
+    const children = options.map((item, i) => {
+      return (
+        <ButtonBarItemComponent
+          key={item.iconSrc}
+          children={item.icon}
+          variant={cx({
+            selected: item.value === value,
+            last: i === options.length - 1
+          })}
+          onClick={onChange && (() => onChange(item.value))}
+        />
+      );
+    });
 
-  return <Base children={children} />;
-});
+    return <Base children={children} />;
+  }
+);

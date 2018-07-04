@@ -28,7 +28,7 @@ export default compose(
     onClick: ({ open, setOpen }) => () => {
       setOpen(!open);
     },
-    onFilterChange: ({ setFilter }) => (value) => {
+    onFilterChange: ({ setFilter }) => value => {
       setFilter(value && value.toLowerCase());
     },
     onItemClick: ({ onChange, onChangeComplete, setOpen }) => (item, event) => {
@@ -62,16 +62,20 @@ export default compose(
     ...rest
   }) => {
     const menuItems = open
-      ? options.filter(({label}) => !filter || label.toLowerCase().indexOf(filter) !== -1).map((item, i) => {
-          return (
-            <DropdownMenuItem
-              key={i}
-              onClick={event => onItemClick(item, event)}
-            >
-              {item.label}
-            </DropdownMenuItem>
-          );
-        })
+      ? options
+          .filter(
+            ({ label }) => !filter || label.toLowerCase().indexOf(filter) !== -1
+          )
+          .map((item, i) => {
+            return (
+              <DropdownMenuItem
+                key={i}
+                onClick={event => onItemClick(item, event)}
+              >
+                {item.label}
+              </DropdownMenuItem>
+            );
+          })
       : EMPTY_ARRAY;
 
     const selectedItem = options.find(item => item.value === value);

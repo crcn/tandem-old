@@ -5,17 +5,19 @@ const { Editor } = require("./editor.pc");
 export default compose(
   pure,
   Base => ({ root, dispatch }) => {
-    return <Base>
-      {root.editorWindows.map((editorWindow, i) => {
-        return (
-          <Editor
-            key={i}
-            editorWindow={editorWindow}
-            root={root}
-            dispatch={dispatch}
-          />
-        );
-      })}
-    </Base>
+    return (
+      <Base>
+        {root.editorWindows.map((editorWindow, i) => {
+          return (
+            <Editor
+              key={i}
+              editorWindow={editorWindow}
+              root={root}
+              dispatch={dispatch}
+            />
+          );
+        })}
+      </Base>
+    );
   }
-)
+);

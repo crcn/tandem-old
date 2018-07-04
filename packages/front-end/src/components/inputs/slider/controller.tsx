@@ -34,7 +34,7 @@ export default compose(
             let percent = relativeLeft / sliderRect.width;
             const change = max - min;
             percent = clamp(
-              relativeLeft / sliderRect.width * change / change,
+              ((relativeLeft / sliderRect.width) * change) / change,
               0,
               1
             );

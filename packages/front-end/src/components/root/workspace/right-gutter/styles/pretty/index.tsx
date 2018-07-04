@@ -4,19 +4,22 @@ import { SyntheticNode } from "paperclip";
 
 export type PrettyPaneOuterProps = {
   syntheticNodes: SyntheticNode[];
-}
+};
 
-export default compose(pure, Base => props => {
-  return (
-    <Base
-      {...props}
-      inheritPaneProps={props}
-      codePaneProps={props}
-      layoutPaneProps={props}
-      typographyPaneProps={props}
-      opacityPaneProps={props}
-      backgroundsPaneProps={props}
-      spacingPaneProps={props}
-    />
-  );
-});
+export default compose(
+  pure,
+  Base => props => {
+    return (
+      <Base
+        {...props}
+        inheritPaneProps={props}
+        codePaneProps={props}
+        layoutPaneProps={props}
+        typographyPaneProps={props}
+        opacityPaneProps={props}
+        backgroundsPaneProps={props}
+        spacingPaneProps={props}
+      />
+    );
+  }
+);

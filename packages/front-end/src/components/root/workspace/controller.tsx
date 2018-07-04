@@ -18,34 +18,39 @@ export type WorkspaceControllerOuterProps = {
 export default compose(
   pure,
   Base => ({ root, dispatch }: WorkspaceControllerOuterProps) => {
-    return <div>
-      <Base
-        leftGutterProps={{
-          style: {
-            display: root.showSidebar === false ? "none" : "block"
-          },
-          children: root.showSidebar === false ? [] : <LeftGutterComponent
-            editorWindows={root.editorWindows}
-            rootDirectory={root.projectDirectory}
-            dispatch={dispatch}
-            root={root}
-          />
-        }}
+    return (
+      <div>
+        <Base
+          leftGutterProps={{
+            style: {
+              display: root.showSidebar === false ? "none" : "block"
+            },
+            children:
+              root.showSidebar === false ? (
+                []
+              ) : (
+                <LeftGutterComponent
+                  editorWindows={root.editorWindows}
+                  rootDirectory={root.projectDirectory}
+                  dispatch={dispatch}
+                  root={root}
+                />
+              )
+          }}
+          editorWindowsProps={{
+            root,
+            dispatch
+          }}
+          rightGutterProps={{
+            root,
+            dispatch
+          }}
+        />
 
-        editorWindowsProps={{
-          root,
-          dispatch,
-        }}
-
-        rightGutterProps={{
-          root,
-          dispatch
-        }}
-      />
-
-      <QuickSearchModal root={root} dispatch={dispatch} />
-      <ComponentPickerModal root={root} dispatch={dispatch} />
-    </div>
+        <QuickSearchModal root={root} dispatch={dispatch} />
+        <ComponentPickerModal root={root} dispatch={dispatch} />
+      </div>
+    );
   },
   DragDropContext(HTML5Backend)
-)
+);

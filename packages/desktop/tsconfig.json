@@ -3,12 +3,7 @@
   "compilerOptions": {
     "target": "es5",
     "sourceMap": true,
-    "lib": [
-      "es2015.promise",
-      "dom",
-      "es5",
-      "esnext"
-    ],
+    "lib": ["es2015.promise", "dom", "es5", "esnext"],
     "module": "commonjs",
     "outDir": "lib",
     "jsx": "react",
@@ -23,10 +18,6 @@
     "../front-end/**",
     "dist"
   ],
-  "filesGlob": [
-    "./src/**/*.ts"
-  ],
-  "rootDirs": [
-    "node_modules"
-  ]
+  "filesGlob": ["./src/**/*.ts"],
+  "rootDirs": ["node_modules"]
 }

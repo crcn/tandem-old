@@ -1,6 +1,10 @@
 import * as React from "react";
 import { compose, pure, withHandlers, withState } from "recompose";
-import { getSyntheticNodeById, SyntheticDocument, getSyntheticVisibleNodeDocument } from "paperclip";
+import {
+  getSyntheticNodeById,
+  SyntheticDocument,
+  getSyntheticVisibleNodeDocument
+} from "paperclip";
 import { memoize } from "tandem-common";
 const { RightGutterTab } = require("./tab.pc");
 import * as cx from "classnames";
@@ -17,44 +21,62 @@ export default compose(
   pure,
   withState("currentTab", "setTab", TAB_NAMES[0]),
   withHandlers({
-    onTabClick: ({ setTab }) => (tabName) => {
+    onTabClick: ({ setTab }) => tabName => {
       setTab(tabName);
     }
   }),
   Base => ({ root, dispatch, setTab, currentTab }) => {
+    if (!root.selectedNodeIds.length) {
+      return null;
+    }
 
-  if (!root.selectedNodeIds.length) {
-    return null;
+    const syntheticDocument = getSyntheticVisibleNodeDocument(
+      root.selectedNodeIds[0],
+      root.documents
+    );
+    const selectedNodes = getSelectedNoded(
+      root.selectedNodeIds,
+      root.documents
+    );
+
+    const tabs = TAB_NAMES.map(tabName => {
+      return (
+        <RightGutterTab
+          key={tabName}
+          variant={cx({ selected: currentTab === tabName })}
+          onClick={() => setTab(tabName)}
+        >
+          {tabName}
+        </RightGutterTab>
+      );
+    });
+
+    return (
+      <Base
+        stylesProps={{
+          dispatch,
+          syntheticDocument,
+          fontFamilies: root.fontFamilies,
+          selectedNodes,
+          selectedVariant: root.selectedVariant,
+          graph: root.graph,
+          selectedInheritComponentId: root.selectedInheritComponentId,
+          style: {
+            display: currentTab === TAB_NAMES[0] ? "block" : "none"
+          }
+        }}
+        tabsProps={{
+          children: tabs
+        }}
+        propertiesProps={{
+          dispatch,
+          syntheticDocument,
+          selectedNodes,
+          style: {
+            display: currentTab === TAB_NAMES[1] ? "block" : "none"
+          }
+        }}
+      />
+    );
   }
-
-  const syntheticDocument = getSyntheticVisibleNodeDocument(root.selectedNodeIds[0], root.documents);
-  const selectedNodes = getSelectedNoded(root.selectedNodeIds, root.documents);
-
-  const tabs = TAB_NAMES.map(tabName => {
-    return <RightGutterTab key={tabName} variant={cx({ selected: currentTab === tabName })} onClick={() => setTab(tabName)}>{tabName}</RightGutterTab>;
-  });
-
-  return <Base stylesProps={{
-    dispatch,
-    syntheticDocument,
-    fontFamilies: root.fontFamilies,
-    selectedNodes,
-    selectedVariant: root.selectedVariant,
-    graph: root.graph,
-    selectedInheritComponentId: root.selectedInheritComponentId,
-    style: {
-      display: currentTab === TAB_NAMES[0] ? "block": "none"
-    }
-  }}
-  tabsProps={{
-    children: tabs
-  }}
-  propertiesProps={{
-    dispatch,
-    syntheticDocument,
-    selectedNodes,
-    style: {
-      display: currentTab === TAB_NAMES[1] ? "block": "none"
-    }
-  }} />;
-});
+);

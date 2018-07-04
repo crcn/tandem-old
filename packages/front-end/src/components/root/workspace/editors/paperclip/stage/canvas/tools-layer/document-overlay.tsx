@@ -204,7 +204,9 @@ const getHoveringSyntheticVisibleNodes = memoize(
   (root: RootState, frame: Frame): string[] => {
     const selectionRefIds = root.selectedNodeIds;
     return root.hoveringNodeIds.filter(
-      nodeId => selectionRefIds.indexOf(nodeId) === -1 && (frame.computed[nodeId] || frame.contentNodeId === nodeId)
+      nodeId =>
+        selectionRefIds.indexOf(nodeId) === -1 &&
+        (frame.computed[nodeId] || frame.contentNodeId === nodeId)
     );
   }
 );

@@ -58,7 +58,9 @@ const highlightFilterMatches = (str, filter: string[]) =>
     .map(
       (match, i) =>
         getFilterReplacer(filter).test(match) ? (
-          <span style={MATCH_STYLE} key={i}>{match}</span>
+          <span style={MATCH_STYLE} key={i}>
+            {match}
+          </span>
         ) : (
           match
         )

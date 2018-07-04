@@ -7,7 +7,6 @@ export type FocusProps = {
   focus?: boolean;
 };
 
-
 export class FocusComponent extends React.Component<FocusProps> {
   componentDidMount() {
     if (this.props.focus !== false) {

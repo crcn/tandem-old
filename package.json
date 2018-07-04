@@ -33,6 +33,7 @@
   },
   "dependencies": {
     "fs-extra": "^6.0.1",
-    "linklocal": "^2.8.2"
+    "linklocal": "^2.8.2",
+    "prettier": "^1.13.7"
   }
 }

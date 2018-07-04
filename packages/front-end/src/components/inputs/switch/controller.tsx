@@ -1,7 +1,10 @@
 import * as React from "react";
 import { compose } from "recompose";
 import * as cx from "classnames";
-import { default as checkboxController, CheckboxControllerOuterProps } from "../checkbox/controller";
+import {
+  default as checkboxController,
+  CheckboxControllerOuterProps
+} from "../checkbox/controller";
 
 export default compose(
   checkboxController,
@@ -9,4 +12,3 @@ export default compose(
     return <Base variant={cx({ on: value })} {...rest} />;
   }
 );
-

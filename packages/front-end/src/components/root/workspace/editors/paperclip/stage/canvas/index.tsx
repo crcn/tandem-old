@@ -146,7 +146,9 @@ const enhance = compose<CanvasInnerProps, CanvasOuterProps>(
   withState("canvasOuter", "setCanvasOuter", null),
   withState("canvasContainer", "setCanvasContainer", null),
   withHandlers({
-    onMouseEvent: ({ dispatch, editorWindow }) => (event: React.MouseEvent<any>) => {
+    onMouseEvent: ({ dispatch, editorWindow }) => (
+      event: React.MouseEvent<any>
+    ) => {
       dispatch(canvasMouseMoved(editorWindow, event));
     },
     onMotionRest: ({ dispatch }) => () => {

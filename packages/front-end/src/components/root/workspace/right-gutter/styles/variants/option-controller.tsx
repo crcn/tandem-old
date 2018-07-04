@@ -3,7 +3,11 @@ import { compose, pure, withHandlers, withState } from "recompose";
 import { PCVariant } from "paperclip";
 import { Dispatch } from "react-redux";
 import * as cx from "classnames";
-import { variantDefaultSwitchClicked, variantLabelChanged, variantClicked } from "actions";
+import {
+  variantDefaultSwitchClicked,
+  variantLabelChanged,
+  variantClicked
+} from "actions";
 import { FocusComponent } from "../../../../../focus";
 const { TextInput } = require("../../../../../inputs/text/view.pc");
 
@@ -30,24 +34,28 @@ export default compose(
   pure,
   withState("editingLabel", "setEditingLabel", false),
   withHandlers({
-    onSwitchChange: ({ variant, dispatch, onToggle }: OptionControllerInnerProps) => (event) => {
+    onSwitchChange: ({
+      variant,
+      dispatch,
+      onToggle
+    }: OptionControllerInnerProps) => event => {
       if (onToggle) {
         onToggle(variant, event);
       } else {
         dispatch(variantDefaultSwitchClicked(variant));
       }
     },
-    onInputClick: ({ setEditingLabel, editable }) => (event) => {
+    onInputClick: ({ setEditingLabel, editable }) => event => {
       if (editable !== false) {
         setEditingLabel(true);
         event.stopPropagation();
       }
     },
-    onLabelChange: ({ variant, dispatch, setEditingLabel }) => (value) => {
+    onLabelChange: ({ variant, dispatch, setEditingLabel }) => value => {
       setEditingLabel(false);
       dispatch(variantLabelChanged(variant, value));
     },
-    onClick: ({ variant, dispatch, onClick }) => (event) => {
+    onClick: ({ variant, dispatch, onClick }) => event => {
       if (onClick) {
         onClick(variant, event);
       } else {
@@ -55,25 +63,51 @@ export default compose(
       }
     }
   }),
-  Base => ({ onClick, editingLabel, onInputClick, onLabelChange, variant, onReset, onSwitchChange, selected, ...rest }: OptionControllerInnerProps) => {
+  Base => ({
+    onClick,
+    editingLabel,
+    onInputClick,
+    onLabelChange,
+    variant,
+    onReset,
+    onSwitchChange,
+    selected,
+    ...rest
+  }: OptionControllerInnerProps) => {
     if (!variant) {
       return null;
     }
-    return <Base
-      onClick={onClick}
-      variant={cx({ selected })}
-      switchProps={{value: variant.isDefault, onChangeComplete: onSwitchChange}}
-      resetButtonProps={{
-        onClick: onReset && (() => onReset(variant)),
-        style: {
-          display: onReset ? "block" : "none"
-        }
-      }}
-      inputProps={{
-        onClick: onInputClick,
-        children: editingLabel ? <FocusComponent>{<TextInput value={variant.label} onChangeComplete={onLabelChange} />}</FocusComponent> : (variant.label || "Click to edit")
-      }}
-      {...rest}
-    />;
+    return (
+      <Base
+        onClick={onClick}
+        variant={cx({ selected })}
+        switchProps={{
+          value: variant.isDefault,
+          onChangeComplete: onSwitchChange
+        }}
+        resetButtonProps={{
+          onClick: onReset && (() => onReset(variant)),
+          style: {
+            display: onReset ? "block" : "none"
+          }
+        }}
+        inputProps={{
+          onClick: onInputClick,
+          children: editingLabel ? (
+            <FocusComponent>
+              {
+                <TextInput
+                  value={variant.label}
+                  onChangeComplete={onLabelChange}
+                />
+              }
+            </FocusComponent>
+          ) : (
+            variant.label || "Click to edit"
+          )
+        }}
+        {...rest}
+      />
+    );
   }
-)
+);

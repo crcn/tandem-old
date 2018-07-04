@@ -46,6 +46,10 @@ export default compose<any, any>(
   pure,
   withInputHandlers(),
   Base => ({ value, onChange, onChangeComplete, focus, ...rest }) => {
-    return <FocusComponent focus={Boolean(focus)}><Base {...rest} defaultValue={value} /></FocusComponent>;
+    return (
+      <FocusComponent focus={Boolean(focus)}>
+        <Base {...rest} defaultValue={value} />
+      </FocusComponent>
+    );
   }
 );
