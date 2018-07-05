@@ -5,7 +5,7 @@ import {
   pcFrameContainerCreated,
   pcRuntimeEvaluated,
   PC_RUNTIME_EVALUATED,
-  PCRuntimeEvaluated,
+  PCRuntimeEvaluated
 } from "./actions";
 import { uniq } from "lodash";
 import {
@@ -15,9 +15,7 @@ import {
   computeDisplayInfo
 } from "./dom-renderer";
 import { KeyValue, getNestedTreeNodeById, EMPTY_ARRAY } from "tandem-common";
-import {
-  DependencyGraph,
-} from "./graph";
+import { DependencyGraph } from "./graph";
 import { TreeNodeOperationalTransform } from "./ot";
 import { PCEditorState, Frame, getSyntheticDocumentFrames } from "./edit";
 import {
@@ -33,9 +31,7 @@ export type PaperclipSagaOptions = {
   createRuntime(): PCRuntime;
 };
 
-export const createPaperclipSaga = ({
-  createRuntime
-}: PaperclipSagaOptions) =>
+export const createPaperclipSaga = ({ createRuntime }: PaperclipSagaOptions) =>
   function* paperclipSaga() {
     yield fork(runtime);
     yield fork(nativeRenderer);
@@ -43,24 +39,32 @@ export const createPaperclipSaga = ({
     function* runtime() {
       const rt = createRuntime();
 
-      const chan = eventChannel((emit) => {
-        rt.on("evaluate", (newDocuments, diffs, deletedDocumentIds, timestamp) => {
-          emit(pcRuntimeEvaluated(newDocuments, diffs, rt.syntheticDocuments, timestamp < rt.lastUpdatedAt));
-        });
-        return () => {
-
-        };
+      const chan = eventChannel(emit => {
+        rt.on(
+          "evaluate",
+          (newDocuments, diffs, deletedDocumentIds, timestamp) => {
+            emit(
+              pcRuntimeEvaluated(
+                newDocuments,
+                diffs,
+                rt.syntheticDocuments,
+                timestamp < rt.lastUpdatedAt
+              )
+            );
+          }
+        );
+        return () => {};
       });
 
       yield fork(function*() {
-        while(1) {
+        while (1) {
           yield put(yield take(chan));
         }
       });
 
-      while(1) {
+      while (1) {
         yield take();
-        const state:PCEditorState = yield select();
+        const state: PCEditorState = yield select();
         rt.setGraph(state.graph);
       }
     }
@@ -69,34 +73,70 @@ export const createPaperclipSaga = ({
 
     function* nativeRenderer() {
       yield fork(function* captureFrameChanges() {
+        let prevState: PCEditorState;
         while (1) {
-          const { newDocuments, diffs }: PCRuntimeEvaluated = yield take(PC_RUNTIME_EVALUATED);
+          const { diffs }: PCRuntimeEvaluated = yield take(
+            PC_RUNTIME_EVALUATED
+          );
           const state: PCEditorState = yield select();
 
-          const updatedDocUris = uniq([...Object.keys(newDocuments), ...Object.keys(diffs)]);
+          const allDocUris = Object.keys(state.graph);
 
-          for (const uri of updatedDocUris) {
-            const document = getSyntheticDocumentByDependencyUri(uri, state.documents, state.graph);
+          for (const uri of allDocUris) {
+            const document = getSyntheticDocumentByDependencyUri(
+              uri,
+              state.documents,
+              state.graph
+            );
+
+            if (!document) {
+              continue;
+            }
             const ots = diffs[uri] || EMPTY_ARRAY;
 
-            for (const frame of getSyntheticDocumentFrames(document, state.frames)) {
+            for (const frame of getSyntheticDocumentFrames(
+              document,
+              state.frames
+            )) {
               if (!initedFrames[frame.contentNodeId]) {
-                initedFrames[frame.contentNodeId]= 1;
+                initedFrames[frame.contentNodeId] = true;
                 yield spawn(initContainer, frame, state.graph);
-              } else if (ots.length) {
-                const frameOts = mapContentNodeOperationalTransforms(frame.contentNodeId, document, ots);
-                if (frameOts.length) {
-                  yield spawn(patchContainer, frame, getNestedTreeNodeById(frame.contentNodeId, document), frameOts);
+              } else {
+                const frameOts = mapContentNodeOperationalTransforms(
+                  frame.contentNodeId,
+                  document,
+                  ots
+                );
+                const prevFrame =
+                  prevState &&
+                  prevState.frames.find(
+                    oldFrame => oldFrame.contentNodeId === frame.contentNodeId
+                  );
+                if (frameOts.length || frame !== prevFrame) {
+                  yield spawn(
+                    patchContainer,
+                    frame,
+                    getNestedTreeNodeById(frame.contentNodeId, document),
+                    frameOts
+                  );
                 }
               }
             }
           }
+
+          prevState = state;
         }
       });
     }
 
-    const mapContentNodeOperationalTransforms = (contentNodeId: string, document: SyntheticDocument, ots: TreeNodeOperationalTransform[]) => {
-      const index = document.children.findIndex(child => child.id === contentNodeId);
+    const mapContentNodeOperationalTransforms = (
+      contentNodeId: string,
+      document: SyntheticDocument,
+      ots: TreeNodeOperationalTransform[]
+    ) => {
+      const index = document.children.findIndex(
+        child => child.id === contentNodeId
+      );
       return ots.filter(ot => ot.nodePath[0] === index).map(ot => ({
         ...ot,
         nodePath: ot.nodePath.slice(1)

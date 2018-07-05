@@ -55,7 +55,7 @@ import {
   filterPCNodes,
   isPCComponentInstance,
   InheritStyle,
-  PCBaseVisibleNode,
+  PCBaseVisibleNode
 } from "./dsl";
 import {
   SyntheticVisibleNode,
@@ -139,15 +139,19 @@ export type Frame = {
  * GETTERS
  *-----------------------------------------*/
 
-export const getFramesContentNodeIdMap = memoize((frames: Frame[]): {
-  [identifier: string]: Frame;
-} => {
-  const map = {};
-  for (const frame of frames) {
-    map[frame.contentNodeId] = frame;
+export const getFramesContentNodeIdMap = memoize(
+  (
+    frames: Frame[]
+  ): {
+    [identifier: string]: Frame;
+  } => {
+    const map = {};
+    for (const frame of frames) {
+      map[frame.contentNodeId] = frame;
+    }
+    return map;
   }
-  return map;
-});
+);
 
 export const getSyntheticDocumentFrames = memoize(
   (document: SyntheticDocument, frames: Frame[]) => {
@@ -180,8 +184,10 @@ export const getSyntheticVisibleNodeComputedBounds = (
 
 export const getSyntheticVisibleNodeFrame = memoize(
   (syntheticNode: SyntheticVisibleNode, frames: Frame[]) =>
-    frames.find(frame =>
-      Boolean(frame.computed && frame.computed[syntheticNode.id]) || frame.contentNodeId === syntheticNode.id
+    frames.find(
+      frame =>
+        Boolean(frame.computed && frame.computed[syntheticNode.id]) ||
+        frame.contentNodeId === syntheticNode.id
     )
 );
 export const getFrameByContentNodeId = memoize(
@@ -271,8 +277,7 @@ const replaceDependencyGraphPCNode = <TState extends PCEditorState>(
 export const replaceDependency = <TState extends PCEditorState>(
   dep: Dependency<any>,
   state: TState
-) =>
-  updateDependencyGraph({ [dep.uri]: dep }, state)
+) => updateDependencyGraph({ [dep.uri]: dep }, state);
 
 export const removeFrame = <TState extends PCEditorState>(
   { contentNodeId }: Frame,
@@ -317,10 +322,9 @@ export const updateSyntheticDocument = <TState extends PCEditorState>(
       state.documents.indexOf(document),
       1,
       newDocument
-    ),
+    )
   });
 };
-
 
 export const removeSyntheticVisibleNode = <TState extends PCEditorState>(
   node: SyntheticVisibleNode,
@@ -328,10 +332,7 @@ export const removeSyntheticVisibleNode = <TState extends PCEditorState>(
 ) => {
   const document = getSyntheticVisibleNodeDocument(node.id, state.documents);
   if (node.isContentNode) {
-    state = removeFrame(
-      getFrameByContentNodeId(node.id, state.frames),
-      state
-    );
+    state = removeFrame(getFrameByContentNodeId(node.id, state.frames), state);
   }
 
   return updateSyntheticDocument(
@@ -340,7 +341,6 @@ export const removeSyntheticVisibleNode = <TState extends PCEditorState>(
     state
   );
 };
-
 
 export const replaceSyntheticVisibleNode = <TState extends PCEditorState>(
   replacement: SyntheticVisibleNode,
@@ -491,16 +491,16 @@ export const upsertFrames = <TState extends PCEditorState>(state: TState) => {
 
   for (const document of state.documents) {
     for (const contentNode of document.children) {
-      frames.push(
-        framesByContentNodeId[contentNode.id] || {
-          contentNodeId: contentNode.id,
+      const sourceNode = getSyntheticSourceNode(contentNode, state.graph);
+      frames.push({
+        ...(framesByContentNodeId[contentNode.id] || EMPTY_OBJECT),
+        contentNodeId: contentNode.id,
 
-          // todo add warning here that bounds do not exist when they should.
-          bounds:
-            contentNode.metadata[PCVisibleNodeMetadataKey.BOUNDS] ||
-            DEFAULT_FRAME_BOUNDS
-        }
-      );
+        // todo add warning here that bounds do not exist when they should.
+        bounds:
+          sourceNode.metadata[PCVisibleNodeMetadataKey.BOUNDS] ||
+          DEFAULT_FRAME_BOUNDS
+      });
     }
   }
 
@@ -510,7 +510,6 @@ export const upsertFrames = <TState extends PCEditorState>(state: TState) => {
 /*------------------------------------------
  * PERSISTING
  *-----------------------------------------*/
-
 
 export const persistChangeLabel = <TState extends PCEditorState>(
   newLabel: string,
@@ -528,7 +527,7 @@ export const persistChangeLabel = <TState extends PCEditorState>(
     })
   )(node, state.documents, state.graph);
   return replaceDependencyGraphPCNode(newNode, newNode, state);
-}
+};
 
 export const persistConvertNodeToComponent = <TState extends PCEditorState>(
   node: SyntheticVisibleNode,
@@ -573,7 +572,7 @@ export const persistConvertNodeToComponent = <TState extends PCEditorState>(
   state = replaceDependencyGraphPCNode(componentInstance, sourceNode, state);
 
   return state;
-}
+};
 
 const moveBoundsToEmptySpace = (bounds: Bounds, frames: Frame[]) => {
   const intersecting = values(frames).some((frame: Frame) =>
@@ -596,27 +595,27 @@ export const persistAddComponentController = <TState extends PCEditorState>(
   state: TState
 ) => {
   let sourceNode = getSyntheticSourceNode(target, state.graph) as PCComponent;
-    const sourceNodeDep = getPCNodeDependency(sourceNode.id, state.graph);
+  const sourceNodeDep = getPCNodeDependency(sourceNode.id, state.graph);
 
-    let relativePath = path.relative(
-      path.dirname(stripProtocol(sourceNodeDep.uri)),
-      stripProtocol(uri)
-    );
-    if (relativePath.charAt(0) !== ".") {
-      relativePath = "./" + relativePath;
-    }
+  let relativePath = path.relative(
+    path.dirname(stripProtocol(sourceNodeDep.uri)),
+    stripProtocol(uri)
+  );
+  if (relativePath.charAt(0) !== ".") {
+    relativePath = "./" + relativePath;
+  }
 
-    sourceNode = {
-      ...sourceNode,
-      controllers: uniq(
-        sourceNode.controllers
-          ? [...sourceNode.controllers, relativePath]
-          : [relativePath]
-      )
-    };
+  sourceNode = {
+    ...sourceNode,
+    controllers: uniq(
+      sourceNode.controllers
+        ? [...sourceNode.controllers, relativePath]
+        : [relativePath]
+    )
+  };
 
-    return replaceDependencyGraphPCNode(sourceNode, sourceNode, state);
-}
+  return replaceDependencyGraphPCNode(sourceNode, sourceNode, state);
+};
 
 /**
  * Synchronizes updated documents from the runtime engine. Updates are likely to be _behind_ in terms of
@@ -624,29 +623,38 @@ export const persistAddComponentController = <TState extends PCEditorState>(
  * get clobbered with a previous version (which will cause bugs).
  */
 
-export const syncSyntheticDocuments = <TState extends PCEditorState>(updatedDocuments: SyntheticDocument[], state: TState) => {
-
+export const syncSyntheticDocuments = <TState extends PCEditorState>(
+  updatedDocuments: SyntheticDocument[],
+  state: TState
+) => {
   const staleDocumentMap: {
-    [identifier: string]: SyntheticDocument
-  } = state.documents.reduce((map, document: SyntheticDocument) => ({
-    ...map,
-    [document.id]: document
-  }), {});
+    [identifier: string]: SyntheticDocument;
+  } = state.documents.reduce(
+    (map, document: SyntheticDocument) => ({
+      ...map,
+      [document.id]: document
+    }),
+    {}
+  );
 
   state = {
     ...(state as any),
-    documents: updatedDocuments.map((document) => {
+    documents: updatedDocuments.map(document => {
       const existingDocument = staleDocumentMap[document.id];
       if (existingDocument) {
-
         // if checksum exists, then the client is a head of the document being synced
         if (existingDocument.checksum === document.checksum) {
           return existingDocument;
 
-        // otherwise, use the fail safe for syncing documents
+          // otherwise, use the fail safe for syncing documents
         } else {
           console.warn(`Checksum mismatch, patching synthetic document`);
-          const patchedDocument = setDocumentChecksum(patchTreeNode(diffTreeNode(existingDocument, document), existingDocument));
+          const patchedDocument = setDocumentChecksum(
+            patchTreeNode(
+              diffTreeNode(existingDocument, document),
+              existingDocument
+            )
+          );
 
           if (patchedDocument.checksum !== document.checksum) {
             throw new Error(`Document checksum malformed.`);
@@ -684,10 +692,7 @@ export const persistInsertNode = <TState extends PCEditorState>(
   } else {
     let parent: SyntheticVisibleNode;
     let index: number;
-    if (
-      offset === TreeMoveOffset.APPEND ||
-      offset === TreeMoveOffset.PREPEND
-    ) {
+    if (offset === TreeMoveOffset.APPEND || offset === TreeMoveOffset.PREPEND) {
       parent = relative as SyntheticVisibleNode;
       index = offset === TreeMoveOffset.PREPEND ? 0 : parent.children.length;
     } else {
@@ -720,25 +725,51 @@ export const persistInsertNode = <TState extends PCEditorState>(
   return replaceDependencyGraphPCNode(parentSource, parentSource, state);
 };
 
-export const persistAddVariant = <TState extends PCEditorState>(contentNode: SyntheticVisibleNode, state: TState): TState => {
+export const persistAddVariant = <TState extends PCEditorState>(
+  contentNode: SyntheticVisibleNode,
+  state: TState
+): TState => {
   const component = getSyntheticSourceNode(contentNode, state.graph);
-  state = replaceDependencyGraphPCNode(appendChildNode(createPCVariant(null, true), component), component, state);
+  state = replaceDependencyGraphPCNode(
+    appendChildNode(createPCVariant(null, true), component),
+    component,
+    state
+  );
   return state;
 };
 
-export const persistRemoveVariant = <TState extends PCEditorState>(variant: PCVariant, state: TState): TState => {
+export const persistRemoveVariant = <TState extends PCEditorState>(
+  variant: PCVariant,
+  state: TState
+): TState => {
   const module = getPCNodeModule(variant.id, state.graph);
-  state = replaceDependencyGraphPCNode(removeNestedTreeNode(variant, module), module, state);
+  state = replaceDependencyGraphPCNode(
+    removeNestedTreeNode(variant, module),
+    module,
+    state
+  );
   return state;
 };
 
-export const persistUpdateVariant = <TState extends PCEditorState>(properties: Partial<PCVariant>, variant: PCVariant, state: TState): TState => {
-  state = replaceDependencyGraphPCNode({ ...variant, ...properties }, variant, state);
+export const persistUpdateVariant = <TState extends PCEditorState>(
+  properties: Partial<PCVariant>,
+  variant: PCVariant,
+  state: TState
+): TState => {
+  state = replaceDependencyGraphPCNode(
+    { ...variant, ...properties },
+    variant,
+    state
+  );
   return state;
 };
 
-export const persistToggleVariantDefault = <TState extends PCEditorState>(instance: SyntheticInstanceElement, targetVariantId: string, variant: PCVariant, state: TState): TState => {
-
+export const persistToggleVariantDefault = <TState extends PCEditorState>(
+  instance: SyntheticInstanceElement,
+  targetVariantId: string,
+  variant: PCVariant,
+  state: TState
+): TState => {
   const node = maybeOverride(
     PCOverridablePropertyName.VARIANT_IS_DEFAULT,
     null,
@@ -750,10 +781,19 @@ export const persistToggleVariantDefault = <TState extends PCEditorState>(instan
   )(instance, state.documents, state.graph, targetVariantId);
   state = replaceDependencyGraphPCNode(node, node, state);
   return state;
-
 };
-export const persistRemoveVariantOverride = <TState extends PCEditorState>(instance: SyntheticInstanceElement, targetVariantId: string, variant: PCVariant, state: TState): TState => {
-  const override = getInheritedOverrides(instance, getSyntheticVisibleNodeDocument(instance.id, state.documents), state.graph, variant && variant.id).find(override => last(override.targetIdPath) === targetVariantId);
+export const persistRemoveVariantOverride = <TState extends PCEditorState>(
+  instance: SyntheticInstanceElement,
+  targetVariantId: string,
+  variant: PCVariant,
+  state: TState
+): TState => {
+  const override = getInheritedOverrides(
+    instance,
+    getSyntheticVisibleNodeDocument(instance.id, state.documents),
+    state.graph,
+    variant && variant.id
+  ).find(override => last(override.targetIdPath) === targetVariantId);
   return replaceDependencyGraphPCNode(null, override, state);
 };
 
@@ -769,7 +809,10 @@ export const persistInheritStyle = <TState extends PCEditorState>(
     variant,
     (value, override) => {
       const prevStyle = (override && override.value) || EMPTY_OBJECT;
-      return overrideKeyValue(node.style, prevStyle, {...prevStyle, ...value});
+      return overrideKeyValue(node.style, prevStyle, {
+        ...prevStyle,
+        ...value
+      });
     },
     (node: PCBaseVisibleNode<any>) => ({
       ...node,
@@ -783,7 +826,7 @@ export const persistInheritStyle = <TState extends PCEditorState>(
   state = replaceDependencyGraphPCNode(sourceNode, sourceNode, state);
 
   return state;
-}
+};
 
 export const persistInheritStyleComponentId = <TState extends PCEditorState>(
   oldComponentId: string,
@@ -798,7 +841,11 @@ export const persistInheritStyleComponentId = <TState extends PCEditorState>(
     variant,
     (value, override) => {
       const prevStyle = (override && override.value) || EMPTY_OBJECT;
-      return overrideKeyValue(node.style, prevStyle, {...prevStyle, [oldComponentId]: undefined, [newComponentId]: prevStyle[oldComponentId] || { priority: 0 }});
+      return overrideKeyValue(node.style, prevStyle, {
+        ...prevStyle,
+        [oldComponentId]: undefined,
+        [newComponentId]: prevStyle[oldComponentId] || { priority: 0 }
+      });
     },
     (node: PCBaseVisibleNode<any>) => ({
       ...node,
@@ -813,7 +860,7 @@ export const persistInheritStyleComponentId = <TState extends PCEditorState>(
   state = replaceDependencyGraphPCNode(sourceNode, sourceNode, state);
 
   return state;
-}
+};
 
 export const persistAppendPCClips = <TState extends PCEditorState>(
   clips: PCNodeClip[],
@@ -923,7 +970,7 @@ export const persistChangeSyntheticTextNodeValue = <
 
   state = replaceDependencyGraphPCNode(updatedNode, updatedNode, state);
   return state;
-}
+};
 
 export const persistChangeElementType = <TState extends PCEditorState>(
   value: string,
@@ -950,22 +997,42 @@ const maybeOverride = (
   node: SyntheticVisibleNode,
   documents: SyntheticDocument[],
   graph: DependencyGraph,
-  targetSourceId: string =  node.source.nodeId
+  targetSourceId: string = node.source.nodeId
 ): PCVisibleNode => {
   const sourceNode = getPCNode(targetSourceId, graph) as PCVisibleNode;
   const contentNode = getSyntheticContentNode(node, documents);
   const contentSourceNode = getSyntheticSourceNode(contentNode, graph);
-  const variantId = variant && getNestedTreeNodeById(variant.id, contentSourceNode) && variant.id;
-  const defaultVariantIds = isComponent(contentSourceNode) ? getPCVariants(contentSourceNode).filter(variant => variant.isDefault).map(variant => variant.id) : [];
-  const variantOverrides = filterNestedNodes(contentSourceNode, (node) => isPCOverride(node) && defaultVariantIds.indexOf(node.variantId) !== -1).filter((override: PCOverride) => last(override.targetIdPath) === sourceNode.id || (override.targetIdPath.length === 0 && sourceNode.id === contentSourceNode.id));
+  const variantId =
+    variant &&
+    getNestedTreeNodeById(variant.id, contentSourceNode) &&
+    variant.id;
+  const defaultVariantIds = isComponent(contentSourceNode)
+    ? getPCVariants(contentSourceNode)
+        .filter(variant => variant.isDefault)
+        .map(variant => variant.id)
+    : [];
+  const variantOverrides = filterNestedNodes(
+    contentSourceNode,
+    node =>
+      isPCOverride(node) && defaultVariantIds.indexOf(node.variantId) !== -1
+  ).filter(
+    (override: PCOverride) =>
+      last(override.targetIdPath) === sourceNode.id ||
+      (override.targetIdPath.length === 0 &&
+        sourceNode.id === contentSourceNode.id)
+  );
 
-  if (node.immutable || variantId || variantOverrides.length || targetSourceId !== node.source.nodeId) {
+  if (
+    node.immutable ||
+    variantId ||
+    variantOverrides.length ||
+    targetSourceId !== node.source.nodeId
+  ) {
     const document = getSyntheticVisibleNodeDocument(node.id, documents);
 
-    const nearestComponentInstances = !node.immutable ? [contentNode] : getNearestComponentInstances(
-      node,
-      document
-    );
+    const nearestComponentInstances = !node.immutable
+      ? [contentNode]
+      : getNearestComponentInstances(node, document);
 
     const mutableInstance: SyntheticVisibleNode = nearestComponentInstances.find(
       instance => !instance.immutable
@@ -988,7 +1055,13 @@ const maybeOverride = (
         .map((node: SyntheticVisibleNode) => node.source.nodeId)
     ]);
 
-    if (sourceNode.id !== contentSourceNode.id && !(overrideIdPath.length === 0 && sourceNode.id === mutableInstanceSourceNode.id)) {
+    if (
+      sourceNode.id !== contentSourceNode.id &&
+      !(
+        overrideIdPath.length === 0 &&
+        sourceNode.id === mutableInstanceSourceNode.id
+      )
+    ) {
       overrideIdPath.push(sourceNode.id);
     }
 
@@ -1016,9 +1089,11 @@ const maybeOverride = (
     value = mapOverride(value, existingOverride);
 
     if (existingOverride) {
-
       if (value == null) {
-        return removeNestedTreeNode(existingOverride, mutableInstanceSourceNode);
+        return removeNestedTreeNode(
+          existingOverride,
+          mutableInstanceSourceNode
+        );
       }
       if (
         existingOverride.propertyName === PCOverridablePropertyName.CHILDREN
@@ -1040,7 +1115,12 @@ const maybeOverride = (
         mutableInstanceSourceNode
       );
     } else if (node.immutable || variantId || node.id !== targetSourceId) {
-      const override = createPCOverride(overrideIdPath, propertyName, value, variantId);
+      const override = createPCOverride(
+        overrideIdPath,
+        propertyName,
+        value,
+        variantId
+      );
       return appendChildNode(override, mutableInstanceSourceNode);
     }
   }
@@ -1134,7 +1214,13 @@ export const persistRawCSSText = <TState extends PCEditorState>(
   node: SyntheticVisibleNode,
   variant: PCVariant,
   state: TState
-) => persistSyntheticVisibleNodeStyle(parseStyle(text || ""), node, variant, state);
+) =>
+  persistSyntheticVisibleNodeStyle(
+    parseStyle(text || ""),
+    node,
+    variant,
+    state
+  );
 
 export const persistCSSProperty = <TState extends PCEditorState>(
   name: string,
@@ -1149,7 +1235,10 @@ export const persistCSSProperty = <TState extends PCEditorState>(
     variant,
     (style, override) => {
       const prevStyle = (override && override.value) || EMPTY_OBJECT;
-      return overrideKeyValue(node.style, prevStyle, {...prevStyle, ...style});
+      return overrideKeyValue(node.style, prevStyle, {
+        ...prevStyle,
+        ...style
+      });
     },
     (sourceNode: PCVisibleNode) =>
       ({
@@ -1175,7 +1264,11 @@ export const persistAttribute = <TState extends PCEditorState>(
     { [name]: value || undefined },
     null,
     (attributes, override) => {
-      return overrideKeyValue(element.attributes, (override && override.value) || EMPTY_OBJECT, attributes);
+      return overrideKeyValue(
+        element.attributes,
+        (override && override.value) || EMPTY_OBJECT,
+        attributes
+      );
     },
     (sourceNode: PCElement) =>
       ({
@@ -1196,7 +1289,6 @@ export const persistSyntheticVisibleNodeStyle = <TState extends PCEditorState>(
   variant: PCVariant,
   state: TState
 ) => {
-
   // state = replaceSyntheticVisibleNode({ ...node, style: merge(node.style, style) }, node, state);
   // TODO - need to move
   const updatedNode = maybeOverride(
@@ -1204,7 +1296,11 @@ export const persistSyntheticVisibleNodeStyle = <TState extends PCEditorState>(
     style,
     variant,
     (style, override) => {
-      return overrideKeyValue(node.style, (override && override.value) || EMPTY_OBJECT, style);
+      return overrideKeyValue(
+        node.style,
+        (override && override.value) || EMPTY_OBJECT,
+        style
+      );
     },
     sourceNode =>
       ({
@@ -1221,7 +1317,6 @@ export const canRemoveSyntheticVisibleNode = <TState extends PCEditorState>(
   node: SyntheticVisibleNode,
   state: TState
 ) => {
-
   const sourceNode = getSyntheticSourceNode(node, state.graph);
 
   if (!isComponent(sourceNode)) {
@@ -1229,7 +1324,10 @@ export const canRemoveSyntheticVisibleNode = <TState extends PCEditorState>(
   }
 
   const instancesOfComponent = filterPCNodes(state.graph, node => {
-    return (isPCComponentInstance(node) || isComponent(node)) && node.is === sourceNode.id;
+    return (
+      (isPCComponentInstance(node) || isComponent(node)) &&
+      node.is === sourceNode.id
+    );
   });
 
   return instancesOfComponent.length === 0;
@@ -1239,11 +1337,15 @@ export const persistRemoveSyntheticVisibleNode = <TState extends PCEditorState>(
   node: SyntheticVisibleNode,
   state: TState
 ) => {
-
   // if the node is immutable, then it is part of an instance, so override the
   // style instead
   if (node.immutable) {
-    return persistSyntheticVisibleNodeStyle({ "display": "none" }, node, null, state);
+    return persistSyntheticVisibleNodeStyle(
+      { display: "none" },
+      node,
+      null,
+      state
+    );
   }
 
   state = removeSyntheticVisibleNode(node, state);
@@ -1264,10 +1366,7 @@ const parseStyle = (source: string) => {
 const overrideKeyValue = (main, oldOverrides, newOverrides) => {
   const minOverrides = {};
   for (const key in newOverrides) {
-    if (
-      oldOverrides[key] != null ||
-      main[key] !== newOverrides[key]
-    ) {
+    if (oldOverrides[key] != null || main[key] !== newOverrides[key]) {
       minOverrides[key] = newOverrides[key];
     }
   }
