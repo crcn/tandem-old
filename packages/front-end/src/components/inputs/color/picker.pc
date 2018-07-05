@@ -254,10 +254,10 @@
       ],
       "metadata": {
         "bounds": {
-          "left": 545,
-          "top": 517,
-          "right": 863.4505475827968,
-          "bottom": 589.4821398220452
+          "left": 524,
+          "top": 508,
+          "right": 842.4505475827968,
+          "bottom": 580.4821398220452
         }
       },
       "controllers": [
@@ -453,10 +453,10 @@
       ],
       "metadata": {
         "bounds": {
-          "left": 554,
-          "top": 344,
-          "right": 862.7382461427483,
-          "bottom": 444
+          "left": 526,
+          "top": 337,
+          "right": 834.7382461427483,
+          "bottom": 437
         }
       },
       "controllers": [
@@ -785,25 +785,6 @@
         }
       },
       "label": "TODO"
-    },
-    {
-      "id": "d68a68691",
-      "label": "Element",
-      "is": "div",
-      "name": "element",
-      "attributes": {},
-      "style": {
-        "box-sizing": "border-box"
-      },
-      "children": [],
-      "metadata": {
-        "bounds": {
-          "left": 12,
-          "top": 353,
-          "right": 170.46274653168535,
-          "bottom": 484.60148461172184
-        }
-      }
     }
   ],
   "metadata": {}

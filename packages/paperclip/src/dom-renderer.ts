@@ -113,8 +113,8 @@ const setAttribute = (target: HTMLElement, name: string, value: string) => {
 };
 
 const SVG_STYlE_KEY_MAP = {
-  "background": "fill"
-}
+  background: "fill"
+};
 
 const setStyle = (target: HTMLElement, style: any) => {
   const normalizedStyle = normalizeStyle(style);
@@ -136,14 +136,16 @@ const createNativeNode = (
   const isText = synthetic.name === PCSourceTagNames.TEXT;
 
   const attrs = (synthetic as SyntheticElement).attributes || EMPTY_OBJECT;
-  const tagName = isText ? "span" : (synthetic as SyntheticElement).name || "div";
+  const tagName = isText
+    ? "span"
+    : (synthetic as SyntheticElement).name || "div";
   if (attrs.xmlns) {
     xmlns = attrs.xmlns;
   }
 
-  const nativeElement = (xmlns ? document.createElementNS(xmlns, tagName) : document.createElement(
-    tagName
-  )) as HTMLElement;
+  const nativeElement = (xmlns
+    ? document.createElementNS(xmlns, tagName)
+    : document.createElement(tagName)) as HTMLElement;
 
   for (const name in attrs) {
     setAttribute(nativeElement, name, attrs[name]);
@@ -281,7 +283,9 @@ export const patchDOM = (
   return newMap;
 };
 
-const stripEmptyElement = memoize(style => omit(style, ["box-sizing"]));
+const stripEmptyElement = memoize(style =>
+  omit(style, ["box-sizing", "display"])
+);
 
 const makeElementClickable = (
   target: HTMLElement,

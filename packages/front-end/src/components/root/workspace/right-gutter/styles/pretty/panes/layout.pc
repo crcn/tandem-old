@@ -1695,6 +1695,23 @@
           "bottom": 534.2169125141472
         }
       }
+    },
+    {
+      "label": "Frame",
+      "is": "b6c162d113",
+      "style": {},
+      "attributes": {},
+      "id": "f62a8c862",
+      "name": "component",
+      "children": [],
+      "metadata": {
+        "bounds": {
+          "left": 22,
+          "top": 613,
+          "right": 226.00000000000006,
+          "bottom": 711.3571410945106
+        }
+      }
     }
   ],
   "metadata": {}

@@ -13,12 +13,6 @@ in a different component file.
 
 ![untitled](https://user-images.githubusercontent.com/757408/42292147-c975789c-7fa6-11e8-9b2f-218191d2deb8.gif)
 
-#### Artboards
-
-Artboards have been added to the toolbar, and can also be added via the `a` shortcut.
-
-[TODO GIF]
-
 #### `[name].tdproject`
 
 TODO:

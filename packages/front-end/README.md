@@ -2,12 +2,7 @@ OBJECTIVE:
 
 - eliminate current friction. Don't focus on UI.
 
-IMMEDIATE:
-
-- fix selecting newly inserted frame
-- double click to edit
-- label show showing
-- drag tabs to other editors
+IMMEDIATE:s
 
 - tidy tdproject
 - color picker
