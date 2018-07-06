@@ -173,6 +173,7 @@ export type RootState = {
   fontFamilies?: FontFamily[];
   selectedFileNodeIds: string[];
   selectedComponentVariantName?: string;
+  ready?: boolean;
   projectDirectory?: Directory;
   insertFileInfo?: InsertFileInfo;
   history: GraphHistory;

@@ -82,7 +82,8 @@ export const REMOVE_VARIANT_BUTTON_CLICKED = "REMOVE_VARIANT_BUTTON_CLICKED";
 export const VARIANT_DEFAULT_SWITCH_CLICKED = "VARIANT_DEFAULT_SWITCH_CLICKED";
 export const VARIANT_LABEL_CHANGED = "VARIANT_LABEL_CHANGED";
 export const VARIANT_CLICKED = "VARIANT_CLICKED";
-export const COMPONENT_INSTANCE_VARIANT_TOGGLED = "COMPONENT_INSTANCE_VARIANT_TOGGLED";
+export const COMPONENT_INSTANCE_VARIANT_TOGGLED =
+  "COMPONENT_INSTANCE_VARIANT_TOGGLED";
 export const INSTANCE_VARIANT_RESET_CLICKED = "INSTANCE_VARIANT_RESET_CLICKED";
 export const FRAME_MODE_CHANGE_COMPLETE = "FRAME_MODE_CHANGE_COMPLETE";
 export const RESIZER_PATH_MOUSE_MOVED = "RESIZER_PATH_MOUSE_MOVED";
@@ -115,9 +116,11 @@ export const SHORTCUT_CONVERT_TO_COMPONENT_KEY_DOWN =
   "SHORTCUT_CONVERT_TO_COMPONENT_KEY_DOWN";
 export const SHORTCUT_TOGGLE_SIDEBAR = "SHORTCUT_TOGGLE_SIDEBAR";
 export const INHERIT_PANE_ADD_BUTTON_CLICK = "INHERIT_PANE_ADD_BUTTON_CLICK";
-export const INHERIT_PANE_REMOVE_BUTTON_CLICK = "INHERIT_PANE_REMOVE_BUTTON_CLICK";
+export const INHERIT_PANE_REMOVE_BUTTON_CLICK =
+  "INHERIT_PANE_REMOVE_BUTTON_CLICK";
 export const INHERIT_PANE_ITEM_CLICK = "INHERIT_PANE_ITEM_CLICK";
-export const INHERIT_ITEM_COMPONENT_TYPE_CHANGE_COMPLETE = "INHERIT_ITEM_COMPONENT_TYPE_CHANGE_COMPLETE";
+export const INHERIT_ITEM_COMPONENT_TYPE_CHANGE_COMPLETE =
+  "INHERIT_ITEM_COMPONENT_TYPE_CHANGE_COMPLETE";
 export const INHERIT_ITEM_CLICK = "INHERIT_ITEM_CLICK";
 export const INSERT_TOOL_FINISHED = "INSERT_TOOL_FINISHED";
 export const SYNTHETIC_NODES_PASTED = "SYNTHETIC_NODES_PASTED";
@@ -149,6 +152,8 @@ export const NEW_VARIANT_NAME_ENTERED = "NEW_VARIANT_NAME_ENTERED";
 export const COMPONENT_VARIANT_REMOVED = "COMPONENT_VARIANT_REMOVED";
 export const COMPONENT_VARIANT_NAME_CHANGED = "COMPONENT_VARIANT_NAME_CHANGED";
 export const COMPONENT_VARIANT_NAME_CLICKED = "COMPONENT_VARIANT_NAME_CLICKED";
+export const OPEN_PROJECT_BUTTON_CLICKED = "OPEN_PROJECT_BUTTON_CLICKED";
+export const CREATE_PROJECT_BUTTON_CLICKED = "CREATE_PROJECT_BUTTON_CLICKED";
 export const COMPONENT_VARIANT_NAME_DEFAULT_TOGGLE_CLICK =
   "COMPONENT_VARIANT_NAME_DEFAULT_TOGGLE_CLICK";
 export const ELEMENT_VARIANT_TOGGLED = "ELEMENT_VARIANT_TOGGLED";
@@ -486,6 +491,14 @@ export const fileNavigatorNewDirectoryClicked = (): Action => ({
   type: FILE_NAVIGATOR_NEW_DIRECTORY_CLICKED
 });
 
+export const openProjectButtonClicked = publicActionCreator(() => ({
+  type: OPEN_PROJECT_BUTTON_CLICKED
+}));
+
+export const createProjectButtonClicked = publicActionCreator(() => ({
+  type: CREATE_PROJECT_BUTTON_CLICKED
+}));
+
 export const inheritPaneAddButtonClick = (): Action => ({
   type: INHERIT_PANE_ADD_BUTTON_CLICK
 });
@@ -494,12 +507,17 @@ export const inheritPaneRemoveButtonClick = (): Action => ({
   type: INHERIT_PANE_REMOVE_BUTTON_CLICK
 });
 
-export const inheritPaneItemClick = (componentId: string): InheritPaneItemClick => ({
+export const inheritPaneItemClick = (
+  componentId: string
+): InheritPaneItemClick => ({
   componentId,
   type: INHERIT_PANE_ITEM_CLICK
 });
 
-export const inheritItemComponentTypeChangeComplete = (oldComponentId: string, newComponentId: string): InheritItemComponentTypeChangeComplete => ({
+export const inheritItemComponentTypeChangeComplete = (
+  oldComponentId: string,
+  newComponentId: string
+): InheritItemComponentTypeChangeComplete => ({
   oldComponentId,
   newComponentId,
   type: INHERIT_ITEM_COMPONENT_TYPE_CHANGE_COMPLETE
@@ -520,29 +538,38 @@ export const addVariantButtonClicked = (): Action => ({
 
 export const unhandledError = (error: Error): UnhandledError => ({
   error,
-  type: UNHANDLED_ERROR,
+  type: UNHANDLED_ERROR
 });
 
 export const removeVariantButtonClicked = (): Action => ({
   type: REMOVE_VARIANT_BUTTON_CLICKED
 });
 
-export const variantDefaultSwitchClicked = (variant: PCVariant): VariantDefaultSwitchClicked => ({
+export const variantDefaultSwitchClicked = (
+  variant: PCVariant
+): VariantDefaultSwitchClicked => ({
   variant,
   type: VARIANT_DEFAULT_SWITCH_CLICKED
 });
 
-export const instanceVariantToggled = (variant: PCVariant): InstanceVariantToggled => ({
+export const instanceVariantToggled = (
+  variant: PCVariant
+): InstanceVariantToggled => ({
   variant,
   type: COMPONENT_INSTANCE_VARIANT_TOGGLED
 });
 
-export const instanceVariantResetClicked = (variant: PCVariant): InstanceVariantToggled => ({
+export const instanceVariantResetClicked = (
+  variant: PCVariant
+): InstanceVariantToggled => ({
   variant,
   type: INSTANCE_VARIANT_RESET_CLICKED
 });
 
-export const variantLabelChanged = (variant: PCVariant, newLabel: string): VariantLabelChanged => ({
+export const variantLabelChanged = (
+  variant: PCVariant,
+  newLabel: string
+): VariantLabelChanged => ({
   variant,
   newLabel,
   type: VARIANT_LABEL_CHANGED

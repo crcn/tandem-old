@@ -7,9 +7,10 @@ import {
   tdProjectLoaded,
   TD_PROJECT_LOADED,
   previewServerStarted,
-  OPEN_WORKSPACE_MENU_ITEM_CLICKED,
+  OPEN_PROJECT_MENU_ITEM_CLICKED,
   projectDirectoryLoaded,
-  tdProjectFilePicked
+  tdProjectFilePicked,
+  TD_PROJECT_FILE_PICKED
 } from "../actions";
 import { FRONT_END_ENTRY_FILE_PATH } from "../constants";
 import { ipcSaga, pid } from "./ipc";
@@ -28,7 +29,6 @@ import {
 import { shortcutsSaga } from "./menu";
 import * as fs from "fs";
 import * as path from "path";
-import { PROJECT_DIRECTORY_LOADED } from "tandem-front-end";
 
 export function* rootSaga() {
   yield fork(openMainWindow);
@@ -37,7 +37,8 @@ export function* rootSaga() {
   yield fork(handleLoadProject);
   yield fork(shortcutsSaga);
   yield fork(previewServer);
-  yield fork(handleOpenWorkspace);
+  yield fork(handleOpenProject);
+  yield fork(handleCreateProject);
   yield fork(initProjectDirectory);
   yield fork(handleOpenedWorkspaceDirectory);
 }
@@ -109,6 +110,7 @@ function* loadProjectDirectory() {
   const { tdProject, tdProjectPath }: DesktopState = yield select();
 
   if (!tdProject || !tdProjectPath) {
+    yield put(projectDirectoryLoaded(null));
     return;
   }
 
@@ -159,23 +161,44 @@ function* previewServer() {
   yield put(previewServerStarted(port));
 }
 
-function* handleOpenWorkspace() {
+function* handleOpenProject() {
   while (1) {
-    yield take(OPEN_WORKSPACE_MENU_ITEM_CLICKED);
-    const [directory] = dialog.showOpenDialog({
-      properties: ["openDirectory"]
+    yield take([OPEN_PROJECT_MENU_ITEM_CLICKED, "OPEN_PROJECT_BUTTON_CLICKED"]);
+    const [filePath] = dialog.showOpenDialog({
+      filters: [
+        {
+          name: "Tandem Project File",
+          extensions: ["tdproject"]
+        }
+      ],
+      properties: ["openFile"]
     }) || [undefined];
-    if (!directory) {
+    if (!filePath) {
       continue;
     }
 
-    yield put(tdProjectFilePicked(directory));
+    yield put(tdProjectFilePicked(filePath));
+  }
+}
+
+function* handleCreateProject() {
+  while (1) {
+    yield take(["CREATE_PROJECT_BUTTON_CLICKED"]);
+    console.log("TODO");
+    // const [directory] = dialog.showSaveDialog({
+    //   properties: ["openDirectory"]
+    // }) || [undefined];
+    // if (!directory) {
+    //   continue;
+    // }
+
+    // yield put(tdProjectFilePicked(directory));
   }
 }
 
 function* handleOpenedWorkspaceDirectory() {
   while (1) {
-    yield take(APP_READY);
+    yield take(TD_PROJECT_FILE_PICKED);
     yield call(initProjectDirectory);
   }
 }

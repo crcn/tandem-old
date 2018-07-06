@@ -15,17 +15,13 @@ in a different component file.
 
 #### `[name].tdproject`
 
-TODO:
-
-- eliminiate pcconfig
-- tdproject double click to open tandem
+`.tdproject` is now the source of truth for tandem editable project
 
 #### welcome screen
 
-TODO:
+Added a welcome screen in Tandem if there is no project currently loaded.
 
-- show recently opened projects
-- create new project
+[TODO SCREENSHOT]
 
 #### Changes
 

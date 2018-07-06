@@ -284,7 +284,10 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
   switch (action.type) {
     case PROJECT_DIRECTORY_LOADED: {
       const { directory } = action as ProjectDirectoryLoaded;
-      return updateRootState({ projectDirectory: directory }, state);
+      return updateRootState(
+        { projectDirectory: directory, ready: true },
+        state
+      );
     }
     case FILE_NAVIGATOR_ITEM_CLICKED: {
       const { node } = action as FileNavigatorItemClicked;

@@ -27,7 +27,6 @@ function* apiSaga() {
     while (1) {
       const { event } = yield take(chan);
       const state = yield select();
-      console.log("SEND STATE");
       event.sender.send("serverState", state);
     }
   });
