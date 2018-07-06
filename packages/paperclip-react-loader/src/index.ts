@@ -2,7 +2,7 @@ import * as fs from "fs";
 import * as path from "path";
 import { translatePaperclipModuleToReact } from "paperclip-react-compiler";
 import * as migrate from "paperclip-migrator";
-import { openPCConfig, loadFSDependencyGraphSync } from "paperclip";
+import { loadFSDependencyGraphSync } from "paperclip";
 const loaderUtils = require("loader-utils");
 
 // TODO - use options for
@@ -12,8 +12,11 @@ module.exports = function(source) {
   const uri = this.resource;
   const options = loaderUtils.getOptions(this) || {};
   const useHMR = options.hmr == null ? true : options.hmr;
-  const { config, directory } = openPCConfig(path.dirname(uri));
-  const graph = loadFSDependencyGraphSync(config, directory, migrate);
+  const graph = loadFSDependencyGraphSync(
+    options.config,
+    process.cwd(),
+    migrate
+  );
   const entry = graph["file://" + uri];
 
   let content = translatePaperclipModuleToReact(entry, graph);

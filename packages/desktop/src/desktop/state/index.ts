@@ -1,19 +1,18 @@
 import { PCConfig } from "paperclip";
 
-export type TDConfig = {
+export type TDProject = {
   scripts: {
     previewServer: string;
   };
-};
+} & PCConfig;
 
 type PreviewServerInfo = {
   port: number;
 };
 
 export type DesktopState = {
-  projectDirectory?: string;
-  pcConfig?: PCConfig;
-  tdConfig?: TDConfig;
+  tdProjectPath?: string;
+  tdProject?: TDProject;
   info: {
     previewServer?: PreviewServerInfo;
   };

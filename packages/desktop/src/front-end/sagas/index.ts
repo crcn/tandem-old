@@ -10,7 +10,7 @@ import {
   FILE_PROTOCOL,
   FSItemTagNames
 } from "tandem-common";
-import { findPaperclipSourceFiles, openPCConfig, pcSourceFileUrisReceived } from "paperclip";
+import { findPaperclipSourceFiles, pcSourceFileUrisReceived } from "paperclip";
 import {
   RootState,
   FILE_NAVIGATOR_ITEM_CLICKED,
@@ -40,7 +40,7 @@ export function* rootSaga() {
 }
 
 function* handleProjectDirectory() {
-  while(1) {
+  while (1) {
     yield take(PROJECT_DIRECTORY_LOADED);
     yield call(loadPCFiles);
   }
@@ -52,13 +52,14 @@ function* loadPCFiles() {
     return [];
   }
 
+  throw new Error("TODO");
   // TODO - need to hit back-end API for this since CWD could be different
-  const sourceFiles = findPaperclipSourceFiles(
-    openPCConfig(stripProtocol(state.projectDirectory.uri)).config,
-    stripProtocol(state.projectDirectory.uri)
-  ).map(path => addProtocol(FILE_PROTOCOL, path));
+  // const sourceFiles = findPaperclipSourceFiles(
+  //   openPCConfig(stripProtocol(state.projectDirectory.uri)).config,
+  //   stripProtocol(state.projectDirectory.uri)
+  // ).map(path => addProtocol(FILE_PROTOCOL, path));
 
-  yield put(pcSourceFileUrisReceived(sourceFiles));
+  // yield put(pcSourceFileUrisReceived(sourceFiles));
 }
 
 // function* handleActivePaperclipFile() {

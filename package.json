@@ -13,7 +13,7 @@
   "scripts": {
     "test": "gulp test",
     "precommit": "lint-staged",
-    "design-front-end": "cd packages/front-end; tandem .",
+    "design-front-end": "cd packages/front-end; tandem front-end.tdproject",
     "clean": "lerna exec --parallel -- npm run clean",
     "bootstrap": "lerna bootstrap",
     "build-watch": "lerna exec --parallel -- npm run build -- --watch",

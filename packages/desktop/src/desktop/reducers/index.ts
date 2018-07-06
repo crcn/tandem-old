@@ -1,15 +1,12 @@
 import { Action } from "redux";
-import { DesktopState } from "../state";
+import { DesktopState, TDProject } from "../state";
 import {
-  PC_CONFIG_LOADED,
-  pcConfigLoaded,
-  PCConfigLoaded,
-  TD_CONFIG_LOADED,
-  TDConfigLoaded,
+  TD_PROJECT_LOADED,
+  TDProjectLoaded,
   PREVIEW_SERVER_STARTED,
   PreviewServerStarted,
-  WORKSPACE_DIRECTORY_OPENED,
-  WorkspaceDirectoryOpened
+  TD_PROJECT_FILE_PICKED,
+  TDProjectFilePicked
 } from "../actions";
 
 export const rootReducer = (
@@ -17,17 +14,13 @@ export const rootReducer = (
   action: Action
 ): DesktopState => {
   switch (action.type) {
-    case WORKSPACE_DIRECTORY_OPENED: {
-      const { directory: projectDirectory } = action as WorkspaceDirectoryOpened;
-      return { ...state, projectDirectory };
+    case TD_PROJECT_FILE_PICKED: {
+      const { filePath } = action as TDProjectFilePicked;
+      return { ...state, tdProjectPath: filePath };
     }
-    case PC_CONFIG_LOADED: {
-      const { config: pcConfig } = action as PCConfigLoaded;
-      return { ...state, pcConfig };
-    }
-    case TD_CONFIG_LOADED: {
-      const { config: tdConfig } = action as TDConfigLoaded;
-      return { ...state, tdConfig };
+    case TD_PROJECT_LOADED: {
+      const { project: tdProject } = action as TDProjectLoaded;
+      return { ...state, tdProject };
     }
     case PREVIEW_SERVER_STARTED: {
       const { port } = action as PreviewServerStarted;

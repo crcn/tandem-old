@@ -1,27 +1,22 @@
 import { Action } from "redux";
-import { PCConfig } from "paperclip";
-import { TDConfig } from "../state";
+import { TDProject } from "../state";
 import { publicActionCreator, Directory } from "tandem-common";
 
 export const APP_READY = "APP_READY";
 export const MAIN_WINDOW_OPENED = "MAIN_WINDOW_OPENED";
-export const PC_CONFIG_LOADED = "PC_CONFIG_LOADED";
-export const TD_CONFIG_LOADED = "TD_CONFIG_LOADED";
+export const TD_PROJECT_LOADED = "TD_PROJECT_LOADED";
 export const PREVIEW_SERVER_STARTED = "PREVIEW_SERVER_STARTED";
-export const OPEN_WORKSPACE_MENU_ITEM_CLICKED = "OPEN_WORKSPACE_MENU_ITEM_CLICKED";
-export const WORKSPACE_DIRECTORY_OPENED = "WORKSPACE_DIRECTORY_OPENED";
+export const OPEN_WORKSPACE_MENU_ITEM_CLICKED =
+  "OPEN_WORKSPACE_MENU_ITEM_CLICKED";
+export const TD_PROJECT_FILE_PICKED = "TD_PROJECT_FILE_PICKED";
 
 export type AppReady = {} & Action;
-export type PCConfigLoaded = {
-  config: PCConfig;
+export type TDProjectLoaded = {
+  project: TDProject;
 } & Action;
 
-export type TDConfigLoaded = {
-  config: TDConfig;
-} & Action;
-
-export type WorkspaceDirectoryOpened = {
-  directory: string;
+export type TDProjectFilePicked = {
+  filePath: string;
 } & Action;
 
 export type PreviewServerStarted = {
@@ -29,20 +24,16 @@ export type PreviewServerStarted = {
 } & Action;
 
 export const appReady = (): AppReady => ({ type: APP_READY });
-export const workspaceDirectoryOpened = (directory: string): WorkspaceDirectoryOpened => ({
-  directory,
-  type: WORKSPACE_DIRECTORY_OPENED
+export const tdProjectFilePicked = (filePath: string): TDProjectFilePicked => ({
+  filePath,
+  type: TD_PROJECT_FILE_PICKED
 });
 
 export const mainWindowOpened = (): Action => ({ type: MAIN_WINDOW_OPENED });
-export const pcConfigLoaded = (config: PCConfig): PCConfigLoaded => ({
-  type: PC_CONFIG_LOADED,
-  config
-});
 
-export const tdConfigLoaded = (config: TDConfig): TDConfigLoaded => ({
-  type: TD_CONFIG_LOADED,
-  config
+export const tdProjectLoaded = (project: TDProject): TDProjectLoaded => ({
+  type: TD_PROJECT_LOADED,
+  project
 });
 
 export const previewServerStarted = (port: number): PreviewServerStarted => ({
@@ -50,8 +41,9 @@ export const previewServerStarted = (port: number): PreviewServerStarted => ({
   port
 });
 
-
-export const projectDirectoryLoaded = publicActionCreator((directory: Directory) => ({
-  directory,
-  type: "PROJECT_DIRECTORY_LOADED"
-}));
+export const projectDirectoryLoaded = publicActionCreator(
+  (directory: Directory) => ({
+    directory,
+    type: "PROJECT_DIRECTORY_LOADED"
+  })
+);

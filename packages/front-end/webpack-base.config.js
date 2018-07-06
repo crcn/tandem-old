@@ -1,5 +1,6 @@
 const {resolve} = require('path');
 const webpack   = require('webpack');
+const fs = require("fs");
 
 module.exports = {
   devtool: 'none',
@@ -50,7 +51,13 @@ module.exports = {
           { loader: 'css-loader'   }
         ]
       },
-      { test: /\.pc$/, use: ['paperclip-react-loader']},
+      { test: /\.pc$/, use: [{
+          loader: 'paperclip-react-loader',
+          options: {
+            config: JSON.parse(fs.readFileSync("./front-end.tdproject", "utf8"))
+          }
+        }]
+      },
       { test: /\.tsx?$/, use: ['ts-loader'] },
       { test: /\.worker.ts?$/, use: [{
         loader: 'worker-loader',

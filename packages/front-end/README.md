@@ -2,8 +2,9 @@ OBJECTIVE:
 
 - eliminate current friction. Don't focus on UI.
 
-IMMEDIATE:s
+IMMEDIATE:
 
+- TD should be dark since most UI is white
 - tidy tdproject
 - color picker
   - swatches
