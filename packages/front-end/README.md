@@ -6,49 +6,30 @@ OBJECTIVE:
 IMMEDIATE:
 
 - cannot dnd element to empty state
-- border input
-
-- color picker
-  - swatches
-  - other inputs
-- border UI
-- box shadows
-- variables (easier to refactor to this)
-- performance
-  - "Welcome" screen picking project
-- double click instance -> open in new tab
-- clear overrides functionality (need to reset to inherited styles)
+- design controls
+  - border input
+  - color picker
+    - swatches
+    - RGBA / HSA / HEX inputs
+  - box shadows
+  - clear overrides functionality (need to reset to inherited styles)
 - special _bind_ attribute
-- do not sync synthetic metadata
-- fetch frame bounds from source metadata
+- variables (easier to refactor to this)
 - controller UI
 - better place to expose properties
 - redesign (see https://dribbble.com/shots/4781001-Figma)
--
 - dts
   - code compiler watcher
 - sync frames & metadata
 - show controllers
 - AJ handoff
-- .tdproject source of truth
-  - move pc config to here
 - Rust interp
-- variables
-- measurement input UI
-- ability to load fonts
-  - store in pc config
-- make UI consistent
 - file navigator refactor
-- react dts files
-  - generate on project save
 - open files refactor
-- prohibit instance layers from being deleted
-- drop shadows input
 - preview in app
   - "preview mode" banner
   - "click to interact" button
   - auto save in preview mode
-- component controller UI
 
 FRICTION POINTS:
 
