@@ -5,6 +5,9 @@ OBJECTIVE:
 
 IMMEDIATE:
 
+- cannot dnd element to empty state
+- border input
+
 - color picker
   - swatches
   - other inputs

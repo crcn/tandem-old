@@ -4,7 +4,7 @@
   "version": "0.0.3",
   "children": [
     {
-      "label": "Borders",
+      "label": "Border",
       "is": "b6c162d113",
       "style": {
         "font-family": "Helvetica",
@@ -615,6 +615,26 @@
           "top": 297,
           "right": 900,
           "bottom": 597
+        }
+      }
+    },
+    {
+      "id": "b9d1103b5",
+      "label": "Borders",
+      "is": "div",
+      "name": "element",
+      "attributes": {},
+      "style": {
+        "box-sizing": "border-box",
+        "display": "block"
+      },
+      "children": [],
+      "metadata": {
+        "bounds": {
+          "left": 958.0072141858633,
+          "top": 293.4235700042489,
+          "right": 1291.0967547658506,
+          "bottom": 533.6809126043279
         }
       }
     }
