@@ -59,12 +59,12 @@ module.exports = {
         }]
       },
       { test: /\.tsx?$/, use: ['ts-loader'] },
-      { test: /\.worker.ts?$/, use: [{
+      { test: /\.worker.js?$/, use: [{
         loader: 'worker-loader',
         options: {
           inline: true
         }
-      }, 'ts-loader'] }
+      }] }
     ]
   }
 };

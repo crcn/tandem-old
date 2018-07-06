@@ -1,8 +1,8 @@
 import { PCConfig } from "paperclip";
 
 export type TDProject = {
-  scripts: {
-    previewServer: string;
+  scripts?: {
+    previewServer?: string;
   };
 } & PCConfig;
 

@@ -18,7 +18,7 @@ import * as getPort from "get-port";
 import * as qs from "querystring";
 import { spawn } from "child_process";
 import { walkPCRootDirectory } from "paperclip";
-import { DesktopState } from "../state";
+import { DesktopState, TDProject } from "../state";
 import {
   isPublicAction,
   convertFlatFilesToNested,
@@ -29,6 +29,14 @@ import {
 import { shortcutsSaga } from "./menu";
 import * as fs from "fs";
 import * as path from "path";
+
+const DEFAULT_TD_PROJECT: TDProject = {
+  scripts: {},
+  rootDir: ".",
+  exclude: ["node_modules"]
+};
+
+const DEFAULT_TD_PROJECT_NAME = "app.tdproject";
 
 export function* rootSaga() {
   yield fork(openMainWindow);
@@ -184,15 +192,24 @@ function* handleOpenProject() {
 function* handleCreateProject() {
   while (1) {
     yield take(["CREATE_PROJECT_BUTTON_CLICKED"]);
-    console.log("TODO");
-    // const [directory] = dialog.showSaveDialog({
-    //   properties: ["openDirectory"]
-    // }) || [undefined];
-    // if (!directory) {
-    //   continue;
-    // }
+    const [directory] = dialog.showOpenDialog({
+      title: "Choose project directory",
+      properties: ["openDirectory"]
+    }) || [undefined];
+    if (!directory) {
+      continue;
+    }
 
-    // yield put(tdProjectFilePicked(directory));
+    const filePath = path.join(directory, DEFAULT_TD_PROJECT_NAME);
+
+    if (!fs.existsSync(filePath)) {
+      fs.writeFileSync(
+        filePath,
+        JSON.stringify(DEFAULT_TD_PROJECT, null, 2),
+        "utf8"
+      );
+    }
+    yield put(tdProjectFilePicked(filePath));
   }
 }
 
