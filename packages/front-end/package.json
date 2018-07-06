@@ -1,6 +1,6 @@
 {
   "name": "tandem-front-end",
-  "version": "10.0.5",
+  "version": "10.0.6",
   "description": "Visual editor for web components",
   "main": "index.js",
   "scripts": {
@@ -41,7 +41,7 @@
     "mocha": "^3.4.2",
     "node-sass": "^4.7.2",
     "null-loader": "^0.1.1",
-    "paperclip-react-loader": "^10.0.5",
+    "paperclip-react-loader": "^10.0.6",
     "react-hot-loader": "^3.1.2",
     "sass-loader": "^7.0.3",
     "source-map": "^0.5.7",
@@ -64,14 +64,14 @@
     "@types/xml-js": "^1.0.0",
     "classnames": "^2.2.5",
     "crc32": "^0.2.2",
-    "fsbox": "^10.0.5",
+    "fsbox": "^10.0.6",
     "glob": "^7.1.2",
     "http-proxy": "^1.16.2",
     "lodash": "^4.17.5",
     "md5": "^2.2.1",
     "mousetrap": "^1.6.1",
-    "paperclip": "^10.0.5",
-    "paperclip-migrator": "^10.0.5",
+    "paperclip": "^10.0.6",
+    "paperclip-migrator": "^10.0.6",
     "prop-types": "^15.6.1",
     "react": "^15.6.1",
     "react-dnd": "^2.6.0",
@@ -86,7 +86,7 @@
     "request": "^2.81.0",
     "socket.io": "^2.0.3",
     "socket.io-client": "^2.0.3",
-    "tandem-common": "^10.0.5",
+    "tandem-common": "^10.0.6",
     "worker-loader": "^2.0.0",
     "xml-js": "^1.6.4"
   }
