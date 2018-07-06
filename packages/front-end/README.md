@@ -1,6 +1,7 @@
 OBJECTIVE:
 
 - eliminate current friction. Don't focus on UI.
+- make compiler more efficient. UI needs to be more explicit.
 
 IMMEDIATE:
 

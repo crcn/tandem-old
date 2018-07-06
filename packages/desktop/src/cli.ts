@@ -1,14 +1,19 @@
 import * as path from "path";
+import * as fs from "fs";
 
 import { init } from "./desktop";
+import { TDProject } from "desktop/state";
 
-let dir = process.argv[2] || ".";
+let projectPath = process.argv[2];
+let project: TDProject;
 
-if (dir.charAt(0) !== "/") {
-  dir = path.join(process.cwd(), dir);
+if (projectPath && projectPath.charAt(0) !== "/") {
+  projectPath = path.join(process.cwd(), projectPath);
+  project = JSON.parse(fs.readFileSync(projectPath, "utf8"));
 }
 
 init({
-  projectDirectory: dir,
+  tdProjectPath: projectPath,
+  tdProject: project,
   info: {}
 });

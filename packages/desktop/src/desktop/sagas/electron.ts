@@ -1,6 +1,6 @@
 import { fork, call, take, put } from "redux-saga/effects";
 import { eventChannel } from "redux-saga";
-import { app, BrowserWindow } from "electron";
+import { app } from "electron";
 import { appReady } from "../actions";
 
 export function* electronSaga() {

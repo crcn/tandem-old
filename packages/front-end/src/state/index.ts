@@ -142,7 +142,7 @@ export enum ConfirmType {
   ERROR,
   WARNING,
   SUCCESS
-};
+}
 
 export type Confirm = {
   type: ConfirmType;
@@ -195,12 +195,12 @@ export type OpenFile = {
   canvas: Canvas;
 };
 
-export const updateRootState = (
-  properties: Partial<RootState>,
-  root: RootState
-) => ({
-  ...root,
-  ...properties
+export const updateRootState = <TState extends RootState>(
+  properties: Partial<TState>,
+  root: TState
+): TState => ({
+  ...(root as any),
+  ...(properties as any)
 });
 
 export const deselectRootProjectFiles = (state: RootState) =>
@@ -264,13 +264,20 @@ const getUpdatedSyntheticVisibleNodes = (
   return uniq(newSyntheticVisibleNodes);
 };
 
-export const queueSelectInsertedSyntheticVisibleNodes = (oldState: RootState, newState: RootState, scope: SyntheticVisibleNode | SyntheticDocument) => {
-  return updateRootState({
-    queuedScopeSelect: {
-      previousState: oldState,
-      scope
-    }
-  }, newState);
+export const queueSelectInsertedSyntheticVisibleNodes = (
+  oldState: RootState,
+  newState: RootState,
+  scope: SyntheticVisibleNode | SyntheticDocument
+) => {
+  return updateRootState(
+    {
+      queuedScopeSelect: {
+        previousState: oldState,
+        scope
+      }
+    },
+    newState
+  );
 };
 
 export const selectInsertedSyntheticVisibleNodes = (
@@ -296,12 +303,20 @@ const setOpenFileContent = (dep: Dependency<any>, state: RootState) =>
     state
   );
 
-const addHistory = (oldGraph: DependencyGraph, newGraph: DependencyGraph, state: RootState) => {
+const addHistory = (
+  oldGraph: DependencyGraph,
+  newGraph: DependencyGraph,
+  state: RootState
+) => {
   const items = state.history.items.slice(0, state.history.index);
 
   const prevSnapshotItem: GraphHistoryItem = getNextHistorySnapshot(items);
 
-  if (!items.length || (prevSnapshotItem && items.length - items.indexOf(prevSnapshotItem) > SNAPSHOT_GAP)) {
+  if (
+    !items.length ||
+    (prevSnapshotItem &&
+      items.length - items.indexOf(prevSnapshotItem) > SNAPSHOT_GAP)
+  ) {
     items.push({
       snapshot: oldGraph
     });
@@ -310,34 +325,47 @@ const addHistory = (oldGraph: DependencyGraph, newGraph: DependencyGraph, state:
   const modifiedDeps = getModifiedDependencies(newGraph, oldGraph);
   const transforms = {};
   for (const dep of modifiedDeps) {
-    transforms[dep.uri] = diffTreeNode(oldGraph[dep.uri].content, dep.content, EMPTY_OBJECT);
+    transforms[dep.uri] = diffTreeNode(
+      oldGraph[dep.uri].content,
+      dep.content,
+      EMPTY_OBJECT
+    );
   }
 
-  return updateRootState({
-    history: {
-      index: items.length + 1,
-      items: [...items, {
-        transforms
-      }]
-    }
-  }, state);
+  return updateRootState(
+    {
+      history: {
+        index: items.length + 1,
+        items: [
+          ...items,
+          {
+            transforms
+          }
+        ]
+      }
+    },
+    state
+  );
 };
 
 const getNextHistorySnapshot = (items: GraphHistoryItem[]) => {
-
-  for (let i = items.length; i--;) {
+  for (let i = items.length; i--; ) {
     const prevHistoryItem = items[i];
     if (prevHistoryItem.snapshot) {
       return items[i];
     }
   }
-}
+};
 
 const moveDependencyRecordHistory = (
   pos: number,
   state: RootState
 ): RootState => {
-  const newIndex = clamp(state.history.index + pos, 1, state.history.items.length);
+  const newIndex = clamp(
+    state.history.index + pos,
+    1,
+    state.history.items.length
+  );
   const items = state.history.items.slice(0, newIndex);
   const snapshotItem = getNextHistorySnapshot(items);
   const snapshotIndex = items.indexOf(snapshotItem);
@@ -357,16 +385,24 @@ const moveDependencyRecordHistory = (
 
   state = updateDependencyGraph(graphSnapshot, state);
 
-  state = updateRootState({ history: {
-    ...state.history,
-    index: newIndex
-  }}, state);
+  state = updateRootState(
+    {
+      history: {
+        ...state.history,
+        index: newIndex
+      }
+    },
+    state
+  );
 
   // deselect synthetic nodes if their source is also deleted
-  state = setSelectedSyntheticVisibleNodeIds(state, ...state.selectedNodeIds.filter((nodeId) => {
-    const { source } = getSyntheticNodeById(nodeId, state.documents);
-    return Boolean(getPCNode(source.nodeId, state.graph));
-  }));
+  state = setSelectedSyntheticVisibleNodeIds(
+    state,
+    ...state.selectedNodeIds.filter(nodeId => {
+      const { source } = getSyntheticNodeById(nodeId, state.documents);
+      return Boolean(getPCNode(source.nodeId, state.graph));
+    })
+  );
 
   return state;
 };
@@ -380,7 +416,8 @@ const DEFAULT_CANVAS: Canvas = {
   }
 };
 
-export const confirm = (message: string, type: ConfirmType, state: RootState) => updateRootState({ confirm: { message, type }}, state);
+export const confirm = (message: string, type: ConfirmType, state: RootState) =>
+  updateRootState({ confirm: { message, type } }, state);
 
 export const undo = (root: RootState) => moveDependencyRecordHistory(-1, root);
 export const redo = (root: RootState) => moveDependencyRecordHistory(1, root);
@@ -453,8 +490,6 @@ export const openFile = (
   return state;
 };
 
-
-
 // export const setActiveFilePath = (
 //   newActiveFilePath: string,
 //   root: RootState
@@ -482,7 +517,10 @@ export const getEditorWithActiveFileUri = (
   return state.editorWindows.find(editor => editor.activeFilePath === uri);
 };
 
-const createEditorWindow = (tabUris: string[], activeFilePath: string): EditorWindow => ({
+const createEditorWindow = (
+  tabUris: string[],
+  activeFilePath: string
+): EditorWindow => ({
   tabUris,
   activeFilePath
 });
@@ -502,9 +540,14 @@ export const getSyntheticWindowBounds = memoize(
 
 export const isImageMimetype = (mimeType: string) => /^image\//.test(mimeType);
 
-export const openEditorFileUri = (uri: string, secondaryTab: boolean, state: RootState): RootState => {
+export const openEditorFileUri = (
+  uri: string,
+  secondaryTab: boolean,
+  state: RootState
+): RootState => {
   const editor =
-    getEditorWindowWithFileUri(uri, state) || (secondaryTab ? null : state.editorWindows[0]);
+    getEditorWindowWithFileUri(uri, state) ||
+    (secondaryTab ? null : state.editorWindows[0]);
 
   return {
     ...state,
@@ -525,10 +568,7 @@ export const openEditorFileUri = (uri: string, secondaryTab: boolean, state: Roo
             activeFilePath: uri
           }
         )
-      : [
-          ...state.editorWindows,
-          createEditorWindow([uri], uri)
-        ]
+      : [...state.editorWindows, createEditorWindow([uri], uri)]
   };
 };
 
@@ -638,7 +678,13 @@ export const openSyntheticVisibleNodeOriginFile = (
   }
 
   const uri = getPCNodeDependency(sourceNode.id, state.graph).uri;
-  const instance = findInstanceOfPCNode(sourceNode, state.documents.filter(document => getSyntheticDocumentDependencyUri(document, state.graph) === uri));
+  const instance = findInstanceOfPCNode(
+    sourceNode,
+    state.documents.filter(
+      document =>
+        getSyntheticDocumentDependencyUri(document, state.graph) === uri
+    )
+  );
   state = openFile(uri, false, true, state);
   state = setSelectedSyntheticVisibleNodeIds(state, instance.id);
   state = centerCanvasToSelectedNodes(state);
@@ -763,7 +809,6 @@ export const setRootStateSyntheticVisibleNodeExpanded = (
   value: boolean,
   state: RootState
 ) => {
-
   const node = getSyntheticNodeById(nodeId, state.documents);
   const document = getSyntheticVisibleNodeDocument(node.id, state.documents);
 
@@ -1002,11 +1047,13 @@ export const setTool = (toolType: ToolType, root: RootState) => {
 };
 
 export const getActiveFrames = (root: RootState): Frame[] =>
-  values(root.frames).filter(frame =>
-    getActiveEditorWindow(root).activeFilePath === getSyntheticDocumentDependencyUri(
-      getSyntheticVisibleNodeDocument(frame.contentNodeId, root.documents),
-      root.graph
-    )
+  values(root.frames).filter(
+    frame =>
+      getActiveEditorWindow(root).activeFilePath ===
+      getSyntheticDocumentDependencyUri(
+        getSyntheticVisibleNodeDocument(frame.contentNodeId, root.documents),
+        root.graph
+      )
   );
 
 export const getCanvasTranslate = (canvas: Canvas) => canvas.translate;
@@ -1028,7 +1075,6 @@ export const getCanvasMouseTargetNodeId = (
   event: CanvasToolOverlayMouseMoved | CanvasToolOverlayClicked,
   filter?: (node: TreeNode<any>) => boolean
 ): string => {
-
   return getCanvasMouseTargetNodeIdFromPoint(
     state,
     {
@@ -1057,7 +1103,6 @@ export const getCanvasMouseTargetNodeIdFromPoint = (
   );
 
   const { left: scaledPageX, top: scaledPageY } = scaledMousePos;
-
 
   const mouseX = scaledPageX - frame.bounds.left;
   const mouseY = scaledPageY - frame.bounds.top;
@@ -1184,13 +1229,14 @@ export const setHoveringSyntheticVisibleNodeIds = (
 //     root
 //   );
 
-export const getBoundedSelection = memoize((root: RootState): string[] =>
-  root.selectedNodeIds.filter(nodeId =>
-    getSyntheticVisibleNodeRelativeBounds(
-      getSyntheticNodeById(nodeId, root.documents),
-      root.frames
+export const getBoundedSelection = memoize(
+  (root: RootState): string[] =>
+    root.selectedNodeIds.filter(nodeId =>
+      getSyntheticVisibleNodeRelativeBounds(
+        getSyntheticNodeById(nodeId, root.documents),
+        root.frames
+      )
     )
-  )
 );
 
 export const getSelectionBounds = memoize((root: RootState) =>

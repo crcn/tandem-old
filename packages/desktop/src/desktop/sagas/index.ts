@@ -8,17 +8,15 @@ import {
   TD_PROJECT_LOADED,
   previewServerStarted,
   OPEN_WORKSPACE_MENU_ITEM_CLICKED,
-  TD_PROJECT_FILE_PICKED,
-  TDProjectFilePicked,
   projectDirectoryLoaded,
   tdProjectFilePicked
 } from "../actions";
-import { FRONT_END_ENTRY_FILE_PATH, TD_PROJECT_EXTENSION } from "../constants";
+import { FRONT_END_ENTRY_FILE_PATH } from "../constants";
 import { ipcSaga, pid } from "./ipc";
 import * as getPort from "get-port";
 import * as qs from "querystring";
 import { spawn } from "child_process";
-import { walkPCRootDirectory, DEFAULT_CONFIG } from "paperclip";
+import { walkPCRootDirectory } from "paperclip";
 import { DesktopState } from "../state";
 import {
   isPublicAction,
@@ -30,6 +28,7 @@ import {
 import { shortcutsSaga } from "./menu";
 import * as fs from "fs";
 import * as path from "path";
+import { PROJECT_DIRECTORY_LOADED } from "tandem-front-end";
 
 export function* rootSaga() {
   yield fork(openMainWindow);
@@ -176,6 +175,7 @@ function* handleOpenWorkspace() {
 
 function* handleOpenedWorkspaceDirectory() {
   while (1) {
+    yield take(APP_READY);
     yield call(initProjectDirectory);
   }
 }

@@ -1,9 +1,10 @@
 import * as fs from "fs";
 const fontManager = require("font-manager");
 import { rootSaga } from "./sagas";
-import { take, select } from "redux-saga/effects";
+import { select } from "redux-saga/effects";
 import { rootReducer } from "./reducers";
-import { setup, RootState, stripProtocol, FontFamily } from "tandem-front-end";
+import { setup, RootState, FontFamily } from "tandem-front-end";
+import { stripProtocol } from "tandem-common";
 import { DesktopRootState } from "./state";
 import * as path from "path";
 import * as Url from "url";
@@ -36,8 +37,7 @@ setup<DesktopRootState>(
   frames: [],
   documents: [],
   fontFamilies: getFontFamiles(),
-  graph: {
-  },
+  graph: {},
   history: {
     index: 0,
     items: []
@@ -71,14 +71,17 @@ function* openPreview(frame: Frame) {
 
 function getFontFamiles(): FontFamily[] {
   let used = {};
-  return fontManager.getAvailableFontsSync().map((info) => {
-    return {
-      name: info.family
-    };
-  }).filter((family) => {
-    if (used[family.name]) return false;
-    return used[family.name] = true;
-  });
+  return fontManager
+    .getAvailableFontsSync()
+    .map(info => {
+      return {
+        name: info.family
+      };
+    })
+    .filter(family => {
+      if (used[family.name]) return false;
+      return (used[family.name] = true);
+    });
 }
 
 function readFile(uri) {

@@ -9,7 +9,7 @@ const PaperclipWorker = require("./paperclip.worker");
 import {
   createPaperclipSaga,
   PAPERCLIP_MIME_TYPE,
-  PAPERCLIP_DEFAULT_EXTENSIONS,
+  PAPERCLIP_DEFAULT_EXTENSIONS
 } from "paperclip";
 import { RootState } from "./state";
 import { appLoaded } from "./actions";
@@ -20,15 +20,16 @@ import {
 } from "fsbox";
 import { createRemotePCRuntime } from "paperclip";
 
-export type FrontEndOptions = FrontEndSagaOptions &
-  FSSandboxOptions;
+export type FrontEndOptions = FrontEndSagaOptions & FSSandboxOptions;
 export type SideEffectCreator = () => IterableIterator<FrontEndOptions>;
 
 // Dirty, but okay for now. Want to eventually display a prettyier message that reports diagnostics, but
 // that needs to happen _outside_ of the application's scope.
 
-const onError = (error) => {
-  alert(`An unknown error occured, please save changes and restart Tandem. Details:\n${error}`);
+const onError = error => {
+  alert(
+    `An unknown error occured, please save changes and restart Tandem. Details:\n${error}`
+  );
 };
 window.onerror = onError;
 
@@ -51,9 +52,7 @@ export const setup = <TState extends RootState>(
       applyMiddleware(sagaMiddleware)
     );
     sagaMiddleware.run(function*() {
-      let { readFile, writeFile, openPreview } = yield call(
-        createSideEffects
-      );
+      let { readFile, writeFile, openPreview } = yield call(createSideEffects);
 
       readFile = setReaderMimetype(
         PAPERCLIP_MIME_TYPE,
@@ -64,11 +63,13 @@ export const setup = <TState extends RootState>(
       if (saga) {
         yield fork(saga);
         yield fork(createFSSandboxSaga({ readFile, writeFile }));
-        yield fork(createPaperclipSaga({
-          createRuntime: () => {
-            return createRemotePCRuntime(new PaperclipWorker());
-          }
-        }));
+        yield fork(
+          createPaperclipSaga({
+            createRuntime: () => {
+              return createRemotePCRuntime(new PaperclipWorker());
+            }
+          })
+        );
       }
     });
 
@@ -77,7 +78,5 @@ export const setup = <TState extends RootState>(
 };
 export const init = (initialState: RootState) => {};
 
-export * from "paperclip";
 export * from "./state";
 export * from "./actions";
-export * from "tandem-common";

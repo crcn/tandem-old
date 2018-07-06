@@ -3,32 +3,31 @@ import * as fs from "fs";
 import * as fsa from "fs-extra";
 import * as path from "path";
 import { ipcSaga } from "./ipc";
+import { eventChannel } from "redux-saga";
+import { ipcRenderer } from "electron";
 import {
+  RootState,
+  PROJECT_DIRECTORY_LOADED,
+  FILE_NAVIGATOR_NEW_FILE_ENTERED,
+  SHORTCUT_SAVE_KEY_DOWN,
+  savedFile,
+  FileNavigatorNewFileEntered,
+  newFileAdded,
+  InsertFileType,
+  FILE_NAVIGATOR_DROPPED_ITEM,
+  getActiveEditorWindow
+} from "tandem-front-end";
+import { findPaperclipSourceFiles, pcSourceFileUrisReceived } from "paperclip";
+import {
+  getNestedTreeNodeById,
   addProtocol,
   stripProtocol,
   Directory,
   FILE_PROTOCOL,
   FSItemTagNames
 } from "tandem-common";
-import { findPaperclipSourceFiles, pcSourceFileUrisReceived } from "paperclip";
-import {
-  RootState,
-  FILE_NAVIGATOR_ITEM_CLICKED,
-  PROJECT_DIRECTORY_LOADED,
-  OPEN_FILE_ITEM_CLICKED,
-  PAPERCLIP_DEFAULT_EXTENSIONS,
-  FILE_NAVIGATOR_NEW_FILE_ENTERED,
-  loadEntry,
-  SHORTCUT_SAVE_KEY_DOWN,
-  savedFile,
-  getOpenFile,
-  FileNavigatorNewFileEntered,
-  getNestedTreeNodeById,
-  newFileAdded,
-  InsertFileType,
-  FILE_NAVIGATOR_DROPPED_ITEM,
-  getActiveEditorWindow
-} from "tandem-front-end";
+import { serverStateLoaded, SERVER_STATE_LOADED } from "../actions";
+import { DesktopRootState } from "../state";
 
 export function* rootSaga() {
   yield fork(ipcSaga);
@@ -37,70 +36,28 @@ export function* rootSaga() {
   yield fork(handleNewFileEntered);
   yield fork(handleDroppedFile);
   yield fork(handleProjectDirectory);
+  yield fork(receiveServerState);
 }
 
 function* handleProjectDirectory() {
   while (1) {
-    yield take(PROJECT_DIRECTORY_LOADED);
+    yield take(SERVER_STATE_LOADED);
     yield call(loadPCFiles);
   }
 }
 
 function* loadPCFiles() {
-  const state: RootState = yield select();
-  if (!state.projectDirectory) {
-    return [];
+  const { serverState }: DesktopRootState = yield select();
+  if (!serverState || !serverState.tdProject) {
+    return;
   }
 
-  throw new Error("TODO");
-  // TODO - need to hit back-end API for this since CWD could be different
-  // const sourceFiles = findPaperclipSourceFiles(
-  //   openPCConfig(stripProtocol(state.projectDirectory.uri)).config,
-  //   stripProtocol(state.projectDirectory.uri)
-  // ).map(path => addProtocol(FILE_PROTOCOL, path));
-
-  // yield put(pcSourceFileUrisReceived(sourceFiles));
+  const sourceFiles = findPaperclipSourceFiles(
+    serverState.tdProject,
+    stripProtocol(path.dirname(serverState.tdProjectPath))
+  ).map(path => addProtocol(FILE_PROTOCOL, path));
+  yield put(pcSourceFileUrisReceived(sourceFiles));
 }
-
-// function* handleActivePaperclipFile() {
-//   let oldState: RootState;
-
-//   while (1) {
-//     yield take();
-//     const state: RootState = yield select();
-//     const { editors, browser } = state;
-
-//     const newPCEditors = editors.filter(editor => {
-//       return (
-//         !getEditorWithActiveFileUri(editor.activeFilePath, oldState) &&
-//         editor.activeFilePath.indexOf(PAPERCLIP_DEFAULT_EXTENSIONS) !== -1
-//       );
-//     });
-
-//     oldState = state;
-
-//     for (const editor of newPCEditors) {
-//       yield call(openDependencyEntry, editor.activeFilePath);
-//     }
-//   }
-// }
-
-// function* openDependencyEntry(activeFilePath: string) {
-//   const { browser } = yield select();
-//   let graph: DependencyGraph = browser.graph;
-//   let entry: Dependency = graph && graph[activeFilePath];
-
-//   if (!entry) {
-//     const result = yield call(loadEntry, activeFilePath, {
-//       graph: browser.graph,
-//       openFile: uri => fs.readFileSync(uri.substr("file://".length), "utf8")
-//     });
-//     entry = result.entry;
-//     graph = result.graph;
-//   }
-
-//   yield put(dependencyEntryLoaded(entry, graph));
-// }
 
 function* handleNewFileEntered() {
   while (1) {
@@ -176,3 +133,22 @@ const saveFile = (uri: string, content: Buffer) => {
     });
   });
 };
+
+function* receiveServerState() {
+  const chan = eventChannel(emit => {
+    ipcRenderer.on("serverState", (event, arg) => emit(arg));
+    return () => {};
+  });
+
+  yield fork(function*() {
+    while (1) {
+      const state = yield take(chan);
+      yield put(serverStateLoaded(state));
+    }
+  });
+
+  while (1) {
+    yield take(PROJECT_DIRECTORY_LOADED);
+    ipcRenderer.send("getServerState");
+  }
+}
