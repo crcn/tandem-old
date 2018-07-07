@@ -617,13 +617,18 @@ export const closeFile = (uri: string, state: RootState): RootState => {
   if (editorWindow.tabUris.length === 1) {
     state = removeEditorWindow(editorWindow, state);
   } else {
+    const index = editorWindow.tabUris.indexOf(uri);
+    const nextActiveUri = editorWindow.tabUris[clamp(index - 1, 0)];
     state = updateEditorWindow(
       {
-        tabUris: editorWindow.tabUris.filter(furi => furi !== uri)
+        tabUris: arraySplice(editorWindow.tabUris, index, 1),
+        activeFilePath: nextActiveUri
       },
       uri,
       state
     );
+
+    state = updateRootState({ activeEditorFilePath: nextActiveUri }, state);
   }
 
   state = updateRootState(
