@@ -121,13 +121,13 @@ const setStyle = (target: HTMLElement, style: any) => {
   let cstyle;
   if (target.namespaceURI === SVG_XMLNS) {
     cstyle = {};
-    for (const key in style) {
+    for (const key in normalizedStyle) {
       cstyle[SVG_STYlE_KEY_MAP[key] || key] = normalizedStyle[key];
     }
   } else {
     cstyle = normalizedStyle;
   }
-  Object.assign(target.style, normalizedStyle);
+  Object.assign(target.style, cstyle, target.namespaceURI);
 };
 
 const createNativeNode = (
