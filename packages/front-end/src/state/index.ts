@@ -618,10 +618,11 @@ export const closeFile = (uri: string, state: RootState): RootState => {
     state = removeEditorWindow(editorWindow, state);
   } else {
     const index = editorWindow.tabUris.indexOf(uri);
-    const nextActiveUri = editorWindow.tabUris[clamp(index - 1, 0)];
+    const tabUris = arraySplice(editorWindow.tabUris, index, 1);
+    const nextActiveUri = tabUris[Math.max(0, index - 1)];
     state = updateEditorWindow(
       {
-        tabUris: arraySplice(editorWindow.tabUris, index, 1),
+        tabUris,
         activeFilePath: nextActiveUri
       },
       uri,
@@ -640,6 +641,7 @@ export const closeFile = (uri: string, state: RootState): RootState => {
 
   state = setNextOpenFile(state);
 
+  console.log(state.editorWindows);
   return state;
 };
 
@@ -896,6 +898,9 @@ export const updateEditorWindow = (
 ) => {
   const window = getEditorWindowWithFileUri(uri, root);
   const i = root.editorWindows.indexOf(window);
+  if (i === -1) {
+    return root;
+  }
   return updateRootState(
     {
       editorWindows: arraySplice(root.editorWindows, i, 1, {
