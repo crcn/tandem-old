@@ -28,6 +28,13 @@ export const tdProjectFilePicked = (filePath: string): TDProjectFilePicked => ({
   type: TD_PROJECT_FILE_PICKED
 });
 
+export const componentControllerPicked = publicActionCreator(
+  (filePath: string) => ({
+    filePath,
+    type: "COMPONENT_CONTROLLER_PICKED"
+  })
+);
+
 export const mainWindowOpened = (): Action => ({ type: MAIN_WINDOW_OPENED });
 
 export const tdProjectLoaded = (project: TDProject): TDProjectLoaded => ({

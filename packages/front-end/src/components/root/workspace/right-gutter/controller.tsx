@@ -71,6 +71,7 @@ export default compose(
           children: tabs
         }}
         propertiesProps={{
+          selectedControllerRelativePath: root.selectedControllerRelativePath,
           dispatch,
           syntheticDocument,
           graph: root.graph,

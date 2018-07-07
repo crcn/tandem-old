@@ -1968,7 +1968,8 @@
                 "b6c162d140"
               ],
               "value": {
-                "padding": "none"
+                "padding": "0px",
+                "padding-bottom": "8px"
               },
               "name": "override",
               "children": []
@@ -2025,6 +2026,7 @@
                             "display": "none",
                             "height": "1px",
                             "width": "10px",
+                            "cursor": "pointer",
                             "position": "relative",
                             "top": "-1px",
                             "margin-right": "4px"
@@ -2037,7 +2039,8 @@
                               "right": 1007,
                               "bottom": 658
                             }
-                          }
+                          },
+                          "label": "remove controller button"
                         },
                         {
                           "id": "60ea77f716",
@@ -2046,7 +2049,8 @@
                           "attributes": {},
                           "style": {
                             "display": "block",
-                            "height": "10px"
+                            "height": "10px",
+                            "cursor": "pointer"
                           },
                           "children": [],
                           "metadata": {
@@ -2056,7 +2060,8 @@
                               "right": 545,
                               "bottom": 1803
                             }
-                          }
+                          },
+                          "label": "Add controller button"
                         }
                       ],
                       "metadata": {}

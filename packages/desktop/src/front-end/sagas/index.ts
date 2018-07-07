@@ -5,6 +5,7 @@ import * as path from "path";
 import { ipcSaga } from "./ipc";
 import { eventChannel } from "redux-saga";
 import { ipcRenderer } from "electron";
+import { dialog } from "electron";
 import {
   RootState,
   PROJECT_DIRECTORY_LOADED,
@@ -15,7 +16,9 @@ import {
   newFileAdded,
   InsertFileType,
   FILE_NAVIGATOR_DROPPED_ITEM,
-  getActiveEditorWindow
+  getActiveEditorWindow,
+  ADD_COMPONENT_CONTROLLER_BUTTON_CLICKED,
+  componentControllerPicked
 } from "tandem-front-end";
 import { findPaperclipSourceFiles, pcSourceFileUrisReceived } from "paperclip";
 import {

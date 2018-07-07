@@ -124,7 +124,12 @@ import {
   INHERIT_ITEM_CLICK,
   InheritItemClick,
   CANVAS_MOUSE_DOUBLE_CLICKED,
-  CanvasMouseMoved
+  CanvasMouseMoved,
+  COMPONENT_CONTROLLER_ITEM_CLICKED,
+  ComponentControllerItemClicked,
+  COMPONENT_CONTROLLER_PICKED,
+  ComponentControllerPicked,
+  REMOVE_COMPONENT_CONTROLLER_BUTTON_CLICKED
 } from "../actions";
 import {
   queueOpenFile,
@@ -216,6 +221,7 @@ import {
   isSyntheticVisibleNode,
   persistChangeElementType,
   persistAddComponentController,
+  persistRemoveComponentController,
   PC_RUNTIME_EVALUATED,
   persistCSSProperty,
   persistAttribute,
@@ -596,6 +602,18 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
         state
       );
       return state;
+    }
+    case COMPONENT_CONTROLLER_ITEM_CLICKED: {
+      const { relativePath } = action as ComponentControllerItemClicked;
+      return updateRootState(
+        {
+          selectedControllerRelativePath:
+            relativePath === state.selectedControllerRelativePath
+              ? null
+              : relativePath
+        },
+        state
+      );
     }
     case OPEN_FILE_ITEM_CLOSE_CLICKED: {
       // TODO - flag confirm remove state
@@ -1366,6 +1384,27 @@ export const canvasReducer = (state: RootState, action: Action) => {
     }
     case CANVAS_TOOL_WINDOW_BACKGROUND_CLICKED: {
       return setSelectedSyntheticVisibleNodeIds(state);
+    }
+    case COMPONENT_CONTROLLER_PICKED: {
+      const { filePath } = action as ComponentControllerPicked;
+      const node = getSyntheticNodeById(
+        state.selectedNodeIds[0],
+        state.documents
+      );
+      state = persistAddComponentController(filePath, node, state);
+      return state;
+    }
+    case REMOVE_COMPONENT_CONTROLLER_BUTTON_CLICKED: {
+      const node = getSyntheticNodeById(
+        state.selectedNodeIds[0],
+        state.documents
+      );
+      state = persistRemoveComponentController(
+        state.selectedControllerRelativePath,
+        node,
+        state
+      );
+      return state;
     }
     case INSERT_TOOL_FINISHED: {
       let { point, fileUri } = action as InsertToolFinished;

@@ -5,13 +5,13 @@ OBJECTIVE:
 
 IMMEDIATE:
 
-- variants UI must be fixed up top
 - controller UI
-  - ability to add controllers (show dropdown)
-  - ability to remove controllers
-  - preview controller code
+  - icon indicating it's controlled
   - button for going to controller source
 - explicit props
+- explicit slots
+- dts
+- variables
 - more paperclip tests
 - design controls
   - border input

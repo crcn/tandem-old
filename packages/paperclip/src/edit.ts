@@ -617,6 +617,24 @@ export const persistAddComponentController = <TState extends PCEditorState>(
   return replaceDependencyGraphPCNode(sourceNode, sourceNode, state);
 };
 
+export const persistRemoveComponentController = <TState extends PCEditorState>(
+  relativePath: string,
+  target: SyntheticVisibleNode,
+  state: TState
+) => {
+  let sourceNode = getSyntheticSourceNode(target, state.graph) as PCComponent;
+  sourceNode = {
+    ...sourceNode,
+    controllers: arraySplice(
+      sourceNode.controllers,
+      sourceNode.controllers.indexOf(relativePath),
+      1
+    )
+  };
+
+  return replaceDependencyGraphPCNode(sourceNode, sourceNode, state);
+};
+
 /**
  * Synchronizes updated documents from the runtime engine. Updates are likely to be _behind_ in terms of
  * changes, so the editor state is the source of truth for the synthetic document to ensure that it doesn't

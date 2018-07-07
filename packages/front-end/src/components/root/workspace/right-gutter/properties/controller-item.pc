@@ -42,7 +42,9 @@
           "variantId": "60ea77f75",
           "propertyName": "style",
           "targetIdPath": [],
-          "value": {},
+          "value": {
+            "background": "rgba(204, 221, 251, 1)"
+          },
           "name": "override",
           "children": []
         },
@@ -53,6 +55,17 @@
           "isDefault": false,
           "children": [],
           "metadata": {}
+        },
+        {
+          "id": "b9c6fce51",
+          "variantId": "60ea77f725",
+          "propertyName": "style",
+          "targetIdPath": [],
+          "value": {
+            "background": "rgba(247, 247, 247, 1)"
+          },
+          "name": "override",
+          "children": []
         }
       ],
       "metadata": {

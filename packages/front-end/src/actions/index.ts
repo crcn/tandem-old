@@ -154,6 +154,13 @@ export const COMPONENT_VARIANT_NAME_CHANGED = "COMPONENT_VARIANT_NAME_CHANGED";
 export const COMPONENT_VARIANT_NAME_CLICKED = "COMPONENT_VARIANT_NAME_CLICKED";
 export const OPEN_PROJECT_BUTTON_CLICKED = "OPEN_PROJECT_BUTTON_CLICKED";
 export const CREATE_PROJECT_BUTTON_CLICKED = "CREATE_PROJECT_BUTTON_CLICKED";
+export const COMPONENT_CONTROLLER_ITEM_CLICKED =
+  "COMPONENT_CONTROLLER_ITEM_CLICKED";
+export const ADD_COMPONENT_CONTROLLER_BUTTON_CLICKED =
+  "ADD_COMPONENT_CONTROLLER_BUTTON_CLICKED";
+export const REMOVE_COMPONENT_CONTROLLER_BUTTON_CLICKED =
+  "REMOVE_COMPONENT_CONTROLLER_BUTTON_CLICKED";
+export const COMPONENT_CONTROLLER_PICKED = "COMPONENT_CONTROLLER_PICKED";
 export const COMPONENT_VARIANT_NAME_DEFAULT_TOGGLE_CLICK =
   "COMPONENT_VARIANT_NAME_DEFAULT_TOGGLE_CLICK";
 export const ELEMENT_VARIANT_TOGGLED = "ELEMENT_VARIANT_TOGGLED";
@@ -304,6 +311,14 @@ export type ComponentVariantNameChanged = {
 
 export type ComponentVariantNameClicked = {
   name: string;
+} & Action;
+
+export type ComponentControllerPicked = {
+  filePath: string;
+} & Action;
+
+export type ComponentControllerItemClicked = {
+  relativePath: string;
 } & Action;
 
 export type InstanceVariantToggled = {
@@ -590,6 +605,30 @@ export const componentPickerItemClick = (
 export const quickSearchItemClicked = (file: File): QuickSearchItemClicked => ({
   file,
   type: QUICK_SEARCH_ITEM_CLICKED
+});
+
+export const componentControllerItemClicked = (
+  relativePath: string
+): ComponentControllerItemClicked => ({
+  relativePath,
+  type: COMPONENT_CONTROLLER_ITEM_CLICKED
+});
+
+export const addComponentControllerButtonClicked = publicActionCreator(
+  (): Action => ({
+    type: ADD_COMPONENT_CONTROLLER_BUTTON_CLICKED
+  })
+);
+
+export const removeComponentControllerButtonClicked = (): Action => ({
+  type: REMOVE_COMPONENT_CONTROLLER_BUTTON_CLICKED
+});
+
+export const componentControllerPicked = (
+  filePath: string
+): ComponentControllerPicked => ({
+  filePath,
+  type: COMPONENT_CONTROLLER_PICKED
 });
 
 export const quickSearchBackgroundClick = (): Action => ({

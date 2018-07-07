@@ -10,7 +10,8 @@ import {
   OPEN_PROJECT_MENU_ITEM_CLICKED,
   projectDirectoryLoaded,
   tdProjectFilePicked,
-  TD_PROJECT_FILE_PICKED
+  TD_PROJECT_FILE_PICKED,
+  componentControllerPicked
 } from "../actions";
 import { FRONT_END_ENTRY_FILE_PATH } from "../constants";
 import { ipcSaga, pid } from "./ipc";
@@ -49,6 +50,7 @@ export function* rootSaga() {
   yield fork(handleCreateProject);
   yield fork(initProjectDirectory);
   yield fork(handleOpenedWorkspaceDirectory);
+  yield fork(handleAddControllerClick);
 }
 
 function* initProjectDirectory() {
@@ -217,5 +219,19 @@ function* handleOpenedWorkspaceDirectory() {
   while (1) {
     yield take(TD_PROJECT_FILE_PICKED);
     yield call(initProjectDirectory);
+  }
+}
+
+function* handleAddControllerClick() {
+  while (1) {
+    yield take("ADD_COMPONENT_CONTROLLER_BUTTON_CLICKED");
+    const [controllerFilePath] = dialog.showOpenDialog({
+      properties: ["openFile"]
+    }) || [undefined];
+    if (!controllerFilePath) {
+      continue;
+    }
+
+    yield put(componentControllerPicked(controllerFilePath));
   }
 }
