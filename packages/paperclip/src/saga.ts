@@ -83,40 +83,47 @@ export const createPaperclipSaga = ({ createRuntime }: PaperclipSagaOptions) =>
           const allDocUris = Object.keys(state.graph);
 
           for (const uri of allDocUris) {
-            const document = getSyntheticDocumentByDependencyUri(
+            const newDocument = getSyntheticDocumentByDependencyUri(
               uri,
               state.documents,
               state.graph
             );
 
-            if (!document) {
+            if (!newDocument) {
               continue;
             }
             const ots = diffs[uri] || EMPTY_ARRAY;
 
-            for (const frame of getSyntheticDocumentFrames(
-              document,
+            for (const newFrame of getSyntheticDocumentFrames(
+              newDocument,
               state.frames
             )) {
-              if (!initedFrames[frame.contentNodeId]) {
-                initedFrames[frame.contentNodeId] = true;
-                yield spawn(initContainer, frame, state.graph);
+              if (!initedFrames[newFrame.contentNodeId]) {
+                initedFrames[newFrame.contentNodeId] = true;
+                yield spawn(initContainer, newFrame, state.graph);
               } else {
                 const frameOts = mapContentNodeOperationalTransforms(
-                  frame.contentNodeId,
-                  document,
+                  newFrame.contentNodeId,
+                  newDocument,
                   ots
                 );
-                const prevFrame =
+                const oldFrameFrame =
                   prevState &&
                   prevState.frames.find(
-                    oldFrame => oldFrame.contentNodeId === frame.contentNodeId
+                    oldFrame =>
+                      oldFrame.contentNodeId === newFrame.contentNodeId
                   );
-                if (frameOts.length || frame !== prevFrame) {
+                if (frameOts.length || newFrame !== oldFrameFrame) {
+                  const oldDocument = getSyntheticDocumentByDependencyUri(
+                    uri,
+                    prevState.documents,
+                    prevState.graph
+                  );
+
                   yield spawn(
                     patchContainer,
-                    frame,
-                    getNestedTreeNodeById(frame.contentNodeId, document),
+                    newFrame,
+                    getNestedTreeNodeById(newFrame.contentNodeId, oldDocument),
                     frameOts
                   );
                 }

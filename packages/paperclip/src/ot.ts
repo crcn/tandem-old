@@ -1,7 +1,4 @@
-import {
-  SyntheticVisibleNode,
-  SyntheticBaseNode
-} from "./synthetic";
+import { SyntheticVisibleNode, SyntheticBaseNode } from "./synthetic";
 import {
   updateNestedNode,
   updateNestedNodeFromPath,
@@ -108,10 +105,12 @@ export const createSetNodePropertyOperationalTransform = (
   value
 });
 
-const _diffTreeNodeMemos = {};
-
 export const diffTreeNode = memoize(
-  (oldNode: SyntheticBaseNode | PCNode, newNode: SyntheticBaseNode | PCNode, ignoreDiffKeys = IGNORE_DIFF_KEYS) => {
+  (
+    oldNode: SyntheticBaseNode | PCNode,
+    newNode: SyntheticBaseNode | PCNode,
+    ignoreDiffKeys = IGNORE_DIFF_KEYS
+  ) => {
     const ots = _diffTreeNode(oldNode, newNode, [], [], ignoreDiffKeys);
     return ots;
   }
@@ -123,7 +122,7 @@ const IGNORE_DIFF_KEYS = {
 
 const PROHIBITED_DIFF_KEYS = {
   children: true,
-  id: true,
+  id: true
 };
 
 const _diffTreeNode = (
@@ -135,10 +134,6 @@ const _diffTreeNode = (
 ): TreeNodeOperationalTransform[] => {
   if (oldNode === newNode) {
     return ots;
-  }
-  const memoKey = oldNode.id + newNode.id;
-  if (_diffTreeNodeMemos[memoKey]) {
-    return _diffTreeNodeMemos[memoKey];
   }
 
   for (const key in newNode) {
@@ -164,7 +159,8 @@ const _diffTreeNode = (
   const childOts = diffArray(
     oldNode.children as SyntheticVisibleNode[],
     newNode.children as SyntheticVisibleNode[],
-    (a, b) => ((a.source ? a.source.nodeId === b.source.nodeId : a.id === b.id) ? 0 : -1)
+    (a, b) =>
+      (a.source ? a.source.nodeId === b.source.nodeId : a.id === b.id) ? 0 : -1
   );
 
   for (const ot of childOts) {
@@ -255,5 +251,5 @@ export const patchTreeNode = (
         }
       }
     );
-  }, oldNode)
+  }, oldNode);
 };
