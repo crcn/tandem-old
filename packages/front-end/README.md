@@ -7,10 +7,10 @@ IMMEDIATE:
 
 - style inputs
 
+  - borders
   - box shadow
-  - border
 
-- redesign.
+- start redesign (dark)
 
 * explicit props
   - do not show for shadow nodes

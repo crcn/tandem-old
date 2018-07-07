@@ -2034,7 +2034,8 @@
               "metadata": {}
             }
           ],
-          "metadata": {}
+          "metadata": {},
+          "label": ""
         }
       ],
       "metadata": {
@@ -2043,6 +2044,136 @@
           "top": 98,
           "right": 641,
           "bottom": 398
+        }
+      }
+    },
+    {
+      "label": "Empty Square Icon",
+      "is": "svg",
+      "style": {},
+      "attributes": {
+        "xmlns": "http://www.w3.org/2000/svg",
+        "xmlns:xlink": "http://www.w3.org/1999/xlink",
+        "version": "1.1",
+        "x": "0px",
+        "y": "0px",
+        "viewBox": "0 0 100 100",
+        "enable-background": "new 0 0 100 100",
+        "xml:space": "preserve"
+      },
+      "id": "8bf103e27",
+      "name": "component",
+      "children": [
+        {
+          "id": "8bf103e25",
+          "is": "g",
+          "name": "element",
+          "attributes": {},
+          "style": {
+            "background": "currentColor"
+          },
+          "children": [
+            {
+              "id": "8bf103e26",
+              "is": "path",
+              "name": "element",
+              "attributes": {
+                "d": "M5,95h90V5H5V95z M15,15h70v70H15V15z"
+              },
+              "style": {},
+              "children": [],
+              "metadata": {}
+            }
+          ],
+          "metadata": {}
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": -1662,
+          "top": 1915,
+          "right": -1262,
+          "bottom": 2215
+        }
+      }
+    },
+    {
+      "label": "Borders Icon",
+      "is": "svg",
+      "style": {},
+      "attributes": {
+        "xmlns": "http://www.w3.org/2000/svg",
+        "xmlns:sodipodi": "http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd",
+        "viewBox": "0 0 100 100",
+        "x": "0px",
+        "y": "0px"
+      },
+      "id": "8bf103e218",
+      "name": "component",
+      "children": [
+        {
+          "id": "8bf103e214",
+          "is": "path",
+          "name": "element",
+          "attributes": {
+            "d": "M 18,85 82,85 92,95 8,95 z",
+            "color": "#000"
+          },
+          "style": {
+            "background": "currentColor"
+          },
+          "children": [],
+          "metadata": {}
+        },
+        {
+          "id": "8bf103e215",
+          "is": "path",
+          "name": "element",
+          "attributes": {
+            "d": "M 15,18 15,82 5,92 5,8 z",
+            "color": "#000"
+          },
+          "style": {
+            "background": "currentColor"
+          },
+          "children": [],
+          "metadata": {}
+        },
+        {
+          "id": "8bf103e216",
+          "is": "path",
+          "name": "element",
+          "attributes": {
+            "d": "M 82,15 18,15 8,5 92,5 z",
+            "color": "#000"
+          },
+          "style": {
+            "background": "currentColor"
+          },
+          "children": [],
+          "metadata": {}
+        },
+        {
+          "id": "8bf103e217",
+          "is": "path",
+          "name": "element",
+          "attributes": {
+            "d": "M 85,82 85,18 95,8 95,92 z",
+            "color": "#000"
+          },
+          "style": {
+            "background": "currentColor"
+          },
+          "children": [],
+          "metadata": {}
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": -1676,
+          "top": 2307,
+          "right": -1276,
+          "bottom": 2607
         }
       }
     }
