@@ -5,9 +5,6 @@ OBJECTIVE:
 
 IMMEDIATE:
 
-- controller UI
-  - icon indicating it's controlled
-  - button for going to controller source
 - explicit props
 - explicit slots
 - dts

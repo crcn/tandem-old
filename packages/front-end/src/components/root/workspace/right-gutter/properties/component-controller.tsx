@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as path from "path";
 import * as cx from "classnames";
 const { ControllerItem } = require("./controller-item.pc");
 import { compose, pure, withHandlers } from "recompose";
@@ -7,7 +8,7 @@ import {
   getSyntheticSourceNode,
   PCSourceTagNames
 } from "paperclip";
-import { EMPTY_ARRAY } from "tandem-common";
+import { EMPTY_ARRAY, stripProtocol } from "tandem-common";
 import {
   addComponentControllerButtonClicked,
   removeComponentControllerButtonClicked
@@ -19,8 +20,12 @@ export default compose(
     onRemoveControllerClick: ({ dispatch }) => () => {
       dispatch(removeComponentControllerButtonClicked());
     },
-    onAddControllerClick: ({ dispatch }) => () => {
-      dispatch(addComponentControllerButtonClicked());
+    onAddControllerClick: ({ dispatch, sourceNodeUri }) => () => {
+      dispatch(
+        addComponentControllerButtonClicked(
+          path.dirname(stripProtocol(sourceNodeUri))
+        )
+      );
     }
   }),
   Base => ({

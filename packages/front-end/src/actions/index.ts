@@ -322,6 +322,10 @@ export type ComponentControllerItemClicked = {
   relativePath: string;
 } & Action;
 
+export type AddComponentControllerButtonClicked = {
+  defaultPath: string;
+} & Action;
+
 export type InstanceVariantToggled = {
   variant: PCVariant;
 } & Action;
@@ -623,7 +627,8 @@ export const openControllerButtonClicked = (
 });
 
 export const addComponentControllerButtonClicked = publicActionCreator(
-  (): Action => ({
+  (defaultPath: string): AddComponentControllerButtonClicked => ({
+    defaultPath,
     type: ADD_COMPONENT_CONTROLLER_BUTTON_CLICKED
   })
 );

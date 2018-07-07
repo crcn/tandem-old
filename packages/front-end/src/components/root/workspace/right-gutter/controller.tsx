@@ -3,7 +3,8 @@ import { compose, pure, withHandlers, withState } from "recompose";
 import {
   getSyntheticNodeById,
   SyntheticDocument,
-  getSyntheticVisibleNodeDocument
+  getSyntheticVisibleNodeDocument,
+  getSyntheticSourceUri
 } from "paperclip";
 import { memoize } from "tandem-common";
 const { RightGutterTab } = require("./tab.pc");
@@ -72,6 +73,7 @@ export default compose(
         }}
         propertiesProps={{
           selectedControllerRelativePath: root.selectedControllerRelativePath,
+          sourceNodeUri: getSyntheticSourceUri(selectedNodes[0], root.graph),
           dispatch,
           syntheticDocument,
           graph: root.graph,

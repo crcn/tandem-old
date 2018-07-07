@@ -25,7 +25,8 @@ import {
   convertFlatFilesToNested,
   createDirectory,
   addProtocol,
-  FILE_PROTOCOL
+  FILE_PROTOCOL,
+  stripProtocol
 } from "tandem-common";
 import { shortcutsSaga } from "./menu";
 import * as fs from "fs";
@@ -224,8 +225,11 @@ function* handleOpenedWorkspaceDirectory() {
 
 function* handleAddControllerClick() {
   while (1) {
-    yield take("ADD_COMPONENT_CONTROLLER_BUTTON_CLICKED");
+    const { defaultPath } = yield take(
+      "ADD_COMPONENT_CONTROLLER_BUTTON_CLICKED"
+    );
     const [controllerFilePath] = dialog.showOpenDialog({
+      defaultPath,
       properties: ["openFile"]
     }) || [undefined];
     if (!controllerFilePath) {
