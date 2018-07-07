@@ -151,7 +151,7 @@
           "attributes": {},
           "style": {
             "box-sizing": "border-box",
-            "display": "block",
+            "display": "none",
             "padding-left": "4px",
             "border-top": "1px solid rgba(0,0,0,0.2)"
           },
