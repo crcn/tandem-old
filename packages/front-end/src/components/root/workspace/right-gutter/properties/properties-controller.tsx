@@ -12,6 +12,8 @@ export default compose(
       return null;
     }
 
+    const selectedNode = selectedNodes[0];
+
     const sourceNode = getSyntheticSourceNode(selectedNodes[0], graph);
 
     return (
@@ -19,6 +21,7 @@ export default compose(
         className={className}
         {...rest}
         variant={cx({
+          bindings: !selectedNode.immutable,
           component: sourceNode.name === PCSourceTagNames.COMPONENT,
           text: sourceNode.name === PCSourceTagNames.TEXT,
           element: sourceNode.name !== PCSourceTagNames.TEXT

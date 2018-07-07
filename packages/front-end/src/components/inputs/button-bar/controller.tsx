@@ -1,5 +1,6 @@
 import * as React from "react";
 import * as cx from "classnames";
+import { EMPTY_ARRAY } from "tandem-common";
 import { compose, pure } from "recompose";
 const { ButtonBarItem: ButtonBarItemComponent } = require("./item.pc");
 
@@ -11,7 +12,7 @@ export type ButtonBarOption = {
 export default compose(
   pure,
   Base => ({ options, value, onChange }) => {
-    const children = options.map((item, i) => {
+    const children = (options || EMPTY_ARRAY).map((item, i) => {
       return (
         <ButtonBarItemComponent
           key={item.iconSrc}

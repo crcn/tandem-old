@@ -647,6 +647,25 @@
           "label": "Component Properties"
         },
         {
+          "id": "326c99d81",
+          "is": "26aaa39a17",
+          "name": "component-instance",
+          "attributes": {},
+          "style": {
+            "display": "none"
+          },
+          "children": [],
+          "metadata": {
+            "bounds": {
+              "left": 1366.3512563516224,
+              "top": 236.33786948422016,
+              "right": 1709.4580207782299,
+              "bottom": 516.1596984092981
+            }
+          },
+          "label": "bindings"
+        },
+        {
           "id": "50ae5f7b3",
           "name": "variant",
           "label": "element",
@@ -702,6 +721,27 @@
           "propertyName": "style",
           "targetIdPath": [
             "9208d19593982"
+          ],
+          "value": {
+            "display": "block"
+          },
+          "name": "override",
+          "children": []
+        },
+        {
+          "id": "326c99d83",
+          "name": "variant",
+          "label": "bindings",
+          "isDefault": true,
+          "children": [],
+          "metadata": {}
+        },
+        {
+          "id": "326c99d84",
+          "variantId": "326c99d83",
+          "propertyName": "style",
+          "targetIdPath": [
+            "326c99d81"
           ],
           "value": {
             "display": "block"
