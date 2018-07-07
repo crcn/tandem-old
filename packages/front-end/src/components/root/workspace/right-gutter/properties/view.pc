@@ -623,7 +623,19 @@
           "style": {
             "display": "none"
           },
-          "children": [],
+          "children": [
+            {
+              "id": "38ae9df1",
+              "variantId": null,
+              "propertyName": "label",
+              "targetIdPath": [
+                "50ae5f7b1"
+              ],
+              "value": "Controllers Pane",
+              "name": "override",
+              "children": []
+            }
+          ],
           "metadata": {
             "bounds": {
               "left": 862,
@@ -632,7 +644,7 @@
               "bottom": 597.9419825694584
             }
           },
-          "label": "Component"
+          "label": "Component Properties"
         },
         {
           "id": "50ae5f7b3",
@@ -1798,66 +1810,6 @@
       }
     },
     {
-      "label": "Controller Item",
-      "is": "div",
-      "style": {
-        "box-sizing": "border-box",
-        "display": "block",
-        "font-family": "Helvetica",
-        "padding-left": "16px",
-        "padding-top": "8px",
-        "padding-right": "16px",
-        "padding-bottom": "8px"
-      },
-      "attributes": {},
-      "id": "60ea77f73",
-      "name": "component",
-      "children": [
-        {
-          "id": "60ea77f74",
-          "name": "text",
-          "label": "Text",
-          "value": "./controller.tsx",
-          "style": {},
-          "children": [],
-          "metadata": {}
-        },
-        {
-          "id": "60ea77f75",
-          "name": "variant",
-          "label": "selected",
-          "isDefault": false,
-          "children": [],
-          "metadata": {}
-        },
-        {
-          "id": "60ea77f77",
-          "variantId": "60ea77f75",
-          "propertyName": "style",
-          "targetIdPath": [],
-          "value": {},
-          "name": "override",
-          "children": []
-        },
-        {
-          "id": "60ea77f725",
-          "name": "variant",
-          "label": "alt",
-          "isDefault": false,
-          "children": [],
-          "metadata": {}
-        }
-      ],
-      "metadata": {
-        "bounds": {
-          "left": 549.6834705406093,
-          "top": 299,
-          "right": 806.8410219413829,
-          "bottom": 399
-        }
-      }
-    },
-    {
       "label": "Controllers Pane",
       "is": "div",
       "style": {
@@ -2114,6 +2066,17 @@
                 }
               ],
               "metadata": {}
+            },
+            {
+              "id": "b64f6eab4",
+              "variantId": null,
+              "propertyName": "label",
+              "targetIdPath": [
+                "b6c162d140"
+              ],
+              "value": "Content",
+              "name": "override",
+              "children": []
             }
           ],
           "metadata": {
@@ -2175,7 +2138,10 @@
           "right": 800.3397803293012,
           "bottom": 684.1457011141008
         }
-      }
+      },
+      "controllers": [
+        "./component-controller.tsx"
+      ]
     }
   ],
   "metadata": {}

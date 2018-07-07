@@ -1,0 +1,72 @@
+{
+  "id": "b64f6eab2",
+  "name": "module",
+  "version": "0.0.3",
+  "children": [
+    {
+      "label": "Controller Item",
+      "is": "div",
+      "style": {
+        "box-sizing": "border-box",
+        "display": "block",
+        "cursor": "pointer",
+        "font-family": "Helvetica",
+        "padding-left": "16px",
+        "padding-top": "8px",
+        "padding-right": "16px",
+        "padding-bottom": "8px"
+      },
+      "attributes": {},
+      "id": "60ea77f73",
+      "name": "component",
+      "children": [
+        {
+          "id": "60ea77f74",
+          "name": "text",
+          "label": "Label",
+          "value": "./controller.tsx",
+          "style": {},
+          "children": [],
+          "metadata": {}
+        },
+        {
+          "id": "60ea77f75",
+          "name": "variant",
+          "label": "selected",
+          "isDefault": false,
+          "children": [],
+          "metadata": {}
+        },
+        {
+          "id": "60ea77f77",
+          "variantId": "60ea77f75",
+          "propertyName": "style",
+          "targetIdPath": [],
+          "value": {},
+          "name": "override",
+          "children": []
+        },
+        {
+          "id": "60ea77f725",
+          "name": "variant",
+          "label": "alt",
+          "isDefault": false,
+          "children": [],
+          "metadata": {}
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": 431,
+          "top": 300,
+          "right": 688.1575514007736,
+          "bottom": 400
+        }
+      },
+      "controllers": [
+        "./controller-item-controller.tsx"
+      ]
+    }
+  ],
+  "metadata": {}
+}

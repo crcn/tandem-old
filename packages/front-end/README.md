@@ -10,6 +10,7 @@ IMMEDIATE:
   - ability to add controllers (show dropdown)
   - ability to remove controllers
   - preview controller code
+  - button for going to controller source
 - explicit props
 - more paperclip tests
 - design controls
