@@ -1,14 +1,14 @@
 import * as fs from "fs";
 import * as path from "path";
-// import { PAPERCLIP_CONFIG_DEFAULT_FILENAME } from "./constants";
+import { PAPERCLIP_CONFIG_DEFAULT_EXTENSION } from "./constants";
 import { isPaperclipUri, DependencyGraph } from "./graph";
 import { PCModule, createPCDependency } from "./dsl";
 import { addProtocol, FILE_PROTOCOL } from "tandem-common";
 
-// export type PCConfigInfo = {
-//   directory: string;
-//   config: PCConfig;
-// };
+export type PCConfigInfo = {
+  directory: string;
+  config: PCConfig;
+};
 
 // based on tsconfig
 export type PCConfig = {
@@ -28,25 +28,28 @@ export const createPCConfig = (
 
 export const DEFAULT_CONFIG = createPCConfig(".");
 
-// export const openPCConfig = (
-//   dir: string,
-//   configFileName: string = PAPERCLIP_CONFIG_DEFAULT_FILENAME
-// ): PCConfigInfo => {
-//   const dirParts = dir.split("/");
-//   while (dirParts.length) {
-//     const possibleDir = dirParts.join("/");
-//     const configPath = path.join(possibleDir, configFileName);
-//     if (fs.existsSync(configPath)) {
-//       return {
-//         directory: possibleDir,
-//         config: JSON.parse(fs.readFileSync(configPath, "utf8"))
-//       };
-//     }
-//     dirParts.pop();
-//   }
+export const openPCConfig = (dir: string): PCConfigInfo => {
+  const dirParts = dir.split("/");
+  while (dirParts.length) {
+    const possibleDir = dirParts.join("/");
+    const tdProjectBasename = fs
+      .readdirSync(possibleDir)
+      .find(name => name.indexOf(PAPERCLIP_CONFIG_DEFAULT_EXTENSION) !== -1);
 
-//   return { directory: dir, config: DEFAULT_CONFIG };
-// };
+    if (tdProjectBasename) {
+      return {
+        directory: possibleDir,
+        config: JSON.parse(
+          fs.readFileSync(path.join(possibleDir, tdProjectBasename), "utf8")
+        )
+      };
+    }
+
+    dirParts.pop();
+  }
+
+  return { directory: dir, config: DEFAULT_CONFIG };
+};
 
 export const findPaperclipSourceFiles = (config: PCConfig, cwd: string) => {
   const pcFilePaths: string[] = [];

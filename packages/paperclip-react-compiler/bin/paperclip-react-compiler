@@ -10,7 +10,7 @@ const relPath = process.argv.slice(2)[0];
 const cwd = process.cwd();
 const absPath = relPath.charAt(0) === "/" ? relPath : path.join(cwd, relPath);
 const absUri = addProtocol(FILE_PROTOCOL, absPath);
-const { config, directory } = openPCConfig(cwd);
+const { config, directory } = openPCConfig(path.dirname(absPath));
 const graph = loadFSDependencyGraphSync(config, directory, migrate);
 const entry = graph[absUri];
 

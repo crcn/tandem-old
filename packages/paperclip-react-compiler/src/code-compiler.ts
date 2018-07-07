@@ -514,9 +514,12 @@ const addClassNameCheck = (
   varName: string,
   context: TranslateContext
 ) => {
-  context = addOpenTag(`if(${varName} && ${varName}.className) {\n`, context);
+  context = addOpenTag(
+    `if(${varName} && ${varName}.hasOwnProperty("className")) {\n`,
+    context
+  );
   context = addLine(
-    `_${id}Props.className = _${id}StaticProps.className + " " + ${varName}.className;`,
+    `_${id}Props.className = _${id}StaticProps.className + (${varName}.className ? " " + ${varName}.className : "");`,
     context
   );
   context = addCloseTag(`}\n`, context);

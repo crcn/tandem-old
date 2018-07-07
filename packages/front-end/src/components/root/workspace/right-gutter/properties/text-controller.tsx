@@ -10,12 +10,16 @@ export default compose(
       dispatch(textValueChanged(value));
     }
   }),
-  Base => ({ dispatch, selectedNodes, onTextValueChange }) => {
+  Base => ({ selectedNodes, onTextValueChange, ...rest }) => {
     const textNode = selectedNodes.find(
       (node: SyntheticVisibleNode) => node.name == PCSourceTagNames.TEXT
     );
+    if (!textNode) {
+      return null;
+    }
     return (
       <Base
+        {...rest}
         textInputProps={{
           value: textNode.value,
           onChange: onTextValueChange

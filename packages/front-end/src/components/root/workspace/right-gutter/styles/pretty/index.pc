@@ -9,7 +9,9 @@
       "is": "div",
       "style": {
         "flex-direction": "column",
-        "color": "#666"
+        "color": "#666",
+        "height": "100%",
+        "overflow": "scroll"
       },
       "attributes": {},
       "id": "2399b467",

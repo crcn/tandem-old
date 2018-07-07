@@ -41,8 +41,6 @@ export const loadEntry = async (
 
     const module = await loadModule(currentUri, options);
 
-    const absolutePaths = [];
-
     const dependency = createDependency(currentUri, module);
     graph[currentUri] = dependency;
   }

@@ -124,10 +124,14 @@ export default compose(
       dispatch(elementTypeChanged(value));
     }
   }),
-  Base => ({ onTypeChange, selectedNodes, onTextValueKeyDown, dispatch }) => {
+  Base => ({ onTypeChange, selectedNodes, dispatch, ...rest }) => {
     const element = selectedNodes.find(
       (node: SyntheticVisibleNode) => node.name !== PCSourceTagNames.TEXT
     ) as SyntheticElement;
+
+    if (!element) {
+      return null;
+    }
 
     let fieldChild;
     if (element.name === "input") {
@@ -138,6 +142,7 @@ export default compose(
 
     return (
       <Base
+        {...rest}
         fieldsProps={{ children: fieldChild || [] }}
         typeInputProps={{
           value: element.name,

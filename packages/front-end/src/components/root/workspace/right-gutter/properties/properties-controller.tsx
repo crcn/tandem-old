@@ -1,27 +1,32 @@
 import * as React from "react";
+import * as cx from "classnames";
 import { compose, pure } from "recompose";
-import { PCSourceTagNames } from "paperclip";
-const { TextProperties, ElementProperties } = require("./view.pc");
+import { PCSourceTagNames, getSyntheticSourceNode } from "paperclip";
 
 export default compose(
   pure,
-  Base => props => {
-    const { selectedNodes } = props;
+  Base => ({ className, ...rest }) => {
+    const { selectedNodes, graph } = rest;
 
     if (!selectedNodes.length) {
       return null;
     }
 
-    const name = selectedNodes[0].name;
+    const sourceNode = getSyntheticSourceNode(selectedNodes[0], graph);
 
-    let section = null;
-
-    if (name === PCSourceTagNames.TEXT) {
-      section = <TextProperties {...props} />;
-    } else {
-      section = <ElementProperties {...props} />;
-    }
-
-    return <Base {...props}>{section}</Base>;
+    return (
+      <Base
+        className={className}
+        {...rest}
+        variant={cx({
+          component: sourceNode.name === PCSourceTagNames.COMPONENT,
+          text: sourceNode.name === PCSourceTagNames.TEXT,
+          element: sourceNode.name !== PCSourceTagNames.TEXT
+        })}
+        componentProps={rest}
+        textProps={rest}
+        elementProps={rest}
+      />
+    );
   }
 );

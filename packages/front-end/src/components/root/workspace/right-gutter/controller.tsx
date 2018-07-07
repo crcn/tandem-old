@@ -25,7 +25,7 @@ export default compose(
       setTab(tabName);
     }
   }),
-  Base => ({ root, dispatch, setTab, currentTab }) => {
+  Base => ({ root, dispatch, setTab, currentTab, ...rest }) => {
     if (!root.selectedNodeIds.length) {
       return null;
     }
@@ -53,6 +53,11 @@ export default compose(
 
     return (
       <Base
+        {...rest}
+        variant={cx({
+          stylesTab: currentTab === TAB_NAMES[0],
+          propertiesTab: currentTab === TAB_NAMES[1]
+        })}
         stylesProps={{
           dispatch,
           syntheticDocument,
@@ -60,10 +65,7 @@ export default compose(
           selectedNodes,
           selectedVariant: root.selectedVariant,
           graph: root.graph,
-          selectedInheritComponentId: root.selectedInheritComponentId,
-          style: {
-            display: currentTab === TAB_NAMES[0] ? "block" : "none"
-          }
+          selectedInheritComponentId: root.selectedInheritComponentId
         }}
         tabsProps={{
           children: tabs
@@ -71,10 +73,8 @@ export default compose(
         propertiesProps={{
           dispatch,
           syntheticDocument,
-          selectedNodes,
-          style: {
-            display: currentTab === TAB_NAMES[1] ? "block" : "none"
-          }
+          graph: root.graph,
+          selectedNodes
         }}
       />
     );

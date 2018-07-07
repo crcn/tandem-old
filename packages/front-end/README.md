@@ -5,7 +5,13 @@ OBJECTIVE:
 
 IMMEDIATE:
 
-- cannot dnd element to empty state
+- variants UI must be fixed up top
+- controller UI
+  - ability to add controllers (show dropdown)
+  - ability to remove controllers
+  - preview controller code
+- explicit props
+- more paperclip tests
 - design controls
   - border input
   - color picker
@@ -13,7 +19,6 @@ IMMEDIATE:
     - RGBA / HSA / HEX inputs
   - box shadows
   - clear overrides functionality (need to reset to inherited styles)
-- special _bind_ attribute
 - variables (easier to refactor to this)
 - controller UI
 - better place to expose properties

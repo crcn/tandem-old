@@ -558,6 +558,19 @@
           "isDefault": false,
           "children": [],
           "metadata": {}
+        },
+        {
+          "id": "bc6c09b81",
+          "variantId": "1a11459311",
+          "propertyName": "style",
+          "targetIdPath": [
+            "45055e8e10"
+          ],
+          "value": {
+            "display": "flex"
+          },
+          "name": "override",
+          "children": []
         }
       ],
       "metadata": {
@@ -565,7 +578,7 @@
           "left": 368.2438030763085,
           "top": 76,
           "right": 668,
-          "bottom": 1535.8975564891314
+          "bottom": 1621.0503191011264
         }
       },
       "controllers": [
