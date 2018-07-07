@@ -287,6 +287,26 @@
       "controllers": [
         "../focus/controller.tsx"
       ]
+    },
+    {
+      "label": "Component",
+      "is": "div",
+      "style": {
+        "box-sizing": "border-box",
+        "display": "block"
+      },
+      "attributes": {},
+      "id": "babf9bd54",
+      "name": "component",
+      "children": [],
+      "metadata": {
+        "bounds": {
+          "left": -335.14126422199706,
+          "top": 575.7402815827418,
+          "right": -235.14126422199706,
+          "bottom": 675.7402815827418
+        }
+      }
     }
   ],
   "metadata": {}

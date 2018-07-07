@@ -1,10 +1,10 @@
 .m-frame {
   .controls {
-    display: none;
+    visibility: hidden
   }
   .top-bar:hover {
     .controls {
-      display: inline-block;
+      visibility: visible;
     }
   }
 }

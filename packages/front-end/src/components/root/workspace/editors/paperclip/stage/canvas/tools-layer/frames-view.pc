@@ -47,19 +47,56 @@
             "display": "flex",
             "overflow": "hidden",
             "justify-content": "space-between",
-            "user-select": "none"
+            "user-select": "none",
+            "align-items": "center"
           },
           "children": [
             {
-              "id": "11188f8623368",
-              "name": "text",
-              "label": "Title",
-              "value": "Title",
+              "id": "f6f985952",
+              "label": "Element",
+              "is": "div",
+              "name": "element",
+              "attributes": {},
               "style": {
-                "font-family": "Helvetica",
-                "color": "rgba(160, 155, 155, 1)"
+                "box-sizing": "border-box",
+                "display": "flex",
+                "align-items": "center"
               },
-              "children": [],
+              "children": [
+                {
+                  "id": "f6f985951",
+                  "is": "1fd9c8366",
+                  "name": "component-instance",
+                  "attributes": {},
+                  "style": {
+                    "display": "none",
+                    "height": "20px",
+                    "width": "14px",
+                    "margin-right": "4px"
+                  },
+                  "children": [],
+                  "metadata": {
+                    "bounds": {
+                      "left": 241,
+                      "top": 98,
+                      "right": 641,
+                      "bottom": 398
+                    }
+                  }
+                },
+                {
+                  "id": "11188f8623368",
+                  "name": "text",
+                  "label": "Title",
+                  "value": "Title",
+                  "style": {
+                    "font-family": "Helvetica",
+                    "color": "rgba(160, 155, 155, 1)"
+                  },
+                  "children": [],
+                  "metadata": {}
+                }
+              ],
               "metadata": {}
             },
             {
@@ -95,6 +132,27 @@
             }
           ],
           "metadata": {}
+        },
+        {
+          "id": "f6f985953",
+          "name": "variant",
+          "label": "has controller",
+          "isDefault": false,
+          "children": [],
+          "metadata": {}
+        },
+        {
+          "id": "f6f985954",
+          "variantId": "f6f985953",
+          "propertyName": "style",
+          "targetIdPath": [
+            "f6f985951"
+          ],
+          "value": {
+            "display": "block"
+          },
+          "name": "override",
+          "children": []
         }
       ],
       "metadata": {

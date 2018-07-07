@@ -1,11 +1,11 @@
 import { fork, select, take, call, put } from "redux-saga/effects";
 import * as fs from "fs";
 import * as fsa from "fs-extra";
+import { exec } from "child_process";
 import * as path from "path";
 import { ipcSaga } from "./ipc";
 import { eventChannel } from "redux-saga";
 import { ipcRenderer } from "electron";
-import { dialog } from "electron";
 import {
   RootState,
   PROJECT_DIRECTORY_LOADED,
@@ -18,9 +18,18 @@ import {
   FILE_NAVIGATOR_DROPPED_ITEM,
   getActiveEditorWindow,
   ADD_COMPONENT_CONTROLLER_BUTTON_CLICKED,
-  componentControllerPicked
+  componentControllerPicked,
+  OPEN_CONTROLLER_BUTTON_CLCIKED,
+  ComponentPickerItemClick,
+  ComponentControllerItemClicked
 } from "tandem-front-end";
-import { findPaperclipSourceFiles, pcSourceFileUrisReceived } from "paperclip";
+import {
+  findPaperclipSourceFiles,
+  pcSourceFileUrisReceived,
+  getSyntheticSourceUri,
+  getSyntheticNodeById,
+  getSyntheticSourceNode
+} from "paperclip";
 import {
   getNestedTreeNodeById,
   addProtocol,
@@ -40,6 +49,7 @@ export function* rootSaga() {
   yield fork(handleDroppedFile);
   yield fork(handleProjectDirectory);
   yield fork(receiveServerState);
+  yield fork(handleOpenController);
 }
 
 function* handleProjectDirectory() {
@@ -153,5 +163,25 @@ function* receiveServerState() {
   while (1) {
     yield take(PROJECT_DIRECTORY_LOADED);
     ipcRenderer.send("getServerState");
+  }
+}
+
+function* handleOpenController() {
+  while (1) {
+    const { relativePath }: ComponentControllerItemClicked = yield take(
+      OPEN_CONTROLLER_BUTTON_CLCIKED
+    );
+    const state: DesktopRootState = yield select();
+    const node = getSyntheticNodeById(
+      state.selectedNodeIds[0],
+      state.documents
+    );
+    const sourceNodeUri = getSyntheticSourceUri(node, state.graph);
+    const controllerPath = path.join(
+      stripProtocol(sourceNodeUri),
+      relativePath
+    );
+    console.log("opening controller %s", controllerPath);
+    exec(`open "${controllerPath}"`);
   }
 }

@@ -156,6 +156,7 @@ export const OPEN_PROJECT_BUTTON_CLICKED = "OPEN_PROJECT_BUTTON_CLICKED";
 export const CREATE_PROJECT_BUTTON_CLICKED = "CREATE_PROJECT_BUTTON_CLICKED";
 export const COMPONENT_CONTROLLER_ITEM_CLICKED =
   "COMPONENT_CONTROLLER_ITEM_CLICKED";
+export const OPEN_CONTROLLER_BUTTON_CLCIKED = "OPEN_CONTROLLER_BUTTON_CLCIKED";
 export const ADD_COMPONENT_CONTROLLER_BUTTON_CLICKED =
   "ADD_COMPONENT_CONTROLLER_BUTTON_CLICKED";
 export const REMOVE_COMPONENT_CONTROLLER_BUTTON_CLICKED =
@@ -612,6 +613,13 @@ export const componentControllerItemClicked = (
 ): ComponentControllerItemClicked => ({
   relativePath,
   type: COMPONENT_CONTROLLER_ITEM_CLICKED
+});
+
+export const openControllerButtonClicked = (
+  relativePath: string
+): ComponentControllerItemClicked => ({
+  relativePath,
+  type: OPEN_CONTROLLER_BUTTON_CLCIKED
 });
 
 export const addComponentControllerButtonClicked = publicActionCreator(

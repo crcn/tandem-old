@@ -1,7 +1,8 @@
 import "./frame-controller.scss";
 import * as React from "react";
+import * as cx from "classnames";
 import { compose, pure, withHandlers } from "recompose";
-import { SyntheticDocument, SyntheticVisibleNode, Frame } from "paperclip";
+import { SyntheticVisibleNode, Frame, PCNode, isComponent } from "paperclip";
 import { getBoundsSize, Translate } from "tandem-common";
 import {
   canvasToolDocumentTitleClicked,
@@ -21,6 +22,7 @@ const MODE_TOGGLE_OPTIONS: DropdownMenuOption[] = [
 
 export type FrameOuterProps = {
   frame: Frame;
+  sourceNode: PCNode;
   contentNode: SyntheticVisibleNode;
   translate: Translate;
 };
@@ -50,6 +52,7 @@ export default compose<FrameOuterProps, FrameInnerProps>(
     frame,
     translate,
     contentNode,
+    sourceNode,
     onTitleClick,
     onModeChangeComplete,
     onPreviewButtonClick
@@ -64,10 +67,16 @@ export default compose<FrameOuterProps, FrameInnerProps>(
       background: "transparent"
     };
 
+    const hasController =
+      sourceNode &&
+      isComponent(sourceNode) &&
+      sourceNode.controllers &&
+      Boolean(sourceNode.controllers.length);
+
     const titleScale = Math.max(1 / translate.zoom, 0.03);
 
     const titleStyle = {
-      transform: `translateY(-${15 * titleScale}px) scale(${titleScale})`,
+      transform: `translateY(-${22 * titleScale}px) scale(${titleScale})`,
       transformOrigin: "top left",
       whiteSpace: "nowrap",
 
@@ -84,6 +93,7 @@ export default compose<FrameOuterProps, FrameInnerProps>(
     return (
       <Base
         className="m-frame"
+        variant={cx({ hasController })}
         style={style}
         topBarProps={{
           style: titleStyle,

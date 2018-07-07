@@ -4,7 +4,11 @@ import { RootState, EditorWindow, Canvas } from "../../../../../../../../state";
 import { wrapEventToDispatch } from "../../../../../../../../utils";
 import { Dispatch } from "redux";
 import { Translate } from "tandem-common";
-import { getFramesByDependencyUri, getSyntheticNodeById } from "paperclip";
+import {
+  getFramesByDependencyUri,
+  getSyntheticNodeById,
+  getSyntheticSourceNode
+} from "paperclip";
 const { Frame } = require("./frames-view.pc");
 import { canvasToolWindowBackgroundClicked } from "../../../../../../../../actions";
 
@@ -25,8 +29,6 @@ export default compose<FramesOuterProps, any>(
     root,
     dispatch
   }: FramesOuterProps) => {
-    const { backgroundColor } = canvas;
-
     const backgroundStyle = {
       transform: `translate(${-translate.left /
         translate.zoom}px, ${-translate.top / translate.zoom}px) scale(${1 /
@@ -42,14 +44,18 @@ export default compose<FramesOuterProps, any>(
     );
 
     const frames = activeFrames.map(frame => {
+      const contentNode = getSyntheticNodeById(
+        frame.contentNodeId,
+        root.documents
+      );
+
+      const sourceNode = getSyntheticSourceNode(contentNode, root.graph);
       return (
         <Frame
           key={frame.contentNodeId}
+          sourceNode={sourceNode}
           frame={frame}
-          contentNode={getSyntheticNodeById(
-            frame.contentNodeId,
-            root.documents
-          )}
+          contentNode={contentNode}
           dispatch={dispatch}
           translate={translate}
         />
