@@ -206,7 +206,8 @@
       "style": {
         "box-sizing": "border-box",
         "display": "flex",
-        "flex-direction": "column"
+        "flex-direction": "column",
+        "font-size": "10px"
       },
       "attributes": {},
       "id": "c389e3829",

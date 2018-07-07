@@ -118,13 +118,16 @@ const SVG_STYlE_KEY_MAP = {
 
 const setStyle = (target: HTMLElement, style: any) => {
   const normalizedStyle = normalizeStyle(style);
+  let cstyle;
   if (target.namespaceURI === SVG_XMLNS) {
+    cstyle = {};
     for (const key in style) {
-      target.setAttribute(SVG_STYlE_KEY_MAP[key] || key, style[key]);
+      cstyle[SVG_STYlE_KEY_MAP[key] || key] = normalizedStyle[key];
     }
   } else {
-    Object.assign(target.style, normalizedStyle);
+    cstyle = normalizedStyle;
   }
+  Object.assign(target.style, normalizedStyle);
 };
 
 const createNativeNode = (

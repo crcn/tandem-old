@@ -4,6 +4,97 @@
   "version": "0.0.3",
   "children": [
     {
+      "id": "2e44166e9",
+      "variant": {},
+      "is": "97a34b151010442",
+      "name": "component-instance",
+      "attributes": {},
+      "style": {},
+      "children": [
+        {
+          "id": "2e44166e10",
+          "propertyName": "children",
+          "targetIdPath": [
+            "97a34b151010440"
+          ],
+          "name": "override",
+          "children": [
+            {
+              "id": "2e44166e11",
+              "label": "Element",
+              "is": "ul",
+              "name": "element",
+              "attributes": {},
+              "style": {},
+              "children": [
+                {
+                  "id": "2e44166e15",
+                  "label": "Element",
+                  "is": "li",
+                  "name": "element",
+                  "attributes": {},
+                  "style": {},
+                  "children": [
+                    {
+                      "id": "2e44166e16",
+                      "name": "text",
+                      "label": "Text",
+                      "value": "+ button should display color, and measurement options\n",
+                      "style": {},
+                      "children": [],
+                      "metadata": {}
+                    }
+                  ],
+                  "metadata": {}
+                },
+                {
+                  "id": "2e44166e12",
+                  "label": "Element",
+                  "is": "li",
+                  "name": "element",
+                  "attributes": {},
+                  "style": {},
+                  "children": [
+                    {
+                      "id": "2e44166e13",
+                      "name": "text",
+                      "label": "Text",
+                      "value": "Todo item",
+                      "style": {},
+                      "children": [],
+                      "metadata": {}
+                    }
+                  ],
+                  "metadata": {}
+                }
+              ],
+              "metadata": {}
+            }
+          ],
+          "metadata": {}
+        },
+        {
+          "id": "2e44166e14",
+          "propertyName": "text",
+          "targetIdPath": [
+            "97a34b151010439"
+          ],
+          "value": " ",
+          "name": "override",
+          "children": []
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": 461,
+          "top": 199,
+          "right": 754.6542270494879,
+          "bottom": 399.7213373757045
+        }
+      },
+      "label": "TODO"
+    },
+    {
       "label": "Variables Tab",
       "is": "div",
       "style": {
@@ -184,9 +275,7 @@
                         "c389e38233",
                         "c389e38226"
                       ],
-                      "value": {
-                        "width": "100%"
-                      },
+                      "value": {},
                       "name": "override",
                       "children": []
                     },
@@ -576,7 +665,7 @@
                 "b6c162d140"
               ],
               "value": {
-                "padding-top": "0px"
+                "display": "none"
               },
               "name": "override",
               "children": []
@@ -855,14 +944,122 @@
               "bottom": 287.3571410945104
             }
           }
+        },
+        {
+          "id": "2e44166e1",
+          "is": "c389e3829",
+          "name": "component-instance",
+          "attributes": {},
+          "style": {},
+          "children": [
+            {
+              "id": "2e44166e3",
+              "variantId": null,
+              "propertyName": "text",
+              "targetIdPath": [
+                "c389e38232",
+                "c389e38226",
+                "c389e38220"
+              ],
+              "value": "Name",
+              "name": "override",
+              "children": []
+            },
+            {
+              "id": "2e44166e4",
+              "variantId": null,
+              "propertyName": "text",
+              "targetIdPath": [
+                "c389e38232",
+                "c389e38224",
+                "c389e38220"
+              ],
+              "value": "Value",
+              "name": "override",
+              "children": []
+            },
+            {
+              "id": "2e44166e7",
+              "variantId": null,
+              "propertyName": "text",
+              "targetIdPath": [
+                "c389e38233",
+                "c389e38226",
+                "c389e38220"
+              ],
+              "value": "background alt",
+              "name": "override",
+              "children": []
+            },
+            {
+              "id": "2e44166e8",
+              "variantId": null,
+              "propertyName": "text",
+              "targetIdPath": [
+                "c389e38233",
+                "c389e38224",
+                "c389e38220"
+              ],
+              "value": "rgba(0,0,0,1)",
+              "name": "override",
+              "children": []
+            },
+            {
+              "id": "2e44166e18",
+              "variantId": null,
+              "propertyName": "text",
+              "targetIdPath": [
+                "4cc76c5b9",
+                "c389e38226",
+                "c389e38220"
+              ],
+              "value": "spacing 1",
+              "name": "override",
+              "children": []
+            },
+            {
+              "id": "2e44166e20",
+              "variantId": null,
+              "propertyName": "text",
+              "targetIdPath": [
+                "4cc76c5b7",
+                "c389e38226",
+                "c389e38220"
+              ],
+              "value": "spacing 2",
+              "name": "override",
+              "children": []
+            },
+            {
+              "id": "2e44166e21",
+              "variantId": null,
+              "propertyName": "text",
+              "targetIdPath": [
+                "c389e38234",
+                "c389e38226",
+                "c389e38220"
+              ],
+              "value": "spacing 3",
+              "name": "override",
+              "children": []
+            }
+          ],
+          "metadata": {
+            "bounds": {
+              "left": -21,
+              "top": 94,
+              "right": 308.50795530191954,
+              "bottom": 418.6425584867711
+            }
+          }
         }
       ],
       "metadata": {
         "bounds": {
           "left": 8,
           "top": 194,
-          "right": 271.76480784569947,
-          "bottom": 392.5922516757032
+          "right": 410.46572892897143,
+          "bottom": 479.2803273527482
         }
       }
     }
