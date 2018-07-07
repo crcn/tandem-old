@@ -178,10 +178,14 @@ function* handleOpenController() {
     );
     const sourceNodeUri = getSyntheticSourceUri(node, state.graph);
     const controllerPath = path.join(
-      stripProtocol(sourceNodeUri),
+      path.dirname(stripProtocol(sourceNodeUri)),
       relativePath
     );
     console.log("opening controller %s", controllerPath);
-    exec(`open "${controllerPath}"`);
+    exec(`open "${controllerPath}"`, error => {
+      if (error) {
+        alert(error.message);
+      }
+    });
   }
 }

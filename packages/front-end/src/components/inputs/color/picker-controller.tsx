@@ -1,7 +1,6 @@
 import * as React from "react";
 import { pure, compose, lifecycle, withState, withHandlers } from "recompose";
 import { memoize } from "tandem-common";
-import { DraggableComponent } from "../../draggable";
 import { GrabberAxis } from "./canvas-controller";
 import { throttle } from "lodash";
 

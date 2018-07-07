@@ -10,7 +10,6 @@ const withHoveringState = compose(
   withState("hovering", "setHovering", false),
   withHandlers({
     onMouseOver: ({ setHovering }) => () => {
-      console.log("HOVE");
       setHovering(true);
     },
     onMouseLeave: ({ setHovering }) => () => {
