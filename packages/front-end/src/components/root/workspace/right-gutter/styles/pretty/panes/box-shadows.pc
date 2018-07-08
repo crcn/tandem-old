@@ -328,9 +328,9 @@
         "box-sizing": "border-box",
         "display": "flex",
         "padding-left": "16px",
-        "padding-top": "8px",
+        "padding-top": "4px",
         "padding-right": "16px",
-        "padding-bottom": "8px",
+        "padding-bottom": "4px",
         "align-items": "center"
       },
       "attributes": {},
@@ -405,9 +405,7 @@
           "id": "3fb9d47e23",
           "is": "7149f8199122",
           "name": "component-instance",
-          "attributes": {
-            "placeholder": "x"
-          },
+          "attributes": {},
           "style": {
             "margin-right": "8px"
           },
@@ -426,9 +424,7 @@
           "id": "3fb9d47e24",
           "is": "7149f8199122",
           "name": "component-instance",
-          "attributes": {
-            "placeholder": "y"
-          },
+          "attributes": {},
           "style": {
             "margin-right": "8px"
           },
@@ -447,9 +443,7 @@
           "id": "3fb9d47e25",
           "is": "7149f8199122",
           "name": "component-instance",
-          "attributes": {
-            "placeholder": "blur"
-          },
+          "attributes": {},
           "style": {
             "margin-right": "8px"
           },
@@ -468,9 +462,7 @@
           "id": "3fb9d47e26",
           "is": "7149f8199122",
           "name": "component-instance",
-          "attributes": {
-            "placeholder": "spread"
-          },
+          "attributes": {},
           "style": {},
           "children": [],
           "metadata": {

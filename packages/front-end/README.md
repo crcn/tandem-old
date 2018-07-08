@@ -5,7 +5,9 @@ OBJECTIVE:
 
 IMMEDIATE:
 
-- box shadow
+- outer box shadow
+- inner box shadow
+- box shadow labels
 - gradient input
 
 - start redesign (dark)
