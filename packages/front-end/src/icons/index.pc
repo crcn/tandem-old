@@ -2116,8 +2116,7 @@
           "is": "path",
           "name": "element",
           "attributes": {
-            "d": "M 18,85 82,85 92,95 8,95 z",
-            "color": "#000"
+            "d": "M 18,85 82,85 92,95 8,95 z"
           },
           "style": {
             "background": "currentColor"
@@ -2130,8 +2129,7 @@
           "is": "path",
           "name": "element",
           "attributes": {
-            "d": "M 15,18 15,82 5,92 5,8 z",
-            "color": "#000"
+            "d": "M 15,18 15,82 5,92 5,8 z"
           },
           "style": {
             "background": "currentColor"
@@ -2144,8 +2142,7 @@
           "is": "path",
           "name": "element",
           "attributes": {
-            "d": "M 82,15 18,15 8,5 92,5 z",
-            "color": "#000"
+            "d": "M 82,15 18,15 8,5 92,5 z"
           },
           "style": {
             "background": "currentColor"
@@ -2158,8 +2155,7 @@
           "is": "path",
           "name": "element",
           "attributes": {
-            "d": "M 85,82 85,18 95,8 95,92 z",
-            "color": "#000"
+            "d": "M 85,82 85,18 95,8 95,92 z"
           },
           "style": {
             "background": "currentColor"

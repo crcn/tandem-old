@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+function realpath() { /usr/bin/python -c "import os,sys; print(os.path.realpath(sys.argv[1]))" "$0"; }
+CLI_DIR="$(dirname "$(dirname "$(realpath "$0")")")"
+BIN="$CLI_DIR/app/tandem"
+"$BIN" "$@"
+exit $?

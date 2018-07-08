@@ -24,7 +24,8 @@ export default compose(
     onBlur,
     onChange,
     onChangeComplete,
-    onEmptySpaceClick
+    onEmptySpaceClick,
+    ...rest
   }) => {
     let popdownChildren: any = EMPTY_ARRAY;
 
@@ -40,6 +41,7 @@ export default compose(
 
     return (
       <Base
+        {...rest}
         buttonProps={{
           tabIndex: 0,
           onClick: onButtonClick,

@@ -377,17 +377,6 @@
                   "children": []
                 },
                 {
-                  "id": "1a11459312",
-                  "variantId": "1a11459311",
-                  "propertyName": "style",
-                  "targetIdPath": [],
-                  "value": {
-                    "display": "block"
-                  },
-                  "name": "override",
-                  "children": []
-                },
-                {
                   "id": "cfd17e431",
                   "variantId": null,
                   "propertyName": "style",

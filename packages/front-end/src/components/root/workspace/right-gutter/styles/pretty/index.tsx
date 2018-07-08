@@ -19,6 +19,7 @@ export default compose(
         opacityPaneProps={props}
         backgroundsPaneProps={props}
         spacingPaneProps={props}
+        bordersPaneProps={props}
       />
     );
   }

@@ -2,7 +2,7 @@ const path = require("path");
 const fs = require("fs");
 const {platform, arch} = process;
 const { tmpdir } = require("os");
-const { version } = require("./package");
+const { distVersion } = require("./package");
 const request = require("request");
 const ProgressBar = require("progress");
 const {mkdirpSync} = require("fs-extra");
@@ -10,26 +10,25 @@ const { spawn } = require("child_process");
 const glob = require("glob");
 
 const archName = `${platform}-${arch}`;
-const fileName = `${archName}-v${version}.zip`;
+const fileName = `${archName}-v${distVersion}.zip`;
 const filePath = path.join(__dirname, fileName);
-const url = `https://github.com/tandemcode/tandem/releases/download/v${version}/${archName}.zip`;
+const url = `https://github.com/tandemcode/tandem/releases/download/v${distVersion}/${archName}.zip`;
 
-download(url, `${tmpdir()}/tandem/${fileName}`, path.join(__dirname, "app"));
+download(url, `${tmpdir()}/tandem/${fileName}`, path.join(__dirname, "app")).then(() => {
+  console.log("Done!");
+})
 
 function download(url, filePath, unzipPath) {
-  if (fs.existsSync(filePath)) {
-    return install(filePath, unzipPath);
-  }
-
-  console.log(`Downloading %s`, url);
-
-  try {
-    mkdirpSync(path.dirname(filePath));
-  } catch(e) {
-
-  }
-
   return new Promise((resolve, reject) => {
+    if (fs.existsSync(filePath)) {
+      return resolve();
+    }
+
+    try {
+      mkdirpSync(path.dirname(filePath));
+    } catch(e) {
+
+    }
     request.get(url).on("response", (response) => {
       const contentLength = parseInt(response.headers['content-length'], 10);
       const bar = new ProgressBar(`Downloading Tandem [:bar]`, { width: 40, total: contentLength })
@@ -44,7 +43,10 @@ function download(url, filePath, unzipPath) {
       });
 
     })
-    .pipe(fs.createWriteStream(filePath));
+    .pipe(fs.createWriteStream(filePath))
+    .on("end", resolve);
+  }).then(() => {
+    return install(filePath, unzipPath);
   });
 };
 
@@ -53,8 +55,11 @@ function install(filePath, unzipPath) {
     if (fs.existsSync(unzipPath)) {
       return resolve();
     }
-    const proc = spawn("unzip", [filePath, "-d", unzipPath]);
-    proc.on("end", resolve);
+    console.log("Unzipping %s", filePath);
+    const proc = spawn("unzip", ["-qq", filePath, "-d", unzipPath]);
+    proc.stdout.pipe(process.stdout);
+    proc.stderr.pipe(process.stderr);
+    proc.on("exit", resolve);
   }).then(() => {
     return link(unzipPath);
   });
@@ -69,7 +74,6 @@ function link(unzipPath) {
   } catch(e) {
 
   }
-  console.log(binPath);
   fs.symlinkSync(binPath, symlinkPath);
   return Promise.resolve();
 }

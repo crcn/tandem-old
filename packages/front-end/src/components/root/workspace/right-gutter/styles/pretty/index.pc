@@ -220,7 +220,7 @@
               "bottom": 560.3571410945103
             }
           },
-          "label": "Border Pane"
+          "label": "Borders Pane"
         },
         {
           "id": "ab9eb3a110018",
