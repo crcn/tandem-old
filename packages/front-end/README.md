@@ -7,8 +7,9 @@ IMMEDIATE:
 
 - style inputs
 
-  - borders
   - box shadow
+  - gradient input
+  - filters
 
 - start redesign (dark)
 
