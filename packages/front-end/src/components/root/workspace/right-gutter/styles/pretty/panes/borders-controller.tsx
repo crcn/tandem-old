@@ -7,7 +7,6 @@ export default compose(
   pure,
   withHandlers({
     onPropertyChange: ({ dispatch }) => (name, value) => {
-      console.log(name, value);
       dispatch(cssPropertyChanged(name, value));
     },
     onPropertyChangeComplete: ({ dispatch }) => (name, value) => {

@@ -30,7 +30,12 @@ export default compose(
     "borderStyling",
     "setBorderStyling",
     ({ selectedNode }) =>
-      selectedNode.style.border ? TOGGLE_OPTION.ALL : TOGGLE_OPTION.INDIVIDUAL
+      selectedNode.style["border-left"] ||
+      selectedNode.style["border-right"] ||
+      selectedNode.style["border-top"] ||
+      selectedNode.style["border-bottom"]
+        ? TOGGLE_OPTION.INDIVIDUAL
+        : TOGGLE_OPTION.ALL
   ),
   withHandlers({
     onStyleToggleChangeComplete: ({ setBorderStyling }) => value => {
