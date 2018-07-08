@@ -5,11 +5,8 @@ OBJECTIVE:
 
 IMMEDIATE:
 
-- style inputs
-
-  - box shadow
-  - gradient input
-  - filters
+- box shadow
+- gradient input
 
 - start redesign (dark)
 
