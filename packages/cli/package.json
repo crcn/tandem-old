@@ -1,0 +1,21 @@
+{
+  "name": "tandem-cli",
+  "version": "10.0.11",
+  "description": "",
+  "main": "index.js",
+  "bin": {
+    "tandem": "./app/tandem"
+  },
+  "scripts": {
+    "postinstall": "node install.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "fs-extra": "^6.0.1",
+    "fsa": "^0.5.1",
+    "glob": "^7.1.2",
+    "progress": "^2.0.0",
+    "request": "^2.87.0"
+  }
+}
