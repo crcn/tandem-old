@@ -175,6 +175,51 @@
           "label": "Typography Pane"
         },
         {
+          "id": "ab9eb3a110018",
+          "variant": {},
+          "is": "ab9eb3a110017",
+          "name": "component-instance",
+          "attributes": {},
+          "style": {},
+          "children": [],
+          "metadata": {},
+          "label": "Opacity Pane"
+        },
+        {
+          "id": "b6d08a597456",
+          "propertyName": "style",
+          "targetIdPath": [
+            "b6d08a5937",
+            "b6d08a5919",
+            "67e386c7935"
+          ],
+          "value": {},
+          "name": "override",
+          "children": []
+        },
+        {
+          "id": "bcda9fb5100610",
+          "variant": {},
+          "is": "bcda9fb596963",
+          "name": "component-instance",
+          "attributes": {},
+          "style": {},
+          "children": [
+            {
+              "id": "8e601d2b29819",
+              "propertyName": "style",
+              "targetIdPath": [
+                "8e601d2b25755"
+              ],
+              "value": {},
+              "name": "override",
+              "children": []
+            }
+          ],
+          "metadata": {},
+          "label": "Backgrounds Pane"
+        },
+        {
           "id": "af2a67c2930",
           "variant": {},
           "is": "52309d3e125631",
@@ -221,51 +266,6 @@
             }
           },
           "label": "Borders Pane"
-        },
-        {
-          "id": "ab9eb3a110018",
-          "variant": {},
-          "is": "ab9eb3a110017",
-          "name": "component-instance",
-          "attributes": {},
-          "style": {},
-          "children": [],
-          "metadata": {},
-          "label": "Opacity Pane"
-        },
-        {
-          "id": "b6d08a597456",
-          "propertyName": "style",
-          "targetIdPath": [
-            "b6d08a5937",
-            "b6d08a5919",
-            "67e386c7935"
-          ],
-          "value": {},
-          "name": "override",
-          "children": []
-        },
-        {
-          "id": "bcda9fb5100610",
-          "variant": {},
-          "is": "bcda9fb596963",
-          "name": "component-instance",
-          "attributes": {},
-          "style": {},
-          "children": [
-            {
-              "id": "8e601d2b29819",
-              "propertyName": "style",
-              "targetIdPath": [
-                "8e601d2b25755"
-              ],
-              "value": {},
-              "name": "override",
-              "children": []
-            }
-          ],
-          "metadata": {},
-          "label": "Backgrounds Pane"
         },
         {
           "id": "bcda9fb5100963",
