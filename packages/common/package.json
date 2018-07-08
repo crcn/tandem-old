@@ -1,6 +1,6 @@
 {
   "name": "tandem-common",
-  "version": "10.0.6",
+  "version": "10.0.12",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -12,13 +12,13 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@types/node": "^10.1.2",
     "crc32": "^0.2.2",
     "lodash": "^4.17.10",
     "lru-cache": "^4.1.3",
     "xml-js": "^1.6.4"
   },
   "devDependencies": {
+    "@types/node": "^10.1.2",
     "husky": "^0.14.3",
     "lint-staged": "^7.1.2"
   }

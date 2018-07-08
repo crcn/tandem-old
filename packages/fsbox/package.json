@@ -1,6 +1,6 @@
 {
   "name": "fsbox",
-  "version": "10.0.6",
+  "version": "10.0.12",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -11,14 +11,16 @@
   },
   "author": "",
   "license": "ISC",
-  "dependencies": {
+  "devDependencies": {
     "@types/lodash": "^4.14.109",
     "@types/node": "^10.3.3",
     "@types/redux": "^3.6.0",
-    "@types/redux-saga": "^0.10.5",
+    "@types/redux-saga": "^0.10.5"
+  },
+  "dependencies": {
     "lodash": "^4.17.10",
     "redux": "^4.0.0",
     "redux-saga": "^0.16.0",
-    "tandem-common": "^10.0.6"
+    "tandem-common": "^10.0.12"
   }
 }
