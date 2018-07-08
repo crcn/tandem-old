@@ -88,10 +88,10 @@ const parseBorder = memoize(
       /(none|hidden|dotted|dashed|solid|double|groove|ridge|inset|outset|initial|inherit)/
     ) || EMPTY_ARRAY)[1],
     color: (value.match(/(#\w+|rgba?\(.*?\))/) || EMPTY_ARRAY)[1],
-    thickness: (value.match(/\d+px/) || EMPTY_ARRAY)[1]
+    thickness: (value.match(/(\d+px)/) || EMPTY_ARRAY)[1]
   }),
   100
 );
 
 const stringifyBorderInfo = (info: BorderInfo) =>
-  [info.thickness, info.style, info.color].join(" ");
+  [info.thickness || "0px", info.style, info.color].join(" ").trim();
