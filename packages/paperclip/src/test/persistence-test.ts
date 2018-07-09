@@ -17,6 +17,8 @@ import {
   SyntheticTextNode
 } from "..";
 import { TreeMoveOffset } from "tandem-common";
+import { evaluateEditedStateSync } from "../edit";
+const clone = v => JSON.parse(JSON.stringify(v));
 
 describe(__filename + "#", () => {
   const createEditorState = (module: PCModule) => {
@@ -35,14 +37,17 @@ describe(__filename + "#", () => {
 
   it("can insert an element into the root document", () => {
     let state = createEditorState(createPCModule());
+    state = evaluateEditedStateSync(state);
+
     const [document] = state.documents;
-    expect(document.children.length).to.eql(0);
     state = persistInsertNode(
       createPCElement("div"),
-      state.documents[0],
+      document,
       TreeMoveOffset.APPEND,
       state
     );
+    state = evaluateEditedStateSync(state);
+
     const [newDocument] = state.documents;
     expect(newDocument.children.length).to.eql(1);
     expect(newDocument.children[0].name).to.eql("div");
@@ -53,6 +58,7 @@ describe(__filename + "#", () => {
     let state = createEditorState(
       createPCModule([contentNode1Source, contentNode2Source])
     );
+    state = evaluateEditedStateSync(state);
     const [document] = state.documents;
     expect(document.children.length).to.eql(2);
     state = persistMoveSyntheticVisibleNode(
@@ -61,6 +67,7 @@ describe(__filename + "#", () => {
       TreeMoveOffset.APPEND,
       state
     );
+    state = evaluateEditedStateSync(state);
     const [newDocument] = state.documents;
     expect(newDocument.children.length).to.eql(1);
     expect(newDocument.children[0].name).to.eql("div");
@@ -74,6 +81,7 @@ describe(__filename + "#", () => {
     let state = createEditorState(
       createPCModule([contentNode1Source, contentNode2Source])
     );
+    state = evaluateEditedStateSync(state);
     const [document] = state.documents;
     expect(document.children.length).to.eql(2);
     state = persistMoveSyntheticVisibleNode(
@@ -82,6 +90,7 @@ describe(__filename + "#", () => {
       TreeMoveOffset.BEFORE,
       state
     );
+    state = evaluateEditedStateSync(state);
     const [newDocument] = state.documents;
     expect(newDocument.children.length).to.eql(2);
     expect(newDocument.children[0].name).to.eql("text");
@@ -92,6 +101,7 @@ describe(__filename + "#", () => {
     let state = createEditorState(
       createPCModule([contentNode1Source, contentNode2Source])
     );
+    state = evaluateEditedStateSync(state);
     const [document] = state.documents;
     expect(document.children.length).to.eql(2);
     state = persistMoveSyntheticVisibleNode(
@@ -100,9 +110,10 @@ describe(__filename + "#", () => {
       TreeMoveOffset.AFTER,
       state
     );
+    state = evaluateEditedStateSync(state);
     const [newDocument] = state.documents;
     expect(newDocument.children.length).to.eql(2);
-    expect(newDocument.children[0].name).to.eql("text");
+    expect(newDocument.children[0].name).to.eql("div");
   });
 
   xit("can insert an element into a component");
@@ -119,6 +130,7 @@ describe(__filename + "#", () => {
         const component1 = createPCComponent("A", "div", null, null, [child]);
         const instance = createPCComponentInstance(component1.id);
         let state = createEditorState(createPCModule([component1, instance]));
+        state = evaluateEditedStateSync(state);
         expect(state.documents[0].children.length).to.eql(2);
         const instanceChild = state.documents[0].children[1]
           .children[0] as SyntheticVisibleNode;
@@ -131,6 +143,7 @@ describe(__filename + "#", () => {
           null,
           state
         );
+        state = evaluateEditedStateSync(state);
         const [newDocument] = state.documents;
         const componentChild = newDocument.children[0]
           .children[0] as SyntheticVisibleNode;
@@ -148,6 +161,7 @@ describe(__filename + "#", () => {
         let state = createEditorState(
           createPCModule([component1, instanceSource])
         );
+        state = evaluateEditedStateSync(state);
         expect(state.documents[0].children.length).to.eql(2);
         const instance = state.documents[0].children[1] as SyntheticVisibleNode;
         expect(instance.name).to.eql("div");
@@ -159,6 +173,7 @@ describe(__filename + "#", () => {
           null,
           state
         );
+        state = evaluateEditedStateSync(state);
         const [newDocument] = state.documents;
         const componentChild = newDocument.children[0] as SyntheticVisibleNode;
         expect(componentChild.style).to.eql({});
@@ -188,6 +203,7 @@ describe(__filename + "#", () => {
         let state = createEditorState(
           createPCModule([componentSource, instanceSource, childSource])
         );
+        state = evaluateEditedStateSync(state);
 
         expect(state.documents[0].children.length).to.eql(3);
         const child = state.documents[0].children[2];
@@ -206,6 +222,7 @@ describe(__filename + "#", () => {
           TreeMoveOffset.APPEND,
           state
         );
+        state = evaluateEditedStateSync(state);
 
         const [newDocument] = state.documents;
         expect(newDocument.children[0].children[0].name).to.eql("div");
@@ -235,6 +252,7 @@ describe(__filename + "#", () => {
         let state = createEditorState(
           createPCModule([componentSource, instanceSource, childSource])
         );
+        state = evaluateEditedStateSync(state);
 
         expect(state.documents[0].children.length).to.eql(3);
         const child = state.documents[0].children[2];
@@ -253,6 +271,7 @@ describe(__filename + "#", () => {
           TreeMoveOffset.APPEND,
           state
         );
+        state = evaluateEditedStateSync(state);
 
         const [newDocument] = state.documents;
         expect(newDocument.children[1].children[0].name).to.eql("text");

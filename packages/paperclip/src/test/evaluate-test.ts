@@ -15,6 +15,8 @@ import {
 import { cloneTreeNode } from "tandem-common";
 import { DependencyGraph } from "../graph";
 
+const clone = v => JSON.parse(JSON.stringify(v));
+
 describe(__filename + "#", () => {
   type EvaluateCases = Array<[PCModule, Frame[]]>;
 
@@ -119,37 +121,49 @@ describe(__filename + "#", () => {
 
     expect(document.children.length).to.eql(2);
 
-    console.log(JSON.stringify(nodeIdCleaner()(document.children[1]), null, 2));
-
-    expect(nodeIdCleaner()(document.children[1])).to.eql(
-      nodeIdCleaner()(
-        createSyntheticElement(
-          "body",
-          { nodeId: "000000003" },
-          { a: "b3" },
-          { c: "d" },
-          [
-            createSyntheticElement(
-              "div",
-              { nodeId: "000000001" },
-              { a: "b2" },
-              { c: "d" },
-              [],
-              undefined,
-              false,
-              true,
-              false,
-              true
-            )
-          ],
-          "Test",
-          true,
-          true,
-          true,
-          false
-        )
-      )
-    );
+    expect(nodeIdCleaner()(document.children[1])).to.eql({
+      id: "000000000",
+      metadata: {},
+      variant: {},
+      isComponentInstance: true,
+      isCreatedFromComponent: true,
+      label: undefined,
+      isContentNode: true,
+      immutable: false,
+      source: {
+        nodeId: "000000003"
+      },
+      name: "body",
+      attributes: {
+        c: "a",
+        a: "b3"
+      },
+      style: {
+        a: "b"
+      },
+      children: [
+        {
+          id: "000000001",
+          metadata: {},
+          isComponentInstance: false,
+          isCreatedFromComponent: true,
+          label: undefined,
+          isContentNode: false,
+          immutable: true,
+          source: {
+            nodeId: "000000001"
+          },
+          name: "div",
+          attributes: {
+            c: "d"
+          },
+          style: {
+            a: "b2"
+          },
+          children: []
+        }
+      ]
+    });
   });
 
   it("components can extend existing components", () => {
@@ -169,24 +183,24 @@ describe(__filename + "#", () => {
 
     const document = evaluatePCModule(module, createFakeGraph(module));
 
-    expect(nodeIdCleaner()(document.children[1])).to.eql({
+    expect(clone(nodeIdCleaner()(document.children[1]))).to.eql({
       id: "000000000",
       metadata: {},
+      label: "Test",
       variant: {},
-      isComponentInstance: true,
+      isComponentInstance: false,
       isCreatedFromComponent: true,
       isContentNode: true,
       immutable: false,
       source: {
-        nodeId: "000000003"
+        nodeId: "000000002"
       },
-      name: "body",
+      name: "div",
       attributes: {
-        c: "a",
-        a: "b3"
+        c: "a2"
       },
       style: {
-        a: "b"
+        a: "b2"
       },
       children: [
         {
@@ -210,71 +224,73 @@ describe(__filename + "#", () => {
         }
       ]
     });
-  });
 
-  it("extended components can provide slots to parent components", () => {
-    const cleanIds = nodeIdCleaner();
+    it("extended components can provide slots to parent components", () => {
+      const cleanIds = nodeIdCleaner();
 
-    const container = cleanIds(createPCElement("div", { a: "b2" }, { c: "d" }));
+      const container = cleanIds(
+        createPCElement("div", { a: "b2" }, { c: "d" })
+      );
 
-    const component1 = cleanIds(
-      createPCComponent("Test", "div", { a: "b" }, { c: "a" }, [container])
-    );
+      const component1 = cleanIds(
+        createPCComponent("Test", "div", { a: "b" }, { c: "a" }, [container])
+      );
 
-    const component2 = cleanIds(
-      createPCComponent("Test", component1.id, { a: "b2" }, { c: "a2" }, [
-        createPCOverride([container.id], PCOverridablePropertyName.CHILDREN, [
-          createPCElement("div", { a: "bb" }, { c: "dd" })
+      const component2 = cleanIds(
+        createPCComponent("Test", component1.id, { a: "b2" }, { c: "a2" }, [
+          createPCOverride([container.id], PCOverridablePropertyName.CHILDREN, [
+            createPCElement("div", { a: "bb" }, { c: "dd" })
+          ])
         ])
-      ])
-    );
+      );
 
-    const module = cleanIds(createPCModule([component1, component2]));
+      const module = cleanIds(createPCModule([component1, component2]));
 
-    const document = evaluatePCModule(module, createFakeGraph(module));
+      const document = evaluatePCModule(module, createFakeGraph(module));
 
-    expect(document.children.length).to.eql(2);
+      expect(document.children.length).to.eql(2);
 
-    expect(nodeIdCleaner()(document.children[1])).to.eql({
-      id: "000000000",
-      metadata: {},
-      variant: {},
-      isComponentInstance: true,
-      isCreatedFromComponent: true,
-      isContentNode: true,
-      immutable: false,
-      source: {
-        nodeId: "000000003"
-      },
-      name: "body",
-      attributes: {
-        c: "a",
-        a: "b3"
-      },
-      style: {
-        a: "b"
-      },
-      children: [
-        {
-          id: "000000001",
-          metadata: {},
-          isComponentInstance: false,
-          isCreatedFromComponent: true,
-          isContentNode: false,
-          immutable: true,
-          source: {
-            nodeId: "000000001"
-          },
-          name: "div",
-          attributes: {
-            c: "d"
-          },
-          style: {
-            a: "b2"
-          },
-          children: []
-        }
-      ]
+      expect(nodeIdCleaner()(document.children[1])).to.eql({
+        id: "000000000",
+        metadata: {},
+        variant: {},
+        isComponentInstance: true,
+        isCreatedFromComponent: true,
+        isContentNode: true,
+        immutable: false,
+        source: {
+          nodeId: "000000003"
+        },
+        name: "body",
+        attributes: {
+          c: "a",
+          a: "b3"
+        },
+        style: {
+          a: "b"
+        },
+        children: [
+          {
+            id: "000000001",
+            metadata: {},
+            isComponentInstance: false,
+            isCreatedFromComponent: true,
+            isContentNode: false,
+            immutable: true,
+            source: {
+              nodeId: "000000001"
+            },
+            name: "div",
+            attributes: {
+              c: "d"
+            },
+            style: {
+              a: "b2"
+            },
+            children: []
+          }
+        ]
+      });
     });
   });
 
@@ -322,86 +338,104 @@ describe(__filename + "#", () => {
 
     expect(document.children.length).to.eql(4);
 
-    expect(nodeIdCleaner()(document.children[3])).to.eql(
-      nodeIdCleaner()(
-        createSyntheticElement(
-          "div",
-          { nodeId: "0000000010" },
-          { color: "blue" },
-          {},
-          [
-            createSyntheticElement(
-              "a",
-              { nodeId: "000000000" },
-              {},
-              {},
-              [
-                createSyntheticElement(
-                  "b",
-                  { nodeId: "000000002" },
-                  {},
-                  {},
-                  [
-                    createSyntheticElement(
-                      "c",
-                      { nodeId: "000000006" },
-                      {},
-                      {},
-                      [
-                        createSyntheticElement(
-                          "d",
-                          { nodeId: "000000009" },
-                          {},
-                          {},
-                          [],
-                          undefined,
-                          false,
-                          true,
-                          false,
-                          false
-                        )
-                      ],
-                      undefined,
-                      false,
-                      true,
-                      false,
-                      true
-                    )
-                  ],
-                  undefined,
-                  false,
-                  true,
-                  false,
-                  true
-                ),
-                createSyntheticElement(
-                  "b2",
-                  { nodeId: "000000005" },
-                  {},
-                  {},
-                  [],
-                  undefined,
-                  false,
-                  true,
-                  false,
-                  true
-                )
-              ],
-              undefined,
-              false,
-              true,
-              false,
-              true
-            )
-          ],
-          "Test",
-          true,
-          true,
-          false,
-          false
-        )
-      )
-    );
+    expect(clone(nodeIdCleaner()(document.children[3]))).to.eql({
+      id: "000000000",
+      metadata: {},
+      label: "Test",
+      variant: {},
+      isComponentInstance: false,
+      isCreatedFromComponent: true,
+      isContentNode: true,
+      immutable: false,
+      source: {
+        nodeId: "0000000010"
+      },
+      name: "div",
+      attributes: {},
+      style: {
+        color: "blue"
+      },
+      children: [
+        {
+          id: "000000001",
+          metadata: {},
+          isComponentInstance: false,
+          isCreatedFromComponent: true,
+          isContentNode: false,
+          immutable: true,
+          source: {
+            nodeId: "000000000"
+          },
+          name: "a",
+          attributes: {},
+          style: {},
+          children: [
+            {
+              id: "000000002",
+              metadata: {},
+              isComponentInstance: false,
+              isCreatedFromComponent: true,
+              isContentNode: false,
+              immutable: true,
+              source: {
+                nodeId: "000000002"
+              },
+              name: "b",
+              attributes: {},
+              style: {},
+              children: [
+                {
+                  id: "000000003",
+                  metadata: {},
+                  isComponentInstance: false,
+                  isCreatedFromComponent: true,
+                  isContentNode: false,
+                  immutable: true,
+                  source: {
+                    nodeId: "000000006"
+                  },
+                  name: "c",
+                  attributes: {},
+                  style: {},
+                  children: [
+                    {
+                      id: "000000004",
+                      metadata: {},
+                      isComponentInstance: false,
+                      isCreatedFromComponent: true,
+                      isContentNode: false,
+                      immutable: false,
+                      source: {
+                        nodeId: "000000009"
+                      },
+                      name: "d",
+                      attributes: {},
+                      style: {},
+                      children: []
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              id: "000000005",
+              metadata: {},
+              isComponentInstance: false,
+              isCreatedFromComponent: true,
+              isContentNode: false,
+              immutable: true,
+              source: {
+                nodeId: "000000005"
+              },
+              name: "b2",
+              attributes: {},
+              style: {},
+              children: []
+            }
+          ]
+        }
+      ]
+    });
   });
 
   it("can override a nested node style in a component", () => {
@@ -426,35 +460,41 @@ describe(__filename + "#", () => {
 
     expect(document.children.length).to.eql(2);
 
-    expect(nodeIdCleaner()(document.children[1])).to.eql(
-      nodeIdCleaner()(
-        createSyntheticElement(
-          "div",
-          { nodeId: "000000002" },
-          {},
-          {},
-          [
-            createSyntheticElement(
-              "a",
-              { nodeId: "000000000" },
-              { color: "red" },
-              {},
-              [],
-              undefined,
-              false,
-              true,
-              false,
-              true
-            )
-          ],
-          "Test",
-          true,
-          true,
-          false,
-          false
-        )
-      )
-    );
+    expect(clone(nodeIdCleaner()(document.children[1]))).to.eql({
+      id: "000000000",
+      metadata: {},
+      label: "Test",
+      variant: {},
+      isComponentInstance: false,
+      isCreatedFromComponent: true,
+      isContentNode: true,
+      immutable: false,
+      source: {
+        nodeId: "000000002"
+      },
+      name: "div",
+      attributes: {},
+      style: {},
+      children: [
+        {
+          id: "000000001",
+          metadata: {},
+          isComponentInstance: false,
+          isCreatedFromComponent: true,
+          isContentNode: false,
+          immutable: true,
+          source: {
+            nodeId: "000000000"
+          },
+          name: "a",
+          attributes: {},
+          style: {
+            color: "red"
+          },
+          children: []
+        }
+      ]
+    });
   });
 
   xit("can evaluate a component with a variant", () => {

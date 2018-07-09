@@ -78,6 +78,7 @@ import {
 import * as path from "path";
 import { convertFixedBoundsToRelative } from "./synthetic-layout";
 import { diffTreeNode, patchTreeNode } from "./ot";
+import { evaluatePCModule } from "./evaluate";
 
 /*------------------------------------------
  * CONSTANTS
@@ -1019,6 +1020,9 @@ const maybeOverride = (
 ): PCVisibleNode => {
   const sourceNode = getPCNode(targetSourceId, graph) as PCVisibleNode;
   const contentNode = getSyntheticContentNode(node, documents);
+  if (!contentNode) {
+    return updater(sourceNode, value);
+  }
   const contentSourceNode = getSyntheticSourceNode(contentNode, graph);
   const variantId =
     variant &&
@@ -1176,8 +1180,6 @@ export const persistMoveSyntheticVisibleNode = <TState extends PCEditorState>(
   offset: TreeMoveOffset,
   state: TState
 ) => {
-  const oldState = state;
-
   const sourceNode = getSyntheticSourceNode(node, state.graph);
 
   return persistInsertNode(sourceNode, newRelative, offset, state);
@@ -1389,4 +1391,26 @@ const overrideKeyValue = (main, oldOverrides, newOverrides) => {
     }
   }
   return minOverrides;
+};
+
+// to be used only in tests
+export const evaluateEditedStateSync = (state: PCEditorState) => {
+  const documents: SyntheticDocument[] = [];
+  for (const uri in state.graph) {
+    const newDocument = evaluatePCModule(state.graph[uri].content, state.graph);
+    const oldDocument = getSyntheticDocumentByDependencyUri(
+      uri,
+      state.documents,
+      state.graph
+    );
+    documents.push(
+      oldDocument
+        ? patchTreeNode(diffTreeNode(oldDocument, newDocument), oldDocument)
+        : newDocument
+    );
+  }
+
+  state = upsertFrames({ ...state, documents });
+
+  return state;
 };
