@@ -4,59 +4,87 @@
   "version": "0.0.3",
   "children": [
     {
-      "label": "Workspace",
+      "label": "App",
       "is": "div",
       "style": {
         "box-sizing": "border-box",
-        "display": "flex"
+        "display": "flex",
+        "flex-direction": "column"
       },
       "attributes": {},
       "id": "181944453",
       "name": "component",
       "children": [
         {
-          "id": "181944455",
-          "label": "Left Gutter",
+          "id": "a3596aef26",
+          "is": "a3596aef25",
+          "name": "component-instance",
+          "attributes": {},
+          "style": {},
+          "children": [],
+          "metadata": {}
+        },
+        {
+          "id": "a3596aef24",
+          "is": "a3596aef23",
+          "name": "component-instance",
+          "attributes": {},
+          "style": {},
+          "children": [],
+          "metadata": {}
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": 122,
+          "top": 37,
+          "right": 1684.0852159015226,
+          "bottom": 920.4224331735213
+        }
+      },
+      "inheritStyle": {
+        "a3596aef2": {
+          "priority": 0
+        }
+      }
+    },
+    {
+      "label": "Editor",
+      "is": "div",
+      "style": {
+        "box-sizing": "border-box",
+        "display": "flex",
+        "width": "100%",
+        "height": "100%",
+        "flex-direction": "column"
+      },
+      "attributes": {},
+      "id": "f8488dc87",
+      "name": "component",
+      "children": [
+        {
+          "id": "f8488dc810",
+          "label": "tabs",
           "is": "div",
           "name": "element",
           "attributes": {},
           "style": {
             "box-sizing": "border-box",
-            "display": "block",
-            "height": "100%",
-            "width": "250px",
-            "flex-shrink": "0",
-            "border-right": "1px solid rgba(255, 163, 163, 1)"
+            "display": "block"
           },
           "children": [],
           "metadata": {}
         },
         {
-          "id": "181944456",
-          "label": "Stage",
+          "id": "f8488dc811",
+          "label": "canvas",
           "is": "div",
           "name": "element",
           "attributes": {},
           "style": {
             "box-sizing": "border-box",
             "display": "block",
-            "width": "100%"
-          },
-          "children": [],
-          "metadata": {}
-        },
-        {
-          "id": "700096c78",
-          "label": "Right Gutter",
-          "is": "div",
-          "name": "element",
-          "attributes": {},
-          "style": {
-            "box-sizing": "border-box",
-            "display": "block",
-            "height": "100%",
-            "width": "250px",
-            "flex-shrink": "0"
+            "height": "100%"
           },
           "children": [],
           "metadata": {}
@@ -64,10 +92,394 @@
       ],
       "metadata": {
         "bounds": {
-          "left": 278,
-          "top": 185,
-          "right": 1840.0852159015226,
-          "bottom": 1068.4224331735213
+          "left": 348,
+          "top": 1244,
+          "right": 1943.7141425652296,
+          "bottom": 1882.6553042998858
+        }
+      },
+      "inheritStyle": {
+        "a3596aef2": {
+          "priority": 0
+        }
+      }
+    },
+    {
+      "label": "Pane",
+      "is": "div",
+      "style": {
+        "box-sizing": "border-box",
+        "display": "flex",
+        "flex-direction": "column",
+        "width": "100%"
+      },
+      "attributes": {},
+      "id": "f8488dc814",
+      "name": "component",
+      "children": [
+        {
+          "id": "f8488dc817",
+          "label": "Element",
+          "is": "div",
+          "name": "element",
+          "attributes": {},
+          "style": {
+            "box-sizing": "border-box",
+            "display": "block",
+            "padding-left": "16px",
+            "padding-top": "8px",
+            "padding-right": "8px",
+            "padding-bottom": "8px"
+          },
+          "children": [
+            {
+              "id": "f8488dc818",
+              "name": "text",
+              "label": "Text",
+              "value": "Header\n",
+              "style": {},
+              "children": [],
+              "metadata": {}
+            }
+          ],
+          "metadata": {}
+        },
+        {
+          "id": "f8488dc819",
+          "label": "Element",
+          "is": "div",
+          "name": "element",
+          "attributes": {},
+          "style": {
+            "box-sizing": "border-box",
+            "display": "block",
+            "height": "100%"
+          },
+          "children": [],
+          "metadata": {}
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": -537.2866217403589,
+          "top": 42.478605287446655,
+          "right": -168.21163405525,
+          "bottom": 335.12992783122286
+        }
+      },
+      "inheritStyle": {
+        "700096c74": {
+          "priority": 0
+        },
+        "a3596aef2": {
+          "priority": 2
+        }
+      }
+    },
+    {
+      "label": "Higherarchy Pane",
+      "is": "div",
+      "style": {
+        "box-sizing": "border-box",
+        "display": "flex",
+        "width": "100%"
+      },
+      "attributes": {},
+      "id": "f8488dc823",
+      "name": "component",
+      "children": [
+        {
+          "id": "f8488dc821",
+          "is": "f8488dc814",
+          "name": "component-instance",
+          "attributes": {},
+          "style": {},
+          "children": [
+            {
+              "id": "f8488dc822",
+              "variantId": null,
+              "propertyName": "text",
+              "targetIdPath": [
+                "f8488dc818"
+              ],
+              "value": "Higherarchy",
+              "name": "override",
+              "children": []
+            }
+          ],
+          "metadata": {
+            "bounds": {
+              "left": -537.2866217403589,
+              "top": 42.478605287446655,
+              "right": -168.21163405525,
+              "bottom": 335.12992783122286
+            }
+          }
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": -761,
+          "top": 499,
+          "right": -171.41935301876856,
+          "bottom": 1038.7927845763606
+        }
+      },
+      "inheritStyle": {}
+    },
+    {
+      "label": "Navigator Pane",
+      "is": "div",
+      "style": {
+        "box-sizing": "border-box",
+        "display": "flex"
+      },
+      "attributes": {},
+      "id": "a3596aef5",
+      "name": "component",
+      "children": [
+        {
+          "id": "a3596aef10",
+          "is": "f8488dc814",
+          "name": "component-instance",
+          "attributes": {},
+          "style": {},
+          "children": [
+            {
+              "id": "a3596aef11",
+              "variantId": null,
+              "propertyName": "text",
+              "targetIdPath": [
+                "f8488dc818"
+              ],
+              "value": "Navigator",
+              "name": "override",
+              "children": []
+            }
+          ],
+          "metadata": {
+            "bounds": {
+              "left": -537.2866217403589,
+              "top": 42.478605287446655,
+              "right": -168.21163405525,
+              "bottom": 335.12992783122286
+            }
+          }
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": -1203,
+          "top": 158,
+          "right": -907.4097236135431,
+          "bottom": 816.8293611041634
+        }
+      }
+    },
+    {
+      "label": "Left Gutter",
+      "is": "div",
+      "style": {
+        "box-sizing": "border-box",
+        "display": "flex",
+        "height": "100%",
+        "width": "250px",
+        "flex-shrink": "0",
+        "flex-direction": "column"
+      },
+      "attributes": {},
+      "id": "a3596aef7",
+      "name": "component",
+      "children": [
+        {
+          "id": "a3596aef6",
+          "is": "f8488dc823",
+          "name": "component-instance",
+          "attributes": {},
+          "style": {},
+          "children": [],
+          "metadata": {
+            "bounds": {
+              "left": -761,
+              "top": 499,
+              "right": -171.41935301876856,
+              "bottom": 1038.7927845763606
+            }
+          }
+        },
+        {
+          "id": "a3596aef9",
+          "is": "a3596aef5",
+          "name": "component-instance",
+          "attributes": {},
+          "style": {},
+          "children": [],
+          "metadata": {
+            "bounds": {
+              "left": -1203.4229228647946,
+              "top": 158.61994778877437,
+              "right": -907.8326464783374,
+              "bottom": 817.4493088929378
+            }
+          }
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": -2028,
+          "top": 158,
+          "right": -1628.9377840245352,
+          "bottom": 1041
+        }
+      },
+      "inheritStyle": {
+        "a3596aef2": {
+          "priority": 0
+        }
+      }
+    },
+    {
+      "label": "Right Gutter",
+      "is": "div",
+      "style": {
+        "box-sizing": "border-box",
+        "display": "block",
+        "height": "100%",
+        "width": "250px",
+        "flex-shrink": "0"
+      },
+      "attributes": {},
+      "id": "a3596aef12",
+      "name": "component",
+      "children": [],
+      "metadata": {
+        "bounds": {
+          "left": 1953.7141425652296,
+          "top": 42.478605287446655,
+          "right": 2203.71414256523,
+          "bottom": 925.4786052874467
+        }
+      },
+      "inheritStyle": {
+        "a3596aef2": {
+          "priority": 0
+        }
+      }
+    },
+    {
+      "id": "a3596aef14",
+      "is": "a3596aef2",
+      "name": "component-instance",
+      "attributes": {},
+      "style": {},
+      "children": [],
+      "metadata": {
+        "bounds": {
+          "left": 829.8821521325534,
+          "top": -388.37266785318553,
+          "right": 929.8821521325533,
+          "bottom": -288.37266785318553
+        }
+      }
+    },
+    {
+      "label": "Workspace",
+      "is": "div",
+      "style": {
+        "box-sizing": "border-box",
+        "display": "flex",
+        "flex-direction": "row"
+      },
+      "attributes": {},
+      "id": "a3596aef23",
+      "name": "component",
+      "children": [
+        {
+          "id": "a3596aef18",
+          "is": "a3596aef7",
+          "name": "component-instance",
+          "attributes": {},
+          "style": {},
+          "children": [],
+          "metadata": {}
+        },
+        {
+          "id": "a3596aef19",
+          "label": "Stage",
+          "is": "div",
+          "name": "element",
+          "attributes": {},
+          "style": {
+            "box-sizing": "border-box",
+            "display": "flex",
+            "width": "100%",
+            "flex-direction": "column"
+          },
+          "children": [
+            {
+              "id": "a3596aef20",
+              "is": "f8488dc87",
+              "name": "component-instance",
+              "attributes": {},
+              "style": {},
+              "children": [],
+              "metadata": {},
+              "label": "editor"
+            }
+          ],
+          "metadata": {}
+        },
+        {
+          "id": "a3596aef21",
+          "is": "f8488dc87",
+          "name": "component-instance",
+          "attributes": {},
+          "style": {},
+          "children": [],
+          "metadata": {},
+          "label": "editor"
+        },
+        {
+          "id": "a3596aef22",
+          "is": "a3596aef12",
+          "name": "component-instance",
+          "attributes": {},
+          "style": {},
+          "children": [],
+          "metadata": {}
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": 2213.71414256523,
+          "top": -388.37266785318553,
+          "right": 3775.71414256523,
+          "bottom": 447.09608214681447
+        }
+      }
+    },
+    {
+      "label": "App Toolbar",
+      "is": "div",
+      "style": {
+        "box-sizing": "border-box",
+        "display": "block"
+      },
+      "attributes": {},
+      "id": "a3596aef25",
+      "name": "component",
+      "children": [],
+      "metadata": {
+        "bounds": {
+          "left": 4081,
+          "top": -408,
+          "right": 5643,
+          "bottom": -360.46875
+        }
+      },
+      "inheritStyle": {
+        "a3596aef2": {
+          "priority": 0
         }
       }
     }
