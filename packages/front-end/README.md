@@ -13,6 +13,8 @@ IMMEDIATE:
   - do not show for shadow nodes
 * explicit slots
 
+* inherit pane needs to be supported in variants
+
 * dts
 * variables
 * more paperclip tests
