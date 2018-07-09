@@ -30,7 +30,24 @@
           "name": "component-instance",
           "attributes": {},
           "style": {},
-          "children": [],
+          "children": [
+            {
+              "id": "62eef3785",
+              "propertyName": "style",
+              "targetIdPath": [
+                "a3596aef18",
+                "a3596aef6",
+                "62eef3780"
+              ],
+              "value": {
+                "padding-left": "16px",
+                "padding-top": "8px",
+                "padding-right": "16px"
+              },
+              "name": "override",
+              "children": []
+            }
+          ],
           "metadata": {}
         }
       ],
@@ -220,6 +237,68 @@
               "value": "Higherarchy",
               "name": "override",
               "children": []
+            },
+            {
+              "id": "62eef3781",
+              "variantId": null,
+              "propertyName": "children",
+              "targetIdPath": [
+                "f8488dc819"
+              ],
+              "name": "override",
+              "children": [
+                {
+                  "id": "62eef3783",
+                  "label": "Element",
+                  "is": "div",
+                  "name": "element",
+                  "attributes": {},
+                  "style": {
+                    "box-sizing": "border-box",
+                    "display": "block",
+                    "padding-left": "16px",
+                    "padding-top": "8px",
+                    "padding-right": "16px",
+                    "padding-bottom": "8px"
+                  },
+                  "children": [
+                    {
+                      "id": "62eef3784",
+                      "name": "text",
+                      "label": "Text",
+                      "value": "Component 1",
+                      "style": {},
+                      "children": [],
+                      "metadata": {}
+                    }
+                  ],
+                  "metadata": {}
+                },
+                {
+                  "id": "62eef3780",
+                  "label": "Element",
+                  "is": "div",
+                  "name": "element",
+                  "attributes": {},
+                  "style": {
+                    "box-sizing": "border-box",
+                    "display": "block"
+                  },
+                  "children": [
+                    {
+                      "id": "62eef3782",
+                      "name": "text",
+                      "label": "Text",
+                      "value": "Instance",
+                      "style": {},
+                      "children": [],
+                      "metadata": {}
+                    }
+                  ],
+                  "metadata": {}
+                }
+              ],
+              "metadata": {}
             }
           ],
           "metadata": {

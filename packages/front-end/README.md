@@ -5,6 +5,8 @@ OBJECTIVE:
 
 IMMEDIATE:
 
+- shadow DOM updates.
+  - needs to come first since it will affect data model
 - box shadow color picking doesn't work properly
 - research on existing design tools
 - gradient input
