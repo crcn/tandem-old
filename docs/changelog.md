@@ -1,3 +1,17 @@
+## v10.0.23
+
+#### box shadow inputs
+
+inner & outer box shadows can now be set within the UI.
+
+#### gradient input
+
+TODO
+
+#### Inherit styles
+
+Re-added inherit styles pane
+
 ## v10.0.11
 
 #### View controller UI

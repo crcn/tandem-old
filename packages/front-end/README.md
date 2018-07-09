@@ -21,17 +21,13 @@ IMMEDIATE:
   - color picker
     - swatches
     - RGBA / HSA / HEX inputs
-  - box shadows
   - clear overrides functionality (need to reset to inherited styles)
-* variables (easier to refactor to this)
 * controller UI
 * better place to expose properties
 * redesign (see https://dribbble.com/shots/4781001-Figma)
 * dts
   - code compiler watcher
-* sync frames & metadata
 * show controllers
-* AJ handoff
 * Rust interp
 * file navigator refactor
 * open files refactor
