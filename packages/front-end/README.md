@@ -5,8 +5,10 @@ OBJECTIVE:
 
 IMMEDIATE:
 
+- box shadow color picking doesn't work properly
 - research on existing design tools
 - gradient input
+- CSS parser
 
 - start redesign (dark)
 

@@ -93,21 +93,23 @@ export default compose(
 
     const selectedNode = selectedNodes[0];
     const boxShadowInfo = parseBoxShadows(selectedNode.style["box-shadow"]);
-    const hasItems = Boolean(boxShadowInfo.length);
     const hasSelectedShadow = selectedBoxShadowIndex != null;
 
-    const items = boxShadowInfo.map((info, index) => {
-      return info.inset === Boolean(inset) ? (
-        <BoxShadowItem
-          selected={index === selectedBoxShadowIndex}
-          key={index}
-          value={info}
-          onBackgroundClick={() => onItemClick(index)}
-          onChange={value => onChange(value, index)}
-          onChangeComplete={value => onChangeComplete(value, index)}
-        />
-      ) : null;
-    });
+    const items = boxShadowInfo
+      .map((info, index) => {
+        return info.inset === Boolean(inset) ? (
+          <BoxShadowItem
+            selected={index === selectedBoxShadowIndex}
+            key={index}
+            value={info}
+            onBackgroundClick={() => onItemClick(index)}
+            onChange={value => onChange(value, index)}
+            onChangeComplete={value => onChangeComplete(value, index)}
+          />
+        ) : null;
+      })
+      .filter(Boolean);
+    const hasItems = Boolean(items.length);
 
     return (
       <Base
@@ -132,14 +134,15 @@ const stringifyBoxShadowInfo = (value: BoxShadowInfo[]) =>
 const parseBoxShadows = memoize(
   (value: string = ""): BoxShadowInfo[] => {
     return (
-      value.match(/(inset\s+)?((-?\d+px)\s*)*((rgba|hsl)\(.*?\)|#[\d\w]+)/g) ||
+      value.match(/(inset\s+)?((-?\d+\w*)\s*)*((rgba|hsl)\(.*?\)|#[\d\w]+)/g) ||
       EMPTY_ARRAY
     )
       .map(shadow => {
-        const [, inset, x, y, blur, spread, color] =
-          shadow.match(
-            /(inset\s*)?(-?[^\s]+)\s+(-?[^\s]+)\s+(-?[^\s]+)\s+(-?[^\s]+)\s+((rgba|hsl)\(.*?\)|#[\d\w]+)/
-          ) || EMPTY_ARRAY;
+        const inset = shadow.indexOf("inset") !== -1;
+        const [x, y, blur, spread, color] = shadow
+          .replace(/inset\s*/, "")
+          .trim()
+          .split(" ");
         console.log(shadow);
         return {
           inset: Boolean(inset),

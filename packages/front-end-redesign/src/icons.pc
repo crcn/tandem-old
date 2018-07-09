@@ -1,0 +1,28 @@
+{
+  "id": "a3596aef40",
+  "name": "module",
+  "version": "0.0.3",
+  "children": [
+    {
+      "id": "a3596aef41",
+      "label": "Element",
+      "is": "div",
+      "name": "element",
+      "attributes": {},
+      "style": {
+        "box-sizing": "border-box",
+        "display": "block"
+      },
+      "children": [],
+      "metadata": {
+        "bounds": {
+          "left": 462,
+          "top": 156,
+          "right": 562,
+          "bottom": 256
+        }
+      }
+    }
+  ],
+  "metadata": {}
+}

@@ -41,7 +41,8 @@
         "box-sizing": "border-box",
         "display": "block",
         "font-family": "Avenir Next",
-        "color": "rgba(244, 244, 244, 1)"
+        "color": "rgba(244, 244, 244, 1)",
+        "letter-spacing": "0.05em"
       },
       "attributes": {},
       "id": "700096c74",
@@ -56,10 +57,15 @@
             "display": "block",
             "width": "100%",
             "height": "100%",
-            "background": "rgba(46, 0, 0, 1)"
+            "letter-spacing": "0.1em"
           },
           "children": [],
-          "metadata": {}
+          "metadata": {},
+          "inheritStyle": {
+            "a3596aef2": {
+              "priority": 0
+            }
+          }
         }
       ],
       "metadata": {
@@ -70,11 +76,7 @@
           "bottom": 410.407199202441
         }
       },
-      "inheritStyle": {
-        "700096c73": {
-          "priority": 0
-        }
-      }
+      "inheritStyle": {}
     },
     {
       "label": "Background 1 Atom",
@@ -94,6 +96,66 @@
           "top": 511.18749913270074,
           "right": 69.97582934767473,
           "bottom": 611.1874991327007
+        }
+      }
+    },
+    {
+      "label": "Background 2 Atom",
+      "is": "div",
+      "style": {
+        "box-sizing": "border-box",
+        "display": "block",
+        "background": "rgba(61, 61, 61, 1)"
+      },
+      "attributes": {},
+      "id": "a3596aef32",
+      "name": "component",
+      "children": [],
+      "metadata": {
+        "bounds": {
+          "left": 101,
+          "top": 514,
+          "right": 201,
+          "bottom": 614
+        }
+      }
+    },
+    {
+      "label": "Font Size 1 Atom",
+      "is": "div",
+      "style": {
+        "box-sizing": "border-box",
+        "display": "block",
+        "font-size": "12px"
+      },
+      "attributes": {},
+      "id": "a3596aef37",
+      "name": "component",
+      "children": [
+        {
+          "id": "a3596aef38",
+          "name": "text",
+          "label": "Text",
+          "value": "12px\n",
+          "style": {},
+          "children": [],
+          "metadata": {}
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": -233,
+          "top": 308,
+          "right": -133,
+          "bottom": 408
+        }
+      },
+      "inheritStyle": {
+        "a3596aef2": {
+          "priority": 0
+        },
+        "700096c74": {
+          "priority": 2
         }
       }
     }

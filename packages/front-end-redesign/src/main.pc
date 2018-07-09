@@ -110,8 +110,18 @@
       "style": {
         "box-sizing": "border-box",
         "display": "flex",
+        "font-family": "Avenir Next",
+        "color": "rgba(244, 244, 244, 1)",
+        "letter-spacing": "0.05em",
+        "background": "rgba(61, 61, 61, 1)",
+        "font-size": "12px",
         "flex-direction": "column",
-        "width": "100%"
+        "width": "100%",
+        "box-shadow": "inset  0px 0px 0px 1px rgba(255,255,255,0.1)",
+        "border": "0px solid rgba(5, 0, 0, 1)",
+        "border-bottom": "1px solid rgba(1, 0, 0, 1)",
+        "border-right": "1px solid rgba(25, 0, 0, 1)",
+        "border-left": "1px solid rgba(21, 0, 0, 1)"
       },
       "attributes": {},
       "id": "f8488dc814",
@@ -171,8 +181,11 @@
         "700096c74": {
           "priority": 0
         },
-        "a3596aef2": {
-          "priority": 2
+        "a3596aef32": {
+          "priority": 3
+        },
+        "a3596aef37": {
+          "priority": 5
         }
       }
     },
@@ -193,7 +206,9 @@
           "is": "f8488dc814",
           "name": "component-instance",
           "attributes": {},
-          "style": {},
+          "style": {
+            "border-left": "1px  rgba(21, 0, 0, 1)"
+          },
           "children": [
             {
               "id": "f8488dc822",
@@ -243,7 +258,9 @@
           "is": "f8488dc814",
           "name": "component-instance",
           "attributes": {},
-          "style": {},
+          "style": {
+            "border-left": "1px  rgba(21, 0, 0, 1)"
+          },
           "children": [
             {
               "id": "a3596aef11",
@@ -274,6 +291,11 @@
           "right": -907.4097236135431,
           "bottom": 816.8293611041634
         }
+      },
+      "inheritStyle": {
+        "a3596aef32": {
+          "priority": 0
+        }
       }
     },
     {
@@ -282,10 +304,12 @@
       "style": {
         "box-sizing": "border-box",
         "display": "flex",
+        "background": "rgba(51, 51, 51, 1)",
         "height": "100%",
         "width": "250px",
         "flex-shrink": "0",
-        "flex-direction": "column"
+        "flex-direction": "column",
+        "z-index": "1"
       },
       "attributes": {},
       "id": "a3596aef7",
@@ -480,6 +504,22 @@
       "inheritStyle": {
         "a3596aef2": {
           "priority": 0
+        }
+      }
+    },
+    {
+      "id": "a3596aef33",
+      "is": "a3596aef32",
+      "name": "component-instance",
+      "attributes": {},
+      "style": {},
+      "children": [],
+      "metadata": {
+        "bounds": {
+          "left": 329.4266108189655,
+          "top": -475.21972140152087,
+          "right": 429.4266108189655,
+          "bottom": -375.21972140152087
         }
       }
     }
