@@ -7,6 +7,7 @@ IMMEDIATE:
 
 - shadow DOM updates.
   - needs to come first since it will affect data model
+  - keep this in tandem with pane panes
 - box shadow color picking doesn't work properly
 - research on existing design tools
 - gradient input
