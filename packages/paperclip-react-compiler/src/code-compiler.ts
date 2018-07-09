@@ -464,6 +464,8 @@ const translateContentNode = (
   context = addLine("", context);
 
   // variants need to come first since there may be child overrides that have variant styles
+
+  context = translateDynamicOverrideKeys(contentNode, context);
   context = translateContentNodeVariantOverrides(contentNode, context);
   context = translateContentNodeOverrides(contentNode, context);
 
@@ -862,6 +864,39 @@ const translateLabelOverrides = (
   return context;
 };
 
+const translateDynamicOverrideKeys = (
+  contentNode: ContentNode,
+  context: TranslateContext
+) => {
+  const instances = filterNestedNodes(
+    contentNode,
+    node =>
+      node.name === PCSourceTagNames.COMPONENT_INSTANCE ||
+      node.name === PCSourceTagNames.COMPONENT
+  );
+
+  for (const instance of instances) {
+    const overrides = getOverrides(instance);
+
+    for (const override of overrides) {
+      if (isDynamicOverride(override)) {
+        let keyPath: string[];
+
+        if (getNestedTreeNodeById(last(override.targetIdPath), contentNode)) {
+          keyPath = [`_${last(override.targetIdPath)}Props`];
+        } else {
+          keyPath = [instance.id + "Props", ...override.targetIdPath].map(
+            id => `_${id}`
+          );
+        }
+        context = defineNestedObject(keyPath, true, context);
+      }
+    }
+  }
+
+  return context;
+};
+
 const translateDynamicOverrides = (
   component: ContentNode,
   instance: PCComponent | PCComponentInstanceElement,
@@ -881,7 +916,6 @@ const translateDynamicOverrides = (
           id => `_${id}`
         );
       }
-      context = defineNestedObject(keyPath, true, context);
       context = translateDynamicOverrideSetter(
         keyPath.join("."),
         override,

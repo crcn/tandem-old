@@ -293,7 +293,8 @@
       "is": "div",
       "style": {
         "box-sizing": "border-box",
-        "display": "block"
+        "display": "block",
+        "box-shadow": " 0px 0px 10px 0px rgba(0,0,0,1)"
       },
       "attributes": {},
       "id": "babf9bd54",

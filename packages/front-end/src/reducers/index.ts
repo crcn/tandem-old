@@ -238,7 +238,8 @@ import {
   getPCVariants,
   canRemoveSyntheticVisibleNode,
   persistInheritStyle,
-  persistInheritStyleComponentId
+  persistInheritStyleComponentId,
+  isPaperclipUri
 } from "paperclip";
 import {
   roundBounds,
@@ -446,7 +447,7 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
         state
       );
 
-      if (fileType === FSItemTagNames.FILE) {
+      if (fileType === FSItemTagNames.FILE && isPaperclipUri(uri)) {
         state = openFile(uri, false, false, state);
       }
       return state;

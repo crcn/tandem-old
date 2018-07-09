@@ -20,6 +20,8 @@ export default compose(
         backgroundsPaneProps={props}
         spacingPaneProps={props}
         bordersPaneProps={props}
+        outerShadowsPaneProps={props}
+        innerShadowsPaneProps={props}
       />
     );
   }

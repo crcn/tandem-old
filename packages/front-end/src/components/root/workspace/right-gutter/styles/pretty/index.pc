@@ -279,15 +279,38 @@
           "label": "Spacing Pane"
         },
         {
-          "id": "bcda9fb5101342",
-          "variant": {},
-          "is": "bcda9fb597619",
+          "id": "cdcf193c20",
+          "is": "cdcf193c15",
           "name": "component-instance",
           "attributes": {},
           "style": {},
           "children": [],
-          "metadata": {},
-          "label": "Box Shadows Pane"
+          "metadata": {
+            "bounds": {
+              "left": 611,
+              "top": 1290,
+              "right": 1011,
+              "bottom": 1590
+            }
+          },
+          "label": "Outer Shadows Pane"
+        },
+        {
+          "id": "cdcf193c21",
+          "is": "cdcf193c18",
+          "name": "component-instance",
+          "attributes": {},
+          "style": {},
+          "children": [],
+          "metadata": {
+            "bounds": {
+              "left": 744.8839671501759,
+              "top": 1686.0052298662222,
+              "right": 1144.883967150176,
+              "bottom": 1986.0052298662222
+            }
+          },
+          "label": "Inner Shadows Pane"
         },
         {
           "id": "bcda9fb5101747",

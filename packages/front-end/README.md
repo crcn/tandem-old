@@ -5,9 +5,6 @@ OBJECTIVE:
 
 IMMEDIATE:
 
-- outer box shadow
-- inner box shadow
-- box shadow labels
 - gradient input
 
 - start redesign (dark)
@@ -15,6 +12,7 @@ IMMEDIATE:
 * explicit props
   - do not show for shadow nodes
 * explicit slots
+
 * dts
 * variables
 * more paperclip tests
@@ -53,7 +51,7 @@ UX PROBLEMS:
 
 BUGS:
 
-- prohibit immutable elements from being deleted
+- prohibit circular components
 - dropdown must close when another opens
 - inherit typography
 - tab + open files syncing fix
