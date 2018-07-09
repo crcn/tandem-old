@@ -1,0 +1,74 @@
+{
+  "id": "5c876a320",
+  "name": "module",
+  "version": "0.0.3",
+  "children": [
+    {
+      "label": "Typography Atom",
+      "is": "div",
+      "style": {
+        "box-sizing": "border-box",
+        "display": "block",
+        "font-family": "Avenir Next"
+      },
+      "attributes": {},
+      "id": "700096c73",
+      "name": "component",
+      "children": [
+        {
+          "id": "700096c72",
+          "name": "text",
+          "label": "Text",
+          "value": "A quick brown fox jumped over the lazy log.",
+          "style": {},
+          "children": [],
+          "metadata": {}
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": -45,
+          "top": 129,
+          "right": 228,
+          "bottom": 276
+        }
+      }
+    },
+    {
+      "label": "Font color 1 Atom",
+      "is": "div",
+      "style": {
+        "box-sizing": "border-box",
+        "display": "block"
+      },
+      "attributes": {},
+      "id": "700096c74",
+      "name": "component",
+      "children": [
+        {
+          "id": "700096c75",
+          "name": "text",
+          "label": "Text",
+          "value": "Font",
+          "style": {},
+          "children": [],
+          "metadata": {}
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": -28.99128603007142,
+          "top": 310.407199202441,
+          "right": 71.00871396992858,
+          "bottom": 410.407199202441
+        }
+      },
+      "inheritStyle": {
+        "700096c73": {
+          "priority": 0
+        }
+      }
+    }
+  ],
+  "metadata": {}
+}

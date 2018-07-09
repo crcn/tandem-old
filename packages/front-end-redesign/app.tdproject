@@ -1,0 +1,7 @@
+{
+  "scripts": {
+    "previewServer": "/usr/local/bin/npm run tandem-preview-server"
+  },
+  "rootDir": ".",
+  "exclude": ["node_modules"]
+}

@@ -1,0 +1,76 @@
+{
+  "id": "181944451",
+  "name": "module",
+  "version": "0.0.3",
+  "children": [
+    {
+      "label": "Workspace",
+      "is": "div",
+      "style": {
+        "box-sizing": "border-box",
+        "display": "flex"
+      },
+      "attributes": {},
+      "id": "181944453",
+      "name": "component",
+      "children": [
+        {
+          "id": "181944455",
+          "label": "Left Gutter",
+          "is": "div",
+          "name": "element",
+          "attributes": {},
+          "style": {
+            "box-sizing": "border-box",
+            "display": "block",
+            "height": "100%",
+            "width": "250px",
+            "flex-shrink": "0",
+            "border-right": "1px solid rgba(255, 163, 163, 1)"
+          },
+          "children": [],
+          "metadata": {}
+        },
+        {
+          "id": "181944456",
+          "label": "Stage",
+          "is": "div",
+          "name": "element",
+          "attributes": {},
+          "style": {
+            "box-sizing": "border-box",
+            "display": "block",
+            "width": "100%"
+          },
+          "children": [],
+          "metadata": {}
+        },
+        {
+          "id": "700096c78",
+          "label": "Right Gutter",
+          "is": "div",
+          "name": "element",
+          "attributes": {},
+          "style": {
+            "box-sizing": "border-box",
+            "display": "block",
+            "height": "100%",
+            "width": "250px",
+            "flex-shrink": "0"
+          },
+          "children": [],
+          "metadata": {}
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": 278,
+          "top": 185,
+          "right": 1840.0852159015226,
+          "bottom": 1068.4224331735213
+        }
+      }
+    }
+  ],
+  "metadata": {}
+}

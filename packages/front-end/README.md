@@ -5,6 +5,7 @@ OBJECTIVE:
 
 IMMEDIATE:
 
+- research on existing design tools
 - gradient input
 
 - start redesign (dark)
