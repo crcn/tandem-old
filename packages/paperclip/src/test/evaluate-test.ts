@@ -1,30 +1,19 @@
 import { expect } from "chai";
 import { evaluatePCModule } from "../evaluate";
 import { Frame, createSyntheticElement } from "..";
-import { values } from "lodash";
 import {
   PCModule,
-  PAPERCLIP_MODULE_VERSION,
-  PCSourceTagNames,
   createPCComponent,
   createPCElement,
   createPCModule,
   createPCComponentInstance,
   createPCVariant,
-  getPCNodeDependency,
   createPCDependency,
   createPCOverride,
   PCOverridablePropertyName
 } from "../dsl";
-import {
-  generateUID,
-  generateTreeChecksum,
-  cloneTreeNode,
-  createTreeNode,
-  appendChildNode
-} from "tandem-common";
+import { cloneTreeNode } from "tandem-common";
 import { DependencyGraph } from "../graph";
-import { translateAbsoluteToRelativePoint } from "tandem-common/lib/utils/transform";
 
 describe(__filename + "#", () => {
   type EvaluateCases = Array<[PCModule, Frame[]]>;
@@ -68,19 +57,81 @@ describe(__filename + "#", () => {
 
     const document = evaluatePCModule(module, createFakeGraph(module));
 
-    expect(document.children.length).to.eql(1);
+    expect(nodeIdCleaner()(document.children[0])).to.eql({
+      id: "000000000",
+      metadata: {},
+      label: "Test",
+      variant: {},
+      isComponentInstance: false,
+      isCreatedFromComponent: true,
+      isContentNode: true,
+      immutable: false,
+      source: {
+        nodeId: "000000001"
+      },
+      name: "body",
+      attributes: {},
+      style: {
+        a: "b"
+      },
+      children: [
+        {
+          id: "000000001",
+          metadata: {},
+          label: undefined,
+          isComponentInstance: false,
+          isCreatedFromComponent: true,
+          isContentNode: false,
+          immutable: false,
+          source: {
+            nodeId: "000000002"
+          },
+          name: "div",
+          attributes: {
+            c: "d"
+          },
+          style: {
+            a: "b2"
+          },
+          children: []
+        }
+      ]
+    });
+  });
 
-    expect(nodeIdCleaner()(document.children[0])).to.eql(
+  it("can evaluate an instance of a component", () => {
+    const cleanIds = nodeIdCleaner();
+
+    const component = cleanIds(
+      createPCComponent("Test", "body", { a: "b" }, { c: "a" }, [
+        createPCElement("div", { a: "b2" }, { c: "d" })
+      ])
+    );
+
+    const module = cleanIds(
+      createPCModule([
+        component,
+        createPCComponentInstance(component.id, null, { a: "b3" })
+      ])
+    );
+
+    const document = evaluatePCModule(module, createFakeGraph(module));
+
+    expect(document.children.length).to.eql(2);
+
+    console.log(JSON.stringify(nodeIdCleaner()(document.children[1]), null, 2));
+
+    expect(nodeIdCleaner()(document.children[1])).to.eql(
       nodeIdCleaner()(
         createSyntheticElement(
           "body",
-          { nodeId: "000000001" },
-          { a: "b" },
-          {},
+          { nodeId: "000000003" },
+          { a: "b3" },
+          { c: "d" },
           [
             createSyntheticElement(
               "div",
-              { nodeId: "000000002" },
+              { nodeId: "000000001" },
               { a: "b2" },
               { c: "d" },
               [],
@@ -88,69 +139,18 @@ describe(__filename + "#", () => {
               false,
               true,
               false,
-              false
+              true
             )
           ],
           "Test",
           true,
           true,
-          false,
+          true,
           false
         )
       )
     );
   });
-
-  // it("can evaluate an instance of a component", () => {
-  //   const cleanIds = nodeIdCleaner();
-
-  //   const component = cleanIds(
-  //     createPCComponent("Test", "body", { a: "b" }, { c: "a" }, [
-  //       createPCElement("div", { a: "b2" }, { c: "d" })
-  //     ])
-  //   );
-
-  //   const module = cleanIds(
-  //     createPCModule([
-  //       component,
-  //       createPCComponentInstance(component.id, null, { a: "b3" }, { c: "d" })
-  //     ])
-  //   );
-
-  //   const document = evaluatePCModule(module, createFakeGraph(module));
-
-  //   expect(document.children.length).to.eql(2);
-
-  //   expect(nodeIdCleaner()(document.children[1])).to.eql(
-  //     nodeIdCleaner()(
-  //       createSyntheticElement(
-  //         "body",
-  //         { nodeId: "000000003" },
-  //         { a: "b3" },
-  //         { c: "d" },
-  //         [
-  //           createSyntheticElement(
-  //             "div",
-  //             { nodeId: "000000001" },
-  //             { a: "b2" },
-  //             { c: "d" },
-  //             [],
-  //             undefined,
-  //             false,
-  //             true,
-  //             false,
-  //             true
-  //           )
-  //         ],
-  //         "Test",
-  //         true,
-  //         true,
-  //         true,
-  //         false
-  //       )
-  //     )
-  //   );
-  // });
 
   it("components can extend existing components", () => {
     const cleanIds = nodeIdCleaner();
@@ -169,37 +169,47 @@ describe(__filename + "#", () => {
 
     const document = evaluatePCModule(module, createFakeGraph(module));
 
-    expect(document.children.length).to.eql(2);
-
-    expect(nodeIdCleaner()(document.children[1])).to.eql(
-      nodeIdCleaner()(
-        createSyntheticElement(
-          "div",
-          { nodeId: "000000002" },
-          { a: "b2" },
-          { c: "a2" },
-          [
-            createSyntheticElement(
-              "div",
-              { nodeId: "000000001" },
-              { a: "b2" },
-              { c: "d" },
-              [],
-              undefined,
-              false,
-              true,
-              false,
-              true
-            )
-          ],
-          "Test",
-          true,
-          true,
-          false,
-          false
-        )
-      )
-    );
+    expect(nodeIdCleaner()(document.children[1])).to.eql({
+      id: "000000000",
+      metadata: {},
+      variant: {},
+      isComponentInstance: true,
+      isCreatedFromComponent: true,
+      isContentNode: true,
+      immutable: false,
+      source: {
+        nodeId: "000000003"
+      },
+      name: "body",
+      attributes: {
+        c: "a",
+        a: "b3"
+      },
+      style: {
+        a: "b"
+      },
+      children: [
+        {
+          id: "000000001",
+          metadata: {},
+          isComponentInstance: false,
+          isCreatedFromComponent: true,
+          isContentNode: false,
+          immutable: true,
+          source: {
+            nodeId: "000000001"
+          },
+          name: "div",
+          attributes: {
+            c: "d"
+          },
+          style: {
+            a: "b2"
+          },
+          children: []
+        }
+      ]
+    });
   });
 
   it("extended components can provide slots to parent components", () => {
@@ -225,48 +235,47 @@ describe(__filename + "#", () => {
 
     expect(document.children.length).to.eql(2);
 
-    expect(nodeIdCleaner()(document.children[1])).to.eql(
-      nodeIdCleaner()(
-        createSyntheticElement(
-          "div",
-          { nodeId: "000000002" },
-          { a: "b2" },
-          { c: "a2" },
-          [
-            createSyntheticElement(
-              "div",
-              { nodeId: "000000000" },
-              { a: "b2" },
-              { c: "d" },
-              [
-                createSyntheticElement(
-                  "div",
-                  { nodeId: "000000004" },
-                  { a: "bb" },
-                  { c: "dd" },
-                  [],
-                  undefined,
-                  false,
-                  true,
-                  false,
-                  false
-                )
-              ],
-              undefined,
-              false,
-              true,
-              false,
-              true
-            )
-          ],
-          "Test",
-          true,
-          true,
-          false,
-          false
-        )
-      )
-    );
+    expect(nodeIdCleaner()(document.children[1])).to.eql({
+      id: "000000000",
+      metadata: {},
+      variant: {},
+      isComponentInstance: true,
+      isCreatedFromComponent: true,
+      isContentNode: true,
+      immutable: false,
+      source: {
+        nodeId: "000000003"
+      },
+      name: "body",
+      attributes: {
+        c: "a",
+        a: "b3"
+      },
+      style: {
+        a: "b"
+      },
+      children: [
+        {
+          id: "000000001",
+          metadata: {},
+          isComponentInstance: false,
+          isCreatedFromComponent: true,
+          isContentNode: false,
+          immutable: true,
+          source: {
+            nodeId: "000000001"
+          },
+          name: "div",
+          attributes: {
+            c: "d"
+          },
+          style: {
+            a: "b2"
+          },
+          children: []
+        }
+      ]
+    });
   });
 
   it("can extend a component 4 levels up", () => {
