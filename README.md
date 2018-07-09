@@ -1,3 +1,5 @@
+[![CircleCI](https://circleci.com/gh/tandemcode/tandem.svg?style=svg)](https://circleci.com/gh/tandemcode/tandem)
+
 Tandem is a visual component builder that integrates with your existing codebase.
 
 - Contributing
