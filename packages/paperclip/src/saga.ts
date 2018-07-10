@@ -7,7 +7,6 @@ import {
   PC_RUNTIME_EVALUATED,
   PCRuntimeEvaluated
 } from "./actions";
-import { uniq } from "lodash";
 import {
   SyntheticNativeNodeMap,
   renderDOM,
@@ -22,8 +21,7 @@ import {
   getSyntheticNodeById,
   SyntheticDocument,
   SyntheticVisibleNode,
-  getSyntheticDocumentByDependencyUri,
-  getSyntheticDocumentDependencyUri
+  getSyntheticDocumentByDependencyUri
 } from "./synthetic";
 import { PCRuntime } from "./runtime";
 

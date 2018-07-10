@@ -5,6 +5,7 @@ OBJECTIVE:
 
 IMMEDIATE:
 
+- inherit style must work work with variants
 - shadow DOM updates.
   - needs to come first since it will affect data model
   - keep this in tandem with pane panes
@@ -52,9 +53,13 @@ FRICTION POINTS:
 UX PROBLEMS:
 
 - hard to find components. Need to include in quick search.
+- sometimes editing shadow instance thinking it's the component.
+  - breadcrumbs might help
+  - outline might help indicating node type
 
 BUGS:
 
+- variant props sometimes persist to default
 - prohibit circular components
 - dropdown must close when another opens
 - inherit typography

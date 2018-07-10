@@ -92,7 +92,7 @@ export type SyntheticContentNode = SyntheticVisibleNode;
 
 export const createSytheticDocument = (
   source: SyntheticSource,
-  children?: SyntheticVisibleNode[],
+  children?: SyntheticVisibleNode[]
 ): SyntheticDocument => ({
   id: generateUID(),
   metadata: EMPTY_OBJECT,
@@ -101,7 +101,9 @@ export const createSytheticDocument = (
   children: children || EMPTY_ARRAY
 });
 
-export const setDocumentChecksum = (document: SyntheticDocument): SyntheticDocument => {
+export const setDocumentChecksum = (
+  document: SyntheticDocument
+): SyntheticDocument => {
   const newChecksum = generateSyntheticDocumentChecksum(document);
   if (document.checksum === newChecksum) {
     return document;
@@ -110,7 +112,7 @@ export const setDocumentChecksum = (document: SyntheticDocument): SyntheticDocum
     ...document,
     checksum: newChecksum
   };
-}
+};
 
 export const createSyntheticElement = (
   name: string,
@@ -205,19 +207,27 @@ export const isSyntheticDocumentRoot = (node: SyntheticVisibleNode) => {
   return node.isContentNode;
 };
 
-export const isSyntheticInstanceElement = (node: SyntheticNode): node is SyntheticInstanceElement => {
+export const isSyntheticInstanceElement = (
+  node: SyntheticNode
+): node is SyntheticInstanceElement => {
   return Boolean((node as SyntheticInstanceElement).variant);
 };
 
-export const isSyntheticDocument = (node: SyntheticNode): node is SyntheticDocument => {
+export const isSyntheticDocument = (
+  node: SyntheticNode
+): node is SyntheticDocument => {
   return node.name === SYNTHETIC_DOCUMENT_NODE_NAME;
 };
 
-export const isSyntheticElement = (node: SyntheticNode): node is SyntheticElement => {
+export const isSyntheticElement = (
+  node: SyntheticNode
+): node is SyntheticElement => {
   return Boolean((node as SyntheticElement).attributes);
 };
 
-export const isSyntheticTextNode = (node: SyntheticNode): node is SyntheticTextNode => {
+export const isSyntheticTextNode = (
+  node: SyntheticNode
+): node is SyntheticTextNode => {
   return (node as SyntheticTextNode).name === PCSourceTagNames.TEXT;
 };
 
@@ -242,12 +252,30 @@ export const isSyntheticVisibleNodeResizable = (node: SyntheticVisibleNode) =>
  * GETTERS
  *-----------------------------------------*/
 
-export const getInheritedOverrides = memoize((instance: SyntheticElement, document: SyntheticDocument, graph: DependencyGraph, variantId?: string): PCOverride[] => {
-  const parents = filterTreeNodeParents(instance.id, document, () => true) as SyntheticNode[];
-  return parents.reduce((overrides: PCOverride[], parent: SyntheticNode) => {
-    return [...getOverrides(getSyntheticSourceNode(parent, graph)).filter(override => override.variantId == variantId && override.targetIdPath.indexOf(instance.source.nodeId) !== -1), ...overrides];
-  }, EMPTY_ARRAY);
-});
+export const getInheritedOverrides = memoize(
+  (
+    instance: SyntheticElement,
+    document: SyntheticDocument,
+    graph: DependencyGraph,
+    variantId?: string
+  ): PCOverride[] => {
+    const parents = filterTreeNodeParents(
+      instance.id,
+      document,
+      () => true
+    ) as SyntheticNode[];
+    return parents.reduce((overrides: PCOverride[], parent: SyntheticNode) => {
+      return [
+        ...getOverrides(getSyntheticSourceNode(parent, graph)).filter(
+          override =>
+            override.variantId == variantId &&
+            override.targetIdPath.indexOf(instance.source.nodeId) !== -1
+        ),
+        ...overrides
+      ];
+    }, EMPTY_ARRAY);
+  }
+);
 
 export const getSyntheticSourceNode = (
   node: SyntheticVisibleNode | SyntheticDocument,
@@ -275,11 +303,22 @@ export const getSyntheticDocumentByDependencyUri = memoize(
   }
 );
 
-export const getSyntheticContentNode = memoize((node: SyntheticVisibleNode, documentOrDocuments: SyntheticDocument | SyntheticDocument[]) => {
-  const documents = Array.isArray(documentOrDocuments) ? documentOrDocuments : [documentOrDocuments];
-  const document = getSyntheticVisibleNodeDocument(node.id, documents);
-  return document.children.find(contentNode => contentNode.id === node.id || getNestedTreeNodeById(node.id, contentNode));
-});
+export const getSyntheticContentNode = memoize(
+  (
+    node: SyntheticVisibleNode,
+    documentOrDocuments: SyntheticDocument | SyntheticDocument[]
+  ) => {
+    const documents = Array.isArray(documentOrDocuments)
+      ? documentOrDocuments
+      : [documentOrDocuments];
+    const document = getSyntheticVisibleNodeDocument(node.id, documents);
+    return document.children.find(
+      contentNode =>
+        contentNode.id === node.id ||
+        getNestedTreeNodeById(node.id, contentNode)
+    );
+  }
+);
 
 export const getSyntheticDocumentDependencyUri = (
   document: SyntheticDocument,
@@ -331,7 +370,9 @@ export const findInstanceOfPCNode = memoize(
   (node: PCVisibleNode | PCComponent, documents: SyntheticDocument[]) => {
     for (const document of documents) {
       const instance = findNestedNode(document, (instance: SyntheticNode) => {
-        return !instance.isComponentInstance && instance.source.nodeId === node.id;
+        return (
+          !instance.isComponentInstance && instance.source.nodeId === node.id
+        );
       });
       if (instance) {
         return instance;
@@ -399,20 +440,38 @@ export const getNearestComponentInstances = memoize(
   }
 );
 
-export const generateSyntheticDocumentChecksum = memoize((document: SyntheticDocument) => {
-  return getPCNodePreChecksum(document);
-});
+export const generateSyntheticDocumentChecksum = memoize(
+  (document: SyntheticDocument) => {
+    return getPCNodePreChecksum(document);
+  }
+);
 
 const getPCNodePreChecksum = memoize((node: SyntheticNode) => {
-  return crc32(getShallowPCNodePreChecksum(node) + node.children.map(getPCNodePreChecksum).join(""));
+  return crc32(
+    getShallowPCNodePreChecksum(node) +
+      node.children.map(getPCNodePreChecksum).join("")
+  );
 });
 
 const getShallowPCNodePreChecksum = (node: SyntheticNode) => {
-  const base = node.name + node.label + node.source.nodeId + node.immutable + node.isComponentInstance + node.isContentNode + node.isCreatedFromComponent;
+  let base =
+    node.name +
+    node.label +
+    node.source.nodeId +
+    node.immutable +
+    node.isComponentInstance +
+    node.isContentNode +
+    node.isCreatedFromComponent;
   if (isSyntheticDocument(node)) {
     return base;
   } else if (isSyntheticElement(node)) {
-    return base + JSON.stringify(node.attributes) + JSON.stringify(node.style);
+    base += JSON.stringify(node.attributes) + JSON.stringify(node.style);
+
+    if (isSyntheticInstanceElement(node)) {
+      base += JSON.stringify(node.variant);
+    }
+
+    return base;
   } else if (isSyntheticTextNode(node)) {
     return base + node.value + JSON.stringify(node.style);
   } else {

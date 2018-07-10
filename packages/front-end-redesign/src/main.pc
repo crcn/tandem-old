@@ -774,15 +774,6 @@
           "label": "Component Icon"
         },
         {
-          "id": "7ee0bc9411",
-          "name": "text",
-          "label": "Text",
-          "value": "Component 1",
-          "style": {},
-          "children": [],
-          "metadata": {}
-        },
-        {
           "id": "3c166ea00",
           "name": "variant",
           "label": "component",
@@ -858,6 +849,83 @@
       "inheritStyle": {
         "a3596aef32": {
           "priority": 3
+        }
+      }
+    },
+    {
+      "label": "A",
+      "is": "div",
+      "style": {
+        "box-sizing": "border-box",
+        "display": "block"
+      },
+      "attributes": {},
+      "id": "72ad65869",
+      "name": "component",
+      "children": [
+        {
+          "id": "72ad658610",
+          "name": "variant",
+          "label": "abcd",
+          "isDefault": true,
+          "children": [],
+          "metadata": {}
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": 3175.721911202229,
+          "top": -2197.3439139179945,
+          "right": 3275.721911202229,
+          "bottom": -2097.3439139179945
+        }
+      }
+    },
+    {
+      "id": "72ad65868",
+      "label": "Element",
+      "is": "div",
+      "name": "element",
+      "attributes": {},
+      "style": {
+        "box-sizing": "border-box",
+        "display": "block"
+      },
+      "children": [
+        {
+          "id": "72ad658611",
+          "is": "72ad65869",
+          "name": "component-instance",
+          "attributes": {},
+          "style": {},
+          "children": [
+            {
+              "id": "72ad658612",
+              "propertyName": "isDefault",
+              "targetIdPath": [
+                "72ad658610"
+              ],
+              "value": false,
+              "name": "override",
+              "children": []
+            }
+          ],
+          "metadata": {
+            "bounds": {
+              "left": 3175.721911202229,
+              "top": -2197.3439139179945,
+              "right": 3275.721911202229,
+              "bottom": -2097.3439139179945
+            }
+          }
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": 3313.5355788508555,
+          "top": -2229.6503820017974,
+          "right": 3413.5355788508555,
+          "bottom": -2129.6503820017974
         }
       }
     }

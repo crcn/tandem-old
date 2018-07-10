@@ -582,8 +582,76 @@ describe(__filename + "#", () => {
     );
   });
 
-  xit("merges variants when multiple are applied");
-  xit("a variant can be defined by a parent variant");
-  xit("multiple component instance children can be overriden");
-  xit("can evaluate a component from another module");
+  it("can evaluate an overridden variant default that is also empty", () => {
+    const cleanIds = nodeIdCleaner();
+    const variant = cleanIds(createPCVariant(null, true));
+    const component = cleanIds(
+      createPCComponent(null, null, {}, {}, [variant])
+    );
+    const instance = cleanIds(
+      createPCComponentInstance(component.id, {}, {}, [
+        createPCOverride(
+          [variant.id],
+          PCOverridablePropertyName.VARIANT_IS_DEFAULT,
+          false
+        )
+      ])
+    );
+
+    const module = cleanIds(createPCModule([component, instance]));
+
+    const document = clone(
+      cleanIds(evaluatePCModule(module, createFakeGraph(module)))
+    );
+
+    // console.log(JSON.stringify(document, null, 2));
+
+    expect(document).to.eql({
+      id: "000000005",
+      metadata: {},
+      source: {
+        nodeId: "000000004"
+      },
+      name: "document",
+      children: [
+        {
+          id: "000000006",
+          metadata: {},
+          label: null,
+          variant: {
+            "000000000": true
+          },
+          isComponentInstance: false,
+          isCreatedFromComponent: true,
+          isContentNode: true,
+          immutable: false,
+          source: {
+            nodeId: "000000001"
+          },
+          name: "div",
+          attributes: {},
+          style: {},
+          children: []
+        },
+        {
+          id: "000000007",
+          metadata: {},
+          variant: {
+            "000000000": false
+          },
+          isComponentInstance: true,
+          isCreatedFromComponent: true,
+          isContentNode: true,
+          immutable: false,
+          source: {
+            nodeId: "000000002"
+          },
+          name: "div",
+          attributes: {},
+          style: {},
+          children: []
+        }
+      ]
+    });
+  });
 });

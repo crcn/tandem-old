@@ -1052,9 +1052,10 @@ const maybeOverride = (
   ) {
     const document = getSyntheticVisibleNodeDocument(node.id, documents);
 
-    const nearestComponentInstances = !node.immutable
-      ? [contentNode]
-      : getNearestComponentInstances(node, document);
+    const nearestComponentInstances = getNearestComponentInstances(
+      node,
+      document
+    );
 
     const mutableInstance: SyntheticVisibleNode = nearestComponentInstances.find(
       instance => !instance.immutable
