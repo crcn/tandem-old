@@ -14,7 +14,7 @@ import {
   isSyntheticInstanceElement,
   PCVariant,
   getPCVariantOverrides,
-  getInheritedOverrides,
+  getInheritedAndSelfOverrides,
   PCOverridablePropertyName
 } from "paperclip";
 import { Dispatch } from "redux";
@@ -84,12 +84,13 @@ export default compose(
 
     const component = getPCNode(instance.is, graph) as PCComponent;
     const componentVariants = getPCVariants(component);
-    const overrides = getInheritedOverrides(
+    const overrides = getInheritedAndSelfOverrides(
       node,
       syntheticDocument,
       graph,
       selectedVariant && selectedVariant.id
     );
+
     const variantOverrides = overrides.filter(
       override =>
         override.propertyName === PCOverridablePropertyName.VARIANT_IS_DEFAULT

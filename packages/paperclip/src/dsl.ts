@@ -484,7 +484,7 @@ export const getPCVariantOverrides = memoize(
         isPCOverride(override) &&
         override.propertyName ===
           PCOverridablePropertyName.VARIANT_IS_DEFAULT &&
-        override.variantId === variantId
+        override.variantId == variantId
     ) as PCVariantOverride[]
 );
 

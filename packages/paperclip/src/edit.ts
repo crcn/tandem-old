@@ -73,7 +73,7 @@ import {
   isSyntheticDocument,
   getSyntheticContentNode,
   SyntheticInstanceElement,
-  getInheritedOverrides
+  getInheritedAndSelfOverrides
 } from "./synthetic";
 import * as path from "path";
 import { convertFixedBoundsToRelative } from "./synthetic-layout";
@@ -807,7 +807,7 @@ export const persistRemoveVariantOverride = <TState extends PCEditorState>(
   variant: PCVariant,
   state: TState
 ): TState => {
-  const override = getInheritedOverrides(
+  const override = getInheritedAndSelfOverrides(
     instance,
     getSyntheticVisibleNodeDocument(instance.id, state.documents),
     state.graph,

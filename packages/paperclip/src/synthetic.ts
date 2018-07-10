@@ -35,7 +35,8 @@ import {
   PCComponent,
   getPCNodeModule,
   PCComponentInstanceElement,
-  getOverrides
+  getOverrides,
+  getPCVariantOverrides
 } from "./dsl";
 import { diffTreeNode, patchTreeNode } from "./ot";
 
@@ -252,7 +253,7 @@ export const isSyntheticVisibleNodeResizable = (node: SyntheticVisibleNode) =>
  * GETTERS
  *-----------------------------------------*/
 
-export const getInheritedOverrides = memoize(
+export const getInheritedAndSelfOverrides = memoize(
   (
     instance: SyntheticElement,
     document: SyntheticDocument,
@@ -264,6 +265,7 @@ export const getInheritedOverrides = memoize(
       document,
       () => true
     ) as SyntheticNode[];
+
     return parents.reduce((overrides: PCOverride[], parent: SyntheticNode) => {
       return [
         ...getOverrides(getSyntheticSourceNode(parent, graph)).filter(
@@ -273,7 +275,7 @@ export const getInheritedOverrides = memoize(
         ),
         ...overrides
       ];
-    }, EMPTY_ARRAY);
+    }, getPCVariantOverrides(getSyntheticSourceNode(instance, graph) as PCComponentInstanceElement, variantId));
   }
 );
 

@@ -497,7 +497,7 @@ describe(__filename + "#", () => {
     });
   });
 
-  xit("can evaluate a component with a variant", () => {
+  it("can evaluate a component with a variant", () => {
     const cleanIds = nodeIdCleaner();
 
     const variant1 = cleanIds(createPCVariant("a"));
@@ -523,63 +523,91 @@ describe(__filename + "#", () => {
       ])
     );
 
-    const document = evaluatePCModule(module, createFakeGraph(module));
-
-    expect(nodeIdCleaner()(document.children[0])).to.eql(
-      nodeIdCleaner()(
-        createSyntheticElement(
-          "div",
-          { nodeId: "000000003" },
-          {},
-          {},
-          [
-            createSyntheticElement(
-              "a",
-              { nodeId: "000000001" },
-              { color: "blue" },
-              {},
-              [],
-              undefined,
-              false,
-              true,
-              false
-            )
-          ],
-          "Test",
-          true,
-          true,
-          false
-        )
-      )
+    const document = clone(
+      cleanIds(evaluatePCModule(module, createFakeGraph(module)))
     );
 
-    expect(nodeIdCleaner()(document.children[1])).to.eql(
-      nodeIdCleaner()(
-        createSyntheticElement(
-          "div",
-          { nodeId: "000000005" },
-          {},
-          {},
-          [
-            createSyntheticElement(
-              "a",
-              { nodeId: "000000001" },
-              { color: "red" },
-              {},
-              [],
-              undefined,
-              false,
-              true,
-              false
-            )
-          ],
-          "Test",
-          true,
-          true,
-          true
-        )
-      )
-    );
+    expect(document).to.eql({
+      id: "000000006",
+      metadata: {},
+      source: {
+        nodeId: "000000004"
+      },
+      name: "document",
+      children: [
+        {
+          id: "000000007",
+          metadata: {},
+          label: "Test",
+          variant: {},
+          isComponentInstance: false,
+          isCreatedFromComponent: true,
+          isContentNode: true,
+          immutable: false,
+          source: {
+            nodeId: "000000003"
+          },
+          name: "div",
+          attributes: {},
+          style: {},
+          children: [
+            {
+              id: "000000008",
+              metadata: {},
+              isComponentInstance: false,
+              isCreatedFromComponent: true,
+              isContentNode: false,
+              immutable: false,
+              source: {
+                nodeId: "000000001"
+              },
+              name: "a",
+              attributes: {},
+              style: {
+                color: "blue"
+              },
+              children: []
+            }
+          ]
+        },
+        {
+          id: "000000009",
+          metadata: {},
+          variant: {},
+          isComponentInstance: true,
+          isCreatedFromComponent: true,
+          isContentNode: true,
+          immutable: false,
+          source: {
+            nodeId: "000000005"
+          },
+          name: "div",
+          attributes: {},
+          style: {
+            "0": "000000000"
+          },
+          children: [
+            {
+              id: "0000000010",
+              metadata: {},
+              isComponentInstance: false,
+              isCreatedFromComponent: true,
+              isContentNode: false,
+              immutable: true,
+              source: {
+                nodeId: "000000001"
+              },
+              name: "a",
+              attributes: {},
+              style: {
+                color: "blue"
+              },
+              children: []
+            }
+          ]
+        }
+      ]
+    });
   });
 
   it("can evaluate an overridden variant default that is also empty", () => {
