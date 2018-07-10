@@ -8,7 +8,7 @@
       "is": "svg",
       "style": {
         "display": "block",
-        "height": "1em"
+        "height": "1.4em"
       },
       "attributes": {
         "xmlns": "http://www.w3.org/2000/svg",
@@ -287,7 +287,7 @@
       "is": "svg",
       "style": {
         "display": "block",
-        "height": "1em"
+        "height": "1.4em"
       },
       "attributes": {
         "xmlns:dc": "http://purl.org/dc/elements/1.1/",

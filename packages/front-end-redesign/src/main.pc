@@ -194,7 +194,7 @@
             "box-sizing": "border-box",
             "display": "block",
             "padding-left": "16px",
-            "padding-top": "8px",
+            "padding-top": "4px",
             "padding-right": "8px",
             "padding-bottom": "8px"
           },
@@ -310,6 +310,19 @@
                 }
               ],
               "metadata": {}
+            },
+            {
+              "id": "3c166ea013",
+              "variantId": null,
+              "propertyName": "style",
+              "targetIdPath": [
+                "f8488dc819"
+              ],
+              "value": {
+                "padding-right": "1px"
+              },
+              "name": "override",
+              "children": []
             }
           ],
           "metadata": {
@@ -554,6 +567,21 @@
               },
               "name": "override",
               "children": []
+            },
+            {
+              "id": "3c166ea014",
+              "variantId": null,
+              "propertyName": "style",
+              "targetIdPath": [
+                "a3596aef6",
+                "7ee0bc9413",
+                "7ee0bc9410"
+              ],
+              "value": {
+                "margin-right": "4px"
+              },
+              "name": "override",
+              "children": []
             }
           ],
           "metadata": {}
@@ -678,13 +706,12 @@
       "style": {
         "box-sizing": "border-box",
         "display": "flex",
-        "background": "rgba(33, 37, 53, 1)",
         "color": "rgba(244, 244, 244, 0.62)",
         "opacity": "1",
         "padding-left": "16px",
-        "padding-top": "8px",
+        "padding-top": "4px",
         "padding-right": "16px",
-        "padding-bottom": "8px",
+        "padding-bottom": "4px",
         "align-items": "center",
         "font-family": "Roboto",
         "letter-spacing": "0.1em"
@@ -719,7 +746,7 @@
           "name": "component-instance",
           "attributes": {},
           "style": {
-            "margin-right": "8px",
+            "margin-right": "4px",
             "display": "none"
           },
           "children": [
@@ -787,7 +814,8 @@
             "7ee0bc9410"
           ],
           "value": {
-            "display": "none"
+            "display": "none",
+            "margin-right": "4px"
           },
           "name": "override",
           "children": []
@@ -828,11 +856,8 @@
         }
       },
       "inheritStyle": {
-        "700096c74": {
-          "priority": 2
-        },
         "a3596aef32": {
-          "priority": 0
+          "priority": 3
         }
       }
     }

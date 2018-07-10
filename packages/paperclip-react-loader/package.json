@@ -17,5 +17,8 @@
     "paperclip": "^10.0.12",
     "paperclip-migrator": "^10.0.12",
     "paperclip-react-compiler": "^10.0.12"
+  },
+  "devDependencies": {
+    "typescript": "^2.9.2"
   }
 }

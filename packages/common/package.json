@@ -20,6 +20,7 @@
   "devDependencies": {
     "@types/node": "^10.1.2",
     "husky": "^0.14.3",
-    "lint-staged": "^7.1.2"
+    "lint-staged": "^7.1.2",
+    "typescript": "^2.9.2"
   }
 }
