@@ -306,7 +306,6 @@
         "padding-right": "16px",
         "padding-bottom": "8px",
         "align-items": "center",
-        "border-top": "1px  rgba(44, 0, 0, 0.05)",
         "justify-content": "space-between"
       },
       "attributes": {},
@@ -573,9 +572,7 @@
           "variantId": "d3bf183b25",
           "propertyName": "style",
           "targetIdPath": [],
-          "value": {
-            "border-top": "1px solid rgba(0, 0, 0, 0.05)"
-          },
+          "value": {},
           "name": "override",
           "children": []
         },
@@ -634,8 +631,7 @@
           "propertyName": "style",
           "targetIdPath": [],
           "value": {
-            "background": "rgba(246, 245, 245, 1)",
-            "border-top": "1px  rgba(44, 0, 0, 0.05)"
+            "background": "rgba(246, 245, 245, 1)"
           },
           "name": "override",
           "children": []
