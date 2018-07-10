@@ -55,7 +55,7 @@
               "name": "component-instance",
               "attributes": {},
               "style": {
-                "padding-left": "28px"
+                "padding-left": "34px"
               },
               "children": [
                 {
@@ -151,7 +151,7 @@
               "name": "component-instance",
               "attributes": {},
               "style": {
-                "padding-left": "28px"
+                "padding-left": "34px"
               },
               "children": [
                 {
@@ -345,24 +345,12 @@
                   "attributes": {},
                   "style": {
                     "display": "none",
-                    "height": "12px",
+                    "height": "1.7em",
                     "position": "absolute",
                     "top": "-6px",
                     "margin-right": "4px"
                   },
-                  "children": [
-                    {
-                      "id": "355706ad2",
-                      "variantId": null,
-                      "propertyName": "style",
-                      "targetIdPath": [],
-                      "value": {
-                        "height": "1.7em"
-                      },
-                      "name": "override",
-                      "children": []
-                    }
-                  ],
+                  "children": [],
                   "metadata": {
                     "bounds": {
                       "left": -1257,
@@ -379,23 +367,13 @@
                   "attributes": {},
                   "style": {
                     "display": "none",
-                    "height": "14px",
+                    "height": " 1.7em",
                     "position": "absolute",
                     "top": "-8px",
-                    "margin-right": "4px"
+                    "margin-right": "4px",
+                    "left": "-2px"
                   },
                   "children": [
-                    {
-                      "id": "e5ca0a5b2",
-                      "variantId": null,
-                      "propertyName": "style",
-                      "targetIdPath": [],
-                      "value": {
-                        "height": "14px"
-                      },
-                      "name": "override",
-                      "children": []
-                    },
                     {
                       "id": "e5ca0a5b3",
                       "variantId": "d3bf183b30",
