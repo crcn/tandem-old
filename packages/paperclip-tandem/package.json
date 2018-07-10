@@ -10,5 +10,8 @@
     "prepare": "npm run build"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "typescript": "^2.9.2"
+  }
 }
