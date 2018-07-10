@@ -864,12 +864,34 @@
       "name": "component",
       "children": [
         {
+          "id": "4769ff0e0",
+          "name": "text",
+          "label": "Text",
+          "value": "Click to edit",
+          "style": {
+            "font-size": "9px"
+          },
+          "children": [],
+          "metadata": {}
+        },
+        {
           "id": "72ad658610",
           "name": "variant",
           "label": "abcd",
-          "isDefault": true,
+          "isDefault": false,
           "children": [],
           "metadata": {}
+        },
+        {
+          "id": "4769ff0e1",
+          "variantId": "72ad658610",
+          "propertyName": "style",
+          "targetIdPath": [
+            "4769ff0e0"
+          ],
+          "value": {},
+          "name": "override",
+          "children": []
         }
       ],
       "metadata": {
@@ -878,54 +900,6 @@
           "top": -2197.3439139179945,
           "right": 3275.721911202229,
           "bottom": -2097.3439139179945
-        }
-      }
-    },
-    {
-      "id": "72ad65868",
-      "label": "Element",
-      "is": "div",
-      "name": "element",
-      "attributes": {},
-      "style": {
-        "box-sizing": "border-box",
-        "display": "block"
-      },
-      "children": [
-        {
-          "id": "72ad658611",
-          "is": "72ad65869",
-          "name": "component-instance",
-          "attributes": {},
-          "style": {},
-          "children": [
-            {
-              "id": "72ad658612",
-              "propertyName": "isDefault",
-              "targetIdPath": [
-                "72ad658610"
-              ],
-              "value": false,
-              "name": "override",
-              "children": []
-            }
-          ],
-          "metadata": {
-            "bounds": {
-              "left": 3175.721911202229,
-              "top": -2197.3439139179945,
-              "right": 3275.721911202229,
-              "bottom": -2097.3439139179945
-            }
-          }
-        }
-      ],
-      "metadata": {
-        "bounds": {
-          "left": 3313.5355788508555,
-          "top": -2229.6503820017974,
-          "right": 3413.5355788508555,
-          "bottom": -2129.6503820017974
         }
       }
     }

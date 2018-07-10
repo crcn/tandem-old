@@ -55,7 +55,9 @@
           "targetIdPath": [
             "b6c162d140"
           ],
-          "value": {},
+          "value": {
+            "padding-bottom": "8px"
+          },
           "name": "override",
           "children": []
         }

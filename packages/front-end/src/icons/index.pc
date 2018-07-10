@@ -732,7 +732,10 @@
     {
       "label": "Puzzle Icon",
       "is": "svg",
-      "style": {},
+      "style": {
+        "display": "block",
+        "height": "1.5em"
+      },
       "attributes": {
         "xmlns": "http://www.w3.org/2000/svg",
         "xmlns:xlink": "http://www.w3.org/1999/xlink",
@@ -2176,7 +2179,10 @@
     {
       "label": "Shadow Icon",
       "is": "svg",
-      "style": {},
+      "style": {
+        "display": "block",
+        "height": "1.4em"
+      },
       "attributes": {
         "xmlns": "http://www.w3.org/2000/svg",
         "xmlns:xlink": "http://www.w3.org/1999/xlink",
@@ -2246,7 +2252,9 @@
               "is": "g",
               "name": "element",
               "attributes": {},
-              "style": {},
+              "style": {
+                "background": "currentColor"
+              },
               "children": [
                 {
                   "id": "28fcc84625",

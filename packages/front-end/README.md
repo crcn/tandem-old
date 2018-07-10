@@ -6,6 +6,8 @@ OBJECTIVE:
 IMMEDIATE:
 
 - inherit style must work work with variants
+- measure tool for distance between elements
+- show hovered element heights
 - shadow DOM updates.
   - needs to come first since it will affect data model
   - keep this in tandem with pane panes
