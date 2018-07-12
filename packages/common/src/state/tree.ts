@@ -1,11 +1,8 @@
 import { memoize } from "../utils/memoization";
 const crc32 = require("crc32");
-import { merge } from "lodash";
 import { arraySplice } from "../utils/array";
-import { UIDGenerator, createUIDGenerator } from "../utils/uid";
+import { createUIDGenerator } from "../utils/uid";
 import { generateUID } from "../utils/uid";
-import { EMPTY_ARRAY, EMPTY_OBJECT } from "../utils/object";
-import { RecursivePartial } from "../utils/types";
 
 export enum TreeMoveOffset {
   PREPEND = 0,
@@ -78,20 +75,24 @@ export const filterNestedNodes = memoize(
   }
 );
 
-export const getChildParentMap = memoize((current: TreeNode<any>): {
-  [identifier: string]: TreeNode<any>;
-} => {
-  const idMap = getTreeNodeIdMap(current);
-  const parentChildMap: any = {};
+export const getChildParentMap = memoize(
+  (
+    current: TreeNode<any>
+  ): {
+    [identifier: string]: TreeNode<any>;
+  } => {
+    const idMap = getTreeNodeIdMap(current);
+    const parentChildMap: any = {};
 
-  for (const id in idMap) {
-    const parent = idMap[id];
-    for (const child of parent.children) {
-      parentChildMap[child.id] = parent;
+    for (const id in idMap) {
+      const parent = idMap[id];
+      for (const child of parent.children) {
+        parentChildMap[child.id] = parent;
+      }
     }
+    return parentChildMap;
   }
-  return parentChildMap;
-});
+);
 
 export type TreeNodeIdMap = {
   [identifier: string]: TreeNode<any>;
@@ -190,6 +191,12 @@ export const getTreeNodeFromPath = memoize(
 export const getNestedTreeNodeById = memoize(
   <TNode extends TreeNode<any>>(id: string, root: TNode): TNode => {
     return getTreeNodeIdMap(root)[id] as TNode;
+  }
+);
+
+export const containsNestedTreeNodeById = memoize(
+  <TNode extends TreeNode<any>>(id: string, root: TNode) => {
+    return Boolean(getTreeNodeIdMap(root)[id]);
   }
 );
 

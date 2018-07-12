@@ -5,7 +5,7 @@ OBJECTIVE:
 
 IMMEDIATE:
 
-- ## PROBLEMS
+- expansion based on instance path
 
 - shadow DOM
   - Update UI to reflect shadow (implicit)

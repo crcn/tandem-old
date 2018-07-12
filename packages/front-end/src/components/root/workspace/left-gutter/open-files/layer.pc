@@ -340,9 +340,10 @@
             "display": "block",
             "height": "12px",
             "position": "relative",
-            "top": "2px",
+            "top": "0px",
             "opacity": "0.353",
-            "rotate": ""
+            "transform": "rotate(-90deg)",
+            "left": "1px"
           },
           "children": [
             {
@@ -354,6 +355,19 @@
               ],
               "value": {
                 "opacity": 0.491
+              },
+              "name": "override",
+              "children": []
+            },
+            {
+              "id": "60bb6ec41",
+              "variantId": "d3bf183b37",
+              "propertyName": "style",
+              "targetIdPath": [],
+              "value": {
+                "transform": "unset",
+                "top": "2px",
+                "left": "0px"
               },
               "name": "override",
               "children": []

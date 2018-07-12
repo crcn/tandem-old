@@ -4,26 +4,62 @@ import { compose, pure } from "recompose";
 import {
   SyntheticNode,
   PCNode,
-  isComponent,
-  isPCComponentInstance,
-  PCSourceTagNames
+  PCSourceTagNames,
+  getPCNode,
+  extendsComponent,
+  DependencyGraph
 } from "paperclip";
 
 export type LayerControllerOuterProps = {
   depth?: number;
+  graph: DependencyGraph;
   sourceNode: PCNode;
-  alt: boolean;
   syntheticNode: SyntheticNode;
 };
 
-export default compose(
+const EnhancedLayer = compose<
+  LayerControllerOuterProps,
+  LayerControllerOuterProps
+>(
   pure,
   Base => ({
+    graph,
     depth = 1,
-    alt,
     sourceNode,
     syntheticNode
   }: LayerControllerOuterProps) => {
+    const expanded = true;
+    let children;
+
+    if (expanded) {
+      const childDepth = depth + 1;
+      if (
+        sourceNode.name === PCSourceTagNames.COMPONENT_INSTANCE ||
+        (sourceNode.name === PCSourceTagNames.COMPONENT &&
+          extendsComponent(sourceNode))
+      ) {
+        children = [
+          <EnhancedLayer
+            key="shadow"
+            depth={childDepth}
+            sourceNode={getPCNode(sourceNode.id, graph)}
+            graph={graph}
+            syntheticNode={null}
+          />
+        ];
+      } else {
+        children = sourceNode.children.map(child => {
+          return (
+            <EnhancedLayer
+              key={child.id}
+              depth={childDepth}
+              sourceNode={child}
+              graph={graph}
+            />
+          );
+        });
+      }
+    }
     return (
       <span>
         <Base
@@ -36,11 +72,14 @@ export default compose(
             shadow: false
           })}
           labelProps={{
-            text: syntheticNode.label
+            text: syntheticNode && syntheticNode.label
           }}
           style={{ paddingLeft: depth * 16 }}
         />
+        {children}
       </span>
     );
   }
-);
+) as any;
+
+export default EnhancedLayer;

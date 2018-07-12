@@ -36,6 +36,7 @@ export default compose<
           return (
             <NodeLayer
               depth={2}
+              graph={graph}
               sourceNode={getSyntheticSourceNode(child, graph)}
               syntheticNode={child}
             />

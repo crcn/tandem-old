@@ -14,7 +14,7 @@ import {
   filterTreeNodeParents,
   NodeFilter
 } from "tandem-common";
-import { mapValues, merge, uniq, isEqual } from "lodash";
+import { uniq, isEqual } from "lodash";
 import { Dependency, DependencyGraph, updateGraphDependency } from "./graph";
 
 export const PAPERCLIP_MODULE_VERSION = "0.0.3";
@@ -41,7 +41,9 @@ export enum PCOverridablePropertyName {
   VARIANT_IS_DEFAULT = "isDefault",
   STYLE = "style",
   ATTRIBUTES = "attributes",
-  LABEL = "label"
+  LABEL = "label",
+  SLOT = "slot",
+  CONTENT = "content"
 }
 
 export enum PCVisibleNodeMetadataKey {
