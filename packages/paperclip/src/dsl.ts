@@ -157,9 +157,19 @@ export type PCBaseVisibleNode<TName extends PCSourceTagNames> = {
   inheritStyle?: InheritStyle;
 } & PCBaseSourceNode<TName>;
 
+export type PCPropertyBindings = {
+  // to property name: from property name
+  [identifier: string]: string;
+};
+
+export type PCBaseElementBindings = {
+  properties?: PCPropertyBindings;
+};
+
 export type PCBaseElement<TName extends PCSourceTagNames> = {
   is: string;
   attributes: KeyValue<string>;
+  bind?: PCBaseElementBindings;
   children: (PCBaseVisibleNode<any> | PCOverride)[];
 } & PCBaseVisibleNode<TName>;
 
@@ -510,6 +520,80 @@ export const getPCNodeDependency = memoize(
       }
     }
     return null;
+  }
+);
+
+export const isSlottableNode = memoize((node: PCVisibleNode | PCComponent) => {
+  return Boolean(
+    (node.name === PCSourceTagNames.ELEMENT ||
+      node.name === PCSourceTagNames.COMPONENT_INSTANCE ||
+      node.name === PCSourceTagNames.COMPONENT) &&
+      node.bind &&
+      node.bind.properties &&
+      node.bind.properties[PCOverridablePropertyName.CHILDREN]
+  );
+});
+
+let slotCount = 0;
+
+const generateSlotName = () => `slot${++slotCount}`;
+
+export const makePCNodeSlottable = memoize(
+  (node: PCVisibleNode | PCComponent) => {
+    if (isSlottableNode(node)) {
+      return node;
+    }
+  }
+);
+
+export const addPCNodePropertyBinding = memoize(
+  (
+    node: PCVisibleNode | PCComponent,
+    bindProperty: string,
+    sourceProperty: string
+  ) => {
+    // TODO - assert that property binding does not exist
+    // TODO
+  }
+);
+
+export const getInstanceShadow = memoize(
+  (
+    instance: PCComponentInstanceElement,
+    graph: DependencyGraph
+  ): PCComponent => {
+    return getPCNode(instance.is, graph) as PCComponent;
+  }
+);
+
+/**
+ * Scans a compoent instance for elements that can be slotted in.
+ */
+
+export const getSlottableNodes = memoize(
+  (instance: PCComponentInstanceElement, graph: DependencyGraph) => {
+    return getInstanceExtends(instance, graph).reduce(
+      (slottables, component) => {
+        return [...slottables, findNestedNode(component, isSlottableNode)];
+      },
+      EMPTY_ARRAY
+    );
+  }
+);
+
+export const getInstanceExtends = memoize(
+  (
+    instance: PCComponentInstanceElement,
+    graph: DependencyGraph
+  ): PCComponent[] => {
+    let current: PCComponent | PCComponentInstanceElement = instance;
+    const components = [];
+
+    while (current) {
+      components.push((current = getPCNode(current.is, graph) as PCComponent));
+    }
+
+    return components;
   }
 );
 

@@ -2190,7 +2190,6 @@
         "x": "0px",
         "y": "0px",
         "viewBox": "0 0 100 100",
-        "style": "enable-background:new 0 0 100 100;",
         "xml:space": "preserve"
       },
       "id": "28fcc84635",
@@ -2397,6 +2396,263 @@
           "top": 1997,
           "right": -2414,
           "bottom": 2297
+        }
+      }
+    },
+    {
+      "label": "Insert Icon",
+      "is": "svg",
+      "style": {},
+      "attributes": {
+        "xmlns": "http://www.w3.org/2000/svg",
+        "viewBox": "0 0 100 100",
+        "x": "0px",
+        "y": "0px"
+      },
+      "id": "64048c6613",
+      "name": "component",
+      "children": [
+        {
+          "id": "64048c668",
+          "is": "title",
+          "name": "element",
+          "attributes": {},
+          "style": {},
+          "children": [
+            {
+              "id": "64048c669",
+              "name": "text",
+              "label": "test",
+              "value": "test",
+              "style": {},
+              "children": [],
+              "metadata": {}
+            }
+          ],
+          "metadata": {}
+        },
+        {
+          "id": "64048c6610",
+          "is": "polygon",
+          "name": "element",
+          "attributes": {
+            "points": "62 49 62 76 26 76 26 40 52 40 52 37 23 37 23 79 65 79 65 49 62 49"
+          },
+          "style": {
+            "background": "currentColor"
+          },
+          "children": [],
+          "metadata": {}
+        },
+        {
+          "id": "64048c6611",
+          "is": "path",
+          "name": "element",
+          "attributes": {
+            "d": "M78,49V23H52V45.26l-6.89,6.89-5.66-5.66L38,63.46l17-1.41-5.66-5.66L56.74,49ZM55,26H75V46H55Z"
+          },
+          "style": {
+            "background": "currentColor"
+          },
+          "children": [],
+          "metadata": {}
+        },
+        {
+          "id": "64048c6612",
+          "is": "rect",
+          "name": "element",
+          "attributes": {
+            "x": "59",
+            "y": "30",
+            "width": "12",
+            "height": "12"
+          },
+          "style": {
+            "background": "currentColor"
+          },
+          "children": [],
+          "metadata": {}
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": -891,
+          "top": -240,
+          "right": -491,
+          "bottom": 60
+        }
+      }
+    },
+    {
+      "label": "Component Icon",
+      "is": "svg",
+      "style": {
+        "height": "1.2em"
+      },
+      "attributes": {
+        "xmlns:dc": "http://purl.org/dc/elements/1.1/",
+        "xmlns:cc": "http://creativecommons.org/ns#",
+        "xmlns:rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+        "xmlns:svg": "http://www.w3.org/2000/svg",
+        "xmlns": "http://www.w3.org/2000/svg",
+        "xmlns:sodipodi": "http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd",
+        "xmlns:inkscape": "http://www.inkscape.org/namespaces/inkscape",
+        "viewBox": "0 0 26.4583 26.4583",
+        "version": "1.1",
+        "x": "0px",
+        "y": "0px"
+      },
+      "id": "724c3c9e7",
+      "name": "component",
+      "children": [
+        {
+          "id": "724c3c9e5",
+          "is": "g",
+          "name": "element",
+          "attributes": {
+            "transform": "translate(0,-270.542)"
+          },
+          "style": {
+            "background": "rgba(200, 200, 200, 1)"
+          },
+          "children": [
+            {
+              "id": "724c3c9e6",
+              "is": "path",
+              "name": "element",
+              "attributes": {
+                "d": "m 1.32292,271.865 v 0.621 9.961 H 11.9068 v -10.582 z m 13.23018,0 v 0.621 9.961 h 10.5823 v -10.582 z m -11.98426,1.244 h 8.09196 v 8.094 H 2.56884 Z m 13.22866,0 h 8.0935 v 8.094 H 15.7975 Z M 1.32292,285.094 v 0.623 9.961 H 11.9068 v -10.584 z m 18.52128,0 c -2.9152,0 -5.2911,2.376 -5.2911,5.291 0,2.915 2.3759,5.293 5.2911,5.293 2.9151,0 5.2912,-2.378 5.2912,-5.293 0,-2.915 -2.3761,-5.291 -5.2912,-5.291 z M 2.56884,286.34 h 8.09196 v 8.092 H 2.56884 Z m 17.27536,0 c 2.2423,0 4.0468,1.803 4.0468,4.045 0,2.242 -1.8045,4.047 -4.0468,4.047 -2.2422,0 -4.0467,-1.805 -4.0467,-4.047 0,-2.242 1.8045,-4.045 4.0467,-4.045 z"
+              },
+              "style": {
+                "background": "currentColor"
+              },
+              "children": [],
+              "metadata": {}
+            }
+          ],
+          "metadata": {}
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": -1837,
+          "top": -318,
+          "right": -1437,
+          "bottom": -18
+        }
+      }
+    },
+    {
+      "label": "Circle Icon",
+      "is": "svg",
+      "style": {
+        "height": "1em"
+      },
+      "attributes": {
+        "xmlns:dc": "http://purl.org/dc/elements/1.1/",
+        "xmlns:cc": "http://creativecommons.org/ns#",
+        "xmlns:rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+        "xmlns:svg": "http://www.w3.org/2000/svg",
+        "xmlns": "http://www.w3.org/2000/svg",
+        "xmlns:sodipodi": "http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd",
+        "xmlns:inkscape": "http://www.inkscape.org/namespaces/inkscape",
+        "version": "1.1",
+        "x": "0px",
+        "y": "0px",
+        "viewBox": "0 0 100 100"
+      },
+      "id": "10f7fc1a7",
+      "name": "component",
+      "children": [
+        {
+          "id": "10f7fc1a5",
+          "is": "g",
+          "name": "element",
+          "attributes": {
+            "transform": "translate(0,-952.36218)"
+          },
+          "style": {},
+          "children": [
+            {
+              "id": "10f7fc1a6",
+              "is": "path",
+              "name": "element",
+              "attributes": {
+                "d": "m 49.999998,970.36218 c -17.64942,0 -32,14.3508 -32,32.00002 0,17.6493 14.35059,32 32,32 17.649414,0 32.000004,-14.3507 32.000004,-32 0,-17.64922 -14.35058,-32.00002 -32.000004,-32.00002 z m 0,4 c 15.487624,0 28.000004,12.5126 28.000004,28.00002 0,15.4875 -12.51237,28 -28.000004,28 -15.48763,0 -28,-12.5125 -28,-28 0,-15.48742 12.51238,-28.00002 28,-28.00002 z",
+                "fill": "#000000",
+                "fill-opacity": "1",
+                "stroke": "none",
+                "marker": "none",
+                "visibility": "visible",
+                "display": "inline",
+                "overflow": "visible"
+              },
+              "style": {
+                "background": "currentColor"
+              },
+              "children": [],
+              "metadata": {}
+            }
+          ],
+          "metadata": {}
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": -237,
+          "top": -320,
+          "right": 163,
+          "bottom": -20
+        }
+      }
+    },
+    {
+      "label": "File Icon",
+      "is": "svg",
+      "style": {},
+      "attributes": {
+        "xmlns": "http://www.w3.org/2000/svg",
+        "xmlns:xlink": "http://www.w3.org/1999/xlink",
+        "version": "1.1",
+        "x": "0px",
+        "y": "0px",
+        "viewBox": "0 0 100 100",
+        "enable-background": "new 0 0 100 100",
+        "xml:space": "preserve"
+      },
+      "id": "a6fd80837",
+      "name": "component",
+      "children": [
+        {
+          "id": "a6fd80835",
+          "is": "g",
+          "name": "element",
+          "attributes": {},
+          "style": {},
+          "children": [
+            {
+              "id": "a6fd80836",
+              "is": "path",
+              "name": "element",
+              "attributes": {
+                "d": "M82.111,95c1.207,0,2.185-0.978,2.185-2.185V28.593c0-0.144-0.015-0.287-0.043-0.429c-0.014-0.066-0.037-0.128-0.058-0.193   c-0.021-0.071-0.037-0.145-0.066-0.213c-0.032-0.077-0.075-0.148-0.116-0.221c-0.027-0.053-0.051-0.106-0.083-0.155   c-0.082-0.12-0.173-0.234-0.276-0.337L62.251,5.643c-0.103-0.104-0.216-0.194-0.336-0.275c-0.05-0.032-0.104-0.056-0.155-0.084   c-0.073-0.041-0.144-0.084-0.221-0.116c-0.069-0.029-0.142-0.045-0.214-0.066c-0.065-0.02-0.126-0.044-0.193-0.058   C60.991,5.016,60.848,5,60.704,5H17.889c-1.206,0-2.185,0.978-2.185,2.185v85.631c0,1.207,0.979,2.185,2.185,2.185H82.111z    M62.889,12.458l13.949,13.949H62.889V12.458z M20.072,9.368H58.52v19.225c0,1.206,0.979,2.185,2.185,2.185h19.223v59.854H20.072   V9.368z"
+              },
+              "style": {
+                "background": "currentColor"
+              },
+              "children": [],
+              "metadata": {}
+            }
+          ],
+          "metadata": {}
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": -2548,
+          "top": 163,
+          "right": -2148,
+          "bottom": 463
         }
       }
     }

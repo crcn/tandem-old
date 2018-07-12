@@ -5,13 +5,19 @@ OBJECTIVE:
 
 IMMEDIATE:
 
+- ## PROBLEMS
+
 - shadow DOM
+  - Update UI to reflect shadow (implicit)
+  - generate random slot name
+  - property bindings UI
+    - overridable children (will show up as a slot in the UI)cc
   - update paperclip to new shadow DOM
-    - new DSL
     - evaluator must work
     - better patching algorithm for synthetic DOM - `patchSyntheticDOM(syntheticDOM, dslOTs)`
       - this should probably be done internally withinthe synthetic eval script
   - update front-end to persist to data model
+  - warning for any case where child overrides exist
   - start refactoring front-end UI to new shadow DOM
   - refactor left side gutter (litmus test)
 
@@ -19,7 +25,7 @@ IMMEDIATE:
 * measure tool for distance between elements
 * show hovered element heights
 * shadow DOM updates.
-  - needs to come first since it will affect data model
+  - needs to come first since it will affect data model c
   - keep this in tandem with pane panes
 * update all icons to have same padding
 * box shadow color picking doesn't work properly

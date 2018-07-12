@@ -10,7 +10,8 @@ import {
   createPCVariant,
   createPCDependency,
   createPCOverride,
-  PCOverridablePropertyName
+  PCOverridablePropertyName,
+  createPCTextNode
 } from "../dsl";
 import { cloneTreeNode } from "tandem-common";
 import { DependencyGraph } from "../graph";

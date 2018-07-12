@@ -102,23 +102,6 @@
               "bottom": 624.6903757530276
             }
           }
-        },
-        {
-          "id": "317401b1702183",
-          "variant": {},
-          "is": "317401b1511417",
-          "name": "component-instance",
-          "attributes": {},
-          "style": {},
-          "children": [],
-          "metadata": {
-            "bounds": {
-              "left": 532,
-              "top": 633,
-              "right": 736,
-              "bottom": 731.3571410945103
-            }
-          }
         }
       ],
       "metadata": {

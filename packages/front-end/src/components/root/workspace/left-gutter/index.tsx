@@ -4,6 +4,7 @@ import { Directory } from "tandem-common";
 import { GutterComponent } from "../../../gutter";
 import { OpenFile, RootState, EditorWindow } from "../../../../state";
 import { OpenFilesPaneComponent } from "./open-files";
+const { LayersPane } = require("./open-files/view.pc");
 import { FileNavigatorPaneComponent } from "./file-navigator";
 import { ComponentsPaneComponent } from "./components";
 
@@ -21,6 +22,7 @@ const BaseLeftGutterComponent = ({
   root
 }: LeftGutterProps) => (
   <GutterComponent>
+    <LayersPane root={root} />
     <OpenFilesPaneComponent
       root={root}
       editorWindows={editorWindows}
