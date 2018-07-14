@@ -449,7 +449,7 @@ export const getSyntheticInstancePath = memoize(
     );
 
     return [
-      ...instances.map(instance => instance.source.nodeId),
+      ...instances.map(instance => instance.source.nodeId).reverse(),
       node.source.nodeId
     ].join(".");
   }

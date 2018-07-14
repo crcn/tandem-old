@@ -26,7 +26,8 @@ import {
   EMPTY_OBJECT,
   generateUID,
   TreeNodeUpdater,
-  containsNestedTreeNodeById
+  containsNestedTreeNodeById,
+  findNestedNode
 } from "tandem-common";
 import {
   SyntheticVisibleNode,
@@ -56,7 +57,8 @@ import {
   findInstanceOfPCNode,
   isPCComponentInstance,
   PCComponent,
-  PCModule
+  PCModule,
+  SyntheticNode
 } from "paperclip";
 import {
   CanvasToolOverlayMouseMoved,
@@ -525,6 +527,16 @@ const refreshModuleInspectorNodes = (state: RootState) => {
       })
     },
     state
+  );
+};
+
+export const getSyntheticNodeInspectorNode = (
+  node: SyntheticNode,
+  state: RootState
+) => {
+  const sourceNode = getSyntheticSourceNode(node, state.graph);
+  return state.moduleInspectors.find(inspectorNode =>
+    findNestedNode(inspectorNode, child => child.sourceNodeId === sourceNode.id)
   );
 };
 

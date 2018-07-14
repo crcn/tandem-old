@@ -185,7 +185,8 @@ import {
   ConfirmType,
   openSyntheticVisibleNodeOriginFile,
   updateRootInspectorNode,
-  getRootInspectorNode
+  getRootInspectorNode,
+  getSyntheticNodeInspectorNode
 } from "../state";
 import {
   PCSourceTagNames,
@@ -282,7 +283,8 @@ import {
 import { clamp, last } from "lodash";
 import {
   expandInspectorNode,
-  collapseInspectorNode
+  collapseInspectorNode,
+  expandSyntheticInspectorNode
 } from "../state/pc-inspector-tree";
 
 const ZOOM_SENSITIVITY = process.platform === "win32" ? 2500 : 250;
@@ -1090,6 +1092,7 @@ export const canvasReducer = (state: RootState, action: Action) => {
           editorWindow.activeFilePath,
           state
         );
+
         return state;
       }
       return state;
@@ -1488,6 +1491,23 @@ export const canvasReducer = (state: RootState, action: Action) => {
   }
 
   return state;
+};
+
+const expandSelectedSyntheticNode = (state: RootState) => {
+  return state.selectedNodeIds.reduce((state, nodeId) => {
+    const syntheticNode = getSyntheticNodeById(nodeId, state.documents);
+    const document = getSyntheticVisibleNodeDocument(
+      syntheticNode.id,
+      state.documents
+    );
+    const inspectorNode = getSyntheticNodeInspectorNode(document, state);
+
+    state = updateRootInspectorNode(inspectorNode, state, root =>
+      expandSyntheticInspectorNode(syntheticNode, document, root, state.graph)
+    );
+
+    return state;
+  }, state);
 };
 
 const isJavaScriptFile = (file: string) => /(ts|js)x?$/.test(file);
@@ -1901,7 +1921,9 @@ const handleArtboardSelectionFromAction = <
 ) => {
   const { sourceEvent } = event;
   state = setRootStateSyntheticVisibleNodeExpanded(nodeId, true, state);
-  return setSelectedSyntheticVisibleNodeIds(state, nodeId);
+  state = setSelectedSyntheticVisibleNodeIds(state, nodeId);
+  state = expandSelectedSyntheticNode(state);
+  return state;
 };
 
 const setCanvasZoom = (

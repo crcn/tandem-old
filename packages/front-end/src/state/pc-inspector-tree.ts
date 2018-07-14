@@ -9,7 +9,8 @@ import {
   PCComponentInstanceElement,
   PCComponent,
   isVisibleNode,
-  isComponent
+  isComponent,
+  getSyntheticInstancePath
 } from "paperclip";
 
 import {
@@ -17,7 +18,10 @@ import {
   generateUID,
   EMPTY_ARRAY,
   updateNestedNode,
-  flattenTreeNode
+  flattenTreeNode,
+  findNestedNode,
+  containsNestedTreeNodeById,
+  getNestedTreeNodeById
 } from "tandem-common";
 // import { SyntheticNode, PCNode, PCModule, PCComponent, DependencyGraph, PCComponentInstanceElement, PCSourceTagNames, PCOverride, PCChildrenOverride } from "paperclip";
 
@@ -41,6 +45,7 @@ export type InspectorTreeBaseNode<TType extends InspectorTreeNodeType> = {
   instancePath: string;
   alt?: boolean;
   sourceNodeId: string;
+  children: InspectorTreeBaseNode<any>[];
 } & TreeNode<TType>;
 
 export type InspectorSourceRep = {} & InspectorTreeBaseNode<
@@ -137,14 +142,10 @@ const getShadowSlots = (shadow: PCNode) => {
 };
 
 export const expandInspectorNode = (
-  node: InspectorNode | SyntheticNode,
+  node: InspectorNode,
   root: InspectorNode,
   graph: DependencyGraph
 ) => {
-  if (!isInspectorNode(node)) {
-    throw new Error("TODO");
-  }
-
   if (node.expanded) {
     return root;
   }
@@ -184,6 +185,50 @@ export const expandInspectorNode = (
       };
     })
   );
+};
+
+export const expandSyntheticInspectorNode = (
+  node: SyntheticNode,
+  document: SyntheticDocument,
+  rootInspectorNode: InspectorNode,
+  graph: DependencyGraph
+) => {
+  const instancePath = getSyntheticInstancePath(node, document).split(".");
+  let current = rootInspectorNode;
+  console.log(instancePath, node);
+  for (const instanceId of instancePath) {
+    while (1) {
+      current = (current.children as InspectorTreeBaseNode<any>[]).find(child =>
+        containsNestedTreeNodeById(
+          instanceId,
+          getPCNode(child.sourceNodeId, graph)
+        )
+      );
+      rootInspectorNode = expandInspectorNode(
+        current,
+        rootInspectorNode,
+        graph
+      );
+      current = getNestedTreeNodeById(current.id, rootInspectorNode);
+
+      if (current.sourceNodeId === instanceId) {
+        const sourceNode = getPCNode(current.sourceNodeId, graph);
+        if (sourceNode.name === PCSourceTagNames.COMPONENT_INSTANCE) {
+          // point to shadow
+          current = current.children[0];
+          rootInspectorNode = expandInspectorNode(
+            current,
+            rootInspectorNode,
+            graph
+          );
+          current = getNestedTreeNodeById(current.id, rootInspectorNode);
+        }
+        break;
+      }
+    }
+  }
+
+  return rootInspectorNode;
 };
 
 const maybeAddInstancePath = (
