@@ -1,18 +1,16 @@
 import * as React from "react";
-import * as path from "path";
-import { OpenFile } from "state";
 import { compose, pure } from "recompose";
-import {
-  SyntheticDocument,
-  getSyntheticSourceNode,
-  DependencyGraph
-} from "../../../../../../node_modules/paperclip";
-const { BaseLayer, NodeLayer } = require("./layer.pc");
+import { SyntheticDocument, DependencyGraph } from "paperclip";
+import { Dispatch } from "redux";
+import { InspectorNode } from "../../../../../state/pc-inspector-tree";
+const { NodeLayer } = require("./layer.pc");
 
 export type OpenModuleControllerOuterProps = {
-  file: OpenFile;
+  inspectorNode: InspectorNode;
   document: SyntheticDocument;
   graph: DependencyGraph;
+  dispatch: Dispatch<any>;
+  selectedPaths: string[];
 };
 
 export default compose<
@@ -21,27 +19,23 @@ export default compose<
 >(
   pure,
   Base => ({
-    file,
+    inspectorNode,
     document,
     graph,
+    dispatch,
+    selectedPaths,
     ...rest
   }: OpenModuleControllerOuterProps) => {
     return (
       <Base {...rest}>
-        <BaseLayer
-          variant="file"
-          labelProps={{ text: path.basename(file.uri) }}
+        <NodeLayer
+          depth={2}
+          selectedPaths={selectedPaths}
+          graph={graph}
+          dispatch={dispatch}
+          document={document}
+          inspectorNode={inspectorNode}
         />
-        {document.children.map(child => {
-          return (
-            <NodeLayer
-              depth={2}
-              graph={graph}
-              sourceNode={getSyntheticSourceNode(child, graph)}
-              syntheticNode={child}
-            />
-          );
-        })}
       </Base>
     );
   }

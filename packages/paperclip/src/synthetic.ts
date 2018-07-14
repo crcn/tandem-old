@@ -442,6 +442,19 @@ export const getNearestComponentInstances = memoize(
   }
 );
 
+export const getSyntheticInstancePath = memoize(
+  (node: SyntheticNode, root: SyntheticVisibleNode | SyntheticDocument) => {
+    const instances = getAllParentComponentInstance(node as any, root).filter(
+      (node: SyntheticElement) => node.isComponentInstance
+    );
+
+    return [
+      ...instances.map(instance => instance.source.nodeId),
+      node.source.nodeId
+    ].join(".");
+  }
+);
+
 export const generateSyntheticDocumentChecksum = memoize(
   (document: SyntheticDocument) => {
     return getPCNodePreChecksum(document);

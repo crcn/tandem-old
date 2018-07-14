@@ -1,12 +1,15 @@
 import * as React from "react";
 import { Dispatch } from "redux";
-import { Directory } from "tandem-common";
-import { GutterComponent } from "../../../gutter";
-import { OpenFile, RootState, EditorWindow } from "../../../../state";
-import { OpenFilesPaneComponent } from "./open-files";
+import { Directory, memoize } from "tandem-common";
 const { LayersPane } = require("./open-files/view.pc");
+import { GutterComponent } from "../../../gutter";
+import { OpenFilesPaneComponent } from "./open-files";
+import { RootState, EditorWindow } from "../../../../state";
 import { FileNavigatorPaneComponent } from "./file-navigator";
-import { ComponentsPaneComponent } from "./components";
+import {
+  getSyntheticNodeById,
+  SyntheticDocument
+} from "../../../../../node_modules/paperclip";
 
 type LeftGutterProps = {
   editorWindows: EditorWindow[];
@@ -22,7 +25,13 @@ const BaseLeftGutterComponent = ({
   root
 }: LeftGutterProps) => (
   <GutterComponent>
-    <LayersPane root={root} />
+    <LayersPane
+      selectedNodes={getSelectedNodes(root.selectedNodeIds, root.documents)}
+      inspectorNodes={root.moduleInspectors}
+      dispatch={dispatch}
+      graph={root.graph}
+      documents={root.documents}
+    />
     <OpenFilesPaneComponent
       root={root}
       editorWindows={editorWindows}
@@ -36,6 +45,11 @@ const BaseLeftGutterComponent = ({
     />
     {/* <ComponentsPaneComponent dispatch={dispatch} /> */}
   </GutterComponent>
+);
+
+const getSelectedNodes = memoize(
+  (selectedNodeIds: string[], documents: SyntheticDocument[]) =>
+    selectedNodeIds.map(id => getSyntheticNodeById(id, documents))
 );
 
 export const LeftGutterComponent = BaseLeftGutterComponent;

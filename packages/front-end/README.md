@@ -5,13 +5,19 @@ OBJECTIVE:
 
 IMMEDIATE:
 
-- expansion based on instance path
+- expand selected inspector node
+- moving inspector nodes
+- convert to slot shortcut - add child binding
+- scan for slots - add inspector nodes
+- moving child overrides
+- when inserting, only highlight elements with slots
+- bindings UI
 
-- shadow DOM
+* shadow DOM
   - Update UI to reflect shadow (implicit)
-  - generate random slot name
   - property bindings UI
-    - overridable children (will show up as a slot in the UI)cc
+    - overridable children (will show up as a slot in the UI)
+  - generate random slot name
   - update paperclip to new shadow DOM
     - evaluator must work
     - better patching algorithm for synthetic DOM - `patchSyntheticDOM(syntheticDOM, dslOTs)`
@@ -21,45 +27,45 @@ IMMEDIATE:
   - start refactoring front-end UI to new shadow DOM
   - refactor left side gutter (litmus test)
 
-* inherit style must work work with variants
-* measure tool for distance between elements
-* show hovered element heights
-* shadow DOM updates.
+- inherit style must work work with variants
+- measure tool for distance between elements
+- show hovered element heights
+- shadow DOM updates.
   - needs to come first since it will affect data model c
   - keep this in tandem with pane panes
-* update all icons to have same padding
-* box shadow color picking doesn't work properly
-* research on existing design tools
-* gradient input
-* CSS parser
+- update all icons to have same padding
+- box shadow color picking doesn't work properly
+- research on existing design tools
+- gradient input
+- CSS parser
 
-* start redesign (dark)
+- start redesign (dark)
 
-- explicit props
+* explicit props
   - do not show for shadow nodes
-- explicit slots
+* explicit slots
 
-- inherit pane needs to be supported in variants
+* inherit pane needs to be supported in variants
 
-- dts
-- variables
-- more paperclip tests
-- design controls
+* dts
+* variables
+* more paperclip tests
+* design controls
   - border input
   - color picker
     - swatches
     - RGBA / HSA / HEX inputs
   - clear overrides functionality (need to reset to inherited styles)
-- controller UI
-- better place to expose properties
-- redesign (see https://dribbble.com/shots/4781001-Figma)
-- dts
+* controller UI
+* better place to expose properties
+* redesign (see https://dribbble.com/shots/4781001-Figma)
+* dts
   - code compiler watcher
-- show controllers
-- Rust interp
-- file navigator refactor
-- open files refactor
-- preview in app
+* show controllers
+* Rust interp
+* file navigator refactor
+* open files refactor
+* preview in app
   - "preview mode" banner
   - "click to interact" button
   - auto save in preview mode

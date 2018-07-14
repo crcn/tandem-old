@@ -33,6 +33,7 @@ setup<DesktopRootState>(
   hoveringNodeIds: [],
   selectedNodeIds: [],
   selectedFileNodeIds: [],
+  moduleInspectors: [],
   editorWindows: [],
   frames: [],
   documents: [],

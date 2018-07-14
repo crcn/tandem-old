@@ -461,8 +461,7 @@ export const getModuleComponents = memoize(
 );
 
 export const getVisibleChildren = memoize(
-  (node: PCVisibleNode | PCComponent | PCOverride) =>
-    node.children.filter(isVisibleNode) as PCVisibleNode[]
+  (node: PCNode) => node.children.filter(isVisibleNode) as PCVisibleNode[]
 );
 export const getOverrides = memoize(
   (node: PCNode) =>

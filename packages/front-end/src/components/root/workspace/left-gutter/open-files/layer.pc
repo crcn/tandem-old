@@ -33,6 +33,7 @@
         "padding-top": "8px",
         "padding-right": "16px",
         "padding-bottom": "8px",
+        "user-select": "none",
         "align-items": "center",
         "justify-content": "space-between",
         "font-family": "Helvetica"
@@ -324,7 +325,10 @@
               "name": "text",
               "label": "label",
               "value": "Component\n",
-              "style": {},
+              "style": {
+                "user-select": "none",
+                "cursor": "default"
+              },
               "children": [],
               "metadata": {}
             }
@@ -508,7 +512,7 @@
           "propertyName": "style",
           "targetIdPath": [],
           "value": {
-            "background": "rgba(246, 245, 245, 1)"
+            "background": "rgba(237, 236, 236, 1)"
           },
           "name": "override",
           "children": []

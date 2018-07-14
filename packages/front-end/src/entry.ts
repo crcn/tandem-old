@@ -6,6 +6,7 @@ init({
   editorWindows: [],
   selectedNodeIds: [],
   selectedFileNodeIds: [],
+  moduleInspectors: [],
   history: {
     index: 0,
     items: []

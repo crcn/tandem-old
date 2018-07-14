@@ -129,7 +129,10 @@ import {
   ComponentControllerItemClicked,
   COMPONENT_CONTROLLER_PICKED,
   ComponentControllerPicked,
-  REMOVE_COMPONENT_CONTROLLER_BUTTON_CLICKED
+  REMOVE_COMPONENT_CONTROLLER_BUTTON_CLICKED,
+  SOURCE_INSPECTOR_LAYER_CLICKED,
+  InspectorLayerEvent,
+  SOURCE_INSPECTOR_LAYER_ARROW_CLICKED
 } from "../actions";
 import {
   queueOpenFile,
@@ -180,7 +183,9 @@ import {
   shiftActiveEditorTab,
   confirm,
   ConfirmType,
-  openSyntheticVisibleNodeOriginFile
+  openSyntheticVisibleNodeOriginFile,
+  updateRootInspectorNode,
+  getRootInspectorNode
 } from "../state";
 import {
   PCSourceTagNames,
@@ -275,11 +280,14 @@ import {
   getNestedTreeNodeById
 } from "tandem-common";
 import { clamp, last } from "lodash";
+import {
+  expandInspectorNode,
+  collapseInspectorNode
+} from "../state/pc-inspector-tree";
 
 const ZOOM_SENSITIVITY = process.platform === "win32" ? 2500 : 250;
 const MIN_ZOOM = 0.02;
 const MAX_ZOOM = 6400 / 100;
-const INITIAL_ZOOM_PADDING = 50;
 
 export const rootReducer = (state: RootState, action: Action): RootState => {
   state = fsSandboxReducer(state, action);
@@ -602,6 +610,26 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
         ],
         state
       );
+      return state;
+    }
+    case SOURCE_INSPECTOR_LAYER_CLICKED: {
+      const { node } = action as InspectorLayerEvent;
+      const root = getRootInspectorNode(node, state);
+      state = updateRootInspectorNode(root, state, root => {
+        return expandInspectorNode(node, root, state.graph);
+      });
+
+      return state;
+    }
+    case SOURCE_INSPECTOR_LAYER_ARROW_CLICKED: {
+      const { node } = action as InspectorLayerEvent;
+      const root = getRootInspectorNode(node, state);
+      state = updateRootInspectorNode(root, state, root => {
+        return node.expanded
+          ? collapseInspectorNode(node, root)
+          : expandInspectorNode(node, root, state.graph);
+      });
+
       return state;
     }
     case COMPONENT_CONTROLLER_ITEM_CLICKED: {

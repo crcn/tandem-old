@@ -27,6 +27,7 @@ import {
 import { RegisteredComponent } from "..";
 import { ClientOffset } from "react-dnd";
 import { FrameMode, ToolType, EditorWindow } from "../state";
+import { InspectorNode } from "../state/pc-inspector-tree";
 
 export const PROJECT_LOADED = "PROJECT_LOADED";
 export const ACTIVE_FILE_CHANGED = "ACTIVE_FILE_CHANGED";
@@ -145,6 +146,9 @@ export const PC_LAYER_LABEL_CHANGED = "PC_LAYER_LABEL_CHANGED";
 export const PC_LAYER_EXPAND_TOGGLE_CLICK = "PC_LAYER_EXPAND_TOGGLE_CLICK";
 export const PC_LAYER_DROPPED_NODE = "PC_LAYER_DROPPED_NODE";
 export const PC_LAYER_EDIT_LABEL_BLUR = "PC_LAYER_EDIT_LABEL_BLUR";
+export const SOURCE_INSPECTOR_LAYER_CLICKED = "SOURCE_INSPECTOR_LAYER_CLICKED";
+export const SOURCE_INSPECTOR_LAYER_ARROW_CLICKED =
+  "SOURCE_INSPECTOR_LAYER_ARROW_CLICKED";
 export const NEW_FILE_ADDED = "NEW_FILE_ADDED";
 export const QUICK_SEARCH_ITEM_CLICKED = "QUICK_SEARCH_ITEM_CLICKED";
 export const QUICK_SEARCH_BACKGROUND_CLICK = "QUICK_SEARCH_BACKGROUND_CLICK";
@@ -277,6 +281,10 @@ export type TreeLayerClick = TreeLayerMouseOver &
   WrappedEvent<React.MouseEvent<any>>;
 export type TreeLayerExpandToggleClick = TreeLayerMouseOver;
 export type TreeLayerMouseOut = TreeLayerMouseOver;
+
+export type InspectorLayerEvent = {
+  node: InspectorNode;
+} & WrappedEvent<React.MouseEvent<any>>;
 
 export type CanvasMounted = {
   element: HTMLDivElement;
@@ -731,6 +739,24 @@ export const pcLayerClick = (
   node,
   sourceEvent,
   type: PC_LAYER_CLICK
+});
+
+export const sourceInspectorLayerClicked = (
+  node: InspectorNode,
+  sourceEvent: React.MouseEvent<any>
+): InspectorLayerEvent => ({
+  type: SOURCE_INSPECTOR_LAYER_CLICKED,
+  node,
+  sourceEvent
+});
+
+export const sourceInspectorLayerArrowClicked = (
+  node: InspectorNode,
+  sourceEvent: React.MouseEvent<any>
+): InspectorLayerEvent => ({
+  type: SOURCE_INSPECTOR_LAYER_ARROW_CLICKED,
+  node,
+  sourceEvent
 });
 
 export const newVariantNameEntered = (

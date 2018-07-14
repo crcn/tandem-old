@@ -1,11 +1,25 @@
 import * as React from "react";
 import { compose, pure } from "recompose";
-import { RootState, openFile } from "../../../../../state";
-import { getSyntheticDocumentByDependencyUri } from "../../../../../../node_modules/paperclip";
+import {
+  getSyntheticDocumentByDependencyUri,
+  DependencyGraph,
+  getPCNodeDependency,
+  getPCNode,
+  SyntheticDocument,
+  SyntheticNode,
+  getSyntheticInstancePath
+} from "paperclip";
+import { InspectorNode } from "../../../../../state/pc-inspector-tree";
+import { Dispatch } from "redux";
+import { getNestedTreeNodeById } from "tandem-common";
 const { OpenModule } = require("./open-module.pc");
 
 export type LayersPaneControllerOuterProps = {
-  root: RootState;
+  graph: DependencyGraph;
+  selectedNodes: SyntheticNode[];
+  inspectorNodes: InspectorNode[];
+  documents: SyntheticDocument[];
+  dispatch: Dispatch<any>;
 };
 
 export default compose<
@@ -13,19 +27,34 @@ export default compose<
   LayersPaneControllerOuterProps
 >(
   pure,
-  Base => ({ root, ...rest }: LayersPaneControllerOuterProps) => {
-    const content = root.openFiles.map(openFile => {
+  Base => ({
+    inspectorNodes,
+    graph,
+    documents,
+    dispatch,
+    selectedNodes,
+    ...rest
+  }: LayersPaneControllerOuterProps) => {
+    const content = inspectorNodes.map(inspectorNode => {
+      const sourceNode = getPCNode(inspectorNode.sourceNodeId, graph);
+      const dependency = getPCNodeDependency(sourceNode.id, graph);
+      const document = getSyntheticDocumentByDependencyUri(
+        dependency.uri,
+        documents,
+        graph
+      );
+      const selectedPaths = selectedNodes
+        .filter(node => getNestedTreeNodeById(node.id, document))
+        .map(node => getSyntheticInstancePath(node, document));
       return (
         <OpenModule
-          graph={root.graph}
-          key={openFile.uri}
-          file={openFile}
-          document={getSyntheticDocumentByDependencyUri(
-            openFile.uri,
-            root.documents,
-            root.graph
-          )}
-          module={root.graph[openFile.uri].content}
+          selectedPaths={selectedPaths}
+          inspectorNode={inspectorNode}
+          dependency={dependency}
+          dispatch={dispatch}
+          key={inspectorNode.sourceNodeId}
+          document={document}
+          graph={graph}
         />
       );
     });

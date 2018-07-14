@@ -24,7 +24,9 @@ import {
   updateNestedNodeTrail,
   getTreeNodeFromPath,
   EMPTY_OBJECT,
-  generateUID
+  generateUID,
+  TreeNodeUpdater,
+  containsNestedTreeNodeById
 } from "tandem-common";
 import {
   SyntheticVisibleNode,
@@ -53,7 +55,8 @@ import {
   getPCNode,
   findInstanceOfPCNode,
   isPCComponentInstance,
-  PCComponent
+  PCComponent,
+  PCModule
 } from "paperclip";
 import {
   CanvasToolOverlayMouseMoved,
@@ -70,6 +73,14 @@ import {
   getModifiedDependencies
 } from "paperclip";
 import { FSSandboxRootState, queueOpenFile, hasFileCacheItem } from "fsbox";
+import {
+  createInspectorNode,
+  InspectorTreeNodeType,
+  refreshInspectorTree,
+  InspectorTreeBaseNode,
+  expandInspectorNode,
+  InspectorNode
+} from "./pc-inspector-tree";
 
 export enum ToolType {
   TEXT,
@@ -171,6 +182,7 @@ export type RootState = {
   // TODO - this should be actual node instances
   selectedNodeIds: string[];
   fontFamilies?: FontFamily[];
+  moduleInspectors: InspectorTreeBaseNode<any>[];
   selectedFileNodeIds: string[];
   selectedComponentVariantName?: string;
   ready?: boolean;
@@ -492,18 +504,53 @@ export const openFile = (
   return state;
 };
 
-// export const setActiveFilePath = (
-//   newActiveFilePath: string,
-//   root: RootState
-// ) => {
-//   root = updateRootState({ selectedVariant: null }, root);
-//   if (getEditorWithActiveFileUri(newActiveFilePath, root)) {
-//     return root;
-//   }
-//   root = addOpenFile(newActiveFilePath, true, root);
-//   root = centerEditorCanvas(root, newActiveFilePath);
-//   return root;
-// };
+const refreshModuleInspectorNodes = (state: RootState) => {
+  return updateRootState(
+    {
+      moduleInspectors: state.openFiles.map(openFile => {
+        const module = state.graph[openFile.uri].content;
+        let inspector = state.moduleInspectors.find(
+          inspector => inspector.sourceNodeId === module.id
+        );
+        if (inspector) {
+          return refreshInspectorTree(inspector, state.graph);
+        }
+        inspector = createInspectorNode(
+          InspectorTreeNodeType.SOURCE_REP,
+          "",
+          module
+        );
+        inspector = expandInspectorNode(inspector, inspector, state.graph);
+        return inspector;
+      })
+    },
+    state
+  );
+};
+
+export const getRootInspectorNode = (node: InspectorNode, state: RootState) =>
+  state.moduleInspectors.find(root =>
+    containsNestedTreeNodeById(node.id, root)
+  );
+
+export const updateRootInspectorNode = (
+  { id }: InspectorNode,
+  state: RootState,
+  updater: TreeNodeUpdater<any>
+) => {
+  const index = state.moduleInspectors.findIndex(root => root.id === id);
+  return updateRootState(
+    {
+      moduleInspectors: arraySplice(
+        state.moduleInspectors,
+        index,
+        1,
+        updater(state.moduleInspectors[index])
+      )
+    },
+    state
+  );
+};
 
 export const getEditorWindowWithFileUri = (
   uri: string,
@@ -640,8 +687,8 @@ export const closeFile = (uri: string, state: RootState): RootState => {
   );
 
   state = setNextOpenFile(state);
+  state = refreshModuleInspectorNodes(state);
 
-  console.log(state.editorWindows);
   return state;
 };
 
@@ -718,7 +765,7 @@ export const addOpenFile = (
 
   state = removeTemporaryOpenFiles(state);
 
-  return {
+  state = {
     ...state,
     openFiles: [
       ...state.openFiles,
@@ -729,50 +776,17 @@ export const addOpenFile = (
       }
     ]
   };
+
+  // need to sync inspector nodes so that they show up in the inspector pane
+  state = refreshModuleInspectorNodes(state);
+
+  return state;
 };
 
-// export const getInsertedWindowElementIds = (
-//   oldWindow: SyntheticWindow,
-//   targetFrameId: string,
-//   newBrowser: PCEditorState
-// ): string[] => {
-//   const elementIds = oldWindow.documents
-//     .filter(document => !targetFrameId || document.id === targetFrameId)
-//     .reduce((nodeIds, oldFrame) => {
-//       return [
-//         ...nodeIds,
-//         ...getInsertedFrameElementIds(oldFrame, newBrowser)
-//       ];
-//     }, []);
-//   const newWindow = newBrowser.windows.find(
-//     window => window.location === oldWindow.location
-//   );
-//   return [
-//     ...elementIds,
-//     ...newWindow.documents
-//       .filter(document => {
-//         const isInserted =
-//           oldWindow.documents.find(oldFrame => {
-//             return oldFrame.id === document.id;
-//           }) == null;
-//         return isInserted;
-//       })
-//       .map(document => document.root.id)
-//   ];
-// };
-
-// export const getInsertedFrameElementIds = (
-//   oldFrame: Frame,
-//   newBrowser: PCEditorState
-// ): string[] => {
-//   const newFrame = getFrameById(oldFrame.id, newBrowser);
-//   if (!newFrame) {
-//     return [];
-//   }
-//   const oldIds = Object.keys(oldFrame.nativeNodeMap);
-//   const newIds = Object.keys(newFrame.nativeNodeMap);
-//   return pull(newIds, ...oldIds);
-// };
+export const upsertPCModuleInspectorNode = (
+  module: PCModule,
+  state: RootState
+) => {};
 
 export const keepActiveFileOpen = (state: RootState): RootState => {
   return {
@@ -783,35 +797,6 @@ export const keepActiveFileOpen = (state: RootState): RootState => {
     }))
   };
 };
-
-// export const updateRootStateSyntheticWindowFrame = (
-//   documentId: string,
-//   properties: Partial<Frame>,
-//   root: RootState
-// ) => {
-//   const window = getFrameWindow(documentId, root);
-//   const document = getFrameById(documentId, root);
-//   return updateRootState(
-//     {
-//       browser: updateSyntheticWindow(
-//         window.location,
-//         {
-//           documents: arraySplice(
-//             window.documents,
-//             window.documents.indexOf(document),
-//             1,
-//             {
-//               ...document,
-//               ...properties
-//             }
-//           )
-//         },
-//         root
-//       )
-//     },
-//     root
-//   );
-// };
 
 export const setRootStateSyntheticVisibleNodeExpanded = (
   nodeId: string,
@@ -1216,30 +1201,6 @@ export const setHoveringSyntheticVisibleNodeIds = (
     root
   );
 };
-
-// export const updateRootSyntheticPosition = (
-//   position: Point,
-//   nodeId: string,
-//   root: RootState
-// ) =>
-//   updateRootState(
-//     {
-//       browser: updateSyntheticItemPosition(position, nodeId, root)
-//     },
-//     root
-//   );
-
-// export const updateRootSyntheticBounds = (
-//   bounds: Bounds,
-//   nodeId: string,
-//   root: RootState
-// ) =>
-//   updateRootState(
-//     {
-//       browser: updateSyntheticItemBounds(bounds, nodeId, root)
-//     },
-//     root
-//   );
 
 export const getBoundedSelection = memoize(
   (root: RootState): string[] =>
