@@ -1,4 +1,8 @@
 import { init } from "./index";
+import {
+  createInspectorNode,
+  InspectorTreeNodeType
+} from "state/pc-inspector-tree";
 
 init({
   mount: document.getElementById("application"),
@@ -6,7 +10,12 @@ init({
   editorWindows: [],
   selectedNodeIds: [],
   selectedFileNodeIds: [],
-  moduleInspectors: [],
+  sourceNodeInspector: createInspectorNode(
+    InspectorTreeNodeType.ROOT,
+    "",
+    null
+  ),
+  selectedInspectorNodeIds: [],
   history: {
     index: 0,
     items: []

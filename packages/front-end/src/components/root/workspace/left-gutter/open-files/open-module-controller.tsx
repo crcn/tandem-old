@@ -10,7 +10,7 @@ export type OpenModuleControllerOuterProps = {
   document: SyntheticDocument;
   graph: DependencyGraph;
   dispatch: Dispatch<any>;
-  selectedPaths: string[];
+  selectedInspectorNodeIds: string[];
 };
 
 export default compose<
@@ -23,14 +23,14 @@ export default compose<
     document,
     graph,
     dispatch,
-    selectedPaths,
+    selectedInspectorNodeIds,
     ...rest
   }: OpenModuleControllerOuterProps) => {
     return (
       <Base {...rest}>
         <NodeLayer
           depth={2}
-          selectedPaths={selectedPaths}
+          selectedInspectorNodeIds={selectedInspectorNodeIds}
           graph={graph}
           dispatch={dispatch}
           document={document}

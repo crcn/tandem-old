@@ -527,6 +527,7 @@ export const persistChangeLabel = <TState extends PCEditorState>(
       label: newLabel
     })
   )(node, state.documents, state.graph);
+  console.log(newNode);
   return replaceDependencyGraphPCNode(newNode, newNode, state);
 };
 

@@ -16,7 +16,8 @@ import {
   patchArray,
   arraySplice,
   findNestedNode,
-  filterTreeNodeParents
+  filterTreeNodeParents,
+  containsNestedTreeNodeById
 } from "tandem-common";
 import * as crc32 from "crc32";
 import { DependencyGraph, Dependency } from "./graph";
@@ -36,7 +37,8 @@ import {
   getPCNodeModule,
   PCComponentInstanceElement,
   getOverrides,
-  getPCVariantOverrides
+  getPCVariantOverrides,
+  extendsComponent
 } from "./dsl";
 import { diffTreeNode, patchTreeNode } from "./ot";
 
@@ -443,15 +445,24 @@ export const getNearestComponentInstances = memoize(
 );
 
 export const getSyntheticInstancePath = memoize(
-  (node: SyntheticNode, root: SyntheticVisibleNode | SyntheticDocument) => {
+  (
+    node: SyntheticNode,
+    root: SyntheticVisibleNode | SyntheticDocument,
+    graph: DependencyGraph
+  ) => {
+    const targetSourceNode = getSyntheticSourceNode(node, graph);
     const instances = getAllParentComponentInstance(node as any, root).filter(
-      (node: SyntheticElement) => node.isComponentInstance
+      (node: SyntheticElement) => {
+        const sourceNode = getSyntheticSourceNode(node, graph);
+        console.log(node, sourceNode);
+        return (
+          extendsComponent(sourceNode) &&
+          !containsNestedTreeNodeById(targetSourceNode.id, sourceNode)
+        );
+      }
     );
 
-    return [
-      ...instances.map(instance => instance.source.nodeId).reverse(),
-      node.source.nodeId
-    ].join(".");
+    return instances.map(instance => instance.source.nodeId).reverse();
   }
 );
 

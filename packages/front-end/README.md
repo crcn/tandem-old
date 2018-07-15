@@ -5,7 +5,6 @@ OBJECTIVE:
 
 IMMEDIATE:
 
-- expand selected inspector node
 - moving inspector nodes
 - convert to slot shortcut - add child binding
 - scan for slots - add inspector nodes

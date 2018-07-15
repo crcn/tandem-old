@@ -15,6 +15,7 @@ import {
   getSyntheticNodeById,
   getPCNodeDependency
 } from "paperclip";
+import { createInspectorNode, InspectorTreeNodeType } from "tandem-front-end";
 
 const query = Url.parse(String(location), true).query;
 
@@ -33,7 +34,12 @@ setup<DesktopRootState>(
   hoveringNodeIds: [],
   selectedNodeIds: [],
   selectedFileNodeIds: [],
-  moduleInspectors: [],
+  sourceNodeInspector: createInspectorNode(
+    InspectorTreeNodeType.ROOT,
+    "",
+    null
+  ),
+  selectedInspectorNodeIds: [],
   editorWindows: [],
   frames: [],
   documents: [],

@@ -10,8 +10,13 @@ import {
   PCComponent,
   isVisibleNode,
   isComponent,
-  getSyntheticInstancePath
+  getSyntheticInstancePath,
+  getOverrides,
+  PCChildrenOverride,
+  PCOverridablePropertyName
 } from "paperclip";
+
+import { last } from "lodash";
 
 import {
   TreeNode,
@@ -19,9 +24,10 @@ import {
   EMPTY_ARRAY,
   updateNestedNode,
   flattenTreeNode,
-  findNestedNode,
   containsNestedTreeNodeById,
-  getNestedTreeNodeById
+  getNestedTreeNodeById,
+  findNestedNode,
+  memoize
 } from "tandem-common";
 // import { SyntheticNode, PCNode, PCModule, PCComponent, DependencyGraph, PCComponentInstanceElement, PCSourceTagNames, PCOverride, PCChildrenOverride } from "paperclip";
 
@@ -34,6 +40,7 @@ import {
 //  */
 
 export enum InspectorTreeNodeType {
+  ROOT = "root",
   SOURCE_REP = "source-rep",
   SHADOW = "shadow",
   CONTENT = "content"
@@ -48,6 +55,10 @@ export type InspectorTreeBaseNode<TType extends InspectorTreeNodeType> = {
   children: InspectorTreeBaseNode<any>[];
 } & TreeNode<TType>;
 
+export type InspectorRoot = {} & InspectorTreeBaseNode<
+  InspectorTreeNodeType.ROOT
+>;
+
 export type InspectorSourceRep = {} & InspectorTreeBaseNode<
   InspectorTreeNodeType.SOURCE_REP
 >;
@@ -61,6 +72,7 @@ export type InspectorContent = {} & InspectorTreeBaseNode<
 >;
 
 export type InspectorNode =
+  | InspectorRoot
   | InspectorSourceRep
   | InspectorShadow
   | InspectorContent;
@@ -68,11 +80,11 @@ export type InspectorNode =
 export const createInspectorNode = <TName extends InspectorTreeNodeType>(
   name: TName,
   instancePath: string,
-  sourceNode: PCNode
+  sourceNode?: PCNode
 ): InspectorTreeBaseNode<InspectorTreeNodeType> => {
   return {
     name: name,
-    sourceNodeId: sourceNode.id,
+    sourceNodeId: sourceNode && sourceNode.id,
     instancePath,
     id: generateUID(),
     children: EMPTY_ARRAY
@@ -91,10 +103,20 @@ export const refreshInspectorTree = (
   node: InspectorTreeBaseNode<any>,
   graph: DependencyGraph
 ): InspectorTreeBaseNode<InspectorTreeNodeType> => {
-  const sourceNode = getPCNode(node.sourceNodeId, graph);
+  console.log("REFRESH", node);
 
   if (!node.expanded) {
-    return node;
+    return { ...node };
+  }
+
+  const sourceNode = node.sourceNodeId && getPCNode(node.sourceNodeId, graph);
+
+  // if no source node, then it's likely the root
+  if (!sourceNode) {
+    return {
+      ...node,
+      children: node.children.map(child => refreshInspectorTree(child, graph))
+    };
   }
 
   if (containsShadow(sourceNode)) {
@@ -102,7 +124,13 @@ export const refreshInspectorTree = (
     return {
       ...node,
       children: [
-        refreshInspectorTree(shadow, graph)
+        refreshInspectorTree(shadow, graph),
+        ...refreshChildren(
+          node,
+          contents,
+          getInstanceContents(sourceNode),
+          graph
+        )
         // TODO - content
       ]
     };
@@ -110,21 +138,46 @@ export const refreshInspectorTree = (
 
   return {
     ...node,
-    children: sourceNode.children.map(child => {
-      const existing = (node.children as InspectorTreeBaseNode<any>[]).find(
-        inspectorChild => inspectorChild.sourceNodeId === child.id
-      );
-      return (
-        existing ||
-        createInspectorNode(
-          InspectorTreeNodeType.SOURCE_REP,
-          maybeAddInstancePath(node, graph),
-          child
-        )
-      );
-    })
+    children: refreshChildren(
+      node,
+      node.children,
+      sourceNode.children.filter(
+        node => isVisibleNode(node) || isComponent(node)
+      ),
+      graph
+    )
   };
 };
+
+const refreshChildren = (
+  inspectorNode: InspectorTreeBaseNode<any>,
+  inspectorChildren: InspectorTreeBaseNode<any>[],
+  sourceNodeChildren: PCNode[],
+  graph: DependencyGraph
+) =>
+  sourceNodeChildren.map(child => {
+    const existing = inspectorChildren.find(
+      inspectorChild => inspectorChild.sourceNodeId === child.id
+    );
+
+    if (existing) {
+      return refreshInspectorTree(existing, graph);
+    }
+
+    if (child.name === PCSourceTagNames.OVERRIDE) {
+      return createInspectorNode(
+        InspectorTreeNodeType.CONTENT,
+        inspectorNode.instancePath,
+        child
+      );
+    }
+
+    return createInspectorNode(
+      InspectorTreeNodeType.SOURCE_REP,
+      maybeAddInstancePath(inspectorNode, graph),
+      child
+    );
+  });
 
 const containsShadow = (
   sourceNode: PCNode
@@ -136,9 +189,14 @@ const containsShadow = (
   );
 };
 
-const getShadowSlots = (shadow: PCNode) => {
-  // TODO - scan for prop bindings
-  // return getOverrides(sourceNode).map(override => override.propertyName === PCOverridablePropertyName.CHILDREN);
+const getInstanceContents = (
+  instance: PCComponentInstanceElement | PCComponent
+) => {
+  return getOverrides(instance).filter(
+    override =>
+      override.targetIdPath.length === 1 &&
+      override.propertyName === PCOverridablePropertyName.CHILDREN
+  ) as PCChildrenOverride[];
 };
 
 export const expandInspectorNode = (
@@ -163,8 +221,14 @@ export const expandInspectorNode = (
             InspectorTreeNodeType.SHADOW,
             childInstancePath,
             getPCNode(sourceNode.is, graph)
+          ),
+          ...getInstanceContents(sourceNode).map(child =>
+            createInspectorNode(
+              InspectorTreeNodeType.CONTENT,
+              node.instancePath,
+              child
+            )
           )
-          // TODO - get slots here
         ];
       } else {
         children = sourceNode.children
@@ -193,10 +257,13 @@ export const expandSyntheticInspectorNode = (
   rootInspectorNode: InspectorNode,
   graph: DependencyGraph
 ) => {
-  const instancePath = getSyntheticInstancePath(node, document).split(".");
+  const nodePath = [
+    ...getSyntheticInstancePath(node, document, graph),
+    node.source.nodeId
+  ];
+  const lastId = last(nodePath);
   let current = rootInspectorNode;
-  console.log(instancePath, node);
-  for (const instanceId of instancePath) {
+  for (const instanceId of nodePath) {
     while (1) {
       current = (current.children as InspectorTreeBaseNode<any>[]).find(child =>
         containsNestedTreeNodeById(
@@ -212,9 +279,7 @@ export const expandSyntheticInspectorNode = (
       current = getNestedTreeNodeById(current.id, rootInspectorNode);
 
       if (current.sourceNodeId === instanceId) {
-        const sourceNode = getPCNode(current.sourceNodeId, graph);
-        if (sourceNode.name === PCSourceTagNames.COMPONENT_INSTANCE) {
-          // point to shadow
+        if (instanceId !== lastId) {
           current = current.children[0];
           rootInspectorNode = expandInspectorNode(
             current,
@@ -231,6 +296,53 @@ export const expandSyntheticInspectorNode = (
   return rootInspectorNode;
 };
 
+export const getSyntheticInspectorNode = memoize(
+  (
+    node: SyntheticNode,
+    document: SyntheticDocument,
+    rootInspector: InspectorNode,
+    graph: DependencyGraph
+  ) => {
+    const instancePath = getSyntheticInstancePath(node, document, graph).join(
+      "."
+    );
+    return findNestedNode(
+      rootInspector,
+      (child: InspectorTreeBaseNode<any>) => {
+        return (
+          child.instancePath === instancePath &&
+          child.sourceNodeId === node.source.nodeId
+        );
+      }
+    );
+  }
+);
+
+export const getInspectorSyntheticNode = memoize(
+  (
+    node: InspectorNode,
+    documents: SyntheticDocument[],
+    graph: DependencyGraph
+  ) => {
+    const instancePath: string = node.instancePath;
+
+    for (const document of documents) {
+      const syntheticNode = findNestedNode(document, (child: SyntheticNode) => {
+        return (
+          getSyntheticInstancePath(child, document, graph).join(".") ===
+            instancePath && child.source.nodeId === node.sourceNodeId
+        );
+      });
+      if (syntheticNode) {
+        return syntheticNode;
+      }
+    }
+
+    // doesn't exist for root, shadows, or content nodes
+    return null;
+  }
+);
+
 const maybeAddInstancePath = (
   parent: InspectorNode,
   graph: DependencyGraph
@@ -245,13 +357,9 @@ const maybeAddInstancePath = (
 };
 
 export const collapseInspectorNode = (
-  node: InspectorNode | SyntheticNode,
+  node: InspectorNode,
   root: InspectorNode
 ) => {
-  if (!isInspectorNode(node)) {
-    throw new Error("TODO");
-  }
-
   if (!node.expanded) {
     return node;
   }

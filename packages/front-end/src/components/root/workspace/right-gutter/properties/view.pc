@@ -654,7 +654,19 @@
           "style": {
             "display": "none"
           },
-          "children": [],
+          "children": [
+            {
+              "id": "fc243cf065",
+              "variantId": "326c99d83",
+              "propertyName": "style",
+              "targetIdPath": [],
+              "value": {
+                "display": "none"
+              },
+              "name": "override",
+              "children": []
+            }
+          ],
           "metadata": {
             "bounds": {
               "left": 1366.3512563516224,
@@ -729,14 +741,6 @@
           "children": []
         },
         {
-          "id": "326c99d83",
-          "name": "variant",
-          "label": "bindings",
-          "isDefault": true,
-          "children": [],
-          "metadata": {}
-        },
-        {
           "id": "326c99d84",
           "variantId": "326c99d83",
           "propertyName": "style",
@@ -802,7 +806,8 @@
       "label": "Bindings Pane",
       "is": "div",
       "style": {
-        "box-sizing": "border-box"
+        "box-sizing": "border-box",
+        "display": "block"
       },
       "attributes": {},
       "id": "26aaa39a17",

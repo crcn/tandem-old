@@ -1,7 +1,8 @@
 import * as React from "react";
 import * as path from "path";
+import { FocusComponent } from "../../../../focus";
 import * as cx from "classnames";
-import { compose, pure, withHandlers } from "recompose";
+import { compose, pure, withHandlers, withState } from "recompose";
 import {
   SyntheticNode,
   PCSourceTagNames,
@@ -9,7 +10,8 @@ import {
   DependencyGraph,
   PCVisibleNode,
   getPCNodeDependency,
-  SyntheticDocument
+  SyntheticDocument,
+  PCComponent
 } from "paperclip";
 import {
   InspectorNode,
@@ -18,22 +20,26 @@ import {
 import { Dispatch } from "redux";
 import {
   sourceInspectorLayerClicked,
-  sourceInspectorLayerArrowClicked
+  sourceInspectorLayerArrowClicked,
+  sourceInspectorLayerLabelChanged
 } from "../../../../../actions";
 
 export type LayerControllerOuterProps = {
   depth?: number;
   graph: DependencyGraph;
   dispatch: Dispatch<any>;
-  selectedPaths: string[];
+  selectedInspectorNodeIds: string[];
   document: SyntheticDocument;
   inspectorNode: InspectorNode;
   syntheticNode: SyntheticNode;
+  editingLabel: boolean;
 };
 
 type LayerControllerInnerProps = {
   onLabelClick: () => any;
+  onLabelDoubleClick: () => any;
   onArrowButtonClick: () => any;
+  onLabelInputKeyDown: () => any;
 } & LayerControllerOuterProps;
 
 export default Base => {
@@ -41,6 +47,7 @@ export default Base => {
 
   const enhance = compose<LayerControllerOuterProps, LayerControllerOuterProps>(
     pure,
+    withState("editingLabel", "setEditingLabel", false),
     withHandlers({
       onLabelClick: ({ dispatch, inspectorNode }) => (
         event: React.MouseEvent<any>
@@ -52,6 +59,22 @@ export default Base => {
       ) => {
         event.stopPropagation();
         dispatch(sourceInspectorLayerArrowClicked(inspectorNode, event));
+      },
+      onLabelDoubleClick: ({ inspectorNode, setEditingLabel }) => () => {
+        if (inspectorNode.name === InspectorTreeNodeType.SOURCE_REP) {
+          setEditingLabel(true);
+        }
+      },
+      onLabelInputKeyDown: ({ dispatch, inspectorNode, setEditingLabel }) => (
+        event: React.KeyboardEvent<any>
+      ) => {
+        if (event.key === "Enter") {
+          const label = String((event.target as any).value || "").trim();
+          setEditingLabel(false);
+          dispatch(
+            sourceInspectorLayerLabelChanged(inspectorNode, label, event)
+          );
+        }
       }
     }),
     Base => ({
@@ -60,9 +83,12 @@ export default Base => {
       dispatch,
       document,
       onLabelClick,
-      selectedPaths,
+      editingLabel,
+      selectedInspectorNodeIds,
       inspectorNode,
-      onArrowButtonClick
+      onArrowButtonClick,
+      onLabelDoubleClick,
+      onLabelInputKeyDown
     }: LayerControllerInnerProps) => {
       const expanded = inspectorNode.expanded;
       const sourceNode = getPCNode(inspectorNode.sourceNodeId, graph);
@@ -70,20 +96,14 @@ export default Base => {
         inspectorNode.name === InspectorTreeNodeType.SOURCE_REP;
       let children;
 
-      const isSelected = selectedPaths.some(path => {
-        return (
-          path ===
-          (inspectorNode.instancePath
-            ? inspectorNode.instancePath + "." + inspectorNode.sourceNodeId
-            : inspectorNode.sourceNodeId)
-        );
-      });
+      const isSelected =
+        selectedInspectorNodeIds.indexOf(inspectorNode.id) !== -1;
       if (expanded) {
         const childDepth = depth + 1;
         children = inspectorNode.children.map(child => {
           return (
             <EnhancedLayer
-              selectedPaths={selectedPaths}
+              selectedInspectorNodeIds={selectedInspectorNodeIds}
               document={document}
               key={child.id}
               depth={childDepth}
@@ -95,46 +115,57 @@ export default Base => {
         });
       }
 
-      let label;
+      let label = (sourceNode as PCVisibleNode).label;
 
-      if (sourceNode.name === PCSourceTagNames.MODULE) {
-        const dependency = getPCNodeDependency(
-          inspectorNode.sourceNodeId,
-          graph
-        );
-        label = path.basename(dependency.uri);
-      } else {
-        label = (sourceNode as PCVisibleNode).label;
+      if (!label) {
+        if (sourceNode.name === PCSourceTagNames.MODULE) {
+          const dependency = getPCNodeDependency(
+            inspectorNode.sourceNodeId,
+            graph
+          );
+          label = path.basename(dependency.uri);
+        } else if (sourceNode.name === PCSourceTagNames.COMPONENT_INSTANCE) {
+          const component = getPCNode(sourceNode.is, graph);
+          label = (component as PCComponent).label;
+        } else if (sourceNode.name === PCSourceTagNames.ELEMENT) {
+          label = sourceNode.is || "Element";
+        }
       }
 
       return (
         <span>
-          <Base
-            onClick={onLabelClick}
-            variant={cx({
-              file: isSourceRep && sourceNode.name === PCSourceTagNames.MODULE,
-              component:
-                isSourceRep && sourceNode.name === PCSourceTagNames.COMPONENT,
-              instance:
-                isSourceRep &&
-                sourceNode.name === PCSourceTagNames.COMPONENT_INSTANCE,
-              element:
-                isSourceRep && sourceNode.name === PCSourceTagNames.ELEMENT,
-              text: isSourceRep && sourceNode.name === PCSourceTagNames.TEXT,
-              expanded,
-              selected: isSelected,
-              alt: inspectorNode.alt,
-              content: inspectorNode.name === InspectorTreeNodeType.CONTENT,
-              shadow: inspectorNode.name === InspectorTreeNodeType.SHADOW
-            })}
-            arrowProps={{
-              onClick: onArrowButtonClick
-            }}
-            labelProps={{
-              text: label
-            }}
-            style={{ paddingLeft: depth * 16 }}
-          />
+          <FocusComponent focus={editingLabel}>
+            <Base
+              onClick={onLabelClick}
+              onDoubleClick={onLabelDoubleClick}
+              elementProps={{ onKeyDown: onLabelInputKeyDown }}
+              variant={cx({
+                editingLabel: editingLabel,
+                file:
+                  isSourceRep && sourceNode.name === PCSourceTagNames.MODULE,
+                component:
+                  isSourceRep && sourceNode.name === PCSourceTagNames.COMPONENT,
+                instance:
+                  isSourceRep &&
+                  sourceNode.name === PCSourceTagNames.COMPONENT_INSTANCE,
+                element:
+                  isSourceRep && sourceNode.name === PCSourceTagNames.ELEMENT,
+                text: isSourceRep && sourceNode.name === PCSourceTagNames.TEXT,
+                expanded,
+                selected: isSelected,
+                alt: inspectorNode.alt,
+                content: inspectorNode.name === InspectorTreeNodeType.CONTENT,
+                shadow: inspectorNode.name === InspectorTreeNodeType.SHADOW
+              })}
+              arrowProps={{
+                onClick: onArrowButtonClick
+              }}
+              labelProps={{
+                text: label
+              }}
+              style={{ paddingLeft: depth * 16 }}
+            />
+          </FocusComponent>
           {children}
         </span>
       );

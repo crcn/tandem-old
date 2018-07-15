@@ -149,6 +149,8 @@ export const PC_LAYER_EDIT_LABEL_BLUR = "PC_LAYER_EDIT_LABEL_BLUR";
 export const SOURCE_INSPECTOR_LAYER_CLICKED = "SOURCE_INSPECTOR_LAYER_CLICKED";
 export const SOURCE_INSPECTOR_LAYER_ARROW_CLICKED =
   "SOURCE_INSPECTOR_LAYER_ARROW_CLICKED";
+export const SOURCE_INSPECTOR_LAYER_LABEL_CHANGED =
+  "SOURCE_INSPECTOR_LAYER_LABEL_CHANGED";
 export const NEW_FILE_ADDED = "NEW_FILE_ADDED";
 export const QUICK_SEARCH_ITEM_CLICKED = "QUICK_SEARCH_ITEM_CLICKED";
 export const QUICK_SEARCH_BACKGROUND_CLICK = "QUICK_SEARCH_BACKGROUND_CLICK";
@@ -285,6 +287,11 @@ export type TreeLayerMouseOut = TreeLayerMouseOver;
 export type InspectorLayerEvent = {
   node: InspectorNode;
 } & WrappedEvent<React.MouseEvent<any>>;
+
+export type InspectorLayerLabelChanged = {
+  node: InspectorNode;
+  label: string;
+} & WrappedEvent<React.KeyboardEvent<any>>;
 
 export type CanvasMounted = {
   element: HTMLDivElement;
@@ -756,6 +763,17 @@ export const sourceInspectorLayerArrowClicked = (
 ): InspectorLayerEvent => ({
   type: SOURCE_INSPECTOR_LAYER_ARROW_CLICKED,
   node,
+  sourceEvent
+});
+
+export const sourceInspectorLayerLabelChanged = (
+  node: InspectorNode,
+  label: string,
+  sourceEvent: React.KeyboardEvent<any>
+): InspectorLayerLabelChanged => ({
+  type: SOURCE_INSPECTOR_LAYER_LABEL_CHANGED,
+  node,
+  label,
   sourceEvent
 });
 

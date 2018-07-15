@@ -368,8 +368,12 @@ export const isPCComponentOrInstance = (
   isPCComponentInstance(node) || isComponent(node);
 
 export const extendsComponent = (
-  element: PCElement | PCComponent | PCComponentInstanceElement
-) => element.is.length > 6 && /\d/.test(element.is);
+  element: PCNode
+): element is PCComponent | PCComponentInstanceElement =>
+  (element.name == PCSourceTagNames.COMPONENT ||
+    element.name === PCSourceTagNames.COMPONENT_INSTANCE) &&
+  element.is.length > 6 &&
+  /\d/.test(element.is);
 
 export const assertValidPCModule = memoize((module: PCModule) => {
   if (!validatePCModule(module)) {

@@ -5,19 +5,16 @@ import {
   DependencyGraph,
   getPCNodeDependency,
   getPCNode,
-  SyntheticDocument,
-  SyntheticNode,
-  getSyntheticInstancePath
+  SyntheticDocument
 } from "paperclip";
 import { InspectorNode } from "../../../../../state/pc-inspector-tree";
 import { Dispatch } from "redux";
-import { getNestedTreeNodeById } from "tandem-common";
 const { OpenModule } = require("./open-module.pc");
 
 export type LayersPaneControllerOuterProps = {
   graph: DependencyGraph;
-  selectedNodes: SyntheticNode[];
-  inspectorNodes: InspectorNode[];
+  selectedInspectorNodeIds: string[];
+  sourceNodeInspector: InspectorNode;
   documents: SyntheticDocument[];
   dispatch: Dispatch<any>;
 };
@@ -28,14 +25,14 @@ export default compose<
 >(
   pure,
   Base => ({
-    inspectorNodes,
+    sourceNodeInspector,
     graph,
     documents,
     dispatch,
-    selectedNodes,
+    selectedInspectorNodeIds,
     ...rest
   }: LayersPaneControllerOuterProps) => {
-    const content = inspectorNodes.map(inspectorNode => {
+    const content = sourceNodeInspector.children.map(inspectorNode => {
       const sourceNode = getPCNode(inspectorNode.sourceNodeId, graph);
       const dependency = getPCNodeDependency(sourceNode.id, graph);
       const document = getSyntheticDocumentByDependencyUri(
@@ -43,12 +40,9 @@ export default compose<
         documents,
         graph
       );
-      const selectedPaths = selectedNodes
-        .filter(node => getNestedTreeNodeById(node.id, document))
-        .map(node => getSyntheticInstancePath(node, document));
       return (
         <OpenModule
-          selectedPaths={selectedPaths}
+          selectedInspectorNodeIds={selectedInspectorNodeIds}
           inspectorNode={inspectorNode}
           dependency={dependency}
           dispatch={dispatch}

@@ -132,7 +132,9 @@ import {
   REMOVE_COMPONENT_CONTROLLER_BUTTON_CLICKED,
   SOURCE_INSPECTOR_LAYER_CLICKED,
   InspectorLayerEvent,
-  SOURCE_INSPECTOR_LAYER_ARROW_CLICKED
+  SOURCE_INSPECTOR_LAYER_ARROW_CLICKED,
+  SOURCE_INSPECTOR_LAYER_LABEL_CHANGED,
+  InspectorLayerLabelChanged
 } from "../actions";
 import {
   queueOpenFile,
@@ -184,9 +186,7 @@ import {
   confirm,
   ConfirmType,
   openSyntheticVisibleNodeOriginFile,
-  updateRootInspectorNode,
-  getRootInspectorNode,
-  getSyntheticNodeInspectorNode
+  updateSourceInspectorNode
 } from "../state";
 import {
   PCSourceTagNames,
@@ -284,7 +284,8 @@ import { clamp, last } from "lodash";
 import {
   expandInspectorNode,
   collapseInspectorNode,
-  expandSyntheticInspectorNode
+  expandSyntheticInspectorNode,
+  getInspectorSyntheticNode
 } from "../state/pc-inspector-tree";
 
 const ZOOM_SENSITIVITY = process.platform === "win32" ? 2500 : 250;
@@ -616,21 +617,48 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
     }
     case SOURCE_INSPECTOR_LAYER_CLICKED: {
       const { node } = action as InspectorLayerEvent;
-      const root = getRootInspectorNode(node, state);
-      state = updateRootInspectorNode(root, state, root => {
-        return expandInspectorNode(node, root, state.graph);
+      state = updateSourceInspectorNode(state, sourceNodeInspector => {
+        return expandInspectorNode(node, sourceNodeInspector, state.graph);
       });
+
+      const assocSyntheticNode = getInspectorSyntheticNode(
+        node,
+        state.documents,
+        state.graph
+      );
+
+      state = updateRootState(
+        {
+          selectedInspectorNodeIds: [node.id],
+          selectedNodeIds: assocSyntheticNode ? [assocSyntheticNode.id] : []
+        },
+        state
+      );
 
       return state;
     }
     case SOURCE_INSPECTOR_LAYER_ARROW_CLICKED: {
       const { node } = action as InspectorLayerEvent;
-      const root = getRootInspectorNode(node, state);
-      state = updateRootInspectorNode(root, state, root => {
+      state = updateSourceInspectorNode(state, sourceNodeInspector => {
         return node.expanded
-          ? collapseInspectorNode(node, root)
-          : expandInspectorNode(node, root, state.graph);
+          ? collapseInspectorNode(node, sourceNodeInspector)
+          : expandInspectorNode(node, sourceNodeInspector, state.graph);
       });
+
+      return state;
+    }
+    case SOURCE_INSPECTOR_LAYER_LABEL_CHANGED: {
+      const { node, label } = action as InspectorLayerLabelChanged;
+
+      state = persistRootState(
+        browser =>
+          persistChangeLabel(
+            label,
+            getInspectorSyntheticNode(node, browser.documents, browser.graph),
+            browser
+          ),
+        state
+      );
 
       return state;
     }
@@ -1493,23 +1521,6 @@ export const canvasReducer = (state: RootState, action: Action) => {
   return state;
 };
 
-const expandSelectedSyntheticNode = (state: RootState) => {
-  return state.selectedNodeIds.reduce((state, nodeId) => {
-    const syntheticNode = getSyntheticNodeById(nodeId, state.documents);
-    const document = getSyntheticVisibleNodeDocument(
-      syntheticNode.id,
-      state.documents
-    );
-    const inspectorNode = getSyntheticNodeInspectorNode(document, state);
-
-    state = updateRootInspectorNode(inspectorNode, state, root =>
-      expandSyntheticInspectorNode(syntheticNode, document, root, state.graph)
-    );
-
-    return state;
-  }, state);
-};
-
 const isJavaScriptFile = (file: string) => /(ts|js)x?$/.test(file);
 
 const INSERT_ARTBOARD_WIDTH = 100;
@@ -1922,7 +1933,6 @@ const handleArtboardSelectionFromAction = <
   const { sourceEvent } = event;
   state = setRootStateSyntheticVisibleNodeExpanded(nodeId, true, state);
   state = setSelectedSyntheticVisibleNodeIds(state, nodeId);
-  state = expandSelectedSyntheticNode(state);
   return state;
 };
 

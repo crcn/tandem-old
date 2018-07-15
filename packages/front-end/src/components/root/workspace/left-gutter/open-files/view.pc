@@ -233,6 +233,31 @@
                   "value": false,
                   "name": "override",
                   "children": []
+                },
+                {
+                  "id": "54ad1ce765",
+                  "propertyName": "isDefault",
+                  "targetIdPath": [
+                    "d3bf183b22",
+                    "fc243cf081"
+                  ],
+                  "value": true,
+                  "name": "override",
+                  "children": []
+                },
+                {
+                  "id": "54ad1ce771",
+                  "variantId": null,
+                  "propertyName": "attributes",
+                  "targetIdPath": [
+                    "d3bf183b22",
+                    "fc243cf091"
+                  ],
+                  "value": {
+                    "placeholder": "label"
+                  },
+                  "name": "override",
+                  "children": []
                 }
               ],
               "metadata": {

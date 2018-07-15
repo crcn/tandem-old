@@ -81,7 +81,9 @@ import {
   refreshInspectorTree,
   InspectorTreeBaseNode,
   expandInspectorNode,
-  InspectorNode
+  InspectorNode,
+  expandSyntheticInspectorNode,
+  getSyntheticInspectorNode
 } from "./pc-inspector-tree";
 
 export enum ToolType {
@@ -183,8 +185,12 @@ export type RootState = {
 
   // TODO - this should be actual node instances
   selectedNodeIds: string[];
+
+  // seaprate from synthetic & AST since it represents both. May also have separate
+  // tooling
+  selectedInspectorNodeIds: string[];
   fontFamilies?: FontFamily[];
-  moduleInspectors: InspectorTreeBaseNode<any>[];
+  sourceNodeInspector: InspectorTreeBaseNode<any>;
   selectedFileNodeIds: string[];
   selectedComponentVariantName?: string;
   ready?: boolean;
@@ -243,6 +249,7 @@ export const persistRootState = (
     (state, dep: Dependency<any>) => setOpenFileContent(dep, state),
     state
   );
+  state = refreshModuleInspectorNodes(state);
   return state;
 };
 
@@ -509,22 +516,25 @@ export const openFile = (
 const refreshModuleInspectorNodes = (state: RootState) => {
   return updateRootState(
     {
-      moduleInspectors: state.openFiles.map(openFile => {
-        const module = state.graph[openFile.uri].content;
-        let inspector = state.moduleInspectors.find(
-          inspector => inspector.sourceNodeId === module.id
-        );
-        if (inspector) {
-          return refreshInspectorTree(inspector, state.graph);
-        }
-        inspector = createInspectorNode(
-          InspectorTreeNodeType.SOURCE_REP,
-          "",
-          module
-        );
-        inspector = expandInspectorNode(inspector, inspector, state.graph);
-        return inspector;
-      })
+      sourceNodeInspector: {
+        ...state.sourceNodeInspector,
+        children: state.openFiles.map(openFile => {
+          const module = state.graph[openFile.uri].content;
+          let inspector = state.sourceNodeInspector.children.find(
+            inspector => inspector.sourceNodeId === module.id
+          );
+          if (inspector) {
+            return refreshInspectorTree(inspector, state.graph);
+          }
+          inspector = createInspectorNode(
+            InspectorTreeNodeType.SOURCE_REP,
+            "",
+            module
+          );
+          inspector = expandInspectorNode(inspector, inspector, state.graph);
+          return inspector;
+        })
+      }
     },
     state
   );
@@ -535,30 +545,19 @@ export const getSyntheticNodeInspectorNode = (
   state: RootState
 ) => {
   const sourceNode = getSyntheticSourceNode(node, state.graph);
-  return state.moduleInspectors.find(inspectorNode =>
-    findNestedNode(inspectorNode, child => child.sourceNodeId === sourceNode.id)
+  return findNestedNode(
+    state.sourceNodeInspector,
+    child => child.sourceNodeId === sourceNode.id
   );
 };
 
-export const getRootInspectorNode = (node: InspectorNode, state: RootState) =>
-  state.moduleInspectors.find(root =>
-    containsNestedTreeNodeById(node.id, root)
-  );
-
-export const updateRootInspectorNode = (
-  { id }: InspectorNode,
+export const updateSourceInspectorNode = (
   state: RootState,
   updater: TreeNodeUpdater<any>
 ) => {
-  const index = state.moduleInspectors.findIndex(root => root.id === id);
   return updateRootState(
     {
-      moduleInspectors: arraySplice(
-        state.moduleInspectors,
-        index,
-        1,
-        updater(state.moduleInspectors[index])
-      )
+      sourceNodeInspector: updater(state.sourceNodeInspector)
     },
     state
   );
@@ -1180,7 +1179,50 @@ export const setSelectedSyntheticVisibleNodeIds = (
     },
     root
   );
+  root = expandSelectedSyntheticNode(root);
+
+  const assocInspectorNodes = selectionIds.map(nodeId => {
+    const syntheticNode = getSyntheticNodeById(nodeId, root.documents);
+    const document = getSyntheticVisibleNodeDocument(
+      syntheticNode.id,
+      root.documents
+    );
+    return getSyntheticInspectorNode(
+      syntheticNode,
+      document,
+      root.sourceNodeInspector
+    );
+  });
+
+  root = updateRootState(
+    {
+      selectedInspectorNodeIds: assocInspectorNodes.map(node => node.id)
+    },
+    root
+  );
+
   return root;
+};
+
+const expandSelectedSyntheticNode = (state: RootState) => {
+  return state.selectedNodeIds.reduce((state, nodeId) => {
+    const syntheticNode = getSyntheticNodeById(nodeId, state.documents);
+    const document = getSyntheticVisibleNodeDocument(
+      syntheticNode.id,
+      state.documents
+    );
+
+    state = updateSourceInspectorNode(state, sourceNodeInspector =>
+      expandSyntheticInspectorNode(
+        syntheticNode,
+        document,
+        sourceNodeInspector,
+        state.graph
+      )
+    );
+
+    return state;
+  }, state);
 };
 
 export const setSelectedFileNodeIds = (

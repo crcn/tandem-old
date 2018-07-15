@@ -26,8 +26,8 @@ const BaseLeftGutterComponent = ({
 }: LeftGutterProps) => (
   <GutterComponent>
     <LayersPane
-      selectedNodes={getSelectedNodes(root.selectedNodeIds, root.documents)}
-      inspectorNodes={root.moduleInspectors}
+      selectedInspectorNodeIds={root.selectedInspectorNodeIds}
+      sourceNodeInspector={root.sourceNodeInspector}
       dispatch={dispatch}
       graph={root.graph}
       documents={root.documents}
