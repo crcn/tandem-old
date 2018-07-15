@@ -103,8 +103,6 @@ export const refreshInspectorTree = (
   node: InspectorTreeBaseNode<any>,
   graph: DependencyGraph
 ): InspectorTreeBaseNode<InspectorTreeNodeType> => {
-  console.log("REFRESH", node);
-
   if (!node.expanded) {
     return { ...node };
   }
@@ -174,7 +172,9 @@ const refreshChildren = (
 
     return createInspectorNode(
       InspectorTreeNodeType.SOURCE_REP,
-      maybeAddInstancePath(inspectorNode, graph),
+      inspectorNode.name === InspectorTreeNodeType.SHADOW
+        ? addInstancePath(inspectorNode, graph)
+        : inspectorNode.instancePath,
       child
     );
   });
@@ -213,13 +213,11 @@ export const expandInspectorNode = (
       const sourceNode = getPCNode(node.sourceNodeId, graph);
       let children: InspectorTreeBaseNode<any>[] = [];
 
-      const childInstancePath = maybeAddInstancePath(node, graph);
-
       if (containsShadow(sourceNode)) {
         children = [
           createInspectorNode(
             InspectorTreeNodeType.SHADOW,
-            childInstancePath,
+            addInstancePath(node, graph),
             getPCNode(sourceNode.is, graph)
           ),
           ...getInstanceContents(sourceNode).map(child =>
@@ -236,7 +234,7 @@ export const expandInspectorNode = (
           .map(child =>
             createInspectorNode(
               InspectorTreeNodeType.SOURCE_REP,
-              childInstancePath,
+              node.instancePath,
               child
             )
           );
@@ -306,6 +304,7 @@ export const getSyntheticInspectorNode = memoize(
     const instancePath = getSyntheticInstancePath(node, document, graph).join(
       "."
     );
+
     return findNestedNode(
       rootInspector,
       (child: InspectorTreeBaseNode<any>) => {
@@ -343,17 +342,9 @@ export const getInspectorSyntheticNode = memoize(
   }
 );
 
-const maybeAddInstancePath = (
-  parent: InspectorNode,
-  graph: DependencyGraph
-) => {
+const addInstancePath = (parent: InspectorNode, graph: DependencyGraph) => {
   const sourceNode = getPCNode(parent.sourceNodeId, graph);
-  return (
-    parent.instancePath +
-    (sourceNode.name === PCSourceTagNames.COMPONENT_INSTANCE
-      ? (parent.instancePath ? "." : "") + sourceNode.id
-      : "")
-  );
+  return parent.instancePath + (parent.instancePath ? "." : "") + sourceNode.id;
 };
 
 export const collapseInspectorNode = (

@@ -1190,7 +1190,8 @@ export const setSelectedSyntheticVisibleNodeIds = (
     return getSyntheticInspectorNode(
       syntheticNode,
       document,
-      root.sourceNodeInspector
+      root.sourceNodeInspector,
+      root.graph
     );
   });
 

@@ -189,7 +189,7 @@ const evaluateComponentInstance = (
   const children = overrides[selfPath] && overrides[selfPath].children;
 
   return createSyntheticInstanceElement(
-    node.is,
+    (node as PCComponentInstanceElement).is,
     createSyntheticSource(instance),
     evaluateStyle(node, selfPath, componentMap, overrides),
     selfVariant,

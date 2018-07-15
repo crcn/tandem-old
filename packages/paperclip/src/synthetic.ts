@@ -2,39 +2,28 @@ import {
   KeyValue,
   generateUID,
   EMPTY_ARRAY,
-  TreeNodeUpdater,
   EMPTY_OBJECT,
   getNestedTreeNodeById,
   memoize,
   TreeNode,
-  Bounds,
   updateNestedNode,
-  shiftBounds,
-  Point,
   findTreeNodeParent,
-  diffArray,
-  patchArray,
   arraySplice,
   findNestedNode,
   filterTreeNodeParents,
   containsNestedTreeNodeById
 } from "tandem-common";
 import * as crc32 from "crc32";
-import { DependencyGraph, Dependency } from "./graph";
+import { DependencyGraph } from "./graph";
+import { last } from "lodash";
 import {
-  PCNode,
   getPCNode,
   PCVisibleNode,
   getPCNodeContentNode,
   getPCNodeDependency,
   PCSourceTagNames,
-  getPCImportedChildrenSourceUris,
-  PCTextNode,
-  PCElement,
   PCOverride,
-  validatePCModule,
   PCComponent,
-  getPCNodeModule,
   PCComponentInstanceElement,
   getOverrides,
   getPCVariantOverrides,
@@ -450,19 +439,35 @@ export const getSyntheticInstancePath = memoize(
     root: SyntheticVisibleNode | SyntheticDocument,
     graph: DependencyGraph
   ) => {
-    const targetSourceNode = getSyntheticSourceNode(node, graph);
-    const instances = getAllParentComponentInstance(node as any, root).filter(
-      (node: SyntheticElement) => {
-        const sourceNode = getSyntheticSourceNode(node, graph);
-        console.log(node, sourceNode);
-        return (
-          extendsComponent(sourceNode) &&
-          !containsNestedTreeNodeById(targetSourceNode.id, sourceNode)
-        );
-      }
+    const nodePath = getAllParentComponentInstance(
+      node as SyntheticVisibleNode,
+      root
+    ).reduce(
+      (nodePath: string[], instance: SyntheticInstanceElement) => {
+        const lastId = last(nodePath);
+        const currentSourceNode = getSyntheticSourceNode(
+          instance,
+          graph
+        ) as PCComponentInstanceElement;
+
+        let current:
+          | PCComponent
+          | PCComponentInstanceElement = currentSourceNode;
+
+        while (extendsComponent(current)) {
+          current = getPCNode(currentSourceNode.is, graph) as PCComponent;
+          if (containsNestedTreeNodeById(lastId, current)) {
+            return [...nodePath, currentSourceNode.id];
+          }
+        }
+
+        return nodePath;
+      },
+      [node.source.nodeId]
     );
 
-    return instances.map(instance => instance.source.nodeId).reverse();
+    // only want instance path, so strip initial source node ID
+    return nodePath.slice(1).reverse();
   }
 );
 

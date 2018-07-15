@@ -5,7 +5,6 @@ import {
   TreeNode,
   filterNestedNodes,
   findNestedNode,
-  Bounds,
   generateUID,
   KeyValue,
   getNestedTreeNodeById,
@@ -367,9 +366,7 @@ export const isPCComponentOrInstance = (
 ): node is PCComponent | PCComponentInstanceElement =>
   isPCComponentInstance(node) || isComponent(node);
 
-export const extendsComponent = (
-  element: PCNode
-): element is PCComponent | PCComponentInstanceElement =>
+export const extendsComponent = (element: PCNode) =>
   (element.name == PCSourceTagNames.COMPONENT ||
     element.name === PCSourceTagNames.COMPONENT_INSTANCE) &&
   element.is.length > 6 &&
