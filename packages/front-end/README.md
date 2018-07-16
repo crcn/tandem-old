@@ -5,15 +5,32 @@ OBJECTIVE:
 
 IMMEDIATE:
 
-- fix changing label
-- moving inspector nodes
-- convert to slot shortcut - add child binding
-- scan for slots - add inspector nodes
-- moving child overrides
-- when inserting, only highlight elements with slots
-- bindings UI
+- PC layers
 
-* shadow DOM
+  - dnd before
+  - dnd after
+  - dnd over
+  - rep slots
+  - update DND canvas to accept INSPECTOR_NODE instead of SYNTHETIC_NODE
+
+- Bindings
+
+  - convert to slot shortcut
+    - prohibit text elements
+    - auto-generate id
+  - bindings UI
+    - ability to change names
+    - scan for bindable element props (native, and custom)
+
+- update code compiler to use new bindings functionality
+- typed definition file
+- eliminiate
+
+* VSCode
+  - Tandem button for opening assoc `*.pc` file (scan PC files for controller)
+    - dropdown if multiple controllers attached
+
+- shadow DOM
   - Update UI to reflect shadow (implicit)
   - property bindings UI
     - overridable children (will show up as a slot in the UI)
@@ -27,45 +44,45 @@ IMMEDIATE:
   - start refactoring front-end UI to new shadow DOM
   - refactor left side gutter (litmus test)
 
-- inherit style must work work with variants
-- measure tool for distance between elements
-- show hovered element heights
-- shadow DOM updates.
+* inherit style must work work with variants
+* measure tool for distance between elements
+* show hovered element heights
+* shadow DOM updates.
   - needs to come first since it will affect data model c
   - keep this in tandem with pane panes
-- update all icons to have same padding
-- box shadow color picking doesn't work properly
-- research on existing design tools
-- gradient input
-- CSS parser
+* update all icons to have same padding
+* box shadow color picking doesn't work properly
+* research on existing design tools
+* gradient input
+* CSS parser
 
-- start redesign (dark)
+* start redesign (dark)
 
-* explicit props
+- explicit props
   - do not show for shadow nodes
-* explicit slots
+- explicit slots
 
-* inherit pane needs to be supported in variants
+- inherit pane needs to be supported in variants
 
-* dts
-* variables
-* more paperclip tests
-* design controls
+- dts
+- variables
+- more paperclip tests
+- design controls
   - border input
   - color picker
     - swatches
     - RGBA / HSA / HEX inputs
   - clear overrides functionality (need to reset to inherited styles)
-* controller UI
-* better place to expose properties
-* redesign (see https://dribbble.com/shots/4781001-Figma)
-* dts
+- controller UI
+- better place to expose properties
+- redesign (see https://dribbble.com/shots/4781001-Figma)
+- dts
   - code compiler watcher
-* show controllers
-* Rust interp
-* file navigator refactor
-* open files refactor
-* preview in app
+- show controllers
+- Rust interp
+- file navigator refactor
+- open files refactor
+- preview in app
   - "preview mode" banner
   - "click to interact" button
   - auto save in preview mode

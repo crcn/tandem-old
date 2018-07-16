@@ -3,6 +3,7 @@ import * as path from "path";
 import { FocusComponent } from "../../../../focus";
 import * as cx from "classnames";
 import { compose, pure, withHandlers, withState } from "recompose";
+import { DropTarget, DragSource } from "react-dnd";
 import {
   SyntheticNode,
   PCSourceTagNames,
@@ -11,11 +12,14 @@ import {
   PCVisibleNode,
   getPCNodeDependency,
   SyntheticDocument,
-  PCComponent
+  PCComponent,
+  getPCNodeContentNode,
+  PCModule
 } from "paperclip";
 import {
   InspectorNode,
-  InspectorTreeNodeType
+  InspectorTreeNodeType,
+  getInspectorSyntheticNode
 } from "../../../../../state/pc-inspector-tree";
 import { Dispatch } from "redux";
 import {
@@ -23,11 +27,16 @@ import {
   sourceInspectorLayerArrowClicked,
   sourceInspectorLayerLabelChanged
 } from "../../../../../actions";
+import {
+  containsNestedTreeNodeById,
+  TreeMoveOffset
+} from "../../../../../../node_modules/tandem-common";
 
 export type LayerControllerOuterProps = {
   depth?: number;
   graph: DependencyGraph;
   dispatch: Dispatch<any>;
+  contentNode: InspectorNode;
   selectedInspectorNodeIds: string[];
   document: SyntheticDocument;
   inspectorNode: InspectorNode;
@@ -37,10 +46,14 @@ export type LayerControllerOuterProps = {
 
 type LayerControllerInnerProps = {
   onLabelClick: () => any;
+  connectDragSource?: any;
+  connectDropTarget?: any;
   onLabelDoubleClick: () => any;
   onArrowButtonClick: () => any;
   onLabelInputKeyDown: () => any;
 } & LayerControllerOuterProps;
+
+const DRAG_TYPE = "INSPECTOR_NODE";
 
 export default Base => {
   let EnhancedLayer;
@@ -77,6 +90,70 @@ export default Base => {
         }
       }
     }),
+    DropTarget(
+      DRAG_TYPE,
+      {
+        canDrop: (
+          { inspectorNode, contentNode, graph }: LayerControllerOuterProps,
+          monitor
+        ) => {
+          contentNode = getContentNode(inspectorNode, contentNode, graph);
+          const draggingNode = monitor.getItem() as InspectorNode;
+          const contentSourceNode =
+            contentNode && getPCNode(contentNode.sourceNodeId, graph);
+
+          const sourceNode = getPCNode(inspectorNode.sourceNodeId, graph);
+          return (
+            !contentSourceNode ||
+            containsNestedTreeNodeById(sourceNode.id, contentSourceNode)
+          );
+        },
+        drop: ({ dispatch, inspectorNode }, monitor) => {
+          // dispatch(
+          //   treeLayerDroppedNode(
+          //     monitor.getItem() as TreeNode<any>,
+          //     node,
+          //     offset
+          //   )
+          // );
+        }
+      },
+      (connect, monitor) => {
+        return {
+          connectDropTarget: connect.dropTarget(),
+          isOver: !!monitor.isOver(),
+          canDrop: !!monitor.canDrop()
+        };
+      }
+    ),
+    DragSource(
+      DRAG_TYPE,
+      {
+        beginDrag({ inspectorNode }: LayerControllerOuterProps) {
+          return inspectorNode;
+        },
+        canDrag({
+          inspectorNode,
+          contentNode,
+          graph
+        }: LayerControllerOuterProps) {
+          contentNode = getContentNode(inspectorNode, contentNode, graph);
+
+          const contentSourceNode =
+            contentNode && getPCNode(contentNode.sourceNodeId, graph);
+          const sourceNode = getPCNode(inspectorNode.sourceNodeId, graph);
+          return (
+            contentSourceNode &&
+            containsNestedTreeNodeById(sourceNode.id, contentSourceNode)
+          );
+        }
+      },
+      (connect, monitor) => ({
+        connectDragSource: connect.dragSource(),
+        connectDragPreview: connect.dragPreview(),
+        isDragging: monitor.isDragging()
+      })
+    ),
     Base => ({
       graph,
       depth = 1,
@@ -85,10 +162,13 @@ export default Base => {
       onLabelClick,
       editingLabel,
       selectedInspectorNodeIds,
+      contentNode,
       inspectorNode,
       onArrowButtonClick,
       onLabelDoubleClick,
-      onLabelInputKeyDown
+      onLabelInputKeyDown,
+      connectDragSource,
+      connectDropTarget
     }: LayerControllerInnerProps) => {
       const expanded = inspectorNode.expanded;
       const sourceNode = getPCNode(inspectorNode.sourceNodeId, graph);
@@ -103,6 +183,7 @@ export default Base => {
         children = inspectorNode.children.map(child => {
           return (
             <EnhancedLayer
+              contentNode={getContentNode(inspectorNode, contentNode, graph)}
               selectedInspectorNodeIds={selectedInspectorNodeIds}
               document={document}
               key={child.id}
@@ -135,36 +216,49 @@ export default Base => {
       return (
         <span>
           <FocusComponent focus={editingLabel}>
-            <Base
-              onClick={onLabelClick}
-              onDoubleClick={onLabelDoubleClick}
-              elementProps={{ onKeyDown: onLabelInputKeyDown }}
-              variant={cx({
-                editingLabel: editingLabel,
-                file:
-                  isSourceRep && sourceNode.name === PCSourceTagNames.MODULE,
-                component:
-                  isSourceRep && sourceNode.name === PCSourceTagNames.COMPONENT,
-                instance:
-                  isSourceRep &&
-                  sourceNode.name === PCSourceTagNames.COMPONENT_INSTANCE,
-                element:
-                  isSourceRep && sourceNode.name === PCSourceTagNames.ELEMENT,
-                text: isSourceRep && sourceNode.name === PCSourceTagNames.TEXT,
-                expanded,
-                selected: isSelected,
-                alt: inspectorNode.alt && !isSelected,
-                content: inspectorNode.name === InspectorTreeNodeType.CONTENT,
-                shadow: inspectorNode.name === InspectorTreeNodeType.SHADOW
-              })}
-              arrowProps={{
-                onClick: onArrowButtonClick
-              }}
-              labelProps={{
-                text: label
-              }}
-              style={{ paddingLeft: depth * 16 }}
-            />
+            {connectDropTarget(
+              connectDragSource(
+                <div>
+                  <Base
+                    onClick={onLabelClick}
+                    onDoubleClick={onLabelDoubleClick}
+                    labelInputProps={{ onKeyDown: onLabelInputKeyDown }}
+                    variant={cx({
+                      editingLabel: editingLabel,
+                      file:
+                        isSourceRep &&
+                        sourceNode.name === PCSourceTagNames.MODULE,
+                      component:
+                        isSourceRep &&
+                        sourceNode.name === PCSourceTagNames.COMPONENT,
+                      instance:
+                        isSourceRep &&
+                        sourceNode.name === PCSourceTagNames.COMPONENT_INSTANCE,
+                      element:
+                        isSourceRep &&
+                        sourceNode.name === PCSourceTagNames.ELEMENT,
+                      text:
+                        isSourceRep &&
+                        sourceNode.name === PCSourceTagNames.TEXT,
+                      expanded,
+                      selected: isSelected,
+                      alt: inspectorNode.alt && !isSelected,
+                      content:
+                        inspectorNode.name === InspectorTreeNodeType.CONTENT,
+                      shadow:
+                        inspectorNode.name === InspectorTreeNodeType.SHADOW
+                    })}
+                    arrowProps={{
+                      onClick: onArrowButtonClick
+                    }}
+                    labelProps={{
+                      text: label
+                    }}
+                    style={{ paddingLeft: depth * 16 }}
+                  />
+                </div>
+              )
+            )}
           </FocusComponent>
           {children}
         </span>
@@ -173,4 +267,18 @@ export default Base => {
   );
 
   return (EnhancedLayer = enhance(Base));
+};
+
+const getContentNode = (
+  inspectorNode: InspectorNode,
+  contentNode: InspectorNode,
+  graph: DependencyGraph
+) => {
+  return (
+    contentNode ||
+    (getPCNode(inspectorNode.sourceNodeId, graph).name !==
+    PCSourceTagNames.MODULE
+      ? inspectorNode
+      : null)
+  );
 };

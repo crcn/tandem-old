@@ -60,7 +60,8 @@
         "user-select": "none",
         "align-items": "center",
         "justify-content": "space-between",
-        "font-family": "Helvetica"
+        "font-family": "Helvetica",
+        "position": "relative"
       },
       "attributes": {},
       "id": "d3bf183b20",
@@ -360,7 +361,7 @@
             },
             {
               "id": "fc243cf091",
-              "label": "Element",
+              "label": "label input",
               "is": "input",
               "name": "element",
               "attributes": {},
@@ -436,6 +437,70 @@
             }
           },
           "label": "arrow"
+        },
+        {
+          "id": "6f0de1ad90",
+          "is": "6f0de1ad85",
+          "name": "component-instance",
+          "attributes": {},
+          "style": {
+            "top": "100%",
+            "display": "none"
+          },
+          "children": [
+            {
+              "id": "6f0de1ad100",
+              "variantId": "6f0de1ad99",
+              "propertyName": "style",
+              "targetIdPath": [],
+              "value": {
+                "display": "block"
+              },
+              "name": "override",
+              "children": []
+            }
+          ],
+          "metadata": {
+            "bounds": {
+              "left": 822.806685827573,
+              "top": 157.01784077257707,
+              "right": 922.806685827573,
+              "bottom": 257.0178407725771
+            }
+          },
+          "label": "after line"
+        },
+        {
+          "id": "6f0de1ad87",
+          "is": "6f0de1ad85",
+          "name": "component-instance",
+          "attributes": {},
+          "style": {
+            "top": "0px",
+            "display": "none"
+          },
+          "children": [
+            {
+              "id": "6f0de1ad103",
+              "variantId": "6f0de1ad98",
+              "propertyName": "style",
+              "targetIdPath": [],
+              "value": {
+                "display": "block"
+              },
+              "name": "override",
+              "children": []
+            }
+          ],
+          "metadata": {
+            "bounds": {
+              "left": 822.806685827573,
+              "top": 157.01784077257707,
+              "right": 922.806685827573,
+              "bottom": 257.0178407725771
+            }
+          },
+          "label": "before line"
         },
         {
           "id": "d3bf183b25",
@@ -663,6 +728,41 @@
           },
           "name": "override",
           "children": []
+        },
+        {
+          "id": "6f0de1ad98",
+          "name": "variant",
+          "label": "hover before",
+          "isDefault": false,
+          "children": [],
+          "metadata": {}
+        },
+        {
+          "id": "6f0de1ad99",
+          "name": "variant",
+          "label": "hover after",
+          "isDefault": false,
+          "children": [],
+          "metadata": {}
+        },
+        {
+          "id": "6f0de1ad114",
+          "name": "variant",
+          "label": "hover",
+          "isDefault": false,
+          "children": [],
+          "metadata": {}
+        },
+        {
+          "id": "6f0de1ad115",
+          "variantId": "6f0de1ad114",
+          "propertyName": "style",
+          "targetIdPath": [],
+          "value": {
+            "box-shadow": "inset  0px 0px 0px 2px #00B5FF"
+          },
+          "name": "override",
+          "children": []
         }
       ],
       "metadata": {
@@ -674,6 +774,34 @@
         }
       },
       "controllers": []
+    },
+    {
+      "label": "Drop Zone",
+      "is": "div",
+      "style": {
+        "box-sizing": "content-box",
+        "display": "block",
+        "position": "absolute",
+        "right": "0px",
+        "border": "1px solid rgba(255, 255, 255, 1)",
+        "height": "2px",
+        "background": "#00B5FF",
+        "width": "100%",
+        "z-index": "1",
+        "transform": "translateY(-50%)"
+      },
+      "attributes": {},
+      "id": "6f0de1ad85",
+      "name": "component",
+      "children": [],
+      "metadata": {
+        "bounds": {
+          "left": 822.806685827573,
+          "top": 157.01784077257707,
+          "right": 922.806685827573,
+          "bottom": 257.0178407725771
+        }
+      }
     }
   ],
   "metadata": {}
