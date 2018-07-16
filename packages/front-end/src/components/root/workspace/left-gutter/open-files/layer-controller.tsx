@@ -39,6 +39,7 @@ export type LayerControllerOuterProps = {
   depth?: number;
   graph: DependencyGraph;
   dispatch: Dispatch<any>;
+  inShadow?: boolean;
   contentNode: InspectorNode;
   selectedInspectorNodeIds: string[];
   document: SyntheticDocument;
@@ -140,12 +141,15 @@ export default Base => {
       onLabelDoubleClick,
       onLabelInputKeyDown,
       connectDragSource,
-      connectDropTarget
+      connectDropTarget,
+      inShadow
     }: LayerControllerInnerProps) => {
       const expanded = inspectorNode.expanded;
       const sourceNode = getPCNode(inspectorNode.sourceNodeId, graph);
       const isSourceRep =
         inspectorNode.name === InspectorTreeNodeType.SOURCE_REP;
+      inShadow =
+        inShadow || inspectorNode.name === InspectorTreeNodeType.SHADOW;
       let children;
 
       const isSelected =
@@ -155,6 +159,7 @@ export default Base => {
         children = inspectorNode.children.map(child => {
           return (
             <EnhancedLayer
+              inShadow={inShadow}
               contentNode={getContentNode(inspectorNode, contentNode, graph)}
               selectedInspectorNodeIds={selectedInspectorNodeIds}
               document={document}
@@ -231,7 +236,8 @@ export default Base => {
                         inspectorNode.name === InspectorTreeNodeType.CONTENT,
                       shadow:
                         inspectorNode.name === InspectorTreeNodeType.SHADOW,
-                      hover: isOver && canDrop
+                      hover: isOver && canDrop,
+                      inShadow: !isSelected && inShadow
                     })}
                     arrowProps={{
                       onClick: onArrowButtonClick

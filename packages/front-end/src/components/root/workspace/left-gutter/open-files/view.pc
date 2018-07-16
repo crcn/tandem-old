@@ -156,6 +156,18 @@
                   },
                   "name": "override",
                   "children": []
+                },
+                {
+                  "id": "3c31564768",
+                  "variantId": null,
+                  "propertyName": "isDefault",
+                  "targetIdPath": [
+                    "d3bf183b50",
+                    "3c31564763"
+                  ],
+                  "value": true,
+                  "name": "override",
+                  "children": []
                 }
               ],
               "metadata": {
@@ -303,6 +315,18 @@
                   "targetIdPath": [
                     "d3bf183b50",
                     "6f0de1ad114"
+                  ],
+                  "value": true,
+                  "name": "override",
+                  "children": []
+                },
+                {
+                  "id": "3c31564779",
+                  "variantId": null,
+                  "propertyName": "isDefault",
+                  "targetIdPath": [
+                    "d3bf183b50",
+                    "3c31564763"
                   ],
                   "value": true,
                   "name": "override",

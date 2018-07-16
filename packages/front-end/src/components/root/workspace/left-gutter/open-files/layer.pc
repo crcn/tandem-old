@@ -772,6 +772,25 @@
           },
           "name": "override",
           "children": []
+        },
+        {
+          "id": "3c31564763",
+          "name": "variant",
+          "label": "in shadow",
+          "isDefault": false,
+          "children": [],
+          "metadata": {}
+        },
+        {
+          "id": "3c31564764",
+          "variantId": "3c31564763",
+          "propertyName": "style",
+          "targetIdPath": [],
+          "value": {
+            "color": "rgba(129, 97, 172, 1)"
+          },
+          "name": "override",
+          "children": []
         }
       ],
       "metadata": {
