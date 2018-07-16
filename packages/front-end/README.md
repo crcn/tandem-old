@@ -5,6 +5,7 @@ OBJECTIVE:
 
 IMMEDIATE:
 
+- fix changing label
 - moving inspector nodes
 - convert to slot shortcut - add child binding
 - scan for slots - add inspector nodes

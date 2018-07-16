@@ -153,7 +153,7 @@ export default Base => {
                 text: isSourceRep && sourceNode.name === PCSourceTagNames.TEXT,
                 expanded,
                 selected: isSelected,
-                alt: inspectorNode.alt,
+                alt: inspectorNode.alt && !isSelected,
                 content: inspectorNode.name === InspectorTreeNodeType.CONTENT,
                 shadow: inspectorNode.name === InspectorTreeNodeType.SHADOW
               })}
