@@ -1,9 +1,11 @@
 import * as React from "react";
+import * as ReactDOM from "react-dom";
 import * as path from "path";
 import { FocusComponent } from "../../../../focus";
 import * as cx from "classnames";
 import { compose, pure, withHandlers, withState } from "recompose";
 import { DropTarget, DragSource } from "react-dnd";
+import { withNodeDropTarget } from "./dnd-controller";
 import {
   SyntheticNode,
   PCSourceTagNames,
@@ -31,6 +33,7 @@ import {
   containsNestedTreeNodeById,
   TreeMoveOffset
 } from "../../../../../../node_modules/tandem-common";
+import { getContentNode } from "./utils";
 
 export type LayerControllerOuterProps = {
   depth?: number;
@@ -45,6 +48,8 @@ export type LayerControllerOuterProps = {
 };
 
 type LayerControllerInnerProps = {
+  isOver: boolean;
+  canDrop: boolean;
   onLabelClick: () => any;
   connectDragSource?: any;
   connectDropTarget?: any;
@@ -90,42 +95,7 @@ export default Base => {
         }
       }
     }),
-    DropTarget(
-      DRAG_TYPE,
-      {
-        canDrop: (
-          { inspectorNode, contentNode, graph }: LayerControllerOuterProps,
-          monitor
-        ) => {
-          contentNode = getContentNode(inspectorNode, contentNode, graph);
-          const draggingNode = monitor.getItem() as InspectorNode;
-          const contentSourceNode =
-            contentNode && getPCNode(contentNode.sourceNodeId, graph);
-
-          const sourceNode = getPCNode(inspectorNode.sourceNodeId, graph);
-          return (
-            !contentSourceNode ||
-            containsNestedTreeNodeById(sourceNode.id, contentSourceNode)
-          );
-        },
-        drop: ({ dispatch, inspectorNode }, monitor) => {
-          // dispatch(
-          //   treeLayerDroppedNode(
-          //     monitor.getItem() as TreeNode<any>,
-          //     node,
-          //     offset
-          //   )
-          // );
-        }
-      },
-      (connect, monitor) => {
-        return {
-          connectDropTarget: connect.dropTarget(),
-          isOver: !!monitor.isOver(),
-          canDrop: !!monitor.canDrop()
-        };
-      }
-    ),
+    withNodeDropTarget(TreeMoveOffset.PREPEND),
     DragSource(
       DRAG_TYPE,
       {
@@ -162,6 +132,8 @@ export default Base => {
       onLabelClick,
       editingLabel,
       selectedInspectorNodeIds,
+      isOver,
+      canDrop,
       contentNode,
       inspectorNode,
       onArrowButtonClick,
@@ -220,6 +192,18 @@ export default Base => {
               connectDragSource(
                 <div>
                   <Base
+                    beforeDropProps={{
+                      dispatch,
+                      inspectorNode,
+                      contentNode,
+                      graph
+                    }}
+                    afterDropProps={{
+                      dispatch,
+                      inspectorNode,
+                      contentNode,
+                      graph
+                    }}
                     onClick={onLabelClick}
                     onDoubleClick={onLabelDoubleClick}
                     labelInputProps={{ onKeyDown: onLabelInputKeyDown }}
@@ -246,7 +230,8 @@ export default Base => {
                       content:
                         inspectorNode.name === InspectorTreeNodeType.CONTENT,
                       shadow:
-                        inspectorNode.name === InspectorTreeNodeType.SHADOW
+                        inspectorNode.name === InspectorTreeNodeType.SHADOW,
+                      hover: isOver && canDrop
                     })}
                     arrowProps={{
                       onClick: onArrowButtonClick
@@ -267,18 +252,4 @@ export default Base => {
   );
 
   return (EnhancedLayer = enhance(Base));
-};
-
-const getContentNode = (
-  inspectorNode: InspectorNode,
-  contentNode: InspectorNode,
-  graph: DependencyGraph
-) => {
-  return (
-    contentNode ||
-    (getPCNode(inspectorNode.sourceNodeId, graph).name !==
-    PCSourceTagNames.MODULE
-      ? inspectorNode
-      : null)
-  );
 };

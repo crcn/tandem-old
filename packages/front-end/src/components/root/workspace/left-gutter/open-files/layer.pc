@@ -48,6 +48,22 @@
       ]
     },
     {
+      "id": "207a949d41",
+      "is": "207a949d27",
+      "name": "component-instance",
+      "attributes": {},
+      "style": {},
+      "children": [],
+      "metadata": {
+        "bounds": {
+          "left": 827,
+          "top": 492,
+          "right": 927,
+          "bottom": 592
+        }
+      }
+    },
+    {
       "label": "Base Layer",
       "is": "div",
       "style": {
@@ -439,40 +455,8 @@
           "label": "arrow"
         },
         {
-          "id": "6f0de1ad90",
-          "is": "6f0de1ad85",
-          "name": "component-instance",
-          "attributes": {},
-          "style": {
-            "top": "100%",
-            "display": "none"
-          },
-          "children": [
-            {
-              "id": "6f0de1ad100",
-              "variantId": "6f0de1ad99",
-              "propertyName": "style",
-              "targetIdPath": [],
-              "value": {
-                "display": "block"
-              },
-              "name": "override",
-              "children": []
-            }
-          ],
-          "metadata": {
-            "bounds": {
-              "left": 822.806685827573,
-              "top": 157.01784077257707,
-              "right": 922.806685827573,
-              "bottom": 257.0178407725771
-            }
-          },
-          "label": "after line"
-        },
-        {
-          "id": "6f0de1ad87",
-          "is": "6f0de1ad85",
+          "id": "e4d0e24e16",
+          "is": "207a949d27",
           "name": "component-instance",
           "attributes": {},
           "style": {
@@ -481,7 +465,7 @@
           },
           "children": [
             {
-              "id": "6f0de1ad103",
+              "id": "e4d0e24e20",
               "variantId": "6f0de1ad98",
               "propertyName": "style",
               "targetIdPath": [],
@@ -494,13 +478,38 @@
           ],
           "metadata": {
             "bounds": {
-              "left": 822.806685827573,
-              "top": 157.01784077257707,
-              "right": 922.806685827573,
-              "bottom": 257.0178407725771
+              "left": 827,
+              "top": 492,
+              "right": 927,
+              "bottom": 592
             }
           },
-          "label": "before line"
+          "label": "before drop"
+        },
+        {
+          "id": "207a949d36",
+          "is": "207a949d21",
+          "name": "component-instance",
+          "attributes": {},
+          "style": {
+            "top": "100%",
+            "display": "none"
+          },
+          "children": [
+            {
+              "id": "e4d0e24e19",
+              "variantId": "6f0de1ad99",
+              "propertyName": "style",
+              "targetIdPath": [],
+              "value": {
+                "display": "block"
+              },
+              "name": "override",
+              "children": []
+            }
+          ],
+          "metadata": {},
+          "label": "after drop"
         },
         {
           "id": "d3bf183b25",
@@ -774,6 +783,46 @@
         }
       },
       "controllers": []
+    },
+    {
+      "label": "after drop zone",
+      "is": "6f0de1ad85",
+      "style": {},
+      "attributes": {},
+      "id": "207a949d21",
+      "name": "component",
+      "children": [],
+      "metadata": {
+        "bounds": {
+          "left": 834,
+          "top": 308,
+          "right": 934,
+          "bottom": 408
+        }
+      },
+      "controllers": [
+        "./after-dnd-controller.tsx"
+      ]
+    },
+    {
+      "label": "before drop zone",
+      "is": "6f0de1ad85",
+      "style": {},
+      "attributes": {},
+      "id": "207a949d27",
+      "name": "component",
+      "children": [],
+      "metadata": {
+        "bounds": {
+          "left": 521,
+          "top": 438,
+          "right": 621,
+          "bottom": 538
+        }
+      },
+      "controllers": [
+        "./before-dnd-controller.tsx"
+      ]
     },
     {
       "label": "Drop Zone",

@@ -7,9 +7,9 @@ IMMEDIATE:
 
 - PC layers
 
+  - wire up DND over
   - dnd before
   - dnd after
-  - dnd over
   - rep slots
   - update DND canvas to accept INSPECTOR_NODE instead of SYNTHETIC_NODE
 
