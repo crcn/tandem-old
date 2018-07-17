@@ -44,11 +44,11 @@ const BaseLeftGutterComponent = ({
       graph={root.graph}
       documents={root.documents}
     />
-    <OpenFilesPaneComponent
+    {/* <OpenFilesPaneComponent
       root={root}
       editorWindows={editorWindows}
       dispatch={dispatch}
-    />
+    /> */}
     <FileNavigatorPaneComponent
       dispatch={dispatch}
       rootDirectory={rootDirectory}

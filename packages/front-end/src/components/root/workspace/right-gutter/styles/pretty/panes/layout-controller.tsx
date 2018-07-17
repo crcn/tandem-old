@@ -116,13 +116,15 @@ export default compose(
     const node = selectedNodes[0];
     const showMoveInputs = isSyntheticVisibleNodeMovable(node);
     const showSizeInputs = isSyntheticVisibleNodeResizable(node);
-    const showParentFlexInputs = node.style.display === "flex";
+    const showParentFlexInputs =
+      node.style.display === "flex" || node.style.display === "inline-flex";
     const parentNode: SyntheticVisibleNode = getParentTreeNode(
       node.id,
       syntheticDocument
     );
     const showChildFlexInputs =
-      isSyntheticElement(parentNode) && parentNode.style.display === "flex";
+      (isSyntheticElement(parentNode) && parentNode.style.display === "flex") ||
+      parentNode.style.display === "inline-flex";
 
     return (
       <Base
