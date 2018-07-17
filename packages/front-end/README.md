@@ -11,7 +11,6 @@ IMMEDIATE:
 
 - PC layers
   - rep slots
-  - update DND canvas to accept INSPECTOR_NODE instead of SYNTHETIC_NODE
 
 * Bindings
 
@@ -35,25 +34,11 @@ IMMEDIATE:
     - dropdown if multiple controllers attached
 
 * shadow DOM
-  - Update UI to reflect shadow (implicit)
-  - property bindings UI
-    - overridable children (will show up as a slot in the UI)
-  - generate random slot name
-  - update paperclip to new shadow DOM
-    - evaluator must work
-    - better patching algorithm for synthetic DOM - `patchSyntheticDOM(syntheticDOM, dslOTs)`
-      - this should probably be done internally withinthe synthetic eval script
   - update front-end to persist to data model
   - warning for any case where child overrides exist
-  - start refactoring front-end UI to new shadow DOM
-  - refactor left side gutter (litmus test)
 
 - inherit style must work work with variants
 - measure tool for distance between elements
-- show hovered element heights
-- shadow DOM updates.
-  - needs to come first since it will affect data model c
-  - keep this in tandem with pane panes
 - update all icons to have same padding
 - box shadow color picking doesn't work properly
 - research on existing design tools
