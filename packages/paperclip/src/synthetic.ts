@@ -471,6 +471,12 @@ export const getSyntheticInstancePath = memoize(
   }
 );
 
+export const syntheticNodeIsInShadow = (
+  node: SyntheticNode,
+  root: SyntheticVisibleNode | SyntheticDocument,
+  graph: DependencyGraph
+) => getSyntheticInstancePath(node, root, graph).length > 0;
+
 export const generateSyntheticDocumentChecksum = memoize(
   (document: SyntheticDocument) => {
     return getPCNodePreChecksum(document);

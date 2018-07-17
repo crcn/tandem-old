@@ -16,7 +16,6 @@ import {
   CANVAS_MOUSE_MOVED,
   CANVAS_MOUNTED,
   CANVAS_MOUSE_CLICKED,
-  WrappedEvent,
   CanvasToolOverlayClicked,
   RESIZER_MOUSE_DOWN,
   ResizerMouseDown,
@@ -51,7 +50,6 @@ import {
   TreeLayerClick,
   TreeLayerDroppedNode,
   TreeLayerExpandToggleClick,
-  TreeLayerMouseOut,
   FILE_NAVIGATOR_TOGGLE_DIRECTORY_CLICKED,
   TreeLayerMouseOver,
   PC_LAYER_DROPPED_NODE,
@@ -247,7 +245,8 @@ import {
   canRemoveSyntheticVisibleNode,
   persistInheritStyle,
   persistInheritStyleComponentId,
-  isPaperclipUri
+  isPaperclipUri,
+  syntheticNodeIsInShadow
 } from "paperclip";
 import {
   roundBounds,
@@ -287,7 +286,8 @@ import {
   expandInspectorNode,
   collapseInspectorNode,
   expandSyntheticInspectorNode,
-  getInspectorSyntheticNode
+  getInspectorSyntheticNode,
+  isInspectorNode
 } from "../state/pc-inspector-tree";
 
 const ZOOM_SENSITIVITY = process.platform === "win32" ? 2500 : 250;
@@ -1109,7 +1109,7 @@ export const canvasReducer = (state: RootState, action: Action) => {
       targetNodeId = getCanvasMouseTargetNodeIdFromPoint(
         state,
         offset,
-        getDragFilter(item)
+        getDragFilter(item, state)
       );
 
       state = updateRootState(
@@ -1631,9 +1631,16 @@ const persistInsertNodeFromPoint = (
   return state;
 };
 
-const getDragFilter = (item: any) => {
+const getDragFilter = (item: any, state: RootState) => {
+  // TODO - filter should check if is slot
   let filter = (node: SyntheticVisibleNode) =>
-    node.name !== PCSourceTagNames.TEXT;
+    node.name !== PCSourceTagNames.TEXT &&
+    node.name !== PCSourceTagNames.COMPONENT_INSTANCE &&
+    !syntheticNodeIsInShadow(
+      node,
+      getSyntheticVisibleNodeDocument(node.id, state.documents),
+      state.graph
+    );
 
   if (isFile(item) && isJavaScriptFile(item.uri)) {
     filter = (node: SyntheticVisibleNode) => {
@@ -1643,6 +1650,11 @@ const getDragFilter = (item: any) => {
         !node.isComponentInstance
       );
     };
+  } else if (isInspectorNode(item)) {
+    const sourceNode = getPCNode(item.sourceNodeId, state.graph);
+    if (sourceNode.name === PCSourceTagNames.COMPONENT) {
+      return () => false;
+    }
   }
 
   return filter;
@@ -1685,7 +1697,7 @@ const handleLoadedDroppedItem = (
   const targetNodeId = getCanvasMouseTargetNodeIdFromPoint(
     state,
     point,
-    getDragFilter(item)
+    getDragFilter(item, state)
   );
 
   let sourceNode: PCVisibleNode;
@@ -1718,8 +1730,11 @@ const handleLoadedDroppedItem = (
         );
       }, state);
     }
-  } else if (isSyntheticVisibleNode(item)) {
-    sourceNode = getSyntheticSourceNode(item, state.graph) as PCVisibleNode;
+  } else if (isInspectorNode(item)) {
+    sourceNode = getSyntheticSourceNode(
+      getInspectorSyntheticNode(item, state.documents, state.graph),
+      state.graph
+    ) as PCVisibleNode;
   } else {
     sourceNode = cloneTreeNode((item as RegisteredComponent).template);
   }
@@ -1960,13 +1975,6 @@ const clipboardReducer = (state: RootState, action: Action) => {
   }
 
   return state;
-};
-
-const isDroppableNode = (node: SyntheticVisibleNode) => {
-  return (
-    node.name !== "text" &&
-    !/input/.test(String((node as SyntheticElement).name))
-  );
 };
 
 const handleArtboardSelectionFromAction = <

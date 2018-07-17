@@ -11,6 +11,7 @@ export type OpenModuleControllerOuterProps = {
   graph: DependencyGraph;
   dispatch: Dispatch<any>;
   selectedInspectorNodeIds: string[];
+  hoveringInspectorNodeIds: string[];
 };
 
 export default compose<
@@ -24,12 +25,14 @@ export default compose<
     graph,
     dispatch,
     selectedInspectorNodeIds,
+    hoveringInspectorNodeIds,
     ...rest
   }: OpenModuleControllerOuterProps) => {
     return (
       <Base {...rest}>
         <NodeLayer
           depth={2}
+          hoveringInspectorNodeIds={hoveringInspectorNodeIds}
           selectedInspectorNodeIds={selectedInspectorNodeIds}
           graph={graph}
           dispatch={dispatch}

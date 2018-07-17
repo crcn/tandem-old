@@ -43,6 +43,7 @@ export type LayerControllerOuterProps = {
   inShadow?: boolean;
   contentNode: InspectorNode;
   selectedInspectorNodeIds: string[];
+  hoveringInspectorNodeIds: string[];
   document: SyntheticDocument;
   inspectorNode: InspectorNode;
   syntheticNode: SyntheticNode;
@@ -136,6 +137,7 @@ export default Base => {
       onLabelClick,
       editingLabel,
       selectedInspectorNodeIds,
+      hoveringInspectorNodeIds,
       isOver,
       canDrop,
       contentNode,
@@ -157,6 +159,9 @@ export default Base => {
 
       const isSelected =
         selectedInspectorNodeIds.indexOf(inspectorNode.id) !== -1;
+      const isHovering =
+        hoveringInspectorNodeIds.indexOf(inspectorNode.id) !== -1 ||
+        (canDrop && isOver);
       if (expanded) {
         const childDepth = depth + 1;
         children = inspectorNode.children.map(child => {
@@ -165,6 +170,7 @@ export default Base => {
               inShadow={inShadow}
               contentNode={getContentNode(inspectorNode, contentNode, graph)}
               selectedInspectorNodeIds={selectedInspectorNodeIds}
+              hoveringInspectorNodeIds={hoveringInspectorNodeIds}
               document={document}
               key={child.id}
               depth={childDepth}
@@ -238,7 +244,7 @@ export default Base => {
                         inspectorNode.name === InspectorTreeNodeType.CONTENT,
                       shadow:
                         inspectorNode.name === InspectorTreeNodeType.SHADOW,
-                      hover: isOver && canDrop,
+                      hover: isHovering,
                       inShadow: !isSelected && inShadow
                     })}
                     arrowProps={{

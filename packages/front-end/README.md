@@ -5,12 +5,11 @@ OBJECTIVE:
 
 IMMEDIATE:
 
-- PC layers
+- deleting layers
+- moving component nodes
+- test moving to shadow DOM
 
-  - wire up DND over
-  - move layer label to separate component with hover controller
-  - dnd before
-  - dnd after
+- PC layers
   - rep slots
   - update DND canvas to accept INSPECTOR_NODE instead of SYNTHETIC_NODE
 

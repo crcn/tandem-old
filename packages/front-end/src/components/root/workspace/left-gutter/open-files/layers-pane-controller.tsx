@@ -13,6 +13,7 @@ const { OpenModule } = require("./open-module.pc");
 
 export type LayersPaneControllerOuterProps = {
   graph: DependencyGraph;
+  hoveringInspectorNodeIds: string[];
   selectedInspectorNodeIds: string[];
   sourceNodeInspector: InspectorNode;
   documents: SyntheticDocument[];
@@ -30,6 +31,7 @@ export default compose<
     documents,
     dispatch,
     selectedInspectorNodeIds,
+    hoveringInspectorNodeIds,
     ...rest
   }: LayersPaneControllerOuterProps) => {
     const content = sourceNodeInspector.children.map(inspectorNode => {
@@ -43,6 +45,7 @@ export default compose<
       return (
         <OpenModule
           selectedInspectorNodeIds={selectedInspectorNodeIds}
+          hoveringInspectorNodeIds={hoveringInspectorNodeIds}
           inspectorNode={inspectorNode}
           dependency={dependency}
           dispatch={dispatch}

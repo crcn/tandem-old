@@ -83,7 +83,8 @@ import {
   expandInspectorNode,
   InspectorNode,
   expandSyntheticInspectorNode,
-  getSyntheticInspectorNode
+  getSyntheticInspectorNode,
+  updateAlts
 } from "./pc-inspector-tree";
 
 export enum ToolType {
@@ -516,7 +517,7 @@ export const openFile = (
 const refreshModuleInspectorNodes = (state: RootState) => {
   return updateRootState(
     {
-      sourceNodeInspector: {
+      sourceNodeInspector: updateAlts({
         ...state.sourceNodeInspector,
         children: state.openFiles.map(openFile => {
           const module = state.graph[openFile.uri].content;
@@ -534,7 +535,7 @@ const refreshModuleInspectorNodes = (state: RootState) => {
           inspector = expandInspectorNode(inspector, inspector, state.graph);
           return inspector;
         })
-      }
+      })
     },
     state
   );
