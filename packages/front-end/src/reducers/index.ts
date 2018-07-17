@@ -1616,13 +1616,9 @@ const persistInsertNodeFromPoint = (
     );
   }
 
-  state = persistRootState(
-    state => {
-      return persistInsertNode(node, targetNode, TreeMoveOffset.APPEND, state);
-    },
-    state,
-    targetNode
-  );
+  state = persistRootState(state => {
+    return persistInsertNode(node, targetNode, TreeMoveOffset.APPEND, state);
+  }, state);
 
   state = setTool(null, state);
 
@@ -1902,32 +1898,33 @@ const shortcutReducer = (state: RootState, action: Action): RootState => {
         );
       }
 
-      return persistRootState(state => {
-        const document = getSyntheticVisibleNodeDocument(
-          firstNode.id,
-          state.documents
-        );
-        let parent = getParentTreeNode(firstNode.id, document);
-        const index = parent.children.indexOf(firstNode);
+      const document = getSyntheticVisibleNodeDocument(
+        firstNode.id,
+        state.documents
+      );
 
-        state = state.selectedNodeIds.reduce((state, nodeId) => {
+      let parent = getParentTreeNode(firstNode.id, document);
+      const index = parent.children.indexOf(firstNode);
+
+      state = persistRootState(state => {
+        return state.selectedNodeIds.reduce((state, nodeId) => {
           return persistRemoveSyntheticVisibleNode(
             getSyntheticNodeById(nodeId, state.documents),
             state
           );
         }, state);
-
-        parent = getSyntheticNodeById(parent.id, state.documents);
-        state = setSelectedSyntheticVisibleNodeIds(
-          state,
-          ...(parent.children.length
-            ? [parent.children[Math.min(index, parent.children.length - 1)].id]
-            : parent.name !== SYNTHETIC_DOCUMENT_NODE_NAME
-              ? [parent.id]
-              : [])
-        );
-        return state;
       }, state);
+
+      parent = getSyntheticNodeById(parent.id, state.documents);
+
+      state = setSelectedSyntheticVisibleNodeIds(
+        state,
+        ...(parent.children.length
+          ? [parent.children[Math.min(index, parent.children.length - 1)].id]
+          : parent.name !== SYNTHETIC_DOCUMENT_NODE_NAME
+            ? [parent.id]
+            : [])
+      );
     }
   }
   return state;

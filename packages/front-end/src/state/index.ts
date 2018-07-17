@@ -236,13 +236,23 @@ export const deselectRootProjectFiles = (state: RootState) =>
 
 export const persistRootState = (
   persistPaperclipState: (state: RootState) => RootState,
-  state: RootState,
-  newSelectionScope?: SyntheticVisibleNode | SyntheticDocument
+  state: RootState
 ) => {
-  const oldState = state;
   const oldGraph = state.graph;
   state = keepActiveFileOpen(
     updateRootState(persistPaperclipState(state), state)
+  );
+
+  state = updateRootState(
+    {
+      selectedNodeIds: state.selectedNodeIds.filter(id =>
+        getPCNode(id, state.graph)
+      ),
+      hoveringNodeIds: state.hoveringNodeIds.filter(id =>
+        getPCNode(id, state.graph)
+      )
+    },
+    state
   );
   const modifiedDeps = getModifiedDependencies(state.graph, oldGraph);
   state = addHistory(oldGraph, state.graph, state);

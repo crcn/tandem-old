@@ -116,11 +116,16 @@ const _refreshInspectorTree = (
 
   const sourceNode = node.sourceNodeId && getPCNode(node.sourceNodeId, graph);
 
-  // if no source node, then it's likely the root
+  // if no source node, then it's likely the root, or deleted
   if (!sourceNode) {
+    if (node.name !== InspectorTreeNodeType.ROOT) {
+      return null;
+    }
     return {
       ...node,
-      children: node.children.map(child => refreshInspectorTree(child, graph))
+      children: node.children
+        .map(child => refreshInspectorTree(child, graph))
+        .filter(Boolean)
     };
   }
 
@@ -267,6 +272,11 @@ export const expandSyntheticInspectorNode = (
     node.source.nodeId
   ];
   const lastId = last(nodePath);
+
+  if (!getPCNode(lastId, graph)) {
+    return rootInspectorNode;
+  }
+
   let current = rootInspectorNode;
   for (const instanceId of nodePath) {
     while (1) {
