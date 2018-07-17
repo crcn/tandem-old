@@ -6,6 +6,7 @@ import * as cx from "classnames";
 import { compose, pure, withHandlers, withState } from "recompose";
 import { DropTarget, DragSource } from "react-dnd";
 import { withNodeDropTarget } from "./dnd-controller";
+const { BeforeDropZone, AfterDropZone } = require("./drop-zones.pc");
 import {
   SyntheticNode,
   PCSourceTagNames,
@@ -60,6 +61,8 @@ type LayerControllerInnerProps = {
 } & LayerControllerOuterProps;
 
 const DRAG_TYPE = "INSPECTOR_NODE";
+
+const LAYER_PADDING = 16;
 
 export default Base => {
   let EnhancedLayer;
@@ -190,25 +193,24 @@ export default Base => {
         }
       }
 
+      const dropZoneStyle = {
+        width: `calc(100% - ${depth * LAYER_PADDING}px)`
+      };
+
       return (
         <span>
+          <BeforeDropZone
+            style={dropZoneStyle}
+            dispatch={dispatch}
+            inspectorNode={inspectorNode}
+            contentNode={contentNode}
+            graph={graph}
+          />
           <FocusComponent focus={editingLabel}>
             {connectDropTarget(
               connectDragSource(
                 <div>
                   <Base
-                    beforeDropProps={{
-                      dispatch,
-                      inspectorNode,
-                      contentNode,
-                      graph
-                    }}
-                    afterDropProps={{
-                      dispatch,
-                      inspectorNode,
-                      contentNode,
-                      graph
-                    }}
                     onClick={onLabelClick}
                     onDoubleClick={onLabelDoubleClick}
                     labelInputProps={{ onKeyDown: onLabelInputKeyDown }}
@@ -245,12 +247,19 @@ export default Base => {
                     labelProps={{
                       text: label
                     }}
-                    style={{ paddingLeft: depth * 16 }}
+                    style={{ paddingLeft: depth * LAYER_PADDING }}
                   />
                 </div>
               )
             )}
           </FocusComponent>
+          <AfterDropZone
+            style={dropZoneStyle}
+            dispatch={dispatch}
+            inspectorNode={inspectorNode}
+            contentNode={contentNode}
+            graph={graph}
+          />
           {children}
         </span>
       );

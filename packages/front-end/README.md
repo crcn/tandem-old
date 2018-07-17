@@ -8,6 +8,7 @@ IMMEDIATE:
 - PC layers
 
   - wire up DND over
+  - move layer label to separate component with hover controller
   - dnd before
   - dnd after
   - rep slots

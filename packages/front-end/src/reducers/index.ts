@@ -134,7 +134,9 @@ import {
   InspectorLayerEvent,
   SOURCE_INSPECTOR_LAYER_ARROW_CLICKED,
   SOURCE_INSPECTOR_LAYER_LABEL_CHANGED,
-  InspectorLayerLabelChanged
+  InspectorLayerLabelChanged,
+  SOURCE_INSPECTOR_LAYER_DROPPED,
+  SourceInspectorLayerDropped
 } from "../actions";
 import {
   queueOpenFile,
@@ -550,6 +552,8 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
       );
       return state;
     }
+
+    // DEPRECATED
     case PC_LAYER_DROPPED_NODE: {
       const { node, targetNode, offset } = action as TreeLayerDroppedNode;
 
@@ -582,8 +586,50 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
       );
       return state;
     }
+    case SOURCE_INSPECTOR_LAYER_DROPPED: {
+      const { source, target, offset } = action as SourceInspectorLayerDropped;
+
+      const sourceSyntheticNode = getInspectorSyntheticNode(
+        source,
+        state.documents,
+        state.graph
+      );
+      const targetSyntheticNode = getInspectorSyntheticNode(
+        target,
+        state.documents,
+        state.graph
+      );
+
+      const oldState = state;
+
+      state = persistRootState(
+        state =>
+          persistMoveSyntheticVisibleNode(
+            sourceSyntheticNode,
+            targetSyntheticNode,
+            offset,
+            state
+          ),
+        state
+      );
+
+      const document = getSyntheticVisibleNodeDocument(
+        targetSyntheticNode.id,
+        state.documents
+      );
+      const mutatedTarget =
+        offset === TreeMoveOffset.APPEND || offset === TreeMoveOffset.PREPEND
+          ? targetSyntheticNode
+          : getParentTreeNode(targetSyntheticNode.id, document);
+
+      state = queueSelectInsertedSyntheticVisibleNodes(
+        oldState,
+        state,
+        mutatedTarget
+      );
+      return state;
+    }
     case PC_LAYER_MOUSE_OUT: {
-      const { node } = action as TreeLayerMouseOut;
       state = setHoveringSyntheticVisibleNodeIds(state);
       return state;
     }

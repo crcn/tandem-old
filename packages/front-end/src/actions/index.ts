@@ -151,6 +151,7 @@ export const SOURCE_INSPECTOR_LAYER_ARROW_CLICKED =
   "SOURCE_INSPECTOR_LAYER_ARROW_CLICKED";
 export const SOURCE_INSPECTOR_LAYER_LABEL_CHANGED =
   "SOURCE_INSPECTOR_LAYER_LABEL_CHANGED";
+export const SOURCE_INSPECTOR_LAYER_DROPPED = "SOURCE_INSPECTOR_LAYER_DROPPED";
 export const NEW_FILE_ADDED = "NEW_FILE_ADDED";
 export const QUICK_SEARCH_ITEM_CLICKED = "QUICK_SEARCH_ITEM_CLICKED";
 export const QUICK_SEARCH_BACKGROUND_CLICK = "QUICK_SEARCH_BACKGROUND_CLICK";
@@ -277,6 +278,12 @@ export type TreeLayerDroppedNode = {
   node: TreeNode<any>;
   targetNode: TreeNode<any>;
   offset?: 0 | -1 | 1;
+} & Action;
+
+export type SourceInspectorLayerDropped = {
+  source: InspectorNode;
+  target: InspectorNode;
+  offset: TreeMoveOffset;
 } & Action;
 
 export type TreeLayerClick = TreeLayerMouseOver &
@@ -816,6 +823,7 @@ export const pcLayerExpandToggleClick = (
   type: PC_LAYER_EXPAND_TOGGLE_CLICK
 });
 
+// DEPRECATED
 export const pcLayerDroppedNode = (
   node: SyntheticVisibleNode,
   targetNode: TreeNode<any>,
@@ -825,6 +833,17 @@ export const pcLayerDroppedNode = (
   targetNode,
   offset,
   type: PC_LAYER_DROPPED_NODE
+});
+
+export const sourceInspectorLayerDropped = (
+  source: InspectorNode,
+  target: InspectorNode,
+  offset: TreeMoveOffset
+): SourceInspectorLayerDropped => ({
+  source,
+  target,
+  offset,
+  type: SOURCE_INSPECTOR_LAYER_DROPPED
 });
 
 export const rawCssTextChanged = (value: string): RawCSSTextChanged => ({

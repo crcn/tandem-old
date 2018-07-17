@@ -103,6 +103,13 @@ export const refreshInspectorTree = (
   node: InspectorTreeBaseNode<any>,
   graph: DependencyGraph
 ): InspectorTreeBaseNode<InspectorTreeNodeType> => {
+  return updateAlts(_refreshInspectorTree(node, graph) as InspectorNode);
+};
+
+const _refreshInspectorTree = (
+  node: InspectorTreeBaseNode<any>,
+  graph: DependencyGraph
+): InspectorTreeBaseNode<InspectorTreeNodeType> => {
   if (!node.expanded) {
     return { ...node };
   }
