@@ -15,6 +15,7 @@ import {
   InspectorNode,
   getSyntheticInspectorNode
 } from "state/pc-inspector-tree";
+import { OpenFilesPaneComponent } from "./open-files";
 
 type LeftGutterProps = {
   editorWindows: EditorWindow[];
@@ -26,7 +27,8 @@ type LeftGutterProps = {
 const BaseLeftGutterComponent = ({
   dispatch,
   rootDirectory,
-  root
+  root,
+  editorWindows
 }: LeftGutterProps) => (
   <GutterComponent>
     <LayersPane
@@ -42,11 +44,11 @@ const BaseLeftGutterComponent = ({
       graph={root.graph}
       documents={root.documents}
     />
-    {/* <OpenFilesPaneComponent
+    <OpenFilesPaneComponent
       root={root}
       editorWindows={editorWindows}
       dispatch={dispatch}
-    /> */}
+    />
     <FileNavigatorPaneComponent
       dispatch={dispatch}
       rootDirectory={rootDirectory}

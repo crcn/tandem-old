@@ -5,21 +5,23 @@ OBJECTIVE:
 
 IMMEDIATE:
 
-- deleting layers
 - moving component nodes
 - test moving to shadow DOM
 
-- PC layers
-  - rep slots
-
 * Bindings
-
   - convert to slot shortcut
     - prohibit text elements
-    - auto-generate id
+    - auto-generate ids
   - bindings UI
     - ability to change names
     - scan for bindable element props (native, and custom)
+
+- PC layers
+
+  - rep slots
+
+- PC layers (again)
+  - prohibit shadow slot labels from being edited
 
 * Variants
 

@@ -13,6 +13,7 @@
         "border-bottom": "1px solid rgba(0,0,0,0.05)",
         "font-size": "11px",
         "color": "grey",
+        "min-height": "200px",
         "overflow": "scroll",
         "height": "100%"
       },
@@ -166,6 +167,16 @@
                     "3c31564763"
                   ],
                   "value": true,
+                  "name": "override",
+                  "children": []
+                },
+                {
+                  "id": "22ec2c3274",
+                  "propertyName": "style",
+                  "targetIdPath": [
+                    "fe256b423"
+                  ],
+                  "value": {},
                   "name": "override",
                   "children": []
                 }

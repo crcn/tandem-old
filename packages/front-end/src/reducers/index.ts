@@ -1497,7 +1497,10 @@ export const canvasReducer = (state: RootState, action: Action) => {
         state.selectedNodeIds[0],
         state.documents
       );
-      state = persistAddComponentController(filePath, node, state);
+      state = persistRootState(
+        state => persistAddComponentController(filePath, node, state),
+        state
+      );
       return state;
     }
     case REMOVE_COMPONENT_CONTROLLER_BUTTON_CLICKED: {

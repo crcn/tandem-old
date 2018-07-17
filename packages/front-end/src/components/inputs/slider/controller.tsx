@@ -55,7 +55,7 @@ export default compose(
       }
     };
   }),
-  Base => ({ percent, setSlider, onMouseDown, grabberStyle }) => {
+  Base => ({ percent, setSlider, onMouseDown }) => {
     return (
       <span ref={setSlider}>
         <Base

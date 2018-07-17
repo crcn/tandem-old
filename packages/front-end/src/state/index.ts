@@ -245,11 +245,21 @@ export const persistRootState = (
 
   state = updateRootState(
     {
-      selectedNodeIds: state.selectedNodeIds.filter(id =>
-        getPCNode(id, state.graph)
+      selectedNodeIds: state.selectedNodeIds.filter(
+        id =>
+          getSyntheticNodeById(id, state.documents) &&
+          getSyntheticSourceNode(
+            getSyntheticNodeById(id, state.documents),
+            state.graph
+          )
       ),
-      hoveringNodeIds: state.hoveringNodeIds.filter(id =>
-        getPCNode(id, state.graph)
+      hoveringNodeIds: state.hoveringNodeIds.filter(
+        id =>
+          getSyntheticNodeById(id, state.documents) &&
+          getSyntheticSourceNode(
+            getSyntheticNodeById(id, state.documents),
+            state.graph
+          )
       )
     },
     state

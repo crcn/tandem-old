@@ -1251,9 +1251,12 @@ export const persistCSSProperty = <TState extends PCEditorState>(
   variant: PCVariant,
   state: TState
 ) => {
+  if (value === "") {
+    value = undefined;
+  }
   const updatedNode = maybeOverride(
     PCOverridablePropertyName.STYLE,
-    { [name]: value || undefined },
+    { [name]: value },
     variant,
     (style, override) => {
       const prevStyle = (override && override.value) || EMPTY_OBJECT;
@@ -1267,7 +1270,7 @@ export const persistCSSProperty = <TState extends PCEditorState>(
         ...sourceNode,
         style: {
           ...sourceNode.style,
-          [name]: value || undefined
+          [name]: value
         }
       } as PCVisibleNode)
   )(node, state.documents, state.graph);
@@ -1281,9 +1284,12 @@ export const persistAttribute = <TState extends PCEditorState>(
   element: SyntheticElement,
   state: TState
 ) => {
+  if (value === "") {
+    value = undefined;
+  }
   const updatedNode = maybeOverride(
     PCOverridablePropertyName.ATTRIBUTES,
-    { [name]: value || undefined },
+    { [name]: value },
     null,
     (attributes, override) => {
       return overrideKeyValue(
@@ -1297,7 +1303,7 @@ export const persistAttribute = <TState extends PCEditorState>(
         ...sourceNode,
         attributes: {
           ...sourceNode.attributes,
-          [name]: value || undefined
+          [name]: value
         }
       } as PCVisibleNode)
   )(element, state.documents, state.graph);

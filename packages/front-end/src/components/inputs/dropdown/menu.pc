@@ -33,10 +33,10 @@
       ],
       "metadata": {
         "bounds": {
-          "left": 381,
-          "top": 313,
-          "right": 582,
-          "bottom": 347
+          "left": 395,
+          "top": 347,
+          "right": 596,
+          "bottom": 381
         }
       }
     }

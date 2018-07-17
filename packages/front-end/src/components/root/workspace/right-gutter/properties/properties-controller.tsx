@@ -26,6 +26,7 @@ export default compose(
           text: sourceNode.name === PCSourceTagNames.TEXT,
           element: sourceNode.name !== PCSourceTagNames.TEXT
         })}
+        bindingsProps={rest}
         controllersPaneProps={rest}
         textProps={rest}
         elementProps={rest}

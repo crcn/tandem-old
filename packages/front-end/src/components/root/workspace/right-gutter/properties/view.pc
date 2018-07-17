@@ -652,7 +652,7 @@
           "name": "component-instance",
           "attributes": {},
           "style": {
-            "display": "none"
+            "display": "block"
           },
           "children": [
             {
@@ -1455,6 +1455,7 @@
                 "b6c162d140"
               ],
               "value": {
+                "padding": "0px",
                 "padding-top": "0px"
               },
               "name": "override",
@@ -1693,6 +1694,17 @@
               },
               "name": "override",
               "children": []
+            },
+            {
+              "id": "4e52e47832",
+              "variantId": null,
+              "propertyName": "label",
+              "targetIdPath": [
+                "b6c162d140"
+              ],
+              "value": "Content",
+              "name": "override",
+              "children": []
             }
           ],
           "metadata": {
@@ -1712,7 +1724,10 @@
           "right": 1709.4580207782299,
           "bottom": 516.1596984092981
         }
-      }
+      },
+      "controllers": [
+        "./bindings-controller.tsx"
+      ]
     },
     {
       "label": "Behavior Pane",

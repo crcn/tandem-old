@@ -1,10 +1,10 @@
 import * as React from "react";
-import * as ReactDOM from "react-dom";
+import { last } from "lodash";
 import * as path from "path";
 import { FocusComponent } from "../../../../focus";
 import * as cx from "classnames";
 import { compose, pure, withHandlers, withState } from "recompose";
-import { DropTarget, DragSource } from "react-dnd";
+import { DragSource } from "react-dnd";
 import { withNodeDropTarget } from "./dnd-controller";
 const { BeforeDropZone, AfterDropZone } = require("./drop-zones.pc");
 import {
@@ -17,7 +17,8 @@ import {
   SyntheticDocument,
   PCComponent,
   getPCNodeContentNode,
-  PCModule
+  PCModule,
+  extendsComponent
 } from "paperclip";
 import {
   InspectorNode,
@@ -162,6 +163,7 @@ export default Base => {
       const isHovering =
         hoveringInspectorNodeIds.indexOf(inspectorNode.id) !== -1 ||
         (canDrop && isOver);
+      const isSlot = sourceNode.name === PCSourceTagNames.OVERRIDE;
       if (expanded) {
         const childDepth = depth + 1;
         children = inspectorNode.children.map(child => {
@@ -196,6 +198,12 @@ export default Base => {
           label = (component as PCComponent).label;
         } else if (sourceNode.name === PCSourceTagNames.ELEMENT) {
           label = sourceNode.is || "Element";
+        } else if (sourceNode.name === PCSourceTagNames.OVERRIDE) {
+          const targetSourceNode = getPCNode(
+            last(sourceNode.targetIdPath),
+            graph
+          ) as PCVisibleNode;
+          label = targetSourceNode.label || "Slot";
         }
       }
 
@@ -239,6 +247,7 @@ export default Base => {
                         sourceNode.name === PCSourceTagNames.TEXT,
                       expanded,
                       selected: isSelected,
+                      slot: isSlot,
                       alt: inspectorNode.alt && !isSelected,
                       content:
                         inspectorNode.name === InspectorTreeNodeType.CONTENT,

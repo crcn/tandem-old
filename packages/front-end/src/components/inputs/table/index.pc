@@ -166,7 +166,7 @@
           "targetIdPath": [],
           "value": {
             "font-weight": "600",
-            "background": "rgba(200, 200, 200, 0.8)"
+            "background": "rgba(222, 222, 222, 0.8)"
           },
           "name": "override",
           "children": []

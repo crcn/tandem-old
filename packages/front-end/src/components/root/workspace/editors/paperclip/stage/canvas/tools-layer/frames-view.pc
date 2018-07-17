@@ -119,9 +119,9 @@
                     "display": "inline-block",
                     "width": "22px",
                     "height": "20px",
+                    "opacity": "0p",
                     "cursor": "pointer",
-                    "position": "relative",
-                    "opacity": "0.853"
+                    "position": "relative"
                   },
                   "children": [],
                   "metadata": {},
