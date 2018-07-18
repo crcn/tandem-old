@@ -5,84 +5,82 @@ OBJECTIVE:
 
 IMMEDIATE:
 
-- moving component nodes
-- test moving to shadow DOM
+- convert to slot shortcut
+  - prohibit text elements
+  - auto-generate ids
+- scan for slots
+- wire up scanned slots
+- refactor
+- prohobit override is slot does not exist
 
-* Bindings
-  - bindings UI
-    - add button
-    - "to" dropdown
-      - component props
-      - element specific props
-  - convert to slot shortcut
-    - prohibit text elements
-    - auto-generate ids
+* moving component nodes
+* test moving to shadow DOM
 
-- ## prohobit property overrides (necessary)
+* prohobit property overrides (necessary)
 
-- property inputs for component dynamic bindings
+* property inputs for component dynamic bindings
 
-- update evaluator
-- update code compiler to use bindings
+* update evaluator
+* update code compiler to use bindings
 
-* PC layers
+- PC layers
 
   - rep slots
 
-* PC layers (again)
+- PC layers (again)
   - prohibit shadow slot labels from being edited
 
-- Variants
+* Variants
 
   - based on default. Do not allow to be toggleable.
 
-- update code compiler to use new bindings functionality
-- typed definition file
-- eliminiate
+* update code compiler to use new bindings functionality
+* typed definition file
+* eliminiate
 
-* VSCode
+- VSCode
   - Tandem button for opening assoc `*.pc` file (scan PC files for controller)
     - dropdown if multiple controllers attached
 
-- shadow DOM
+* shadow DOM
   - update front-end to persist to data model
   - warning for any case where child overrides exist
 
-* inherit style must work work with variants
-* measure tool for distance between elements
-* update all icons to have same padding
-* box shadow color picking doesn't work properly
-* research on existing design tools
-* gradient input
-* CSS parser
+- inherit style must work work with variants
+- measure tool for distance between elements
+- update all icons to have same padding
+- box shadow color picking doesn't work properly
+- research on existing design tools
+- gradient input
+- CSS parser
 
-* start redesign (dark)
+- start redesign (dark)
 
-- explicit props
+* explicit props
   - do not show for shadow nodes
-- explicit slots
+* explicit slots
 
-- inherit pane needs to be supported in variants
+* inherit pane needs to be supported in variants
 
-- dts
-- variables
-- more paperclip tests
-- design controls
+* dts
+* variables
+* more paperclip tests
+* design controls
   - border input
   - color picker
     - swatches
     - RGBA / HSA / HEX inputs
   - clear overrides functionality (need to reset to inherited styles)
-- controller UI
-- better place to expose properties
-- redesign (see https://dribbble.com/shots/4781001-Figma)
-- dts
+* controller UI
+* better place to expose properties
+* redesign (see https://dribbble.com/shots/4781001-Figma)
+* dts
   - code compiler watcher
-- show controllers
-- Rust interp
-- file navigator refactor
-- open files refactor
-- preview in app
+* show controllers
+* Rust interp
+* file navigator refactor
+* open files refactor
+* preview in app
   - "preview mode" banner
   - "click to interact" button
   - auto save in preview mode

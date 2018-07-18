@@ -123,8 +123,9 @@ export default compose(
       syntheticDocument
     );
     const showChildFlexInputs =
-      (isSyntheticElement(parentNode) && parentNode.style.display === "flex") ||
-      parentNode.style.display === "inline-flex";
+      isSyntheticElement(parentNode) &&
+      (parentNode.style.display === "flex" ||
+        parentNode.style.display === "inline-flex");
 
     return (
       <Base

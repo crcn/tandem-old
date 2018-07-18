@@ -158,19 +158,19 @@ export type PCBaseVisibleNode<TName extends PCSourceTagNames> = {
   inheritStyle?: InheritStyle;
 } & PCBaseSourceNode<TName>;
 
-export type PCPropertyBindings = {
-  // to property name: from property name
-  [identifier: string]: string;
+export type PCPropertyBinding = {
+  from?: string;
+  to?: string;
 };
 
-export type PCBaseElementBindings = {
-  properties?: PCPropertyBindings;
+export type PCVisibleNodeBindings = {
+  properties?: PCPropertyBinding[];
 };
 
 export type PCBaseElement<TName extends PCSourceTagNames> = {
   is: string;
   attributes: KeyValue<string>;
-  bind?: PCBaseElementBindings;
+  bind?: PCVisibleNodeBindings;
   children: (PCBaseVisibleNode<any> | PCOverride)[];
 } & PCBaseVisibleNode<TName>;
 
@@ -182,6 +182,7 @@ export type PCComponentInstanceElement = {} & PCBaseElement<
 
 export type PCTextNode = {
   value: string;
+  bind?: PCVisibleNodeBindings;
 } & PCBaseVisibleNode<PCSourceTagNames.TEXT>;
 
 export type PCVisibleNode = PCElement | PCTextNode | PCComponentInstanceElement;
@@ -565,6 +566,38 @@ export const getInstanceShadow = memoize(
     graph: DependencyGraph
   ): PCComponent => {
     return getPCNode(instance.is, graph) as PCComponent;
+  }
+);
+
+export const findSlottableElements = (
+  instance: PCComponentInstanceElement | PCComponent,
+  graph: DependencyGraph
+) => {
+  if (!extendsComponent(instance)) {
+    return [];
+  }
+
+  const component = getPCNode(instance.is, graph);
+
+  return getPCComponentSlottableElements(component as PCComponent);
+};
+
+export const getPCComponentSlottableElements = memoize(
+  (component: PCComponent) => {
+    return filterNestedNodes(
+      component,
+      (child: PCElement | PCComponentInstanceElement) => {
+        return (
+          (child.name === PCSourceTagNames.ELEMENT ||
+            PCSourceTagNames.COMPONENT_INSTANCE) &&
+          child.bind &&
+          child.bind.properties &&
+          child.bind.properties.some(
+            property => property.to === PCOverridablePropertyName.CHILDREN
+          )
+        );
+      }
+    );
   }
 );
 

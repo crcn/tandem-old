@@ -1463,7 +1463,8 @@
                               "right": 2000.9140559852212,
                               "bottom": 464.1206146414751
                             }
-                          }
+                          },
+                          "label": "remove button"
                         },
                         {
                           "id": "d7775c918",
@@ -1486,7 +1487,8 @@
                               "right": 545,
                               "bottom": 1803
                             }
-                          }
+                          },
+                          "label": "add button"
                         }
                       ],
                       "metadata": {}
@@ -1770,7 +1772,7 @@
           "id": "2a5e418d43",
           "name": "variant",
           "label": "has selected binding",
-          "isDefault": true,
+          "isDefault": false,
           "children": [],
           "metadata": {}
         }

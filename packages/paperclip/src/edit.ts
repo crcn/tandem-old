@@ -21,7 +21,8 @@ import {
   getNestedTreeNodeById,
   KeyValue,
   dropChildNode,
-  filterNestedNodes
+  filterNestedNodes,
+  EMPTY_ARRAY
 } from "tandem-common";
 import { values, identity, uniq, last, intersection } from "lodash";
 import { DependencyGraph, Dependency } from "./graph";
@@ -55,7 +56,8 @@ import {
   filterPCNodes,
   isPCComponentInstance,
   InheritStyle,
-  PCBaseVisibleNode
+  PCBaseVisibleNode,
+  PCPropertyBinding
 } from "./dsl";
 import {
   SyntheticVisibleNode,
@@ -1309,6 +1311,82 @@ export const persistAttribute = <TState extends PCEditorState>(
   )(element, state.documents, state.graph);
 
   return replaceDependencyGraphPCNode(updatedNode, updatedNode, state);
+};
+
+export const persistUpdatePropertyBinding = <TState extends PCEditorState>(
+  properties: Partial<PCPropertyBinding>,
+  index: number,
+  node: SyntheticVisibleNode,
+  state: TState
+) => {
+  let sourceNode = getSyntheticSourceNode(node, state.graph) as PCVisibleNode;
+  const binding = { ...sourceNode.bind.properties[index], ...properties };
+  sourceNode = {
+    ...sourceNode,
+    bind: {
+      ...sourceNode.bind,
+      properties: arraySplice(sourceNode.bind.properties, index, 1, binding)
+    }
+  };
+
+  state = replaceDependencyGraphPCNode(sourceNode, sourceNode, state);
+  return state;
+};
+
+export const persistRemovePropertyBinding = <TState extends PCEditorState>(
+  index: number,
+  node: SyntheticVisibleNode,
+  state: TState
+) => {
+  let sourceNode = getSyntheticSourceNode(node, state.graph) as PCVisibleNode;
+  sourceNode = {
+    ...sourceNode,
+    bind: {
+      ...sourceNode.bind,
+      properties: arraySplice(sourceNode.bind.properties, index, 1)
+    }
+  };
+
+  state = replaceDependencyGraphPCNode(sourceNode, sourceNode, state);
+  return state;
+};
+export const persistAddPropertyBinding = <TState extends PCEditorState>(
+  node: SyntheticVisibleNode,
+  state: TState
+) => {
+  let sourceNode = getSyntheticSourceNode(node, state.graph) as PCVisibleNode;
+  sourceNode = maybeAddPropertyBind(sourceNode);
+  sourceNode = {
+    ...sourceNode,
+    bind: {
+      ...sourceNode.bind,
+      properties: [...sourceNode.bind.properties, EMPTY_OBJECT]
+    }
+  };
+
+  state = replaceDependencyGraphPCNode(sourceNode, sourceNode, state);
+  return state;
+};
+
+const maybeAddBind = (node: PCVisibleNode) => {
+  if (node.bind) {
+    return node;
+  }
+  return { ...node, bind: EMPTY_OBJECT };
+};
+
+const maybeAddPropertyBind = (node: PCVisibleNode) => {
+  node = maybeAddBind(node);
+  if (node.bind.properties) {
+    return node;
+  }
+  return {
+    ...node,
+    bind: {
+      ...node.bind,
+      properties: EMPTY_ARRAY
+    }
+  };
 };
 
 export const persistSyntheticVisibleNodeStyle = <TState extends PCEditorState>(

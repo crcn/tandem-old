@@ -24,9 +24,7 @@ import {
   updateNestedNodeTrail,
   getTreeNodeFromPath,
   EMPTY_OBJECT,
-  generateUID,
   TreeNodeUpdater,
-  containsNestedTreeNodeById,
   findNestedNode
 } from "tandem-common";
 import {
@@ -66,7 +64,6 @@ import {
   CanvasDroppedItem
 } from "../actions";
 import { uniq, pull, values, clamp } from "lodash";
-import { stat } from "fs";
 import {
   replaceDependency,
   PCDependency,
@@ -542,7 +539,7 @@ const refreshModuleInspectorNodes = (state: RootState) => {
         children: state.openFiles.map(openFile => {
           const module = state.graph[openFile.uri].content;
           let inspector = state.sourceNodeInspector.children.find(
-            inspector => inspector.sourceNodeId === module.id
+            inspector => inspector.assocSourceNodeId === module.id
           );
           if (inspector) {
             return refreshInspectorTree(inspector, state.graph);
@@ -568,7 +565,7 @@ export const getSyntheticNodeInspectorNode = (
   const sourceNode = getSyntheticSourceNode(node, state.graph);
   return findNestedNode(
     state.sourceNodeInspector,
-    child => child.sourceNodeId === sourceNode.id
+    child => child.assocSourceNodeId === sourceNode.id
   );
 };
 

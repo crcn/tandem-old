@@ -8,7 +8,7 @@ export const getContentNode = (
 ) => {
   return (
     contentNode ||
-    (getPCNode(inspectorNode.sourceNodeId, graph).name !==
+    (getPCNode(inspectorNode.assocSourceNodeId, graph).name !==
     PCSourceTagNames.MODULE
       ? inspectorNode
       : null)

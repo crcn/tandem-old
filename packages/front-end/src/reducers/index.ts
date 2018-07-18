@@ -134,7 +134,12 @@ import {
   SOURCE_INSPECTOR_LAYER_LABEL_CHANGED,
   InspectorLayerLabelChanged,
   SOURCE_INSPECTOR_LAYER_DROPPED,
-  SourceInspectorLayerDropped
+  SourceInspectorLayerDropped,
+  PropertyBindingUpdated,
+  PROPERTY_BINDING_UPDATED,
+  PROPERTY_BINDING_ADD_BUTTON_CLICKED,
+  PROPERTY_BINDING_REMOVE_BUTTON_CLICKED,
+  PropertyBindingRemoveButtonClicked
 } from "../actions";
 import {
   queueOpenFile,
@@ -246,7 +251,10 @@ import {
   persistInheritStyle,
   persistInheritStyleComponentId,
   isPaperclipUri,
-  syntheticNodeIsInShadow
+  syntheticNodeIsInShadow,
+  persistUpdatePropertyBinding,
+  persistAddPropertyBinding,
+  persistRemovePropertyBinding
 } from "paperclip";
 import {
   roundBounds,
@@ -1488,6 +1496,50 @@ export const canvasReducer = (state: RootState, action: Action) => {
         action as CanvasToolArtboardTitleClicked
       );
     }
+    case PROPERTY_BINDING_UPDATED: {
+      const {
+        fromPropertyName,
+        toPropertyName,
+        index
+      } = action as PropertyBindingUpdated;
+      const selectedNode = getSyntheticNodeById(
+        state.selectedNodeIds[0],
+        state.documents
+      );
+      state = persistRootState(state => {
+        return persistUpdatePropertyBinding(
+          { from: fromPropertyName, to: toPropertyName },
+          index,
+          selectedNode,
+          state
+        );
+      }, state);
+
+      return state;
+    }
+    case PROPERTY_BINDING_ADD_BUTTON_CLICKED: {
+      const selectedNode = getSyntheticNodeById(
+        state.selectedNodeIds[0],
+        state.documents
+      );
+      state = persistRootState(state => {
+        return persistAddPropertyBinding(selectedNode, state);
+      }, state);
+
+      return state;
+    }
+    case PROPERTY_BINDING_REMOVE_BUTTON_CLICKED: {
+      const { index } = action as PropertyBindingRemoveButtonClicked;
+      const selectedNode = getSyntheticNodeById(
+        state.selectedNodeIds[0],
+        state.documents
+      );
+      state = persistRootState(state => {
+        return persistRemovePropertyBinding(index, selectedNode, state);
+      }, state);
+
+      return state;
+    }
     case CANVAS_TOOL_WINDOW_BACKGROUND_CLICKED: {
       return setSelectedSyntheticVisibleNodeIds(state);
     }
@@ -1650,7 +1702,7 @@ const getDragFilter = (item: any, state: RootState) => {
       );
     };
   } else if (isInspectorNode(item)) {
-    const sourceNode = getPCNode(item.sourceNodeId, state.graph);
+    const sourceNode = getPCNode(item.assocSourceNodeId, state.graph);
     if (sourceNode.name === PCSourceTagNames.COMPONENT) {
       return () => false;
     }

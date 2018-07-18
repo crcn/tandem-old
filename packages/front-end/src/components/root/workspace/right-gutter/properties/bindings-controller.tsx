@@ -1,12 +1,14 @@
 import * as React from "react";
 import * as cx from "classnames";
-import { compose, pure } from "recompose";
+import { compose, pure, withHandlers, withState } from "recompose";
 import {
   PCNode,
   Dependency,
   DependencyGraph,
   getSyntheticSourceNode,
-  PCSourceTagNames
+  PCSourceTagNames,
+  getPCNodeContentNode,
+  getPCNodeModule
 } from "paperclip";
 import { Dispatch } from "redux";
 import {
@@ -24,33 +26,68 @@ import {
   dropdownMenuOptionFromValue,
   DropdownMenuOption
 } from "../../../../inputs/dropdown/controller";
+import {
+  propertyBindingUpdated,
+  propertyBindingAddButtonClicked,
+  propertyBindingRemoveButtonClicked
+} from "../../../../../actions";
 
 type PropertyBindingOuterProps = {
   alt: boolean;
+  index: number;
   fromPropertyName: string;
   toPropertyName: string;
   sourceNode: PCNode;
   graph: DependencyGraph;
   dispatch: Dispatch<any>;
+  onClick: any;
 };
 
-const PropertyBinding = compose<PropertyBindingOuterProps, any>(pure)(
+type PropertyBindingInnerProps = {
+  onToPropertyChange: any;
+  onFromPropertyChange: any;
+} & PropertyBindingOuterProps;
+
+const PropertyBinding = compose<PropertyBindingOuterProps, any>(
+  pure,
+  withHandlers({
+    onToPropertyChange: ({
+      index,
+      dispatch,
+      fromPropertyName
+    }: PropertyBindingOuterProps) => value => {
+      dispatch(propertyBindingUpdated(index, fromPropertyName, value));
+    },
+    onFromPropertyChange: ({
+      index,
+      dispatch,
+      toPropertyName
+    }: PropertyBindingOuterProps) => value => {
+      dispatch(propertyBindingUpdated(index, value, toPropertyName));
+    },
+    onClick: ({ onClick, index }) => () => onClick(index)
+  })
+)(
   ({
     alt,
+    onClick,
+    onToPropertyChange,
+    onFromPropertyChange,
     fromPropertyName,
     toPropertyName,
     sourceNode,
     graph
-  }: PropertyBindingOuterProps) => {
+  }: PropertyBindingInnerProps) => {
     return (
-      <TableRow variant={cx({ alt })}>
+      <TableRow variant={cx({ alt })} onClick={onClick}>
         <TableCell>
-          <TextInput value={fromPropertyName} />
+          <TextInput value={fromPropertyName} onChange={onFromPropertyChange} />
         </TableCell>
         <TableCell variant="last">
           <Dropdown
             options={getBindingTargetOptions(sourceNode, graph)}
             value={toPropertyName}
+            onChangeComplete={onToPropertyChange}
           />
         </TableCell>
       </TableRow>
@@ -60,24 +97,51 @@ const PropertyBinding = compose<PropertyBindingOuterProps, any>(pure)(
 
 export default compose(
   pure,
+  withState("selectedBindingIndex", "setSelectedBindingIndex", -1),
+  withHandlers({
+    onAddButtonClick: ({ dispatch }) => () => {
+      dispatch(propertyBindingAddButtonClicked());
+    },
+    onRemoveButtonClick: ({
+      dispatch,
+      selectedBindingIndex,
+      setSelectedBindingIndex
+    }) => () => {
+      dispatch(propertyBindingRemoveButtonClicked(selectedBindingIndex));
+      setSelectedBindingIndex(-1);
+    },
+    onBindingClick: ({ setSelectedBindingIndex }) => index => {
+      setSelectedBindingIndex(index);
+    }
+  }),
   Base => ({
     selectedNodes,
     graph,
+    selectedBindingIndex,
+    onRemoveButtonClick,
+    onBindingClick,
     selectedControllerRelativePath,
     onRemoveControllerClick,
     onAddControllerClick,
+    onAddButtonClick,
     dispatch,
     ...rest
   }) => {
     const selectedNode = selectedNodes[0];
     const sourceNode = getSyntheticSourceNode(selectedNode, graph);
+    const contentNode = getPCNodeContentNode(
+      sourceNode.id,
+      getPCNodeModule(sourceNode.id, graph)
+    );
 
-    const propertyBindings = [
-      { from: "a", to: "b" },
-      { from: "a", to: "b" },
-      { from: "a", to: "b" },
-      { from: "a", to: "b" }
-    ];
+    // bindings _only_ apply for components, so do not show them if the content node
+    // is a regular text, element, or component instance.
+    if (contentNode.name !== PCSourceTagNames.COMPONENT) {
+      return null;
+    }
+
+    const propertyBindings =
+      (sourceNode.bind && sourceNode.bind.properties) || EMPTY_ARRAY;
 
     const content = [
       <Table>
@@ -88,6 +152,9 @@ export default compose(
         {propertyBindings.map(({ from, to }, i) => {
           return (
             <PropertyBinding
+              onClick={onBindingClick}
+              key={i}
+              index={i}
               alt={i % 2 === 0}
               sourceNode={sourceNode}
               graph={graph}
@@ -99,7 +166,17 @@ export default compose(
         })}
       </Table>
     ];
-    return <Base {...rest} contentProps={{ children: content }} />;
+    return (
+      <Base
+        {...rest}
+        variant={cx({
+          hasSelectedBinding: selectedBindingIndex !== -1
+        })}
+        addButtonProps={{ onClick: onAddButtonClick }}
+        removeButtonProps={{ onClick: onRemoveButtonClick }}
+        contentProps={{ children: content }}
+      />
+    );
   }
 );
 

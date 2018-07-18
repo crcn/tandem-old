@@ -116,8 +116,8 @@ export default Base => {
           contentNode = getContentNode(inspectorNode, contentNode, graph);
 
           const contentSourceNode =
-            contentNode && getPCNode(contentNode.sourceNodeId, graph);
-          const sourceNode = getPCNode(inspectorNode.sourceNodeId, graph);
+            contentNode && getPCNode(contentNode.assocSourceNodeId, graph);
+          const sourceNode = getPCNode(inspectorNode.assocSourceNodeId, graph);
           return (
             contentSourceNode &&
             containsNestedTreeNodeById(sourceNode.id, contentSourceNode)
@@ -151,7 +151,7 @@ export default Base => {
       inShadow
     }: LayerControllerInnerProps) => {
       const expanded = inspectorNode.expanded;
-      const sourceNode = getPCNode(inspectorNode.sourceNodeId, graph);
+      const assocSourceNode = getPCNode(inspectorNode.assocSourceNodeId, graph);
       const isSourceRep =
         inspectorNode.name === InspectorTreeNodeType.SOURCE_REP;
       inShadow =
@@ -163,7 +163,7 @@ export default Base => {
       const isHovering =
         hoveringInspectorNodeIds.indexOf(inspectorNode.id) !== -1 ||
         (canDrop && isOver);
-      const isSlot = sourceNode.name === PCSourceTagNames.OVERRIDE;
+      const isSlot = inspectorNode.name === InspectorTreeNodeType.CONTENT;
       if (expanded) {
         const childDepth = depth + 1;
         children = inspectorNode.children.map(child => {
@@ -184,23 +184,25 @@ export default Base => {
         });
       }
 
-      let label = (sourceNode as PCVisibleNode).label;
+      let label = (assocSourceNode as PCVisibleNode).label;
 
       if (!label) {
-        if (sourceNode.name === PCSourceTagNames.MODULE) {
+        if (assocSourceNode.name === PCSourceTagNames.MODULE) {
           const dependency = getPCNodeDependency(
-            inspectorNode.sourceNodeId,
+            inspectorNode.assocSourceNodeId,
             graph
           );
           label = path.basename(dependency.uri);
-        } else if (sourceNode.name === PCSourceTagNames.COMPONENT_INSTANCE) {
-          const component = getPCNode(sourceNode.is, graph);
+        } else if (
+          assocSourceNode.name === PCSourceTagNames.COMPONENT_INSTANCE
+        ) {
+          const component = getPCNode(assocSourceNode.is, graph);
           label = (component as PCComponent).label;
-        } else if (sourceNode.name === PCSourceTagNames.ELEMENT) {
-          label = sourceNode.is || "Element";
-        } else if (sourceNode.name === PCSourceTagNames.OVERRIDE) {
+        } else if (assocSourceNode.name === PCSourceTagNames.ELEMENT) {
+          label = assocSourceNode.is || "Element";
+        } else if (assocSourceNode.name === PCSourceTagNames.OVERRIDE) {
           const targetSourceNode = getPCNode(
-            last(sourceNode.targetIdPath),
+            last(assocSourceNode.targetIdPath),
             graph
           ) as PCVisibleNode;
           label = targetSourceNode.label || "Slot";
@@ -232,19 +234,20 @@ export default Base => {
                       editingLabel: editingLabel,
                       file:
                         isSourceRep &&
-                        sourceNode.name === PCSourceTagNames.MODULE,
+                        assocSourceNode.name === PCSourceTagNames.MODULE,
                       component:
                         isSourceRep &&
-                        sourceNode.name === PCSourceTagNames.COMPONENT,
+                        assocSourceNode.name === PCSourceTagNames.COMPONENT,
                       instance:
                         isSourceRep &&
-                        sourceNode.name === PCSourceTagNames.COMPONENT_INSTANCE,
+                        assocSourceNode.name ===
+                          PCSourceTagNames.COMPONENT_INSTANCE,
                       element:
                         isSourceRep &&
-                        sourceNode.name === PCSourceTagNames.ELEMENT,
+                        assocSourceNode.name === PCSourceTagNames.ELEMENT,
                       text:
                         isSourceRep &&
-                        sourceNode.name === PCSourceTagNames.TEXT,
+                        assocSourceNode.name === PCSourceTagNames.TEXT,
                       expanded,
                       selected: isSelected,
                       slot: isSlot,

@@ -4,6 +4,22 @@
   "version": "0.0.3",
   "children": [
     {
+      "id": "4201e98b8",
+      "is": "b6c162d113",
+      "name": "component-instance",
+      "attributes": {},
+      "style": {},
+      "children": [],
+      "metadata": {
+        "bounds": {
+          "left": 555,
+          "top": 175,
+          "right": 759,
+          "bottom": 273.3571410945104
+        }
+      }
+    },
+    {
       "label": "Pane",
       "is": "div",
       "style": {
@@ -60,7 +76,15 @@
             }
           ],
           "label": "Title",
-          "metadata": {}
+          "metadata": {},
+          "bind": {
+            "properties": [
+              {
+                "from": "title",
+                "to": "children"
+              }
+            ]
+          }
         },
         {
           "id": "b6c162d140",
@@ -88,7 +112,15 @@
             }
           ],
           "label": "Content",
-          "metadata": {}
+          "metadata": {},
+          "bind": {
+            "properties": [
+              {
+                "from": "content",
+                "to": "children"
+              }
+            ]
+          }
         }
       ],
       "metadata": {

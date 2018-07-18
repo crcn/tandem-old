@@ -35,7 +35,7 @@ export default compose<
     ...rest
   }: LayersPaneControllerOuterProps) => {
     const content = sourceNodeInspector.children.map(inspectorNode => {
-      const sourceNode = getPCNode(inspectorNode.sourceNodeId, graph);
+      const sourceNode = getPCNode(inspectorNode.assocSourceNodeId, graph);
       const dependency = getPCNodeDependency(sourceNode.id, graph);
       const document = getSyntheticDocumentByDependencyUri(
         dependency.uri,
@@ -49,7 +49,7 @@ export default compose<
           inspectorNode={inspectorNode}
           dependency={dependency}
           dispatch={dispatch}
-          key={inspectorNode.sourceNodeId}
+          key={inspectorNode.assocSourceNodeId}
           document={document}
           graph={graph}
         />
