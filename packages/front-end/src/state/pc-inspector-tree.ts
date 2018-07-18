@@ -201,10 +201,13 @@ const refreshChildren = (
         return _refreshInspectorTree(existing, root, graph);
       }
 
-      if (
-        child.name === PCSourceTagNames.OVERRIDE &&
-        child.propertyName === PCOverridablePropertyName.CHILDREN
-      ) {
+      const inspectorSourceNode = getInspectorSourceNode(
+        inspectorNode,
+        root,
+        graph
+      );
+
+      if (!containsNestedTreeNodeById(child.id, inspectorSourceNode)) {
         return createInspectorNode(
           InspectorTreeNodeType.CONTENT,
           inspectorNode.instancePath,

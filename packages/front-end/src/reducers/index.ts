@@ -254,7 +254,11 @@ import {
   syntheticNodeIsInShadow,
   persistUpdatePropertyBinding,
   persistAddPropertyBinding,
-  persistRemovePropertyBinding
+  persistRemovePropertyBinding,
+  getSyntheticContentNode,
+  PCOverridablePropertyName,
+  getSyntheticInstancePath,
+  PCComponentInstanceElement
 } from "paperclip";
 import {
   roundBounds,
@@ -287,7 +291,8 @@ import {
   createDirectory,
   sortFSItems,
   EMPTY_OBJECT,
-  getNestedTreeNodeById
+  getNestedTreeNodeById,
+  EMPTY_ARRAY
 } from "tandem-common";
 import { clamp, last } from "lodash";
 import {
@@ -1082,7 +1087,8 @@ export const canvasReducer = (state: RootState, action: Action) => {
       if (!editorWindow.movingOrResizing) {
         targetNodeId = getCanvasMouseTargetNodeId(
           state,
-          action as CanvasToolOverlayMouseMoved
+          action as CanvasToolOverlayMouseMoved,
+          state.toolType != null ? getInsertFilter(state) : () => true
         );
       }
 
@@ -1634,7 +1640,11 @@ const persistInsertNodeFromPoint = (
   state: RootState
 ) => {
   const oldState = state;
-  const targetNodeId = getCanvasMouseTargetNodeIdFromPoint(state, point);
+  const targetNodeId = getCanvasMouseTargetNodeIdFromPoint(
+    state,
+    point,
+    getInsertFilter(state)
+  );
   let targetNode: SyntheticVisibleNode | SyntheticDocument =
     targetNodeId && getSyntheticNodeById(targetNodeId, state.documents);
 
@@ -1684,14 +1694,7 @@ const persistInsertNodeFromPoint = (
 
 const getDragFilter = (item: any, state: RootState) => {
   // TODO - filter should check if is slot
-  let filter = (node: SyntheticVisibleNode) =>
-    node.name !== PCSourceTagNames.TEXT &&
-    node.name !== PCSourceTagNames.COMPONENT_INSTANCE &&
-    !syntheticNodeIsInShadow(
-      node,
-      getSyntheticVisibleNodeDocument(node.id, state.documents),
-      state.graph
-    );
+  let filter = getInsertFilter(state);
 
   if (isFile(item) && isJavaScriptFile(item.uri)) {
     filter = (node: SyntheticVisibleNode) => {
@@ -1709,6 +1712,63 @@ const getDragFilter = (item: any, state: RootState) => {
   }
 
   return filter;
+};
+
+const getInsertFilter = (state: RootState) => {
+  const isSlottableElement = filterSlottableElement(state);
+  let filter = (node: SyntheticVisibleNode) =>
+    node.name !== PCSourceTagNames.TEXT &&
+    node.name !== PCSourceTagNames.COMPONENT_INSTANCE &&
+    (!syntheticNodeIsInShadow(
+      node,
+      getSyntheticVisibleNodeDocument(node.id, state.documents),
+      state.graph
+    ) ||
+      isSlottableElement(node));
+
+  return filter;
+};
+
+const filterSlottableElement = (state: RootState) => {
+  return (node: SyntheticVisibleNode) => {
+    const sourceNode = getSyntheticSourceNode(node, state.graph);
+    if (
+      sourceNode.name !== PCSourceTagNames.ELEMENT &&
+      sourceNode.name !== PCSourceTagNames.COMPONENT_INSTANCE
+    ) {
+      return false;
+    }
+    const childBinding = (
+      (sourceNode.bind && sourceNode.bind.properties) ||
+      EMPTY_ARRAY
+    ).find(binding => binding.to === PCOverridablePropertyName.CHILDREN);
+    if (!childBinding) {
+      return false;
+    }
+
+    const instancePath = getSyntheticInstancePath(
+      node,
+      getSyntheticVisibleNodeDocument(node.id, state.documents),
+      state.graph
+    );
+    let currentBinding = childBinding;
+
+    for (let i = instancePath.length - 1; i--; ) {
+      const instance = getPCNode(
+        instancePath[i],
+        state.graph
+      ) as PCComponentInstanceElement;
+      currentBinding = (
+        (instance.bind && instance.bind.properties) ||
+        EMPTY_ARRAY
+      ).find(binding => binding.to === currentBinding.from);
+      if (!currentBinding) {
+        return false;
+      }
+    }
+
+    return true;
+  };
 };
 
 const setFileExpanded = (node: FSItem, value: boolean, state: RootState) => {
