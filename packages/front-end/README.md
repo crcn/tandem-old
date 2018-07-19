@@ -5,9 +5,14 @@ OBJECTIVE:
 
 IMMEDIATE:
 
-- perf
 - explicit slots
-  - use hotkey for this
+  - paperclip updates
+    - update evaluator
+      - emit warnings for child overrides (start on deprecation functionality)
+    - update tests
+  - define hotkey
+  - panel view for component
+    - ability to define name for export
 - update evaluator to use slots
 - update compiler to use slots
 - ensure that all child overrides gone
@@ -99,6 +104,7 @@ UX PROBLEMS:
 - sometimes editing shadow instance thinking it's the component.
   - breadcrumbs might help
   - outline might help indicating node type
+- labels should really be "names" and exported. Prohibit spacing
 
 BUGS:
 

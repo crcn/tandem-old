@@ -54,6 +54,13 @@ export function* shortcutsSaga() {
               emit(shortcutKeyDown("SHORTCUT_CONVERT_TO_COMPONENT_KEY_DOWN"));
             }
           },
+          {
+            label: "Wrap in slot",
+            accelerator: "alt+s",
+            click: () => {
+              emit(shortcutKeyDown("SHORTCUT_WRAP_IN_SLOT_KEY_DOWN"));
+            }
+          },
           { type: "separator" },
           { role: "cut" },
           { role: "copy" },

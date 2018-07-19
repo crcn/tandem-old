@@ -578,6 +578,15 @@ export const persistConvertNodeToComponent = <TState extends PCEditorState>(
   return state;
 };
 
+export const persistWrapInSlot = <TState extends PCEditorState>(
+  node: SyntheticVisibleNode,
+  state: TState
+) => {
+  const sourceNode = getSyntheticSourceNode(node, state.graph);
+
+  return state;
+};
+
 const moveBoundsToEmptySpace = (bounds: Bounds, frames: Frame[]) => {
   const intersecting = values(frames).some((frame: Frame) =>
     pointIntersectsBounds(bounds, frame.bounds)

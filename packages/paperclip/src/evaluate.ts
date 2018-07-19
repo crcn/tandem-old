@@ -1,7 +1,6 @@
 import * as path from "path";
-import { DependencyGraph, Dependency } from "./graph";
+import { DependencyGraph } from "./graph";
 import {
-  SyntheticDocument,
   SyntheticElement,
   SyntheticVisibleNode,
   createSyntheticElement,
@@ -14,12 +13,10 @@ import {
 import {
   PCModule,
   getVisibleChildren,
-  PCDependency,
   createPCDependency,
   PCOverridablePropertyName,
   PCVisibleNode,
   PCComponent,
-  getComponentGraphRefs,
   PCNode,
   PCSourceTagNames,
   PCElement,
@@ -32,10 +29,13 @@ import {
   ComponentRef,
   getPCNodeDependency,
   getPCVariants,
-  isPCComponentInstance,
   PCVariant,
   isComponent,
-  InheritStyle
+  InheritStyle,
+  PCSlot,
+  PCContent,
+  isVisibleNode,
+  getVisibleOrSlotChildren
 } from "./dsl";
 import {
   KeyValue,
@@ -45,7 +45,6 @@ import {
   FILE_PROTOCOL,
   EMPTY_OBJECT
 } from "tandem-common";
-import { uniq } from "lodash";
 
 type EvalOverride = {
   [PCOverridablePropertyName.ATTRIBUTES]: KeyValue<any>;
@@ -260,7 +259,7 @@ const evaluateLabel = (
 };
 
 const evaluateVisibleNode = (
-  node: PCVisibleNode,
+  node: PCVisibleNode | PCSlot | PCContent,
   instancePath: string,
   immutable: boolean,
   isCreatedFromComponent: boolean,
@@ -303,6 +302,32 @@ const evaluateVisibleNode = (
       overrides
     );
   }
+};
+
+const evaluateSlot = (
+  slot: PCSlot,
+  instancePath: string,
+  immutable: boolean,
+  isCreatedFromComponent: boolean,
+  variant: KeyValue<boolean>,
+  overrides: EvalOverrides,
+  componentMap: ComponentRefs,
+  sourceUri: string
+): SyntheticVisibleNode[] => {
+  // TODO - check if slot is overridden
+
+  return slot.children.map(child =>
+    evaluateVisibleNode(
+      child,
+      instancePath,
+      immutable,
+      isCreatedFromComponent,
+      variant,
+      overrides,
+      componentMap,
+      sourceUri
+    )
+  );
 };
 
 const evaluateElement = (
@@ -428,19 +453,37 @@ const evaluateChildren = (
   if (overrides[selfPath] && overrides[selfPath].children) {
     return overrides[selfPath].children;
   }
-  const visiblePCChildren = getVisibleChildren(parent);
-  const children: SyntheticVisibleNode[] = new Array(visiblePCChildren.length);
-  for (let i = 0, { length } = visiblePCChildren; i < length; i++) {
-    children[i] = evaluateVisibleNode(
-      visiblePCChildren[i],
-      instancePath,
-      immutable,
-      isCreatedFromComponent,
-      variant,
-      overrides,
-      componentMap,
-      sourceUri
-    );
+  const children: SyntheticVisibleNode[] = [];
+
+  for (let i = 0, { length } = parent.children; i < length; i++) {
+    const child = parent.children[i];
+    if (child.name === PCSourceTagNames.SLOT) {
+      children.push(
+        ...evaluateSlot(
+          child,
+          instancePath,
+          immutable,
+          isCreatedFromComponent,
+          variant,
+          overrides,
+          componentMap,
+          sourceUri
+        )
+      );
+    } else if (isVisibleNode(child)) {
+      children.push(
+        evaluateVisibleNode(
+          child,
+          instancePath,
+          immutable,
+          isCreatedFromComponent,
+          variant,
+          overrides,
+          componentMap,
+          sourceUri
+        )
+      );
+    }
   }
 
   return children;
@@ -579,7 +622,7 @@ const registerOverrides = (
   if (
     (node.name === PCSourceTagNames.COMPONENT ||
       node.name === PCSourceTagNames.COMPONENT_INSTANCE) &&
-    getVisibleChildren(node).length
+    getVisibleOrSlotChildren(node).length
   ) {
     const childPath =
       node.name === PCSourceTagNames.COMPONENT_INSTANCE

@@ -28,6 +28,8 @@ export enum PCSourceTagNames {
   ELEMENT = "element",
   COMPONENT_INSTANCE = "component-instance",
   VARIANT = "variant",
+  SLOT = "slot",
+  CONTENT = "content",
   OVERRIDE = "override",
   TEXT = "text",
   INHERIT_STYLE = "inherit-style"
@@ -68,6 +70,8 @@ export type PCModule = {
   children: Array<PCComponent | PCVisibleNode>;
 } & PCBaseSourceNode<PCSourceTagNames.MODULE>;
 
+export type PCComponentChild = PCVisibleNode | PCVariant | PCOverride | PCSlot;
+
 export type PCComponent = {
   /**
    * Controller source files, can be any supported language, filtered by compile target.
@@ -85,7 +89,7 @@ export type PCComponent = {
    */
   controllers?: string[];
   is?: string;
-  children: Array<PCVisibleNode | PCVariant | PCOverride>;
+  children: PCComponentChild[];
 } & PCBaseElement<PCSourceTagNames.COMPONENT>;
 
 export type PCVariant = {
@@ -98,6 +102,15 @@ export type PCBaseOverride<TPropertyName extends PCOverridablePropertyName> = {
   targetIdPath: string[];
   variantId: string;
 } & PCBaseSourceNode<PCSourceTagNames.OVERRIDE>;
+
+export type PCSlot = {
+  // export name
+  exportName?: string;
+} & PCBaseSourceNode<PCSourceTagNames.SLOT>;
+
+export type PCContent = {
+  slotId: string;
+} & PCBaseSourceNode<PCSourceTagNames.CONTENT>;
 
 export type PCBaseValueOverride<
   TPropertyName extends PCOverridablePropertyName,
@@ -167,18 +180,25 @@ export type PCVisibleNodeBindings = {
   properties?: PCPropertyBinding[];
 };
 
+export type PCBaseElementChild =
+  | PCBaseVisibleNode<any>
+  | PCOverride
+  | PCContent;
+
 export type PCBaseElement<TName extends PCSourceTagNames> = {
   is: string;
   attributes: KeyValue<string>;
   bind?: PCVisibleNodeBindings;
-  children: (PCBaseVisibleNode<any> | PCOverride)[];
+  children: PCBaseElementChild[];
 } & PCBaseVisibleNode<TName>;
 
 export type PCElement = PCBaseElement<PCSourceTagNames.ELEMENT>;
 
-export type PCComponentInstanceElement = {} & PCBaseElement<
-  PCSourceTagNames.COMPONENT_INSTANCE
->;
+export type PCComponentInstanceChild = PCBaseElementChild | PCContent;
+
+export type PCComponentInstanceElement = {
+  children: PCComponentInstanceChild[];
+} & PCBaseElement<PCSourceTagNames.COMPONENT_INSTANCE>;
 
 export type PCTextNode = {
   value: string;
@@ -191,7 +211,9 @@ export type PCNode =
   | PCComponent
   | PCVariant
   | PCOverride
-  | PCVisibleNode;
+  | PCVisibleNode
+  | PCSlot
+  | PCContent;
 
 export type PCComputedOverrideMap = {
   [COMPUTED_OVERRIDE_DEFAULT_KEY]: PCComputedOverrideVariantMap;
@@ -229,7 +251,7 @@ export const createPCComponent = (
   is?: string,
   style?: KeyValue<string>,
   attributes?: KeyValue<string>,
-  children: Array<PCVariant | PCVisibleNode | PCOverride> = EMPTY_ARRAY
+  children?: PCComponentChild[]
 ): PCComponent => ({
   label,
   is: is || "div",
@@ -257,7 +279,7 @@ export const createPCElement = (
   is: string = "div",
   style: KeyValue<any> = EMPTY_OBJECT,
   attributes: KeyValue<string> = EMPTY_OBJECT,
-  children: (PCVisibleNode | PCOverride)[] = EMPTY_ARRAY,
+  children: PCBaseElementChild[] = EMPTY_ARRAY,
   label?: string
 ): PCElement => ({
   id: generateUID(),
@@ -274,7 +296,7 @@ export const createPCComponentInstance = (
   is: string,
   style: KeyValue<any> = EMPTY_OBJECT,
   attributes: KeyValue<string> = EMPTY_OBJECT,
-  children: (PCVisibleNode | PCOverride)[] = EMPTY_ARRAY,
+  children: PCComponentInstanceChild[] = EMPTY_ARRAY,
   metadata?: KeyValue<any>
 ): PCComponentInstanceElement => ({
   id: generateUID(),
@@ -297,6 +319,28 @@ export const createPCTextNode = (
   style: {},
   children: [],
   metadata: {}
+});
+
+export const createPCSlot = (
+  exportName?: string,
+  defaultChildren?: PCBaseElementChild[]
+): PCSlot => ({
+  exportName,
+  id: generateUID(),
+  children: defaultChildren || EMPTY_ARRAY,
+  metadata: EMPTY_OBJECT,
+  name: PCSourceTagNames.SLOT
+});
+
+export const createPCContent = (
+  slotId: string,
+  children?: PCBaseElementChild[]
+): PCContent => ({
+  slotId,
+  id: generateUID(),
+  children: children || EMPTY_ARRAY,
+  metadata: EMPTY_OBJECT,
+  name: PCSourceTagNames.CONTENT
 });
 
 export const createPCOverride = (
@@ -464,6 +508,13 @@ export const getModuleComponents = memoize(
 
 export const getVisibleChildren = memoize(
   (node: PCNode) => node.children.filter(isVisibleNode) as PCVisibleNode[]
+);
+
+export const getVisibleOrSlotChildren = memoize(
+  (node: PCNode) =>
+    node.children.filter(
+      child => isVisibleNode(child) || child.name === PCSourceTagNames.SLOT
+    ) as PCVisibleNode[]
 );
 export const getOverrides = memoize(
   (node: PCNode) =>

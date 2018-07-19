@@ -182,11 +182,18 @@ export default compose(
 
 const VISIBLE_TARGET_OPTIONS = ["style"];
 
+// TODO
+const BASE_EVENT_TARGET_OPTIONS = ["onClick"];
+
 const BASE_ELEMENT_TARGET_OPTIONS = [
   ...VISIBLE_TARGET_OPTIONS,
-  "children",
-  "attributes"
+  ...BASE_EVENT_TARGET_OPTIONS
 ];
+
+// TODO - fill me out
+const ELEMENT_BY_TAG_TARGET_OPTIONS = {
+  img: [...BASE_ELEMENT_TARGET_OPTIONS, "src"]
+};
 
 const TEXT_NODE_TARGET_OPTIONS: DropdownMenuOption[] = [
   ...VISIBLE_TARGET_OPTIONS,

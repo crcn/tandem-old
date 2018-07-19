@@ -139,7 +139,8 @@ import {
   PROPERTY_BINDING_UPDATED,
   PROPERTY_BINDING_ADD_BUTTON_CLICKED,
   PROPERTY_BINDING_REMOVE_BUTTON_CLICKED,
-  PropertyBindingRemoveButtonClicked
+  PropertyBindingRemoveButtonClicked,
+  SHORTCUT_WRAP_IN_SLOT_KEY_DOWN
 } from "../actions";
 import {
   queueOpenFile,
@@ -259,7 +260,8 @@ import {
   getSyntheticContentNode,
   PCOverridablePropertyName,
   getSyntheticInstancePath,
-  PCComponentInstanceElement
+  PCComponentInstanceElement,
+  persistWrapInSlot
 } from "paperclip";
 import {
   roundBounds,
@@ -1982,6 +1984,16 @@ const shortcutReducer = (state: RootState, action: Action): RootState => {
           state.graph
         )
       );
+      return state;
+    }
+    case SHORTCUT_WRAP_IN_SLOT_KEY_DOWN: {
+      const selectedNode = getSyntheticNodeById(
+        state.selectedNodeIds[0],
+        state.documents
+      );
+      state = persistRootState(state => {
+        return persistWrapInSlot(selectedNode, state);
+      }, state);
       return state;
     }
     case SHORTCUT_ESCAPE_KEY_DOWN: {

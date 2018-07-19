@@ -11,7 +11,9 @@ import {
   createPCDependency,
   createPCOverride,
   PCOverridablePropertyName,
-  createPCTextNode
+  createPCTextNode,
+  createPCSlot,
+  createPCContent
 } from "../dsl";
 import { cloneTreeNode } from "tandem-common";
 import { DependencyGraph } from "../graph";
@@ -633,8 +635,6 @@ describe(__filename + "#", () => {
       cleanIds(evaluatePCModule(module, createFakeGraph(module)))
     );
 
-    // console.log(JSON.stringify(document, null, 2));
-
     expect(document).to.eql({
       id: "000000005",
       metadata: {},
@@ -683,4 +683,90 @@ describe(__filename + "#", () => {
       ]
     });
   });
+
+  it("can evaluate a slot with default children", () => {
+    const cleanIds = nodeIdCleaner();
+
+    const component1 = cleanIds(
+      createPCComponent("Test", "div", {}, {}, [
+        createPCSlot(null, [createPCTextNode("blarg")])
+      ])
+    );
+
+    const module = cleanIds(createPCModule([component1]));
+
+    const document = clone(
+      cleanIds(evaluatePCModule(module, createFakeGraph(module)))
+    );
+
+    expect(document).to.eql({
+      id: "000000004",
+      metadata: {},
+      source: {
+        nodeId: "000000003"
+      },
+      name: "document",
+      children: [
+        {
+          id: "000000005",
+          metadata: {},
+          label: "Test",
+          variant: {},
+          isComponentInstance: false,
+          isCreatedFromComponent: true,
+          isContentNode: true,
+          immutable: false,
+          source: {
+            nodeId: "000000000"
+          },
+          name: "div",
+          attributes: {},
+          style: {},
+          children: [
+            {
+              label: "blarg",
+              id: "000000006",
+              metadata: {},
+              value: "blarg",
+              isContentNode: false,
+              isCreatedFromComponent: true,
+              immutable: false,
+              source: {
+                nodeId: "000000002"
+              },
+              name: "text",
+              style: {},
+              children: []
+            }
+          ]
+        }
+      ]
+    });
+  });
+
+  it("can override slot children", () => {
+    const cleanIds = nodeIdCleaner();
+
+    const slot1 = cleanIds(createPCSlot(null, [createPCTextNode("a")]));
+
+    const component1 = cleanIds(
+      createPCComponent("Test", "div", {}, {}, [slot1])
+    );
+
+    const instance1 = cleanIds(
+      createPCComponentInstance(component1.id, {}, {}, [
+        createPCContent(slot1.id, [createPCTextNode("b")])
+      ])
+    );
+
+    const module = cleanIds(createPCModule([component1]));
+
+    const document = clone(
+      cleanIds(evaluatePCModule(module, createFakeGraph(module)))
+    );
+
+    console.log(JSON.stringify(document, null, 2));
+  });
+
+  // nested slot children
 });
