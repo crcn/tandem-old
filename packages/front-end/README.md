@@ -5,12 +5,15 @@ OBJECTIVE:
 
 IMMEDIATE:
 
-- convert to slot shortcut
-  - prohibit text elements
-  - auto-generate ids
-- scan for slots
-- wire up scanned slots
-- refactor
+- perf
+- explicit slots
+  - use hotkey for this
+- update evaluator to use slots
+- update compiler to use slots
+- ensure that all child overrides gone
+- update compiler
+- dts compiler (everything explicit)
+- refactor TSX
 - prohobit override is slot does not exist
 
 * moving component nodes

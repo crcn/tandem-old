@@ -33,7 +33,7 @@ const BaseLeftGutterComponent = ({
   <GutterComponent>
     <LayersPane
       selectedInspectorNodeIds={root.selectedInspectorNodeIds}
-      hoveringInspectorNodeIds={gethoveringInspectorNodeIds(
+      hoveringInspectorNodeIds={getHoveringInspectorNodeIds(
         root.hoveringNodeIds,
         root.documents,
         root.sourceNodeInspector,
@@ -59,25 +59,34 @@ const BaseLeftGutterComponent = ({
   </GutterComponent>
 );
 
-const gethoveringInspectorNodeIds = memoize(
+const getHoveringInspectorNodeIds = memoize(
   (
     selectedNodeIds: string[],
     documents: SyntheticDocument[],
     rootInspectorNode: InspectorNode,
     graph: DependencyGraph
   ) => {
-    return selectedNodeIds
-      .map(nodeId => {
-        return getSyntheticInspectorNode(
-          getSyntheticNodeById(nodeId, documents),
-          getSyntheticVisibleNodeDocument(nodeId, documents),
-          rootInspectorNode,
-          graph
-        );
-      })
-      .filter(Boolean)
-      .map(node => node.id);
+    // bleh -- splitting here just to leverage memoized IDs
+    return split(
+      selectedNodeIds
+        .map(nodeId => {
+          return getSyntheticInspectorNode(
+            getSyntheticNodeById(nodeId, documents),
+            getSyntheticVisibleNodeDocument(nodeId, documents),
+            rootInspectorNode,
+            graph
+          );
+        })
+        .filter(Boolean)
+        .map(node => node.id)
+        .join(","),
+      ","
+    );
   }
 );
+
+const split = memoize((str: string, separator: string) => {
+  return str.split(separator);
+}, 100);
 
 export const LeftGutterComponent = BaseLeftGutterComponent;

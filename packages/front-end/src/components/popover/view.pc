@@ -19,7 +19,15 @@
           "attributes": {},
           "style": {},
           "children": [],
-          "metadata": {}
+          "metadata": {},
+          "bind": {
+            "properties": [
+              {
+                "from": "anchor",
+                "to": "children"
+              }
+            ]
+          }
         },
         {
           "id": "ddec6a12139578",
@@ -32,7 +40,15 @@
           },
           "children": [],
           "metadata": {},
-          "label": "Content"
+          "label": "Content",
+          "bind": {
+            "properties": [
+              {
+                "from": "content",
+                "to": "children"
+              }
+            ]
+          }
         }
       ],
       "metadata": {

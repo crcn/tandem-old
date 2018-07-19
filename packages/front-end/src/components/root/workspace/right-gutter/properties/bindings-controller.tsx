@@ -204,6 +204,9 @@ const getBindingTargetOptions = memoize(
     } else if (sourceNode.name === PCSourceTagNames.ELEMENT) {
       // TODO - needs to be per tag name
       return ELEMENT_TARGET_OPTIONS;
+    } else if (sourceNode.name === PCSourceTagNames.COMPONENT_INSTANCE) {
+      // TODO - needs to be per tag name
+      return ELEMENT_TARGET_OPTIONS;
     }
 
     return EMPTY_ARRAY;

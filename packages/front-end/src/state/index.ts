@@ -240,6 +240,18 @@ export const persistRootState = (
     updateRootState(persistPaperclipState(state), state)
   );
 
+  state = pruneStaleSyntheticNodes(state);
+  const modifiedDeps = getModifiedDependencies(state.graph, oldGraph);
+  state = addHistory(oldGraph, state.graph, state);
+  state = modifiedDeps.reduce(
+    (state, dep: Dependency<any>) => setOpenFileContent(dep, state),
+    state
+  );
+  state = refreshModuleInspectorNodes(state);
+  return state;
+};
+
+export const pruneStaleSyntheticNodes = (state: RootState) => {
   state = updateRootState(
     {
       selectedNodeIds: state.selectedNodeIds.filter(
@@ -261,13 +273,7 @@ export const persistRootState = (
     },
     state
   );
-  const modifiedDeps = getModifiedDependencies(state.graph, oldGraph);
-  state = addHistory(oldGraph, state.graph, state);
-  state = modifiedDeps.reduce(
-    (state, dep: Dependency<any>) => setOpenFileContent(dep, state),
-    state
-  );
-  state = refreshModuleInspectorNodes(state);
+
   return state;
 };
 

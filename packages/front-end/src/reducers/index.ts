@@ -191,7 +191,8 @@ import {
   confirm,
   ConfirmType,
   openSyntheticVisibleNodeOriginFile,
-  updateSourceInspectorNode
+  updateSourceInspectorNode,
+  pruneStaleSyntheticNodes
 } from "../state";
 import {
   PCSourceTagNames,
@@ -1439,6 +1440,8 @@ export const canvasReducer = (state: RootState, action: Action) => {
         }
       }
 
+      state = pruneStaleSyntheticNodes(state);
+
       return updateRootState({ queuedScopeSelect: null }, state);
     }
 
@@ -1575,8 +1578,6 @@ export const canvasReducer = (state: RootState, action: Action) => {
     }
     case INSERT_TOOL_FINISHED: {
       let { point, fileUri } = action as InsertToolFinished;
-      const editor = getEditorWithActiveFileUri(fileUri, state);
-
       const toolType = state.toolType;
 
       switch (toolType) {

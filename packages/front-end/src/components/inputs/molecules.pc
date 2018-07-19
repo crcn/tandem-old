@@ -64,7 +64,15 @@
               "label": "text"
             }
           ],
-          "metadata": {}
+          "metadata": {},
+          "bind": {
+            "properties": [
+              {
+                "from": "input",
+                "to": "children"
+              }
+            ]
+          }
         }
       ],
       "metadata": {
@@ -73,6 +81,22 @@
           "top": 386,
           "right": 487,
           "bottom": 433.5832678332798
+        }
+      }
+    },
+    {
+      "id": "38d0d25262",
+      "name": "text",
+      "label": "Text",
+      "value": "Click to edit",
+      "style": {},
+      "children": [],
+      "metadata": {
+        "bounds": {
+          "left": 938,
+          "top": 248.75,
+          "right": 1038,
+          "bottom": 348.75
         }
       }
     }
