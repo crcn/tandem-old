@@ -314,6 +314,9 @@ const evaluateSlot = (
   componentMap: ComponentRefs,
   sourceUri: string
 ): SyntheticVisibleNode[] => {
+  if (overrides[slot.id]) {
+    return overrides[slot.id].children;
+  }
   // TODO - check if slot is overridden
 
   return slot.children.map(child =>
@@ -440,7 +443,12 @@ const evaluateAttributes = (
 };
 
 const evaluateChildren = (
-  parent: PCComponent | PCElement | PCComponentInstanceElement | PCOverride,
+  parent:
+    | PCComponent
+    | PCElement
+    | PCComponentInstanceElement
+    | PCOverride
+    | PCContent,
   instancePath: string,
   immutable: boolean,
   isCreatedFromComponent: boolean,
@@ -619,32 +627,59 @@ const registerOverrides = (
       overrides
     );
   }
-  if (
-    (node.name === PCSourceTagNames.COMPONENT ||
-      node.name === PCSourceTagNames.COMPONENT_INSTANCE) &&
-    getVisibleOrSlotChildren(node).length
-  ) {
-    const childPath =
-      node.name === PCSourceTagNames.COMPONENT_INSTANCE
-        ? instancePath
-        : selfPath;
 
-    registerOverride(
-      null,
-      PCOverridablePropertyName.CHILDREN,
-      evaluateChildren(
-        node,
-        childPath,
-        immutable,
-        isCreatedFromComponent,
-        selfVariant,
-        overrides,
-        componentMap,
-        sourceUri
-      ),
-      selfPath,
-      overrides
-    );
+  if (node.name === PCSourceTagNames.COMPONENT_INSTANCE) {
+    for (let i = node.children.length; i--; ) {
+      const child = node.children[i] as PCNode;
+      if (child.name === PCSourceTagNames.CONTENT) {
+        overrides[child.slotId] = {
+          attributes: null,
+          text: null,
+          style: null,
+          isDefault: false,
+          inheritStyle: null,
+          label: null,
+          children: evaluateChildren(
+            child,
+            selfPath,
+            immutable,
+            isCreatedFromComponent,
+            selfVariant,
+            overrides,
+            componentMap,
+            sourceUri
+          )
+        };
+      }
+    }
+  }
+  if (
+    node.name === PCSourceTagNames.COMPONENT ||
+    node.name === PCSourceTagNames.COMPONENT_INSTANCE
+  ) {
+    if (getVisibleOrSlotChildren(node).length) {
+      const childPath =
+        node.name === PCSourceTagNames.COMPONENT_INSTANCE
+          ? instancePath
+          : selfPath;
+
+      registerOverride(
+        null,
+        PCOverridablePropertyName.CHILDREN,
+        evaluateChildren(
+          node,
+          childPath,
+          immutable,
+          isCreatedFromComponent,
+          selfVariant,
+          overrides,
+          componentMap,
+          sourceUri
+        ),
+        selfPath,
+        overrides
+      );
+    }
   }
 };
 

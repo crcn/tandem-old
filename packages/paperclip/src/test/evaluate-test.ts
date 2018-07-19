@@ -759,14 +759,86 @@ describe(__filename + "#", () => {
       ])
     );
 
-    const module = cleanIds(createPCModule([component1]));
+    const module = cleanIds(createPCModule([component1, instance1]));
 
     const document = clone(
       cleanIds(evaluatePCModule(module, createFakeGraph(module)))
     );
 
-    console.log(JSON.stringify(document, null, 2));
+    expect(document).to.eql({
+      id: "000000007",
+      metadata: {},
+      source: {
+        nodeId: "000000006"
+      },
+      name: "document",
+      children: [
+        {
+          id: "000000008",
+          metadata: {},
+          label: "Test",
+          variant: {},
+          isComponentInstance: false,
+          isCreatedFromComponent: true,
+          isContentNode: true,
+          immutable: false,
+          source: {
+            nodeId: "000000002"
+          },
+          name: "div",
+          attributes: {},
+          style: {},
+          children: [
+            {
+              label: "a",
+              id: "000000009",
+              metadata: {},
+              value: "a",
+              isContentNode: false,
+              isCreatedFromComponent: true,
+              immutable: false,
+              source: {
+                nodeId: "000000001"
+              },
+              name: "text",
+              style: {},
+              children: []
+            }
+          ]
+        },
+        {
+          id: "0000000010",
+          metadata: {},
+          variant: {},
+          isComponentInstance: true,
+          isCreatedFromComponent: true,
+          isContentNode: true,
+          immutable: false,
+          source: {
+            nodeId: "000000003"
+          },
+          name: "div",
+          attributes: {},
+          style: {},
+          children: [
+            {
+              label: "b",
+              id: "0000000011",
+              metadata: {},
+              value: "b",
+              isContentNode: false,
+              isCreatedFromComponent: true,
+              immutable: false,
+              source: {
+                nodeId: "000000005"
+              },
+              name: "text",
+              style: {},
+              children: []
+            }
+          ]
+        }
+      ]
+    });
   });
-
-  // nested slot children
 });
