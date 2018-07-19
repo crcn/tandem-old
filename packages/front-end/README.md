@@ -7,16 +7,12 @@ IMMEDIATE:
 
 - explicit slots
   - paperclip updates
-    - update evaluator
-      - emit warnings for child overrides (start on deprecation functionality)
-    - update tests
   - define hotkey
   - panel view for component
     - ability to define name for export
-- update evaluator to use slots
 - update compiler to use slots
+- refactor to use slots
 - ensure that all child overrides gone
-- update compiler
 - dts compiler (everything explicit)
 - refactor TSX
 - prohobit override is slot does not exist
