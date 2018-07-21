@@ -34,8 +34,8 @@ export type TreeNodeLayerOuterProps = {
   node: TreeNode<any>;
   depth: number;
   dispatch: Dispatch<any>;
-  hoveringNodeIds: string[];
-  selectedNodeIds: string[];
+  hoveringSyntheticNodeIds: string[];
+  selectedSyntheticNodeIds: string[];
 };
 
 type TreeNodeLayerLabelOuterProps = {
@@ -101,8 +101,8 @@ const DEFAULT_NODE_EDITING_LABEL_ATTRIBUTE = node => node.editingLabel;
 
 export const defaultChildRender = Base => ({
   node,
-  hoveringNodeIds,
-  selectedNodeIds,
+  hoveringSyntheticNodeIds,
+  selectedSyntheticNodeIds,
   depth,
   dispatch,
   ...rest
@@ -110,8 +110,8 @@ export const defaultChildRender = Base => ({
   node.children.map(child => {
     return (
       <Base
-        hoveringNodeIds={hoveringNodeIds}
-        selectedNodeIds={selectedNodeIds}
+        hoveringSyntheticNodeIds={hoveringSyntheticNodeIds}
+        selectedSyntheticNodeIds={selectedSyntheticNodeIds}
         key={child.id}
         node={child as TreeNode<any>}
         depth={depth + 1}
@@ -358,16 +358,16 @@ export const createTreeLayerComponents = <
   type TreeNodeLayerInnerProps = {} & TTreeLayerOuterProps & any;
 
   const BaseTreeNodeLayerComponent = ({
-    hoveringNodeIds,
-    selectedNodeIds,
+    hoveringSyntheticNodeIds,
+    selectedSyntheticNodeIds,
     node,
     depth,
     dispatch,
     root,
     ...rest
   }: TreeNodeLayerInnerProps) => {
-    const selected = selectedNodeIds.indexOf(node.id) !== -1;
-    const hovering = hoveringNodeIds.indexOf(node.id) !== -1;
+    const selected = selectedSyntheticNodeIds.indexOf(node.id) !== -1;
+    const hovering = hoveringSyntheticNodeIds.indexOf(node.id) !== -1;
     const expanded = expandAttr(node);
     const editingLabel = editingLabelAttr(node);
     if (!root) {
@@ -398,8 +398,8 @@ export const createTreeLayerComponents = <
         <div className="children">
           {!node.children.length || expanded
             ? renderChildren({
-                hoveringNodeIds,
-                selectedNodeIds,
+                hoveringSyntheticNodeIds,
+                selectedSyntheticNodeIds,
                 node,
                 depth,
                 dispatch,

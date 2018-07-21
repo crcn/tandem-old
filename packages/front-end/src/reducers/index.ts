@@ -48,11 +48,9 @@ import {
   PC_LAYER_EXPAND_TOGGLE_CLICK,
   TreeLayerLabelChanged,
   TreeLayerClick,
-  TreeLayerDroppedNode,
   TreeLayerExpandToggleClick,
   FILE_NAVIGATOR_TOGGLE_DIRECTORY_CLICKED,
   TreeLayerMouseOver,
-  PC_LAYER_DROPPED_NODE,
   FILE_NAVIGATOR_NEW_FILE_CLICKED,
   FILE_NAVIGATOR_NEW_DIRECTORY_CLICKED,
   NewFileAdded,
@@ -193,12 +191,12 @@ import {
   ConfirmType,
   openSyntheticVisibleNodeOriginFile,
   updateSourceInspectorNode,
-  pruneStaleSyntheticNodes
+  pruneStaleSyntheticNodes,
+  getInsertableSourceNodeFromSyntheticNode
 } from "../state";
 import {
   PCSourceTagNames,
   PCVisibleNode,
-  PCTextNode,
   paperclipReducer,
   SyntheticElement,
   createPCElement,
@@ -261,7 +259,17 @@ import {
   PCOverridablePropertyName,
   getSyntheticInstancePath,
   PCComponentInstanceElement,
-  persistWrapInSlot
+  persistWrapInSlot,
+  getPCNodeModule,
+  getPCNodeContentNode,
+  PCNode,
+  isPCContent,
+  createPCContent,
+  persistRemovePCNode,
+  getInstanceSlotContent,
+  SyntheticNode,
+  PCSlot,
+  DependencyGraph
 } from "paperclip";
 import {
   roundBounds,
@@ -303,7 +311,10 @@ import {
   collapseInspectorNode,
   expandSyntheticInspectorNode,
   getInspectorSyntheticNode,
-  isInspectorNode
+  isInspectorNode,
+  getInspectorSourceNode,
+  InspectorTreeNodeType,
+  InspectorNode
 } from "../state/pc-inspector-tree";
 
 const ZOOM_SENSITIVITY = process.platform === "win32" ? 2500 : 250;
@@ -387,7 +398,7 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
         state
       );
 
-      const selectedNodeId = state.selectedNodeIds[0];
+      const selectedNodeId = state.selectedSyntheticNodeIds[0];
       if (selectedNodeId) {
         const document = getSyntheticDocumentByDependencyUri(
           fileUri,
@@ -569,65 +580,55 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
       return state;
     }
 
-    // DEPRECATED
-    case PC_LAYER_DROPPED_NODE: {
-      const { node, targetNode, offset } = action as TreeLayerDroppedNode;
-
-      const oldState = state;
-
-      state = persistRootState(
-        state =>
-          persistMoveSyntheticVisibleNode(
-            node as SyntheticVisibleNode,
-            targetNode as SyntheticVisibleNode,
-            offset,
-            state
-          ),
-        state
-      );
-
-      const document = getSyntheticVisibleNodeDocument(
-        targetNode.id,
-        state.documents
-      );
-      const mutatedTarget =
-        offset === TreeMoveOffset.APPEND || offset === TreeMoveOffset.PREPEND
-          ? targetNode
-          : getParentTreeNode(targetNode.id, document);
-
-      state = queueSelectInsertedSyntheticVisibleNodes(
-        oldState,
-        state,
-        mutatedTarget
-      );
-      return state;
-    }
     case SOURCE_INSPECTOR_LAYER_DROPPED: {
       const { source, target, offset } = action as SourceInspectorLayerDropped;
 
-      const sourceSyntheticNode = getInspectorSyntheticNode(
+      if (!target || source.id === target.id) {
+        return state;
+      }
+
+      const sourceNode = getInspectorSourceNode(
         source,
-        state.documents,
+        state.sourceNodeInspector,
         state.graph
       );
-      const targetSyntheticNode = getInspectorSyntheticNode(
-        target,
-        state.documents,
-        state.graph
-      );
+
+      let targetNode: PCNode;
+      let targetInspectorNode: InspectorNode;
+
+      if (target.name === InspectorTreeNodeType.CONTENT) {
+        const parent = targetInspectorNode = getParentTreeNode(target.id, state.sourceNodeInspector);
+        let parentSourceNode =  getInspectorSourceNode(parent, state.sourceNodeInspector, state.graph) as PCComponentInstanceElement;
+        let contentNode = getInstanceSlotContent(target.assocSourceNodeId, parentSourceNode);
+        if (!contentNode) {
+          state = persistInsertNode(createPCContent(target.assocSourceNodeId), parentSourceNode, TreeMoveOffset.APPEND, state);
+          parentSourceNode = getInspectorSourceNode(parent, state.sourceNodeInspector, state.graph) as PCComponentInstanceElement;
+          contentNode = getInstanceSlotContent(target.assocSourceNodeId, parentSourceNode);
+        }
+
+        targetNode = contentNode;
+
+      } else {
+        targetInspectorNode = target;
+        targetNode = getInspectorSourceNode(target, state.sourceNodeInspector, state.graph);
+      }
 
       const oldState = state;
 
       state = persistRootState(
         state =>
           persistMoveSyntheticVisibleNode(
-            sourceSyntheticNode,
-            targetSyntheticNode,
+            sourceNode,
+            targetNode,
             offset,
             state
           ),
         state
       );
+
+      console.log(state.graph);
+
+      const targetSyntheticNode = getInspectorSyntheticNode(targetInspectorNode, state.documents, state.graph);
 
       const document = getSyntheticVisibleNodeDocument(
         targetSyntheticNode.id,
@@ -660,7 +661,7 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
         state = setSelectedSyntheticVisibleNodeIds(
           state,
           ...(sourceEvent.shiftKey
-            ? [...state.selectedNodeIds, node.id]
+            ? [...state.selectedSyntheticNodeIds, node.id]
             : [node.id])
         );
       }
@@ -692,7 +693,7 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
       state = updateRootState(
         {
           selectedInspectorNodeIds: [node.id],
-          selectedNodeIds: assocSyntheticNode ? [assocSyntheticNode.id] : []
+          selectedSyntheticNodeIds: assocSyntheticNode ? [assocSyntheticNode.id] : []
         },
         state
       );
@@ -771,11 +772,11 @@ export const canvasReducer = (state: RootState, action: Action) => {
 
       if (isSelectionMovable(state)) {
         const selectionBounds = getSelectionBounds(state);
-        const nodeId = state.selectedNodeIds[0];
+        const nodeId = state.selectedSyntheticNodeIds[0];
 
         let movedBounds = moveBounds(selectionBounds, newPoint);
 
-        for (const nodeId of state.selectedNodeIds) {
+        for (const nodeId of state.selectedSyntheticNodeIds) {
           const itemBounds = getSyntheticVisibleNodeRelativeBounds(
             getSyntheticNodeById(nodeId, state.documents),
             state.frames
@@ -797,7 +798,7 @@ export const canvasReducer = (state: RootState, action: Action) => {
     case RESIZER_MOUSE_DOWN: {
       const { sourceEvent } = action as ResizerMouseDown;
       if (sourceEvent.metaKey) {
-        // state = openSyntheticVisibleNodeOriginFile(state.selectedNodeIds[0], state);
+        // state = openSyntheticVisibleNodeOriginFile(state.selectedSyntheticNodeIds[0], state);
       }
       return state;
     }
@@ -826,7 +827,7 @@ export const canvasReducer = (state: RootState, action: Action) => {
 
     case ADD_VARIANT_BUTTON_CLICKED: {
       const node = getSyntheticNodeById(
-        state.selectedNodeIds[0],
+        state.selectedSyntheticNodeIds[0],
         state.documents
       );
       const frame = getSyntheticVisibleNodeFrame(node, state.frames);
@@ -903,7 +904,7 @@ export const canvasReducer = (state: RootState, action: Action) => {
     case COMPONENT_INSTANCE_VARIANT_TOGGLED: {
       const { variant } = action as VariantClicked;
       const element = getSyntheticNodeById(
-        state.selectedNodeIds[0],
+        state.selectedSyntheticNodeIds[0],
         state.documents
       ) as SyntheticInstanceElement;
       state = persistRootState(
@@ -922,7 +923,7 @@ export const canvasReducer = (state: RootState, action: Action) => {
     case INSTANCE_VARIANT_RESET_CLICKED: {
       const { variant } = action as VariantClicked;
       const element = getSyntheticNodeById(
-        state.selectedNodeIds[0],
+        state.selectedSyntheticNodeIds[0],
         state.documents
       ) as SyntheticInstanceElement;
       state = persistRootState(
@@ -944,7 +945,7 @@ export const canvasReducer = (state: RootState, action: Action) => {
 
       if (isSelectionMovable(state)) {
         state = persistRootState(state => {
-          return state.selectedNodeIds.reduce((state, nodeId) => {
+          return state.selectedSyntheticNodeIds.reduce((state, nodeId) => {
             return persistSyntheticVisibleNodeBounds(
               getSyntheticNodeById(nodeId, state.documents),
               state
@@ -1097,7 +1098,7 @@ export const canvasReducer = (state: RootState, action: Action) => {
 
       state = updateRootState(
         {
-          hoveringNodeIds: targetNodeId ? [targetNodeId] : []
+          hoveringSyntheticNodeIds: targetNodeId ? [targetNodeId] : []
         },
         state
       );
@@ -1131,7 +1132,7 @@ export const canvasReducer = (state: RootState, action: Action) => {
 
       state = updateRootState(
         {
-          hoveringNodeIds: targetNodeId ? [targetNodeId] : []
+          hoveringSyntheticNodeIds: targetNodeId ? [targetNodeId] : []
         },
         state
       );
@@ -1245,7 +1246,7 @@ export const canvasReducer = (state: RootState, action: Action) => {
       );
 
       state = persistRootState(state => {
-        return state.selectedNodeIds.reduce(
+        return state.selectedSyntheticNodeIds.reduce(
           (state, nodeId) =>
             persistSyntheticVisibleNodeBounds(
               getSyntheticNodeById(nodeId, state.documents),
@@ -1260,7 +1261,7 @@ export const canvasReducer = (state: RootState, action: Action) => {
     case RAW_CSS_TEXT_CHANGED: {
       const { value: cssText } = action as RawCSSTextChanged;
       state = persistRootState(browser => {
-        return state.selectedNodeIds.reduce(
+        return state.selectedSyntheticNodeIds.reduce(
           (state, nodeId) =>
             persistRawCSSText(
               cssText,
@@ -1287,7 +1288,7 @@ export const canvasReducer = (state: RootState, action: Action) => {
     }
     case CSS_PROPERTY_CHANGED: {
       const { name, value } = action as CSSPropertyChanged;
-      return state.selectedNodeIds.reduce(
+      return state.selectedSyntheticNodeIds.reduce(
         (state, nodeId) =>
           persistCSSProperty(
             name,
@@ -1303,7 +1304,7 @@ export const canvasReducer = (state: RootState, action: Action) => {
     case CSS_PROPERTY_CHANGE_COMPLETED: {
       const { name, value } = action as CSSPropertyChanged;
       state = persistRootState(browser => {
-        return state.selectedNodeIds.reduce(
+        return state.selectedSyntheticNodeIds.reduce(
           (state, nodeId) =>
             persistCSSProperty(
               name,
@@ -1321,7 +1322,7 @@ export const canvasReducer = (state: RootState, action: Action) => {
     case ATTRIBUTE_CHANGED: {
       const { name, value } = action as CSSPropertyChanged;
       state = persistRootState(browser => {
-        return state.selectedNodeIds.reduce(
+        return state.selectedSyntheticNodeIds.reduce(
           (state, nodeId) =>
             persistAttribute(
               name,
@@ -1336,8 +1337,8 @@ export const canvasReducer = (state: RootState, action: Action) => {
     }
 
     case INHERIT_PANE_REMOVE_BUTTON_CLICK: {
-      const { selectedInheritComponentId, selectedNodeIds } = state;
-      const node = getSyntheticNodeById(selectedNodeIds[0], state.documents);
+      const { selectedInheritComponentId, selectedSyntheticNodeIds } = state;
+      const node = getSyntheticNodeById(selectedSyntheticNodeIds[0], state.documents);
       state = persistRootState(state => {
         return persistInheritStyle(
           { [selectedInheritComponentId]: undefined },
@@ -1351,8 +1352,8 @@ export const canvasReducer = (state: RootState, action: Action) => {
     }
 
     case INHERIT_PANE_ADD_BUTTON_CLICK: {
-      const { selectedNodeIds } = state;
-      const node = getSyntheticNodeById(selectedNodeIds[0], state.documents);
+      const { selectedSyntheticNodeIds } = state;
+      const node = getSyntheticNodeById(selectedSyntheticNodeIds[0], state.documents);
       const sourceNode = getSyntheticSourceNode(node, state.graph);
 
       state = persistRootState(state => {
@@ -1393,8 +1394,8 @@ export const canvasReducer = (state: RootState, action: Action) => {
         oldComponentId,
         newComponentId
       } = action as InheritItemComponentTypeChangeComplete;
-      const { selectedNodeIds } = state;
-      const node = getSyntheticNodeById(selectedNodeIds[0], state.documents);
+      const { selectedSyntheticNodeIds } = state;
+      const node = getSyntheticNodeById(selectedSyntheticNodeIds[0], state.documents);
       state = persistRootState(state => {
         state = persistInheritStyleComponentId(
           oldComponentId,
@@ -1435,7 +1436,7 @@ export const canvasReducer = (state: RootState, action: Action) => {
 
       // ensure that synthetic nodes still exist, otherwise remove them
       // from selection.
-      for (const nodeId of state.selectedNodeIds) {
+      for (const nodeId of state.selectedSyntheticNodeIds) {
         if (!getSyntheticNodeById(nodeId, state.documents)) {
           state = setSelectedSyntheticVisibleNodeIds(state);
           break;
@@ -1453,7 +1454,7 @@ export const canvasReducer = (state: RootState, action: Action) => {
       //   return persistChangeNodeType(
       //     nativeType,
       //     getSyntheticSourceNode(
-      //       state.selectedNodeIds[0],
+      //       state.selectedSyntheticNodeIds[0],
       //       state.paperclip
       //     ) as PCElement,
       //     browser
@@ -1467,7 +1468,7 @@ export const canvasReducer = (state: RootState, action: Action) => {
         return persistChangeSyntheticTextNodeValue(
           value,
           getSyntheticNodeById(
-            state.selectedNodeIds[0],
+            state.selectedSyntheticNodeIds[0],
             state.documents
           ) as SyntheticTextNode,
           state
@@ -1481,7 +1482,7 @@ export const canvasReducer = (state: RootState, action: Action) => {
         return persistChangeElementType(
           value,
           getSyntheticNodeById(
-            state.selectedNodeIds[0],
+            state.selectedSyntheticNodeIds[0],
             state.documents
           ) as SyntheticElement,
           state
@@ -1514,7 +1515,7 @@ export const canvasReducer = (state: RootState, action: Action) => {
         index
       } = action as PropertyBindingUpdated;
       const selectedNode = getSyntheticNodeById(
-        state.selectedNodeIds[0],
+        state.selectedSyntheticNodeIds[0],
         state.documents
       );
       state = persistRootState(state => {
@@ -1530,7 +1531,7 @@ export const canvasReducer = (state: RootState, action: Action) => {
     }
     case PROPERTY_BINDING_ADD_BUTTON_CLICKED: {
       const selectedNode = getSyntheticNodeById(
-        state.selectedNodeIds[0],
+        state.selectedSyntheticNodeIds[0],
         state.documents
       );
       state = persistRootState(state => {
@@ -1542,7 +1543,7 @@ export const canvasReducer = (state: RootState, action: Action) => {
     case PROPERTY_BINDING_REMOVE_BUTTON_CLICKED: {
       const { index } = action as PropertyBindingRemoveButtonClicked;
       const selectedNode = getSyntheticNodeById(
-        state.selectedNodeIds[0],
+        state.selectedSyntheticNodeIds[0],
         state.documents
       );
       state = persistRootState(state => {
@@ -1557,7 +1558,7 @@ export const canvasReducer = (state: RootState, action: Action) => {
     case COMPONENT_CONTROLLER_PICKED: {
       const { filePath } = action as ComponentControllerPicked;
       const node = getSyntheticNodeById(
-        state.selectedNodeIds[0],
+        state.selectedSyntheticNodeIds[0],
         state.documents
       );
       state = persistRootState(
@@ -1568,7 +1569,7 @@ export const canvasReducer = (state: RootState, action: Action) => {
     }
     case REMOVE_COMPONENT_CONTROLLER_BUTTON_CLICKED: {
       const node = getSyntheticNodeById(
-        state.selectedNodeIds[0],
+        state.selectedSyntheticNodeIds[0],
         state.documents
       );
       state = persistRemoveComponentController(
@@ -1648,8 +1649,11 @@ const persistInsertNodeFromPoint = (
     point,
     getInsertFilter(state)
   );
+
   let targetNode: SyntheticVisibleNode | SyntheticDocument =
     targetNodeId && getSyntheticNodeById(targetNodeId, state.documents);
+
+  let insertableSourceNode = targetNodeId && getInsertableSourceNodeFromSyntheticNode(targetNode, getSyntheticVisibleNodeDocument(targetNodeId, state.documents), state.graph);
 
   if (!targetNode) {
     const newPoint = shiftPoint(
@@ -1677,6 +1681,8 @@ const persistInsertNodeFromPoint = (
       node
     );
 
+    insertableSourceNode = state.graph[fileUri].content;
+
     targetNode = getSyntheticDocumentByDependencyUri(
       fileUri,
       state.documents,
@@ -1685,7 +1691,14 @@ const persistInsertNodeFromPoint = (
   }
 
   state = persistRootState(state => {
-    return persistInsertNode(node, targetNode, TreeMoveOffset.APPEND, state);
+
+    if (insertableSourceNode.name === PCSourceTagNames.SLOT) {
+      state = maybeCreateContent(targetNode, insertableSourceNode, state);
+      insertableSourceNode = getInstanceSlotContent(insertableSourceNode.id, getSyntheticRootInstanceSourceNode(targetNode, state));
+    }
+
+
+    return persistInsertNode(node, insertableSourceNode, TreeMoveOffset.APPEND, state);
   }, state);
 
   state = setTool(null, state);
@@ -1694,6 +1707,26 @@ const persistInsertNodeFromPoint = (
 
   return state;
 };
+
+const maybeCreateContent = <TState extends RootState>(target: SyntheticNode, slot: PCSlot, state: TState) => {
+  const instanceSourceNode = getSyntheticRootInstanceSourceNode(target, state);
+  const contentNode = getInstanceSlotContent(slot.id, instanceSourceNode);
+  if (contentNode) {
+    return state;
+  }
+
+  state = persistInsertNode(createPCContent(slot.id), instanceSourceNode, TreeMoveOffset.APPEND, state);
+
+  return state;
+}
+
+
+const getSyntheticRootInstanceSourceNode = (target: SyntheticNode, state: RootState) => {
+  const document = getSyntheticVisibleNodeDocument(target.id, state.documents);
+  const instanceId = getSyntheticInstancePath(target, document, state.graph)[0];
+  const instanceSourceNode = getPCNode(instanceId, state.graph) as PCComponentInstanceElement;
+  return instanceSourceNode;
+}
 
 const getDragFilter = (item: any, state: RootState) => {
   // TODO - filter should check if is slot
@@ -1715,63 +1748,14 @@ const getDragFilter = (item: any, state: RootState) => {
   }
 
   return filter;
-};
-
+}
 const getInsertFilter = (state: RootState) => {
-  const isSlottableElement = filterSlottableElement(state);
-  let filter = (node: SyntheticVisibleNode) =>
-    node.name !== PCSourceTagNames.TEXT &&
-    node.name !== PCSourceTagNames.COMPONENT_INSTANCE &&
-    (!syntheticNodeIsInShadow(
-      node,
-      getSyntheticVisibleNodeDocument(node.id, state.documents),
-      state.graph
-    ) ||
-      isSlottableElement(node));
+  let filter = (node: SyntheticVisibleNode) => {
+    const document = getSyntheticVisibleNodeDocument(node.id, state.documents);
+    return Boolean(getInsertableSourceNodeFromSyntheticNode(node, document, state.graph));
+  }
 
   return filter;
-};
-
-const filterSlottableElement = (state: RootState) => {
-  return (node: SyntheticVisibleNode) => {
-    const sourceNode = getSyntheticSourceNode(node, state.graph);
-    if (
-      sourceNode.name !== PCSourceTagNames.ELEMENT &&
-      sourceNode.name !== PCSourceTagNames.COMPONENT_INSTANCE
-    ) {
-      return false;
-    }
-    const childBinding = (
-      (sourceNode.bind && sourceNode.bind.properties) ||
-      EMPTY_ARRAY
-    ).find(binding => binding.to === PCOverridablePropertyName.CHILDREN);
-    if (!childBinding) {
-      return false;
-    }
-
-    const instancePath = getSyntheticInstancePath(
-      node,
-      getSyntheticVisibleNodeDocument(node.id, state.documents),
-      state.graph
-    );
-    let currentBinding = childBinding;
-
-    for (let i = instancePath.length - 1; i--; ) {
-      const instance = getPCNode(
-        instancePath[i],
-        state.graph
-      ) as PCComponentInstanceElement;
-      currentBinding = (
-        (instance.bind && instance.bind.properties) ||
-        EMPTY_ARRAY
-      ).find(binding => binding.to === currentBinding.from);
-      if (!currentBinding) {
-        return false;
-      }
-    }
-
-    return true;
-  };
 };
 
 const setFileExpanded = (node: FSItem, value: boolean, state: RootState) => {
@@ -1886,7 +1870,7 @@ const handleLoadedDroppedItem = (
 
   return persistRootState(
     browser =>
-      persistInsertNode(sourceNode, target, TreeMoveOffset.APPEND, browser),
+      persistInsertNode(sourceNode, getSyntheticSourceNode(target, state.graph), TreeMoveOffset.APPEND, browser),
     state
   );
 };
@@ -1958,7 +1942,7 @@ const shortcutReducer = (state: RootState, action: Action): RootState => {
     }
     case SHORTCUT_CONVERT_TO_COMPONENT_KEY_DOWN: {
       // TODO - should be able to conver all selected nodes to components
-      if (state.selectedNodeIds.length > 1) {
+      if (state.selectedSyntheticNodeIds.length > 1) {
         return state;
       }
 
@@ -1967,7 +1951,7 @@ const shortcutReducer = (state: RootState, action: Action): RootState => {
       state = persistRootState(
         state =>
           persistConvertNodeToComponent(
-            getSyntheticNodeById(state.selectedNodeIds[0], state.documents),
+            getSyntheticNodeById(state.selectedSyntheticNodeIds[0], state.documents),
             state
           ),
         state
@@ -1988,9 +1972,37 @@ const shortcutReducer = (state: RootState, action: Action): RootState => {
     }
     case SHORTCUT_WRAP_IN_SLOT_KEY_DOWN: {
       const selectedNode = getSyntheticNodeById(
-        state.selectedNodeIds[0],
+        state.selectedSyntheticNodeIds[0],
         state.documents
       );
+      const sourceNode = getSyntheticSourceNode(selectedNode, state.graph);
+      const sourceModule = getPCNodeModule(sourceNode.id, state.graph);
+      const contentNode = getPCNodeContentNode(sourceNode.id, sourceModule);
+
+      if (syntheticNodeIsInShadow(selectedNode, getSyntheticVisibleNodeDocument(selectedNode.id, state.documents), state.graph)) {
+        return confirm(
+          "Cannot perform this action for shadow elements.",
+          ConfirmType.ERROR,
+          state
+        );
+      }
+
+      if (contentNode.name !== PCSourceTagNames.COMPONENT) {
+        return confirm(
+          "Slots are only supported for elements that are within a component.",
+          ConfirmType.ERROR,
+          state
+        );
+      }
+
+      if (sourceNode.id === contentNode.id) {
+        return confirm(
+          "Cannot convert components into slots.",
+          ConfirmType.ERROR,
+          state
+        );
+      }
+
       state = persistRootState(state => {
         return persistWrapInSlot(selectedNode, state);
       }, state);
@@ -2010,11 +2022,11 @@ const shortcutReducer = (state: RootState, action: Action): RootState => {
       }
     }
     case SHORTCUT_DELETE_KEY_DOWN: {
-      if (isInputSelected(state) || state.selectedNodeIds.length === 0) {
+      if (isInputSelected(state) || state.selectedSyntheticNodeIds.length === 0) {
         return state;
       }
       const firstNode = getSyntheticNodeById(
-        state.selectedNodeIds[0],
+        state.selectedSyntheticNodeIds[0],
         state.documents
       );
 
@@ -2035,7 +2047,7 @@ const shortcutReducer = (state: RootState, action: Action): RootState => {
       const index = parent.children.indexOf(firstNode);
 
       state = persistRootState(state => {
-        return state.selectedNodeIds.reduce((state, nodeId) => {
+        return state.selectedSyntheticNodeIds.reduce((state, nodeId) => {
           return persistRemoveSyntheticVisibleNode(
             getSyntheticNodeById(nodeId, state.documents),
             state
@@ -2068,8 +2080,8 @@ const clipboardReducer = (state: RootState, action: Action) => {
       let targetNode: SyntheticVisibleNode | SyntheticDocument;
       let scopeNode: SyntheticVisibleNode | SyntheticDocument;
 
-      if (state.selectedNodeIds.length) {
-        const nodeId = state.selectedNodeIds[0];
+      if (state.selectedSyntheticNodeIds.length) {
+        const nodeId = state.selectedSyntheticNodeIds[0];
         scopeNode = targetNode = getSyntheticNodeById(nodeId, state.documents);
         scopeNode = getParentTreeNode(
           scopeNode.id,

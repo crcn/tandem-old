@@ -631,7 +631,7 @@ const registerOverrides = (
   if (node.name === PCSourceTagNames.COMPONENT_INSTANCE) {
     for (let i = node.children.length; i--; ) {
       const child = node.children[i] as PCNode;
-      if (child.name === PCSourceTagNames.CONTENT) {
+      if (child.name === PCSourceTagNames.CONTENT && child.children.length) {
         overrides[child.slotId] = {
           attributes: null,
           text: null,

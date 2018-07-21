@@ -30,8 +30,8 @@ export const BaseLayersComponent = ({
     <div className="m-open-file-layers">
       {ext === PAPERCLIP_DEFAULT_EXTENSIONS[0] ? (
         <FrameLayersComponent
-          selectedReferences={root.selectedNodeIds}
-          hoveringNodeIds={root.hoveringNodeIds}
+          selectedReferences={root.selectedSyntheticNodeIds}
+          hoveringSyntheticNodeIds={root.hoveringSyntheticNodeIds}
           dispatch={dispatch}
           document={getSyntheticDocumentByDependencyUri(
             uri,

@@ -46,7 +46,7 @@
 //   onTextInputKeyDown,
 //   value
 // }: StylePaneInnerProps) => {
-//   const selectedNodeId = root.selectedNodeIds[0];
+//   const selectedNodeId = root.selectedSyntheticNodeIds[0];
 //   if (!selectedNodeId) {
 //     return null;
 //   }
@@ -96,7 +96,7 @@
 // };
 
 // const getSelectedNodeStyle = (root: RootState) => {
-//   const node = getSyntheticNodeById(root.selectedNodeIds[0], root.browser);
+//   const node = getSyntheticNodeById(root.selectedSyntheticNodeIds[0], root.browser);
 //   return (
 //     node &&
 //     stringifyStyle(node.attributes.core.style || EMPTY_OBJECT)

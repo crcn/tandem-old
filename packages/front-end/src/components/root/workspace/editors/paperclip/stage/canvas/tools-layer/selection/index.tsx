@@ -68,7 +68,7 @@ export const SelectionCanvasToolBase = ({
 }: SelectionInnerProps) => {
   const selection = getBoundedSelection(root);
   if (!selection.length || editorWindow.secondarySelection) return null;
-  if (!getNestedTreeNodeById(root.selectedNodeIds[0], document)) {
+  if (!getNestedTreeNodeById(root.selectedSyntheticNodeIds[0], document)) {
     return null;
   }
 

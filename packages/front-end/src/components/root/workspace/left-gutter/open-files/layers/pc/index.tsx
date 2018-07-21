@@ -113,7 +113,7 @@ const { TreeNodeLayerComponent } = createTreeLayerComponents<PCLayerOuterProps>(
 
 type FrameLayersOuterProps = {
   document: SyntheticDocument;
-  hoveringNodeIds: string[];
+  hoveringSyntheticNodeIds: string[];
   selectedReferences: string[];
   dispatch: Dispatch<any>;
   // window: Frame;
@@ -123,7 +123,7 @@ type FrameLayersOuterProps = {
 type FrameLayersInnerProps = {} & FrameLayersOuterProps;
 
 const BaseFrameLayersComponent = ({
-  hoveringNodeIds,
+  hoveringSyntheticNodeIds,
   selectedReferences,
   dispatch,
   frames,
@@ -137,8 +137,8 @@ const BaseFrameLayersComponent = ({
             key={frame.contentNodeId}
             node={getNestedTreeNodeById(frame.contentNodeId, document)}
             depth={0}
-            hoveringNodeIds={hoveringNodeIds}
-            selectedNodeIds={selectedReferences}
+            hoveringSyntheticNodeIds={hoveringSyntheticNodeIds}
+            selectedSyntheticNodeIds={selectedReferences}
             dispatch={dispatch}
           />
         );

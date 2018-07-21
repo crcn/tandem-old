@@ -1114,6 +1114,116 @@
           "bottom": 1675.897643431201
         }
       }
+    },
+    {
+      "id": "59d8b6b1374",
+      "is": "c728dddc29",
+      "name": "component-instance",
+      "attributes": {},
+      "style": {},
+      "children": [
+        {
+          "slotId": "c728dddc32",
+          "id": "59d8b6b1404",
+          "children": [
+            {
+              "id": "59d8b6b1402",
+              "label": "Element",
+              "is": "div",
+              "name": "element",
+              "attributes": {},
+              "style": {
+                "box-sizing": "border-box",
+                "display": "block"
+              },
+              "children": [],
+              "metadata": {
+                "bounds": {
+                  "left": -896.1961400108095,
+                  "top": 360.31462836334,
+                  "right": -796.1961400108095,
+                  "bottom": 460.31462836334
+                }
+              }
+            }
+          ],
+          "metadata": {},
+          "name": "content"
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": -1033.7037248618649,
+          "top": 286.838676205486,
+          "right": -933.7037248618649,
+          "bottom": 386.838676205486
+        }
+      }
+    },
+    {
+      "label": "Element",
+      "is": "div",
+      "style": {
+        "box-sizing": "border-box",
+        "display": "block"
+      },
+      "attributes": {},
+      "id": "c728dddc29",
+      "name": "component",
+      "children": [
+        {
+          "exportName": null,
+          "id": "c728dddc32",
+          "children": [
+            {
+              "id": "c728dddc28",
+              "name": "text",
+              "label": "Text",
+              "value": "EDAAAT",
+              "style": {},
+              "children": [
+                {
+                  "id": "d11319fa21",
+                  "label": "Element",
+                  "is": "div",
+                  "name": "element",
+                  "attributes": {},
+                  "style": {
+                    "box-sizing": "border-box",
+                    "display": "block"
+                  },
+                  "children": [],
+                  "metadata": {}
+                },
+                {
+                  "id": "d11319fa22",
+                  "label": "Element",
+                  "is": "div",
+                  "name": "element",
+                  "attributes": {},
+                  "style": {
+                    "box-sizing": "border-box",
+                    "display": "block"
+                  },
+                  "children": [],
+                  "metadata": {}
+                }
+              ],
+              "metadata": {}
+            }
+          ],
+          "metadata": {},
+          "name": "slot"
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": -1043.7037248618649,
+          "top": 276.838676205486,
+          "right": -943.7037248618649,
+          "bottom": 376.838676205486
+        }
+      }
     }
   ],
   "metadata": {}

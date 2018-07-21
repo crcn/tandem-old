@@ -163,7 +163,7 @@ export default Base => {
       const isHovering =
         hoveringInspectorNodeIds.indexOf(inspectorNode.id) !== -1 ||
         (canDrop && isOver);
-      const isSlot = inspectorNode.name === InspectorTreeNodeType.CONTENT;
+      const isSlot = inspectorNode.name === InspectorTreeNodeType.CONTENT || assocSourceNode.name === PCSourceTagNames.SLOT;
       if (expanded) {
         const childDepth = depth + 1;
         children = inspectorNode.children.map(child => {
@@ -200,12 +200,14 @@ export default Base => {
           label = (component as PCComponent).label;
         } else if (assocSourceNode.name === PCSourceTagNames.ELEMENT) {
           label = assocSourceNode.is || "Element";
-        } else if (assocSourceNode.name === PCSourceTagNames.OVERRIDE) {
+        } else if (assocSourceNode.name === PCSourceTagNames.CONTENT) {
           const targetSourceNode = getPCNode(
-            last(assocSourceNode.targetIdPath),
+            assocSourceNode.slotId,
             graph
           ) as PCVisibleNode;
           label = targetSourceNode.label || "Slot";
+        } else if (assocSourceNode.name === PCSourceTagNames.SLOT) {
+          label = assocSourceNode.name || "Slot";
         }
       }
 

@@ -173,7 +173,7 @@ function* handleOpenController() {
     );
     const state: DesktopRootState = yield select();
     const node = getSyntheticNodeById(
-      state.selectedNodeIds[0],
+      state.selectedSyntheticNodeIds[0],
       state.documents
     );
     const sourceNodeUri = getSyntheticSourceUri(node, state.graph);

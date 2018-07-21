@@ -57,7 +57,9 @@ import {
   isPCComponentInstance,
   InheritStyle,
   PCBaseVisibleNode,
-  PCPropertyBinding
+  PCPropertyBinding,
+  createPCSlot,
+  getPCNodeContentNode
 } from "./dsl";
 import {
   SyntheticVisibleNode,
@@ -529,7 +531,6 @@ export const persistChangeLabel = <TState extends PCEditorState>(
       label: newLabel
     })
   )(node, state.documents, state.graph);
-  console.log(newNode);
   return replaceDependencyGraphPCNode(newNode, newNode, state);
 };
 
@@ -583,6 +584,14 @@ export const persistWrapInSlot = <TState extends PCEditorState>(
   state: TState
 ) => {
   const sourceNode = getSyntheticSourceNode(node, state.graph);
+
+  if (getPCNodeContentNode(sourceNode.id, getPCNodeModule(sourceNode.id, state.graph)).name !== PCSourceTagNames.COMPONENT) {
+    return state;
+  }
+
+  const newSource = createPCSlot(null, [sourceNode]);
+
+  state = replaceDependencyGraphPCNode(newSource, sourceNode, state);
 
   return state;
 };
@@ -703,54 +712,39 @@ export const syncSyntheticDocuments = <TState extends PCEditorState>(
 };
 
 export const persistInsertNode = <TState extends PCEditorState>(
-  newChild: PCVisibleNode | PCComponent,
-  relative: SyntheticVisibleNode | SyntheticDocument,
+  newChild: PCNode,
+  { id: relativeId }: PCNode,
   offset: TreeMoveOffset,
   state: TState
 ) => {
-  let parentSource: PCVisibleNode;
+  let parentSource: PCNode;
 
   if (getPCNodeModule(newChild.id, state.graph)) {
     // remove the child first
     state = replaceDependencyGraphPCNode(null, newChild, state);
   }
 
-  if (isSyntheticDocument(relative)) {
-    parentSource = appendChildNode(newChild, getSyntheticSourceNode(
-      relative,
-      state.graph
-    ) as PCVisibleNode);
+  const relative = getPCNode(relativeId, state.graph);
+
+  if (relative.name === PCSourceTagNames.MODULE) {
+    parentSource = appendChildNode(newChild, relative);
   } else {
-    let parent: SyntheticVisibleNode;
     let index: number;
     if (offset === TreeMoveOffset.APPEND || offset === TreeMoveOffset.PREPEND) {
-      parent = relative as SyntheticVisibleNode;
-      index = offset === TreeMoveOffset.PREPEND ? 0 : parent.children.length;
+      parentSource = relative;
+      index = offset === TreeMoveOffset.PREPEND ? 0 : parentSource.children.length;
     } else {
-      const document = getSyntheticVisibleNodeDocument(
+      const module = getPCNodeModule(
         relative.id,
-        state.documents
+        state.graph
       );
 
-      // reset reative so that we can fetch the index
-      relative = getSyntheticNodeById(relative.id, state.documents);
-      parent = getParentTreeNode(relative.id, document);
+      parentSource = getParentTreeNode(relative.id, module);
       index =
-        parent.children.indexOf(relative) +
+      parentSource.children.indexOf(relative) +
         (offset === TreeMoveOffset.BEFORE ? 0 : 1);
     }
-
-    parentSource = maybeOverride(
-      PCOverridablePropertyName.CHILDREN,
-      newChild,
-      null,
-      (child, override?: PCOverride) => {
-        return override
-          ? arraySplice(override.children, index, 0, newChild)
-          : [newChild];
-      },
-      (parent, value) => insertChildNode(value, index, parent)
-    )(parent, state.documents, state.graph);
+    parentSource = insertChildNode(newChild, index, parentSource);
   }
 
   return replaceDependencyGraphPCNode(parentSource, parentSource, state);
@@ -1188,14 +1182,12 @@ export const persistSyntheticVisibleNodeBounds = <TState extends PCEditorState>(
 
 // aias for inserting node
 export const persistMoveSyntheticVisibleNode = <TState extends PCEditorState>(
-  node: SyntheticVisibleNode,
-  newRelative: SyntheticVisibleNode | SyntheticDocument,
+  sourceNode: PCNode,
+  relative: PCNode,
   offset: TreeMoveOffset,
   state: TState
 ) => {
-  const sourceNode = getSyntheticSourceNode(node, state.graph);
-
-  return persistInsertNode(sourceNode, newRelative, offset, state);
+  return persistInsertNode(sourceNode, relative, offset, state);
 };
 
 export const persistSyntheticNodeMetadata = <TState extends PCEditorState>(
@@ -1464,7 +1456,13 @@ export const persistRemoveSyntheticVisibleNode = <TState extends PCEditorState>(
   }
 
   state = removeSyntheticVisibleNode(node, state);
-  const sourceNode = getPCNode(node.source.nodeId, state.graph);
+  return persistRemovePCNode(getSyntheticSourceNode(node, state.graph), state);
+};
+
+export const persistRemovePCNode = <TState extends PCEditorState>(
+  sourceNode: PCNode,
+  state: TState
+) => {
   return replaceDependencyGraphPCNode(null, sourceNode, state);
 };
 

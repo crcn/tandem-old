@@ -25,7 +25,9 @@ import {
   getTreeNodeFromPath,
   EMPTY_OBJECT,
   TreeNodeUpdater,
-  findNestedNode
+  findNestedNode,
+  findTreeNodeParent,
+  containsNestedTreeNodeById
 } from "tandem-common";
 import {
   SyntheticVisibleNode,
@@ -56,7 +58,16 @@ import {
   isPCComponentInstance,
   PCComponent,
   PCModule,
-  SyntheticNode
+  SyntheticNode,
+  extendsComponent,
+  getFrameSyntheticNode,
+  PCNode,
+  getSyntheticDocumentById,
+  getPCNodeModule,
+  getSyntheticInstancePath,
+  syntheticNodeIsInShadow,
+  PCComponentInstanceElement,
+  isSlot
 } from "paperclip";
 import {
   CanvasToolOverlayMouseMoved,
@@ -179,10 +190,10 @@ export type RootState = {
   selectedVariant?: PCVariant;
 
   // TODO - should be actual instances for type safety
-  hoveringNodeIds: string[];
+  hoveringSyntheticNodeIds: string[];
 
   // TODO - this should be actual node instances
-  selectedNodeIds: string[];
+  selectedSyntheticNodeIds: string[];
 
   // seaprate from synthetic & AST since it represents both. May also have separate
   // tooling
@@ -254,7 +265,7 @@ export const persistRootState = (
 export const pruneStaleSyntheticNodes = (state: RootState) => {
   state = updateRootState(
     {
-      selectedNodeIds: state.selectedNodeIds.filter(
+      selectedSyntheticNodeIds: state.selectedSyntheticNodeIds.filter(
         id =>
           getSyntheticNodeById(id, state.documents) &&
           getSyntheticSourceNode(
@@ -262,7 +273,7 @@ export const pruneStaleSyntheticNodes = (state: RootState) => {
             state.graph
           )
       ),
-      hoveringNodeIds: state.hoveringNodeIds.filter(
+      hoveringSyntheticNodeIds: state.hoveringSyntheticNodeIds.filter(
         id =>
           getSyntheticNodeById(id, state.documents) &&
           getSyntheticSourceNode(
@@ -339,6 +350,36 @@ export const selectInsertedSyntheticVisibleNodes = (
     )
   );
 };
+
+export const getInsertableSourceNodeFromSyntheticNode = memoize((node: SyntheticVisibleNode, document: SyntheticDocument, graph: DependencyGraph) => {
+  const sourceNode = getSyntheticSourceNode(node, graph);
+  if (syntheticNodeIsInShadow(node, document, graph)) {
+    const module = getPCNodeModule(sourceNode.id, graph);
+    const instancePath = getSyntheticInstancePath(node, document, graph);
+    const instancePCComponent = getPCNode((getPCNode(instancePath[0], graph) as PCComponentInstanceElement).is, graph);
+    const slot = findTreeNodeParent(sourceNode.id, module, (parent: PCNode) => isSlot(parent));
+    return slot && containsNestedTreeNodeById(slot.id, instancePCComponent) ? slot : null;
+  } else if(sourceNode.name !== PCSourceTagNames.COMPONENT_INSTANCE && sourceNode.name !== PCSourceTagNames.TEXT) {
+    return sourceNode;
+  }
+
+  return null;
+});
+
+export const getSyntheticRelativesOfParentSource = memoize((node: SyntheticVisibleNode, parentSourceNode: PCNode, documents: SyntheticDocument[], graph: DependencyGraph) => {
+  const document = getSyntheticVisibleNodeDocument(node.id, documents);
+  const module = getPCNodeModule(parentSourceNode.id, graph);
+
+  const relatedParent = findTreeNodeParent(node.id, document, (parent: SyntheticNode) => {
+    const sourceNode = getSyntheticSourceNode(parent, graph);
+    return getParentTreeNode(sourceNode.id, module).id === parentSourceNode.id;
+  });
+  const relatedParentParent = getParentTreeNode(relatedParent.id, document);
+  return relatedParentParent.children.filter((child: SyntheticNode) => {
+    const sourceNode = getSyntheticSourceNode(child, graph);
+    return getParentTreeNode(sourceNode.id, module).id === parentSourceNode.id;
+  }) as SyntheticVisibleNode[];
+});
 
 const setOpenFileContent = (dep: Dependency<any>, state: RootState) =>
   updateOpenFile(
@@ -445,7 +486,7 @@ const moveDependencyRecordHistory = (
   // deselect synthetic nodes if their source is also deleted
   state = setSelectedSyntheticVisibleNodeIds(
     state,
-    ...state.selectedNodeIds.filter(nodeId => {
+    ...state.selectedSyntheticNodeIds.filter(nodeId => {
       const { source } = getSyntheticNodeById(nodeId, state.documents);
       return Boolean(getPCNode(source.nodeId, state.graph));
     })
@@ -553,7 +594,9 @@ const refreshModuleInspectorNodes = (state: RootState) => {
           inspector = createInspectorNode(
             InspectorTreeNodeType.SOURCE_REP,
             "",
-            module
+            state.sourceNodeInspector,
+            module,
+            state.graph
           );
           inspector = expandInspectorNode(inspector, inspector, state.graph);
           return inspector;
@@ -635,8 +678,8 @@ export const openEditorFileUri = (
 
   return {
     ...state,
-    hoveringNodeIds: [],
-    selectedNodeIds: [],
+    hoveringSyntheticNodeIds: [],
+    selectedSyntheticNodeIds: [],
     activeEditorFilePath: uri,
     editorWindows: editor
       ? arraySplice(
@@ -737,8 +780,8 @@ export const setNextOpenFile = (state: RootState): RootState => {
   }
   state = {
     ...state,
-    hoveringNodeIds: [],
-    selectedNodeIds: []
+    hoveringSyntheticNodeIds: [],
+    selectedSyntheticNodeIds: []
   };
 
   if (state.openFiles.length) {
@@ -1122,7 +1165,6 @@ export const getCanvasMouseTargetNodeIdFromPoint = (
   point: Point,
   filter?: (node: TreeNode<any>) => boolean
 ): string => {
-  const toolType = state.toolType;
 
   const scaledMousePos = getScaledMouseCanvasPosition(state, point);
 
@@ -1147,10 +1189,6 @@ export const getCanvasMouseTargetNodeIdFromPoint = (
     const { bounds } = computedInfo[$id];
     if (
       pointIntersectsBounds(mouseFramePoint, bounds) &&
-      // !pointIntersectsBounds(scaledMousePos, deadZone) &&
-      (toolType == null ||
-        getNestedTreeNodeById($id, contentNode).name !==
-          PCSourceTagNames.TEXT) &&
       (!filter || filter(getNestedTreeNodeById($id, contentNode)))
     ) {
       intersectingBounds.push(bounds);
@@ -1199,7 +1237,7 @@ export const setSelectedSyntheticVisibleNodeIds = (
   );
   root = updateRootState(
     {
-      selectedNodeIds: nodeIds
+      selectedSyntheticNodeIds: nodeIds
     },
     root
   );
@@ -1230,7 +1268,7 @@ export const setSelectedSyntheticVisibleNodeIds = (
 };
 
 const expandSelectedSyntheticNode = (state: RootState) => {
-  return state.selectedNodeIds.reduce((state, nodeId) => {
+  return state.selectedSyntheticNodeIds.reduce((state, nodeId) => {
     const syntheticNode = getSyntheticNodeById(nodeId, state.documents);
     const document = getSyntheticVisibleNodeDocument(
       syntheticNode.id,
@@ -1275,7 +1313,7 @@ export const setHoveringSyntheticVisibleNodeIds = (
 ) => {
   return updateRootState(
     {
-      hoveringNodeIds: uniq([...selectionIds])
+      hoveringSyntheticNodeIds: uniq([...selectionIds])
     },
     root
   );
@@ -1283,7 +1321,7 @@ export const setHoveringSyntheticVisibleNodeIds = (
 
 export const getBoundedSelection = memoize(
   (root: RootState): string[] =>
-    root.selectedNodeIds.filter(nodeId =>
+    root.selectedSyntheticNodeIds.filter(nodeId =>
       getSyntheticVisibleNodeRelativeBounds(
         getSyntheticNodeById(nodeId, root.documents),
         root.frames
@@ -1303,14 +1341,14 @@ export const getSelectionBounds = memoize((root: RootState) =>
 );
 
 export const isSelectionMovable = memoize((root: RootState) => {
-  return !root.selectedNodeIds.some(nodeId => {
+  return !root.selectedSyntheticNodeIds.some(nodeId => {
     const node = getSyntheticNodeById(nodeId, root.documents);
     return !isSyntheticVisibleNodeMovable(node);
   });
 });
 
 export const isSelectionResizable = memoize((root: RootState) => {
-  return !root.selectedNodeIds.some(nodeId => {
+  return !root.selectedSyntheticNodeIds.some(nodeId => {
     const node = getSyntheticNodeById(nodeId, root.documents);
     return !isSyntheticVisibleNodeResizable(node);
   });

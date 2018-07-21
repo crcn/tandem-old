@@ -11,7 +11,8 @@ import {
   replaceNestedNode,
   reduceTree,
   filterTreeNodeParents,
-  NodeFilter
+  NodeFilter,
+  flattenTreeNode
 } from "tandem-common";
 import { uniq, isEqual } from "lodash";
 import { Dependency, DependencyGraph, updateGraphDependency } from "./graph";
@@ -402,6 +403,9 @@ export const isPCOverride = (node: PCNode): node is PCOverride =>
   node.name === PCSourceTagNames.OVERRIDE;
 export const isComponent = (node: PCNode): node is PCComponent =>
   node.name === PCSourceTagNames.COMPONENT;
+
+export const isSlot = (node: PCNode): node is PCSlot => node.name === PCSourceTagNames.SLOT;
+export const isPCContent = (node: PCNode): node is PCContent => node.name === PCSourceTagNames.CONTENT;
 export const isPCComponentInstance = (
   node: PCNode
 ): node is PCComponentInstanceElement =>
@@ -586,6 +590,18 @@ export const isSlottableNode = memoize((node: PCVisibleNode | PCComponent) => {
       node.bind.properties &&
       node.bind.properties[PCOverridablePropertyName.CHILDREN]
   );
+});
+
+export const getInstanceSlots = memoize((node: PCComponentInstanceElement | PCComponent, graph: DependencyGraph): PCSlot[] => {
+  if (!extendsComponent(node)) {
+    return [];
+  }
+  const component = getPCNode(node.is, graph);
+  return flattenTreeNode(component).filter(isSlot);
+});
+
+export const getInstanceSlotContent = memoize((slotId: string, node: PCComponentInstanceElement) => {
+  return node.children.find(child => isPCContent(child) && child.slotId === slotId) as PCContent;
 });
 
 let slotCount = 0;

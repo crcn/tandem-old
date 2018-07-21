@@ -27,16 +27,16 @@ export default compose(
     }
   }),
   Base => ({ root, dispatch, setTab, currentTab, ...rest }) => {
-    if (!root.selectedNodeIds.length) {
+    if (!root.selectedSyntheticNodeIds.length) {
       return null;
     }
 
     const syntheticDocument = getSyntheticVisibleNodeDocument(
-      root.selectedNodeIds[0],
+      root.selectedSyntheticNodeIds[0],
       root.documents
     );
     const selectedNodes = getSelectedNoded(
-      root.selectedNodeIds,
+      root.selectedSyntheticNodeIds,
       root.documents
     );
 

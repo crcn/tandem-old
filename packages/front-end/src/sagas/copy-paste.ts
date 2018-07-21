@@ -35,7 +35,7 @@ function* handleCopy() {
       event.clipboardData.setData(
         "text/plain",
         JSON.stringify(
-          root.selectedNodeIds.map(nodeId => {
+          root.selectedSyntheticNodeIds.map(nodeId => {
             const syntheticNode = getSyntheticNodeById(nodeId, root.documents);
             return getPCNodeClip(syntheticNode, root.frames, root.graph);
           })

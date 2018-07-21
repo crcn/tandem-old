@@ -11,10 +11,11 @@ import {
   isVisibleNode,
   isComponent,
   getSyntheticInstancePath,
-  getOverrides,
-  PCChildrenOverride,
-  PCOverridablePropertyName,
-  findSlottableElements
+  isSlot,
+  isPCContent,
+  PCContent,
+  getInstanceSlots,
+  SyntheticVisibleNode
 } from "paperclip";
 
 import { last } from "lodash";
@@ -29,7 +30,8 @@ import {
   getNestedTreeNodeById,
   findNestedNode,
   memoize,
-  getParentTreeNode
+  getParentTreeNode,
+  findTreeNodeParent
 } from "tandem-common";
 // import { SyntheticNode, PCNode, PCModule, PCComponent, DependencyGraph, PCComponentInstanceElement, PCSourceTagNames, PCOverride, PCChildrenOverride } from "paperclip";
 
@@ -82,15 +84,24 @@ export type InspectorNode =
 export const createInspectorNode = <TName extends InspectorTreeNodeType>(
   name: TName,
   instancePath: string,
-  sourceNode?: PCNode
+  parent: InspectorNode,
+  sourceNode: PCNode,
+  graph: DependencyGraph
 ): InspectorTreeBaseNode<InspectorTreeNodeType> => {
-  return {
+  let node: InspectorTreeBaseNode<InspectorTreeNodeType> = {
     name: name,
+    expanded: false,
     assocSourceNodeId: sourceNode && sourceNode.id,
     instancePath,
     id: generateUID(),
     children: EMPTY_ARRAY
   };
+
+  if (sourceNode && graph) {
+    node.children = createInspectorChildren(instancePath, node as InspectorNode, getInspectorSourceNode(node as InspectorNode, parent, graph), sourceNode, graph);
+  }
+
+  return node;
 };
 
 export const isInspectorNode = (node: TreeNode<any>): node is InspectorNode => {
@@ -108,25 +119,24 @@ export const refreshInspectorTree = (
   return updateAlts(_refreshInspectorTree(root, root, graph) as InspectorNode);
 };
 
-const getInspectorSourceNode = (
+export const getInspectorSourceNode = (
   node: InspectorNode,
-  root: InspectorNode,
+  ancestor: InspectorNode,
   graph: DependencyGraph
-) => {
+): PCNode => {
   if (node.name === InspectorTreeNodeType.CONTENT) {
-    const parentInspectorNode = getParentTreeNode(
-      node.id,
-      root
-    ) as InspectorNode;
+    const parent = getNestedTreeNodeById(node.id, ancestor);
     return getSlotContent(
       node.assocSourceNodeId,
-      parentInspectorNode.assocSourceNodeId,
+      parent.assocSourceNodeId,
       graph
     );
   } else {
     return getPCNode(node.assocSourceNodeId, graph);
   }
 };
+
+
 
 const _refreshInspectorTree = (
   node: InspectorTreeBaseNode<any>,
@@ -138,7 +148,7 @@ const _refreshInspectorTree = (
   }
 
   const sourceNode =
-    node.assocSourceNodeId && getInspectorSourceNode(node, root, graph);
+    node.assocSourceNodeId && getInspectorSourceNode(node, getParentTreeNode(node.id, root), graph);
 
   // if no source node, then it's likely the root, or deleted
   if (!sourceNode) {
@@ -163,7 +173,7 @@ const _refreshInspectorTree = (
           root,
           node,
           contents,
-          getInstanceContents(sourceNode, graph),
+          getInstanceSlots(sourceNode, graph),
           graph
         )
       ]
@@ -203,7 +213,7 @@ const refreshChildren = (
 
       const inspectorSourceNode = getInspectorSourceNode(
         inspectorNode,
-        root,
+        getParentTreeNode(inspectorNode.id, root),
         graph
       );
 
@@ -211,16 +221,20 @@ const refreshChildren = (
         return createInspectorNode(
           InspectorTreeNodeType.CONTENT,
           inspectorNode.instancePath,
-          child
+          inspectorNode,
+          child,
+          graph
         );
       }
 
       return createInspectorNode(
         InspectorTreeNodeType.SOURCE_REP,
         inspectorNode.name === InspectorTreeNodeType.SHADOW
-          ? addInstancePath(inspectorNode, graph)
+          ? addInstancePath(inspectorNode.instancePath, getPCNode(inspectorNode.assocSourceNodeId, graph))
           : inspectorNode.instancePath,
-        child
+        inspectorNode,
+        child,
+        graph
       );
     })
     .filter(Boolean);
@@ -235,25 +249,60 @@ const containsShadow = (
   );
 };
 
-const getInstanceContents = (
-  instance: PCComponentInstanceElement | PCComponent,
-  graph: DependencyGraph
-) => {
-  return findSlottableElements(instance, graph);
-};
+// const getInstanceContents = (
+//   instance: PCComponentInstanceElement | PCComponent,
+//   graph: DependencyGraph
+// ) => {
+//   return findSlottableElements(instance, graph);
+// };
 
 const getSlotContent = (
   assocSourceNodeId: string,
   instanceNodeId: string,
   graph: DependencyGraph
-) => {
+): PCContent => {
   const instance = getPCNode(instanceNodeId, graph);
+  return instance.children.find(child => isPCContent(child) && child.slotId === assocSourceNodeId) as PCContent;
+};
 
-  return getOverrides(instance).find(
-    override =>
-      last(override.targetIdPath) === assocSourceNodeId &&
-      override.propertyName === PCOverridablePropertyName.CHILDREN
-  ) as PCChildrenOverride;
+export const inspectorNodeInShadow = (node: InspectorNode, contentNode: InspectorNode) => {
+  return Boolean(findTreeNodeParent(node.id, contentNode, parent => parent.name === InspectorTreeNodeType.SHADOW))
+};
+
+export const createInspectorChildren = (instancePath: string, node: InspectorNode, parentSourceNode: PCNode, parentAssocNode: PCNode, graph: DependencyGraph) => {
+  if (containsShadow(parentSourceNode)) {
+
+    return [
+      createInspectorNode(
+        InspectorTreeNodeType.SHADOW,
+        addInstancePath(instancePath, parentAssocNode),
+        node,
+        getPCNode(parentSourceNode.is, graph),
+        graph
+      ),
+      ...getInstanceSlots(parentSourceNode, graph).map(child =>
+        createInspectorNode(
+          InspectorTreeNodeType.CONTENT,
+          instancePath,
+          node,
+          child,
+          graph
+        )
+      )
+    ];
+  } else {
+    return parentSourceNode.children
+    .filter(child => isVisibleNode(child) || isComponent(child) || isSlot(child))
+    .map(child =>
+      createInspectorNode(
+        InspectorTreeNodeType.SOURCE_REP,
+        instancePath,
+        node,
+        child,
+        graph
+      )
+    );
+  }
 };
 
 export const expandInspectorNode = (
@@ -267,42 +316,9 @@ export const expandInspectorNode = (
 
   return updateAlts(
     updateNestedNode(node, root, node => {
-      const sourceNode: PCNode = getInspectorSourceNode(node, root, graph);
-
-      let children: InspectorTreeBaseNode<any>[] = [];
-      if (sourceNode) {
-        if (containsShadow(sourceNode)) {
-          children = [
-            createInspectorNode(
-              InspectorTreeNodeType.SHADOW,
-              addInstancePath(node, graph),
-              getPCNode(sourceNode.is, graph)
-            ),
-            ...getInstanceContents(sourceNode, graph).map(child =>
-              createInspectorNode(
-                InspectorTreeNodeType.CONTENT,
-                node.instancePath,
-                child
-              )
-            )
-          ];
-        } else {
-          children = sourceNode.children
-            .filter(child => isVisibleNode(child) || isComponent(child))
-            .map(child =>
-              createInspectorNode(
-                InspectorTreeNodeType.SOURCE_REP,
-                node.instancePath,
-                child
-              )
-            );
-        }
-      }
-
       return {
         ...node,
-        expanded: true,
-        children
+        expanded: true
       };
     })
   );
@@ -331,7 +347,7 @@ export const expandSyntheticInspectorNode = (
         child => {
           const sourceNode = getInspectorSourceNode(
             child,
-            rootInspectorNode,
+            getParentTreeNode(node.id, rootInspectorNode),
             graph
           );
           return (
@@ -393,7 +409,7 @@ export const getInspectorSyntheticNode = memoize(
     node: InspectorNode,
     documents: SyntheticDocument[],
     graph: DependencyGraph
-  ) => {
+  ): SyntheticVisibleNode => {
     const instancePath: string = node.instancePath;
 
     for (const document of documents) {
@@ -413,9 +429,8 @@ export const getInspectorSyntheticNode = memoize(
   }
 );
 
-const addInstancePath = (parent: InspectorNode, graph: DependencyGraph) => {
-  const sourceNode = getPCNode(parent.assocSourceNodeId, graph);
-  return parent.instancePath + (parent.instancePath ? "." : "") + sourceNode.id;
+const addInstancePath = (instancePath: string, parentAssocNode: PCNode) => {
+  return instancePath + (instancePath ? "." : "") + parentAssocNode.id;
 };
 
 export const collapseInspectorNode = (
@@ -426,19 +441,24 @@ export const collapseInspectorNode = (
     return node;
   }
 
+  const collapse = (node: InspectorNode) => {
+    if (!node.expanded) {
+      return node;
+    }
+    return {
+      ...node,
+      expanded: false,
+      children: node.children.map(collapse)
+    };
+  };
+
   return updateAlts(
-    updateNestedNode(node, root, node => {
-      return {
-        ...node,
-        expanded: false,
-        children: []
-      };
-    })
+    updateNestedNode(node, root, collapse)
   );
 };
 
 export const updateAlts = (root: InspectorNode) => {
-  const flattened = flattenTreeNode(root);
+  const flattened = flattenTreeNode(root).filter(node => getParentTreeNode(node.id, root) && getParentTreeNode(node.id, root).expanded);
 
   const map = (node: InspectorNode) => {
     return {

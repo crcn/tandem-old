@@ -98,8 +98,8 @@ const { TreeNodeLayerComponent } = createTreeLayerComponents<
   },
   childRenderer: Base => ({
     node,
-    hoveringNodeIds,
-    selectedNodeIds,
+    hoveringSyntheticNodeIds,
+    selectedSyntheticNodeIds,
     depth,
     dispatch,
     insertFileInfo
@@ -111,8 +111,8 @@ const { TreeNodeLayerComponent } = createTreeLayerComponents<
       ...node.children.map(child => {
         return (
           <Base
-            hoveringNodeIds={hoveringNodeIds}
-            selectedNodeIds={selectedNodeIds}
+            hoveringSyntheticNodeIds={hoveringSyntheticNodeIds}
+            selectedSyntheticNodeIds={selectedSyntheticNodeIds}
             key={child.id}
             node={child as TreeNode<any>}
             depth={depth + 1}
@@ -188,8 +188,8 @@ const BaseFileNavigatorPaneComponent = ({
           <TreeNodeLayerComponent
             key={file.id}
             insertFileInfo={insertFileInfo}
-            hoveringNodeIds={EMPTY_ARRAY}
-            selectedNodeIds={selectedFileNodeIds}
+            hoveringSyntheticNodeIds={EMPTY_ARRAY}
+            selectedSyntheticNodeIds={selectedFileNodeIds}
             node={file as File}
             depth={1}
             dispatch={dispatch}

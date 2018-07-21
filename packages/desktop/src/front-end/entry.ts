@@ -31,8 +31,8 @@ setup<DesktopRootState>(
   rootSaga
 )({
   mount: document.getElementById("application"),
-  hoveringNodeIds: [],
-  selectedNodeIds: [],
+  hoveringSyntheticNodeIds: [],
+  selectedSyntheticNodeIds: [],
   selectedFileNodeIds: [],
   sourceNodeInspector: createInspectorNode(
     InspectorTreeNodeType.ROOT,

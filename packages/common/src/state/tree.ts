@@ -112,13 +112,13 @@ export const getTreeNodeIdMap = memoize(
   }
 );
 
-export const flattenTreeNode = memoize((current: TreeNode<any>) =>
+export const flattenTreeNode = memoize(<TTree extends TreeNode<any>>(current: TTree): TTree[] =>
   current.children.reduce(
     (flattened, child) => {
       return [...flattened, ...flattenTreeNode(child)];
     },
     [current]
-  )
+  ) as TTree[]
 );
 
 export const getTreeNodePath = memoize(

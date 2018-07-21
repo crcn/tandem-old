@@ -5,11 +5,14 @@ OBJECTIVE:
 
 IMMEDIATE:
 
+
+- insertion layer tool
+  - `hoveringInspectorNodeIds`
+  - ability to insert into layer directly
+
+
 - explicit slots
-  - paperclip updates
-  - define hotkey
-  - panel view for component
-    - ability to define name for export
+  - ability to define name for export
 - update compiler to use slots
 - refactor to use slots
 - ensure that all child overrides gone

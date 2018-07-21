@@ -47,7 +47,7 @@ type ArtboardOverlayToolsOuterProps = {
   dispatch: Dispatch<any>;
   frame: Frame;
   zoom: number;
-  hoveringNodeIds: string[];
+  hoveringSyntheticNodeIds: string[];
 };
 
 type ArtboardOverlayToolsInnerProps = {
@@ -96,7 +96,7 @@ const getDocumentRelativeBounds = memoize((document: Frame) => ({
 const ArtboardOverlayToolsBase = ({
   dispatch,
   frame,
-  hoveringNodeIds,
+  hoveringSyntheticNodeIds,
   zoom,
   onPanStart,
   onPan,
@@ -136,7 +136,7 @@ const ArtboardOverlayToolsBase = ({
             canvasToolOverlayMouseDoubleClicked.bind(this, frame.contentNodeId)
           )}
         >
-          {hoveringNodeIds.map(nodeId => (
+          {hoveringSyntheticNodeIds.map(nodeId => (
             <NodeOverlay
               zoom={zoom}
               key={nodeId}
@@ -202,8 +202,8 @@ const getNodes = memoize(
 
 const getHoveringSyntheticVisibleNodes = memoize(
   (root: RootState, frame: Frame): string[] => {
-    const selectionRefIds = root.selectedNodeIds;
-    return root.hoveringNodeIds.filter(
+    const selectionRefIds = root.selectedSyntheticNodeIds;
+    return root.hoveringSyntheticNodeIds.filter(
       nodeId =>
         selectionRefIds.indexOf(nodeId) === -1 &&
         ((frame.computed && frame.computed[nodeId]) ||
@@ -232,7 +232,7 @@ export const NodeOverlaysToolBase = ({
           <ArtboardOverlayTools
             key={frame.contentNodeId}
             frame={frame}
-            hoveringNodeIds={getHoveringSyntheticVisibleNodes(root, frame)}
+            hoveringSyntheticNodeIds={getHoveringSyntheticVisibleNodes(root, frame)}
             dispatch={dispatch}
             zoom={zoom}
           />

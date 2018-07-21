@@ -6,7 +6,6 @@ export default compose(
   pure,
   withHandlers({
     onOpenProjectButtonClick: ({ dispatch }) => () => {
-      console.log("BUTP");
       dispatch(openProjectButtonClicked());
     },
     onCreateProjectButtonClick: ({ dispatch }) => () => {

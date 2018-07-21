@@ -6,13 +6,14 @@ import {
 
 init({
   mount: document.getElementById("application"),
-  hoveringNodeIds: [],
+  hoveringSyntheticNodeIds: [],
   editorWindows: [],
-  selectedNodeIds: [],
+  selectedSyntheticNodeIds: [],
   selectedFileNodeIds: [],
   sourceNodeInspector: createInspectorNode(
     InspectorTreeNodeType.ROOT,
     "",
+    null,
     null
   ),
   selectedInspectorNodeIds: [],

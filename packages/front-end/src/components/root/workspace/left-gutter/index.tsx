@@ -34,7 +34,7 @@ const BaseLeftGutterComponent = ({
     <LayersPane
       selectedInspectorNodeIds={root.selectedInspectorNodeIds}
       hoveringInspectorNodeIds={getHoveringInspectorNodeIds(
-        root.hoveringNodeIds,
+        root.hoveringSyntheticNodeIds,
         root.documents,
         root.sourceNodeInspector,
         root.graph
@@ -61,14 +61,14 @@ const BaseLeftGutterComponent = ({
 
 const getHoveringInspectorNodeIds = memoize(
   (
-    selectedNodeIds: string[],
+    selectedSyntheticNodeIds: string[],
     documents: SyntheticDocument[],
     rootInspectorNode: InspectorNode,
     graph: DependencyGraph
   ) => {
     // bleh -- splitting here just to leverage memoized IDs
     return split(
-      selectedNodeIds
+      selectedSyntheticNodeIds
         .map(nodeId => {
           return getSyntheticInspectorNode(
             getSyntheticNodeById(nodeId, documents),
