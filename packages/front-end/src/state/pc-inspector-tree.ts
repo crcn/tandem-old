@@ -98,7 +98,14 @@ export const createInspectorNode = <TName extends InspectorTreeNodeType>(
   };
 
   if (sourceNode && graph) {
-    node.children = createInspectorChildren(instancePath, node as InspectorNode, getInspectorSourceNode(node as InspectorNode, parent, graph), sourceNode, graph);
+    console.log(node, parent);
+    node.children = createInspectorChildren(
+      instancePath,
+      node as InspectorNode,
+      getInspectorSourceNode(node as InspectorNode, parent, graph),
+      sourceNode,
+      graph
+    );
   }
 
   return node;
@@ -125,7 +132,7 @@ export const getInspectorSourceNode = (
   graph: DependencyGraph
 ): PCNode => {
   if (node.name === InspectorTreeNodeType.CONTENT) {
-    const parent = getNestedTreeNodeById(node.id, ancestor);
+    const parent = getParentTreeNode(node.id, ancestor);
     return getSlotContent(
       node.assocSourceNodeId,
       parent.assocSourceNodeId,
@@ -135,8 +142,6 @@ export const getInspectorSourceNode = (
     return getPCNode(node.assocSourceNodeId, graph);
   }
 };
-
-
 
 const _refreshInspectorTree = (
   node: InspectorTreeBaseNode<any>,
@@ -148,7 +153,8 @@ const _refreshInspectorTree = (
   }
 
   const sourceNode =
-    node.assocSourceNodeId && getInspectorSourceNode(node, getParentTreeNode(node.id, root), graph);
+    node.assocSourceNodeId &&
+    getInspectorSourceNode(node, getParentTreeNode(node.id, root), graph);
 
   // if no source node, then it's likely the root, or deleted
   if (!sourceNode) {
@@ -230,7 +236,10 @@ const refreshChildren = (
       return createInspectorNode(
         InspectorTreeNodeType.SOURCE_REP,
         inspectorNode.name === InspectorTreeNodeType.SHADOW
-          ? addInstancePath(inspectorNode.instancePath, getPCNode(inspectorNode.assocSourceNodeId, graph))
+          ? addInstancePath(
+              inspectorNode.instancePath,
+              getPCNode(inspectorNode.assocSourceNodeId, graph)
+            )
           : inspectorNode.instancePath,
         inspectorNode,
         child,
@@ -262,16 +271,32 @@ const getSlotContent = (
   graph: DependencyGraph
 ): PCContent => {
   const instance = getPCNode(instanceNodeId, graph);
-  return instance.children.find(child => isPCContent(child) && child.slotId === assocSourceNodeId) as PCContent;
+  return instance.children.find(
+    child => isPCContent(child) && child.slotId === assocSourceNodeId
+  ) as PCContent;
 };
 
-export const inspectorNodeInShadow = (node: InspectorNode, contentNode: InspectorNode) => {
-  return Boolean(findTreeNodeParent(node.id, contentNode, parent => parent.name === InspectorTreeNodeType.SHADOW))
+export const inspectorNodeInShadow = (
+  node: InspectorNode,
+  contentNode: InspectorNode
+) => {
+  return Boolean(
+    findTreeNodeParent(
+      node.id,
+      contentNode,
+      parent => parent.name === InspectorTreeNodeType.SHADOW
+    )
+  );
 };
 
-export const createInspectorChildren = (instancePath: string, node: InspectorNode, parentSourceNode: PCNode, parentAssocNode: PCNode, graph: DependencyGraph) => {
+export const createInspectorChildren = (
+  instancePath: string,
+  node: InspectorNode,
+  parentSourceNode: PCNode,
+  parentAssocNode: PCNode,
+  graph: DependencyGraph
+) => {
   if (containsShadow(parentSourceNode)) {
-
     return [
       createInspectorNode(
         InspectorTreeNodeType.SHADOW,
@@ -292,16 +317,18 @@ export const createInspectorChildren = (instancePath: string, node: InspectorNod
     ];
   } else {
     return parentSourceNode.children
-    .filter(child => isVisibleNode(child) || isComponent(child) || isSlot(child))
-    .map(child =>
-      createInspectorNode(
-        InspectorTreeNodeType.SOURCE_REP,
-        instancePath,
-        node,
-        child,
-        graph
+      .filter(
+        child => isVisibleNode(child) || isComponent(child) || isSlot(child)
       )
-    );
+      .map(child =>
+        createInspectorNode(
+          InspectorTreeNodeType.SOURCE_REP,
+          instancePath,
+          node,
+          child,
+          graph
+        )
+      );
   }
 };
 
@@ -452,13 +479,15 @@ export const collapseInspectorNode = (
     };
   };
 
-  return updateAlts(
-    updateNestedNode(node, root, collapse)
-  );
+  return updateAlts(updateNestedNode(node, root, collapse));
 };
 
 export const updateAlts = (root: InspectorNode) => {
-  const flattened = flattenTreeNode(root).filter(node => getParentTreeNode(node.id, root) && getParentTreeNode(node.id, root).expanded);
+  const flattened = flattenTreeNode(root).filter(
+    node =>
+      getParentTreeNode(node.id, root) &&
+      getParentTreeNode(node.id, root).expanded
+  );
 
   const map = (node: InspectorNode) => {
     return {

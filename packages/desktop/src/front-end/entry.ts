@@ -37,6 +37,8 @@ setup<DesktopRootState>(
   sourceNodeInspector: createInspectorNode(
     InspectorTreeNodeType.ROOT,
     "",
+    null,
+    null,
     null
   ),
   selectedInspectorNodeIds: [],

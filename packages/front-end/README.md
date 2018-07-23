@@ -5,11 +5,12 @@ OBJECTIVE:
 
 IMMEDIATE:
 
+- refactor inspector tree
+  - move to paperclip lib
 
-- insertion layer tool
+* insertion layer tool
   - `hoveringInspectorNodeIds`
   - ability to insert into layer directly
-
 
 - explicit slots
   - ability to define name for export

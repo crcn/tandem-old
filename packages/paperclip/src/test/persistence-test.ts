@@ -30,7 +30,7 @@ import {
   PCComponentInstanceElement,
   PCVariantOverride
 } from "../dsl";
-import { SyntheticInstanceElement } from "synthetic";
+import { SyntheticInstanceElement, getSyntheticSourceNode } from "../synthetic";
 const clone = v => JSON.parse(JSON.stringify(v));
 
 describe(__filename + "#", () => {
@@ -55,7 +55,7 @@ describe(__filename + "#", () => {
     const [document] = state.documents;
     state = persistInsertNode(
       createPCElement("div"),
-      document,
+      getSyntheticSourceNode(document, state.graph),
       TreeMoveOffset.APPEND,
       state
     );
@@ -75,8 +75,8 @@ describe(__filename + "#", () => {
     const [document] = state.documents;
     expect(document.children.length).to.eql(2);
     state = persistMoveSyntheticVisibleNode(
-      document.children[1],
-      document.children[0],
+      getSyntheticSourceNode(document.children[1], state.graph),
+      getSyntheticSourceNode(document.children[0], state.graph),
       TreeMoveOffset.APPEND,
       state
     );
@@ -98,8 +98,8 @@ describe(__filename + "#", () => {
     const [document] = state.documents;
     expect(document.children.length).to.eql(2);
     state = persistMoveSyntheticVisibleNode(
-      document.children[1],
-      document.children[0],
+      getSyntheticSourceNode(document.children[1], state.graph),
+      getSyntheticSourceNode(document.children[0], state.graph),
       TreeMoveOffset.BEFORE,
       state
     );
@@ -118,8 +118,8 @@ describe(__filename + "#", () => {
     const [document] = state.documents;
     expect(document.children.length).to.eql(2);
     state = persistMoveSyntheticVisibleNode(
-      document.children[1],
-      document.children[0],
+      getSyntheticSourceNode(document.children[1], state.graph),
+      getSyntheticSourceNode(document.children[0], state.graph),
       TreeMoveOffset.AFTER,
       state
     );
@@ -185,7 +185,7 @@ describe(__filename + "#", () => {
     });
   });
 
-  it("can move a node into nested child", () => {
+  xit("can move a node into nested child", () => {
     const elementSource = createPCElement("div", {}, {}, [
       createPCTextNode("some text")
     ]);
@@ -212,8 +212,11 @@ describe(__filename + "#", () => {
     );
     const instance = state.documents[0].children[1];
     state = persistMoveSyntheticVisibleNode(
-      child,
-      instance.children[0] as SyntheticVisibleNode,
+      getSyntheticSourceNode(child, state.graph),
+      getSyntheticSourceNode(
+        instance.children[0] as SyntheticVisibleNode,
+        state.graph
+      ),
       TreeMoveOffset.APPEND,
       state
     );
@@ -260,7 +263,7 @@ describe(__filename + "#", () => {
     const instance = state.documents[0].children[1];
     state = persistMoveSyntheticVisibleNode(
       child,
-      instance as SyntheticVisibleNode,
+      getSyntheticSourceNode(instance as SyntheticVisibleNode, state.graph),
       TreeMoveOffset.APPEND,
       state
     );
