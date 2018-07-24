@@ -8,7 +8,8 @@ import {
   ArrayOperationalTransformType,
   ArrayDeleteMutation,
   ArrayUpdateMutation,
-  ArrayInsertMutation
+  ArrayInsertMutation,
+  TreeNode
 } from "tandem-common";
 import { PCNode } from "./dsl";
 
@@ -107,8 +108,8 @@ export const createSetNodePropertyOperationalTransform = (
 
 export const diffTreeNode = memoize(
   (
-    oldNode: SyntheticBaseNode | PCNode,
-    newNode: SyntheticBaseNode | PCNode,
+    oldNode: TreeNode<any>,
+    newNode: TreeNode<any>,
     ignoreDiffKeys = IGNORE_DIFF_KEYS
   ) => {
     const ots = _diffTreeNode(oldNode, newNode, [], [], ignoreDiffKeys);
@@ -126,8 +127,8 @@ const PROHIBITED_DIFF_KEYS = {
 };
 
 const _diffTreeNode = (
-  oldNode: SyntheticBaseNode | PCNode,
-  newNode: SyntheticBaseNode | PCNode,
+  oldNode: TreeNode<any>,
+  newNode: TreeNode<any>,
   nodePath: number[],
   ots: TreeNodeOperationalTransform[] = [],
   ignoreDiffKeys: any
@@ -211,7 +212,7 @@ const _diffTreeNode = (
 
 export const patchTreeNode = (
   ots: TreeNodeOperationalTransform[],
-  oldNode: SyntheticBaseNode | PCNode
+  oldNode: TreeNode<any>
 ) => {
   return ots.reduce((node, ot) => {
     return updateNestedNodeFromPath(

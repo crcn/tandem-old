@@ -404,8 +404,10 @@ export const isPCOverride = (node: PCNode): node is PCOverride =>
 export const isComponent = (node: PCNode): node is PCComponent =>
   node.name === PCSourceTagNames.COMPONENT;
 
-export const isSlot = (node: PCNode): node is PCSlot => node.name === PCSourceTagNames.SLOT;
-export const isPCContent = (node: PCNode): node is PCContent => node.name === PCSourceTagNames.CONTENT;
+export const isSlot = (node: PCNode): node is PCSlot =>
+  node.name === PCSourceTagNames.SLOT;
+export const isPCContent = (node: PCNode): node is PCContent =>
+  node.name === PCSourceTagNames.CONTENT;
 export const isPCComponentInstance = (
   node: PCNode
 ): node is PCComponentInstanceElement =>
@@ -415,7 +417,9 @@ export const isPCComponentOrInstance = (
 ): node is PCComponent | PCComponentInstanceElement =>
   isPCComponentInstance(node) || isComponent(node);
 
-export const extendsComponent = (element: PCNode) =>
+export const extendsComponent = (
+  element: PCNode
+): element is PCComponent | PCComponentInstanceElement =>
   (element.name == PCSourceTagNames.COMPONENT ||
     element.name === PCSourceTagNames.COMPONENT_INSTANCE) &&
   element.is.length > 6 &&
@@ -592,17 +596,26 @@ export const isSlottableNode = memoize((node: PCVisibleNode | PCComponent) => {
   );
 });
 
-export const getInstanceSlots = memoize((node: PCComponentInstanceElement | PCComponent, graph: DependencyGraph): PCSlot[] => {
-  if (!extendsComponent(node)) {
-    return [];
+export const getInstanceSlots = memoize(
+  (
+    node: PCComponentInstanceElement | PCComponent,
+    graph: DependencyGraph
+  ): PCSlot[] => {
+    if (!extendsComponent(node)) {
+      return [];
+    }
+    const component = getPCNode(node.is, graph);
+    return flattenTreeNode(component).filter(isSlot);
   }
-  const component = getPCNode(node.is, graph);
-  return flattenTreeNode(component).filter(isSlot);
-});
+);
 
-export const getInstanceSlotContent = memoize((slotId: string, node: PCComponentInstanceElement) => {
-  return node.children.find(child => isPCContent(child) && child.slotId === slotId) as PCContent;
-});
+export const getInstanceSlotContent = memoize(
+  (slotId: string, node: PCComponentInstanceElement | PCComponent) => {
+    return node.children.find(
+      child => isPCContent(child) && child.slotId === slotId
+    ) as PCContent;
+  }
+);
 
 let slotCount = 0;
 
