@@ -412,9 +412,7 @@ export const isPCComponentInstance = (
   node: PCNode
 ): node is PCComponentInstanceElement =>
   node.name === PCSourceTagNames.COMPONENT_INSTANCE;
-export const isPCComponentOrInstance = (
-  node: PCNode
-): node is PCComponent | PCComponentInstanceElement =>
+export const isPCComponentOrInstance = (node: PCNode) =>
   isPCComponentInstance(node) || isComponent(node);
 
 export const extendsComponent = (
@@ -604,7 +602,12 @@ export const getInstanceSlots = memoize(
     if (!extendsComponent(node)) {
       return [];
     }
-    const component = getPCNode(node.is, graph);
+    return getComponentSlots(getPCNode(node.is, graph) as PCComponent, graph);
+  }
+);
+
+export const getComponentSlots = memoize(
+  (component: PCComponent, graph: DependencyGraph): PCSlot[] => {
     return flattenTreeNode(component).filter(isSlot);
   }
 );

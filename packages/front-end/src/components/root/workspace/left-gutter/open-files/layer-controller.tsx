@@ -22,7 +22,7 @@ import {
 } from "paperclip";
 import {
   InspectorNode,
-  InspectorTreeNodeType,
+  InspectorTreeNodeName,
   getInspectorSyntheticNode
 } from "../../../../../state/pc-inspector-tree";
 import { Dispatch } from "redux";
@@ -85,7 +85,7 @@ export default Base => {
         dispatch(sourceInspectorLayerArrowClicked(inspectorNode, event));
       },
       onLabelDoubleClick: ({ inspectorNode, setEditingLabel }) => () => {
-        if (inspectorNode.name === InspectorTreeNodeType.SOURCE_REP) {
+        if (inspectorNode.name === InspectorTreeNodeName.SOURCE_REP) {
           setEditingLabel(true);
         }
       },
@@ -153,9 +153,9 @@ export default Base => {
       const expanded = inspectorNode.expanded;
       const assocSourceNode = getPCNode(inspectorNode.assocSourceNodeId, graph);
       const isSourceRep =
-        inspectorNode.name === InspectorTreeNodeType.SOURCE_REP;
+        inspectorNode.name === InspectorTreeNodeName.SOURCE_REP;
       inShadow =
-        inShadow || inspectorNode.name === InspectorTreeNodeType.SHADOW;
+        inShadow || inspectorNode.name === InspectorTreeNodeName.SHADOW;
       let children;
 
       const isSelected =
@@ -163,7 +163,9 @@ export default Base => {
       const isHovering =
         hoveringInspectorNodeIds.indexOf(inspectorNode.id) !== -1 ||
         (canDrop && isOver);
-      const isSlot = inspectorNode.name === InspectorTreeNodeType.CONTENT || assocSourceNode.name === PCSourceTagNames.SLOT;
+      const isSlot =
+        inspectorNode.name === InspectorTreeNodeName.CONTENT ||
+        assocSourceNode.name === PCSourceTagNames.SLOT;
       if (expanded) {
         const childDepth = depth + 1;
         children = inspectorNode.children.map(child => {
@@ -255,9 +257,9 @@ export default Base => {
                       slot: isSlot,
                       alt: inspectorNode.alt && !isSelected,
                       content:
-                        inspectorNode.name === InspectorTreeNodeType.CONTENT,
+                        inspectorNode.name === InspectorTreeNodeName.CONTENT,
                       shadow:
-                        inspectorNode.name === InspectorTreeNodeType.SHADOW,
+                        inspectorNode.name === InspectorTreeNodeName.SHADOW,
                       hover: isHovering,
                       inShadow: !isSelected && inShadow
                     })}

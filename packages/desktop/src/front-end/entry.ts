@@ -3,7 +3,12 @@ const fontManager = require("font-manager");
 import { rootSaga } from "./sagas";
 import { select } from "redux-saga/effects";
 import { rootReducer } from "./reducers";
-import { setup, RootState, FontFamily } from "tandem-front-end";
+import {
+  setup,
+  RootState,
+  FontFamily,
+  createRootInspectorNode
+} from "tandem-front-end";
 import { stripProtocol } from "tandem-common";
 import { DesktopRootState } from "./state";
 import * as path from "path";
@@ -15,7 +20,6 @@ import {
   getSyntheticNodeById,
   getPCNodeDependency
 } from "paperclip";
-import { createInspectorNode, InspectorTreeNodeType } from "tandem-front-end";
 
 const query = Url.parse(String(location), true).query;
 
@@ -34,13 +38,7 @@ setup<DesktopRootState>(
   hoveringSyntheticNodeIds: [],
   selectedSyntheticNodeIds: [],
   selectedFileNodeIds: [],
-  sourceNodeInspector: createInspectorNode(
-    InspectorTreeNodeType.ROOT,
-    "",
-    null,
-    null,
-    null
-  ),
+  sourceNodeInspector: createRootInspectorNode(),
   selectedInspectorNodeIds: [],
   editorWindows: [],
   frames: [],

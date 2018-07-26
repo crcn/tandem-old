@@ -1174,54 +1174,26 @@
         {
           "exportName": null,
           "id": "c728dddc32",
-          "children": [
-            {
-              "id": "c728dddc28",
-              "name": "text",
-              "label": "Text",
-              "value": "EDAAAT",
-              "style": {},
-              "children": [
-                {
-                  "id": "d11319fa21",
-                  "label": "Element",
-                  "is": "div",
-                  "name": "element",
-                  "attributes": {},
-                  "style": {
-                    "box-sizing": "border-box",
-                    "display": "block"
-                  },
-                  "children": [],
-                  "metadata": {}
-                },
-                {
-                  "id": "d11319fa22",
-                  "label": "Element",
-                  "is": "div",
-                  "name": "element",
-                  "attributes": {},
-                  "style": {
-                    "box-sizing": "border-box",
-                    "display": "block"
-                  },
-                  "children": [],
-                  "metadata": {}
-                }
-              ],
-              "metadata": {}
-            }
-          ],
+          "children": [],
           "metadata": {},
           "name": "slot"
+        },
+        {
+          "id": "f1fe03177",
+          "name": "text",
+          "label": "Text",
+          "value": "Click to edit",
+          "style": {},
+          "children": [],
+          "metadata": {}
         }
       ],
       "metadata": {
         "bounds": {
-          "left": -1043.7037248618649,
-          "top": 276.838676205486,
-          "right": -943.7037248618649,
-          "bottom": 376.838676205486
+          "left": -908,
+          "top": 285,
+          "right": -808,
+          "bottom": 385
         }
       }
     }

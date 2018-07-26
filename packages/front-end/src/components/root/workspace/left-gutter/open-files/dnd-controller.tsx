@@ -9,7 +9,11 @@ import {
   getParentTreeNode
 } from "tandem-common";
 import { DropTarget } from "react-dnd";
-import { InspectorNode, InspectorTreeNodeType, inspectorNodeInShadow } from "../../../../../state/pc-inspector-tree";
+import {
+  InspectorNode,
+  InspectorTreeNodeName,
+  inspectorNodeInShadow
+} from "../../../../../state/pc-inspector-tree";
 import { getPCNode, PCSourceTagNames } from "paperclip";
 import { compose } from "redux";
 import { sourceInspectorLayerDropped } from "../../../../../actions";
@@ -41,7 +45,6 @@ export const withNodeDropTarget = (offset: TreeMoveOffset) =>
           return false;
         }
 
-
         if (
           offset === TreeMoveOffset.APPEND ||
           offset === TreeMoveOffset.PREPEND
@@ -49,7 +52,8 @@ export const withNodeDropTarget = (offset: TreeMoveOffset) =>
           return (
             !contentSourceNode ||
             containsNestedTreeNodeById(sourceNode.id, contentSourceNode) ||
-            (inspectorNode.name === InspectorTreeNodeType.CONTENT && !inspectorNodeInShadow(inspectorNode, contentNode))
+            (inspectorNode.name === InspectorTreeNodeName.CONTENT &&
+              !inspectorNodeInShadow(inspectorNode, contentNode))
           );
         } else {
           // const parentSourceNode = getParentTreeNode()

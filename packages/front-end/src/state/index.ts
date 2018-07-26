@@ -74,25 +74,20 @@ import {
   CanvasToolOverlayClicked,
   CanvasDroppedItem
 } from "../actions";
-import { uniq, pull, values, clamp } from "lodash";
+import { uniq, values, clamp } from "lodash";
 import {
-  replaceDependency,
-  PCDependency,
   Dependency,
   DependencyGraph,
   getModifiedDependencies
 } from "paperclip";
 import { FSSandboxRootState, queueOpenFile, hasFileCacheItem } from "fsbox";
 import {
-  createInspectorNode,
-  InspectorTreeNodeType,
   refreshInspectorTree,
   InspectorTreeBaseNode,
-  expandInspectorNode,
-  InspectorNode,
   expandSyntheticInspectorNode,
   getSyntheticInspectorNode,
-  updateAlts
+  updateAlts,
+  evaluateModuleInspector
 } from "./pc-inspector-tree";
 
 export enum ToolType {
@@ -351,35 +346,66 @@ export const selectInsertedSyntheticVisibleNodes = (
   );
 };
 
-export const getInsertableSourceNodeFromSyntheticNode = memoize((node: SyntheticVisibleNode, document: SyntheticDocument, graph: DependencyGraph) => {
-  const sourceNode = getSyntheticSourceNode(node, graph);
-  if (syntheticNodeIsInShadow(node, document, graph)) {
-    const module = getPCNodeModule(sourceNode.id, graph);
-    const instancePath = getSyntheticInstancePath(node, document, graph);
-    const instancePCComponent = getPCNode((getPCNode(instancePath[0], graph) as PCComponentInstanceElement).is, graph);
-    const slot = findTreeNodeParent(sourceNode.id, module, (parent: PCNode) => isSlot(parent));
-    return slot && containsNestedTreeNodeById(slot.id, instancePCComponent) ? slot : null;
-  } else if(sourceNode.name !== PCSourceTagNames.COMPONENT_INSTANCE && sourceNode.name !== PCSourceTagNames.TEXT) {
-    return sourceNode;
+export const getInsertableSourceNodeFromSyntheticNode = memoize(
+  (
+    node: SyntheticVisibleNode,
+    document: SyntheticDocument,
+    graph: DependencyGraph
+  ) => {
+    const sourceNode = getSyntheticSourceNode(node, graph);
+    if (syntheticNodeIsInShadow(node, document, graph)) {
+      const module = getPCNodeModule(sourceNode.id, graph);
+      const instancePath = getSyntheticInstancePath(node, document, graph);
+      const instancePCComponent = getPCNode(
+        (getPCNode(instancePath[0], graph) as PCComponentInstanceElement).is,
+        graph
+      );
+      const slot = findTreeNodeParent(sourceNode.id, module, (parent: PCNode) =>
+        isSlot(parent)
+      );
+      return slot && containsNestedTreeNodeById(slot.id, instancePCComponent)
+        ? slot
+        : null;
+    } else if (
+      sourceNode.name !== PCSourceTagNames.COMPONENT_INSTANCE &&
+      sourceNode.name !== PCSourceTagNames.TEXT
+    ) {
+      return sourceNode;
+    }
+
+    return null;
   }
+);
 
-  return null;
-});
+export const getSyntheticRelativesOfParentSource = memoize(
+  (
+    node: SyntheticVisibleNode,
+    parentSourceNode: PCNode,
+    documents: SyntheticDocument[],
+    graph: DependencyGraph
+  ) => {
+    const document = getSyntheticVisibleNodeDocument(node.id, documents);
+    const module = getPCNodeModule(parentSourceNode.id, graph);
 
-export const getSyntheticRelativesOfParentSource = memoize((node: SyntheticVisibleNode, parentSourceNode: PCNode, documents: SyntheticDocument[], graph: DependencyGraph) => {
-  const document = getSyntheticVisibleNodeDocument(node.id, documents);
-  const module = getPCNodeModule(parentSourceNode.id, graph);
-
-  const relatedParent = findTreeNodeParent(node.id, document, (parent: SyntheticNode) => {
-    const sourceNode = getSyntheticSourceNode(parent, graph);
-    return getParentTreeNode(sourceNode.id, module).id === parentSourceNode.id;
-  });
-  const relatedParentParent = getParentTreeNode(relatedParent.id, document);
-  return relatedParentParent.children.filter((child: SyntheticNode) => {
-    const sourceNode = getSyntheticSourceNode(child, graph);
-    return getParentTreeNode(sourceNode.id, module).id === parentSourceNode.id;
-  }) as SyntheticVisibleNode[];
-});
+    const relatedParent = findTreeNodeParent(
+      node.id,
+      document,
+      (parent: SyntheticNode) => {
+        const sourceNode = getSyntheticSourceNode(parent, graph);
+        return (
+          getParentTreeNode(sourceNode.id, module).id === parentSourceNode.id
+        );
+      }
+    );
+    const relatedParentParent = getParentTreeNode(relatedParent.id, document);
+    return relatedParentParent.children.filter((child: SyntheticNode) => {
+      const sourceNode = getSyntheticSourceNode(child, graph);
+      return (
+        getParentTreeNode(sourceNode.id, module).id === parentSourceNode.id
+      );
+    }) as SyntheticVisibleNode[];
+  }
+);
 
 const setOpenFileContent = (dep: Dependency<any>, state: RootState) =>
   updateOpenFile(
@@ -585,21 +611,12 @@ const refreshModuleInspectorNodes = (state: RootState) => {
         ...state.sourceNodeInspector,
         children: state.openFiles.map(openFile => {
           const module = state.graph[openFile.uri].content;
-          let inspector = state.sourceNodeInspector.children.find(
+          const inspector = state.sourceNodeInspector.children.find(
             inspector => inspector.assocSourceNodeId === module.id
           );
-          if (inspector) {
-            return refreshInspectorTree(inspector, state.graph);
-          }
-          inspector = createInspectorNode(
-            InspectorTreeNodeType.SOURCE_REP,
-            "",
-            state.sourceNodeInspector,
-            module,
-            state.graph
-          );
-          inspector = expandInspectorNode(inspector, inspector, state.graph);
-          return inspector;
+          return inspector
+            ? refreshInspectorTree(inspector, state.graph)
+            : evaluateModuleInspector(module, state.graph);
         })
       })
     },
@@ -1165,7 +1182,6 @@ export const getCanvasMouseTargetNodeIdFromPoint = (
   point: Point,
   filter?: (node: TreeNode<any>) => boolean
 ): string => {
-
   const scaledMousePos = getScaledMouseCanvasPosition(state, point);
 
   const frame = getFrameFromPoint(scaledMousePos, state);

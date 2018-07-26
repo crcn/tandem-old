@@ -120,15 +120,11 @@ const mapSourceRepChildren = (
       ...getInstanceSlots(parent, graph).map(mapSlot(parent, graph))
     ];
   } else {
-    return parent.children
-      .map(mapSourceRepChild(parent, graph))
-      .filter(Boolean);
+    return parent.children.map(mapSourceRepChild(graph)).filter(Boolean);
   }
 };
 
-const mapSourceRepChild = (parent: PCNode, graph: DependencyGraph) => (
-  child: PCNode
-) => {
+const mapSourceRepChild = (graph: DependencyGraph) => (child: PCNode) => {
   if (!isVisibleNode(child)) {
     return null;
   }
