@@ -190,6 +190,7 @@ import {
   openSyntheticVisibleNodeOriginFile,
   updateSourceInspectorNode,
   pruneStaleSyntheticNodes,
+  getInsertableSourceNodeScope,
   getInsertableSourceNodeFromSyntheticNode
 } from "../state";
 import {
@@ -648,8 +649,6 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
           ),
         state
       );
-
-      console.log(state.graph);
 
       const targetSyntheticNode = getInspectorSyntheticNode(
         targetInspectorNode,
@@ -1712,8 +1711,6 @@ const persistInsertNodeFromPoint = (
         insertableSourceNode.id,
         getSyntheticRootInstanceSourceNode(targetNode, state)
       );
-
-      console.log(insertableSourceNode);
     }
 
     return persistInsertNode(
@@ -1726,7 +1723,14 @@ const persistInsertNodeFromPoint = (
 
   state = setTool(null, state);
 
-  state = queueSelectInsertedSyntheticVisibleNodes(oldState, state, targetNode);
+  const scope = getInsertableSourceNodeScope(
+    insertableSourceNode,
+    targetNode as SyntheticVisibleNode,
+    getSyntheticVisibleNodeDocument(targetNode.id, state.documents),
+    state.graph
+  );
+
+  state = queueSelectInsertedSyntheticVisibleNodes(oldState, state, scope);
 
   return state;
 };

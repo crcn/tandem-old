@@ -8,6 +8,8 @@ IMMEDIATE:
 - refactor inspector tree
   - move to paperclip lib
 
+* insertion tool should use inspector tree instead of synthetic
+
 * insertion layer tool
   - `hoveringInspectorNodeIds`
   - ability to insert into layer directly

@@ -377,6 +377,26 @@ export const getInsertableSourceNodeFromSyntheticNode = memoize(
   }
 );
 
+export const getInsertableSourceNodeScope = memoize(
+  (
+    insertableSourceNode: PCNode,
+    relative: SyntheticVisibleNode,
+    document: SyntheticDocument,
+    graph: DependencyGraph
+  ) => {
+    const containsSource = (current: SyntheticVisibleNode) => {
+      const sourceNode = getSyntheticSourceNode(current, graph);
+      return containsNestedTreeNodeById(insertableSourceNode.id, sourceNode);
+    };
+
+    if (containsSource(relative)) {
+      return relative;
+    }
+
+    return findTreeNodeParent(relative.id, document, containsSource);
+  }
+);
+
 export const getSyntheticRelativesOfParentSource = memoize(
   (
     node: SyntheticVisibleNode,
