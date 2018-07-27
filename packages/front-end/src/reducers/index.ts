@@ -261,8 +261,8 @@ import {
   getPCNodeModule,
   getPCNodeContentNode,
   PCNode,
-  isPCContent,
-  createPCContent,
+  isPCPlug,
+  createPCPlug,
   persistRemovePCNode,
   getInstanceSlotContent,
   SyntheticNode,
@@ -610,7 +610,7 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
         );
         if (!contentNode) {
           state = persistInsertNode(
-            createPCContent(target.assocSourceNodeId),
+            createPCPlug(target.assocSourceNodeId),
             parentSourceNode,
             TreeMoveOffset.APPEND,
             state
@@ -708,7 +708,7 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
     case SOURCE_INSPECTOR_LAYER_CLICKED: {
       const { node } = action as InspectorLayerEvent;
       state = updateSourceInspectorNode(state, sourceNodeInspector => {
-        return expandInspectorNode(node, sourceNodeInspector, state.graph);
+        return expandInspectorNode(node, sourceNodeInspector);
       });
 
       const assocSyntheticNode = getInspectorSyntheticNode(
@@ -734,7 +734,7 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
       state = updateSourceInspectorNode(state, sourceNodeInspector => {
         return node.expanded
           ? collapseInspectorNode(node, sourceNodeInspector)
-          : expandInspectorNode(node, sourceNodeInspector, state.graph);
+          : expandInspectorNode(node, sourceNodeInspector);
       });
 
       return state;
@@ -1712,6 +1712,8 @@ const persistInsertNodeFromPoint = (
         insertableSourceNode.id,
         getSyntheticRootInstanceSourceNode(targetNode, state)
       );
+
+      console.log(insertableSourceNode);
     }
 
     return persistInsertNode(
@@ -1741,7 +1743,7 @@ const maybeCreateContent = <TState extends RootState>(
   }
 
   state = persistInsertNode(
-    createPCContent(slot.id),
+    createPCPlug(slot.id),
     instanceSourceNode,
     TreeMoveOffset.APPEND,
     state

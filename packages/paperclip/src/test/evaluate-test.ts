@@ -13,7 +13,7 @@ import {
   PCOverridablePropertyName,
   createPCTextNode,
   createPCSlot,
-  createPCContent
+  createPCPlug
 } from "../dsl";
 import { cloneTreeNode } from "tandem-common";
 import { DependencyGraph } from "../graph";
@@ -755,7 +755,7 @@ describe(__filename + "#", () => {
 
     const instance1 = cleanIds(
       createPCComponentInstance(component1.id, {}, {}, [
-        createPCContent(slot1.id, [createPCTextNode("b")])
+        createPCPlug(slot1.id, [createPCTextNode("b")])
       ])
     );
 

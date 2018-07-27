@@ -30,7 +30,7 @@ export enum PCSourceTagNames {
   COMPONENT_INSTANCE = "component-instance",
   VARIANT = "variant",
   SLOT = "slot",
-  CONTENT = "content",
+  PLUG = "plug",
   OVERRIDE = "override",
   TEXT = "text",
   INHERIT_STYLE = "inherit-style"
@@ -109,9 +109,9 @@ export type PCSlot = {
   exportName?: string;
 } & PCBaseSourceNode<PCSourceTagNames.SLOT>;
 
-export type PCContent = {
+export type PCPlug = {
   slotId: string;
-} & PCBaseSourceNode<PCSourceTagNames.CONTENT>;
+} & PCBaseSourceNode<PCSourceTagNames.PLUG>;
 
 export type PCBaseValueOverride<
   TPropertyName extends PCOverridablePropertyName,
@@ -181,10 +181,7 @@ export type PCVisibleNodeBindings = {
   properties?: PCPropertyBinding[];
 };
 
-export type PCBaseElementChild =
-  | PCBaseVisibleNode<any>
-  | PCOverride
-  | PCContent;
+export type PCBaseElementChild = PCBaseVisibleNode<any> | PCOverride | PCPlug;
 
 export type PCBaseElement<TName extends PCSourceTagNames> = {
   is: string;
@@ -195,7 +192,7 @@ export type PCBaseElement<TName extends PCSourceTagNames> = {
 
 export type PCElement = PCBaseElement<PCSourceTagNames.ELEMENT>;
 
-export type PCComponentInstanceChild = PCBaseElementChild | PCContent;
+export type PCComponentInstanceChild = PCBaseElementChild | PCPlug;
 
 export type PCComponentInstanceElement = {
   children: PCComponentInstanceChild[];
@@ -214,7 +211,7 @@ export type PCNode =
   | PCOverride
   | PCVisibleNode
   | PCSlot
-  | PCContent;
+  | PCPlug;
 
 export type PCComputedOverrideMap = {
   [COMPUTED_OVERRIDE_DEFAULT_KEY]: PCComputedOverrideVariantMap;
@@ -333,15 +330,15 @@ export const createPCSlot = (
   name: PCSourceTagNames.SLOT
 });
 
-export const createPCContent = (
+export const createPCPlug = (
   slotId: string,
   children?: PCBaseElementChild[]
-): PCContent => ({
+): PCPlug => ({
   slotId,
   id: generateUID(),
   children: children || EMPTY_ARRAY,
   metadata: EMPTY_OBJECT,
-  name: PCSourceTagNames.CONTENT
+  name: PCSourceTagNames.PLUG
 });
 
 export const createPCOverride = (
@@ -406,8 +403,8 @@ export const isComponent = (node: PCNode): node is PCComponent =>
 
 export const isSlot = (node: PCNode): node is PCSlot =>
   node.name === PCSourceTagNames.SLOT;
-export const isPCContent = (node: PCNode): node is PCContent =>
-  node.name === PCSourceTagNames.CONTENT;
+export const isPCPlug = (node: PCNode): node is PCPlug =>
+  node.name === PCSourceTagNames.PLUG;
 export const isPCComponentInstance = (
   node: PCNode
 ): node is PCComponentInstanceElement =>
@@ -583,17 +580,6 @@ export const getPCNodeDependency = memoize(
   }
 );
 
-export const isSlottableNode = memoize((node: PCVisibleNode | PCComponent) => {
-  return Boolean(
-    (node.name === PCSourceTagNames.ELEMENT ||
-      node.name === PCSourceTagNames.COMPONENT_INSTANCE ||
-      node.name === PCSourceTagNames.COMPONENT) &&
-      node.bind &&
-      node.bind.properties &&
-      node.bind.properties[PCOverridablePropertyName.CHILDREN]
-  );
-});
-
 export const getInstanceSlots = memoize(
   (
     node: PCComponentInstanceElement | PCComponent,
@@ -615,22 +601,12 @@ export const getComponentSlots = memoize(
 export const getInstanceSlotContent = memoize(
   (slotId: string, node: PCComponentInstanceElement | PCComponent) => {
     return node.children.find(
-      child => isPCContent(child) && child.slotId === slotId
-    ) as PCContent;
+      child => isPCPlug(child) && child.slotId === slotId
+    ) as PCPlug;
   }
 );
 
 let slotCount = 0;
-
-const generateSlotName = () => `slot${++slotCount}`;
-
-export const makePCNodeSlottable = memoize(
-  (node: PCVisibleNode | PCComponent) => {
-    if (isSlottableNode(node)) {
-      return node;
-    }
-  }
-);
 
 export const addPCNodePropertyBinding = memoize(
   (
@@ -684,18 +660,15 @@ export const getPCComponentSlottableElements = memoize(
   }
 );
 
-/**
- * Scans a compoent instance for elements that can be slotted in.
- */
-
-export const getSlottableNodes = memoize(
-  (instance: PCComponentInstanceElement, graph: DependencyGraph) => {
-    return getInstanceExtends(instance, graph).reduce(
-      (slottables, component) => {
-        return [...slottables, findNestedNode(component, isSlottableNode)];
-      },
-      EMPTY_ARRAY
-    );
+export const getSlotPlug = memoize(
+  (
+    instance: PCComponent | PCComponentInstanceElement,
+    slot: PCSlot
+  ): PCPlug => {
+    return instance.children.find(
+      (child: PCNode) =>
+        child.name === PCSourceTagNames.PLUG && child.slotId === slot.id
+    ) as PCPlug;
   }
 );
 

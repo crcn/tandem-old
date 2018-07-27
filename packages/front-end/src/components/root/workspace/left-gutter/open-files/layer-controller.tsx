@@ -202,7 +202,7 @@ export default Base => {
           label = (component as PCComponent).label;
         } else if (assocSourceNode.name === PCSourceTagNames.ELEMENT) {
           label = assocSourceNode.is || "Element";
-        } else if (assocSourceNode.name === PCSourceTagNames.CONTENT) {
+        } else if (assocSourceNode.name === PCSourceTagNames.PLUG) {
           const targetSourceNode = getPCNode(
             assocSourceNode.slotId,
             graph

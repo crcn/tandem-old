@@ -33,7 +33,7 @@ import {
   isComponent,
   InheritStyle,
   PCSlot,
-  PCContent,
+  PCPlug,
   isVisibleNode,
   getVisibleOrSlotChildren
 } from "./dsl";
@@ -259,7 +259,7 @@ const evaluateLabel = (
 };
 
 const evaluateVisibleNode = (
-  node: PCVisibleNode | PCSlot | PCContent,
+  node: PCVisibleNode | PCSlot | PCPlug,
   instancePath: string,
   immutable: boolean,
   isCreatedFromComponent: boolean,
@@ -448,7 +448,7 @@ const evaluateChildren = (
     | PCElement
     | PCComponentInstanceElement
     | PCOverride
-    | PCContent,
+    | PCPlug,
   instancePath: string,
   immutable: boolean,
   isCreatedFromComponent: boolean,
@@ -631,7 +631,7 @@ const registerOverrides = (
   if (node.name === PCSourceTagNames.COMPONENT_INSTANCE) {
     for (let i = node.children.length; i--; ) {
       const child = node.children[i] as PCNode;
-      if (child.name === PCSourceTagNames.CONTENT && child.children.length) {
+      if (child.name === PCSourceTagNames.PLUG && child.children.length) {
         overrides[child.slotId] = {
           attributes: null,
           text: null,
