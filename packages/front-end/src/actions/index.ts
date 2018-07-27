@@ -136,7 +136,6 @@ export const CSS_PROPERTY_CHANGED = "CSS_PROPERTY_CHANGED";
 export const CSS_PROPERTY_CHANGE_COMPLETED = "CSS_PROPERTY_CHANGE_COMPLETED";
 export const ATTRIBUTE_CHANGED = "ATTRIBUTE_CHANGED";
 export const SLOT_TOGGLE_CLICK = "SLOT_TOGGLE_CLICK";
-export const NATIVE_NODE_TYPE_CHANGED = "NATIVE_NODE_TYPE_CHANGED";
 export const TEXT_VALUE_CHANGED = "TEXT_VALUE_CHANGED";
 export const ELEMENT_TYPE_CHANGED = "ELEMENT_TYPE_CHANGED";
 export const PC_LAYER_MOUSE_OVER = "PC_LAYER_MOUSE_OVER";
@@ -324,10 +323,6 @@ export type CanvasToolArtboardTitleClicked = {
 } & WrappedEvent<React.MouseEvent<any>>;
 
 export type SlotToggleClick = {} & Action;
-
-export type NativeNodeTypeChanged = {
-  nativeType: string;
-} & Action;
 
 export type NewVariantNameEntered = {
   value: string;
@@ -918,13 +913,6 @@ export const attributeChanged = (
 
 export const slotToggleClick = (): SlotToggleClick => ({
   type: SLOT_TOGGLE_CLICK
-});
-
-export const nativeNodeTypeChange = (
-  nativeType: string
-): NativeNodeTypeChanged => ({
-  nativeType,
-  type: NATIVE_NODE_TYPE_CHANGED
 });
 
 export const textValueChanged = (value: string): TextValueChanged => ({

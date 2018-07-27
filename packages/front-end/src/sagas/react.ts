@@ -1,4 +1,4 @@
-import { fork, put, take, select, spawn, call } from "redux-saga/effects";
+import { put, take, select, spawn } from "redux-saga/effects";
 import { RootComponent } from "../components/root";
 import * as ReactDOM from "react-dom";
 import * as React from "react";

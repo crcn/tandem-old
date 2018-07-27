@@ -243,20 +243,22 @@ export const isInspectorNode = (node: TreeNode<any>): node is InspectorNode => {
   );
 };
 
+const compareInspectorTreeNodes = (a: InspectorNode, b: InspectorNode) =>
+  a.assocSourceNodeId === b.assocSourceNodeId ? 0 : -1;
+
 export const refreshInspectorTree = (
   root: InspectorTreeBaseNode<any>,
   graph: DependencyGraph
 ): InspectorTreeBaseNode<InspectorTreeNodeName> => {
-  const now = Date.now();
-
   const sourceNode = getPCNode(root.assocSourceNodeId, graph) as PCModule;
   const moduleInspector = evaluateModuleInspector(sourceNode, graph);
-  const ots = diffTreeNode(root, moduleInspector, { expanded: true });
-  console.log(ots);
-
+  const ots = diffTreeNode(
+    root,
+    moduleInspector,
+    { expanded: true, alt: true },
+    compareInspectorTreeNodes
+  );
   root = patchTreeNode(ots, root);
-
-  console.log("evaluated tree patch in %d ms", Date.now() - now);
 
   return root;
 };

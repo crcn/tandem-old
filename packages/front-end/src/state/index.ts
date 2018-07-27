@@ -1325,11 +1325,22 @@ export const setSelectedFileNodeIds = (
 
 export const setHoveringSyntheticVisibleNodeIds = (
   root: RootState,
-  ...selectionIds: string[]
+  selectionIds: string[]
 ) => {
   return updateRootState(
     {
-      hoveringSyntheticNodeIds: uniq([...selectionIds])
+      // may happen for async ops - especially on hover
+      hoveringSyntheticNodeIds: uniq(
+        [...selectionIds].filter(nodeId => {
+          const node = getSyntheticNodeById(nodeId, root.documents);
+
+          if (!node) {
+            console.warn(`node ${nodeId} does not exist`);
+          }
+
+          return Boolean(node);
+        })
+      )
     },
     root
   );

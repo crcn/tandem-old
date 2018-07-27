@@ -59,11 +59,9 @@ import {
   SHORTCUT_UNDO_KEY_DOWN,
   SHORTCUT_REDO_KEY_DOWN,
   PC_LAYER_LABEL_CHANGED,
-  NATIVE_NODE_TYPE_CHANGED,
   TEXT_VALUE_CHANGED,
   TextValueChanged,
   ElementTypeChanged,
-  NativeNodeTypeChanged,
   SHORTCUT_QUICK_SEARCH_KEY_DOWN,
   QUICK_SEARCH_ITEM_CLICKED,
   QuickSearchItemClicked,
@@ -543,7 +541,7 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
     }
     case PC_LAYER_MOUSE_OVER: {
       const { node } = action as TreeLayerMouseOver;
-      state = setHoveringSyntheticVisibleNodeIds(state, node.id);
+      state = setHoveringSyntheticVisibleNodeIds(state, [node.id]);
       return state;
     }
     case PC_LAYER_DOUBLE_CLICK: {
@@ -676,7 +674,7 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
       return state;
     }
     case PC_LAYER_MOUSE_OUT: {
-      state = setHoveringSyntheticVisibleNodeIds(state);
+      state = setHoveringSyntheticVisibleNodeIds(state, EMPTY_ARRAY);
       return state;
     }
     case PC_LAYER_CLICK: {
@@ -1127,13 +1125,10 @@ export const canvasReducer = (state: RootState, action: Action) => {
         );
       }
 
-      state = updateRootState(
-        {
-          hoveringSyntheticNodeIds: targetNodeId ? [targetNodeId] : []
-        },
-        state
+      state = setHoveringSyntheticVisibleNodeIds(
+        state,
+        targetNodeId ? [targetNodeId] : EMPTY_ARRAY
       );
-
       return state;
     }
 
@@ -1153,7 +1148,6 @@ export const canvasReducer = (state: RootState, action: Action) => {
       // they can drop the element.
 
       let targetNodeId: string;
-      const editor = getActiveEditorWindow(state);
 
       targetNodeId = getCanvasMouseTargetNodeIdFromPoint(
         state,
@@ -1161,11 +1155,9 @@ export const canvasReducer = (state: RootState, action: Action) => {
         getDragFilter(item, state)
       );
 
-      state = updateRootState(
-        {
-          hoveringSyntheticNodeIds: targetNodeId ? [targetNodeId] : []
-        },
-        state
+      state = setHoveringSyntheticVisibleNodeIds(
+        state,
+        targetNodeId ? [targetNodeId] : EMPTY_ARRAY
       );
 
       return state;
@@ -1474,34 +1466,11 @@ export const canvasReducer = (state: RootState, action: Action) => {
         );
       }
 
-      // ensure that synthetic nodes still exist, otherwise remove them
-      // from selection.
-      for (const nodeId of state.selectedSyntheticNodeIds) {
-        if (!getSyntheticNodeById(nodeId, state.documents)) {
-          state = setSelectedSyntheticVisibleNodeIds(state);
-          break;
-        }
-      }
-
       state = pruneStaleSyntheticNodes(state);
 
       return updateRootState({ queuedScopeSelect: null }, state);
     }
 
-    case NATIVE_NODE_TYPE_CHANGED: {
-      const { nativeType } = action as NativeNodeTypeChanged;
-      // state = persistRootState(browser => {
-      //   return persistChangeNodeType(
-      //     nativeType,
-      //     getSyntheticSourceNode(
-      //       state.selectedSyntheticNodeIds[0],
-      //       state.paperclip
-      //     ) as PCElement,
-      //     browser
-      //   );
-      // }, state);
-      return state;
-    }
     case TEXT_VALUE_CHANGED: {
       const { value } = action as TextValueChanged;
       state = persistRootState(state => {
