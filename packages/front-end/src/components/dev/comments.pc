@@ -4,6 +4,78 @@
   "version": "0.0.3",
   "children": [
     {
+      "label": "TODO",
+      "is": "97a34b151010442",
+      "style": {},
+      "attributes": {},
+      "id": "d6261ad5198",
+      "name": "component",
+      "children": [
+        {
+          "slotId": "88156175335",
+          "id": "d6261ad5194",
+          "children": [
+            {
+              "id": "d6261ad5195",
+              "label": "Element",
+              "is": "ul",
+              "name": "element",
+              "attributes": {},
+              "style": {
+                "box-sizing": "border-box",
+                "margin-left": "0px",
+                "margin-top": "0px",
+                "margin-right": "0px",
+                "margin-bottom": "0px"
+              },
+              "children": [
+                {
+                  "id": "d6261ad5196",
+                  "label": "Element",
+                  "is": "li",
+                  "name": "element",
+                  "attributes": {},
+                  "style": {
+                    "box-sizing": "border-box"
+                  },
+                  "children": [
+                    {
+                      "id": "d6261ad5197",
+                      "name": "text",
+                      "label": "Text",
+                      "value": "TODO\n",
+                      "style": {},
+                      "children": [],
+                      "metadata": {}
+                    }
+                  ],
+                  "metadata": {
+                    "bounds": {
+                      "left": -82.02623104308414,
+                      "top": 119.13820878685686,
+                      "right": 17.973768956915862,
+                      "bottom": 219.13820878685686
+                    }
+                  }
+                }
+              ],
+              "metadata": {}
+            }
+          ],
+          "metadata": {},
+          "name": "plug"
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": 20,
+          "top": 103,
+          "right": 403.1708291271775,
+          "bottom": 303.7213373757045
+        }
+      }
+    },
+    {
       "label": "Comment",
       "is": "div",
       "style": {
@@ -50,16 +122,24 @@
           },
           "children": [
             {
-              "id": "97a34b151010441",
-              "name": "text",
-              "label": "Text",
-              "value": "comment text here",
-              "style": {
-                "color": "#444",
-                "opacity": "0.8"
-              },
-              "children": [],
-              "metadata": {}
+              "exportName": null,
+              "id": "88156175335",
+              "children": [
+                {
+                  "id": "97a34b151010441",
+                  "name": "text",
+                  "label": "Text",
+                  "value": "comment text here",
+                  "style": {
+                    "color": "#444",
+                    "opacity": "0.8"
+                  },
+                  "children": [],
+                  "metadata": {}
+                }
+              ],
+              "metadata": {},
+              "name": "slot"
             }
           ],
           "metadata": {}
@@ -73,116 +153,6 @@
           "bottom": 318.7941947318031
         }
       }
-    },
-    {
-      "id": "d227ff68619417",
-      "variant": {},
-      "is": "97a34b151010442",
-      "name": "component-instance",
-      "attributes": {},
-      "style": {},
-      "children": [
-        {
-          "id": "d227ff68619418",
-          "propertyName": "children",
-          "targetIdPath": [
-            "97a34b151010440"
-          ],
-          "name": "override",
-          "children": [
-            {
-              "id": "d227ff68619419",
-              "label": "Element",
-              "is": "ul",
-              "name": "element",
-              "attributes": {},
-              "style": {},
-              "children": [
-                {
-                  "id": "d227ff68619420",
-                  "label": "Element",
-                  "is": "li",
-                  "name": "element",
-                  "attributes": {},
-                  "style": {},
-                  "children": [
-                    {
-                      "id": "d227ff68619421",
-                      "name": "text",
-                      "label": "Text",
-                      "value": "Todo item",
-                      "style": {},
-                      "children": [],
-                      "metadata": {}
-                    }
-                  ],
-                  "metadata": {}
-                }
-              ],
-              "metadata": {}
-            }
-          ],
-          "metadata": {}
-        },
-        {
-          "id": "d227ff68619424",
-          "propertyName": "text",
-          "targetIdPath": [
-            "97a34b151010439"
-          ],
-          "value": " ",
-          "name": "override",
-          "children": []
-        }
-      ],
-      "metadata": {
-        "bounds": {
-          "left": 168,
-          "top": 105,
-          "right": 461.6542270494879,
-          "bottom": 305.7213373757045
-        }
-      },
-      "label": "TODO"
-    },
-    {
-      "id": "9b7b527f160044",
-      "variant": {},
-      "is": "97a34b151010442",
-      "name": "component-instance",
-      "attributes": {},
-      "style": {},
-      "children": [
-        {
-          "id": "9b7b527f160045",
-          "propertyName": "children",
-          "targetIdPath": [
-            "97a34b151010440"
-          ],
-          "name": "override",
-          "children": [],
-          "metadata": {}
-        },
-        {
-          "id": "9b7b527f160049",
-          "propertyName": "text",
-          "targetIdPath": [
-            "97a34b151010439"
-          ],
-          "value": " ",
-          "name": "override",
-          "children": []
-        }
-      ],
-      "metadata": {
-        "bounds": {
-          "left": -176,
-          "top": 101,
-          "right": 117.65422704948787,
-          "bottom": 301.7213373757045
-        }
-      },
-      "label": "NOTICE"
     }
   ],
   "metadata": {}

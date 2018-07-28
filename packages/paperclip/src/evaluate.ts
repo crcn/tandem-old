@@ -560,6 +560,7 @@ const registerOverrides = (
     );
 
     if (overrideNode.propertyName === PCOverridablePropertyName.CHILDREN) {
+      // console.warn(`DEPRECATED: child overrides found for ${node.id}`);
       if (overrideNode.children.length) {
         registerOverride(
           overrideNode.variantId,

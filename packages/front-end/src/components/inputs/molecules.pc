@@ -53,15 +53,23 @@
           },
           "children": [
             {
-              "id": "7149f8199969",
-              "variant": {},
-              "is": "7149f8199122",
-              "name": "component-instance",
-              "attributes": {},
-              "style": {},
-              "children": [],
+              "exportName": null,
+              "id": "e73029b416045",
+              "children": [
+                {
+                  "id": "7149f8199969",
+                  "variant": {},
+                  "is": "7149f8199122",
+                  "name": "component-instance",
+                  "attributes": {},
+                  "style": {},
+                  "children": [],
+                  "metadata": {},
+                  "label": "text"
+                }
+              ],
               "metadata": {},
-              "label": "text"
+              "name": "slot"
             }
           ],
           "metadata": {},
@@ -77,26 +85,10 @@
       ],
       "metadata": {
         "bounds": {
-          "left": 387,
-          "top": 386,
-          "right": 487,
-          "bottom": 433.5832678332798
-        }
-      }
-    },
-    {
-      "id": "38d0d25262",
-      "name": "text",
-      "label": "Text",
-      "value": "Click to edit",
-      "style": {},
-      "children": [],
-      "metadata": {
-        "bounds": {
-          "left": 938,
-          "top": 248.75,
-          "right": 1038,
-          "bottom": 348.75
+          "left": 486,
+          "top": 306,
+          "right": 586,
+          "bottom": 353.5832678332798
         }
       }
     }

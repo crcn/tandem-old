@@ -19,7 +19,9 @@ import {
   diffTreeNode,
   patchTreeNode,
   getSlotPlug,
-  getPCNodeModule
+  getPCNodeModule,
+  PCOverridablePropertyName,
+  PCChildrenOverride
 } from "paperclip";
 
 import {
@@ -187,6 +189,14 @@ const evaluateInspectorNodeChildren = (
             ? evaluateInspectorNodeChildren(plug, instancePath, graph)
             : EMPTY_ARRAY
         );
+      }),
+      ...getDeprecatedChildOverrides(parent).map(override => {
+        return createInspectorSourceRep(
+          override,
+          instancePath,
+          false,
+          evaluateInspectorNodeChildren(override, instancePath, graph)
+        );
       })
     ];
   } else {
@@ -203,6 +213,16 @@ const evaluateInspectorNodeChildren = (
         );
       });
   }
+};
+
+const getDeprecatedChildOverrides = (
+  instance: PCComponent | PCComponentInstanceElement
+) => {
+  return instance.children.filter(
+    (child: PCNode) =>
+      child.name === PCSourceTagNames.OVERRIDE &&
+      child.propertyName === PCOverridablePropertyName.CHILDREN
+  ) as PCChildrenOverride[];
 };
 
 export const isInspectorNode = (node: TreeNode<any>): node is InspectorNode => {

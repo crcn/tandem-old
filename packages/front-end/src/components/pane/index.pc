@@ -4,34 +4,6 @@
   "version": "0.0.3",
   "children": [
     {
-      "id": "4201e98b8",
-      "is": "b6c162d113",
-      "name": "component-instance",
-      "attributes": {},
-      "style": {},
-      "children": [
-        {
-          "id": "caad9d1e6",
-          "variantId": null,
-          "propertyName": "children",
-          "targetIdPath": [
-            "b6c162d140"
-          ],
-          "name": "override",
-          "children": [],
-          "metadata": {}
-        }
-      ],
-      "metadata": {
-        "bounds": {
-          "left": 555,
-          "top": 175,
-          "right": 759,
-          "bottom": 273.3571410945104
-        }
-      }
-    },
-    {
       "label": "Pane",
       "is": "div",
       "style": {
@@ -64,27 +36,35 @@
           },
           "children": [
             {
-              "id": "b6c162d1281",
-              "name": "text",
-              "value": "pane",
-              "style": {
-                "text-transform": "uppercase",
-                "font-size": "0.9em",
-                "font-weight": "500"
-              },
+              "exportName": null,
+              "id": "d6261ad53069",
               "children": [
                 {
-                  "id": "cb63bb744322",
+                  "id": "b6c162d1281",
                   "name": "text",
-                  "label": "Text",
-                  "value": "Click to edit",
-                  "style": {},
-                  "children": [],
+                  "value": "pane",
+                  "style": {
+                    "text-transform": "uppercase",
+                    "font-size": "0.9em",
+                    "font-weight": "500"
+                  },
+                  "children": [
+                    {
+                      "id": "cb63bb744322",
+                      "name": "text",
+                      "label": "Text",
+                      "value": "Click to edit",
+                      "style": {},
+                      "children": [],
+                      "metadata": {}
+                    }
+                  ],
+                  "label": "text",
                   "metadata": {}
                 }
               ],
-              "label": "text",
-              "metadata": {}
+              "metadata": {},
+              "name": "slot"
             }
           ],
           "label": "Title",
@@ -114,13 +94,21 @@
           },
           "children": [
             {
-              "id": "6fd27ae1495",
-              "name": "text",
-              "value": "Content",
-              "style": {},
-              "children": [],
-              "label": "inner",
-              "metadata": {}
+              "exportName": null,
+              "id": "d6261ad52883",
+              "children": [
+                {
+                  "id": "6fd27ae1495",
+                  "name": "text",
+                  "value": "Content",
+                  "style": {},
+                  "children": [],
+                  "label": "inner",
+                  "metadata": {}
+                }
+              ],
+              "metadata": {},
+              "name": "slot"
             }
           ],
           "label": "Content",

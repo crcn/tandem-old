@@ -267,7 +267,8 @@ import {
   DependencyGraph,
   canRemovePCNode,
   isVisibleNode,
-  persistSyntheticVisibleNodeStyle
+  persistSyntheticVisibleNodeStyle,
+  removeSyntheticVisibleNode
 } from "paperclip";
 import {
   roundBounds,
@@ -2083,6 +2084,16 @@ const shortcutReducer = (state: RootState, action: Action): RootState => {
               null,
               state
             );
+          }
+
+          const assocSyntheticNode = getInspectorSyntheticNode(
+            inspectorNode,
+            state.documents,
+            state.graph
+          );
+
+          if (assocSyntheticNode) {
+            state = removeSyntheticVisibleNode(assocSyntheticNode, state);
           }
 
           return persistRemovePCNode(sourceNode, state);

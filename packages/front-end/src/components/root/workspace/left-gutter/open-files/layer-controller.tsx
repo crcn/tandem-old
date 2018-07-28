@@ -210,6 +210,8 @@ export default Base => {
             inspectorNode.name === InspectorTreeNodeName.CONTENT
               ? "Content"
               : assocSourceNode.name || "Slot";
+        } else if (assocSourceNode.name === PCSourceTagNames.OVERRIDE) {
+          label = "[DEP] child override";
         }
       }
 

@@ -18,7 +18,25 @@
           "name": "element",
           "attributes": {},
           "style": {},
-          "children": [],
+          "children": [
+            {
+              "exportName": null,
+              "id": "c00d8561361",
+              "children": [
+                {
+                  "id": "c00d8561190",
+                  "name": "text",
+                  "label": "Text",
+                  "value": "Click to edit",
+                  "style": {},
+                  "children": [],
+                  "metadata": {}
+                }
+              ],
+              "metadata": {},
+              "name": "slot"
+            }
+          ],
           "metadata": {},
           "bind": {
             "properties": [
@@ -38,7 +56,37 @@
           "style": {
             "display": "none"
           },
-          "children": [],
+          "children": [
+            {
+              "slotId": "e691a1d915771",
+              "id": "e6638364184",
+              "children": [
+                {
+                  "exportName": null,
+                  "id": "e6638364254",
+                  "children": [
+                    {
+                      "id": "e6638364114",
+                      "label": "Element",
+                      "is": "div",
+                      "name": "element",
+                      "attributes": {},
+                      "style": {
+                        "box-sizing": "border-box",
+                        "display": "block"
+                      },
+                      "children": [],
+                      "metadata": {}
+                    }
+                  ],
+                  "metadata": {},
+                  "name": "slot"
+                }
+              ],
+              "metadata": {},
+              "name": "plug"
+            }
+          ],
           "metadata": {},
           "label": "Content",
           "bind": {
@@ -49,6 +97,14 @@
               }
             ]
           }
+        },
+        {
+          "id": "e691a1d98281",
+          "name": "variant",
+          "label": "open",
+          "isDefault": true,
+          "children": [],
+          "metadata": {}
         }
       ],
       "metadata": {
@@ -112,7 +168,29 @@
       "attributes": {},
       "id": "ddec6a12139577",
       "name": "component",
-      "children": [],
+      "children": [
+        {
+          "exportName": null,
+          "id": "e691a1d915771",
+          "children": [
+            {
+              "id": "e691a1d915159",
+              "label": "Element",
+              "is": "div",
+              "name": "element",
+              "attributes": {},
+              "style": {
+                "box-sizing": "border-box",
+                "display": "block"
+              },
+              "children": [],
+              "metadata": {}
+            }
+          ],
+          "metadata": {},
+          "name": "slot"
+        }
+      ],
       "metadata": {
         "bounds": {
           "left": 759,

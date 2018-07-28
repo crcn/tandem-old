@@ -5,24 +5,17 @@ OBJECTIVE:
 
 IMMEDIATE:
 
-- refactor inspector tree
-
-  - move to paperclip lib
-
-- deprecation logs
+- ability to name slots
+- fix dropdown component
+- update compiler to accept bindings
+- ensure that all child overrides gone
+- make evaluator faster (refactor entirely -- use style sheets for style overrides. Necessary either way for pseudo elements)
+  - leverage style sheets for style overrides
+  - memoize evaluated instances
 - refactor evaluator to compile & run code
 
 * insertion tool should use inspector tree instead of synthetic
 
-* insertion layer tool
-  - `hoveringInspectorNodeIds`
-  - ability to insert into layer directly
-
-- explicit slots
-  - ability to define name for export
-- update compiler to use slots
-- refactor to use slots
-- ensure that all child overrides gone
 - dts compiler (everything explicit)
 - refactor TSX
 - prohobit override is slot does not exist
