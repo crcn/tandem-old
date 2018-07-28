@@ -1,7 +1,6 @@
 import * as React from "react";
 import * as path from "path";
 import { pure, compose } from "recompose";
-import { FrameLayersComponent } from "./pc";
 import { RootState, OpenFile } from "../../../../../../state";
 import {
   getFramesByDependencyUri,
@@ -26,28 +25,7 @@ export const BaseLayersComponent = ({
   const ext = path.extname(uri);
 
   // only PC for now. Ideally this may also support images, and other visual documents.
-  return (
-    <div className="m-open-file-layers">
-      {ext === PAPERCLIP_DEFAULT_EXTENSIONS[0] ? (
-        <FrameLayersComponent
-          selectedReferences={root.selectedSyntheticNodeIds}
-          hoveringSyntheticNodeIds={root.hoveringSyntheticNodeIds}
-          dispatch={dispatch}
-          document={getSyntheticDocumentByDependencyUri(
-            uri,
-            root.documents,
-            root.graph
-          )}
-          frames={getFramesByDependencyUri(
-            uri,
-            root.frames,
-            root.documents,
-            root.graph
-          )}
-        />
-      ) : null}
-    </div>
-  );
+  return <div />;
 };
 
 export const LayersComponent = compose<LayersInnerProps, LayersOuterProps>(

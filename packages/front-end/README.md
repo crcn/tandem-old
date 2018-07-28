@@ -6,7 +6,11 @@ OBJECTIVE:
 IMMEDIATE:
 
 - refactor inspector tree
+
   - move to paperclip lib
+
+- deprecation logs
+- refactor evaluator to compile & run code
 
 * insertion tool should use inspector tree instead of synthetic
 

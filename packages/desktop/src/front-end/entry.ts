@@ -37,6 +37,7 @@ setup<DesktopRootState>(
   mount: document.getElementById("application"),
   hoveringSyntheticNodeIds: [],
   selectedSyntheticNodeIds: [],
+  hoveringInspectorNodeIds: [],
   selectedFileNodeIds: [],
   sourceNodeInspector: createRootInspectorNode(),
   selectedInspectorNodeIds: [],

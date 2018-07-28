@@ -262,6 +262,51 @@ export const inspectorNodeInShadow = (
   );
 };
 
+const getInspectorNodeOwnerInstance = (
+  node: InspectorNode,
+  root: InspectorNode
+) => {
+  return findTreeNodeParent(
+    node.id,
+    root,
+    (parent: InspectorNode) =>
+      !inspectorNodeInShadow(parent, root) &&
+      parent.name === InspectorTreeNodeName.SOURCE_REP
+  );
+};
+
+const getInspectorNodeOwnerSlot = (
+  node: InspectorNode,
+  root: InspectorNode,
+  graph: DependencyGraph
+) => {
+  return findTreeNodeParent(
+    node.id,
+    root,
+    (parent: InspectorNode) =>
+      getPCNode(parent.assocSourceNodeId, graph).name === PCSourceTagNames.SLOT
+  );
+};
+
+export const getInsertableInspectorNode = (
+  child: InspectorNode,
+  root: InspectorNode,
+  graph: DependencyGraph
+) => {
+  if (inspectorNodeInShadow(child, root)) {
+    const slot = getInspectorNodeOwnerSlot(child, root, graph);
+    const owner = getInspectorNodeOwnerInstance(child, root);
+    return owner.children.find(child => {
+      return (
+        child.name === InspectorTreeNodeName.CONTENT &&
+        child.assocSourceNodeId === slot.assocSourceNodeId
+      );
+    });
+  } else {
+    return child;
+  }
+};
+
 export const expandInspectorNode = (
   node: InspectorNode,
   root: InspectorNode

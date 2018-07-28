@@ -10,7 +10,6 @@ import {
   getSmallestBounds,
   mergeBounds,
   getNestedTreeNodeById,
-  File,
   updateNestedNode,
   isDirectory,
   getParentTreeNode,
@@ -87,7 +86,10 @@ import {
   expandSyntheticInspectorNode,
   getSyntheticInspectorNode,
   updateAlts,
-  evaluateModuleInspector
+  evaluateModuleInspector,
+  InspectorNode,
+  getInspectorSyntheticNode,
+  getInsertableInspectorNode
 } from "./pc-inspector-tree";
 
 export enum ToolType {
@@ -193,6 +195,7 @@ export type RootState = {
   // seaprate from synthetic & AST since it represents both. May also have separate
   // tooling
   selectedInspectorNodeIds: string[];
+  hoveringInspectorNodeIds: string[];
   fontFamilies?: FontFamily[];
   sourceNodeInspector: InspectorTreeBaseNode<any>;
   selectedFileNodeIds: string[];
@@ -717,6 +720,7 @@ export const openEditorFileUri = (
     ...state,
     hoveringSyntheticNodeIds: [],
     selectedSyntheticNodeIds: [],
+    hoveringInspectorNodeIds: [],
     activeEditorFilePath: uri,
     editorWindows: editor
       ? arraySplice(
@@ -1197,6 +1201,35 @@ export const getCanvasMouseTargetNodeId = (
   );
 };
 
+export const getCanvasMouseTargetInspectorNode = (
+  state: RootState,
+  event: CanvasToolOverlayMouseMoved | CanvasToolOverlayClicked,
+  filter?: (node: TreeNode<any>) => boolean
+): InspectorNode => {
+  const syntheticNodeId = getCanvasMouseTargetNodeId(state, event, filter);
+  if (!syntheticNodeId) {
+    return null;
+  }
+  const syntheticNode = getSyntheticNodeById(
+    syntheticNodeId,
+    state.documents
+  ) as SyntheticVisibleNode;
+  const assocInspectorNode = getSyntheticInspectorNode(
+    syntheticNode,
+    getSyntheticVisibleNodeDocument(syntheticNode.id, state.documents),
+    state.sourceNodeInspector,
+    state.graph
+  );
+  const insertableSourceNode = getInsertableInspectorNode(
+    assocInspectorNode,
+    state.sourceNodeInspector,
+    state.graph
+  );
+  console.log(assocInspectorNode, insertableSourceNode);
+
+  return insertableSourceNode;
+};
+
 export const getCanvasMouseTargetNodeIdFromPoint = (
   state: RootState,
   point: Point,
@@ -1347,20 +1380,42 @@ export const setHoveringSyntheticVisibleNodeIds = (
   root: RootState,
   selectionIds: string[]
 ) => {
+  const hoveringSyntheticNodeIds = uniq(
+    [...selectionIds].filter(nodeId => {
+      const node = getSyntheticNodeById(nodeId, root.documents);
+
+      if (!node) {
+        console.warn(`node ${nodeId} does not exist`);
+      }
+
+      return Boolean(node);
+    })
+  );
+
   return updateRootState(
     {
       // may happen for async ops - especially on hover
-      hoveringSyntheticNodeIds: uniq(
-        [...selectionIds].filter(nodeId => {
-          const node = getSyntheticNodeById(nodeId, root.documents);
+      hoveringSyntheticNodeIds,
+      hoveringInspectorNodeIds: hoveringSyntheticNodeIds.map(nodeId => {
+        return getSyntheticInspectorNode(
+          getSyntheticNodeById(nodeId, root.documents),
+          getSyntheticVisibleNodeDocument(nodeId, root.documents),
+          root.sourceNodeInspector,
+          root.graph
+        ).id;
+      })
+    },
+    root
+  );
+};
 
-          if (!node) {
-            console.warn(`node ${nodeId} does not exist`);
-          }
-
-          return Boolean(node);
-        })
-      )
+export const setHoveringInspectorNodeIds = (
+  root: RootState,
+  hoveringInspectorNodeIds: string[]
+) => {
+  return updateRootState(
+    {
+      hoveringInspectorNodeIds
     },
     root
   );

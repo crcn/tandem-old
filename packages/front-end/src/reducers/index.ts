@@ -4,9 +4,7 @@ import { xmlToPCNode } from "../utils/paperclip";
 import {
   CanvasToolArtboardTitleClicked,
   NEW_FILE_ADDED,
-  PC_LAYER_EDIT_LABEL_BLUR,
   CANVAS_TOOL_ARTBOARD_TITLE_CLICKED,
-  PC_LAYER_DOUBLE_CLICK,
   CanvasToolOverlayMouseMoved,
   PROJECT_DIRECTORY_LOADED,
   ProjectDirectoryLoaded,
@@ -42,10 +40,6 @@ import {
   SAVED_ALL_FILES,
   RAW_CSS_TEXT_CHANGED,
   RawCSSTextChanged,
-  PC_LAYER_MOUSE_OVER,
-  PC_LAYER_MOUSE_OUT,
-  PC_LAYER_CLICK,
-  PC_LAYER_EXPAND_TOGGLE_CLICK,
   TreeLayerLabelChanged,
   TreeLayerClick,
   TreeLayerExpandToggleClick,
@@ -58,7 +52,6 @@ import {
   FileNavigatorDroppedItem,
   SHORTCUT_UNDO_KEY_DOWN,
   SHORTCUT_REDO_KEY_DOWN,
-  PC_LAYER_LABEL_CHANGED,
   TEXT_VALUE_CHANGED,
   TextValueChanged,
   ElementTypeChanged,
@@ -191,7 +184,9 @@ import {
   updateSourceInspectorNode,
   pruneStaleSyntheticNodes,
   getInsertableSourceNodeScope,
-  getInsertableSourceNodeFromSyntheticNode
+  getInsertableSourceNodeFromSyntheticNode,
+  getCanvasMouseTargetInspectorNode,
+  setHoveringInspectorNodeIds
 } from "../state";
 import {
   PCSourceTagNames,
@@ -540,44 +535,6 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
       state = updateRootState({ selectedComponentVariantName: name }, state);
       return state;
     }
-    case PC_LAYER_MOUSE_OVER: {
-      const { node } = action as TreeLayerMouseOver;
-      state = setHoveringSyntheticVisibleNodeIds(state, [node.id]);
-      return state;
-    }
-    case PC_LAYER_DOUBLE_CLICK: {
-      const { node } = action as TreeLayerClick;
-      state = setRootStateSyntheticVisibleNodeLabelEditing(
-        node.id,
-        true,
-        state
-      );
-      return state;
-    }
-    case PC_LAYER_EDIT_LABEL_BLUR: {
-      const { node } = action as TreeLayerClick;
-      state = setRootStateSyntheticVisibleNodeLabelEditing(
-        node.id,
-        false,
-        state
-      );
-      return state;
-    }
-    case PC_LAYER_LABEL_CHANGED: {
-      const { label, node } = action as TreeLayerLabelChanged;
-
-      state = setRootStateSyntheticVisibleNodeLabelEditing(
-        node.id,
-        false,
-        state
-      );
-      state = persistRootState(
-        browser =>
-          persistChangeLabel(label, node as SyntheticVisibleNode, browser),
-        state
-      );
-      return state;
-    }
 
     case SOURCE_INSPECTOR_LAYER_DROPPED: {
       const { source, target, offset } = action as SourceInspectorLayerDropped;
@@ -669,38 +626,6 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
         oldState,
         state,
         mutatedTarget
-      );
-      return state;
-    }
-    case PC_LAYER_MOUSE_OUT: {
-      state = setHoveringSyntheticVisibleNodeIds(state, EMPTY_ARRAY);
-      return state;
-    }
-    case PC_LAYER_CLICK: {
-      const { node, sourceEvent } = action as TreeLayerClick;
-      if (sourceEvent.altKey) {
-        // state = openSyntheticVisibleNodeOriginFile(node.id, state);
-      } else {
-        const doc = getSyntheticVisibleNodeDocument(node.id, state.documents);
-        const dep = getSyntheticNodeSourceDependency(doc, state.graph);
-        state = openFile(dep.uri, false, false, state);
-        state = setSelectedSyntheticVisibleNodeIds(
-          state,
-          ...(sourceEvent.shiftKey
-            ? [...state.selectedSyntheticNodeIds, node.id]
-            : [node.id])
-        );
-      }
-      return state;
-    }
-    case PC_LAYER_EXPAND_TOGGLE_CLICK: {
-      const { node } = action as TreeLayerExpandToggleClick;
-      state = setRootStateSyntheticVisibleNodeExpanded(
-        node.id,
-        !(node as SyntheticVisibleNode).metadata[
-          SyntheticVisibleNodeMetadataKeys.EXPANDED
-        ],
-        state
       );
       return state;
     }
@@ -1113,21 +1038,33 @@ export const canvasReducer = (state: RootState, action: Action) => {
       );
 
       let targetNodeId: string;
+      let targetInspectorNode: InspectorNode;
       state = updateRootState({ activeEditorFilePath: activeFilePath }, state);
       const editorWindow = getEditorWindowWithFileUri(activeFilePath, state);
 
       if (!editorWindow.movingOrResizing) {
-        targetNodeId = getCanvasMouseTargetNodeId(
-          state,
-          action as CanvasToolOverlayMouseMoved,
-          state.toolType != null ? getInsertFilter(state) : () => true
-        );
+        if (state.toolType != null) {
+          targetInspectorNode = getCanvasMouseTargetInspectorNode(
+            state,
+            action as CanvasToolOverlayMouseMoved,
+            getInsertFilter(state)
+          );
+          state = setHoveringInspectorNodeIds(
+            state,
+            targetInspectorNode ? [targetInspectorNode.id] : EMPTY_ARRAY
+          );
+        } else {
+          targetNodeId = getCanvasMouseTargetNodeId(
+            state,
+            action as CanvasToolOverlayMouseMoved
+          );
+          state = setHoveringSyntheticVisibleNodeIds(
+            state,
+            targetNodeId ? [targetNodeId] : EMPTY_ARRAY
+          );
+        }
       }
 
-      state = setHoveringSyntheticVisibleNodeIds(
-        state,
-        targetNodeId ? [targetNodeId] : EMPTY_ARRAY
-      );
       return state;
     }
 

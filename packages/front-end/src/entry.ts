@@ -6,6 +6,7 @@ init({
   hoveringSyntheticNodeIds: [],
   editorWindows: [],
   selectedSyntheticNodeIds: [],
+  hoveringInspectorNodeIds: [],
   selectedFileNodeIds: [],
   sourceNodeInspector: createRootInspectorNode(),
   selectedInspectorNodeIds: [],

@@ -138,14 +138,6 @@ export const ATTRIBUTE_CHANGED = "ATTRIBUTE_CHANGED";
 export const SLOT_TOGGLE_CLICK = "SLOT_TOGGLE_CLICK";
 export const TEXT_VALUE_CHANGED = "TEXT_VALUE_CHANGED";
 export const ELEMENT_TYPE_CHANGED = "ELEMENT_TYPE_CHANGED";
-export const PC_LAYER_MOUSE_OVER = "PC_LAYER_MOUSE_OVER";
-export const PC_LAYER_MOUSE_OUT = "PC_LAYER_MOUSE_OUT";
-export const PC_LAYER_CLICK = "PC_LAYER_CLICK";
-export const PC_LAYER_DOUBLE_CLICK = "PC_LAYER_DOUBLE_CLICK";
-export const PC_LAYER_LABEL_CHANGED = "PC_LAYER_LABEL_CHANGED";
-export const PC_LAYER_EXPAND_TOGGLE_CLICK = "PC_LAYER_EXPAND_TOGGLE_CLICK";
-export const PC_LAYER_DROPPED_NODE = "PC_LAYER_DROPPED_NODE";
-export const PC_LAYER_EDIT_LABEL_BLUR = "PC_LAYER_EDIT_LABEL_BLUR";
 export const SOURCE_INSPECTOR_LAYER_CLICKED = "SOURCE_INSPECTOR_LAYER_CLICKED";
 export const SOURCE_INSPECTOR_LAYER_ARROW_CLICKED =
   "SOURCE_INSPECTOR_LAYER_ARROW_CLICKED";
@@ -746,48 +738,6 @@ export const fileNavigatorItemDoubleClicked = (
   type: FILE_NAVIGATOR_ITEM_DOUBLE_CLICKED
 });
 
-export const pcLayerMouseOver = (node: TreeNode<any>): TreeLayerMouseOver => ({
-  node,
-  type: PC_LAYER_MOUSE_OVER
-});
-
-export const pcLayerDoubleClick = (
-  node: TreeNode<any>
-): TreeLayerMouseOver => ({
-  node,
-  type: PC_LAYER_DOUBLE_CLICK
-});
-
-export const pcLayerLabelChanged = (
-  label: string,
-  node: TreeNode<any>
-): TreeLayerLabelChanged => ({
-  label,
-  node,
-  type: PC_LAYER_LABEL_CHANGED
-});
-
-export const pcLayerMouseOut = (node: TreeNode<any>): TreeLayerMouseOut => ({
-  node,
-  type: PC_LAYER_MOUSE_OUT
-});
-
-export const pcEditLayerLabelBlur = (
-  node: TreeNode<any>
-): TreeLayerMouseOut => ({
-  node,
-  type: PC_LAYER_EDIT_LABEL_BLUR
-});
-
-export const pcLayerClick = (
-  node: TreeNode<any>,
-  sourceEvent: React.MouseEvent<any>
-): TreeLayerClick => ({
-  node,
-  sourceEvent,
-  type: PC_LAYER_CLICK
-});
-
 export const sourceInspectorLayerClicked = (
   node: InspectorNode,
   sourceEvent: React.MouseEvent<any>
@@ -847,25 +797,6 @@ export const componentVariantNameDefaultToggleClick = (
   name,
   value,
   type: COMPONENT_VARIANT_NAME_DEFAULT_TOGGLE_CLICK
-});
-
-export const pcLayerExpandToggleClick = (
-  node: TreeNode<any>
-): TreeLayerExpandToggleClick => ({
-  node,
-  type: PC_LAYER_EXPAND_TOGGLE_CLICK
-});
-
-// DEPRECATED
-export const pcLayerDroppedNode = (
-  node: SyntheticVisibleNode,
-  targetNode: TreeNode<any>,
-  offset?: 0 | -1 | 1
-): TreeLayerDroppedNode => ({
-  node,
-  targetNode,
-  offset,
-  type: PC_LAYER_DROPPED_NODE
 });
 
 export const sourceInspectorLayerDropped = (
