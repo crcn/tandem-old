@@ -62,7 +62,8 @@ import {
   setCurrentScope,
   addScopedLayerLabel
 } from "./utils";
-import { InheritStyle } from "paperclip";
+import { InheritStyle, isSlot, PCSlot } from "paperclip";
+import { PCPlug } from "../node_modules/paperclip/src";
 export const compilePaperclipModuleToReact = (
   entry: PCDependency,
   graph: DependencyGraph
@@ -793,9 +794,7 @@ const isDynamicOverride = (override: PCOverride) =>
     override.children.length > 0) ||
   Boolean(override.variantId);
 
-const mapContainsDynamicOverrides = mapContainersOverride(isDynamicOverride);
 const mapContainsStaticOverrides = mapContainersOverride(isStaticOverride);
-const mapContainsLabelOverrides = mapContainersOverride(isLabelOverride);
 
 const defineNestedObject = (
   keyPath: string[],
@@ -904,6 +903,9 @@ const translateDynamicOverrides = (
   context: TranslateContext
 ) => {
   const overrides = getOverrides(instance);
+  const plugs = instance.children.filter(
+    child => child.name === PCSourceTagNames.PLUG
+  ) as PCPlug[];
 
   for (const override of overrides) {
     if (isDynamicOverride(override) && override.variantId == variantId) {
@@ -924,13 +926,21 @@ const translateDynamicOverrides = (
     }
   }
 
+  for (const plug of plugs) {
+    const visibleChildren = plug.children.filter(
+      child => isVisibleNode(child) || child.name === PCSourceTagNames.SLOT
+    );
+
+    context = addOpenTag(`_${instance.id}Props._${plug.slotId} = [\n`, context);
+    for (const child of visibleChildren) {
+      context = translateVisibleNode(child, context);
+      context = addLineItem(",\n", context);
+    }
+    context = addCloseTag(`];\n`, context);
+  }
+
   return context;
 };
-
-const getIdPathPropRef = (idPath: string[]) =>
-  idPath.slice(1).reduce((ref, id, index, ary) => {
-    return ref + " && " + ref + "._" + ary.slice(0, index + 1).join("._");
-  }, "_" + idPath[0] + "Props");
 
 const hasDynamicOverrides = ({
   children,
@@ -957,6 +967,7 @@ const translateDynamicOverrideSetter = (
   context: TranslateContext
 ) => {
   switch (override.propertyName) {
+    // DEPRECATED
     case PCOverridablePropertyName.CHILDREN: {
       const visibleChildren = getVisibleChildren(override);
 
@@ -1048,7 +1059,7 @@ const getNodePropsVarName = (
 };
 
 const translateVisibleNode = (
-  node: PCVisibleNode,
+  node: PCVisibleNode | PCSlot | PCPlug,
   context: TranslateContext
 ) => {
   switch (node.name) {
@@ -1072,6 +1083,35 @@ const translateVisibleNode = (
     case PCSourceTagNames.ELEMENT: {
       return translateElement(node, context);
     }
+    case PCSourceTagNames.SLOT: {
+      return translateSlot(node, context);
+    }
+  }
+
+  return context;
+};
+
+const translateSlot = (slot: PCSlot, context: TranslateContext) => {
+  const visibleChildren = slot.children.filter(
+    child => isVisibleNode(child) || isSlot(child)
+  );
+  context = addLineItem(
+    `_${context.currentScope}Props.${slot.name} || _${
+      context.currentScope
+    }Props._${slot.id}`,
+    context
+  );
+
+  if (visibleChildren.length) {
+    context = addOpenTag(` || [\n`, context);
+    context = visibleChildren.reduce((context, node, index, array) => {
+      context = translateVisibleNode(node as any, context);
+      if (index < array.length - 1) {
+        context = addBuffer(",", context);
+      }
+      return addLine("", context);
+    }, context);
+    context = addCloseTag(`]`, context);
   }
 
   return context;
@@ -1081,7 +1121,9 @@ const translateElement = (
   elementOrComponent: PCComponent | PCComponentInstanceElement | PCElement,
   context: TranslateContext
 ) => {
-  const visibleChildren = getVisibleChildren(elementOrComponent);
+  const visibleChildren = elementOrComponent.children.filter(
+    child => isVisibleNode(child) || isSlot(child)
+  );
   const hasVisibleChildren = visibleChildren.length > 0;
   context = addOpenTag(`React.createElement(`, context, hasVisibleChildren);
   context = addLineItem(
@@ -1101,11 +1143,13 @@ const translateElement = (
   } else {
     context = addLineItem(`_${elementOrComponent.id}Props`, context);
   }
+
+  // TODO - deprecate child overrides like this
   context = addLineItem(`, _${elementOrComponent.id}Props.children`, context);
   if (visibleChildren.length) {
     context = addLineItem(` || [\n`, context);
     context = visibleChildren.reduce((context, node, index, array) => {
-      context = translateVisibleNode(node, context);
+      context = translateVisibleNode(node as any, context);
       if (index < array.length - 1) {
         context = addBuffer(",", context);
       }

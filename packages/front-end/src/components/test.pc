@@ -137,7 +137,15 @@
               "name": "slot"
             }
           ],
-          "metadata": {}
+          "metadata": {},
+          "bind": {
+            "properties": [
+              {
+                "from": "contentStyle",
+                "to": "style"
+              }
+            ]
+          }
         }
       ],
       "metadata": {

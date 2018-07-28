@@ -181,7 +181,11 @@ export type PCVisibleNodeBindings = {
   properties?: PCPropertyBinding[];
 };
 
-export type PCBaseElementChild = PCBaseVisibleNode<any> | PCOverride | PCPlug;
+export type PCBaseElementChild =
+  | PCBaseVisibleNode<any>
+  | PCOverride
+  | PCSlot
+  | PCPlug;
 
 export type PCBaseElement<TName extends PCSourceTagNames> = {
   is: string;
@@ -194,9 +198,9 @@ export type PCElement = PCBaseElement<PCSourceTagNames.ELEMENT>;
 
 export type PCComponentInstanceChild = PCBaseElementChild | PCPlug;
 
-export type PCComponentInstanceElement = {
-  children: PCComponentInstanceChild[];
-} & PCBaseElement<PCSourceTagNames.COMPONENT_INSTANCE>;
+export type PCComponentInstanceElement = PCBaseElement<
+  PCSourceTagNames.COMPONENT_INSTANCE
+>;
 
 export type PCTextNode = {
   value: string;
