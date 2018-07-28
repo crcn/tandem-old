@@ -163,9 +163,6 @@ export default Base => {
       const isHovering =
         hoveringInspectorNodeIds.indexOf(inspectorNode.id) !== -1 ||
         (canDrop && isOver);
-      const isSlot =
-        inspectorNode.name === InspectorTreeNodeName.CONTENT ||
-        assocSourceNode.name === PCSourceTagNames.SLOT;
       if (expanded) {
         const childDepth = depth + 1;
         children = inspectorNode.children.map(child => {
@@ -207,9 +204,12 @@ export default Base => {
             assocSourceNode.slotId,
             graph
           ) as PCVisibleNode;
-          label = targetSourceNode.label || "Slot";
+          label = targetSourceNode.label || "Content";
         } else if (assocSourceNode.name === PCSourceTagNames.SLOT) {
-          label = assocSourceNode.name || "Slot";
+          label =
+            inspectorNode.name === InspectorTreeNodeName.CONTENT
+              ? "Content"
+              : assocSourceNode.name || "Slot";
         }
       }
 
@@ -254,7 +254,12 @@ export default Base => {
                         assocSourceNode.name === PCSourceTagNames.TEXT,
                       expanded,
                       selected: isSelected,
-                      slot: isSlot,
+                      slot:
+                        inspectorNode.name ===
+                          InspectorTreeNodeName.SOURCE_REP &&
+                        assocSourceNode.name === PCSourceTagNames.SLOT,
+                      plug:
+                        inspectorNode.name === InspectorTreeNodeName.CONTENT,
                       alt: inspectorNode.alt && !isSelected,
                       content:
                         inspectorNode.name === InspectorTreeNodeName.CONTENT,

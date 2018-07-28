@@ -403,7 +403,7 @@
                   "targetIdPath": [
                     "d3bf183b27"
                   ],
-                  "value": true,
+                  "value": false,
                   "name": "override",
                   "children": []
                 },
@@ -424,6 +424,17 @@
                   "propertyName": "isDefault",
                   "targetIdPath": [
                     "3e8417591"
+                  ],
+                  "value": true,
+                  "name": "override",
+                  "children": []
+                },
+                {
+                  "id": "e4317da213150",
+                  "variantId": null,
+                  "propertyName": "isDefault",
+                  "targetIdPath": [
+                    "e4317da29074"
                   ],
                   "value": true,
                   "name": "override",

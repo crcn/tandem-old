@@ -114,6 +114,73 @@
               },
               "children": [
                 {
+                  "id": "e4317da214899",
+                  "is": "e387963e7248",
+                  "name": "component-instance",
+                  "attributes": {},
+                  "style": {
+                    "position": "absolute",
+                    "height": "1.2em",
+                    "top": "-6px",
+                    "left": "1px",
+                    "display": "none"
+                  },
+                  "children": [
+                    {
+                      "id": "e4317da232552",
+                      "variantId": "d3bf183b27",
+                      "propertyName": "style",
+                      "targetIdPath": [],
+                      "value": {
+                        "display": "block"
+                      },
+                      "name": "override",
+                      "children": []
+                    }
+                  ],
+                  "metadata": {
+                    "bounds": {
+                      "left": 328.3086321774882,
+                      "top": 196.07772788374425,
+                      "right": 728.3086321774881,
+                      "bottom": 496.0777278837443
+                    }
+                  }
+                },
+                {
+                  "id": "e4317da22959",
+                  "is": "e387963e1284",
+                  "name": "component-instance",
+                  "attributes": {},
+                  "style": {
+                    "position": "absolute",
+                    "top": "-6px",
+                    "height": "1.2em",
+                    "display": "none"
+                  },
+                  "children": [
+                    {
+                      "id": "e4317da210239",
+                      "variantId": "e4317da29074",
+                      "propertyName": "style",
+                      "targetIdPath": [],
+                      "value": {
+                        "display": "block"
+                      },
+                      "name": "override",
+                      "children": []
+                    }
+                  ],
+                  "metadata": {
+                    "bounds": {
+                      "left": 349,
+                      "top": 259,
+                      "right": 398.3344974153082,
+                      "bottom": 296.0008730614811
+                    }
+                  }
+                },
+                {
                   "id": "a6fd80838",
                   "is": "a6fd80837",
                   "name": "component-instance",
@@ -252,41 +319,6 @@
                     }
                   },
                   "label": "component icon"
-                },
-                {
-                  "id": "64048c6614",
-                  "is": "64048c6613",
-                  "name": "component-instance",
-                  "attributes": {},
-                  "style": {
-                    "display": "none",
-                    "position": "absolute",
-                    "left": "-2px",
-                    "height": "1.8em",
-                    "top": "-9px"
-                  },
-                  "children": [
-                    {
-                      "id": "64048c6615",
-                      "variantId": "d3bf183b27",
-                      "propertyName": "style",
-                      "targetIdPath": [],
-                      "value": {
-                        "display": "block"
-                      },
-                      "name": "override",
-                      "children": []
-                    }
-                  ],
-                  "metadata": {
-                    "bounds": {
-                      "left": 698.232734832181,
-                      "top": 159.06440649589072,
-                      "right": 1098.232734832181,
-                      "bottom": 459.0644064958907
-                    }
-                  },
-                  "label": "slot icon"
                 },
                 {
                   "id": "d3bf183b31",
@@ -718,6 +750,14 @@
           },
           "name": "override",
           "children": []
+        },
+        {
+          "id": "e4317da29074",
+          "name": "variant",
+          "label": "plug",
+          "isDefault": false,
+          "children": [],
+          "metadata": {}
         }
       ],
       "metadata": {

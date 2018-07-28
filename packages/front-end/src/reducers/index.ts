@@ -186,7 +186,8 @@ import {
   getInsertableSourceNodeScope,
   getInsertableSourceNodeFromSyntheticNode,
   getCanvasMouseTargetInspectorNode,
-  setHoveringInspectorNodeIds
+  setHoveringInspectorNodeIds,
+  refreshModuleInspectorNodes
 } from "../state";
 import {
   PCSourceTagNames,
@@ -308,7 +309,8 @@ import {
   isInspectorNode,
   getInspectorSourceNode,
   InspectorTreeNodeName,
-  InspectorNode
+  InspectorNode,
+  refreshInspectorTree
 } from "../state/pc-inspector-tree";
 
 const ZOOM_SENSITIVITY = process.platform === "win32" ? 2500 : 250;
@@ -502,6 +504,8 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
       }
 
       const editor = getEditorWindowWithFileUri(uri, state);
+
+      state = refreshModuleInspectorNodes(state);
 
       return state;
     }

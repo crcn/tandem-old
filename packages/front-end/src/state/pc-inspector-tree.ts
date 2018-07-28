@@ -12,15 +12,14 @@ import {
   isComponent,
   getSyntheticInstancePath,
   isSlot,
-  isPCPlug,
-  PCPlug,
   SyntheticVisibleNode,
   PCModule,
   getComponentSlots,
   PCSlot,
   diffTreeNode,
   patchTreeNode,
-  getSlotPlug
+  getSlotPlug,
+  getPCNodeModule
 } from "paperclip";
 
 import {
@@ -166,7 +165,9 @@ const evaluateInspectorNodeChildren = (
   if (extendsComponent(parent)) {
     const component = getPCNode(parent.is, graph) as PCComponent;
     const shadowInstancePath =
-      parent.name === PCSourceTagNames.COMPONENT_INSTANCE
+      parent.name === PCSourceTagNames.COMPONENT_INSTANCE ||
+      getParentTreeNode(parent.id, getPCNodeModule(parent.id, graph)).name ===
+        PCSourceTagNames.MODULE
         ? addInstancePath(instancePath, parent)
         : instancePath;
     return [

@@ -627,20 +627,22 @@ export const openFile = (
   return state;
 };
 
-const refreshModuleInspectorNodes = (state: RootState) => {
+export const refreshModuleInspectorNodes = (state: RootState) => {
   return updateRootState(
     {
       sourceNodeInspector: updateAlts({
         ...state.sourceNodeInspector,
-        children: state.openFiles.map(openFile => {
-          const module = state.graph[openFile.uri].content;
-          const inspector = state.sourceNodeInspector.children.find(
-            inspector => inspector.assocSourceNodeId === module.id
-          );
-          return inspector
-            ? refreshInspectorTree(inspector, state.graph)
-            : evaluateModuleInspector(module, state.graph);
-        })
+        children: state.openFiles
+          .filter(openFile => Boolean(state.graph[openFile.uri]))
+          .map(openFile => {
+            const module = state.graph[openFile.uri].content;
+            const inspector = state.sourceNodeInspector.children.find(
+              inspector => inspector.assocSourceNodeId === module.id
+            );
+            return inspector
+              ? refreshInspectorTree(inspector, state.graph)
+              : evaluateModuleInspector(module, state.graph);
+          })
       })
     },
     state
@@ -1225,8 +1227,6 @@ export const getCanvasMouseTargetInspectorNode = (
     state.sourceNodeInspector,
     state.graph
   );
-  console.log(assocInspectorNode, insertableSourceNode);
-
   return insertableSourceNode;
 };
 

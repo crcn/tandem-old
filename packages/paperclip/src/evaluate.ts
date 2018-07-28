@@ -628,7 +628,7 @@ const registerOverrides = (
     );
   }
 
-  if (node.name === PCSourceTagNames.COMPONENT_INSTANCE) {
+  if (extendsComponent(node)) {
     for (let i = node.children.length; i--; ) {
       const child = node.children[i] as PCNode;
       if (child.name === PCSourceTagNames.PLUG && child.children.length) {
