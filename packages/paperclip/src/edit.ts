@@ -1431,6 +1431,24 @@ export const canRemoveSyntheticVisibleNode = <TState extends PCEditorState>(
   return instancesOfComponent.length === 0;
 };
 
+export const canRemovePCNode = <TState extends PCEditorState>(
+  sourceNode: PCNode,
+  state: TState
+) => {
+  if (!isComponent(sourceNode)) {
+    return true;
+  }
+
+  const instancesOfComponent = filterPCNodes(state.graph, node => {
+    return (
+      (isPCComponentInstance(node) || isComponent(node)) &&
+      node.is === sourceNode.id
+    );
+  });
+
+  return instancesOfComponent.length === 0;
+};
+
 export const persistRemoveSyntheticVisibleNode = <TState extends PCEditorState>(
   node: SyntheticVisibleNode,
   state: TState

@@ -264,7 +264,10 @@ import {
   getInstanceSlotContent,
   SyntheticNode,
   PCSlot,
-  DependencyGraph
+  DependencyGraph,
+  canRemovePCNode,
+  isVisibleNode,
+  persistSyntheticVisibleNodeStyle
 } from "paperclip";
 import {
   roundBounds,
@@ -310,7 +313,8 @@ import {
   getInspectorSourceNode,
   InspectorTreeNodeName,
   InspectorNode,
-  refreshInspectorTree
+  refreshInspectorTree,
+  inspectorNodeInShadow
 } from "../state/pc-inspector-tree";
 
 const ZOOM_SENSITIVITY = process.platform === "win32" ? 2500 : 250;
@@ -611,26 +615,28 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
         state
       );
 
-      const targetSyntheticNode = getInspectorSyntheticNode(
-        targetInspectorNode,
-        state.documents,
-        state.graph
-      );
+      // this does _NOT_ work for inspector nodes like plugs & slots that
+      // have no assoc synthetic node.
+      // const targetSyntheticNode = getInspectorSyntheticNode(
+      //   targetInspectorNode,
+      //   state.documents,
+      //   state.graph
+      // );
 
-      const document = getSyntheticVisibleNodeDocument(
-        targetSyntheticNode.id,
-        state.documents
-      );
-      const mutatedTarget =
-        offset === TreeMoveOffset.APPEND || offset === TreeMoveOffset.PREPEND
-          ? targetSyntheticNode
-          : getParentTreeNode(targetSyntheticNode.id, document);
+      // const document = getSyntheticVisibleNodeDocument(
+      //   targetSyntheticNode.id,
+      //   state.documents
+      // );
+      // const mutatedTarget =
+      //   offset === TreeMoveOffset.APPEND || offset === TreeMoveOffset.PREPEND
+      //     ? targetSyntheticNode
+      //     : getParentTreeNode(targetSyntheticNode.id, document);
 
-      state = queueSelectInsertedSyntheticVisibleNodes(
-        oldState,
-        state,
-        mutatedTarget
-      );
+      // state = queueSelectInsertedSyntheticVisibleNodes(
+      //   oldState,
+      //   state,
+      //   mutatedTarget
+      // );
       return state;
     }
     case SOURCE_INSPECTOR_LAYER_CLICKED: {
@@ -2022,16 +2028,23 @@ const shortcutReducer = (state: RootState, action: Action): RootState => {
     case SHORTCUT_DELETE_KEY_DOWN: {
       if (
         isInputSelected(state) ||
-        state.selectedSyntheticNodeIds.length === 0
+        state.selectedInspectorNodeIds.length === 0
       ) {
         return state;
       }
-      const firstNode = getSyntheticNodeById(
-        state.selectedSyntheticNodeIds[0],
-        state.documents
+
+      const firstNode = getNestedTreeNodeById(
+        state.selectedInspectorNodeIds[0],
+        state.sourceNodeInspector
       );
 
-      if (!canRemoveSyntheticVisibleNode(firstNode, state)) {
+      const sourceNode = getInspectorSourceNode(
+        firstNode,
+        state.sourceNodeInspector,
+        state.graph
+      );
+
+      if (!canRemovePCNode(sourceNode, state)) {
         return confirm(
           "Please remove all instances of component before deleting it.",
           ConfirmType.ERROR,
@@ -2039,33 +2052,74 @@ const shortcutReducer = (state: RootState, action: Action): RootState => {
         );
       }
 
-      const document = getSyntheticVisibleNodeDocument(
-        firstNode.id,
-        state.documents
-      );
-
-      let parent = getParentTreeNode(firstNode.id, document);
+      let parent = getParentTreeNode(firstNode.id, state.sourceNodeInspector);
       const index = parent.children.indexOf(firstNode);
 
       state = persistRootState(state => {
-        return state.selectedSyntheticNodeIds.reduce((state, nodeId) => {
-          return persistRemoveSyntheticVisibleNode(
-            getSyntheticNodeById(nodeId, state.documents),
-            state
+        return state.selectedInspectorNodeIds.reduce((state, nodeId) => {
+          const inspectorNode = getNestedTreeNodeById(
+            nodeId,
+            state.sourceNodeInspector
           );
+          if (inspectorNodeInShadow(inspectorNode, state.sourceNodeInspector)) {
+            const sourceNode = getInspectorSourceNode(
+              inspectorNode,
+              state.sourceNodeInspector,
+              state.graph
+            );
+
+            // content, or slot. Ignore
+            if (!isVisibleNode(sourceNode)) {
+              return state;
+            }
+            const syntheticNode = getInspectorSyntheticNode(
+              inspectorNode,
+              state.documents,
+              state.graph
+            );
+            return persistSyntheticVisibleNodeStyle(
+              { display: "none" },
+              syntheticNode,
+              null,
+              state
+            );
+          }
+
+          return persistRemovePCNode(sourceNode, state);
         }, state);
       }, state);
 
-      parent = getSyntheticNodeById(parent.id, state.documents);
+      parent = getNestedTreeNodeById(parent.id, state.sourceNodeInspector);
 
-      state = setSelectedSyntheticVisibleNodeIds(
-        state,
-        ...(parent.children.length
-          ? [parent.children[Math.min(index, parent.children.length - 1)].id]
-          : parent.name !== SYNTHETIC_DOCUMENT_NODE_NAME
-            ? [parent.id]
-            : [])
-      );
+      const nextSelectedNodeId = parent.children.length
+        ? parent.children[Math.min(index, parent.children.length - 1)].id
+        : parent.name !== SYNTHETIC_DOCUMENT_NODE_NAME
+          ? parent.id
+          : null;
+
+      if (nextSelectedNodeId) {
+        const nextInspectorNode = getNestedTreeNodeById(
+          nextSelectedNodeId,
+          state.sourceNodeInspector
+        );
+        const assocSyntheticNode = getInspectorSyntheticNode(
+          nextInspectorNode,
+          state.documents,
+          state.graph
+        );
+        if (assocSyntheticNode) {
+          state = setSelectedSyntheticVisibleNodeIds(
+            state,
+            assocSyntheticNode.id
+          );
+        } else {
+          // does not exist as rep
+          state = updateRootState(
+            { selectedInspectorNodeIds: [nextInspectorNode.id] },
+            state
+          );
+        }
+      }
     }
   }
   return state;
