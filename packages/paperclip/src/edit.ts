@@ -217,18 +217,6 @@ export const getFrameSyntheticNode = memoize(
     getSyntheticNodeById(frame.contentNodeId, documents)
 );
 
-export const getSyntheticVisibleNodeFixedBounds = memoize(
-  (syntheticNode: SyntheticVisibleNode, frames: Frame[]): Bounds => {
-    const frame = getSyntheticVisibleNodeFrame(syntheticNode, frames);
-    return frame
-      ? shiftBounds(
-          getSyntheticVisibleNodeRelativeBounds(syntheticNode, frames),
-          frame.bounds
-        )
-      : NO_BOUNDS;
-  }
-);
-
 export const getPCNodeClip = (
   node: SyntheticVisibleNode,
   frames: Frame[],
@@ -585,7 +573,12 @@ export const persistWrapInSlot = <TState extends PCEditorState>(
 ) => {
   const sourceNode = getSyntheticSourceNode(node, state.graph);
 
-  if (getPCNodeContentNode(sourceNode.id, getPCNodeModule(sourceNode.id, state.graph)).name !== PCSourceTagNames.COMPONENT) {
+  if (
+    getPCNodeContentNode(
+      sourceNode.id,
+      getPCNodeModule(sourceNode.id, state.graph)
+    ).name !== PCSourceTagNames.COMPONENT
+  ) {
     return state;
   }
 
@@ -732,16 +725,14 @@ export const persistInsertNode = <TState extends PCEditorState>(
     let index: number;
     if (offset === TreeMoveOffset.APPEND || offset === TreeMoveOffset.PREPEND) {
       parentSource = relative;
-      index = offset === TreeMoveOffset.PREPEND ? 0 : parentSource.children.length;
+      index =
+        offset === TreeMoveOffset.PREPEND ? 0 : parentSource.children.length;
     } else {
-      const module = getPCNodeModule(
-        relative.id,
-        state.graph
-      );
+      const module = getPCNodeModule(relative.id, state.graph);
 
       parentSource = getParentTreeNode(relative.id, module);
       index =
-      parentSource.children.indexOf(relative) +
+        parentSource.children.indexOf(relative) +
         (offset === TreeMoveOffset.BEFORE ? 0 : 1);
     }
     parentSource = insertChildNode(newChild, index, parentSource);

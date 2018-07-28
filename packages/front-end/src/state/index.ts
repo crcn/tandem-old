@@ -1396,14 +1396,18 @@ export const setHoveringSyntheticVisibleNodeIds = (
     {
       // may happen for async ops - especially on hover
       hoveringSyntheticNodeIds,
-      hoveringInspectorNodeIds: hoveringSyntheticNodeIds.map(nodeId => {
-        return getSyntheticInspectorNode(
-          getSyntheticNodeById(nodeId, root.documents),
-          getSyntheticVisibleNodeDocument(nodeId, root.documents),
-          root.sourceNodeInspector,
-          root.graph
-        ).id;
-      })
+      hoveringInspectorNodeIds: hoveringSyntheticNodeIds
+        .map(nodeId => {
+          const syntheticNode = getSyntheticInspectorNode(
+            getSyntheticNodeById(nodeId, root.documents),
+            getSyntheticVisibleNodeDocument(nodeId, root.documents),
+            root.sourceNodeInspector,
+            root.graph
+          );
+
+          return syntheticNode && syntheticNode.id;
+        })
+        .filter(Boolean)
     },
     root
   );
@@ -1415,7 +1419,8 @@ export const setHoveringInspectorNodeIds = (
 ) => {
   return updateRootState(
     {
-      hoveringInspectorNodeIds
+      hoveringInspectorNodeIds,
+      hoveringSyntheticNodeIds: EMPTY_ARRAY
     },
     root
   );

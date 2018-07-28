@@ -4,13 +4,17 @@ import { compose, pure, withHandlers, withState } from "recompose";
 import { Canvas, ToolType, EditorWindow } from "../../../../../../../../state";
 import { insertToolFinished } from "../../../../../../../../actions";
 import { Dispatch } from "redux";
-import { startDOMDrag, Bounds, getBoundsSize } from "tandem-common";
+import { Bounds, getBoundsSize } from "tandem-common";
+import { InspectorNode } from "state/pc-inspector-tree";
 
 type InsertLayerOuterProps = {
   toolType: ToolType;
   canvas: Canvas;
+  zoom;
   editorWindow: EditorWindow;
   dispatch: Dispatch<any>;
+  insertInspectorNode: InspectorNode;
+  insertInspectorNodeBounds: Bounds;
 };
 
 type InsertLayerInnerProps = {
@@ -28,9 +32,11 @@ const CURSOR_MAP = {
 const TEXT_PADDING = 5;
 
 const BaseInsertLayer = ({
+  insertInspectorNode,
+  insertInspectorNodeBounds,
   canvas,
+  zoom,
   toolType,
-  editorWindow,
   onMouseDown,
   previewBounds
 }: InsertLayerInnerProps) => {
@@ -75,13 +81,39 @@ const BaseInsertLayer = ({
     );
   }
 
+  let insertOutline;
+
+  if (insertInspectorNodeBounds) {
+    const borderWidth = 2 / zoom;
+
+    const style = {
+      left: insertInspectorNodeBounds.left,
+      top: insertInspectorNodeBounds.top,
+      position: "absolute",
+
+      // round to ensure that the bounds match up with the selection bounds
+      width: Math.ceil(
+        insertInspectorNodeBounds.right - insertInspectorNodeBounds.left
+      ),
+      height: Math.ceil(
+        insertInspectorNodeBounds.bottom - insertInspectorNodeBounds.top
+      ),
+      boxShadow: `inset 0 0 0 ${borderWidth}px #00B5FF`
+    };
+
+    insertOutline = <div style={style as any} />;
+  }
+
   return (
-    <div
-      className="m-insert-layer"
-      style={outerStyle}
-      onMouseDown={onMouseDown}
-    >
-      {preview}
+    <div>
+      <div
+        className="m-insert-layer"
+        style={outerStyle}
+        onMouseDown={onMouseDown}
+      >
+        {preview}
+      </div>
+      {insertOutline}
     </div>
   );
 };

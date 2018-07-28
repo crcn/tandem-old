@@ -25,12 +25,7 @@ import {
   canvasDraggedOver,
   canvasMouseDoubleClicked
 } from "../../../../../../../actions";
-import {
-  DropTarget,
-  DropTargetCollector,
-  DragDropContextProvider,
-  DropTargetMonitor
-} from "react-dnd";
+import { DropTarget, DropTargetMonitor } from "react-dnd";
 
 export type CanvasOuterProps = {
   root: RootState;

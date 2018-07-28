@@ -262,7 +262,7 @@ export const inspectorNodeInShadow = (
   );
 };
 
-const getInspectorNodeOwnerInstance = (
+export const getInspectorNodeOwnerInstance = (
   node: InspectorNode,
   root: InspectorNode
 ) => {

@@ -1116,16 +1116,54 @@
       }
     },
     {
-      "id": "18e4d806161",
+      "id": "47a13bb4650",
+      "is": "47a13bb4325",
+      "name": "component-instance",
+      "attributes": {},
+      "style": {},
+      "children": [],
+      "metadata": {
+        "bounds": {
+          "left": -759,
+          "top": 506,
+          "right": -659,
+          "bottom": 606
+        }
+      }
+    },
+    {
       "label": "Element",
       "is": "div",
-      "name": "element",
-      "attributes": {},
       "style": {
         "box-sizing": "border-box",
         "display": "block"
       },
-      "children": [],
+      "attributes": {},
+      "id": "47a13bb4325",
+      "name": "component",
+      "children": [
+        {
+          "exportName": null,
+          "id": "47a13bb4487",
+          "children": [
+            {
+              "id": "47a13bb4324",
+              "label": "Element",
+              "is": "div",
+              "name": "element",
+              "attributes": {},
+              "style": {
+                "box-sizing": "border-box",
+                "display": "block"
+              },
+              "children": [],
+              "metadata": {}
+            }
+          ],
+          "metadata": {},
+          "name": "slot"
+        }
+      ],
       "metadata": {
         "bounds": {
           "left": -878.6731196478436,
