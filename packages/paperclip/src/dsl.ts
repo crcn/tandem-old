@@ -106,7 +106,7 @@ export type PCBaseOverride<TPropertyName extends PCOverridablePropertyName> = {
 
 export type PCSlot = {
   // export name
-  exportName?: string;
+  publicName: string;
 } & PCBaseSourceNode<PCSourceTagNames.SLOT>;
 
 export type PCPlug = {
@@ -324,10 +324,10 @@ export const createPCTextNode = (
 });
 
 export const createPCSlot = (
-  exportName?: string,
+  publicName: string = generateUID(),
   defaultChildren?: PCBaseElementChild[]
 ): PCSlot => ({
-  exportName,
+  publicName,
   id: generateUID(),
   children: defaultChildren || EMPTY_ARRAY,
   metadata: EMPTY_OBJECT,

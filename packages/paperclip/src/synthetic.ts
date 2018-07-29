@@ -58,6 +58,14 @@ export type SyntheticDocument = {
   children: SyntheticVisibleNode[];
 } & SyntheticBaseNode;
 
+// TODO
+export type SyntheticStyleSheet = {};
+
+export type SyntheticContentNode = {
+  stylesheets: SyntheticStyleSheet[];
+  children: SyntheticVisibleNode[];
+} & SyntheticBaseNode;
+
 export type SyntheticElement = {
   attributes: KeyValue<string>;
   style: KeyValue<any>;
@@ -76,7 +84,6 @@ export type SyntheticTextNode = {
 
 export type SyntheticVisibleNode = SyntheticElement | SyntheticTextNode;
 export type SyntheticNode = SyntheticDocument | SyntheticVisibleNode;
-export type SyntheticContentNode = SyntheticVisibleNode;
 
 /*------------------------------------------
  * STATE FACTORIES

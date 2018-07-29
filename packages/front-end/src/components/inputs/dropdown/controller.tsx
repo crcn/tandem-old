@@ -97,7 +97,7 @@ export default compose(
         tabIndex={0}
         onKeyDown={onKeyDown}
         onBlur={onBlur}
-        menuProps={{ children: menuItems }}
+        menu={menuItems}
         labelProps={{
           style: {
             display: showFilter ? "none" : "block"

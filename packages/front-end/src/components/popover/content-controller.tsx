@@ -1,8 +1,6 @@
 import * as React from "react";
-import * as ReactDOM from "react-dom";
 import { compose, pure, lifecycle, withState, withHandlers } from "recompose";
 import { portal } from "../portal/controller";
-import { isEqual } from "lodash";
 import { Bounds, mergeBounds, getBoundsSize } from "tandem-common";
 
 const calcPortalStyle = (anchorRect: Bounds, portalRect: Bounds) => {

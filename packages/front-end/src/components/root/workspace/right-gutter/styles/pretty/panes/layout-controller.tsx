@@ -108,7 +108,8 @@ export default compose(
     onPropertyChange,
     onPropertyChangeComplete,
     selectedNodes,
-    syntheticDocument
+    syntheticDocument,
+    ...rest
   }: LayoutControllerInnerProps) => {
     if (!selectedNodes) {
       return null;
@@ -129,6 +130,7 @@ export default compose(
 
     return (
       <Base
+        {...rest}
         displayInputProps={{
           value: node.style.display,
           options: DISPLAY_MENU_OPTIONS,

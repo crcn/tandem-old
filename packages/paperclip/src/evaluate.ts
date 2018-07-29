@@ -259,7 +259,7 @@ const evaluateLabel = (
 };
 
 const evaluateVisibleNode = (
-  node: PCVisibleNode | PCSlot | PCPlug,
+  node: PCNode,
   instancePath: string,
   immutable: boolean,
   isCreatedFromComponent: boolean,
@@ -464,7 +464,7 @@ const evaluateChildren = (
   const children: SyntheticVisibleNode[] = [];
 
   for (let i = 0, { length } = parent.children; i < length; i++) {
-    const child = parent.children[i];
+    const child = parent.children[i] as PCNode;
     if (child.name === PCSourceTagNames.SLOT) {
       children.push(
         ...evaluateSlot(

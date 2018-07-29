@@ -33,13 +33,7 @@ export default compose<PopoverInnerProps, PopoverOuterProps>(
   }: PopoverOuterProps) => {
     let overrideProps: any = {};
 
-    if (!open) {
-      overrideProps = {
-        contentProps: {
-          children: []
-        }
-      };
-    } else if (anchorRect) {
+    if (anchorRect) {
       overrideProps = {
         contentProps: {
           onEmptySpaceClick,

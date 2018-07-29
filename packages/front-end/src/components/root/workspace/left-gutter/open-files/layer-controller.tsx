@@ -1,5 +1,4 @@
 import * as React from "react";
-import { last } from "lodash";
 import * as path from "path";
 import { FocusComponent } from "../../../../focus";
 import * as cx from "classnames";
@@ -16,14 +15,11 @@ import {
   getPCNodeDependency,
   SyntheticDocument,
   PCComponent,
-  getPCNodeContentNode,
-  PCModule,
-  extendsComponent
+  PCSlot
 } from "paperclip";
 import {
   InspectorNode,
-  InspectorTreeNodeName,
-  getInspectorSyntheticNode
+  InspectorTreeNodeName
 } from "../../../../../state/pc-inspector-tree";
 import { Dispatch } from "redux";
 import {
@@ -199,17 +195,9 @@ export default Base => {
           label = (component as PCComponent).label;
         } else if (assocSourceNode.name === PCSourceTagNames.ELEMENT) {
           label = assocSourceNode.is || "Element";
-        } else if (assocSourceNode.name === PCSourceTagNames.PLUG) {
-          const targetSourceNode = getPCNode(
-            assocSourceNode.slotId,
-            graph
-          ) as PCVisibleNode;
-          label = targetSourceNode.label || "Content";
-        } else if (assocSourceNode.name === PCSourceTagNames.SLOT) {
-          label =
-            inspectorNode.name === InspectorTreeNodeName.CONTENT
-              ? "Content"
-              : assocSourceNode.name || "Slot";
+        }
+        if (assocSourceNode.name === PCSourceTagNames.SLOT) {
+          label = assocSourceNode.publicName;
         } else if (assocSourceNode.name === PCSourceTagNames.OVERRIDE) {
           label = "[DEP] child override";
         }

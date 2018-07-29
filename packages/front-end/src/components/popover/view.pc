@@ -20,7 +20,7 @@
           "style": {},
           "children": [
             {
-              "exportName": null,
+              "publicName": "anchor",
               "id": "c00d8561361",
               "children": [
                 {
@@ -62,7 +62,7 @@
               "id": "e6638364184",
               "children": [
                 {
-                  "exportName": null,
+                  "publicName": "content",
                   "id": "e6638364254",
                   "children": [
                     {
@@ -162,7 +162,6 @@
       "label": "Content",
       "is": "div",
       "style": {
-        "çheight": "100px",
         "width": "100px"
       },
       "attributes": {},
@@ -170,7 +169,7 @@
       "name": "component",
       "children": [
         {
-          "exportName": null,
+          "publicName": "children",
           "id": "e691a1d915771",
           "children": [
             {

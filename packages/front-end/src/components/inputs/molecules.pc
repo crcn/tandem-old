@@ -53,7 +53,7 @@
           },
           "children": [
             {
-              "exportName": null,
+              "publicName": "input",
               "id": "e73029b416045",
               "children": [
                 {

@@ -14,7 +14,12 @@ import {
   InspectorTreeNodeName,
   inspectorNodeInShadow
 } from "../../../../../state/pc-inspector-tree";
-import { getPCNode, PCSourceTagNames } from "paperclip";
+import {
+  getPCNode,
+  PCSourceTagNames,
+  PCNode,
+  extendsComponent
+} from "paperclip";
 import { compose } from "redux";
 import { sourceInspectorLayerDropped } from "../../../../../actions";
 
@@ -35,20 +40,36 @@ export const withNodeDropTarget = (offset: TreeMoveOffset) =>
         const contentSourceNode =
           contentNode && getPCNode(contentNode.assocSourceNodeId, graph);
         const sourceNode = getPCNode(inspectorNode.assocSourceNodeId, graph);
+        const parentSourceNode: PCNode =
+          contentSourceNode &&
+          getParentTreeNode(sourceNode.id, contentSourceNode);
 
         if (draggedSourceNode.name === PCSourceTagNames.COMPONENT) {
           return !contentSourceNode;
         }
 
-        // must be within a slot
-        if (sourceNode.name === PCSourceTagNames.COMPONENT_INSTANCE) {
-          return false;
+        if (
+          offset === TreeMoveOffset.BEFORE ||
+          offset === TreeMoveOffset.AFTER
+        ) {
+          return (
+            parentSourceNode &&
+            (parentSourceNode.name !== PCSourceTagNames.COMPONENT_INSTANCE &&
+              !extendsComponent(parentSourceNode))
+          );
         }
 
         if (
           offset === TreeMoveOffset.APPEND ||
           offset === TreeMoveOffset.PREPEND
         ) {
+          if (
+            sourceNode.name === PCSourceTagNames.COMPONENT_INSTANCE ||
+            extendsComponent(sourceNode)
+          ) {
+            return false;
+          }
+
           return (
             !contentSourceNode ||
             containsNestedTreeNodeById(sourceNode.id, contentSourceNode) ||

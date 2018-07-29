@@ -37,7 +37,6 @@ import { camelCase, uniq, kebabCase, last, negate } from "lodash";
 import {
   flattenTreeNode,
   EMPTY_OBJECT,
-  EMPTY_ARRAY,
   getNestedTreeNodeById,
   stripProtocol,
   filterNestedNodes,
@@ -52,7 +51,6 @@ import {
   getPublicComponentClassName,
   getPublicLayerVarName,
   TranslateContext,
-  getScopedLayerLabelIndex,
   addOpenTag,
   addCloseTag,
   addBuffer,
@@ -64,6 +62,7 @@ import {
 } from "./utils";
 import { InheritStyle, isSlot, PCSlot } from "paperclip";
 import { PCPlug } from "../node_modules/paperclip/src";
+import { PCBaseElementChild } from "../node_modules/paperclip/src";
 export const compilePaperclipModuleToReact = (
   entry: PCDependency,
   graph: DependencyGraph
@@ -929,14 +928,32 @@ const translateDynamicOverrides = (
   for (const plug of plugs) {
     const visibleChildren = plug.children.filter(
       child => isVisibleNode(child) || child.name === PCSourceTagNames.SLOT
-    );
+    ) as PCBaseElementChild[];
 
-    context = addOpenTag(`_${instance.id}Props._${plug.slotId} = [\n`, context);
+    const slot = getPCNode(plug.slotId, context.graph) as PCSlot;
+
+    if (!slot) {
+      console.log(`Orphaned plug found for slot ${plug.slotId}`);
+      continue;
+    }
+
+    // We use the slot's name here so that developers can programatically override
+    // the slot via controllers. This value should be unique, so if there's ever colliding slot names,
+    // then there's an issue with the component file being translated.
+    context = addOpenTag(
+      `if (!_${instance.id}Props.${slot.publicName}) {\n`,
+      context
+    );
+    context = addOpenTag(
+      `_${instance.id}Props.${slot.publicName} = [\n`,
+      context
+    );
     for (const child of visibleChildren) {
       context = translateVisibleNode(child, context);
       context = addLineItem(",\n", context);
     }
     context = addCloseTag(`];\n`, context);
+    context = addCloseTag(`}\n`, context);
   }
 
   return context;
@@ -1058,10 +1075,7 @@ const getNodePropsVarName = (
     : `${getPublicLayerVarName(node.label, node.id, context)}Props`;
 };
 
-const translateVisibleNode = (
-  node: PCVisibleNode | PCSlot | PCPlug,
-  context: TranslateContext
-) => {
+const translateVisibleNode = (node: PCNode, context: TranslateContext) => {
   switch (node.name) {
     case PCSourceTagNames.TEXT: {
       const textValue = `_${node.id}Props.text || ${JSON.stringify(
@@ -1095,12 +1109,14 @@ const translateSlot = (slot: PCSlot, context: TranslateContext) => {
   const visibleChildren = slot.children.filter(
     child => isVisibleNode(child) || isSlot(child)
   );
-  context = addLineItem(
-    `_${context.currentScope}Props.${slot.name} || _${
-      context.currentScope
-    }Props._${slot.id}`,
-    context
-  );
+
+  if (slot.publicName) {
+    context = addLineItem(
+      `_${context.currentScope}Props.${slot.publicName} ||`,
+      context
+    );
+  }
+  context = addLineItem(`_${context.currentScope}Props._${slot.id}`, context);
 
   if (visibleChildren.length) {
     context = addOpenTag(` || [\n`, context);
