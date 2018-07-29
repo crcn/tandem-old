@@ -461,7 +461,7 @@ export const getSyntheticInstancePath = memoize(
           | PCComponent
           | PCComponentInstanceElement = currentSourceNode;
 
-        while (extendsComponent(current)) {
+        while (current && extendsComponent(current)) {
           current = getPCNode(current.is, graph) as PCComponent;
           if (containsNestedTreeNodeById(lastId, current)) {
             return [...nodePath, currentSourceNode.id];

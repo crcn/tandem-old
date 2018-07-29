@@ -14,8 +14,7 @@ import {
   PCVisibleNode,
   getPCNodeDependency,
   SyntheticDocument,
-  PCComponent,
-  PCSlot
+  PCComponent
 } from "paperclip";
 import {
   InspectorNode,
@@ -198,8 +197,6 @@ export default Base => {
         }
         if (assocSourceNode.name === PCSourceTagNames.SLOT) {
           label = assocSourceNode.publicName;
-        } else if (assocSourceNode.name === PCSourceTagNames.OVERRIDE) {
-          label = "[DEP] child override";
         }
       }
 

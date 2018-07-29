@@ -23,21 +23,29 @@
           "style": {},
           "children": [
             {
-              "id": "7149f8192506",
-              "name": "text",
-              "label": "Text",
-              "value": "Label",
-              "style": {
-                "font-family": "Helvetica",
-                "color": "grey",
-                "font-size": "0.8em",
-                "margin-bottom": "4px",
-                "display": "inline-block",
-                "margin-left": "2px",
-                "opacity": "0.4"
-              },
-              "children": [],
-              "metadata": {}
+              "publicName": "label",
+              "id": "ba94dac93878",
+              "children": [
+                {
+                  "id": "7149f8192506",
+                  "name": "text",
+                  "label": "Text",
+                  "value": "Label",
+                  "style": {
+                    "font-family": "Helvetica",
+                    "color": "grey",
+                    "font-size": "0.8em",
+                    "margin-bottom": "4px",
+                    "display": "inline-block",
+                    "margin-left": "2px",
+                    "opacity": "0.4"
+                  },
+                  "children": [],
+                  "metadata": {}
+                }
+              ],
+              "metadata": {},
+              "name": "slot"
             }
           ],
           "metadata": {}

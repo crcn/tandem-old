@@ -25,12 +25,40 @@
           },
           "children": [
             {
-              "id": "ff4f91e012407",
-              "propertyName": "children",
+              "id": "ddec6a12145779",
+              "propertyName": "style",
+              "targetIdPath": [
+                "ddec6a12139578"
+              ],
+              "value": {
+                "çheight": "100px"
+              },
+              "name": "override",
+              "children": []
+            },
+            {
+              "id": "fb95cf8679",
+              "propertyName": "label",
               "targetIdPath": [
                 "46686eab3161"
               ],
+              "value": "Anchor",
               "name": "override",
+              "children": []
+            },
+            {
+              "id": "659da073141",
+              "propertyName": "label",
+              "targetIdPath": [
+                "ddec6a12139578"
+              ],
+              "value": "Content",
+              "name": "override",
+              "children": []
+            },
+            {
+              "slotId": "c00d8561361",
+              "id": "7057aee112046",
               "children": [
                 {
                   "id": "d227ff68826765",
@@ -52,65 +80,12 @@
                   "metadata": {}
                 }
               ],
-              "metadata": {}
+              "metadata": {},
+              "name": "plug"
             },
             {
-              "id": "ff4f91e018600",
-              "propertyName": "children",
-              "targetIdPath": [
-                "46686eab9332"
-              ],
-              "name": "override",
-              "children": [
-                {
-                  "id": "d227ff68826767",
-                  "variant": {},
-                  "is": "67e386c762",
-                  "name": "component-instance",
-                  "attributes": {},
-                  "style": {
-                    "padding": "10px",
-                    "box-sizing": "border-box",
-                    "display": "flex",
-                    "flex-direction": "column",
-                    "font-family": "Helvetica",
-                    "color": "grey",
-                    "width": "calc(255px + 16px)",
-                    "height": "255px"
-                  },
-                  "children": [],
-                  "metadata": {
-                    "bounds": {
-                      "left": -266,
-                      "top": 363,
-                      "right": 41.79281114138871,
-                      "bottom": 611.3866802446275
-                    }
-                  },
-                  "label": "Picker"
-                }
-              ],
-              "metadata": {}
-            },
-            {
-              "id": "ddec6a12145779",
-              "propertyName": "style",
-              "targetIdPath": [
-                "ddec6a12139578"
-              ],
-              "value": {
-                "çheight": "100px"
-              },
-              "name": "override",
-              "children": []
-            },
-            {
-              "id": "ddec6a12269791",
-              "propertyName": "children",
-              "targetIdPath": [
-                "ddec6a12139578"
-              ],
-              "name": "override",
+              "slotId": "e6638364254",
+              "id": "7057aee112557",
               "children": [
                 {
                   "id": "ddec6a12260453",
@@ -130,27 +105,8 @@
                   }
                 }
               ],
-              "metadata": {}
-            },
-            {
-              "id": "fb95cf8679",
-              "propertyName": "label",
-              "targetIdPath": [
-                "46686eab3161"
-              ],
-              "value": "Anchor",
-              "name": "override",
-              "children": []
-            },
-            {
-              "id": "659da073141",
-              "propertyName": "label",
-              "targetIdPath": [
-                "ddec6a12139578"
-              ],
-              "value": "Content",
-              "name": "override",
-              "children": []
+              "metadata": {},
+              "name": "plug"
             }
           ],
           "metadata": {
@@ -313,97 +269,6 @@
           "bottom": 645.3124627985359
         }
       }
-    },
-    {
-      "id": "d227ff68569222",
-      "variant": {},
-      "is": "97a34b151010442",
-      "name": "component-instance",
-      "attributes": {},
-      "style": {},
-      "children": [
-        {
-          "id": "d227ff68578074",
-          "propertyName": "children",
-          "targetIdPath": [
-            "97a34b151010440"
-          ],
-          "name": "override",
-          "children": [
-            {
-              "id": "d227ff68578073",
-              "label": "Element",
-              "is": "ul",
-              "name": "element",
-              "attributes": {},
-              "style": {},
-              "children": [
-                {
-                  "id": "d227ff68583975",
-                  "label": "Element",
-                  "is": "li",
-                  "name": "element",
-                  "attributes": {},
-                  "style": {},
-                  "children": [
-                    {
-                      "id": "d227ff68592829",
-                      "name": "text",
-                      "label": "Text",
-                      "value": "Contrast linter (see chrome inspector)",
-                      "style": {},
-                      "children": [],
-                      "metadata": {}
-                    }
-                  ],
-                  "metadata": {}
-                },
-                {
-                  "id": "d227ff68595782",
-                  "label": "Element",
-                  "is": "li",
-                  "name": "element",
-                  "attributes": {},
-                  "style": {},
-                  "children": [
-                    {
-                      "id": "d227ff68595783",
-                      "name": "text",
-                      "label": "Text",
-                      "value": "Color vars (pulled from global config)",
-                      "style": {},
-                      "children": [],
-                      "metadata": {}
-                    }
-                  ],
-                  "metadata": {}
-                }
-              ],
-              "metadata": {}
-            }
-          ],
-          "metadata": {}
-        },
-        {
-          "id": "d227ff68601692",
-          "propertyName": "text",
-          "targetIdPath": [
-            "97a34b151010439"
-          ],
-          "value": " ",
-          "name": "override",
-          "children": []
-        }
-      ],
-      "metadata": {
-        "bounds": {
-          "left": 35,
-          "top": 290,
-          "right": 328.6542270494879,
-          "bottom": 490.7213373757045
-        }
-      },
-      "label": "TODO"
     }
   ]
 }

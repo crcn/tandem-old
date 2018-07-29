@@ -314,8 +314,9 @@ const evaluateSlot = (
   componentMap: ComponentRefs,
   sourceUri: string
 ): SyntheticVisibleNode[] => {
-  if (overrides[slot.id]) {
-    return overrides[slot.id].children;
+  const slotPath = appendPath(instancePath, slot.id);
+  if (overrides[slotPath]) {
+    return overrides[slotPath].children;
   }
   // TODO - check if slot is overridden
 
@@ -633,7 +634,7 @@ const registerOverrides = (
     for (let i = node.children.length; i--; ) {
       const child = node.children[i] as PCNode;
       if (child.name === PCSourceTagNames.PLUG && child.children.length) {
-        overrides[child.slotId] = {
+        overrides[appendPath(selfPath, child.slotId)] = {
           attributes: null,
           text: null,
           style: null,
@@ -642,7 +643,7 @@ const registerOverrides = (
           label: null,
           children: evaluateChildren(
             child,
-            selfPath,
+            instancePath,
             immutable,
             isCreatedFromComponent,
             selfVariant,

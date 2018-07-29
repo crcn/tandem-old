@@ -46,12 +46,133 @@
           "children": []
         },
         {
-          "id": "6a863e866",
-          "propertyName": "children",
+          "id": "6a863e8632",
+          "propertyName": "label",
           "targetIdPath": [
             "b6c162d140"
           ],
+          "value": "Content",
           "name": "override",
+          "children": []
+        },
+        {
+          "id": "e1d03964",
+          "propertyName": "style",
+          "targetIdPath": [
+            "b6c162d140"
+          ],
+          "value": {
+            "padding-top": "0",
+            "padding-right": "0",
+            "padding-bottom": "0",
+            "padding-left": "0",
+            "flex-direction": "column",
+            "flex-shrink": "0"
+          },
+          "name": "override",
+          "children": []
+        },
+        {
+          "slotId": "d6261ad53069",
+          "id": "a75e630729363",
+          "children": [
+            {
+              "id": "6a863e8616",
+              "label": "Element",
+              "is": "div",
+              "name": "element",
+              "attributes": {},
+              "style": {
+                "box-sizing": "border-box",
+                "display": "flex",
+                "flex-direction": "row",
+                "align-items": "center",
+                "justify-content": "space-between"
+              },
+              "children": [
+                {
+                  "id": "6a863e8617",
+                  "name": "text",
+                  "label": "Text",
+                  "value": "Variants",
+                  "style": {},
+                  "children": [],
+                  "metadata": {}
+                },
+                {
+                  "id": "f960bf395",
+                  "label": "Element",
+                  "is": "div",
+                  "name": "element",
+                  "attributes": {},
+                  "style": {
+                    "box-sizing": "border-box",
+                    "display": "flex",
+                    "align-items": "center"
+                  },
+                  "children": [
+                    {
+                      "id": "c72c60195",
+                      "name": "text",
+                      "label": "Remove Variant Button",
+                      "value": "-\n",
+                      "style": {
+                        "margin-right": "4px",
+                        "position": "relative",
+                        "top": "-1px",
+                        "cursor": "pointer"
+                      },
+                      "children": [],
+                      "metadata": {}
+                    },
+                    {
+                      "id": "6a863e8618",
+                      "variant": {},
+                      "is": "8e601d2b23050",
+                      "name": "component-instance",
+                      "attributes": {},
+                      "style": {
+                        "display": "block",
+                        "height": "10px"
+                      },
+                      "children": [
+                        {
+                          "id": "6a863e8619",
+                          "propertyName": "style",
+                          "targetIdPath": [
+                            "289d8e3428"
+                          ],
+                          "value": {
+                            "font-size": "10px",
+                            "cursor": "pointer"
+                          },
+                          "name": "override",
+                          "children": []
+                        }
+                      ],
+                      "metadata": {
+                        "bounds": {
+                          "left": 145,
+                          "top": 1503,
+                          "right": 545,
+                          "bottom": 1803
+                        }
+                      },
+                      "label": "Add Variant Button"
+                    }
+                  ],
+                  "metadata": {}
+                }
+              ],
+              "metadata": {}
+            }
+          ],
+          "metadata": {},
+          "name": "plug"
+        },
+        {
+          "slotId": "d6261ad52883",
+          "id": "a75e630729481",
           "children": [
             {
               "id": "e1d03963",
@@ -304,135 +425,8 @@
               }
             }
           ],
-          "metadata": {}
-        },
-        {
-          "id": "6a863e8615",
-          "propertyName": "children",
-          "targetIdPath": [
-            "b6c162d132"
-          ],
-          "name": "override",
-          "children": [
-            {
-              "id": "6a863e8616",
-              "label": "Element",
-              "is": "div",
-              "name": "element",
-              "attributes": {},
-              "style": {
-                "box-sizing": "border-box",
-                "display": "flex",
-                "flex-direction": "row",
-                "align-items": "center",
-                "justify-content": "space-between"
-              },
-              "children": [
-                {
-                  "id": "6a863e8617",
-                  "name": "text",
-                  "label": "Text",
-                  "value": "Variants",
-                  "style": {},
-                  "children": [],
-                  "metadata": {}
-                },
-                {
-                  "id": "f960bf395",
-                  "label": "Element",
-                  "is": "div",
-                  "name": "element",
-                  "attributes": {},
-                  "style": {
-                    "box-sizing": "border-box",
-                    "display": "flex",
-                    "align-items": "center"
-                  },
-                  "children": [
-                    {
-                      "id": "c72c60195",
-                      "name": "text",
-                      "label": "Remove Variant Button",
-                      "value": "-\n",
-                      "style": {
-                        "margin-right": "4px",
-                        "position": "relative",
-                        "top": "-1px",
-                        "cursor": "pointer"
-                      },
-                      "children": [],
-                      "metadata": {}
-                    },
-                    {
-                      "id": "6a863e8618",
-                      "variant": {},
-                      "is": "8e601d2b23050",
-                      "name": "component-instance",
-                      "attributes": {},
-                      "style": {
-                        "display": "block",
-                        "height": "10px"
-                      },
-                      "children": [
-                        {
-                          "id": "6a863e8619",
-                          "propertyName": "style",
-                          "targetIdPath": [
-                            "289d8e3428"
-                          ],
-                          "value": {
-                            "font-size": "10px",
-                            "cursor": "pointer"
-                          },
-                          "name": "override",
-                          "children": []
-                        }
-                      ],
-                      "metadata": {
-                        "bounds": {
-                          "left": 145,
-                          "top": 1503,
-                          "right": 545,
-                          "bottom": 1803
-                        }
-                      },
-                      "label": "Add Variant Button"
-                    }
-                  ],
-                  "metadata": {}
-                }
-              ],
-              "metadata": {}
-            }
-          ],
-          "metadata": {}
-        },
-        {
-          "id": "6a863e8632",
-          "propertyName": "label",
-          "targetIdPath": [
-            "b6c162d140"
-          ],
-          "value": "Content",
-          "name": "override",
-          "children": []
-        },
-        {
-          "id": "e1d03964",
-          "propertyName": "style",
-          "targetIdPath": [
-            "b6c162d140"
-          ],
-          "value": {
-            "padding-top": "0",
-            "padding-right": "0",
-            "padding-bottom": "0",
-            "padding-left": "0",
-            "flex-direction": "column",
-            "flex-shrink": "0"
-          },
-          "name": "override",
-          "children": []
+          "metadata": {},
+          "name": "plug"
         }
       ],
       "metadata": {

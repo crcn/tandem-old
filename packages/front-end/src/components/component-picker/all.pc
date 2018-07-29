@@ -12,16 +12,6 @@
       "style": {},
       "children": [
         {
-          "id": "839a748a4",
-          "propertyName": "children",
-          "targetIdPath": [
-            "97a34b151010440"
-          ],
-          "name": "override",
-          "children": [],
-          "metadata": {}
-        },
-        {
           "id": "839a748a5",
           "propertyName": "text",
           "targetIdPath": [

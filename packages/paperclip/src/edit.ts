@@ -20,11 +20,11 @@ import {
   stripProtocol,
   getNestedTreeNodeById,
   KeyValue,
-  dropChildNode,
   filterNestedNodes,
-  EMPTY_ARRAY
+  EMPTY_ARRAY,
+  generateUID
 } from "tandem-common";
-import { values, identity, uniq, last, intersection } from "lodash";
+import { values, identity, uniq, last } from "lodash";
 import { DependencyGraph, Dependency } from "./graph";
 import {
   PCNode,
@@ -50,9 +50,6 @@ import {
   isComponent,
   getPCVariants,
   isPCOverride,
-  isValueOverride,
-  PCComponentInstanceElement,
-  getPCVariantOverrides,
   filterPCNodes,
   isPCComponentInstance,
   InheritStyle,
@@ -582,7 +579,7 @@ export const persistWrapInSlot = <TState extends PCEditorState>(
     return state;
   }
 
-  const newSource = createPCSlot(null, [sourceNode]);
+  const newSource = createPCSlot(generateUID(), [sourceNode]);
 
   state = replaceDependencyGraphPCNode(newSource, sourceNode, state);
 

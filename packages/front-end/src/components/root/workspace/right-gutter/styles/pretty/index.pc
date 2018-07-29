@@ -136,16 +136,6 @@
           "style": {},
           "children": [
             {
-              "id": "bcda9fb518264",
-              "propertyName": "children",
-              "targetIdPath": [
-                "b6c162d140"
-              ],
-              "name": "override",
-              "children": [],
-              "metadata": {}
-            },
-            {
               "id": "201dfad770822",
               "propertyName": "style",
               "targetIdPath": [

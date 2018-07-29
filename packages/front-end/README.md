@@ -5,10 +5,10 @@ OBJECTIVE:
 
 IMMEDIATE:
 
-- fix dropdown component
 - ability to name slots
 - update compiler to accept bindings
-- ensure that all child overrides gone
+- component instance bindings
+- ensure that label is no-longer used for defining props
 - make evaluator faster (refactor entirely -- use style sheets for style overrides. Necessary either way for pseudo elements)
   - leverage style sheets for style overrides
   - memoize evaluated instances

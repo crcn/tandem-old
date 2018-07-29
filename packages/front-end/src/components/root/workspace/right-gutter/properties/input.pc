@@ -30,16 +30,6 @@
               "children": []
             },
             {
-              "id": "6e2729d443537",
-              "propertyName": "children",
-              "targetIdPath": [
-                "7149f81937818"
-              ],
-              "name": "override",
-              "children": [],
-              "metadata": {}
-            },
-            {
               "id": "6e2729d443538",
               "propertyName": "style",
               "targetIdPath": [

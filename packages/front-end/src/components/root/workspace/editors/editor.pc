@@ -131,48 +131,6 @@
       "style": {},
       "children": [
         {
-          "id": "483373f9122264",
-          "propertyName": "children",
-          "targetIdPath": [
-            "483373f987276"
-          ],
-          "name": "override",
-          "children": [
-            {
-              "id": "483373f929122",
-              "variant": {},
-              "is": "bae08a2e609807",
-              "name": "component-instance",
-              "attributes": {},
-              "style": {},
-              "children": [
-                {
-                  "id": "483373f929123",
-                  "propertyName": "style",
-                  "targetIdPath": [
-                    "8deb6ba423"
-                  ],
-                  "value": {
-                    "background": "rgba(241, 241, 241, 1)"
-                  },
-                  "name": "override",
-                  "children": []
-                }
-              ],
-              "metadata": {
-                "bounds": {
-                  "left": 1368,
-                  "top": 1161,
-                  "right": 2788.3626850974215,
-                  "bottom": 2080.4356137775667
-                }
-              },
-              "label": "Frames Preview"
-            }
-          ],
-          "metadata": {}
-        },
-        {
           "id": "483373f9367294",
           "propertyName": "style",
           "targetIdPath": [

@@ -576,15 +576,6 @@
           "children": []
         },
         {
-          "id": "28fcc84637",
-          "variantId": null,
-          "propertyName": "children",
-          "targetIdPath": [],
-          "name": "override",
-          "children": [],
-          "metadata": {}
-        },
-        {
           "id": "28fcc84639",
           "variantId": "d3bf183b26",
           "propertyName": "style",

@@ -22,17 +22,25 @@
       "name": "component",
       "children": [
         {
-          "id": "41cb1f8590628",
-          "variant": {},
-          "is": "38fc2a472503",
-          "name": "component-instance",
-          "attributes": {},
-          "style": {
-            "height": "100%"
-          },
-          "children": [],
+          "publicName": "icon",
+          "id": "e42107633",
+          "children": [
+            {
+              "id": "41cb1f8590628",
+              "variant": {},
+              "is": "38fc2a472503",
+              "name": "component-instance",
+              "attributes": {},
+              "style": {
+                "height": "100%"
+              },
+              "children": [],
+              "metadata": {},
+              "label": "icon"
+            }
+          ],
           "metadata": {},
-          "label": "icon"
+          "name": "slot"
         },
         {
           "id": "15d6c81f3",
