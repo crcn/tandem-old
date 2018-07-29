@@ -3,12 +3,12 @@ import * as cx from "classnames";
 import { compose, pure, withHandlers, withState } from "recompose";
 import {
   PCNode,
-  Dependency,
   DependencyGraph,
   getSyntheticSourceNode,
   PCSourceTagNames,
+  getPCNodeModule,
   getPCNodeContentNode,
-  getPCNodeModule
+  getNativeComponentName
 } from "paperclip";
 import { Dispatch } from "redux";
 import {
@@ -192,7 +192,13 @@ const BASE_ELEMENT_TARGET_OPTIONS = [
 
 // TODO - fill me out
 const ELEMENT_BY_TAG_TARGET_OPTIONS = {
-  img: [...BASE_ELEMENT_TARGET_OPTIONS, "src"]
+  img: [...BASE_ELEMENT_TARGET_OPTIONS, "src"].map(dropdownMenuOptionFromValue),
+  input: [...BASE_ELEMENT_TARGET_OPTIONS, "value", "onChange"].map(
+    dropdownMenuOptionFromValue
+  ),
+  textarea: [...BASE_ELEMENT_TARGET_OPTIONS, "value", "onChange"].map(
+    dropdownMenuOptionFromValue
+  )
 };
 
 const TEXT_NODE_TARGET_OPTIONS: DropdownMenuOption[] = [
@@ -211,9 +217,17 @@ const getBindingTargetOptions = memoize(
     } else if (sourceNode.name === PCSourceTagNames.ELEMENT) {
       // TODO - needs to be per tag name
       return ELEMENT_TARGET_OPTIONS;
-    } else if (sourceNode.name === PCSourceTagNames.COMPONENT_INSTANCE) {
+    } else if (
+      sourceNode.name === PCSourceTagNames.COMPONENT_INSTANCE ||
+      sourceNode.name === PCSourceTagNames.COMPONENT
+    ) {
+      const nativeElementName = getNativeComponentName(sourceNode, graph);
+
       // TODO - needs to be per tag name
-      return ELEMENT_TARGET_OPTIONS;
+      return (
+        ELEMENT_BY_TAG_TARGET_OPTIONS[nativeElementName] ||
+        ELEMENT_TARGET_OPTIONS
+      );
     }
 
     return EMPTY_ARRAY;

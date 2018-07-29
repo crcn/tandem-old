@@ -116,8 +116,10 @@ const mapSourceRepChildren = (
 ): InspectorNode[] => {
   if (extendsComponent(parent)) {
     return [
-      createShadowInspector(parent, graph),
-      ...getInstanceSlots(parent, graph).map(mapSlot(parent, graph))
+      createShadowInspector(parent as PCComponent, graph),
+      ...getInstanceSlots(parent as PCComponent, graph).map(
+        mapSlot(parent as PCComponent, graph)
+      )
     ];
   } else {
     return parent.children.map(mapSourceRepChild(graph)).filter(Boolean);

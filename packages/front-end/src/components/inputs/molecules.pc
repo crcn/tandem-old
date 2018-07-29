@@ -73,7 +73,15 @@
                   "style": {},
                   "children": [],
                   "metadata": {},
-                  "label": "text"
+                  "label": "text",
+                  "bind": {
+                    "properties": [
+                      {
+                        "from": "value",
+                        "to": "value"
+                      }
+                    ]
+                  }
                 }
               ],
               "metadata": {},
@@ -82,12 +90,7 @@
           ],
           "metadata": {},
           "bind": {
-            "properties": [
-              {
-                "from": "input",
-                "to": "children"
-              }
-            ]
+            "properties": []
           }
         }
       ],

@@ -440,8 +440,10 @@ const translateContentNode = (
       const propsVarName = getNodePropsVarName(node, context);
 
       context = defineNestedObject([`_${node.id}Props`], false, context);
+      context = addLineItem(`var _${node.id}Props = `, context);
+      context = translatePropertyBindings(node, context);
       context = addLine(
-        `var _${node.id}Props = Object.assign({}, _${contentNode.id}Props._${
+        `Object.assign(_${node.id}Props, _${contentNode.id}Props._${
           node.id
         }, _${contentNode.id}Props.${propsVarName});`,
         context
@@ -499,6 +501,24 @@ const translateContentNode = (
     `exports.${publicClassName} = ${internalVarName}({});`,
     context
   );
+  return context;
+};
+
+const translatePropertyBindings = (
+  node: ContentNode,
+  context: TranslateContext
+) => {
+  context = addOpenTag(`{\n`, context);
+  if (node.bind && node.bind.properties) {
+    for (const { from, to } of node.bind.properties) {
+      if (!from || !to) continue;
+      context = addLineItem(
+        `"${to}": _${context.currentScope}Props["${from}"],\n`,
+        context
+      );
+    }
+  }
+  context = addCloseTag(`};\n`, context);
   return context;
 };
 
@@ -1112,7 +1132,7 @@ const translateSlot = (slot: PCSlot, context: TranslateContext) => {
 
   if (slot.publicName) {
     context = addLineItem(
-      `_${context.currentScope}Props.${slot.publicName} ||`,
+      `_${context.currentScope}Props.${slot.publicName} || `,
       context
     );
   }

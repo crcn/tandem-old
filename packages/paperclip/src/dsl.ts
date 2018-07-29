@@ -416,9 +416,7 @@ export const isPCComponentInstance = (
 export const isPCComponentOrInstance = (node: PCNode) =>
   isPCComponentInstance(node) || isComponent(node);
 
-export const extendsComponent = (
-  element: PCNode
-): element is PCComponent | PCComponentInstanceElement =>
+export const extendsComponent = (element: PCNode) =>
   (element.name == PCSourceTagNames.COMPONENT ||
     element.name === PCSourceTagNames.COMPONENT_INSTANCE) &&
   element.is.length > 6 &&
@@ -571,6 +569,21 @@ export const getPCImportedChildrenSourceUris = (
   });
   return Object.keys(imported);
 };
+
+export const getNativeComponentName = memoize(
+  (
+    { id }: PCComponent | PCComponentInstanceElement,
+    graph: DependencyGraph
+  ) => {
+    let current = getPCNode(id, graph) as PCComponent;
+    while (extendsComponent(current)) {
+      current = getPCNode(current.is, graph) as PCComponent;
+    }
+    return current.is;
+  }
+);
+
+// export const getComponentProperties = (memoize)
 
 export const getPCNodeDependency = memoize(
   (nodeId: string, graph: DependencyGraph) => {
