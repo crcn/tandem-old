@@ -8,6 +8,8 @@ IMMEDIATE:
 - ability to name slots
 - update compiler to accept bindings
 - component instance bindings
+- wire up property overrides in evaluator
+- prohibit non-style overrides
 - ensure that label is no-longer used for defining props
 - make evaluator faster (refactor entirely -- use style sheets for style overrides. Necessary either way for pseudo elements)
   - leverage style sheets for style overrides
