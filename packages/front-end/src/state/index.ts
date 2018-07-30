@@ -1448,15 +1448,17 @@ export const getSelectionBounds = memoize((root: RootState) =>
 );
 
 export const isSelectionMovable = memoize((root: RootState) => {
-  return !root.selectedSyntheticNodeIds.some(nodeId => {
+  return root.selectedSyntheticNodeIds.every(nodeId => {
     const node = getSyntheticNodeById(nodeId, root.documents);
-    return !isSyntheticVisibleNodeMovable(node);
+    return node.isContentNode;
+    // return !isSyntheticVisibleNodeMovable(node);
   });
 });
 
 export const isSelectionResizable = memoize((root: RootState) => {
-  return !root.selectedSyntheticNodeIds.some(nodeId => {
+  return root.selectedSyntheticNodeIds.every(nodeId => {
     const node = getSyntheticNodeById(nodeId, root.documents);
-    return !isSyntheticVisibleNodeResizable(node);
+    return node.isContentNode;
+    // return !isSyntheticVisibleNodeResizable(node);
   });
 });
