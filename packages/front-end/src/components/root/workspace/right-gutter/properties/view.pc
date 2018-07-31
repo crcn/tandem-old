@@ -1198,18 +1198,6 @@
                       "bottom": 433.5832678332798
                     }
                   }
-                },
-                {
-                  "id": "308dd31369",
-                  "label": "Element",
-                  "is": "div",
-                  "name": "element",
-                  "attributes": {},
-                  "style": {
-                    "box-sizing": "border-box"
-                  },
-                  "children": [],
-                  "metadata": {}
                 }
               ],
               "metadata": {},
@@ -1615,7 +1603,7 @@
                   "targetIdPath": [
                     "7149f8192506"
                   ],
-                  "value": "Name",
+                  "value": "Public name\n",
                   "name": "override",
                   "children": []
                 }

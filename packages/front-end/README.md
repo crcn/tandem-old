@@ -3,8 +3,19 @@ OBJECTIVE:
 - eliminate current friction. Don't focus on UI.
 - make compiler more efficient. UI needs to be more explicit.
 
+ISSUES:
+
+- cannot be explicit about props since we don't know about the information that controllers would receive. Props
+- must not be definable.
+- maybe maintain label since
+  - it's less opinionated
+  - is decoupled from code implementation
+  - kinda explicit
+  - explicitness can be fixed
+
 IMMEDIATE:
 
+- use label for slot instead of public name
 - fix slot name generator
 - refactor styles pane to use inspector nodes instead of synthetic
 - ability to name slots
