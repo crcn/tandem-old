@@ -125,6 +125,10 @@ export default compose(
     }
   }),
   Base => ({ onTypeChange, selectedNodes, dispatch, ...rest }) => {
+    if (!selectedNodes.length) {
+      return null;
+    }
+
     const element = selectedNodes.find(
       (node: SyntheticVisibleNode) => node.name !== PCSourceTagNames.TEXT
     ) as SyntheticElement;

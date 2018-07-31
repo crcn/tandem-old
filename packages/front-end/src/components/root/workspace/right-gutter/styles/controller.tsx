@@ -13,6 +13,9 @@ export default compose(
     graph,
     ...rest
   }) => {
+    if (!selectedNodes.length) {
+      return null;
+    }
     return (
       <Base
         variantsProps={{

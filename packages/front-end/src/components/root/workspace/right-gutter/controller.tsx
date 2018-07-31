@@ -4,19 +4,28 @@ import {
   getSyntheticNodeById,
   SyntheticDocument,
   getSyntheticVisibleNodeDocument,
-  getSyntheticSourceUri
+  getSyntheticSourceUri,
+  getPCNodeDependency
 } from "paperclip";
-import { memoize } from "tandem-common";
+import { memoize, EMPTY_ARRAY, getNestedTreeNodeById } from "tandem-common";
 const { RightGutterTab } = require("./tab.pc");
 import * as cx from "classnames";
+import { InspectorNode } from "state/pc-inspector-tree";
 
-const getSelectedNoded = memoize(
+const getSelectedSyntheticNodes = memoize(
   (nodeIds: string[], documents: SyntheticDocument[]) => {
     return nodeIds.map(id => getSyntheticNodeById(id, documents));
   }
 );
 
+const getSelectedInspectorNodes = memoize(
+  (nodeIds: string[], sourceInspector: InspectorNode): InspectorNode[] => {
+    return nodeIds.map(id => getNestedTreeNodeById(id, sourceInspector));
+  }
+);
+
 const TAB_NAMES = ["styles", "properties"];
+const INSPECTOR_NODE_TAB_NAMES = ["properties"];
 
 export default compose(
   pure,
@@ -27,24 +36,38 @@ export default compose(
     }
   }),
   Base => ({ root, dispatch, setTab, currentTab, ...rest }) => {
-    if (!root.selectedSyntheticNodeIds.length) {
+    if (!root.selectedInspectorNodeIds.length) {
       return null;
     }
 
-    const syntheticDocument = getSyntheticVisibleNodeDocument(
-      root.selectedSyntheticNodeIds[0],
-      root.documents
-    );
-    const selectedNodes = getSelectedNoded(
-      root.selectedSyntheticNodeIds,
-      root.documents
+    const hasSyntheticNodes = root.selectedSyntheticNodeIds.length;
+    const availableTabs = hasSyntheticNodes
+      ? TAB_NAMES
+      : INSPECTOR_NODE_TAB_NAMES;
+    const availableCurrentTab =
+      availableTabs.indexOf(currentTab) !== -1 ? currentTab : availableTabs[0];
+
+    const syntheticDocument = hasSyntheticNodes
+      ? getSyntheticVisibleNodeDocument(
+          root.selectedSyntheticNodeIds[0],
+          root.documents
+        )
+      : null;
+
+    const selectedSyntheticNodes = hasSyntheticNodes
+      ? getSelectedSyntheticNodes(root.selectedSyntheticNodeIds, root.documents)
+      : EMPTY_ARRAY;
+
+    const selectedInspectorNodes = getSelectedInspectorNodes(
+      root.selectedInspectorNodeIds,
+      root.sourceNodeInspector
     );
 
-    const tabs = TAB_NAMES.map(tabName => {
+    const tabs = availableTabs.map(tabName => {
       return (
         <RightGutterTab
           key={tabName}
-          variant={cx({ selected: currentTab === tabName })}
+          variant={cx({ selected: availableCurrentTab === tabName })}
           onClick={() => setTab(tabName)}
         >
           {tabName}
@@ -56,14 +79,15 @@ export default compose(
       <Base
         {...rest}
         variant={cx({
-          stylesTab: currentTab === TAB_NAMES[0],
-          propertiesTab: currentTab === TAB_NAMES[1]
+          stylesTab: availableCurrentTab === TAB_NAMES[0],
+          propertiesTab: availableCurrentTab === TAB_NAMES[1]
         })}
         stylesProps={{
           dispatch,
           syntheticDocument,
           fontFamilies: root.fontFamilies,
-          selectedNodes,
+          selectedNodes: selectedSyntheticNodes,
+          selectedInspectorNodes,
           selectedVariant: root.selectedVariant,
           graph: root.graph,
           selectedInheritComponentId: root.selectedInheritComponentId
@@ -73,11 +97,17 @@ export default compose(
         }}
         propertiesProps={{
           selectedControllerRelativePath: root.selectedControllerRelativePath,
-          sourceNodeUri: getSyntheticSourceUri(selectedNodes[0], root.graph),
+          sourceNodeUri:
+            selectedInspectorNodes[0] &&
+            getPCNodeDependency(
+              selectedInspectorNodes[0].assocSourceNodeId,
+              root.graph
+            ).uri,
           dispatch,
           syntheticDocument,
           graph: root.graph,
-          selectedNodes
+          selectedNodes: selectedSyntheticNodes,
+          selectedInspectorNodes
         }}
       />
     );

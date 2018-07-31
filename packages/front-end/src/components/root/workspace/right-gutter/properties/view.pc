@@ -423,6 +423,30 @@
           "label": "Component Properties"
         },
         {
+          "id": "8175b0db1043",
+          "is": "32370ceb1424",
+          "name": "component-instance",
+          "attributes": {},
+          "style": {
+            "display": "none"
+          },
+          "children": [
+            {
+              "id": "8175b0db4673",
+              "variantId": "8175b0db2858",
+              "propertyName": "style",
+              "targetIdPath": [],
+              "value": {
+                "display": "flex"
+              },
+              "name": "override",
+              "children": []
+            }
+          ],
+          "metadata": {},
+          "label": "slot"
+        },
+        {
           "id": "326c99d81",
           "is": "26aaa39a17",
           "name": "component-instance",
@@ -434,6 +458,17 @@
             {
               "id": "fc243cf065",
               "variantId": "326c99d83",
+              "propertyName": "style",
+              "targetIdPath": [],
+              "value": {
+                "display": "none"
+              },
+              "name": "override",
+              "children": []
+            },
+            {
+              "id": "8175b0db6488",
+              "variantId": "8175b0db2858",
               "propertyName": "style",
               "targetIdPath": [],
               "value": {
@@ -528,6 +563,14 @@
           },
           "name": "override",
           "children": []
+        },
+        {
+          "id": "8175b0db2858",
+          "name": "variant",
+          "label": "slot",
+          "isDefault": true,
+          "children": [],
+          "metadata": {}
         }
       ],
       "metadata": {
@@ -1598,7 +1641,10 @@
           "right": 143,
           "bottom": 206.35714109451038
         }
-      }
+      },
+      "controllers": [
+        "./slot-controller.tsx"
+      ]
     }
   ],
   "metadata": {}

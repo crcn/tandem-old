@@ -10,7 +10,7 @@ export default compose(
     }
   }),
   Base => ({ selectedNodes, onPlaceholderChange }) => {
-    if (!selectedNodes) {
+    if (!selectedNodes.lenght) {
       return null;
     }
     const element = selectedNodes[0];

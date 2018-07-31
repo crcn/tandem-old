@@ -40,6 +40,10 @@ export default compose(
     if (!graph) {
       return null;
     }
+    if (!selectedNodes.length) {
+      return null;
+    }
+
     const sourceNode = getSyntheticSourceNode(
       selectedNodes[0],
       graph

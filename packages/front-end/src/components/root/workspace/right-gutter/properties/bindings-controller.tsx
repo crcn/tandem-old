@@ -128,6 +128,9 @@ export default compose(
     ...rest
   }) => {
     const selectedNode = selectedNodes[0];
+    if (!selectedNode) {
+      return null;
+    }
     const sourceNode = getSyntheticSourceNode(selectedNode, graph);
     const contentNode = getPCNodeContentNode(
       sourceNode.id,

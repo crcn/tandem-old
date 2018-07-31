@@ -1012,6 +1012,44 @@
           "bottom": 1675.897643431201
         }
       }
+    },
+    {
+      "label": "Element",
+      "is": "div",
+      "style": {
+        "box-sizing": "border-box",
+        "display": "block"
+      },
+      "attributes": {},
+      "id": "1d2fb74b470",
+      "name": "component",
+      "children": [
+        {
+          "publicName": "test",
+          "id": "1d2fb74b628",
+          "children": [
+            {
+              "id": "1d2fb74b469",
+              "name": "text",
+              "label": "Text",
+              "value": "Click to edit",
+              "style": {},
+              "children": [],
+              "metadata": {}
+            }
+          ],
+          "metadata": {},
+          "name": "slot"
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": -599.4586579611956,
+          "top": 382.4045177649981,
+          "right": -499.4586579611956,
+          "bottom": 482.4045177649981
+        }
+      }
     }
   ],
   "metadata": {}
