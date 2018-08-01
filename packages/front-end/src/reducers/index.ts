@@ -681,7 +681,11 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
         browser =>
           persistChangeLabel(
             label,
-            getInspectorSyntheticNode(node, browser.documents, browser.graph),
+            getInspectorSourceNode(
+              node,
+              state.sourceNodeInspector,
+              browser.graph
+            ),
             browser
           ),
         state

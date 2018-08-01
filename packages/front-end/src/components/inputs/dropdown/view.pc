@@ -413,7 +413,7 @@
                   },
                   "children": [
                     {
-                      "label": "menu",
+                      "label": "options",
                       "id": "806ffd06590",
                       "children": [
                         {

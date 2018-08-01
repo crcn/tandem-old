@@ -503,19 +503,14 @@ export const upsertFrames = <TState extends PCEditorState>(state: TState) => {
 
 export const persistChangeLabel = <TState extends PCEditorState>(
   newLabel: string,
-  node: SyntheticVisibleNode,
+  sourceNode: PCNode,
   state: TState
 ) => {
-  const newNode = maybeOverride(
-    PCOverridablePropertyName.LABEL,
-    newLabel,
-    null,
-    identity,
-    node => ({
-      ...node,
-      label: newLabel
-    })
-  )(node, state.documents, state.graph);
+  const newNode = {
+    ...sourceNode,
+    label: newLabel
+  };
+
   return replaceDependencyGraphPCNode(newNode, newNode, state);
 };
 

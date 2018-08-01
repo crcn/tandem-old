@@ -431,7 +431,7 @@ const translateContentNode = (
   context = setCurrentScope(contentNode.id, context);
   context = defineNestedObject([`_${contentNode.id}Props`], false, context);
   context = flattenTreeNode(contentNode)
-    .filter(isVisibleNode)
+    .filter(node => isVisibleNode(node))
     .reduce((context, node: ContentNode) => {
       if (node === contentNode) return context;
       context = addScopedLayerLabel(node.label, node.id, context);
@@ -960,6 +960,9 @@ const translateDynamicOverrides = (
       continue;
     }
 
+    // FIXME: this is FLAWED since the actual "scope" is the instance
+    context = addScopedLayerLabel(slot.label, slot.id, context);
+
     // We use the slot's name here so that developers can programatically override
     // the slot via controllers. This value should be unique, so if there's ever colliding slot names,
     // then there's an issue with the component file being translated.
@@ -1135,6 +1138,8 @@ const translateSlot = (slot: PCSlot, context: TranslateContext) => {
   const visibleChildren = slot.children.filter(
     child => isVisibleNode(child) || isSlot(child)
   );
+
+  context = addScopedLayerLabel(slot.label, slot.id, context);
 
   const slotPropName = getPublicLayerVarName(slot.label, slot.id, context);
 

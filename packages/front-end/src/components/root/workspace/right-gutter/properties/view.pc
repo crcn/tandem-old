@@ -235,7 +235,9 @@
                   "is": "7149f8192509",
                   "name": "component-instance",
                   "attributes": {},
-                  "style": {},
+                  "style": {
+                    "display": "none"
+                  },
                   "children": [
                     {
                       "id": "39f7576b32981",
@@ -1059,116 +1061,6 @@
       "controllers": [
         "./component-controller.tsx"
       ]
-    },
-    {
-      "id": "39f7576b5604",
-      "label": "Element",
-      "is": "div",
-      "name": "element",
-      "attributes": {},
-      "style": {
-        "box-sizing": "border-box",
-        "display": "block"
-      },
-      "children": [
-        {
-          "id": "39f7576b6396",
-          "is": "b6c162d113",
-          "name": "component-instance",
-          "attributes": {},
-          "style": {},
-          "children": [
-            {
-              "id": "39f7576b12814",
-              "variantId": null,
-              "propertyName": "text",
-              "targetIdPath": [
-                "b6c162d1281"
-              ],
-              "value": "Properties",
-              "name": "override",
-              "children": []
-            },
-            {
-              "slotId": "d6261ad52883",
-              "id": "39f7576b24848",
-              "children": [
-                {
-                  "id": "39f7576b24847",
-                  "is": "7149f8192509",
-                  "name": "component-instance",
-                  "attributes": {},
-                  "style": {},
-                  "children": [
-                    {
-                      "id": "39f7576b25662",
-                      "variantId": null,
-                      "propertyName": "text",
-                      "targetIdPath": [
-                        "7149f8192506"
-                      ],
-                      "value": "Label\n",
-                      "name": "override",
-                      "children": []
-                    },
-                    {
-                      "slotId": "e73029b416045",
-                      "id": "39f7576b35498",
-                      "children": [
-                        {
-                          "id": "39f7576b35497",
-                          "is": "7149f8199122",
-                          "name": "component-instance",
-                          "attributes": {},
-                          "style": {},
-                          "children": [],
-                          "metadata": {
-                            "bounds": {
-                              "left": 384,
-                              "top": 298,
-                              "right": 484,
-                              "bottom": 327.0358087589019
-                            }
-                          },
-                          "label": "label input"
-                        }
-                      ],
-                      "metadata": {},
-                      "name": "plug"
-                    }
-                  ],
-                  "metadata": {
-                    "bounds": {
-                      "left": 486,
-                      "top": 306,
-                      "right": 586,
-                      "bottom": 353.5832678332798
-                    }
-                  }
-                }
-              ],
-              "metadata": {},
-              "name": "plug"
-            }
-          ],
-          "metadata": {
-            "bounds": {
-              "left": 321,
-              "top": 189,
-              "right": 525,
-              "bottom": 287.3571410945104
-            }
-          }
-        }
-      ],
-      "metadata": {
-        "bounds": {
-          "left": -146,
-          "top": 10,
-          "right": 42.934401954081984,
-          "bottom": 174.08508376102967
-        }
-      }
     }
   ],
   "metadata": {}
