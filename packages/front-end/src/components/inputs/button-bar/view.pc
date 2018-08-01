@@ -16,7 +16,7 @@
       "name": "component",
       "children": [
         {
-          "publicName": "children",
+          "label": "children",
           "id": "a282a90069",
           "children": [
             {

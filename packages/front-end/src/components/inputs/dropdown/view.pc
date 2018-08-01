@@ -413,7 +413,7 @@
                   },
                   "children": [
                     {
-                      "publicName": "menu",
+                      "label": "menu",
                       "id": "806ffd06590",
                       "children": [
                         {

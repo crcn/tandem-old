@@ -579,7 +579,7 @@ export const persistWrapInSlot = <TState extends PCEditorState>(
     return state;
   }
 
-  const newSource = createPCSlot(generateUID(), [sourceNode]);
+  const newSource = createPCSlot([sourceNode]);
 
   state = replaceDependencyGraphPCNode(newSource, sourceNode, state);
 

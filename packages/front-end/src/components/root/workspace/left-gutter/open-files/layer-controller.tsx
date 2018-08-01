@@ -196,7 +196,7 @@ export default Base => {
           label = assocSourceNode.is || "Element";
         }
         if (assocSourceNode.name === PCSourceTagNames.SLOT) {
-          label = assocSourceNode.publicName;
+          label = assocSourceNode.label;
         }
       }
 

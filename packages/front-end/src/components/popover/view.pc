@@ -20,7 +20,7 @@
           "style": {},
           "children": [
             {
-              "publicName": "anchor",
+              "label": "anchor",
               "id": "c00d8561361",
               "children": [
                 {
@@ -62,7 +62,7 @@
               "id": "e6638364184",
               "children": [
                 {
-                  "publicName": "content",
+                  "label": "content",
                   "id": "e6638364254",
                   "children": [
                     {
@@ -169,7 +169,7 @@
       "name": "component",
       "children": [
         {
-          "publicName": "children",
+          "label": "children",
           "id": "e691a1d915771",
           "children": [
             {

@@ -22,7 +22,7 @@
       "name": "component",
       "children": [
         {
-          "publicName": "icon",
+          "label": "icon",
           "id": "e42107633",
           "children": [
             {

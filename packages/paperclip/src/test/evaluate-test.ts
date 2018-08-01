@@ -689,7 +689,7 @@ describe(__filename + "#", () => {
 
     const component1 = cleanIds(
       createPCComponent("Test", "div", {}, {}, [
-        createPCSlot(null, [createPCTextNode("blarg")])
+        createPCSlot([createPCTextNode("blarg")])
       ])
     );
 
@@ -747,7 +747,7 @@ describe(__filename + "#", () => {
   it("can override slot children", () => {
     const cleanIds = nodeIdCleaner();
 
-    const slot1 = cleanIds(createPCSlot(null, [createPCTextNode("a")]));
+    const slot1 = cleanIds(createPCSlot([createPCTextNode("a")]));
 
     const component1 = cleanIds(
       createPCComponent("Test", "div", {}, {}, [slot1])

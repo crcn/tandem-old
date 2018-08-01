@@ -558,7 +558,10 @@ const translatedUsedComponentInstances = (
   );
 
   if (isPCComponentOrInstance(component) && extendsComponent(component)) {
-    context = translateUsedComponentInstance(component, context);
+    context = translateUsedComponentInstance(
+      component as PCComponentInstanceElement,
+      context
+    );
   }
   for (const instance of componentInstances) {
     context = translateUsedComponentInstance(
@@ -960,14 +963,17 @@ const translateDynamicOverrides = (
     // We use the slot's name here so that developers can programatically override
     // the slot via controllers. This value should be unique, so if there's ever colliding slot names,
     // then there's an issue with the component file being translated.
+
+    const slotPropName =
+      (slot.label && getPublicLayerVarName(slot.label, slot.id, context)) ||
+      `_${slot.id}`;
+
     context = addOpenTag(
-      `if (!_${instance.id}Props.${slot.publicName}) {\n`,
+      `if (!_${instance.id}Props.${slotPropName}) {\n`,
       context
     );
-    context = addOpenTag(
-      `_${instance.id}Props.${slot.publicName} = [\n`,
-      context
-    );
+
+    context = addOpenTag(`_${instance.id}Props.${slotPropName} = [\n`, context);
     for (const child of visibleChildren) {
       context = translateVisibleNode(child, context);
       context = addLineItem(",\n", context);
@@ -1130,9 +1136,11 @@ const translateSlot = (slot: PCSlot, context: TranslateContext) => {
     child => isVisibleNode(child) || isSlot(child)
   );
 
-  if (slot.publicName) {
+  const slotPropName = getPublicLayerVarName(slot.label, slot.id, context);
+
+  if (slotPropName) {
     context = addLineItem(
-      `_${context.currentScope}Props.${slot.publicName} || `,
+      `_${context.currentScope}Props.${slotPropName} || `,
       context
     );
   }

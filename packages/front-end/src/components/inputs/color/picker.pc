@@ -1025,7 +1025,7 @@
       "name": "component",
       "children": [
         {
-          "publicName": "test",
+          "label": "test",
           "id": "1d2fb74b628",
           "children": [
             {

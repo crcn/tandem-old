@@ -23,7 +23,7 @@
           "style": {},
           "children": [
             {
-              "publicName": "label",
+              "label": "label",
               "id": "ba94dac93878",
               "children": [
                 {
@@ -61,7 +61,7 @@
           },
           "children": [
             {
-              "publicName": "input",
+              "label": "input",
               "id": "e73029b416045",
               "children": [
                 {
