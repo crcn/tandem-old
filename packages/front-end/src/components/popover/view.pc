@@ -1,7 +1,8 @@
 {
   "id": "9b7b527f6219",
+  "version": "0.0.4",
+  "metadata": {},
   "name": "module",
-  "version": "0.0.3",
   "children": [
     {
       "label": "Popover",
@@ -202,6 +203,5 @@
         "./content-controller.tsx"
       ]
     }
-  ],
-  "metadata": {}
+  ]
 }

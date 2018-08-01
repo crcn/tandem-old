@@ -1,6 +1,6 @@
 {
   "id": "808486bb2",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "metadata": {},
   "name": "module",
   "children": [
@@ -39,62 +39,29 @@
               "id": "808486bb6",
               "name": "element",
               "label": "Input Wrapper",
-              "style": {},
+              "style": {
+                "padding-bottom": "8px"
+              },
               "container": "containere12829e4",
               "attributes": {},
               "is": "div",
               "children": [
                 {
-                  "id": "808486bb7",
+                  "id": "acd54254336",
+                  "is": "7149f8199122",
                   "name": "component-instance",
-                  "is": "808486bb17",
-                  "variant": {},
-                  "style": {
-                    "left": 20,
-                    "right": 420,
-                    "top": 20,
-                    "bottom": 420
-                  },
-                  "children": [
-                    {
-                      "id": "63257bfd470810",
-                      "propertyName": "style",
-                      "targetIdPath": [
-                        "808486bb19"
-                      ],
-                      "value": {
-                        "padding": "4\npx",
-                        "outline": "none"
-                      },
-                      "name": "override",
-                      "children": []
-                    },
-                    {
-                      "id": "4a49008a81",
-                      "propertyName": "label",
-                      "targetIdPath": [
-                        "2ac23bf886500"
-                      ],
-                      "value": "quick search input",
-                      "name": "override",
-                      "children": []
-                    },
-                    {
-                      "id": "8c0647211395467",
-                      "propertyName": "style",
-                      "targetIdPath": [
-                        "2ac23bf886500"
-                      ],
-                      "value": {
-                        "border": "1px solid #CCC",
-                        "background": "transparent"
-                      },
-                      "name": "override",
-                      "children": []
+                  "attributes": {},
+                  "style": {},
+                  "children": [],
+                  "metadata": {
+                    "bounds": {
+                      "left": 384,
+                      "top": 298,
+                      "right": 484,
+                      "bottom": 327.0358087589019
                     }
-                  ],
-                  "metadata": {},
-                  "attributes": {}
+                  },
+                  "label": "quick search input"
                 }
               ],
               "metadata": {}
@@ -359,9 +326,7 @@
           "bottom": 185
         }
       },
-      "controllers": [
-        "../focus/controller.tsx"
-      ]
+      "controllers": []
     },
     {
       "label": "Modal",

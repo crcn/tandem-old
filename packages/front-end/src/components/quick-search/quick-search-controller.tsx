@@ -75,7 +75,8 @@ export default compose(
           children: results
         }}
         quickSearchInputProps={{
-          onChange: onInputChange
+          onChange: onInputChange,
+          focus: true
         }}
       />
     );

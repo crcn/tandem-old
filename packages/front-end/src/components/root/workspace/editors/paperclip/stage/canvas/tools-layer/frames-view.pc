@@ -1,7 +1,8 @@
 {
   "id": "11188f860",
+  "version": "0.0.4",
+  "metadata": {},
   "name": "module",
-  "version": "0.0.3",
   "children": [
     {
       "label": "Frame",
@@ -394,16 +395,6 @@
                   "children": []
                 },
                 {
-                  "id": "60bcc5b28721",
-                  "propertyName": "label",
-                  "targetIdPath": [
-                    "77a7a2c122"
-                  ],
-                  "value": "mode toggle input",
-                  "name": "override",
-                  "children": []
-                },
-                {
                   "id": "5b2acf9d88333",
                   "propertyName": "style",
                   "targetIdPath": [
@@ -472,6 +463,5 @@
       },
       "label": "Frames Preview"
     }
-  ],
-  "metadata": {}
+  ]
 }

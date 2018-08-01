@@ -1,7 +1,8 @@
 {
   "id": "76b155a0893154",
+  "version": "0.0.4",
+  "metadata": {},
   "name": "module",
-  "version": "0.0.3",
   "children": [
     {
       "label": "Dropdown Menu Item",
@@ -836,6 +837,5 @@
       },
       "label": "Dropdown open"
     }
-  ],
-  "metadata": {}
+  ]
 }

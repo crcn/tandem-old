@@ -1,7 +1,8 @@
 {
   "id": "b34e7ef42461334",
+  "version": "0.0.4",
+  "metadata": {},
   "name": "module",
-  "version": "0.0.3",
   "children": [
     {
       "label": "Layers Pane",
@@ -59,17 +60,6 @@
             "d3bf183b30"
           ],
           "value": true,
-          "name": "override",
-          "children": []
-        },
-        {
-          "id": "de0c4866",
-          "variantId": null,
-          "propertyName": "label",
-          "targetIdPath": [
-            "b6c162d140"
-          ],
-          "value": "Content",
           "name": "override",
           "children": []
         },
@@ -418,6 +408,5 @@
         "./layers-pane-controller.tsx"
       ]
     }
-  ],
-  "metadata": {}
+  ]
 }

@@ -1,7 +1,8 @@
 {
   "id": "33b1b6b130414",
+  "version": "0.0.4",
+  "metadata": {},
   "name": "module",
-  "version": "0.0.3",
   "children": [
     {
       "label": "Workspace",
@@ -347,6 +348,5 @@
         }
       }
     }
-  ],
-  "metadata": {}
+  ]
 }

@@ -1,7 +1,8 @@
 {
   "id": "45055e8e1",
+  "version": "0.0.4",
+  "metadata": {},
   "name": "module",
-  "version": "0.0.3",
   "children": [
     {
       "label": "Styles",
@@ -295,6 +296,5 @@
         }
       }
     }
-  ],
-  "metadata": {}
+  ]
 }

@@ -1,7 +1,8 @@
 {
   "id": "b78f10d1027",
+  "version": "0.0.4",
+  "metadata": {},
   "name": "module",
-  "version": "0.0.3",
   "children": [
     {
       "label": "Pane",
@@ -132,6 +133,5 @@
         }
       }
     }
-  ],
-  "metadata": {}
+  ]
 }

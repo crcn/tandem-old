@@ -1,7 +1,8 @@
 {
   "id": "eb4cfb9719",
+  "version": "0.0.4",
+  "metadata": {},
   "name": "module",
-  "version": "0.0.3",
   "children": [
     {
       "label": "Switch",
@@ -100,6 +101,5 @@
         "./controller.tsx"
       ]
     }
-  ],
-  "metadata": {}
+  ]
 }

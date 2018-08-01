@@ -1,6 +1,6 @@
 {
   "id": "808486bb69",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "metadata": {},
   "name": "module",
   "children": [
@@ -33,26 +33,6 @@
               "value": {
                 "çheight": "100px"
               },
-              "name": "override",
-              "children": []
-            },
-            {
-              "id": "fb95cf8679",
-              "propertyName": "label",
-              "targetIdPath": [
-                "46686eab3161"
-              ],
-              "value": "Anchor",
-              "name": "override",
-              "children": []
-            },
-            {
-              "id": "659da073141",
-              "propertyName": "label",
-              "targetIdPath": [
-                "ddec6a12139578"
-              ],
-              "value": "Content",
               "name": "override",
               "children": []
             },
@@ -236,17 +216,6 @@
               "value": {
                 "çheight": "100px"
               },
-              "name": "override",
-              "children": []
-            },
-            {
-              "id": "bc4ec7479",
-              "propertyName": "label",
-              "targetIdPath": [
-                "ff4f91e03148",
-                "46686eab3161"
-              ],
-              "value": "Anchor",
               "name": "override",
               "children": []
             }

@@ -1,7 +1,8 @@
 {
   "id": "b34e7ef4148",
+  "version": "0.0.4",
+  "metadata": {},
   "name": "module",
-  "version": "0.0.3",
   "children": [
     {
       "label": "Tree",
@@ -240,6 +241,5 @@
         }
       }
     }
-  ],
-  "metadata": {}
+  ]
 }

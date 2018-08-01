@@ -1,7 +1,8 @@
 {
   "id": "a5bde25041538",
+  "version": "0.0.4",
+  "metadata": {},
   "name": "module",
-  "version": "0.0.3",
   "children": [
     {
       "label": "Picker",
@@ -309,6 +310,5 @@
         }
       }
     }
-  ],
-  "metadata": {}
+  ]
 }

@@ -1,7 +1,8 @@
 {
   "id": "f9ffe26e5",
+  "version": "0.0.4",
+  "metadata": {},
   "name": "module",
-  "version": "0.0.3",
   "children": [
     {
       "label": "Input Properties",
@@ -75,27 +76,6 @@
               "value": "./image.gif",
               "name": "override",
               "children": []
-            },
-            {
-              "id": "6e2729d443542",
-              "propertyName": "label",
-              "targetIdPath": [
-                "7149f8199969",
-                "7149f8199120"
-              ],
-              "value": "Text Input",
-              "name": "override",
-              "children": []
-            },
-            {
-              "id": "6e2729d443543",
-              "propertyName": "label",
-              "targetIdPath": [
-                "7149f8199969"
-              ],
-              "value": "Placeholder Input",
-              "name": "override",
-              "children": []
             }
           ],
           "metadata": {
@@ -120,6 +100,5 @@
         "./input-controller.tsx"
       ]
     }
-  ],
-  "metadata": {}
+  ]
 }

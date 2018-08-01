@@ -1,7 +1,8 @@
 {
   "id": "6a863e8637",
+  "version": "0.0.4",
+  "metadata": {},
   "name": "module",
-  "version": "0.0.3",
   "children": [
     {
       "label": "Variant option",
@@ -153,6 +154,5 @@
         "./option-controller.tsx"
       ]
     }
-  ],
-  "metadata": {}
+  ]
 }

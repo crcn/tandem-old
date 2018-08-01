@@ -1,7 +1,8 @@
 {
   "id": "296b92da36265",
+  "version": "0.0.4",
+  "metadata": {},
   "name": "module",
-  "version": "0.0.3",
   "children": [
     {
       "label": "Outer Shadows",
@@ -490,6 +491,5 @@
         "./box-shadows-controller.tsx"
       ]
     }
-  ],
-  "metadata": {}
+  ]
 }

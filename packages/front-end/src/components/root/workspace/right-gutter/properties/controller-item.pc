@@ -1,7 +1,8 @@
 {
   "id": "b64f6eab2",
+  "version": "0.0.4",
+  "metadata": {},
   "name": "module",
-  "version": "0.0.3",
   "children": [
     {
       "label": "Controller Item",
@@ -124,6 +125,5 @@
         "./controller-item-controller.tsx"
       ]
     }
-  ],
-  "metadata": {}
+  ]
 }

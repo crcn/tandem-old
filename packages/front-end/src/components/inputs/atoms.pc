@@ -1,7 +1,8 @@
 {
   "id": "76b155a0869608",
+  "version": "0.0.4",
+  "metadata": {},
   "name": "module",
-  "version": "0.0.3",
   "children": [
     {
       "label": "Input Row",
@@ -655,6 +656,5 @@
         }
       }
     }
-  ],
-  "metadata": {}
+  ]
 }

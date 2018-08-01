@@ -1,7 +1,8 @@
 {
   "id": "ab9eb3a123020",
+  "version": "0.0.4",
+  "metadata": {},
   "name": "module",
-  "version": "0.0.3",
   "children": [
     {
       "label": "Opacity Pane",
@@ -140,6 +141,5 @@
         "./opacity-controller.tsx"
       ]
     }
-  ],
-  "metadata": {}
+  ]
 }

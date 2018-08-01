@@ -1,7 +1,8 @@
 {
   "id": "296b92da26125",
+  "version": "0.0.4",
+  "metadata": {},
   "name": "module",
-  "version": "0.0.3",
   "children": [
     {
       "label": "Inherit",
@@ -52,17 +53,6 @@
           "value": {
             "display": "block"
           },
-          "name": "override",
-          "children": []
-        },
-        {
-          "id": "ff05cf7d3",
-          "variantId": null,
-          "propertyName": "label",
-          "targetIdPath": [
-            "b6c162d140"
-          ],
-          "value": "Content",
           "name": "override",
           "children": []
         },
@@ -269,6 +259,5 @@
         "./inherit-controller.tsx"
       ]
     }
-  ],
-  "metadata": {}
+  ]
 }

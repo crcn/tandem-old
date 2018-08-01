@@ -1,7 +1,8 @@
 {
   "id": "ab406a6b793607",
+  "version": "0.0.4",
+  "metadata": {},
   "name": "module",
-  "version": "0.0.3",
   "children": [
     {
       "label": "toolbar",
@@ -443,6 +444,5 @@
         }
       }
     }
-  ],
-  "metadata": {}
+  ]
 }

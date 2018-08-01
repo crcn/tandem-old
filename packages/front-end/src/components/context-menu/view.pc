@@ -1,7 +1,8 @@
 {
   "id": "8c06472158661",
+  "version": "0.0.4",
+  "metadata": {},
   "name": "module",
-  "version": "0.0.3",
   "children": [
     {
       "label": "Context Menu",
@@ -226,6 +227,5 @@
         }
       }
     }
-  ],
-  "metadata": {}
+  ]
 }

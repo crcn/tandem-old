@@ -1,7 +1,8 @@
 {
   "id": "296b92da14567",
+  "version": "0.0.4",
+  "metadata": {},
   "name": "module",
-  "version": "0.0.3",
   "children": [
     {
       "label": "Background Item",
@@ -124,16 +125,6 @@
             "b6c162d1281"
           ],
           "value": "backgrounds",
-          "name": "override",
-          "children": []
-        },
-        {
-          "id": "53f5d4a29897",
-          "propertyName": "label",
-          "targetIdPath": [
-            "b6c162d140"
-          ],
-          "value": "Content",
           "name": "override",
           "children": []
         },
@@ -435,16 +426,6 @@
               "value": "5px",
               "name": "override",
               "children": []
-            },
-            {
-              "id": "53f5d4a2115967",
-              "propertyName": "label",
-              "targetIdPath": [
-                "7149f8199969"
-              ],
-              "value": "Left Input",
-              "name": "override",
-              "children": []
             }
           ],
           "metadata": {
@@ -624,16 +605,6 @@
                   "value": "5px",
                   "name": "override",
                   "children": []
-                },
-                {
-                  "id": "53f5d4a259051",
-                  "propertyName": "label",
-                  "targetIdPath": [
-                    "7149f8199969"
-                  ],
-                  "value": "Left Input",
-                  "name": "override",
-                  "children": []
                 }
               ],
               "metadata": {
@@ -689,16 +660,6 @@
                   "value": "5px",
                   "name": "override",
                   "children": []
-                },
-                {
-                  "id": "53f5d4a259057",
-                  "propertyName": "label",
-                  "targetIdPath": [
-                    "7149f8199969"
-                  ],
-                  "value": "Left Input",
-                  "name": "override",
-                  "children": []
                 }
               ],
               "metadata": {
@@ -723,6 +684,5 @@
         }
       }
     }
-  ],
-  "metadata": {}
+  ]
 }

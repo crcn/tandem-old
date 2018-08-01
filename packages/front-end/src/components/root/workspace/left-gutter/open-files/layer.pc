@@ -1,7 +1,8 @@
 {
   "id": "de0c4865",
+  "version": "0.0.4",
+  "metadata": {},
   "name": "module",
-  "version": "0.0.3",
   "children": [
     {
       "label": "Node Layer",
@@ -565,17 +566,6 @@
           "metadata": {}
         },
         {
-          "id": "d3bf183b38",
-          "variantId": null,
-          "propertyName": "label",
-          "targetIdPath": [
-            "d3bf183b17"
-          ],
-          "value": "component icon",
-          "name": "override",
-          "children": []
-        },
-        {
           "id": "28fcc84639",
           "variantId": "d3bf183b26",
           "propertyName": "style",
@@ -761,6 +751,5 @@
       },
       "controllers": []
     }
-  ],
-  "metadata": {}
+  ]
 }

@@ -1,7 +1,8 @@
 {
   "id": "296b92da1",
+  "version": "0.0.4",
+  "metadata": {},
   "name": "module",
-  "version": "0.0.3",
   "children": [
     {
       "label": "Typograph",
@@ -329,16 +330,6 @@
                       "value": "12pt",
                       "name": "override",
                       "children": []
-                    },
-                    {
-                      "id": "72c3a6226511",
-                      "propertyName": "label",
-                      "targetIdPath": [
-                        "7149f8199969"
-                      ],
-                      "value": "Line Input",
-                      "name": "override",
-                      "children": []
                     }
                   ],
                   "metadata": {}
@@ -382,16 +373,6 @@
                         "7149f8199121"
                       ],
                       "value": "12pt",
-                      "name": "override",
-                      "children": []
-                    },
-                    {
-                      "id": "72c3a6232342",
-                      "propertyName": "label",
-                      "targetIdPath": [
-                        "7149f8199969"
-                      ],
-                      "value": "Spacing Input",
                       "name": "override",
                       "children": []
                     }
@@ -584,16 +565,6 @@
                           "value": {},
                           "name": "override",
                           "children": []
-                        },
-                        {
-                          "id": "72c3a6241088",
-                          "propertyName": "label",
-                          "targetIdPath": [
-                            "7149f8199969"
-                          ],
-                          "value": "Size Input",
-                          "name": "override",
-                          "children": []
                         }
                       ],
                       "metadata": {},
@@ -779,6 +750,5 @@
         "./typography-controller.tsx"
       ]
     }
-  ],
-  "metadata": {}
+  ]
 }

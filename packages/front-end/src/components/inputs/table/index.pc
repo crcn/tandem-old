@@ -1,7 +1,8 @@
 {
   "id": "651e07640",
+  "version": "0.0.4",
+  "metadata": {},
   "name": "module",
-  "version": "0.0.3",
   "children": [
     {
       "label": "Table Cell",
@@ -409,6 +410,5 @@
         }
       }
     }
-  ],
-  "metadata": {}
+  ]
 }

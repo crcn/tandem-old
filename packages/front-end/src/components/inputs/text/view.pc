@@ -1,7 +1,8 @@
 {
   "id": "76b155a0907062",
+  "version": "0.0.4",
+  "metadata": {},
   "name": "module",
-  "version": "0.0.3",
   "children": [
     {
       "label": "Text Input",
@@ -16,8 +17,7 @@
       "attributes": {},
       "id": "7149f8199122",
       "name": "component",
-      "children": [
-      ],
+      "children": [],
       "metadata": {
         "bounds": {
           "left": 384,
@@ -30,6 +30,5 @@
         "./controller.tsx"
       ]
     }
-  ],
-  "metadata": {}
+  ]
 }

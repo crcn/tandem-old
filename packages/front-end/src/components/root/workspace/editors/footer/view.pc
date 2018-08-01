@@ -1,7 +1,8 @@
 {
   "id": "174f96bb0",
+  "version": "0.0.4",
+  "metadata": {},
   "name": "module",
-  "version": "0.0.3",
   "children": [
     {
       "label": "Editor Footer",
@@ -58,6 +59,5 @@
         }
       }
     }
-  ],
-  "metadata": {}
+  ]
 }

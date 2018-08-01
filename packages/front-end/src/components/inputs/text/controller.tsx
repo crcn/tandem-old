@@ -1,6 +1,6 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import { compose, pure, withHandlers, lifecycle, withProps } from "recompose";
+import { compose, pure, withHandlers, lifecycle } from "recompose";
 import { FocusComponent } from "../../focus";
 
 export const withInputHandlers = () =>

@@ -5,9 +5,10 @@ OBJECTIVE:
 
 IMMEDIATE:
 
-- clean up PC inefficiencies
-  - warn about label overrides
-  - remove children overrides in props
+- rewire
+
+  - border inputs
+
 - refactor styles pane to use inspector nodes instead of synthetic
 - ability to name slots
 - update compiler to accept bindings

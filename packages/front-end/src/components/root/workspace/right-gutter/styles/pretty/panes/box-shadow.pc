@@ -1,7 +1,8 @@
 {
   "id": "328486385",
+  "version": "0.0.4",
+  "metadata": {},
   "name": "module",
-  "version": "0.0.3",
   "children": [
     {
       "label": "Box shadow item",
@@ -209,6 +210,5 @@
         "./box-shadow-item-controller.tsx"
       ]
     }
-  ],
-  "metadata": {}
+  ]
 }

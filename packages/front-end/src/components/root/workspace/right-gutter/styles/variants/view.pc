@@ -1,7 +1,8 @@
 {
   "id": "6a863e861",
+  "version": "0.0.4",
+  "metadata": {},
   "name": "module",
-  "version": "0.0.3",
   "children": [
     {
       "id": "6aff62873",
@@ -42,16 +43,6 @@
             "b6c162d1281"
           ],
           "value": "variants",
-          "name": "override",
-          "children": []
-        },
-        {
-          "id": "6a863e8632",
-          "propertyName": "label",
-          "targetIdPath": [
-            "b6c162d140"
-          ],
-          "value": "Content",
           "name": "override",
           "children": []
         },
@@ -441,6 +432,5 @@
         "./controller.tsx"
       ]
     }
-  ],
-  "metadata": {}
+  ]
 }

@@ -1,7 +1,8 @@
 {
   "id": "a5bde25030259",
+  "version": "0.0.4",
+  "metadata": {},
   "name": "module",
-  "version": "0.0.3",
   "children": [
     {
       "id": "839a748a3",
@@ -131,6 +132,5 @@
         }
       }
     }
-  ],
-  "metadata": {}
+  ]
 }

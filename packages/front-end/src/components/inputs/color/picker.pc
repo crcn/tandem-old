@@ -1,7 +1,8 @@
 {
   "id": "b5f797ed34250",
+  "version": "0.0.4",
+  "metadata": {},
   "name": "module",
-  "version": "0.0.3",
   "children": [
     {
       "label": "Color Picker",
@@ -1013,6 +1014,5 @@
         }
       }
     }
-  ],
-  "metadata": {}
+  ]
 }

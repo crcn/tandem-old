@@ -1,7 +1,8 @@
 {
   "id": "42a77ed16",
+  "version": "0.0.4",
+  "metadata": {},
   "name": "module",
-  "version": "0.0.3",
   "children": [
     {
       "label": "Component Instance Variant",
@@ -498,6 +499,5 @@
         "./variant-input-controller.tsx"
       ]
     }
-  ],
-  "metadata": {}
+  ]
 }

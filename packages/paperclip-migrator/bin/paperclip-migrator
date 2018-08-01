@@ -14,7 +14,7 @@ for (const relativePath of filePaths) {
     const newModule = migrate(JSON.parse(fs.readFileSync(relativePath, "utf8")));
     const moduleJSON = JSON.stringify(newModule, null, 2);
     if (write) {
-      fs.writeSync(relativePath, moduleJSON);
+      fs.writeFileSync(relativePath, moduleJSON);
       console.log(`migrated ${relativePath}`);
     } else {
       console.log(moduleJSON);

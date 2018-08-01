@@ -1,7 +1,8 @@
 {
   "id": "c2276d6621338",
+  "version": "0.0.4",
+  "metadata": {},
   "name": "module",
-  "version": "0.0.3",
   "children": [
     {
       "id": "664248a05",
@@ -335,16 +336,6 @@
                 "display": "none"
               },
               "children": [
-                {
-                  "id": "89ef2c1413",
-                  "propertyName": "label",
-                  "targetIdPath": [
-                    "45055e8e8"
-                  ],
-                  "value": "",
-                  "name": "override",
-                  "children": []
-                },
                 {
                   "id": "2842a72d19",
                   "variantId": "2842a72d17",
@@ -732,6 +723,5 @@
         }
       }
     }
-  ],
-  "metadata": {}
+  ]
 }

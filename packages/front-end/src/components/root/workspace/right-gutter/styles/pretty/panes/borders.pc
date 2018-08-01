@@ -1,7 +1,8 @@
 {
   "id": "296b92da24677",
+  "version": "0.0.4",
+  "metadata": {},
   "name": "module",
-  "version": "0.0.3",
   "children": [
     {
       "label": "Border",
@@ -116,17 +117,6 @@
                       "children": []
                     },
                     {
-                      "id": "9b4f0db32",
-                      "variantId": null,
-                      "propertyName": "label",
-                      "targetIdPath": [
-                        "7149f81937818"
-                      ],
-                      "value": "",
-                      "name": "override",
-                      "children": []
-                    },
-                    {
                       "slotId": "e73029b416045",
                       "id": "e94fae192098",
                       "children": [
@@ -218,17 +208,6 @@
                         "7149f8199121"
                       ],
                       "value": "5px",
-                      "name": "override",
-                      "children": []
-                    },
-                    {
-                      "id": "9b4f0db33",
-                      "variantId": null,
-                      "propertyName": "label",
-                      "targetIdPath": [
-                        "7149f81937818"
-                      ],
-                      "value": "",
                       "name": "override",
                       "children": []
                     },
@@ -335,17 +314,6 @@
                       "children": []
                     },
                     {
-                      "id": "9b4f0db34",
-                      "variantId": null,
-                      "propertyName": "label",
-                      "targetIdPath": [
-                        "7149f81937818"
-                      ],
-                      "value": "",
-                      "name": "override",
-                      "children": []
-                    },
-                    {
                       "slotId": "e73029b416045",
                       "id": "e94fae1917624",
                       "children": [
@@ -436,17 +404,6 @@
                         "7149f8199121"
                       ],
                       "value": "5px",
-                      "name": "override",
-                      "children": []
-                    },
-                    {
-                      "id": "9b4f0db35",
-                      "variantId": null,
-                      "propertyName": "label",
-                      "targetIdPath": [
-                        "7149f81937818"
-                      ],
-                      "value": "",
                       "name": "override",
                       "children": []
                     },
@@ -695,28 +652,6 @@
                   "value": {
                     "height": "22px"
                   },
-                  "name": "override",
-                  "children": []
-                },
-                {
-                  "id": "9a067ebc2",
-                  "variantId": null,
-                  "propertyName": "label",
-                  "targetIdPath": [
-                    "7be2457119"
-                  ],
-                  "value": "",
-                  "name": "override",
-                  "children": []
-                },
-                {
-                  "id": "5720312d1",
-                  "variantId": null,
-                  "propertyName": "label",
-                  "targetIdPath": [
-                    "7be2457126"
-                  ],
-                  "value": "",
                   "name": "override",
                   "children": []
                 }
@@ -992,15 +927,6 @@
                 "border-radius": "10px"
               },
               "children": [
-                {
-                  "id": "9b4f0db31",
-                  "variantId": null,
-                  "propertyName": "label",
-                  "targetIdPath": [],
-                  "value": "toggler",
-                  "name": "override",
-                  "children": []
-                },
                 {
                   "id": "7be2457120",
                   "variantId": null,
@@ -1443,6 +1369,5 @@
         "./border-styles-controller.tsx"
       ]
     }
-  ],
-  "metadata": {}
+  ]
 }

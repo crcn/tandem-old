@@ -1,7 +1,8 @@
 {
   "id": "a5bde25018988",
+  "version": "0.0.4",
+  "metadata": {},
   "name": "module",
-  "version": "0.0.3",
   "children": [
     {
       "label": "Modal",
@@ -92,16 +93,6 @@
               },
               "name": "override",
               "children": []
-            },
-            {
-              "id": "ef1c422369",
-              "propertyName": "label",
-              "targetIdPath": [
-                "33949bb81531103"
-              ],
-              "value": "filter input",
-              "name": "override",
-              "children": []
             }
           ],
           "metadata": {
@@ -127,6 +118,5 @@
         "./modal-controller.tsx"
       ]
     }
-  ],
-  "metadata": {}
+  ]
 }

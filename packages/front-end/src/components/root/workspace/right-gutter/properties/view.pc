@@ -1,7 +1,8 @@
 {
   "id": "e28a9f9410714",
+  "version": "0.0.4",
+  "metadata": {},
   "name": "module",
-  "version": "0.0.3",
   "children": [
     {
       "label": "Text Properties",
@@ -103,27 +104,6 @@
                         "7149f8199121"
                       ],
                       "value": "./image.gif",
-                      "name": "override",
-                      "children": []
-                    },
-                    {
-                      "id": "5dea740a242",
-                      "propertyName": "label",
-                      "targetIdPath": [
-                        "7149f8199969",
-                        "7149f8199120"
-                      ],
-                      "value": "Text Input",
-                      "name": "override",
-                      "children": []
-                    },
-                    {
-                      "id": "42c082ba95",
-                      "propertyName": "label",
-                      "targetIdPath": [
-                        "7149f8199969"
-                      ],
-                      "value": "Text input",
                       "name": "override",
                       "children": []
                     },
@@ -454,19 +434,7 @@
           "style": {
             "display": "none"
           },
-          "children": [
-            {
-              "id": "38ae9df1",
-              "variantId": null,
-              "propertyName": "label",
-              "targetIdPath": [
-                "50ae5f7b1"
-              ],
-              "value": "Controllers Pane",
-              "name": "override",
-              "children": []
-            }
-          ],
+          "children": [],
           "metadata": {
             "bounds": {
               "left": 862,
@@ -773,17 +741,6 @@
               "children": []
             },
             {
-              "id": "b64f6eab4",
-              "variantId": null,
-              "propertyName": "label",
-              "targetIdPath": [
-                "b6c162d140"
-              ],
-              "value": "Content",
-              "name": "override",
-              "children": []
-            },
-            {
               "slotId": "d6261ad53069",
               "id": "2c64e9ae12213",
               "children": [
@@ -1062,6 +1019,5 @@
         "./component-controller.tsx"
       ]
     }
-  ],
-  "metadata": {}
+  ]
 }

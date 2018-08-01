@@ -1,7 +1,8 @@
 {
   "id": "e6a0c2610",
+  "version": "0.0.4",
+  "metadata": {},
   "name": "module",
-  "version": "0.0.3",
   "children": [
     {
       "label": "Editor Windows",
@@ -68,6 +69,5 @@
         "./editor-windows-controller.tsx"
       ]
     }
-  ],
-  "metadata": {}
+  ]
 }

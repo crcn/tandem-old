@@ -1,7 +1,8 @@
 {
   "id": "70ef61a6213",
+  "version": "0.0.4",
+  "metadata": {},
   "name": "module",
-  "version": "0.0.3",
   "children": [
     {
       "label": "Button Bar Item",
@@ -91,6 +92,5 @@
         }
       }
     }
-  ],
-  "metadata": {}
+  ]
 }

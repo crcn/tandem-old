@@ -1,7 +1,8 @@
 {
   "id": "e99e2f6647",
+  "version": "0.0.4",
+  "metadata": {},
   "name": "module",
-  "version": "0.0.3",
   "children": [
     {
       "label": "Variables Tab",
@@ -964,6 +965,5 @@
         }
       }
     }
-  ],
-  "metadata": {}
+  ]
 }
