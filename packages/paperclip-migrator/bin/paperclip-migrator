@@ -3,8 +3,24 @@ const path = require("path");
 const fs = require("fs");
 const migrate = require("..");
 let filePath = process.argv[2];
-filePath = filePath.charAt(0) === "/" ? filePath : path.resolve(process.cwd(), filePath);
+const {_,write} = require("yargs").argv;
+const glob= require("glob");
+const filePaths = glob.sync(_[0]);
 
-const newModule = migrate(JSON.parse(fs.readFileSync(filePath, "utf8")));
+for (const relativePath of filePaths) {
 
-console.log(JSON.stringify(newModule, null, 2));
+
+  try {
+    const newModule = migrate(JSON.parse(fs.readFileSync(relativePath, "utf8")));
+    const moduleJSON = JSON.stringify(newModule, null, 2);
+    if (write) {
+      fs.writeSync(relativePath, moduleJSON);
+      console.log(`migrated ${relativePath}`);
+    } else {
+      console.log(moduleJSON);
+    }
+  } catch(e) {
+    console.error(e);
+  }
+}
+

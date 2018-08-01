@@ -17,7 +17,7 @@ import {
 import { uniq, isEqual } from "lodash";
 import { Dependency, DependencyGraph, updateGraphDependency } from "./graph";
 
-export const PAPERCLIP_MODULE_VERSION = "0.0.3";
+export const PAPERCLIP_MODULE_VERSION = "0.0.4";
 
 /*------------------------------------------
  * CONSTANTS
