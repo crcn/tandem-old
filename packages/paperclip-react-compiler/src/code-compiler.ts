@@ -441,7 +441,6 @@ const translateContentNode = (
 
       context = defineNestedObject([`_${node.id}Props`], false, context);
       context = addLineItem(`var _${node.id}Props = `, context);
-      context = translatePropertyBindings(node, context);
       context = addLine(
         `Object.assign(_${node.id}Props, _${contentNode.id}Props._${
           node.id
@@ -501,24 +500,6 @@ const translateContentNode = (
     `exports.${publicClassName} = ${internalVarName}({});`,
     context
   );
-  return context;
-};
-
-const translatePropertyBindings = (
-  node: ContentNode,
-  context: TranslateContext
-) => {
-  context = addOpenTag(`{\n`, context);
-  if (node.bind && node.bind.properties) {
-    for (const { from, to } of node.bind.properties) {
-      if (!from || !to) continue;
-      context = addLineItem(
-        `"${to}": _${context.currentScope}Props["${from}"],\n`,
-        context
-      );
-    }
-  }
-  context = addCloseTag(`};\n`, context);
   return context;
 };
 
@@ -733,7 +714,6 @@ const translateContentNodeOverrides = (
 
   for (let i = instances.length; i--; ) {
     const instance = instances[i];
-    context = translateLabelOverrides(component, instance, context);
     context = translateDynamicOverrides(component, instance, null, context);
   }
 
@@ -855,33 +835,6 @@ const defineNestedObject = (
     }
   }
 
-  return context;
-};
-
-const translateLabelOverrides = (
-  component: ContentNode,
-  instance: PCComponent | PCComponentInstanceElement,
-  context: TranslateContext
-) => {
-  const overrides = getOverrides(instance);
-  for (const override of overrides) {
-    if (isLabelOverride(override)) {
-      const keyPath = [instance.id + "Props", ...override.targetIdPath].map(
-        id => `_${id}`
-      );
-      context = defineNestedObject(
-        keyPath.slice(0, keyPath.length - 1),
-        true,
-        context
-      );
-      context = addLine(
-        `${keyPath.join(".")} = Object.assign({}, ${keyPath.join(".")}, _${
-          component.id
-        }Props.${camelCase(override.value)}Props);`,
-        context
-      );
-    }
-  }
   return context;
 };
 
@@ -1012,26 +965,6 @@ const translateDynamicOverrideSetter = (
   override: PCOverride,
   context: TranslateContext
 ) => {
-  switch (override.propertyName) {
-    // DEPRECATED
-    case PCOverridablePropertyName.CHILDREN: {
-      const visibleChildren = getVisibleChildren(override);
-
-      // may be defined in the upper scope
-      context = addOpenTag(`if (!${varName}.children) {\n`, context);
-      if (visibleChildren.length) {
-        context = addOpenTag(`${varName}.children =  [\n`, context);
-        for (const child of visibleChildren) {
-          context = translateVisibleNode(child, context);
-          context = addLineItem(",\n", context);
-        }
-        context = addCloseTag(`];\n`, context);
-      }
-      context = addCloseTag(`}\n`, context);
-      return context;
-    }
-  }
-
   if (override.variantId) {
     switch (override.propertyName) {
       case PCOverridablePropertyName.STYLE: {

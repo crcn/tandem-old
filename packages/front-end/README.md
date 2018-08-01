@@ -1,23 +1,8 @@
-OBJECTIVE:
-
-- eliminate current friction. Don't focus on UI.
-- make compiler more efficient. UI needs to be more explicit.
-
 IMMEDIATE:
 
-- rewire
-
-  - border inputs
-
-- refactor styles pane to use inspector nodes instead of synthetic
+- remove dead features in code compiler
+- DTS compiler for react
 - ability to name slots
-- update compiler to accept bindings
-- component instance bindings
-- wire up property overrides in evaluator
-- dts compiler
-- remove `Props` overrides
-- prohibit non-style overrides
-- ensure that label is no-longer used for defining props
 - make evaluator faster (refactor entirely -- use style sheets for style overrides. Necessary either way for pseudo elements)
   - leverage style sheets for style overrides
   - memoize evaluated instances

@@ -190,7 +190,6 @@ export type PCBaseElementChild =
 export type PCBaseElement<TName extends PCSourceTagNames> = {
   is: string;
   attributes: KeyValue<string>;
-  bind?: PCVisibleNodeBindings;
   children: PCBaseElementChild[];
 } & PCBaseVisibleNode<TName>;
 
@@ -204,7 +203,6 @@ export type PCComponentInstanceElement = PCBaseElement<
 
 export type PCTextNode = {
   value: string;
-  bind?: PCVisibleNodeBindings;
 } & PCBaseVisibleNode<PCSourceTagNames.TEXT>;
 
 export type PCVisibleNode = PCElement | PCTextNode | PCComponentInstanceElement;
@@ -640,38 +638,6 @@ export const getInstanceShadow = memoize(
     graph: DependencyGraph
   ): PCComponent => {
     return getPCNode(instance.is, graph) as PCComponent;
-  }
-);
-
-export const findSlottableElements = (
-  instance: PCComponentInstanceElement | PCComponent,
-  graph: DependencyGraph
-) => {
-  if (!extendsComponent(instance)) {
-    return [];
-  }
-
-  const component = getPCNode(instance.is, graph);
-
-  return getPCComponentSlottableElements(component as PCComponent);
-};
-
-export const getPCComponentSlottableElements = memoize(
-  (component: PCComponent) => {
-    return filterNestedNodes(
-      component,
-      (child: PCElement | PCComponentInstanceElement) => {
-        return (
-          (child.name === PCSourceTagNames.ELEMENT ||
-            PCSourceTagNames.COMPONENT_INSTANCE) &&
-          child.bind &&
-          child.bind.properties &&
-          child.bind.properties.some(
-            property => property.to === PCOverridablePropertyName.CHILDREN
-          )
-        );
-      }
-    );
   }
 );
 
