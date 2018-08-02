@@ -65,13 +65,13 @@ import {
   getSyntheticSourceNode,
   getSyntheticDocumentByDependencyUri,
   SyntheticElement,
+  isSyntheticNodeImmutable,
+  isSyntheticContentNode,
   SyntheticTextNode,
   SyntheticDocument,
   getSyntheticSourceUri,
   getNearestComponentInstances,
   isSyntheticVisibleNode,
-  setDocumentChecksum,
-  isSyntheticDocument,
   getSyntheticContentNode,
   SyntheticInstanceElement,
   getInheritedAndSelfOverrides
@@ -79,7 +79,7 @@ import {
 import * as path from "path";
 import { convertFixedBoundsToRelative } from "./synthetic-layout";
 import { diffTreeNode, patchTreeNode } from "./ot";
-import { evaluatePCModule } from "./evaluate";
+import { evaluatePCModule2 } from "./evaluate2";
 
 /*------------------------------------------
  * CONSTANTS
@@ -170,17 +170,22 @@ export const getFramesByDependencyUri = memoize(
     graph: DependencyGraph
   ) => {
     const document = getSyntheticDocumentByDependencyUri(uri, documents, graph);
-    return document ? getSyntheticDocumentFrames(document, frames) : [];
+    return document
+      ? getSyntheticDocumentFrames(document, frames)
+      : EMPTY_ARRAY;
   }
 );
 
 export const getSyntheticVisibleNodeComputedBounds = (
-  { id, isContentNode }: SyntheticVisibleNode,
-  frame: Frame
+  node: SyntheticVisibleNode,
+  frame: Frame,
+  graph: DependencyGraph
 ) => {
-  return isContentNode
+  return isSyntheticContentNode(node, graph)
     ? moveBounds(frame.bounds, NO_POINT)
-    : (frame.computed && frame.computed[id] && frame.computed[id].bounds) ||
+    : (frame.computed &&
+        frame.computed[node.id] &&
+        frame.computed[node.id].bounds) ||
         NO_BOUNDS;
 };
 
@@ -198,11 +203,15 @@ export const getFrameByContentNodeId = memoize(
 );
 
 export const getSyntheticVisibleNodeRelativeBounds = memoize(
-  (syntheticNode: SyntheticVisibleNode, frames: Frame[]): Bounds => {
+  (
+    syntheticNode: SyntheticVisibleNode,
+    frames: Frame[],
+    graph: DependencyGraph
+  ): Bounds => {
     const frame = getSyntheticVisibleNodeFrame(syntheticNode, frames);
     return frame
       ? shiftBounds(
-          getSyntheticVisibleNodeComputedBounds(syntheticNode, frame),
+          getSyntheticVisibleNodeComputedBounds(syntheticNode, frame, graph),
           frame.bounds
         )
       : NO_BOUNDS;
@@ -224,9 +233,9 @@ export const getPCNodeClip = (
   return {
     uri: getSyntheticSourceUri(node, graph),
     node: sourceNode,
-    fixedBounds: node.isContentNode
+    fixedBounds: isSyntheticContentNode(node, graph)
       ? frame.bounds
-      : getSyntheticVisibleNodeRelativeBounds(node, frames)
+      : getSyntheticVisibleNodeRelativeBounds(node, frames, graph)
   };
 };
 
@@ -300,10 +309,10 @@ export const updateSyntheticDocument = <TState extends PCEditorState>(
     throw new Error(` document does not exist`);
   }
 
-  const newDocument = setDocumentChecksum({
+  const newDocument = {
     ...document,
     ...properties
-  });
+  };
 
   return upsertFrames({
     ...(state as any),
@@ -321,7 +330,7 @@ export const removeSyntheticVisibleNode = <TState extends PCEditorState>(
   state: TState
 ) => {
   const document = getSyntheticVisibleNodeDocument(node.id, state.documents);
-  if (node.isContentNode) {
+  if (isSyntheticContentNode(node, state.graph)) {
     state = removeFrame(getFrameByContentNodeId(node.id, state.frames), state);
   }
 
@@ -407,7 +416,7 @@ export const updateSyntheticVisibleNodePosition = <
   node: SyntheticVisibleNode,
   state: TState
 ) => {
-  if (node.isContentNode) {
+  if (isSyntheticContentNode(node, state.graph)) {
     return updateFramePosition(
       position,
       getSyntheticVisibleNodeFrame(node, state.frames),
@@ -416,7 +425,11 @@ export const updateSyntheticVisibleNodePosition = <
   }
 
   return updateSyntheticVisibleNode(node, state, node => {
-    const bounds = getSyntheticVisibleNodeRelativeBounds(node, state.frames);
+    const bounds = getSyntheticVisibleNodeRelativeBounds(
+      node,
+      state.frames,
+      state.graph
+    );
     const newBounds = convertFixedBoundsToRelative(
       moveBounds(bounds, position),
       node,
@@ -440,7 +453,7 @@ export const updateSyntheticVisibleNodeBounds = <TState extends PCEditorState>(
   node: SyntheticVisibleNode,
   state: TState
 ) => {
-  if (node.isContentNode) {
+  if (isSyntheticContentNode(node, state.graph)) {
     return updateFrameBounds(
       bounds,
       getSyntheticVisibleNodeFrame(node, state.frames),
@@ -449,30 +462,7 @@ export const updateSyntheticVisibleNodeBounds = <TState extends PCEditorState>(
   }
 
   throw new Error("TODO");
-  // return updateSyntheticVisibleNode(node, state, (node) => {
-  //   const bounds = getSyntheticVisibleNodeRelativeBounds(node.id, state.frames);
-  //   const newBounds = convertFixedBoundsToRelative(
-  //     moveBounds(bounds, position),
-  //     node,
-  //     getSyntheticVisibleNodeDocument(node.id, state.frames)
-  //   );
-
-  //   return {
-  //     ...node,
-  //     style: {
-  //       ...node.style,
-  //       left: newBounds.left,
-  //       top: newBounds.top
-  //     }
-  //   };
-  // });
 };
-
-const assertValidDependencyGraph = memoize((graph: DependencyGraph) => {
-  for (const uri in graph) {
-    assertValidPCModule(graph[uri].content);
-  }
-});
 
 export const upsertFrames = <TState extends PCEditorState>(state: TState) => {
   const frames: Frame[] = [];
@@ -534,7 +524,7 @@ export const persistConvertNodeToComponent = <TState extends PCEditorState>(
       : (sourceNode.children || []).map(node => cloneTreeNode(node))
   );
 
-  if (node.isContentNode) {
+  if (isSyntheticContentNode(node, state.graph)) {
     component = updatePCNodeMetadata(sourceNode.metadata, component);
     sourceNode = updatePCNodeMetadata(
       {
@@ -652,48 +642,10 @@ export const syncSyntheticDocuments = <TState extends PCEditorState>(
   updatedDocuments: SyntheticDocument[],
   state: TState
 ) => {
-  const staleDocumentMap: {
-    [identifier: string]: SyntheticDocument;
-  } = state.documents.reduce(
-    (map, document: SyntheticDocument) => ({
-      ...map,
-      [document.id]: document
-    }),
-    {}
-  );
-
-  state = {
+  return upsertFrames({
     ...(state as any),
-    documents: updatedDocuments.map(document => {
-      const existingDocument = staleDocumentMap[document.id];
-      if (existingDocument) {
-        // if checksum exists, then the client is a head of the document being synced
-        if (existingDocument.checksum === document.checksum) {
-          return existingDocument;
-
-          // otherwise, use the fail safe for syncing documents
-        } else {
-          console.warn(`Checksum mismatch, patching synthetic document`);
-          const patchedDocument = setDocumentChecksum(
-            patchTreeNode(
-              diffTreeNode(existingDocument, document),
-              existingDocument
-            )
-          );
-
-          if (patchedDocument.checksum !== document.checksum) {
-            throw new Error(`Document checksum malformed.`);
-          }
-
-          // assert checksum match
-          return patchedDocument;
-        }
-      }
-      return document;
-    })
-  };
-
-  return upsertFrames(state);
+    documents: updatedDocuments
+  });
 };
 
 export const persistInsertNode = <TState extends PCEditorState>(
@@ -1005,7 +957,7 @@ const maybeOverride = (
   node: SyntheticVisibleNode,
   documents: SyntheticDocument[],
   graph: DependencyGraph,
-  targetSourceId: string = node.source.nodeId
+  targetSourceId: string = node.sourceNodeId
 ): PCVisibleNode => {
   const sourceNode = getPCNode(targetSourceId, graph) as PCVisibleNode;
   const contentNode = getSyntheticContentNode(node, documents);
@@ -1034,16 +986,21 @@ const maybeOverride = (
   );
 
   if (
-    node.immutable ||
+    isSyntheticNodeImmutable(
+      node,
+      getSyntheticVisibleNodeDocument(node.id, documents),
+      graph
+    ) ||
     variantId ||
     variantOverrides.length ||
-    targetSourceId !== node.source.nodeId
+    targetSourceId !== node.sourceNodeId
   ) {
     const document = getSyntheticVisibleNodeDocument(node.id, documents);
 
     const nearestComponentInstances = getNearestComponentInstances(
       node,
-      document
+      document,
+      graph
     );
 
     const mutableInstance: SyntheticVisibleNode = nearestComponentInstances.find(
@@ -1064,7 +1021,7 @@ const maybeOverride = (
       ...nearestComponentInstances
         .slice(0, nearestComponentInstances.indexOf(mutableInstance))
         .reverse()
-        .map((node: SyntheticVisibleNode) => node.source.nodeId)
+        .map((node: SyntheticVisibleNode) => node.sourceNodeId)
     ]);
 
     if (
@@ -1126,7 +1083,15 @@ const maybeOverride = (
         existingOverride.id,
         mutableInstanceSourceNode
       );
-    } else if (node.immutable || variantId || node.id !== targetSourceId) {
+    } else if (
+      isSyntheticNodeImmutable(
+        node,
+        getSyntheticVisibleNodeDocument(node.id, documents),
+        graph
+      ) ||
+      variantId ||
+      node.id !== targetSourceId
+    ) {
       const override = createPCOverride(
         overrideIdPath,
         propertyName,
@@ -1145,7 +1110,7 @@ export const persistSyntheticVisibleNodeBounds = <TState extends PCEditorState>(
   state: TState
 ) => {
   const document = getSyntheticVisibleNodeDocument(node.id, state.documents);
-  if (node.isContentNode) {
+  if (isSyntheticContentNode(node, state.graph)) {
     const frame = getSyntheticVisibleNodeFrame(node, state.frames) as Frame;
     const sourceNode = getSyntheticSourceNode(node, state.graph);
     return replaceDependencyGraphPCNode(
@@ -1201,7 +1166,8 @@ const addBoundsMetadata = (
   const frame = getSyntheticVisibleNodeFrame(node, state.frames);
   const syntheticNodeBounds = getSyntheticVisibleNodeRelativeBounds(
     node,
-    state.frames
+    state.frames,
+    state.graph
   );
 
   let bestBounds = syntheticNodeBounds
@@ -1371,7 +1337,14 @@ export const persistRemoveSyntheticVisibleNode = <TState extends PCEditorState>(
 ) => {
   // if the node is immutable, then it is part of an instance, so override the
   // style instead
-  if (node.immutable) {
+
+  if (
+    isSyntheticNodeImmutable(
+      node,
+      getSyntheticVisibleNodeDocument(node.id, state.documents),
+      state.graph
+    )
+  ) {
     return persistSyntheticVisibleNodeStyle(
       { display: "none" },
       node,
@@ -1415,7 +1388,10 @@ const overrideKeyValue = (main, oldOverrides, newOverrides) => {
 export const evaluateEditedStateSync = (state: PCEditorState) => {
   const documents: SyntheticDocument[] = [];
   for (const uri in state.graph) {
-    const newDocument = evaluatePCModule(state.graph[uri].content, state.graph);
+    const newDocument = evaluatePCModule2(
+      state.graph[uri].content,
+      state.graph
+    );
     const oldDocument = getSyntheticDocumentByDependencyUri(
       uri,
       state.documents,

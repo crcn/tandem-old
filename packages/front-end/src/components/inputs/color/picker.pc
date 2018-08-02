@@ -170,10 +170,10 @@
       ],
       "metadata": {
         "bounds": {
-          "left": -606,
-          "top": 865,
-          "right": -175.77594754084498,
-          "bottom": 1221.984364557568
+          "left": -777,
+          "top": 629,
+          "right": -346.775947540845,
+          "bottom": 985.9843645575679
         },
         "mode": "preview"
       },
@@ -1011,6 +1011,26 @@
           "top": 1575.897643431201,
           "right": -496.77913114760656,
           "bottom": 1675.897643431201
+        }
+      }
+    },
+    {
+      "id": "901557d3772",
+      "label": "Element",
+      "is": "div",
+      "name": "element",
+      "attributes": {},
+      "style": {
+        "box-sizing": "border-box",
+        "display": "block"
+      },
+      "children": [],
+      "metadata": {
+        "bounds": {
+          "left": -1239,
+          "top": 857,
+          "right": -1139,
+          "bottom": 957
         }
       }
     }

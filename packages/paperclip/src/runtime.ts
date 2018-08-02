@@ -1,9 +1,14 @@
 import { DependencyGraph, Dependency } from "./graph";
 import { EventEmitter } from "events";
-import { SyntheticDocument, generateSyntheticDocumentChecksum, setDocumentChecksum } from "./synthetic";
-import { evaluatePCModule } from "./evaluate";
+import { SyntheticDocument } from "./synthetic";
+import { evaluatePCModule2 } from "./evaluate2";
 import { KeyValue, TreeNode } from "tandem-common";
-import { patchTreeNode, TreeNodeOperationalTransform, diffTreeNode, createSetNodePropertyOperationalTransform } from "./ot";
+import {
+  patchTreeNode,
+  TreeNodeOperationalTransform,
+  diffTreeNode,
+  createSetNodePropertyOperationalTransform
+} from "./ot";
 import { PCModule, PCNode, createPCDependency } from "./dsl";
 
 export interface PCRuntime extends EventEmitter {
@@ -11,8 +16,19 @@ export interface PCRuntime extends EventEmitter {
   setGraph(value: DependencyGraph, timestamp?: number);
   readonly syntheticDocuments: SyntheticDocument[];
   readonly lastUpdatedAt: number;
-  on(event: "dependencyUpdated", listener: (dependency: Dependency<any>, graph: DependencyGraph) => void): this;
-  on(event: "evaluate", listener: (newDocuments: KeyValue<SyntheticDocument>, diffs: KeyValue<TreeNodeOperationalTransform[]>, deletedDocumentIds: string[], timestamp: number) => void): this;
+  on(
+    event: "dependencyUpdated",
+    listener: (dependency: Dependency<any>, graph: DependencyGraph) => void
+  ): this;
+  on(
+    event: "evaluate",
+    listener: (
+      newDocuments: KeyValue<SyntheticDocument>,
+      diffs: KeyValue<TreeNodeOperationalTransform[]>,
+      deletedDocumentIds: string[],
+      timestamp: number
+    ) => void
+  ): this;
 }
 
 class LocalPCRuntime extends EventEmitter implements PCRuntime {
@@ -67,46 +83,62 @@ class LocalPCRuntime extends EventEmitter implements PCRuntime {
   private _evaluateNow() {
     const now = Date.now();
     const diffs: KeyValue<TreeNodeOperationalTransform[]> = {};
-    const newDocuments: KeyValue<SyntheticDocument> = {};
-    const newDocumentMap = {};
+    const newDocumentMap: KeyValue<SyntheticDocument> = {};
+    const documentMap = {};
     const deletedDocumentIds = [];
 
     for (const uri in this._graph) {
       const dependency = this._graph[uri];
-      const syntheticDocument = evaluatePCModule(dependency.content, this._graph);
+      const syntheticDocument = evaluatePCModule2(
+        dependency.content,
+        this._graph
+      );
       let documentMapItem = this._syntheticDocuments[uri];
       if (documentMapItem) {
+        documentMap[uri] = documentMapItem;
         const ots = diffTreeNode(documentMapItem, syntheticDocument);
         if (ots.length) {
-          this._syntheticDocuments[uri] = documentMapItem = setDocumentChecksum(patchTreeNode(ots, documentMapItem));
-          diffs[uri] = [createSetNodePropertyOperationalTransform([], "checksum", documentMapItem.checksum),...ots];
+          documentMapItem = documentMap[uri] = patchTreeNode(
+            ots,
+            documentMapItem
+          );
+          diffs[uri] = ots;
+        } else {
+          documentMap[uri] = documentMapItem;
         }
       } else {
-        newDocuments[uri] = documentMapItem = setDocumentChecksum(syntheticDocument);
+        newDocumentMap[uri] = documentMap[uri] = syntheticDocument;
       }
-
-      newDocumentMap[uri] = documentMapItem;
     }
 
     for (const uri in this._syntheticDocuments) {
-      if (!newDocumentMap[uri]) {
+      if (!documentMap[uri]) {
         deletedDocumentIds.push(uri);
       }
     }
 
-    this._syntheticDocuments = newDocumentMap;
+    this._syntheticDocuments = documentMap;
 
     console.log("evaluated dependency graph in %d ms", Date.now() - now);
-    this.emit("evaluate", newDocuments, diffs, deletedDocumentIds, this._lastUpdatedAt);
+
+    this.emit(
+      "evaluate",
+      newDocumentMap,
+      diffs,
+      deletedDocumentIds,
+      this._lastUpdatedAt
+    );
   }
 }
 
-export type DependencyGraphChanges = KeyValue<PCModule | TreeNodeOperationalTransform[]>;
+export type DependencyGraphChanges = KeyValue<
+  PCModule | TreeNodeOperationalTransform[]
+>;
 
 export type RemoteConnection = {
   addEventListener(type: "message", listener: any): any;
   postMessage(message: Object): any;
-}
+};
 
 export class RemotePCRuntime extends EventEmitter implements PCRuntime {
   private _graph: DependencyGraph;
@@ -120,7 +152,7 @@ export class RemotePCRuntime extends EventEmitter implements PCRuntime {
     }
 
     this._remote.addEventListener("message", this._onRemoteMessage);
-    this._remote.postMessage({type: "fetchAllSyntheticDocuments"});
+    this._remote.postMessage({ type: "fetchAllSyntheticDocuments" });
   }
   get lastUpdatedAt() {
     return this._lastUpdatedAt;
@@ -154,14 +186,20 @@ export class RemotePCRuntime extends EventEmitter implements PCRuntime {
     }
 
     if (Object.keys(changes).length) {
-      this._remote.postMessage({ type: "dependencyGraphChanges", payload: { changes, lastUpdatedAt: this._lastUpdatedAt = timestamp } });
+      this._remote.postMessage({
+        type: "dependencyGraphChanges",
+        payload: { changes, lastUpdatedAt: (this._lastUpdatedAt = timestamp) }
+      });
     }
   }
 
-  private _onRemoteMessage = (event) => {
+  private _onRemoteMessage = event => {
     const { type, payload } = event.data;
     if (type === "fetchDependencyGraph") {
-      this._remote.postMessage({ type: "dependencyGraph", payload: this._graph });
+      this._remote.postMessage({
+        type: "dependencyGraph",
+        payload: this._graph
+      });
     } else if (type === "evaluate") {
       const [newDocuments, diffs, deletedDocumentUris, timestamp] = payload;
       this._syntheticDocuments = {
@@ -170,15 +208,23 @@ export class RemotePCRuntime extends EventEmitter implements PCRuntime {
       };
 
       for (const uri in diffs) {
-        this._syntheticDocuments[uri] = patchTreeNode(diffs[uri], this._syntheticDocuments[uri]);
+        this._syntheticDocuments[uri] = patchTreeNode(
+          diffs[uri],
+          this._syntheticDocuments[uri]
+        );
       }
 
       for (const uri of deletedDocumentUris) {
         delete this._syntheticDocuments[uri];
       }
 
-      this.emit("evaluate", newDocuments, diffs, deletedDocumentUris, timestamp);
-
+      this.emit(
+        "evaluate",
+        newDocuments,
+        diffs,
+        deletedDocumentUris,
+        timestamp
+      );
     } else if (type === "allSyntheticDocuments") {
       this._syntheticDocuments = payload;
       this.emit("evaluate", payload, {}, [], Date.now());
@@ -186,15 +232,24 @@ export class RemotePCRuntime extends EventEmitter implements PCRuntime {
   };
 }
 
-export const createLocalPCRuntime = (initialGraph?: DependencyGraph) => new LocalPCRuntime(initialGraph);
-export const createRemotePCRuntime = (remote: RemoteConnection, initialGraph?: DependencyGraph)  => new RemotePCRuntime(remote, initialGraph);
+export const createLocalPCRuntime = (initialGraph?: DependencyGraph) =>
+  new LocalPCRuntime(initialGraph);
+export const createRemotePCRuntime = (
+  remote: RemoteConnection,
+  initialGraph?: DependencyGraph
+) => new RemotePCRuntime(remote, initialGraph);
 
-const patchDependencyGraph = (changes: DependencyGraphChanges, oldGraph: DependencyGraph) => {
+const patchDependencyGraph = (
+  changes: DependencyGraphChanges,
+  oldGraph: DependencyGraph
+) => {
   let newGraph = {};
   for (const uri in changes) {
     const change = changes[uri];
     if (Array.isArray(change)) {
-      newGraph[uri] = change.length ? createPCDependency(uri, patchTreeNode(change, oldGraph[uri].content)) : oldGraph[uri];
+      newGraph[uri] = change.length
+        ? createPCDependency(uri, patchTreeNode(change, oldGraph[uri].content))
+        : oldGraph[uri];
     } else {
       newGraph[uri] = createPCDependency(uri, change);
     }
@@ -203,22 +258,31 @@ const patchDependencyGraph = (changes: DependencyGraphChanges, oldGraph: Depende
   return newGraph;
 };
 
-export const hookRemotePCRuntime = async (localRuntime: PCRuntime, remote: RemoteConnection) => {
+export const hookRemotePCRuntime = async (
+  localRuntime: PCRuntime,
+  remote: RemoteConnection
+) => {
   let _sentDocuments = false;
 
   const sendDocuments = () => {
     _sentDocuments = true;
-    remote.postMessage({ type: "allSyntheticDocuments", payload: localRuntime.syntheticDocuments });
+    remote.postMessage({
+      type: "allSyntheticDocuments",
+      payload: localRuntime.syntheticDocuments
+    });
   };
 
-  remote.addEventListener("message", (event) => {
+  remote.addEventListener("message", event => {
     const { type, payload } = event.data;
     if (type === "fetchAllSyntheticDocuments") {
       sendDocuments();
     } else if (type === "dependencyGraph") {
       localRuntime.setGraph(payload);
     } else if (type === "dependencyGraphChanges") {
-      localRuntime.setGraph(patchDependencyGraph(payload.changes, localRuntime.getGraph()), payload.lastUpdatedAt);
+      localRuntime.setGraph(
+        patchDependencyGraph(payload.changes, localRuntime.getGraph()),
+        payload.lastUpdatedAt
+      );
     }
   });
 

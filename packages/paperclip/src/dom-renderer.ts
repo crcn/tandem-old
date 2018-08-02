@@ -3,7 +3,8 @@ import {
   SyntheticVisibleNode,
   SyntheticElement,
   SyntheticTextNode,
-  SYNTHETIC_DOCUMENT_NODE_NAME
+  SYNTHETIC_DOCUMENT_NODE_NAME,
+  isSyntheticContentNode
 } from "./synthetic";
 import { ComputedDisplayInfo } from "./edit";
 import {
@@ -34,16 +35,12 @@ export const renderDOM = (
   synthetic: SyntheticVisibleNode,
   document: Document = window.document
 ) => {
-  let parentNative;
-  let parentSynthetic;
-  let currentSynthetic = synthetic;
-
   while (native.childNodes.length) {
     native.removeChild(native.childNodes[0]);
   }
 
   const nativeMap = {};
-  native.appendChild(createNativeNode(synthetic, document, nativeMap));
+  native.appendChild(createNativeNode(synthetic, document, nativeMap, true));
 
   return nativeMap;
 };
@@ -83,9 +80,9 @@ export const computeDisplayInfo = (
 
 const setStyleConstraintsIfRoot = (
   synthetic: SyntheticVisibleNode,
-  nativeElement: HTMLElement
+  nativeElement: HTMLElement,
+  isContentNode: boolean
 ) => {
-  const isContentNode = synthetic.isContentNode;
   if (isContentNode) {
     nativeElement.style.position = "fixed";
     if (nativeElement.tagName === "SPAN") {
@@ -134,6 +131,7 @@ const createNativeNode = (
   synthetic: SyntheticVisibleNode,
   document: Document,
   map: SyntheticNativeNodeMap,
+  isContentNode: boolean,
   xmlns?: string
 ) => {
   const isText = synthetic.name === PCSourceTagNames.TEXT;
@@ -156,7 +154,7 @@ const createNativeNode = (
   if (synthetic.style) {
     setStyle(nativeElement, synthetic.style);
   }
-  setStyleConstraintsIfRoot(synthetic, nativeElement);
+  setStyleConstraintsIfRoot(synthetic, nativeElement, isContentNode);
   if (isText) {
     nativeElement.appendChild(
       document.createTextNode((synthetic as SyntheticTextNode).value)
@@ -165,12 +163,12 @@ const createNativeNode = (
     for (let i = 0, { length } = synthetic.children; i < length; i++) {
       const childSynthetic = synthetic.children[i] as SyntheticVisibleNode;
       nativeElement.appendChild(
-        createNativeNode(childSynthetic, document, map, xmlns)
+        createNativeNode(childSynthetic, document, map, false, xmlns)
       );
     }
   }
 
-  makeElementClickable(nativeElement, synthetic);
+  makeElementClickable(nativeElement, synthetic, isContentNode);
   return (map[synthetic.id] = nativeElement);
 };
 
@@ -198,6 +196,7 @@ export const patchDOM = (
       transform.nodePath,
       newSyntheticTree
     );
+    const isContentNode = transform.nodePath.length === 1;
     const target = map[oldSyntheticTarget.id] as HTMLElement;
     newSyntheticTree = patchTreeNode([transform], newSyntheticTree);
     const syntheticTarget = getTreeNodeFromPath(
@@ -213,8 +212,8 @@ export const patchDOM = (
 
         if (name === "style") {
           resetElementStyle(target, syntheticTarget);
-          setStyleConstraintsIfRoot(syntheticTarget, target);
-          makeElementClickable(target, syntheticTarget);
+          setStyleConstraintsIfRoot(syntheticTarget, target, isContentNode);
+          makeElementClickable(target, syntheticTarget, isContentNode);
         } else if (name === "attributes") {
           for (const key in value) {
             if (!value[key]) {
@@ -231,7 +230,8 @@ export const patchDOM = (
           const newTarget = createNativeNode(
             getTreeNodeFromPath(transform.nodePath, newSyntheticTree),
             root.ownerDocument,
-            newMap
+            newMap,
+            isContentNode
           );
           parent.insertBefore(newTarget, target);
           parent.removeChild(target);
@@ -253,7 +253,8 @@ export const patchDOM = (
         const nativeChild = createNativeNode(
           child as SyntheticVisibleNode,
           root.ownerDocument,
-          newMap
+          newMap,
+          false
         );
         removeClickableStyle(target, syntheticTarget);
         insertChild(target, nativeChild, index);
@@ -264,7 +265,7 @@ export const patchDOM = (
         const { index } = transform as RemoveChildNodeOperationalTransform;
         target.removeChild(target.childNodes[index]);
         if (target.childNodes.length === 0) {
-          makeElementClickable(target, syntheticTarget);
+          makeElementClickable(target, syntheticTarget, isContentNode);
         }
         break;
       }
@@ -292,10 +293,9 @@ const stripEmptyElement = memoize(style =>
 
 const makeElementClickable = (
   target: HTMLElement,
-  synthetic: SyntheticVisibleNode
+  synthetic: SyntheticVisibleNode,
+  isContentNode: boolean
 ) => {
-  const isContentNode = synthetic.isContentNode;
-
   if (synthetic.name === "div" && !isContentNode) {
     const style = synthetic.style || EMPTY_OBJECT;
     if (

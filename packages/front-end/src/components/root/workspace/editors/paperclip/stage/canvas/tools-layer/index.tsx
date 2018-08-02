@@ -132,7 +132,11 @@ const calcInspectorNodeBounds = memoize(
     );
 
     if (assocSyntheticNode) {
-      return getSyntheticVisibleNodeRelativeBounds(assocSyntheticNode, frames);
+      return getSyntheticVisibleNodeRelativeBounds(
+        assocSyntheticNode,
+        frames,
+        graph
+      );
     }
 
     let assocInspectorNode: InspectorNode;
@@ -163,7 +167,8 @@ const calcInspectorNodeBounds = memoize(
             assocChildSyntheticNode &&
             getSyntheticVisibleNodeRelativeBounds(
               assocChildSyntheticNode,
-              frames
+              frames,
+              graph
             )
           );
         })

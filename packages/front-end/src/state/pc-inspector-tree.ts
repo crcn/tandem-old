@@ -340,7 +340,7 @@ export const expandSyntheticInspectorNode = (
   const instancePath = getSyntheticInstancePath(node, document, graph).join(
     "."
   );
-  const sourceNodeId = node.source.nodeId;
+  const sourceNodeId = node.sourceNodeId;
 
   const relatedInspectorNode = findNestedNode(
     rootInspectorNode,
@@ -388,7 +388,7 @@ export const getSyntheticInspectorNode = memoize(
         return (
           child.name === InspectorTreeNodeName.SOURCE_REP,
           child.instancePath === instancePath &&
-            child.assocSourceNodeId === node.source.nodeId
+            child.assocSourceNodeId === node.sourceNodeId
         );
       }
     );
@@ -407,7 +407,7 @@ export const getInspectorSyntheticNode = memoize(
       const syntheticNode = findNestedNode(document, (child: SyntheticNode) => {
         return (
           getSyntheticInstancePath(child, document, graph).join(".") ===
-            instancePath && child.source.nodeId === node.assocSourceNodeId
+            instancePath && child.sourceNodeId === node.assocSourceNodeId
         );
       });
       if (syntheticNode) {

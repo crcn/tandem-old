@@ -13,7 +13,6 @@ import {
   filterTreeNodeParents,
   containsNestedTreeNodeById
 } from "tandem-common";
-import * as crc32 from "crc32";
 import { DependencyGraph } from "./graph";
 import { last } from "lodash";
 import {
@@ -27,7 +26,9 @@ import {
   PCComponentInstanceElement,
   getOverrides,
   getPCVariantOverrides,
-  extendsComponent
+  extendsComponent,
+  getPCNodeModule,
+  PCModule
 } from "./dsl";
 import { diffTreeNode, patchTreeNode } from "./ot";
 
@@ -35,26 +36,14 @@ import { diffTreeNode, patchTreeNode } from "./ot";
  * STATE
  *-----------------------------------------*/
 
-export type SyntheticSource = {
-  nodeId: string;
-};
-
 export const SYNTHETIC_DOCUMENT_NODE_NAME = "document";
 
 export type SyntheticBaseNode = {
   metadata: KeyValue<any>;
-  source: SyntheticSource;
-
-  // TODO - this information should go in metadata
-  isContentNode?: boolean;
-  isCreatedFromComponent?: boolean;
-  immutable?: boolean;
-  isComponentInstance?: boolean;
-  label?: string;
+  sourceNodeId: string;
 } & TreeNode<string>;
 
 export type SyntheticDocument = {
-  checksum?: string;
   children: SyntheticVisibleNode[];
 } & SyntheticBaseNode;
 
@@ -90,50 +79,27 @@ export type SyntheticNode = SyntheticDocument | SyntheticVisibleNode;
  *-----------------------------------------*/
 
 export const createSytheticDocument = (
-  source: SyntheticSource,
+  sourceNodeId: string,
   children?: SyntheticVisibleNode[]
 ): SyntheticDocument => ({
   id: generateUID(),
   metadata: EMPTY_OBJECT,
-  source,
+  sourceNodeId,
   name: SYNTHETIC_DOCUMENT_NODE_NAME,
   children: children || EMPTY_ARRAY
 });
 
-export const setDocumentChecksum = (
-  document: SyntheticDocument
-): SyntheticDocument => {
-  const newChecksum = generateSyntheticDocumentChecksum(document);
-  if (document.checksum === newChecksum) {
-    return document;
-  }
-  return {
-    ...document,
-    checksum: newChecksum
-  };
-};
-
 export const createSyntheticElement = (
   name: string,
-  source: SyntheticSource,
+  sourceNodeId: string,
   style: KeyValue<any> = EMPTY_OBJECT,
   attributes: KeyValue<string> = EMPTY_OBJECT,
   children: SyntheticVisibleNode[] = EMPTY_ARRAY,
-  label?: string,
-  isContentNode?: boolean,
-  isCreatedFromComponent?: boolean,
-  isComponentInstance?: boolean,
-  immutable?: boolean,
   metadata?: KeyValue<any>
 ): SyntheticElement => ({
   id: generateUID(),
   metadata: metadata || EMPTY_OBJECT,
-  label,
-  isComponentInstance,
-  isCreatedFromComponent,
-  isContentNode,
-  immutable,
-  source,
+  sourceNodeId,
   name,
   attributes: attributes || EMPTY_OBJECT,
   style: style || EMPTY_OBJECT,
@@ -141,27 +107,17 @@ export const createSyntheticElement = (
 });
 export const createSyntheticInstanceElement = (
   name: string,
-  source: SyntheticSource,
+  sourceNodeId: string,
   style: KeyValue<any> = EMPTY_OBJECT,
   variant: KeyValue<boolean>,
   attributes: KeyValue<string> = EMPTY_OBJECT,
   children: SyntheticVisibleNode[] = EMPTY_ARRAY,
-  label?: string,
-  isContentNode?: boolean,
-  isCreatedFromComponent?: boolean,
-  isComponentInstance?: boolean,
-  immutable?: boolean,
   metadata?: KeyValue<any>
 ): SyntheticInstanceElement => ({
   id: generateUID(),
   metadata: metadata || EMPTY_OBJECT,
-  label,
   variant,
-  isComponentInstance,
-  isCreatedFromComponent,
-  isContentNode,
-  immutable,
-  source,
+  sourceNodeId,
   name,
   attributes: attributes || EMPTY_OBJECT,
   style: style || EMPTY_OBJECT,
@@ -170,22 +126,15 @@ export const createSyntheticInstanceElement = (
 
 export const createSyntheticTextNode = (
   value: string,
-  source: SyntheticSource,
+  sourceNodeId: string,
   style: KeyValue<any> = EMPTY_OBJECT,
   label?: string,
-  isContentNode?: boolean,
-  isCreatedFromComponent?: boolean,
-  immutable?: boolean,
   metadata?: KeyValue<any>
 ): SyntheticTextNode => ({
-  label,
   id: generateUID(),
   metadata: metadata || EMPTY_OBJECT,
   value,
-  isContentNode,
-  isCreatedFromComponent,
-  immutable,
-  source,
+  sourceNodeId,
   name: PCSourceTagNames.TEXT,
   style,
   children: EMPTY_ARRAY
@@ -200,10 +149,15 @@ export const isPaperclipState = (state: any) => Boolean(state.frames);
 export const isSyntheticVisibleNodeRoot = (
   node: SyntheticVisibleNode,
   graph: DependencyGraph
-) => getSyntheticSourceFrame(node, graph).children[0].id === node.source.nodeId;
+) => getSyntheticSourceFrame(node, graph).children[0].id === node.sourceNodeId;
 
-export const isSyntheticDocumentRoot = (node: SyntheticVisibleNode) => {
-  return node.isContentNode;
+export const isSyntheticContentNode = (
+  node: SyntheticVisibleNode,
+  graph: DependencyGraph
+) => {
+  const sourceNode = getSyntheticSourceNode(node, graph);
+  const module: PCModule = getPCNodeModule(sourceNode.id, graph);
+  return module.children.indexOf(sourceNode) !== -1;
 };
 
 export const isSyntheticInstanceElement = (
@@ -235,16 +189,22 @@ export const isSyntheticVisibleNode = (
 ): node is SyntheticVisibleNode => {
   const sn = node as SyntheticVisibleNode;
   if (!sn) return false;
-  return Boolean(sn.source.nodeId) && Boolean(sn.name);
+  return Boolean(sn.sourceNodeId) && Boolean(sn.name);
 };
 
-export const isSyntheticVisibleNodeMovable = (node: SyntheticVisibleNode) =>
-  isSyntheticDocumentRoot(node) ||
+export const isSyntheticVisibleNodeMovable = (
+  node: SyntheticVisibleNode,
+  graph: DependencyGraph
+) =>
+  isSyntheticContentNode(node, graph) ||
   /fixed|relative|absolute/.test(node.style.position || "static");
 
-export const isSyntheticVisibleNodeResizable = (node: SyntheticVisibleNode) =>
-  isSyntheticDocumentRoot(node) ||
-  isSyntheticVisibleNodeMovable(node) ||
+export const isSyntheticVisibleNodeResizable = (
+  node: SyntheticVisibleNode,
+  graph: DependencyGraph
+) =>
+  isSyntheticContentNode(node, graph) ||
+  isSyntheticVisibleNodeMovable(node, graph) ||
   /block|inline-block|flex|inline-flex/.test(node.style.display || "inline");
 
 /*------------------------------------------
@@ -269,7 +229,7 @@ export const getInheritedAndSelfOverrides = memoize(
         ...getOverrides(getSyntheticSourceNode(parent, graph)).filter(
           override =>
             override.variantId == variantId &&
-            override.targetIdPath.indexOf(instance.source.nodeId) !== -1
+            override.targetIdPath.indexOf(instance.sourceNodeId) !== -1
         ),
         ...overrides
       ];
@@ -280,15 +240,15 @@ export const getInheritedAndSelfOverrides = memoize(
 export const getSyntheticSourceNode = (
   node: SyntheticVisibleNode | SyntheticDocument,
   graph: DependencyGraph
-) => getPCNode(node.source.nodeId, graph) as PCVisibleNode | PCComponent;
+) => getPCNode(node.sourceNodeId, graph) as PCVisibleNode | PCComponent;
 
 export const getSyntheticSourceFrame = (
   node: SyntheticVisibleNode,
   graph: DependencyGraph
 ) =>
   getPCNodeContentNode(
-    node.source.nodeId,
-    getPCNodeDependency(node.source.nodeId, graph).content
+    node.sourceNodeId,
+    getPCNodeDependency(node.sourceNodeId, graph).content
   );
 
 export const getSyntheticDocumentByDependencyUri = memoize(
@@ -298,7 +258,7 @@ export const getSyntheticDocumentByDependencyUri = memoize(
     graph: DependencyGraph
   ): SyntheticDocument => {
     return documents.find((document: SyntheticDocument) => {
-      return getPCNodeDependency(document.source.nodeId, graph).uri === uri;
+      return getPCNodeDependency(document.sourceNodeId, graph).uri === uri;
     });
   }
 );
@@ -324,7 +284,7 @@ export const getSyntheticDocumentDependencyUri = (
   document: SyntheticDocument,
   graph: DependencyGraph
 ) => {
-  return getPCNodeDependency(document.source.nodeId, graph).uri;
+  return getPCNodeDependency(document.sourceNodeId, graph).uri;
 };
 
 export const getSyntheticVisibleNodeDocument = memoize(
@@ -342,7 +302,7 @@ export const getSyntheticSourceUri = (
   syntheticNode: SyntheticVisibleNode,
   graph: DependencyGraph
 ) => {
-  return getPCNodeDependency(syntheticNode.source.nodeId, graph).uri;
+  return getPCNodeDependency(syntheticNode.sourceNodeId, graph).uri;
 };
 
 export const getSyntheticNodeById = memoize(
@@ -364,14 +324,20 @@ export const getSyntheticNodeById = memoize(
 export const getSyntheticNodeSourceDependency = (
   node: SyntheticVisibleNode | SyntheticDocument,
   graph: DependencyGraph
-) => getPCNodeDependency(node.source.nodeId, graph);
+) => getPCNodeDependency(node.sourceNodeId, graph);
 
 export const findInstanceOfPCNode = memoize(
-  (node: PCVisibleNode | PCComponent, documents: SyntheticDocument[]) => {
+  (
+    node: PCVisibleNode | PCComponent,
+    documents: SyntheticDocument[],
+    graph: DependencyGraph
+  ) => {
     for (const document of documents) {
       const instance = findNestedNode(document, (instance: SyntheticNode) => {
         return (
-          !instance.isComponentInstance && instance.source.nodeId === node.id
+          instance.sourceNodeId === node.id &&
+          getSyntheticSourceNode(instance, graph).name !==
+            PCSourceTagNames.COMPONENT
         );
       });
       if (instance) {
@@ -385,18 +351,26 @@ export const findInstanceOfPCNode = memoize(
 export const findClosestParentComponentInstance = memoize(
   (
     node: SyntheticVisibleNode,
-    root: SyntheticVisibleNode | SyntheticDocument
+    root: SyntheticVisibleNode | SyntheticDocument,
+    graph: DependencyGraph
   ) => {
-    return findTreeNodeParent(node.id, root, isComponentOrInstance);
+    return findTreeNodeParent(node.id, root, (parent: SyntheticVisibleNode) =>
+      isComponentOrInstance(parent, graph)
+    );
   }
 );
 
 export const findFurthestParentComponentInstance = memoize(
   (
     node: SyntheticVisibleNode,
-    root: SyntheticVisibleNode | SyntheticDocument
+    root: SyntheticVisibleNode | SyntheticDocument,
+    graph: DependencyGraph
   ) => {
-    const parentComponentInstances = getAllParentComponentInstance(node, root);
+    const parentComponentInstances = getAllParentComponentInstance(
+      node,
+      root,
+      graph
+    );
     return parentComponentInstances.length
       ? parentComponentInstances[parentComponentInstances.length - 1]
       : null;
@@ -406,13 +380,14 @@ export const findFurthestParentComponentInstance = memoize(
 export const getAllParentComponentInstance = memoize(
   (
     node: SyntheticVisibleNode,
-    root: SyntheticVisibleNode | SyntheticDocument
+    root: SyntheticVisibleNode | SyntheticDocument,
+    graph: DependencyGraph
   ) => {
-    let current = findClosestParentComponentInstance(node, root);
+    let current = findClosestParentComponentInstance(node, root, graph);
     if (!current) return [];
     const instances = [current];
     while (current) {
-      const parent = findClosestParentComponentInstance(current, root);
+      const parent = findClosestParentComponentInstance(current, root, graph);
       if (!parent) break;
       current = parent;
 
@@ -423,17 +398,25 @@ export const getAllParentComponentInstance = memoize(
   }
 );
 
-export const isComponentOrInstance = (node: SyntheticVisibleNode) =>
-  node.isComponentInstance ||
-  (node.isContentNode && node.isCreatedFromComponent);
+export const isComponentOrInstance = (
+  node: SyntheticVisibleNode,
+  graph: DependencyGraph
+) => {
+  const sourceNode = getSyntheticSourceNode(node, graph);
+  return (
+    sourceNode.name === PCSourceTagNames.COMPONENT ||
+    sourceNode.name === PCSourceTagNames.COMPONENT_INSTANCE
+  );
+};
 
 export const getNearestComponentInstances = memoize(
   (
     node: SyntheticVisibleNode,
-    root: SyntheticVisibleNode | SyntheticDocument
+    root: SyntheticVisibleNode | SyntheticDocument,
+    graph: DependencyGraph
   ) => {
-    const instances = getAllParentComponentInstance(node, root);
-    if (isComponentOrInstance(node)) {
+    const instances = getAllParentComponentInstance(node, root, graph);
+    if (isComponentOrInstance(node, graph)) {
       return [node, ...instances];
     }
     return instances;
@@ -448,7 +431,8 @@ export const getSyntheticInstancePath = memoize(
   ) => {
     const nodePath = getAllParentComponentInstance(
       node as SyntheticVisibleNode,
-      root
+      root,
+      graph
     ).reduce(
       (nodePath: string[], instance: SyntheticInstanceElement) => {
         const lastId = last(nodePath);
@@ -470,7 +454,7 @@ export const getSyntheticInstancePath = memoize(
 
         return nodePath;
       },
-      [node.source.nodeId]
+      [node.sourceNodeId]
     );
 
     // only want instance path, so strip initial source node ID
@@ -484,44 +468,8 @@ export const syntheticNodeIsInShadow = (
   graph: DependencyGraph
 ) => getSyntheticInstancePath(node, root, graph).length > 0;
 
-export const generateSyntheticDocumentChecksum = memoize(
-  (document: SyntheticDocument) => {
-    return getPCNodePreChecksum(document);
-  }
-);
-
-const getPCNodePreChecksum = memoize((node: SyntheticNode) => {
-  return crc32(
-    getShallowPCNodePreChecksum(node) +
-      node.children.map(getPCNodePreChecksum).join("")
-  );
-});
-
-const getShallowPCNodePreChecksum = (node: SyntheticNode) => {
-  let base =
-    node.name +
-    node.label +
-    node.source.nodeId +
-    node.immutable +
-    node.isComponentInstance +
-    node.isContentNode +
-    node.isCreatedFromComponent;
-  if (isSyntheticDocument(node)) {
-    return base;
-  } else if (isSyntheticElement(node)) {
-    base += JSON.stringify(node.attributes) + JSON.stringify(node.style);
-
-    if (isSyntheticInstanceElement(node)) {
-      base += JSON.stringify(node.variant);
-    }
-
-    return base;
-  } else if (isSyntheticTextNode(node)) {
-    return base + node.value + JSON.stringify(node.style);
-  } else {
-    throw new Error(`unsupported synthetic node`);
-  }
-};
+// alias
+export const isSyntheticNodeImmutable = syntheticNodeIsInShadow;
 
 /*------------------------------------------
  * SETTERS
@@ -533,7 +481,7 @@ export const upsertSyntheticDocument = (
   graph: DependencyGraph
 ) => {
   const oldDocumentIndex = oldDocuments.findIndex(
-    oldDocument => oldDocument.source.nodeId === newDocument.source.nodeId
+    oldDocument => oldDocument.sourceNodeId === newDocument.sourceNodeId
   );
   if (oldDocumentIndex === -1) {
     return [...oldDocuments, newDocument];

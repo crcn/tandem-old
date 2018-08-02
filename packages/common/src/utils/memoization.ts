@@ -6,7 +6,7 @@ export const memoize = <TFunc extends (...args: any[]) => any>(
   fn: TFunc,
   lruMax: number = DEFAULT_LRU_MAX,
   argumentCount: number = fn.length
-  ) => {
+) => {
   if (argumentCount == Infinity || isNaN(argumentCount)) {
     throw new Error(`Argument count cannot be Infinity, 0, or NaN.`);
   }
@@ -23,20 +23,50 @@ export const memoize = <TFunc extends (...args: any[]) => any>(
   ) as TFunc;
 };
 
+export const shallowEquals = (a, b) => {
+  if (Object.keys(a).length !== Object.keys(b).length) {
+    return false;
+  }
+
+  for (const key in a) {
+    if (a[key] !== b[key]) {
+      return false;
+    }
+  }
+
+  return true;
+};
+
+export const reuser = <TValue>(
+  lruMax: number = DEFAULT_LRU_MAX,
+  getKey: (value: TValue) => string,
+  equals: (a, b) => boolean
+): ((value: TValue) => TValue) => {
+  const cache = lru({ max: lruMax });
+  return (value: TValue) => {
+    const key = getKey(value);
+    if (!cache.has(key) || !equals(cache.get(key), value)) {
+      cache.set(key, value);
+    }
+
+    return cache.get(key);
+  };
+};
+
 let _memoFns = {};
 
 const compilFastMemoFn = (argumentCount: number, acceptPrimitives: boolean) => {
-  const hash = '' + argumentCount + acceptPrimitives;
+  const hash = "" + argumentCount + acceptPrimitives;
   if (_memoFns[hash]) {
     return _memoFns[hash];
   }
 
-  const args = Array.from({length: argumentCount}).map((v, i) => `arg${i}`);
+  const args = Array.from({ length: argumentCount }).map((v, i) => `arg${i}`);
 
   let buffer = `
   return function(fn, keyMemo) {
     var memo = new WeakMap();
-    return function(${args.join(', ')}) {
+    return function(${args.join(", ")}) {
       var currMemo = memo, prevMemo, key;
   `;
 
@@ -50,7 +80,7 @@ const compilFastMemoFn = (argumentCount: number, acceptPrimitives: boolean) => {
           ? `if ((typeof key !== "object" || !key) && !(key = keyMemo.get(${arg}))) {
         keyMemo.set(${arg}, key = {});
       }`
-          : ''
+          : ""
       }
       if (!(currMemo = currMemo.get(key))) {
         prevMemo.set(key, currMemo = new WeakMap());
@@ -68,11 +98,11 @@ const compilFastMemoFn = (argumentCount: number, acceptPrimitives: boolean) => {
       if ((typeof key !== "object" || !key) && !(key = keyMemo.get(${lastArg}))) {
         keyMemo.set(${lastArg}, key = {});
       }`
-          : ''
+          : ""
       }
 
       if (!currMemo.has(key)) {
-        currMemo.set(key, fn(${args.join(', ')}));
+        currMemo.set(key, fn(${args.join(", ")}));
       }
 
       return currMemo.get(key);
@@ -81,7 +111,7 @@ const compilFastMemoFn = (argumentCount: number, acceptPrimitives: boolean) => {
   `;
 
   return (_memoFns[hash] = new Function(buffer)());
-}
+};
 
 /**
  * Calls target function once & proxies passed functions

@@ -106,7 +106,7 @@ export const createSetNodePropertyOperationalTransform = (
 });
 
 const defaultComparator = (a, b) =>
-  (a.source ? a.source.nodeId === b.source.nodeId : a.id === b.id) ? 0 : -1;
+  (a.sourceNodeId ? a.sourceNodeId === b.sourceNodeId : a.id === b.id) ? 0 : -1;
 type NodeComparator = (a: TreeNode<any>, b: TreeNode<any>) => number;
 
 export const diffTreeNode = memoize(

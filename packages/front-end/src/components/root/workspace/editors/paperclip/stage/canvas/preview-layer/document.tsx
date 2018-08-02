@@ -22,7 +22,7 @@ type DesignPreviewOuterProps = {
   dependency: Dependency<any>;
 };
 
-const BaseDesignPreview = ({ frame }: DesignPreviewOuterProps) => {
+const BaseDesignPreview = () => {
   return <div ref="container" />;
 };
 
@@ -52,26 +52,26 @@ const DesignPreview = compose<DesignPreviewOuterProps, DesignPreviewOuterProps>(
   })
 )(BaseDesignPreview);
 
-type LivePreviewOuterProps = {
-  livePreviewUrl: string;
-  dependencyUri: string;
-  contentNodeSourceId: string;
-};
+// type LivePreviewOuterProps = {
+//   livePreviewUrl: string;
+//   dependencyUri: string;
+//   contentNodeSourceId: string;
+// };
 
-const LivePreview = ({
-  livePreviewUrl,
-  dependencyUri,
-  contentNodeSourceId
-}: LivePreviewOuterProps) => {
-  const location =
-    livePreviewUrl +
-    "?entryPath=" +
-    stripProtocol(dependencyUri) +
-    "&componentId=" +
-    contentNodeSourceId;
-  console.log(location);
-  return <iframe src={location} />;
-};
+// const LivePreview = ({
+//   livePreviewUrl,
+//   dependencyUri,
+//   contentNodeSourceId
+// }: LivePreviewOuterProps) => {
+//   const location =
+//     livePreviewUrl +
+//     "?entryPath=" +
+//     stripProtocol(dependencyUri) +
+//     "&componentId=" +
+//     contentNodeSourceId;
+//   console.log(location);
+//   return <iframe src={location} />;
+// };
 
 export const DocumentPreviewComponent = compose<DocumentPreviewOuterProps, any>(
   pure

@@ -442,7 +442,7 @@ const translateContentNode = (
       context = defineNestedObject([`_${node.id}Props`], false, context);
       context = addLineItem(`var _${node.id}Props = `, context);
       context = addLine(
-        `Object.assign(_${node.id}Props, _${contentNode.id}Props._${
+        `Object.assign(_${node.id}Props || {}, _${contentNode.id}Props._${
           node.id
         }, _${contentNode.id}Props.${propsVarName});`,
         context

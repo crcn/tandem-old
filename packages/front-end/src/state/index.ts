@@ -58,15 +58,16 @@ import {
   PCComponent,
   PCModule,
   SyntheticNode,
-  extendsComponent,
-  getFrameSyntheticNode,
+  isSyntheticContentNode,
   PCNode,
-  getSyntheticDocumentById,
   getPCNodeModule,
   getSyntheticInstancePath,
   syntheticNodeIsInShadow,
   PCComponentInstanceElement,
-  isSlot
+  isSlot,
+  Dependency,
+  DependencyGraph,
+  getModifiedDependencies
 } from "paperclip";
 import {
   CanvasToolOverlayMouseMoved,
@@ -74,11 +75,6 @@ import {
   CanvasDroppedItem
 } from "../actions";
 import { uniq, values, clamp } from "lodash";
-import {
-  Dependency,
-  DependencyGraph,
-  getModifiedDependencies
-} from "paperclip";
 import { FSSandboxRootState, queueOpenFile, hasFileCacheItem } from "fsbox";
 import {
   refreshInspectorTree,
@@ -536,8 +532,8 @@ const moveDependencyRecordHistory = (
   state = setSelectedSyntheticVisibleNodeIds(
     state,
     ...state.selectedSyntheticNodeIds.filter(nodeId => {
-      const { source } = getSyntheticNodeById(nodeId, state.documents);
-      return Boolean(getPCNode(source.nodeId, state.graph));
+      const { sourceNodeId } = getSyntheticNodeById(nodeId, state.documents);
+      return Boolean(getPCNode(sourceNodeId, state.graph));
     })
   );
 
@@ -860,7 +856,8 @@ export const openSyntheticVisibleNodeOriginFile = (
     state.documents.filter(
       document =>
         getSyntheticDocumentDependencyUri(document, state.graph) === uri
-    )
+    ),
+    state.graph
   );
   state = openFile(uri, false, true, state);
   state = setSelectedSyntheticVisibleNodeIds(state, instance.id);
@@ -1431,7 +1428,8 @@ export const getBoundedSelection = memoize(
     root.selectedSyntheticNodeIds.filter(nodeId =>
       getSyntheticVisibleNodeRelativeBounds(
         getSyntheticNodeById(nodeId, root.documents),
-        root.frames
+        root.frames,
+        root.graph
       )
     )
 );
@@ -1441,7 +1439,8 @@ export const getSelectionBounds = memoize((root: RootState) =>
     ...getBoundedSelection(root).map(nodeId =>
       getSyntheticVisibleNodeRelativeBounds(
         getSyntheticNodeById(nodeId, root.documents),
-        root.frames
+        root.frames,
+        root.graph
       )
     )
   )
@@ -1450,7 +1449,7 @@ export const getSelectionBounds = memoize((root: RootState) =>
 export const isSelectionMovable = memoize((root: RootState) => {
   return root.selectedSyntheticNodeIds.every(nodeId => {
     const node = getSyntheticNodeById(nodeId, root.documents);
-    return node.isContentNode;
+    return isSyntheticContentNode(node, root.graph);
     // return !isSyntheticVisibleNodeMovable(node);
   });
 });
@@ -1458,7 +1457,7 @@ export const isSelectionMovable = memoize((root: RootState) => {
 export const isSelectionResizable = memoize((root: RootState) => {
   return root.selectedSyntheticNodeIds.every(nodeId => {
     const node = getSyntheticNodeById(nodeId, root.documents);
-    return node.isContentNode;
+    return isSyntheticContentNode(node, root.graph);
     // return !isSyntheticVisibleNodeResizable(node);
   });
 });

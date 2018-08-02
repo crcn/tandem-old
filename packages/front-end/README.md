@@ -1,8 +1,11 @@
 IMMEDIATE:
 
-- make evaluator faster (refactor entirely -- use style sheets for style overrides. Necessary either way for pseudo elements)
-  - leverage style sheets for style overrides
-  - memoize evaluated instances
+- ensure new evaluator works
+  - works with variants
+  - works with slots
+  - works with all existing previews
+- remove checksum check
+  - ensure that checksum mismatches are not possible
 - refactor evaluator to compile & run code
 - DTS compiler for react
 

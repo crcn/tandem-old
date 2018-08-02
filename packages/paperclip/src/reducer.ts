@@ -3,7 +3,7 @@ import {
   queueOpenFiles,
   FSSandboxRootState,
   FS_SANDBOX_ITEM_LOADED,
-  FSSandboxItemLoaded,
+  FSSandboxItemLoaded
 } from "fsbox";
 import {
   PC_SYNTHETIC_FRAME_RENDERED,
@@ -19,6 +19,7 @@ import {
   PCEditorState,
   updateFrame,
   syncSyntheticDocuments,
+  upsertFrames
 } from "./edit";
 import { addFileCacheItemToDependencyGraph } from "./graph";
 import { PAPERCLIP_MIME_TYPE } from "./constants";
@@ -46,7 +47,10 @@ export const paperclipReducer = <
       if (catchingUp) {
         return state;
       }
-      return syncSyntheticDocuments(allDocuments, state);
+      return upsertFrames({
+        ...Object(state as any),
+        documents: allDocuments
+      });
     }
     case PC_SOURCE_FILE_URIS_RECEIVED: {
       const { uris } = action as PCSourceFileUrisReceived;

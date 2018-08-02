@@ -14,7 +14,8 @@ import {
   isSyntheticVisibleNodeMovable,
   isSyntheticVisibleNodeResizable,
   SyntheticDocument,
-  isSyntheticElement
+  isSyntheticElement,
+  DependencyGraph
 } from "paperclip";
 
 export const DISPLAY_MENU_OPTIONS: DropdownMenuOption[] = [
@@ -86,6 +87,7 @@ const ALIGN_SELF_OPTIONS: DropdownMenuOption[] = [
 export type LayoutControllerOuterProps = {
   selectedNodes: SyntheticVisibleNode[];
   syntheticDocument: SyntheticDocument;
+  graph: DependencyGraph;
 };
 
 export type LayoutControllerInnerProps = {
@@ -109,14 +111,15 @@ export default compose(
     onPropertyChangeComplete,
     selectedNodes,
     syntheticDocument,
+    graph,
     ...rest
   }: LayoutControllerInnerProps) => {
     if (!selectedNodes) {
       return null;
     }
     const node = selectedNodes[0];
-    const showMoveInputs = isSyntheticVisibleNodeMovable(node);
-    const showSizeInputs = isSyntheticVisibleNodeResizable(node);
+    const showMoveInputs = isSyntheticVisibleNodeMovable(node, graph);
+    const showSizeInputs = isSyntheticVisibleNodeResizable(node, graph);
     const showParentFlexInputs =
       node.style.display === "flex" || node.style.display === "inline-flex";
     const parentNode: SyntheticVisibleNode = getParentTreeNode(

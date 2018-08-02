@@ -2,7 +2,13 @@ import "./frame-controller.scss";
 import * as React from "react";
 import * as cx from "classnames";
 import { compose, pure, withHandlers } from "recompose";
-import { SyntheticVisibleNode, Frame, PCNode, isComponent } from "paperclip";
+import {
+  SyntheticVisibleNode,
+  Frame,
+  PCNode,
+  isComponent,
+  PCComponent
+} from "paperclip";
 import { getBoundsSize, Translate } from "tandem-common";
 import {
   canvasToolDocumentTitleClicked,
@@ -100,7 +106,7 @@ export default compose<FrameOuterProps, FrameInnerProps>(
           className: "top-bar"
         }}
         titleProps={{
-          text: contentNode.label || "Untitled",
+          text: (sourceNode as PCComponent).label || "Untitled",
           onClick: onTitleClick
         }}
         controlsProps={{

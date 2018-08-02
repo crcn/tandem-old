@@ -260,7 +260,8 @@ import {
   canRemovePCNode,
   isVisibleNode,
   persistSyntheticVisibleNodeStyle,
-  removeSyntheticVisibleNode
+  removeSyntheticVisibleNode,
+  isSyntheticContentNode
 } from "paperclip";
 import {
   roundBounds,
@@ -300,13 +301,11 @@ import { clamp, last } from "lodash";
 import {
   expandInspectorNode,
   collapseInspectorNode,
-  expandSyntheticInspectorNode,
   getInspectorSyntheticNode,
   isInspectorNode,
   getInspectorSourceNode,
   InspectorTreeNodeName,
   InspectorNode,
-  refreshInspectorTree,
   inspectorNodeInShadow
 } from "../state/pc-inspector-tree";
 
@@ -739,7 +738,8 @@ export const canvasReducer = (state: RootState, action: Action) => {
         for (const nodeId of state.selectedSyntheticNodeIds) {
           const itemBounds = getSyntheticVisibleNodeRelativeBounds(
             getSyntheticNodeById(nodeId, state.documents),
-            state.frames
+            state.frames,
+            state.graph
           );
           const newBounds = roundBounds(
             scaleInnerBounds(itemBounds, selectionBounds, movedBounds)
@@ -1675,10 +1675,10 @@ const getDragFilter = (item: any, state: RootState) => {
 
   if (isFile(item) && isJavaScriptFile(item.uri)) {
     filter = (node: SyntheticVisibleNode) => {
+      const sourceNode = getSyntheticSourceNode(node, state.graph);
       return (
-        node.isContentNode &&
-        node.isCreatedFromComponent &&
-        !node.isComponentInstance
+        isSyntheticContentNode(node, state.graph) &&
+        sourceNode.name === PCSourceTagNames.COMPONENT
       );
     };
   } else if (isInspectorNode(item)) {
@@ -1724,7 +1724,11 @@ const getNewSyntheticVisibleNodeBounds = (
   state: RootState
 ) => {
   const currentBounds = getSelectionBounds(state);
-  const innerBounds = getSyntheticVisibleNodeRelativeBounds(node, state.frames);
+  const innerBounds = getSyntheticVisibleNodeRelativeBounds(
+    node,
+    state.frames,
+    state.graph
+  );
   return scaleInnerBounds(innerBounds, currentBounds, newBounds);
 };
 
