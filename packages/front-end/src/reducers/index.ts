@@ -116,6 +116,7 @@ import {
   ComponentControllerItemClicked,
   COMPONENT_CONTROLLER_PICKED,
   ComponentControllerPicked,
+  SHORTCUT_WRAP_IN_SLOT_KEY_DOWN,
   REMOVE_COMPONENT_CONTROLLER_BUTTON_CLICKED,
   SOURCE_INSPECTOR_LAYER_CLICKED,
   InspectorLayerEvent,
@@ -123,13 +124,7 @@ import {
   SOURCE_INSPECTOR_LAYER_LABEL_CHANGED,
   InspectorLayerLabelChanged,
   SOURCE_INSPECTOR_LAYER_DROPPED,
-  SourceInspectorLayerDropped,
-  PropertyBindingUpdated,
-  PROPERTY_BINDING_UPDATED,
-  PROPERTY_BINDING_ADD_BUTTON_CLICKED,
-  PROPERTY_BINDING_REMOVE_BUTTON_CLICKED,
-  PropertyBindingRemoveButtonClicked,
-  SHORTCUT_WRAP_IN_SLOT_KEY_DOWN
+  SourceInspectorLayerDropped
 } from "../actions";
 import {
   queueOpenFile,
@@ -247,9 +242,6 @@ import {
   persistInheritStyleComponentId,
   isPaperclipUri,
   syntheticNodeIsInShadow,
-  persistUpdatePropertyBinding,
-  persistAddPropertyBinding,
-  persistRemovePropertyBinding,
   getSyntheticContentNode,
   PCOverridablePropertyName,
   getSyntheticInstancePath,
@@ -1467,50 +1459,6 @@ export const canvasReducer = (state: RootState, action: Action) => {
         frame.contentNodeId,
         action as CanvasToolArtboardTitleClicked
       );
-    }
-    case PROPERTY_BINDING_UPDATED: {
-      const {
-        fromPropertyName,
-        toPropertyName,
-        index
-      } = action as PropertyBindingUpdated;
-      const selectedNode = getSyntheticNodeById(
-        state.selectedSyntheticNodeIds[0],
-        state.documents
-      );
-      state = persistRootState(state => {
-        return persistUpdatePropertyBinding(
-          { from: fromPropertyName, to: toPropertyName },
-          index,
-          selectedNode,
-          state
-        );
-      }, state);
-
-      return state;
-    }
-    case PROPERTY_BINDING_ADD_BUTTON_CLICKED: {
-      const selectedNode = getSyntheticNodeById(
-        state.selectedSyntheticNodeIds[0],
-        state.documents
-      );
-      state = persistRootState(state => {
-        return persistAddPropertyBinding(selectedNode, state);
-      }, state);
-
-      return state;
-    }
-    case PROPERTY_BINDING_REMOVE_BUTTON_CLICKED: {
-      const { index } = action as PropertyBindingRemoveButtonClicked;
-      const selectedNode = getSyntheticNodeById(
-        state.selectedSyntheticNodeIds[0],
-        state.documents
-      );
-      state = persistRootState(state => {
-        return persistRemovePropertyBinding(index, selectedNode, state);
-      }, state);
-
-      return state;
     }
     case CANVAS_TOOL_WINDOW_BACKGROUND_CLICKED: {
       return setSelectedSyntheticVisibleNodeIds(state);

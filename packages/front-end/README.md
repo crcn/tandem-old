@@ -1,12 +1,10 @@
 IMMEDIATE:
 
-- remove dead features in code compiler
-- DTS compiler for react
-- ability to name slots
 - make evaluator faster (refactor entirely -- use style sheets for style overrides. Necessary either way for pseudo elements)
   - leverage style sheets for style overrides
   - memoize evaluated instances
 - refactor evaluator to compile & run code
+- DTS compiler for react
 
 * insertion tool should use inspector tree instead of synthetic
 

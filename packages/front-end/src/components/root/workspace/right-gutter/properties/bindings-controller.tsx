@@ -26,11 +26,6 @@ import {
   dropdownMenuOptionFromValue,
   DropdownMenuOption
 } from "../../../../inputs/dropdown/controller";
-import {
-  propertyBindingUpdated,
-  propertyBindingAddButtonClicked,
-  propertyBindingRemoveButtonClicked
-} from "../../../../../actions";
 
 type PropertyBindingOuterProps = {
   alt: boolean;
@@ -55,16 +50,12 @@ const PropertyBinding = compose<PropertyBindingOuterProps, any>(
       index,
       dispatch,
       fromPropertyName
-    }: PropertyBindingOuterProps) => value => {
-      dispatch(propertyBindingUpdated(index, fromPropertyName, value));
-    },
+    }: PropertyBindingOuterProps) => value => {},
     onFromPropertyChange: ({
       index,
       dispatch,
       toPropertyName
-    }: PropertyBindingOuterProps) => value => {
-      dispatch(propertyBindingUpdated(index, value, toPropertyName));
-    },
+    }: PropertyBindingOuterProps) => value => {},
     onClick: ({ onClick, index }) => () => onClick(index)
   })
 )(
@@ -99,15 +90,12 @@ export default compose(
   pure,
   withState("selectedBindingIndex", "setSelectedBindingIndex", -1),
   withHandlers({
-    onAddButtonClick: ({ dispatch }) => () => {
-      dispatch(propertyBindingAddButtonClicked());
-    },
+    onAddButtonClick: ({ dispatch }) => () => {},
     onRemoveButtonClick: ({
       dispatch,
       selectedBindingIndex,
       setSelectedBindingIndex
     }) => () => {
-      dispatch(propertyBindingRemoveButtonClicked(selectedBindingIndex));
       setSelectedBindingIndex(-1);
     },
     onBindingClick: ({ setSelectedBindingIndex }) => index => {
@@ -143,8 +131,7 @@ export default compose(
       return null;
     }
 
-    const propertyBindings =
-      (sourceNode.bind && sourceNode.bind.properties) || EMPTY_ARRAY;
+    const propertyBindings = EMPTY_ARRAY;
 
     const content = [
       <Table>

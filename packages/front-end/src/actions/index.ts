@@ -164,11 +164,6 @@ export const COMPONENT_CONTROLLER_PICKED = "COMPONENT_CONTROLLER_PICKED";
 export const COMPONENT_VARIANT_NAME_DEFAULT_TOGGLE_CLICK =
   "COMPONENT_VARIANT_NAME_DEFAULT_TOGGLE_CLICK";
 export const ELEMENT_VARIANT_TOGGLED = "ELEMENT_VARIANT_TOGGLED";
-export const PROPERTY_BINDING_UPDATED = "PROPERTY_BINDINGS_ADD_BUTTON_CLICKED";
-export const PROPERTY_BINDING_ADD_BUTTON_CLICKED =
-  "PROPERTY_BINDING_ADD_BUTTON_CLICKED";
-export const PROPERTY_BINDING_REMOVE_BUTTON_CLICKED =
-  "PROPERTY_BINDING_REMOVE_BUTTON_CLICKED";
 
 export type WrappedEvent<T> = {
   sourceEvent: T;
@@ -331,16 +326,6 @@ export type ComponentVariantNameClicked = {
 
 export type ComponentControllerPicked = {
   filePath: string;
-} & Action;
-
-export type PropertyBindingUpdated = {
-  index: number;
-  fromPropertyName: string;
-  toPropertyName: string;
-} & Action;
-
-export type PropertyBindingRemoveButtonClicked = {
-  index: number;
 } & Action;
 
 export type ComponentControllerItemClicked = {
@@ -517,28 +502,6 @@ export const newFileAdded = (
   uri,
   fileType,
   type: NEW_FILE_ADDED
-});
-
-export const propertyBindingUpdated = (
-  index: number,
-  fromPropertyName: string,
-  toPropertyName: string
-): PropertyBindingUpdated => ({
-  index,
-  fromPropertyName,
-  toPropertyName,
-  type: PROPERTY_BINDING_UPDATED
-});
-
-export const propertyBindingAddButtonClicked = (): Action => ({
-  type: PROPERTY_BINDING_ADD_BUTTON_CLICKED
-});
-
-export const propertyBindingRemoveButtonClicked = (
-  index: number
-): PropertyBindingRemoveButtonClicked => ({
-  index,
-  type: PROPERTY_BINDING_REMOVE_BUTTON_CLICKED
 });
 
 export const elementVariantToggled = (

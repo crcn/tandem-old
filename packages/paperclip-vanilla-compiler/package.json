@@ -1,0 +1,19 @@
+{
+  "name": "paperclip-vanilla-compiler",
+  "version": "10.0.12",
+  "description": "",
+  "main": "index.js",
+  "bin": {
+    "paperclip-vanilla-compiler": "./bin/paperclip-vanilla-compiler"
+  },
+  "scripts": {
+    "test": "",
+    "build": "tsc"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "paperclip": "^10.0.12",
+    "tandem-common": "^10.0.12"
+  }
+}

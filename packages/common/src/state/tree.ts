@@ -3,6 +3,7 @@ const crc32 = require("crc32");
 import { arraySplice } from "../utils/array";
 import { createUIDGenerator } from "../utils/uid";
 import { generateUID } from "../utils/uid";
+import { EMPTY_ARRAY } from "../utils/object";
 
 export enum TreeMoveOffset {
   PREPEND = 0,
@@ -94,6 +95,27 @@ export const getChildParentMap = memoize(
   }
 );
 
+export type TreeNodeNameMap = {
+  [identifier: string]: TreeNode<any>[];
+};
+
+export const getNodeNameMap = memoize((node: TreeNode<any>) => {
+  const map = { [node.name]: [node] };
+
+  for (let i = 0, { length } = node.children; i < length; i++) {
+    const childMap = getNodeNameMap(node.children[i]);
+    for (const name in childMap) {
+      map[name] = map[name] ? map[name].concat(childMap[name]) : childMap[name];
+    }
+  }
+
+  return map;
+});
+
+export const getTreeNodesByName = (name: string, node: TreeNode<any>) => {
+  return getNodeNameMap(node)[name] || EMPTY_ARRAY;
+};
+
 export type TreeNodeIdMap = {
   [identifier: string]: TreeNode<any>;
 };
@@ -112,13 +134,14 @@ export const getTreeNodeIdMap = memoize(
   }
 );
 
-export const flattenTreeNode = memoize(<TTree extends TreeNode<any>>(current: TTree): TTree[] =>
-  current.children.reduce(
-    (flattened, child) => {
-      return [...flattened, ...flattenTreeNode(child)];
-    },
-    [current]
-  ) as TTree[]
+export const flattenTreeNode = memoize(
+  <TTree extends TreeNode<any>>(current: TTree): TTree[] =>
+    current.children.reduce(
+      (flattened, child) => {
+        return [...flattened, ...flattenTreeNode(child)];
+      },
+      [current]
+    ) as TTree[]
 );
 
 export const getTreeNodePath = memoize(
