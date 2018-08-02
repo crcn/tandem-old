@@ -43,7 +43,6 @@ export const evaluatePCModule2 = memoize(
 
 const evaluateContentNode = memoize(
   (contentNode: PCVisibleNode | PCComponent, refMap: KeyValue<PCComponent>) => {
-    console.log("E CONTENT NODE");
     return compileContentNodeAsVanilla(contentNode)(
       EMPTY_OBJECT,
       compileComponentRefMap(refMap)
