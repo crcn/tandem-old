@@ -220,7 +220,6 @@ const translateVariantOverrideMap = memoize(
   (map: PCComputedOverrideVariantMap) => {
     let buffer = ``;
     for (const nodeId in map) {
-      buffer += `_${nodeId}Overrides: {`;
       const { overrides, children: childMap } = map[nodeId];
 
       for (const override of overrides) {
@@ -229,7 +228,7 @@ const translateVariantOverrideMap = memoize(
         if (override.propertyName === PCOverridablePropertyName.STYLE) {
           buffer += `_${targetId}Style: ${JSON.stringify(override.value)},`;
         }
-        if (override.propertyName === PCOverridablePropertyName.STYLE) {
+        if (override.propertyName === PCOverridablePropertyName.ATTRIBUTES) {
           buffer += `_${targetId}Attributes: ${JSON.stringify(
             override.value
           )},`;
@@ -238,6 +237,8 @@ const translateVariantOverrideMap = memoize(
           buffer += `_${targetId}Value: ${JSON.stringify(override.value)},`;
         }
       }
+      buffer += `_${nodeId}Overrides: {`;
+
       buffer += translateVariantOverrideMap(childMap);
 
       buffer += `},`;
