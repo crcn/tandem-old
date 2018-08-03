@@ -126,7 +126,10 @@ const translateVisibleNode = memoize(
 
 const translateElementChild = memoize((node: PCBaseElementChild) => {
   if (node.name === PCSourceTagNames.SLOT) {
-    return `...(overrides._${node.id}Children || EMPTY_ARRAY)`;
+    return `...(overrides._${node.id}Children || [${node.children
+      .map(translateElementChild)
+      .filter(Boolean)
+      .join(",")}])`;
   } else if (isVisibleNode(node)) {
     return translateVisibleNode(node);
   } else {

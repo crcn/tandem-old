@@ -94,8 +94,6 @@ export default compose<FrameOuterProps, FrameInnerProps>(
       width: width * translate.zoom
     };
 
-    // console.log(contentNode.metadata.mode);
-
     return (
       <Base
         className="m-frame"
@@ -106,7 +104,7 @@ export default compose<FrameOuterProps, FrameInnerProps>(
           className: "top-bar"
         }}
         titleProps={{
-          text: (sourceNode as PCComponent).label || "Untitled",
+          text: (sourceNode && (sourceNode as PCComponent).label) || "Untitled",
           onClick: onTitleClick
         }}
         controlsProps={{

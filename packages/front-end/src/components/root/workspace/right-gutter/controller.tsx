@@ -20,7 +20,9 @@ const getSelectedSyntheticNodes = memoize(
 
 const getSelectedInspectorNodes = memoize(
   (nodeIds: string[], sourceInspector: InspectorNode): InspectorNode[] => {
-    return nodeIds.map(id => getNestedTreeNodeById(id, sourceInspector));
+    return nodeIds
+      .map(id => getNestedTreeNodeById(id, sourceInspector))
+      .filter(Boolean);
   }
 );
 
