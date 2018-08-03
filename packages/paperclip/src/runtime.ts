@@ -1,7 +1,7 @@
 import { DependencyGraph, Dependency } from "./graph";
 import { EventEmitter } from "events";
 import { SyntheticDocument } from "./synthetic";
-import { evaluatePCModule2 } from "./evaluate2";
+import { evaluateDependencyGraph } from "./evaluate2";
 import { KeyValue, TreeNode } from "tandem-common";
 import {
   patchTreeNode,
@@ -87,27 +87,24 @@ class LocalPCRuntime extends EventEmitter implements PCRuntime {
     const documentMap = {};
     const deletedDocumentIds = [];
 
-    for (const uri in this._graph) {
-      const dependency = this._graph[uri];
-      const syntheticDocument = evaluatePCModule2(
-        dependency.content,
-        this._graph
-      );
-      let documentMapItem = this._syntheticDocuments[uri];
-      if (documentMapItem) {
-        documentMap[uri] = documentMapItem;
-        const ots = diffTreeNode(documentMapItem, syntheticDocument);
+    const newSyntheticDocuments = evaluateDependencyGraph(this._graph);
+
+    for (const uri in newSyntheticDocuments) {
+      const newSyntheticDocument = newSyntheticDocuments[uri];
+      let prevSyntheticDocument = this._syntheticDocuments[uri];
+      if (prevSyntheticDocument) {
+        const ots = diffTreeNode(prevSyntheticDocument, newSyntheticDocument);
         if (ots.length) {
-          documentMapItem = documentMap[uri] = patchTreeNode(
+          prevSyntheticDocument = documentMap[uri] = patchTreeNode(
             ots,
-            documentMapItem
+            prevSyntheticDocument
           );
           diffs[uri] = ots;
         } else {
-          documentMap[uri] = documentMapItem;
+          documentMap[uri] = prevSyntheticDocument;
         }
       } else {
-        newDocumentMap[uri] = documentMap[uri] = syntheticDocument;
+        newDocumentMap[uri] = documentMap[uri] = newSyntheticDocument;
       }
     }
 

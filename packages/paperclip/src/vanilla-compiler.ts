@@ -14,97 +14,115 @@ import {
   PCComputedOverrideVariantMap,
   PCComponentInstanceElement,
   PCBaseElement,
-  PCModule,
   PCComponent,
   getOverrides,
   PCVisibleNode,
   PCSourceTagNames,
   extendsComponent,
-  ComponentRef
+  computePCNodeStyle,
+  PCModule
 } from "./dsl";
-import { DependencyGraph } from "./graph";
 import { SyntheticElement } from "./synthetic";
 
-export type VanillaPCComponents = KeyValue<VanillaPCComponent>;
-export type VanillaPCComponent = (
+export type VanillaPCRenderers = KeyValue<VanillaPCRenderer>;
+export type VanillaPCRenderer = (
+  instanceSourceNodeId: string,
+  attributes: any,
+  style: any,
   overrides: any,
-  components: VanillaPCComponents
+  components: VanillaPCRenderers
 ) => SyntheticElement;
 
 // Note: we're not using immutability here because this thing needs to be _fast_
 
-export const compileComponentRefMap = memoize(
-  (refMap: KeyValue<PCComponent>): VanillaPCComponents => {
-    const map: VanillaPCComponents = {};
-
-    for (const nodeId in refMap) {
-      map[`_` + nodeId] = compileContentNodeAsVanilla(refMap[nodeId]);
-    }
-
-    return map;
-  }
-);
-
 export const compileContentNodeAsVanilla = memoize(
-  (node: PCComponent | PCVisibleNode) => {
-    return new Function(`generateUID`, `return ` + translateContentNode(node))(
-      generateUID
-    );
+  (node: PCComponent | PCVisibleNode, refMap: KeyValue<PCComponent>) => {
+    return new Function(
+      `generateUID`,
+      `return ` + translateContentNode(node, refMap)
+    )(generateUID);
   }
 );
 
-const translateContentNode = memoize((node: PCComponent | PCVisibleNode) => {
-  let buffer = `(function() {`;
+export const translateModuleToVanilla = memoize(
+  (module: PCModule, componentRefMap: KeyValue<PCComponent>) => {
+    return module.children
+      .map(
+        child =>
+          `exports._${child.id} = ${translateContentNode(
+            child,
+            componentRefMap
+          )}`
+      )
+      .join("\n");
+  }
+);
 
-  buffer += `const EMPTY_ARRAY = [];\n`;
-  buffer += `const EMPTY_OBJECT = {};\n`;
-  buffer += translateStaticNodeProps(node);
-  buffer += translateStaticOverrides(node);
+const translateContentNode = memoize(
+  (
+    node: PCComponent | PCVisibleNode,
+    componentRefMap: KeyValue<PCComponent>
+  ) => {
+    let buffer = `(function() {`;
 
-  buffer += `return function(overrides, components) {
-      return ${translateVisibleNode(node)};
+    buffer += `var EMPTY_ARRAY = [];\n`;
+    buffer += `var EMPTY_OBJECT = {};\n`;
+    buffer += translateStaticNodeProps(node, componentRefMap);
+    buffer += translateStaticOverrides(node);
+
+    buffer += `return function(instanceSourceNodeId, attributes, style, overrides, components) {
+      return ${translateVisibleNode(node, true)};
     }`;
 
-  return buffer + `})()`;
-});
+    return buffer + `})()`;
+  }
+);
 
 const isBaseElement = (node: PCNode): node is PCBaseElement<any> =>
   node.name === PCSourceTagNames.ELEMENT ||
   node.name === PCSourceTagNames.COMPONENT ||
   node.name === PCSourceTagNames.COMPONENT_INSTANCE;
 
-const translateVisibleNode = memoize((node: PCComponent | PCVisibleNode) => {
-  if (isBaseElement(node)) {
-    if (extendsComponent(node)) {
-      return `components._${node.is}(${translateDynamicOverrides(
-        node as PCComponent
-      )}, components)`;
-    }
+const translateVisibleNode = memoize(
+  (node: PCComponent | PCVisibleNode, isContentNode?: boolean) => {
+    if (isBaseElement(node)) {
+      if (extendsComponent(node)) {
+        return `components._${node.is}("${
+          node.id
+        }", ${translateDynamicAttributes(
+          node,
+          isContentNode
+        )}, ${translateDynamicStyle(
+          node,
+          isContentNode
+        )}, ${translateDynamicOverrides(node as PCComponent)}, components)`;
+      }
 
-    return `{
+      return `{
       id: generateUID(),
-      sourceNodeId: "${node.id}",
+      sourceNodeId: ${isContentNode ? "instanceSourceNodeId" : `"${node.id}"`},
       name: "${node.is}",
-      style: ${translateDynamicStyle(node)},
+      style: ${translateDynamicStyle(node, isContentNode)},
       metadata: EMPTY_OBJECT,
-      attributes: ${translateDynamicAttributes(node)},
+      attributes: ${translateDynamicAttributes(node, isContentNode)},
       children: [${node.children
         .map(translateElementChild)
         .filter(Boolean)
         .join(",")}]
     }`;
-  } else if (node.name === PCSourceTagNames.TEXT) {
-    return `{
+    } else if (node.name === PCSourceTagNames.TEXT) {
+      return `{
       id: generateUID(),
       sourceNodeId: "${node.id}",
-      style: ${translateDynamicStyle(node)},
+      style: ${translateDynamicStyle(node, isContentNode)},
       metadata: EMPTY_OBJECT,
       name: "text",
-      value: overrides._${node.id} || ${JSON.stringify(node.value)},
+      value: overrides._${node.id}Value || ${JSON.stringify(node.value)},
       children: EMPTY_ARRAY
     }`;
+    }
   }
-});
+);
 
 const translateElementChild = memoize((node: PCBaseElementChild) => {
   if (node.name === PCSourceTagNames.SLOT) {
@@ -116,14 +134,38 @@ const translateElementChild = memoize((node: PCBaseElementChild) => {
   }
 });
 
-const translateDynamicAttributes = (node: PCBaseElement<any>) => {
+const translateDynamicAttributes = (
+  node: PCBaseElement<any>,
+  isContentNode: boolean
+) => {
+  if (isContentNode) {
+    return `overrides._${node.id}Attributes ? Object.assign({}, _${
+      node.id
+    }Attributes, overrides._${
+      node.id
+    }Attributes, attributes) : Object.assign({}, _${
+      node.id
+    }Attributes, attributes)`;
+  }
+
   return `overrides._${node.id}Attributes ? Object.assign({}, _${
     node.id
   }Attributes, overrides._${node.id}Attributes) : _${node.id}Attributes`;
 };
 
-const translateDynamicStyle = (node: PCBaseElement<any> | PCTextNode) => {
-  return `overrides._${node.id}Style ? Object.assign({}, _${
+const translateDynamicStyle = (
+  node: PCBaseElement<any> | PCTextNode,
+  isContentNode: boolean
+) => {
+  if (isContentNode) {
+    return `overrides._${node.id}Style ? Object.assign({}, _${
+      node.id
+    }Style, overrides._${node.id}Style, style) : Object.assign({}, _${
+      node.id
+    }Style, style)`;
+  }
+
+  return `overrides._${node.id}Style ? Object.assign({},  _${
     node.id
   }Style, overrides._${node.id}Style) : _${node.id}Style`;
 };
@@ -159,7 +201,7 @@ const translateComponentInstanceOverrides = memoize(
   (instance: PCComponentInstanceElement) => {
     const overrides = getOverrides(instance);
     const overrideMap = getOverrideMap(overrides);
-    let buffer = `const _${instance.id}Overrides = {`;
+    let buffer = `var _${instance.id}Overrides = {`;
 
     for (const variantId in overrideMap) {
       buffer += `_${variantId}: {${translateVariantOverrideMap(
@@ -202,28 +244,28 @@ const translateVariantOverrideMap = memoize(
   }
 );
 
-const translateStaticNodeProps = memoize((node: PCNode) => {
-  let buffer = "";
+const translateStaticNodeProps = memoize(
+  (node: PCNode, componentRefMap: KeyValue<PCComponent>) => {
+    let buffer = "";
 
-  if (isBaseElement(node)) {
-    buffer += `const _${node.id}Attributes = {\n`;
-    for (const name in node.attributes) {
-      buffer += `"${name}": "${node.attributes[name]}",\n`;
+    if (isBaseElement(node)) {
+      buffer += `var _${node.id}Attributes = {\n`;
+      for (const name in node.attributes) {
+        buffer += `"${name}": "${node.attributes[name]}",\n`;
+      }
+      buffer += `};\n`;
     }
-    buffer += `};\n`;
-  }
 
-  if (isBaseElement(node) || node.name === PCSourceTagNames.TEXT) {
-    buffer += `const _${node.id}Style = {\n`;
-    for (const name in node.style) {
-      buffer += `"${name}": "${node.style[name]}",\n`;
+    if (isBaseElement(node) || node.name === PCSourceTagNames.TEXT) {
+      buffer += `var _${node.id}Style = ${JSON.stringify(
+        computePCNodeStyle(node, componentRefMap)
+      )};`;
     }
-    buffer += `};\n`;
-  }
 
-  for (const child of node.children) {
-    buffer += translateStaticNodeProps(child);
-  }
+    for (const child of node.children) {
+      buffer += translateStaticNodeProps(child, componentRefMap);
+    }
 
-  return buffer;
-});
+    return buffer;
+  }
+);

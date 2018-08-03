@@ -79,7 +79,7 @@ import {
 import * as path from "path";
 import { convertFixedBoundsToRelative } from "./synthetic-layout";
 import { diffTreeNode, patchTreeNode } from "./ot";
-import { evaluatePCModule2 } from "./evaluate2";
+import { evaluateDependencyGraph } from "./evaluate2";
 
 /*------------------------------------------
  * CONSTANTS
@@ -1387,11 +1387,9 @@ const overrideKeyValue = (main, oldOverrides, newOverrides) => {
 // to be used only in tests
 export const evaluateEditedStateSync = (state: PCEditorState) => {
   const documents: SyntheticDocument[] = [];
-  for (const uri in state.graph) {
-    const newDocument = evaluatePCModule2(
-      state.graph[uri].content,
-      state.graph
-    );
+  const newDocuments = evaluateDependencyGraph(state.graph);
+  for (const uri in newDocuments) {
+    const newDocument = newDocuments[uri];
     const oldDocument = getSyntheticDocumentByDependencyUri(
       uri,
       state.documents,

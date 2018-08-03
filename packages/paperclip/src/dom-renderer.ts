@@ -196,7 +196,7 @@ export const patchDOM = (
       transform.nodePath,
       newSyntheticTree
     );
-    const isContentNode = transform.nodePath.length === 1;
+    const isContentNode = transform.nodePath.length === 0;
     const target = map[oldSyntheticTarget.id] as HTMLElement;
     newSyntheticTree = patchTreeNode([transform], newSyntheticTree);
     const syntheticTarget = getTreeNodeFromPath(

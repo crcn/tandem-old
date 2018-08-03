@@ -10,51 +10,83 @@ import {
   getComponentGraphRefMap,
   PCVisibleNode,
   PCComponent,
-  ComponentRef,
   PCNode
 } from "./dsl";
 import {
-  compileComponentRefMap,
-  compileContentNodeAsVanilla
+  compileContentNodeAsVanilla,
+  VanillaPCRenderers,
+  VanillaPCRenderer
 } from "./vanilla-compiler";
 import { DependencyGraph } from "./graph";
-import { createSytheticDocument } from "./synthetic";
+import { createSytheticDocument, SyntheticDocument } from "./synthetic";
 
 const reuseComponentGraphMap = reuser(
   500,
-  (value: KeyValue<PCComponent>) => Object.keys(value).join(","),
+  (value: KeyValue<any>) => Object.keys(value).join(","),
   shallowEquals
 );
 
-export const evaluatePCModule2 = memoize(
-  (module: PCModule, graph: DependencyGraph) => {
-    const document = createSytheticDocument(
+export const evaluateDependencyGraph = memoize(
+  (graph: DependencyGraph): KeyValue<SyntheticDocument> => {
+    const documents = {};
+    const renderers = compileDependencyGraph(graph);
+    for (const uri in graph) {
+      const { content: module } = graph[uri];
+      documents[uri] = evaluateModule(
+        module,
+        reuseComponentGraphMap(filterAssocRenderers(module, graph, renderers))
+      );
+    }
+
+    return documents;
+  }
+);
+
+const evaluateModule = memoize(
+  (module: PCModule, usedRenderers: VanillaPCRenderers) => {
+    return createSytheticDocument(
       module.id,
-      module.children.map(contentNode =>
-        evaluateContentNode(
-          contentNode,
-          reuseComponentGraphMap(getUsedComponentMap(contentNode, graph))
-        )
-      )
-    );
-    return document;
-  }
-);
-
-const evaluateContentNode = memoize(
-  (contentNode: PCVisibleNode | PCComponent, refMap: KeyValue<PCComponent>) => {
-    return compileContentNodeAsVanilla(contentNode)(
-      EMPTY_OBJECT,
-      compileComponentRefMap(refMap)
+      module.children.map(child => {
+        return usedRenderers[`_${child.id}`](
+          child.id,
+          EMPTY_OBJECT,
+          EMPTY_OBJECT,
+          EMPTY_OBJECT,
+          usedRenderers
+        );
+      })
     );
   }
 );
 
-const getUsedComponentMap = (node: PCNode, graph: DependencyGraph) => {
-  const map: KeyValue<PCComponent> = {};
-  const refMap = getComponentGraphRefMap(node, graph);
+const filterAssocRenderers = (
+  module: PCModule,
+  graph: DependencyGraph,
+  allRenderers: VanillaPCRenderers
+) => {
+  const assocRenderers: VanillaPCRenderers = {};
+  const refMap = getComponentGraphRefMap(module, graph);
   for (const id in refMap) {
-    map[id] = refMap[id].component;
+    assocRenderers[`_${id}`] = allRenderers[`_${id}`];
   }
-  return map;
+
+  for (const child of module.children) {
+    assocRenderers[`_${child.id}`] = allRenderers[`_${child.id}`];
+  }
+  return assocRenderers;
+};
+
+const compileDependencyGraph = (graph: DependencyGraph) => {
+  const renderers = {};
+  for (const uri in graph) {
+    const { content: module } = graph[uri];
+    for (const contentNode of module.children) {
+      renderers[`_${contentNode.id}`] = compileContentNodeAsVanilla(
+        contentNode,
+        reuseComponentGraphMap(getComponentGraphRefMap(contentNode, graph))
+      );
+    }
+  }
+
+  return renderers;
 };

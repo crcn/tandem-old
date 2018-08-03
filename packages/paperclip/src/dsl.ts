@@ -160,6 +160,9 @@ export type PCOverride =
 
 export type InheritStyleItem = {
   priority: number;
+
+  // not actually implemented het
+  variantId?: string;
 };
 
 export type InheritStyle = {
@@ -770,24 +773,42 @@ export const getComponentRefIds = memoize(
   }
 );
 
-export type ComponentRef = {
-  sourceUri: string;
-  component: PCComponent;
-};
+export const computePCNodeStyle = memoize(
+  (node: PCVisibleNode | PCComponent, componentRefs: KeyValue<PCComponent>) => {
+    if (!node.inheritStyle) {
+      return node.style;
+    }
+
+    let style = {};
+
+    const inheritStyleComponentIds = Object.keys(
+      node.inheritStyle || EMPTY_OBJECT
+    ).sort((a, b) => {
+      return node.inheritStyle[a].priority > node.inheritStyle[b].priority
+        ? 1
+        : -1;
+    });
+    for (let i = 0, { length } = inheritStyleComponentIds; i < length; i++) {
+      const inheritComponent = componentRefs[inheritStyleComponentIds[i]];
+      Object.assign(style, computePCNodeStyle(inheritComponent, componentRefs));
+    }
+
+    Object.assign(style, node.style);
+
+    return style;
+  }
+);
 
 export const getComponentGraphRefs = memoize(
-  (node: PCNode, graph: DependencyGraph): ComponentRef[] => {
-    const allRefs: ComponentRef[] = [];
+  (node: PCNode, graph: DependencyGraph): PCComponent[] => {
+    const allRefs: PCComponent[] = [];
     const refIds = getComponentRefIds(node);
     for (let i = 0, { length } = refIds; i < length; i++) {
       const component = getPCNode(refIds[i], graph) as PCComponent;
       if (!component) {
         continue;
       }
-      allRefs.push({
-        component,
-        sourceUri: getPCNodeDependency(component.id, graph).uri
-      });
+      allRefs.push(component);
       allRefs.push(...getComponentGraphRefs(component, graph));
     }
     return uniq(allRefs);
@@ -862,11 +883,11 @@ const componentShallowEquals = (a: PCComponent, b: PCComponent) => {
 };
 
 const componentGraphRefsToMap = memoize(
-  (refs: ComponentRef[]): KeyValue<ComponentRef> => {
+  (refs: PCComponent[]): KeyValue<PCComponent> => {
     const componentRefMap = {};
     for (let i = 0, { length } = refs; i < length; i++) {
       const ref = refs[i];
-      componentRefMap[ref.component.id] = ref;
+      componentRefMap[ref.id] = ref;
     }
 
     return componentRefMap;
