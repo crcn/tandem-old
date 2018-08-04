@@ -1022,32 +1022,65 @@
         "display": "block"
       },
       "attributes": {},
-      "id": "ecb66d14312",
+      "id": "d9e59c8d627",
       "name": "component",
       "children": [
         {
-          "id": "ecb66d14625",
-          "children": [
-            {
-              "id": "ecb66d14468",
-              "name": "text",
-              "label": "Text",
-              "value": "Click to edit",
-              "style": {},
-              "children": [],
-              "metadata": {}
-            }
+          "id": "d9e59c8d626",
+          "name": "text",
+          "label": "Text",
+          "value": "Click to edit",
+          "style": {},
+          "children": [],
+          "metadata": {}
+        },
+        {
+          "id": "d9e59c8d784",
+          "name": "variant",
+          "label": "Something else",
+          "isDefault": true,
+          "children": [],
+          "metadata": {}
+        },
+        {
+          "id": "d9e59c8d1097",
+          "name": "variant",
+          "label": "blarg",
+          "isDefault": true,
+          "children": [],
+          "metadata": {}
+        },
+        {
+          "id": "d9e59c8d1722",
+          "variantId": "d9e59c8d1097",
+          "propertyName": "style",
+          "targetIdPath": [],
+          "value": {
+            "width": "10px"
+          },
+          "name": "override",
+          "children": []
+        },
+        {
+          "id": "147caa1c626",
+          "variantId": "d9e59c8d1097",
+          "propertyName": "style",
+          "targetIdPath": [
+            "d9e59c8d626"
           ],
-          "metadata": {},
-          "name": "slot"
+          "value": {
+            "border-bottom-left-radius": "10px"
+          },
+          "name": "override",
+          "children": []
         }
       ],
       "metadata": {
         "bounds": {
-          "left": -1539.8713207915678,
-          "top": 854.2674350420338,
-          "right": -1439.8713207915678,
-          "bottom": 954.2674350420338
+          "left": -1096,
+          "top": 978,
+          "right": -996,
+          "bottom": 1078
         }
       }
     }

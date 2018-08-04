@@ -21,8 +21,7 @@ import {
   getNestedTreeNodeById,
   KeyValue,
   filterNestedNodes,
-  EMPTY_ARRAY,
-  generateUID
+  EMPTY_ARRAY
 } from "tandem-common";
 import { values, identity, uniq, last } from "lodash";
 import { DependencyGraph, Dependency } from "./graph";
@@ -35,7 +34,6 @@ import {
   PCSourceTagNames,
   replacePCNode,
   PCComponent,
-  assertValidPCModule,
   PCElement,
   createPCComponentInstance,
   getPCNodeModule,
@@ -54,7 +52,6 @@ import {
   isPCComponentInstance,
   InheritStyle,
   PCBaseVisibleNode,
-  PCPropertyBinding,
   createPCSlot,
   getPCNodeContentNode
 } from "./dsl";

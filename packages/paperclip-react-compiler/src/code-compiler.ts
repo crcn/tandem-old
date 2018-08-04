@@ -581,7 +581,7 @@ const translateUsedComponentOverrides = (
   instance: PCComponentInstanceElement | PCComponent,
   context: TranslateContext
 ) => {
-  const overrideMap = getOverrideMap(getOverrides(instance));
+  const overrideMap = getOverrideMap(instance);
   context = translateUsedComponentOverrideMap(
     overrideMap[COMPUTED_OVERRIDE_DEFAULT_KEY],
     context
@@ -739,8 +739,7 @@ const translateContentNodeVariantOverrides = (
     );
     for (let i = instances.length; i--; ) {
       const instance = instances[i];
-      const overrides = getOverrides(instance);
-      const overrideMap = getOverrideMap(overrides);
+      const overrideMap = getOverrideMap(instance);
       if (!overrideMap[variant.id]) {
         continue;
       }

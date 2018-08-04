@@ -20,7 +20,9 @@ import {
   PCSourceTagNames,
   extendsComponent,
   computePCNodeStyle,
-  PCModule
+  PCModule,
+  PCVariant,
+  PCStyleOverride
 } from "./dsl";
 import { SyntheticElement } from "./synthetic";
 
@@ -71,6 +73,7 @@ const translateContentNode = memoize(
     buffer += translateStaticOverrides(node);
 
     buffer += `return function(instanceSourceNodeId, attributes, style, overrides, components) {
+      ${translateContentNodeStyles(node)}
       return ${translateVisibleNode(node, true)};
     }`;
 
@@ -89,20 +92,16 @@ const translateVisibleNode = memoize(
       if (extendsComponent(node)) {
         return `components._${node.is}("${
           node.id
-        }", ${translateDynamicAttributes(
-          node,
-          isContentNode
-        )}, ${translateDynamicStyle(
-          node,
-          isContentNode
-        )}, ${translateDynamicOverrides(node as PCComponent)}, components)`;
+        }", ${translateDynamicAttributes(node, isContentNode)}, styles._${
+          node.id
+        }, ${translateDynamicOverrides(node as PCComponent)}, components)`;
       }
 
       return `{
       id: generateUID(),
       sourceNodeId: ${isContentNode ? "instanceSourceNodeId" : `"${node.id}"`},
       name: "${node.is}",
-      style: ${translateDynamicStyle(node, isContentNode)},
+      style: styles._${node.id},
       metadata: EMPTY_OBJECT,
       attributes: ${translateDynamicAttributes(node, isContentNode)},
       children: [${node.children
@@ -114,7 +113,7 @@ const translateVisibleNode = memoize(
       return `{
       id: generateUID(),
       sourceNodeId: "${node.id}",
-      style: ${translateDynamicStyle(node, isContentNode)},
+      style: styles._${node.id},
       metadata: EMPTY_OBJECT,
       name: "text",
       value: overrides._${node.id}Value || ${JSON.stringify(node.value)},
@@ -123,6 +122,41 @@ const translateVisibleNode = memoize(
     }
   }
 );
+const translateContentNodeStyles = (node: PCVisibleNode | PCComponent) => {
+  const variants = getTreeNodesByName(
+    PCSourceTagNames.VARIANT,
+    node
+  ) as PCVariant[];
+
+  let buffer = `var styles = {`;
+
+  const visibleChildren = [
+    ...getTreeNodesByName(PCSourceTagNames.TEXT, node),
+    ...getTreeNodesByName(PCSourceTagNames.ELEMENT, node),
+    ...getTreeNodesByName(PCSourceTagNames.COMPONENT_INSTANCE, node),
+    ...getTreeNodesByName(PCSourceTagNames.COMPONENT, node)
+  ] as PCVisibleNode[];
+
+  const childVariantStyles = {};
+
+  for (const child of visibleChildren) {
+    buffer += `_${child.id}: ${translateDynamicStyle(child, child === node)},`;
+  }
+
+  buffer += `};`;
+
+  for (const variant of variants) {
+    buffer += `if (${
+      variant.isDefault
+        ? `overrides._${variant.id}Default !== false`
+        : `overrides._${variant.id}Default === true`
+    }) {`;
+
+    buffer += `}`;
+  }
+
+  return buffer;
+};
 
 const translateElementChild = memoize((node: PCBaseElementChild) => {
   if (node.name === PCSourceTagNames.SLOT) {
@@ -202,8 +236,7 @@ const translateStaticOverrides = (node: PCNode) => {
 
 const translateComponentInstanceOverrides = memoize(
   (instance: PCComponentInstanceElement) => {
-    const overrides = getOverrides(instance);
-    const overrideMap = getOverrideMap(overrides);
+    const overrideMap = getOverrideMap(instance);
     let buffer = `var _${instance.id}Overrides = {`;
 
     for (const variantId in overrideMap) {
@@ -223,18 +256,14 @@ const translateVariantOverrideMap = memoize(
       const { overrides, children: childMap } = map[nodeId];
 
       for (const override of overrides) {
-        const targetId =
-          override.targetIdPath[override.targetIdPath.length - 1];
         if (override.propertyName === PCOverridablePropertyName.STYLE) {
-          buffer += `_${targetId}Style: ${JSON.stringify(override.value)},`;
+          buffer += `_${nodeId}Style: ${JSON.stringify(override.value)},`;
         }
         if (override.propertyName === PCOverridablePropertyName.ATTRIBUTES) {
-          buffer += `_${targetId}Attributes: ${JSON.stringify(
-            override.value
-          )},`;
+          buffer += `_${nodeId}Attributes: ${JSON.stringify(override.value)},`;
         }
         if (override.propertyName === PCOverridablePropertyName.TEXT) {
-          buffer += `_${targetId}Value: ${JSON.stringify(override.value)},`;
+          buffer += `_${nodeId}Value: ${JSON.stringify(override.value)},`;
         }
       }
       buffer += `_${nodeId}Overrides: {`;

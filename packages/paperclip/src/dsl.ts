@@ -175,15 +175,6 @@ export type PCBaseVisibleNode<TName extends PCSourceTagNames> = {
   inheritStyle?: InheritStyle;
 } & PCBaseSourceNode<TName>;
 
-export type PCPropertyBinding = {
-  from?: string;
-  to?: string;
-};
-
-export type PCVisibleNodeBindings = {
-  properties?: PCPropertyBinding[];
-};
-
 export type PCBaseElementChild =
   | PCBaseVisibleNode<any>
   | PCOverride
@@ -911,7 +902,8 @@ export const filterNestedOverrides = memoize(
   (node: PCNode): PCOverride[] => filterNestedNodes(node, isPCOverride)
 );
 
-export const getOverrideMap = memoize((overrides: PCOverride[]) => {
+export const getOverrideMap = memoize((node: PCNode) => {
+  const overrides = getOverrides(node);
   const map: PCComputedOverrideMap = {
     default: {}
   };
@@ -933,7 +925,7 @@ export const getOverrideMap = memoize((overrides: PCOverride[]) => {
 
     const targetIdPath = [...override.targetIdPath];
 
-    const targetId = targetIdPath.pop();
+    const targetId = targetIdPath.pop() || node.id;
 
     for (const nodeId of targetIdPath) {
       if (!targetOverrides[nodeId]) {

@@ -1,18 +1,16 @@
 IMMEDIATE:
 
+- leverage style sheets for overrides
+- write out variants functionality
+
 - ensure new evaluator works
+
   - works with variants
-  - works with slots
   - works with all existing previews
-- remove checksum check
-  - ensure that checksum mismatches are not possible
-- refactor evaluator to compile & run code
-- DTS compiler for react
 
-* insertion tool should use inspector tree instead of synthetic
-
-- dts compiler (everything explicit)
-- refactor TSX
+- speed up app
+  - user timing
+- refactor variants input
 
 * moving component nodes
 * test moving to shadow DOM
@@ -20,10 +18,6 @@ IMMEDIATE:
 * prohobit property overrides (necessary)
 * property inputs for component dynamic bindings
 * update code compiler to use bindings
-
-- Variants
-
-  - based on default. Do not allow to be toggleable.
 
 - update code compiler to use new bindings functionality
 - typed definition file
