@@ -2,7 +2,8 @@ import {
   memoize,
   generateUID,
   getTreeNodesByName,
-  KeyValue
+  KeyValue,
+  getParentTreeNode
 } from "tandem-common";
 import {
   PCNode,
@@ -15,15 +16,15 @@ import {
   PCComponentInstanceElement,
   PCBaseElement,
   PCComponent,
-  getOverrides,
   PCVisibleNode,
   PCSourceTagNames,
   extendsComponent,
   computePCNodeStyle,
   PCModule,
   PCVariant,
-  PCStyleOverride
+  PCOverride
 } from "./dsl";
+import { uniq } from "lodash";
 import { SyntheticElement } from "./synthetic";
 
 export type VanillaPCRenderers = KeyValue<VanillaPCRenderer>;
@@ -37,12 +38,23 @@ export type VanillaPCRenderer = (
 
 // Note: we're not using immutability here because this thing needs to be _fast_
 
+const merge = (a, b) => {
+  if (b == null) return a;
+  if (!a || typeof b !== "object" || Array.isArray(b)) return b;
+  const clone = { ...a };
+  for (const k in b) {
+    clone[k] = merge(a[k], b[k]);
+  }
+  return clone;
+};
+
 export const compileContentNodeAsVanilla = memoize(
   (node: PCComponent | PCVisibleNode, refMap: KeyValue<PCComponent>) => {
     return new Function(
       `generateUID`,
+      `merge`,
       `return ` + translateContentNode(node, refMap)
-    )(generateUID);
+    )(generateUID, merge);
   }
 );
 
@@ -70,10 +82,11 @@ const translateContentNode = memoize(
     buffer += `var EMPTY_ARRAY = [];\n`;
     buffer += `var EMPTY_OBJECT = {};\n`;
     buffer += translateStaticNodeProps(node, componentRefMap);
-    buffer += translateStaticOverrides(node);
+    buffer += translateStaticOverrides(node as PCComponent);
+    buffer += translateStaticVariants(node);
 
     buffer += `return function(instanceSourceNodeId, attributes, style, overrides, components) {
-      ${translateContentNodeStyles(node)}
+      ${translateVariants(node)}
       return ${translateVisibleNode(node, true)};
     }`;
 
@@ -92,16 +105,20 @@ const translateVisibleNode = memoize(
       if (extendsComponent(node)) {
         return `components._${node.is}("${
           node.id
-        }", ${translateDynamicAttributes(node, isContentNode)}, styles._${
-          node.id
-        }, ${translateDynamicOverrides(node as PCComponent)}, components)`;
+        }", ${translateDynamicAttributes(
+          node,
+          isContentNode
+        )}, ${translateDynamicStyle(
+          node,
+          isContentNode
+        )}, ${translateDynamicOverrides(node as PCComponent)}, components)`;
       }
 
       return `{
       id: generateUID(),
       sourceNodeId: ${isContentNode ? "instanceSourceNodeId" : `"${node.id}"`},
       name: "${node.is}",
-      style: styles._${node.id},
+      style: ${translateDynamicStyle(node, isContentNode)},
       metadata: EMPTY_OBJECT,
       attributes: ${translateDynamicAttributes(node, isContentNode)},
       children: [${node.children
@@ -113,7 +130,7 @@ const translateVisibleNode = memoize(
       return `{
       id: generateUID(),
       sourceNodeId: "${node.id}",
-      style: styles._${node.id},
+      style: ${translateDynamicStyle(node, isContentNode)},
       metadata: EMPTY_OBJECT,
       name: "text",
       value: overrides._${node.id}Value || ${JSON.stringify(node.value)},
@@ -122,28 +139,15 @@ const translateVisibleNode = memoize(
     }
   }
 );
-const translateContentNodeStyles = (node: PCVisibleNode | PCComponent) => {
-  const variants = getTreeNodesByName(
+const translateVariants = (contentNode: PCVisibleNode | PCComponent) => {
+  const variants = (getTreeNodesByName(
     PCSourceTagNames.VARIANT,
-    node
-  ) as PCVariant[];
+    contentNode
+  ) as PCVariant[])
+    .concat()
+    .reverse();
 
-  let buffer = `var styles = {`;
-
-  const visibleChildren = [
-    ...getTreeNodesByName(PCSourceTagNames.TEXT, node),
-    ...getTreeNodesByName(PCSourceTagNames.ELEMENT, node),
-    ...getTreeNodesByName(PCSourceTagNames.COMPONENT_INSTANCE, node),
-    ...getTreeNodesByName(PCSourceTagNames.COMPONENT, node)
-  ] as PCVisibleNode[];
-
-  const childVariantStyles = {};
-
-  for (const child of visibleChildren) {
-    buffer += `_${child.id}: ${translateDynamicStyle(child, child === node)},`;
-  }
-
-  buffer += `};`;
+  let buffer = ``;
 
   for (const variant of variants) {
     buffer += `if (${
@@ -152,7 +156,11 @@ const translateContentNodeStyles = (node: PCVisibleNode | PCComponent) => {
         : `overrides._${variant.id}Default === true`
     }) {`;
 
-    buffer += `}`;
+    buffer += `overrides = merge(_${contentNode.id}Variants._${
+      variant.id
+    }, overrides); `;
+
+    buffer += `}\n`;
   }
 
   return buffer;
@@ -210,9 +218,9 @@ const translateDynamicStyle = (
 const translateDynamicOverrides = (
   node: PCComponent | PCComponentInstanceElement
 ) => {
-  let buffer = `Object.assign({}, overrides._${node.id}Overrides, _${
+  let buffer = `Object.assign({}, _${node.id}Overrides, overrides._${
     node.id
-  }Overrides._default, {`;
+  }Overrides, {`;
 
   for (const child of node.children as PCNode[]) {
     if (child.name === PCSourceTagNames.PLUG) {
@@ -226,28 +234,55 @@ const translateDynamicOverrides = (
   return buffer + `})`;
 };
 
-const translateStaticOverrides = (node: PCNode) => {
+const translateStaticOverrides = (contentNode: PCNode) => {
   const instances = [
-    ...getTreeNodesByName(PCSourceTagNames.COMPONENT_INSTANCE, node),
-    ...getTreeNodesByName(PCSourceTagNames.COMPONENT, node)
+    ...getTreeNodesByName(PCSourceTagNames.COMPONENT_INSTANCE, contentNode),
+    ...getTreeNodesByName(PCSourceTagNames.COMPONENT, contentNode)
   ];
-  return instances.map(translateComponentInstanceOverrides).join("\n");
+
+  let buffer = ``;
+
+  for (const instance of instances) {
+    const overrideMap = getOverrideMap(instance);
+    buffer += `var _${instance.id}Overrides = { ${translateVariantOverrideMap(
+      overrideMap.default
+    )}};\n`;
+  }
+
+  return buffer;
 };
 
-const translateComponentInstanceOverrides = memoize(
-  (instance: PCComponentInstanceElement) => {
-    const overrideMap = getOverrideMap(instance);
-    let buffer = `var _${instance.id}Overrides = {`;
+const translateStaticVariants = (contentNode: PCNode) => {
+  const variants = getTreeNodesByName(PCSourceTagNames.VARIANT, contentNode);
+  const variantNodes = uniq(
+    (getTreeNodesByName(PCSourceTagNames.OVERRIDE, contentNode) as PCOverride[])
+      .filter(override => {
+        return (
+          override.propertyName === PCOverridablePropertyName.STYLE ||
+          override.propertyName === PCOverridablePropertyName.VARIANT_IS_DEFAULT
+        );
+      })
+      .map(override => {
+        return getParentTreeNode(override.id, contentNode);
+      })
+  );
 
-    for (const variantId in overrideMap) {
-      buffer += `_${variantId}: {${translateVariantOverrideMap(
-        overrideMap[variantId]
-      )}},\n`;
+  let buffer = `_${contentNode.id}Variants = {`;
+
+  for (const variant of variants) {
+    buffer += `_${variant.id}: {`;
+    for (const node of variantNodes) {
+      const overrideMap = getOverrideMap(node);
+      if (!overrideMap[variant.id]) {
+        continue;
+      }
+      buffer += `${translateVariantOverrideMap(overrideMap[variant.id])}`;
     }
-
-    return buffer + `};\n`;
+    buffer += `},`;
   }
-);
+
+  return buffer + `};\n`;
+};
 
 const translateVariantOverrideMap = memoize(
   (map: PCComputedOverrideVariantMap) => {
@@ -261,6 +296,11 @@ const translateVariantOverrideMap = memoize(
         }
         if (override.propertyName === PCOverridablePropertyName.ATTRIBUTES) {
           buffer += `_${nodeId}Attributes: ${JSON.stringify(override.value)},`;
+        }
+        if (
+          override.propertyName === PCOverridablePropertyName.VARIANT_IS_DEFAULT
+        ) {
+          buffer += `_${nodeId}Default: ${Boolean(override.value)},`;
         }
         if (override.propertyName === PCOverridablePropertyName.TEXT) {
           buffer += `_${nodeId}Value: ${JSON.stringify(override.value)},`;

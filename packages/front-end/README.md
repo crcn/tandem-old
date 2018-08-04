@@ -23,15 +23,6 @@ IMMEDIATE:
 - typed definition file
 - eliminiate
 
-* VSCode
-  - Tandem button for opening assoc `*.pc` file (scan PC files for controller)
-    - dropdown if multiple controllers attached
-
-- shadow DOM
-  - update front-end to persist to data model
-  - warning for any case where child overrides exist
-
-* inherit style must work work with variants
 * measure tool for distance between elements
 * update all icons to have same padding
 * box shadow color picking doesn't work properly

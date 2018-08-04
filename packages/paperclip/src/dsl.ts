@@ -903,10 +903,11 @@ export const filterNestedOverrides = memoize(
 );
 
 export const getOverrideMap = memoize((node: PCNode) => {
-  const overrides = getOverrides(node);
   const map: PCComputedOverrideMap = {
     default: {}
   };
+
+  const overrides = getOverrides(node);
   for (const override of overrides) {
     if (override.variantId && !map[override.variantId]) {
       map[override.variantId] = {};
