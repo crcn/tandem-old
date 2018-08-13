@@ -491,7 +491,7 @@
           "id": "d3bf183b25",
           "name": "variant",
           "label": "component",
-          "isDefault": true,
+          "isDefault": false,
           "children": [],
           "metadata": {}
         },

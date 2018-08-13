@@ -8,7 +8,7 @@ import {
   inheritItemComponentTypeChangeComplete,
   inheritItemClick
 } from "actions";
-import { Dispatch } from "react-redux";
+import { Dispatch } from "redux";
 
 export type InheritItemControllerOuterProps = {
   dispatch: Dispatch<any>;

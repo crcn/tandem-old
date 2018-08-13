@@ -1,7 +1,7 @@
 import "./document-overlay.scss";
 const cx = require("classnames");
 import * as React from "react";
-import * as Hammer from "react-hammerjs";
+const Hammer = require("react-hammerjs");
 // import { Workspace, AVAILABLE_COMPONENT, AvailableComponent, Artboard } from "front-end/state";
 // import { Workspace, AVAILABLE_COMPONENT, AvailableComponent, Artboard } from "front-end/state";
 import { wrapEventToDispatch } from "../../../../../../../../utils";

@@ -49,7 +49,7 @@ const enhance = compose<
   withHandlers({
     onMouseDown: ({ tokens }) => (event: React.MouseEvent<any>) => {
       const pos = calcCaretPosition(
-        ReactDOM.findDOMNode(this),
+        ReactDOM.findDOMNode(this) as HTMLElement,
         tokens,
         event.nativeEvent
       );

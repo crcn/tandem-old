@@ -1,11 +1,11 @@
-import { compose, pure, lifecycle, withHandlers } from "recompose";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 
 export type FocusProps = {
-  children: any;
+  // children: any;
   focus?: boolean;
 };
+
 
 export class FocusComponent extends React.Component<FocusProps> {
   componentDidMount() {

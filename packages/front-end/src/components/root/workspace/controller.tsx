@@ -8,7 +8,7 @@ const {
 } = require("../../component-picker/modal.pc");
 const { Modal: QuickSearchModal } = require("../../quick-search/index.pc");
 import { DragDropContext } from "react-dnd";
-import HTML5Backend, { IHTML5BackendContext } from "react-dnd-html5-backend";
+import HTML5Backend from "react-dnd-html5-backend";
 
 export type WorkspaceControllerOuterProps = {
   root: RootState;

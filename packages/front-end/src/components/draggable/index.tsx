@@ -13,7 +13,7 @@ export class DraggableComponent extends React.Component<DraggableProps, any> {
   private _element: HTMLElement;
   componentDidMount() {}
   onMouseDown = (event: React.MouseEvent<any>) => {
-    this._element = ReactDOM.findDOMNode(this);
+    this._element = ReactDOM.findDOMNode(this) as HTMLElement;
     document.body.addEventListener("mouseup", this.onMouseUp);
     document.body.addEventListener("mousemove", this.onMouseMove);
   };

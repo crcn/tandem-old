@@ -2,7 +2,7 @@ import * as React from "react";
 import { compose, pure, withState, withHandlers } from "recompose";
 import { flattenTreeNode, File, isFile, memoize } from "tandem-common";
 import { RootState } from "../../state";
-import { Dispatch } from "react-redux";
+import { Dispatch } from "redux";
 const { SearchResult } = require("./row.pc");
 
 export type QuickSearchOuterProps = {

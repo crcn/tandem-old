@@ -1,16 +1,11 @@
 IMMEDIATE:
 
-- leverage style sheets for overrides
-- write out variants functionality
-
-- ensure new evaluator works
-
-  - works with variants
-  - works with all existing previews
 
 - speed up app
   - user timing
-- refactor variants input
+- update variant input
+  - not toggleable
+
 
 * moving component nodes
 * test moving to shadow DOM

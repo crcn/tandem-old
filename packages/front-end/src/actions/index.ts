@@ -25,7 +25,6 @@ import {
   PCVariant
 } from "paperclip";
 import { RegisteredComponent } from "..";
-import { ClientOffset } from "react-dnd";
 import { FrameMode, ToolType, EditorWindow } from "../state";
 import { InspectorNode } from "../state/pc-inspector-tree";
 

@@ -48,7 +48,7 @@ export const setup = <TState extends RootState>(
         }
         return state;
       },
-      initialState,
+      initialState as any,
       applyMiddleware(sagaMiddleware)
     );
     sagaMiddleware.run(function*() {

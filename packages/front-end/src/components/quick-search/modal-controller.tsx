@@ -1,7 +1,7 @@
 import * as React from "react";
 import { compose, pure, withHandlers } from "recompose";
 import { RootState } from "../../state";
-import { Dispatch } from "react-redux";
+import { Dispatch } from "redux";
 import { quickSearchBackgroundClick } from "actions";
 
 export type ModalOuterProps = {

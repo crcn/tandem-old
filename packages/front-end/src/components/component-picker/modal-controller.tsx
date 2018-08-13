@@ -1,7 +1,7 @@
 import * as React from "react";
 import { compose, pure, withHandlers } from "recompose";
 import { RootState, ToolType } from "state";
-import { Dispatch } from "react-redux";
+import { Dispatch } from "redux";
 import { componentPickerBackgroundClick } from "actions";
 
 export type ComponentPickerModalOuterProps = {

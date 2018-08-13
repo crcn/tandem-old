@@ -1,7 +1,7 @@
 import * as React from "react";
 import { compose, pure, withHandlers, withState } from "recompose";
 import { PCVariant } from "paperclip";
-import { Dispatch } from "react-redux";
+import { Dispatch } from "redux";
 import * as cx from "classnames";
 import {
   variantDefaultSwitchClicked,

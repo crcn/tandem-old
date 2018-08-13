@@ -5,8 +5,9 @@ import * as React from "react";
 import { RootState } from "../state";
 import { eventChannel } from "redux-saga";
 
+
 export function* reactSaga() {
-  let dispatch: any = action => {};
+  let dispatch: any = () => {};
 
   yield spawn(function*() {
     const chan = eventChannel(emit => {
@@ -21,10 +22,10 @@ export function* reactSaga() {
   while (1) {
     const root: RootState = yield select();
     ReactDOM.render(
-      React.createElement(RootComponent, {
+      React.createElement(RootComponent as any, {
         root,
         dispatch
-      }),
+      } as any) as any,
       root.mount
     );
     yield take();

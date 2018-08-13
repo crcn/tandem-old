@@ -19,7 +19,7 @@ export default compose<PopoverInnerProps, PopoverOuterProps>(
   lifecycle<PopoverInnerProps, any>({
     componentWillUpdate({ open }: PopoverInnerProps) {
       if (!this.props.open && open) {
-        const anchor: HTMLDivElement = ReactDOM.findDOMNode(this as any);
+        const anchor: HTMLDivElement = ReactDOM.findDOMNode(this as any) as HTMLDivElement;
         const rect = getRealElementBounds(anchor);
         this.props.setAnchorRect(rect);
       }
