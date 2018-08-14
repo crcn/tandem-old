@@ -1,8 +1,8 @@
 IMMEDIATE:
 
-
 - speed up app
   - user timing
+
 - update variant input
   - not toggleable
 

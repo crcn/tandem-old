@@ -164,7 +164,7 @@ function* previewServer() {
       ...process.env,
       ELECTRON_RUN_AS_NODE: true,
       PORT: port
-    }
+    } as any
   });
   proc.stderr.pipe(process.stderr);
   proc.stdout.pipe(process.stdout);

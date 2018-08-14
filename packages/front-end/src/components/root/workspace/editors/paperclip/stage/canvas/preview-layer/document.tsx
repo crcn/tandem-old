@@ -1,15 +1,11 @@
 import "./document.scss";
 import * as React from "react";
-import { compose, pure, lifecycle } from "recompose";
-import { FrameMode } from "../../../../../../../../state";
+import { compose, pure } from "recompose";
 import {
   Frame,
   Dependency,
-  DependencyGraph,
   SyntheticVisibleNode,
-  getFrameByContentNodeId
 } from "paperclip";
-import { stripProtocol } from "tandem-common";
 
 export type DocumentPreviewOuterProps = {
   frame: Frame;
@@ -22,56 +18,32 @@ type DesignPreviewOuterProps = {
   dependency: Dependency<any>;
 };
 
-const BaseDesignPreview = () => {
-  return <div ref="container" />;
-};
 
-const DesignPreview = compose<DesignPreviewOuterProps, DesignPreviewOuterProps>(
-  pure,
-  lifecycle({
-    componentDidUpdate({ frame: oldFrame }: DocumentPreviewOuterProps) {
-      const props: DocumentPreviewOuterProps = this.props;
-      if (!oldFrame || oldFrame.$container !== props.frame.$container) {
-        const container = this.refs.container as HTMLElement;
-        while (container.childNodes.length) {
-          container.removeChild(container.childNodes[0]);
-        }
-        if (props.frame.$container) {
-          container.appendChild(props.frame.$container);
-        }
-      }
-    },
-    componentDidMount() {
+class DesignPreview extends React.PureComponent<DesignPreviewOuterProps> {
+  componentDidUpdate({ frame: oldFrame }: DocumentPreviewOuterProps) {
+    const props = this.props;
+    if (!oldFrame || oldFrame.$container !== props.frame.$container) {
       const container = this.refs.container as HTMLElement;
-      if (container && this.props.frame.$container) {
-        container.appendChild(
-          (this.props as DocumentPreviewOuterProps).frame.$container
-        );
+      while (container.childNodes.length) {
+        container.removeChild(container.childNodes[0]);
+      }
+      if (props.frame.$container) {
+        container.appendChild(props.frame.$container);
       }
     }
-  })
-)(BaseDesignPreview);
-
-// type LivePreviewOuterProps = {
-//   livePreviewUrl: string;
-//   dependencyUri: string;
-//   contentNodeSourceId: string;
-// };
-
-// const LivePreview = ({
-//   livePreviewUrl,
-//   dependencyUri,
-//   contentNodeSourceId
-// }: LivePreviewOuterProps) => {
-//   const location =
-//     livePreviewUrl +
-//     "?entryPath=" +
-//     stripProtocol(dependencyUri) +
-//     "&componentId=" +
-//     contentNodeSourceId;
-//   console.log(location);
-//   return <iframe src={location} />;
-// };
+  }
+  componentDidMount() {
+    const container = this.refs.container as HTMLElement;
+    if (container && this.props.frame.$container) {
+      container.appendChild(
+        (this.props as DocumentPreviewOuterProps).frame.$container
+      );
+    }
+  } 
+  render() {
+    return <div ref="container" />
+  }
+}
 
 export const DocumentPreviewComponent = compose<DocumentPreviewOuterProps, any>(
   pure

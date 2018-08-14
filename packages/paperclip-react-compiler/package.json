@@ -28,5 +28,6 @@
     "paperclip": "^10.0.24",
     "paperclip-migrator": "^10.0.24",
     "tandem-common": "^10.0.24"
-  }
+  },
+  "gitHead": "5f4140ab9161222cbab0100b00cc2916384637af"
 }

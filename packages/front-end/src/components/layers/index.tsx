@@ -123,7 +123,7 @@ export const defaultChildRender = Base => ({
 
 const defaultLayerRenderer = Base => props => React.createElement(Base, props);
 
-const defaultShowChildren = (node: TreeNode<any>) => node.children.length;
+const defaultShowChildren = (node: TreeNode<any>) => Boolean(node.children.length);
 
 export const createTreeLayerComponents = <
   TTreeLayerOuterProps extends TreeNodeLayerOuterProps

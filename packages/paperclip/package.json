@@ -30,5 +30,6 @@
     "lint-staged": "^7.1.2",
     "mocha": "^5.2.0",
     "typescript": "3.0.x"
-  }
+  },
+  "gitHead": "5f4140ab9161222cbab0100b00cc2916384637af"
 }

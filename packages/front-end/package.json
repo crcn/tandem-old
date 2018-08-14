@@ -83,5 +83,6 @@
     "socket.io-client": "^2.0.3",
     "tandem-common": "^10.0.24",
     "xml-js": "^1.6.4"
-  }
+  },
+  "gitHead": "5f4140ab9161222cbab0100b00cc2916384637af"
 }

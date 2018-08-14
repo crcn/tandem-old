@@ -9,8 +9,8 @@
   },
   "scripts": {
     "start": "electron lib/index.js",
+    "postinstall": "electron-rebuild",
     "build": "tsc; webpack",
-    "rebuild-modules": "electron-rebuild",
     "build-front-end": "webpack",
     "clean": "rm -rf lib; rm -rf node_modules",
     "prepare": "npm run build",

@@ -2,6 +2,7 @@
 .vscode/
 html-report/
 packages/cli/app
+*.tgz
 tmp/
 dist/
 coverage/

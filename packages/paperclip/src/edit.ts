@@ -71,7 +71,8 @@ import {
   isSyntheticVisibleNode,
   getSyntheticContentNode,
   SyntheticInstanceElement,
-  getInheritedAndSelfOverrides
+  getInheritedAndSelfOverrides,
+  SyntheticNode
 } from "./synthetic";
 import * as path from "path";
 import { convertFixedBoundsToRelative } from "./synthetic-layout";
@@ -468,7 +469,7 @@ export const upsertFrames = <TState extends PCEditorState>(state: TState) => {
 
   for (const document of state.documents) {
     for (const contentNode of document.children) {
-      const sourceNode = getSyntheticSourceNode(contentNode, state.graph);
+      const sourceNode = getSyntheticSourceNode(contentNode as SyntheticNode, state.graph);
       frames.push({
         ...(framesByContentNodeId[contentNode.id] || EMPTY_OBJECT),
         contentNodeId: contentNode.id,

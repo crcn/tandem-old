@@ -25,7 +25,7 @@ import {
   PCOverride
 } from "./dsl";
 import { uniq } from "lodash";
-import { SyntheticElement } from "./synthetic";
+import { SyntheticElement, SyntheticNode } from "./synthetic";
 
 export type VanillaPCRenderers = KeyValue<VanillaPCRenderer>;
 export type VanillaPCRenderer = (
@@ -336,7 +336,7 @@ const translateStaticNodeProps = memoize(
     }
 
     for (const child of node.children) {
-      buffer += translateStaticNodeProps(child, componentRefMap);
+      buffer += translateStaticNodeProps(child as PCNode, componentRefMap);
     }
 
     return buffer;

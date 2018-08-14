@@ -1,7 +1,7 @@
 import "./document-overlay.scss";
 const cx = require("classnames");
 import * as React from "react";
-const Hammer = require("react-hammerjs");
+import Hammer from "react-hammerjs";
 // import { Workspace, AVAILABLE_COMPONENT, AvailableComponent, Artboard } from "front-end/state";
 // import { Workspace, AVAILABLE_COMPONENT, AvailableComponent, Artboard } from "front-end/state";
 import { wrapEventToDispatch } from "../../../../../../../../utils";
@@ -34,6 +34,8 @@ import {
   canvasToolOverlayMousePanEnd,
   canvasToolOverlayMouseDoubleClicked
 } from "../../../../../../../../actions";
+
+console.log(Hammer);
 
 export type VisualToolsProps = {
   editorWindow: EditorWindow;
