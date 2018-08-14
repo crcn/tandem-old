@@ -1,6 +1,6 @@
 {
   "name": "tandem-webpack-preview-server",
-  "version": "10.0.23",
+  "version": "10.0.24",
   "description": "",
   "main": "index.js",
   "bin": {
@@ -16,7 +16,7 @@
   "license": "ISC",
   "devDependencies": {
     "@types/webpack": "^4.4.0",
-    "typescript": "^2.9.2",
+    "typescript": "3.0.x",
     "webpack": "^4.12.0"
   },
   "dependencies": {

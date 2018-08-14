@@ -1,6 +1,6 @@
 {
   "name": "tandem-common",
-  "version": "10.0.23",
+  "version": "10.0.24",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -21,6 +21,6 @@
     "@types/node": "^10.1.2",
     "husky": "^0.14.3",
     "lint-staged": "^7.1.2",
-    "typescript": "^2.9.2"
+    "typescript": "3.0.x"
   }
 }
