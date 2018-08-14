@@ -88,7 +88,9 @@ function* openMainWindow() {
 
   let url = FRONT_END_ENTRY_FILE_PATH;
 
-  const query: any = {};
+  const query: any = {
+    react_perf: true
+  };
 
   if (state.info.previewServer) {
     query.previewHost = `localhost:${state.info.previewServer.port}`;
