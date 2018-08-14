@@ -35,8 +35,6 @@ import {
   canvasToolOverlayMouseDoubleClicked
 } from "../../../../../../../../actions";
 
-console.log(Hammer);
-
 export type VisualToolsProps = {
   editorWindow: EditorWindow;
   zoom: number;

@@ -2,17 +2,28 @@ import * as lru from "lru-cache";
 
 const DEFAULT_LRU_MAX = 1000;
 
+// need this for default arguments
+const getArgumentCount = (fn: Function) => {
+  const str = fn.toString();
+  const params = str.match(/\(.*?\)/)[0];
+  const args = params.substr(1, params.length - 2).split(/\s*,\s*/).filter(arg => arg.substr(0, 3) !== "...")
+  // if (fn.length !== args.length) {
+  //   console.log("arg length mismatch")
+  // }
+
+  return args.length;
+}
+
 export const memoize = <TFunc extends (...args: any[]) => any>(
   fn: TFunc,
   lruMax: number = DEFAULT_LRU_MAX,
-  argumentCount: number = fn.length
+  argumentCount: number = getArgumentCount(fn)
 ) => {
   if (argumentCount == Infinity || isNaN(argumentCount)) {
     throw new Error(`Argument count cannot be Infinity, 0, or NaN.`);
   }
 
   if (!argumentCount) {
-    console.log(fn);
     console.error(`Argument count should not be 0. Defaulting to 1.`);
     argumentCount = 1;
   }
