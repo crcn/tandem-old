@@ -1013,6 +1013,36 @@
           "bottom": 1675.897643431201
         }
       }
+    },
+    {
+      "id": "3b431ed4156",
+      "label": "Element",
+      "is": "div",
+      "name": "element",
+      "attributes": {},
+      "style": {
+        "box-sizing": "border-box",
+        "display": "block"
+      },
+      "children": [
+        {
+          "id": "3b431ed4312",
+          "name": "text",
+          "label": "Text",
+          "value": "Click to edit",
+          "style": {},
+          "children": [],
+          "metadata": {}
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": -1152.6900836661844,
+          "top": 756.9858447760188,
+          "right": -1052.6900836661844,
+          "bottom": 856.9858447760188
+        }
+      }
     }
   ]
 }

@@ -13,7 +13,12 @@ import {
   patchDOM,
   computeDisplayInfo
 } from "./dom-renderer";
-import { KeyValue, getNestedTreeNodeById, EMPTY_ARRAY } from "tandem-common";
+import {
+  KeyValue,
+  getNestedTreeNodeById,
+  EMPTY_ARRAY,
+  pmark
+} from "tandem-common";
 import { DependencyGraph } from "./graph";
 import { TreeNodeOperationalTransform } from "./ot";
 import { PCEditorState, Frame, getSyntheticDocumentFrames } from "./edit";
@@ -76,6 +81,7 @@ export const createPaperclipSaga = ({ createRuntime }: PaperclipSagaOptions) =>
           const { diffs }: PCRuntimeEvaluated = yield take(
             PC_RUNTIME_EVALUATED
           );
+          const marker = pmark(`*nativeRenderer()`);
           const state: PCEditorState = yield select();
 
           const allDocUris = Object.keys(state.graph);
@@ -105,13 +111,20 @@ export const createPaperclipSaga = ({ createRuntime }: PaperclipSagaOptions) =>
                   newDocument,
                   ots
                 );
-                const oldFrameFrame =
+                const oldFrame =
                   prevState &&
                   prevState.frames.find(
                     oldFrame =>
                       oldFrame.contentNodeId === newFrame.contentNodeId
                   );
-                if (frameOts.length || newFrame !== oldFrameFrame) {
+
+                // Equality check on bounds since that's the only prop needed for re-rendering the frame. Equality check
+                // should !!NOT!! happen between frames (oldFrame !== newFrame) since patchContainer emits computed data
+                // that updates the frame which would result in prevState to be out of sync.
+                if (
+                  frameOts.length ||
+                  (!oldFrame || oldFrame.bounds !== newFrame.bounds)
+                ) {
                   const oldDocument = getSyntheticDocumentByDependencyUri(
                     uri,
                     prevState.documents,
@@ -128,6 +141,8 @@ export const createPaperclipSaga = ({ createRuntime }: PaperclipSagaOptions) =>
               }
             }
           }
+
+          marker.end();
 
           prevState = state;
         }
@@ -216,10 +231,12 @@ export const createPaperclipSaga = ({ createRuntime }: PaperclipSagaOptions) =>
       contentNode: SyntheticVisibleNode,
       ots: TreeNodeOperationalTransform[]
     ) {
+      const marker = pmark(`*patchContainer()`);
       const container: HTMLElement = frame.$container;
       const iframe = container.children[0] as HTMLIFrameElement;
       const body = iframe.contentDocument && iframe.contentDocument.body;
       if (!body) {
+        marker.end();
         return;
       }
 
@@ -236,6 +253,8 @@ export const createPaperclipSaga = ({ createRuntime }: PaperclipSagaOptions) =>
           computeDisplayInfo(frameNodeMap[frame.contentNodeId])
         )
       );
+
+      marker.end();
     }
   };
 

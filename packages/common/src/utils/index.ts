@@ -10,3 +10,4 @@ export * from "./uid";
 export * from "./types";
 export * from "./protocol";
 export * from "./immutable";
+export * from "./performance";

@@ -19,9 +19,12 @@ import {
   setReaderMimetype
 } from "fsbox";
 import { createRemotePCRuntime } from "paperclip";
+import { pmark } from "tandem-common";
 
 export type FrontEndOptions = FrontEndSagaOptions & FSSandboxOptions;
 export type SideEffectCreator = () => IterableIterator<FrontEndOptions>;
+
+const SLOW_ACTION_INTERVAL = 50;
 
 // Dirty, but okay for now. Want to eventually display a prettyier message that reports diagnostics, but
 // that needs to happen _outside_ of the application's scope.
@@ -42,9 +45,20 @@ export const setup = <TState extends RootState>(
     const sagaMiddleware = createSagaMiddleware({ onError });
     const store = createStore(
       (state: TState, event: Action) => {
+        const now = Date.now();
+        const marker = pmark(`start action ${event.type}`);
         state = rootReducer(state, event) as TState;
         if (reducer) {
           state = reducer(state, event);
+        }
+        marker.end();
+
+        const actionDuration = Date.now() - now;
+
+        if (actionDuration > SLOW_ACTION_INTERVAL) {
+          console.warn(
+            `Action "${event.type}" took ${actionDuration}ms to execute.`
+          );
         }
         return state;
       },

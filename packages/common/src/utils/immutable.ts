@@ -3,7 +3,7 @@ import { shallowEquals } from "./memoization";
 export const updateProperties = <TState>(
   properties: Partial<TState>,
   target: TState
-) => {
+): TState => {
   const newProps: Partial<TState> = {};
   let hasNewProps = false;
   for (const key in properties) {

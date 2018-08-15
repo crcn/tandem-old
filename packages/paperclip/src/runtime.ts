@@ -2,7 +2,7 @@ import { DependencyGraph, Dependency } from "./graph";
 import { EventEmitter } from "events";
 import { SyntheticDocument } from "./synthetic";
 import { evaluateDependencyGraph } from "./evaluate2";
-import { KeyValue, TreeNode } from "tandem-common";
+import { KeyValue, TreeNode, pmark } from "tandem-common";
 import {
   patchTreeNode,
   TreeNodeOperationalTransform,
@@ -192,6 +192,7 @@ export class RemotePCRuntime extends EventEmitter implements PCRuntime {
 
   private _onRemoteMessage = event => {
     const { type, payload } = event.data;
+    const marker = pmark("start Runtime._onRemoteMessage()");
     if (type === "fetchDependencyGraph") {
       this._remote.postMessage({
         type: "dependencyGraph",
@@ -226,6 +227,8 @@ export class RemotePCRuntime extends EventEmitter implements PCRuntime {
       this._syntheticDocuments = payload;
       this.emit("evaluate", payload, {}, [], Date.now());
     }
+
+    marker.end();
   };
 }
 

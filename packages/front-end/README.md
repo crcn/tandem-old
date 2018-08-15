@@ -5,6 +5,8 @@ IMMEDIATE:
   - inserting element
   - changing props
 
+- fix style pane props
+
 - fix evaluator exceptions on initial start up
 - dts configuration
 

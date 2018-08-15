@@ -21,7 +21,8 @@ import {
   getNestedTreeNodeById,
   KeyValue,
   filterNestedNodes,
-  EMPTY_ARRAY
+  EMPTY_ARRAY,
+  updateProperties
 } from "tandem-common";
 import { values, identity, uniq, last } from "lodash";
 import { DependencyGraph, Dependency } from "./graph";
@@ -245,10 +246,7 @@ export const updatePCEditorState = <TState extends PCEditorState>(
   properties: Partial<PCEditorState>,
   state: TState
 ): TState => {
-  return {
-    ...(state as any),
-    ...properties
-  };
+  return updateProperties(properties as TState, state);
 };
 
 export const updateDependencyGraph = <TState extends PCEditorState>(
@@ -469,16 +467,34 @@ export const upsertFrames = <TState extends PCEditorState>(state: TState) => {
 
   for (const document of state.documents) {
     for (const contentNode of document.children) {
-      const sourceNode = getSyntheticSourceNode(contentNode as SyntheticNode, state.graph);
-      frames.push({
-        ...(framesByContentNodeId[contentNode.id] || EMPTY_OBJECT),
-        contentNodeId: contentNode.id,
+      const sourceNode = getSyntheticSourceNode(
+        contentNode as SyntheticNode,
+        state.graph
+      );
+      const existingFrame = framesByContentNodeId[contentNode.id];
 
-        // todo add warning here that bounds do not exist when they should.
-        bounds:
-          sourceNode.metadata[PCVisibleNodeMetadataKey.BOUNDS] ||
-          DEFAULT_FRAME_BOUNDS
-      });
+      if (existingFrame) {
+        frames.push(
+          updateProperties(
+            {
+              // todo add warning here that bounds do not exist when they should.
+              bounds:
+                sourceNode.metadata[PCVisibleNodeMetadataKey.BOUNDS] ||
+                DEFAULT_FRAME_BOUNDS
+            },
+            existingFrame
+          )
+        );
+      } else {
+        frames.push({
+          contentNodeId: contentNode.id,
+
+          // todo add warning here that bounds do not exist when they should.
+          bounds:
+            sourceNode.metadata[PCVisibleNodeMetadataKey.BOUNDS] ||
+            DEFAULT_FRAME_BOUNDS
+        });
+      }
     }
   }
 
