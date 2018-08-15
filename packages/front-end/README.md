@@ -1,8 +1,9 @@
 IMMEDIATE:
 
-- speed up app
+- performance
 
-  - user timing
+  - inserting element
+  - changing props
 
 - fix evaluator exceptions on initial start up
 - dts configuration
