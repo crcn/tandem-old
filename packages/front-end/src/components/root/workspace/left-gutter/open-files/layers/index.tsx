@@ -1,12 +1,7 @@
 import * as React from "react";
 import * as path from "path";
 import { pure, compose } from "recompose";
-import { RootState, OpenFile } from "../../../../../../state";
-import {
-  getFramesByDependencyUri,
-  getSyntheticDocumentByDependencyUri,
-  PAPERCLIP_DEFAULT_EXTENSIONS
-} from "paperclip";
+import { RootState } from "../../../../../../state";
 import { Dispatch } from "redux";
 
 type LayersOuterProps = {
@@ -17,13 +12,7 @@ type LayersOuterProps = {
 
 type LayersInnerProps = {} & LayersOuterProps;
 
-export const BaseLayersComponent = ({
-  dispatch,
-  root,
-  uri
-}: LayersOuterProps) => {
-  const ext = path.extname(uri);
-
+export const BaseLayersComponent = ({ uri }: LayersOuterProps) => {
   // only PC for now. Ideally this may also support images, and other visual documents.
   return <div />;
 };

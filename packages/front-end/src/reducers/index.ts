@@ -398,7 +398,16 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
           state.graph
         );
         if (getNestedTreeNodeById(selectedNodeId, document)) {
-          return centerEditorCanvas(state, fileUri, getSelectionBounds(state));
+          return centerEditorCanvas(
+            state,
+            fileUri,
+            getSelectionBounds(
+              state.selectedSyntheticNodeIds,
+              state.documents,
+              state.frames,
+              state.graph
+            )
+          );
         }
       } else {
         return centerEditorCanvas(state, fileUri);
@@ -729,8 +738,19 @@ export const canvasReducer = (state: RootState, action: Action) => {
         state
       );
 
-      if (isSelectionMovable(state)) {
-        const selectionBounds = getSelectionBounds(state);
+      if (
+        isSelectionMovable(
+          state.selectedSyntheticNodeIds,
+          state.documents,
+          state.graph
+        )
+      ) {
+        const selectionBounds = getSelectionBounds(
+          state.selectedSyntheticNodeIds,
+          state.documents,
+          state.frames,
+          state.graph
+        );
         const nodeId = state.selectedSyntheticNodeIds[0];
 
         let movedBounds = moveBounds(selectionBounds, newPoint);
@@ -900,10 +920,13 @@ export const canvasReducer = (state: RootState, action: Action) => {
     }
 
     case RESIZER_STOPPED_MOVING: {
-      const { point } = action as ResizerMoved;
-      const oldGraph = state.graph;
-
-      if (isSelectionMovable(state)) {
+      if (
+        isSelectionMovable(
+          state.selectedSyntheticNodeIds,
+          state.documents,
+          state.graph
+        )
+      ) {
         state = persistRootState(state => {
           return state.selectedSyntheticNodeIds.reduce((state, nodeId) => {
             return persistSyntheticVisibleNodeBounds(
@@ -934,7 +957,10 @@ export const canvasReducer = (state: RootState, action: Action) => {
         canvasWidth
       } = action as CanvasWheel;
       const editorWindow = getActiveEditorWindow(state);
-      const openFile = getOpenFile(editorWindow.activeFilePath, state);
+      const openFile = getOpenFile(
+        editorWindow.activeFilePath,
+        state.openFiles
+      );
 
       let translate = openFile.canvas.translate;
 
@@ -992,7 +1018,7 @@ export const canvasReducer = (state: RootState, action: Action) => {
 
     case SHORTCUT_ZOOM_IN_KEY_DOWN: {
       const editor = getActiveEditorWindow(state);
-      const openFile = getOpenFile(editor.activeFilePath, state);
+      const openFile = getOpenFile(editor.activeFilePath, state.openFiles);
       state = setCanvasZoom(
         normalizeZoom(openFile.canvas.translate.zoom) * 2,
         false,
@@ -1013,7 +1039,7 @@ export const canvasReducer = (state: RootState, action: Action) => {
 
     case SHORTCUT_ZOOM_OUT_KEY_DOWN: {
       const editor = getActiveEditorWindow(state);
-      const openFile = getOpenFile(editor.activeFilePath, state);
+      const openFile = getOpenFile(editor.activeFilePath, state.openFiles);
       state = setCanvasZoom(
         normalizeZoom(openFile.canvas.translate.zoom) / 2,
         false,
@@ -1122,7 +1148,10 @@ export const canvasReducer = (state: RootState, action: Action) => {
       const altKey = sourceEvent.altKey;
 
       const editorWindow = getActiveEditorWindow(state);
-      const openFile = getOpenFile(editorWindow.activeFilePath, state);
+      const openFile = getOpenFile(
+        editorWindow.activeFilePath,
+        state.openFiles
+      );
 
       // do not allow selection while window is panning (scrolling)
       if (openFile.canvas.panning || editorWindow.movingOrResizing)
@@ -1183,7 +1212,12 @@ export const canvasReducer = (state: RootState, action: Action) => {
 
       // TODO - possibly use BoundsStruct instead of Bounds since there are cases where bounds prop doesn't exist
       const newBounds = getResizeActionBounds(action as ResizerPathMoved);
-      for (const nodeId of getBoundedSelection(state)) {
+      for (const nodeId of getBoundedSelection(
+        state.selectedSyntheticNodeIds,
+        state.documents,
+        state.frames,
+        state.graph
+      )) {
         state = updateSyntheticVisibleNodeBounds(
           getNewSyntheticVisibleNodeBounds(
             newBounds,
@@ -1571,7 +1605,10 @@ const persistInsertNodeFromPoint = (
 
   if (!targetNode) {
     const newPoint = shiftPoint(
-      normalizePoint(getOpenFile(fileUri, state).canvas.translate, point),
+      normalizePoint(
+        getOpenFile(fileUri, state.openFiles).canvas.translate,
+        point
+      ),
       {
         left: -(INSERT_ARTBOARD_WIDTH / 2),
         top: -(INSERT_ARTBOARD_HEIGHT / 2)
@@ -1723,7 +1760,12 @@ const getNewSyntheticVisibleNodeBounds = (
   node: SyntheticVisibleNode,
   state: RootState
 ) => {
-  const currentBounds = getSelectionBounds(state);
+  const currentBounds = getSelectionBounds(
+    state.selectedSyntheticNodeIds,
+    state.documents,
+    state.frames,
+    state.graph
+  );
   const innerBounds = getSyntheticVisibleNodeRelativeBounds(
     node,
     state.frames,
@@ -2156,7 +2198,7 @@ const setCanvasZoom = (
   state: RootState
 ) => {
   const editorWindow = getEditorWindowWithFileUri(uri, state);
-  const openFile = getOpenFile(uri, state);
+  const openFile = getOpenFile(uri, state.openFiles);
   return updateOpenFileCanvas(
     {
       translate: centerTransformZoom(

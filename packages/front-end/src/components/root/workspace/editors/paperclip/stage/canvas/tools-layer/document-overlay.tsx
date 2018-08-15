@@ -2,29 +2,15 @@ import "./document-overlay.scss";
 const cx = require("classnames");
 import * as React from "react";
 import Hammer from "react-hammerjs";
-// import { Workspace, AVAILABLE_COMPONENT, AvailableComponent, Artboard } from "front-end/state";
-// import { Workspace, AVAILABLE_COMPONENT, AvailableComponent, Artboard } from "front-end/state";
 import { wrapEventToDispatch } from "../../../../../../../../utils";
-import {
-  RootState,
-  EditorWindow,
-  FrameMode
-} from "../../../../../../../../state";
+import { EditorWindow } from "../../../../../../../../state";
 import {
   Frame,
   getFramesByDependencyUri,
-  getSyntheticNodeById,
-  SyntheticDocument
+  SyntheticDocument,
+  DependencyGraph
 } from "paperclip";
-import {
-  Bounds,
-  memoize,
-  getTreeNodeIdMap,
-  TreeNodeIdMap,
-  StructReference,
-  EMPTY_OBJECT,
-  Bounded
-} from "tandem-common";
+import { Bounds, memoize, TreeNodeIdMap, StructReference } from "tandem-common";
 import { compose, pure, withHandlers } from "recompose";
 // import { Dispatcher, Bounds, wrapEventToDispatch, weakMemo, StructReference } from "aerial-common2";
 import { Dispatch } from "redux";
@@ -39,7 +25,11 @@ export type VisualToolsProps = {
   editorWindow: EditorWindow;
   zoom: number;
   document: SyntheticDocument;
-  root: RootState;
+  hoveringSyntheticNodeIds: string[];
+  selectedSyntheticNodeIds: string[];
+  documents: SyntheticDocument[];
+  frames: Frame[];
+  graph: DependencyGraph;
   dispatch: Dispatch<any>;
 };
 
@@ -201,9 +191,13 @@ const getNodes = memoize(
 );
 
 const getHoveringSyntheticVisibleNodes = memoize(
-  (root: RootState, frame: Frame): string[] => {
-    const selectionRefIds = root.selectedSyntheticNodeIds;
-    return root.hoveringSyntheticNodeIds.filter(
+  (
+    hoveringSyntheticNodeIds: string[],
+    selectedSyntheticNodeIds: string[],
+    frame: Frame
+  ): string[] => {
+    const selectionRefIds = selectedSyntheticNodeIds;
+    return hoveringSyntheticNodeIds.filter(
       nodeId =>
         selectionRefIds.indexOf(nodeId) === -1 &&
         ((frame.computed && frame.computed[nodeId]) ||
@@ -213,26 +207,34 @@ const getHoveringSyntheticVisibleNodes = memoize(
 );
 
 export const NodeOverlaysToolBase = ({
-  root,
+  frames,
   editorWindow,
   dispatch,
+  documents,
+  graph,
+  hoveringSyntheticNodeIds,
+  selectedSyntheticNodeIds,
   zoom
 }: VisualToolsProps) => {
   const activeFrames = getFramesByDependencyUri(
     editorWindow.activeFilePath,
-    root.frames,
-    root.documents,
-    root.graph
+    frames,
+    documents,
+    graph
   );
 
   return (
     <div className="visual-tools-layer-component">
-      {activeFrames.map((frame, i) => {
+      {activeFrames.map(frame => {
         return (
           <ArtboardOverlayTools
             key={frame.contentNodeId}
             frame={frame}
-            hoveringSyntheticNodeIds={getHoveringSyntheticVisibleNodes(root, frame)}
+            hoveringSyntheticNodeIds={getHoveringSyntheticVisibleNodes(
+              hoveringSyntheticNodeIds,
+              selectedSyntheticNodeIds,
+              frame
+            )}
             dispatch={dispatch}
             zoom={zoom}
           />

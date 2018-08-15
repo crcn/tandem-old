@@ -9,7 +9,9 @@ import { pure, compose } from "recompose";
 import {
   RootState,
   EditorWindow,
-  getOpenFile
+  getOpenFile,
+  OpenFile,
+  ToolType
 } from "../../../../../../../../state";
 import { NodeOverlaysTool } from "./document-overlay";
 import { SelectionCanvasTool } from "./selection";
@@ -20,8 +22,7 @@ import {
   SyntheticDocument,
   DependencyGraph,
   getSyntheticVisibleNodeRelativeBounds,
-  Frame,
-  getPCNode
+  Frame
 } from "paperclip";
 import {
   getNestedTreeNodeById,
@@ -34,38 +35,50 @@ import {
   InspectorNode,
   getInspectorSyntheticNode,
   InspectorTreeNodeName,
-  getInsertableInspectorNode,
   getInspectorNodeOwnerInstance
-} from "state/pc-inspector-tree";
+} from "../../../../../../../../state/pc-inspector-tree";
 
-export type ToolsLayerComponent = {
+export type ToolsLayerComponentProps = {
   editorWindow: EditorWindow;
-  root: RootState;
   zoom: number;
+  toolType: ToolType;
+  hoveringInspectorNodeIds: string[];
+  selectedSyntheticNodeIds: string[];
+  hoveringSyntheticNodeIds: string[];
+  sourceNodeInspector: InspectorNode;
+  openFiles: OpenFile[];
   dispatch: Dispatch<any>;
+  documents: SyntheticDocument[];
+  frames: Frame[];
+  graph: DependencyGraph;
 };
 
 const BaseToolsLayerComponent = ({
   editorWindow,
-  root,
+  hoveringInspectorNodeIds,
+  selectedSyntheticNodeIds,
+  hoveringSyntheticNodeIds,
+  sourceNodeInspector,
+  openFiles,
   zoom,
-  dispatch
-}: ToolsLayerComponent) => {
-  const canvas = getOpenFile(editorWindow.activeFilePath, root).canvas;
-  const insertInspectorNode = root.hoveringInspectorNodeIds.length
-    ? getNestedTreeNodeById(
-        root.hoveringInspectorNodeIds[0],
-        root.sourceNodeInspector
-      )
+  dispatch,
+  graph,
+  documents,
+  toolType,
+  frames
+}: ToolsLayerComponentProps) => {
+  const canvas = getOpenFile(editorWindow.activeFilePath, openFiles).canvas;
+  const insertInspectorNode = hoveringInspectorNodeIds.length
+    ? getNestedTreeNodeById(hoveringInspectorNodeIds[0], sourceNodeInspector)
     : null;
   const insertInspectorNodeBounds =
     insertInspectorNode &&
     calcInspectorNodeBounds(
       insertInspectorNode,
-      root.sourceNodeInspector,
-      root.documents,
-      root.frames,
-      root.graph
+      sourceNodeInspector,
+      documents,
+      frames,
+      graph
     );
   return (
     <div className="m-tools-layer">
@@ -73,38 +86,47 @@ const BaseToolsLayerComponent = ({
         canvas={canvas}
         zoom={zoom}
         editorWindow={editorWindow}
-        toolType={root.toolType}
+        toolType={toolType}
         dispatch={dispatch}
         insertInspectorNode={insertInspectorNode}
         insertInspectorNodeBounds={insertInspectorNodeBounds}
       />
       <Frames
-        root={root}
         canvas={canvas}
+        frames={frames}
+        documents={documents}
+        graph={graph}
         translate={canvas.translate}
         dispatch={dispatch}
         editorWindow={editorWindow}
       />
       <NodeOverlaysTool
-        root={root}
+        frames={frames}
+        documents={documents}
+        hoveringSyntheticNodeIds={hoveringSyntheticNodeIds}
+        selectedSyntheticNodeIds={selectedSyntheticNodeIds}
+        graph={graph}
         zoom={zoom}
         dispatch={dispatch}
         document={getSyntheticDocumentByDependencyUri(
           editorWindow.activeFilePath,
-          root.documents,
-          root.graph
+          documents,
+          graph
         )}
         editorWindow={editorWindow}
       />
       <SelectionCanvasTool
         canvas={canvas}
-        root={root}
+        selectedSyntheticNodeIds={selectedSyntheticNodeIds}
+        documents={documents}
+        frames={frames}
+        graph={graph}
         dispatch={dispatch}
         zoom={zoom}
         document={getSyntheticDocumentByDependencyUri(
           editorWindow.activeFilePath,
-          root.documents,
-          root.graph
+          documents,
+          graph
         )}
         editorWindow={editorWindow}
       />
@@ -113,8 +135,8 @@ const BaseToolsLayerComponent = ({
 };
 
 export const ToolsLayerComponent = compose<
-  ToolsLayerComponent,
-  ToolsLayerComponent
+  ToolsLayerComponentProps,
+  ToolsLayerComponentProps
 >(pure)(BaseToolsLayerComponent);
 
 const calcInspectorNodeBounds = memoize(

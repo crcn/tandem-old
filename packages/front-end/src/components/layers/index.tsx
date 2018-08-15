@@ -2,15 +2,10 @@ import "./index.scss";
 import * as React from "react";
 import * as cx from "classnames";
 import { identity } from "lodash";
-import { compose, pure, withHandlers, withState, withProps } from "recompose";
-import {
-  EMPTY_ARRAY,
-  getNestedTreeNodeById,
-  TreeNode,
-  TreeMoveOffset
-} from "tandem-common";
+import { compose, pure, withHandlers } from "recompose";
+import { getNestedTreeNodeById, TreeNode, TreeMoveOffset } from "tandem-common";
 import { Dispatch } from "redux";
-import { DropTarget, DragSource, DropTargetCollector } from "react-dnd";
+import { DropTarget, DragSource } from "react-dnd";
 import { FocusComponent } from "../focus";
 
 export type TreeLayerDroppedNodeActionCreator = (
@@ -123,7 +118,8 @@ export const defaultChildRender = Base => ({
 
 const defaultLayerRenderer = Base => props => React.createElement(Base, props);
 
-const defaultShowChildren = (node: TreeNode<any>) => Boolean(node.children.length);
+const defaultShowChildren = (node: TreeNode<any>) =>
+  Boolean(node.children.length);
 
 export const createTreeLayerComponents = <
   TTreeLayerOuterProps extends TreeNodeLayerOuterProps

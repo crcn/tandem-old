@@ -26,7 +26,8 @@ import {
   TreeNodeUpdater,
   findNestedNode,
   findTreeNodeParent,
-  containsNestedTreeNodeById
+  containsNestedTreeNodeById,
+  updateProperties
 } from "tandem-common";
 import {
   SyntheticVisibleNode,
@@ -84,7 +85,6 @@ import {
   updateAlts,
   evaluateModuleInspector,
   InspectorNode,
-  getInspectorSyntheticNode,
   getInsertableInspectorNode
 } from "./pc-inspector-tree";
 
@@ -223,10 +223,7 @@ export type OpenFile = {
 export const updateRootState = <TState extends RootState>(
   properties: Partial<TState>,
   root: TState
-): TState => ({
-  ...(root as any),
-  ...(properties as any)
-});
+): TState => updateProperties(properties, root);
 
 export const deselectRootProjectFiles = (state: RootState) =>
   updateRootState(
@@ -555,8 +552,8 @@ export const confirm = (message: string, type: ConfirmType, state: RootState) =>
 export const undo = (root: RootState) => moveDependencyRecordHistory(-1, root);
 export const redo = (root: RootState) => moveDependencyRecordHistory(1, root);
 
-export const getOpenFile = (uri: string, state: RootState) =>
-  state.openFiles.find(openFile => openFile.uri === uri);
+export const getOpenFile = (uri: string, openFiles: OpenFile[]) =>
+  openFiles.find(openFile => openFile.uri === uri);
 
 export const getOpenFilesWithContent = (state: RootState) =>
   state.openFiles.filter(openFile => openFile.newContent);
@@ -584,7 +581,7 @@ export const updateOpenFile = (
   uri: string,
   state: RootState
 ) => {
-  const file = getOpenFile(uri, state);
+  const file = getOpenFile(uri, state.openFiles);
 
   if (!file) {
     state = addOpenFile(uri, false, state);
@@ -609,11 +606,11 @@ export const openFile = (
   secondaryTab: boolean,
   state: RootState
 ): RootState => {
-  let file = getOpenFile(uri, state);
+  let file = getOpenFile(uri, state.openFiles);
   state = openEditorFileUri(uri, secondaryTab, state);
   if (!file) {
     state = addOpenFile(uri, temporary, state);
-    file = getOpenFile(uri, state);
+    file = getOpenFile(uri, state.openFiles);
     state = centerEditorCanvas(state, uri);
   }
 
@@ -866,7 +863,12 @@ export const openSyntheticVisibleNodeOriginFile = (
 };
 
 export const centerCanvasToSelectedNodes = (state: RootState) => {
-  const selectedBounds = getSelectionBounds(state);
+  const selectedBounds = getSelectionBounds(
+    state.selectedSyntheticNodeIds,
+    state.documents,
+    state.frames,
+    state.graph
+  );
   state = centerEditorCanvas(state, state.activeEditorFilePath, selectedBounds);
   return state;
 };
@@ -876,7 +878,7 @@ export const addOpenFile = (
   temporary: boolean,
   state: RootState
 ): RootState => {
-  const file = getOpenFile(uri, state);
+  const file = getOpenFile(uri, state.openFiles);
   if (file) {
     return state;
   }
@@ -1058,7 +1060,7 @@ export const centerEditorCanvas = (
   }
 
   const editorWindow = getEditorWindowWithFileUri(editorFileUri, state);
-  const openFile = getOpenFile(editorFileUri, state);
+  const openFile = getOpenFile(editorFileUri, state.openFiles);
   const { container } = editorWindow;
 
   if (!container) {
@@ -1120,7 +1122,7 @@ export const updateOpenFileCanvas = (
   uri: string,
   root: RootState
 ) => {
-  const openFile = getOpenFile(uri, root);
+  const openFile = getOpenFile(uri, root.openFiles);
   return updateOpenFile(
     {
       canvas: {
@@ -1177,7 +1179,8 @@ export const getScaledMouseCanvasPosition = (
   state: RootState,
   point: Point
 ) => {
-  const canvas = getOpenFile(state.activeEditorFilePath, state).canvas;
+  const canvas = getOpenFile(state.activeEditorFilePath, state.openFiles)
+    .canvas;
   const translate = getCanvasTranslate(canvas);
 
   const scaledPageX = (point.left - translate.left) / translate.zoom;
@@ -1424,40 +1427,67 @@ export const setHoveringInspectorNodeIds = (
 };
 
 export const getBoundedSelection = memoize(
-  (root: RootState): string[] =>
-    root.selectedSyntheticNodeIds.filter(nodeId =>
+  (
+    selectedSyntheticNodeIds: string[],
+    documents: SyntheticDocument[],
+    frames: Frame[],
+    graph: DependencyGraph
+  ): string[] =>
+    selectedSyntheticNodeIds.filter(nodeId =>
       getSyntheticVisibleNodeRelativeBounds(
-        getSyntheticNodeById(nodeId, root.documents),
-        root.frames,
-        root.graph
+        getSyntheticNodeById(nodeId, documents),
+        frames,
+        graph
       )
     )
 );
 
-export const getSelectionBounds = memoize((root: RootState) =>
-  mergeBounds(
-    ...getBoundedSelection(root).map(nodeId =>
-      getSyntheticVisibleNodeRelativeBounds(
-        getSyntheticNodeById(nodeId, root.documents),
-        root.frames,
-        root.graph
+export const getSelectionBounds = memoize(
+  (
+    selectedSyntheticNodeIds: string[],
+    documents: SyntheticDocument[],
+    frames: Frame[],
+    graph: DependencyGraph
+  ) =>
+    mergeBounds(
+      ...getBoundedSelection(
+        selectedSyntheticNodeIds,
+        documents,
+        frames,
+        graph
+      ).map(nodeId =>
+        getSyntheticVisibleNodeRelativeBounds(
+          getSyntheticNodeById(nodeId, documents),
+          frames,
+          graph
+        )
       )
     )
-  )
 );
 
-export const isSelectionMovable = memoize((root: RootState) => {
-  return root.selectedSyntheticNodeIds.every(nodeId => {
-    const node = getSyntheticNodeById(nodeId, root.documents);
-    return isSyntheticContentNode(node, root.graph);
-    // return !isSyntheticVisibleNodeMovable(node);
-  });
-});
+export const isSelectionMovable = memoize(
+  (
+    selectedSyntheticNodeIds: string[],
+    documents: SyntheticDocument[],
+    graph: DependencyGraph
+  ) => {
+    return selectedSyntheticNodeIds.every(nodeId => {
+      const node = getSyntheticNodeById(nodeId, documents);
+      return isSyntheticContentNode(node, graph);
+      // return !isSyntheticVisibleNodeMovable(node);
+    });
+  }
+);
 
-export const isSelectionResizable = memoize((root: RootState) => {
-  return root.selectedSyntheticNodeIds.every(nodeId => {
-    const node = getSyntheticNodeById(nodeId, root.documents);
-    return isSyntheticContentNode(node, root.graph);
-    // return !isSyntheticVisibleNodeResizable(node);
-  });
-});
+export const isSelectionResizable = memoize(
+  (
+    selectedSyntheticNodeIds: string[],
+    documents: SyntheticDocument[],
+    graph: DependencyGraph
+  ) => {
+    return selectedSyntheticNodeIds.every(nodeId => {
+      const node = getSyntheticNodeById(nodeId, documents);
+      return isSyntheticContentNode(node, graph);
+    });
+  }
+);

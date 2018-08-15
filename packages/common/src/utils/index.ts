@@ -9,3 +9,4 @@ export * from "./uid";
 // export * from "./tree";
 export * from "./types";
 export * from "./protocol";
+export * from "./immutable";

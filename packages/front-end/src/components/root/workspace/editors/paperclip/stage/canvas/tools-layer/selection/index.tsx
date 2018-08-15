@@ -14,7 +14,9 @@ import { selectorDoubleClicked } from "../../../../../../../../../actions";
 import {
   getSyntheticVisibleNodeFrame,
   getSyntheticNodeById,
-  SyntheticDocument
+  SyntheticDocument,
+  Frame,
+  DependencyGraph
 } from "paperclip";
 import { getNestedTreeNodeById } from "tandem-common";
 
@@ -23,7 +25,10 @@ export type SelectionOuterProps = {
   dispatch: Dispatch<any>;
   zoom: number;
   document: SyntheticDocument;
-  root: RootState;
+  frames: Frame[];
+  documents: SyntheticDocument[];
+  graph: DependencyGraph;
+  selectedSyntheticNodeIds: string[];
   editorWindow: EditorWindow;
 };
 
@@ -33,15 +38,25 @@ export type SelectionInnerProps = {
 } & SelectionOuterProps;
 
 const SelectionBounds = ({
-  root,
   zoom,
-  document
+  selectedSyntheticNodeIds,
+  graph,
+  frames,
+  documents
 }: {
   document: SyntheticDocument;
-  root: RootState;
+  selectedSyntheticNodeIds: string[];
+  graph: DependencyGraph;
+  frames: Frame[];
+  documents: SyntheticDocument[];
   zoom: number;
 }) => {
-  const entireBounds = getSelectionBounds(root);
+  const entireBounds = getSelectionBounds(
+    selectedSyntheticNodeIds,
+    documents,
+    frames,
+    graph
+  );
   const borderWidth = 1 / zoom;
   const boundsStyle = {
     position: "absolute",
@@ -60,23 +75,41 @@ const SelectionBounds = ({
 export const SelectionCanvasToolBase = ({
   canvas,
   editorWindow,
-  root,
+  selectedSyntheticNodeIds,
+  documents,
+  frames,
+  graph,
   dispatch,
   onDoubleClick,
   document,
   zoom
 }: SelectionInnerProps) => {
-  const selection = getBoundedSelection(root);
+  const selection = getBoundedSelection(
+    selectedSyntheticNodeIds,
+    documents,
+    frames,
+    graph
+  );
   if (!selection.length || editorWindow.secondarySelection) return null;
-  if (!getNestedTreeNodeById(root.selectedSyntheticNodeIds[0], document)) {
+  if (!getNestedTreeNodeById(selectedSyntheticNodeIds[0], document)) {
     return null;
   }
 
   return (
     <div className="m-stage-selection-tool" onDoubleClick={onDoubleClick}>
-      <SelectionBounds root={root} zoom={zoom} document={document} />
+      <SelectionBounds
+        frames={frames}
+        documents={documents}
+        selectedSyntheticNodeIds={selectedSyntheticNodeIds}
+        graph={graph}
+        zoom={zoom}
+        document={document}
+      />
       <Resizer
-        root={root}
+        frames={frames}
+        documents={documents}
+        graph={graph}
+        selectedSyntheticNodeIds={selectedSyntheticNodeIds}
         editorWindow={editorWindow}
         canvas={canvas}
         dispatch={dispatch}
@@ -92,10 +125,19 @@ const enhanceSelectionCanvasTool = compose<
 >(
   pure,
   withHandlers({
-    onDoubleClick: ({ dispatch, root }: SelectionInnerProps) => (
-      event: React.MouseEvent<any>
-    ) => {
-      const selection = getBoundedSelection(root);
+    onDoubleClick: ({
+      dispatch,
+      selectedSyntheticNodeIds,
+      documents,
+      frames,
+      graph
+    }: SelectionInnerProps) => (event: React.MouseEvent<any>) => {
+      const selection = getBoundedSelection(
+        selectedSyntheticNodeIds,
+        documents,
+        frames,
+        graph
+      );
       if (selection.length === 1) {
         dispatch(selectorDoubleClicked(selection[0], event));
       }

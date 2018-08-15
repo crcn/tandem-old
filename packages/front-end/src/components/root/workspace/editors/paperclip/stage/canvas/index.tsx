@@ -8,9 +8,16 @@ import {
   ToolType,
   REGISTERED_COMPONENT,
   RegisteredComponent,
-  getOpenFile
+  getOpenFile,
+  OpenFile
 } from "../../../../../../../state";
-import { Dependency, getFramesByDependencyUri } from "paperclip";
+import {
+  Dependency,
+  getFramesByDependencyUri,
+  Frame,
+  SyntheticDocument,
+  DependencyGraph
+} from "paperclip";
 import { PreviewLayerComponent } from "./preview-layer";
 import { throttle } from "lodash";
 import { ToolsLayerComponent } from "./tools-layer";
@@ -26,9 +33,19 @@ import {
   canvasMouseDoubleClicked
 } from "../../../../../../../actions";
 import { DropTarget, DropTargetMonitor } from "react-dnd";
+import { InspectorNode } from "../../../../../../../state/pc-inspector-tree";
 
 export type CanvasOuterProps = {
-  root: RootState;
+  frames: Frame[];
+  toolType: ToolType;
+  documents: SyntheticDocument[];
+  sourceNodeInspector: InspectorNode;
+  openFiles: OpenFile[];
+  hoveringInspectorNodeIds: string[];
+  selectedSyntheticNodeIds: string[];
+  hoveringSyntheticNodeIds: string[];
+  graph: DependencyGraph;
+  activeFilePath: string;
   editorWindow: EditorWindow;
   dependency: Dependency<any>;
   dispatch: Dispatch<any>;
@@ -53,29 +70,37 @@ export type CanvasInnerProps = {
 
 const onWheel = () => {};
 const BaseCanvasComponent = ({
-  root,
+  frames,
+  documents,
+  graph,
   dispatch,
   dependency,
+  openFiles,
+  toolType,
   setCanvasOuter,
   editorWindow,
   setCanvasContainer,
   onWheel,
   onDrop,
+  hoveringInspectorNodeIds,
+  selectedSyntheticNodeIds,
+  hoveringSyntheticNodeIds,
   onMouseEvent,
   onDragOver,
   onMouseDoubleClick,
   onMouseClick,
+  sourceNodeInspector,
   connectDropTarget,
   onDragExit
 }: CanvasInnerProps) => {
   const activeFrames = getFramesByDependencyUri(
     editorWindow.activeFilePath,
-    root.frames,
-    root.documents,
-    root.graph
+    frames,
+    documents,
+    graph
   );
 
-  const canvas = getOpenFile(editorWindow.activeFilePath, root).canvas;
+  const canvas = getOpenFile(editorWindow.activeFilePath, openFiles).canvas;
   const translate = canvas.translate;
 
   return (
@@ -119,10 +144,18 @@ const BaseCanvasComponent = ({
                 <PreviewLayerComponent
                   frames={activeFrames}
                   dependency={dependency}
-                  documents={root.documents}
+                  documents={documents}
                 />
                 <ToolsLayerComponent
-                  root={root}
+                  toolType={toolType}
+                  openFiles={openFiles}
+                  sourceNodeInspector={sourceNodeInspector}
+                  selectedSyntheticNodeIds={selectedSyntheticNodeIds}
+                  hoveringSyntheticNodeIds={hoveringSyntheticNodeIds}
+                  hoveringInspectorNodeIds={hoveringInspectorNodeIds}
+                  documents={documents}
+                  graph={graph}
+                  frames={frames}
                   dispatch={dispatch}
                   zoom={translate.zoom}
                   editorWindow={editorWindow}
@@ -160,7 +193,7 @@ const enhance = compose<CanvasInnerProps, CanvasOuterProps>(
     ) => {
       dispatch(canvasContainerMounted(element, editorWindow.activeFilePath));
     },
-    onWheel: ({ root, dispatch, canvasOuter }: CanvasInnerProps) => (
+    onWheel: ({ dispatch, canvasOuter }: CanvasInnerProps) => (
       event: React.WheelEvent<any>
     ) => {
       const rect = canvasOuter.getBoundingClientRect();
@@ -183,11 +216,11 @@ const enhance = compose<CanvasInnerProps, CanvasOuterProps>(
         },
         100
       ),
-      canDrop: ({ root }: CanvasOuterProps, monitor: DropTargetMonitor) => {
+      canDrop: () => {
         return true;
       },
       drop: (
-        { root, dispatch, editorWindow }: CanvasOuterProps,
+        { dispatch, editorWindow }: CanvasOuterProps,
         monitor: DropTargetMonitor
       ) => {
         const item = monitor.getItem() as RegisteredComponent;

@@ -14,7 +14,6 @@ export type PathOuterProps = {
   zoom: number;
   pointRadius: number;
   strokeWidth: number;
-  root: RootState;
   showPoints?: boolean;
   bounds: Bounds;
   dispatch: Dispatch<any>;
@@ -85,7 +84,7 @@ export const PathBase = ({
 const enhancePath = compose<PathInnerProps, PathOuterProps>(
   pure,
   withHandlers({
-    onPointClick: ({ bounds, dispatch, zoom, root }: PathOuterProps) => (
+    onPointClick: ({ bounds, dispatch, zoom }: PathOuterProps) => (
       point: Point,
       event: React.MouseEvent<any>
     ) => {

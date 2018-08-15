@@ -15,7 +15,6 @@ import {
   InspectorNode,
   getSyntheticInspectorNode
 } from "state/pc-inspector-tree";
-import { OpenFilesPaneComponent } from "./open-files";
 
 type LeftGutterProps = {
   editorWindows: EditorWindow[];

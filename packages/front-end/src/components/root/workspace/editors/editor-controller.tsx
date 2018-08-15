@@ -37,7 +37,16 @@ export default compose(
       if (fileCacheItem.mimeType === PAPERCLIP_MIME_TYPE) {
         stage = (
           <PaperclipStageComponent
-            root={root}
+            sourceNodeInspector={root.sourceNodeInspector}
+            openFiles={root.openFiles}
+            documents={root.documents}
+            graph={root.graph}
+            frames={root.frames}
+            selectedSyntheticNodeIds={root.selectedSyntheticNodeIds}
+            hoveringInspectorNodeIds={root.hoveringInspectorNodeIds}
+            hoveringSyntheticNodeIds={root.hoveringSyntheticNodeIds}
+            activeFilePath={root.activeEditorFilePath}
+            toolType={root.toolType}
             dispatch={dispatch}
             dependency={dependency}
             editorWindow={editorWindow}
@@ -46,7 +55,6 @@ export default compose(
       } else if (isImageMimetype(fileCacheItem.mimeType)) {
         stage = (
           <ImageEditorWindowComponent
-            root={root}
             dispatch={dispatch}
             fileCacheItem={fileCacheItem}
           />

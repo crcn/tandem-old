@@ -6,13 +6,16 @@ const DEFAULT_LRU_MAX = 1000;
 const getArgumentCount = (fn: Function) => {
   const str = fn.toString();
   const params = str.match(/\(.*?\)/)[0];
-  const args = params.substr(1, params.length - 2).split(/\s*,\s*/).filter(arg => arg.substr(0, 3) !== "...")
+  const args = params
+    .substr(1, params.length - 2)
+    .split(/\s*,\s*/)
+    .filter(arg => arg.substr(0, 3) !== "...");
   // if (fn.length !== args.length) {
   //   console.log("arg length mismatch")
   // }
 
   return args.length;
-}
+};
 
 export const memoize = <TFunc extends (...args: any[]) => any>(
   fn: TFunc,
@@ -35,6 +38,17 @@ export const memoize = <TFunc extends (...args: any[]) => any>(
 };
 
 export const shallowEquals = (a, b) => {
+  const toa = typeof a;
+  const tob = typeof b;
+
+  if (toa !== tob) {
+    return false;
+  }
+
+  if (toa !== "object" || !a || !b) {
+    return a === b;
+  }
+
   if (Object.keys(a).length !== Object.keys(b).length) {
     return false;
   }

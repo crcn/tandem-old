@@ -32,7 +32,6 @@ const CURSOR_MAP = {
 const TEXT_PADDING = 5;
 
 const BaseInsertLayer = ({
-  insertInspectorNode,
   insertInspectorNodeBounds,
   canvas,
   zoom,

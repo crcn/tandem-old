@@ -7,13 +7,18 @@ import { Translate } from "tandem-common";
 import {
   getFramesByDependencyUri,
   getSyntheticNodeById,
-  getSyntheticSourceNode
+  getSyntheticSourceNode,
+  Frame,
+  SyntheticDocument,
+  DependencyGraph
 } from "paperclip";
 const { Frame } = require("./frames-view.pc");
 import { canvasToolWindowBackgroundClicked } from "../../../../../../../../actions";
 
 export type FramesOuterProps = {
-  root: RootState;
+  frames: Frame[];
+  documents: SyntheticDocument[];
+  graph: DependencyGraph;
   editorWindow: EditorWindow;
   dispatch: Dispatch<any>;
   translate: Translate;
@@ -23,10 +28,11 @@ export type FramesOuterProps = {
 export default compose<FramesOuterProps, any>(
   pure,
   Base => ({
-    canvas,
     translate,
     editorWindow,
-    root,
+    frames,
+    graph,
+    documents,
     dispatch
   }: FramesOuterProps) => {
     const backgroundStyle = {
@@ -38,18 +44,15 @@ export default compose<FramesOuterProps, any>(
 
     const activeFrames = getFramesByDependencyUri(
       editorWindow.activeFilePath,
-      root.frames,
-      root.documents,
-      root.graph
+      frames,
+      documents,
+      graph
     );
 
-    const frames = activeFrames.map(frame => {
-      const contentNode = getSyntheticNodeById(
-        frame.contentNodeId,
-        root.documents
-      );
+    const frameComponents = activeFrames.map(frame => {
+      const contentNode = getSyntheticNodeById(frame.contentNodeId, documents);
 
-      const sourceNode = getSyntheticSourceNode(contentNode, root.graph);
+      const sourceNode = getSyntheticSourceNode(contentNode, graph);
       return (
         <Frame
           key={frame.contentNodeId}
@@ -71,7 +74,7 @@ export default compose<FramesOuterProps, any>(
             canvasToolWindowBackgroundClicked
           )
         }}
-        contentProps={{ children: frames }}
+        contentProps={{ children: frameComponents }}
       />
     );
   }

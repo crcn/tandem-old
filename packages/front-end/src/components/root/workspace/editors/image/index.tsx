@@ -1,12 +1,10 @@
 import "./index.scss";
 import * as React from "react";
 import { Dispatch } from "redux";
-import { RootState } from "../../../../../state";
 import { compose, pure } from "recompose";
 import { FileCacheItem, getFileCacheItemDataUrl } from "fsbox";
 
 export type ImageEditorWindowOuterProps = {
-  root: RootState;
   fileCacheItem: FileCacheItem;
   dispatch: Dispatch<any>;
 };

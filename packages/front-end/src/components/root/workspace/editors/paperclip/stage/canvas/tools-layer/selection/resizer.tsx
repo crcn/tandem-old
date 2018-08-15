@@ -20,12 +20,16 @@ import {
 import { startDOMDrag } from "tandem-common";
 import { Dispatch } from "redux";
 import { Path } from "./path";
+import { Frame, SyntheticDocument, DependencyGraph } from "paperclip";
 
 export type ResizerOuterProps = {
+  frames: Frame[];
+  documents: SyntheticDocument[];
+  graph: DependencyGraph;
+  selectedSyntheticNodeIds: string[];
   canvas: Canvas;
   editorWindow: EditorWindow;
   dispatch: Dispatch<any>;
-  root: RootState;
   zoom: number;
 };
 
@@ -37,12 +41,20 @@ const POINT_STROKE_WIDTH = 1;
 const POINT_RADIUS = 4;
 
 export const ResizerBase = ({
-  root,
   dispatch,
   onMouseDown,
-  zoom
+  zoom,
+  selectedSyntheticNodeIds,
+  graph,
+  documents,
+  frames
 }: ResizerInnerProps) => {
-  const bounds = getSelectionBounds(root);
+  const bounds = getSelectionBounds(
+    selectedSyntheticNodeIds,
+    documents,
+    frames,
+    graph
+  );
 
   // offset stroke
   const resizerStyle = {
@@ -58,7 +70,7 @@ export const ResizerBase = ({
 
   const points = [];
 
-  if (isSelectionMovable(root)) {
+  if (isSelectionMovable(selectedSyntheticNodeIds, documents, graph)) {
     points.push(
       { left: 0, top: 0 },
       { left: 1, top: 0 },
@@ -68,7 +80,7 @@ export const ResizerBase = ({
     );
   }
 
-  if (isSelectionResizable(root)) {
+  if (isSelectionResizable(selectedSyntheticNodeIds, documents, graph)) {
     points.push(
       { left: 1, top: 0.5 },
       { left: 1, top: 1 },
@@ -86,7 +98,6 @@ export const ResizerBase = ({
         <Path
           zoom={zoom}
           points={points}
-          root={root}
           bounds={bounds}
           strokeWidth={POINT_STROKE_WIDTH}
           dispatch={dispatch}
@@ -102,16 +113,21 @@ const enhanceResizer = compose<ResizerInnerProps, ResizerOuterProps>(
   withHandlers({
     onMouseDown: ({
       dispatch,
-      root,
-      editorWindow,
-      canvas
+      canvas,
+      frames,
+      documents,
+      selectedSyntheticNodeIds,
+      graph
     }: ResizerOuterProps) => (event: React.MouseEvent<any>) => {
       dispatch(resizerMouseDown(event));
 
       const translate = canvas.translate;
-      const bounds = getSelectionBounds(root);
-      const translateLeft = translate.left;
-      const translateTop = translate.top;
+      const bounds = getSelectionBounds(
+        selectedSyntheticNodeIds,
+        documents,
+        frames,
+        graph
+      );
       const onStartDrag = event => {
         dispatch(resizerStartDrag(event));
       };
