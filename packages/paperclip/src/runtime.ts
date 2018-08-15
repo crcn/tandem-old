@@ -2,14 +2,13 @@ import { DependencyGraph, Dependency } from "./graph";
 import { EventEmitter } from "events";
 import { SyntheticDocument } from "./synthetic";
 import { evaluateDependencyGraph } from "./evaluate2";
-import { KeyValue, TreeNode, pmark } from "tandem-common";
+import { KeyValue, pmark } from "tandem-common";
 import {
   patchTreeNode,
   TreeNodeOperationalTransform,
-  diffTreeNode,
-  createSetNodePropertyOperationalTransform
+  diffTreeNode
 } from "./ot";
-import { PCModule, PCNode, createPCDependency } from "./dsl";
+import { PCModule, createPCDependency } from "./dsl";
 
 export interface PCRuntime extends EventEmitter {
   getGraph(): DependencyGraph;
@@ -81,7 +80,7 @@ class LocalPCRuntime extends EventEmitter implements PCRuntime {
   }
 
   private _evaluateNow() {
-    const now = Date.now();
+    const marker = pmark("LocalPCRuntime._evaluateNow()");
     const diffs: KeyValue<TreeNodeOperationalTransform[]> = {};
     const newDocumentMap: KeyValue<SyntheticDocument> = {};
     const documentMap = {};
@@ -115,8 +114,7 @@ class LocalPCRuntime extends EventEmitter implements PCRuntime {
     }
 
     this._syntheticDocuments = documentMap;
-
-    console.log("evaluated dependency graph in %d ms", Date.now() - now);
+    marker.end();
 
     this.emit(
       "evaluate",

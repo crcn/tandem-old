@@ -46,7 +46,6 @@ export const setup = <TState extends RootState>(
     const store = createStore(
       (state: TState, event: Action) => {
         const now = Date.now();
-        console.log(event.type);
         const marker = pmark(`action ${event.type}`);
         state = rootReducer(state, event) as TState;
         if (reducer) {

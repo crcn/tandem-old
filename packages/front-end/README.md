@@ -1,12 +1,7 @@
 IMMEDIATE:
 
-- performance
-
-  - React 16
-  - inserting element
-  - changing props
-  - Fix layers view (taking 133 ms)
-  - Speed up patchContainer
+- fix errors for desktop build
+- fix exception for dropdown
 
 - fix style pane props
 

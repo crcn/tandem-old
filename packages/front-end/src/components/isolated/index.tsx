@@ -2,6 +2,7 @@ import React = require("react");
 import ReactDOM = require("react-dom");
 import * as PropTypes from "prop-types";
 import { bubbleHTMLIframeEvents, Point } from "tandem-common";
+import { Consumer } from "react-dnd/lib/DragDropContext";
 
 class IsolateContent extends React.Component<
   { children: any; dragDropManager: any },
@@ -40,19 +41,16 @@ export class Isolate extends React.Component<
   },
   any
 > {
-  static contextTypes = {
-    dragDropManager: PropTypes.object.isRequired
-  };
-
   private _mountElement: any;
   private _iframe: HTMLIFrameElement;
+  private _dragDropManager: any;
 
   componentDidMount() {
     if (window["$synthetic"]) {
       return;
     }
 
-    this.context.dragDropManager.getBackend().addEventListeners(this.window);
+    this._dragDropManager.getBackend().addEventListeners(this.window);
 
     if (this.props.inheritCSS) {
       const head = this.head;
@@ -86,7 +84,9 @@ export class Isolate extends React.Component<
   }
 
   componentWillUnmount() {
-    this.context.dragDropManager.getBackend().removeEventListeners(this.window);
+    if (this._dragDropManager) {
+      this._dragDropManager.getBackend().addEventListeners(this.window);
+    }
   }
 
   componentDidUpdate() {
@@ -154,6 +154,12 @@ export class Isolate extends React.Component<
   setIframe = (iframe: HTMLIFrameElement) => {
     this._iframe = iframe;
   };
+  receiveDragDropManager(manager: any) {
+    if (this._dragDropManager) {
+      return;
+    }
+    this._dragDropManager = manager;
+  }
 
   render() {
     // TODO - eventually want to use iframes. Currently not supported though.
@@ -162,16 +168,23 @@ export class Isolate extends React.Component<
     }
 
     return (
-      <iframe
-        ref={this.setIframe}
-        onDragOver={this.props.onDragOver}
-        onDrop={this.props.onDrop}
-        onWheel={this.onWheel}
-        onScroll={this.onScroll}
-        onLoad={this.onLoad}
-        className={this.props.className}
-        style={this.props.style}
-      />
+      <Consumer>
+        {({ dragDropManager }) => {
+          this.receiveDragDropManager(dragDropManager);
+          return (
+            <iframe
+              ref={this.setIframe}
+              onDragOver={this.props.onDragOver}
+              onDrop={this.props.onDrop}
+              onWheel={this.onWheel}
+              onScroll={this.onScroll}
+              onLoad={this.onLoad}
+              className={this.props.className}
+              style={this.props.style}
+            />
+          );
+        }}
+      </Consumer>
     );
   }
 }
