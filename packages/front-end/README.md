@@ -2,8 +2,11 @@ IMMEDIATE:
 
 - performance
 
+  - React 16
   - inserting element
   - changing props
+  - Fix layers view (taking 133 ms)
+  - Speed up patchContainer
 
 - fix style pane props
 

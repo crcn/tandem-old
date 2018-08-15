@@ -192,7 +192,7 @@ export class RemotePCRuntime extends EventEmitter implements PCRuntime {
 
   private _onRemoteMessage = event => {
     const { type, payload } = event.data;
-    const marker = pmark("start Runtime._onRemoteMessage()");
+    const marker = pmark("Runtime._onRemoteMessage()");
     if (type === "fetchDependencyGraph") {
       this._remote.postMessage({
         type: "dependencyGraph",

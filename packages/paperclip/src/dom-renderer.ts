@@ -11,7 +11,8 @@ import {
   getTreeNodeFromPath,
   roundBounds,
   EMPTY_OBJECT,
-  memoize
+  memoize,
+  pmark
 } from "tandem-common";
 import {
   TreeNodeOperationalTransformType,
@@ -284,6 +285,7 @@ export const patchDOM = (
       }
     }
   }
+
   return newMap;
 };
 

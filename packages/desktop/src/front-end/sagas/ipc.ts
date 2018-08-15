@@ -1,7 +1,7 @@
 import { ipcRenderer } from "electron";
 import { take, put, fork } from "redux-saga/effects";
 import { eventChannel } from "redux-saga";
-import { isPublicAction, mark } from "tandem-common";
+import { isPublicAction } from "tandem-common";
 
 const pid = Date.now() + "_" + Math.random();
 
