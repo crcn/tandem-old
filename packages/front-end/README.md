@@ -5,6 +5,9 @@ IMMEDIATE:
   - close when click out
 - fix style pane props
 
+- performance
+  - layout mouse hover = slow (probably due to left nav)
+
 - dts configuration
 - fix evaluator exceptions on initial start up
 
@@ -47,6 +50,7 @@ SAFETY:
 
 UX ENHANCEMENTS:
 
+- warning sign if label name if overriding another
 - move component picker to quick search
 - persist changes to master component
 - ability to hide left gutter
