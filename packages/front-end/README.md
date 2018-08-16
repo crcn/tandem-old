@@ -1,9 +1,9 @@
 IMMEDIATE:
 
-- fix popover
-  - close when scrolling
-  - close when click out
 - fix style pane props
+  - tyopgraphy audit
+  - backgrounds audit
+  - borders audit
 
 - performance
   - layout mouse hover = slow (probably due to left nav)
@@ -23,7 +23,6 @@ UX PROBLEMS:
 
 BUGS:
 
-- dropdown must close when another opens
 - inherit typography
 - open file modal should have editorWindowId prop instead of EditorWindows holding preferences to open files.
 - Elements should be draggable of their position is absolute|fixed|relative
@@ -49,6 +48,9 @@ SAFETY:
 - prohibit circular components
 
 UX ENHANCEMENTS:
+
+- style pane
+  - single input for margin, and padding (like borders)
 
 - warning sign if label name if overriding another
 - move component picker to quick search
