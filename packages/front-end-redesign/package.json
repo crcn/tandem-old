@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"\""
+    "test": "echo \"\"",
+    "clean": "echo \"\""
   },
   "author": "",
   "license": "ISC"

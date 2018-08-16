@@ -1,8 +1,6 @@
 IMMEDIATE:
 
-- fix errors for desktop build
 - fix exception for dropdown
-
 - fix style pane props
 
 - fix evaluator exceptions on initial start up

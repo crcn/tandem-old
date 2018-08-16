@@ -8,7 +8,8 @@
     "tandem": "./bin/tandem"
   },
   "scripts": {
-    "postinstall": "node install.js"
+    "postinstall": "node install.js",
+    "clean": "rm -rf  node_modules"
   },
   "author": "",
   "license": "ISC",
