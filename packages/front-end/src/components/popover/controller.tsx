@@ -6,49 +6,57 @@ import { compose, pure, lifecycle, withState } from "recompose";
 export type PopoverOuterProps = {
   open: boolean;
   anchorRect: Bounds;
-  onEmptySpaceClick: any;
+  onShouldClose: any;
 };
 
 export type PopoverInnerProps = {
   setAnchorRect(rect: Bounds);
 } & PopoverOuterProps;
 
-export default compose<PopoverInnerProps, PopoverOuterProps>(
-  pure,
-  withState("anchorRect", "setAnchorRect", null),
-  lifecycle<PopoverInnerProps, any>({
-    componentWillUpdate({ open }: PopoverInnerProps) {
+type PopoverState = {
+  anchorRect: Bounds;
+};
+
+export default (Base) => {
+  return class Popover extends React.PureComponent<PopoverOuterProps, PopoverState> {
+    constructor(props) {
+      super(props);
+      this.state = {
+        anchorRect: null
+      }
+    }
+    componentWillUpdate({ open }: PopoverOuterProps) {
       if (!this.props.open && open) {
         const anchor: HTMLDivElement = ReactDOM.findDOMNode(this as any) as HTMLDivElement;
         const rect = getRealElementBounds(anchor);
-        this.props.setAnchorRect(rect);
+        this.setState({ anchorRect: rect });
+      } else if (this.props.open && !open) {
+        this.setState({ anchorRect: null });
       }
     }
-  }),
-  Base => ({
-    open,
-    onEmptySpaceClick,
-    anchorRect,
-    ...rest
-  }: PopoverOuterProps) => {
-    let overrideProps: any = {};
+    render() {
+      const { open, onShouldClose, ...rest }  = this.props;
+      const { anchorRect } = this.state;
 
-    if (anchorRect) {
-      overrideProps = {
-        contentProps: {
-          onEmptySpaceClick,
-          anchorRect,
-          style: {
-            display: "block",
-            position: "fixed"
+      let overrideProps: any = {};
+  
+      if (anchorRect) {
+        overrideProps = {
+          contentProps: {
+            onShouldClose,
+            anchorRect,
+            style: {
+              display: "block",
+              position: "fixed"
+            }
           }
-        }
-      };
+        };
+      }
+  
+      return <Base {...rest} {...overrideProps} />;
     }
-
-    return <Base {...rest} {...overrideProps} />;
-  }
-);
+  };
+};
 
 const getRealElementBounds = (element: HTMLElement) => {
   const parentIframes = [];

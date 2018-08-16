@@ -1,5 +1,5 @@
 import * as React from "react";
-import { compose, pure, lifecycle, withState, withHandlers } from "recompose";
+import { compose, pure, withState, withHandlers } from "recompose";
 import { portal } from "../portal/controller";
 import { Bounds, mergeBounds, getBoundsSize } from "tandem-common";
 
@@ -17,41 +17,55 @@ const calcPortalStyle = (anchorRect: Bounds, portalRect: Bounds) => {
 };
 
 export default compose(
-  withHandlers(() => {
-    let _container: HTMLSpanElement;
-    let _emptySpaceListener: any;
-    return {
-      setContainer: ({ onEmptySpaceClick }) => container => {
-        if (_emptySpaceListener) {
-          document.body.removeEventListener("click", _emptySpaceListener);
+  (Base) => {
+    return class extends React.Component<any, any> {
+      private _emptySpaceListener: any;
+      private _scrollListener: any;
+      setContainer = (container: HTMLDivElement) => {
+        const { onShouldClose } = this.props;
+        if (this._emptySpaceListener) {
+          document.body.removeEventListener("click", this._emptySpaceListener);
+          document.removeEventListener("scroll", this._scrollListener, true);
         }
-        _container = container;
-        if (container && onEmptySpaceClick) {
+        if (container && onShouldClose) {
           document.body.addEventListener(
             "click",
-            (_emptySpaceListener = event => {
+            (this._emptySpaceListener = event => {
               if (!container.contains(event.target)) {
-                onEmptySpaceClick(event);
+
+                // beat onClick handler for dropdown button
+                setImmediate(() => {
+                  onShouldClose(event);
+                });
               }
             })
           );
+
+          document.addEventListener(
+            "scroll",
+            (this._scrollListener = event => {
+              console.log(event);
+              if (!container.contains(event.target)) {
+                onShouldClose(event);
+              }
+            }), true
+          );
         }
       }
-    };
-  }),
-  Base => {
-    return ({ setContainer, children, anchorRect, ...rest }) => {
-      return anchorRect ? (
-        <Base anchorRect={anchorRect} {...rest}>
-          <div
-            ref={setContainer}
-            style={{ width: anchorRect.right - anchorRect.left }}
-          >
-            {children}
-          </div>
-        </Base>
-      ) : null;
-    };
+      render() {
+        const { anchorRect, children, setContainer, ...rest } = this.props;
+        return anchorRect ? (
+          <Base anchorRect={anchorRect} {...rest}>
+            <div
+              ref={this.setContainer}
+              style={{ width: anchorRect.right - anchorRect.left }}
+            >
+              {children}
+            </div>
+          </Base>
+        ) : null;
+      }
+    }
   },
   pure,
   withState(`style`, `setStyle`, null),

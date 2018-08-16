@@ -1,10 +1,12 @@
 IMMEDIATE:
 
-- fix exception for dropdown
+- fix popover
+  - close when scrolling
+  - close when click out
 - fix style pane props
 
-- fix evaluator exceptions on initial start up
 - dts configuration
+- fix evaluator exceptions on initial start up
 
 - update variant input
   - not toggleable
