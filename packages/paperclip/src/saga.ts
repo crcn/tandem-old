@@ -29,6 +29,7 @@ import {
   getSyntheticDocumentByDependencyUri
 } from "./synthetic";
 import { PCRuntime } from "./runtime";
+import { fsCacheBusy } from "fsbox";
 
 export type PaperclipSagaOptions = {
   createRuntime(): PCRuntime;
@@ -68,6 +69,10 @@ export const createPaperclipSaga = ({ createRuntime }: PaperclipSagaOptions) =>
       while (1) {
         yield take();
         const state: PCEditorState = yield select();
+        if (fsCacheBusy(state.fileCache)) {
+          continue;
+        }
+
         rt.setGraph(state.graph);
       }
     }

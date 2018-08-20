@@ -62,6 +62,10 @@ export const queueSaveFile = <TState extends FSSandboxRootState>(
   );
 };
 
+export const fsCacheBusy = memoize((fileCache: FileCache) => {
+  return Object.values(fileCache).some(item => item.status !== FileCacheItemStatus.LOADED);
+});
+
 export const getFileCacheItemsByMimetype = (
   mimeType: string,
   state: FileCache

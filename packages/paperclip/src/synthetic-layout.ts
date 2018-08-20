@@ -9,16 +9,13 @@ TODO:
 import { SyntheticVisibleNode, SyntheticDocument } from "./synthetic";
 import {
   Point,
-  getParentTreeNode,
   memoize,
   findTreeNodeParent,
   Bounds,
-  TreeNode,
   shiftBounds,
   moveBounds,
   getNestedTreeNodeById
 } from "tandem-common";
-import { negate } from "lodash";
 import { Frame } from "./edit";
 
 enum Axis {
@@ -58,7 +55,7 @@ const measurementToPx = (
     return 0;
   }
 
-  const [match, value, unit] = measurment.match(/([-\d\.]+)(.+)/);
+  const [, value, unit] = measurment.match(/([-\d\.]+)(.+)/);
   if (unit === "px") {
     return Number(value);
   }

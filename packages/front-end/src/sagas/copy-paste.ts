@@ -70,7 +70,4 @@ function* handlePaste() {
       }
     }
   }
-  // while(1) {
-  //   // yield take(SHORTCUT_COPY_KEY_DOWN)
-  // }
 }

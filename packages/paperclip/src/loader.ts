@@ -5,12 +5,7 @@ TODOS:
 */
 
 import {
-  TreeNode,
-  addTreeNodeIds,
-  resolveFilePath,
   EMPTY_OBJECT,
-  createTreeNode,
-  EMPTY_ARRAY
 } from "tandem-common";
 import * as migratePCModule from "paperclip-migrator";
 import { createPCModule, PCModule } from "./dsl";

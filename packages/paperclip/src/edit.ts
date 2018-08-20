@@ -79,6 +79,7 @@ import * as path from "path";
 import { convertFixedBoundsToRelative } from "./synthetic-layout";
 import { diffTreeNode, patchTreeNode } from "./ot";
 import { evaluateDependencyGraph } from "./evaluate2";
+import { FSSandboxRootState } from "fsbox";
 
 /*------------------------------------------
  * CONSTANTS
@@ -118,7 +119,7 @@ export type PCEditorState = {
   frames: Frame[];
 
   graph: DependencyGraph;
-};
+} & FSSandboxRootState;
 
 export type ComputedDisplayInfo = {
   [identifier: string]: {

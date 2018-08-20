@@ -8,8 +8,6 @@ import {
 } from "./state";
 import {
   fsSandboxItemLoading,
-  FsSandboxItemSaving,
-  FsSandboxItemSaved,
   fsSandboxItemSaving,
   fsSandboxItemLoaded,
   fsSandboxItemSaved

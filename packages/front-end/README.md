@@ -1,15 +1,16 @@
 IMMEDIATE:
 
+- DTS generation
+
+- Fix unknown prop errors
+- use react contexts instead of passing props down
+
 - fix style pane props
   - tyopgraphy audit
   - backgrounds audit
   - borders audit
 
-- performance
-  - layout mouse hover = slow (probably due to left nav)
 
-- dts configuration
-- fix evaluator exceptions on initial start up
 
 - update variant input
   - not toggleable
