@@ -141,7 +141,6 @@ export const getPublicLayerVarName = (
   return camelCase(label || "child") + (i === 0 ? "" : i);
 };
 
-
 export const addWarning = (warning: Error, context: TranslateContext) => ({
   ...context,
   warnings: [...context.warnings, warning]

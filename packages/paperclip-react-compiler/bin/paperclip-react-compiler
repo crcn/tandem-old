@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 const path = require("path");
 const fs = require("fs");
-const { translatePaperclipModuleToReact } = require("..");
+const { translatePaperclipModuleToReact, translatePaperclipModuleToReactTSDefinition } = require("..");
 const migrate = require("paperclip-migrator");
 const { openPCConfig, loadFSDependencyGraphSync } = require("paperclip");
 const { addProtocol, FILE_PROTOCOL } = require("tandem-common");
@@ -14,4 +14,7 @@ const { config, directory } = openPCConfig(path.dirname(absPath));
 const graph = loadFSDependencyGraphSync(config, directory, migrate);
 const entry = graph[absUri];
 
-console.log(translatePaperclipModuleToReact(entry, graph));
+
+const translate = process.argv.indexOf(`--definition`) !== -1 ? translatePaperclipModuleToReactTSDefinition : translatePaperclipModuleToReact;
+
+console.log(translate(entry, graph));
