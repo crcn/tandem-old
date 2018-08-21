@@ -4,6 +4,7 @@ html-report/
 packages/cli/app
 *.tgz
 tmp/
+src/**/*.d.ts
 dist/
 coverage/
 node_modules
