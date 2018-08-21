@@ -3,7 +3,7 @@ const path = require("path");
 const fs = require("fs");
 const fsa = require("fs-extra");
 let filePath = process.argv[2];
-const {_,write,definition,out: outRelPath} = require("yargs").argv;
+const {_,write,definition,out: outRelPath,watch} = require("yargs").argv;
 const glob = require("glob");
 const {difference} = require("lodash");
 const { translatePaperclipModuleToReact, translatePaperclipModuleToReactTSDefinition } = require("..");
@@ -32,7 +32,7 @@ for (const relPath of filePaths) {
 
     if (definition) {
       content = translatePaperclipModuleToReactTSDefinition(entry, graph);
-      contentFilePath = absPath.replace(/\.pc$/, ".d.ts");
+      contentFilePath = absPath.replace(/\.pc$/, ".pc.d.ts");
     } else {
       content = translatePaperclipModuleToReact(entry, graph);
       contentFilePath = absPath.replace(/\.pc$/, ".js");
@@ -43,17 +43,16 @@ for (const relPath of filePaths) {
         outAbsPath,
         difference(contentFilePath.split("/"), outAbsPath.split("/")).slice(1).join("/"),
       );
-
-
     }
 
     if (write) {
-      // fs.writeFileSync(contentFilePath, content);
-      console.log(`wrote ${contentFilePath}`);
+      fs.writeFileSync(contentFilePath, content);
+      console.log(`write ${contentFilePath}`);
     } else {
       console.log(content);
     }
   } catch(e) {
+    console.error(relPath);
     console.error(e);
   }
 }

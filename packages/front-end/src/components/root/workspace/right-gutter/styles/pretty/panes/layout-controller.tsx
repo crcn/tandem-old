@@ -1,4 +1,5 @@
 import * as React from "react";
+import { BaseLayoutProps } from "./layout.pc";
 import { memoize, getParentTreeNode } from "tandem-common";
 import { compose, pure, withHandlers } from "recompose";
 import {
@@ -90,6 +91,8 @@ export type LayoutControllerOuterProps = {
   graph: DependencyGraph;
 };
 
+export type Props = LayoutControllerOuterProps;
+
 export type LayoutControllerInnerProps = {
   onPropertyChangeComplete: any;
   onPropertyChange: any;
@@ -106,7 +109,7 @@ export default compose(
       dispatch(cssPropertyChangeCompleted(name, value));
     }
   }),
-  Base => ({
+  (Base: React.ComponentClass<BaseLayoutProps>) => ({
     onPropertyChange,
     onPropertyChangeComplete,
     selectedNodes,

@@ -81,6 +81,7 @@ export  const addScopedLayerLabel = (
     id: string,
     context: TranslateContext
   ) => {
+    label = label.toLowerCase();
     if (context.scopedLabelRefs[id]) {
       return context;
     }
@@ -91,6 +92,7 @@ export  const addScopedLayerLabel = (
       context = {
         ...context,
         scopedLabelRefs: {
+          ...context.scopedLabelRefs,
           [context.currentScope]: EMPTY_OBJECT
         }
       };
@@ -99,6 +101,7 @@ export  const addScopedLayerLabel = (
     return {
       ...context,
       scopedLabelRefs: {
+        ...context.scopedLabelRefs,
         [scope]: {
           ...context.scopedLabelRefs[scope],
           [label]: uniq([
@@ -120,7 +123,7 @@ export const getScopedLayerLabelIndex = (
   id: string,
   context: TranslateContext
 ) => {
-  return context.scopedLabelRefs[context.currentScope][label].indexOf(id);
+  return context.scopedLabelRefs[context.currentScope][label.toLowerCase()].indexOf(id);
 };
 
 

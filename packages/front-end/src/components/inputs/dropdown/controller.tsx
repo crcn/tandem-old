@@ -20,6 +20,7 @@ export type DropdownOuterProps = {
   onChange?: (item: DropdownMenuOption) => any;
   onChangeComplete?: (item: DropdownMenuOption) => any;
 };
+export type Props = DropdownOuterProps;
 
 type DropdownState = {
   open: boolean;

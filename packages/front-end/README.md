@@ -3,6 +3,7 @@ IMMEDIATE:
 - DTS generation
   - auto-generate when PC file is saved (to lib)
     - hooked into build-watch
+  - fix DTS issues
 
 - Fix unknown prop errors
 - use react contexts instead of passing props down
