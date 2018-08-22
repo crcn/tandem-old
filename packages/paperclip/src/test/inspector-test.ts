@@ -43,7 +43,6 @@ describe(__filename + "#", () => {
       fileCache: {}
     };
 
-    // state = evaluateDependency("0", state);
     return state;
   };
 
