@@ -81,7 +81,7 @@ export  const addScopedLayerLabel = (
     id: string,
     context: TranslateContext
   ) => {
-    label = label.toLowerCase();
+    label = String(label).toLowerCase();
     if (context.scopedLabelRefs[id]) {
       return context;
     }
@@ -123,7 +123,7 @@ export const getScopedLayerLabelIndex = (
   id: string,
   context: TranslateContext
 ) => {
-  return context.scopedLabelRefs[context.currentScope][label.toLowerCase()].indexOf(id);
+  return context.scopedLabelRefs[context.currentScope][String(label).toLowerCase()].indexOf(id);
 };
 
 

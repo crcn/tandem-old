@@ -2,7 +2,6 @@
 const path = require("path");
 const fs = require("fs");
 const fsa = require("fs-extra");
-let filePath = process.argv[2];
 const {_,write,definition,out: outRelPath,watch} = require("yargs").argv;
 const glob = require("glob");
 const {difference} = require("lodash");
@@ -10,25 +9,41 @@ const { translatePaperclipModuleToReact, translatePaperclipModuleToReactTSDefini
 const migrate = require("paperclip-migrator");
 const { openPCConfig, loadFSDependencyGraphSync } = require("paperclip");
 const { addProtocol, FILE_PROTOCOL } = require("tandem-common");
-
-// const relPath = process.argv.slice(2)[0];
-// const cwd = process.cwd();
+const chokidar = require("chokidar");
 
 const filePaths = glob.sync(_[0]);
 const cwd = process.cwd();
-const outAbsPath = outRelPath && (outRelPath.charAt(0) === "/" ? outRelPath : path.join(cwd, outRelPath));
+const outAbsPath = outRelPath && resolvePath(outRelPath, cwd);
 
 for (const relPath of filePaths) {
-
-  const absPath = relPath.charAt(0) === "/" ? relPath : path.join(cwd, relPath);
   try {
-    const absUri = addProtocol(FILE_PROTOCOL, absPath);
-    const { config, directory } = openPCConfig(path.dirname(absPath));
-    const graph = loadFSDependencyGraphSync(config, directory, migrate);
-    const entry = graph[absUri];
+    translateFile(relPath);
+  } catch(e) {
+    console.error(relPath);
+    console.error(e);
+  }
+}
+  
+if (watch) {
+  chokidar.watch(_[0]).on(`all`, (eventType, path) => {
+    if (eventType === `change`) {
+      translateFile(path);
+    }
+  });
+}
 
-    let content;
-    let contentFilePath;
+function resolvePath(relPath, cwd) {
+  return relPath.charAt(0) === "/" ? relPath : path.join(cwd, relPath);
+}
+
+function translateFile(relPath) {
+  const absPath = resolvePath(relPath, cwd);
+  const absUri = addProtocol(FILE_PROTOCOL, absPath);
+  const { config, directory } = openPCConfig(path.dirname(absPath));
+  const graph = loadFSDependencyGraphSync(config, directory, migrate);
+  const entry = graph[absUri];
+  let content;
+  let contentFilePath;
 
     if (definition) {
       content = translatePaperclipModuleToReactTSDefinition(entry, graph);
@@ -37,42 +52,17 @@ for (const relPath of filePaths) {
       content = translatePaperclipModuleToReact(entry, graph);
       contentFilePath = absPath.replace(/\.pc$/, ".js");
     }
-
-    if (outAbsPath) {
-      contentFilePath = path.join(
-        outAbsPath,
-        difference(contentFilePath.split("/"), outAbsPath.split("/")).slice(1).join("/"),
-      );
-    }
-
-    if (write) {
-      fs.writeFileSync(contentFilePath, content);
-      console.log(`write ${contentFilePath}`);
-    } else {
-      console.log(content);
-    }
-  } catch(e) {
-    console.error(relPath);
-    console.error(e);
+  if (outAbsPath) {
+    contentFilePath = path.join(
+      outAbsPath,
+      difference(contentFilePath.split("/"), outAbsPath.split("/")).slice(1).join("/"),
+    );
+  }
+  if (write) {
+    fs.writeFileSync(contentFilePath, content);
+    console.log(`write ${contentFilePath}`);
+  } else {
+    console.log(content);
   }
 }
-  
-
-
-
-// for (const relativePath of filePaths) {
-
-
-//   try {
-//     const newModule = migrate(JSON.parse(fs.readFileSync(relativePath, "utf8")));
-//     const moduleJSON = JSON.stringify(newModule, null, 2);
-//     if (write) {
-//       fs.writeFileSync(relativePath, moduleJSON);
-//       console.log(`migrated ${relativePath}`);
-//     } else {
-//       console.log(moduleJSON);
-//     }
-//   } catch(e) {
-//   }
-// }
 

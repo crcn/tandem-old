@@ -25,7 +25,6 @@ import {
   getPCNode,
   PCComponent,
   getOverrides,
-  PCBaseValueOverride,
   PCStyleOverride,
   PCComponentInstanceElement,
   PCVariantOverride
@@ -41,7 +40,8 @@ describe(__filename + "#", () => {
     let state: PCEditorState = {
       graph,
       documents: [],
-      frames: []
+      frames: [],
+      fileCache: {}
     };
 
     // state = evaluateDependency("0", state);

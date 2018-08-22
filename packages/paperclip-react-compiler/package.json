@@ -9,6 +9,7 @@
   "scripts": {
     "test": "echo \"\"",
     "build": "tsc",
+    "build-watch": "tsc --watch",
     "clean": "rm -rf lib; rm -rf node_modules",
     "prepare": "npm run build"
   },
@@ -24,6 +25,7 @@
     "typescript": "3.0.x"
   },
   "dependencies": {
+    "chokidar": "^2.0.4",
     "fs-extra": "^7.0.0",
     "glob": "^7.1.2",
     "lodash": "^4.17.10",

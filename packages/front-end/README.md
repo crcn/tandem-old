@@ -13,7 +13,10 @@ IMMEDIATE:
   - backgrounds audit
   - borders audit
 
-
+- prepare for online usage
+  - edit code in app
+  - preview tab
+  - "download app" button
 
 - update variant input
   - not toggleable

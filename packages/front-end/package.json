@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"\"",
-    "build": "webpack",
+    "build": "paperclip-react-compiler src/**/*.pc --definition --write; webpack",
+    "build-watch": "concurrently 'paperclip-react-compiler \"src/**/*.pc\" --definition --write --watch' 'webpack --watch'",
     "start": "node lib/back-end/entry",
     "tandem-preview-server": "tandem-webpack-preview-server --config=webpack-tandem-preview.config.js --include-script=node_modules/react/dist/react.min.js --include-script=node_modules/react-dom/dist/react-dom.min.js",
     "clean": "rm -rf lib; rm -rf node_modules",
@@ -33,6 +34,7 @@
     "@types/source-map": "^0.5.0",
     "@types/xml-js": "^1.0.0",
     "chai": "^4.0.2",
+    "concurrently": "^3.6.1",
     "css-loader": "^0.28.4",
     "file-loader": "^1.1.11",
     "html-webpack-plugin": "^3.2.0",

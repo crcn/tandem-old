@@ -5,7 +5,8 @@
   "description": "",
   "main": "index.js",
   "bin": {
-    "tandem": "./bin/tandem"
+    "tandem": "./bin/tandem",
+    "build-watch": "echo ''"
   },
   "scripts": {
     "postinstall": "node install.js",
