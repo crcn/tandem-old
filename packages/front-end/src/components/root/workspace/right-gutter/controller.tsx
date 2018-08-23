@@ -45,11 +45,6 @@ type InnerProps = {
 export default compose<BaseRightGutterProps, Props>(
   pure,
   withState("currentTab", "setTab", TAB_NAMES[0]),
-  withHandlers({
-    onTabClick: ({ setTab }) => tabName => {
-      setTab(tabName);
-    }
-  }),
   (Base: React.ComponentClass<BaseRightGutterProps>) => ({
     root,
     dispatch,
@@ -117,7 +112,6 @@ export default compose<BaseRightGutterProps, Props>(
           children: tabs
         }}
         propertiesProps={{
-          selectedControllerRelativePath: root.selectedControllerRelativePath,
           sourceNodeUri:
             selectedInspectorNodes[0] &&
             getPCNodeDependency(

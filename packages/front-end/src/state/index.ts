@@ -203,7 +203,6 @@ export type RootState = {
   showQuickSearch?: boolean;
   selectedComponentId?: string;
   selectedInheritComponentId?: string;
-  selectedControllerRelativePath?: string;
   queuedScopeSelect?: {
     previousState: RootState;
     scope: SyntheticVisibleNode | SyntheticDocument;

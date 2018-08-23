@@ -152,8 +152,6 @@ export const COMPONENT_VARIANT_NAME_CHANGED = "COMPONENT_VARIANT_NAME_CHANGED";
 export const COMPONENT_VARIANT_NAME_CLICKED = "COMPONENT_VARIANT_NAME_CLICKED";
 export const OPEN_PROJECT_BUTTON_CLICKED = "OPEN_PROJECT_BUTTON_CLICKED";
 export const CREATE_PROJECT_BUTTON_CLICKED = "CREATE_PROJECT_BUTTON_CLICKED";
-export const COMPONENT_CONTROLLER_ITEM_CLICKED =
-  "COMPONENT_CONTROLLER_ITEM_CLICKED";
 export const OPEN_CONTROLLER_BUTTON_CLCIKED = "OPEN_CONTROLLER_BUTTON_CLCIKED";
 export const ADD_COMPONENT_CONTROLLER_BUTTON_CLICKED =
   "ADD_COMPONENT_CONTROLLER_BUTTON_CLICKED";
@@ -389,6 +387,10 @@ export type ComponentPickerItemClick = {
   component: PCComponent;
 } & Action;
 
+export type RemoveComponentControllerButtonClicked = {
+  relativePath: string;
+} & Action;
+
 export type SavedFile = {
   uri: string;
 } & Action;
@@ -621,13 +623,6 @@ export const quickSearchItemClicked = (file: File): QuickSearchItemClicked => ({
   type: QUICK_SEARCH_ITEM_CLICKED
 });
 
-export const componentControllerItemClicked = (
-  relativePath: string
-): ComponentControllerItemClicked => ({
-  relativePath,
-  type: COMPONENT_CONTROLLER_ITEM_CLICKED
-});
-
 export const openControllerButtonClicked = (
   relativePath: string
 ): ComponentControllerItemClicked => ({
@@ -642,7 +637,10 @@ export const addComponentControllerButtonClicked = publicActionCreator(
   })
 );
 
-export const removeComponentControllerButtonClicked = (): Action => ({
+export const removeComponentControllerButtonClicked = (
+  relativePath: string
+): RemoveComponentControllerButtonClicked => ({
+  relativePath,
   type: REMOVE_COMPONENT_CONTROLLER_BUTTON_CLICKED
 });
 

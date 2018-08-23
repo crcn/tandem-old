@@ -14,7 +14,6 @@ import { Dispatch } from "redux";
 export type PropertiesControllerOuterProps = {};
 
 export type Props = {
-  selectedControllerRelativePath: string;
   selectedNodes: SyntheticElement[];
   selectedInspectorNodes: InspectorNode[];
   graph: DependencyGraph;

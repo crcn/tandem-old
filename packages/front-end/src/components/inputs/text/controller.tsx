@@ -10,54 +10,56 @@ export type WithInputHandlersProps = {
   onChangeComplete?: any;
 } & BaseTextInputProps;
 
-export const withInputHandlers = () =>
-  compose(
-    withHandlers({
-      onKeyDown: ({ onChange, onChangeComplete }) => event => {
-        const nativeEvent = event.nativeEvent;
-        setImmediate(() => {
-          const {
-            key,
-            target: { value }
-          } = nativeEvent;
-          if (onChange) {
-            onChange(value || undefined);
-          }
+export const withPureInputHandlers = () => (
+  Base: React.ComponentClass<any>
+) => {
+  return class InputHandlersWrapper extends React.PureComponent<
+    WithInputHandlersProps
+  > {
+    onKeyDown = event => {
+      const { onChange, onChangeComplete } = this.props;
+      const nativeEvent = event.nativeEvent;
+      setImmediate(() => {
+        const {
+          key,
+          target: { value }
+        } = nativeEvent;
+        if (onChange) {
+          onChange(value || undefined);
+        }
 
-          if (key === "Enter" && onChangeComplete) {
-            onChangeComplete(value || "");
-          }
-        });
-      },
-      onBlur: ({ onChangeComplete }) => event => {
-        if (onChangeComplete) {
-          onChangeComplete(event.target.value);
+        if (key === "Enter" && onChangeComplete) {
+          onChangeComplete(value || "");
+        }
+      });
+    };
+    onBlur = event => {
+      const { onChangeComplete } = this.props;
+      if (onChangeComplete) {
+        onChangeComplete(event.target.value);
+      }
+    };
+    componentDidUpdate(props) {
+      if (props.value !== this.props.value) {
+        const input = ReactDOM.findDOMNode(this as any) as HTMLTextAreaElement;
+        if (document.activeElement !== input) {
+          input.value = this.props.value == null ? "" : this.props.value;
         }
       }
-    }),
-    lifecycle({
-      componentDidUpdate(props: WithInputHandlersProps) {
-        if (props.value !== this.props.value) {
-          const input = ReactDOM.findDOMNode(
-            this as any
-          ) as HTMLTextAreaElement;
-          if (document.activeElement !== input) {
-            input.value = this.props.value == null ? "" : this.props.value;
-          }
-        }
-      }
-    })
-  );
+    }
+    render() {
+      const { onKeyDown, onBlur } = this;
+      return <Base {...this.props} onKeyDown={onKeyDown} onBlur={onBlur} />;
+    }
+  };
+};
 
 export type Props = WithInputHandlersProps & FocusProps;
 
 export default compose<BaseTextInputProps, Props>(
-  pure,
-  withInputHandlers(),
+  withPureInputHandlers(),
   (Base: React.ComponentClass<BaseTextInputProps>) => ({
     value,
-    onChange,
-    onChangeComplete,
     focus,
     ...rest
   }) => {
