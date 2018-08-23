@@ -1,25 +1,7 @@
 import React = require("react");
 import ReactDOM = require("react-dom");
-import * as PropTypes from "prop-types";
 import { bubbleHTMLIframeEvents, Point } from "tandem-common";
 import { Consumer } from "react-dnd/lib/DragDropContext";
-
-class IsolateContent extends React.Component<
-  { children: any; dragDropManager: any },
-  any
-> {
-  static childContextTypes = {
-    dragDropManager: PropTypes.object.isRequired
-  };
-  getChildContext() {
-    return {
-      dragDropManager: this.props.dragDropManager
-    };
-  }
-  render() {
-    return this.props.children;
-  }
-}
 
 export class Isolate extends React.Component<
   {
@@ -122,13 +104,7 @@ export class Isolate extends React.Component<
   _render() {
     if (window["$synthetic"]) return;
     if (this.props.children && this._mountElement) {
-      ReactDOM.render(
-        React.createElement(IsolateContent, {
-          children: this.props.children,
-          dragDropManager: this.context.dragDropManager
-        }),
-        this._mountElement
-      );
+      ReactDOM.render(this.props.children, this._mountElement);
     }
   }
 

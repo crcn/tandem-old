@@ -1010,6 +1010,9 @@ const translateStaticOverride = (
   return context;
 };
 
+const canTranslateAttributeKey = (key: string) =>
+  !/xmlns|style/.test(key) && key.indexOf(":") !== -1 && key;
+
 const translateInnerAttributes = (
   nodeId: string,
   attributes: any,
@@ -1020,6 +1023,9 @@ const translateInnerAttributes = (
     return addWarning(new Error(`cannot find PC node`), context);
   }
   for (const key in attributes) {
+    if (!canTranslateAttributeKey(key)) {
+      continue;
+    }
     let value = JSON.stringify(attributes[key]);
     if (key === "src" && node.is === "img") {
       value = `require(${value})`;
