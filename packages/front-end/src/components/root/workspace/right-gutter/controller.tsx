@@ -118,12 +118,12 @@ export default compose<BaseRightGutterProps, Props>(
         }}
         propertiesProps={{
           selectedControllerRelativePath: root.selectedControllerRelativePath,
-          // sourceNodeUri:
-          //   selectedInspectorNodes[0] &&
-          //   getPCNodeDependency(
-          //     selectedInspectorNodes[0].assocSourceNodeId,
-          //     root.graph
-          //   ).uri,
+          sourceNodeUri:
+            selectedInspectorNodes[0] &&
+            getPCNodeDependency(
+              selectedInspectorNodes[0].assocSourceNodeId,
+              root.graph
+            ).uri,
           dispatch,
           graph: root.graph,
           selectedNodes: selectedSyntheticNodes,

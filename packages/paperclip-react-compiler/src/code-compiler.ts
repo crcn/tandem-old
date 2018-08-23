@@ -60,9 +60,13 @@ import {
   setCurrentScope,
   addScopedLayerLabel
 } from "./utils";
-import { InheritStyle, isSlot, PCSlot } from "paperclip";
-import { PCPlug } from "../node_modules/paperclip/src";
-import { PCBaseElementChild } from "../node_modules/paperclip/src";
+import {
+  InheritStyle,
+  isSlot,
+  PCSlot,
+  PCPlug,
+  PCBaseElementChild
+} from "paperclip";
 export const compilePaperclipModuleToReact = (
   entry: PCDependency,
   graph: DependencyGraph
@@ -912,16 +916,14 @@ const translateDynamicOverrides = (
       continue;
     }
 
-    // FIXME: this is FLAWED since the actual "scope" is the instance
-    context = addScopedLayerLabel(slot.label, slot.id, context);
+    // context = addScopedLayerLabel(slot.label, slot.id, context);
+    const publicLayerVarName = slot.label && camelCase(slot.label);
 
     // We use the slot's name here so that developers can programatically override
     // the slot via controllers. This value should be unique, so if there's ever colliding slot names,
     // then there's an issue with the component file being translated.
 
-    const slotPropName =
-      (slot.label && getPublicLayerVarName(slot.label, slot.id, context)) ||
-      `_${slot.id}`;
+    const slotPropName = publicLayerVarName || `_${slot.id}`;
 
     context = addOpenTag(
       `if (!_${instance.id}Props.${slotPropName}) {\n`,

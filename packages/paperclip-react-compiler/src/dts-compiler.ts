@@ -213,7 +213,7 @@ const translateComponent = (
       context
     );
     context = addLine(
-      `export type ${componentClassName} = typeof ${controllerClassName};\n`,
+      `export const ${componentClassName}: (props: ${controllerClassName}Props) => any;\n`,
       context
     );
     return context;
@@ -224,7 +224,7 @@ const translateComponent = (
     context
   );
   context = addLine(
-    `export type ${componentClassName} = (props: Base${componentPropsName}) => any;\n`,
+    `export const ${componentClassName}: (props: Base${componentPropsName}) => any;\n`,
     context
   );
   return context;

@@ -2098,10 +2098,17 @@ const shortcutReducer = (state: RootState, action: Action): RootState => {
         }, state);
       }, state);
 
-      parent = getNestedTreeNodeById(parent.id, state.sourceNodeInspector);
+      parent = getNestedTreeNodeById(
+        parent.id,
+        state.sourceNodeInspector
+      ) as InspectorNode;
 
-      const nextSelectedNodeId = parent.children.length
-        ? parent.children[Math.min(index, parent.children.length - 1)].id
+      const nextChildren = parent.children.filter(
+        child => child.assocSourceNodeId !== sourceNode.id
+      );
+
+      const nextSelectedNodeId = nextChildren.length
+        ? nextChildren[Math.min(index, nextChildren.length - 1)].id
         : parent.name !== SYNTHETIC_DOCUMENT_NODE_NAME
           ? parent.id
           : null;

@@ -354,9 +354,15 @@ export const findClosestParentComponentInstance = memoize(
     root: SyntheticVisibleNode | SyntheticDocument,
     graph: DependencyGraph
   ) => {
-    return findTreeNodeParent(node.id, root, (parent: SyntheticVisibleNode) =>
-      isComponentOrInstance(parent, graph)
-    );
+    if (!getNestedTreeNodeById(node.id, root)) {
+      console.log("NO NODE????");
+    }
+    return findTreeNodeParent(node.id, root, (parent: SyntheticVisibleNode) => {
+      if (!parent) {
+        console.error("NO PARRENTT?");
+      }
+      return isComponentOrInstance(parent, graph);
+    });
   }
 );
 
@@ -403,6 +409,12 @@ export const isComponentOrInstance = (
   graph: DependencyGraph
 ) => {
   const sourceNode = getSyntheticSourceNode(node, graph);
+
+  // source node may have been deleted, so return false is that's the case
+
+  if (!sourceNode) {
+    return false;
+  }
   return (
     sourceNode.name === PCSourceTagNames.COMPONENT ||
     sourceNode.name === PCSourceTagNames.COMPONENT_INSTANCE

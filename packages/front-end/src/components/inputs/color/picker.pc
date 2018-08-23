@@ -170,10 +170,10 @@
       ],
       "metadata": {
         "bounds": {
-          "left": -777,
-          "top": 629,
-          "right": -346.775947540845,
-          "bottom": 985.9843645575679
+          "left": -619,
+          "top": 881,
+          "right": -188.77594754084498,
+          "bottom": 1237.984364557568
         },
         "mode": "preview"
       },
@@ -1022,7 +1022,8 @@
       "attributes": {},
       "style": {
         "box-sizing": "border-box",
-        "display": "block"
+        "display": "block",
+        "opacity": 0.748
       },
       "children": [
         {
@@ -1042,10 +1043,10 @@
       ],
       "metadata": {
         "bounds": {
-          "left": -1152.6900836661844,
-          "top": 756.9858447760188,
-          "right": -1052.6900836661844,
-          "bottom": 856.9858447760188
+          "left": -860,
+          "top": 878,
+          "right": -729.8553491860348,
+          "bottom": 997.2785557531174
         }
       }
     }

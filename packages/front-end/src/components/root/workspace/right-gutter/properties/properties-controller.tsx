@@ -20,9 +20,10 @@ export type Props = {
   graph: DependencyGraph;
   className?: string;
   dispatch: Dispatch<any>;
+  sourceNodeUri: string;
 } & BasePropertiesProps;
 
-type InnerProps = {} & Props;
+type InnerProps = Props;
 
 export default compose<InnerProps, Props>(
   pure,
@@ -30,7 +31,7 @@ export default compose<InnerProps, Props>(
     className,
     ...rest
   }: InnerProps) => {
-    const { selectedInspectorNodes, graph } = rest;
+    const { selectedInspectorNodes, graph, dispatch } = rest;
 
     if (!selectedInspectorNodes.length) {
       return null;
@@ -50,7 +51,7 @@ export default compose<InnerProps, Props>(
           text: sourceNode.name === PCSourceTagNames.TEXT,
           element: sourceNode.name !== PCSourceTagNames.TEXT
         })}
-        componentPropertiesProps={rest}
+        controllersPaneProps={rest}
         slotProps={rest}
         textProps={rest}
         elementProps={rest}

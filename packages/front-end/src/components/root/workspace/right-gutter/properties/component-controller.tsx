@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as path from "path";
 import * as cx from "classnames";
-const { ControllerItem } = require("./controller-item.pc");
+import { ControllerItem } from "./controller-item.pc";
 import { compose, pure, withHandlers } from "recompose";
 import {
   PCComponent,
@@ -15,7 +15,10 @@ import {
   addComponentControllerButtonClicked,
   removeComponentControllerButtonClicked
 } from "actions";
-import { BaseComponentPropertiesProps } from "./view.pc";
+import {
+  BaseComponentPropertiesProps,
+  BaseControllersPaneProps
+} from "./view.pc";
 import { Dispatch } from "redux";
 
 export type Props = {
@@ -31,7 +34,7 @@ type InnerProps = {
   onAddControllerClick: any;
 } & Props;
 
-export default compose<InnerProps, Props>(
+export default compose<BaseControllersPaneProps, Props>(
   pure,
   withHandlers({
     onRemoveControllerClick: ({ dispatch }) => () => {
@@ -45,7 +48,7 @@ export default compose<InnerProps, Props>(
       );
     }
   }),
-  (Base: React.ComponentClass<BaseComponentPropertiesProps>) => ({
+  (Base: React.ComponentClass<BaseControllersPaneProps>) => ({
     selectedNodes,
     graph,
     selectedControllerRelativePath,
@@ -76,9 +79,10 @@ export default compose<InnerProps, Props>(
       ) !== -1;
 
     const controllers = (sourceNode.controllers || EMPTY_ARRAY).map(
-      relativePath => {
+      (relativePath, i) => {
         return (
           <ControllerItem
+            key={relativePath + i}
             dispatch={dispatch}
             selected={selectedControllerRelativePath === relativePath}
             relativePath={relativePath}
@@ -89,10 +93,10 @@ export default compose<InnerProps, Props>(
     return (
       <Base
         {...rest}
-        // variant={cx({ hasControllerSelected })}
-        // removeControllerButtonProps={{ onClick: onRemoveControllerClick }}
-        // addControllerButtonProps={{ onClick: onAddControllerClick }}
-        // contentProps={{ children: controllers }}
+        variant={cx({ hasControllerSelected })}
+        removeControllerButtonProps={{ onClick: onRemoveControllerClick }}
+        addControllerButtonProps={{ onClick: onAddControllerClick }}
+        content={controllers}
       />
     );
   }

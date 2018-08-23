@@ -53,7 +53,8 @@ export default compose<InnerProps, Props>(
     onOpenClick,
     hovering,
     onMouseOver,
-    onMouseLeave
+    onMouseLeave,
+    dispatch
   }: InnerProps) => {
     return (
       <Base

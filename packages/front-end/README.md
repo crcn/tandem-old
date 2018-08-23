@@ -1,20 +1,22 @@
 IMMEDIATE:
 
-- DTS generation
+- fix style pane props
 
-  - auto-generate when PC file is saved (to lib)
-    - hooked into build-watch
-  - fix DTS issues
+  - fix components
+  - tyopgraphy audit
+  - backgrounds audit
+  - borders audit
+
+- UX
+
+  - all layers must be expose. For component instances, take component label
+  - shortcuts shouldn't be triggered when keys are pressed
 
 - curtail recompose usage
   - input controller refactor
 - use react contexts instead of passing props down
 
-- fix style pane props
-
-  - tyopgraphy audit
-  - backgrounds audit
-  - borders audit
+- fix controllers pane
 
 - prepare for online usage
 

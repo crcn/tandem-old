@@ -410,6 +410,7 @@ export const getInspectorSyntheticNode = memoize(
             instancePath && child.sourceNodeId === node.assocSourceNodeId
         );
       });
+
       if (syntheticNode) {
         return syntheticNode;
       }
