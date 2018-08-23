@@ -5,7 +5,7 @@ import * as cx from "classnames";
 import { compose, pure, withHandlers, withState } from "recompose";
 import { DragSource } from "react-dnd";
 import { withNodeDropTarget } from "./dnd-controller";
-const { BeforeDropZone, AfterDropZone } = require("./drop-zones.pc");
+import { BeforeDropZone, AfterDropZone } from "./drop-zones.pc";
 import {
   SyntheticNode,
   PCSourceTagNames,

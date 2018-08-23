@@ -5,26 +5,26 @@ import {
   SyntheticNode,
   DependencyGraph,
   getSyntheticSourceNode,
-  isComponent,
   isPCComponentInstance,
   getPCNode,
   getPCVariants,
   PCComponent,
-  SyntheticInstanceElement,
   isSyntheticInstanceElement,
   PCVariant,
-  getPCVariantOverrides,
   getInheritedAndSelfOverrides,
   PCOverridablePropertyName
 } from "paperclip";
 import { Dispatch } from "redux";
-const { VariantOption } = require("./option.pc");
-const { VariantPill } = require("./pill.pc");
+import { VariantOption } from "./option.pc";
+import { VariantPill } from "./pill.pc";
 import { noop, last } from "lodash";
-import { instanceVariantToggled, instanceVariantResetClicked } from "actions";
+import {
+  instanceVariantToggled,
+  instanceVariantResetClicked
+} from "../../../../../../actions";
 import { BaseComponentInstanceVariantProps } from "./variant-input.pc";
 
-export type VariantInputControllerOuterProps = {
+export type Props = {
   syntheticDocument: SyntheticDocument;
   selectedNodes: SyntheticNode[];
   dispatch: Dispatch<any>;
@@ -32,7 +32,7 @@ export type VariantInputControllerOuterProps = {
   selectedVariant: PCVariant;
 };
 
-type VariantInputControllerInnerProps = {
+type InnerProps = {
   onVariantToggle: any;
   onVariantInputClick: any;
   editing: boolean;
@@ -40,7 +40,7 @@ type VariantInputControllerInnerProps = {
   onFocus: any;
   onBlur: any;
   onVariantReset: any;
-} & VariantInputControllerOuterProps;
+} & Props;
 
 export default compose(
   pure,
@@ -72,7 +72,7 @@ export default compose(
     selectedVariant,
     onVariantReset,
     syntheticDocument
-  }: VariantInputControllerInnerProps) => {
+  }: InnerProps) => {
     const node = selectedNodes[0];
     if (!isSyntheticInstanceElement(node)) {
       return null;

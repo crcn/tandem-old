@@ -7,7 +7,7 @@ import {
   variantDefaultSwitchClicked,
   variantLabelChanged,
   variantClicked
-} from "actions";
+} from "../../../../../../actions";
 import { FocusComponent } from "../../../../../focus";
 import { BaseVariantOptionProps } from "./option.pc";
 const { TextInput } = require("../../../../../inputs/text/view.pc");

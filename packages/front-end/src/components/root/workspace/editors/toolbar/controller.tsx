@@ -8,11 +8,11 @@ import {
   toolbarToolClicked,
   editorTabClicked,
   editorTabCloseButtonClicked
-} from "actions";
+} from "../../../../../actions";
 import { ToolType, EditorWindow } from "../../../../../state";
 import { Dispatch } from "redux";
 import { BaseToolbarProps } from "./view.pc";
-const { EditorTab } = require("./tab.pc");
+import { EditorTab } from "./tab.pc";
 
 export type Props = {
   editorWindow: EditorWindow;

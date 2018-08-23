@@ -1,11 +1,14 @@
 import * as React from "react";
 import { compose, pure, withHandlers } from "recompose";
-import { cssPropertyChangeCompleted, cssPropertyChanged } from "actions";
+import {
+  cssPropertyChangeCompleted,
+  cssPropertyChanged
+} from "../../../../../../../actions";
 import { arraySplice } from "tandem-common";
 import { Dispatch } from "redux";
 import { SyntheticElement } from "paperclip";
 import { BaseBackgroundsProps } from "./backgrounds.pc";
-const { BackgroundItem } = require("./backgrounds.pc");
+import { BackgroundItem } from "./backgrounds.pc";
 
 const DEFAULT_COLOR = "rgba(200, 200, 200, 1)";
 

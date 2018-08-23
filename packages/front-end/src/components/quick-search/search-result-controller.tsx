@@ -2,7 +2,7 @@ import * as React from "react";
 import * as path from "path";
 import { compose, pure, withHandlers } from "recompose";
 import { Dispatch } from "redux";
-import { quickSearchItemClicked } from "actions";
+import { quickSearchItemClicked } from "../../actions";
 import { File, memoize } from "tandem-common";
 import { BaseSearchResultProps } from "./row.pc";
 

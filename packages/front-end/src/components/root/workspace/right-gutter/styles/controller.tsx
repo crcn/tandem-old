@@ -8,7 +8,7 @@ import {
   PCVariant,
   DependencyGraph
 } from "paperclip";
-import { FontFamily } from "state";
+import { FontFamily } from "../../../../../state";
 
 export type Props = {
   dispatch: Dispatch<any>;

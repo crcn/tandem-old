@@ -1,21 +1,8 @@
 import * as React from "react";
 import * as cx from "classnames";
-import { compose, pure, withHandlers, withState } from "recompose";
-import { openControllerButtonClicked } from "actions";
+import { openControllerButtonClicked } from "../../../../../actions";
 import { Dispatch } from "redux";
 import { BaseControllerItemProps } from "./controller-item.pc";
-
-const withHoveringState = compose(
-  withState("hovering", "setHovering", false),
-  withHandlers({
-    onMouseOver: ({ setHovering }) => () => {
-      setHovering(true);
-    },
-    onMouseLeave: ({ setHovering }) => () => {
-      setHovering(false);
-    }
-  })
-);
 
 export type Props = {
   selected: boolean;

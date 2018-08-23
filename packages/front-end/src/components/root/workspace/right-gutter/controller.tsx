@@ -1,18 +1,17 @@
 import * as React from "react";
-import { compose, pure, withHandlers, withState } from "recompose";
+import { compose, pure, withState } from "recompose";
 import {
   getSyntheticNodeById,
   SyntheticDocument,
   getSyntheticVisibleNodeDocument,
-  getSyntheticSourceUri,
   getPCNodeDependency
 } from "paperclip";
 import { memoize, EMPTY_ARRAY, getNestedTreeNodeById } from "tandem-common";
-const { RightGutterTab } = require("./tab.pc");
+import { RightGutterTab } from "./tab.pc";
 import * as cx from "classnames";
-import { InspectorNode } from "state/pc-inspector-tree";
+import { InspectorNode } from "../../../../state/pc-inspector-tree";
 import { BaseRightGutterProps } from "./index.pc";
-import { RootState } from "state";
+import { RootState } from "../../../../state";
 import { Dispatch } from "redux";
 
 const getSelectedSyntheticNodes = memoize(

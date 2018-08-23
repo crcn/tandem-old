@@ -8,7 +8,7 @@ import {
 } from "paperclip";
 import { BaseElementStylerProps } from "./index.pc";
 import { Dispatch } from "redux";
-import { FontFamily } from "state";
+import { FontFamily } from "../../../../../../state";
 
 export type PrettyPaneOuterProps = {
   syntheticNodes: SyntheticNode[];

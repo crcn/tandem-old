@@ -1,8 +1,8 @@
 import * as React from "react";
 import { compose, pure, withHandlers } from "recompose";
-import { RootState, ToolType } from "state";
+import { RootState, ToolType } from "../../state";
 import { Dispatch } from "redux";
-import { componentPickerBackgroundClick } from "actions";
+import { componentPickerBackgroundClick } from "../../actions";
 import { BaseModalProps } from "./modal.pc";
 
 export type Props = {

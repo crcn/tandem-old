@@ -12,7 +12,7 @@ import {
   PCVariant
 } from "paperclip";
 import { Dispatch } from "redux";
-const { VariantOption } = require("./option.pc");
+import { VariantOption } from "./option.pc";
 import {
   addVariantButtonClicked,
   removeVariantButtonClicked

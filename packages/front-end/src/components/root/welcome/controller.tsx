@@ -1,6 +1,9 @@
 import * as React from "react";
 import { compose, pure, withHandlers } from "recompose";
-import { openProjectButtonClicked, createProjectButtonClicked } from "actions";
+import {
+  openProjectButtonClicked,
+  createProjectButtonClicked
+} from "../../../actions";
 import { BaseWelcomeProps } from "./view.pc";
 import { Dispatch } from "redux";
 

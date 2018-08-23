@@ -1,10 +1,13 @@
 import * as React from "react";
 import * as cx from "classnames";
 import { compose, pure, withHandlers, withState } from "recompose";
-const { BoxShadowItem } = require("./box-shadow.pc");
+import { BoxShadowItem } from "./box-shadow.pc";
 import { BoxShadowInfo } from "./box-shadow-item-controller";
 import { memoize, EMPTY_ARRAY, arraySplice } from "tandem-common";
-import { cssPropertyChangeCompleted, cssPropertyChanged } from "actions";
+import {
+  cssPropertyChangeCompleted,
+  cssPropertyChanged
+} from "../../../../../../../actions";
 import { BaseBoxShadowsProps } from "./box-shadows.pc";
 import { Dispatch } from "redux";
 import { SyntheticElement } from "paperclip";

@@ -1,8 +1,8 @@
 import "./index.scss";
 import * as React from "react";
 import { Dispatch } from "redux";
-const { Workspace } = require("./workspace/index.pc");
-const { Welcome } = require("./welcome/view.pc");
+import { Workspace } from "./workspace/index.pc";
+import { Welcome } from "./welcome/view.pc";
 import { RootState } from "../../state";
 import { compose, pure } from "recompose";
 

@@ -1,5 +1,5 @@
 import { init } from "./index";
-import { createRootInspectorNode } from "state/pc-inspector-tree";
+import { createRootInspectorNode } from "./state/pc-inspector-tree";
 
 init({
   mount: document.getElementById("application"),

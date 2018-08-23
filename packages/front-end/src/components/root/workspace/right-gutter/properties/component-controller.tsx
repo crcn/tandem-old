@@ -14,7 +14,7 @@ import { EMPTY_ARRAY, stripProtocol } from "tandem-common";
 import {
   addComponentControllerButtonClicked,
   removeComponentControllerButtonClicked
-} from "actions";
+} from "../../../../../actions";
 import {
   BaseComponentPropertiesProps,
   BaseControllersPaneProps

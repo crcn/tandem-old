@@ -1,6 +1,9 @@
 import * as React from "react";
 import { compose, pure, withHandlers } from "recompose";
-import { cssPropertyChanged, cssPropertyChangeCompleted } from "actions";
+import {
+  cssPropertyChanged,
+  cssPropertyChangeCompleted
+} from "../../../../../../../actions";
 import { Dispatch } from "redux";
 import { SyntheticElement } from "paperclip";
 import { BaseOpacityPaneProps } from "./opacity.pc";

@@ -10,7 +10,7 @@ import {
 import { InspectorNode } from "../../../../../state/pc-inspector-tree";
 import { Dispatch } from "redux";
 import { BaseLayersPaneProps } from "./view.pc";
-const { OpenModule } = require("./open-module.pc");
+import { OpenModule } from "./open-module.pc";
 
 export type Props = {
   graph: DependencyGraph;

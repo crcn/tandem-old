@@ -4,11 +4,11 @@ import {
   SyntheticVisibleNode,
   SyntheticElement
 } from "paperclip";
-import { elementTypeChanged } from "actions";
+import { elementTypeChanged } from "../../../../../actions";
 import { DropdownMenuOption } from "../../../../inputs/dropdown/controller";
 import { BaseElementPropertiesProps } from "./view.pc";
 import { Dispatch } from "redux";
-const { InputProperties } = require("./input.pc");
+import { InputProperties } from "./input.pc";
 
 const TYPE_MENU_OPTIONS: DropdownMenuOption[] = [
   "a",

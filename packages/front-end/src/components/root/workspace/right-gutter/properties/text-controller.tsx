@@ -3,10 +3,9 @@ import { compose, pure, withHandlers } from "recompose";
 import {
   PCSourceTagNames,
   SyntheticVisibleNode,
-  SyntheticElement,
   SyntheticTextNode
 } from "paperclip";
-import { textValueChanged } from "actions";
+import { textValueChanged } from "../../../../../actions";
 import { BaseTextPropertiesProps } from "./view.pc";
 import { Dispatch } from "redux";
 

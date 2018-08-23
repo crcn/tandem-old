@@ -14,7 +14,7 @@ import {
   canvasToolDocumentTitleClicked,
   frameModeChangeComplete,
   canvasToolPreviewButtonClicked
-} from "actions";
+} from "../../../../../../../../actions";
 import {
   DropdownMenuOption,
   dropdownMenuOptionFromValue

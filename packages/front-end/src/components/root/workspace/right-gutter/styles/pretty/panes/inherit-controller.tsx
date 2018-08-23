@@ -13,7 +13,7 @@ import {
 import {
   inheritPaneAddButtonClick,
   inheritPaneRemoveButtonClick
-} from "actions";
+} from "../../../../../../../actions";
 import { BaseInheritProps } from "./inherit.pc";
 
 export type Props = {

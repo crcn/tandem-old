@@ -15,7 +15,7 @@ import {
 } from "../../../../../../../../state";
 import { NodeOverlaysTool } from "./document-overlay";
 import { SelectionCanvasTool } from "./selection";
-const { Frames } = require("./frames-view.pc");
+import { Frames } from "./frames-view.pc";
 import { InsertLayer } from "./insert-layer";
 import {
   getSyntheticDocumentByDependencyUri,

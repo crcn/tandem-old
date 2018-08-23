@@ -4,7 +4,7 @@ import { SyntheticDocument, DependencyGraph } from "paperclip";
 import { Dispatch } from "redux";
 import { InspectorNode } from "../../../../../state/pc-inspector-tree";
 import { BaseOpenModuleProps } from "./open-module.pc";
-const { NodeLayer } = require("./layer.pc");
+import { NodeLayer } from "./layer.pc";
 
 export type Props = {
   inspectorNode: InspectorNode;

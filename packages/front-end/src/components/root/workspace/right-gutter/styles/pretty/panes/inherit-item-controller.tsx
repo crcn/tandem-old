@@ -4,7 +4,7 @@ import { compose, pure, withHandlers } from "recompose";
 import { PCComponent } from "paperclip";
 import { DropdownMenuOption } from "../../../../../../inputs/dropdown/controller";
 import { memoize } from "tandem-common";
-import { inheritItemComponentTypeChangeComplete } from "actions";
+import { inheritItemComponentTypeChangeComplete } from "../../../../../../../actions";
 import { Dispatch } from "redux";
 import { BaseInheritItemProps } from "./inherit-item.pc";
 

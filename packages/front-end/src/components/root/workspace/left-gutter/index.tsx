@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Dispatch } from "redux";
 import { Directory, memoize } from "tandem-common";
-const { LayersPane } = require("./open-files/view.pc");
+import { LayersPane } from "./open-files/view.pc";
 import { GutterComponent } from "../../../gutter";
 import { RootState, EditorWindow } from "../../../../state";
 import { FileNavigatorPaneComponent } from "./file-navigator";

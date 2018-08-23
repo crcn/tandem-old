@@ -1,6 +1,9 @@
 import * as React from "react";
 import { compose, pure, withHandlers } from "recompose";
-import { cssPropertyChangeCompleted, cssPropertyChanged } from "actions";
+import {
+  cssPropertyChangeCompleted,
+  cssPropertyChanged
+} from "../../../../../../../actions";
 import { memoize } from "tandem-common";
 import { SyntheticElement } from "paperclip";
 import { Dispatch } from "redux";

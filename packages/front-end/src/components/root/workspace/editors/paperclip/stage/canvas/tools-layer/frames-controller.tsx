@@ -12,7 +12,7 @@ import {
   SyntheticDocument,
   DependencyGraph
 } from "paperclip";
-const { Frame } = require("./frames-view.pc");
+import { Frame as FrameComponent } from "./frames-view.pc";
 import { canvasToolWindowBackgroundClicked } from "../../../../../../../../actions";
 import { BaseFramesProps } from "./frames-view.pc";
 
@@ -55,7 +55,7 @@ export default compose<BaseFramesProps, Props>(
 
       const sourceNode = getSyntheticSourceNode(contentNode, graph);
       return (
-        <Frame
+        <FrameComponent
           key={frame.contentNodeId}
           sourceNode={sourceNode}
           frame={frame}

@@ -2,7 +2,7 @@ import * as React from "react";
 import { compose, pure, withHandlers } from "recompose";
 import { RootState } from "../../state";
 import { Dispatch } from "redux";
-import { quickSearchBackgroundClick } from "actions";
+import { quickSearchBackgroundClick } from "../../actions";
 import { BaseModalProps } from "./index.pc";
 
 export type Props = {

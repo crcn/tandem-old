@@ -3,8 +3,11 @@ import { memoize } from "tandem-common";
 import { ButtonBarOption } from "../../../../../../inputs/button-bar/controller";
 import { DropdownMenuOption } from "../../../../../../inputs/dropdown/controller";
 import { compose, pure, withHandlers } from "recompose";
-import { cssPropertyChangeCompleted, cssPropertyChanged } from "actions";
-import { FontFamily } from "state";
+import {
+  cssPropertyChangeCompleted,
+  cssPropertyChanged
+} from "../../../../../../../actions";
+import { FontFamily } from "../../../../../../../state";
 import { BaseTypographProps } from "./typography.pc";
 import { Dispatch } from "redux";
 import { SyntheticElement } from "paperclip";
