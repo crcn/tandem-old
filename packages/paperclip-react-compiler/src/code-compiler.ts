@@ -434,7 +434,7 @@ const translateContentNode = (
     .filter(node => isVisibleNode(node))
     .reduce((context, node: ContentNode) => {
       if (node === contentNode) return context;
-      context = addScopedLayerLabel(node.label, node.id, context);
+      context = addScopedLayerLabel(`${node.label} Props`, node.id, context);
       context = addLine("", context);
 
       const propsVarName = getNodePropsVarName(node, context);
@@ -1033,7 +1033,7 @@ const getNodePropsVarName = (
 ) => {
   return node.name === PCSourceTagNames.COMPONENT
     ? `props`
-    : `${getPublicLayerVarName(node.label, node.id, context)}Props`;
+    : `${getPublicLayerVarName(`${node.label} Props`, node.id, context)}Props`;
 };
 
 const translateVisibleNode = (node: PCNode, context: TranslateContext) => {

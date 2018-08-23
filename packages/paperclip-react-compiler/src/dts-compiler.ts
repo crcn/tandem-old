@@ -30,6 +30,7 @@ import {
 } from "./utils";
 import { EMPTY_ARRAY, filterNestedNodes, stripProtocol } from "tandem-common";
 import { camelCase } from "lodash";
+import { PCSlot } from "paperclip";
 
 export const translatePaperclipModuleToReactTSDefinition = (
   entry: PCDependency,
@@ -138,9 +139,9 @@ const translateComponent = (
   const controllerPath = (component.controllers || EMPTY_ARRAY).find(
     isTSFilePath
   );
-  const labeledNestedChildren = getLabeledNestedChildren(
-    component
-  ) as PCVisibleNode[];
+  const labeledNestedChildren = getLabeledNestedChildren(component) as (
+    | PCVisibleNode
+    | PCSlot)[];
 
   // const labeledNestedChildren =
   context = addOpenTag(
@@ -167,9 +168,10 @@ const translateComponent = (
 
   for (const child of labeledNestedChildren) {
     if (child.id === component.id) continue;
-    context = addScopedLayerLabel(child.label, child.id, context);
+    if (child.name === PCSourceTagNames.SLOT) continue;
+    context = addScopedLayerLabel(`${child.label} Props`, child.id, context);
     context = addLineItem(
-      `${getPublicLayerVarName(child.label, child.id, context)}Props?: `,
+      `${getPublicLayerVarName(`${child.label} Props`, child.id, context)}?: `,
       context
     );
     if (isPCComponentInstance(child)) {
