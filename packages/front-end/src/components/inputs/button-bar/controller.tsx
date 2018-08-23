@@ -2,6 +2,7 @@ import * as React from "react";
 import * as cx from "classnames";
 import { EMPTY_ARRAY } from "tandem-common";
 import { compose, pure } from "recompose";
+import { BaseButtonBarProps } from "./view.pc";
 const { ButtonBarItem: ButtonBarItemComponent } = require("./item.pc");
 
 export type ButtonBarOption = {
@@ -9,9 +10,19 @@ export type ButtonBarOption = {
   value: any;
 };
 
-export default compose(
+export type Props = {
+  options: ButtonBarOption[];
+  value: any;
+  onChange: any;
+};
+
+export default compose<BaseButtonBarProps, Props>(
   pure,
-  Base => ({ options, value, onChange }) => {
+  (Base: React.ComponentClass<BaseButtonBarProps>) => ({
+    options,
+    value,
+    onChange
+  }) => {
     const children = (options || EMPTY_ARRAY).map((item, i) => {
       return (
         <ButtonBarItemComponent

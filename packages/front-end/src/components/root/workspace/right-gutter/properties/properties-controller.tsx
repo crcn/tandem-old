@@ -1,13 +1,35 @@
 import * as React from "react";
 import * as cx from "classnames";
 import { compose, pure } from "recompose";
-import { PCSourceTagNames, getPCNode } from "paperclip";
+import {
+  PCSourceTagNames,
+  getPCNode,
+  DependencyGraph,
+  SyntheticElement
+} from "paperclip";
+import { BasePropertiesProps } from "./view.pc";
+import { InspectorNode } from "../../../../../state/pc-inspector-tree";
+import { Dispatch } from "redux";
 
 export type PropertiesControllerOuterProps = {};
 
-export default compose(
+export type Props = {
+  selectedControllerRelativePath: string;
+  selectedNodes: SyntheticElement[];
+  selectedInspectorNodes: InspectorNode[];
+  graph: DependencyGraph;
+  className?: string;
+  dispatch: Dispatch<any>;
+} & BasePropertiesProps;
+
+type InnerProps = {} & Props;
+
+export default compose<InnerProps, Props>(
   pure,
-  Base => ({ className, ...rest }) => {
+  (Base: React.ComponentClass<BasePropertiesProps>) => ({
+    className,
+    ...rest
+  }: InnerProps) => {
     const { selectedInspectorNodes, graph } = rest;
 
     if (!selectedInspectorNodes.length) {
@@ -23,15 +45,13 @@ export default compose(
         className={className}
         {...rest}
         variant={cx({
-          bindings: !selectedNode.immutable,
           slot: sourceNode.name === PCSourceTagNames.SLOT,
           component: sourceNode.name === PCSourceTagNames.COMPONENT,
           text: sourceNode.name === PCSourceTagNames.TEXT,
           element: sourceNode.name !== PCSourceTagNames.TEXT
         })}
+        componentPropertiesProps={rest}
         slotProps={rest}
-        bindingsProps={rest}
-        controllersPaneProps={rest}
         textProps={rest}
         elementProps={rest}
       />

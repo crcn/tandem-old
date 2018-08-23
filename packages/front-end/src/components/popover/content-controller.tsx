@@ -2,6 +2,7 @@ import * as React from "react";
 import { compose, pure, withState, withHandlers } from "recompose";
 import { portal } from "../portal/controller";
 import { Bounds, mergeBounds, getBoundsSize } from "tandem-common";
+import { BaseContentProps } from "./view.pc";
 
 const calcPortalStyle = (anchorRect: Bounds, portalRect: Bounds) => {
   const portalSize = getBoundsSize(portalRect);
@@ -16,8 +17,14 @@ const calcPortalStyle = (anchorRect: Bounds, portalRect: Bounds) => {
   };
 };
 
-export default compose(
-  (Base) => {
+export type Props = {
+  onShouldClose: any;
+  anchorRect: Bounds;
+  children?: any;
+} & BaseContentProps;
+
+export default compose<any, Props>(
+  (Base: React.ComponentClass<any>) => {
     return class extends React.Component<any, any> {
       private _emptySpaceListener: any;
       private _scrollListener: any;
@@ -32,7 +39,6 @@ export default compose(
             "click",
             (this._emptySpaceListener = event => {
               if (!container.contains(event.target)) {
-
                 // beat onClick handler for dropdown button
                 setImmediate(() => {
                   onShouldClose(event);
@@ -48,10 +54,11 @@ export default compose(
               if (!container.contains(event.target)) {
                 onShouldClose(event);
               }
-            }), true
+            }),
+            true
           );
         }
-      }
+      };
       render() {
         const { anchorRect, children, setContainer, ...rest } = this.props;
         return anchorRect ? (
@@ -65,7 +72,7 @@ export default compose(
           </Base>
         ) : null;
       }
-    }
+    };
   },
   pure,
   withState(`style`, `setStyle`, null),

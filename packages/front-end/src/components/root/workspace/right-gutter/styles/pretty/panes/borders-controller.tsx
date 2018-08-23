@@ -2,8 +2,21 @@ import * as React from "react";
 import { compose, pure, withHandlers } from "recompose";
 import { cssPropertyChangeCompleted, cssPropertyChanged } from "actions";
 import { memoize } from "tandem-common";
+import { SyntheticElement } from "paperclip";
+import { Dispatch } from "redux";
+import { BaseBorderProps } from "./borders.pc";
 
-export default compose(
+export type Props = {
+  selectedNodes: SyntheticElement[];
+  dispatch: Dispatch;
+};
+
+type InnerProps = {
+  onPropertyChange: any;
+  onPropertyChangeComplete: any;
+} & Props;
+
+export default compose<InnerProps, Props>(
   pure,
   withHandlers({
     onPropertyChange: ({ dispatch }) => (name, value) => {
@@ -13,7 +26,11 @@ export default compose(
       dispatch(cssPropertyChangeCompleted(name, value));
     }
   }),
-  Base => ({ selectedNodes, onPropertyChange, onPropertyChangeComplete }) => {
+  (Base: React.ComponentClass<BaseBorderProps>) => ({
+    selectedNodes,
+    onPropertyChange,
+    onPropertyChangeComplete
+  }) => {
     if (!selectedNodes) {
       return null;
     }

@@ -1,8 +1,7 @@
 import * as React from "react";
-import * as cx from "classnames";
-import { compose, pure, withHandlers, withState } from "recompose";
 const { DropdownMenuItem } = require("./menu.pc");
 import { EMPTY_ARRAY } from "tandem-common";
+import { BaseDropdownProps } from "./view.pc";
 
 export type DropdownMenuOption = {
   label: string;
@@ -13,22 +12,24 @@ export const dropdownMenuOptionFromValue = (
   value: string
 ): DropdownMenuOption => ({ label: value || "--", value });
 
-export type DropdownOuterProps = {
-  value?: string;
+export type Props = {
+  value?: any;
   filterable?: boolean;
   options: DropdownMenuOption[];
   onChange?: (item: DropdownMenuOption) => any;
   onChangeComplete?: (item: DropdownMenuOption) => any;
-};
-export type Props = DropdownOuterProps;
+} & BaseDropdownProps;
 
 type DropdownState = {
   open: boolean;
   filter: string;
-}
+};
 
-export default (Base) => {
-  return class DropdownController extends React.PureComponent<DropdownOuterProps, DropdownState> {
+export default (Base: React.ComponentClass<BaseDropdownProps>) => {
+  return class DropdownController extends React.PureComponent<
+    Props,
+    DropdownState
+  > {
     constructor(props) {
       super(props);
       this.state = {
@@ -38,10 +39,10 @@ export default (Base) => {
     }
     onClick = () => {
       this.setState({ ...this.state, open: !this.state.open });
-    }
-    onFilterChange = (value) => {
+    };
+    onFilterChange = value => {
       this.setState({ ...this.state, filter: value });
-    }
+    };
     onItemClick = (item, event) => {
       const { onChange, onChangeComplete } = this.props;
       if (onChange) {
@@ -51,33 +52,25 @@ export default (Base) => {
         onChangeComplete(item.value);
       }
       this.setState({ ...this.state, open: false });
-    }
-    onKeyDown = (event) => {
+    };
+    onKeyDown = event => {
       if (event.key === "Enter") {
         this.setState({ ...this.state, open: true });
       }
-    }
+    };
     onShouldClose = () => {
       this.setState({ ...this.state, open: false });
-    }
+    };
 
     render() {
-      const {
-        value,
-        options = EMPTY_ARRAY,
-        filterable,
-        ...rest
-      } = this.props;
-      const {
-        open,
-        filter
-      } = this.state;
+      const { value, options = EMPTY_ARRAY, filterable, ...rest } = this.props;
+      const { open, filter } = this.state;
 
-
-        const menuItems = open
+      const menuItems = open
         ? options
             .filter(
-              ({ label }) => !filter || label.toLowerCase().indexOf(filter) !== -1
+              ({ label }) =>
+                !filter || label.toLowerCase().indexOf(filter) !== -1
             )
             .map((item, i) => {
               return (
@@ -94,31 +87,33 @@ export default (Base) => {
       const selectedItem = options.find(item => item.value === value);
       const showFilter = open && filterable;
 
-      return <Base
-      popoverProps={{
-        open,
-        onShouldClose: this.onShouldClose
-      }}
-      filterInputProps={{
-        style: {
-          display: showFilter ? "block" : "none"
-        },
-        value: selectedItem && selectedItem.label,
-        focus: showFilter,
-        onChange: this.onFilterChange
-      }}
-      tabIndex={0}
-      onKeyDown={this.onKeyDown}
-      options={menuItems}
-      labelProps={{
-        style: {
-          display: showFilter ? "none" : "block"
-        },
-        text: (selectedItem && selectedItem.label) || "--"
-      }}
-      onClick={this.onClick}
-      {...rest}
-    />
+      return (
+        <Base
+          popoverProps={{
+            open,
+            onShouldClose: this.onShouldClose
+          }}
+          filterInputProps={{
+            style: {
+              display: showFilter ? "block" : "none"
+            } as any,
+            value: selectedItem && selectedItem.label,
+            focus: showFilter,
+            onChange: this.onFilterChange
+          }}
+          tabIndex={0}
+          onKeyDown={this.onKeyDown}
+          options={menuItems}
+          labelProps={{
+            style: {
+              display: showFilter ? "none" : "block"
+            },
+            text: (selectedItem && selectedItem.label) || "--"
+          }}
+          onClick={this.onClick}
+          {...rest}
+        />
+      );
     }
-  }
-}
+  };
+};

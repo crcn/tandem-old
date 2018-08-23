@@ -3,9 +3,10 @@ import { compose, pure } from "recompose";
 import { SyntheticDocument, DependencyGraph } from "paperclip";
 import { Dispatch } from "redux";
 import { InspectorNode } from "../../../../../state/pc-inspector-tree";
+import { BaseOpenModuleProps } from "./open-module.pc";
 const { NodeLayer } = require("./layer.pc");
 
-export type OpenModuleControllerOuterProps = {
+export type Props = {
   inspectorNode: InspectorNode;
   document: SyntheticDocument;
   graph: DependencyGraph;
@@ -14,12 +15,9 @@ export type OpenModuleControllerOuterProps = {
   hoveringInspectorNodeIds: string[];
 };
 
-export default compose<
-  OpenModuleControllerOuterProps,
-  OpenModuleControllerOuterProps
->(
+export default compose<BaseOpenModuleProps, Props>(
   pure,
-  Base => ({
+  (Base: React.ComponentClass<BaseOpenModuleProps>) => ({
     inspectorNode,
     document,
     graph,
@@ -27,7 +25,7 @@ export default compose<
     selectedInspectorNodeIds,
     hoveringInspectorNodeIds,
     ...rest
-  }: OpenModuleControllerOuterProps) => {
+  }: Props) => {
     return (
       <Base {...rest}>
         <NodeLayer

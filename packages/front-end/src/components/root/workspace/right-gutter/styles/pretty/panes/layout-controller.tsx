@@ -85,20 +85,18 @@ const ALIGN_SELF_OPTIONS: DropdownMenuOption[] = [
   "stretch"
 ].map(dropdownMenuOptionFromValue);
 
-export type LayoutControllerOuterProps = {
+export type Props = {
   selectedNodes: SyntheticVisibleNode[];
   syntheticDocument: SyntheticDocument;
   graph: DependencyGraph;
 };
 
-export type Props = LayoutControllerOuterProps;
-
-export type LayoutControllerInnerProps = {
+export type InnerProps = {
   onPropertyChangeComplete: any;
   onPropertyChange: any;
-} & LayoutControllerOuterProps;
+} & Props;
 
-export default compose(
+export default compose<InnerProps, Props>(
   pure,
   withHandlers({
     onClick: () => () => {},
@@ -116,7 +114,7 @@ export default compose(
     syntheticDocument,
     graph,
     ...rest
-  }: LayoutControllerInnerProps) => {
+  }: InnerProps) => {
     if (!selectedNodes) {
       return null;
     }

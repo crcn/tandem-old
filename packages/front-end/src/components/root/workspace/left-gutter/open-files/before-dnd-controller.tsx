@@ -1,8 +1,14 @@
 import { compose } from "recompose";
-import { withNodeDropTarget, withHoverVariant } from "./dnd-controller";
+import {
+  withNodeDropTarget,
+  withHoverVariant,
+  WithNodeDropTargetProps
+} from "./dnd-controller";
 import { TreeMoveOffset } from "tandem-common";
 
-export default compose(
+export type Props = WithNodeDropTargetProps;
+
+export default compose<Props, Props>(
   withNodeDropTarget(TreeMoveOffset.BEFORE),
   withHoverVariant
 );

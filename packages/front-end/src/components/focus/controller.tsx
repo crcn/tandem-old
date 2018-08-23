@@ -4,7 +4,7 @@ import { FocusComponent } from "./index";
 
 export default compose(
   pure,
-  Base => props => {
+  (Base: React.ComponentClass<any>) => props => {
     return (
       <FocusComponent {...props}>
         <Base {...props} />

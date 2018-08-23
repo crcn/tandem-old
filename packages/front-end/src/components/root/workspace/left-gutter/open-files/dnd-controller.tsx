@@ -1,6 +1,5 @@
 import * as React from "react";
 import * as cx from "classnames";
-import { LayerControllerOuterProps } from "./layer-controller";
 import { getContentNode } from "./utils";
 import {
   TreeMoveOffset,
@@ -18,17 +17,26 @@ import {
   getPCNode,
   PCSourceTagNames,
   PCNode,
-  extendsComponent
+  extendsComponent,
+  SyntheticElement,
+  DependencyGraph
 } from "paperclip";
-import { compose } from "redux";
+import { compose, Dispatch } from "redux";
 import { sourceInspectorLayerDropped } from "../../../../../actions";
+
+export type WithNodeDropTargetProps = {
+  inspectorNode: InspectorNode;
+  contentNode: InspectorNode;
+  graph: DependencyGraph;
+  dispatch: Dispatch;
+};
 
 export const withNodeDropTarget = (offset: TreeMoveOffset) =>
   DropTarget(
     "INSPECTOR_NODE",
     {
       canDrop: (
-        { inspectorNode, contentNode, graph }: LayerControllerOuterProps,
+        { inspectorNode, contentNode, graph }: WithNodeDropTargetProps,
         monitor
       ) => {
         contentNode = getContentNode(inspectorNode, contentNode, graph);
@@ -101,7 +109,12 @@ export const withNodeDropTarget = (offset: TreeMoveOffset) =>
   );
 
 export const withHoverVariant = compose(
-  Base => ({ isOver, canDrop, connectDropTarget, ...rest }) => {
+  (Base: React.ComponentClass<any>) => ({
+    isOver,
+    canDrop,
+    connectDropTarget,
+    ...rest
+  }) => {
     return connectDropTarget(
       <div>
         <Base

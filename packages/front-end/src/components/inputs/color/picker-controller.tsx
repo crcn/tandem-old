@@ -3,23 +3,38 @@ import { pure, compose, lifecycle, withState, withHandlers } from "recompose";
 import { memoize } from "tandem-common";
 import { GrabberAxis } from "./canvas-controller";
 import { throttle } from "lodash";
+import { BasePickerProps, BaseColorPickerProps } from "./picker.pc";
 
 const CHANGE_THROTTLE_MS = 1000 / 20;
 
 type RGBA = [number, number, number, number];
 type HSLA = [number, number, number, number];
 
+export type Props = {
+  value: string;
+  onChange: any;
+};
+
+type InnerProps = {
+  hsla: any;
+  setHSLA: any;
+  onRGBAInputChange: any;
+  onHSLChange: any;
+  onHSLChangeComplete: any;
+  onSpectrumChange: any;
+  onSpectrumChangeComplete: any;
+  onOpacityChange: any;
+  onOpacityChangeComplete: any;
+} & Props;
+
 export default compose(
-  Base => props => {
-    return <Base {...props} />;
-  },
   pure,
   withState(`hsla`, `setHSLA`, ({ value }) => {
     const rgba = parseRGBA(value || "#FF0000");
     return rgbaToHsla(rgba);
   }),
   lifecycle({
-    componentWillUpdate(props: any) {
+    componentWillUpdate(props: InnerProps) {
       if (this.props.value !== props.value) {
         const rgba = parseRGBA(props.value);
         const hsla = rgbaToHsla(rgba);
@@ -30,7 +45,11 @@ export default compose(
     }
   }),
   withHandlers(() => {
-    const colorChangeCallback = updater => ({ onChange, hsla, setHSLA }) =>
+    const colorChangeCallback = updater => ({
+      onChange,
+      hsla,
+      setHSLA
+    }: InnerProps) =>
       throttle(rgba => {
         setHSLA((hsla = updater(rgba, hsla)));
         if (onChange) {
@@ -65,7 +84,7 @@ export default compose(
       }
     };
   }),
-  Base => ({
+  (Base: React.ComponentClass<BaseColorPickerProps>) => ({
     hsla,
     onRGBAInputChange,
     onHSLChange,
@@ -75,7 +94,7 @@ export default compose(
     onOpacityChange,
     onOpacityChangeComplete,
     ...rest
-  }) => {
+  }: InnerProps) => {
     const rgba = hslaToRgba(hsla);
     return (
       <Base

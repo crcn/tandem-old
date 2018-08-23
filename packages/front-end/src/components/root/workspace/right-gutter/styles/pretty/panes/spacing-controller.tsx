@@ -6,7 +6,9 @@ import {
   dropdownMenuOptionFromValue
 } from "../../../../../../inputs/dropdown/controller";
 import { memoize } from "tandem-common";
-import { SyntheticVisibleNode } from "paperclip";
+import { SyntheticVisibleNode, SyntheticElement } from "paperclip";
+import { BaseBoxModelProps } from "./spacing.pc";
+import { Dispatch } from "redux";
 
 const BOX_SIZING_OPTIONS: DropdownMenuOption[] = [
   undefined,
@@ -14,7 +16,17 @@ const BOX_SIZING_OPTIONS: DropdownMenuOption[] = [
   "content-box"
 ].map(dropdownMenuOptionFromValue);
 
-export default compose(
+export type Props = {
+  dispatch: Dispatch<any>;
+  selectedNodes: SyntheticElement[];
+};
+
+type InnerProps = {
+  onPropertyChange: any;
+  onPropertyChangeComplete: any;
+} & Props;
+
+export default compose<InnerProps, Props>(
   pure,
   withHandlers({
     onClick: () => () => {},
@@ -25,7 +37,11 @@ export default compose(
       dispatch(cssPropertyChangeCompleted(name, value));
     }
   }),
-  Base => ({ onPropertyChange, onPropertyChangeComplete, selectedNodes }) => {
+  (Base: React.ComponentClass<BaseBoxModelProps>) => ({
+    onPropertyChange,
+    onPropertyChangeComplete,
+    selectedNodes
+  }: InnerProps) => {
     const node: SyntheticVisibleNode = selectedNodes[0];
     return (
       <Base

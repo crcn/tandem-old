@@ -1,18 +1,32 @@
 import * as React from "react";
 import { compose, pure, withHandlers } from "recompose";
-import { RootState } from "state";
 import { stringifyStyle, EMPTY_OBJECT } from "tandem-common";
 import { rawCssTextChanged } from "../../../../../../../actions";
+import { BaseCodeProps } from "./code.pc";
+import { Dispatch } from "redux";
+import { SyntheticElement } from "paperclip";
 
-export default compose(
+export type Props = {
+  dispatch: Dispatch<any>;
+  selectedNodes: SyntheticElement[];
+};
+
+export type InnerProps = {
+  onChange: any;
+} & Props;
+
+export default compose<InnerProps, Props>(
   pure,
   withHandlers({
-    onClick: () => () => {},
     onChange: ({ dispatch }) => value => {
       dispatch(rawCssTextChanged(value));
     }
   }),
-  Base => ({ onChange, selectedNodes, ...rest }) => {
+  (Base: React.ComponentClass<BaseCodeProps>) => ({
+    onChange,
+    selectedNodes,
+    ...rest
+  }: InnerProps) => {
     const cssText = getSelectedNodeStyle(selectedNodes);
     return (
       <Base

@@ -9,9 +9,10 @@ import {
   variantClicked
 } from "actions";
 import { FocusComponent } from "../../../../../focus";
+import { BaseVariantOptionProps } from "./option.pc";
 const { TextInput } = require("../../../../../inputs/text/view.pc");
 
-export type OptionControllerOuterProps = {
+export type Props = {
   variant: PCVariant;
   dispatch: Dispatch<any>;
   selected: boolean;
@@ -19,26 +20,22 @@ export type OptionControllerOuterProps = {
   onClick?: any;
   editable?: boolean;
   onReset?: any;
-};
+} & BaseVariantOptionProps;
 
-type OptionControllerInnerProps = {
+type InnerProps = {
   editingLabel?: boolean;
   onSwitchChange: any;
   onLabelChange: any;
   setEditingLabel: any;
   onInputClick: any;
   onClick: any;
-} & OptionControllerOuterProps;
+} & Props;
 
-export default compose(
+export default compose<BaseVariantOptionProps, Props>(
   pure,
   withState("editingLabel", "setEditingLabel", false),
   withHandlers({
-    onSwitchChange: ({
-      variant,
-      dispatch,
-      onToggle
-    }: OptionControllerInnerProps) => event => {
+    onSwitchChange: ({ variant, dispatch, onToggle }: InnerProps) => event => {
       if (onToggle) {
         onToggle(variant, event);
       } else {
@@ -63,7 +60,7 @@ export default compose(
       }
     }
   }),
-  Base => ({
+  (Base: React.ComponentClass<BaseVariantOptionProps>) => ({
     onClick,
     editingLabel,
     onInputClick,
@@ -73,7 +70,7 @@ export default compose(
     onSwitchChange,
     selected,
     ...rest
-  }: OptionControllerInnerProps) => {
+  }: InnerProps) => {
     if (!variant) {
       return null;
     }

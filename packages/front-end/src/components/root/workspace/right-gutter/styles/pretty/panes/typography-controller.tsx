@@ -5,6 +5,9 @@ import { DropdownMenuOption } from "../../../../../../inputs/dropdown/controller
 import { compose, pure, withHandlers } from "recompose";
 import { cssPropertyChangeCompleted, cssPropertyChanged } from "actions";
 import { FontFamily } from "state";
+import { BaseTypographProps } from "./typography.pc";
+import { Dispatch } from "redux";
+import { SyntheticElement } from "paperclip";
 const {
   TextLeftIcon,
   TextCenterIcon,
@@ -51,6 +54,17 @@ const ALIGNMENTS: ButtonBarOption[] = [
   }
 ];
 
+export type Props = {
+  dispatch: Dispatch<any>;
+  selectedNodes: SyntheticElement[];
+  fontFamilies: FontFamily[];
+};
+
+export type InnerProps = {
+  onPropertyChange: any;
+  onPropertyChangeComplete: any;
+} & Props;
+
 export default compose(
   pure,
   withHandlers({
@@ -61,12 +75,12 @@ export default compose(
       dispatch(cssPropertyChangeCompleted(name, value));
     }
   }),
-  Base => ({
+  (Base: React.ComponentClass<BaseTypographProps>) => ({
     selectedNodes,
     onPropertyChange,
     onPropertyChangeComplete,
     fontFamilies
-  }) => {
+  }: InnerProps) => {
     const node = selectedNodes[0];
     return (
       <Base
@@ -97,42 +111,38 @@ export default compose(
             onPropertyChangeComplete
           )
         }}
-        lineInputProps={{
-          options: FONT_WEIGHTS,
-          value: node.style["line-height"],
-          onChange: propertyChangeCallback("line-height", onPropertyChange),
-          onChangeComplete: propertyChangeCallback(
-            "line-height",
-            onPropertyChangeComplete
-          )
-        }}
-        spacingInputProps={{
-          options: FONT_WEIGHTS,
-          value: node.style["letter-spacing"],
-          onChange: propertyChangeCallback("letter-spacing", onPropertyChange),
-          onChangeComplete: propertyChangeCallback(
-            "letter-spacing",
-            onPropertyChangeComplete
-          )
-        }}
+        // lineInputProps={{
+        //   options: FONT_WEIGHTS,
+        //   value: node.style["line-height"],
+        //   onChange: propertyChangeCallback("line-height", onPropertyChange),
+        //   onChangeComplete: propertyChangeCallback(
+        //     "line-height",
+        //     onPropertyChangeComplete
+        //   )
+        // }}
+        // spacingInputProps={{
+        //   options: FONT_WEIGHTS,
+        //   value: node.style["letter-spacing"],
+        //   onChange: propertyChangeCallback("letter-spacing", onPropertyChange),
+        //   onChangeComplete: propertyChangeCallback(
+        //     "letter-spacing",
+        //     onPropertyChangeComplete
+        //   )
+        // }}
         alignmentInputProps={{
           options: ALIGNMENTS,
           value: node.style["text-align"],
-          onChange: propertyChangeCallback("text-align", onPropertyChange),
-          onChangeComplete: propertyChangeCallback(
-            "text-align",
-            onPropertyChangeComplete
-          )
+          onChange: propertyChangeCallback("text-align", onPropertyChange)
         }}
-        sizeInputProps={{
-          options: FONT_FAMILIES,
-          value: node.style["font-size"],
-          onChange: propertyChangeCallback("font-size", onPropertyChange),
-          onChangeComplete: propertyChangeCallback(
-            "font-size",
-            onPropertyChangeComplete
-          )
-        }}
+        // sizeInputProps={{
+        //   options: FONT_FAMILIES,
+        //   value: node.style["font-size"],
+        //   onChange: propertyChangeCallback("font-size", onPropertyChange),
+        //   onChangeComplete: propertyChangeCallback(
+        //     "font-size",
+        //     onPropertyChangeComplete
+        //   )
+        // }}
         colorInputProps={{
           value: node.style.color,
           onChange: propertyChangeCallback("color", onPropertyChange),

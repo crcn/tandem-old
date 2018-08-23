@@ -1,11 +1,20 @@
 import * as React from "react";
 import { arraySplice } from "tandem-common";
 import { clamp, noop } from "lodash";
-import { compose, pure, withHandlers } from "recompose";
+import { compose, pure } from "recompose";
+import { BaseRgbaInputProps } from "./picker.pc";
 
-export default compose(
+export type Props = {
+  onChange?: any;
+  value?: [number, number, number, number];
+};
+
+export default compose<BaseRgbaInputProps, Props>(
   pure,
-  Base => ({ onChange = noop, value: [r, g, b, a] = [0, 0, 0, 0] }) => {
+  (Base: React.ComponentClass<BaseRgbaInputProps>) => ({
+    onChange = noop,
+    value: [r, g, b, a] = [0, 0, 0, 0]
+  }: Props) => {
     const changeCallback = index => value =>
       onChange(
         arraySplice([r, g, b, a], index, 1, clamp(Number(value), 0, 255))

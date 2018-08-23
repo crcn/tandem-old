@@ -2,32 +2,31 @@ import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { Bounds, shiftBounds, shiftPoint } from "tandem-common";
 import { compose, pure, lifecycle, withState } from "recompose";
+import { BasePopoverProps } from "./view.pc";
 
-export type PopoverOuterProps = {
+export type Props = {
   open: boolean;
-  anchorRect: Bounds;
+  anchorRect?: Bounds;
   onShouldClose: any;
-};
-
-export type PopoverInnerProps = {
-  setAnchorRect(rect: Bounds);
-} & PopoverOuterProps;
+} & BasePopoverProps;
 
 type PopoverState = {
   anchorRect: Bounds;
 };
 
-export default (Base) => {
-  return class Popover extends React.PureComponent<PopoverOuterProps, PopoverState> {
+export default (Base: React.ComponentClass<BasePopoverProps>) => {
+  return class Popover extends React.PureComponent<Props, PopoverState> {
     constructor(props) {
       super(props);
       this.state = {
         anchorRect: null
-      }
+      };
     }
-    componentWillUpdate({ open }: PopoverOuterProps) {
+    componentWillUpdate({ open }: Props) {
       if (!this.props.open && open) {
-        const anchor: HTMLDivElement = ReactDOM.findDOMNode(this as any) as HTMLDivElement;
+        const anchor: HTMLDivElement = ReactDOM.findDOMNode(
+          this as any
+        ) as HTMLDivElement;
         const rect = getRealElementBounds(anchor);
         this.setState({ anchorRect: rect });
       } else if (this.props.open && !open) {
@@ -35,11 +34,11 @@ export default (Base) => {
       }
     }
     render() {
-      const { open, onShouldClose, ...rest }  = this.props;
+      const { open, onShouldClose, ...rest } = this.props;
       const { anchorRect } = this.state;
 
-      let overrideProps: any = {};
-  
+      let overrideProps: BasePopoverProps = {};
+
       if (anchorRect) {
         overrideProps = {
           contentProps: {
@@ -52,7 +51,7 @@ export default (Base) => {
           }
         };
       }
-  
+
       return <Base {...rest} {...overrideProps} />;
     }
   };

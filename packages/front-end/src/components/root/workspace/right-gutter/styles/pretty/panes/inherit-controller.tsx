@@ -9,7 +9,8 @@ import {
   getSyntheticSourceNode,
   DependencyGraph,
   getPCNode,
-  getAllPCComponents
+  getAllPCComponents,
+  SyntheticElement
 } from "paperclip";
 import {
   INHERIT_PANE_REMOVE_BUTTON_CLICK,
@@ -17,10 +18,11 @@ import {
   inheritPaneRemoveButtonClick,
   inheritPaneItemClick
 } from "actions";
+import { BaseInheritProps } from "./inherit.pc";
 
-export type InheritControllerOuterProps = {
+export type Props = {
   dispatch: Dispatch<any>;
-  selectedNodes: SyntheticNode;
+  selectedNodes: SyntheticElement[];
   graph: DependencyGraph;
 };
 
@@ -29,9 +31,9 @@ type InheritControllerInnerProps = {
   onRemoveButtonClick: any;
   onItemClick: any;
   selectedInheritComponentId: string;
-} & InheritControllerOuterProps;
+} & Props;
 
-export default compose(
+export default compose<InheritControllerInnerProps, Props>(
   pure,
   withHandlers({
     onAddButtonClick: ({ dispatch }) => () => {
@@ -44,7 +46,7 @@ export default compose(
       dispatch(inheritPaneItemClick(componentId));
     }
   }),
-  Base => ({
+  (Base: React.ComponentClass<BaseInheritProps>) => ({
     selectedNodes,
     dispatch,
     graph,

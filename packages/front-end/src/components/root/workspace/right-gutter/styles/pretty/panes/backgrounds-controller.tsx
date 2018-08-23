@@ -2,11 +2,25 @@ import * as React from "react";
 import { compose, pure, withHandlers } from "recompose";
 import { cssPropertyChangeCompleted, cssPropertyChanged } from "actions";
 import { arraySplice } from "tandem-common";
+import { Dispatch } from "redux";
+import { SyntheticElement } from "paperclip";
+import { BaseBackgroundsProps } from "./backgrounds.pc";
 const { BackgroundItem } = require("./backgrounds.pc");
 
 const DEFAULT_COLOR = "rgba(200, 200, 200, 1)";
 
-export default compose(
+export type Props = {
+  dispatch: Dispatch;
+  selectedNodes: SyntheticElement[];
+};
+
+type InnerProps = {
+  onChange: any;
+  onChangeComplete: any;
+  onPlusButtonClick: any;
+} & Props;
+
+export default compose<InnerProps, Props>(
   pure,
   withHandlers({
     onChange: ({ dispatch, selectedNodes }) => (item, index) => {
@@ -37,12 +51,12 @@ export default compose(
       );
     }
   }),
-  Base => ({
+  (Base: React.ComponentClass<BaseBackgroundsProps>) => ({
     onChange,
     onChangeComplete,
     onPlusButtonClick,
     selectedNodes
-  }) => {
+  }: InnerProps) => {
     const node = selectedNodes[0];
     const children = splitBackgrounds(node.style.background).map(
       (background, i) => {

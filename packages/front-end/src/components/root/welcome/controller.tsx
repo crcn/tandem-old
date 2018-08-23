@@ -1,8 +1,19 @@
 import * as React from "react";
 import { compose, pure, withHandlers } from "recompose";
 import { openProjectButtonClicked, createProjectButtonClicked } from "actions";
+import { BaseWelcomeProps } from "./view.pc";
+import { Dispatch } from "redux";
 
-export default compose(
+export type Props = {
+  dispatch: Dispatch<any>;
+};
+
+type InnerProps = {
+  onOpenProjectButtonClick: any;
+  onCreateProjectButtonClick: any;
+} & Props;
+
+export default compose<BaseWelcomeProps, Props>(
   pure,
   withHandlers({
     onOpenProjectButtonClick: ({ dispatch }) => () => {
@@ -12,7 +23,10 @@ export default compose(
       dispatch(createProjectButtonClicked());
     }
   }),
-  Base => ({ onOpenProjectButtonClick, onCreateProjectButtonClick }) => {
+  (Base: React.ComponentClass<BaseWelcomeProps>) => ({
+    onOpenProjectButtonClick,
+    onCreateProjectButtonClick
+  }: InnerProps) => {
     return (
       <Base
         openProjectButtonProps={{ onClick: onOpenProjectButtonClick }}

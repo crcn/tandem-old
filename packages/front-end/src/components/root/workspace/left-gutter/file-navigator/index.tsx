@@ -96,7 +96,7 @@ const { TreeNodeLayerComponent } = createTreeLayerComponents<
   hasChildren: (node: TreeNode<any>) => {
     return node.name === "directory";
   },
-  childRenderer: Base => ({
+  childRenderer: (Base: React.ComponentClass<any>) => ({
     node,
     hoveringSyntheticNodeIds,
     selectedSyntheticNodeIds,

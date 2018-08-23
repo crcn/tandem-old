@@ -7,6 +7,8 @@ import {
 } from "paperclip";
 import { elementTypeChanged } from "actions";
 import { DropdownMenuOption } from "../../../../inputs/dropdown/controller";
+import { BaseElementPropertiesProps } from "./view.pc";
+import { Dispatch } from "redux";
 const { InputProperties } = require("./input.pc");
 
 const TYPE_MENU_OPTIONS: DropdownMenuOption[] = [
@@ -117,6 +119,15 @@ const TYPE_MENU_OPTIONS: DropdownMenuOption[] = [
   "wbr"
 ].map(value => ({ label: value, value }));
 
+export type Props = {
+  dispatch: Dispatch<any>;
+  selectedNodes: SyntheticElement[];
+} & BaseElementPropertiesProps;
+
+type InnerProps = {
+  onTypeChange: any;
+} & Props;
+
 export default compose(
   pure,
   withHandlers({
@@ -124,7 +135,12 @@ export default compose(
       dispatch(elementTypeChanged(value));
     }
   }),
-  Base => ({ onTypeChange, selectedNodes, dispatch, ...rest }) => {
+  (Base: React.ComponentClass<BaseElementPropertiesProps>) => ({
+    onTypeChange,
+    selectedNodes,
+    dispatch,
+    ...rest
+  }) => {
     if (!selectedNodes.length) {
       return null;
     }

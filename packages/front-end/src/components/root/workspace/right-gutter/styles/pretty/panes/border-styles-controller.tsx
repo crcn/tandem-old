@@ -3,6 +3,8 @@ import * as cx from "classnames";
 import { compose, pure, withHandlers, withState } from "recompose";
 import { memoize } from "tandem-common";
 import { ButtonBarOption } from "../../../../../../inputs/button-bar/controller";
+import { BaseBorderStylesProps } from "./borders.pc";
+import { SyntheticElement } from "paperclip";
 const {
   EmptySquareIcon,
   BordersIcon
@@ -24,7 +26,18 @@ const TOGGLE_OPTIONS: ButtonBarOption[] = [
   }
 ];
 
-export default compose(
+export type Props = {
+  selectedNode: SyntheticElement;
+  onPropertyChange: any;
+  onPropertyChangeComplete: any;
+};
+
+export type InnerProps = {
+  borderStyling: TOGGLE_OPTION;
+  onStyleToggleChangeComplete: any;
+} & Props;
+
+export default compose<InnerProps, Props>(
   pure,
   withState(
     "borderStyling",
@@ -42,7 +55,7 @@ export default compose(
       setBorderStyling(value);
     }
   }),
-  Base => ({
+  (Base: React.ComponentClass<BaseBorderStylesProps>) => ({
     borderStyling,
     selectedNode,
     onPropertyChange,
@@ -57,11 +70,11 @@ export default compose(
           all: borderStyling === TOGGLE_OPTION.ALL,
           individual: borderStyling === TOGGLE_OPTION.INDIVIDUAL
         })}
-        togglerProps={{
-          value: borderStyling,
-          options: TOGGLE_OPTIONS,
-          onChange: onStyleToggleChangeComplete
-        }}
+        // togglerProps={{
+        //   value: borderStyling,
+        //   options: TOGGLE_OPTIONS,
+        //   onChange: onStyleToggleChangeComplete
+        // }}
         borderInputProps={{
           value: selectedNode.style.border,
           onChange: propertyChangeCallback("border", onPropertyChange),

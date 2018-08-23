@@ -1,16 +1,16 @@
 import * as React from "react";
 import { compose, pure, withHandlers } from "recompose";
 
-export type CheckboxControllerOuterProps = {
+export type Props = {
   value: boolean;
   onChangeComplete?: (value: boolean) => any;
 };
 
-type CheckboxControllerInnerProps = {
+type InnerProps = {
   onClick: any;
-} & CheckboxControllerOuterProps;
+} & Props;
 
-export default compose(
+export default compose<any, Props>(
   pure,
   withHandlers({
     onClick: ({ value, onChange, onChangeComplete }) => event => {
@@ -23,7 +23,7 @@ export default compose(
       }
     }
   }),
-  Base => ({ onClick, ...rest }: CheckboxControllerInnerProps) => {
+  (Base: React.ComponentClass<any>) => ({ onClick, ...rest }: InnerProps) => {
     return <Base onClick={onClick} {...rest} />;
   }
 );

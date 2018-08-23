@@ -1,19 +1,23 @@
 IMMEDIATE:
 
 - DTS generation
+
   - auto-generate when PC file is saved (to lib)
     - hooked into build-watch
   - fix DTS issues
 
-- Fix unknown prop errors
+- curtail recompose usage
+  - input controller refactor
 - use react contexts instead of passing props down
 
 - fix style pane props
+
   - tyopgraphy audit
   - backgrounds audit
   - borders audit
 
 - prepare for online usage
+
   - edit code in app
   - preview tab
   - "download app" button
@@ -57,6 +61,7 @@ SAFETY:
 UX ENHANCEMENTS:
 
 - style pane
+
   - single input for margin, and padding (like borders)
 
 - warning sign if label name if overriding another

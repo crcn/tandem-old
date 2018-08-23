@@ -17,8 +17,9 @@ import {
   addVariantButtonClicked,
   removeVariantButtonClicked
 } from "../../../../../../actions";
+import { BaseVariantsProps } from "./view.pc";
 
-export type VariantsControllerOuterProps = {
+export type Props = {
   dispatch: Dispatch<any>;
   syntheticDocument: SyntheticDocument;
   selectedNodes: SyntheticVisibleNode[];
@@ -26,26 +27,22 @@ export type VariantsControllerOuterProps = {
   graph: DependencyGraph;
 };
 
-export type VariantsControllerInnerProps = {
+export type InnerProps = {
   onAddVariantButtonClick: any;
   onRemoveVariantButtonClick: any;
-} & VariantsControllerOuterProps;
+} & Props;
 
-export default compose(
+export default compose<InnerProps, Props>(
   pure,
   withHandlers({
-    onAddVariantButtonClick: ({
-      dispatch
-    }: VariantsControllerOuterProps) => () => {
+    onAddVariantButtonClick: ({ dispatch }: InnerProps) => () => {
       dispatch(addVariantButtonClicked());
     },
-    onRemoveVariantButtonClick: ({
-      dispatch
-    }: VariantsControllerOuterProps) => () => {
+    onRemoveVariantButtonClick: ({ dispatch }: InnerProps) => () => {
       dispatch(removeVariantButtonClicked());
     }
   }),
-  Base => ({
+  (Base: React.ComponentClass<BaseVariantsProps>) => ({
     dispatch,
     onAddVariantButtonClick,
     onRemoveVariantButtonClick,
@@ -53,7 +50,7 @@ export default compose(
     selectedVariant,
     syntheticDocument,
     graph
-  }: VariantsControllerInnerProps) => {
+  }: InnerProps) => {
     const contentNode = getSyntheticContentNode(
       selectedNodes[0],
       syntheticDocument

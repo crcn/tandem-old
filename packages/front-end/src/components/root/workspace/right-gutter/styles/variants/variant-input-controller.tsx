@@ -22,6 +22,7 @@ const { VariantOption } = require("./option.pc");
 const { VariantPill } = require("./pill.pc");
 import { noop, last } from "lodash";
 import { instanceVariantToggled, instanceVariantResetClicked } from "actions";
+import { BaseComponentInstanceVariantProps } from "./variant-input.pc";
 
 export type VariantInputControllerOuterProps = {
   syntheticDocument: SyntheticDocument;
@@ -61,7 +62,7 @@ export default compose(
       dispatch(instanceVariantResetClicked(variant));
     }
   }),
-  Base => ({
+  (Base: React.ComponentClass<BaseComponentInstanceVariantProps>) => ({
     graph,
     selectedNodes,
     editing,

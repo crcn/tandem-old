@@ -5,19 +5,20 @@ import { RootState } from "../../state";
 const { ComponentOption } = require("./cell.pc");
 import { getAllPCComponents } from "paperclip";
 import { componentPickerItemClick } from "../../actions";
+import { BasePickerProps } from "./picker.pc";
 
-export type ComponentPickerOuterProps = {
+export type Props = {
   root: RootState;
   dispatch: Dispatch<any>;
 };
 
-type ComponentPickerInnerProps = {
+type InnerProps = {
   filter: string[];
   onClickComponent: any;
   onFilterChange: any;
-} & ComponentPickerOuterProps;
+} & Props;
 
-export default compose<ComponentPickerInnerProps, ComponentPickerOuterProps>(
+export default compose<BasePickerProps, Props>(
   pure,
   withState("filter", "setFilter", []),
   withHandlers({
@@ -28,13 +29,12 @@ export default compose<ComponentPickerInnerProps, ComponentPickerOuterProps>(
       dispatch(componentPickerItemClick(component));
     }
   }),
-  Base => ({
+  (Base: React.ComponentClass<BasePickerProps>) => ({
     onFilterChange,
     onClickComponent,
     filter,
-    root,
-    dispatch
-  }: ComponentPickerInnerProps) => {
+    root
+  }: InnerProps) => {
     const componentNodes = getAllPCComponents(root.graph);
 
     // TODO - filter private

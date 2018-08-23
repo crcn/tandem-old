@@ -94,7 +94,7 @@ const DEFAULT_NODE_EXPAND_ATTRIBUTE = node => node.expanded;
 const DEFAULT_NODE_LABEL_ATTRIBUTE = node => node.label;
 const DEFAULT_NODE_EDITING_LABEL_ATTRIBUTE = node => node.editingLabel;
 
-export const defaultChildRender = Base => ({
+export const defaultChildRender = (Base: React.ComponentClass<any>) => ({
   node,
   hoveringSyntheticNodeIds,
   selectedSyntheticNodeIds,
@@ -116,7 +116,8 @@ export const defaultChildRender = Base => ({
     );
   });
 
-const defaultLayerRenderer = Base => props => React.createElement(Base, props);
+const defaultLayerRenderer = (Base: React.ComponentClass<any>) => props =>
+  React.createElement(Base, props);
 
 const defaultShowChildren = (node: TreeNode<any>) =>
   Boolean(node.children.length);

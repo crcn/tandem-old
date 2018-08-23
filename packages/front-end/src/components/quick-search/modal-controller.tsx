@@ -3,24 +3,29 @@ import { compose, pure, withHandlers } from "recompose";
 import { RootState } from "../../state";
 import { Dispatch } from "redux";
 import { quickSearchBackgroundClick } from "actions";
+import { BaseModalProps } from "./index.pc";
 
-export type ModalOuterProps = {
+export type Props = {
   root: RootState;
   dispatch: Dispatch<any>;
 };
 
-type ModalInnerProps = {
+type InnerProps = {
   onBackgroundClick: any;
-} & ModalOuterProps;
+} & Props;
 
-export default compose<ModalOuterProps, ModalOuterProps>(
+export default compose<BaseModalProps, Props>(
   pure,
   withHandlers({
     onBackgroundClick: ({ dispatch }) => () => {
       dispatch(quickSearchBackgroundClick());
     }
   }),
-  Base => ({ root, dispatch, onBackgroundClick }: ModalInnerProps) => {
+  (Base: React.ComponentClass<BaseModalProps>) => ({
+    root,
+    dispatch,
+    onBackgroundClick
+  }: InnerProps) => {
     if (!root.showQuickSearch) {
       return null;
     }

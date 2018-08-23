@@ -6,20 +6,25 @@ import { StageComponent as PaperclipStageComponent } from "./paperclip/stage";
 import { ImageEditorWindowComponent } from "./image";
 import { PAPERCLIP_MIME_TYPE } from "paperclip";
 import { getFSItem } from "fsbox";
+import { BaseEditorProps } from "./editor.pc";
 
-export type EditorWindowOuterProps = {
+export type Props = {
   editorWindow: EditorWindow;
   root: RootState;
   dispatch: Dispatch<any>;
 };
 
-type EditorWindowInnerProps = {
+type InnerProps = {
   onTabClick: () => any;
-} & EditorWindowOuterProps;
+} & Props;
 
-export default compose(
+export default compose<BaseEditorProps, Props>(
   pure,
-  Base => ({ editorWindow, root, dispatch }: EditorWindowInnerProps) => {
+  (Base: React.ComponentClass<BaseEditorProps>) => ({
+    editorWindow,
+    root,
+    dispatch
+  }: InnerProps) => {
     if (!editorWindow) {
       return null;
     }

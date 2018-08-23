@@ -1,9 +1,20 @@
 import * as React from "react";
-import { compose, pure, withHandlers } from "recompose";
+import { compose, pure } from "recompose";
+import { BaseBackgroundItemProps } from "./backgrounds.pc";
+
+export type Props = {
+  value: string;
+  onChange: (value: string) => any;
+  onChangeComplete: (value: string) => any;
+};
 
 export default compose(
   pure,
-  Base => ({ value, onChange, onChangeComplete }) => {
+  (Base: React.ComponentClass<BaseBackgroundItemProps>) => ({
+    value,
+    onChange,
+    onChangeComplete
+  }) => {
     return (
       <Base
         colorInputProps={{

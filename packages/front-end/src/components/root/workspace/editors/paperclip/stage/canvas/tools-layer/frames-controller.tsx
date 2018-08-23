@@ -14,8 +14,9 @@ import {
 } from "paperclip";
 const { Frame } = require("./frames-view.pc");
 import { canvasToolWindowBackgroundClicked } from "../../../../../../../../actions";
+import { BaseFramesProps } from "./frames-view.pc";
 
-export type FramesOuterProps = {
+export type Props = {
   frames: Frame[];
   documents: SyntheticDocument[];
   graph: DependencyGraph;
@@ -25,16 +26,16 @@ export type FramesOuterProps = {
   canvas: Canvas;
 };
 
-export default compose<FramesOuterProps, any>(
+export default compose<BaseFramesProps, Props>(
   pure,
-  Base => ({
+  (Base: React.ComponentClass<BaseFramesProps>) => ({
     translate,
     editorWindow,
     frames,
     graph,
     documents,
     dispatch
-  }: FramesOuterProps) => {
+  }: Props) => {
     const backgroundStyle = {
       transform: `translate(${-translate.left /
         translate.zoom}px, ${-translate.top / translate.zoom}px) scale(${1 /

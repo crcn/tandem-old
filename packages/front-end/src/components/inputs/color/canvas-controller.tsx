@@ -1,12 +1,29 @@
 import * as React from "react";
 import { noop } from "lodash";
-import { startDOMDrag } from "tandem-common";
+import { startDOMDrag, Point } from "tandem-common";
 import { compose, pure, withHandlers, withState, lifecycle } from "recompose";
+import { BaseColorPickerProps, BasePickerProps } from "./picker.pc";
 
 export enum GrabberAxis {
   X = 1,
   Y = X << 1
 }
+
+export type Props = {
+  grabberAxis: any;
+  draw: any;
+  onChange: any;
+  onChangeComplete: any;
+  getGraggerPoint: any;
+  value: any;
+};
+
+type InnerProps = {
+  canvas: HTMLCanvasElement;
+  setCanvas: any;
+  grabberPoint: Point;
+  setGrabberPoint: any;
+} & Props;
 
 export default compose(
   pure,
@@ -15,7 +32,9 @@ export default compose(
   withHandlers(() => {
     let _canvas: HTMLCanvasElement;
     return {
-      onCanvas: ({ setCanvas, draw }) => (canvas: HTMLCanvasElement) => {
+      onCanvas: ({ setCanvas, draw }: InnerProps) => (
+        canvas: HTMLCanvasElement
+      ) => {
         setCanvas((_canvas = canvas));
         if (canvas) {
           const {
@@ -30,7 +49,7 @@ export default compose(
         setGrabberPoint,
         onChange,
         onChangeComplete
-      }) => event => {
+      }: InnerProps) => event => {
         const rect = _canvas.getBoundingClientRect();
 
         const handleChange = callback => event => {
@@ -76,7 +95,7 @@ export default compose(
       draw,
       canvas,
       value
-    }: any) {
+    }: InnerProps) {
       if (canvas && this.props.draw !== draw) {
         const { width, height } = canvas.parentElement.getBoundingClientRect();
         this.props.draw(canvas, width, height);
@@ -88,7 +107,12 @@ export default compose(
       }
     }
   }),
-  Base => ({ onMouseDown, grabberPoint, onCanvas, ...rest }) => {
+  (Base: React.ComponentClass<BasePickerProps>) => ({
+    onMouseDown,
+    grabberPoint,
+    onCanvas,
+    ...rest
+  }) => {
     return (
       <Base
         {...rest}

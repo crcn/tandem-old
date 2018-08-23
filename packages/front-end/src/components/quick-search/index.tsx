@@ -12,14 +12,7 @@ import {
   quickSearchItemClicked,
   quickSearchBackgroundClick
 } from "../../actions";
-import {
-  flattenTreeNode,
-  FileAttributeNames,
-  isFile,
-  TreeNode,
-  File,
-  FSItem
-} from "tandem-common";
+import { File } from "tandem-common";
 import { FocusComponent } from "../focus";
 
 type SearchResultOuterProps = {

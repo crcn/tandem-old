@@ -11,6 +11,9 @@ import { memoize, EMPTY_ARRAY, getNestedTreeNodeById } from "tandem-common";
 const { RightGutterTab } = require("./tab.pc");
 import * as cx from "classnames";
 import { InspectorNode } from "state/pc-inspector-tree";
+import { BaseRightGutterProps } from "./index.pc";
+import { RootState } from "state";
+import { Dispatch } from "redux";
 
 const getSelectedSyntheticNodes = memoize(
   (nodeIds: string[], documents: SyntheticDocument[]) => {
@@ -29,7 +32,17 @@ const getSelectedInspectorNodes = memoize(
 const TAB_NAMES = ["styles", "properties"];
 const INSPECTOR_NODE_TAB_NAMES = ["properties"];
 
-export default compose(
+export type Props = {
+  root: RootState;
+  dispatch: Dispatch;
+} & BaseRightGutterProps;
+
+type InnerProps = {
+  setTab: any;
+  currentTab: string;
+} & Props;
+
+export default compose<BaseRightGutterProps, Props>(
   pure,
   withState("currentTab", "setTab", TAB_NAMES[0]),
   withHandlers({
@@ -37,7 +50,13 @@ export default compose(
       setTab(tabName);
     }
   }),
-  Base => ({ root, dispatch, setTab, currentTab, ...rest }) => {
+  (Base: React.ComponentClass<BaseRightGutterProps>) => ({
+    root,
+    dispatch,
+    setTab,
+    currentTab,
+    ...rest
+  }: InnerProps) => {
     if (!root.selectedInspectorNodeIds.length) {
       return null;
     }
@@ -89,7 +108,7 @@ export default compose(
           syntheticDocument,
           fontFamilies: root.fontFamilies,
           selectedNodes: selectedSyntheticNodes,
-          selectedInspectorNodes,
+          // selectedInspectorNodes,
           selectedVariant: root.selectedVariant,
           graph: root.graph,
           selectedInheritComponentId: root.selectedInheritComponentId
@@ -99,14 +118,13 @@ export default compose(
         }}
         propertiesProps={{
           selectedControllerRelativePath: root.selectedControllerRelativePath,
-          sourceNodeUri:
-            selectedInspectorNodes[0] &&
-            getPCNodeDependency(
-              selectedInspectorNodes[0].assocSourceNodeId,
-              root.graph
-            ).uri,
+          // sourceNodeUri:
+          //   selectedInspectorNodes[0] &&
+          //   getPCNodeDependency(
+          //     selectedInspectorNodes[0].assocSourceNodeId,
+          //     root.graph
+          //   ).uri,
           dispatch,
-          syntheticDocument,
           graph: root.graph,
           selectedNodes: selectedSyntheticNodes,
           selectedInspectorNodes

@@ -1,6 +1,7 @@
 import * as React from "react";
 import * as cx from "classnames";
 import { compose, pure, withHandlers } from "recompose";
+import { BaseBoxShadowsProps } from "./box-shadows.pc";
 export type BoxShadowInfo = {
   inset: boolean;
   color: string;
@@ -10,7 +11,27 @@ export type BoxShadowInfo = {
   spread: string;
 };
 
-export default compose(
+export type Props = {
+  selected: boolean;
+  value: BoxShadowInfo;
+  onChange: any;
+};
+
+export type InnerProps = {
+  onColorChange: any;
+  onColorChangeComplete: any;
+  onXChange: any;
+  onXChangeComplete: any;
+  onYChange: any;
+  onYChangeComplete: any;
+  onBlurChange: any;
+  onBlurChangeComplete: any;
+  onSpreadChange: any;
+  onSpreadChangeComplete: any;
+  onBackgroundClick: any;
+} & Props;
+
+export default compose<InnerProps, Props>(
   pure,
   withHandlers({
     onColorChange: ({ value, onChange }) => color => {
@@ -44,7 +65,7 @@ export default compose(
       onChange({ ...value, spread });
     }
   }),
-  Base => ({
+  (Base: React.ComponentClass<BaseBoxShadowsProps>) => ({
     value: { color, x, y, blur, spread },
     selected,
     onColorChange,
@@ -59,42 +80,42 @@ export default compose(
     onSpreadChangeComplete,
     onBackgroundClick,
     ...rest
-  }) => {
+  }: InnerProps) => {
     return (
       <Base
         {...rest}
         variant={cx({ selected })}
         onClick={onBackgroundClick}
-        colorInputProps={{
-          value: color,
-          onClick: stopPropagation,
-          onChange: onColorChange,
-          onChangeComplete: onColorChangeComplete
-        }}
-        xInputProps={{
-          value: x,
-          onClick: stopPropagation,
-          onChange: onXChange,
-          onChangeComplete: onXChangeComplete
-        }}
-        yInputProps={{
-          value: y,
-          onClick: stopPropagation,
-          onChange: onYChange,
-          onChangeComplete: onYChangeComplete
-        }}
-        blurInputProps={{
-          value: blur,
-          onClick: stopPropagation,
-          onChange: onBlurChange,
-          onChangeComplete: onBlurChangeComplete
-        }}
-        spreadInputProps={{
-          value: spread,
-          onClick: stopPropagation,
-          onChange: onSpreadChange,
-          onChangeComplete: onSpreadChangeComplete
-        }}
+        // colorInputProps={{
+        //   value: color,
+        //   onClick: stopPropagation,
+        //   onChange: onColorChange,
+        //   onChangeComplete: onColorChangeComplete
+        // }}
+        // xInputProps={{
+        //   value: x,
+        //   onClick: stopPropagation,
+        //   onChange: onXChange,
+        //   onChangeComplete: onXChangeComplete
+        // }}
+        // yInputProps={{
+        //   value: y,
+        //   onClick: stopPropagation,
+        //   onChange: onYChange,
+        //   onChangeComplete: onYChangeComplete
+        // }}
+        // blurInputProps={{
+        //   value: blur,
+        //   onClick: stopPropagation,
+        //   onChange: onBlurChange,
+        //   onChangeComplete: onBlurChangeComplete
+        // }}
+        // spreadInputProps={{
+        //   value: spread,
+        //   onClick: stopPropagation,
+        //   onChange: onSpreadChange,
+        //   onChangeComplete: onSpreadChangeComplete
+        // }}
       />
     );
   }

@@ -1,10 +1,8 @@
 import * as React from "react";
 import { compose, pure, withHandlers } from "recompose";
-import {
-  DropdownMenuOption,
-  dropdownMenuOptionFromValue
-} from "../../../../../../inputs/dropdown/controller";
+import { dropdownMenuOptionFromValue } from "../../../../../../inputs/dropdown/controller";
 import { memoize, EMPTY_ARRAY } from "tandem-common";
+import { BaseBorderStyleProps } from "./borders.pc";
 
 const STYLE_OPTIONS = [
   undefined,
@@ -27,9 +25,21 @@ type BorderInfo = {
   thickness: string;
 };
 
-// none|hidden|dotted|dashed|solid|double|groove|ridge|inset|outset|initial|inherit
+export type Props = {
+  value: string;
+  onChange: any;
+  onChangeComplete: any;
+};
 
-export default compose(
+type InnerProps = {
+  onStyleChangeComplete: any;
+  onColorChange: any;
+  onColorChangeComplete: any;
+  onThicknessChange: any;
+  onThicknessChangeComplete: any;
+} & Props;
+
+export default compose<any, Props>(
   pure,
   withHandlers({
     onStyleChangeComplete: ({ value, onChangeComplete }) => style => {
@@ -50,16 +60,15 @@ export default compose(
       );
     }
   }),
-  Base => ({
+  (Base: React.ComponentClass<BaseBorderStyleProps>) => ({
     value,
     onStyleChangeComplete,
     onColorChange,
     onColorChangeComplete,
     onThicknessChange,
     onThicknessChangeComplete
-  }) => {
+  }: InnerProps) => {
     const { style, color, thickness } = parseBorder(value);
-
     return (
       <Base
         colorInputProps={{

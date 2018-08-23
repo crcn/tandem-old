@@ -3,17 +3,18 @@ import { compose, pure, withState, withHandlers } from "recompose";
 import { flattenTreeNode, File, isFile, memoize } from "tandem-common";
 import { RootState } from "../../state";
 import { Dispatch } from "redux";
+import { BaseQuickSearchProps } from "./index.pc";
 const { SearchResult } = require("./row.pc");
 
-export type QuickSearchOuterProps = {
+export type Props = {
   root: RootState;
   dispatch: Dispatch<any>;
 };
 
-type QuickSearchInnerProps = {
+type InnerProps = {
   onInputChange: any;
   filter: string[];
-} & QuickSearchOuterProps;
+} & Props;
 
 const MAX_RESULTS = 50;
 
@@ -21,7 +22,7 @@ const getFilterTester = memoize(
   (filter: string[]) => new RegExp(filter.join(".*?"))
 );
 
-export default compose(
+export default compose<BaseQuickSearchProps, Props>(
   pure,
   withState("filter", "setFilter", null),
   withHandlers({
@@ -34,12 +35,12 @@ export default compose(
       setFilter(filter);
     }
   }),
-  Base => ({
+  (Base: React.ComponentClass<BaseQuickSearchProps>) => ({
     filter,
     onInputChange,
     root,
     dispatch
-  }: QuickSearchInnerProps) => {
+  }: InnerProps) => {
     const allFiles = flattenTreeNode(root.projectDirectory) as File[];
 
     const results = filter

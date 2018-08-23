@@ -20,26 +20,27 @@ import {
   dropdownMenuOptionFromValue
 } from "../../../../../../../inputs/dropdown/controller";
 import { FrameMode } from "../../../../../../../../state";
+import { BaseFrameProps } from "./frames-view.pc";
 
 const MODE_TOGGLE_OPTIONS: DropdownMenuOption[] = [
   FrameMode.PREVIEW,
   FrameMode.DESIGN
 ].map(dropdownMenuOptionFromValue);
 
-export type FrameOuterProps = {
+export type Props = {
   frame: Frame;
   sourceNode: PCNode;
   contentNode: SyntheticVisibleNode;
   translate: Translate;
 };
 
-type FrameInnerProps = {
+type InnerProps = {
   onTitleClick: any;
   onPreviewButtonClick: any;
   onModeChangeComplete: any;
-} & FrameOuterProps;
+} & Props;
 
-export default compose<FrameOuterProps, FrameInnerProps>(
+export default compose<BaseFrameProps, Props>(
   pure,
   withHandlers({
     onTitleClick: ({ dispatch, frame }) => (event: React.MouseEvent<any>) => {
@@ -54,7 +55,7 @@ export default compose<FrameOuterProps, FrameInnerProps>(
       dispatch(frameModeChangeComplete(frame, mode));
     }
   }),
-  Base => ({
+  (Base: React.ComponentClass<BaseFrameProps>) => ({
     frame,
     translate,
     contentNode,
@@ -62,7 +63,7 @@ export default compose<FrameOuterProps, FrameInnerProps>(
     onTitleClick,
     onModeChangeComplete,
     onPreviewButtonClick
-  }: FrameInnerProps) => {
+  }: InnerProps) => {
     const { width, height } = getBoundsSize(frame.bounds);
 
     const style = {
@@ -100,7 +101,7 @@ export default compose<FrameOuterProps, FrameInnerProps>(
         variant={cx({ hasController })}
         style={style}
         topBarProps={{
-          style: titleStyle,
+          style: titleStyle as any,
           className: "top-bar"
         }}
         titleProps={{
@@ -113,11 +114,11 @@ export default compose<FrameOuterProps, FrameInnerProps>(
         previewButtonProps={{
           onClick: onPreviewButtonClick
         }}
-        modeToggleInputProps={{
-          options: MODE_TOGGLE_OPTIONS,
-          value: contentNode.metadata.mode || FrameMode.DESIGN,
-          onChangeComplete: onModeChangeComplete
-        }}
+        // modeToggleInputProps={{
+        //   options: MODE_TOGGLE_OPTIONS,
+        //   value: contentNode.metadata.mode || FrameMode.DESIGN,
+        //   onChangeComplete: onModeChangeComplete
+        // }}
       />
     );
   }

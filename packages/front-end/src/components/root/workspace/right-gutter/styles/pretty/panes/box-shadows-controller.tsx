@@ -5,8 +5,27 @@ const { BoxShadowItem } = require("./box-shadow.pc");
 import { BoxShadowInfo } from "./box-shadow-item-controller";
 import { memoize, EMPTY_ARRAY, arraySplice } from "tandem-common";
 import { cssPropertyChangeCompleted, cssPropertyChanged } from "actions";
+import { BaseBoxShadowsProps } from "./box-shadows.pc";
+import { Dispatch } from "redux";
+import { SyntheticElement } from "paperclip";
 
-export default compose(
+export type Props = {
+  inset?: Boolean;
+  value?: string;
+  dispatch: Dispatch<any>;
+  selectedNodes: SyntheticElement[];
+};
+
+export type InnerProps = {
+  selectedBoxShadowIndex: any;
+  onAddButtonClick: any;
+  onRemoveButtonClick: any;
+  onItemClick: any;
+  onChange: any;
+  onChangeComplete: any;
+} & Props;
+
+export default compose<InnerProps, Props>(
   pure,
   withState("selectedBoxShadowIndex", "setSelectedBoxShadowIndex", null),
   withHandlers({
@@ -76,7 +95,7 @@ export default compose(
       );
     }
   }),
-  Base => ({
+  (Base: React.ComponentClass<BaseBoxShadowsProps>) => ({
     selectedNodes,
     selectedBoxShadowIndex,
     onAddButtonClick,
@@ -114,7 +133,6 @@ export default compose(
     return (
       <Base
         variant={cx({ hasItems, hasSelectedShadow })}
-        labelProps={{}}
         addButtonProps={{ onClick: onAddButtonClick }}
         removeButtonProps={{ onClick: onRemoveButtonClick }}
         itemsProps={{ children: items }}

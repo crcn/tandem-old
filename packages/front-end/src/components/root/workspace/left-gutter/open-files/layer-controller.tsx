@@ -31,8 +31,9 @@ import {
   TreeMoveOffset
 } from "../../../../../../node_modules/tandem-common";
 import { getContentNode } from "./utils";
+import { BaseNodeLayerProps } from "./layer.pc";
 
-export type LayerControllerOuterProps = {
+export type Props = {
   depth?: number;
   graph: DependencyGraph;
   dispatch: Dispatch<any>;
@@ -46,7 +47,7 @@ export type LayerControllerOuterProps = {
   editingLabel: boolean;
 };
 
-type LayerControllerInnerProps = {
+type InnerProps = {
   isOver: boolean;
   canDrop: boolean;
   onLabelClick: () => any;
@@ -55,16 +56,16 @@ type LayerControllerInnerProps = {
   onLabelDoubleClick: () => any;
   onArrowButtonClick: () => any;
   onLabelInputKeyDown: () => any;
-} & LayerControllerOuterProps;
+} & Props;
 
 const DRAG_TYPE = "INSPECTOR_NODE";
 
 const LAYER_PADDING = 16;
 
-export default Base => {
+export default (Base: React.ComponentClass<BaseNodeLayerProps>) => {
   let EnhancedLayer;
 
-  const enhance = compose<LayerControllerOuterProps, LayerControllerOuterProps>(
+  const enhance = compose<BaseNodeLayerProps, Props>(
     pure,
     withState("editingLabel", "setEditingLabel", false),
     withHandlers({
@@ -100,14 +101,10 @@ export default Base => {
     DragSource(
       DRAG_TYPE,
       {
-        beginDrag({ inspectorNode }: LayerControllerOuterProps) {
+        beginDrag({ inspectorNode }: InnerProps) {
           return inspectorNode;
         },
-        canDrag({
-          inspectorNode,
-          contentNode,
-          graph
-        }: LayerControllerOuterProps) {
+        canDrag({ inspectorNode, contentNode, graph }: Props) {
           contentNode = getContentNode(inspectorNode, contentNode, graph);
 
           const contentSourceNode =
@@ -125,7 +122,7 @@ export default Base => {
         isDragging: monitor.isDragging()
       })
     ),
-    Base => ({
+    (Base: React.ComponentClass<BaseNodeLayerProps>) => ({
       graph,
       depth = 1,
       dispatch,
@@ -144,7 +141,7 @@ export default Base => {
       connectDragSource,
       connectDropTarget,
       inShadow
-    }: LayerControllerInnerProps) => {
+    }: InnerProps) => {
       const expanded = inspectorNode.expanded;
       const assocSourceNode = getPCNode(inspectorNode.assocSourceNodeId, graph);
       const isSourceRep =

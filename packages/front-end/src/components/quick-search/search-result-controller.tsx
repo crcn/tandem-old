@@ -4,26 +4,32 @@ import { compose, pure, withHandlers } from "recompose";
 import { Dispatch } from "redux";
 import { quickSearchItemClicked } from "actions";
 import { File, memoize } from "tandem-common";
+import { BaseSearchResultProps } from "./row.pc";
 
-export type SearchResultsOuterProps = {
+export type Props = {
   file: File;
   cwd: string;
   filter: string[];
   dispatch: Dispatch<any>;
 };
 
-type SearchResultsInnerProps = {
+type InnerProps = {
   onClick: any;
-} & SearchResultsOuterProps;
+} & Props;
 
-export default compose<SearchResultsInnerProps, SearchResultsOuterProps>(
+export default compose<BaseSearchResultProps, Props>(
   pure,
   withHandlers({
     onClick: ({ dispatch, file }) => () => {
       dispatch(quickSearchItemClicked(file));
     }
   }),
-  Base => ({ filter, onClick, file, cwd }: SearchResultsInnerProps) => {
+  (Base: React.ComponentClass<BaseSearchResultProps>) => ({
+    filter,
+    onClick,
+    file,
+    cwd
+  }: InnerProps) => {
     const basename = highlightFilterMatches(path.basename(file.uri), filter);
     const directory = highlightFilterMatches(
       path

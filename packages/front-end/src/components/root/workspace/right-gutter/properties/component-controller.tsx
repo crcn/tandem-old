@@ -6,15 +6,32 @@ import { compose, pure, withHandlers } from "recompose";
 import {
   PCComponent,
   getSyntheticSourceNode,
-  PCSourceTagNames
+  PCSourceTagNames,
+  SyntheticElement,
+  DependencyGraph
 } from "paperclip";
 import { EMPTY_ARRAY, stripProtocol } from "tandem-common";
 import {
   addComponentControllerButtonClicked,
   removeComponentControllerButtonClicked
 } from "actions";
+import { BaseComponentPropertiesProps } from "./view.pc";
+import { Dispatch } from "redux";
 
-export default compose(
+export type Props = {
+  selectedNodes: SyntheticElement[];
+  graph: DependencyGraph;
+  selectedControllerRelativePath: string;
+  dispatch: Dispatch;
+  sourceNodeUri: string;
+} & BaseComponentPropertiesProps;
+
+type InnerProps = {
+  onRemoveControllerClick: any;
+  onAddControllerClick: any;
+} & Props;
+
+export default compose<InnerProps, Props>(
   pure,
   withHandlers({
     onRemoveControllerClick: ({ dispatch }) => () => {
@@ -28,7 +45,7 @@ export default compose(
       );
     }
   }),
-  Base => ({
+  (Base: React.ComponentClass<BaseComponentPropertiesProps>) => ({
     selectedNodes,
     graph,
     selectedControllerRelativePath,
@@ -36,7 +53,7 @@ export default compose(
     onAddControllerClick,
     dispatch,
     ...rest
-  }) => {
+  }: InnerProps) => {
     if (!graph) {
       return null;
     }
@@ -72,10 +89,10 @@ export default compose(
     return (
       <Base
         {...rest}
-        variant={cx({ hasControllerSelected })}
-        removeControllerButtonProps={{ onClick: onRemoveControllerClick }}
-        addControllerButtonProps={{ onClick: onAddControllerClick }}
-        contentProps={{ children: controllers }}
+        // variant={cx({ hasControllerSelected })}
+        // removeControllerButtonProps={{ onClick: onRemoveControllerClick }}
+        // addControllerButtonProps={{ onClick: onAddControllerClick }}
+        // contentProps={{ children: controllers }}
       />
     );
   }

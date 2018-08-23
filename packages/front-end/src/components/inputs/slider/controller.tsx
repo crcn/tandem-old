@@ -1,12 +1,28 @@
 import { clamp } from "lodash";
 import * as React from "react";
 import { startDOMDrag } from "tandem-common";
-import { lifecycle, compose, pure, withHandlers, withState } from "recompose";
+import { compose, pure, withHandlers, withState } from "recompose";
+import { BaseSliderProps } from "./view.pc";
 
 const DEFAULT_MIN = 0;
 const DEFAULT_MAX = 100;
 
-export default compose(
+export type Props = {
+  value?: number;
+  onChange: any;
+  onChangeComplete: any;
+  min?: number;
+  max?: number;
+};
+
+type InnerProps = {
+  percent: number;
+  setPercent: any;
+  setSlider: any;
+  onMouseDown: any;
+} & Props;
+
+export default compose<BaseSliderProps, Props>(
   pure,
   withState(
     `percent`,
@@ -26,7 +42,7 @@ export default compose(
         setPercent,
         onChange,
         onChangeComplete
-      }) => event => {
+      }: InnerProps) => event => {
         const changeCallback = callback => {
           return (event: MouseEvent) => {
             const sliderRect = _slider.getBoundingClientRect();
@@ -55,7 +71,11 @@ export default compose(
       }
     };
   }),
-  Base => ({ percent, setSlider, onMouseDown }) => {
+  (Base: React.ComponentClass<BaseSliderProps>) => ({
+    percent,
+    setSlider,
+    onMouseDown
+  }: InnerProps) => {
     return (
       <span ref={setSlider}>
         <Base

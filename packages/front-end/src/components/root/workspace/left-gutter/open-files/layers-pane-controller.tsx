@@ -9,9 +9,10 @@ import {
 } from "paperclip";
 import { InspectorNode } from "../../../../../state/pc-inspector-tree";
 import { Dispatch } from "redux";
+import { BaseLayersPaneProps } from "./view.pc";
 const { OpenModule } = require("./open-module.pc");
 
-export type LayersPaneControllerOuterProps = {
+export type Props = {
   graph: DependencyGraph;
   hoveringInspectorNodeIds: string[];
   selectedInspectorNodeIds: string[];
@@ -20,12 +21,9 @@ export type LayersPaneControllerOuterProps = {
   dispatch: Dispatch<any>;
 };
 
-export default compose<
-  LayersPaneControllerOuterProps,
-  LayersPaneControllerOuterProps
->(
+export default compose<BaseLayersPaneProps, Props>(
   pure,
-  Base => ({
+  (Base: React.ComponentClass<BaseLayersPaneProps>) => ({
     sourceNodeInspector,
     graph,
     documents,
@@ -33,7 +31,7 @@ export default compose<
     selectedInspectorNodeIds,
     hoveringInspectorNodeIds,
     ...rest
-  }: LayersPaneControllerOuterProps) => {
+  }: Props) => {
     const content = sourceNodeInspector.children.map(inspectorNode => {
       const sourceNode = getPCNode(inspectorNode.assocSourceNodeId, graph);
       const dependency = getPCNodeDependency(sourceNode.id, graph);

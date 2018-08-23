@@ -9,15 +9,19 @@ const {
 const { Modal: QuickSearchModal } = require("../../quick-search/index.pc");
 import { DragDropContext } from "react-dnd";
 import HTML5Backend from "react-dnd-html5-backend";
+import { BaseWorkspaceProps } from "./index.pc";
 
-export type WorkspaceControllerOuterProps = {
+export type Props = {
   root: RootState;
   dispatch: Dispatch<any>;
 };
 
-export default compose(
+export default compose<BaseWorkspaceProps, Props>(
   pure,
-  Base => ({ root, dispatch }: WorkspaceControllerOuterProps) => {
+  (Base: React.ComponentClass<BaseWorkspaceProps>) => ({
+    root,
+    dispatch
+  }: Props) => {
     return (
       <div>
         <Base

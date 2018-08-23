@@ -5,6 +5,8 @@ import {
   componentControllerItemClicked,
   openControllerButtonClicked
 } from "actions";
+import { Dispatch } from "redux";
+import { BaseControllerItemProps } from "./controller-item.pc";
 
 const withHoveringState = compose(
   withState("hovering", "setHovering", false),
@@ -18,7 +20,21 @@ const withHoveringState = compose(
   })
 );
 
-export default compose(
+export type Props = {
+  selected: boolean;
+  hovering: boolean;
+  onMouseOver: any;
+  onMouseLeave: any;
+  dispatch: Dispatch<any>;
+  relativePath: string;
+};
+
+type InnerProps = {
+  onClick: any;
+  onOpenClick: any;
+} & Props;
+
+export default compose<InnerProps, Props>(
   pure,
   withHoveringState,
   withHandlers({
@@ -30,7 +46,7 @@ export default compose(
       dispatch(openControllerButtonClicked(relativePath));
     }
   }),
-  Base => ({
+  (Base: React.ComponentClass<BaseControllerItemProps>) => ({
     onClick,
     relativePath,
     selected,
@@ -38,7 +54,7 @@ export default compose(
     hovering,
     onMouseOver,
     onMouseLeave
-  }) => {
+  }: InnerProps) => {
     return (
       <Base
         onClick={onClick}

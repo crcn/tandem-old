@@ -1,12 +1,21 @@
 import * as React from "react";
 import { compose, pure, withHandlers } from "recompose";
 import { cssPropertyChanged, cssPropertyChangeCompleted } from "actions";
+import { Dispatch } from "redux";
+import { SyntheticElement } from "paperclip";
+import { BaseOpacityPaneProps } from "./opacity.pc";
 
-type OpacityPaneOuterProps = {
-  // selectedNodes:
+export type Props = {
+  dispatch: Dispatch<any>;
+  selectedNodes: SyntheticElement[];
 };
 
-export default compose(
+type InnerProps = {
+  onChange: any;
+  onChangeComplete: any;
+} & Props;
+
+export default compose<InnerProps, Props>(
   pure,
   withHandlers({
     onChange: ({ dispatch }) => value => {
@@ -16,7 +25,11 @@ export default compose(
       dispatch(cssPropertyChangeCompleted("opacity", value));
     }
   }),
-  Base => ({ onChange, onChangeComplete, selectedNodes }) => {
+  (Base: React.ComponentClass<BaseOpacityPaneProps>) => ({
+    onChange,
+    onChangeComplete,
+    selectedNodes
+  }: InnerProps) => {
     if (!selectedNodes) {
       return null;
     }

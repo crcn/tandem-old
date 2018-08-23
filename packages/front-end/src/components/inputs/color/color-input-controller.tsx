@@ -1,9 +1,25 @@
 import * as React from "react";
 import { EMPTY_ARRAY } from "tandem-common";
 import { compose, pure, withHandlers, withState } from "recompose";
+import { BaseColorInputProps } from "./view.pc";
 const { ColorPicker } = require("./picker.pc");
 
-export default compose(
+export type Props = {
+  value: any;
+  onChange: any;
+  onChangeComplete: any;
+};
+
+type InnerProps = {
+  open: boolean;
+  setOpen: any;
+  onButtonClick: any;
+  onFocus: any;
+  onBlur: any;
+  onShouldClose: any;
+} & Props;
+
+export default compose<BaseColorInputProps, Props>(
   pure,
   withState("open", "setOpen", false),
   withHandlers({
@@ -16,7 +32,7 @@ export default compose(
       setOpen(false);
     }
   }),
-  Base => ({
+  (Base: React.ComponentClass<BaseColorInputProps>) => ({
     open,
     value,
     onButtonClick,
@@ -26,7 +42,7 @@ export default compose(
     onChangeComplete,
     onShouldClose,
     ...rest
-  }) => {
+  }: InnerProps) => {
     let popdownChildren: any = EMPTY_ARRAY;
 
     if (open) {
@@ -53,12 +69,11 @@ export default compose(
         }}
         popoverProps={{
           open,
-          focusable: true,
           onShouldClose
         }}
-        contentProps={{
-          children: popdownChildren
-        }}
+        // contentProps={{
+        //   children: popdownChildren
+        // }}
       />
     );
   }

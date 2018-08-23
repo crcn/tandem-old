@@ -9,8 +9,9 @@ import {
   inheritItemClick
 } from "actions";
 import { Dispatch } from "redux";
+import { BaseInheritItemProps } from "./inherit-item.pc";
 
-export type InheritItemControllerOuterProps = {
+export type Props = {
   dispatch: Dispatch<any>;
   componentId: string;
   component: PCComponent;
@@ -18,31 +19,28 @@ export type InheritItemControllerOuterProps = {
   allComponents: PCComponent[];
 };
 
-export type InheritItemControllerInnerProps = {
+export type InnerProps = {
   onChangeComplete: any;
   onClick: any;
-} & InheritItemControllerOuterProps;
+} & Props;
 
-export default compose(
+export default compose<InnerProps, Props>(
   pure,
   withHandlers({
-    onChangeComplete: ({
-      dispatch,
-      componentId
-    }: InheritItemControllerOuterProps) => value => {
+    onChangeComplete: ({ dispatch, componentId }: InnerProps) => value => {
       dispatch(inheritItemComponentTypeChangeComplete(componentId, value.id));
     },
     onClick: ({ dispatch, componentId }) => () => {
       dispatch(inheritItemClick(componentId));
     }
   }),
-  Base => ({
+  (Base: React.ComponentClass<BaseInheritItemProps>) => ({
     component,
     allComponents,
     selected,
     onChangeComplete,
     onClick
-  }: InheritItemControllerInnerProps) => {
+  }: InnerProps) => {
     return (
       <Base
         onClick={onClick}

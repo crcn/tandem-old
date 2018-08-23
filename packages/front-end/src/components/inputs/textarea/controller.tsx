@@ -1,12 +1,14 @@
 import * as React from "react";
-import * as ReactDOM from "react-dom";
-import { compose, pure, withHandlers, lifecycle } from "recompose";
-import { withInputHandlers } from "../text/controller";
+import { compose, pure } from "recompose";
+import { withInputHandlers, WithInputHandlersProps } from "../text/controller";
+import { BaseTextareaProps } from "./view.pc";
 
-export default compose<any, any>(
+export type Props = WithInputHandlersProps;
+
+export default compose<BaseTextareaProps, Props>(
   pure,
   withInputHandlers(),
-  Base => ({ value, onKeyDown }) => {
+  (Base: React.ComponentClass<BaseTextareaProps>) => ({ value, onKeyDown }) => {
     return <Base defaultValue={value} onKeyDown={onKeyDown} />;
   }
 );

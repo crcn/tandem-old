@@ -1,7 +1,14 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { compose, pure, withHandlers, lifecycle } from "recompose";
-import { FocusComponent } from "../../focus";
+import { FocusComponent, FocusProps } from "../../focus";
+import { BaseTextInputProps } from "./view.pc";
+
+export type WithInputHandlersProps = {
+  value?: any;
+  onChange?: any;
+  onChangeComplete?: any;
+} & BaseTextInputProps;
 
 export const withInputHandlers = () =>
   compose(
@@ -29,7 +36,7 @@ export const withInputHandlers = () =>
       }
     }),
     lifecycle({
-      componentDidUpdate(props: any) {
+      componentDidUpdate(props: WithInputHandlersProps) {
         if (props.value !== this.props.value) {
           const input = ReactDOM.findDOMNode(
             this as any
@@ -42,10 +49,18 @@ export const withInputHandlers = () =>
     })
   );
 
-export default compose<any, any>(
+export type Props = WithInputHandlersProps & FocusProps;
+
+export default compose<BaseTextInputProps, Props>(
   pure,
   withInputHandlers(),
-  Base => ({ value, onChange, onChangeComplete, focus, ...rest }) => {
+  (Base: React.ComponentClass<BaseTextInputProps>) => ({
+    value,
+    onChange,
+    onChangeComplete,
+    focus,
+    ...rest
+  }) => {
     return (
       <FocusComponent focus={Boolean(focus)}>
         <Base {...rest} defaultValue={value} />

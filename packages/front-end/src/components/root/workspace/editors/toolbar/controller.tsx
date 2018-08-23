@@ -11,23 +11,24 @@ import {
 } from "actions";
 import { ToolType, EditorWindow } from "../../../../../state";
 import { Dispatch } from "redux";
+import { BaseToolbarProps } from "./view.pc";
 const { EditorTab } = require("./tab.pc");
 
-export type ToolbarOuterProps = {
+export type Props = {
   editorWindow: EditorWindow;
   dispatch: Dispatch<any>;
 };
 
-type ToolbarInnerProps = {
+type InnerProps = {
   onPointerClick: any;
   onTextClick: any;
   onTabClick: any;
   onComponentClick: any;
   onElementClick: any;
   onTabCloseButtonClick: any;
-} & ToolbarOuterProps;
+} & Props;
 
-export default compose<ToolbarInnerProps, ToolbarOuterProps>(
+export default compose<BaseToolbarProps, Props>(
   pure,
   withHandlers({
     onTabClick: ({ dispatch }) => uri => {
@@ -50,7 +51,7 @@ export default compose<ToolbarInnerProps, ToolbarOuterProps>(
       dispatch(toolbarToolClicked(ToolType.ELEMENT));
     }
   }),
-  Base => ({
+  (Base: React.ComponentClass<BaseToolbarProps>) => ({
     editorWindow,
     onTabClick,
     onTabCloseButtonClick,
@@ -58,7 +59,7 @@ export default compose<ToolbarInnerProps, ToolbarOuterProps>(
     onTextClick,
     onComponentClick,
     onElementClick
-  }: ToolbarInnerProps) => {
+  }: InnerProps) => {
     const tabs = editorWindow.tabUris.map(uri => {
       return (
         <EditorTab
