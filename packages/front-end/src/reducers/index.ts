@@ -1309,7 +1309,7 @@ export const canvasReducer = (state: RootState, action: Action) => {
 
     case ATTRIBUTE_CHANGED: {
       const { name, value } = action as CSSPropertyChanged;
-      state = persistRootState(browser => {
+      state = persistRootState(() => {
         return state.selectedSyntheticNodeIds.reduce(
           (state, nodeId) =>
             persistAttribute(

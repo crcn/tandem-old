@@ -1,5 +1,9 @@
 IMMEDIATE:
 
+- hover not showing for inserting slots (test typography)
+
+- left layers pane is _insanely_ slow.
+
 - fix style pane props
 
   - fix components

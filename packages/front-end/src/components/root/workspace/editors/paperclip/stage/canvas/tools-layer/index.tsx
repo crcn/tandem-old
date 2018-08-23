@@ -22,7 +22,9 @@ import {
   SyntheticDocument,
   DependencyGraph,
   getSyntheticVisibleNodeRelativeBounds,
-  Frame
+  Frame,
+  getSyntheticVisibleNodeDocument,
+  getSyntheticDocumentDependencyUri
 } from "paperclip";
 import {
   getNestedTreeNodeById,
@@ -173,6 +175,8 @@ const calcInspectorNodeBounds = memoize(
           child.assocSourceNodeId === inspectorNode.assocSourceNodeId &&
           child.name === InspectorTreeNodeName.SOURCE_REP
       );
+
+      console.log(assocInspectorNode);
     } else {
       assocInspectorNode = inspectorNode;
     }
@@ -184,6 +188,21 @@ const calcInspectorNodeBounds = memoize(
             child,
             documents,
             graph
+          );
+          const a = getSyntheticVisibleNodeDocument(
+            assocChildSyntheticNode.id,
+            documents
+          );
+          console.log(getSyntheticDocumentDependencyUri(a, graph));
+          console.log(
+            child,
+            assocChildSyntheticNode,
+            assocChildSyntheticNode &&
+              getSyntheticVisibleNodeRelativeBounds(
+                assocChildSyntheticNode,
+                frames,
+                graph
+              )
           );
           return (
             assocChildSyntheticNode &&

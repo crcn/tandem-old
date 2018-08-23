@@ -106,7 +106,7 @@ export default compose(
           )
         }}
         decorationInputProps={{
-          options: FONT_WEIGHTS,
+          options: DECORATIONS,
           value: node.style["text-decoration"],
           onChange: propertyChangeCallback("text-decoration", onPropertyChange),
           onChangeComplete: propertyChangeCallback(
@@ -114,24 +114,22 @@ export default compose(
             onPropertyChangeComplete
           )
         }}
-        // lineInputProps={{
-        //   options: FONT_WEIGHTS,
-        //   value: node.style["line-height"],
-        //   onChange: propertyChangeCallback("line-height", onPropertyChange),
-        //   onChangeComplete: propertyChangeCallback(
-        //     "line-height",
-        //     onPropertyChangeComplete
-        //   )
-        // }}
-        // spacingInputProps={{
-        //   options: FONT_WEIGHTS,
-        //   value: node.style["letter-spacing"],
-        //   onChange: propertyChangeCallback("letter-spacing", onPropertyChange),
-        //   onChangeComplete: propertyChangeCallback(
-        //     "letter-spacing",
-        //     onPropertyChangeComplete
-        //   )
-        // }}
+        lineInputProps={{
+          value: node.style["line-height"],
+          onChange: propertyChangeCallback("line-height", onPropertyChange),
+          onChangeComplete: propertyChangeCallback(
+            "line-height",
+            onPropertyChangeComplete
+          )
+        }}
+        spacingInputProps={{
+          value: node.style["letter-spacing"],
+          onChange: propertyChangeCallback("letter-spacing", onPropertyChange),
+          onChangeComplete: propertyChangeCallback(
+            "letter-spacing",
+            onPropertyChangeComplete
+          )
+        }}
         alignmentInputProps={{
           options: ALIGNMENTS,
           value: node.style["text-align"],
