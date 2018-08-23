@@ -61,6 +61,8 @@ export default compose<BaseTextInputProps, Props>(
   (Base: React.ComponentClass<BaseTextInputProps>) => ({
     value,
     focus,
+    onChange,
+    onChangeComplete,
     ...rest
   }) => {
     return (

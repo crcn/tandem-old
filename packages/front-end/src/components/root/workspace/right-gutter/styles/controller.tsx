@@ -16,7 +16,6 @@ export type Props = {
   selectedNodes: SyntheticElement[];
   selectedVariant: PCVariant;
   fontFamilies: FontFamily[];
-  selectedInheritComponentId: string;
   graph: DependencyGraph;
 } & BaseStylesProps;
 
@@ -28,7 +27,6 @@ export default compose(
     selectedNodes,
     selectedVariant,
     fontFamilies,
-    selectedInheritComponentId,
     graph,
     ...rest
   }) => {
@@ -56,8 +54,7 @@ export default compose(
           syntheticDocument,
           selectedNodes,
           graph,
-          fontFamilies,
-          selectedInheritComponentId
+          fontFamilies
         }}
         {...rest}
       />

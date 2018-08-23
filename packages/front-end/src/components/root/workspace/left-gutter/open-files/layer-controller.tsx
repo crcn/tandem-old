@@ -157,7 +157,7 @@ export default (Base: React.ComponentClass<BaseNodeLayerProps>) => {
         (canDrop && isOver);
       if (expanded) {
         const childDepth = depth + 1;
-        children = inspectorNode.children.map(child => {
+        children = inspectorNode.children.map((child, i) => {
           return (
             <EnhancedLayer
               inShadow={inShadow}

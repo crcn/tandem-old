@@ -119,7 +119,6 @@ export const SHORTCUT_TOGGLE_SIDEBAR = "SHORTCUT_TOGGLE_SIDEBAR";
 export const INHERIT_PANE_ADD_BUTTON_CLICK = "INHERIT_PANE_ADD_BUTTON_CLICK";
 export const INHERIT_PANE_REMOVE_BUTTON_CLICK =
   "INHERIT_PANE_REMOVE_BUTTON_CLICK";
-export const INHERIT_PANE_ITEM_CLICK = "INHERIT_PANE_ITEM_CLICK";
 export const INHERIT_ITEM_COMPONENT_TYPE_CHANGE_COMPLETE =
   "INHERIT_ITEM_COMPONENT_TYPE_CHANGE_COMPLETE";
 export const INHERIT_ITEM_CLICK = "INHERIT_ITEM_CLICK";
@@ -452,6 +451,10 @@ export type InheritPaneItemClick = {
   componentId: string;
 } & Action;
 
+export type InheritPaneRemoveButtonClick = {
+  componentId: string;
+} & Action;
+
 export type InheritItemComponentTypeChangeComplete = {
   oldComponentId: string;
   newComponentId: string;
@@ -534,15 +537,11 @@ export const inheritPaneAddButtonClick = (): Action => ({
   type: INHERIT_PANE_ADD_BUTTON_CLICK
 });
 
-export const inheritPaneRemoveButtonClick = (): Action => ({
-  type: INHERIT_PANE_REMOVE_BUTTON_CLICK
-});
-
-export const inheritPaneItemClick = (
+export const inheritPaneRemoveButtonClick = (
   componentId: string
-): InheritPaneItemClick => ({
+): InheritPaneRemoveButtonClick => ({
   componentId,
-  type: INHERIT_PANE_ITEM_CLICK
+  type: INHERIT_PANE_REMOVE_BUTTON_CLICK
 });
 
 export const inheritItemComponentTypeChangeComplete = (
@@ -553,12 +552,6 @@ export const inheritItemComponentTypeChangeComplete = (
   newComponentId,
   type: INHERIT_ITEM_COMPONENT_TYPE_CHANGE_COMPLETE
 });
-
-export const inheritItemClick = (componentId: string): InheritItemClick => ({
-  componentId,
-  type: INHERIT_ITEM_CLICK
-});
-
 export const componentPickerBackgroundClick = (): Action => ({
   type: COMPONENT_PICKER_BACKGROUND_CLICK
 });

@@ -28,10 +28,13 @@ export default compose<InnerProps, Props>(
   pure,
   (Base: React.ComponentClass<BasePropertiesProps>) => ({
     className,
+    selectedInspectorNodes,
+    selectedNodes,
+    graph,
+    dispatch,
+    sourceNodeUri,
     ...rest
   }: InnerProps) => {
-    const { selectedInspectorNodes, graph, dispatch } = rest;
-
     if (!selectedInspectorNodes.length) {
       return null;
     }
@@ -50,10 +53,20 @@ export default compose<InnerProps, Props>(
           text: sourceNode.name === PCSourceTagNames.TEXT,
           element: sourceNode.name !== PCSourceTagNames.TEXT
         })}
-        controllersPaneProps={rest}
-        slotProps={rest}
-        textProps={rest}
-        elementProps={rest}
+        controllersPaneProps={{
+          selectedNodes,
+          graph,
+          dispatch,
+          sourceNodeUri
+        }}
+        textProps={{
+          dispatch,
+          selectedNodes
+        }}
+        elementProps={{
+          selectedNodes,
+          dispatch
+        }}
       />
     );
   }

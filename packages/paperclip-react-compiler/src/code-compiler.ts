@@ -410,7 +410,10 @@ const translateContentNode = (
   }
   context = addCloseTag(`];\n`, context);
 
-  context = addOpenTag(`var render = function(props) {\n`, context);
+  context = addOpenTag(
+    `var render${publicClassName} = function(props) {\n`,
+    context
+  );
 
   if (isPCComponentOrInstance(contentNode) && !extendsComponent(contentNode)) {
     context = addLineItem(
@@ -488,10 +491,14 @@ const translateContentNode = (
   context = addCloseTag(`};\n`, context);
 
   if (isComponent(contentNode)) {
-    context = translateControllers(contentNode, context);
+    context = translateControllers(
+      `render${publicClassName}`,
+      contentNode,
+      context
+    );
   }
 
-  context = addLine(`return render;`, context);
+  context = addLine(`return render${publicClassName};`, context);
 
   context = addCloseTag(`};\n`, context);
 
@@ -677,6 +684,7 @@ const getPCOverrideVarName = memoize(
 );
 
 const translateControllers = (
+  renderName: string,
   component: PCComponent,
   context: TranslateContext
 ) => {
@@ -697,7 +705,7 @@ const translateControllers = (
       context
     );
     context = addLine(
-      `render = (${controllerVarName}.default || ${controllerVarName})(render);`,
+      `${renderName} = (${controllerVarName}.default || ${controllerVarName})(${renderName});`,
       context
     );
   }
@@ -1011,7 +1019,10 @@ const translateStaticOverride = (
 };
 
 const canTranslateAttributeKey = (key: string) =>
-  !/xmlns|style/.test(key) && key.indexOf(":") !== -1 && key;
+  !/xmlns/.test(key) &&
+  key.indexOf(":") === -1 &&
+  key !== "style" &&
+  key !== "class";
 
 const translateInnerAttributes = (
   nodeId: string,

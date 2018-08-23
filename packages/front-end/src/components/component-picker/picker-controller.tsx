@@ -2,7 +2,7 @@ import * as React from "react";
 import { compose, pure, withHandlers, withState } from "recompose";
 import { Dispatch } from "redux";
 import { RootState } from "../../state";
-const { ComponentOption } = require("./cell.pc");
+import { ComponentOption } from "./cell.pc";
 import { getAllPCComponents } from "paperclip";
 import { componentPickerItemClick } from "../../actions";
 import { BasePickerProps } from "./picker.pc";

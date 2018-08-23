@@ -32,7 +32,7 @@ export default compose<BaseLayersPaneProps, Props>(
     hoveringInspectorNodeIds,
     ...rest
   }: Props) => {
-    const content = sourceNodeInspector.children.map(inspectorNode => {
+    const content = sourceNodeInspector.children.map((inspectorNode, i) => {
       const sourceNode = getPCNode(inspectorNode.assocSourceNodeId, graph);
       const dependency = getPCNodeDependency(sourceNode.id, graph);
       const document = getSyntheticDocumentByDependencyUri(

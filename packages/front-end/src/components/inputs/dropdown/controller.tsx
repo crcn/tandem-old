@@ -1,5 +1,5 @@
 import * as React from "react";
-const { DropdownMenuItem } = require("./menu.pc");
+import { DropdownMenuItem } from "./menu.pc";
 import { EMPTY_ARRAY } from "tandem-common";
 import { BaseDropdownProps } from "./view.pc";
 
@@ -12,13 +12,13 @@ export const dropdownMenuOptionFromValue = (
   value: string
 ): DropdownMenuOption => ({ label: value || "--", value });
 
-export type Props = {
+export type Props = BaseDropdownProps & {
   value?: any;
   filterable?: boolean;
   options: DropdownMenuOption[];
-  onChange?: (item: DropdownMenuOption) => any;
-  onChangeComplete?: (item: DropdownMenuOption) => any;
-} & BaseDropdownProps;
+  onChange?: (value: any) => any;
+  onChangeComplete?: (value: any) => any;
+};
 
 type DropdownState = {
   open: boolean;
@@ -63,7 +63,14 @@ export default (Base: React.ComponentClass<BaseDropdownProps>) => {
     };
 
     render() {
-      const { value, options = EMPTY_ARRAY, filterable, ...rest } = this.props;
+      const {
+        value,
+        options = EMPTY_ARRAY,
+        filterable,
+        onChange,
+        onChangeComplete,
+        ...rest
+      } = this.props;
       const { open, filter } = this.state;
 
       const menuItems = open

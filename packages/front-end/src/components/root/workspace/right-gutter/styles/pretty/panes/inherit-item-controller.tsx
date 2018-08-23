@@ -4,14 +4,12 @@ import { compose, pure, withHandlers } from "recompose";
 import { PCComponent } from "paperclip";
 import { DropdownMenuOption } from "../../../../../../inputs/dropdown/controller";
 import { memoize } from "tandem-common";
-import {
-  inheritItemComponentTypeChangeComplete,
-  inheritItemClick
-} from "actions";
+import { inheritItemComponentTypeChangeComplete } from "actions";
 import { Dispatch } from "redux";
 import { BaseInheritItemProps } from "./inherit-item.pc";
 
 export type Props = {
+  onClick: any;
   dispatch: Dispatch<any>;
   componentId: string;
   component: PCComponent;
@@ -30,8 +28,8 @@ export default compose<InnerProps, Props>(
     onChangeComplete: ({ dispatch, componentId }: InnerProps) => value => {
       dispatch(inheritItemComponentTypeChangeComplete(componentId, value.id));
     },
-    onClick: ({ dispatch, componentId }) => () => {
-      dispatch(inheritItemClick(componentId));
+    onClick: ({ onClick, componentId }) => () => {
+      onClick(componentId);
     }
   }),
   (Base: React.ComponentClass<BaseInheritItemProps>) => ({

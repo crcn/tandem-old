@@ -3,7 +3,7 @@ import { compose, pure } from "recompose";
 import { BaseEditorWindowsProps } from "./editor-windows.pc";
 import { RootState } from "../../../../state";
 import { Dispatch } from "redux";
-const { Editor } = require("./editor.pc");
+import { Editor } from "./editor.pc";
 
 export type Props = {
   root: RootState;

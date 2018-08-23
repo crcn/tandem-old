@@ -105,7 +105,6 @@ import {
   INHERIT_PANE_ADD_BUTTON_CLICK,
   INHERIT_PANE_REMOVE_BUTTON_CLICK,
   InheritPaneItemClick,
-  INHERIT_PANE_ITEM_CLICK,
   INHERIT_ITEM_COMPONENT_TYPE_CHANGE_COMPLETE,
   InheritItemComponentTypeChangeComplete,
   INHERIT_ITEM_CLICK,
@@ -124,7 +123,8 @@ import {
   InspectorLayerLabelChanged,
   SOURCE_INSPECTOR_LAYER_DROPPED,
   SourceInspectorLayerDropped,
-  RemoveComponentControllerButtonClicked
+  RemoveComponentControllerButtonClicked,
+  InheritPaneRemoveButtonClick
 } from "../actions";
 import {
   queueOpenFile,
@@ -1325,20 +1325,20 @@ export const canvasReducer = (state: RootState, action: Action) => {
     }
 
     case INHERIT_PANE_REMOVE_BUTTON_CLICK: {
-      const { selectedInheritComponentId, selectedSyntheticNodeIds } = state;
+      const { selectedSyntheticNodeIds } = state;
+      const { componentId } = action as InheritPaneRemoveButtonClick;
       const node = getSyntheticNodeById(
         selectedSyntheticNodeIds[0],
         state.documents
       );
       state = persistRootState(state => {
         return persistInheritStyle(
-          { [selectedInheritComponentId]: undefined },
+          { [componentId]: undefined },
           node,
           state.selectedVariant,
           state
         );
       }, state);
-      state = updateRootState({ selectedInheritComponentId: null }, state);
       return state;
     }
 
@@ -1369,20 +1369,6 @@ export const canvasReducer = (state: RootState, action: Action) => {
       return state;
     }
 
-    case INHERIT_PANE_ITEM_CLICK: {
-      const { componentId } = action as InheritPaneItemClick;
-      state = updateRootState(
-        {
-          selectedInheritComponentId:
-            state.selectedInheritComponentId === componentId
-              ? null
-              : componentId
-        },
-        state
-      );
-      return state;
-    }
-
     case INHERIT_ITEM_COMPONENT_TYPE_CHANGE_COMPLETE: {
       const {
         oldComponentId,
@@ -1403,20 +1389,6 @@ export const canvasReducer = (state: RootState, action: Action) => {
         );
         return state;
       }, state);
-      return state;
-    }
-
-    case INHERIT_ITEM_CLICK: {
-      const { componentId } = action as InheritItemClick;
-      state = updateRootState(
-        {
-          selectedInheritComponentId:
-            state.selectedInheritComponentId === componentId
-              ? null
-              : componentId
-        },
-        state
-      );
       return state;
     }
 

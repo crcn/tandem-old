@@ -79,7 +79,7 @@ export default compose<BaseRightGutterProps, Props>(
       root.sourceNodeInspector
     );
 
-    const tabs = availableTabs.map(tabName => {
+    const tabs = availableTabs.map((tabName, i) => {
       return (
         <RightGutterTab
           key={tabName}
@@ -105,8 +105,7 @@ export default compose<BaseRightGutterProps, Props>(
           selectedNodes: selectedSyntheticNodes,
           // selectedInspectorNodes,
           selectedVariant: root.selectedVariant,
-          graph: root.graph,
-          selectedInheritComponentId: root.selectedInheritComponentId
+          graph: root.graph
         }}
         tabsProps={{
           children: tabs

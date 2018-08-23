@@ -50,7 +50,7 @@ export default compose<BaseFramesProps, Props>(
       graph
     );
 
-    const frameComponents = activeFrames.map(frame => {
+    const frameComponents = activeFrames.map((frame, i) => {
       const contentNode = getSyntheticNodeById(frame.contentNodeId, documents);
 
       const sourceNode = getSyntheticSourceNode(contentNode, graph);

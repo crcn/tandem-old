@@ -1,5 +1,4 @@
 import * as React from "react";
-import { compose, pure, withHandlers } from "recompose";
 import {
   PCSourceTagNames,
   SyntheticVisibleNode,
@@ -124,52 +123,44 @@ export type Props = {
   selectedNodes: SyntheticElement[];
 } & BaseElementPropertiesProps;
 
-type InnerProps = {
-  onTypeChange: any;
-} & Props;
+export default (Base: React.ComponentClass<BaseElementPropertiesProps>) => {
+  return class ElementController extends React.PureComponent<Props> {
+    onTypeChange = (value: any) => {
+      this.props.dispatch(elementTypeChanged(value));
+    };
+    render() {
+      const { onTypeChange } = this;
+      const { selectedNodes, dispatch, ...rest } = this.props;
+      if (!selectedNodes.length) {
+        return null;
+      }
 
-export default compose(
-  pure,
-  withHandlers({
-    onTypeChange: ({ dispatch }) => (value: string) => {
-      dispatch(elementTypeChanged(value));
-    }
-  }),
-  (Base: React.ComponentClass<BaseElementPropertiesProps>) => ({
-    onTypeChange,
-    selectedNodes,
-    dispatch,
-    ...rest
-  }) => {
-    if (!selectedNodes.length) {
-      return null;
-    }
+      const element = selectedNodes.find(
+        (node: SyntheticVisibleNode) => node.name !== PCSourceTagNames.TEXT
+      ) as SyntheticElement;
 
-    const element = selectedNodes.find(
-      (node: SyntheticVisibleNode) => node.name !== PCSourceTagNames.TEXT
-    ) as SyntheticElement;
+      if (!element) {
+        return null;
+      }
 
-    if (!element) {
-      return null;
-    }
+      let fieldChild;
+      if (element.name === "input") {
+        fieldChild = (
+          <InputProperties dispatch={dispatch} selectedNodes={selectedNodes} />
+        );
+      }
 
-    let fieldChild;
-    if (element.name === "input") {
-      fieldChild = (
-        <InputProperties dispatch={dispatch} selectedNodes={selectedNodes} />
+      return (
+        <Base
+          {...rest}
+          fieldsProps={{ children: fieldChild || [] }}
+          typeInputProps={{
+            value: element.name,
+            options: TYPE_MENU_OPTIONS,
+            onChange: onTypeChange
+          }}
+        />
       );
     }
-
-    return (
-      <Base
-        {...rest}
-        fieldsProps={{ children: fieldChild || [] }}
-        typeInputProps={{
-          value: element.name,
-          options: TYPE_MENU_OPTIONS,
-          onChange: onTypeChange
-        }}
-      />
-    );
-  }
-);
+  };
+};

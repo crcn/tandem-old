@@ -3,7 +3,7 @@ import * as cx from "classnames";
 import { EMPTY_ARRAY } from "tandem-common";
 import { compose, pure } from "recompose";
 import { BaseButtonBarProps } from "./view.pc";
-const { ButtonBarItem: ButtonBarItemComponent } = require("./item.pc");
+import { ButtonBarItem as ButtonBarItemComponent } from "./item.pc";
 
 export type ButtonBarOption = {
   icon: any;
@@ -26,7 +26,7 @@ export default compose<BaseButtonBarProps, Props>(
     const children = (options || EMPTY_ARRAY).map((item, i) => {
       return (
         <ButtonBarItemComponent
-          key={item.iconSrc}
+          key={i}
           children={item.icon}
           variant={cx({
             selected: item.value === value,

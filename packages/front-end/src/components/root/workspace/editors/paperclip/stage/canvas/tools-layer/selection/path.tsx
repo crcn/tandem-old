@@ -60,7 +60,7 @@ export const PathBase = ({
       className="resizer-path"
     >
       {showPoints !== false
-        ? points.map((path, key) => (
+        ? points.map((path, i) => (
             <rect
               onMouseDown={event => onPointClick(path, event)}
               className={`point-circle-${path.top * 100}-${path.left * 100}`}
@@ -73,7 +73,7 @@ export const PathBase = ({
               y={path.top * height + PADDING / 2}
               rx={0}
               ry={0}
-              key={key}
+              key={i}
             />
           ))
         : void 0}

@@ -89,7 +89,7 @@ const BaseOpenFilesPaneComponent = ({
 }: OpenFilesPaneInnerProps) => {
   return (
     <PaneComponent header="Open Files" className="m-open-files-pane">
-      {root.openFiles.map(openFile => {
+      {root.openFiles.map((openFile, i) => {
         return (
           <OpenFileComponent
             root={root}

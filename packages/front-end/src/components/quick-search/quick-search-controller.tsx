@@ -4,7 +4,7 @@ import { flattenTreeNode, File, isFile, memoize } from "tandem-common";
 import { RootState } from "../../state";
 import { Dispatch } from "redux";
 import { BaseQuickSearchProps } from "./index.pc";
-const { SearchResult } = require("./row.pc");
+import { SearchResult } from "./row.pc";
 
 export type Props = {
   root: RootState;

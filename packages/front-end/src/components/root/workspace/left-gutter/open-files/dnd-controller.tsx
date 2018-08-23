@@ -112,6 +112,7 @@ export const withHoverVariant = compose(
   (Base: React.ComponentClass<any>) => ({
     isOver,
     canDrop,
+    contentNode,
     connectDropTarget,
     ...rest
   }) => {

@@ -2,7 +2,7 @@ import * as React from "react";
 import { EMPTY_ARRAY } from "tandem-common";
 import { compose, pure, withHandlers, withState } from "recompose";
 import { BaseColorInputProps } from "./view.pc";
-const { ColorPicker } = require("./picker.pc");
+import { ColorPicker } from "./picker.pc";
 
 export type Props = {
   value: any;

@@ -5,16 +5,6 @@ const { LayersPane } = require("./open-files/view.pc");
 import { GutterComponent } from "../../../gutter";
 import { RootState, EditorWindow } from "../../../../state";
 import { FileNavigatorPaneComponent } from "./file-navigator";
-import {
-  getSyntheticNodeById,
-  SyntheticDocument,
-  getSyntheticVisibleNodeDocument,
-  DependencyGraph
-} from "../../../../../node_modules/paperclip";
-import {
-  InspectorNode,
-  getSyntheticInspectorNode
-} from "state/pc-inspector-tree";
 
 type LeftGutterProps = {
   editorWindows: EditorWindow[];
@@ -26,8 +16,7 @@ type LeftGutterProps = {
 const BaseLeftGutterComponent = ({
   dispatch,
   rootDirectory,
-  root,
-  editorWindows
+  root
 }: LeftGutterProps) => (
   <GutterComponent>
     <LayersPane
@@ -38,18 +27,12 @@ const BaseLeftGutterComponent = ({
       graph={root.graph}
       documents={root.documents}
     />
-    {/* <OpenFilesPaneComponent
-      root={root}
-      editorWindows={editorWindows}
-      dispatch={dispatch}
-    /> */}
     <FileNavigatorPaneComponent
       dispatch={dispatch}
       rootDirectory={rootDirectory}
       selectedFileNodeIds={root.selectedFileNodeIds}
       insertFileInfo={root.insertFileInfo}
     />
-    {/* <ComponentsPaneComponent dispatch={dispatch} /> */}
   </GutterComponent>
 );
 

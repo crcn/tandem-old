@@ -72,7 +72,13 @@ export default (Base: React.ComponentClass<BaseControllersPaneProps>) => {
         onItemClick
       } = this;
       const { selectedControllerRelativePath } = this.state;
-      const { selectedNodes, graph, dispatch, ...rest } = this.props;
+      const {
+        selectedNodes,
+        graph,
+        dispatch,
+        sourceNodeUri,
+        ...rest
+      } = this.props;
 
       if (!graph) {
         return null;
@@ -100,7 +106,7 @@ export default (Base: React.ComponentClass<BaseControllersPaneProps>) => {
           return (
             <ControllerItem
               onClick={onItemClick}
-              key={relativePath + i}
+              key={relativePath}
               dispatch={dispatch}
               selected={selectedControllerRelativePath === relativePath}
               relativePath={relativePath}

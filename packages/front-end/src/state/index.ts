@@ -202,7 +202,6 @@ export type RootState = {
   history: GraphHistory;
   showQuickSearch?: boolean;
   selectedComponentId?: string;
-  selectedInheritComponentId?: string;
   queuedScopeSelect?: {
     previousState: RootState;
     scope: SyntheticVisibleNode | SyntheticDocument;

@@ -20,7 +20,6 @@ export type Props = {
   graph: DependencyGraph;
   syntheticDocument: SyntheticDocument;
   fontFamilies: FontFamily[];
-  selectedInheritComponentId: string;
 };
 
 type InnerProps = {} & Props;

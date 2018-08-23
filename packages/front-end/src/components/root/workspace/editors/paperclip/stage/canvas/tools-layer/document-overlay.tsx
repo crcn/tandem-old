@@ -126,7 +126,7 @@ const ArtboardOverlayToolsBase = ({
             canvasToolOverlayMouseDoubleClicked.bind(this, frame.contentNodeId)
           )}
         >
-          {hoveringSyntheticNodeIds.map(nodeId => (
+          {hoveringSyntheticNodeIds.map((nodeId, i) => (
             <NodeOverlay
               zoom={zoom}
               key={nodeId}
@@ -225,7 +225,7 @@ export const NodeOverlaysToolBase = ({
 
   return (
     <div className="visual-tools-layer-component">
-      {activeFrames.map(frame => {
+      {activeFrames.map((frame, i) => {
         return (
           <ArtboardOverlayTools
             key={frame.contentNodeId}
