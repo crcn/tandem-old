@@ -1033,7 +1033,7 @@ const getNodePropsVarName = (
 ) => {
   return node.name === PCSourceTagNames.COMPONENT
     ? `props`
-    : `${getPublicLayerVarName(`${node.label} Props`, node.id, context)}Props`;
+    : `${getPublicLayerVarName(`${node.label} Props`, node.id, context)}`;
 };
 
 const translateVisibleNode = (node: PCNode, context: TranslateContext) => {
