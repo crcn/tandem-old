@@ -4,9 +4,7 @@ TODOS:
 - better error messaging for files that are not found
 */
 
-import {
-  EMPTY_OBJECT,
-} from "tandem-common";
+import { EMPTY_OBJECT } from "tandem-common";
 import * as migratePCModule from "paperclip-migrator";
 import { createPCModule, PCModule } from "./dsl";
 import { Dependency, DependencyGraph } from "./graph";

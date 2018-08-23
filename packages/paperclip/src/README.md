@@ -1,8 +1,8 @@
 Features:
 
-* variants
-* slots
-* components
+- variants
+- slots
+- components
 
 Example:
 

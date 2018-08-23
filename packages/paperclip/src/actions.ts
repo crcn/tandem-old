@@ -10,8 +10,7 @@ export const PC_DEPENDENCY_GRAPH_LOADED = "PC_DEPENDENCY_GRAPH_LOADED";
 export const PC_SOURCE_FILE_URIS_RECEIVED = "PC_SOURCE_FILE_URIS_RECEIVED";
 export const PC_SYNTHETIC_FRAME_CONTAINER_CREATED =
   "PC_SYNTHETIC_FRAME_CONTAINER_CREATED";
-export const PC_RUNTIME_EVALUATED =
-  "PC_RUNTIME_EVALUATED";
+export const PC_RUNTIME_EVALUATED = "PC_RUNTIME_EVALUATED";
 
 export type PCFrameContainerCreated = {
   frame: Frame;
@@ -81,4 +80,4 @@ export const pcRuntimeEvaluated = (
   catchingUp,
   allDocuments,
   type: PC_RUNTIME_EVALUATED
-})
+});

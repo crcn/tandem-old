@@ -26,9 +26,8 @@ export type FileCacheItem = {
 
 export const queueOpenFile = <TState extends FSSandboxRootState>(
   uri: string,
-  state: TState,
+  state: TState
 ): TState => {
-
   // should always create new file for queueOpen since reducer
   // code may depend on newly loaded content
   return {
@@ -63,7 +62,9 @@ export const queueSaveFile = <TState extends FSSandboxRootState>(
 };
 
 export const fsCacheBusy = memoize((fileCache: FileCache) => {
-  return Object.values(fileCache).some(item => item.status !== FileCacheItemStatus.LOADED);
+  return Object.values(fileCache).some(
+    item => item.status !== FileCacheItemStatus.LOADED
+  );
 });
 
 export const getFileCacheItemsByMimetype = (

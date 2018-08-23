@@ -208,14 +208,18 @@ export const boundsFromRect = ({ width, height }: Element): Bounds => ({
 
 export const getBoundsWidth = (bounds: Bounds) => bounds.right - bounds.left;
 export const getBoundsHeight = (bounds: Bounds) => bounds.bottom - bounds.top;
-export const getBoundsSize = memoize((bounds: Bounds): Size => ({
-  width: getBoundsWidth(bounds),
-  height: getBoundsHeight(bounds)
-}));
-export const getBoundsPoint = memoize((bounds: Bounds): Point => ({
-  left: bounds.left,
-  top: bounds.top
-}));
+export const getBoundsSize = memoize(
+  (bounds: Bounds): Size => ({
+    width: getBoundsWidth(bounds),
+    height: getBoundsHeight(bounds)
+  })
+);
+export const getBoundsPoint = memoize(
+  (bounds: Bounds): Point => ({
+    left: bounds.left,
+    top: bounds.top
+  })
+);
 
 export const scaleInnerBounds = (
   inner: Bounds,

@@ -1,12 +1,16 @@
-import { PCDependency, DependencyGraph, PCNode, PCVisibleNode, PCComponent } from "paperclip";
-import { repeat, uniq, camelCase  } from "lodash";
+import {
+  PCDependency,
+  DependencyGraph,
+  PCNode,
+  PCVisibleNode,
+  PCComponent
+} from "paperclip";
+import { repeat, uniq, camelCase } from "lodash";
 import { EMPTY_ARRAY, EMPTY_OBJECT } from "tandem-common";
-
 
 export type TranslateOptions = {
   compileNonComponents?: boolean;
 };
-
 
 export type ContentNode = PCVisibleNode | PCComponent;
 
@@ -19,12 +23,11 @@ export type TranslateContext = {
   graph: DependencyGraph;
   warnings: Error[];
   definedObjects: {
-
     // scope id
     [identifier: string]: {
       [identifier: string]: boolean;
-    }
-  }
+    };
+  };
   scopedLabelRefs: {
     // scope ID
     [identifier: string]: {
@@ -70,62 +73,62 @@ export const addCloseTag = (
     depth: indent ? context.depth - 1 : context.depth
   });
 
-export const setCurrentScope = (currentScope: string, context: TranslateContext) => ({
-    ...context,
-    currentScope
-  });
+export const setCurrentScope = (
+  currentScope: string,
+  context: TranslateContext
+) => ({
+  ...context,
+  currentScope
+});
 
+export const addScopedLayerLabel = (
+  label: string,
+  id: string,
+  context: TranslateContext
+) => {
+  label = String(label).toLowerCase();
+  if (context.scopedLabelRefs[id]) {
+    return context;
+  }
 
-export  const addScopedLayerLabel = (
-    label: string,
-    id: string,
-    context: TranslateContext
-  ) => {
-    label = String(label).toLowerCase();
-    if (context.scopedLabelRefs[id]) {
-      return context;
-    }
+  const scope = context.currentScope;
 
-    const scope = context.currentScope;
-
-    if (!context.scopedLabelRefs[scope]) {
-      context = {
-        ...context,
-        scopedLabelRefs: {
-          ...context.scopedLabelRefs,
-          [context.currentScope]: EMPTY_OBJECT
-        }
-      };
-    }
-
-    return {
+  if (!context.scopedLabelRefs[scope]) {
+    context = {
       ...context,
       scopedLabelRefs: {
         ...context.scopedLabelRefs,
-        [scope]: {
-          ...context.scopedLabelRefs[scope],
-          [label]: uniq([
-            ...(context.scopedLabelRefs[scope][label] || EMPTY_ARRAY),
-            id
-          ])
-        }
+        [context.currentScope]: EMPTY_OBJECT
       }
     };
+  }
+
+  return {
+    ...context,
+    scopedLabelRefs: {
+      ...context.scopedLabelRefs,
+      [scope]: {
+        ...context.scopedLabelRefs[scope],
+        [label]: uniq([
+          ...(context.scopedLabelRefs[scope][label] || EMPTY_ARRAY),
+          id
+        ])
+      }
+    }
   };
-
-
+};
 
 export const getInternalVarName = (node: PCNode) => "_" + node.id;
-
 
 export const getScopedLayerLabelIndex = (
   label: string,
   id: string,
   context: TranslateContext
 ) => {
-  return context.scopedLabelRefs[context.currentScope][String(label).toLowerCase()].indexOf(id);
+  return context.scopedLabelRefs[context.currentScope][
+    String(label).toLowerCase()
+  ].indexOf(id);
 };
-
 
 export const getPublicComponentClassName = (
   component: ContentNode,

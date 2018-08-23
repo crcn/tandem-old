@@ -31,7 +31,10 @@ export const portal = ({ didMount }: PortalOptions = {}) => () => {
       this._mount.remove();
     }
     render() {
-      return ReactDOM.createPortal(<div style={this.props.style}>{this.props.children}</div>, this._mount);
+      return ReactDOM.createPortal(
+        <div style={this.props.style}>{this.props.children}</div>,
+        this._mount
+      );
     }
   };
 };

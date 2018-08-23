@@ -4,13 +4,20 @@ import { EMPTY_ARRAY } from "tandem-common";
 
 // TODO - check for SVG and convert props to style
 export const xmlToPCNode = (source: string) => {
-  const { elements: [root] } = JSON.parse(xml.xml2json(source)) as any;
+  const {
+    elements: [root]
+  } = JSON.parse(xml.xml2json(source)) as any;
   return convertXMLJSONToPCNode(root);
 };
 
-const convertXMLJSONToPCNode = (node) => {
+const convertXMLJSONToPCNode = node => {
   if (node.type === "element") {
-    return createPCElement(node.name, {}, node.attributes, (node.elements || EMPTY_ARRAY).map(convertXMLJSONToPCNode));
+    return createPCElement(
+      node.name,
+      {},
+      node.attributes,
+      (node.elements || EMPTY_ARRAY).map(convertXMLJSONToPCNode)
+    );
   } else if (node.type === "text") {
     return createPCTextNode(node.text);
   } else {

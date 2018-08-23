@@ -1,11 +1,7 @@
 import "./document.scss";
 import * as React from "react";
 import { compose, pure } from "recompose";
-import {
-  Frame,
-  Dependency,
-  SyntheticVisibleNode,
-} from "paperclip";
+import { Frame, Dependency, SyntheticVisibleNode } from "paperclip";
 
 export type DocumentPreviewOuterProps = {
   frame: Frame;
@@ -17,7 +13,6 @@ type DesignPreviewOuterProps = {
   frame: Frame;
   dependency: Dependency<any>;
 };
-
 
 class DesignPreview extends React.PureComponent<DesignPreviewOuterProps> {
   componentDidUpdate({ frame: oldFrame }: DocumentPreviewOuterProps) {
@@ -39,9 +34,9 @@ class DesignPreview extends React.PureComponent<DesignPreviewOuterProps> {
         (this.props as DocumentPreviewOuterProps).frame.$container
       );
     }
-  } 
+  }
   render() {
-    return <div ref="container" />
+    return <div ref="container" />;
   }
 }
 
