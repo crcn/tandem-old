@@ -2,36 +2,38 @@ IMMEDIATE:
 
 - hover not showing for inserting slots (test typography)
 
+  - assocNodeId for inspector nodes are overlapping across instances
+
 - left layers pane is _insanely_ slow.
 
-- fix style pane props
+* fix style pane props
 
   - fix components
   - tyopgraphy audit
   - backgrounds audit
   - borders audit
 
-- UX
+* UX
 
   - all layers must be expose. For component instances, take component label
   - shortcuts shouldn't be triggered when keys are pressed
 
-- curtail recompose usage
+* curtail recompose usage
   - input controller refactor
-- use react contexts instead of passing props down
+* use react contexts instead of passing props down
 
-- fix controllers pane
+* fix controllers pane
 
-- prepare for online usage
+* prepare for online usage
 
   - edit code in app
   - preview tab
   - "download app" button
 
-- update variant input
+* update variant input
   - not toggleable
 
-* start redesign (dark)
+- start redesign (dark)
 
 UX PROBLEMS:
 
