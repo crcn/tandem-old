@@ -403,6 +403,7 @@ export const getInspectorSyntheticNode = memoize(
   ): SyntheticVisibleNode => {
     const instancePath: string = node.instancePath;
 
+    // PERF TODO - this is probably abysmal
     for (const document of documents) {
       const syntheticNode = findNestedNode(document, (child: SyntheticNode) => {
         return (

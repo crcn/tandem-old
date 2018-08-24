@@ -10,9 +10,6 @@ const getArgumentCount = (fn: Function) => {
     .substr(1, params.length - 2)
     .split(/\s*,\s*/)
     .filter(arg => arg.substr(0, 3) !== "...");
-  // if (fn.length !== args.length) {
-  //   console.log("arg length mismatch")
-  // }
 
   return args.length;
 };

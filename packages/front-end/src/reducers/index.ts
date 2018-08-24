@@ -261,7 +261,11 @@ import {
   isVisibleNode,
   persistSyntheticVisibleNodeStyle,
   removeSyntheticVisibleNode,
-  isSyntheticContentNode
+  isSyntheticContentNode,
+  getSyntheticDocumentDependencyUri,
+  getAllParentComponentInstance,
+  PCComponent,
+  extendsComponent
 } from "paperclip";
 import {
   roundBounds,
@@ -295,7 +299,8 @@ import {
   sortFSItems,
   EMPTY_OBJECT,
   getNestedTreeNodeById,
-  EMPTY_ARRAY
+  EMPTY_ARRAY,
+  containsNestedTreeNodeById
 } from "tandem-common";
 import { clamp, last } from "lodash";
 import {

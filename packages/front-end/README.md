@@ -1,10 +1,8 @@
 IMMEDIATE:
 
-- hover not showing for inserting slots (test typography)
-
-  - assocNodeId for inspector nodes are overlapping across instances
-
 - left layers pane is _insanely_ slow.
+  - do not pass graph down (compute all info)
+  -
 
 * fix style pane props
 
@@ -12,6 +10,7 @@ IMMEDIATE:
   - tyopgraphy audit
   - backgrounds audit
   - borders audit
+  - fix color input
 
 * UX
 

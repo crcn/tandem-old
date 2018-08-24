@@ -354,13 +354,7 @@ export const findClosestParentComponentInstance = memoize(
     root: SyntheticVisibleNode | SyntheticDocument,
     graph: DependencyGraph
   ) => {
-    if (!getNestedTreeNodeById(node.id, root)) {
-      console.log("NO NODE????");
-    }
     return findTreeNodeParent(node.id, root, (parent: SyntheticVisibleNode) => {
-      if (!parent) {
-        console.error("NO PARRENTT?");
-      }
       return isComponentOrInstance(parent, graph);
     });
   }

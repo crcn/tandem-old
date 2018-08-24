@@ -25,7 +25,7 @@ import {
   PCOverride
 } from "./dsl";
 import { uniq } from "lodash";
-import { SyntheticElement, SyntheticNode } from "./synthetic";
+import { SyntheticElement } from "./synthetic";
 
 export type VanillaPCRenderers = KeyValue<VanillaPCRenderer>;
 export type VanillaPCRenderer = (
@@ -103,9 +103,9 @@ const translateVisibleNode = memoize(
   (node: PCComponent | PCVisibleNode, isContentNode?: boolean) => {
     if (isBaseElement(node)) {
       if (extendsComponent(node)) {
-        return `components._${node.is}("${
-          node.id
-        }", ${translateDynamicAttributes(
+        return `components._${node.is}(${
+          isContentNode ? "instanceSourceNodeId" : `"${node.id}"`
+        }, ${translateDynamicAttributes(
           node,
           isContentNode
         )}, ${translateDynamicStyle(
