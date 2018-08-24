@@ -11,8 +11,6 @@ export type Props = {
   document: SyntheticDocument;
   graph: DependencyGraph;
   dispatch: Dispatch<any>;
-  selectedInspectorNodeIds: string[];
-  hoveringInspectorNodeIds: string[];
 };
 
 export default compose<BaseOpenModuleProps, Props>(
@@ -22,16 +20,12 @@ export default compose<BaseOpenModuleProps, Props>(
     document,
     graph,
     dispatch,
-    selectedInspectorNodeIds,
-    hoveringInspectorNodeIds,
     ...rest
   }: Props) => {
     return (
       <Base {...rest}>
         <NodeLayer
           depth={2}
-          hoveringInspectorNodeIds={hoveringInspectorNodeIds}
-          selectedInspectorNodeIds={selectedInspectorNodeIds}
           graph={graph}
           dispatch={dispatch}
           document={document}

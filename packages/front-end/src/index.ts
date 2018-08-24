@@ -24,7 +24,7 @@ import { pmark } from "tandem-common";
 export type FrontEndOptions = FrontEndSagaOptions & FSSandboxOptions;
 export type SideEffectCreator = () => IterableIterator<FrontEndOptions>;
 
-const SLOW_ACTION_INTERVAL = 50;
+const SLOW_ACTION_INTERVAL = 10;
 
 // Dirty, but okay for now. Want to eventually display a prettyier message that reports diagnostics, but
 // that needs to happen _outside_ of the application's scope.

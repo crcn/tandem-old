@@ -14,7 +14,8 @@ import {
   PCVisibleNode,
   getPCNodeDependency,
   SyntheticDocument,
-  PCComponent
+  PCComponent,
+  PCNode
 } from "paperclip";
 import {
   InspectorNode,
@@ -30,24 +31,26 @@ import {
   containsNestedTreeNodeById,
   TreeMoveOffset
 } from "../../../../../../node_modules/tandem-common";
-import { getContentNode } from "./utils";
 import { BaseNodeLayerProps } from "./layer.pc";
+import { withLayersPaneContext, LayersPaneContextProps } from "./contexts";
 
 export type Props = {
   depth?: number;
-  graph: DependencyGraph;
-  dispatch: Dispatch<any>;
   inShadow?: boolean;
-  contentNode: InspectorNode;
-  selectedInspectorNodeIds: string[];
-  hoveringInspectorNodeIds: string[];
-  document: SyntheticDocument;
   inspectorNode: InspectorNode;
-  syntheticNode: SyntheticNode;
-  editingLabel: boolean;
+};
+
+type ContextProps = {
+  canDrag: boolean;
+  assocSourceNode: PCNode;
+  isSelected: boolean;
+  isHovering: boolean;
+  dispatch: Dispatch<any>;
+  label: string;
 };
 
 type InnerProps = {
+  editingLabel: boolean;
   isOver: boolean;
   canDrop: boolean;
   onLabelClick: () => any;
@@ -56,16 +59,74 @@ type InnerProps = {
   onLabelDoubleClick: () => any;
   onArrowButtonClick: () => any;
   onLabelInputKeyDown: () => any;
-} & Props;
+} & ContextProps &
+  Props;
 
 const DRAG_TYPE = "INSPECTOR_NODE";
 
 const LAYER_PADDING = 16;
 
 export default (Base: React.ComponentClass<BaseNodeLayerProps>) => {
-  let EnhancedLayer;
+  let EnhancedLayer: React.ComponentClass<Props>;
 
   const enhance = compose<BaseNodeLayerProps, Props>(
+    withLayersPaneContext<ContextProps, Props>(
+      (
+        { inspectorNode }: Props,
+        {
+          graph,
+          rootSourceNodeInspector,
+          selectedInspectorNodeIds,
+          hoveringInspectorNodeIds,
+          dispatch,
+          document
+        }: LayersPaneContextProps
+      ) => {
+        const contentSourceNode =
+          rootSourceNodeInspector &&
+          getPCNode(rootSourceNodeInspector.assocSourceNodeId, graph);
+        const sourceNode = getPCNode(inspectorNode.assocSourceNodeId, graph);
+        const canDrag =
+          contentSourceNode &&
+          containsNestedTreeNodeById(sourceNode.id, contentSourceNode);
+
+        const assocSourceNode = getPCNode(
+          inspectorNode.assocSourceNodeId,
+          graph
+        );
+
+        let label = (assocSourceNode as PCVisibleNode).label;
+
+        if (!label) {
+          if (assocSourceNode.name === PCSourceTagNames.MODULE) {
+            const dependency = getPCNodeDependency(
+              inspectorNode.assocSourceNodeId,
+              graph
+            );
+            label = path.basename(dependency.uri);
+          } else if (
+            assocSourceNode.name === PCSourceTagNames.COMPONENT_INSTANCE
+          ) {
+            const component = getPCNode(assocSourceNode.is, graph);
+            label = (component as PCComponent).label;
+          } else if (assocSourceNode.name === PCSourceTagNames.ELEMENT) {
+            label = assocSourceNode.is || "Element";
+          }
+          if (assocSourceNode.name === PCSourceTagNames.SLOT) {
+            label = assocSourceNode.label;
+          }
+        }
+
+        return {
+          dispatch,
+          isSelected: selectedInspectorNodeIds.indexOf(inspectorNode.id) !== -1,
+          isHovering: hoveringInspectorNodeIds.indexOf(inspectorNode.id) !== -1,
+          assocSourceNode,
+          canDrag,
+          label
+        };
+      }
+    ),
     pure,
     withState("editingLabel", "setEditingLabel", false),
     withHandlers({
@@ -104,16 +165,8 @@ export default (Base: React.ComponentClass<BaseNodeLayerProps>) => {
         beginDrag({ inspectorNode }: InnerProps) {
           return inspectorNode;
         },
-        canDrag({ inspectorNode, contentNode, graph }: Props) {
-          contentNode = getContentNode(inspectorNode, contentNode, graph);
-
-          const contentSourceNode =
-            contentNode && getPCNode(contentNode.assocSourceNodeId, graph);
-          const sourceNode = getPCNode(inspectorNode.assocSourceNodeId, graph);
-          return (
-            contentSourceNode &&
-            containsNestedTreeNodeById(sourceNode.id, contentSourceNode)
-          );
+        canDrag({ inspectorNode, assocSourceNode, canDrag }: InnerProps) {
+          return canDrag;
         }
       },
       (connect, monitor) => ({
@@ -123,78 +176,45 @@ export default (Base: React.ComponentClass<BaseNodeLayerProps>) => {
       })
     ),
     (Base: React.ComponentClass<BaseNodeLayerProps>) => ({
-      graph,
       depth = 1,
       dispatch,
-      document,
       onLabelClick,
       editingLabel,
-      selectedInspectorNodeIds,
-      hoveringInspectorNodeIds,
+      isSelected,
+      isHovering,
       isOver,
       canDrop,
-      contentNode,
       inspectorNode,
       onArrowButtonClick,
       onLabelDoubleClick,
       onLabelInputKeyDown,
+      assocSourceNode,
       connectDragSource,
+      label,
       connectDropTarget,
       inShadow
     }: InnerProps) => {
       const expanded = inspectorNode.expanded;
-      const assocSourceNode = getPCNode(inspectorNode.assocSourceNodeId, graph);
       const isSourceRep =
         inspectorNode.name === InspectorTreeNodeName.SOURCE_REP;
       inShadow =
         inShadow || inspectorNode.name === InspectorTreeNodeName.SHADOW;
       let children;
 
-      const isSelected =
-        selectedInspectorNodeIds.indexOf(inspectorNode.id) !== -1;
-      const isHovering =
-        hoveringInspectorNodeIds.indexOf(inspectorNode.id) !== -1 ||
-        (canDrop && isOver);
+      isHovering = isHovering || (canDrop && isOver);
+
       if (expanded) {
         const childDepth = depth + 1;
         children = inspectorNode.children.map((child, i) => {
           return (
             <EnhancedLayer
               inShadow={inShadow}
-              contentNode={getContentNode(inspectorNode, contentNode, graph)}
-              selectedInspectorNodeIds={selectedInspectorNodeIds}
-              hoveringInspectorNodeIds={hoveringInspectorNodeIds}
-              document={document}
-              key={child.id}
+              key={child.id + i}
               depth={childDepth}
-              dispatch={dispatch}
               inspectorNode={child}
-              graph={graph}
             />
           );
         });
-      }
-
-      let label = (assocSourceNode as PCVisibleNode).label;
-
-      if (!label) {
-        if (assocSourceNode.name === PCSourceTagNames.MODULE) {
-          const dependency = getPCNodeDependency(
-            inspectorNode.assocSourceNodeId,
-            graph
-          );
-          label = path.basename(dependency.uri);
-        } else if (
-          assocSourceNode.name === PCSourceTagNames.COMPONENT_INSTANCE
-        ) {
-          const component = getPCNode(assocSourceNode.is, graph);
-          label = (component as PCComponent).label;
-        } else if (assocSourceNode.name === PCSourceTagNames.ELEMENT) {
-          label = assocSourceNode.is || "Element";
-        }
-        if (assocSourceNode.name === PCSourceTagNames.SLOT) {
-          label = assocSourceNode.label;
-        }
       }
 
       const dropZoneStyle = {
@@ -207,8 +227,6 @@ export default (Base: React.ComponentClass<BaseNodeLayerProps>) => {
             style={dropZoneStyle}
             dispatch={dispatch}
             inspectorNode={inspectorNode}
-            contentNode={contentNode}
-            graph={graph}
           />
           <FocusComponent focus={editingLabel}>
             {connectDropTarget(
@@ -268,8 +286,6 @@ export default (Base: React.ComponentClass<BaseNodeLayerProps>) => {
             style={dropZoneStyle}
             dispatch={dispatch}
             inspectorNode={inspectorNode}
-            contentNode={contentNode}
-            graph={graph}
           />
           {children}
         </span>

@@ -2,7 +2,7 @@ IMMEDIATE:
 
 - left layers pane is _insanely_ slow.
   - do not pass graph down (compute all info)
-  -
+  - use contexts & shallow checks to fix
 
 * fix style pane props
 

@@ -1,6 +1,5 @@
 import * as React from "react";
 import * as cx from "classnames";
-import { getContentNode } from "./utils";
 import {
   TreeMoveOffset,
   containsNestedTreeNodeById,
@@ -26,7 +25,7 @@ import { sourceInspectorLayerDropped } from "../../../../../actions";
 
 export type WithNodeDropTargetProps = {
   inspectorNode: InspectorNode;
-  contentNode: InspectorNode;
+  // contentNode: InspectorNode;
   graph: DependencyGraph;
   dispatch: Dispatch;
 };
@@ -35,59 +34,58 @@ export const withNodeDropTarget = (offset: TreeMoveOffset) =>
   DropTarget(
     "INSPECTOR_NODE",
     {
-      canDrop: (
-        { inspectorNode, contentNode, graph }: WithNodeDropTargetProps,
-        monitor
-      ) => {
-        contentNode = getContentNode(inspectorNode, contentNode, graph);
-        const draggingInspectorNode = monitor.getItem() as InspectorNode;
-        const draggedSourceNode = getPCNode(
-          draggingInspectorNode.assocSourceNodeId,
-          graph
-        );
-        const contentSourceNode =
-          contentNode && getPCNode(contentNode.assocSourceNodeId, graph);
-        const sourceNode = getPCNode(inspectorNode.assocSourceNodeId, graph);
-        const parentSourceNode: PCNode =
-          contentSourceNode &&
-          getParentTreeNode(sourceNode.id, contentSourceNode);
+      canDrop: ({ inspectorNode, graph }: WithNodeDropTargetProps, monitor) => {
+        // contentNode = getContentNode(inspectorNode, contentNode, graph);
+        // const draggingInspectorNode = monitor.getItem() as InspectorNode;
+        // const draggedSourceNode = getPCNode(
+        //   draggingInspectorNode.assocSourceNodeId,
+        //   graph
+        // );
+        // const contentSourceNode =
+        //   contentNode && getPCNode(contentNode.assocSourceNodeId, graph);
+        // const sourceNode = getPCNode(inspectorNode.assocSourceNodeId, graph);
+        // const parentSourceNode: PCNode =
+        //   contentSourceNode &&
+        //   getParentTreeNode(sourceNode.id, contentSourceNode);
 
-        if (draggedSourceNode.name === PCSourceTagNames.COMPONENT) {
-          return !contentSourceNode;
-        }
+        // if (draggedSourceNode.name === PCSourceTagNames.COMPONENT) {
+        //   return !contentSourceNode;
+        // }
 
-        if (
-          offset === TreeMoveOffset.BEFORE ||
-          offset === TreeMoveOffset.AFTER
-        ) {
-          return (
-            parentSourceNode &&
-            (parentSourceNode.name !== PCSourceTagNames.COMPONENT_INSTANCE &&
-              !extendsComponent(parentSourceNode))
-          );
-        }
+        // if (
+        //   offset === TreeMoveOffset.BEFORE ||
+        //   offset === TreeMoveOffset.AFTER
+        // ) {
+        //   return (
+        //     parentSourceNode &&
+        //     (parentSourceNode.name !== PCSourceTagNames.COMPONENT_INSTANCE &&
+        //       !extendsComponent(parentSourceNode))
+        //   );
+        // }
 
-        if (
-          offset === TreeMoveOffset.APPEND ||
-          offset === TreeMoveOffset.PREPEND
-        ) {
-          if (
-            sourceNode.name === PCSourceTagNames.COMPONENT_INSTANCE ||
-            extendsComponent(sourceNode)
-          ) {
-            return false;
-          }
+        // if (
+        //   offset === TreeMoveOffset.APPEND ||
+        //   offset === TreeMoveOffset.PREPEND
+        // ) {
+        //   if (
+        //     sourceNode.name === PCSourceTagNames.COMPONENT_INSTANCE ||
+        //     extendsComponent(sourceNode)
+        //   ) {
+        //     return false;
+        //   }
 
-          return (
-            !contentSourceNode ||
-            containsNestedTreeNodeById(sourceNode.id, contentSourceNode) ||
-            (inspectorNode.name === InspectorTreeNodeName.CONTENT &&
-              !inspectorNodeInShadow(inspectorNode, contentNode))
-          );
-        } else {
-          // const parentSourceNode = getParentTreeNode()
-          return true;
-        }
+        //   return (
+        //     !contentSourceNode ||
+        //     containsNestedTreeNodeById(sourceNode.id, contentSourceNode) ||
+        //     (inspectorNode.name === InspectorTreeNodeName.CONTENT &&
+        //       !inspectorNodeInShadow(inspectorNode, contentNode))
+        //   );
+        // } else {
+        //   // const parentSourceNode = getParentTreeNode()
+        //   return true;
+        // }
+
+        return false;
       },
       drop: ({ dispatch, inspectorNode }, monitor) => {
         dispatch(

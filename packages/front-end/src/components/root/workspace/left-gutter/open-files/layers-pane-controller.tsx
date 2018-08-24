@@ -1,5 +1,6 @@
 import * as React from "react";
 import { compose, pure } from "recompose";
+import { memoize } from "tandem-common";
 import {
   getSyntheticDocumentByDependencyUri,
   DependencyGraph,
@@ -11,6 +12,7 @@ import { InspectorNode } from "../../../../../state/pc-inspector-tree";
 import { Dispatch } from "redux";
 import { BaseLayersPaneProps } from "./view.pc";
 import { OpenModule } from "./open-module.pc";
+import { LayersPaneContext, LayersPaneContextProps } from "./contexts";
 
 export type Props = {
   graph: DependencyGraph;
@@ -20,6 +22,26 @@ export type Props = {
   documents: SyntheticDocument[];
   dispatch: Dispatch<any>;
 };
+
+const generateLayersPaneContext = memoize(
+  (
+    graph: DependencyGraph,
+    document: SyntheticDocument,
+    documents: SyntheticDocument[],
+    selectedInspectorNodeIds: string[],
+    hoveringInspectorNodeIds: string[],
+    rootSourceNodeInspector: InspectorNode,
+    dispatch: Dispatch
+  ): LayersPaneContextProps => ({
+    graph,
+    document,
+    documents,
+    selectedInspectorNodeIds,
+    hoveringInspectorNodeIds,
+    rootSourceNodeInspector,
+    dispatch
+  })
+);
 
 export default compose<BaseLayersPaneProps, Props>(
   pure,
@@ -41,16 +63,27 @@ export default compose<BaseLayersPaneProps, Props>(
         graph
       );
       return (
-        <OpenModule
-          selectedInspectorNodeIds={selectedInspectorNodeIds}
-          hoveringInspectorNodeIds={hoveringInspectorNodeIds}
-          inspectorNode={inspectorNode}
-          dependency={dependency}
-          dispatch={dispatch}
-          key={inspectorNode.assocSourceNodeId}
-          document={document}
-          graph={graph}
-        />
+        <LayersPaneContext.Provider
+          value={generateLayersPaneContext(
+            graph,
+            document,
+            documents,
+            selectedInspectorNodeIds,
+            hoveringInspectorNodeIds,
+            sourceNodeInspector,
+            dispatch
+          )}
+        >
+          <OpenModule
+            selectedInspectorNodeIds={selectedInspectorNodeIds}
+            hoveringInspectorNodeIds={hoveringInspectorNodeIds}
+            inspectorNode={inspectorNode}
+            dependency={dependency}
+            dispatch={dispatch}
+            document={document}
+            graph={graph}
+          />
+        </LayersPaneContext.Provider>
       );
     });
     return <Base {...rest} contentProps={{ children: content }} />;
