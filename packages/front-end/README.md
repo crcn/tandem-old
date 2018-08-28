@@ -1,10 +1,6 @@
 IMMEDIATE:
 
-- left layers pane is _insanely_ slow.
-  - do not pass graph down (compute all info)
-  - use contexts & shallow checks to fix
-
-* fix style pane props
+- fix style pane props
 
   - fix components
   - tyopgraphy audit
@@ -12,27 +8,25 @@ IMMEDIATE:
   - borders audit
   - fix color input
 
-* UX
+- redesign variants pane
+
+- UX
 
   - all layers must be expose. For component instances, take component label
   - shortcuts shouldn't be triggered when keys are pressed
 
-* curtail recompose usage
-  - input controller refactor
-* use react contexts instead of passing props down
+- fix controllers pane
 
-* fix controllers pane
-
-* prepare for online usage
+- prepare for online usage
 
   - edit code in app
   - preview tab
   - "download app" button
 
-* update variant input
+- update variant input
   - not toggleable
 
-- start redesign (dark)
+* start redesign (dark)
 
 UX PROBLEMS:
 

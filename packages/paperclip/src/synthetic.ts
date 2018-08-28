@@ -240,7 +240,8 @@ export const getInheritedAndSelfOverrides = memoize(
 export const getSyntheticSourceNode = (
   node: SyntheticVisibleNode | SyntheticDocument,
   graph: DependencyGraph
-) => getPCNode(node.sourceNodeId, graph) as PCVisibleNode | PCComponent;
+) =>
+  getPCNode(node.sourceNodeId, graph) as PCVisibleNode | PCComponent | PCModule;
 
 export const getSyntheticSourceFrame = (
   node: SyntheticVisibleNode,

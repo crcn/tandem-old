@@ -1049,6 +1049,26 @@
           "bottom": 997.2785557531174
         }
       }
+    },
+    {
+      "id": "ab7e07ff158",
+      "label": "Element",
+      "is": "div",
+      "name": "element",
+      "attributes": {},
+      "style": {
+        "box-sizing": "border-box",
+        "display": "block"
+      },
+      "children": [],
+      "metadata": {
+        "bounds": {
+          "left": -832.432669442416,
+          "top": 995.1759453607192,
+          "right": -732.432669442416,
+          "bottom": 1095.1759453607192
+        }
+      }
     }
   ]
 }

@@ -46,7 +46,8 @@ export default (Base: React.ComponentClass<BaseControllerItemProps>) => {
     };
     render() {
       const { onOpenClick, onMouseOver, onMouseLeave, onClick } = this;
-      const { relativePath, selected, hovering } = this.props;
+      const { relativePath, selected } = this.props;
+      const { hovering } = this.state;
       return (
         <Base
           onClick={onClick}

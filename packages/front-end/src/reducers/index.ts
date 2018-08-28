@@ -815,7 +815,10 @@ export const canvasReducer = (state: RootState, action: Action) => {
       state = updateRootState(
         {
           selectedVariant: last(
-            getPCVariants(getSyntheticSourceNode(contentNode, state.graph))
+            getPCVariants(getSyntheticSourceNode(
+              contentNode,
+              state.graph
+            ) as PCVisibleNode)
           )
         },
         state
@@ -1353,7 +1356,10 @@ export const canvasReducer = (state: RootState, action: Action) => {
         selectedSyntheticNodeIds[0],
         state.documents
       );
-      const sourceNode = getSyntheticSourceNode(node, state.graph);
+      const sourceNode = getSyntheticSourceNode(
+        node,
+        state.graph
+      ) as PCVisibleNode;
 
       state = persistRootState(state => {
         // undefined so that nothing is selected in dropdown.

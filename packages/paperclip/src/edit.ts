@@ -523,7 +523,7 @@ export const persistConvertNodeToComponent = <TState extends PCEditorState>(
   node: SyntheticVisibleNode,
   state: TState
 ) => {
-  let sourceNode = getSyntheticSourceNode(node, state.graph);
+  let sourceNode = getSyntheticSourceNode(node, state.graph) as PCVisibleNode;
 
   if (isComponent(sourceNode)) {
     return state;
@@ -568,7 +568,7 @@ export const persistWrapInSlot = <TState extends PCEditorState>(
   node: SyntheticVisibleNode,
   state: TState
 ) => {
-  const sourceNode = getSyntheticSourceNode(node, state.graph);
+  const sourceNode = getSyntheticSourceNode(node, state.graph) as PCVisibleNode;
 
   if (
     getPCNodeContentNode(

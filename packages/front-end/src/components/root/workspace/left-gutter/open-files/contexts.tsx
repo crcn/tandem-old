@@ -5,9 +5,9 @@ import { Dispatch } from "redux";
 
 export type LayersPaneContextProps = {
   graph: DependencyGraph;
+  rootInspectorNode: InspectorNode;
   hoveringInspectorNodeIds: string[];
   selectedInspectorNodeIds: string[];
-  rootSourceNodeInspector: InspectorNode;
   document: SyntheticDocument;
   documents: SyntheticDocument[];
   dispatch: Dispatch<any>;

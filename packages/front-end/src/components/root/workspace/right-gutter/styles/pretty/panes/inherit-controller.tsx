@@ -8,7 +8,8 @@ import {
   DependencyGraph,
   getPCNode,
   getAllPCComponents,
-  SyntheticElement
+  SyntheticElement,
+  PCVisibleNode
 } from "paperclip";
 import {
   inheritPaneAddButtonClick,
@@ -57,7 +58,7 @@ export default (Base: React.ComponentClass<BaseInheritProps>) => {
       const { selectedInheritItemComponentId } = this.state;
       const { selectedNodes, dispatch, graph } = this.props;
       const node = selectedNodes[0];
-      const sourceNode = getSyntheticSourceNode(node, graph);
+      const sourceNode = getSyntheticSourceNode(node, graph) as PCVisibleNode;
 
       const hasItemSelected = Boolean(selectedInheritItemComponentId);
 

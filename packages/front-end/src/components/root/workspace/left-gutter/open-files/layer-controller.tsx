@@ -2,7 +2,14 @@ import * as React from "react";
 import * as path from "path";
 import { FocusComponent } from "../../../../focus";
 import * as cx from "classnames";
-import { compose, pure, withHandlers, withState } from "recompose";
+import {
+  compose,
+  pure,
+  withHandlers,
+  withState,
+  mapProps,
+  shouldUpdate
+} from "recompose";
 import { DragSource } from "react-dnd";
 import { withNodeDropTarget } from "./dnd-controller";
 import { BeforeDropZone, AfterDropZone } from "./drop-zones.pc";
@@ -15,7 +22,12 @@ import {
   getPCNodeDependency,
   SyntheticDocument,
   PCComponent,
-  PCNode
+  PCNode,
+  getPCNodeContentNode,
+  getSyntheticDocumentByDependencyUri,
+  getSyntheticSourceNode,
+  PCModule,
+  getPCNodeModule
 } from "paperclip";
 import {
   InspectorNode,
@@ -33,6 +45,7 @@ import {
 } from "../../../../../../node_modules/tandem-common";
 import { BaseNodeLayerProps } from "./layer.pc";
 import { withLayersPaneContext, LayersPaneContextProps } from "./contexts";
+import { getInspectorContentNodeContainingChild } from "state";
 
 export type Props = {
   depth?: number;
@@ -41,8 +54,6 @@ export type Props = {
 };
 
 type ContextProps = {
-  canDrag: boolean;
-  assocSourceNode: PCNode;
   isSelected: boolean;
   isHovering: boolean;
   dispatch: Dispatch<any>;
@@ -59,6 +70,7 @@ type InnerProps = {
   onLabelDoubleClick: () => any;
   onArrowButtonClick: () => any;
   onLabelInputKeyDown: () => any;
+  assocSourceNodeName: string;
 } & ContextProps &
   Props;
 
@@ -75,21 +87,12 @@ export default (Base: React.ComponentClass<BaseNodeLayerProps>) => {
         { inspectorNode }: Props,
         {
           graph,
-          rootSourceNodeInspector,
           selectedInspectorNodeIds,
           hoveringInspectorNodeIds,
           dispatch,
-          document
+          rootInspectorNode
         }: LayersPaneContextProps
       ) => {
-        const contentSourceNode =
-          rootSourceNodeInspector &&
-          getPCNode(rootSourceNodeInspector.assocSourceNodeId, graph);
-        const sourceNode = getPCNode(inspectorNode.assocSourceNodeId, graph);
-        const canDrag =
-          contentSourceNode &&
-          containsNestedTreeNodeById(sourceNode.id, contentSourceNode);
-
         const assocSourceNode = getPCNode(
           inspectorNode.assocSourceNodeId,
           graph
@@ -121,43 +124,17 @@ export default (Base: React.ComponentClass<BaseNodeLayerProps>) => {
           dispatch,
           isSelected: selectedInspectorNodeIds.indexOf(inspectorNode.id) !== -1,
           isHovering: hoveringInspectorNodeIds.indexOf(inspectorNode.id) !== -1,
-          assocSourceNode,
-          canDrag,
-          label
+          label,
+          graph,
+          inspectorNode,
+          contentNode: getInspectorContentNodeContainingChild(
+            inspectorNode,
+            rootInspectorNode
+          ),
+          assocSourceNodeName: assocSourceNode.name
         };
       }
     ),
-    pure,
-    withState("editingLabel", "setEditingLabel", false),
-    withHandlers({
-      onLabelClick: ({ dispatch, inspectorNode }) => (
-        event: React.MouseEvent<any>
-      ) => {
-        dispatch(sourceInspectorLayerClicked(inspectorNode, event));
-      },
-      onArrowButtonClick: ({ dispatch, inspectorNode }) => (
-        event: React.MouseEvent<any>
-      ) => {
-        event.stopPropagation();
-        dispatch(sourceInspectorLayerArrowClicked(inspectorNode, event));
-      },
-      onLabelDoubleClick: ({ inspectorNode, setEditingLabel }) => () => {
-        if (inspectorNode.name === InspectorTreeNodeName.SOURCE_REP) {
-          setEditingLabel(true);
-        }
-      },
-      onLabelInputKeyDown: ({ dispatch, inspectorNode, setEditingLabel }) => (
-        event: React.KeyboardEvent<any>
-      ) => {
-        if (event.key === "Enter") {
-          const label = String((event.target as any).value || "").trim();
-          setEditingLabel(false);
-          dispatch(
-            sourceInspectorLayerLabelChanged(inspectorNode, label, event)
-          );
-        }
-      }
-    }),
     withNodeDropTarget(TreeMoveOffset.PREPEND),
     DragSource(
       DRAG_TYPE,
@@ -165,7 +142,19 @@ export default (Base: React.ComponentClass<BaseNodeLayerProps>) => {
         beginDrag({ inspectorNode }: InnerProps) {
           return inspectorNode;
         },
-        canDrag({ inspectorNode, assocSourceNode, canDrag }: InnerProps) {
+        canDrag({ inspectorNode, graph }: any) {
+          const sourceNode = getPCNode(inspectorNode.assocSourceNodeId, graph);
+          const module = getPCNodeModule(
+            inspectorNode.assocSourceNodeId,
+            graph
+          ) as PCModule;
+          const contentSourceNode = getPCNodeContentNode(
+            inspectorNode.assocSourceNodeId,
+            module
+          );
+          const canDrag =
+            contentSourceNode &&
+            containsNestedTreeNodeById(sourceNode.id, contentSourceNode);
           return canDrag;
         }
       },
@@ -175,9 +164,105 @@ export default (Base: React.ComponentClass<BaseNodeLayerProps>) => {
         isDragging: monitor.isDragging()
       })
     ),
+    Base => {
+      return class LayerController extends React.Component<any, any> {
+        constructor(props) {
+          super(props);
+          this.state = { editingLabel: false };
+        }
+        onLabelClick = event => {
+          this.props.dispatch(
+            sourceInspectorLayerClicked(this.props.inspectorNode, event)
+          );
+        };
+        onArrowButtonClick = event => {
+          event.stopPropagation();
+          this.props.dispatch(
+            sourceInspectorLayerArrowClicked(this.props.inspectorNode, event)
+          );
+        };
+        onLabelDoubleClick = () => {
+          if (
+            this.props.inspectorNode.name === InspectorTreeNodeName.SOURCE_REP
+          ) {
+            this.setState({ ...this.state, editingLabel: true });
+          }
+        };
+        onLabelInputKeyDown = event => {
+          if (event.key === "Enter") {
+            const label = String((event.target as any).value || "").trim();
+            this.setState({ ...this.state, editingLabel: false });
+            this.props.dispatch(
+              sourceInspectorLayerLabelChanged(
+                this.props.inspectorNode,
+                label,
+                event
+              )
+            );
+          }
+        };
+        shouldComponentUpdate(nextProps) {
+          return (
+            this.props.depth !== nextProps.depth ||
+            this.props.isSelected !== nextProps.isSelected ||
+            this.props.isHovering !== nextProps.isHovering ||
+            this.props.isOver !== nextProps.isOver ||
+            this.props.canDrop !== nextProps.canDrop ||
+            this.props.inspectorNode !== nextProps.inspectorNode ||
+            this.props.connectDragSource !== nextProps.connectDragSource ||
+            this.props.label !== nextProps.label ||
+            this.props.connectDropTarget !== nextProps.connectDropTarget ||
+            this.props.inShadow !== nextProps.inShadow ||
+            this.props.assocSourceNodeName !== nextProps.assocSourceNodeId
+          );
+        }
+        render() {
+          const {
+            depth,
+            isSelected,
+            isHovering,
+            isOver,
+            canDrop,
+            inspectorNode,
+            connectDragSource,
+            label,
+            connectDropTarget,
+            inShadow,
+            assocSourceNodeName
+          } = this.props;
+          const { editingLabel } = this.state;
+          const {
+            onLabelClick,
+            onArrowButtonClick,
+            onLabelDoubleClick,
+            onLabelInputKeyDown
+          } = this;
+
+          return (
+            <Base
+              onLabelClick={onLabelClick}
+              onArrowButtonClick={onArrowButtonClick}
+              onLabelDoubleClick={onLabelDoubleClick}
+              onLabelInputKeyDown={onLabelInputKeyDown}
+              editingLabel={editingLabel}
+              depth={depth}
+              isSelected={isSelected}
+              isHovering={isHovering}
+              connectDragSource={connectDragSource}
+              isOver={isOver}
+              canDrop={canDrop}
+              inspectorNode={inspectorNode}
+              label={label}
+              connectDropTarget={connectDropTarget}
+              inShadow={inShadow}
+              assocSourceNodeName={assocSourceNodeName}
+            />
+          );
+        }
+      };
+    },
     (Base: React.ComponentClass<BaseNodeLayerProps>) => ({
       depth = 1,
-      dispatch,
       onLabelClick,
       editingLabel,
       isSelected,
@@ -188,11 +273,11 @@ export default (Base: React.ComponentClass<BaseNodeLayerProps>) => {
       onArrowButtonClick,
       onLabelDoubleClick,
       onLabelInputKeyDown,
-      assocSourceNode,
       connectDragSource,
       label,
       connectDropTarget,
-      inShadow
+      inShadow,
+      assocSourceNodeName
     }: InnerProps) => {
       const expanded = inspectorNode.expanded;
       const isSourceRep =
@@ -223,11 +308,7 @@ export default (Base: React.ComponentClass<BaseNodeLayerProps>) => {
 
       return (
         <span>
-          <BeforeDropZone
-            style={dropZoneStyle}
-            dispatch={dispatch}
-            inspectorNode={inspectorNode}
-          />
+          <BeforeDropZone style={dropZoneStyle} inspectorNode={inspectorNode} />
           <FocusComponent focus={editingLabel}>
             {connectDropTarget(
               connectDragSource(
@@ -240,26 +321,26 @@ export default (Base: React.ComponentClass<BaseNodeLayerProps>) => {
                       editingLabel: editingLabel,
                       file:
                         isSourceRep &&
-                        assocSourceNode.name === PCSourceTagNames.MODULE,
+                        assocSourceNodeName === PCSourceTagNames.MODULE,
                       component:
                         isSourceRep &&
-                        assocSourceNode.name === PCSourceTagNames.COMPONENT,
+                        assocSourceNodeName === PCSourceTagNames.COMPONENT,
                       instance:
                         isSourceRep &&
-                        assocSourceNode.name ===
+                        assocSourceNodeName ===
                           PCSourceTagNames.COMPONENT_INSTANCE,
                       element:
                         isSourceRep &&
-                        assocSourceNode.name === PCSourceTagNames.ELEMENT,
+                        assocSourceNodeName === PCSourceTagNames.ELEMENT,
                       text:
                         isSourceRep &&
-                        assocSourceNode.name === PCSourceTagNames.TEXT,
+                        assocSourceNodeName === PCSourceTagNames.TEXT,
                       expanded,
                       selected: isSelected,
                       slot:
                         inspectorNode.name ===
                           InspectorTreeNodeName.SOURCE_REP &&
-                        assocSourceNode.name === PCSourceTagNames.SLOT,
+                        assocSourceNodeName === PCSourceTagNames.SLOT,
                       plug:
                         inspectorNode.name === InspectorTreeNodeName.CONTENT,
                       alt: inspectorNode.alt && !isSelected,
@@ -282,11 +363,7 @@ export default (Base: React.ComponentClass<BaseNodeLayerProps>) => {
               )
             )}
           </FocusComponent>
-          <AfterDropZone
-            style={dropZoneStyle}
-            dispatch={dispatch}
-            inspectorNode={inspectorNode}
-          />
+          <AfterDropZone style={dropZoneStyle} inspectorNode={inspectorNode} />
           {children}
         </span>
       );

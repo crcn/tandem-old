@@ -651,6 +651,23 @@ export const getSyntheticNodeInspectorNode = (
   );
 };
 
+export const getInspectorContentNodeContainingChild = memoize(
+  (child: InspectorNode, root: InspectorNode) => {
+    for (let i = 0, n1 = root.children.length; i < n1; i++) {
+      const module = root.children[i];
+      for (let j = 0, n2 = module.children.length; j < n2; j++) {
+        const contentNode = module.children[j];
+        if (
+          contentNode.id !== child.id &&
+          containsNestedTreeNodeById(child.id, contentNode)
+        ) {
+          return contentNode;
+        }
+      }
+    }
+  }
+);
+
 export const updateSourceInspectorNode = (
   state: RootState,
   updater: TreeNodeUpdater<any>

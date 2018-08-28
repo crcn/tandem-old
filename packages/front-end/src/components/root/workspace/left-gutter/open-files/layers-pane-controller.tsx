@@ -30,15 +30,15 @@ const generateLayersPaneContext = memoize(
     documents: SyntheticDocument[],
     selectedInspectorNodeIds: string[],
     hoveringInspectorNodeIds: string[],
-    rootSourceNodeInspector: InspectorNode,
+    rootInspectorNode: InspectorNode,
     dispatch: Dispatch
   ): LayersPaneContextProps => ({
     graph,
     document,
     documents,
+    rootInspectorNode,
     selectedInspectorNodeIds,
     hoveringInspectorNodeIds,
-    rootSourceNodeInspector,
     dispatch
   })
 );
@@ -74,15 +74,7 @@ export default compose<BaseLayersPaneProps, Props>(
             dispatch
           )}
         >
-          <OpenModule
-            selectedInspectorNodeIds={selectedInspectorNodeIds}
-            hoveringInspectorNodeIds={hoveringInspectorNodeIds}
-            inspectorNode={inspectorNode}
-            dependency={dependency}
-            dispatch={dispatch}
-            document={document}
-            graph={graph}
-          />
+          <OpenModule inspectorNode={inspectorNode} graph={graph} />
         </LayersPaneContext.Provider>
       );
     });
