@@ -45,7 +45,7 @@ import {
 } from "../../../../../../node_modules/tandem-common";
 import { BaseNodeLayerProps } from "./layer.pc";
 import { withLayersPaneContext, LayersPaneContextProps } from "./contexts";
-import { getInspectorContentNodeContainingChild } from "state";
+import { getInspectorContentNodeContainingChild } from "../../../../../state";
 
 export type Props = {
   depth?: number;

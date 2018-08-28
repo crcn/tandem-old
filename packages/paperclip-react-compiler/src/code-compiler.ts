@@ -449,7 +449,7 @@ const translateContentNode = (
       context = defineNestedObject([`_${node.id}Props`], false, context);
       context = addLineItem(`var _${node.id}Props = `, context);
       context = addLine(
-        `Object.assign(_${node.id}Props || {}, _${contentNode.id}Props._${
+        `Object.assign({}, _${node.id}StaticProps, _${contentNode.id}Props._${
           node.id
         }, _${contentNode.id}Props.${propsVarName});`,
         context
@@ -459,12 +459,12 @@ const translateContentNode = (
         context = addClassNameCheck(node.id, `_${node.id}Props`, context);
       }
 
-      context = addLine(
-        `_${node.id}Props = Object.assign({}, _${node.id}StaticProps, _${
-          node.id
-        }Props);`,
-        context
-      );
+      // context = addLine(
+      //   `_${node.id}Props = Object.assign({}, _${node.id}StaticProps, _${
+      //     node.id
+      //   }Props);`,
+      //   context
+      // );
 
       return context;
     }, context);
@@ -529,7 +529,7 @@ const addClassNameCheck = (
   context: TranslateContext
 ) => {
   context = addOpenTag(
-    `if(${varName} && ${varName}.hasOwnProperty("className")) {\n`,
+    `if(${varName}.hasOwnProperty("className")) {\n`,
     context
   );
   context = addLine(

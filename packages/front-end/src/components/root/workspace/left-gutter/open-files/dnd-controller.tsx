@@ -17,11 +17,7 @@ import {
   PCSourceTagNames,
   PCNode,
   extendsComponent,
-  SyntheticElement,
   DependencyGraph,
-  getPCNodeContentNode,
-  getSyntheticSourceNode,
-  PCModule,
   getPCNodeModule
 } from "paperclip";
 import { compose, Dispatch } from "redux";
@@ -31,7 +27,7 @@ import { shouldUpdate } from "recompose";
 import {
   getSyntheticNodeInspectorNode,
   getInspectorContentNodeContainingChild
-} from "state";
+} from "../../../../../state";
 
 export type WithNodeDropTargetProps = {
   inspectorNode: InspectorNode;
