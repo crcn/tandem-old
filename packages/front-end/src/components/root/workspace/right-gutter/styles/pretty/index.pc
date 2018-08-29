@@ -308,7 +308,9 @@
           "is": "bcda9fb597947",
           "name": "component-instance",
           "attributes": {},
-          "style": {},
+          "style": {
+            "display": "none"
+          },
           "children": [],
           "metadata": {},
           "label": "Filters Pane"
@@ -330,7 +332,7 @@
           "left": 327.9970896317676,
           "top": 112,
           "right": 576.9970896317676,
-          "bottom": 1945.3990419729894
+          "bottom": 2951.4628500606377
         }
       },
       "controllers": [

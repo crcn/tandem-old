@@ -79,7 +79,7 @@ export default compose(
       onSpectrumChangeComplete: colorChangeCompleteCallback(updateHue),
       onOpacityChange: colorChangeCallback(updateOpacity),
       onOpacityChangeComplete: colorChangeCompleteCallback(updateOpacity),
-      onRGBAInputChange: ({ onChange, setHSLA }) => rgba => {
+      onRGBAInputChange: ({ setHSLA }) => rgba => {
         setHSLA(rgbaToHsla(rgba));
       }
     };
@@ -219,13 +219,11 @@ const updateHue = (rgba: RGBA, [, s, l, a]: HSLA) => [
   a
 ];
 const updateHSLA = (rgba: RGBA, [h, , , a]: HSLA) => {
+  console.log(rgba);
   const [, s, l] = rgbaToHsla(rgba);
   return [h, s, l, a];
 };
 
-const calcGGBAHueFromString = memoize((value: string) =>
-  calcGGBAHue(parseRGBA(value))
-);
 const calcGGBAHue = (rgba: RGBA) => rgbaToHsla(rgba)[0] * 360;
 
 const rgbaToHsla = ([r, g, b, a]: RGBA) => {
@@ -316,8 +314,6 @@ const rgbToHsv = ([r, g, b]: RGBA) => {
 };
 
 const hslToHsv = (hsl: HSLA) => rgbToHsv(hslaToRgba(hsl));
-
-const getColorHSL = memoize(color => rgbaToHsla(parseRGBA(color)));
 
 const parseRGBA = memoize(
   (value: string): RGBA => {

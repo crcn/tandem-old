@@ -2,7 +2,7 @@ import * as React from "react";
 import { noop } from "lodash";
 import { startDOMDrag, Point } from "tandem-common";
 import { compose, pure, withHandlers, withState, lifecycle } from "recompose";
-import { BaseColorPickerProps, BasePickerProps } from "./picker.pc";
+import { BasePickerProps } from "./picker.pc";
 
 export enum GrabberAxis {
   X = 1,
@@ -37,11 +37,14 @@ export default compose(
       ) => {
         setCanvas((_canvas = canvas));
         if (canvas) {
-          const {
-            width,
-            height
-          } = canvas.parentElement.getBoundingClientRect();
-          draw(canvas, width, height);
+          // need to set immediate to ensure that canvas is actually mounted
+          setImmediate(() => {
+            const {
+              width,
+              height
+            } = canvas.parentElement.getBoundingClientRect();
+            draw(canvas, width, height);
+          });
         }
       },
       onMouseDown: ({
@@ -73,6 +76,7 @@ export default compose(
             const imageData = _canvas
               .getContext("2d")
               .getImageData(point.left, point.top, 1, 1).data;
+
             callback(imageData);
           }
 
@@ -97,13 +101,23 @@ export default compose(
       value
     }: InnerProps) {
       if (canvas && this.props.draw !== draw) {
-        const { width, height } = canvas.parentElement.getBoundingClientRect();
-        this.props.draw(canvas, width, height);
+        setImmediate(() => {
+          const {
+            width,
+            height
+          } = canvas.parentElement.getBoundingClientRect();
+          this.props.draw(canvas, width, height);
+        });
       }
 
       if (canvas && this.props.value !== value) {
-        const { width, height } = canvas.parentElement.getBoundingClientRect();
-        setGrabberPoint(getGraggerPoint(this.props.value, width, height));
+        setImmediate(() => {
+          const {
+            width,
+            height
+          } = canvas.parentElement.getBoundingClientRect();
+          setGrabberPoint(getGraggerPoint(this.props.value, width, height));
+        });
       }
     }
   }),

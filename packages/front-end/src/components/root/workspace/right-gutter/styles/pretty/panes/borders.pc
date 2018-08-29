@@ -684,7 +684,8 @@
                 "box-sizing": "border-box",
                 "display": "flex",
                 "align-items": "center",
-                "justify-content": "space-between"
+                "justify-content": "space-between",
+                "background": "rgba(200, 200, 200, 1),rgba(200, 200, 200, 1),rgba(200, 200, 200, 1),rgba(200, 200, 200, 1)"
               },
               "children": [
                 {
@@ -1031,7 +1032,8 @@
                           "right": 1065,
                           "bottom": 460
                         }
-                      }
+                      },
+                      "label": ""
                     },
                     {
                       "id": "59d211a8327",
@@ -1099,7 +1101,8 @@
                   "right": 688.4524790701034,
                   "bottom": 372
                 }
-              }
+              },
+              "label": "toggler"
             }
           ],
           "metadata": {}

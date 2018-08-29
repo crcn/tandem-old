@@ -105,9 +105,7 @@ export default compose<InnerProps, Props>(
     onRemoveButtonClick,
     onItemClick,
     onChange,
-    onChangeComplete,
-    inset,
-    value
+    inset
   }) => {
     if (!selectedNodes || selectedNodes.length === 0) {
       return null;
@@ -126,7 +124,6 @@ export default compose<InnerProps, Props>(
             value={info}
             onBackgroundClick={() => onItemClick(index)}
             onChange={value => onChange(value, index)}
-            onChangeComplete={value => onChangeComplete(value, index)}
           />
         ) : null;
       })
@@ -160,11 +157,9 @@ const parseBoxShadows = memoize(
     )
       .map(shadow => {
         const inset = shadow.indexOf("inset") !== -1;
-        const [x, y, blur, spread, color] = shadow
-          .replace(/inset\s*/, "")
-          .trim()
-          .split(" ");
-        console.log(shadow);
+        const [, , x, y, blur, spread, color] = shadow.match(
+          /(inset\s)?([^\s]+)\s([^\s]+)\s([^\s]+)\s([^\s]+)\s(.*)/
+        );
         return {
           inset: Boolean(inset),
           x,

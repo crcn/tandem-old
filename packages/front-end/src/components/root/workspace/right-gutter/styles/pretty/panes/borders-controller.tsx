@@ -37,14 +37,16 @@ export default compose<InnerProps, Props>(
     if (!selectedNodes) {
       return null;
     }
+    const selectedNode = selectedNodes[0];
     return (
       <Base
         borderStylingProps={{
-          selectedNode: selectedNodes[0],
+          selectedNode,
           onPropertyChange,
           onPropertyChangeComplete
         }}
         bottomLeftRadiusInputProps={{
+          value: selectedNode.style["border-bottom-left-radius"],
           onChange: propertyChangeCallback(
             "border-bottom-left-radius",
             onPropertyChange
@@ -55,6 +57,7 @@ export default compose<InnerProps, Props>(
           )
         }}
         bottomRightRadiusInputProps={{
+          value: selectedNode.style["border-bottom-right-radius"],
           onChange: propertyChangeCallback(
             "border-bottom-right-radius",
             onPropertyChange
@@ -65,6 +68,7 @@ export default compose<InnerProps, Props>(
           )
         }}
         topLeftRadiusInputProps={{
+          value: selectedNode.style["border-top-left-radius"],
           onChange: propertyChangeCallback(
             "border-top-left-radius",
             onPropertyChange
@@ -75,6 +79,7 @@ export default compose<InnerProps, Props>(
           )
         }}
         topRightRadiusInputProps={{
+          value: selectedNode.style["border-top-right-radius"],
           onChange: propertyChangeCallback(
             "border-top-right-radius",
             onPropertyChange

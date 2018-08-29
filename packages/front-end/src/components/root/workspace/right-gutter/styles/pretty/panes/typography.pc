@@ -615,6 +615,31 @@
                           "value": {},
                           "name": "override",
                           "children": []
+                        },
+                        {
+                          "slotId": "e73029b416045",
+                          "id": "a05ecb4e930",
+                          "children": [
+                            {
+                              "id": "a05ecb4e929",
+                              "is": "7149f8199122",
+                              "name": "component-instance",
+                              "attributes": {},
+                              "style": {},
+                              "children": [],
+                              "metadata": {
+                                "bounds": {
+                                  "left": 384,
+                                  "top": 298,
+                                  "right": 484,
+                                  "bottom": 327.0358087589019
+                                }
+                              },
+                              "label": "size input"
+                            }
+                          ],
+                          "metadata": {},
+                          "name": "plug"
                         }
                       ],
                       "metadata": {},
@@ -770,9 +795,9 @@
                       "attributes": {},
                       "style": {
                         "height": "16px",
-                        "position": "absolute",
                         "right": "0",
-                        "opacity": "0.6"
+                        "opacity": "0.6",
+                        "display": "none"
                       },
                       "children": [],
                       "metadata": {}

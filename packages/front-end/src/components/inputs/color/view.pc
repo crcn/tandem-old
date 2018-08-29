@@ -68,21 +68,29 @@
               "id": "7057aee112557",
               "children": [
                 {
-                  "id": "ddec6a12260453",
-                  "variant": {},
-                  "is": "67e386c762",
-                  "name": "component-instance",
-                  "attributes": {},
-                  "style": {},
-                  "children": [],
-                  "metadata": {
-                    "bounds": {
-                      "left": 135,
-                      "top": 356,
-                      "right": 442.7928111413887,
-                      "bottom": 604.3866802446275
+                  "id": "6a8da795139",
+                  "children": [
+                    {
+                      "id": "ddec6a12260453",
+                      "variant": {},
+                      "is": "67e386c762",
+                      "name": "component-instance",
+                      "attributes": {},
+                      "style": {},
+                      "children": [],
+                      "metadata": {
+                        "bounds": {
+                          "left": 135,
+                          "top": 356,
+                          "right": 442.7928111413887,
+                          "bottom": 604.3866802446275
+                        }
+                      }
                     }
-                  }
+                  ],
+                  "metadata": {},
+                  "name": "slot",
+                  "label": "content"
                 }
               ],
               "metadata": {},

@@ -18,7 +18,7 @@
           "targetIdPath": [
             "b6c162d1281"
           ],
-          "value": "code",
+          "value": "custom CSS",
           "name": "override",
           "children": []
         },

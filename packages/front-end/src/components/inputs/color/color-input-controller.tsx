@@ -8,14 +8,12 @@ export type Props = {
   value: any;
   onChange: any;
   onChangeComplete: any;
-};
+} & BaseColorInputProps;
 
 type InnerProps = {
   open: boolean;
   setOpen: any;
   onButtonClick: any;
-  onFocus: any;
-  onBlur: any;
   onShouldClose: any;
 } & Props;
 
@@ -26,8 +24,6 @@ export default compose<BaseColorInputProps, Props>(
     onButtonClick: ({ open, setOpen }) => () => {
       setOpen(!open);
     },
-    onFocus: ({ setOpen }) => () => {},
-    onBlur: ({ setOpen }) => () => {},
     onShouldClose: ({ setOpen }) => () => {
       setOpen(false);
     }
@@ -36,8 +32,6 @@ export default compose<BaseColorInputProps, Props>(
     open,
     value,
     onButtonClick,
-    onFocus,
-    onBlur,
     onChange,
     onChangeComplete,
     onShouldClose,
@@ -61,8 +55,6 @@ export default compose<BaseColorInputProps, Props>(
         buttonProps={{
           tabIndex: 0,
           onClick: onButtonClick,
-          onFocus,
-          onBlur,
           style: {
             background: value || "transparent"
           }
@@ -71,9 +63,7 @@ export default compose<BaseColorInputProps, Props>(
           open,
           onShouldClose
         }}
-        // contentProps={{
-        //   children: popdownChildren
-        // }}
+        content={popdownChildren}
       />
     );
   }

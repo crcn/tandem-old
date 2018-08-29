@@ -135,15 +135,14 @@ export default compose(
           value: node.style["text-align"],
           onChange: propertyChangeCallback("text-align", onPropertyChange)
         }}
-        // sizeInputProps={{
-        //   options: FONT_FAMILIES,
-        //   value: node.style["font-size"],
-        //   onChange: propertyChangeCallback("font-size", onPropertyChange),
-        //   onChangeComplete: propertyChangeCallback(
-        //     "font-size",
-        //     onPropertyChangeComplete
-        //   )
-        // }}
+        sizeInputProps={{
+          value: node.style["font-size"],
+          onChange: propertyChangeCallback("font-size", onPropertyChange),
+          onChangeComplete: propertyChangeCallback(
+            "font-size",
+            onPropertyChangeComplete
+          )
+        }}
         colorInputProps={{
           value: node.style.color,
           onChange: propertyChangeCallback("color", onPropertyChange),

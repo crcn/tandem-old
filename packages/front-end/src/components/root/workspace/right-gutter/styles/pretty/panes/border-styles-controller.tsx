@@ -70,11 +70,11 @@ export default compose<InnerProps, Props>(
           all: borderStyling === TOGGLE_OPTION.ALL,
           individual: borderStyling === TOGGLE_OPTION.INDIVIDUAL
         })}
-        // togglerProps={{
-        //   value: borderStyling,
-        //   options: TOGGLE_OPTIONS,
-        //   onChange: onStyleToggleChangeComplete
-        // }}
+        togglerProps={{
+          value: borderStyling,
+          options: TOGGLE_OPTIONS,
+          onChange: onStyleToggleChangeComplete
+        }}
         borderInputProps={{
           value: selectedNode.style.border,
           onChange: propertyChangeCallback("border", onPropertyChange),

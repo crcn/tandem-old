@@ -3,10 +3,12 @@ IMMEDIATE:
 - fix style pane props
 
   - fix components
-  - tyopgraphy audit
-  - backgrounds audit
-  - borders audit
-  - fix color input
+
+- style inheritence
+
+  - bolden label to indicate override
+  - hover over label should show parent
+  - fill in typography with parent props
 
 - redesign variants pane
 
@@ -14,6 +16,7 @@ IMMEDIATE:
 
   - all layers must be expose. For component instances, take component label
   - shortcuts shouldn't be triggered when keys are pressed
+  - unsaved files indicator
 
 - fix controllers pane
 
