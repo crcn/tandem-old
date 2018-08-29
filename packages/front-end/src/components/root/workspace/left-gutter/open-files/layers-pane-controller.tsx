@@ -64,6 +64,7 @@ export default compose<BaseLayersPaneProps, Props>(
       );
       return (
         <LayersPaneContext.Provider
+          key={sourceNode.id}
           value={generateLayersPaneContext(
             graph,
             document,
