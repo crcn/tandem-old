@@ -1,8 +1,6 @@
 IMMEDIATE:
 
-- fix style pane props
-
-  - fix components
+- fix inheritence pane
 
 - style inheritence
 
