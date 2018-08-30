@@ -37,8 +37,11 @@ export default (Base: React.ComponentClass<BaseDropdownProps>) => {
         filter: null
       };
     }
-    onClick = () => {
+    onClick = event => {
       this.setState({ ...this.state, open: !this.state.open });
+      if (this.props.onClick) {
+        this.props.onClick(event);
+      }
     };
     onFilterChange = value => {
       this.setState({ ...this.state, filter: value });
@@ -67,6 +70,7 @@ export default (Base: React.ComponentClass<BaseDropdownProps>) => {
         value,
         options = EMPTY_ARRAY,
         filterable,
+        onClick,
         onChange,
         onChangeComplete,
         ...rest

@@ -50,7 +50,6 @@ export default compose<any, Props>(
           document.addEventListener(
             "scroll",
             (this._scrollListener = event => {
-              console.log(event);
               if (!container.contains(event.target)) {
                 onShouldClose(event);
               }

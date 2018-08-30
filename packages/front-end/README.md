@@ -1,6 +1,6 @@
 IMMEDIATE:
 
-- fix inheritence pane
+- stykes need to be merged together (like figma)
 
 - style inheritence
 

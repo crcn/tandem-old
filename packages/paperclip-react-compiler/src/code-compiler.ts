@@ -278,6 +278,9 @@ const getInheritedStyle = (
 
   return componentIds.reduce((style, componentId) => {
     const component = getPCNode(componentId, context.graph) as PCComponent;
+    if (!component) {
+      return style;
+    }
     const compStyle =
       computed[componentId] ||
       (computed[componentId] = {

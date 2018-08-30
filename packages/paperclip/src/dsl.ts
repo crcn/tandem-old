@@ -774,13 +774,18 @@ export const computePCNodeStyle = memoize(
 
     const inheritStyleComponentIds = Object.keys(
       node.inheritStyle || EMPTY_OBJECT
-    ).sort((a, b) => {
-      return node.inheritStyle[a].priority > node.inheritStyle[b].priority
-        ? 1
-        : -1;
-    });
+    )
+      .filter(key => node.inheritStyle[key])
+      .sort((a, b) => {
+        return node.inheritStyle[a].priority > node.inheritStyle[b].priority
+          ? 1
+          : -1;
+      });
     for (let i = 0, { length } = inheritStyleComponentIds; i < length; i++) {
       const inheritComponent = componentRefs[inheritStyleComponentIds[i]];
+      if (!inheritComponent) {
+        continue;
+      }
       Object.assign(style, computePCNodeStyle(inheritComponent, componentRefs));
     }
 

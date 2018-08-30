@@ -34,7 +34,7 @@ const onError = error => {
     `An unknown error occured, please save changes and restart Tandem. Details:\n${error}`
   );
 };
-// window.onerror = onError;
+window.onerror = onError;
 
 export const setup = <TState extends RootState>(
   createSideEffects: SideEffectCreator,
