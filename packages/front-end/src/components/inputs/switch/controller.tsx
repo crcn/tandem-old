@@ -11,7 +11,12 @@ export type Props = CheckboxProps;
 
 export default compose<BaseSwitchProps, CheckboxProps>(
   checkboxController,
-  (Base: React.ComponentClass<BaseSwitchProps>) => ({ value, ...rest }) => {
+  (Base: React.ComponentClass<BaseSwitchProps>) => ({
+    value,
+    onChange,
+    onChangeComplete,
+    ...rest
+  }) => {
     return <Base variant={cx({ on: value })} {...rest} />;
   }
 );

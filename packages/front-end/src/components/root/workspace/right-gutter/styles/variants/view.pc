@@ -431,26 +431,6 @@
       "controllers": [
         "./controller.tsx"
       ]
-    },
-    {
-      "label": "Variants 2",
-      "is": "div",
-      "style": {
-        "box-sizing": "border-box",
-        "display": "block"
-      },
-      "attributes": {},
-      "id": "b8ec9f9d91551",
-      "name": "component",
-      "children": [],
-      "metadata": {
-        "bounds": {
-          "left": 682,
-          "top": 375,
-          "right": 1060.026339416076,
-          "bottom": 647.6727037626173
-        }
-      }
     }
   ]
 }

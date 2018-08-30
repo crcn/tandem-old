@@ -3,17 +3,15 @@ import { compose, pure, withHandlers } from "recompose";
 
 export type Props = {
   value: boolean;
+  onChange?: (value: boolean) => any;
   onChangeComplete?: (value: boolean) => any;
 };
 
-type InnerProps = {
-  onClick: any;
-} & Props;
+export default (Base: React.ComponentClass<any>) => {
+  return class CheckboxController extends React.Component<Props> {
+    onClick = event => {
+      const { value, onChange, onChangeComplete } = this.props;
 
-export default compose<any, Props>(
-  pure,
-  withHandlers({
-    onClick: ({ value, onChange, onChangeComplete }) => event => {
       event.stopPropagation();
       if (onChange) {
         onChange(value);
@@ -21,9 +19,28 @@ export default compose<any, Props>(
       if (onChangeComplete) {
         onChangeComplete(!value);
       }
+    };
+
+    render() {
+      return <Base onClick={this.onClick} {...this.props} />;
     }
-  }),
-  (Base: React.ComponentClass<any>) => ({ onClick, ...rest }: InnerProps) => {
-    return <Base onClick={onClick} {...rest} />;
-  }
-);
+  };
+};
+
+// export default compose<any, Props>(
+//   pure,
+//   withHandlers({
+//     onClick: ({ value, onChange, onChangeComplete }) => event => {
+//       event.stopPropagation();
+//       if (onChange) {
+//         onChange(value);
+//       }
+//       if (onChangeComplete) {
+//         onChangeComplete(!value);
+//       }
+//     }
+//   }),
+//   (Base: React.ComponentClass<any>) => ({ onClick, onChange, onChangeComplete, ...rest }: InnerProps) => {
+//     return <Base onClick={onClick} {...rest} />;
+//   }
+// );

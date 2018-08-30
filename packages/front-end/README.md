@@ -1,6 +1,7 @@
 IMMEDIATE:
 
-- stykes need to be merged together (like figma)
+- instance pane
+- reset styles button
 
 - style inheritence
 
