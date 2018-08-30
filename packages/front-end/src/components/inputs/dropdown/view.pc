@@ -621,6 +621,29 @@
               ],
               "metadata": {},
               "name": "plug"
+            },
+            {
+              "id": "188d32b51262",
+              "variantId": null,
+              "propertyName": "text",
+              "targetIdPath": [
+                "67e386c7935"
+              ],
+              "value": "variant",
+              "name": "override",
+              "children": []
+            },
+            {
+              "id": "188d32b58761",
+              "propertyName": "style",
+              "targetIdPath": [
+                "8b8bbe2c232831"
+              ],
+              "value": {
+                "border": "1px none rgba(0,0,0,0.08)"
+              },
+              "name": "override",
+              "children": []
             }
           ],
           "metadata": {

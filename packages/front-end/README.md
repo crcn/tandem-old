@@ -1,34 +1,44 @@
 IMMEDIATE:
 
-- instance pane
-- reset styles button
+- text overrides isn't working
+  - try dropdown instance
+- style overrides not working
+  - try dropdown instance
+- double clicking instances throws exception
+- variant redesign
 
-- style inheritence
+* instance pane (like Figma)
+
+  - reset styles button
+  - move variant to here
+
+* style inheritence
 
   - bolden label to indicate override
   - hover over label should show parent
   - fill in typography with parent props
 
-- redesign variants pane
+* redesign variants pane
 
-- UX
+* UX
 
   - all layers must be expose. For component instances, take component label
   - shortcuts shouldn't be triggered when keys are pressed
   - unsaved files indicator
+  - select parent hotkey
 
-- fix controllers pane
+* fix controllers pane
 
-- prepare for online usage
+* prepare for online usage
 
   - edit code in app
   - preview tab
   - "download app" button
 
-- update variant input
+* update variant input
   - not toggleable
 
-* start redesign (dark)
+- start redesign (dark)
 
 UX PROBLEMS:
 

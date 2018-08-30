@@ -19,13 +19,30 @@
       "name": "component",
       "children": [
         {
+          "id": "188d32b534276",
+          "is": "188d32b514087",
+          "name": "component-instance",
+          "attributes": {},
+          "style": {},
+          "children": [],
+          "metadata": {
+            "bounds": {
+              "left": 709.309086516917,
+              "top": 545.9076372461777,
+              "right": 891.7890969121189,
+              "bottom": 646.3736260054727
+            }
+          }
+        },
+        {
           "id": "45055e8e6",
           "variant": {},
           "is": "6a863e8620",
           "name": "component-instance",
           "attributes": {},
           "style": {
-            "flex-shrink": "0"
+            "flex-shrink": "0",
+            "display": "none"
           },
           "children": [
             {
@@ -267,34 +284,15 @@
       ],
       "metadata": {
         "bounds": {
-          "left": 247,
-          "top": 135,
-          "right": 678.1147377325349,
-          "bottom": 1060.3158388258707
+          "left": 248,
+          "top": 134,
+          "right": 679.1147377325349,
+          "bottom": 1059.3158388258707
         }
       },
       "controllers": [
         "./controller.tsx"
       ]
-    },
-    {
-      "label": "Component Instance Variant",
-      "is": "div",
-      "style": {
-        "box-sizing": "border-box"
-      },
-      "attributes": {},
-      "id": "42a77ed14",
-      "name": "component",
-      "children": [],
-      "metadata": {
-        "bounds": {
-          "left": 784,
-          "top": 294,
-          "right": 1056.9168939115639,
-          "bottom": 490.8751273119002
-        }
-      }
     }
   ]
 }
