@@ -49,6 +49,7 @@ const evaluateModule = memoize(
       module.children.map(child => {
         return usedRenderers[`_${child.id}`](
           child.id,
+          null,
           EMPTY_OBJECT,
           EMPTY_OBJECT,
           EMPTY_OBJECT,

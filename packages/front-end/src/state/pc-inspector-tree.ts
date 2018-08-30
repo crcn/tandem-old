@@ -20,8 +20,9 @@ import {
   patchTreeNode,
   getSlotPlug,
   getPCNodeModule,
-  PCOverridablePropertyName,
-  PCChildrenOverride
+  getSyntheticSourceMap,
+  getSyntheticDocumentsSourceMap,
+  getSyntheticNodeById
 } from "paperclip";
 
 import {
@@ -36,7 +37,8 @@ import {
   findTreeNodeParent,
   appendChildNode,
   updateNestedNodeTrail,
-  getTreeNodePath
+  getTreeNodePath,
+  getNestedTreeNodeById
 } from "tandem-common";
 // import { SyntheticNode, PCNode, PCModule, PCComponent, DependencyGraph, PCComponentInstanceElement, PCSourceTagNames, PCOverride, PCChildrenOverride } from "paperclip";
 
@@ -398,27 +400,18 @@ export const getSyntheticInspectorNode = memoize(
 export const getInspectorSyntheticNode = memoize(
   (
     node: InspectorNode,
-    documents: SyntheticDocument[],
-    graph: DependencyGraph
+    documents: SyntheticDocument[]
   ): SyntheticVisibleNode => {
-    const instancePath: string = node.instancePath;
+    const instancePath = node.instancePath;
+    const nodePath =
+      (node.instancePath ? instancePath + "." : "") + node.assocSourceNodeId;
 
-    // PERF TODO - this is probably abysmal
-    for (const document of documents) {
-      const syntheticNode = findNestedNode(document, (child: SyntheticNode) => {
-        return (
-          getSyntheticInstancePath(child, document, graph).join(".") ===
-            instancePath && child.sourceNodeId === node.assocSourceNodeId
-        );
-      });
-
-      if (syntheticNode) {
-        return syntheticNode;
-      }
-    }
+    const sourceMap = getSyntheticDocumentsSourceMap(documents);
 
     // doesn't exist for root, shadows, or content nodes
-    return null;
+    const syntheticNodeId = sourceMap[nodePath];
+
+    return syntheticNodeId && getSyntheticNodeById(syntheticNodeId, documents);
   }
 );
 

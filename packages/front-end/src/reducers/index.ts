@@ -653,8 +653,7 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
 
       const assocSyntheticNode = getInspectorSyntheticNode(
         node,
-        state.documents,
-        state.graph
+        state.documents
       );
 
       state = updateRootState(
@@ -1787,7 +1786,7 @@ const handleLoadedDroppedItem = (
     }
   } else if (isInspectorNode(item)) {
     sourceNode = getSyntheticSourceNode(
-      getInspectorSyntheticNode(item, state.documents, state.graph),
+      getInspectorSyntheticNode(item, state.documents),
       state.graph
     ) as PCVisibleNode;
   } else {
@@ -1993,6 +1992,7 @@ const shortcutReducer = (state: RootState, action: Action): RootState => {
       }
     }
     case SHORTCUT_DELETE_KEY_DOWN: {
+      const now = Date.now();
       if (
         isInputSelected(state) ||
         state.selectedInspectorNodeIds.length === 0
@@ -2041,8 +2041,7 @@ const shortcutReducer = (state: RootState, action: Action): RootState => {
             }
             const syntheticNode = getInspectorSyntheticNode(
               inspectorNode,
-              state.documents,
-              state.graph
+              state.documents
             );
             return persistSyntheticVisibleNodeStyle(
               { display: "none" },
@@ -2051,11 +2050,9 @@ const shortcutReducer = (state: RootState, action: Action): RootState => {
               state
             );
           }
-
           const assocSyntheticNode = getInspectorSyntheticNode(
             inspectorNode,
-            state.documents,
-            state.graph
+            state.documents
           );
 
           if (assocSyntheticNode) {
@@ -2088,8 +2085,7 @@ const shortcutReducer = (state: RootState, action: Action): RootState => {
         );
         const assocSyntheticNode = getInspectorSyntheticNode(
           nextInspectorNode,
-          state.documents,
-          state.graph
+          state.documents
         );
         if (assocSyntheticNode) {
           state = setSelectedSyntheticVisibleNodeIds(
@@ -2106,6 +2102,7 @@ const shortcutReducer = (state: RootState, action: Action): RootState => {
       }
     }
   }
+
   return state;
 };
 

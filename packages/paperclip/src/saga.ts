@@ -72,7 +72,6 @@ export const createPaperclipSaga = ({ createRuntime }: PaperclipSagaOptions) =>
         if (fsCacheBusy(state.fileCache)) {
           continue;
         }
-
         rt.setGraph(state.graph);
       }
     }

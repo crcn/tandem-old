@@ -153,8 +153,7 @@ const calcInspectorNodeBounds = memoize(
   ): Bounds => {
     const assocSyntheticNode = getInspectorSyntheticNode(
       inspectorNode,
-      documents,
-      graph
+      documents
     );
 
     if (assocSyntheticNode) {
@@ -186,8 +185,7 @@ const calcInspectorNodeBounds = memoize(
         .map(child => {
           const assocChildSyntheticNode = getInspectorSyntheticNode(
             child,
-            documents,
-            graph
+            documents
           );
           return (
             assocChildSyntheticNode &&

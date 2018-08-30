@@ -30,6 +30,7 @@ import { SyntheticElement } from "./synthetic";
 export type VanillaPCRenderers = KeyValue<VanillaPCRenderer>;
 export type VanillaPCRenderer = (
   instanceSourceNodeId: string,
+  instancePath: string,
   attributes: any,
   style: any,
   overrides: any,
@@ -85,8 +86,9 @@ const translateContentNode = memoize(
     buffer += translateStaticOverrides(node as PCComponent);
     buffer += translateStaticVariants(node);
 
-    buffer += `return function(instanceSourceNodeId, attributes, style, overrides, components) {
+    buffer += `return function(instanceSourceNodeId, instancePath, attributes, style, overrides, components) {
       ${translateVariants(node)}
+      var childInstancePath = instancePath == null ? "" : (instancePath ? instancePath + "." : "") + instanceSourceNodeId;
       return ${translateVisibleNode(node, true)};
     }`;
 
@@ -105,6 +107,8 @@ const translateVisibleNode = memoize(
       if (extendsComponent(node)) {
         return `components._${node.is}(${
           isContentNode ? "instanceSourceNodeId" : `"${node.id}"`
+        }, ${
+          isContentNode ? 'instancePath || ""' : "childInstancePath"
         }, ${translateDynamicAttributes(
           node,
           isContentNode
@@ -117,6 +121,9 @@ const translateVisibleNode = memoize(
       return `{
       id: generateUID(),
       sourceNodeId: ${isContentNode ? "instanceSourceNodeId" : `"${node.id}"`},
+      instancePath: ${
+        isContentNode ? 'instancePath || ""' : `childInstancePath`
+      },
       name: "${node.is}",
       style: ${translateDynamicStyle(node, isContentNode)},
       metadata: EMPTY_OBJECT,
@@ -131,6 +138,7 @@ const translateVisibleNode = memoize(
       id: generateUID(),
       sourceNodeId: "${node.id}",
       style: ${translateDynamicStyle(node, isContentNode)},
+      instancePath: childInstancePath,
       metadata: EMPTY_OBJECT,
       name: "text",
       value: overrides._${node.id}Value || ${JSON.stringify(node.value)},

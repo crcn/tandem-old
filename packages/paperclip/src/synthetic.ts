@@ -44,18 +44,15 @@ export type SyntheticBaseNode = {
 } & TreeNode<string>;
 
 export type SyntheticDocument = {
+  instancePath?: string;
   children: SyntheticVisibleNode[];
 } & SyntheticBaseNode;
 
 // TODO
 export type SyntheticStyleSheet = {};
 
-export type SyntheticContentNode = {
-  stylesheets: SyntheticStyleSheet[];
-  children: SyntheticVisibleNode[];
-} & SyntheticBaseNode;
-
 export type SyntheticElement = {
+  instancePath: string;
   attributes: KeyValue<string>;
   style: KeyValue<any>;
   children: Array<SyntheticVisibleNode | PCOverride>;
@@ -63,9 +60,11 @@ export type SyntheticElement = {
 
 export type SyntheticInstanceElement = {
   variant: KeyValue<boolean>;
+  instancePath: string;
 } & SyntheticElement;
 
 export type SyntheticTextNode = {
+  instancePath: string;
   value: string;
   style: KeyValue<any>;
   children: Array<PCOverride>;
@@ -87,57 +86,6 @@ export const createSytheticDocument = (
   sourceNodeId,
   name: SYNTHETIC_DOCUMENT_NODE_NAME,
   children: children || EMPTY_ARRAY
-});
-
-export const createSyntheticElement = (
-  name: string,
-  sourceNodeId: string,
-  style: KeyValue<any> = EMPTY_OBJECT,
-  attributes: KeyValue<string> = EMPTY_OBJECT,
-  children: SyntheticVisibleNode[] = EMPTY_ARRAY,
-  metadata?: KeyValue<any>
-): SyntheticElement => ({
-  id: generateUID(),
-  metadata: metadata || EMPTY_OBJECT,
-  sourceNodeId,
-  name,
-  attributes: attributes || EMPTY_OBJECT,
-  style: style || EMPTY_OBJECT,
-  children: children || EMPTY_ARRAY
-});
-export const createSyntheticInstanceElement = (
-  name: string,
-  sourceNodeId: string,
-  style: KeyValue<any> = EMPTY_OBJECT,
-  variant: KeyValue<boolean>,
-  attributes: KeyValue<string> = EMPTY_OBJECT,
-  children: SyntheticVisibleNode[] = EMPTY_ARRAY,
-  metadata?: KeyValue<any>
-): SyntheticInstanceElement => ({
-  id: generateUID(),
-  metadata: metadata || EMPTY_OBJECT,
-  variant,
-  sourceNodeId,
-  name,
-  attributes: attributes || EMPTY_OBJECT,
-  style: style || EMPTY_OBJECT,
-  children: children || EMPTY_ARRAY
-});
-
-export const createSyntheticTextNode = (
-  value: string,
-  sourceNodeId: string,
-  style: KeyValue<any> = EMPTY_OBJECT,
-  label?: string,
-  metadata?: KeyValue<any>
-): SyntheticTextNode => ({
-  id: generateUID(),
-  metadata: metadata || EMPTY_OBJECT,
-  value,
-  sourceNodeId,
-  name: PCSourceTagNames.TEXT,
-  style,
-  children: EMPTY_ARRAY
 });
 
 /*------------------------------------------
@@ -466,6 +414,45 @@ export const getSyntheticInstancePath = memoize(
 
     // only want instance path, so strip initial source node ID
     return nodePath.slice(1).reverse();
+  }
+);
+
+export type SyntheticInstanceMap = {
+  [identifier: string]: string[];
+};
+
+export const getSyntheticSourceMap = memoize(
+  (current: SyntheticVisibleNode | SyntheticDocument) => {
+    return Object.assign({}, ...getSyntheticSourceFlatMap(current));
+  }
+);
+
+export const getSyntheticDocumentsSourceMap = memoize(
+  (documents: SyntheticDocument[]) => {
+    const flatMap = [];
+    for (let i = 0, { length } = documents; i < length; i++) {
+      flatMap.push(getSyntheticSourceMap(documents[i]));
+    }
+    return Object.assign({}, ...flatMap);
+  }
+);
+
+const getSyntheticSourceFlatMap = memoize(
+  (current: SyntheticVisibleNode | SyntheticDocument) => {
+    const path = current.instancePath
+      ? current.instancePath + "." + current.sourceNodeId
+      : current.sourceNodeId;
+    const map = { [path]: current.id };
+    const flatMap = [map];
+    for (let i = 0, { length } = current.children; i < length; i++) {
+      flatMap.push(
+        ...getSyntheticSourceFlatMap(current.children[
+          i
+        ] as SyntheticVisibleNode)
+      );
+    }
+
+    return flatMap;
   }
 );
 
