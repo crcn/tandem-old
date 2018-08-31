@@ -80,6 +80,12 @@ import { convertFixedBoundsToRelative } from "./synthetic-layout";
 import { diffTreeNode, patchTreeNode } from "./ot";
 import { evaluateDependencyGraph } from "./evaluate2";
 import { FSSandboxRootState } from "fsbox";
+import {
+  InspectorNode,
+  getInspectorSourceNode,
+  inspectorNodeInShadow
+} from "./inspector";
+import { getInspectorContentNodeContainingChild } from "state";
 
 /*------------------------------------------
  * CONSTANTS
@@ -112,6 +118,7 @@ export type PCNodeClip = {
 
 // namespaced to ensure that key doesn't conflict with others
 export type PCEditorState = {
+  sourceNodeInspector: InspectorNode;
   inEdit?: boolean;
   documents: SyntheticDocument[];
 
@@ -929,10 +936,10 @@ export const persistChangeSyntheticTextNodeValue = <
   TState extends PCEditorState
 >(
   value: string,
-  node: SyntheticTextNode,
+  node: InspectorNode,
   state: TState
 ) => {
-  const updatedNode = maybeOverride(
+  const updatedNode = maybeOverride2(
     PCOverridablePropertyName.TEXT,
     value,
     null,
@@ -941,7 +948,7 @@ export const persistChangeSyntheticTextNodeValue = <
       ...sourceNode,
       value
     })
-  )(node, state.documents, state.graph);
+  )(node, state.sourceNodeInspector, state.graph);
 
   state = replaceDependencyGraphPCNode(updatedNode, updatedNode, state);
   return state;
@@ -961,7 +968,40 @@ export const persistChangeElementType = <TState extends PCEditorState>(
   return state;
 };
 
-// TODO: test me, I'm complicated D:
+const maybeOverride2 = (
+  propertyName: PCOverridablePropertyName,
+  value: any,
+  variant: PCVariant,
+  mapOverride: (value, override) => any,
+  updater: (node: PCNode, value: any) => any
+) => (
+  inspectorNode: InspectorNode,
+  rootInspector: InspectorNode,
+  graph: DependencyGraph
+) => {
+  const sourceNode = getInspectorSourceNode(
+    inspectorNode,
+    rootInspector,
+    graph
+  );
+  const contentNode = getInspectorContentNodeContainingChild(
+    inspectorNode,
+    rootInspector
+  );
+  if (!contentNode) {
+    return sourceNode;
+    // return updater(sourceNode, value);
+  }
+
+  if (inspectorNodeInShadow(inspectorNode, contentNode)) {
+    const instancePath = inspectorNode.instancePath.split(".");
+  }
+
+  return sourceNode;
+
+  // return updater(sourceNode, value);
+};
+
 const maybeOverride = (
   propertyName: PCOverridablePropertyName,
   value: any,

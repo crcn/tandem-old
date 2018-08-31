@@ -311,7 +311,8 @@ import {
   getInspectorSourceNode,
   InspectorTreeNodeName,
   InspectorNode,
-  inspectorNodeInShadow
+  inspectorNodeInShadow,
+  getSyntheticInspectorNode
 } from "../state/pc-inspector-tree";
 
 const ZOOM_SENSITIVITY = process.platform === "win32" ? 2500 : 250;
@@ -1423,10 +1424,18 @@ export const canvasReducer = (state: RootState, action: Action) => {
       state = persistRootState(state => {
         return persistChangeSyntheticTextNodeValue(
           value,
-          getSyntheticNodeById(
-            state.selectedSyntheticNodeIds[0],
-            state.documents
-          ) as SyntheticTextNode,
+          getSyntheticInspectorNode(
+            getSyntheticNodeById(
+              state.selectedSyntheticNodeIds[0],
+              state.documents
+            ),
+            getSyntheticVisibleNodeDocument(
+              state.selectedSyntheticNodeIds[0],
+              state.documents
+            ),
+            state.sourceNodeInspector,
+            state.graph
+          ),
           state
         );
       }, state);

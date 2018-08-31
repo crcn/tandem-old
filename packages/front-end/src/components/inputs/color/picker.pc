@@ -1013,6 +1013,22 @@
           "bottom": 1547
         }
       }
+    },
+    {
+      "id": "b6ad7d7b466",
+      "is": "50e32bec2591",
+      "name": "component-instance",
+      "attributes": {},
+      "style": {},
+      "children": [],
+      "metadata": {
+        "bounds": {
+          "left": -179,
+          "top": 111,
+          "right": 22,
+          "bottom": 353.23603217974676
+        }
+      }
     }
   ]
 }

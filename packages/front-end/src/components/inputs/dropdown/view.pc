@@ -623,17 +623,6 @@
               "name": "plug"
             },
             {
-              "id": "188d32b51262",
-              "variantId": null,
-              "propertyName": "text",
-              "targetIdPath": [
-                "67e386c7935"
-              ],
-              "value": "variant",
-              "name": "override",
-              "children": []
-            },
-            {
               "id": "188d32b58761",
               "propertyName": "style",
               "targetIdPath": [
