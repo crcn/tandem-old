@@ -219,7 +219,6 @@ const updateHue = (rgba: RGBA, [, s, l, a]: HSLA) => [
   a
 ];
 const updateHSLA = (rgba: RGBA, [h, , , a]: HSLA) => {
-  console.log(rgba);
   const [, s, l] = rgbaToHsla(rgba);
   return [h, s, l, a];
 };

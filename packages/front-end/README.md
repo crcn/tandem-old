@@ -1,11 +1,12 @@
 IMMEDIATE:
 
-- text overrides isn't working
-  - try dropdown instance
 - style overrides not working
   - try dropdown instance
 - double clicking instances throws exception
 - variant redesign
+
+- BUGS
+  - cannot inherit for instances
 
 * instance pane (like Figma)
 

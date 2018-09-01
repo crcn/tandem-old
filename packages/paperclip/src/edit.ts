@@ -83,7 +83,8 @@ import { FSSandboxRootState } from "fsbox";
 import {
   InspectorNode,
   getInspectorSourceNode,
-  inspectorNodeInShadow
+  inspectorNodeInShadow,
+  getSyntheticInspectorNode
 } from "./inspector";
 import { getInspectorContentNodeContainingChild } from "./inspector";
 
@@ -1053,7 +1054,6 @@ const maybeOverride2 = (
         value,
         variantId
       );
-      console.log(override, topMostInstanceId);
       return appendChildNode(override, topMostInstanceNode);
     }
   }
@@ -1320,7 +1320,7 @@ export const persistCSSProperty = <TState extends PCEditorState>(
   if (value === "") {
     value = undefined;
   }
-  const updatedNode = maybeOverride(
+  const updatedNode = maybeOverride2(
     PCOverridablePropertyName.STYLE,
     { [name]: value },
     variant,
@@ -1339,7 +1339,16 @@ export const persistCSSProperty = <TState extends PCEditorState>(
           [name]: value
         }
       } as PCVisibleNode)
-  )(node, state.documents, state.graph);
+  )(
+    getSyntheticInspectorNode(
+      node,
+      getSyntheticVisibleNodeDocument(node.id, state.documents),
+      state.sourceNodeInspector,
+      state.graph
+    ),
+    state.sourceNodeInspector,
+    state.graph
+  );
 
   return replaceDependencyGraphPCNode(updatedNode, updatedNode, state);
 };
