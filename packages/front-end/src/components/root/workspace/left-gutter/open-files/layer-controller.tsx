@@ -213,7 +213,7 @@ export default (Base: React.ComponentClass<BaseNodeLayerProps>) => {
             this.props.label !== nextProps.label ||
             this.props.connectDropTarget !== nextProps.connectDropTarget ||
             this.props.inShadow !== nextProps.inShadow ||
-            this.props.assocSourceNodeName !== nextProps.assocSourceNodeId
+            this.props.assocSourceNodeName !== nextProps.assocSourceNodeName
           );
         }
         render() {
@@ -237,7 +237,6 @@ export default (Base: React.ComponentClass<BaseNodeLayerProps>) => {
             onLabelDoubleClick,
             onLabelInputKeyDown
           } = this;
-
           return (
             <Base
               onLabelClick={onLabelClick}
