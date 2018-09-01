@@ -1020,7 +1020,20 @@
       "name": "component-instance",
       "attributes": {},
       "style": {},
-      "children": [],
+      "children": [
+        {
+          "id": "fdaf8434226",
+          "variantId": null,
+          "propertyName": "text",
+          "targetIdPath": [
+            "b6ad7d7b466",
+            "67e386c7935"
+          ],
+          "value": "Labell",
+          "name": "override",
+          "children": []
+        }
+      ],
       "metadata": {
         "bounds": {
           "left": -179,

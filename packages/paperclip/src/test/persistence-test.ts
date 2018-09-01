@@ -38,6 +38,7 @@ describe(__filename + "#", () => {
       "0": createPCDependency("0", module)
     };
     let state: PCEditorState = {
+      sourceNodeInspector: null,
       graph,
       documents: [],
       frames: [],

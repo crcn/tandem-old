@@ -23,7 +23,8 @@ import {
   SyntheticNode,
   SyntheticDocument,
   getSyntheticInstancePath,
-  SyntheticVisibleNode
+  SyntheticVisibleNode,
+  getSyntheticSourceNode
 } from "./synthetic";
 
 import { diffTreeNode, patchTreeNode } from "./ot";
@@ -41,8 +42,10 @@ import {
   appendChildNode,
   updateNestedNodeTrail,
   getTreeNodePath,
-  getNestedTreeNodeById
+  getNestedTreeNodeById,
+  containsNestedTreeNodeById
 } from "tandem-common";
+import { PCEditorState } from "./edit";
 // import { SyntheticNode, PCNode, PCModule, PCComponent, DependencyGraph, PCComponentInstanceElement, PCSourceTagNames, PCOverride, PCChildrenOverride } from "paperclip";
 
 // /**
@@ -375,6 +378,34 @@ export const expandSyntheticInspectorNode = (
 
   return updateAlts(rootInspectorNode);
 };
+
+export const getSyntheticNodeInspectorNode = <TState extends PCEditorState>(
+  node: SyntheticNode,
+  state: TState
+) => {
+  const sourceNode = getSyntheticSourceNode(node, state.graph);
+  return findNestedNode(
+    state.sourceNodeInspector,
+    child => child.assocSourceNodeId === sourceNode.id
+  );
+};
+
+export const getInspectorContentNodeContainingChild = memoize(
+  (child: InspectorNode, root: InspectorNode) => {
+    for (let i = 0, n1 = root.children.length; i < n1; i++) {
+      const module = root.children[i];
+      for (let j = 0, n2 = module.children.length; j < n2; j++) {
+        const contentNode = module.children[j];
+        if (
+          contentNode.id !== child.id &&
+          containsNestedTreeNodeById(child.id, contentNode)
+        ) {
+          return contentNode;
+        }
+      }
+    }
+  }
+);
 
 export const getSyntheticInspectorNode = memoize(
   (

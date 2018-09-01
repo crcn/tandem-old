@@ -27,7 +27,7 @@ import { shouldUpdate } from "recompose";
 import {
   getSyntheticNodeInspectorNode,
   getInspectorContentNodeContainingChild
-} from "../../../../../state";
+} from "paperclip";
 
 export type WithNodeDropTargetProps = {
   inspectorNode: InspectorNode;

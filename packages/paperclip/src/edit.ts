@@ -85,7 +85,7 @@ import {
   getInspectorSourceNode,
   inspectorNodeInShadow
 } from "./inspector";
-import { getInspectorContentNodeContainingChild } from "state";
+import { getInspectorContentNodeContainingChild } from "./inspector";
 
 /*------------------------------------------
  * CONSTANTS
@@ -968,6 +968,7 @@ export const persistChangeElementType = <TState extends PCEditorState>(
   return state;
 };
 
+// TODO: style overrides, variant style overrides
 const maybeOverride2 = (
   propertyName: PCOverridablePropertyName,
   value: any,
@@ -988,18 +989,76 @@ const maybeOverride2 = (
     inspectorNode,
     rootInspector
   );
+
   if (!contentNode) {
-    return sourceNode;
-    // return updater(sourceNode, value);
+    return updater(sourceNode, value);
   }
+
+  const contentSourceNode = getInspectorSourceNode(
+    contentNode,
+    rootInspector,
+    graph
+  );
+
+  const variantId =
+    variant &&
+    getNestedTreeNodeById(variant.id, contentSourceNode) &&
+    variant.id;
 
   if (inspectorNodeInShadow(inspectorNode, contentNode)) {
-    const instancePath = inspectorNode.instancePath.split(".");
+    const instancePathParts = inspectorNode.instancePath.split(".");
+    const [topMostInstanceId, ...nestedInstanceIds] = instancePathParts;
+    const targetIdPathParts = [...nestedInstanceIds, sourceNode.id];
+    const targetIdPath = targetIdPathParts.join(".");
+    const topMostInstanceNode = getPCNode(topMostInstanceId, graph);
+    let existingOverride = topMostInstanceNode.children.find(
+      (child: PCNode) => {
+        return (
+          child.name === PCSourceTagNames.OVERRIDE &&
+          child.propertyName === propertyName &&
+          child.targetIdPath.join(".") === targetIdPath
+        );
+      }
+    ) as PCOverride;
+
+    value = mapOverride(value, existingOverride);
+
+    if (existingOverride) {
+      if (value == null) {
+        return removeNestedTreeNode(existingOverride, topMostInstanceNode);
+      }
+      if (
+        existingOverride.propertyName === PCOverridablePropertyName.CHILDREN
+      ) {
+        existingOverride = {
+          ...existingOverride,
+          children: value
+        };
+      } else {
+        existingOverride = {
+          ...existingOverride,
+          value
+        };
+      }
+
+      return replaceNestedNode(
+        existingOverride,
+        existingOverride.id,
+        topMostInstanceNode
+      );
+    } else {
+      const override = createPCOverride(
+        targetIdPathParts,
+        propertyName,
+        value,
+        variantId
+      );
+      console.log(override, topMostInstanceId);
+      return appendChildNode(override, topMostInstanceNode);
+    }
   }
 
-  return sourceNode;
-
-  // return updater(sourceNode, value);
+  return updater(sourceNode, value);
 };
 
 const maybeOverride = (
