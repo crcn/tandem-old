@@ -1,7 +1,5 @@
 IMMEDIATE:
 
-- style overrides not working
-  - try dropdown instance
 - double clicking instances throws exception
 - variant redesign
 
