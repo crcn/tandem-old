@@ -283,11 +283,7 @@ export const findInstanceOfPCNode = memoize(
   ) => {
     for (const document of documents) {
       const instance = findNestedNode(document, (instance: SyntheticNode) => {
-        return (
-          instance.sourceNodeId === node.id &&
-          getSyntheticSourceNode(instance, graph).name !==
-            PCSourceTagNames.COMPONENT
-        );
+        return instance.sourceNodeId === node.id;
       });
       if (instance) {
         return instance;

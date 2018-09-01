@@ -1,6 +1,5 @@
 IMMEDIATE:
 
-- double clicking instances throws exception
 - variant redesign
 
 - BUGS
