@@ -231,7 +231,7 @@ const translateDynamicOverrides = (
   }Overrides, {`;
 
   for (const child of node.children as PCNode[]) {
-    if (child.name === PCSourceTagNames.PLUG) {
+    if (child.name === PCSourceTagNames.PLUG && child.children.length) {
       buffer += `_${child.slotId}Children: [${child.children
         .map(translateElementChild)
         .filter(Boolean)

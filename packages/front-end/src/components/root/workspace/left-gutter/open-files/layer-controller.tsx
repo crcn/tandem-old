@@ -201,7 +201,7 @@ export default (Base: React.ComponentClass<BaseNodeLayerProps>) => {
             );
           }
         };
-        shouldComponentUpdate(nextProps) {
+        shouldComponentUpdate(nextProps, nextState) {
           return (
             this.props.depth !== nextProps.depth ||
             this.props.isSelected !== nextProps.isSelected ||
@@ -213,7 +213,8 @@ export default (Base: React.ComponentClass<BaseNodeLayerProps>) => {
             this.props.label !== nextProps.label ||
             this.props.connectDropTarget !== nextProps.connectDropTarget ||
             this.props.inShadow !== nextProps.inShadow ||
-            this.props.assocSourceNodeName !== nextProps.assocSourceNodeName
+            this.props.assocSourceNodeName !== nextProps.assocSourceNodeName ||
+            this.state.editingLabel !== nextState.editingLabel
           );
         }
         render() {
