@@ -437,7 +437,11 @@
       "is": "div",
       "style": {
         "box-sizing": "border-box",
-        "display": "block"
+        "display": "block",
+        "font-size": "11px",
+        "border-bottom": "1px  rgba(243, 242, 242, 1)",
+        "border-right": "0px",
+        "padding-left": "12px"
       },
       "attributes": {},
       "id": "188d32b514087",
@@ -454,7 +458,7 @@
             "display": "flex",
             "align-items": "center",
             "width": "100%",
-            "padding-left": "16px",
+            "padding-left": "12px",
             "padding-top": "8px",
             "padding-right": "16px",
             "padding-bottom": "8px"
@@ -470,7 +474,32 @@
                 "flex-shrink": "1",
                 "flex-grow": "1"
               },
-              "children": [],
+              "children": [
+                {
+                  "id": "f68c21e833968",
+                  "propertyName": "style",
+                  "targetIdPath": [
+                    "8b8bbe2c232831"
+                  ],
+                  "value": {
+                    "border": "1px solid rgba(0,0,0,0.08)"
+                  },
+                  "name": "override",
+                  "children": []
+                },
+                {
+                  "id": "f68c21e8102657",
+                  "propertyName": "style",
+                  "targetIdPath": [
+                    "628c465922"
+                  ],
+                  "value": {
+                    "top": "0px"
+                  },
+                  "name": "override",
+                  "children": []
+                }
+              ],
               "metadata": {
                 "bounds": {
                   "left": 133,
@@ -480,16 +509,70 @@
                 }
               },
               "label": "Dropdown"
-            },
+            }
+          ],
+          "metadata": {}
+        },
+        {
+          "id": "9fcdcdd9354316",
+          "is": "7149f8192509",
+          "name": "component-instance",
+          "attributes": {},
+          "style": {},
+          "children": [],
+          "metadata": {
+            "bounds": {
+              "left": 486,
+              "top": 306,
+              "right": 586,
+              "bottom": 353.5832678332798
+            }
+          }
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": 668.322465308641,
+          "top": 336.93577039428163,
+          "right": 850.802475703843,
+          "bottom": 437.40175915357656
+        }
+      }
+    },
+    {
+      "id": "9fcdcdd934131",
+      "label": "Variant menu footer",
+      "is": "div",
+      "name": "element",
+      "attributes": {},
+      "style": {
+        "box-sizing": "border-box",
+        "display": "block",
+        "font-family": "Helvetica"
+      },
+      "children": [
+        {
+          "id": "9fcdcdd979844",
+          "label": "Element",
+          "is": "div",
+          "name": "element",
+          "attributes": {},
+          "style": {
+            "box-sizing": "border-box",
+            "display": "flex",
+            "align-items": "center"
+          },
+          "children": [
             {
-              "id": "188d32b514086",
+              "id": "9fcdcdd9102703",
               "is": "8e601d2b23050",
               "name": "component-instance",
               "attributes": {},
               "style": {
                 "display": "block",
                 "height": "1em",
-                "margin-left": "8px"
+                "position": "relative",
+                "top": "1px"
               },
               "children": [],
               "metadata": {
@@ -500,6 +583,15 @@
                   "bottom": 1803
                 }
               }
+            },
+            {
+              "id": "9fcdcdd9137012",
+              "name": "text",
+              "label": "Text",
+              "value": "Add style",
+              "style": {},
+              "children": [],
+              "metadata": {}
             }
           ],
           "metadata": {}
@@ -507,10 +599,15 @@
       ],
       "metadata": {
         "bounds": {
-          "left": 668.322465308641,
-          "top": 336.93577039428163,
-          "right": 850.802475703843,
-          "bottom": 437.40175915357656
+          "left": 877,
+          "top": 341,
+          "right": 1025.2308624586285,
+          "bottom": 441
+        }
+      },
+      "inheritStyle": {
+        "ca6d1d8433": {
+          "priority": 0
         }
       }
     }

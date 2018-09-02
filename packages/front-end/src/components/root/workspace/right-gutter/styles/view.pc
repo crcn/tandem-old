@@ -19,22 +19,6 @@
       "name": "component",
       "children": [
         {
-          "id": "188d32b534276",
-          "is": "188d32b514087",
-          "name": "component-instance",
-          "attributes": {},
-          "style": {},
-          "children": [],
-          "metadata": {
-            "bounds": {
-              "left": 709.309086516917,
-              "top": 545.9076372461777,
-              "right": 891.7890969121189,
-              "bottom": 646.3736260054727
-            }
-          }
-        },
-        {
           "id": "45055e8e6",
           "variant": {},
           "is": "6a863e8620",

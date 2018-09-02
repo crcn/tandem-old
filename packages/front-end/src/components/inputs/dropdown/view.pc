@@ -629,7 +629,7 @@
                 "8b8bbe2c232831"
               ],
               "value": {
-                "border": "1px none rgba(0,0,0,0.08)"
+                "border": "1px solid rgba(0,0,0,0.08)"
               },
               "name": "override",
               "children": []

@@ -17,19 +17,23 @@ export const withPureInputHandlers = () => (
     WithInputHandlersProps
   > {
     onKeyDown = event => {
-      const { onChange, onChangeComplete } = this.props;
+      const { onChange, onChangeComplete, value: oldValue } = this.props;
       const nativeEvent = event.nativeEvent;
       setImmediate(() => {
         const {
           key,
-          target: { value }
+          target: { value: newValue }
         } = nativeEvent;
+
+        if (oldValue == newValue) {
+          return;
+        }
         if (onChange) {
-          onChange(value || undefined);
+          onChange(newValue || undefined);
         }
 
         if (key === "Enter" && onChangeComplete) {
-          onChangeComplete(value || "");
+          onChangeComplete(newValue || "");
         }
       });
     };
