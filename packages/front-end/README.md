@@ -1,5 +1,10 @@
 IMMEDIATE:
 
+- look into "styles" section
+
+  - define variant
+  - define inherited styles?
+
 - variant redesign
 
 - BUGS
