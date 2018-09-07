@@ -524,32 +524,32 @@
       }
     },
     {
-      "id": "a06d2e81153295",
+      "id": "a06d2e81260587",
       "is": "97a34b151010442",
       "name": "component-instance",
       "attributes": {},
       "style": {},
       "children": [
         {
-          "id": "a06d2e81245032",
+          "id": "a06d2e81292944",
           "variantId": null,
           "propertyName": "text",
           "targetIdPath": [
             "97a34b151010441"
           ],
+          "value": "Need to consider how this works with nested children.",
           "name": "override",
           "children": []
         }
       ],
       "metadata": {
         "bounds": {
-          "left": 84.5169895536277,
-          "top": 279,
-          "right": 337.1708291271774,
-          "bottom": 479.7213373757045
+          "left": 75,
+          "top": 129,
+          "right": 238.67082912717763,
+          "bottom": 237.72133737570448
         }
-      },
-      "label": "Note"
+      }
     }
   ],
   "metadata": {}

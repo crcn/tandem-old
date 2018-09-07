@@ -1,5 +1,4 @@
 import * as React from "react";
-import { compose, pure, withHandlers } from "recompose";
 
 export type Props = {
   value: boolean;
@@ -8,7 +7,7 @@ export type Props = {
 };
 
 export default (Base: React.ComponentClass<any>) => {
-  return class CheckboxController extends React.Component<Props> {
+  return class CheckboxController extends React.PureComponent<Props> {
     onClick = event => {
       const { value, onChange, onChangeComplete } = this.props;
 
@@ -26,21 +25,3 @@ export default (Base: React.ComponentClass<any>) => {
     }
   };
 };
-
-// export default compose<any, Props>(
-//   pure,
-//   withHandlers({
-//     onClick: ({ value, onChange, onChangeComplete }) => event => {
-//       event.stopPropagation();
-//       if (onChange) {
-//         onChange(value);
-//       }
-//       if (onChangeComplete) {
-//         onChangeComplete(!value);
-//       }
-//     }
-//   }),
-//   (Base: React.ComponentClass<any>) => ({ onClick, onChange, onChangeComplete, ...rest }: InnerProps) => {
-//     return <Base onClick={onClick} {...rest} />;
-//   }
-// );

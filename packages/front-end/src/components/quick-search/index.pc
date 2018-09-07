@@ -12,7 +12,8 @@
         "border": "1px solid  #CCC",
         "border-bottom-left-radius": "2px",
         "border-bottom-right-radius": "2px",
-        "border-top": "none"
+        "border-top": "none",
+        "box-shadow": " 0px 2px 10px 0px rgba(0, 0, 0, 0.21)"
       },
       "attributes": {},
       "label": "Quick Search",

@@ -1,5 +1,4 @@
 import * as React from "react";
-import { compose, pure, withHandlers } from "recompose";
 import { RootState, ToolType } from "../../state";
 import { Dispatch } from "redux";
 import { componentPickerBackgroundClick } from "../../actions";
@@ -10,35 +9,27 @@ export type Props = {
   dispatch: Dispatch<any>;
 };
 
-type InnerProps = {
-  onBackgroundClick: any;
-} & Props;
-
-export default compose<BaseModalProps, Props>(
-  pure,
-  withHandlers({
-    onBackgroundClick: ({ dispatch }) => () => {
-      dispatch(componentPickerBackgroundClick());
+export default (Base: React.ComponentClass<BaseModalProps>) =>
+  class ModalController extends React.PureComponent<Props> {
+    onBackgroundClick = () => {
+      this.props.dispatch(componentPickerBackgroundClick());
+    };
+    render() {
+      const { root, dispatch } = this.props;
+      const { onBackgroundClick } = this;
+      if (root.toolType === ToolType.COMPONENT && !root.selectedComponentId) {
+        return (
+          <Base
+            backgroundProps={{
+              onClick: onBackgroundClick
+            }}
+            pickerProps={{
+              root,
+              dispatch
+            }}
+          />
+        );
+      }
+      return null;
     }
-  }),
-  (Base: React.ComponentClass<BaseModalProps>) => ({
-    onBackgroundClick,
-    root,
-    dispatch
-  }: InnerProps) => {
-    if (root.toolType === ToolType.COMPONENT && !root.selectedComponentId) {
-      return (
-        <Base
-          backgroundProps={{
-            onClick: onBackgroundClick
-          }}
-          pickerProps={{
-            root,
-            dispatch
-          }}
-        />
-      );
-    }
-    return null;
-  }
-);
+  };

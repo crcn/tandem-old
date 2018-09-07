@@ -23,6 +23,11 @@ IMMEDIATE:
 
 * redesign variants pane
 
+* EASY
+
+  - eliminiate recompose
+  - reduce `root` usage
+
 * UX
 
   - all layers must be expose. For component instances, take component label

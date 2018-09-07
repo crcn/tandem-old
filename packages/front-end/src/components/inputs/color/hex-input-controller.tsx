@@ -1,6 +1,11 @@
-import { compose, pure } from "recompose";
+import * as React from "react";
 import { BaseHexInputProps } from "./picker.pc";
 
 export type Props = BaseHexInputProps;
 
-export default compose<BaseHexInputProps, Props>(pure);
+export default (Base: React.ComponentClass<any>) =>
+  class HexInputController extends React.PureComponent<Props> {
+    render() {
+      return <Base {...this.props} />;
+    }
+  };

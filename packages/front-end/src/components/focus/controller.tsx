@@ -1,14 +1,13 @@
 import * as React from "react";
-import { pure, compose } from "recompose";
 import { FocusComponent } from "./index";
 
-export default compose(
-  pure,
-  (Base: React.ComponentClass<any>) => props => {
-    return (
-      <FocusComponent {...props}>
-        <Base {...props} />
-      </FocusComponent>
-    );
-  }
-);
+export default (Base: React.ComponentClass<any>) =>
+  class FocusController extends React.PureComponent<any> {
+    render() {
+      return (
+        <FocusComponent {...this.props}>
+          <Base {...this.props} />
+        </FocusComponent>
+      );
+    }
+  };

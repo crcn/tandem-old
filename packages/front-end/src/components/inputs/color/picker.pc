@@ -296,10 +296,10 @@
       ],
       "metadata": {
         "bounds": {
-          "left": 526,
-          "top": 512,
-          "right": 844.4505475827968,
-          "bottom": 584.4821398220452
+          "left": 409,
+          "top": 539,
+          "right": 727.4505475827968,
+          "bottom": 611.4821398220452
         }
       },
       "controllers": [
@@ -421,10 +421,10 @@
       ],
       "metadata": {
         "bounds": {
-          "left": 528,
-          "top": 659,
-          "right": 831.974934087616,
-          "bottom": 759
+          "left": 409,
+          "top": 700,
+          "right": 712.974934087616,
+          "bottom": 800
         }
       },
       "inheritStyle": {
@@ -495,10 +495,10 @@
       ],
       "metadata": {
         "bounds": {
-          "left": 535,
-          "top": 342,
-          "right": 843.7382461427483,
-          "bottom": 442
+          "left": 430,
+          "top": 377,
+          "right": 717.429419493064,
+          "bottom": 477
         }
       },
       "controllers": [
@@ -1008,38 +1008,9 @@
       "metadata": {
         "bounds": {
           "left": -624,
-          "top": 1447,
+          "top": 1478,
           "right": -524,
-          "bottom": 1547
-        }
-      }
-    },
-    {
-      "id": "b6ad7d7b466",
-      "is": "50e32bec2591",
-      "name": "component-instance",
-      "attributes": {},
-      "style": {},
-      "children": [
-        {
-          "id": "fdaf8434226",
-          "variantId": null,
-          "propertyName": "text",
-          "targetIdPath": [
-            "b6ad7d7b466",
-            "67e386c7935"
-          ],
-          "value": "Labell",
-          "name": "override",
-          "children": []
-        }
-      ],
-      "metadata": {
-        "bounds": {
-          "left": -179,
-          "top": 111,
-          "right": 22,
-          "bottom": 353.23603217974676
+          "bottom": 1578
         }
       }
     }

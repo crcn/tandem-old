@@ -105,7 +105,8 @@ export default compose<InnerProps, Props>(
     onRemoveButtonClick,
     onItemClick,
     onChange,
-    inset
+    inset,
+    onChangeComplete
   }) => {
     if (!selectedNodes || selectedNodes.length === 0) {
       return null;
@@ -124,6 +125,7 @@ export default compose<InnerProps, Props>(
             value={info}
             onBackgroundClick={() => onItemClick(index)}
             onChange={value => onChange(value, index)}
+            onChangeComplete={value => onChangeComplete(value, index)}
           />
         ) : null;
       })

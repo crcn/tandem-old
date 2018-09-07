@@ -63,7 +63,16 @@
               "name": "component-instance",
               "attributes": {},
               "style": {},
-              "children": [],
+              "children": [
+                {
+                  "id": "bf98e93e231",
+                  "propertyName": "style",
+                  "targetIdPath": [],
+                  "value": {},
+                  "name": "override",
+                  "children": []
+                }
+              ],
               "metadata": {}
             },
             {

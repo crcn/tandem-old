@@ -15,6 +15,7 @@ export type Props = {
   selected: boolean;
   value: BoxShadowInfo;
   onChange: any;
+  onChangeComplete: any;
 };
 
 export type InnerProps = {
@@ -37,32 +38,32 @@ export default compose<InnerProps, Props>(
     onColorChange: ({ value, onChange }) => color => {
       onChange({ ...value, color });
     },
-    onColorChangeComplete: ({ value, onChange }) => color => {
-      onChange({ ...value, color });
+    onColorChangeComplete: ({ value, onChangeComplete }) => color => {
+      onChangeComplete({ ...value, color });
     },
     onXChange: ({ value, onChange }) => x => {
       onChange({ ...value, x });
     },
-    onXChangeComplete: ({ value, onChange }) => x => {
-      onChange({ ...value, x });
+    onXChangeComplete: ({ value, onChangeComplete }) => x => {
+      onChangeComplete({ ...value, x });
     },
     onYChange: ({ value, onChange }) => y => {
       onChange({ ...value, y });
     },
-    onYChangeComplete: ({ value, onChange }) => y => {
-      onChange({ ...value, y });
+    onYChangeComplete: ({ value, onChangeComplete }) => y => {
+      onChangeComplete({ ...value, y });
     },
     onBlurChange: ({ value, onChange }) => blur => {
       onChange({ ...value, blur });
     },
-    onBlurChangeComplete: ({ value, onChange }) => blur => {
-      onChange({ ...value, blur });
+    onBlurChangeComplete: ({ value, onChangeComplete }) => blur => {
+      onChangeComplete({ ...value, blur });
     },
     onSpreadChange: ({ value, onChange }) => spread => {
       onChange({ ...value, spread });
     },
-    onSpreadChangeComplete: ({ value, onChange }) => spread => {
-      onChange({ ...value, spread });
+    onSpreadChangeComplete: ({ value, onChangeComplete }) => spread => {
+      onChangeComplete({ ...value, spread });
     }
   }),
   (Base: React.ComponentClass<BaseBoxShadowItemProps>) => ({

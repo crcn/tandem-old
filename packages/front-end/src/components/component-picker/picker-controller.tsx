@@ -1,5 +1,4 @@
 import * as React from "react";
-import { compose, pure, withHandlers, withState } from "recompose";
 import { Dispatch } from "redux";
 import { RootState } from "../../state";
 import { ComponentOption } from "./cell.pc";
@@ -12,61 +11,59 @@ export type Props = {
   dispatch: Dispatch<any>;
 };
 
-type InnerProps = {
+type State = {
   filter: string[];
-  onClickComponent: any;
-  onFilterChange: any;
-} & Props;
+};
 
-export default compose<BasePickerProps, Props>(
-  pure,
-  withState("filter", "setFilter", []),
-  withHandlers({
-    onFilterChange: ({ setFilter }) => value => {
-      setFilter((value || "").split(" "));
-    },
-    onClickComponent: ({ dispatch }) => component => {
-      dispatch(componentPickerItemClick(component));
-    }
-  }),
-  (Base: React.ComponentClass<BasePickerProps>) => ({
-    onFilterChange,
-    onClickComponent,
-    filter,
-    root
-  }: InnerProps) => {
-    const componentNodes = getAllPCComponents(root.graph);
+export default (Base: React.ComponentClass<BasePickerProps>) => {
+  return class PickerController extends React.PureComponent<Props, State> {
+    state = {
+      filter: []
+    };
+    onFilterChange = value => {
+      this.setState({ ...this.state, filter: value });
+    };
+    onClickComponent = component => {
+      this.props.dispatch(componentPickerItemClick(component));
+    };
+    render() {
+      const { onFilterChange, onClickComponent } = this;
+      const { filter } = this.state;
+      const { root } = this.props;
 
-    // TODO - filter private
-    const options = componentNodes
-      .filter(component => {
-        const label = (component.label || "").toLowerCase();
-        for (const part of filter) {
-          if (label.indexOf(part) === -1) {
-            return false;
+      const componentNodes = getAllPCComponents(root.graph);
+
+      // TODO - filter private
+      const options = componentNodes
+        .filter(component => {
+          const label = (component.label || "").toLowerCase();
+          for (const part of filter) {
+            if (label.indexOf(part) === -1) {
+              return false;
+            }
           }
-        }
 
-        return true;
-      })
-      .map(component => {
-        return (
-          <ComponentOption
-            key={component.id}
-            component={component}
-            onClick={() => onClickComponent(component)}
-            centerProps={{ children: component.label }}
-          />
-        );
-      });
+          return true;
+        })
+        .map(component => {
+          return (
+            <ComponentOption
+              key={component.id}
+              component={component}
+              onClick={() => onClickComponent(component)}
+              centerProps={{ children: component.label }}
+            />
+          );
+        });
 
-    return (
-      <Base
-        filterInputProps={{
-          onChange: onFilterChange
-        }}
-        optionsProps={{ children: options }}
-      />
-    );
-  }
-);
+      return (
+        <Base
+          filterInputProps={{
+            onChange: onFilterChange
+          }}
+          optionsProps={{ children: options }}
+        />
+      );
+    }
+  };
+};
