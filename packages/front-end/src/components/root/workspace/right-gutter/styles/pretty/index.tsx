@@ -1,5 +1,4 @@
 import * as React from "react";
-import { compose, pure } from "recompose";
 import {
   SyntheticNode,
   SyntheticElement,
@@ -22,27 +21,24 @@ export type Props = {
   fontFamilies: FontFamily[];
 };
 
-type InnerProps = {} & Props;
-
-export default compose<InnerProps, Props>(
-  pure,
-  (Base: React.ComponentClass<BaseElementStylerProps>) => (
-    props: InnerProps
-  ) => {
-    return (
-      <Base
-        {...props}
-        inheritPaneProps={props}
-        codePaneProps={props}
-        layoutPaneProps={props}
-        typographyPaneProps={props}
-        opacityPaneProps={props}
-        backgroundsPaneProps={props}
-        spacingPaneProps={props}
-        bordersPaneProps={props}
-        outerShadowsPaneProps={props}
-        innerShadowsPaneProps={props}
-      />
-    );
-  }
-);
+export default (Base: React.ComponentClass<BaseElementStylerProps>) =>
+  class PrettyStylesController extends React.PureComponent<Props> {
+    render() {
+      const props = this.props;
+      return (
+        <Base
+          {...props}
+          inheritPaneProps={props}
+          codePaneProps={props}
+          layoutPaneProps={props}
+          typographyPaneProps={props}
+          opacityPaneProps={props}
+          backgroundsPaneProps={props}
+          spacingPaneProps={props}
+          bordersPaneProps={props}
+          outerShadowsPaneProps={props}
+          innerShadowsPaneProps={props}
+        />
+      );
+    }
+  };

@@ -1,5 +1,4 @@
 import * as React from "react";
-import { compose, pure, withHandlers, withState } from "recompose";
 import { PCVariant } from "paperclip";
 import { Dispatch } from "redux";
 import * as cx from "classnames";
@@ -31,80 +30,84 @@ type InnerProps = {
   onClick: any;
 } & Props;
 
-export default compose<BaseVariantOptionProps, Props>(
-  pure,
-  withState("editingLabel", "setEditingLabel", false),
-  withHandlers({
-    onSwitchChange: ({ variant, dispatch, onToggle }: InnerProps) => event => {
+type State = {
+  editingLabel: boolean;
+};
+
+export default (Base: React.ComponentClass<BaseVariantOptionProps>) =>
+  class OptionsController extends React.PureComponent<Props, State> {
+    state = {
+      editingLabel: false
+    };
+    setEditingLabel = (value: boolean) => {
+      this.setState({ ...this.state, editingLabel: value });
+    };
+    onSwitchChange = () => {
+      const { onToggle, dispatch, variant } = this.props;
       if (onToggle) {
         onToggle(variant, event);
       } else {
         dispatch(variantDefaultSwitchClicked(variant));
       }
-    },
-    onInputClick: ({ setEditingLabel, editable }) => event => {
-      if (editable !== false) {
-        setEditingLabel(true);
+    };
+    onInputClick = event => {
+      const { editingLabel } = this.state;
+      if (editingLabel !== false) {
+        this.setEditingLabel(true);
         event.stopPropagation();
       }
-    },
-    onLabelChange: ({ variant, dispatch, setEditingLabel }) => value => {
-      setEditingLabel(false);
+    };
+    onLabelChange = (value: string) => {
+      const { variant, dispatch } = this.props;
+      this.setEditingLabel(false);
       dispatch(variantLabelChanged(variant, value));
-    },
-    onClick: ({ variant, dispatch, onClick }) => event => {
+    };
+    onClick = event => {
+      const { onClick, variant, dispatch } = this.props;
       if (onClick) {
         onClick(variant, event);
       } else {
         dispatch(variantClicked(variant));
       }
+    };
+    render() {
+      const { onClick, onSwitchChange, onInputClick, onLabelChange } = this;
+      const { editingLabel } = this.state;
+      const { variant, selected, onReset, ...rest } = this.props;
+      if (!variant) {
+        return null;
+      }
+      return (
+        <Base
+          {...rest}
+          onClick={onClick}
+          variant={cx({ selected })}
+          switchProps={{
+            value: variant.isDefault,
+            onChangeComplete: onSwitchChange
+          }}
+          resetButtonProps={{
+            onClick: onReset && (() => onReset(variant)),
+            style: {
+              display: onReset ? "block" : "none"
+            }
+          }}
+          inputProps={{
+            onClick: onInputClick,
+            children: editingLabel ? (
+              <FocusComponent>
+                {
+                  <TextInput
+                    value={variant.label}
+                    onChangeComplete={onLabelChange}
+                  />
+                }
+              </FocusComponent>
+            ) : (
+              variant.label || "Click to edit"
+            )
+          }}
+        />
+      );
     }
-  }),
-  (Base: React.ComponentClass<BaseVariantOptionProps>) => ({
-    onClick,
-    editingLabel,
-    onInputClick,
-    onLabelChange,
-    variant,
-    onReset,
-    onSwitchChange,
-    selected,
-    ...rest
-  }: InnerProps) => {
-    if (!variant) {
-      return null;
-    }
-    return (
-      <Base
-        onClick={onClick}
-        variant={cx({ selected })}
-        switchProps={{
-          value: variant.isDefault,
-          onChangeComplete: onSwitchChange
-        }}
-        resetButtonProps={{
-          onClick: onReset && (() => onReset(variant)),
-          style: {
-            display: onReset ? "block" : "none"
-          }
-        }}
-        inputProps={{
-          onClick: onInputClick,
-          children: editingLabel ? (
-            <FocusComponent>
-              {
-                <TextInput
-                  value={variant.label}
-                  onChangeComplete={onLabelChange}
-                />
-              }
-            </FocusComponent>
-          ) : (
-            variant.label || "Click to edit"
-          )
-        }}
-        {...rest}
-      />
-    );
-  }
-);
+  };

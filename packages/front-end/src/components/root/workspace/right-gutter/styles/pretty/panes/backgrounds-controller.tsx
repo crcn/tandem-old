@@ -1,5 +1,4 @@
 import * as React from "react";
-import { compose, pure, withHandlers } from "recompose";
 import {
   cssPropertyChangeCompleted,
   cssPropertyChanged
@@ -23,64 +22,60 @@ type InnerProps = {
   onPlusButtonClick: any;
 } & Props;
 
-export default compose<InnerProps, Props>(
-  pure,
-  withHandlers({
-    onChange: ({ dispatch, selectedNodes }) => (item, index) => {
-      const node = selectedNodes[0];
+export default (Base: React.ComponentClass<BaseBackgroundsProps>) =>
+  class BackgroundsController extends React.PureComponent<Props> {
+    onChange = (item, index) => {
+      const node = this.props.selectedNodes[0];
       const value = node.style.background;
-      dispatch(
+      this.props.dispatch(
         cssPropertyChanged("background", replaceBackground(value, item, index))
       );
-    },
-    onChangeComplete: ({ dispatch, selectedNodes }) => (item, index) => {
-      const node = selectedNodes[0];
+    };
+    onChangeComplete = (item, index) => {
+      const node = this.props.selectedNodes[0];
       const value = node.style.background;
-      dispatch(
+      this.props.dispatch(
         cssPropertyChangeCompleted(
           "background",
           replaceBackground(value, item, index)
         )
       );
-    },
-    onPlusButtonClick: ({ dispatch, selectedNodes, value }) => () => {
-      const node = selectedNodes[0];
+    };
+    onPlusButtonClick = () => {
+      const node = this.props.selectedNodes[0];
       const value = node.style.background;
-      dispatch(
+      this.props.dispatch(
         cssPropertyChangeCompleted(
           "background",
           value ? value + "," + DEFAULT_COLOR : DEFAULT_COLOR
         )
       );
+    };
+    render() {
+      const { selectedNodes } = this.props;
+      const { onChange, onChangeComplete, onPlusButtonClick } = this;
+
+      const node = selectedNodes[0];
+      const children = splitBackgrounds(node.style.background).map(
+        (background, i) => {
+          return (
+            <BackgroundItem
+              key={i}
+              value={background}
+              onChange={value => onChange(value, i)}
+              onChangeComplete={value => onChangeComplete(value, i)}
+            />
+          );
+        }
+      );
+      return (
+        <Base
+          contentProps={{ children }}
+          plusButtonProps={{ onClick: onPlusButtonClick }}
+        />
+      );
     }
-  }),
-  (Base: React.ComponentClass<BaseBackgroundsProps>) => ({
-    onChange,
-    onChangeComplete,
-    onPlusButtonClick,
-    selectedNodes
-  }: InnerProps) => {
-    const node = selectedNodes[0];
-    const children = splitBackgrounds(node.style.background).map(
-      (background, i) => {
-        return (
-          <BackgroundItem
-            key={i}
-            value={background}
-            onChange={value => onChange(value, i)}
-            onChangeComplete={value => onChangeComplete(value, i)}
-          />
-        );
-      }
-    );
-    return (
-      <Base
-        contentProps={{ children }}
-        plusButtonProps={{ onClick: onPlusButtonClick }}
-      />
-    );
-  }
-);
+  };
 
 const splitBackgrounds = value =>
   (value || "").match(/(rgba\(.*?\)|\w+|#[^,])/g) || [];

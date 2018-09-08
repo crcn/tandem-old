@@ -1,5 +1,4 @@
 import * as React from "react";
-import { compose, pure, withHandlers } from "recompose";
 import {
   PCSourceTagNames,
   SyntheticVisibleNode,
@@ -18,33 +17,31 @@ type InnerProps = {
   onTextValueChange: any;
 } & Props;
 
-export default compose<InnerProps, Props>(
-  pure,
-  withHandlers({
-    onTextValueChange: ({ dispatch }) => value => {
-      dispatch(textValueChanged(value));
-    }
-  }),
-  (Base: React.ComponentClass<BaseTextPropertiesProps>) => ({
-    selectedNodes,
-    onTextValueChange,
-    ...rest
-  }: InnerProps) => {
-    const textNode = selectedNodes.find(
-      (node: SyntheticVisibleNode) => node.name == PCSourceTagNames.TEXT
-    ) as SyntheticTextNode;
+export default (Base: React.ComponentClass<BaseTextPropertiesProps>) =>
+  class TextController extends React.PureComponent<Props> {
+    onTextValueChange = value => {
+      this.props.dispatch(textValueChanged(value));
+    };
 
-    if (!textNode) {
-      return null;
+    render() {
+      const { selectedNodes, ...rest } = this.props;
+      const { onTextValueChange } = this;
+
+      const textNode = selectedNodes.find(
+        (node: SyntheticVisibleNode) => node.name == PCSourceTagNames.TEXT
+      ) as SyntheticTextNode;
+
+      if (!textNode) {
+        return null;
+      }
+      return (
+        <Base
+          {...rest}
+          textInputProps={{
+            value: textNode.value,
+            onChange: onTextValueChange
+          }}
+        />
+      );
     }
-    return (
-      <Base
-        {...rest}
-        textInputProps={{
-          value: textNode.value,
-          onChange: onTextValueChange
-        }}
-      />
-    );
-  }
-);
+  };

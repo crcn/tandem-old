@@ -1,6 +1,5 @@
 import * as React from "react";
 import * as cx from "classnames";
-import { compose, pure, withHandlers, withState } from "recompose";
 import { BoxShadowItem } from "./box-shadow.pc";
 import { BoxShadowInfo } from "./box-shadow-item-controller";
 import { memoize, EMPTY_ARRAY, arraySplice } from "tandem-common";
@@ -28,11 +27,21 @@ export type InnerProps = {
   onChangeComplete: any;
 } & Props;
 
-export default compose<InnerProps, Props>(
-  pure,
-  withState("selectedBoxShadowIndex", "setSelectedBoxShadowIndex", null),
-  withHandlers({
-    onChange: ({ dispatch, selectedNodes }) => (item, index) => {
+type State = {
+  selectedBoxShadowIndex?: number;
+};
+
+export default (Base: React.ComponentClass<BaseBoxShadowsProps>) =>
+  class BoxShadowsController extends React.PureComponent<Props, State> {
+    state = {
+      selectedBoxShadowIndex: null
+    };
+    setSelectedBoxShadowIndex = (value: number) => {
+      this.setState({ ...this.state, selectedBoxShadowIndex: value });
+    };
+
+    onChange = (item, index) => {
+      const { selectedNodes, dispatch } = this.props;
       const selectedNode = selectedNodes[0];
       const info = arraySplice(
         parseBoxShadows(selectedNode.style["box-shadow"]),
@@ -41,8 +50,9 @@ export default compose<InnerProps, Props>(
         item
       );
       dispatch(cssPropertyChanged("box-shadow", stringifyBoxShadowInfo(info)));
-    },
-    onChangeComplete: ({ dispatch, selectedNodes }) => (item, index) => {
+    };
+    onChangeComplete = (item, index) => {
+      const { selectedNodes, dispatch } = this.props;
       const selectedNode = selectedNodes[0];
       const info = arraySplice(
         parseBoxShadows(selectedNode.style["box-shadow"]),
@@ -53,13 +63,14 @@ export default compose<InnerProps, Props>(
       dispatch(
         cssPropertyChangeCompleted("box-shadow", stringifyBoxShadowInfo(info))
       );
-    },
-    onAddButtonClick: ({ inset, dispatch, selectedNodes }) => () => {
+    };
+    onAddButtonClick = () => {
+      const { selectedNodes, dispatch, inset } = this.props;
       const selectedNode = selectedNodes[0];
-      const info = [
+      const info: BoxShadowInfo[] = [
         ...parseBoxShadows(selectedNode.style["box-shadow"]),
         {
-          inset,
+          inset: Boolean(inset),
           color: "rgba(0,0,0,1)",
           x: "0px",
           y: "0px",
@@ -70,13 +81,12 @@ export default compose<InnerProps, Props>(
       dispatch(
         cssPropertyChangeCompleted("box-shadow", stringifyBoxShadowInfo(info))
       );
-    },
-    onRemoveButtonClick: ({
-      selectedBoxShadowIndex,
-      setSelectedBoxShadowIndex,
-      selectedNodes,
-      dispatch
-    }) => () => {
+    };
+
+    onRemoveButtonClick = () => {
+      const { selectedNodes, dispatch } = this.props;
+      const { selectedBoxShadowIndex } = this.state;
+      const { setSelectedBoxShadowIndex } = this;
       console.log(selectedBoxShadowIndex);
       const selectedNode = selectedNodes[0];
       const info = arraySplice(
@@ -88,60 +98,61 @@ export default compose<InnerProps, Props>(
         cssPropertyChangeCompleted("box-shadow", stringifyBoxShadowInfo(info))
       );
       setSelectedBoxShadowIndex(null);
-    },
-    onItemClick: ({
-      setSelectedBoxShadowIndex,
-      selectedBoxShadowIndex
-    }) => index => {
+    };
+    onItemClick = index => {
+      const { selectedBoxShadowIndex } = this.state;
+      const { setSelectedBoxShadowIndex } = this;
+
       setSelectedBoxShadowIndex(
         index === selectedBoxShadowIndex ? null : index
       );
+    };
+
+    render() {
+      const { selectedNodes, inset } = this.props;
+      const { selectedBoxShadowIndex } = this.state;
+      const {
+        onChange,
+        onItemClick,
+        onChangeComplete,
+        onAddButtonClick,
+        onRemoveButtonClick
+      } = this;
+
+      if (!selectedNodes || selectedNodes.length === 0) {
+        return null;
+      }
+
+      const selectedNode = selectedNodes[0];
+      const boxShadowInfo = parseBoxShadows(selectedNode.style["box-shadow"]);
+      const hasSelectedShadow = selectedBoxShadowIndex != null;
+
+      const items = boxShadowInfo
+        .map((info, index) => {
+          return info.inset === Boolean(inset) ? (
+            <BoxShadowItem
+              selected={index === selectedBoxShadowIndex}
+              key={index}
+              value={info}
+              onBackgroundClick={() => onItemClick(index)}
+              onChange={value => onChange(value, index)}
+              onChangeComplete={value => onChangeComplete(value, index)}
+            />
+          ) : null;
+        })
+        .filter(Boolean);
+      const hasItems = Boolean(items.length);
+
+      return (
+        <Base
+          variant={cx({ hasItems, hasSelectedShadow })}
+          addButtonProps={{ onClick: onAddButtonClick }}
+          removeButtonProps={{ onClick: onRemoveButtonClick }}
+          itemsProps={{ children: items }}
+        />
+      );
     }
-  }),
-  (Base: React.ComponentClass<BaseBoxShadowsProps>) => ({
-    selectedNodes,
-    selectedBoxShadowIndex,
-    onAddButtonClick,
-    onRemoveButtonClick,
-    onItemClick,
-    onChange,
-    inset,
-    onChangeComplete
-  }) => {
-    if (!selectedNodes || selectedNodes.length === 0) {
-      return null;
-    }
-
-    const selectedNode = selectedNodes[0];
-    const boxShadowInfo = parseBoxShadows(selectedNode.style["box-shadow"]);
-    const hasSelectedShadow = selectedBoxShadowIndex != null;
-
-    const items = boxShadowInfo
-      .map((info, index) => {
-        return info.inset === Boolean(inset) ? (
-          <BoxShadowItem
-            selected={index === selectedBoxShadowIndex}
-            key={index}
-            value={info}
-            onBackgroundClick={() => onItemClick(index)}
-            onChange={value => onChange(value, index)}
-            onChangeComplete={value => onChangeComplete(value, index)}
-          />
-        ) : null;
-      })
-      .filter(Boolean);
-    const hasItems = Boolean(items.length);
-
-    return (
-      <Base
-        variant={cx({ hasItems, hasSelectedShadow })}
-        addButtonProps={{ onClick: onAddButtonClick }}
-        removeButtonProps={{ onClick: onRemoveButtonClick }}
-        itemsProps={{ children: items }}
-      />
-    );
-  }
-);
+  };
 
 const stringifyBoxShadowInfo = (value: BoxShadowInfo[]) =>
   value

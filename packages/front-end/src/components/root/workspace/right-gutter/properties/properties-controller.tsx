@@ -14,6 +14,7 @@ import { Dispatch } from "redux";
 export type PropertiesControllerOuterProps = {};
 
 export type Props = {
+  visible: boolean;
   selectedNodes: SyntheticElement[];
   selectedInspectorNodes: InspectorNode[];
   graph: DependencyGraph;
@@ -27,6 +28,7 @@ type InnerProps = Props;
 export default compose<InnerProps, Props>(
   pure,
   (Base: React.ComponentClass<BasePropertiesProps>) => ({
+    visible,
     className,
     selectedInspectorNodes,
     selectedNodes,
@@ -35,7 +37,7 @@ export default compose<InnerProps, Props>(
     sourceNodeUri,
     ...rest
   }: InnerProps) => {
-    if (!selectedInspectorNodes.length) {
+    if (!selectedInspectorNodes.length || !visible) {
       return null;
     }
 

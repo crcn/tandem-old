@@ -1,6 +1,5 @@
 import * as React from "react";
 import * as cx from "classnames";
-import { compose, pure, withHandlers } from "recompose";
 import { PCComponent } from "paperclip";
 import { DropdownMenuOption } from "../../../../../../inputs/dropdown/controller";
 import { memoize } from "tandem-common";
@@ -17,43 +16,35 @@ export type Props = {
   allComponents: PCComponent[];
 };
 
-export type InnerProps = {
-  onChangeComplete: any;
-  onClick: any;
-} & Props;
+export default (Base: React.ComponentClass<BaseInheritItemProps>) =>
+  class InheritItemController extends React.PureComponent<Props> {
+    onChangeComplete = value => {
+      this.props.dispatch(
+        inheritItemComponentTypeChangeComplete(this.props.componentId, value.id)
+      );
+    };
+    onClick = () => {
+      this.props.onClick(this.props.componentId);
+    };
+    render() {
+      const { onClick, onChangeComplete } = this;
+      const { selected, component, allComponents } = this.props;
 
-export default compose<InnerProps, Props>(
-  pure,
-  withHandlers({
-    onChangeComplete: ({ dispatch, componentId }: InnerProps) => value => {
-      dispatch(inheritItemComponentTypeChangeComplete(componentId, value.id));
-    },
-    onClick: ({ onClick, componentId }) => () => {
-      onClick(componentId);
+      return (
+        <Base
+          onClick={onClick}
+          variant={cx({ selected })}
+          dropdownProps={{
+            onClick: event => event.stopPropagation(),
+            filterable: true,
+            value: component,
+            options: getComponentOptions(allComponents),
+            onChangeComplete: onChangeComplete
+          }}
+        />
+      );
     }
-  }),
-  (Base: React.ComponentClass<BaseInheritItemProps>) => ({
-    component,
-    allComponents,
-    selected,
-    onChangeComplete,
-    onClick
-  }: InnerProps) => {
-    return (
-      <Base
-        onClick={onClick}
-        variant={cx({ selected })}
-        dropdownProps={{
-          onClick: event => event.stopPropagation(),
-          filterable: true,
-          value: component,
-          options: getComponentOptions(allComponents),
-          onChangeComplete: onChangeComplete
-        }}
-      />
-    );
-  }
-);
+  };
 
 const getComponentOptions = memoize(
   (components: PCComponent[]): DropdownMenuOption[] => {

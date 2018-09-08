@@ -2,7 +2,6 @@ import * as React from "react";
 import { memoize } from "tandem-common";
 import { ButtonBarOption } from "../../../../../../inputs/button-bar/controller";
 import { DropdownMenuOption } from "../../../../../../inputs/dropdown/controller";
-import { compose, pure, withHandlers } from "recompose";
 import {
   cssPropertyChangeCompleted,
   cssPropertyChanged
@@ -63,98 +62,97 @@ export type Props = {
   fontFamilies: FontFamily[];
 };
 
-export type InnerProps = {
-  onPropertyChange: any;
-  onPropertyChangeComplete: any;
-} & Props;
+export default (Base: React.ComponentClass<BaseTypographProps>) =>
+  class TypographyController extends React.PureComponent<Props> {
+    onPropertyChange = (name, value) => {
+      this.props.dispatch(cssPropertyChanged(name, value));
+    };
 
-export default compose(
-  pure,
-  withHandlers({
-    onPropertyChange: ({ dispatch }) => (name, value) => {
-      dispatch(cssPropertyChanged(name, value));
-    },
-    onPropertyChangeComplete: ({ dispatch }) => (name, value) => {
-      dispatch(cssPropertyChangeCompleted(name, value));
+    onPropertyChangeComplete = (name, value) => {
+      this.props.dispatch(cssPropertyChangeCompleted(name, value));
+    };
+
+    render() {
+      const { onPropertyChange, onPropertyChangeComplete } = this;
+      const { selectedNodes, fontFamilies } = this.props;
+      const node = selectedNodes[0];
+      return (
+        <Base
+          familyInputProps={{
+            options: getFontFamilyOptions(fontFamilies),
+            value: node.style["font-family"],
+            onChange: propertyChangeCallback("font-family", onPropertyChange),
+            onChangeComplete: propertyChangeCallback(
+              "font-family",
+              onPropertyChangeComplete
+            )
+          }}
+          weightInputProps={{
+            options: FONT_WEIGHTS,
+            value: node.style["font-weight"],
+            onChange: propertyChangeCallback("font-weight", onPropertyChange),
+            onChangeComplete: propertyChangeCallback(
+              "font-weight",
+              onPropertyChangeComplete
+            )
+          }}
+          decorationInputProps={{
+            options: DECORATIONS,
+            value: node.style["text-decoration"],
+            onChange: propertyChangeCallback(
+              "text-decoration",
+              onPropertyChange
+            ),
+            onChangeComplete: propertyChangeCallback(
+              "text-decoration",
+              onPropertyChangeComplete
+            )
+          }}
+          lineInputProps={{
+            value: node.style["line-height"],
+            onChange: propertyChangeCallback("line-height", onPropertyChange),
+            onChangeComplete: propertyChangeCallback(
+              "line-height",
+              onPropertyChangeComplete
+            )
+          }}
+          spacingInputProps={{
+            value: node.style["letter-spacing"],
+            onChange: propertyChangeCallback(
+              "letter-spacing",
+              onPropertyChange
+            ),
+            onChangeComplete: propertyChangeCallback(
+              "letter-spacing",
+              onPropertyChangeComplete
+            )
+          }}
+          alignmentInputProps={{
+            options: ALIGNMENTS,
+            value: node.style["text-align"],
+            onChange: propertyChangeCallback("text-align", onPropertyChange)
+          }}
+          sizeInputProps={{
+            value: node.style["font-size"],
+            onChange: propertyChangeCallback("font-size", onPropertyChange),
+            onChangeComplete: propertyChangeCallback(
+              "font-size",
+              onPropertyChangeComplete
+            )
+          }}
+          colorInputProps={{
+            value: node.style.color,
+            onChange: propertyChangeCallback("color", onPropertyChange),
+            onChangeComplete: propertyChangeCallback(
+              "color",
+              onPropertyChangeComplete
+            )
+          }}
+        />
+      );
     }
-  }),
-  (Base: React.ComponentClass<BaseTypographProps>) => ({
-    selectedNodes,
-    onPropertyChange,
-    onPropertyChangeComplete,
-    fontFamilies
-  }: InnerProps) => {
-    const node = selectedNodes[0];
-    return (
-      <Base
-        familyInputProps={{
-          options: getFontFamilyOptions(fontFamilies),
-          value: node.style["font-family"],
-          onChange: propertyChangeCallback("font-family", onPropertyChange),
-          onChangeComplete: propertyChangeCallback(
-            "font-family",
-            onPropertyChangeComplete
-          )
-        }}
-        weightInputProps={{
-          options: FONT_WEIGHTS,
-          value: node.style["font-weight"],
-          onChange: propertyChangeCallback("font-weight", onPropertyChange),
-          onChangeComplete: propertyChangeCallback(
-            "font-weight",
-            onPropertyChangeComplete
-          )
-        }}
-        decorationInputProps={{
-          options: DECORATIONS,
-          value: node.style["text-decoration"],
-          onChange: propertyChangeCallback("text-decoration", onPropertyChange),
-          onChangeComplete: propertyChangeCallback(
-            "text-decoration",
-            onPropertyChangeComplete
-          )
-        }}
-        lineInputProps={{
-          value: node.style["line-height"],
-          onChange: propertyChangeCallback("line-height", onPropertyChange),
-          onChangeComplete: propertyChangeCallback(
-            "line-height",
-            onPropertyChangeComplete
-          )
-        }}
-        spacingInputProps={{
-          value: node.style["letter-spacing"],
-          onChange: propertyChangeCallback("letter-spacing", onPropertyChange),
-          onChangeComplete: propertyChangeCallback(
-            "letter-spacing",
-            onPropertyChangeComplete
-          )
-        }}
-        alignmentInputProps={{
-          options: ALIGNMENTS,
-          value: node.style["text-align"],
-          onChange: propertyChangeCallback("text-align", onPropertyChange)
-        }}
-        sizeInputProps={{
-          value: node.style["font-size"],
-          onChange: propertyChangeCallback("font-size", onPropertyChange),
-          onChangeComplete: propertyChangeCallback(
-            "font-size",
-            onPropertyChangeComplete
-          )
-        }}
-        colorInputProps={{
-          value: node.style.color,
-          onChange: propertyChangeCallback("color", onPropertyChange),
-          onChangeComplete: propertyChangeCallback(
-            "color",
-            onPropertyChangeComplete
-          )
-        }}
-      />
-    );
-  }
-);
+  };
+
 const propertyChangeCallback = memoize((name: string, listener) => value =>
   listener(name, value)
 );

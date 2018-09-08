@@ -1,5 +1,4 @@
 import * as React from "react";
-import { compose, pure, withHandlers } from "recompose";
 import {
   cssPropertyChanged,
   cssPropertyChangeCompleted
@@ -13,40 +12,32 @@ export type Props = {
   selectedNodes: SyntheticElement[];
 };
 
-type InnerProps = {
-  onChange: any;
-  onChangeComplete: any;
-} & Props;
+export default (Base: React.ComponentClass<BaseOpacityPaneProps>) =>
+  class OpacityController extends React.PureComponent<Props> {
+    onChange = value => {
+      this.props.dispatch(cssPropertyChanged("opacity", value));
+    };
+    onChangeComplete = value => {
+      this.props.dispatch(cssPropertyChangeCompleted("opacity", value));
+    };
 
-export default compose<InnerProps, Props>(
-  pure,
-  withHandlers({
-    onChange: ({ dispatch }) => value => {
-      dispatch(cssPropertyChanged("opacity", value));
-    },
-    onChangeComplete: ({ dispatch }) => value => {
-      dispatch(cssPropertyChangeCompleted("opacity", value));
+    render() {
+      const { onChange, onChangeComplete } = this;
+      const { selectedNodes } = this.props;
+      if (!selectedNodes) {
+        return null;
+      }
+      const node = selectedNodes[0];
+      return (
+        <Base
+          sliderInputProps={{
+            min: 0,
+            max: 1,
+            value: node.style.opacity || 1,
+            onChange,
+            onChangeComplete
+          }}
+        />
+      );
     }
-  }),
-  (Base: React.ComponentClass<BaseOpacityPaneProps>) => ({
-    onChange,
-    onChangeComplete,
-    selectedNodes
-  }: InnerProps) => {
-    if (!selectedNodes) {
-      return null;
-    }
-    const node = selectedNodes[0];
-    return (
-      <Base
-        sliderInputProps={{
-          min: 0,
-          max: 1,
-          value: node.style.opacity || 1,
-          onChange,
-          onChangeComplete
-        }}
-      />
-    );
-  }
-);
+  };

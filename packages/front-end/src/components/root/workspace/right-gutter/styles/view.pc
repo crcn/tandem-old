@@ -277,6 +277,36 @@
       "controllers": [
         "./controller.tsx"
       ]
+    },
+    {
+      "label": "Element",
+      "is": "div",
+      "style": {
+        "box-sizing": "border-box",
+        "display": "block"
+      },
+      "attributes": {},
+      "id": "2ea220e26239",
+      "name": "component",
+      "children": [
+        {
+          "id": "2ea220e41114",
+          "name": "text",
+          "label": "Text",
+          "value": "Click to edit2",
+          "style": {},
+          "children": [],
+          "metadata": {}
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": 782.8986971210114,
+          "top": 127.78520484123419,
+          "right": 1103.215028253015,
+          "bottom": 364.84836015377095
+        }
+      }
     }
   ]
 }

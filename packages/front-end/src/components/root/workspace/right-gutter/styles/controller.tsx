@@ -1,5 +1,4 @@
 import * as React from "react";
-import { compose, pure } from "recompose";
 import { BaseStylesProps } from "./view.pc";
 import { Dispatch } from "redux";
 import {
@@ -11,6 +10,7 @@ import {
 import { FontFamily } from "../../../../../state";
 
 export type Props = {
+  visible: boolean;
   dispatch: Dispatch<any>;
   syntheticDocument: SyntheticDocument;
   selectedNodes: SyntheticElement[];
@@ -19,45 +19,47 @@ export type Props = {
   graph: DependencyGraph;
 } & BaseStylesProps;
 
-export default compose(
-  pure,
-  (Base: React.ComponentClass<BaseStylesProps>) => ({
-    dispatch,
-    syntheticDocument,
-    selectedNodes,
-    selectedVariant,
-    fontFamilies,
-    graph,
-    ...rest
-  }) => {
-    if (!selectedNodes.length) {
-      return null;
+export default (Base: React.ComponentClass<BaseStylesProps>) =>
+  class RightGutterController extends React.PureComponent<Props> {
+    render() {
+      const {
+        visible,
+        dispatch,
+        syntheticDocument,
+        selectedNodes,
+        selectedVariant,
+        fontFamilies,
+        graph,
+        ...rest
+      } = this.props;
+      if (!selectedNodes.length || !visible) {
+        return null;
+      }
+      return (
+        <Base
+          variantsProps={{
+            dispatch,
+            syntheticDocument,
+            selectedNodes,
+            selectedVariant,
+            graph
+          }}
+          instanceVariantProps={{
+            dispatch,
+            syntheticDocument,
+            selectedNodes,
+            graph,
+            selectedVariant
+          }}
+          prettyProps={{
+            dispatch,
+            syntheticDocument,
+            selectedNodes,
+            graph,
+            fontFamilies
+          }}
+          {...rest}
+        />
+      );
     }
-    return (
-      <Base
-        variantsProps={{
-          dispatch,
-          syntheticDocument,
-          selectedNodes,
-          selectedVariant,
-          graph
-        }}
-        instanceVariantProps={{
-          dispatch,
-          syntheticDocument,
-          selectedNodes,
-          graph,
-          selectedVariant
-        }}
-        prettyProps={{
-          dispatch,
-          syntheticDocument,
-          selectedNodes,
-          graph,
-          fontFamilies
-        }}
-        {...rest}
-      />
-    );
-  }
-);
+  };

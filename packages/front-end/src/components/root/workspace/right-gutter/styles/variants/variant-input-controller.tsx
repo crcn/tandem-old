@@ -1,5 +1,4 @@
 import * as React from "react";
-import { compose, pure, withHandlers, withState } from "recompose";
 import {
   SyntheticDocument,
   SyntheticNode,
@@ -32,123 +31,121 @@ export type Props = {
   selectedVariant: PCVariant;
 };
 
-type InnerProps = {
-  onVariantToggle: any;
-  onVariantInputClick: any;
+type State = {
   editing: boolean;
-  setEditing: any;
-  onFocus: any;
-  onBlur: any;
-  onVariantReset: any;
-} & Props;
+};
 
-export default compose(
-  pure,
-  withState(`editing`, `setEditing`, false),
-  withHandlers({
-    onVariantToggle: ({ dispatch }) => variant => {
-      dispatch(instanceVariantToggled(variant));
-    },
-    onVariantInputClick: ({ setEditing, editing }) => () => {
-      setEditing(!editing);
-    },
-    onFocus: ({ setEditing }) => () => {
-      setEditing(true);
-    },
-    onBlur: ({ setEditing }) => () => {
-      setEditing(false);
-    },
-    onVariantReset: ({ dispatch }) => (variant: PCVariant) => {
-      dispatch(instanceVariantResetClicked(variant));
+export default (
+  Base: React.ComponentClass<BaseComponentInstanceVariantProps>
+) =>
+  class VariantInputController extends React.PureComponent<Props, State> {
+    state = {
+      editing: false
+    };
+    setEditing(value: boolean) {
+      this.setState({ ...this.state, editing: value });
     }
-  }),
-  (Base: React.ComponentClass<BaseComponentInstanceVariantProps>) => ({
-    graph,
-    selectedNodes,
-    editing,
-    onVariantToggle,
-    onFocus,
-    onBlur,
-    selectedVariant,
-    onVariantReset,
-    syntheticDocument
-  }: InnerProps) => {
-    const node = selectedNodes[0];
-    if (!isSyntheticInstanceElement(node)) {
-      return null;
-    }
+    onVariantToggle = (variant: PCVariant) => {
+      this.props.dispatch(instanceVariantToggled(variant));
+    };
+    onVariantInputClick = () => {
+      this.setEditing(!this.state.editing);
+    };
+    onFocus = () => {
+      this.setEditing(true);
+    };
+    onBlur = () => {
+      this.setEditing(false);
+    };
+    onVariantReset = (variant: PCVariant) => {
+      this.props.dispatch(instanceVariantResetClicked(variant));
+    };
+    render() {
+      const { onVariantToggle, onVariantReset, onBlur, onFocus } = this;
+      const { editing } = this.state;
+      const {
+        selectedNodes,
+        graph,
+        syntheticDocument,
+        selectedVariant
+      } = this.props;
 
-    const instance = getSyntheticSourceNode(node, graph);
-    if (!isPCComponentInstance(instance)) {
-      return null;
-    }
+      const node = selectedNodes[0];
+      if (!isSyntheticInstanceElement(node)) {
+        return null;
+      }
 
-    const component = getPCNode(instance.is, graph) as PCComponent;
-    const componentVariants = getPCVariants(component);
-    const overrides = getInheritedAndSelfOverrides(
-      node,
-      syntheticDocument,
-      graph,
-      selectedVariant && selectedVariant.id
-    );
+      const instance = getSyntheticSourceNode(node, graph);
+      if (!isPCComponentInstance(instance)) {
+        return null;
+      }
 
-    const variantOverrides = overrides.filter(
-      override =>
-        override.propertyName === PCOverridablePropertyName.VARIANT_IS_DEFAULT
-    );
+      const component = getPCNode(instance.is, graph) as PCComponent;
+      const componentVariants = getPCVariants(component);
+      const overrides = getInheritedAndSelfOverrides(
+        node,
+        syntheticDocument,
+        graph,
+        selectedVariant && selectedVariant.id
+      );
 
-    if (!componentVariants.length) {
-      return null;
-    }
+      const variantOverrides = overrides.filter(
+        override =>
+          override.propertyName === PCOverridablePropertyName.VARIANT_IS_DEFAULT
+      );
 
-    const pillChildren = Object.keys(node.variant)
-      .filter(variantId => node.variant[variantId])
-      .map(variantId => {
-        const variant = componentVariants.find(
-          variant => variant.id === variantId
+      if (!componentVariants.length) {
+        return null;
+      }
+
+      const pillChildren = Object.keys(node.variant)
+        .filter(variantId => node.variant[variantId])
+        .map(variantId => {
+          const variant = componentVariants.find(
+            variant => variant.id === variantId
+          );
+
+          // may not exist if component variant is deleted
+          if (!variant) {
+            return null;
+          }
+          return <VariantPill key={variantId}>{variant.label}</VariantPill>;
+        });
+
+      const optionsChildren = componentVariants.map(variant => {
+        const override = variantOverrides.find(
+          override => last(override.targetIdPath) === variant.id
         );
-
-        // may not exist if component variant is deleted
-        if (!variant) {
-          return null;
-        }
-        return <VariantPill key={variantId}>{variant.label}</VariantPill>;
+        return (
+          <VariantOption
+            variant={{ ...variant, isDefault: node.variant[variant.id] }}
+            editable={false}
+            onClick={noop}
+            onToggle={onVariantToggle}
+            onReset={override ? onVariantReset : null}
+          />
+        );
       });
 
-    const optionsChildren = componentVariants.map(variant => {
-      const override = variantOverrides.find(
-        override => last(override.targetIdPath) === variant.id
-      );
       return (
-        <VariantOption
-          variant={{ ...variant, isDefault: node.variant[variant.id] }}
-          editable={false}
-          onClick={noop}
-          onToggle={onVariantToggle}
-          onReset={override ? onVariantReset : null}
+        <Base
+          tabIndex={-1}
+          onBlur={onBlur}
+          onFocus={onFocus}
+          pillsProps={{
+            children: pillChildren.length ? (
+              pillChildren
+            ) : (
+              <VariantPill variant="empty">--</VariantPill>
+            )
+          }}
+          optionsProps={{
+            style: {
+              display: editing && optionsChildren.length ? "block" : "none"
+            },
+            children: editing ? optionsChildren : []
+          }}
         />
       );
-    });
-
-    return (
-      <Base
-        tabIndex={-1}
-        onBlur={onBlur}
-        onFocus={onFocus}
-        pillsProps={{
-          children: pillChildren.length ? (
-            pillChildren
-          ) : (
-            <VariantPill variant="empty">--</VariantPill>
-          )
-        }}
-        optionsProps={{
-          style: {
-            display: editing && optionsChildren.length ? "block" : "none"
-          },
-          children: editing ? optionsChildren : []
-        }}
-      />
-    );
-  }
-);
+    }
+  };

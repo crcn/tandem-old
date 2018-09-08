@@ -13,25 +13,20 @@ export type Props = {
   dispatch: Dispatch<any>;
 };
 
-export default compose<BaseOpenModuleProps, Props>(
-  pure,
-  (Base: React.ComponentClass<BaseOpenModuleProps>) => ({
-    inspectorNode,
-    document,
-    graph,
-    dispatch,
-    ...rest
-  }: Props) => {
-    return (
-      <Base {...rest}>
-        <NodeLayer
-          depth={2}
-          graph={graph}
-          dispatch={dispatch}
-          document={document}
-          inspectorNode={inspectorNode}
-        />
-      </Base>
-    );
-  }
-);
+export default (Base: React.ComponentClass<BaseOpenModuleProps>) =>
+  class OpenModuleController extends React.PureComponent<Props> {
+    render() {
+      const { graph, dispatch, inspectorNode, ...rest } = this.props;
+      return (
+        <Base {...rest}>
+          <NodeLayer
+            depth={2}
+            graph={graph}
+            dispatch={dispatch}
+            document={document}
+            inspectorNode={inspectorNode}
+          />
+        </Base>
+      );
+    }
+  };

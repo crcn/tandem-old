@@ -1,5 +1,7 @@
 IMMEDIATE:
 
+- make tree diffing faster
+- editing styles/index.pc is still slow
 - look into "styles" section
 
   - define variant

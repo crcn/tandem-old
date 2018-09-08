@@ -1,5 +1,4 @@
 import * as React from "react";
-import { compose, pure, withHandlers } from "recompose";
 import { dropdownMenuOptionFromValue } from "../../../../../../inputs/dropdown/controller";
 import { memoize, EMPTY_ARRAY } from "tandem-common";
 import { BaseBorderStyleProps } from "./borders.pc";
@@ -31,65 +30,65 @@ export type Props = {
   onChangeComplete: any;
 };
 
-type InnerProps = {
-  onStyleChangeComplete: any;
-  onColorChange: any;
-  onColorChangeComplete: any;
-  onThicknessChange: any;
-  onThicknessChangeComplete: any;
-} & Props;
+export default (Base: React.ComponentClass<BaseBorderStyleProps>) =>
+  class BorderStyleController extends React.PureComponent<Props> {
+    onStyleChangeComplete = style => {
+      this.props.onChangeComplete(
+        stringifyBorderInfo({ ...parseBorder(this.props.value), style })
+      );
+    };
+    onColorChange = color => {
+      this.props.onChange(
+        stringifyBorderInfo({ ...parseBorder(this.props.value), color })
+      );
+    };
+    onColorChangeComplete = color => {
+      this.props.onChangeComplete(
+        stringifyBorderInfo({ ...parseBorder(this.props.value), color })
+      );
+    };
+    onThicknessChange = thickness => {
+      this.props.onChange(
+        stringifyBorderInfo({ ...parseBorder(this.props.value), thickness })
+      );
+    };
+    onThicknessChangeComplete = thickness => {
+      this.props.onChangeComplete(
+        stringifyBorderInfo({ ...parseBorder(this.props.value), thickness })
+      );
+    };
+    render() {
+      const { value } = this.props;
+      const {
+        onColorChange,
+        onColorChangeComplete,
+        onStyleChangeComplete,
+        onThicknessChange,
+        onThicknessChangeComplete
+      } = this;
 
-export default compose<any, Props>(
-  pure,
-  withHandlers({
-    onStyleChangeComplete: ({ value, onChangeComplete }) => style => {
-      onChangeComplete(stringifyBorderInfo({ ...parseBorder(value), style }));
-    },
-    onColorChange: ({ value, onChange }) => color => {
-      onChange(stringifyBorderInfo({ ...parseBorder(value), color }));
-    },
-    onColorChangeComplete: ({ onChangeComplete, value }) => color => {
-      onChangeComplete(stringifyBorderInfo({ ...parseBorder(value), color }));
-    },
-    onThicknessCHange: ({ onChange, value }) => thickness => {
-      onChange(stringifyBorderInfo({ ...parseBorder(value), thickness }));
-    },
-    onThicknessChangeComplete: ({ onChangeComplete, value }) => thickness => {
-      onChangeComplete(
-        stringifyBorderInfo({ ...parseBorder(value), thickness })
+      const { style, color, thickness } = parseBorder(value);
+      return (
+        <Base
+          colorInputProps={{
+            value: color,
+            onChange: onColorChange,
+            onChangeComplete: onColorChangeComplete
+          }}
+          styleInputProps={{
+            value: style,
+            options: STYLE_OPTIONS,
+            onChangeComplete: onStyleChangeComplete
+          }}
+          thicknessInputProps={{
+            value: thickness,
+            onChange: onThicknessChange,
+            onChangeComplete: onThicknessChangeComplete
+          }}
+        />
       );
     }
-  }),
-  (Base: React.ComponentClass<BaseBorderStyleProps>) => ({
-    value,
-    onStyleChangeComplete,
-    onColorChange,
-    onColorChangeComplete,
-    onThicknessChange,
-    onThicknessChangeComplete
-  }: InnerProps) => {
-    const { style, color, thickness } = parseBorder(value);
-    return (
-      <Base
-        colorInputProps={{
-          value: color,
-          onChange: onColorChange,
-          onChangeComplete: onColorChangeComplete
-        }}
-        styleInputProps={{
-          value: style,
-          options: STYLE_OPTIONS,
-          onChangeComplete: onStyleChangeComplete
-        }}
-        thicknessInputProps={{
-          value: thickness,
-          onChange: onThicknessChange,
-          onChangeComplete: onThicknessChangeComplete
-        }}
-      />
-    );
-  }
-);
+  };
 
 const parseBorder = memoize(
   (value = "") => ({

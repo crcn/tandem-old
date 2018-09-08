@@ -1,5 +1,4 @@
 import * as React from "react";
-import { compose, pure, withHandlers } from "recompose";
 import {
   SyntheticDocument,
   SyntheticVisibleNode,
@@ -32,62 +31,63 @@ export type InnerProps = {
   onRemoveVariantButtonClick: any;
 } & Props;
 
-export default compose<InnerProps, Props>(
-  pure,
-  withHandlers({
-    onAddVariantButtonClick: ({ dispatch }: InnerProps) => () => {
-      dispatch(addVariantButtonClicked());
-    },
-    onRemoveVariantButtonClick: ({ dispatch }: InnerProps) => () => {
-      dispatch(removeVariantButtonClicked());
-    }
-  }),
-  (Base: React.ComponentClass<BaseVariantsProps>) => ({
-    dispatch,
-    onAddVariantButtonClick,
-    onRemoveVariantButtonClick,
-    selectedNodes,
-    selectedVariant,
-    syntheticDocument,
-    graph
-  }: InnerProps) => {
-    const contentNode = getSyntheticContentNode(
-      selectedNodes[0],
-      syntheticDocument
-    );
-    const contentSourceNode = getSyntheticSourceNode(contentNode, graph);
-    if (!contentSourceNode || !isComponent(contentSourceNode)) {
-      return null;
-    }
+export default (Base: React.ComponentClass<BaseVariantsProps>) =>
+  class VariantsController extends React.PureComponent<Props> {
+    onAddVariantButtonClick = () => {
+      this.props.dispatch(addVariantButtonClicked());
+    };
+    onRemoveVariantButtonClick = () => {
+      this.props.dispatch(removeVariantButtonClicked());
+    };
+    render() {
+      const { onRemoveVariantButtonClick, onAddVariantButtonClick } = this;
+      const {
+        dispatch,
+        selectedNodes,
+        syntheticDocument,
+        graph,
+        selectedVariant
+      } = this.props;
 
-    const variants = getPCVariants(contentSourceNode);
+      const contentNode = getSyntheticContentNode(
+        selectedNodes[0],
+        syntheticDocument
+      );
+      const contentSourceNode = getSyntheticSourceNode(contentNode, graph);
+      if (!contentSourceNode || !isComponent(contentSourceNode)) {
+        return null;
+      }
 
-    const variantOptions = variants.map(variant => {
+      const variants = getPCVariants(contentSourceNode);
+
+      const variantOptions = variants.map(variant => {
+        return (
+          <VariantOption
+            key={variant.id}
+            selected={
+              selectedVariant ? variant.id === selectedVariant.id : false
+            }
+            dispatch={dispatch}
+            variant={variant}
+          />
+        );
+      });
+
       return (
-        <VariantOption
-          key={variant.id}
-          selected={selectedVariant ? variant.id === selectedVariant.id : false}
-          dispatch={dispatch}
-          variant={variant}
+        <Base
+          removeVariantButtonProps={{
+            onClick: onRemoveVariantButtonClick,
+            style: {
+              display: selectedVariant ? "block" : "none"
+            }
+          }}
+          addVariantButtonProps={{
+            onClick: onAddVariantButtonClick
+          }}
+          listProps={{
+            children: variantOptions
+          }}
         />
       );
-    });
-
-    return (
-      <Base
-        removeVariantButtonProps={{
-          onClick: onRemoveVariantButtonClick,
-          style: {
-            display: selectedVariant ? "block" : "none"
-          }
-        }}
-        addVariantButtonProps={{
-          onClick: onAddVariantButtonClick
-        }}
-        listProps={{
-          children: variantOptions
-        }}
-      />
-    );
-  }
-);
+    }
+  };

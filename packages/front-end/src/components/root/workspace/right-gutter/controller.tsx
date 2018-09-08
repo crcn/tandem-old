@@ -98,6 +98,7 @@ export default compose<BaseRightGutterProps, Props>(
           propertiesTab: availableCurrentTab === TAB_NAMES[1]
         })}
         stylesProps={{
+          visible: availableCurrentTab === TAB_NAMES[0],
           dispatch,
           syntheticDocument,
           fontFamilies: root.fontFamilies,
@@ -110,6 +111,7 @@ export default compose<BaseRightGutterProps, Props>(
           children: tabs
         }}
         propertiesProps={{
+          visible: availableCurrentTab === TAB_NAMES[1],
           sourceNodeUri:
             selectedInspectorNodes[0] &&
             getPCNodeDependency(
