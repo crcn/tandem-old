@@ -15,74 +15,81 @@ export type Props = {
   max?: number;
 };
 
-type InnerProps = {
+type State = {
   percent: number;
-  setPercent: any;
-  setSlider: any;
-  onMouseDown: any;
-} & Props;
+};
 
-export default compose<BaseSliderProps, Props>(
-  pure,
-  withState(
-    `percent`,
-    `setPercent`,
-    ({ min = DEFAULT_MIN, max = DEFAULT_MAX, value }: any) =>
-      clamp((value || 0) / (max - min), 0, 1)
-  ),
-  withHandlers(() => {
-    let _slider: HTMLDivElement;
-    return {
-      setSlider: () => slider => {
-        _slider = slider;
-      },
-      onMouseDown: ({
+const getPercent = ({ min = DEFAULT_MIN, max = DEFAULT_MAX, value }: Props) => {
+  return clamp((value || 0) / (max - min), 0, 1);
+};
+
+export default (Base: React.ComponentClass<BaseSliderProps>) =>
+  class SliderController extends React.PureComponent<Props, State> {
+    private _slider: HTMLDivElement;
+    constructor(props: Props) {
+      super(props);
+      this.state = {
+        percent: getPercent(props)
+      };
+    }
+    private setPercent = (value: number) => {
+      this.setState({ ...this.state, percent: value });
+    };
+    private setSlider = (slider: HTMLDivElement) => {
+      this._slider = slider;
+    };
+
+    private onMouseDown = event => {
+      const {
         min = DEFAULT_MIN,
         max = DEFAULT_MAX,
-        setPercent,
         onChange,
         onChangeComplete
-      }: InnerProps) => event => {
-        const changeCallback = callback => {
-          return (event: MouseEvent) => {
-            const sliderRect = _slider.getBoundingClientRect();
-            const relativeLeft = event.clientX - sliderRect.left;
-            let percent = relativeLeft / sliderRect.width;
-            const change = max - min;
-            percent = clamp(
-              ((relativeLeft / sliderRect.width) * change) / change,
-              0,
-              1
-            );
-            percent = Number(percent.toFixed(3));
-            setPercent(percent);
-            if (callback) {
-              callback(percent);
-            }
-          };
+      } = this.props;
+      const changeCallback = callback => {
+        return (event: MouseEvent) => {
+          const sliderRect = this._slider.getBoundingClientRect();
+          const relativeLeft = event.clientX - sliderRect.left;
+          let percent = relativeLeft / sliderRect.width;
+          const change = max - min;
+          percent = clamp(
+            ((relativeLeft / sliderRect.width) * change) / change,
+            0,
+            1
+          );
+          percent = Number(percent.toFixed(3));
+          this.setPercent(percent);
+          if (callback) {
+            callback(percent);
+          }
         };
+      };
 
-        startDOMDrag(
-          event,
-          () => {},
-          changeCallback(onChange),
-          changeCallback(onChangeComplete)
-        );
-      }
+      startDOMDrag(
+        event,
+        () => {},
+        changeCallback(onChange),
+        changeCallback(onChangeComplete)
+      );
     };
-  }),
-  (Base: React.ComponentClass<BaseSliderProps>) => ({
-    percent,
-    setSlider,
-    onMouseDown
-  }: InnerProps) => {
-    return (
-      <span ref={setSlider}>
-        <Base
-          onMouseDown={onMouseDown}
-          grabberProps={{ style: { left: `${percent * 100}%` } }}
-        />
-      </span>
-    );
-  }
-);
+
+    componentWillUpdate(props: Props) {
+      if (props.value !== this.props.value) {
+        this.setPercent(getPercent(props));
+      }
+    }
+
+    render() {
+      const { percent } = this.state;
+      const { setSlider, onMouseDown } = this;
+
+      return (
+        <span ref={setSlider}>
+          <Base
+            onMouseDown={onMouseDown}
+            grabberProps={{ style: { left: `${percent * 100}%` } }}
+          />
+        </span>
+      );
+    }
+  };

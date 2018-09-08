@@ -1,6 +1,5 @@
 IMMEDIATE:
 
-- opacity controller not updating
 - look into "styles" section
 
   - define variant
