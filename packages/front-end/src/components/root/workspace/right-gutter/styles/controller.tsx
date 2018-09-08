@@ -51,6 +51,13 @@ export default (Base: React.ComponentClass<BaseStylesProps>) =>
             graph,
             selectedVariant
           }}
+          instancePaneProps={{
+            dispatch,
+            syntheticDocument,
+            selectedNodes,
+            graph,
+            selectedVariant
+          }}
           prettyProps={{
             dispatch,
             syntheticDocument,

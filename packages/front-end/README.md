@@ -2,12 +2,14 @@ IMMEDIATE:
 
 - "prompt" UI
 - ability to rename style
-- look into "styles" section
+- instance pane
 
-  - define variant
-  - define inherited styles?
+  - inherit styles
+  - inherited styles must be disabled for variants
 
-- variant redesign
+- get instance variant to work again
+- prohibit components from having default styles
+- left gutter needs to be resizable
 
 - BUGS
   - cannot inherit for instances

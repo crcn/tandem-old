@@ -8,8 +8,10 @@ import {
   getPCNode,
   getPCVariants,
   PCComponent,
+  PCComponentInstanceElement,
   isSyntheticInstanceElement,
   PCVariant,
+  SyntheticElement,
   getInheritedAndSelfOverrides,
   PCOverridablePropertyName
 } from "paperclip";
@@ -70,14 +72,17 @@ export default (
         selectedVariant
       } = this.props;
 
+      console.log(this.props);
+
       if (!selectedNodes) {
         return null;
       }
 
-      const node = selectedNodes[0];
-      if (!isSyntheticInstanceElement(node)) {
-        return null;
-      }
+      const node = selectedNodes[0] as SyntheticElement;
+      const sourceNode = getPCNode(
+        node.id,
+        graph
+      ) as PCComponentInstanceElement;
 
       const instance = getSyntheticSourceNode(node, graph);
       if (!isPCComponentInstance(instance)) {

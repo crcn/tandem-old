@@ -1015,6 +1015,22 @@
       }
     },
     {
+      "id": "f2834b0f158",
+      "is": "119cd445468",
+      "name": "component-instance",
+      "attributes": {},
+      "style": {},
+      "children": [],
+      "metadata": {
+        "bounds": {
+          "left": -514,
+          "top": 422,
+          "right": -414,
+          "bottom": 522
+        }
+      }
+    },
+    {
       "label": "Element",
       "is": "div",
       "style": {

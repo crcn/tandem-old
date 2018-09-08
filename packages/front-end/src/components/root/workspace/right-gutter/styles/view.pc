@@ -109,7 +109,8 @@
                   "right": 1075.5113534536454,
                   "bottom": 776.1408602999202
                 }
-              }
+              },
+              "label": "instance pane"
             },
             {
               "id": "2c3291713",
@@ -291,7 +292,21 @@
               "name": "component-instance",
               "attributes": {},
               "style": {},
-              "children": [],
+              "children": [
+                {
+                  "id": "a17a00485051",
+                  "propertyName": "style",
+                  "targetIdPath": [
+                    "9e4a45489816",
+                    "d19a9272052"
+                  ],
+                  "value": {
+                    "opacity": 0.431
+                  },
+                  "name": "override",
+                  "children": []
+                }
+              ],
               "metadata": {
                 "bounds": {
                   "left": 327.9970896317676,
@@ -414,7 +429,8 @@
                       "right": 643,
                       "bottom": 482
                     }
-                  }
+                  },
+                  "label": "variant input"
                 }
               ],
               "metadata": {},
@@ -450,7 +466,10 @@
           "right": 1075.5113534536454,
           "bottom": 776.1408602999202
         }
-      }
+      },
+      "controllers": [
+        "./instance-pane-controller.tsx"
+      ]
     }
   ]
 }

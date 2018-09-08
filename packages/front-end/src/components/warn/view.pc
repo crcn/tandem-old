@@ -9,7 +9,7 @@
       "style": {
         "box-sizing": "border-box",
         "display": "block",
-        "opacity": 0.656
+        "opacity": 0.459
       },
       "attributes": {},
       "id": "5f48853331665",
