@@ -483,11 +483,26 @@ export const updateAlts = (root: InspectorNode) => {
   );
 
   const map = (node: InspectorNode) => {
-    return {
-      ...node,
-      alt: flattened.indexOf(node) % 2 !== 0,
-      children: node.children.map(map)
-    };
+    const alt = flattened.indexOf(node) % 2 !== 0;
+
+    let children = node.children;
+
+    if (node.alt !== alt) {
+    }
+
+    if (node.expanded) {
+      children = node.children.map(map);
+    }
+
+    if (node.alt !== alt || node.children !== children) {
+      return {
+        ...node,
+        alt,
+        children
+      };
+    }
+
+    return node;
   };
 
   return map(root);

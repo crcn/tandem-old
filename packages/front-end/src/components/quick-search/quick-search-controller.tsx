@@ -22,6 +22,9 @@ type State = {
 
 export default (Base: React.ComponentClass<BaseQuickSearchProps>) =>
   class QuickSearchController extends React.PureComponent<Props, State> {
+    state = {
+      filter: null
+    };
     setFilter = (value: string[]) => {
       this.setState({ ...this.state, filter: value });
     };
