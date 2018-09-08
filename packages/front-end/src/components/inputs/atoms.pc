@@ -89,7 +89,7 @@
       "is": "div",
       "style": {
         "box-sizing": "border-box",
-        "font-family": "Avenir Next"
+        "font-family": "Helvetica"
       },
       "attributes": {},
       "id": "ca6d1d8454",
@@ -100,18 +100,16 @@
           "name": "text",
           "label": "Text",
           "value": "Avenir Next",
-          "style": {
-            "font-family": "Avenir Next"
-          },
+          "style": {},
           "children": [],
           "metadata": {}
         }
       ],
       "metadata": {
         "bounds": {
-          "left": 373,
+          "left": 372,
           "top": 496,
-          "right": 473,
+          "right": 472,
           "bottom": 596
         }
       }

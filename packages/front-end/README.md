@@ -1,7 +1,6 @@
 IMMEDIATE:
 
-- make tree diffing faster
-- editing styles/index.pc is still slow
+- opacity controller not updating
 - look into "styles" section
 
   - define variant

@@ -70,6 +70,10 @@ export default (
         selectedVariant
       } = this.props;
 
+      if (!selectedNodes) {
+        return null;
+      }
+
       const node = selectedNodes[0];
       if (!isSyntheticInstanceElement(node)) {
         return null;

@@ -21,7 +21,13 @@ export default (Base: React.ComponentClass<BasePickerProps>) => {
       filter: []
     };
     onFilterChange = value => {
-      this.setState({ ...this.state, filter: value });
+      this.setState({
+        ...this.state,
+        filter: String(value || "")
+          .toLowerCase()
+          .trim()
+          .split(/\s+/g)
+      });
     };
     onClickComponent = component => {
       this.props.dispatch(componentPickerItemClick(component));

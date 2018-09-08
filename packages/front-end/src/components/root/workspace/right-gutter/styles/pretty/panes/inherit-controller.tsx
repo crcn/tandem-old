@@ -91,7 +91,7 @@ export default (Base: React.ComponentClass<BaseInheritProps>) => {
           variant={cx({ hasItemSelected })}
           addButtonProps={{ onClick: onAddButtonClick }}
           removeButtonProps={{ onClick: onRemoveButtonClick }}
-          contentProps={{ children: items }}
+          items={items}
         />
       );
     }
