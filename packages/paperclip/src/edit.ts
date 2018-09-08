@@ -709,12 +709,13 @@ export const persistInsertNode = <TState extends PCEditorState>(
 };
 
 export const persistAddVariant = <TState extends PCEditorState>(
+  label: string,
   contentNode: SyntheticVisibleNode,
   state: TState
 ): TState => {
   const component = getSyntheticSourceNode(contentNode, state.graph);
   state = replaceDependencyGraphPCNode(
-    appendChildNode(createPCVariant(null, true), component),
+    appendChildNode(createPCVariant(label, true), component),
     component,
     state
   );
@@ -986,14 +987,11 @@ const maybeOverride2 = (
     rootInspector,
     graph
   );
-  const contentNode = getInspectorContentNodeContainingChild(
-    inspectorNode,
-    rootInspector
-  );
 
-  if (!contentNode) {
-    return updater(sourceNode, value);
-  }
+  // if content node does not exist, then target node must be id
+  const contentNode =
+    getInspectorContentNodeContainingChild(inspectorNode, rootInspector) ||
+    inspectorNode;
 
   const contentSourceNode = getInspectorSourceNode(
     contentNode,
@@ -1006,21 +1004,34 @@ const maybeOverride2 = (
     getNestedTreeNodeById(variant.id, contentSourceNode) &&
     variant.id;
 
-  if (inspectorNodeInShadow(inspectorNode, contentNode)) {
-    const instancePathParts = inspectorNode.instancePath.split(".");
+  if (inspectorNodeInShadow(inspectorNode, contentNode) || variantId) {
+    // if instancePath does NOT exist, then we're dealing with a variant
+    const instancePathParts = (
+      inspectorNode.instancePath || contentSourceNode.id
+    ).split(".");
     const [topMostInstanceId, ...nestedInstanceIds] = instancePathParts;
-    const targetIdPathParts = [...nestedInstanceIds, sourceNode.id];
+    const targetIdPathParts = [...nestedInstanceIds];
+
+    // if source id is content id, then target is component root
+    if (sourceNode.id !== contentSourceNode.id) {
+      targetIdPathParts.push(sourceNode.id);
+    }
+
     const targetIdPath = targetIdPathParts.join(".");
+
     const topMostInstanceNode = getPCNode(topMostInstanceId, graph);
     let existingOverride = topMostInstanceNode.children.find(
       (child: PCNode) => {
         return (
           child.name === PCSourceTagNames.OVERRIDE &&
           child.propertyName === propertyName &&
-          child.targetIdPath.join(".") === targetIdPath
+          child.targetIdPath.join(".") === targetIdPath &&
+          child.variantId == variantId
         );
       }
     ) as PCOverride;
+
+    console.log(existingOverride, instancePathParts);
 
     value = mapOverride(value, existingOverride);
 

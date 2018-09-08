@@ -58,6 +58,13 @@ export default (Base: React.ComponentClass<BaseStylesProps>) =>
             graph,
             fontFamilies
           }}
+          styleSwitcherProps={{
+            dispatch,
+            syntheticDocument,
+            selectedNodes,
+            graph,
+            selectedVariant
+          }}
           {...rest}
         />
       );

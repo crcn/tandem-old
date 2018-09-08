@@ -1,5 +1,7 @@
 IMMEDIATE:
 
+- "prompt" UI
+- ability to rename style
 - look into "styles" section
 
   - define variant

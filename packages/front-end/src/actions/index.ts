@@ -82,6 +82,10 @@ export const REMOVE_VARIANT_BUTTON_CLICKED = "REMOVE_VARIANT_BUTTON_CLICKED";
 export const VARIANT_DEFAULT_SWITCH_CLICKED = "VARIANT_DEFAULT_SWITCH_CLICKED";
 export const VARIANT_LABEL_CHANGED = "VARIANT_LABEL_CHANGED";
 export const VARIANT_CLICKED = "VARIANT_CLICKED";
+export const ADD_STYLE_BUTTON_CLICKED = "ADD_STYLE_BUTTON_CLICKED";
+export const NEW_STYLE_VARIANT_CONFIRMED = "NEW_STYLE_VARIANT_CONFIRMED";
+export const REMOVE_STYLE_BUTTON_CLICKED = "ADD_STYLE_BUTTON_CLICKED";
+export const STYLE_VARIANT_DROPDOWN_CHANGED = "STYLE_VARIANT_DROPDOWN_CHANGED";
 export const COMPONENT_INSTANCE_VARIANT_TOGGLED =
   "COMPONENT_INSTANCE_VARIANT_TOGGLED";
 export const INSTANCE_VARIANT_RESET_CLICKED = "INSTANCE_VARIANT_RESET_CLICKED";
@@ -255,6 +259,15 @@ export type CanvasWheel = {
 export type TreeLayerMouseOver = {
   type: string;
   node: TreeNode<any>;
+} & Action;
+
+export type StyleVariantDropdownChanged = {
+  variant: PCVariant;
+  component: PCComponent;
+} & Action;
+
+export type NewStyleVariantConfirmed = {
+  label: string;
 } & Action;
 
 export type TreeLayerLabelChanged = {
@@ -519,6 +532,30 @@ export const elementVariantToggled = (
 
 export const fileNavigatorNewFileClicked = (): Action => ({
   type: FILE_NAVIGATOR_NEW_FILE_CLICKED
+});
+
+export const styleVariantDropdownChanged = (
+  variant: PCVariant,
+  component: PCComponent
+): StyleVariantDropdownChanged => ({
+  type: STYLE_VARIANT_DROPDOWN_CHANGED,
+  component,
+  variant
+});
+
+export const newStyleVariantConfirmed = (
+  label: string
+): NewStyleVariantConfirmed => ({
+  type: NEW_STYLE_VARIANT_CONFIRMED,
+  label
+});
+
+export const removeStyleButtonClicked = (): Action => ({
+  type: REMOVE_STYLE_BUTTON_CLICKED
+});
+
+export const addStyleButtonClicked = (): Action => ({
+  type: ADD_STYLE_BUTTON_CLICKED
 });
 
 export const fileNavigatorNewDirectoryClicked = (): Action => ({

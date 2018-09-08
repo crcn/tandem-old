@@ -84,6 +84,11 @@ import {
   TOOLBAR_TOOL_CLICKED,
   ToolbarToolClicked,
   EDITOR_TAB_CLOSE_BUTTON_CLICKED,
+  STYLE_VARIANT_DROPDOWN_CHANGED,
+  NEW_STYLE_VARIANT_CONFIRMED,
+  NewStyleVariantConfirmed,
+  StyleVariantDropdownChanged,
+  REMOVE_STYLE_BUTTON_CLICKED,
   SHORTCUT_SELECT_NEXT_TAB,
   SHORTCUT_SELECT_PREVIOUS_TAB,
   SHORTCUT_CLOSE_CURRENT_TAB,
@@ -796,6 +801,7 @@ export const canvasReducer = (state: RootState, action: Action) => {
       return state;
     }
 
+    // DEPRECATED
     case ADD_VARIANT_BUTTON_CLICKED: {
       const node = getSyntheticNodeById(
         state.selectedSyntheticNodeIds[0],
@@ -807,7 +813,7 @@ export const canvasReducer = (state: RootState, action: Action) => {
         state.documents
       );
       state = persistRootState(
-        state => persistAddVariant(contentNode, state),
+        state => persistAddVariant(null, contentNode, state),
         state
       );
       state = updateRootState(
@@ -824,6 +830,7 @@ export const canvasReducer = (state: RootState, action: Action) => {
       return state;
     }
 
+    // DEPRECATED
     case REMOVE_VARIANT_BUTTON_CLICKED: {
       const variant = state.selectedVariant;
       state = persistRootState(
@@ -1297,7 +1304,7 @@ export const canvasReducer = (state: RootState, action: Action) => {
 
     case CSS_PROPERTY_CHANGE_COMPLETED: {
       const { name, value } = action as CSSPropertyChanged;
-      state = persistRootState(browser => {
+      state = persistRootState(state => {
         return state.selectedSyntheticNodeIds.reduce(
           (state, nodeId) =>
             persistCSSProperty(
@@ -1439,6 +1446,74 @@ export const canvasReducer = (state: RootState, action: Action) => {
       }, state);
       return state;
     }
+
+    case STYLE_VARIANT_DROPDOWN_CHANGED: {
+      const { variant, component } = action as StyleVariantDropdownChanged;
+      const variants = getPCVariants(component);
+
+      state = persistRootState(state => {
+        for (const evariant of variants) {
+          state = persistUpdateVariant(
+            { isDefault: evariant.id === (variant && variant.id) },
+            evariant,
+            state
+          );
+        }
+
+        return state;
+      }, state);
+
+      state = updateRootState(
+        {
+          selectedVariant: variant
+        },
+        state
+      );
+
+      return state;
+    }
+
+    case NEW_STYLE_VARIANT_CONFIRMED: {
+      const { label } = action as NewStyleVariantConfirmed;
+
+      const node = getSyntheticNodeById(
+        state.selectedSyntheticNodeIds[0],
+        state.documents
+      );
+      const frame = getSyntheticVisibleNodeFrame(node, state.frames);
+      const contentNode = getSyntheticNodeById(
+        frame.contentNodeId,
+        state.documents
+      );
+      state = persistRootState(
+        state => persistAddVariant(label, contentNode, state),
+        state
+      );
+      state = updateRootState(
+        {
+          selectedVariant: last(
+            getPCVariants(getSyntheticSourceNode(
+              contentNode,
+              state.graph
+            ) as PCVisibleNode)
+          )
+        },
+        state
+      );
+
+      return state;
+    }
+
+    case REMOVE_STYLE_BUTTON_CLICKED: {
+      const variant = state.selectedVariant;
+      state = persistRootState(
+        state => persistRemoveVariant(variant, state),
+        state
+      );
+      state = updateRootState({ selectedVariant: null }, state);
+      return state;
+    }
+
     case ELEMENT_TYPE_CHANGED: {
       const { value } = action as ElementTypeChanged;
       state = persistRootState(state => {
