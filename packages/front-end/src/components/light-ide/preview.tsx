@@ -1,6 +1,5 @@
 import "./preview.scss";
 import * as React from "react";
-import { pure, compose } from "recompose";
 import { LightIDETextToken } from "./state";
 
 export type PreviewComponentOuterProps = {
@@ -16,10 +15,6 @@ const BasePreviewComponent = ({ tokens }: PreviewComponentOuterProps) => (
       </span>
     ))}
   </div>
-);
-
-const enhance = compose<PreviewComponentOuterProps, PreviewComponentOuterProps>(
-  pure
 );
 
 export const PreviewComponent = BasePreviewComponent;

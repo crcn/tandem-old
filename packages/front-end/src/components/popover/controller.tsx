@@ -1,7 +1,6 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { Bounds, shiftBounds, shiftPoint } from "tandem-common";
-import { compose, pure, lifecycle, withState } from "recompose";
 import { BasePopoverProps } from "./view.pc";
 
 export type Props = {

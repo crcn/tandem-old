@@ -9,7 +9,7 @@ import {
   RegisteredComponent
 } from "../../../../../state";
 import { createTreeNode } from "tandem-common";
-import { compose, pure, withHandlers } from "recompose";
+import { compose, pure } from "recompose";
 import { DropTarget, DragSource, DropTargetCollector } from "react-dnd";
 
 type ListItem = {
@@ -68,19 +68,16 @@ type ComponentsPaneOuterProps = {
   dispatch: Dispatch<any>;
 };
 
-type ComponentsPaneInnerProps = {} & ComponentsPaneOuterProps;
-
-const BaseComponentsPaneComponent = (props: ComponentsPaneInnerProps) => {
-  return (
-    <PaneComponent header="Native Elements">
-      {NATIVE_ELEMENTS.map((item, i) => {
-        return <NativeElementComponent key={i} item={item} />;
-      })}
-    </PaneComponent>
-  );
-};
-
-export const ComponentsPaneComponent = compose<
-  ComponentsPaneInnerProps,
+export class ComponentsPaneComponent extends React.PureComponent<
   ComponentsPaneOuterProps
->(pure)(BaseComponentsPaneComponent);
+> {
+  render() {
+    return (
+      <PaneComponent header="Native Elements">
+        {NATIVE_ELEMENTS.map((item, i) => {
+          return <NativeElementComponent key={i} item={item} />;
+        })}
+      </PaneComponent>
+    );
+  }
+}

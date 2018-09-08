@@ -1,5 +1,4 @@
 import * as React from "react";
-import { compose, pure } from "recompose";
 import { memoize } from "tandem-common";
 import {
   getSyntheticDocumentByDependencyUri,
@@ -43,42 +42,44 @@ const generateLayersPaneContext = memoize(
   })
 );
 
-export default compose<BaseLayersPaneProps, Props>(
-  pure,
-  (Base: React.ComponentClass<BaseLayersPaneProps>) => ({
-    sourceNodeInspector,
-    graph,
-    documents,
-    dispatch,
-    selectedInspectorNodeIds,
-    hoveringInspectorNodeIds,
-    ...rest
-  }: Props) => {
-    const content = sourceNodeInspector.children.map((inspectorNode, i) => {
-      const sourceNode = getPCNode(inspectorNode.assocSourceNodeId, graph);
-      const dependency = getPCNodeDependency(sourceNode.id, graph);
-      const document = getSyntheticDocumentByDependencyUri(
-        dependency.uri,
+export default (Base: React.ComponentClass<BaseLayersPaneProps>) =>
+  class LayersPaneController extends React.PureComponent<Props> {
+    render() {
+      const {
+        sourceNodeInspector,
+        graph,
         documents,
-        graph
-      );
-      return (
-        <LayersPaneContext.Provider
-          key={sourceNode.id}
-          value={generateLayersPaneContext(
-            graph,
-            document,
-            documents,
-            selectedInspectorNodeIds,
-            hoveringInspectorNodeIds,
-            sourceNodeInspector,
-            dispatch
-          )}
-        >
-          <OpenModule inspectorNode={inspectorNode} graph={graph} />
-        </LayersPaneContext.Provider>
-      );
-    });
-    return <Base {...rest} contentProps={{ children: content }} />;
-  }
-);
+        dispatch,
+        selectedInspectorNodeIds,
+        hoveringInspectorNodeIds,
+        ...rest
+      } = this.props;
+
+      const content = sourceNodeInspector.children.map((inspectorNode, i) => {
+        const sourceNode = getPCNode(inspectorNode.assocSourceNodeId, graph);
+        const dependency = getPCNodeDependency(sourceNode.id, graph);
+        const document = getSyntheticDocumentByDependencyUri(
+          dependency.uri,
+          documents,
+          graph
+        );
+        return (
+          <LayersPaneContext.Provider
+            key={sourceNode.id}
+            value={generateLayersPaneContext(
+              graph,
+              document,
+              documents,
+              selectedInspectorNodeIds,
+              hoveringInspectorNodeIds,
+              sourceNodeInspector,
+              dispatch
+            )}
+          >
+            <OpenModule inspectorNode={inspectorNode} graph={graph} />
+          </LayersPaneContext.Provider>
+        );
+      });
+      return <Base {...rest} contentProps={{ children: content }} />;
+    }
+  };

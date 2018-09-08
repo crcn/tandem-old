@@ -1,6 +1,5 @@
 import "./document.scss";
 import * as React from "react";
-import { compose, pure } from "recompose";
 import { Frame, Dependency, SyntheticVisibleNode } from "paperclip";
 
 export type DocumentPreviewOuterProps = {
@@ -40,29 +39,32 @@ class DesignPreview extends React.PureComponent<DesignPreviewOuterProps> {
   }
 }
 
-export const DocumentPreviewComponent = compose<DocumentPreviewOuterProps, any>(
-  pure
-)(({ contentNode, frame, dependency }: DocumentPreviewOuterProps) => {
-  if (!contentNode) {
-    return null;
-  }
+export class DocumentPreviewComponent extends React.PureComponent<
+  DocumentPreviewOuterProps
+> {
+  render() {
+    const { contentNode, frame, dependency } = this.props;
+    if (!contentNode) {
+      return null;
+    }
 
-  const bounds = frame.bounds;
-  if (!bounds) {
-    return null;
-  }
-  const style = {
-    position: "absolute",
-    left: bounds.left,
-    top: bounds.top,
-    width: bounds.right - bounds.left,
-    height: bounds.bottom - bounds.top,
-    background: "white"
-  } as any;
+    const bounds = frame.bounds;
+    if (!bounds) {
+      return null;
+    }
+    const style = {
+      position: "absolute",
+      left: bounds.left,
+      top: bounds.top,
+      width: bounds.right - bounds.left,
+      height: bounds.bottom - bounds.top,
+      background: "white"
+    } as any;
 
-  return (
-    <div className="m-preview-document" style={style}>
-      <DesignPreview frame={frame} dependency={dependency} />
-    </div>
-  );
-});
+    return (
+      <div className="m-preview-document" style={style}>
+        <DesignPreview frame={frame} dependency={dependency} />
+      </div>
+    );
+  }
+}

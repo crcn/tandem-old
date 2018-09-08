@@ -1,5 +1,5 @@
 import * as React from "react";
-import { compose, pure, withState, withHandlers } from "recompose";
+import { compose, pure, withState } from "recompose";
 import { portal } from "../portal/controller";
 import { Bounds, mergeBounds, getBoundsSize } from "tandem-common";
 import { BaseContentProps } from "./view.pc";

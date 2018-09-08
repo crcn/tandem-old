@@ -1,38 +1,32 @@
 import * as React from "react";
-import { pure, compose, withHandlers } from "recompose";
 import { attributeChanged } from "../../../../../actions";
 import { SyntheticElement } from "paperclip";
+import { Dispatch } from "redux";
 
 export type Props = {
+  dispatch: Dispatch<any>;
   selectedNodes: SyntheticElement[];
 };
 
-type InnerProps = {
-  onPlaceholderChange: any;
-} & Props;
-
-export default compose<InnerProps, Props>(
-  pure,
-  withHandlers({
-    onPlaceholderChange: ({ dispatch }) => value => {
-      dispatch(attributeChanged("placeholder", value));
+export default (Base: React.ComponentClass<any>) =>
+  class InputController extends React.PureComponent<Props> {
+    onPlaceholderChange = value => {
+      this.props.dispatch(attributeChanged("placeholder", value));
+    };
+    render() {
+      const { selectedNodes } = this.props;
+      const { onPlaceholderChange } = this;
+      if (!selectedNodes.length) {
+        return null;
+      }
+      const element = selectedNodes[0];
+      return (
+        <Base
+          placeholderInputProps={{
+            value: element.attributes.placeholder,
+            onChange: onPlaceholderChange
+          }}
+        />
+      );
     }
-  }),
-  (Base: React.ComponentClass<any>) => ({
-    selectedNodes,
-    onPlaceholderChange
-  }) => {
-    if (!selectedNodes.lenght) {
-      return null;
-    }
-    const element = selectedNodes[0];
-    return (
-      <Base
-        placeholderInputProps={{
-          value: element.attributes.placeholder,
-          onChange: onPlaceholderChange
-        }}
-      />
-    );
-  }
-);
+  };

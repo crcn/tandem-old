@@ -1,5 +1,4 @@
 import * as React from "react";
-import { compose, pure, withHandlers } from "recompose";
 import { RootState } from "../../state";
 import { Dispatch } from "redux";
 import { quickSearchBackgroundClick } from "../../actions";
@@ -10,35 +9,27 @@ export type Props = {
   dispatch: Dispatch<any>;
 };
 
-type InnerProps = {
-  onBackgroundClick: any;
-} & Props;
-
-export default compose<BaseModalProps, Props>(
-  pure,
-  withHandlers({
-    onBackgroundClick: ({ dispatch }) => () => {
-      dispatch(quickSearchBackgroundClick());
+export default (Base: React.ComponentClass<BaseModalProps>) =>
+  class ModalController extends React.PureComponent<Props> {
+    onBackgroundClick = () => {
+      this.props.dispatch(quickSearchBackgroundClick());
+    };
+    render() {
+      const { root, dispatch } = this.props;
+      const { onBackgroundClick } = this;
+      if (!root.showQuickSearch) {
+        return null;
+      }
+      return (
+        <Base
+          backgroundProps={{
+            onClick: onBackgroundClick
+          }}
+          quickSearchProps={{
+            root,
+            dispatch
+          }}
+        />
+      );
     }
-  }),
-  (Base: React.ComponentClass<BaseModalProps>) => ({
-    root,
-    dispatch,
-    onBackgroundClick
-  }: InnerProps) => {
-    if (!root.showQuickSearch) {
-      return null;
-    }
-    return (
-      <Base
-        backgroundProps={{
-          onClick: onBackgroundClick
-        }}
-        quickSearchProps={{
-          root,
-          dispatch
-        }}
-      />
-    );
-  }
-);
+  };

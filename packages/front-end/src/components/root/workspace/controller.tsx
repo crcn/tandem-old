@@ -1,5 +1,4 @@
 import * as React from "react";
-import { compose, pure } from "recompose";
 import { RootState } from "../../../state";
 import { Dispatch } from "redux";
 import { LeftGutterComponent } from "./left-gutter";
@@ -16,45 +15,44 @@ export type Props = {
   dispatch: Dispatch<any>;
 };
 
-export default compose<BaseWorkspaceProps, Props>(
-  pure,
-  (Base: React.ComponentClass<BaseWorkspaceProps>) => ({
-    root,
-    dispatch
-  }: Props) => {
-    return (
-      <div>
-        <Base
-          leftGutterProps={{
-            style: {
-              display: root.showSidebar === false ? "none" : "block"
-            },
-            children:
-              root.showSidebar === false ? (
-                []
-              ) : (
-                <LeftGutterComponent
-                  editorWindows={root.editorWindows}
-                  rootDirectory={root.projectDirectory}
-                  dispatch={dispatch}
-                  root={root}
-                />
-              )
-          }}
-          editorWindowsProps={{
-            root,
-            dispatch
-          }}
-          rightGutterProps={{
-            root,
-            dispatch
-          }}
-        />
+export default (Base: React.ComponentClass<BaseWorkspaceProps>) =>
+  DragDropContext(HTML5Backend)(
+    class WorkspaceController extends React.PureComponent<Props> {
+      render() {
+        const { root, dispatch } = this.props;
+        return (
+          <div>
+            <Base
+              leftGutterProps={{
+                style: {
+                  display: root.showSidebar === false ? "none" : "block"
+                },
+                children:
+                  root.showSidebar === false ? (
+                    []
+                  ) : (
+                    <LeftGutterComponent
+                      editorWindows={root.editorWindows}
+                      rootDirectory={root.projectDirectory}
+                      dispatch={dispatch}
+                      root={root}
+                    />
+                  )
+              }}
+              editorWindowsProps={{
+                root,
+                dispatch
+              }}
+              rightGutterProps={{
+                root,
+                dispatch
+              }}
+            />
 
-        <QuickSearchModal root={root} dispatch={dispatch} />
-        <ComponentPickerModal root={root} dispatch={dispatch} />
-      </div>
-    );
-  },
-  DragDropContext(HTML5Backend)
-);
+            <QuickSearchModal root={root} dispatch={dispatch} />
+            <ComponentPickerModal root={root} dispatch={dispatch} />
+          </div>
+        );
+      }
+    }
+  );

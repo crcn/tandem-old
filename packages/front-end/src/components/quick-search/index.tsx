@@ -5,7 +5,6 @@ const {
   SearchResult: BaseSearchResult,
   QuickSearchInput
 } = require("./index.pc");
-import { compose, pure, withHandlers, withState } from "recompose";
 import { RootState } from "../../state";
 import { Dispatch } from "redux";
 import {
@@ -15,75 +14,62 @@ import {
 import { File } from "tandem-common";
 import { FocusComponent } from "../focus";
 
-type SearchResultOuterProps = {
-  file: File;
-  textProps: any;
-  dispatch: Dispatch<any>;
-};
-
-type SearchResultInnerProps = {} & SearchResultOuterProps;
-
-const SearchResult = compose<SearchResultInnerProps, SearchResultOuterProps>(
-  pure,
-  withHandlers({
-    onClick: ({ dispatch, file }) => () => {
-      dispatch(quickSearchItemClicked(file));
-    }
-  })
-)(BaseSearchResult);
-
 type QuickSearchOuterProps = {
   root: RootState;
   dispatch: Dispatch<any>;
 };
 
-type QuickSearchInnerProps = {
-  onInputKeyDown: any;
-  onBackgroundClick: any;
+type State = {
   filter: string[];
-} & QuickSearchOuterProps;
+};
 
-export const QuickSearchComponent = compose<
-  QuickSearchInnerProps,
-  QuickSearchOuterProps
->(
-  pure,
-  withState("filter", "setFilter", null),
-  withHandlers({
-    onInputKeyDown: ({ setFilter }) => event => {
-      setFilter(
-        String(event.target.value || "")
-          .toLowerCase()
-          .trim()
-          .split(" ")
-      );
-    },
-    onBackgroundClick: ({ dispatch }) => () => {
-      dispatch(quickSearchBackgroundClick());
+export class QuickSearchComponent extends React.PureComponent<
+  QuickSearchOuterProps,
+  State
+> {
+  state = {
+    filter: null
+  };
+  setFilter = (value: string[]) => {
+    this.setState({ ...this.state, filter: value });
+  };
+  onInputKeyDown = event => {
+    this.setFilter(
+      String(event.target.value || "")
+        .toLowerCase()
+        .trim()
+        .split(" ")
+    );
+  };
+
+  onBackgroundClick = () => {
+    this.props.dispatch(quickSearchBackgroundClick());
+  };
+  render() {
+    const { root } = this.props;
+    const { onBackgroundClick, onInputKeyDown } = this;
+    if (!root.showQuickSearch) {
+      return null;
     }
-  })
-)(({ filter, root, dispatch, onInputKeyDown, onBackgroundClick }) => {
-  if (!root.showQuickSearch) {
-    return null;
-  }
-  return (
-    <div className="m-quick-search">
-      <div className="background" onClick={onBackgroundClick} />
-      <BaseQuickSearch
-        className="modal"
-        searchResultsProps={
-          {
-            // children: results
+    return (
+      <div className="m-quick-search">
+        <div className="background" onClick={onBackgroundClick} />
+        <BaseQuickSearch
+          className="modal"
+          searchResultsProps={
+            {
+              // children: results
+            }
           }
-        }
-        inputWrapperProps={{
-          children: (
-            <FocusComponent>
-              <QuickSearchInput onKeyUp={onInputKeyDown} />
-            </FocusComponent>
-          )
-        }}
-      />
-    </div>
-  );
-});
+          inputWrapperProps={{
+            children: (
+              <FocusComponent>
+                <QuickSearchInput onKeyUp={onInputKeyDown} />
+              </FocusComponent>
+            )
+          }}
+        />
+      </div>
+    );
+  }
+}

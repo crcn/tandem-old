@@ -1,6 +1,5 @@
 import * as React from "react";
 import * as path from "path";
-import { compose, pure, withHandlers } from "recompose";
 import { Dispatch } from "redux";
 import { quickSearchItemClicked } from "../../actions";
 import { File, memoize } from "tandem-common";
@@ -13,41 +12,32 @@ export type Props = {
   dispatch: Dispatch<any>;
 };
 
-type InnerProps = {
-  onClick: any;
-} & Props;
+export default (Base: React.ComponentClass<BaseSearchResultProps>) =>
+  class SearchResultController extends React.PureComponent<Props> {
+    onClick = () => {
+      this.props.dispatch(quickSearchItemClicked(this.props.file));
+    };
+    render() {
+      const { filter, file, cwd } = this.props;
+      const { onClick } = this;
+      const basename = highlightFilterMatches(path.basename(file.uri), filter);
+      const directory = highlightFilterMatches(
+        path
+          .dirname(file.uri)
+          .replace(cwd, "")
+          .substr(1),
+        filter
+      );
 
-export default compose<BaseSearchResultProps, Props>(
-  pure,
-  withHandlers({
-    onClick: ({ dispatch, file }) => () => {
-      dispatch(quickSearchItemClicked(file));
+      return (
+        <Base
+          onClick={onClick}
+          basenameProps={{ children: basename }}
+          directoryProps={{ children: directory }}
+        />
+      );
     }
-  }),
-  (Base: React.ComponentClass<BaseSearchResultProps>) => ({
-    filter,
-    onClick,
-    file,
-    cwd
-  }: InnerProps) => {
-    const basename = highlightFilterMatches(path.basename(file.uri), filter);
-    const directory = highlightFilterMatches(
-      path
-        .dirname(file.uri)
-        .replace(cwd, "")
-        .substr(1),
-      filter
-    );
-
-    return (
-      <Base
-        onClick={onClick}
-        basenameProps={{ children: basename }}
-        directoryProps={{ children: directory }}
-      />
-    );
-  }
-);
+  };
 
 const MATCH_STYLE: any = { fontWeight: 600, color: "#5f87cd" };
 

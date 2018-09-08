@@ -1,6 +1,6 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import { compose, pure, withHandlers, lifecycle } from "recompose";
+import { compose } from "recompose";
 import { FocusComponent, FocusProps } from "../../focus";
 import { BaseTextInputProps } from "./view.pc";
 

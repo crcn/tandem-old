@@ -1,6 +1,5 @@
 import "./index.scss";
 import * as React from "react";
-import { compose, pure } from "recompose";
 import * as cx from "classnames";
 
 export type PaneComponentInnerProps = {
@@ -10,7 +9,7 @@ export type PaneComponentInnerProps = {
   children: any;
 };
 
-const BasePaneComponent = ({
+export const PaneComponent = ({
   header,
   children,
   className,
@@ -26,5 +25,3 @@ const BasePaneComponent = ({
     <div className="content-outer">{children}</div>
   </div>
 );
-
-export const PaneComponent = BasePaneComponent;

@@ -1,5 +1,4 @@
 import * as React from "react";
-import { compose, pure, withHandlers } from "recompose";
 import {
   openProjectButtonClicked,
   createProjectButtonClicked
@@ -16,25 +15,21 @@ type InnerProps = {
   onCreateProjectButtonClick: any;
 } & Props;
 
-export default compose<BaseWelcomeProps, Props>(
-  pure,
-  withHandlers({
-    onOpenProjectButtonClick: ({ dispatch }) => () => {
-      dispatch(openProjectButtonClicked());
-    },
-    onCreateProjectButtonClick: ({ dispatch }) => () => {
-      dispatch(createProjectButtonClicked());
+export default (Base: React.ComponentClass<BaseWelcomeProps>) =>
+  class WelcomeController extends React.PureComponent<Props> {
+    onOpenProjectButtonClick = () => {
+      this.props.dispatch(openProjectButtonClicked());
+    };
+    onCreateProjectButtonClick = () => {
+      this.props.dispatch(createProjectButtonClicked());
+    };
+    render() {
+      const { onOpenProjectButtonClick, onCreateProjectButtonClick } = this;
+      return (
+        <Base
+          openProjectButtonProps={{ onClick: onOpenProjectButtonClick }}
+          createProjectButtonProps={{ onClick: onCreateProjectButtonClick }}
+        />
+      );
     }
-  }),
-  (Base: React.ComponentClass<BaseWelcomeProps>) => ({
-    onOpenProjectButtonClick,
-    onCreateProjectButtonClick
-  }: InnerProps) => {
-    return (
-      <Base
-        openProjectButtonProps={{ onClick: onOpenProjectButtonClick }}
-        createProjectButtonProps={{ onClick: onCreateProjectButtonClick }}
-      />
-    );
-  }
-);
+  };

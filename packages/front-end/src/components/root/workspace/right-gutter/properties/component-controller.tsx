@@ -1,8 +1,6 @@
 import * as React from "react";
-import * as path from "path";
 import * as cx from "classnames";
 import { ControllerItem } from "./controller-item.pc";
-import { compose, pure, withHandlers } from "recompose";
 import {
   PCComponent,
   getSyntheticSourceNode,

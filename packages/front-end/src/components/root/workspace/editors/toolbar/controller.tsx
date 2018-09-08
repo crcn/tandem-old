@@ -3,7 +3,6 @@ import "./index.scss";
 import * as React from "react";
 import * as path from "path";
 import * as cx from "classnames";
-import { pure, compose, withHandlers } from "recompose";
 import {
   toolbarToolClicked,
   editorTabClicked,
@@ -28,76 +27,77 @@ type InnerProps = {
   onTabCloseButtonClick: any;
 } & Props;
 
-export default compose<BaseToolbarProps, Props>(
-  pure,
-  withHandlers({
-    onTabClick: ({ dispatch }) => uri => {
-      dispatch(editorTabClicked(uri));
-    },
-    onTabCloseButtonClick: ({ dispatch }) => (uri, event) => {
-      dispatch(editorTabCloseButtonClicked(uri));
+export default (Base: React.ComponentClass<BaseToolbarProps>) =>
+  class ToolbarController extends React.PureComponent<Props> {
+    onTabClick = uri => {
+      this.props.dispatch(editorTabClicked(uri));
+    };
+    onTabCloseButtonClick = (uri, event) => {
+      this.props.dispatch(editorTabCloseButtonClicked(uri));
       event.stopPropagation();
-    },
-    onPointerClick: ({ dispatch }) => () => {
-      dispatch(toolbarToolClicked(ToolType.POINTER));
-    },
-    onTextClick: ({ dispatch }) => () => {
-      dispatch(toolbarToolClicked(ToolType.TEXT));
-    },
-    onComponentClick: ({ dispatch }) => () => {
-      dispatch(toolbarToolClicked(ToolType.COMPONENT));
-    },
-    onElementClick: ({ dispatch }) => () => {
-      dispatch(toolbarToolClicked(ToolType.ELEMENT));
-    }
-  }),
-  (Base: React.ComponentClass<BaseToolbarProps>) => ({
-    editorWindow,
-    onTabClick,
-    onTabCloseButtonClick,
-    onPointerClick,
-    onTextClick,
-    onComponentClick,
-    onElementClick
-  }: InnerProps) => {
-    const tabs = editorWindow.tabUris.map(uri => {
+    };
+    onPointerClick = () => {
+      this.props.dispatch(toolbarToolClicked(ToolType.POINTER));
+    };
+    onTextClick = () => {
+      this.props.dispatch(toolbarToolClicked(ToolType.TEXT));
+    };
+    onComponentClick = () => {
+      this.props.dispatch(toolbarToolClicked(ToolType.COMPONENT));
+    };
+    onElementClick = () => {
+      this.props.dispatch(toolbarToolClicked(ToolType.ELEMENT));
+    };
+
+    render() {
+      const { editorWindow } = this.props;
+      const {
+        onTabCloseButtonClick,
+        onTabClick,
+        onPointerClick,
+        onTextClick,
+        onComponentClick,
+        onElementClick
+      } = this;
+
+      const tabs = editorWindow.tabUris.map(uri => {
+        return (
+          <EditorTab
+            className={cx("tab", {
+              selected: editorWindow.activeFilePath === uri
+            })}
+            xButtonProps={{
+              className: "x-button",
+              onClick: event => onTabCloseButtonClick(uri, event)
+            }}
+            labelProps={{
+              text: path.basename(uri)
+            }}
+            key={uri}
+            onClick={() => onTabClick(uri)}
+          />
+        );
+      });
+
       return (
-        <EditorTab
-          className={cx("tab", {
-            selected: editorWindow.activeFilePath === uri
-          })}
-          xButtonProps={{
-            className: "x-button",
-            onClick: event => onTabCloseButtonClick(uri, event)
+        <Base
+          className="m-toolbar"
+          pointerProps={{
+            onClick: onPointerClick
           }}
-          labelProps={{
-            text: path.basename(uri)
+          textProps={{
+            onClick: onTextClick
           }}
-          key={uri}
-          onClick={() => onTabClick(uri)}
+          componentProps={{
+            onClick: onComponentClick
+          }}
+          elementProps={{
+            onClick: onElementClick
+          }}
+          tabsProps={{
+            children: tabs
+          }}
         />
       );
-    });
-
-    return (
-      <Base
-        className="m-toolbar"
-        pointerProps={{
-          onClick: onPointerClick
-        }}
-        textProps={{
-          onClick: onTextClick
-        }}
-        componentProps={{
-          onClick: onComponentClick
-        }}
-        elementProps={{
-          onClick: onElementClick
-        }}
-        tabsProps={{
-          children: tabs
-        }}
-      />
-    );
-  }
-);
+    }
+  };

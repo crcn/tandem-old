@@ -1,6 +1,5 @@
 import * as React from "react";
 import * as cx from "classnames";
-import { compose, pure } from "recompose";
 import {
   PCSourceTagNames,
   getPCNode,
@@ -23,53 +22,52 @@ export type Props = {
   sourceNodeUri: string;
 } & BasePropertiesProps;
 
-type InnerProps = Props;
+export default (Base: React.ComponentClass<BasePropertiesProps>) =>
+  class PropertiesController extends React.PureComponent<Props> {
+    render() {
+      const {
+        visible,
+        className,
+        selectedInspectorNodes,
+        selectedNodes,
+        graph,
+        dispatch,
+        sourceNodeUri,
+        ...rest
+      } = this.props;
+      if (!selectedInspectorNodes.length || !visible) {
+        return null;
+      }
 
-export default compose<InnerProps, Props>(
-  pure,
-  (Base: React.ComponentClass<BasePropertiesProps>) => ({
-    visible,
-    className,
-    selectedInspectorNodes,
-    selectedNodes,
-    graph,
-    dispatch,
-    sourceNodeUri,
-    ...rest
-  }: InnerProps) => {
-    if (!selectedInspectorNodes.length || !visible) {
-      return null;
+      const selectedNode = selectedInspectorNodes[0];
+
+      const sourceNode = getPCNode(selectedNode.assocSourceNodeId, graph);
+
+      return (
+        <Base
+          className={className}
+          {...rest}
+          variant={cx({
+            slot: sourceNode.name === PCSourceTagNames.SLOT,
+            component: sourceNode.name === PCSourceTagNames.COMPONENT,
+            text: sourceNode.name === PCSourceTagNames.TEXT,
+            element: sourceNode.name !== PCSourceTagNames.TEXT
+          })}
+          controllersPaneProps={{
+            selectedNodes,
+            graph,
+            dispatch,
+            sourceNodeUri
+          }}
+          textProps={{
+            dispatch,
+            selectedNodes
+          }}
+          elementProps={{
+            selectedNodes,
+            dispatch
+          }}
+        />
+      );
     }
-
-    const selectedNode = selectedInspectorNodes[0];
-
-    const sourceNode = getPCNode(selectedNode.assocSourceNodeId, graph);
-
-    return (
-      <Base
-        className={className}
-        {...rest}
-        variant={cx({
-          slot: sourceNode.name === PCSourceTagNames.SLOT,
-          component: sourceNode.name === PCSourceTagNames.COMPONENT,
-          text: sourceNode.name === PCSourceTagNames.TEXT,
-          element: sourceNode.name !== PCSourceTagNames.TEXT
-        })}
-        controllersPaneProps={{
-          selectedNodes,
-          graph,
-          dispatch,
-          sourceNodeUri
-        }}
-        textProps={{
-          dispatch,
-          selectedNodes
-        }}
-        elementProps={{
-          selectedNodes,
-          dispatch
-        }}
-      />
-    );
-  }
-);
+  };

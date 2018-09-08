@@ -2,14 +2,7 @@ import * as React from "react";
 import * as path from "path";
 import { FocusComponent } from "../../../../focus";
 import * as cx from "classnames";
-import {
-  compose,
-  pure,
-  withHandlers,
-  withState,
-  mapProps,
-  shouldUpdate
-} from "recompose";
+import { compose } from "recompose";
 import { DragSource } from "react-dnd";
 import { withNodeDropTarget } from "./dnd-controller";
 import { BeforeDropZone, AfterDropZone } from "./drop-zones.pc";

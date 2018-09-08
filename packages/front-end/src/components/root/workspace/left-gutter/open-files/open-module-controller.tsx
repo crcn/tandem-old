@@ -1,5 +1,4 @@
 import * as React from "react";
-import { compose, pure } from "recompose";
 import { SyntheticDocument, DependencyGraph } from "paperclip";
 import { Dispatch } from "redux";
 import { InspectorNode } from "../../../../../state/pc-inspector-tree";
