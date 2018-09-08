@@ -3,26 +3,13 @@ import * as path from "path";
 import * as React from "react";
 import { compose, pure, withHandlers } from "recompose";
 import { PaneComponent } from "../../../../pane";
-import * as cx from "classnames";
 import { Dispatch } from "redux";
-import {
-  Directory,
-  File,
-  FileAttributeNames,
-  EMPTY_ARRAY,
-  TreeNode,
-  filterNestedNodes,
-  FSItemNamespaces,
-  memoize,
-  FSItem
-} from "tandem-common";
+import { Directory, File, EMPTY_ARRAY, TreeNode, FSItem } from "tandem-common";
 import {
   fileNavigatorItemClicked,
   fileNavigatorItemDoubleClicked,
   fileNavigatorToggleDirectoryClicked,
   fileNavigatorDroppedItem,
-  newFileEntered,
-  newDirectoryEntered,
   fileNavigatorNewFileClicked,
   fileNavigatorNewDirectoryClicked,
   fileNavigatorNewFileEntered

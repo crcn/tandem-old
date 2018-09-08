@@ -1,7 +1,7 @@
 import "./frame-controller.scss";
 import * as React from "react";
 import * as cx from "classnames";
-import { compose, pure, withHandlers } from "recompose";
+import { Dispatch } from "redux";
 import {
   SyntheticVisibleNode,
   Frame,
@@ -28,6 +28,7 @@ const MODE_TOGGLE_OPTIONS: DropdownMenuOption[] = [
 ].map(dropdownMenuOptionFromValue);
 
 export type Props = {
+  dispatch: Dispatch;
   frame: Frame;
   sourceNode: PCNode;
   contentNode: SyntheticVisibleNode;
@@ -40,86 +41,83 @@ type InnerProps = {
   onModeChangeComplete: any;
 } & Props;
 
-export default compose<BaseFrameProps, Props>(
-  pure,
-  withHandlers({
-    onTitleClick: ({ dispatch, frame }) => (event: React.MouseEvent<any>) => {
-      dispatch(canvasToolDocumentTitleClicked(frame, event));
-    },
-    onPreviewButtonClick: ({ dispatch, frame }) => (
-      event: React.MouseEvent<any>
-    ) => {
-      dispatch(canvasToolPreviewButtonClicked(frame, event));
-    },
-    onModeChangeComplete: ({ dispatch, frame }) => (mode: FrameMode) => {
-      dispatch(frameModeChangeComplete(frame, mode));
+export default (Base: React.ComponentClass<BaseFrameProps>) =>
+  class FrameController extends React.PureComponent<Props> {
+    onTitleClick = (event: React.MouseEvent<any>) => {
+      this.props.dispatch(
+        canvasToolDocumentTitleClicked(this.props.frame, event)
+      );
+    };
+    onPreviewButtonClick = (event: React.MouseEvent<any>) => {
+      this.props.dispatch(
+        canvasToolPreviewButtonClicked(this.props.frame, event)
+      );
+    };
+    onModeChangeComplete = (mode: FrameMode) => {
+      this.props.dispatch(frameModeChangeComplete(this.props.frame, mode));
+    };
+    render() {
+      const { frame, translate, contentNode, sourceNode } = this.props;
+
+      const { onTitleClick, onModeChangeComplete, onPreviewButtonClick } = this;
+
+      const { width, height } = getBoundsSize(frame.bounds);
+
+      const style = {
+        width,
+        height,
+        left: frame.bounds.left,
+        top: frame.bounds.top,
+        background: "transparent"
+      };
+
+      const hasController =
+        sourceNode &&
+        isComponent(sourceNode) &&
+        sourceNode.controllers &&
+        Boolean(sourceNode.controllers.length);
+
+      const titleScale = Math.max(1 / translate.zoom, 0.03);
+
+      const titleStyle = {
+        transform: `translateY(-${22 * titleScale}px) scale(${titleScale})`,
+        transformOrigin: "top left",
+        whiteSpace: "nowrap",
+
+        // some random height to prevent text from getting cut off
+        // when zooming.
+        height: 30,
+        overflow: "hidden",
+        textOverflow: "ellipsis",
+        width: width * translate.zoom
+      };
+
+      return (
+        <Base
+          className="m-frame"
+          variant={cx({ hasController })}
+          style={style}
+          topBarProps={{
+            style: titleStyle as any,
+            className: "top-bar"
+          }}
+          titleProps={{
+            text:
+              (sourceNode && (sourceNode as PCComponent).label) || "Untitled",
+            onClick: onTitleClick
+          }}
+          controlsProps={{
+            className: "controls"
+          }}
+          previewButtonProps={{
+            onClick: onPreviewButtonClick
+          }}
+          // modeToggleInputProps={{
+          //   options: MODE_TOGGLE_OPTIONS,
+          //   value: contentNode.metadata.mode || FrameMode.DESIGN,
+          //   onChangeComplete: onModeChangeComplete
+          // }}
+        />
+      );
     }
-  }),
-  (Base: React.ComponentClass<BaseFrameProps>) => ({
-    frame,
-    translate,
-    contentNode,
-    sourceNode,
-    onTitleClick,
-    onModeChangeComplete,
-    onPreviewButtonClick
-  }: InnerProps) => {
-    const { width, height } = getBoundsSize(frame.bounds);
-
-    const style = {
-      width,
-      height,
-      left: frame.bounds.left,
-      top: frame.bounds.top,
-      background: "transparent"
-    };
-
-    const hasController =
-      sourceNode &&
-      isComponent(sourceNode) &&
-      sourceNode.controllers &&
-      Boolean(sourceNode.controllers.length);
-
-    const titleScale = Math.max(1 / translate.zoom, 0.03);
-
-    const titleStyle = {
-      transform: `translateY(-${22 * titleScale}px) scale(${titleScale})`,
-      transformOrigin: "top left",
-      whiteSpace: "nowrap",
-
-      // some random height to prevent text from getting cut off
-      // when zooming.
-      height: 30,
-      overflow: "hidden",
-      textOverflow: "ellipsis",
-      width: width * translate.zoom
-    };
-
-    return (
-      <Base
-        className="m-frame"
-        variant={cx({ hasController })}
-        style={style}
-        topBarProps={{
-          style: titleStyle as any,
-          className: "top-bar"
-        }}
-        titleProps={{
-          text: (sourceNode && (sourceNode as PCComponent).label) || "Untitled",
-          onClick: onTitleClick
-        }}
-        controlsProps={{
-          className: "controls"
-        }}
-        previewButtonProps={{
-          onClick: onPreviewButtonClick
-        }}
-        // modeToggleInputProps={{
-        //   options: MODE_TOGGLE_OPTIONS,
-        //   value: contentNode.metadata.mode || FrameMode.DESIGN,
-        //   onChangeComplete: onModeChangeComplete
-        // }}
-      />
-    );
-  }
-);
+  };

@@ -5,7 +5,6 @@
 import "./index.scss";
 import * as React from "react";
 import { Dispatch } from "redux";
-import { pure, compose } from "recompose";
 import {
   RootState,
   EditorWindow,
@@ -57,91 +56,92 @@ export type ToolsLayerComponentProps = {
   graph: DependencyGraph;
 };
 
-const BaseToolsLayerComponent = ({
-  editorWindow,
-  hoveringInspectorNodeIds,
-  selectedSyntheticNodeIds,
-  hoveringSyntheticNodeIds,
-  sourceNodeInspector,
-  openFiles,
-  zoom,
-  dispatch,
-  graph,
-  documents,
-  toolType,
-  frames
-}: ToolsLayerComponentProps) => {
-  const canvas = getOpenFile(editorWindow.activeFilePath, openFiles).canvas;
-  const insertInspectorNode = hoveringInspectorNodeIds.length
-    ? getNestedTreeNodeById(hoveringInspectorNodeIds[0], sourceNodeInspector)
-    : null;
-  const insertInspectorNodeBounds =
-    insertInspectorNode &&
-    calcInspectorNodeBounds(
-      insertInspectorNode,
-      sourceNodeInspector,
-      documents,
-      frames,
-      graph
-    );
-  return (
-    <div className="m-tools-layer">
-      <InsertLayer
-        canvas={canvas}
-        zoom={zoom}
-        editorWindow={editorWindow}
-        toolType={toolType}
-        dispatch={dispatch}
-        insertInspectorNode={insertInspectorNode}
-        insertInspectorNodeBounds={insertInspectorNodeBounds}
-      />
-      <Frames
-        canvas={canvas}
-        frames={frames}
-        documents={documents}
-        graph={graph}
-        translate={canvas.translate}
-        dispatch={dispatch}
-        editorWindow={editorWindow}
-      />
-      <NodeOverlaysTool
-        frames={frames}
-        documents={documents}
-        hoveringSyntheticNodeIds={hoveringSyntheticNodeIds}
-        selectedSyntheticNodeIds={selectedSyntheticNodeIds}
-        graph={graph}
-        zoom={zoom}
-        dispatch={dispatch}
-        document={getSyntheticDocumentByDependencyUri(
-          editorWindow.activeFilePath,
-          documents,
-          graph
-        )}
-        editorWindow={editorWindow}
-      />
-      <SelectionCanvasTool
-        canvas={canvas}
-        selectedSyntheticNodeIds={selectedSyntheticNodeIds}
-        documents={documents}
-        frames={frames}
-        graph={graph}
-        dispatch={dispatch}
-        zoom={zoom}
-        document={getSyntheticDocumentByDependencyUri(
-          editorWindow.activeFilePath,
-          documents,
-          graph
-        )}
-        editorWindow={editorWindow}
-      />
-    </div>
-  );
-};
-
-export const ToolsLayerComponent = compose<
-  ToolsLayerComponentProps,
+export class ToolsLayerComponent extends React.PureComponent<
   ToolsLayerComponentProps
->(pure)(BaseToolsLayerComponent);
+> {
+  render() {
+    const {
+      editorWindow,
+      hoveringInspectorNodeIds,
+      selectedSyntheticNodeIds,
+      hoveringSyntheticNodeIds,
+      sourceNodeInspector,
+      openFiles,
+      zoom,
+      dispatch,
+      graph,
+      documents,
+      toolType,
+      frames
+    } = this.props;
+
+    const canvas = getOpenFile(editorWindow.activeFilePath, openFiles).canvas;
+    const insertInspectorNode = hoveringInspectorNodeIds.length
+      ? getNestedTreeNodeById(hoveringInspectorNodeIds[0], sourceNodeInspector)
+      : null;
+    const insertInspectorNodeBounds =
+      insertInspectorNode &&
+      calcInspectorNodeBounds(
+        insertInspectorNode,
+        sourceNodeInspector,
+        documents,
+        frames,
+        graph
+      );
+    return (
+      <div className="m-tools-layer">
+        <InsertLayer
+          canvas={canvas}
+          zoom={zoom}
+          editorWindow={editorWindow}
+          toolType={toolType}
+          dispatch={dispatch}
+          insertInspectorNode={insertInspectorNode}
+          insertInspectorNodeBounds={insertInspectorNodeBounds}
+        />
+        <Frames
+          canvas={canvas}
+          frames={frames}
+          documents={documents}
+          graph={graph}
+          translate={canvas.translate}
+          dispatch={dispatch}
+          editorWindow={editorWindow}
+        />
+        <NodeOverlaysTool
+          frames={frames}
+          documents={documents}
+          hoveringSyntheticNodeIds={hoveringSyntheticNodeIds}
+          selectedSyntheticNodeIds={selectedSyntheticNodeIds}
+          graph={graph}
+          zoom={zoom}
+          dispatch={dispatch}
+          document={getSyntheticDocumentByDependencyUri(
+            editorWindow.activeFilePath,
+            documents,
+            graph
+          )}
+          editorWindow={editorWindow}
+        />
+        <SelectionCanvasTool
+          canvas={canvas}
+          selectedSyntheticNodeIds={selectedSyntheticNodeIds}
+          documents={documents}
+          frames={frames}
+          graph={graph}
+          dispatch={dispatch}
+          zoom={zoom}
+          document={getSyntheticDocumentByDependencyUri(
+            editorWindow.activeFilePath,
+            documents,
+            graph
+          )}
+          editorWindow={editorWindow}
+        />
+      </div>
+    );
+  }
+}
 
 const calcInspectorNodeBounds = memoize(
   (

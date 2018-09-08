@@ -3,14 +3,13 @@ import * as React from "react";
 import { Dispatch } from "redux";
 import { PaneComponent } from "../../../../pane";
 // import { Item: BaseItem } from "./index.pc";
-const BaseItem = () => <div />;
 import {
   REGISTERED_COMPONENT,
   RegisteredComponent
 } from "../../../../../state";
 import { createTreeNode } from "tandem-common";
 import { compose, pure } from "recompose";
-import { DropTarget, DragSource, DropTargetCollector } from "react-dnd";
+import { DragSource } from "react-dnd";
 
 type ListItem = {
   label: string;

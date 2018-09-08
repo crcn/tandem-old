@@ -11,7 +11,6 @@ import {
   DependencyGraph
 } from "paperclip";
 import { Bounds, memoize, TreeNodeIdMap, StructReference } from "tandem-common";
-import { compose, pure, withHandlers } from "recompose";
 // import { Dispatcher, Bounds, wrapEventToDispatch, weakMemo, StructReference } from "aerial-common2";
 import { Dispatch } from "redux";
 import {
@@ -40,41 +39,36 @@ type ArtboardOverlayToolsOuterProps = {
   hoveringSyntheticNodeIds: string[];
 };
 
-type ArtboardOverlayToolsInnerProps = {
-  onPanStart(event: any);
-  onPan(event: any);
-  onPanEnd(event: any);
-} & ArtboardOverlayToolsOuterProps;
-
 type NodeOverlayProps = {
   bounds: Bounds;
   zoom: number;
   dispatch: Dispatch<any>;
 };
 
-const NodeOverlayBase = ({ zoom, bounds, dispatch }: NodeOverlayProps) => {
-  if (!bounds) {
-    return null;
+class NodeOverlay extends React.PureComponent<NodeOverlayProps> {
+  render() {
+    const { zoom, bounds, dispatch } = this.props;
+    if (!bounds) {
+      return null;
+    }
+
+    const borderWidth = 2 / zoom;
+
+    const style = {
+      left: bounds.left,
+      top: bounds.top,
+
+      // round to ensure that the bounds match up with the selection bounds
+      width: Math.ceil(bounds.right - bounds.left),
+      height: Math.ceil(bounds.bottom - bounds.top),
+      boxShadow: `inset 0 0 0 ${borderWidth}px #00B5FF`
+    };
+
+    return (
+      <div className={cx("visual-tools-node-overlay hovering")} style={style} />
+    );
   }
-
-  const borderWidth = 2 / zoom;
-
-  const style = {
-    left: bounds.left,
-    top: bounds.top,
-
-    // round to ensure that the bounds match up with the selection bounds
-    width: Math.ceil(bounds.right - bounds.left),
-    height: Math.ceil(bounds.bottom - bounds.top),
-    boxShadow: `inset 0 0 0 ${borderWidth}px #00B5FF`
-  };
-
-  return (
-    <div className={cx("visual-tools-node-overlay hovering")} style={style} />
-  );
-};
-
-const NodeOverlay = pure(NodeOverlayBase as any) as typeof NodeOverlayBase;
+}
 
 const getDocumentRelativeBounds = memoize((document: Frame) => ({
   left: 0,
@@ -83,112 +77,94 @@ const getDocumentRelativeBounds = memoize((document: Frame) => ({
   bottom: document.bounds.bottom - document.bounds.top
 }));
 
-const ArtboardOverlayToolsBase = ({
-  dispatch,
-  frame,
-  hoveringSyntheticNodeIds,
-  zoom,
-  onPanStart,
-  onPan,
-  onPanEnd
-}: ArtboardOverlayToolsInnerProps) => {
-  if (!frame.computed) {
-    return null;
-  }
-
-  if (!frame.bounds) {
-    return null;
-  }
-
-  const bounds = frame.bounds;
-
-  // TODO - compute info based on content
-  const style = {
-    position: "absolute",
-    left: bounds.left,
-    top: bounds.top,
-    width: bounds.right - bounds.left,
-    height: bounds.bottom - bounds.top
+class ArtboardOverlayTools extends React.PureComponent<
+  ArtboardOverlayToolsOuterProps
+> {
+  onPanStart = event => {
+    this.props.dispatch(
+      canvasToolOverlayMousePanStart(this.props.frame.contentNodeId)
+    );
+  };
+  onPan = event => {
+    this.props.dispatch(
+      canvasToolOverlayMousePanning(
+        this.props.frame.contentNodeId,
+        { left: event.center.x, top: event.center.y },
+        event.deltaY,
+        event.velocityY
+      )
+    );
+  };
+  onPanEnd = event => {
+    event.preventDefault();
+    setImmediate(() => {
+      this.props.dispatch(
+        canvasToolOverlayMousePanEnd(this.props.frame.contentNodeId)
+      );
+    });
   };
 
-  return (
-    <div style={style as any}>
-      <Hammer
-        onPanStart={onPanStart}
-        onPan={onPan}
-        onPanEnd={onPanEnd}
-        direction="DIRECTION_ALL"
-      >
-        <div
-          style={{ width: "100%", height: "100%", position: "absolute" } as any}
-          onDoubleClick={wrapEventToDispatch(
-            dispatch,
-            canvasToolOverlayMouseDoubleClicked.bind(this, frame.contentNodeId)
-          )}
-        >
-          {hoveringSyntheticNodeIds.map((nodeId, i) => (
-            <NodeOverlay
-              zoom={zoom}
-              key={nodeId}
-              bounds={
-                frame.contentNodeId === nodeId
-                  ? getDocumentRelativeBounds(frame)
-                  : frame.computed[nodeId] && frame.computed[nodeId].bounds
-              }
-              dispatch={dispatch}
-            />
-          ))}
-        </div>
-      </Hammer>
-    </div>
-  );
-};
+  render() {
+    const { dispatch, frame, hoveringSyntheticNodeIds, zoom } = this.props;
 
-const enhanceArtboardOverlayTools = compose<
-  ArtboardOverlayToolsInnerProps,
-  ArtboardOverlayToolsOuterProps
->(
-  pure,
-  withHandlers({
-    onPanStart: ({
-      dispatch,
-      frame
-    }: ArtboardOverlayToolsOuterProps) => event => {
-      dispatch(canvasToolOverlayMousePanStart(frame.contentNodeId));
-    },
-    onPan: ({ dispatch, frame }: ArtboardOverlayToolsOuterProps) => event => {
-      dispatch(
-        canvasToolOverlayMousePanning(
-          frame.contentNodeId,
-          { left: event.center.x, top: event.center.y },
-          event.deltaY,
-          event.velocityY
-        )
-      );
-    },
-    onPanEnd: ({
-      dispatch,
-      frame
-    }: ArtboardOverlayToolsOuterProps) => event => {
-      event.preventDefault();
-      setImmediate(() => {
-        dispatch(canvasToolOverlayMousePanEnd(frame.contentNodeId));
-      });
+    const { onPanStart, onPan, onPanEnd } = this;
+    if (!frame.computed) {
+      return null;
     }
-  })
-);
 
-const ArtboardOverlayTools = enhanceArtboardOverlayTools(
-  ArtboardOverlayToolsBase
-);
+    if (!frame.bounds) {
+      return null;
+    }
 
-const getNodes = memoize(
-  (refs: StructReference<any>[], allNodes: TreeNodeIdMap) => {
-    return refs
-      .map(({ type, id }) => allNodes[id])
-      .filter(flattenedObject => !!flattenedObject);
+    const bounds = frame.bounds;
+
+    // TODO - compute info based on content
+    const style = {
+      position: "absolute",
+      left: bounds.left,
+      top: bounds.top,
+      width: bounds.right - bounds.left,
+      height: bounds.bottom - bounds.top
+    };
+
+    return (
+      <div style={style as any}>
+        <Hammer
+          onPanStart={onPanStart}
+          onPan={onPan}
+          onPanEnd={onPanEnd}
+          direction="DIRECTION_ALL"
+        >
+          <div
+            style={
+              { width: "100%", height: "100%", position: "absolute" } as any
+            }
+            onDoubleClick={wrapEventToDispatch(
+              dispatch,
+              canvasToolOverlayMouseDoubleClicked.bind(
+                this,
+                frame.contentNodeId
+              )
+            )}
+          >
+            {hoveringSyntheticNodeIds.map((nodeId, i) => (
+              <NodeOverlay
+                zoom={zoom}
+                key={nodeId}
+                bounds={
+                  frame.contentNodeId === nodeId
+                    ? getDocumentRelativeBounds(frame)
+                    : frame.computed[nodeId] && frame.computed[nodeId].bounds
+                }
+                dispatch={dispatch}
+              />
+            ))}
+          </div>
+        </Hammer>
+      </div>
+    );
   }
-);
+}
 
 const getHoveringSyntheticVisibleNodes = memoize(
   (
@@ -206,44 +182,43 @@ const getHoveringSyntheticVisibleNodes = memoize(
   }
 );
 
-export const NodeOverlaysToolBase = ({
-  frames,
-  editorWindow,
-  dispatch,
-  documents,
-  graph,
-  hoveringSyntheticNodeIds,
-  selectedSyntheticNodeIds,
-  zoom
-}: VisualToolsProps) => {
-  const activeFrames = getFramesByDependencyUri(
-    editorWindow.activeFilePath,
-    frames,
-    documents,
-    graph
-  );
+export class NodeOverlaysTool extends React.PureComponent<VisualToolsProps> {
+  render() {
+    const {
+      frames,
+      editorWindow,
+      dispatch,
+      documents,
+      graph,
+      hoveringSyntheticNodeIds,
+      selectedSyntheticNodeIds,
+      zoom
+    } = this.props;
+    const activeFrames = getFramesByDependencyUri(
+      editorWindow.activeFilePath,
+      frames,
+      documents,
+      graph
+    );
 
-  return (
-    <div className="visual-tools-layer-component">
-      {activeFrames.map((frame, i) => {
-        return (
-          <ArtboardOverlayTools
-            key={frame.contentNodeId}
-            frame={frame}
-            hoveringSyntheticNodeIds={getHoveringSyntheticVisibleNodes(
-              hoveringSyntheticNodeIds,
-              selectedSyntheticNodeIds,
-              frame
-            )}
-            dispatch={dispatch}
-            zoom={zoom}
-          />
-        );
-      })}
-    </div>
-  );
-};
-
-export const NodeOverlaysTool = pure(
-  NodeOverlaysToolBase as any
-) as typeof NodeOverlaysToolBase;
+    return (
+      <div className="visual-tools-layer-component">
+        {activeFrames.map((frame, i) => {
+          return (
+            <ArtboardOverlayTools
+              key={frame.contentNodeId}
+              frame={frame}
+              hoveringSyntheticNodeIds={getHoveringSyntheticVisibleNodes(
+                hoveringSyntheticNodeIds,
+                selectedSyntheticNodeIds,
+                frame
+              )}
+              dispatch={dispatch}
+              zoom={zoom}
+            />
+          );
+        })}
+      </div>
+    );
+  }
+}

@@ -1,6 +1,5 @@
 import "./index.scss";
 import * as React from "react";
-// import { TextInputComponent } from "../../../inputs/text/";
 import { compose, pure, withState, withHandlers } from "recompose";
 
 type InputComponentProps = {

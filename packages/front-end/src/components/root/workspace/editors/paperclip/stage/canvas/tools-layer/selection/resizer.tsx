@@ -1,7 +1,6 @@
 import "./resizer.scss";
 import React = require("react");
 import { debounce } from "lodash";
-import { pure, compose, withHandlers } from "recompose";
 import {
   RootState,
   EditorWindow,

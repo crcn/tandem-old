@@ -1,7 +1,6 @@
 import "./index.scss";
 import { Dispatch } from "redux";
 import * as React from "react";
-import { pure, compose } from "recompose";
 import { CanvasComponent } from "./canvas";
 import { FooterComponent } from "./footer";
 import {
@@ -34,41 +33,42 @@ export type StageOuterProps = {
   sourceNodeInspector: InspectorNode;
 };
 
-const BaseStageComponent = ({
-  toolType,
-  openFiles,
-  editorWindow,
-  dependency,
-  dispatch,
-  frames,
-  sourceNodeInspector,
-  hoveringInspectorNodeIds,
-  selectedSyntheticNodeIds,
-  hoveringSyntheticNodeIds,
-  activeFilePath,
-  graph,
-  documents
-}: StageOuterProps) => (
-  <div className="m-stage">
-    <CanvasComponent
-      activeFilePath={activeFilePath}
-      frames={frames}
-      toolType={toolType}
-      openFiles={openFiles}
-      sourceNodeInspector={sourceNodeInspector}
-      hoveringInspectorNodeIds={hoveringInspectorNodeIds}
-      selectedSyntheticNodeIds={selectedSyntheticNodeIds}
-      hoveringSyntheticNodeIds={hoveringSyntheticNodeIds}
-      graph={graph}
-      documents={documents}
-      dependency={dependency}
-      dispatch={dispatch}
-      editorWindow={editorWindow}
-    />
-    {/* <FooterComponent /> */}
-  </div>
-);
-
-export const StageComponent = compose<StageOuterProps, StageOuterProps>(pure)(
-  BaseStageComponent
-);
+export class StageComponent extends React.PureComponent<StageOuterProps> {
+  render() {
+    const {
+      toolType,
+      openFiles,
+      editorWindow,
+      dependency,
+      dispatch,
+      frames,
+      sourceNodeInspector,
+      hoveringInspectorNodeIds,
+      selectedSyntheticNodeIds,
+      hoveringSyntheticNodeIds,
+      activeFilePath,
+      graph,
+      documents
+    } = this.props;
+    return (
+      <div className="m-stage">
+        <CanvasComponent
+          activeFilePath={activeFilePath}
+          frames={frames}
+          toolType={toolType}
+          openFiles={openFiles}
+          sourceNodeInspector={sourceNodeInspector}
+          hoveringInspectorNodeIds={hoveringInspectorNodeIds}
+          selectedSyntheticNodeIds={selectedSyntheticNodeIds}
+          hoveringSyntheticNodeIds={hoveringSyntheticNodeIds}
+          graph={graph}
+          documents={documents}
+          dependency={dependency}
+          dispatch={dispatch}
+          editorWindow={editorWindow}
+        />
+        {/* <FooterComponent /> */}
+      </div>
+    );
+  }
+}
