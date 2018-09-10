@@ -123,8 +123,13 @@ export default compose(
   }),
   (Base: React.ComponentClass<BasePickerProps>) => ({
     onMouseDown,
-    grabberPoint,
     onCanvas,
+    grabberAxis,
+    draw,
+    onChange,
+    onChangeComplete,
+    canvas,
+    grabberPoint,
     ...rest
   }) => {
     return (

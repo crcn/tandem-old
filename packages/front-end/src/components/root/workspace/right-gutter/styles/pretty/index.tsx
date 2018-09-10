@@ -3,6 +3,7 @@ import {
   SyntheticNode,
   SyntheticElement,
   DependencyGraph,
+  InspectorNode,
   SyntheticDocument
 } from "paperclip";
 import { BaseElementStylerProps } from "./index.pc";
@@ -17,10 +18,21 @@ export type Props = {
   dispatch: Dispatch<any>;
   selectedNodes: SyntheticElement[];
   graph: DependencyGraph;
+  rootInspectorNode: InspectorNode;
+  selectedInspectorNodes: InspectorNode[];
   syntheticDocument: SyntheticDocument;
   fontFamilies: FontFamily[];
 };
 
+// instancePaneProps={{
+//   dispatch,
+//   selectedInspectorNodes,
+//   rootInspectorNode: null,
+//   syntheticDocument,
+//   selectedNodes,
+//   graph,
+//   selectedVariant
+// }}
 export default (Base: React.ComponentClass<BaseElementStylerProps>) =>
   class PrettyStylesController extends React.PureComponent<Props> {
     render() {
@@ -28,6 +40,7 @@ export default (Base: React.ComponentClass<BaseElementStylerProps>) =>
       return (
         <Base
           {...props}
+          instancePaneProps={props}
           inheritPaneProps={props}
           codePaneProps={props}
           layoutPaneProps={props}

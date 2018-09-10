@@ -884,14 +884,14 @@ export const canvasReducer = (state: RootState, action: Action) => {
 
     case COMPONENT_INSTANCE_VARIANT_TOGGLED: {
       const { variant } = action as VariantClicked;
-      const element = getSyntheticNodeById(
-        state.selectedSyntheticNodeIds[0],
-        state.documents
-      ) as SyntheticInstanceElement;
+      const inspectorNode = getNestedTreeNodeById(
+        state.selectedInspectorNodeIds[0],
+        state.sourceNodeInspector
+      );
       state = persistRootState(
         state =>
           persistToggleVariantDefault(
-            element,
+            inspectorNode,
             variant.id,
             state.selectedVariant,
             state

@@ -302,80 +302,80 @@ describe(__filename + "#", () => {
     expect(override.targetIdPath).to.eql([]);
   });
 
-  it("can override a variant default of a content instance", () => {
-    const variant = createPCVariant();
+  // it("can override a variant default of a content instance", () => {
+  //   const variant = createPCVariant();
 
-    let component = createPCComponent(null, null, {}, {}, [
-      variant,
-      createPCOverride(
-        [],
-        PCOverridablePropertyName.STYLE,
-        { color: "red" },
-        variant.id
-      )
-    ]);
+  //   let component = createPCComponent(null, null, {}, {}, [
+  //     variant,
+  //     createPCOverride(
+  //       [],
+  //       PCOverridablePropertyName.STYLE,
+  //       { color: "red" },
+  //       variant.id
+  //     )
+  //   ]);
 
-    let instance = createPCComponentInstance(component.id);
+  //   let instance = createPCComponentInstance(component.id);
 
-    let state = createEditorState(createPCModule([component, instance]));
+  //   let state = createEditorState(createPCModule([component, instance]));
 
-    state = evaluateEditedStateSync(state);
-    let sInstance = state.documents[0].children[1] as SyntheticInstanceElement;
-    state = persistToggleVariantDefault(sInstance, variant.id, null, state);
-    instance = getPCNode(
-      instance.id,
-      state.graph
-    ) as PCComponentInstanceElement;
+  //   state = evaluateEditedStateSync(state);
+  //   let sInstance = state.documents[0].children[1] as SyntheticInstanceElement;
+  //   state = persistToggleVariantDefault(sInstance, variant.id, null, state);
+  //   instance = getPCNode(
+  //     instance.id,
+  //     state.graph
+  //   ) as PCComponentInstanceElement;
 
-    const [override] = getOverrides(instance);
-    expect(override.propertyName).to.eql(
-      PCOverridablePropertyName.VARIANT_IS_DEFAULT
-    );
-    expect((override as PCVariantOverride).value).to.eql(true);
-    expect(override.targetIdPath).to.eql([variant.id]);
-    state = evaluateEditedStateSync(state);
-    sInstance = state.documents[0].children[1] as SyntheticInstanceElement;
-    expect(sInstance.style).to.eql({ color: "red" });
-  });
+  //   const [override] = getOverrides(instance);
+  //   expect(override.propertyName).to.eql(
+  //     PCOverridablePropertyName.VARIANT_IS_DEFAULT
+  //   );
+  //   expect((override as PCVariantOverride).value).to.eql(true);
+  //   expect(override.targetIdPath).to.eql([variant.id]);
+  //   state = evaluateEditedStateSync(state);
+  //   sInstance = state.documents[0].children[1] as SyntheticInstanceElement;
+  //   expect(sInstance.style).to.eql({ color: "red" });
+  // });
 
-  it("can override a variant default of a nested instance", () => {
-    const variant = createPCVariant();
+  // it("can override a variant default of a nested instance", () => {
+  //   const variant = createPCVariant();
 
-    let component = createPCComponent(null, null, {}, {}, [
-      variant,
-      createPCOverride(
-        [],
-        PCOverridablePropertyName.STYLE,
-        { color: "red" },
-        variant.id
-      )
-    ]);
+  //   let component = createPCComponent(null, null, {}, {}, [
+  //     variant,
+  //     createPCOverride(
+  //       [],
+  //       PCOverridablePropertyName.STYLE,
+  //       { color: "red" },
+  //       variant.id
+  //     )
+  //   ]);
 
-    let instance = createPCComponentInstance(component.id);
-    const div = createPCElement("div", {}, {}, [instance]);
+  //   let instance = createPCComponentInstance(component.id);
+  //   const div = createPCElement("div", {}, {}, [instance]);
 
-    let state = createEditorState(createPCModule([component, div]));
+  //   let state = createEditorState(createPCModule([component, div]));
 
-    state = evaluateEditedStateSync(state);
-    let sInstance = state.documents[0].children[1]
-      .children[0] as SyntheticInstanceElement;
-    state = persistToggleVariantDefault(sInstance, variant.id, null, state);
-    instance = getPCNode(
-      instance.id,
-      state.graph
-    ) as PCComponentInstanceElement;
+  //   state = evaluateEditedStateSync(state);
+  //   let sInstance = state.documents[0].children[1]
+  //     .children[0] as SyntheticInstanceElement;
+  //   state = persistToggleVariantDefault(sInstance, variant.id, null, state);
+  //   instance = getPCNode(
+  //     instance.id,
+  //     state.graph
+  //   ) as PCComponentInstanceElement;
 
-    const [override] = getOverrides(instance);
-    expect(override.propertyName).to.eql(
-      PCOverridablePropertyName.VARIANT_IS_DEFAULT
-    );
-    expect((override as PCVariantOverride).value).to.eql(true);
-    expect(override.targetIdPath).to.eql([variant.id]);
-    state = evaluateEditedStateSync(state);
-    sInstance = state.documents[0].children[1]
-      .children[0] as SyntheticInstanceElement;
-    expect(sInstance.style).to.eql({ color: "red" });
-  });
+  //   const [override] = getOverrides(instance);
+  //   expect(override.propertyName).to.eql(
+  //     PCOverridablePropertyName.VARIANT_IS_DEFAULT
+  //   );
+  //   expect((override as PCVariantOverride).value).to.eql(true);
+  //   expect(override.targetIdPath).to.eql([variant.id]);
+  //   state = evaluateEditedStateSync(state);
+  //   sInstance = state.documents[0].children[1]
+  //     .children[0] as SyntheticInstanceElement;
+  //   expect(sInstance.style).to.eql({ color: "red" });
+  // });
 
   describe("clipboard", () => {});
 

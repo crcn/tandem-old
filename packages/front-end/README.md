@@ -1,11 +1,17 @@
 IMMEDIATE:
 
+- variant prop for instances
+- variant override must be on prop (like styles & attributes)
 - "prompt" UI
 - ability to rename style
 - instance pane
 
   - inherit styles
   - inherited styles must be disabled for variants
+
+- instance style reset
+
+  - reset variants too
 
 - get instance variant to work again
 - prohibit components from having default styles

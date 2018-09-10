@@ -1,23 +1,29 @@
 import * as React from "react";
 import {
   SyntheticDocument,
+  getOverrides,
   SyntheticNode,
+  PCOverride,
   DependencyGraph,
   getSyntheticSourceNode,
   isPCComponentInstance,
   getPCNode,
   getPCVariants,
   PCComponent,
+  getInspectorSourceNode,
   PCComponentInstanceElement,
   isSyntheticInstanceElement,
-  PCVariant,
   SyntheticElement,
+  PCVariant,
+  SyntheticInstanceElement,
+  InspectorNode,
+  getInstanceVariantInfo,
   getInheritedAndSelfOverrides,
   PCOverridablePropertyName
 } from "paperclip";
+import { memoize, KeyValue } from "tandem-common";
 import { Dispatch } from "redux";
 import { VariantOption } from "./option.pc";
-import { VariantPill } from "./pill.pc";
 import { noop, last } from "lodash";
 import {
   instanceVariantToggled,
@@ -26,135 +32,55 @@ import {
 import { BaseComponentInstanceVariantProps } from "./variant-input.pc";
 
 export type Props = {
-  syntheticDocument: SyntheticDocument;
-  selectedNodes: SyntheticNode[];
+  selectedInspectorNode: InspectorNode;
+  rootInspectorNode: InspectorNode;
   dispatch: Dispatch<any>;
   graph: DependencyGraph;
   selectedVariant: PCVariant;
 };
 
-type State = {
-  editing: boolean;
-};
-
 export default (
   Base: React.ComponentClass<BaseComponentInstanceVariantProps>
 ) =>
-  class VariantInputController extends React.PureComponent<Props, State> {
-    state = {
-      editing: false
-    };
-    setEditing(value: boolean) {
-      this.setState({ ...this.state, editing: value });
-    }
+  class VariantInputController extends React.PureComponent<Props> {
     onVariantToggle = (variant: PCVariant) => {
       this.props.dispatch(instanceVariantToggled(variant));
-    };
-    onVariantInputClick = () => {
-      this.setEditing(!this.state.editing);
-    };
-    onFocus = () => {
-      this.setEditing(true);
-    };
-    onBlur = () => {
-      this.setEditing(false);
     };
     onVariantReset = (variant: PCVariant) => {
       this.props.dispatch(instanceVariantResetClicked(variant));
     };
     render() {
-      const { onVariantToggle, onVariantReset, onBlur, onFocus } = this;
-      const { editing } = this.state;
+      const { onVariantToggle, onVariantReset } = this;
       const {
-        selectedNodes,
+        selectedInspectorNode,
+        rootInspectorNode,
         graph,
-        syntheticDocument,
+        dispatch,
         selectedVariant
       } = this.props;
-
-      console.log(this.props);
-
-      if (!selectedNodes) {
-        return null;
-      }
-
-      const node = selectedNodes[0] as SyntheticElement;
-      const sourceNode = getPCNode(
-        node.id,
+      const variantInfo = getInstanceVariantInfo(
+        selectedInspectorNode,
+        rootInspectorNode,
         graph
-      ) as PCComponentInstanceElement;
+      );
 
-      const instance = getSyntheticSourceNode(node, graph);
-      if (!isPCComponentInstance(instance)) {
+      if (!variantInfo.length) {
         return null;
       }
 
-      const component = getPCNode(instance.is, graph) as PCComponent;
-      const componentVariants = getPCVariants(component);
-      const overrides = getInheritedAndSelfOverrides(
-        node,
-        syntheticDocument,
-        graph,
-        selectedVariant && selectedVariant.id
-      );
-
-      const variantOverrides = overrides.filter(
-        override =>
-          override.propertyName === PCOverridablePropertyName.VARIANT_IS_DEFAULT
-      );
-
-      if (!componentVariants.length) {
-        return null;
-      }
-
-      const pillChildren = Object.keys(node.variant)
-        .filter(variantId => node.variant[variantId])
-        .map(variantId => {
-          const variant = componentVariants.find(
-            variant => variant.id === variantId
-          );
-
-          // may not exist if component variant is deleted
-          if (!variant) {
-            return null;
-          }
-          return <VariantPill key={variantId}>{variant.label}</VariantPill>;
-        });
-
-      const optionsChildren = componentVariants.map(variant => {
-        const override = variantOverrides.find(
-          override => last(override.targetIdPath) === variant.id
-        );
+      const options = variantInfo.map(({ variant, override }) => {
         return (
           <VariantOption
-            variant={{ ...variant, isDefault: node.variant[variant.id] }}
-            editable={false}
-            onClick={noop}
+            key={variant.id}
+            variant={variant}
+            selected={selectedVariant && variant.id === selectedVariant.id}
+            dispatch={dispatch}
             onToggle={onVariantToggle}
-            onReset={override ? onVariantReset : null}
+            onReset={override && onVariantReset}
           />
         );
       });
 
-      return (
-        <Base
-          tabIndex={-1}
-          onBlur={onBlur}
-          onFocus={onFocus}
-          pillsProps={{
-            children: pillChildren.length ? (
-              pillChildren
-            ) : (
-              <VariantPill variant="empty">--</VariantPill>
-            )
-          }}
-          optionsProps={{
-            style: {
-              display: editing && optionsChildren.length ? "block" : "none"
-            },
-            children: editing ? optionsChildren : []
-          }}
-        />
-      );
+      return <Base options={options} />;
     }
   };

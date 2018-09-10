@@ -21,15 +21,6 @@ export type Props = {
   onReset?: any;
 } & BaseVariantOptionProps;
 
-type InnerProps = {
-  editingLabel?: boolean;
-  onSwitchChange: any;
-  onLabelChange: any;
-  setEditingLabel: any;
-  onInputClick: any;
-  onClick: any;
-} & Props;
-
 type State = {
   editingLabel: boolean;
 };

@@ -5,13 +5,16 @@ import {
   SyntheticDocument,
   SyntheticElement,
   PCVariant,
-  DependencyGraph
+  DependencyGraph,
+  InspectorNode
 } from "paperclip";
 import { FontFamily } from "../../../../../state";
 
 export type Props = {
   visible: boolean;
   dispatch: Dispatch<any>;
+  rootInspectorNode: InspectorNode;
+  selectedInspectorNodes: InspectorNode[];
   syntheticDocument: SyntheticDocument;
   selectedNodes: SyntheticElement[];
   selectedVariant: PCVariant;
@@ -30,6 +33,8 @@ export default (Base: React.ComponentClass<BaseStylesProps>) =>
         selectedVariant,
         fontFamilies,
         graph,
+        selectedInspectorNodes,
+        rootInspectorNode,
         ...rest
       } = this.props;
       if (!selectedNodes.length || !visible) {
@@ -44,22 +49,10 @@ export default (Base: React.ComponentClass<BaseStylesProps>) =>
             selectedVariant,
             graph
           }}
-          instanceVariantProps={{
-            dispatch,
-            syntheticDocument,
-            selectedNodes,
-            graph,
-            selectedVariant
-          }}
-          instancePaneProps={{
-            dispatch,
-            syntheticDocument,
-            selectedNodes,
-            graph,
-            selectedVariant
-          }}
           prettyProps={{
             dispatch,
+            selectedInspectorNodes,
+            rootInspectorNode,
             syntheticDocument,
             selectedNodes,
             graph,

@@ -15,6 +15,7 @@ export type Props = {
   value: BoxShadowInfo;
   onChange: any;
   onChangeComplete: any;
+  onBackgroundClick: any;
 };
 
 export default (Base: React.ComponentClass<BaseBoxShadowItemProps>) =>
@@ -64,6 +65,9 @@ export default (Base: React.ComponentClass<BaseBoxShadowItemProps>) =>
       const {
         value: { color, x, y, blur, spread },
         selected,
+        onChange,
+        onChangeComplete,
+        onBackgroundClick,
         ...rest
       } = this.props;
       const {

@@ -84,9 +84,13 @@ import {
   InspectorNode,
   getInspectorSourceNode,
   inspectorNodeInShadow,
-  getSyntheticInspectorNode
+  getSyntheticInspectorNode,
+  getInstanceVariantInfo
 } from "./inspector";
-import { getInspectorContentNodeContainingChild } from "./inspector";
+import {
+  getInspectorContentNodeContainingChild,
+  getInspectorNodeByAssocId
+} from "./inspector";
 
 /*------------------------------------------
  * CONSTANTS
@@ -749,20 +753,37 @@ export const persistUpdateVariant = <TState extends PCEditorState>(
 };
 
 export const persistToggleVariantDefault = <TState extends PCEditorState>(
-  instance: SyntheticInstanceElement,
+  instance: InspectorNode,
   targetVariantId: string,
   variant: PCVariant,
   state: TState
 ): TState => {
-  const node = maybeOverride(
+  console.log(instance);
+
+  const instanceVariantInfo = getInstanceVariantInfo(
+    instance,
+    state.sourceNodeInspector,
+    state.graph
+  );
+  const variantInfo = instanceVariantInfo.find(
+    info => info.variant.id === targetVariantId
+  );
+
+  const node = maybeOverride2(
     PCOverridablePropertyName.VARIANT_IS_DEFAULT,
     null,
     variant,
-    (value, override) => {
-      return !instance.variant[targetVariantId];
+    () => {
+      return !Boolean(variantInfo.override && variantInfo.override.value);
     },
     (node: PCVariant) => ({ ...node, isDefault: !node.isDefault })
-  )(instance, state.documents, state.graph, targetVariantId);
+  )(
+    instance.instancePath,
+    targetVariantId,
+    state.sourceNodeInspector,
+    state.graph
+  );
+
   state = replaceDependencyGraphPCNode(node, node, state);
   return state;
 };
@@ -950,7 +971,12 @@ export const persistChangeSyntheticTextNodeValue = <
       ...sourceNode,
       value
     })
-  )(node, state.sourceNodeInspector, state.graph);
+  )(
+    node.instancePath,
+    node.assocSourceNodeId,
+    state.sourceNodeInspector,
+    state.graph
+  );
 
   state = replaceDependencyGraphPCNode(updatedNode, updatedNode, state);
   return state;
@@ -978,20 +1004,30 @@ const maybeOverride2 = (
   mapOverride: (value, override) => any,
   updater: (node: PCNode, value: any) => any
 ) => (
-  inspectorNode: InspectorNode,
+  instancePath: string,
+  nodeId: string,
   rootInspector: InspectorNode,
   graph: DependencyGraph
 ) => {
-  const sourceNode = getInspectorSourceNode(
-    inspectorNode,
-    rootInspector,
-    graph
-  );
+  const sourceNode = getPCNode(nodeId, graph);
+  const instancePathParts = instancePath
+    ? instancePath.split(".")
+    : EMPTY_ARRAY;
 
   // if content node does not exist, then target node must be id
+  const module = getPCNodeModule(nodeId, graph);
+
+  // call getInspectorNodeByAssocId on parent if assoc inspector node doesn't exist. In this case, we're probably dealing with a source node
+  // that does not have an assoc inspector node, so we defer to the owner (parent) instead.
   const contentNode =
-    getInspectorContentNodeContainingChild(inspectorNode, rootInspector) ||
-    inspectorNode;
+    getInspectorNodeByAssocId(
+      instancePathParts.length ? instancePathParts[0] : nodeId,
+      rootInspector
+    ) ||
+    getInspectorNodeByAssocId(
+      getParentTreeNode(nodeId, module).id,
+      rootInspector
+    );
 
   const contentSourceNode = getInspectorSourceNode(
     contentNode,
@@ -1004,12 +1040,12 @@ const maybeOverride2 = (
     getNestedTreeNodeById(variant.id, contentSourceNode) &&
     variant.id;
 
-  if (inspectorNodeInShadow(inspectorNode, contentNode) || variantId) {
+  if (instancePathParts.length || variantId) {
     // if instancePath does NOT exist, then we're dealing with a variant
-    const instancePathParts = (
-      inspectorNode.instancePath || contentSourceNode.id
-    ).split(".");
-    const [topMostInstanceId, ...nestedInstanceIds] = instancePathParts;
+    const targetInstancePathParts = instancePathParts.length
+      ? instancePathParts
+      : [nodeId];
+    const [topMostInstanceId, ...nestedInstanceIds] = targetInstancePathParts;
     const targetIdPathParts = [...nestedInstanceIds];
 
     // if source id is content id, then target is component root
@@ -1030,8 +1066,6 @@ const maybeOverride2 = (
         );
       }
     ) as PCOverride;
-
-    console.log(existingOverride, instancePathParts);
 
     value = mapOverride(value, existingOverride);
 
@@ -1351,12 +1385,8 @@ export const persistCSSProperty = <TState extends PCEditorState>(
         }
       } as PCVisibleNode)
   )(
-    getSyntheticInspectorNode(
-      node,
-      getSyntheticVisibleNodeDocument(node.id, state.documents),
-      state.sourceNodeInspector,
-      state.graph
-    ),
+    node.instancePath,
+    node.sourceNodeId,
     state.sourceNodeInspector,
     state.graph
   );

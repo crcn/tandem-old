@@ -1,16 +1,21 @@
 import * as React from "react";
-import { BaseInstancePaneProps } from "./view.pc";
+import { BaseInstancePaneProps } from "./index.pc";
 import { Dispatch } from "redux";
 import {
   SyntheticDocument,
   SyntheticNode,
   DependencyGraph,
   PCVariant,
+  InspectorNode,
   getSyntheticSourceNode,
-  PCSourceTagNames
+  PCSourceTagNames,
+  extendsComponent,
+  getInspectorSourceNode
 } from "paperclip";
 
 export type Props = {
+  selectedInspectorNodes: InspectorNode[];
+  rootInspectorNode: InspectorNode;
   syntheticDocument: SyntheticDocument;
   selectedNodes: SyntheticNode[];
   dispatch: Dispatch<any>;
@@ -24,14 +29,27 @@ export default (Base: React.ComponentClass<BaseInstancePaneProps>) =>
       const {
         syntheticDocument,
         selectedNodes,
+        selectedInspectorNodes,
+        rootInspectorNode,
         dispatch,
         graph,
         selectedVariant,
         ...rest
       } = this.props;
-      const selectedNode = selectedNodes[0];
-      const sourceNode = getSyntheticSourceNode(selectedNode, graph);
-      if (sourceNode.name !== PCSourceTagNames.COMPONENT_INSTANCE) {
+      const selectedInspectorNode = selectedInspectorNodes[0];
+      if (!selectedInspectorNode) {
+        return null;
+      }
+      const sourceNode = getInspectorSourceNode(
+        selectedInspectorNode,
+        rootInspectorNode,
+        graph
+      );
+      if (
+        sourceNode.name !== PCSourceTagNames.COMPONENT_INSTANCE &&
+        (sourceNode.name !== PCSourceTagNames.COMPONENT ||
+          !extendsComponent(sourceNode))
+      ) {
         return null;
       }
 
@@ -39,8 +57,8 @@ export default (Base: React.ComponentClass<BaseInstancePaneProps>) =>
         <Base
           {...rest}
           variantInputProps={{
-            syntheticDocument,
-            selectedNodes,
+            selectedInspectorNode,
+            rootInspectorNode,
             dispatch,
             graph,
             selectedVariant

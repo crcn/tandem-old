@@ -1019,14 +1019,16 @@
       "is": "119cd445468",
       "name": "component-instance",
       "attributes": {},
-      "style": {},
+      "style": {
+        "color": "rgba(220, 76, 76, 1)"
+      },
       "children": [],
       "metadata": {
         "bounds": {
-          "left": -514,
-          "top": 422,
-          "right": -414,
-          "bottom": 522
+          "left": -458,
+          "top": 417,
+          "right": -358,
+          "bottom": 517
         }
       }
     },
@@ -1073,7 +1075,6 @@
             "119cd445779"
           ],
           "value": {
-            "color": "rgba(37, 0, 255, 1)",
             "box-shadow": "0px 0px 2px 0px rgba(0,0,0,1)"
           },
           "name": "override",

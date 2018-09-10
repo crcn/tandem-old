@@ -4,17 +4,24 @@ import {
   PCSourceTagNames,
   getPCNode,
   extendsComponent,
+  PCOverride,
+  PCVariantOverride,
   PCComponentInstanceElement,
   PCComponent,
+  getOverrides,
+  PCVariant,
   isVisibleNode,
   isComponent,
   isSlot,
   PCModule,
   getComponentSlots,
   PCSlot,
+  PCOverridablePropertyName,
   getSlotPlug,
-  getPCNodeModule
+  getPCNodeModule,
+  getPCVariants
 } from "./dsl";
+import { last } from "lodash";
 
 import {
   getSyntheticSourceMap,
@@ -37,6 +44,7 @@ import {
   flattenTreeNode,
   findNestedNode,
   memoize,
+  KeyValue,
   getParentTreeNode,
   findTreeNodeParent,
   appendChildNode,
@@ -263,6 +271,61 @@ export const getInspectorSourceNode = (
   }
 };
 
+type InstanceVariantInfo = {
+  override?: PCVariantOverride;
+  variant: PCVariant;
+};
+
+export const getInstanceVariantInfo = memoize(
+  (
+    node: InspectorNode,
+    root: InspectorNode,
+    graph: DependencyGraph
+  ): InstanceVariantInfo[] => {
+    const instance = getInspectorSourceNode(
+      node,
+      root,
+      graph
+    ) as PCComponentInstanceElement;
+    const component = getPCNode(instance.is, graph) as PCComponent;
+    const variants = getPCVariants(component);
+    const variantIds = variants.map(variant => variant.id);
+
+    const parentInstances = [
+      instance,
+      ...(node.instancePath
+        ? node.instancePath.split(".").map(instanceId => {
+            return getPCNode(instanceId, graph) as PCComponentInstanceElement;
+          })
+        : [])
+    ];
+
+    const overrides: KeyValue<PCVariantOverride> = {};
+
+    for (const parentInstance of parentInstances) {
+      const variantOverrides = getOverrides(parentInstance).filter(
+        (override: PCOverride) => {
+          const targetVariantId = last(override.targetIdPath);
+          return (
+            !overrides[targetVariantId] &&
+            override.propertyName ===
+              PCOverridablePropertyName.VARIANT_IS_DEFAULT &&
+            variantIds.indexOf(targetVariantId) !== -1
+          );
+        }
+      ) as PCVariantOverride[];
+
+      for (const override of variantOverrides) {
+        overrides[last(override.targetIdPath)] = override;
+      }
+    }
+
+    return variants.map(variant => ({
+      variant,
+      override: overrides[variant.id]
+    }));
+  }
+);
 export const inspectorNodeInShadow = (
   node: InspectorNode,
   contentNode: InspectorNode
@@ -387,6 +450,16 @@ export const getSyntheticNodeInspectorNode = <TState extends PCEditorState>(
   return findNestedNode(
     state.sourceNodeInspector,
     child => child.assocSourceNodeId === sourceNode.id
+  );
+};
+
+export const getInspectorNodeByAssocId = <TState extends PCEditorState>(
+  assocId: string,
+  root: InspectorNode
+) => {
+  return findNestedNode(
+    root,
+    child => !child.instancePath && child.assocSourceNodeId === assocId
   );
 };
 

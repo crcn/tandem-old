@@ -88,6 +88,8 @@ export default (Base: React.ComponentClass<BaseRightGutterProps>) =>
         root.sourceNodeInspector
       );
 
+      const rootInspectorNode = root.sourceNodeInspector;
+
       const tabs = availableTabs.map((tabName, i) => {
         return (
           <RightGutterTab
@@ -113,7 +115,8 @@ export default (Base: React.ComponentClass<BaseRightGutterProps>) =>
             syntheticDocument,
             fontFamilies: root.fontFamilies,
             selectedNodes: selectedSyntheticNodes,
-            // selectedInspectorNodes,
+            selectedInspectorNodes,
+            rootInspectorNode,
             selectedVariant: root.selectedVariant,
             graph: root.graph
           }}
