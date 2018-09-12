@@ -3,7 +3,8 @@ import {
   generateUID,
   getTreeNodesByName,
   KeyValue,
-  getParentTreeNode
+  getParentTreeNode,
+  EMPTY_OBJECT
 } from "tandem-common";
 import {
   PCNode,
@@ -33,6 +34,7 @@ export type VanillaPCRenderer = (
   instancePath: string,
   attributes: any,
   style: any,
+  variant: any,
   overrides: any,
   components: VanillaPCRenderers
 ) => SyntheticElement;
@@ -86,7 +88,7 @@ const translateContentNode = memoize(
     buffer += translateStaticOverrides(node as PCComponent);
     buffer += translateStaticVariants(node);
 
-    buffer += `return function(instanceSourceNodeId, instancePath, attributes, style, overrides, components) {
+    buffer += `return function(instanceSourceNodeId, instancePath, attributes, style, variant, overrides, components) {
       ${translateVariants(node)}
       var childInstancePath = instancePath == null ? "" : (instancePath ? instancePath + "." : "") + instanceSourceNodeId;
       return ${translateVisibleNode(node, true)};
@@ -115,7 +117,7 @@ const translateVisibleNode = memoize(
         )}, ${translateDynamicStyle(
           node,
           isContentNode
-        )}, ${translateDynamicOverrides(node as PCComponent)}, components)`;
+        )}, ${translateDynamicVariant(node)}, ${translateDynamicOverrides(node as PCComponent)}, components)`;
       }
 
       return `{
@@ -158,12 +160,7 @@ const translateVariants = (contentNode: PCVisibleNode | PCComponent) => {
   let buffer = ``;
 
   for (const variant of variants) {
-    buffer += `if (${
-      variant.isDefault
-        ? `overrides._${variant.id}Default !== false`
-        : `overrides._${variant.id}Default === true`
-    }) {`;
-
+    buffer += `if (variant["${variant.id}"]) {`;
     buffer += `overrides = merge(_${contentNode.id}Variants._${
       variant.id
     }, overrides); `;
@@ -221,6 +218,14 @@ const translateDynamicStyle = (
   return `overrides._${node.id}Style ? Object.assign({},  _${
     node.id
   }Style, overrides._${node.id}Style) : _${node.id}Style`;
+};
+
+const translateDynamicVariant = (
+  node: PCBaseElement<any>
+) => {
+  return `overrides._${node.id}Variant ? Object.assign({},  _${
+    node.id
+  }Style, overrides._${node.id}Variant) : _${node.id}Variant`;
 };
 
 const translateDynamicOverrides = (
@@ -306,9 +311,9 @@ const translateVariantOverrideMap = memoize(
           buffer += `_${nodeId}Attributes: ${JSON.stringify(override.value)},`;
         }
         if (
-          override.propertyName === PCOverridablePropertyName.VARIANT_IS_DEFAULT
+          override.propertyName === PCOverridablePropertyName.VARIANT
         ) {
-          buffer += `_${nodeId}Default: ${Boolean(override.value)},`;
+          buffer += `_${nodeId}Variant: ${JSON.stringify(override.value)},`;
         }
         if (override.propertyName === PCOverridablePropertyName.TEXT) {
           buffer += `_${nodeId}Value: ${JSON.stringify(override.value)},`;
@@ -340,6 +345,12 @@ const translateStaticNodeProps = memoize(
     if (isBaseElement(node) || node.name === PCSourceTagNames.TEXT) {
       buffer += `var _${node.id}Style = ${JSON.stringify(
         computePCNodeStyle(node, componentRefMap)
+      )};`;
+    }
+
+    if (node.name === PCSourceTagNames.COMPONENT_INSTANCE || node.name === PCSourceTagNames.COMPONENT) {
+      buffer += `var _${node.id}Variant = ${JSON.stringify(
+        (node as any).variant || EMPTY_OBJECT
       )};`;
     }
 

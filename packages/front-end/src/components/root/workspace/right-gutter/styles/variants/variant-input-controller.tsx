@@ -68,15 +68,16 @@ export default (
         return null;
       }
 
-      const options = variantInfo.map(({ variant, override }) => {
+      const options = variantInfo.map(({ variant, enabled }) => {
         return (
           <VariantOption
+            enabled={enabled}
             key={variant.id}
             variant={variant}
             selected={selectedVariant && variant.id === selectedVariant.id}
             dispatch={dispatch}
             onToggle={onVariantToggle}
-            onReset={override && onVariantReset}
+            onReset={enabled ? onVariantReset : null}
           />
         );
       });

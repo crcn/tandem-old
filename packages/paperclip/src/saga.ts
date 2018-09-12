@@ -17,7 +17,8 @@ import {
   KeyValue,
   getNestedTreeNodeById,
   EMPTY_ARRAY,
-  pmark
+  pmark,
+  memoize
 } from "tandem-common";
 import { DependencyGraph } from "./graph";
 import { TreeNodeOperationalTransform } from "./ot";
@@ -28,14 +29,21 @@ import {
   SyntheticVisibleNode,
   getSyntheticDocumentByDependencyUri
 } from "./synthetic";
-import { PCRuntime } from "./runtime";
+import { PCRuntime, LocalRuntimeInfo } from "./runtime";
 import { fsCacheBusy } from "fsbox";
 
 export type PaperclipSagaOptions = {
   createRuntime(): PCRuntime;
+  getRuntimeVariants(state: PCEditorState): KeyValue<KeyValue<boolean>>;
 };
 
-export const createPaperclipSaga = ({ createRuntime }: PaperclipSagaOptions) =>
+const getRuntimeInfo = memoize((graph: DependencyGraph, variants: KeyValue<KeyValue<boolean>>): LocalRuntimeInfo => {
+  return {
+  graph,
+  variants,
+}});
+
+export const createPaperclipSaga = ({ createRuntime, getRuntimeVariants }: PaperclipSagaOptions) =>
   function* paperclipSaga() {
     yield fork(runtime);
     yield fork(nativeRenderer);
@@ -72,7 +80,7 @@ export const createPaperclipSaga = ({ createRuntime }: PaperclipSagaOptions) =>
         if (fsCacheBusy(state.fileCache)) {
           continue;
         }
-        rt.setGraph(state.graph);
+        rt.setInfo(getRuntimeInfo(state.graph, getRuntimeVariants(state)));
       }
     }
 

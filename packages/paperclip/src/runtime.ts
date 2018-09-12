@@ -2,7 +2,8 @@ import { DependencyGraph, Dependency } from "./graph";
 import { EventEmitter } from "events";
 import { SyntheticDocument } from "./synthetic";
 import { evaluateDependencyGraph } from "./evaluate2";
-import { KeyValue, pmark } from "tandem-common";
+import { KeyValue, pmark, EMPTY_OBJECT } from "tandem-common";
+import { isEqual } from "lodash";
 import {
   patchTreeNode,
   TreeNodeOperationalTransform,
@@ -11,8 +12,8 @@ import {
 import { PCModule, createPCDependency } from "./dsl";
 
 export interface PCRuntime extends EventEmitter {
-  getGraph(): DependencyGraph;
-  setGraph(value: DependencyGraph, timestamp?: number);
+  getInfo(): LocalRuntimeInfo;
+  setInfo(value: LocalRuntimeInfo, timestamp?: number);
   readonly syntheticDocuments: SyntheticDocument[];
   readonly lastUpdatedAt: number;
   on(
@@ -30,17 +31,22 @@ export interface PCRuntime extends EventEmitter {
   ): this;
 }
 
+export type LocalRuntimeInfo = {
+  graph: DependencyGraph;
+  variants: KeyValue<KeyValue<boolean>>;
+}
+
 class LocalPCRuntime extends EventEmitter implements PCRuntime {
   private _evaluating: boolean;
-  private _graph: DependencyGraph;
+  private _info: LocalRuntimeInfo;
   private _lastUpdatedAt: number;
   private _syntheticDocuments: KeyValue<SyntheticDocument>;
 
-  constructor(graph?: DependencyGraph) {
+  constructor(info: LocalRuntimeInfo) {
     super();
     this._syntheticDocuments = {};
-    if (graph) {
-      this.setGraph(graph);
+    if (info) {
+      this.setInfo(info);
     }
   }
 
@@ -48,17 +54,17 @@ class LocalPCRuntime extends EventEmitter implements PCRuntime {
     return this._lastUpdatedAt;
   }
 
-  setGraph(value: DependencyGraph, timestamp: number = Date.now()) {
-    if (this._graph === value) {
+  setInfo(value: LocalRuntimeInfo, timestamp: number = Date.now()) {
+    if (this._info === value) {
       return;
     }
     this._lastUpdatedAt = timestamp;
-    this._graph = value;
+    this._info = value;
     this._evaluate();
   }
 
-  getGraph() {
-    return this._graph;
+  getInfo() {
+    return this._info;
   }
 
   private _evaluate() {
@@ -86,7 +92,7 @@ class LocalPCRuntime extends EventEmitter implements PCRuntime {
     const documentMap = {};
     const deletedDocumentIds = [];
 
-    const newSyntheticDocuments = evaluateDependencyGraph(this._graph);
+    const newSyntheticDocuments = evaluateDependencyGraph(this._info);
 
     for (const uri in newSyntheticDocuments) {
       const newSyntheticDocument = newSyntheticDocuments[uri];
@@ -136,14 +142,14 @@ export type RemoteConnection = {
 };
 
 export class RemotePCRuntime extends EventEmitter implements PCRuntime {
-  private _graph: DependencyGraph;
+  private _info: LocalRuntimeInfo;
   private _syntheticDocuments: KeyValue<SyntheticDocument>;
   private _lastUpdatedAt: number;
-  constructor(private _remote: RemoteConnection, graph?: DependencyGraph) {
+  constructor(private _remote: RemoteConnection, info?: LocalRuntimeInfo) {
     super();
 
-    if (graph) {
-      this.setGraph(graph);
+    if (info) {
+      this.setInfo(info);
     }
 
     this._remote.addEventListener("message", this._onRemoteMessage);
@@ -157,33 +163,33 @@ export class RemotePCRuntime extends EventEmitter implements PCRuntime {
     return Object.values(this._syntheticDocuments);
   }
 
-  getGraph() {
-    return this._graph;
+  getInfo() {
+    return this._info;
   }
 
-  setGraph(value: DependencyGraph, timestamp: number = Date.now()) {
-    if (this._graph === value) {
+  setInfo(value: LocalRuntimeInfo, timestamp: number = Date.now()) {
+    if (this._info === value) {
       return;
     }
-    const oldGraph = this._graph;
-    this._graph = value;
+    const oldInfo = this._info;
+    this._info = value;
 
     const changes = {};
 
-    for (const uri in value) {
-      const oldDep = oldGraph[uri];
+    for (const uri in value.graph) {
+      const oldDep = oldInfo && oldInfo.graph[uri];
       if (oldDep) {
-        const ots = diffTreeNode(oldDep.content, value[uri].content);
+        const ots = diffTreeNode(oldDep.content, value.graph[uri].content);
         changes[uri] = ots;
       } else {
-        changes[uri] = value[uri].content;
+        changes[uri] = value.graph[uri].content;
       }
     }
 
-    if (Object.keys(changes).length) {
+    if (Object.keys(changes).length || (!isEqual(value.variants, (oldInfo || EMPTY_OBJECT).variants))) {
       this._remote.postMessage({
-        type: "dependencyGraphChanges",
-        payload: { changes, lastUpdatedAt: (this._lastUpdatedAt = timestamp) }
+        type: "infoChanges",
+        payload: { changes, variants: value.variants, lastUpdatedAt: (this._lastUpdatedAt = timestamp) }
       });
     }
   }
@@ -191,10 +197,10 @@ export class RemotePCRuntime extends EventEmitter implements PCRuntime {
   private _onRemoteMessage = event => {
     const { type, payload } = event.data;
     const marker = pmark("Runtime._onRemoteMessage()");
-    if (type === "fetchDependencyGraph") {
+    if (type === "fetchInfo") {
       this._remote.postMessage({
-        type: "dependencyGraph",
-        payload: this._graph
+        type: "info",
+        payload: this._info
       });
     } else if (type === "evaluate") {
       const [newDocuments, diffs, deletedDocumentUris, timestamp] = payload;
@@ -230,12 +236,12 @@ export class RemotePCRuntime extends EventEmitter implements PCRuntime {
   };
 }
 
-export const createLocalPCRuntime = (initialGraph?: DependencyGraph) =>
-  new LocalPCRuntime(initialGraph);
+export const createLocalPCRuntime = (info?: LocalRuntimeInfo) =>
+  new LocalPCRuntime(info);
 export const createRemotePCRuntime = (
   remote: RemoteConnection,
-  initialGraph?: DependencyGraph
-) => new RemotePCRuntime(remote, initialGraph);
+  info?: LocalRuntimeInfo
+) => new RemotePCRuntime(remote, info);
 
 const patchDependencyGraph = (
   changes: DependencyGraphChanges,
@@ -274,17 +280,18 @@ export const hookRemotePCRuntime = async (
     const { type, payload } = event.data;
     if (type === "fetchAllSyntheticDocuments") {
       sendDocuments();
-    } else if (type === "dependencyGraph") {
-      localRuntime.setGraph(payload);
-    } else if (type === "dependencyGraphChanges") {
-      localRuntime.setGraph(
-        patchDependencyGraph(payload.changes, localRuntime.getGraph()),
+    } else if (type === "info") {
+      localRuntime.setInfo(payload);
+    } else if (type === "infoChanges") {
+      const localInfo = localRuntime.getInfo() || EMPTY_OBJECT;
+      localRuntime.setInfo(
+        { ...localInfo, variants: payload.variants, graph: patchDependencyGraph(payload.changes, localInfo.graph) },
         payload.lastUpdatedAt
       );
     }
   });
 
-  remote.postMessage({ type: "fetchDependencyGraph" });
+  remote.postMessage({ type: "fetchInfo" });
 
   localRuntime.on("evaluate", (...args) => {
     if (_sentDocuments) {

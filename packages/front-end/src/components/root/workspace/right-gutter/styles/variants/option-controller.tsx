@@ -13,6 +13,7 @@ const { TextInput } = require("../../../../../inputs/text/view.pc");
 
 export type Props = {
   variant: PCVariant;
+  enabled: boolean;
   dispatch: Dispatch<any>;
   selected: boolean;
   onToggle?: any;
@@ -64,7 +65,7 @@ export default (Base: React.ComponentClass<BaseVariantOptionProps>) =>
     render() {
       const { onClick, onSwitchChange, onInputClick, onLabelChange } = this;
       const { editingLabel } = this.state;
-      const { variant, selected, onReset, ...rest } = this.props;
+      const { variant, selected, onReset, enabled, ...rest } = this.props;
       if (!variant) {
         return null;
       }
@@ -74,7 +75,7 @@ export default (Base: React.ComponentClass<BaseVariantOptionProps>) =>
           onClick={onClick}
           variant={cx({ selected })}
           switchProps={{
-            value: variant.isDefault,
+            value: enabled,
             onChangeComplete: onSwitchChange
           }}
           resetButtonProps={{

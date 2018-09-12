@@ -26,14 +26,20 @@ const reuseComponentGraphMap = reuser(
   shallowEquals
 );
 
+export type EvalInfo = {
+  graph: DependencyGraph;
+  variants: KeyValue<KeyValue<boolean>>;
+}
+
 export const evaluateDependencyGraph = memoize(
-  (graph: DependencyGraph): KeyValue<SyntheticDocument> => {
+  ({ graph, variants }): KeyValue<SyntheticDocument> => {
     const documents = {};
     const renderers = compileDependencyGraph(graph);
     for (const uri in graph) {
       const { content: module } = graph[uri];
       documents[uri] = evaluateModule(
         module,
+        variants,
         reuseComponentGraphMap(filterAssocRenderers(module, graph, renderers))
       );
     }
@@ -43,7 +49,7 @@ export const evaluateDependencyGraph = memoize(
 );
 
 const evaluateModule = memoize(
-  (module: PCModule, usedRenderers: VanillaPCRenderers) => {
+  (module: PCModule, variants: KeyValue<KeyValue<boolean>>, usedRenderers: VanillaPCRenderers) => {
     return createSytheticDocument(
       module.id,
       module.children.map(child => {
@@ -52,6 +58,7 @@ const evaluateModule = memoize(
           null,
           EMPTY_OBJECT,
           EMPTY_OBJECT,
+          variants[child.id] || EMPTY_OBJECT,
           EMPTY_OBJECT,
           usedRenderers
         );

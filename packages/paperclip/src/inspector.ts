@@ -272,7 +272,7 @@ export const getInspectorSourceNode = (
 };
 
 type InstanceVariantInfo = {
-  override?: PCVariantOverride;
+  enabled: boolean;
   variant: PCVariant;
 };
 
@@ -300,29 +300,16 @@ export const getInstanceVariantInfo = memoize(
         : [])
     ];
 
-    const overrides: KeyValue<PCVariantOverride> = {};
+    const enabled: KeyValue<boolean> = {};
 
     for (const parentInstance of parentInstances) {
-      const variantOverrides = getOverrides(parentInstance).filter(
-        (override: PCOverride) => {
-          const targetVariantId = last(override.targetIdPath);
-          return (
-            !overrides[targetVariantId] &&
-            override.propertyName ===
-              PCOverridablePropertyName.VARIANT_IS_DEFAULT &&
-            variantIds.indexOf(targetVariantId) !== -1
-          );
-        }
-      ) as PCVariantOverride[];
-
-      for (const override of variantOverrides) {
-        overrides[last(override.targetIdPath)] = override;
-      }
+      const variant = parentInstance.variant;
+      Object.assign(enabled, variant);
     }
 
     return variants.map(variant => ({
       variant,
-      override: overrides[variant.id]
+      enabled: enabled[variant.id]
     }));
   }
 );

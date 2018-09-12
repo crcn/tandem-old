@@ -237,7 +237,7 @@ import {
   persistUpdateVariant,
   persistRemoveVariant,
   SyntheticInstanceElement,
-  persistToggleVariantDefault,
+  persistToggleInstanceVariant,
   persistRemoveVariantOverride,
   getPCVariants,
   canRemoveSyntheticVisibleNode,
@@ -890,7 +890,7 @@ export const canvasReducer = (state: RootState, action: Action) => {
       );
       state = persistRootState(
         state =>
-          persistToggleVariantDefault(
+          persistToggleInstanceVariant(
             inspectorNode,
             variant.id,
             state.selectedVariant,

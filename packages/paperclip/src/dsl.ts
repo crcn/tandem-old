@@ -40,7 +40,10 @@ export enum PCOverridablePropertyName {
   TEXT = "text",
   CHILDREN = "children",
   INHERIT_STYLE = "inheritStyle",
+
+  // DEPRECATED
   VARIANT_IS_DEFAULT = "isDefault",
+  VARIANT = "variant",
   STYLE = "style",
   ATTRIBUTES = "attributes",
   LABEL = "label",
@@ -144,6 +147,11 @@ export type PCVariantOverride = PCBaseValueOverride<
   string[]
 >;
 
+export type PCVariant2Override = PCBaseValueOverride<
+  PCOverridablePropertyName.VARIANT,
+  string[]
+>;
+
 export type PCVisibleNodeOverride = PCStyleOverride | PCLabelOverride;
 export type PCTextNodeOverride = PCVisibleNodeOverride | PCTextOverride;
 export type PCParentOverride = PCVisibleNodeOverride | PCChildrenOverride;
@@ -156,7 +164,8 @@ export type PCOverride =
   | PCChildrenOverride
   | PCAttributesOverride
   | PCVariantOverride
-  | PCLabelOverride;
+  | PCLabelOverride
+  | PCVariant2Override;
 
 export type InheritStyleItem = {
   priority: number;
@@ -191,8 +200,10 @@ export type PCElement = PCBaseElement<PCSourceTagNames.ELEMENT>;
 
 export type PCComponentInstanceChild = PCBaseElementChild | PCPlug;
 
-export type PCComponentInstanceElement = PCBaseElement<
-  PCSourceTagNames.COMPONENT_INSTANCE
+export type PCComponentInstanceElement = {
+  variant: KeyValue<boolean>
+} & PCBaseElement<
+PCSourceTagNames.COMPONENT_INSTANCE
 >;
 
 export type PCTextNode = {
@@ -299,7 +310,8 @@ export const createPCComponentInstance = (
   attributes: attributes || EMPTY_OBJECT,
   style: style || EMPTY_OBJECT,
   children: children || EMPTY_ARRAY,
-  metadata: metadata || EMPTY_OBJECT
+  metadata: metadata || EMPTY_OBJECT,
+  variant: EMPTY_OBJECT
 });
 
 export const createPCTextNode = (

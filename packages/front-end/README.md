@@ -1,7 +1,8 @@
 IMMEDIATE:
 
-- variant prop for instances
-- variant override must be on prop (like styles & attributes)
+- compile instance variants to react
+- variants should not be selectable for instances
+- deselect selected variant if outside of content node
 - "prompt" UI
 - ability to rename style
 - instance pane

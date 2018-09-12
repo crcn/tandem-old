@@ -17,7 +17,7 @@ import {
   SyntheticTextNode
 } from "..";
 import { TreeMoveOffset } from "tandem-common";
-import { evaluateEditedStateSync, persistToggleVariantDefault } from "../edit";
+import { evaluateEditedStateSync, persistToggleInstanceVariant } from "../edit";
 import {
   createPCVariant,
   createPCOverride,
@@ -321,7 +321,7 @@ describe(__filename + "#", () => {
 
   //   state = evaluateEditedStateSync(state);
   //   let sInstance = state.documents[0].children[1] as SyntheticInstanceElement;
-  //   state = persistToggleVariantDefault(sInstance, variant.id, null, state);
+  //   state = persistToggleInstanceVariant(sInstance, variant.id, null, state);
   //   instance = getPCNode(
   //     instance.id,
   //     state.graph
@@ -359,7 +359,7 @@ describe(__filename + "#", () => {
   //   state = evaluateEditedStateSync(state);
   //   let sInstance = state.documents[0].children[1]
   //     .children[0] as SyntheticInstanceElement;
-  //   state = persistToggleVariantDefault(sInstance, variant.id, null, state);
+  //   state = persistToggleInstanceVariant(sInstance, variant.id, null, state);
   //   instance = getPCNode(
   //     instance.id,
   //     state.graph

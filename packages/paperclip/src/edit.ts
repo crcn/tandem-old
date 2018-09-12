@@ -49,6 +49,7 @@ import {
   isComponent,
   getPCVariants,
   isPCOverride,
+  PCComponentInstanceElement,
   filterPCNodes,
   isPCComponentInstance,
   InheritStyle,
@@ -752,13 +753,12 @@ export const persistUpdateVariant = <TState extends PCEditorState>(
   return state;
 };
 
-export const persistToggleVariantDefault = <TState extends PCEditorState>(
+export const persistToggleInstanceVariant = <TState extends PCEditorState>(
   instance: InspectorNode,
   targetVariantId: string,
   variant: PCVariant,
   state: TState
 ): TState => {
-  console.log(instance);
 
   const instanceVariantInfo = getInstanceVariantInfo(
     instance,
@@ -770,16 +770,22 @@ export const persistToggleVariantDefault = <TState extends PCEditorState>(
   );
 
   const node = maybeOverride2(
-    PCOverridablePropertyName.VARIANT_IS_DEFAULT,
+    PCOverridablePropertyName.VARIANT,
     null,
     variant,
-    () => {
-      return !Boolean(variantInfo.override && variantInfo.override.value);
+    (value) => {
+      return value ? {
+        ...value,
+        [targetVariantId]: !value[targetVariantId]
+      } : { [targetVariantId]: true };
     },
-    (node: PCVariant) => ({ ...node, isDefault: !node.isDefault })
+    (node: PCComponentInstanceElement) => ({ ...node, variant: {
+      ...node.variant,
+      [targetVariantId]: !variantInfo.enabled
+    }  })
   )(
     instance.instancePath,
-    targetVariantId,
+    instance.assocSourceNodeId,
     state.sourceNodeInspector,
     state.graph
   );

@@ -9,7 +9,10 @@ const PaperclipWorker = require("./paperclip.worker");
 import {
   createPaperclipSaga,
   PAPERCLIP_MIME_TYPE,
-  PAPERCLIP_DEFAULT_EXTENSIONS
+  PAPERCLIP_DEFAULT_EXTENSIONS,
+  PCVariant,
+  getPCNodeModule,
+  PCComponent
 } from "paperclip";
 import { RootState } from "./state";
 import { appLoaded } from "./actions";
@@ -19,7 +22,7 @@ import {
   setReaderMimetype
 } from "fsbox";
 import { createRemotePCRuntime } from "paperclip";
-import { pmark } from "tandem-common";
+import { pmark, EMPTY_OBJECT, getParentTreeNode, memoize } from "tandem-common";
 
 export type FrontEndOptions = FrontEndSagaOptions & FSSandboxOptions;
 export type SideEffectCreator = () => IterableIterator<FrontEndOptions>;
@@ -81,6 +84,14 @@ export const setup = <TState extends RootState>(
           createPaperclipSaga({
             createRuntime: () => {
               return createRemotePCRuntime(new PaperclipWorker());
+            },
+            getRuntimeVariants: (state: RootState) => {
+              if (!state.selectedVariant) {
+                return EMPTY_OBJECT;
+              }
+              const module = getPCNodeModule(state.selectedVariant.id, state.graph);
+              const component = getParentTreeNode(state.selectedVariant.id, module) as PCComponent;
+              return getVariants(component.id, state.selectedVariant.id);
             }
           })
         );
@@ -90,6 +101,12 @@ export const setup = <TState extends RootState>(
     store.dispatch(appLoaded());
   };
 };
+
+const getVariants = memoize((componentId: string, variantId: string)  => ({
+  [componentId]: {
+    [variantId]: true
+  }
+}));
 export const init = (initialState: RootState) => {};
 
 export * from "./state";
