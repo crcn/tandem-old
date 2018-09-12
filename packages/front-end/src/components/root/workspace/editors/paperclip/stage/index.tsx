@@ -15,7 +15,7 @@ import {
   OpenFile,
   ToolType
 } from "../../../../../../state";
-import { InspectorNode } from "../../../../../../state/pc-inspector-tree";
+import { InspectorNode } from "paperclip";
 
 export type StageOuterProps = {
   editorWindow: EditorWindow;

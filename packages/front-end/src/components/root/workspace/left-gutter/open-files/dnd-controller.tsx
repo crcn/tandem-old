@@ -11,7 +11,7 @@ import {
   InspectorNode,
   InspectorTreeNodeName,
   inspectorNodeInShadow
-} from "../../../../../state/pc-inspector-tree";
+} from "paperclip";
 import {
   getPCNode,
   PCSourceTagNames,

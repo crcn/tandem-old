@@ -1,6 +1,6 @@
 import * as React from "react";
 import { DependencyGraph, SyntheticDocument } from "paperclip";
-import { InspectorNode } from "../../../../../state/pc-inspector-tree";
+import { InspectorNode } from "paperclip";
 import { Dispatch } from "redux";
 
 export type LayersPaneContextProps = {

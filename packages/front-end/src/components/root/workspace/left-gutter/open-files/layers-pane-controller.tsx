@@ -7,7 +7,7 @@ import {
   getPCNode,
   SyntheticDocument
 } from "paperclip";
-import { InspectorNode } from "../../../../../state/pc-inspector-tree";
+import { InspectorNode } from "paperclip";
 import { Dispatch } from "redux";
 import { BaseLayersPaneProps } from "./view.pc";
 import { OpenModule } from "./open-module.pc";

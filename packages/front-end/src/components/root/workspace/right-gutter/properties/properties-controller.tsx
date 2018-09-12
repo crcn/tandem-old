@@ -7,7 +7,7 @@ import {
   SyntheticElement
 } from "paperclip";
 import { BasePropertiesProps } from "./view.pc";
-import { InspectorNode } from "../../../../../state/pc-inspector-tree";
+import { InspectorNode } from "paperclip";
 import { Dispatch } from "redux";
 
 export type PropertiesControllerOuterProps = {};

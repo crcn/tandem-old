@@ -48,7 +48,7 @@
     "style-loader": "^0.18.2",
     "tandem-webpack-preview-server": "^10.0.24",
     "text-loader": "^0.0.1",
-    "ts-loader": "^4.4.1",
+    "ts-loader": "^5.1.0",
     "typescript": "3.0.x",
     "url-loader": "^1.0.1",
     "webpack": "^4.12.0",

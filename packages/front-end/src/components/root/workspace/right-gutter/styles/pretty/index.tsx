@@ -4,7 +4,8 @@ import {
   SyntheticElement,
   DependencyGraph,
   InspectorNode,
-  SyntheticDocument
+  SyntheticDocument,
+  PCVariant
 } from "paperclip";
 import { BaseElementStylerProps } from "./index.pc";
 import { Dispatch } from "redux";
@@ -18,6 +19,7 @@ export type Props = {
   dispatch: Dispatch<any>;
   selectedNodes: SyntheticElement[];
   graph: DependencyGraph;
+  selectedVariant: PCVariant;
   rootInspectorNode: InspectorNode;
   selectedInspectorNodes: InspectorNode[];
   syntheticDocument: SyntheticDocument;

@@ -8,7 +8,7 @@ import {
 import { memoize, EMPTY_ARRAY, getNestedTreeNodeById } from "tandem-common";
 import { RightGutterTab } from "./tab.pc";
 import * as cx from "classnames";
-import { InspectorNode } from "../../../../state/pc-inspector-tree";
+import { InspectorNode } from "paperclip";
 import { BaseRightGutterProps } from "./index.pc";
 import { RootState } from "../../../../state";
 import { Dispatch } from "redux";

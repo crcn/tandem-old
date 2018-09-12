@@ -86,7 +86,7 @@ import {
   evaluateModuleInspector,
   InspectorNode,
   getInsertableInspectorNode
-} from "./pc-inspector-tree";
+} from "paperclip";
 
 export enum ToolType {
   TEXT,

@@ -3,7 +3,6 @@ import * as React from "react";
 import { Dispatch } from "redux";
 import { compose, pure, withState, withHandlers } from "recompose";
 import {
-  RootState,
   EditorWindow,
   ToolType,
   REGISTERED_COMPONENT,
@@ -33,7 +32,7 @@ import {
   canvasMouseDoubleClicked
 } from "../../../../../../../actions";
 import { DropTarget, DropTargetMonitor } from "react-dnd";
-import { InspectorNode } from "../../../../../../../state/pc-inspector-tree";
+import { InspectorNode } from "paperclip";
 
 export type CanvasOuterProps = {
   frames: Frame[];
@@ -68,7 +67,6 @@ export type CanvasInnerProps = {
   onMouseDoubleClick: (event: any) => any;
 } & CanvasOuterProps;
 
-const onWheel = () => {};
 const BaseCanvasComponent = ({
   frames,
   documents,

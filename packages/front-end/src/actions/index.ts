@@ -26,7 +26,7 @@ import {
 } from "paperclip";
 import { RegisteredComponent } from "..";
 import { FrameMode, ToolType, EditorWindow } from "../state";
-import { InspectorNode } from "../state/pc-inspector-tree";
+import { InspectorNode } from "paperclip";
 
 export const PROJECT_LOADED = "PROJECT_LOADED";
 export const ACTIVE_FILE_CHANGED = "ACTIVE_FILE_CHANGED";

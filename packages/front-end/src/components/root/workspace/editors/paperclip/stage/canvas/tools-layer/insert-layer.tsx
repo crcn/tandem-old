@@ -4,7 +4,7 @@ import { Canvas, ToolType, EditorWindow } from "../../../../../../../../state";
 import { insertToolFinished } from "../../../../../../../../actions";
 import { Dispatch } from "redux";
 import { Bounds, getBoundsSize } from "tandem-common";
-import { InspectorNode } from "../../../../../../../../state/pc-inspector-tree";
+import { InspectorNode } from "paperclip";
 
 type InsertLayerOuterProps = {
   toolType: ToolType;

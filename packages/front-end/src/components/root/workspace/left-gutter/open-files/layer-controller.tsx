@@ -25,7 +25,7 @@ import {
 import {
   InspectorNode,
   InspectorTreeNodeName
-} from "../../../../../state/pc-inspector-tree";
+} from "paperclip";
 import { Dispatch } from "redux";
 import {
   sourceInspectorLayerClicked,

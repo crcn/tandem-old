@@ -39,7 +39,7 @@ import {
   getInspectorSyntheticNode,
   InspectorTreeNodeName,
   getInspectorNodeOwnerInstance
-} from "../../../../../../../../state/pc-inspector-tree";
+} from "paperclip";
 
 export type ToolsLayerComponentProps = {
   editorWindow: EditorWindow;

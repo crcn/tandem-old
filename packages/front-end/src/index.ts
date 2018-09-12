@@ -94,4 +94,4 @@ export const init = (initialState: RootState) => {};
 
 export * from "./state";
 export * from "./actions";
-export * from "./state/pc-inspector-tree";
+export * from "paperclip";

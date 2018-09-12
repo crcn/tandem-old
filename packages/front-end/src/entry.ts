@@ -1,5 +1,5 @@
 import { init } from "./index";
-import { createRootInspectorNode } from "./state/pc-inspector-tree";
+import { createRootInspectorNode } from "paperclip";
 
 init({
   mount: document.getElementById("application"),

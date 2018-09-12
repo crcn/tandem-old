@@ -1,4 +1,4 @@
-import { InspectorNode } from "../../../../../state/pc-inspector-tree";
+import { InspectorNode } from "paperclip";
 import { DependencyGraph, getPCNode, PCSourceTagNames } from "paperclip";
 
 // export const getContentNode = (

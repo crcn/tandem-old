@@ -316,7 +316,7 @@ import {
   InspectorNode,
   inspectorNodeInShadow,
   getSyntheticInspectorNode
-} from "../state/pc-inspector-tree";
+} from "paperclip";
 
 const ZOOM_SENSITIVITY = process.platform === "win32" ? 2500 : 250;
 const MIN_ZOOM = 0.02;
