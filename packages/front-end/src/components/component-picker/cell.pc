@@ -1,6 +1,6 @@
 {
   "id": "a5bde25012342",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "metadata": {},
   "name": "module",
   "children": [
@@ -75,7 +75,8 @@
       },
       "controllers": [
         "./cell-controller.tsx"
-      ]
+      ],
+      "variant": {}
     }
   ]
 }

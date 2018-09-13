@@ -1,6 +1,6 @@
 {
   "id": "11188f860",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "metadata": {},
   "name": "module",
   "children": [
@@ -166,7 +166,8 @@
       },
       "controllers": [
         "./frame-controller.tsx"
-      ]
+      ],
+      "variant": {}
     },
     {
       "label": "Frames",
@@ -441,7 +442,8 @@
       },
       "controllers": [
         "./frames-controller.tsx"
-      ]
+      ],
+      "variant": {}
     },
     {
       "id": "9f86ffa611495",

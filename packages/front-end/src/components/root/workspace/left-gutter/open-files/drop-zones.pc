@@ -1,6 +1,6 @@
 {
   "id": "d7a10bcb1",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "metadata": {},
   "name": "module",
   "children": [
@@ -22,7 +22,8 @@
       },
       "controllers": [
         "./before-dnd-controller.tsx"
-      ]
+      ],
+      "variant": {}
     },
     {
       "label": "after drop zone",
@@ -42,7 +43,8 @@
       },
       "controllers": [
         "./after-dnd-controller.tsx"
-      ]
+      ],
+      "variant": {}
     },
     {
       "label": "Drop Zone",
@@ -93,7 +95,8 @@
           "bottom": 227
         }
       },
-      "inheritStyle": {}
+      "inheritStyle": {},
+      "variant": {}
     }
   ]
 }

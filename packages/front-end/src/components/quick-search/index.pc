@@ -1,6 +1,6 @@
 {
   "id": "808486bb2",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "metadata": {},
   "name": "module",
   "children": [
@@ -281,7 +281,8 @@
       },
       "controllers": [
         "./quick-search-controller.tsx"
-      ]
+      ],
+      "variant": {}
     },
     {
       "id": "808486bb17",
@@ -327,7 +328,8 @@
           "bottom": 185
         }
       },
-      "controllers": []
+      "controllers": [],
+      "variant": {}
     },
     {
       "label": "Modal",
@@ -434,7 +436,8 @@
       },
       "controllers": [
         "./modal-controller.tsx"
-      ]
+      ],
+      "variant": {}
     }
   ]
 }

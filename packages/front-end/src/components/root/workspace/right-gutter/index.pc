@@ -1,6 +1,6 @@
 {
   "id": "c2276d6621338",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "metadata": {},
   "name": "module",
   "children": [
@@ -563,7 +563,8 @@
       },
       "controllers": [
         "./controller.tsx"
-      ]
+      ],
+      "variant": {}
     },
     {
       "label": "row",
@@ -594,7 +595,8 @@
           "right": 1249,
           "bottom": 157
         }
-      }
+      },
+      "variant": {}
     },
     {
       "label": "row alt",
@@ -615,7 +617,8 @@
           "right": 1255,
           "bottom": 239
         }
-      }
+      },
+      "variant": {}
     },
     {
       "id": "9b7b527f58489",
@@ -702,7 +705,8 @@
           "right": 368,
           "bottom": 608.6589618414574
         }
-      }
+      },
+      "variant": {}
     },
     {
       "label": "Code Tab",
@@ -721,7 +725,8 @@
           "right": 937,
           "bottom": 432
         }
-      }
+      },
+      "variant": {}
     }
   ]
 }

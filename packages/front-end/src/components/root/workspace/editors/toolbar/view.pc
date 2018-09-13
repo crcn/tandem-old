@@ -1,6 +1,6 @@
 {
   "id": "ab406a6b793607",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "metadata": {},
   "name": "module",
   "children": [
@@ -139,7 +139,8 @@
       },
       "controllers": [
         "./controller.tsx"
-      ]
+      ],
+      "variant": {}
     },
     {
       "label": "Editor Tabs",
@@ -362,7 +363,8 @@
           "right": 1280.7935647864758,
           "bottom": 824.3943504132881
         }
-      }
+      },
+      "variant": {}
     },
     {
       "id": "fde5849e1247110",

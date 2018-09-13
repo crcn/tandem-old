@@ -1,6 +1,6 @@
 {
   "id": "ab9eb3a123020",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "metadata": {},
   "name": "module",
   "children": [
@@ -139,7 +139,8 @@
       },
       "controllers": [
         "./opacity-controller.tsx"
-      ]
+      ],
+      "variant": {}
     }
   ]
 }

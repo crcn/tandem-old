@@ -1,6 +1,6 @@
 {
   "id": "de0c4868",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "metadata": {},
   "name": "module",
   "children": [
@@ -458,7 +458,8 @@
       },
       "controllers": [
         "./open-module-controller.tsx"
-      ]
+      ],
+      "variant": {}
     }
   ]
 }

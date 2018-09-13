@@ -1,6 +1,6 @@
 {
   "id": "e165e1fb1437",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "metadata": {},
   "name": "module",
   "children": [
@@ -1458,7 +1458,8 @@
       },
       "controllers": [
         "./layout-controller.tsx"
-      ]
+      ],
+      "variant": {}
     }
   ]
 }

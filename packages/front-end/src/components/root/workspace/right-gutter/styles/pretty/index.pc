@@ -1,6 +1,6 @@
 {
   "id": "4b11d4db0",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "metadata": {},
   "name": "module",
   "children": [
@@ -354,7 +354,8 @@
       },
       "controllers": [
         "./index.tsx"
-      ]
+      ],
+      "variant": {}
     },
     {
       "label": "Instance Pane",
@@ -483,7 +484,8 @@
       },
       "controllers": [
         "./instance-pane-controller.tsx"
-      ]
+      ],
+      "variant": {}
     }
   ]
 }

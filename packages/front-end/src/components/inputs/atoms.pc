@@ -1,6 +1,6 @@
 {
   "id": "76b155a0869608",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "metadata": {},
   "name": "module",
   "children": [
@@ -22,7 +22,8 @@
           "right": 1590,
           "bottom": 1386.471217980185
         }
-      }
+      },
+      "variant": {}
     },
     {
       "label": "Input Row Item",
@@ -42,7 +43,8 @@
           "right": 1549,
           "bottom": 1538.1275206975329
         }
-      }
+      },
+      "variant": {}
     },
     {
       "label": "Background 1 Atom",
@@ -62,7 +64,8 @@
           "right": 476,
           "bottom": 167
         }
-      }
+      },
+      "variant": {}
     },
     {
       "label": "Border 1 Atom",
@@ -82,7 +85,8 @@
           "right": 476,
           "bottom": 307
         }
-      }
+      },
+      "variant": {}
     },
     {
       "label": "Typography Atom",
@@ -112,7 +116,8 @@
           "right": 472,
           "bottom": 596
         }
-      }
+      },
+      "variant": {}
     },
     {
       "label": "Heading 3 Atom",
@@ -146,7 +151,8 @@
           "right": 882.2998769972603,
           "bottom": 593
         }
-      }
+      },
+      "variant": {}
     },
     {
       "label": "Heading 2 Atom",
@@ -180,7 +186,8 @@
           "right": 725,
           "bottom": 587
         }
-      }
+      },
+      "variant": {}
     },
     {
       "label": "Heading 1 Atom",
@@ -214,7 +221,8 @@
           "right": 594,
           "bottom": 594
         }
-      }
+      },
+      "variant": {}
     },
     {
       "label": "Padding X 4 Atom",
@@ -247,7 +255,8 @@
           "right": 857.0456701121057,
           "bottom": 751
         }
-      }
+      },
+      "variant": {}
     },
     {
       "label": "Padding X 3 Atom",
@@ -280,7 +289,8 @@
           "right": 724.0456701121057,
           "bottom": 749
         }
-      }
+      },
+      "variant": {}
     },
     {
       "label": "Padding X 2 Atom",
@@ -313,7 +323,8 @@
           "right": 597.0456701121057,
           "bottom": 746
         }
-      }
+      },
+      "variant": {}
     },
     {
       "label": "Padding Y 1 Atom",
@@ -346,7 +357,8 @@
           "right": 472.01522337070196,
           "bottom": 896
         }
-      }
+      },
+      "variant": {}
     },
     {
       "label": "Padding X 1 Atom",
@@ -379,7 +391,8 @@
           "right": 471.01522337070196,
           "bottom": 748
         }
-      }
+      },
+      "variant": {}
     },
     {
       "label": "Background 2 Atom",
@@ -422,7 +435,8 @@
         "ca6d1d8433": {
           "priority": 2
         }
-      }
+      },
+      "variant": {}
     },
     {
       "label": "Font Color 1 Atom",
@@ -476,7 +490,8 @@
           "right": 472,
           "bottom": 446
         }
-      }
+      },
+      "variant": {}
     },
     {
       "label": "Background 3 Atom",
@@ -514,7 +529,8 @@
         "7a08e6a03": {
           "priority": 4
         }
-      }
+      },
+      "variant": {}
     },
     {
       "label": "Border Radius 1 Atom",
@@ -534,7 +550,8 @@
           "right": 598,
           "bottom": 306
         }
-      }
+      },
+      "variant": {}
     },
     {
       "label": "Font Color 2 Atom",
@@ -594,7 +611,8 @@
           "right": 610,
           "bottom": 444
         }
-      }
+      },
+      "variant": {}
     },
     {
       "label": "Background Selected 1 Atom",
@@ -630,7 +648,8 @@
         "ca6d1d8454": {
           "priority": 0
         }
-      }
+      },
+      "variant": {}
     },
     {
       "label": "Center Atom",
@@ -652,7 +671,8 @@
           "right": 536,
           "bottom": 1112
         }
-      }
+      },
+      "variant": {}
     }
   ]
 }

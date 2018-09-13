@@ -1,6 +1,6 @@
 {
   "id": "eb0fba972975",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "metadata": {},
   "name": "module",
   "children": [
@@ -64,7 +64,8 @@
           "right": -296,
           "bottom": 578
         }
-      }
+      },
+      "variant": {}
     },
     {
       "label": " Bottom Left Corner Icon",
@@ -105,7 +106,8 @@
           "right": -269,
           "bottom": 914
         }
-      }
+      },
+      "variant": {}
     },
     {
       "label": "Bottom Right Corner Icon",
@@ -146,7 +148,8 @@
           "right": -257,
           "bottom": 1283
         }
-      }
+      },
+      "variant": {}
     },
     {
       "label": "Brush Icon",
@@ -217,7 +220,8 @@
           "right": 454,
           "bottom": 1234
         }
-      }
+      },
+      "variant": {}
     },
     {
       "label": "Code Icon",
@@ -286,7 +290,8 @@
           "right": -57,
           "bottom": 1732
         }
-      }
+      },
+      "variant": {}
     },
     {
       "label": "Minus Icon",
@@ -373,7 +378,8 @@
           "right": 1007,
           "bottom": 658
         }
-      }
+      },
+      "variant": {}
     },
     {
       "label": "More Icon",
@@ -457,7 +463,8 @@
           "right": 1209,
           "bottom": 218
         }
-      }
+      },
+      "variant": {}
     },
     {
       "label": "Open Icon",
@@ -537,7 +544,8 @@
           "right": 1020,
           "bottom": 996
         }
-      }
+      },
+      "variant": {}
     },
     {
       "label": "Play Icon",
@@ -588,7 +596,8 @@
           "right": 977,
           "bottom": 1524
         }
-      }
+      },
+      "variant": {}
     },
     {
       "label": "Plus Icon",
@@ -674,7 +683,8 @@
           "right": 545,
           "bottom": 1803
         }
-      }
+      },
+      "variant": {}
     },
     {
       "label": "Pointer Icon",
@@ -728,7 +738,8 @@
           "right": 479,
           "bottom": 705
         }
-      }
+      },
+      "variant": {}
     },
     {
       "label": "Puzzle Icon",
@@ -781,7 +792,8 @@
           "right": -857,
           "bottom": 1128
         }
-      }
+      },
+      "variant": {}
     },
     {
       "label": "Rectangle Icon",
@@ -840,7 +852,8 @@
           "right": -770,
           "bottom": 500
         }
-      }
+      },
+      "variant": {}
     },
     {
       "label": "Text Center Icon",
@@ -984,7 +997,8 @@
           "right": -876,
           "bottom": 1677
         }
-      }
+      },
+      "variant": {}
     },
     {
       "label": "Text Left Icon",
@@ -1128,7 +1142,8 @@
           "right": 1083,
           "bottom": 1884
         }
-      }
+      },
+      "variant": {}
     },
     {
       "label": "Text Icon",
@@ -1167,7 +1182,8 @@
           "right": 1645,
           "bottom": 1421
         }
-      }
+      },
+      "variant": {}
     },
     {
       "label": "Top Left Corner Icon",
@@ -1208,7 +1224,8 @@
           "right": 88,
           "bottom": 2227
         }
-      }
+      },
+      "variant": {}
     },
     {
       "label": "Top Right Corner Icon",
@@ -1249,7 +1266,8 @@
           "right": -634,
           "bottom": 2169
         }
-      }
+      },
+      "variant": {}
     },
     {
       "label": "Trash Icon",
@@ -1424,7 +1442,8 @@
           "right": 1156,
           "bottom": 2537
         }
-      }
+      },
+      "variant": {}
     },
     {
       "label": "Wand Icon",
@@ -1568,7 +1587,8 @@
           "right": -1357,
           "bottom": 725
         }
-      }
+      },
+      "variant": {}
     },
     {
       "label": "Text Right icon",
@@ -1710,7 +1730,8 @@
           "right": 1903,
           "bottom": 2061
         }
-      }
+      },
+      "variant": {}
     },
     {
       "id": "38fc2a472503",
@@ -1856,7 +1877,8 @@
           "right": 597,
           "bottom": 2452
         }
-      }
+      },
+      "variant": {}
     },
     {
       "label": "Reset Icon",
@@ -1959,7 +1981,8 @@
           "right": -1709,
           "bottom": 1421
         }
-      }
+      },
+      "variant": {}
     },
     {
       "label": "Joystick Icon",
@@ -2049,7 +2072,8 @@
           "right": 641,
           "bottom": 398
         }
-      }
+      },
+      "variant": {}
     },
     {
       "label": "Empty Square Icon",
@@ -2099,7 +2123,8 @@
           "right": -1262,
           "bottom": 2215
         }
-      }
+      },
+      "variant": {}
     },
     {
       "label": "Borders Icon",
@@ -2175,7 +2200,8 @@
           "right": -1276,
           "bottom": 2607
         }
-      }
+      },
+      "variant": {}
     },
     {
       "label": "Shadow Icon",
@@ -2398,7 +2424,8 @@
           "right": -2414,
           "bottom": 2297
         }
-      }
+      },
+      "variant": {}
     },
     {
       "label": "Insert Icon",
@@ -2482,7 +2509,8 @@
           "right": -491,
           "bottom": 60
         }
-      }
+      },
+      "variant": {}
     },
     {
       "label": "Component Icon",
@@ -2541,7 +2569,8 @@
           "right": -1437,
           "bottom": -18
         }
-      }
+      },
+      "variant": {}
     },
     {
       "label": "Circle Icon",
@@ -2605,7 +2634,8 @@
           "right": 163,
           "bottom": -20
         }
-      }
+      },
+      "variant": {}
     },
     {
       "label": "File Icon",
@@ -2655,7 +2685,8 @@
           "right": -2148,
           "bottom": 463
         }
-      }
+      },
+      "variant": {}
     },
     {
       "label": "Replace Icon",
@@ -2777,7 +2808,8 @@
           "right": -2199,
           "bottom": 977
         }
-      }
+      },
+      "variant": {}
     },
     {
       "label": "Dotted box icon",
@@ -3210,7 +3242,8 @@
           "right": -2290,
           "bottom": 1600
         }
-      }
+      },
+      "variant": {}
     },
     {
       "label": "Pencil Icon",
@@ -3308,7 +3341,8 @@
           "right": -2689,
           "bottom": 143
         }
-      }
+      },
+      "variant": {}
     }
   ]
 }

@@ -1,7 +1,8 @@
 {
   "id": "f657bb0940848",
+  "version": "0.0.5",
+  "metadata": {},
   "name": "module",
-  "version": "0.0.4",
   "children": [
     {
       "label": "Instance Pane",
@@ -141,8 +142,8 @@
           "right": 875,
           "bottom": 670
         }
-      }
+      },
+      "variant": {}
     }
-  ],
-  "metadata": {}
+  ]
 }

@@ -1,6 +1,6 @@
 {
   "id": "483373f936",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "metadata": {},
   "name": "module",
   "children": [
@@ -121,7 +121,8 @@
       },
       "controllers": [
         "./editor-controller.tsx"
-      ]
+      ],
+      "variant": {}
     },
     {
       "id": "483373f993093",
@@ -238,7 +239,8 @@
           "right": 1317.5718251510302,
           "bottom": 2333
         }
-      }
+      },
+      "variant": {}
     },
     {
       "label": "Breadcrumb",
@@ -275,7 +277,8 @@
           "right": 1107,
           "bottom": 2499
         }
-      }
+      },
+      "variant": {}
     }
   ]
 }

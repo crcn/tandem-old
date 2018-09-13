@@ -2,7 +2,7 @@ const _000_001 = require("./000-001");
 const _001_002 = require("./001-002");
 const _002_003 = require("./002-003");
 const _003_004 = require("./003-004");
-const _043_005 = require("./004-005");
+const _004_005 = require("./004-005");
 
 const migrators = {
   "0.0.0": _000_001,

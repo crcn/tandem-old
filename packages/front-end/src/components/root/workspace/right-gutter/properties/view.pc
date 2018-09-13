@@ -1,6 +1,6 @@
 {
   "id": "e28a9f9410714",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "metadata": {},
   "name": "module",
   "children": [
@@ -172,7 +172,8 @@
       },
       "controllers": [
         "./text-controller.tsx"
-      ]
+      ],
+      "variant": {}
     },
     {
       "label": "Element Properties",
@@ -383,7 +384,8 @@
       },
       "controllers": [
         "./element-controller.tsx"
-      ]
+      ],
+      "variant": {}
     },
     {
       "label": "Properties",
@@ -552,7 +554,8 @@
       },
       "controllers": [
         "./properties-controller.tsx"
-      ]
+      ],
+      "variant": {}
     },
     {
       "label": "Component Properties",
@@ -588,7 +591,8 @@
           "right": 1216.5815539953546,
           "bottom": 597.9419825694584
         }
-      }
+      },
+      "variant": {}
     },
     {
       "label": "Behavior Pane",
@@ -708,7 +712,8 @@
           "right": 1692.8642108956656,
           "bottom": 792.1966257038804
         }
-      }
+      },
+      "variant": {}
     },
     {
       "label": "Controllers Pane",
@@ -1037,7 +1042,8 @@
       },
       "controllers": [
         "./component-controller.tsx"
-      ]
+      ],
+      "variant": {}
     }
   ]
 }

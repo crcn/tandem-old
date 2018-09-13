@@ -1,6 +1,6 @@
 {
   "id": "174f96bb0",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "metadata": {},
   "name": "module",
   "children": [
@@ -57,7 +57,8 @@
           "right": 750.416464903152,
           "bottom": 264.90914667257584
         }
-      }
+      },
+      "variant": {}
     }
   ]
 }

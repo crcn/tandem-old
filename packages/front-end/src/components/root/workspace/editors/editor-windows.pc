@@ -1,6 +1,6 @@
 {
   "id": "e6a0c2610",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "metadata": {},
   "name": "module",
   "children": [
@@ -67,7 +67,8 @@
       },
       "controllers": [
         "./editor-windows-controller.tsx"
-      ]
+      ],
+      "variant": {}
     }
   ]
 }

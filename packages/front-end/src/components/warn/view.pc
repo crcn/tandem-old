@@ -1,7 +1,8 @@
 {
   "id": "5f48853318158",
+  "version": "0.0.5",
+  "metadata": {},
   "name": "module",
-  "version": "0.0.4",
   "children": [
     {
       "label": "Experimental warning",
@@ -63,8 +64,8 @@
           "right": 849,
           "bottom": 370
         }
-      }
+      },
+      "variant": {}
     }
-  ],
-  "metadata": {}
+  ]
 }

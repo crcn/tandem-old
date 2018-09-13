@@ -1,6 +1,6 @@
 {
   "id": "b34e7ef4148",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "metadata": {},
   "name": "module",
   "children": [
@@ -41,7 +41,8 @@
           "right": 1669,
           "bottom": 584
         }
-      }
+      },
+      "variant": {}
     },
     {
       "label": "Node",
@@ -122,7 +123,8 @@
           "right": 1766.5078553178573,
           "bottom": 298.8267808885354
         }
-      }
+      },
+      "variant": {}
     },
     {
       "label": "Node Label",
@@ -152,7 +154,8 @@
           "right": 1662,
           "bottom": 455
         }
-      }
+      },
+      "variant": {}
     },
     {
       "id": "b34e7ef463390",
@@ -239,7 +242,8 @@
           "right": 1850.1150908272648,
           "bottom": 77.71288767205439
         }
-      }
+      },
+      "variant": {}
     }
   ]
 }

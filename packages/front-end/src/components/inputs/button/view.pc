@@ -1,7 +1,8 @@
 {
   "id": "9f364d2139376",
+  "version": "0.0.5",
+  "metadata": {},
   "name": "module",
-  "version": "0.0.4",
   "children": [
     {
       "label": "Button",
@@ -71,8 +72,8 @@
         "ca6d1d8433": {
           "priority": 0
         }
-      }
+      },
+      "variant": {}
     }
-  ],
-  "metadata": {}
+  ]
 }

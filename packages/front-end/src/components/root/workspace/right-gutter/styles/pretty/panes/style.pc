@@ -1,7 +1,8 @@
 {
   "id": "b65e6f803",
+  "version": "0.0.5",
+  "metadata": {},
   "name": "module",
-  "version": "0.0.4",
   "children": [
     {
       "label": "Style Pane",
@@ -402,7 +403,8 @@
           "right": 615,
           "bottom": 451.47781728214517
         }
-      }
+      },
+      "variant": {}
     },
     {
       "label": "Inherit Item",
@@ -521,7 +523,8 @@
           "right": 935.4163030205839,
           "bottom": 289.847287902493
         }
-      }
+      },
+      "variant": {}
     },
     {
       "id": "a06d2e81260587",
@@ -549,8 +552,8 @@
           "right": 238.67082912717763,
           "bottom": 237.72133737570448
         }
-      }
+      },
+      "variant": {}
     }
-  ],
-  "metadata": {}
+  ]
 }

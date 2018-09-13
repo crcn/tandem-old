@@ -1,7 +1,8 @@
 {
   "id": "9f364d213542",
+  "version": "0.0.5",
+  "metadata": {},
   "name": "module",
-  "version": "0.0.4",
   "children": [
     {
       "label": "Prompt",
@@ -180,7 +181,8 @@
       },
       "controllers": [
         "./controller.tsx"
-      ]
+      ],
+      "variant": {}
     },
     {
       "id": "9f364d215357",
@@ -220,6 +222,5 @@
         }
       }
     }
-  ],
-  "metadata": {}
+  ]
 }

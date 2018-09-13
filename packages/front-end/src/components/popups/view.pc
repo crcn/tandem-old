@@ -1,6 +1,6 @@
 {
   "id": "67d74e285",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "metadata": {},
   "name": "module",
   "children": [
@@ -18,7 +18,8 @@
           "right": 477.62566591881614,
           "bottom": 469
         }
-      }
+      },
+      "variant": {}
     },
     {
       "label": "Banner",
@@ -67,7 +68,8 @@
           "right": 419.62566591881614,
           "bottom": 296
         }
-      }
+      },
+      "variant": {}
     }
   ]
 }

@@ -1,6 +1,6 @@
 {
   "id": "651e07640",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "metadata": {},
   "name": "module",
   "children": [
@@ -90,7 +90,8 @@
           "right": 501,
           "bottom": 392
         }
-      }
+      },
+      "variant": {}
     },
     {
       "label": "Table Row",
@@ -199,7 +200,8 @@
           "right": 936.685857777165,
           "bottom": 263.0653197883014
         }
-      }
+      },
+      "variant": {}
     },
     {
       "label": "Table",
@@ -408,7 +410,8 @@
           "right": 308.50795530191954,
           "bottom": 418.6425584867711
         }
-      }
+      },
+      "variant": {}
     }
   ]
 }

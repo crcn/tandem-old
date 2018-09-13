@@ -1,6 +1,6 @@
 {
   "id": "b5f797ed34250",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "metadata": {},
   "name": "module",
   "children": [
@@ -190,7 +190,8 @@
         "ca6d1d844": {
           "priority": 2
         }
-      }
+      },
+      "variant": {}
     },
     {
       "label": "RGBA Input",
@@ -309,7 +310,8 @@
         "ca6d1d8433": {
           "priority": 0
         }
-      }
+      },
+      "variant": {}
     },
     {
       "label": "HSL Input",
@@ -431,7 +433,8 @@
         "ca6d1d8433": {
           "priority": 0
         }
-      }
+      },
+      "variant": {}
     },
     {
       "label": "Hex Input",
@@ -508,7 +511,8 @@
         "ca6d1d8433": {
           "priority": 0
         }
-      }
+      },
+      "variant": {}
     },
     {
       "label": "Grabber",
@@ -533,7 +537,8 @@
           "right": 1029,
           "bottom": 459
         }
-      }
+      },
+      "variant": {}
     },
     {
       "label": "Slider",
@@ -559,7 +564,8 @@
           "right": 1168.3510347837232,
           "bottom": 453.34755795148203
         }
-      }
+      },
+      "variant": {}
     },
     {
       "id": "236ecf1a47759",
@@ -708,7 +714,8 @@
         "ca6d1d8431": {
           "priority": 0
         }
-      }
+      },
+      "variant": {}
     },
     {
       "label": "Color swatches",
@@ -940,7 +947,8 @@
           "right": -184.86213781856583,
           "bottom": 1416.2966411360896
         }
-      }
+      },
+      "variant": {}
     },
     {
       "label": "Color swatch item",
@@ -1012,7 +1020,8 @@
           "right": -524,
           "bottom": 1578
         }
-      }
+      },
+      "variant": {}
     },
     {
       "id": "aa0444094686",
@@ -1102,7 +1111,8 @@
           "right": -161.17872049339928,
           "bottom": 515.8392895489569
         }
-      }
+      },
+      "variant": {}
     }
   ]
 }

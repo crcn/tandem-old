@@ -1,6 +1,6 @@
 {
   "id": "808486bb69",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "metadata": {},
   "name": "module",
   "children": [
@@ -141,7 +141,8 @@
       },
       "controllers": [
         "./color-input-controller.tsx"
-      ]
+      ],
+      "variant": {}
     },
     {
       "id": "d227ff68920365",

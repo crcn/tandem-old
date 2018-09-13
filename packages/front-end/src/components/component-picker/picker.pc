@@ -1,6 +1,6 @@
 {
   "id": "a5bde25041538",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "metadata": {},
   "name": "module",
   "children": [
@@ -269,7 +269,8 @@
       },
       "controllers": [
         "./picker-controller.tsx"
-      ]
+      ],
+      "variant": {}
     },
     {
       "label": "filter",
@@ -296,7 +297,8 @@
       },
       "controllers": [
         "../focus/controller.tsx"
-      ]
+      ],
+      "variant": {}
     },
     {
       "label": "Component",
@@ -317,7 +319,8 @@
           "right": -235.14126422199706,
           "bottom": 675.7402815827418
         }
-      }
+      },
+      "variant": {}
     }
   ]
 }

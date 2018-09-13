@@ -1,6 +1,6 @@
 {
   "id": "296b92da1",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "metadata": {},
   "name": "module",
   "children": [
@@ -823,7 +823,8 @@
       },
       "controllers": [
         "./typography-controller.tsx"
-      ]
+      ],
+      "variant": {}
     }
   ]
 }

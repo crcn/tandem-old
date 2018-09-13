@@ -1,6 +1,6 @@
 {
   "id": "de0c4865",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "metadata": {},
   "name": "module",
   "children": [
@@ -46,7 +46,8 @@
       },
       "controllers": [
         "./layer-controller.tsx"
-      ]
+      ],
+      "variant": {}
     },
     {
       "id": "207a949d41",
@@ -62,7 +63,8 @@
           "right": 856,
           "bottom": 543
         }
-      }
+      },
+      "variant": {}
     },
     {
       "label": "Base Layer",
@@ -749,7 +751,8 @@
           "bottom": 255
         }
       },
-      "controllers": []
+      "controllers": [],
+      "variant": {}
     }
   ]
 }

@@ -10,11 +10,10 @@ module.exports = (module) => {
   };
 
   const mapNode = (node) => {
-    if (node.name === "component-instance" && node.propertyName === "component") {
-      return {
-        ...node,
+    if (node.name === "component-instance" || node.name === "component") {
+      return Object.assign({}, node, {
         variant: node.variant || {}
-      };
+      });
     }
 
     return node;

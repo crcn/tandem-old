@@ -1,6 +1,6 @@
 {
   "id": "296b92da36265",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "metadata": {},
   "name": "module",
   "children": [
@@ -31,7 +31,8 @@
           "right": 1429,
           "bottom": 789
         }
-      }
+      },
+      "variant": {}
     },
     {
       "label": "Inner Shadows",
@@ -63,7 +64,8 @@
       },
       "controllers": [
         "./box-shadows-inner-controller.tsx"
-      ]
+      ],
+      "variant": {}
     },
     {
       "label": "Box Shadows",
@@ -489,7 +491,8 @@
       },
       "controllers": [
         "./box-shadows-controller.tsx"
-      ]
+      ],
+      "variant": {}
     }
   ]
 }

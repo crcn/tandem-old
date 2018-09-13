@@ -1,6 +1,6 @@
 {
   "id": "296b92da14567",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "metadata": {},
   "name": "module",
   "children": [
@@ -108,7 +108,8 @@
       },
       "controllers": [
         "./background-item-controller.tsx"
-      ]
+      ],
+      "variant": {}
     },
     {
       "label": "Backgrounds",
@@ -370,7 +371,8 @@
       },
       "controllers": [
         "./backgrounds-controller.tsx"
-      ]
+      ],
+      "variant": {}
     },
     {
       "label": "Background Image Input",
@@ -682,7 +684,8 @@
           "right": 1298.4265718722872,
           "bottom": 687.8147798953368
         }
-      }
+      },
+      "variant": {}
     }
   ]
 }

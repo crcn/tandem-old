@@ -1,6 +1,6 @@
 {
   "id": "2b5298ab3",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "metadata": {},
   "name": "module",
   "children": [
@@ -166,7 +166,8 @@
       },
       "controllers": [
         "./controller.tsx"
-      ]
+      ],
+      "variant": {}
     },
     {
       "label": "Welcome button",
@@ -207,7 +208,8 @@
           "right": 1129.6472850476437,
           "bottom": 182.1850188166938
         }
-      }
+      },
+      "variant": {}
     }
   ]
 }

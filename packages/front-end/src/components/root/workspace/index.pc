@@ -1,6 +1,6 @@
 {
   "id": "33b1b6b130414",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "metadata": {},
   "name": "module",
   "children": [
@@ -226,7 +226,8 @@
       },
       "controllers": [
         "./controller.tsx"
-      ]
+      ],
+      "variant": {}
     },
     {
       "id": "1ecbd3354925",
@@ -346,7 +347,8 @@
           "right": 3482.0909190405564,
           "bottom": 1259.463687696396
         }
-      }
+      },
+      "variant": {}
     },
     {
       "label": "Workspace Prompt",
@@ -366,7 +368,8 @@
       },
       "controllers": [
         "./prompt-controller.tsx"
-      ]
+      ],
+      "variant": {}
     }
   ]
 }

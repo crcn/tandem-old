@@ -1,6 +1,6 @@
 {
   "id": "d65d17fd64",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "metadata": {},
   "name": "module",
   "children": [
@@ -28,7 +28,8 @@
       },
       "controllers": [
         "./controller.tsx"
-      ]
+      ],
+      "variant": {}
     }
   ]
 }

@@ -1,6 +1,6 @@
 {
   "id": "664248a04",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "metadata": {},
   "name": "module",
   "children": [
@@ -29,7 +29,8 @@
           "right": 336,
           "bottom": 300.4100033070649
         }
-      }
+      },
+      "variant": {}
     },
     {
       "label": "Right Gutter Tab",
@@ -87,7 +88,8 @@
           "right": 570,
           "bottom": 316.4100033070649
         }
-      }
+      },
+      "variant": {}
     }
   ]
 }
