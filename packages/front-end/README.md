@@ -1,8 +1,6 @@
 IMMEDIATE:
 
-- alt row color (variant)
 - reset prop dropdown
-- variants should not be selectable for instances
 - deselect selected variant if outside of content node
 - experimental window
 
@@ -24,6 +22,9 @@ IMMEDIATE:
 
   - reset styles button
   - move variant to here
+
+- unsaved prompt
+- unsaved button
 
 * style inheritence
 
