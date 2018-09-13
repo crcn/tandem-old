@@ -36,7 +36,6 @@ export type Props = {
   rootInspectorNode: InspectorNode;
   dispatch: Dispatch<any>;
   graph: DependencyGraph;
-  selectedVariant: PCVariant;
 };
 
 export default (
@@ -53,7 +52,6 @@ export default (
         rootInspectorNode,
         graph,
         dispatch,
-        selectedVariant
       } = this.props;
       const variantInfo = getInstanceVariantInfo(
         selectedInspectorNode,
@@ -71,7 +69,6 @@ export default (
             enabled={enabled}
             key={variant.id}
             variant={variant}
-            selected={selectedVariant && variant.id === selectedVariant.id}
             dispatch={dispatch}
             onToggle={onVariantToggle}
           />

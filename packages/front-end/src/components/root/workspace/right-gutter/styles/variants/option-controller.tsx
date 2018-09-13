@@ -14,7 +14,6 @@ export type Props = {
   variant: PCVariant;
   enabled: boolean;
   dispatch: Dispatch<any>;
-  selected: boolean;
   onToggle?: any;
   onClick?: any;
   editable?: boolean;
@@ -56,14 +55,13 @@ export default (Base: React.ComponentClass<BaseVariantOptionProps>) =>
     render() {
       const { onSwitchChange, onInputClick, onLabelChange } = this;
       const { editingLabel } = this.state;
-      const { variant, selected, onReset, enabled, ...rest } = this.props;
+      const { variant, onReset, enabled, ...rest } = this.props;
       if (!variant) {
         return null;
       }
       return (
         <Base
           {...rest}
-          variant={cx({ selected })}
           switchProps={{
             value: enabled,
             onChangeComplete: onSwitchChange
