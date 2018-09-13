@@ -166,6 +166,11 @@ export type Confirm = {
   message: string;
 };
 
+export type Prompt = {
+  label: string;
+  okActionType: string;
+};
+
 export type FontFamily = {
   name: string;
 };
@@ -177,6 +182,7 @@ export type RootState = {
   toolType?: ToolType;
   activeEditorFilePath?: string;
   confirm?: Confirm;
+  prompt?: Prompt;
   showSidebar?: boolean;
 
   // TODO - may need to be moved to EditorWindow

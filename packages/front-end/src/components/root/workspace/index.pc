@@ -347,6 +347,26 @@
           "bottom": 1259.463687696396
         }
       }
+    },
+    {
+      "label": "Workspace Prompt",
+      "is": "9f364d214148",
+      "style": {},
+      "attributes": {},
+      "id": "9f364d2186938",
+      "name": "component",
+      "children": [],
+      "metadata": {
+        "bounds": {
+          "left": 1968,
+          "top": 2981,
+          "right": 2524.6936395576504,
+          "bottom": 3368.221429950012
+        }
+      },
+      "controllers": [
+        "./prompt-controller.tsx"
+      ]
     }
   ]
 }

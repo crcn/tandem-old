@@ -8,7 +8,8 @@ const {
 const { Modal: QuickSearchModal } = require("../../quick-search/index.pc");
 import { DragDropContext } from "react-dnd";
 import HTML5Backend from "react-dnd-html5-backend";
-import { BaseWorkspaceProps } from "./index.pc";
+import { BaseWorkspaceProps, WorkspacePrompt } from "./index.pc";
+import { mapStateToProps as mapStatetoPromptControllerProps } from "./prompt-controller";
 
 export type Props = {
   root: RootState;
@@ -20,6 +21,7 @@ export default (Base: React.ComponentClass<BaseWorkspaceProps>) =>
     class WorkspaceController extends React.PureComponent<Props> {
       render() {
         const { root, dispatch } = this.props;
+        const workspaceProps = mapStatetoPromptControllerProps(root);
         return (
           <div>
             <Base
@@ -51,6 +53,7 @@ export default (Base: React.ComponentClass<BaseWorkspaceProps>) =>
 
             <QuickSearchModal root={root} dispatch={dispatch} />
             <ComponentPickerModal root={root} dispatch={dispatch} />
+            {workspaceProps && <WorkspacePrompt {...workspaceProps} dispatch={dispatch} />}
           </div>
         );
       }

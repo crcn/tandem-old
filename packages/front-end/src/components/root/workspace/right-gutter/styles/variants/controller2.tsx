@@ -4,7 +4,7 @@ import { BaseStyleSwitcherProps } from "./view.pc";
 import { DropdownMenuOption } from "../../../../../inputs/dropdown/controller";
 import {
   styleVariantDropdownChanged,
-  newStyleVariantConfirmed,
+  newStyleVariantButtonClicked,
   addStyleButtonClicked,
   removeStyleButtonClicked
 } from "../../../../../../actions";
@@ -31,11 +31,7 @@ export type Props = {
 export default (Base: React.ComponentClass<BaseStyleSwitcherProps>) =>
   class StyleSwitcherController extends React.PureComponent<Props> {
     onAddVariantButtonClick = () => {
-      // const label = prompt("Style name");
-      // if (!label) {
-      //   return;
-      // }
-      this.props.dispatch(newStyleVariantConfirmed("Style"));
+      this.props.dispatch(newStyleVariantButtonClicked());
     };
     onRemoveVariantButtonClick = () => {
       this.props.dispatch(removeStyleButtonClicked());

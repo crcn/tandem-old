@@ -4,8 +4,7 @@ import { Dispatch } from "redux";
 import * as cx from "classnames";
 import {
   variantDefaultSwitchClicked,
-  variantLabelChanged,
-  variantClicked
+  variantLabelChanged
 } from "../../../../../../actions";
 import { FocusComponent } from "../../../../../focus";
 import { BaseVariantOptionProps } from "./option.pc";
@@ -54,16 +53,8 @@ export default (Base: React.ComponentClass<BaseVariantOptionProps>) =>
       this.setEditingLabel(false);
       dispatch(variantLabelChanged(variant, value));
     };
-    onClick = event => {
-      const { onClick, variant, dispatch } = this.props;
-      if (onClick) {
-        onClick(variant, event);
-      } else {
-        dispatch(variantClicked(variant));
-      }
-    };
     render() {
-      const { onClick, onSwitchChange, onInputClick, onLabelChange } = this;
+      const { onSwitchChange, onInputClick, onLabelChange } = this;
       const { editingLabel } = this.state;
       const { variant, selected, onReset, enabled, ...rest } = this.props;
       if (!variant) {
@@ -72,7 +63,6 @@ export default (Base: React.ComponentClass<BaseVariantOptionProps>) =>
       return (
         <Base
           {...rest}
-          onClick={onClick}
           variant={cx({ selected })}
           switchProps={{
             value: enabled,

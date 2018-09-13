@@ -51,7 +51,9 @@
                       "children": [
                         {
                           "id": "a9046e844",
-                          "variant": {},
+                          "variant": {
+                            "c2b44e3f3": false
+                          },
                           "is": "1d51efba14",
                           "name": "component-instance",
                           "attributes": {},
@@ -67,6 +69,18 @@
                                 "1d51efba20"
                               ],
                               "value": "Variant 1\n",
+                              "name": "override",
+                              "children": []
+                            },
+                            {
+                              "id": "9f364d212015",
+                              "propertyName": "variant",
+                              "targetIdPath": [
+                                "6f30576e9"
+                              ],
+                              "value": {
+                                "246c305d8": true
+                              },
                               "name": "override",
                               "children": []
                             }

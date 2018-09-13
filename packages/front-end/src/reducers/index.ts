@@ -17,6 +17,7 @@ import {
   CanvasToolOverlayClicked,
   RESIZER_MOUSE_DOWN,
   ResizerMouseDown,
+  VariantClicked,
   ResizerMoved,
   RESIZER_MOVED,
   RESIZER_PATH_MOUSE_STOPPED_MOVING,
@@ -40,9 +41,6 @@ import {
   SAVED_ALL_FILES,
   RAW_CSS_TEXT_CHANGED,
   RawCSSTextChanged,
-  TreeLayerLabelChanged,
-  TreeLayerClick,
-  TreeLayerExpandToggleClick,
   FILE_NAVIGATOR_TOGGLE_DIRECTORY_CLICKED,
   TreeLayerMouseOver,
   FILE_NAVIGATOR_NEW_FILE_CLICKED,
@@ -60,6 +58,7 @@ import {
   QuickSearchItemClicked,
   QUICK_SEARCH_BACKGROUND_CLICK,
   COMPONENT_VARIANT_NAME_CLICKED,
+  NEW_STYLE_VARIANT_CONFIRMED,
   ComponentVariantNameClicked,
   EDITOR_TAB_CLICKED,
   EditorTabClicked,
@@ -85,8 +84,8 @@ import {
   ToolbarToolClicked,
   EDITOR_TAB_CLOSE_BUTTON_CLICKED,
   STYLE_VARIANT_DROPDOWN_CHANGED,
-  NEW_STYLE_VARIANT_CONFIRMED,
-  NewStyleVariantConfirmed,
+  NEW_STYLE_VARIANT_BUTTON_CLICKED,
+
   StyleVariantDropdownChanged,
   REMOVE_STYLE_BUTTON_CLICKED,
   SHORTCUT_SELECT_NEXT_TAB,
@@ -101,8 +100,6 @@ import {
   VariantDefaultSwitchClicked,
   VariantLabelChanged,
   VARIANT_LABEL_CHANGED,
-  VARIANT_CLICKED,
-  VariantClicked,
   REMOVE_VARIANT_BUTTON_CLICKED,
   COMPONENT_INSTANCE_VARIANT_TOGGLED,
   INSTANCE_VARIANT_RESET_CLICKED,
@@ -129,7 +126,9 @@ import {
   SOURCE_INSPECTOR_LAYER_DROPPED,
   SourceInspectorLayerDropped,
   RemoveComponentControllerButtonClicked,
-  InheritPaneRemoveButtonClick
+  InheritPaneRemoveButtonClick,
+  PromptConfirmed,
+  PROMPT_CANCEL_BUTTON_CLICKED
 } from "../actions";
 import {
   queueOpenFile,
@@ -864,24 +863,6 @@ export const canvasReducer = (state: RootState, action: Action) => {
       return state;
     }
 
-    case VARIANT_CLICKED: {
-      const { variant } = action as VariantClicked;
-
-      // must be enabled in order to see CSS changes
-      const selectedVariant =
-        state.selectedVariant && state.selectedVariant.id === variant.id
-          ? null
-          : variant;
-      if (selectedVariant) {
-        state = persistRootState(
-          state => persistUpdateVariant({ isDefault: true }, variant, state),
-          state
-        );
-      }
-      state = updateRootState({ selectedVariant }, state);
-      return state;
-    }
-
     case COMPONENT_INSTANCE_VARIANT_TOGGLED: {
       const { variant } = action as VariantClicked;
       const inspectorNode = getNestedTreeNodeById(
@@ -1473,8 +1454,19 @@ export const canvasReducer = (state: RootState, action: Action) => {
       return state;
     }
 
+    case NEW_STYLE_VARIANT_BUTTON_CLICKED: {
+      return updateRootState({ prompt: {
+        label: "Style Name",
+        okActionType: NEW_STYLE_VARIANT_CONFIRMED
+      }}, state);
+    }
+
+    case PROMPT_CANCEL_BUTTON_CLICKED: {
+      return updateRootState({ prompt: null }, state);
+    }
+
     case NEW_STYLE_VARIANT_CONFIRMED: {
-      const { label } = action as NewStyleVariantConfirmed;
+      const {inputValue} = action as PromptConfirmed;
 
       const node = getSyntheticNodeById(
         state.selectedSyntheticNodeIds[0],
@@ -1486,11 +1478,12 @@ export const canvasReducer = (state: RootState, action: Action) => {
         state.documents
       );
       state = persistRootState(
-        state => persistAddVariant(label, contentNode, state),
+        state => persistAddVariant(inputValue, contentNode, state),
         state
       );
       state = updateRootState(
         {
+          prompt: null,
           selectedVariant: last(
             getPCVariants(getSyntheticSourceNode(
               contentNode,

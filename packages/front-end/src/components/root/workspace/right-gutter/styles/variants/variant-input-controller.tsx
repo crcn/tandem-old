@@ -46,11 +46,8 @@ export default (
     onVariantToggle = (variant: PCVariant) => {
       this.props.dispatch(instanceVariantToggled(variant));
     };
-    onVariantReset = (variant: PCVariant) => {
-      this.props.dispatch(instanceVariantResetClicked(variant));
-    };
     render() {
-      const { onVariantToggle, onVariantReset } = this;
+      const { onVariantToggle } = this;
       const {
         selectedInspectorNode,
         rootInspectorNode,
@@ -77,7 +74,6 @@ export default (
             selected={selectedVariant && variant.id === selectedVariant.id}
             dispatch={dispatch}
             onToggle={onVariantToggle}
-            onReset={enabled ? onVariantReset : null}
           />
         );
       });

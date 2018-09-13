@@ -81,9 +81,11 @@ export const ADD_VARIANT_BUTTON_CLICKED = "ADD_VARIANT_BUTTON_CLICKED";
 export const REMOVE_VARIANT_BUTTON_CLICKED = "REMOVE_VARIANT_BUTTON_CLICKED";
 export const VARIANT_DEFAULT_SWITCH_CLICKED = "VARIANT_DEFAULT_SWITCH_CLICKED";
 export const VARIANT_LABEL_CHANGED = "VARIANT_LABEL_CHANGED";
-export const VARIANT_CLICKED = "VARIANT_CLICKED";
 export const ADD_STYLE_BUTTON_CLICKED = "ADD_STYLE_BUTTON_CLICKED";
 export const NEW_STYLE_VARIANT_CONFIRMED = "NEW_STYLE_VARIANT_CONFIRMED";
+export const NEW_STYLE_VARIANT_BUTTON_CLICKED = "NEW_STYLE_VARIANT_BUTTON_CLICKED";
+export const PROMPT_OK_BUTTON_CLICKED = "PROMPT_OK_BUTTON_CLICKED";
+export const PROMPT_CANCEL_BUTTON_CLICKED = "PROMPT_CANCEL_BUTTON_CLICKED";
 export const REMOVE_STYLE_BUTTON_CLICKED = "ADD_STYLE_BUTTON_CLICKED";
 export const STYLE_VARIANT_DROPDOWN_CHANGED = "STYLE_VARIANT_DROPDOWN_CHANGED";
 export const COMPONENT_INSTANCE_VARIANT_TOGGLED =
@@ -266,9 +268,6 @@ export type StyleVariantDropdownChanged = {
   component: PCComponent;
 } & Action;
 
-export type NewStyleVariantConfirmed = {
-  label: string;
-} & Action;
 
 export type TreeLayerLabelChanged = {
   label: string;
@@ -352,6 +351,14 @@ export type InstanceVariantToggled = {
 export type ComponentVariantNameDefaultToggleClick = {
   name: string;
   value: boolean;
+} & Action;
+
+export type PromptConfirmed = {
+  inputValue: string;
+} & Action;
+
+export type PromptCancelButtonClicked = {
+
 } & Action;
 
 export type TextValueChanged = {
@@ -442,11 +449,11 @@ export type CanvasDroppedItem = {
   point: Point;
 } & Action;
 
-export type VariantDefaultSwitchClicked = {
+export type VariantClicked = {
   variant: PCVariant;
 } & Action;
 
-export type VariantClicked = {
+export type VariantDefaultSwitchClicked = {
   variant: PCVariant;
 } & Action;
 
@@ -512,6 +519,15 @@ export const fileNavigatorToggleDirectoryClicked = (
   type: FILE_NAVIGATOR_TOGGLE_DIRECTORY_CLICKED
 });
 
+export const promptConfirmed = (inputValue: string, actionType: string): PromptConfirmed => ({
+  inputValue,
+  type: actionType
+});
+
+export const promptCancelButtonClicked = (): PromptCancelButtonClicked => ({
+  type: PROMPT_CANCEL_BUTTON_CLICKED
+});
+
 export const newFileAdded = (
   uri: string,
   fileType: FSItemTagNames
@@ -543,11 +559,9 @@ export const styleVariantDropdownChanged = (
   variant
 });
 
-export const newStyleVariantConfirmed = (
-  label: string
-): NewStyleVariantConfirmed => ({
-  type: NEW_STYLE_VARIANT_CONFIRMED,
-  label
+export const newStyleVariantButtonClicked = (
+): Action => ({
+  type: NEW_STYLE_VARIANT_BUTTON_CLICKED,
 });
 
 export const removeStyleButtonClicked = (): Action => ({
@@ -634,11 +648,6 @@ export const variantLabelChanged = (
   variant,
   newLabel,
   type: VARIANT_LABEL_CHANGED
-});
-
-export const variantClicked = (variant: PCVariant): VariantClicked => ({
-  variant,
-  type: VARIANT_CLICKED
 });
 
 export const componentPickerItemClick = (
