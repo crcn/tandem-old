@@ -123,20 +123,38 @@
           "metadata": {}
         },
         {
-          "id": "c2b44e3f3",
-          "name": "variant",
-          "label": "selected",
-          "children": [],
-          "metadata": {},
-          "isDefault": false
-        },
-        {
           "id": "6cf317c23",
           "variantId": "c2b44e3f3",
           "propertyName": "style",
           "targetIdPath": [],
           "value": {
             "background": "rgba(212, 222, 240, 1)"
+          },
+          "name": "override",
+          "children": []
+        },
+        {
+          "id": "cc845f08779",
+          "name": "variant",
+          "isDefault": true,
+          "children": [],
+          "metadata": {}
+        },
+        {
+          "id": "cc845f081098",
+          "name": "variant",
+          "label": "alt",
+          "isDefault": false,
+          "children": [],
+          "metadata": {}
+        },
+        {
+          "id": "cc845f081417",
+          "variantId": "cc845f081098",
+          "propertyName": "style",
+          "targetIdPath": [],
+          "value": {
+            "background": "rgba(227, 227, 227, 1)"
           },
           "name": "override",
           "children": []

@@ -601,8 +601,8 @@ const translateUsedComponentOverrides = (
     context
   );
 
-  if (Object.keys(instance.variant).length)  {
-    context = addLine(`variant: ${JSON.stringify(Object.keys(instance.variant))},`, context);
+  if (instance.variant && Object.keys(instance.variant).length)  {
+    context = addLine(`variant: "${Object.keys(instance.variant).join(" ")}",`, context);
   }
 
   return context;

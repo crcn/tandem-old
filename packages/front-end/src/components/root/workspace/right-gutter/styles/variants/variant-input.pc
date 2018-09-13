@@ -96,7 +96,9 @@
                         },
                         {
                           "id": "a9046e846",
-                          "variant": {},
+                          "variant": {
+                            "cc845f081098": true
+                          },
                           "is": "1d51efba14",
                           "name": "component-instance",
                           "attributes": {},
@@ -183,7 +185,9 @@
                         },
                         {
                           "id": "7daf14d610",
-                          "variant": {},
+                          "variant": {
+                            "cc845f081098": true
+                          },
                           "is": "1d51efba14",
                           "name": "component-instance",
                           "attributes": {},
@@ -245,7 +249,9 @@
                         },
                         {
                           "id": "7daf14d614",
-                          "variant": {},
+                          "variant": {
+                            "cc845f081098": true
+                          },
                           "is": "1d51efba14",
                           "name": "component-instance",
                           "attributes": {},

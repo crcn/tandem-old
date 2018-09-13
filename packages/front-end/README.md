@@ -1,9 +1,7 @@
 IMMEDIATE:
 
-- compile instance variants to react
-- reset prop dropdown
-- rename variant
 - alt row color (variant)
+- reset prop dropdown
 - variants should not be selectable for instances
 - deselect selected variant if outside of content node
 - experimental window

@@ -84,7 +84,7 @@ export default (Base: React.ComponentClass<BaseStyleSwitcherProps>) =>
         ...variants.map(variant => {
           return {
             value: variant,
-            label: variant.label
+            label: variant.label || "Undefined"
           };
         })
       ];

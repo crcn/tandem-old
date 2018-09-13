@@ -63,14 +63,16 @@ export default (
         return null;
       }
 
-      const options = variantInfo.map(({ variant, enabled }) => {
+      const options = variantInfo.map(({ variant, enabled }, i) => {
         return (
           <VariantOption
+            alt={Boolean(i % 2)}
             enabled={enabled}
             key={variant.id}
             variant={variant}
             dispatch={dispatch}
             onToggle={onVariantToggle}
+
           />
         );
       });
