@@ -129,6 +129,7 @@ const translateModule = (module: PCModule, context: TranslateContext) => {
   context = addMergeFunction(context);
 
   context = addLine("\nvar _EMPTY_OBJECT = {}", context);
+  context = addLine("\nvar EMPTY_ARRAY = []", context);
 
   context = module.children
     .filter(isComponent)
@@ -404,14 +405,6 @@ const translateContentNode = (
     context = addLine(`"${variantLabelMap[id][0]}": "${id}",`, context);
   }
   context = addCloseTag(`};\n`, context);
-  context = addOpenTag(`const DEFAULT_VARIANT_IDS = [\n`, context);
-  for (const id in variantLabelMap) {
-    const [name, isDefault] = variantLabelMap[id];
-    if (isDefault) {
-      context = addLine(`"${id}",`, context);
-    }
-  }
-  context = addCloseTag(`];\n`, context);
 
   context = addOpenTag(
     `var render${publicClassName} = function(props) {\n`,
@@ -434,7 +427,7 @@ const translateContentNode = (
   }
 
   context = addLine(
-    `var variant = props.variant != null ? props.variant.split(" ").map(function(label) { return VARIANT_LABEL_ID_MAP[label.trim()] || label.trim(); }) : DEFAULT_VARIANT_IDS;`,
+    `var variant = _${contentNode.id}Props.variant != null ? _${contentNode.id}Props.variant.split(" ").map(function(label) { return VARIANT_LABEL_ID_MAP[label.trim()] || label.trim(); }) : EMPTY_ARRAY;`,
     context
   );
 
@@ -1010,6 +1003,9 @@ const translateStaticOverride = (
     }
     case PCOverridablePropertyName.TEXT: {
       return addLine(`text: ${JSON.stringify(override.value)},`, context);
+    }
+    case PCOverridablePropertyName.VARIANT: {
+      return addLine(`variant: "${Object.keys(override.value).join(" ")}",`, context);
     }
     case PCOverridablePropertyName.ATTRIBUTES: {
       context = translateInnerAttributes(

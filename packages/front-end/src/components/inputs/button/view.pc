@@ -44,7 +44,7 @@
           "id": "38b32d581121",
           "name": "variant",
           "label": "secondary",
-          "isDefault": true,
+          "isDefault": false,
           "children": [],
           "metadata": {}
         },

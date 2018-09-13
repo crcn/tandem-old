@@ -1,6 +1,5 @@
 IMMEDIATE:
 
-- reset prop dropdown
 - deselect selected variant if outside of content node
 - experimental window
 
@@ -8,20 +7,10 @@ IMMEDIATE:
   - inherited styles must be disabled for variants
 
 - instance style reset
-
   - reset variants too
-
-- get instance variant to work again
-- prohibit components from having default styles
-- left gutter needs to be resizable
 
 - BUGS
   - cannot inherit for instances
-
-* instance pane (like Figma)
-
-  - reset styles button
-  - move variant to here
 
 - unsaved prompt
 - unsaved button
