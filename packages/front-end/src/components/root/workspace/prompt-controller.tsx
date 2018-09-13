@@ -30,8 +30,8 @@ export default (Base: React.ComponentClass<BaseWorkspacePromptProps>) => class W
     this.props.dispatch(promptCancelButtonClicked());
   }
   render() {
-    const {options: {label}, ...rest} = this.props;
+    const {options: {label, defaultValue}, ...rest} = this.props;
     const {onCancel, onOk} = this;
-    return <Base {...rest} label={label} onCancel={onCancel} onOk={onOk} />
+    return <Base {...rest} label={label} defaultValue={defaultValue} onCancel={onCancel} onOk={onOk} />
   }
 }

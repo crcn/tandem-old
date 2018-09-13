@@ -5,6 +5,7 @@ export type Props = {
   label: string;
   onOk?: any;
   onCancel?: any;
+  defaultValue?: string;
 };
 
 
@@ -13,9 +14,12 @@ type State = {
 }
 
 export default (Base: React.ComponentClass<BasePromptProps>) => class PromptController extends React.PureComponent<Props, State> {
-  state = {
-    value: null
-  };
+  constructor(props: Props) {
+    super(props);
+    this.state = {
+      value: props.defaultValue
+    };
+  }
   onOk = () => {
     this.props.onOk(this.state.value);
   }
@@ -23,12 +27,13 @@ export default (Base: React.ComponentClass<BasePromptProps>) => class PromptCont
     this.setState({ ...this.state, value });
   }
   render() {
-    const {label, onCancel} = this.props;
+    const {label, onCancel, defaultValue} = this.props;
     const {onInputChange, onOk} = this;
     return <Base textProps={{text: label}} okButtonProps={{onClick: onOk}} cancelButtonProps={{onClick: onCancel}} inputProps={{
       onChange: onInputChange,
       onChangeComplete: onOk,
-      focus: true
+      focus: true,
+      value: defaultValue
     }} />
   }
 }

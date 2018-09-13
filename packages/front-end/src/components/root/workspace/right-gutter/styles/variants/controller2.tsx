@@ -5,8 +5,8 @@ import { DropdownMenuOption } from "../../../../../inputs/dropdown/controller";
 import {
   styleVariantDropdownChanged,
   newStyleVariantButtonClicked,
-  addStyleButtonClicked,
-  removeStyleButtonClicked
+  editVariantNameButtonClicked,
+  removeVariantButtonClicked
 } from "../../../../../../actions";
 import {
   PCComponent,
@@ -34,8 +34,11 @@ export default (Base: React.ComponentClass<BaseStyleSwitcherProps>) =>
       this.props.dispatch(newStyleVariantButtonClicked());
     };
     onRemoveVariantButtonClick = () => {
-      this.props.dispatch(removeStyleButtonClicked());
+      this.props.dispatch(removeVariantButtonClicked());
     };
+    onEditNameButtonClick = () => {
+      this.props.dispatch(editVariantNameButtonClicked());
+    }
     onStyleChange = value => {
       const contentNode = getSyntheticContentNode(
         this.props.selectedNodes[0],
@@ -52,6 +55,7 @@ export default (Base: React.ComponentClass<BaseStyleSwitcherProps>) =>
       const {
         onRemoveVariantButtonClick,
         onAddVariantButtonClick,
+        onEditNameButtonClick,
         onStyleChange
       } = this;
       const {
@@ -93,6 +97,12 @@ export default (Base: React.ComponentClass<BaseStyleSwitcherProps>) =>
               display: selectedVariant ? "block" : "none"
             },
             onClick: onRemoveVariantButtonClick
+          }}
+          editNameButtonProps={{
+            style: {
+              display: selectedVariant ? "block" : "none"
+            },
+            onClick: onEditNameButtonClick
           }}
           dropdownProps={{
             value: variants.find(

@@ -1057,7 +1057,7 @@
         {
           "id": "aa0444094059",
           "name": "variant",
-          "label": "Style",
+          "label": "test",
           "isDefault": false,
           "children": [],
           "metadata": {}
@@ -1076,7 +1076,7 @@
         {
           "id": "aa0444094373",
           "name": "variant",
-          "label": "Style",
+          "label": "drop shadow",
           "isDefault": false,
           "children": [],
           "metadata": {}

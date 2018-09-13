@@ -128,7 +128,9 @@ import {
   RemoveComponentControllerButtonClicked,
   InheritPaneRemoveButtonClick,
   PromptConfirmed,
-  PROMPT_CANCEL_BUTTON_CLICKED
+  PROMPT_CANCEL_BUTTON_CLICKED,
+  EDIT_VARIANT_NAME_CONFIRMED,
+  EDIT_VARIANT_NAME_BUTTON_CLICKED
 } from "../actions";
 import {
   queueOpenFile,
@@ -1453,6 +1455,26 @@ export const canvasReducer = (state: RootState, action: Action) => {
 
       return state;
     }
+
+    case EDIT_VARIANT_NAME_BUTTON_CLICKED: {
+      return updateRootState({ prompt: {
+        label: "Style Name",
+        defaultValue: state.selectedVariant.label,
+        okActionType: EDIT_VARIANT_NAME_CONFIRMED
+      }}, state);
+    }
+
+    case EDIT_VARIANT_NAME_CONFIRMED: {
+      const {inputValue: label} = action as PromptConfirmed;
+      const variant = state.selectedVariant;
+      state = persistRootState(
+        state => persistUpdateVariant({label}, variant, state),
+        state
+      );
+      state = updateRootState({ prompt: null }, state);
+      return state;
+    }
+
 
     case NEW_STYLE_VARIANT_BUTTON_CLICKED: {
       return updateRootState({ prompt: {

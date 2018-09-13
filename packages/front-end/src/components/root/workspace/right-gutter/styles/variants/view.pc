@@ -526,6 +526,29 @@
                           "label": "remove style button"
                         },
                         {
+                          "id": "167105e015933",
+                          "is": "167105e0666",
+                          "name": "component-instance",
+                          "attributes": {},
+                          "style": {
+                            "display": "inline-block",
+                            "height": "0.8em",
+                            "margin-right": "4px",
+                            "margin-left": "2px"
+                          },
+                          "children": [],
+                          "metadata": {
+                            "bounds": {
+                              "left": 849.5134547797677,
+                              "top": 337.7725332321287,
+                              "right": 1249.5134547797677,
+                              "bottom": 637.7725332321287
+                            }
+                          },
+                          "variant": {},
+                          "label": "edit name button"
+                        },
+                        {
                           "id": "d31aa238235462",
                           "is": "8e601d2b23050",
                           "name": "component-instance",

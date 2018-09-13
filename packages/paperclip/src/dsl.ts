@@ -17,7 +17,7 @@ import {
 import { uniq, isEqual } from "lodash";
 import { Dependency, DependencyGraph, updateGraphDependency } from "./graph";
 
-export const PAPERCLIP_MODULE_VERSION = "0.0.4";
+export const PAPERCLIP_MODULE_VERSION = "0.0.5";
 
 /*------------------------------------------
  * CONSTANTS
@@ -92,6 +92,7 @@ export type PCComponent = {
    * @type {string[]}
    */
   controllers?: string[];
+  variant: KeyValue<boolean>;
   is?: string;
   children: PCComponentChild[];
 } & PCBaseElement<PCSourceTagNames.COMPONENT>;
@@ -265,7 +266,8 @@ export const createPCComponent = (
   id: generateUID(),
   name: PCSourceTagNames.COMPONENT,
   children: children || EMPTY_ARRAY,
-  metadata: EMPTY_OBJECT
+  metadata: EMPTY_OBJECT,
+  variant: EMPTY_OBJECT
 });
 
 export const createPCVariant = (

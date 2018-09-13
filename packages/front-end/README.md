@@ -1,14 +1,12 @@
 IMMEDIATE:
 
 - compile instance variants to react
-- experimental window
 - reset prop dropdown
 - rename variant
+- alt row color (variant)
 - variants should not be selectable for instances
 - deselect selected variant if outside of content node
-- "prompt" UI
-- ability to rename style
-- instance pane
+- experimental window
 
   - inherit styles
   - inherited styles must be disabled for variants

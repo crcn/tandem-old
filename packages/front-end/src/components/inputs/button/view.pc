@@ -38,6 +38,25 @@
               "priority": 0
             }
           }
+        },
+        {
+          "id": "38b32d581121",
+          "name": "variant",
+          "label": "secondary",
+          "isDefault": true,
+          "children": [],
+          "metadata": {}
+        },
+        {
+          "id": "38b32d581284",
+          "variantId": "38b32d581121",
+          "propertyName": "style",
+          "targetIdPath": [],
+          "value": {
+            "background": "rgba(227, 227, 227, 1)"
+          },
+          "name": "override",
+          "children": []
         }
       ],
       "metadata": {

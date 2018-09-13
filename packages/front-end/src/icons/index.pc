@@ -3211,6 +3211,104 @@
           "bottom": 1600
         }
       }
+    },
+    {
+      "label": "Pencil Icon",
+      "is": "svg",
+      "style": {},
+      "attributes": {
+        "xmlns": "http://www.w3.org/2000/svg",
+        "xmlns:xlink": "http://www.w3.org/1999/xlink",
+        "xml:space": "preserve",
+        "version": "1.1",
+        "style": "shape-rendering:geometricPrecision;text-rendering:geometricPrecision;image-rendering:optimizeQuality;",
+        "viewBox": "0 0 57 170",
+        "x": "0px",
+        "y": "0px",
+        "fill-rule": "evenodd",
+        "clip-rule": "evenodd"
+      },
+      "id": "167105e0666",
+      "name": "component",
+      "children": [
+        {
+          "id": "167105e0660",
+          "is": "defs",
+          "name": "element",
+          "attributes": {},
+          "style": {},
+          "children": [
+            {
+              "id": "167105e0661",
+              "is": "style",
+              "name": "element",
+              "attributes": {
+                "type": "text/css"
+              },
+              "style": {},
+              "children": [
+                {
+                  "id": "167105e0662",
+                  "name": "text",
+                  "label": "\n   \n    .fil0 {fill:black}\n   \n  ",
+                  "value": "\n   \n    .fil0 {fill:black}\n   \n  ",
+                  "style": {},
+                  "children": [],
+                  "metadata": {}
+                }
+              ],
+              "metadata": {}
+            }
+          ],
+          "metadata": {}
+        },
+        {
+          "id": "167105e0663",
+          "is": "g",
+          "name": "element",
+          "attributes": {},
+          "style": {},
+          "children": [
+            {
+              "id": "167105e0664",
+              "is": "polygon",
+              "name": "element",
+              "attributes": {
+                "class": "fil0",
+                "points": "41,0 57,5 17,149 1,145 "
+              },
+              "style": {
+                "background": "currentColor"
+              },
+              "children": [],
+              "metadata": {}
+            },
+            {
+              "id": "167105e0665",
+              "is": "polygon",
+              "name": "element",
+              "attributes": {
+                "class": "fil0",
+                "points": "2,170 16,152 0,147 "
+              },
+              "style": {
+                "background": "currentColor"
+              },
+              "children": [],
+              "metadata": {}
+            }
+          ],
+          "metadata": {}
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": -3089,
+          "top": -157,
+          "right": -2689,
+          "bottom": 143
+        }
+      }
     }
   ]
 }

@@ -51,7 +51,6 @@ export default (Base: React.ComponentClass<BaseStylesProps>) =>
           }}
           prettyProps={{
             dispatch,
-            selectedVariant,
             selectedInspectorNodes,
             rootInspectorNode,
             syntheticDocument,

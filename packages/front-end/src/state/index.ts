@@ -168,6 +168,7 @@ export type Confirm = {
 
 export type Prompt = {
   label: string;
+  defaultValue?: string;
   okActionType: string;
 };
 

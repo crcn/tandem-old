@@ -120,7 +120,9 @@
                       "bottom": 220
                     }
                   },
-                  "variant": {},
+                  "variant": {
+                    "38b32d581121": true
+                  },
                   "label": "Cancel button"
                 },
                 {

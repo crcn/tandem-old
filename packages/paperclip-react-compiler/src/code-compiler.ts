@@ -600,6 +600,11 @@ const translateUsedComponentOverrides = (
     overrideMap[COMPUTED_OVERRIDE_DEFAULT_KEY],
     context
   );
+
+  if (Object.keys(instance.variant).length)  {
+    context = addLine(`variant: ${JSON.stringify(Object.keys(instance.variant))},`, context);
+  }
+
   return context;
 };
 
@@ -803,8 +808,6 @@ const mapContainersOverride = (filter: (override: PCOverride) => boolean) => {
 const isStaticOverride = (override: PCOverride) =>
   override.propertyName !== PCOverridablePropertyName.CHILDREN &&
   !override.variantId;
-const isLabelOverride = (override: PCOverride): override is PCLabelOverride =>
-  override.propertyName === PCOverridablePropertyName.LABEL;
 const isDynamicOverride = (override: PCOverride) =>
   (override.propertyName === PCOverridablePropertyName.CHILDREN &&
     override.children.length > 0) ||

@@ -19,22 +19,12 @@ export type Props = {
   dispatch: Dispatch<any>;
   selectedNodes: SyntheticElement[];
   graph: DependencyGraph;
-  selectedVariant: PCVariant;
   rootInspectorNode: InspectorNode;
   selectedInspectorNodes: InspectorNode[];
   syntheticDocument: SyntheticDocument;
   fontFamilies: FontFamily[];
 };
 
-// instancePaneProps={{
-//   dispatch,
-//   selectedInspectorNodes,
-//   rootInspectorNode: null,
-//   syntheticDocument,
-//   selectedNodes,
-//   graph,
-//   selectedVariant
-// }}
 export default (Base: React.ComponentClass<BaseElementStylerProps>) =>
   class PrettyStylesController extends React.PureComponent<Props> {
     render() {
