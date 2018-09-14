@@ -16,6 +16,7 @@ export type PrettyPaneOuterProps = {
 };
 
 export type Props = {
+  selectedVariant: PCVariant;
   dispatch: Dispatch<any>;
   selectedNodes: SyntheticElement[];
   graph: DependencyGraph;

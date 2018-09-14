@@ -272,7 +272,8 @@ const translateStaticVariants = (contentNode: PCNode) => {
       .filter(override => {
         return (
           override.propertyName === PCOverridablePropertyName.STYLE ||
-          override.propertyName === PCOverridablePropertyName.VARIANT_IS_DEFAULT
+          override.propertyName === PCOverridablePropertyName.VARIANT_IS_DEFAULT ||
+          override.propertyName === PCOverridablePropertyName.VARIANT
         );
       })
       .map(override => {

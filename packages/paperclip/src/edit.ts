@@ -769,6 +769,7 @@ export const persistToggleInstanceVariant = <TState extends PCEditorState>(
     info => info.variant.id === targetVariantId
   );
 
+
   const node = maybeOverride2(
     PCOverridablePropertyName.VARIANT,
     null,
@@ -1016,24 +1017,24 @@ const maybeOverride2 = (
   graph: DependencyGraph
 ) => {
   const sourceNode = getPCNode(nodeId, graph);
-  const instancePathParts = instancePath
+  const instancePathParts: string[] = instancePath
     ? instancePath.split(".")
     : EMPTY_ARRAY;
 
   // if content node does not exist, then target node must be id
-  const module = getPCNodeModule(nodeId, graph);
+  const topMostNodeId = instancePathParts.length ? instancePathParts[0] : nodeId;
+  const topMostInspectorNode = getInspectorNodeByAssocId(
+    topMostNodeId,
+    rootInspector
+  );
 
   // call getInspectorNodeByAssocId on parent if assoc inspector node doesn't exist. In this case, we're probably dealing with a source node
   // that does not have an assoc inspector node, so we defer to the owner (parent) instead.
   const contentNode =
-    getInspectorNodeByAssocId(
-      instancePathParts.length ? instancePathParts[0] : nodeId,
+    getInspectorContentNodeContainingChild(
+      topMostInspectorNode,
       rootInspector
-    ) ||
-    getInspectorNodeByAssocId(
-      getParentTreeNode(nodeId, module).id,
-      rootInspector
-    );
+    ) || topMostInspectorNode;
 
   const contentSourceNode = getInspectorSourceNode(
     contentNode,

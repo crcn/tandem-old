@@ -50,6 +50,7 @@ export default (Base: React.ComponentClass<BaseStylesProps>) =>
             graph
           }}
           prettyProps={{
+            selectedVariant,
             dispatch,
             selectedInspectorNodes,
             rootInspectorNode,

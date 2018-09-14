@@ -20,6 +20,7 @@ export type Props = {
   selectedNodes: SyntheticNode[];
   dispatch: Dispatch<any>;
   graph: DependencyGraph;
+  selectedVariant: PCVariant;
 };
 
 export default (Base: React.ComponentClass<BaseInstancePaneProps>) =>
@@ -30,6 +31,7 @@ export default (Base: React.ComponentClass<BaseInstancePaneProps>) =>
         selectedNodes,
         selectedInspectorNodes,
         rootInspectorNode,
+        selectedVariant,
         dispatch,
         graph,
         ...rest
@@ -55,6 +57,7 @@ export default (Base: React.ComponentClass<BaseInstancePaneProps>) =>
         <Base
           {...rest}
           variantInputProps={{
+            selectedVariant,
             selectedInspectorNode,
             rootInspectorNode,
             dispatch,

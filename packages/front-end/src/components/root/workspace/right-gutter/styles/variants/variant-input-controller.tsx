@@ -36,6 +36,7 @@ export type Props = {
   rootInspectorNode: InspectorNode;
   dispatch: Dispatch<any>;
   graph: DependencyGraph;
+  selectedVariant: PCVariant;
 };
 
 export default (
@@ -51,12 +52,14 @@ export default (
         selectedInspectorNode,
         rootInspectorNode,
         graph,
+        selectedVariant,
         dispatch,
       } = this.props;
       const variantInfo = getInstanceVariantInfo(
         selectedInspectorNode,
         rootInspectorNode,
-        graph
+        graph,
+        selectedVariant && selectedVariant.id
       );
 
       if (!variantInfo.length) {
