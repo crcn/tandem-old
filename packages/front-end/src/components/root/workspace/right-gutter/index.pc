@@ -23,6 +23,58 @@
       "label": "Tab"
     },
     {
+      "id": "1ad7c23f93210",
+      "is": "8b8bbe2c724435",
+      "name": "component-instance",
+      "attributes": {},
+      "style": {},
+      "children": [
+        {
+          "id": "1ad7c23f161387",
+          "propertyName": "variant",
+          "targetIdPath": [
+            "9208d19596001"
+          ],
+          "value": {
+            "50ae5f7b3": true
+          },
+          "name": "override",
+          "children": []
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": 1685,
+          "top": -8,
+          "right": 1984.7561969236913,
+          "bottom": 1693.3054200488054
+        }
+      },
+      "variant": {
+        "1a11459311": false,
+        "2842a72d17": true
+      }
+    },
+    {
+      "id": "1ad7c23f54971",
+      "is": "8b8bbe2c724435",
+      "name": "component-instance",
+      "attributes": {},
+      "style": {},
+      "children": [],
+      "metadata": {
+        "bounds": {
+          "left": 1323,
+          "top": -3,
+          "right": 1622.7561969236913,
+          "bottom": 1698.3054200488054
+        }
+      },
+      "variant": {
+        "1a11459311": true
+      }
+    },
+    {
       "label": "Right Gutter",
       "is": "div",
       "style": {
@@ -558,7 +610,7 @@
           "left": 368.2438030763085,
           "top": 76,
           "right": 668,
-          "bottom": 1621.0503191011264
+          "bottom": 1777.3054200488054
         }
       },
       "controllers": [

@@ -19,7 +19,8 @@ import {
   PCOverridablePropertyName,
   getSlotPlug,
   getPCNodeModule,
-  getPCVariants
+  getPCVariants,
+  PCBaseValueOverride
 } from "./dsl";
 import { last } from "lodash";
 
@@ -289,12 +290,11 @@ export const getInstanceVariantInfo = memoize(
     ) as PCComponentInstanceElement;
     const component = getPCNode(instance.is, graph) as PCComponent;
     const variants = getPCVariants(component);
-    const variantIds = variants.map(variant => variant.id);
 
     const parentInstances = [
       instance,
       ...(node.instancePath
-        ? node.instancePath.split(".").map(instanceId => {
+        ? node.instancePath.split(".").reverse().map(instanceId => {
             return getPCNode(instanceId, graph) as PCComponentInstanceElement;
           })
         : [])
@@ -304,7 +304,8 @@ export const getInstanceVariantInfo = memoize(
 
     for (const parentInstance of parentInstances) {
       const variant = parentInstance.variant;
-      Object.assign(enabled, variant);
+      const variantOverride = parentInstance.children.find((child: PCNode) => child.name === PCSourceTagNames.OVERRIDE && child.propertyName === PCOverridablePropertyName.VARIANT && last(child.targetIdPath) === instance.id) as PCBaseValueOverride<any, any>;
+      Object.assign(enabled, variant, variantOverride && variantOverride.value);
     }
 
     return variants.map(variant => ({

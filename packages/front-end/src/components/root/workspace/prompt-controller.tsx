@@ -24,7 +24,7 @@ export const mapStateToProps = ({ prompt }: RootState): MappedProps => {
 
 export default (Base: React.ComponentClass<BaseWorkspacePromptProps>) => class WorkspacePromptController extends React.PureComponent<Props> {
   onOk = (value: string) => {
-    // this.props.dispatch(value ? promptConfirmed(value, this.props.options.okActionType) : promptCancelButtonClicked());
+    this.props.dispatch(value ? promptConfirmed(value, this.props.options.okActionType) : promptCancelButtonClicked());
   }
   onCancel = () => {
     this.props.dispatch(promptCancelButtonClicked());

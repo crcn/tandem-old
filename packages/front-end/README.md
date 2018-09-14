@@ -1,13 +1,11 @@
 IMMEDIATE:
 
-- deselect selected variant if outside of content node
-- experimental window
-
-  - inherit styles
-  - inherited styles must be disabled for variants
+- variants don't show up for instances
+- variants for component that inherit instance
+- inherit styles per variant
+-
 
 - instance style reset
-  - reset variants too
 
 - BUGS
   - cannot inherit for instances
@@ -47,11 +45,6 @@ IMMEDIATE:
   - not toggleable
 
 - start redesign (dark)
-
-UX PROBLEMS:
-
-- hard to find components. Need to include in quick search.
-- labels should really be "names" and exported. Prohibit spacing
 
 BUGS:
 
