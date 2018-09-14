@@ -5,6 +5,26 @@
   "name": "module",
   "children": [
     {
+      "id": "3f6ce4151973",
+      "is": "6f30576e8",
+      "name": "component-instance",
+      "attributes": {},
+      "style": {},
+      "children": [],
+      "metadata": {
+        "bounds": {
+          "left": 453,
+          "top": 274,
+          "right": 541.5386591971022,
+          "bottom": 293.77061437971554
+        }
+      },
+      "variant": {
+        "246c305d8": true
+      },
+      "label": "On preview"
+    },
+    {
       "label": "Switch",
       "is": "div",
       "style": {

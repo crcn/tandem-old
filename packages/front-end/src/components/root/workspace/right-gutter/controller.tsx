@@ -27,7 +27,7 @@ const getSelectedInspectorNodes = memoize(
   }
 );
 
-const TAB_NAMES = ["styles", "properties"];
+const TAB_NAMES = ["styles", "properties", "variables"];
 const INSPECTOR_NODE_TAB_NAMES = ["properties"];
 
 export type Props = {
@@ -107,7 +107,8 @@ export default (Base: React.ComponentClass<BaseRightGutterProps>) =>
           {...rest}
           variant={cx({
             stylesTab: availableCurrentTab === TAB_NAMES[0],
-            propertiesTab: availableCurrentTab === TAB_NAMES[1]
+            propertiesTab: availableCurrentTab === TAB_NAMES[1],
+            variablesTab: availableCurrentTab === TAB_NAMES[2]
           })}
           stylesProps={{
             visible: availableCurrentTab === TAB_NAMES[0],

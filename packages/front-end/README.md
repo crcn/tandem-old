@@ -1,5 +1,14 @@
 IMMEDIATE:
 
+- variables UI
+  - define variable type
+  - define variable value based on type
+  - define variable name
+
+- tdproject file
+
+
+
 - selectedVariant fudges with other panes
 - variants don't show up for instances
 - variants for component that inherit instance
@@ -28,7 +37,7 @@ IMMEDIATE:
   - reduce `root` usage
 
 * UX
-
+  - secondary input for slider (particularly for opacity)
   - all layers must be expose. For component instances, take component label
   - shortcuts shouldn't be triggered when keys are pressed
   - unsaved files indicator
