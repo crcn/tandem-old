@@ -778,7 +778,7 @@ export const persistToggleInstanceVariant = <TState extends PCEditorState>(
       return override ? {
         ...override.value,
         [targetVariantId]: !override.value[targetVariantId]
-      } : { [targetVariantId]: true };
+      } : { [targetVariantId]: !variantInfo.enabled };
     },
     (node: PCComponentInstanceElement) => ({ ...node, variant: {
       ...node.variant,

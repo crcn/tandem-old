@@ -1,5 +1,6 @@
 IMMEDIATE:
 
+- selectedVariant fudges with other panes
 - variants don't show up for instances
 - variants for component that inherit instance
 - inherit styles per variant
