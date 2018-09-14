@@ -2089,7 +2089,6 @@ const shortcutReducer = (state: RootState, action: Action): RootState => {
       }
     }
     case SHORTCUT_DELETE_KEY_DOWN: {
-      const now = Date.now();
       if (
         isInputSelected(state) ||
         state.selectedInspectorNodeIds.length === 0

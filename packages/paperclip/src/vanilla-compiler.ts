@@ -225,7 +225,7 @@ const translateDynamicVariant = (
 ) => {
   return `overrides._${node.id}Variant ? Object.assign({},  _${
     node.id
-  }Style, overrides._${node.id}Variant) : _${node.id}Variant`;
+  }Variant, overrides._${node.id}Variant) : _${node.id}Variant`;
 };
 
 const translateDynamicOverrides = (
@@ -267,7 +267,7 @@ const translateStaticOverrides = (contentNode: PCNode) => {
 
 const translateStaticVariants = (contentNode: PCNode) => {
   const variants = getTreeNodesByName(PCSourceTagNames.VARIANT, contentNode);
-  const variantNodes = uniq(
+  const variantNodes: PCNode[] = uniq(
     (getTreeNodesByName(PCSourceTagNames.OVERRIDE, contentNode) as PCOverride[])
       .filter(override => {
         return (
@@ -286,7 +286,7 @@ const translateStaticVariants = (contentNode: PCNode) => {
   for (const variant of variants) {
     buffer += `_${variant.id}: {`;
     for (const node of variantNodes) {
-      const overrideMap = getOverrideMap(node);
+      const overrideMap = getOverrideMap(node, node.name === PCSourceTagNames.COMPONENT_INSTANCE || node.name === PCSourceTagNames.COMPONENT);
       if (!overrideMap[variant.id]) {
         continue;
       }

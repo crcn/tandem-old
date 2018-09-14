@@ -519,6 +519,7 @@ const moveDependencyRecordHistory = (
   }, snapshotItem.snapshot);
 
   state = updateDependencyGraph(graphSnapshot, state);
+  state = refreshModuleInspectorNodes(state);
 
   state = updateRootState(
     {

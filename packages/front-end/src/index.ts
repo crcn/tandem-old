@@ -36,8 +36,10 @@ const onError = error => {
   alert(
     `An unknown error occured, please save changes and restart Tandem. Details:\n${error}`
   );
+  console.error(error);
 };
 window.onerror = onError;
+
 
 export const setup = <TState extends RootState>(
   createSideEffects: SideEffectCreator,
@@ -90,6 +92,10 @@ export const setup = <TState extends RootState>(
                 return EMPTY_OBJECT;
               }
               const module = getPCNodeModule(state.selectedVariant.id, state.graph);
+              // variant does not exist
+              if (!module) {
+                return EMPTY_OBJECT;
+              }
               const component = getParentTreeNode(state.selectedVariant.id, module) as PCComponent;
               return getVariants(component.id, state.selectedVariant.id);
             }

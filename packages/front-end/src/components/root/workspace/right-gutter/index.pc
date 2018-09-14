@@ -53,7 +53,8 @@
       "variant": {
         "1a11459311": false,
         "2842a72d17": true
-      }
+      },
+      "label": "Properties preview"
     },
     {
       "id": "1ad7c23f54971",
@@ -72,7 +73,8 @@
       },
       "variant": {
         "1a11459311": true
-      }
+      },
+      "label": "Styles tab preview"
     },
     {
       "label": "Right Gutter",
