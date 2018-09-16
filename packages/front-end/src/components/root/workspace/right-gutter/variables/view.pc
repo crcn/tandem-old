@@ -268,7 +268,10 @@
           "bottom": 381.51506027769346
         }
       },
-      "variant": {}
+      "variant": {},
+      "controllers": [
+        "./controller.tsx"
+      ]
     },
     {
       "label": "Variable Row Item",
