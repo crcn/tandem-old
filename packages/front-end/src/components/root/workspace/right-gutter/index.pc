@@ -1312,23 +1312,6 @@
           "name": "plug"
         },
         {
-          "id": "4b46931a1482990",
-          "is": "50e32bec2591",
-          "name": "component-instance",
-          "attributes": {},
-          "style": {},
-          "children": [],
-          "metadata": {
-            "bounds": {
-              "left": 133,
-              "top": 279,
-              "right": 334,
-              "bottom": 521.2360321797468
-            }
-          },
-          "variant": {}
-        },
-        {
           "slotId": "4b46931a415082",
           "id": "4b46931a1496880",
           "children": [
@@ -1521,23 +1504,6 @@
           "isDefault": false,
           "children": [],
           "metadata": {}
-        },
-        {
-          "id": "4b46931a1568114",
-          "is": "50e32bec2591",
-          "name": "component-instance",
-          "attributes": {},
-          "style": {},
-          "children": [],
-          "metadata": {
-            "bounds": {
-              "left": 133,
-              "top": 279,
-              "right": 334,
-              "bottom": 521.2360321797468
-            }
-          },
-          "variant": {}
         },
         {
           "id": "3a6461fb961320",

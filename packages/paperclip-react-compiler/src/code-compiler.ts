@@ -421,7 +421,7 @@ const translateContentNode = (
     context = addClassNameCheck(`${contentNode.id}`, `props`, context);
   } else {
     context = addLine(
-      `var _${contentNode.id}Props = Object.assign({}, props);`,
+      `var _${contentNode.id}Props = Object.assign({}, overrides, props);`,
       context
     );
   }
@@ -728,6 +728,7 @@ const translateContentNodeOverrides = (
   for (let i = instances.length; i--; ) {
     const instance = instances[i];
     context = translateDynamicOverrides(component, instance, null, context);
+    context = translatePlugs(component, instance, context);
   }
 
   return context;
@@ -881,35 +882,12 @@ const translateDynamicOverrideKeys = (
   return context;
 };
 
-const translateDynamicOverrides = (
-  component: ContentNode,
-  instance: PCComponent | PCComponentInstanceElement,
-  variantId: string,
-  context: TranslateContext
-) => {
-  const overrides = getOverrides(instance);
+const translatePlugs = (component: ContentNode,instance:PCComponent | PCComponentInstanceElement, context: TranslateContext) =>{
+
   const plugs = instance.children.filter(
     child => child.name === PCSourceTagNames.PLUG
   ) as PCPlug[];
 
-  for (const override of overrides) {
-    if (isDynamicOverride(override) && override.variantId == variantId) {
-      let keyPath: string[];
-
-      if (getNestedTreeNodeById(last(override.targetIdPath), component)) {
-        keyPath = [`_${last(override.targetIdPath)}Props`];
-      } else {
-        keyPath = [instance.id + "Props", ...override.targetIdPath].map(
-          id => `_${id}`
-        );
-      }
-      context = translateDynamicOverrideSetter(
-        keyPath.join("."),
-        override,
-        context
-      );
-    }
-  }
 
   for (const plug of plugs) {
     const visibleChildren = plug.children.filter(
@@ -947,6 +925,37 @@ const translateDynamicOverrides = (
   }
 
   return context;
+}
+
+const translateDynamicOverrides = (
+  component: ContentNode,
+  instance: PCComponent | PCComponentInstanceElement,
+  variantId: string,
+  context: TranslateContext
+) => {
+  const overrides = getOverrides(instance);
+
+  for (const override of overrides) {
+    if (isDynamicOverride(override) && override.variantId == variantId) {
+      let keyPath: string[];
+
+      if (getNestedTreeNodeById(last(override.targetIdPath), component)) {
+        keyPath = [`_${last(override.targetIdPath)}Props`];
+      } else {
+        keyPath = [instance.id + "Props", ...override.targetIdPath].map(
+          id => `_${id}`
+        );
+      }
+      context = translateDynamicOverrideSetter(
+        keyPath.join("."),
+        override,
+        context
+      );
+    }
+  }
+
+
+  return context;
 };
 
 const hasDynamicOverrides = ({
@@ -980,6 +989,13 @@ const translateDynamicOverrideSetter = (
           `${varName}.className = (${varName}.className ? ${varName}.className + " " : "") + "_${
             override.id
           } _${override.variantId}";`,
+          context
+        );
+        return context;
+      }
+      case PCOverridablePropertyName.VARIANT: {
+        context = addLine(
+          `${varName}.variant = "${Object.keys(override.value).join(" ")}";`,
           context
         );
         return context;
