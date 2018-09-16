@@ -2115,7 +2115,7 @@ const shortcutReducer = (state: RootState, action: Action): RootState => {
         );
       }
 
-      let parent = getParentTreeNode(firstNode.id, state.sourceNodeInspector);
+      let parent: InspectorNode = getParentTreeNode(firstNode.id, state.sourceNodeInspector);
       const index = parent.children.indexOf(firstNode);
 
       state = persistRootState(state => {
@@ -2170,7 +2170,7 @@ const shortcutReducer = (state: RootState, action: Action): RootState => {
 
       const nextSelectedNodeId = nextChildren.length
         ? nextChildren[Math.min(index, nextChildren.length - 1)].id
-        : parent.name !== SYNTHETIC_DOCUMENT_NODE_NAME
+        : getParentTreeNode(parent.id, state.sourceNodeInspector).name !== InspectorTreeNodeName.ROOT
           ? parent.id
           : null;
 
@@ -2195,6 +2195,12 @@ const shortcutReducer = (state: RootState, action: Action): RootState => {
             state
           );
         }
+      } else {
+        // does not exist as rep
+        state = updateRootState(
+          { selectedInspectorNodeIds: EMPTY_ARRAY, selectedSyntheticNodeIds: EMPTY_ARRAY },
+          state
+        );
       }
     }
   }

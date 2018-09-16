@@ -54,7 +54,7 @@ module.exports = {
       { test: /\.pc$/, use: [{
           loader: 'paperclip-react-loader',
           options: {
-            config: JSON.parse(fs.readFileSync("./front-end.tdproject", "utf8"))
+            config: JSON.parse(fs.readFileSync("./app.tdproject", "utf8"))
           }
         }]
       },

@@ -510,50 +510,6 @@
           },
           "children": [
             {
-              "id": "2842a72d16",
-              "is": "c389e38211",
-              "name": "component-instance",
-              "attributes": {},
-              "style": {
-                "display": "none"
-              },
-              "children": [
-                {
-                  "id": "2842a72d20",
-                  "variantId": "2842a72d18",
-                  "propertyName": "style",
-                  "targetIdPath": [
-                    "2842a72d16"
-                  ],
-                  "value": {
-                    "display": "block"
-                  },
-                  "name": "override",
-                  "children": []
-                },
-                {
-                  "id": "1a1145935",
-                  "variantId": "2842a72d18",
-                  "propertyName": "style",
-                  "targetIdPath": [],
-                  "value": {
-                    "display": "block"
-                  },
-                  "name": "override",
-                  "children": []
-                }
-              ],
-              "metadata": {
-                "bounds": {
-                  "left": 80,
-                  "top": -23,
-                  "right": 343.76480784569947,
-                  "bottom": 175.5922516757032
-                }
-              },
-              "label": "Variables Tab"
-            },
-            {
               "id": "45055e8e10",
               "variant": {},
               "is": "45055e8e9",

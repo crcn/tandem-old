@@ -1,11 +1,12 @@
 IMMEDIATE:
+- variables in tdproject config
+
 
 - variables UI
   - define variable type
   - define variable value based on type
   - define variable name
 
-- tdproject file
 
 
 

@@ -14,6 +14,9 @@ export type PCConfigInfo = {
 export type PCConfig = {
   rootDir?: string;
   exclude: string[];
+
+  // path to PC file where all global data is stored
+  globalFilePath?: string;
 };
 
 const DEFAULT_EXCLUDES = ["node_modules"];

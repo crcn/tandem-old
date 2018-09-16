@@ -89,7 +89,7 @@ function* openMainWindow() {
   let url = FRONT_END_ENTRY_FILE_PATH;
 
   const query: any = {
-    react_perf: true
+    react_perf: false
   };
 
   if (state.info.previewServer) {

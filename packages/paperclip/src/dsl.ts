@@ -26,6 +26,7 @@ export const PAPERCLIP_MODULE_VERSION = "0.0.5";
 export enum PCSourceTagNames {
   MODULE = "module",
   COMPONENT = "component",
+  VARIABLE = "variable",
   ELEMENT = "element",
   COMPONENT_INSTANCE = "component-instance",
   VARIANT = "variant",
@@ -112,6 +113,12 @@ export type PCSlot = {
   // export name
   label?: string;
 } & PCBaseSourceNode<PCSourceTagNames.SLOT>;
+
+export type PCVariable = {
+  label?: string;
+  type: string;
+  value: string;
+} & PCBaseSourceNode<PCSourceTagNames.VARIABLE>;
 
 export type PCPlug = {
   slotId: string;
@@ -219,7 +226,8 @@ export type PCNode =
   | PCOverride
   | PCVisibleNode
   | PCSlot
-  | PCPlug;
+  | PCPlug
+  | PCVariable;
 
 export type PCComputedOverrideMap = {
   [COMPUTED_OVERRIDE_DEFAULT_KEY]: PCComputedOverrideVariantMap;
@@ -547,6 +555,7 @@ export const getPCVariants = memoize(
       child => child.name === PCSourceTagNames.VARIANT
     ) as PCVariant[]
 );
+
 export const getPCVariantOverrides = memoize(
   (
     instance: PCComponent | PCComponentInstanceElement,

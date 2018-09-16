@@ -3,5 +3,6 @@
     "previewServer": "/usr/local/bin/npm run tandem-preview-server"
   },
   "rootDir": ".",
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules"],
+  "globalFilePath": "./src/global.pc"
 }
