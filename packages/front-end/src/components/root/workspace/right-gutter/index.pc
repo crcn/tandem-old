@@ -286,7 +286,7 @@
                   "targetIdPath": [
                     "66d16f05"
                   ],
-                  "value": true,
+                  "value": false,
                   "name": "override",
                   "children": []
                 },
@@ -367,7 +367,7 @@
                   "targetIdPath": [
                     "66d16f05"
                   ],
-                  "value": true,
+                  "value": false,
                   "name": "override",
                   "children": []
                 },
@@ -448,7 +448,7 @@
                   "targetIdPath": [
                     "66d16f05"
                   ],
-                  "value": true,
+                  "value": false,
                   "name": "override",
                   "children": []
                 },
@@ -1509,7 +1509,7 @@
           "id": "3a6461fb961320",
           "name": "variant",
           "label": "color",
-          "isDefault": true,
+          "isDefault": false,
           "children": [],
           "metadata": {}
         },
@@ -1764,7 +1764,7 @@
           "id": "cc878eb5708986",
           "name": "variant",
           "label": "alt",
-          "isDefault": true,
+          "isDefault": false,
           "children": [],
           "metadata": {}
         }

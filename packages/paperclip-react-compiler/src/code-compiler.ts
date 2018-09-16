@@ -595,7 +595,7 @@ const translateUsedComponentOverrides = (
   );
 
   if (instance.variant && Object.keys(instance.variant).length)  {
-    context = addLine(`variant: "${Object.keys(instance.variant).join(" ")}",`, context);
+    context = addLine(`variant: "${Object.keys(instance.variant).filter(key => instance.variant[key]).join(" ")}",`, context);
   }
 
   return context;
