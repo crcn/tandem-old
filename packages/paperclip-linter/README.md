@@ -6,3 +6,6 @@ TODOS:
 FUTURE:
   - identify when layer is not explicitly defined as public
     - layers are public by default
+  - i18n flags
+  - ignore flags
+  - connect with UI
