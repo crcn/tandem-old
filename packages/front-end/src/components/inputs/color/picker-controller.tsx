@@ -12,7 +12,8 @@ type HSLA = [number, number, number, number];
 
 export type Props = {
   value: string;
-  onChange: any;
+  onChange?: any;
+  onChangeComplete?: any;
 };
 
 type InnerProps = {

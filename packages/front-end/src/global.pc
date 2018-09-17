@@ -5,17 +5,9 @@
   "name": "module",
   "children": [
     {
-      "id": "a9f0ed6f156",
+      "id": "818d0442621",
       "name": "variable",
-      "label": "a",
-      "children": [],
-      "metadata": {},
-      "value": "rgba(224, 32, 32, 1)"
-    },
-    {
-      "id": "1e748dd215992",
-      "name": "variable",
-      "label": "Variable 1",
+      "label": "variable",
       "children": [],
       "metadata": {}
     }

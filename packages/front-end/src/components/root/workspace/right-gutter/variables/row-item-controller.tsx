@@ -19,11 +19,11 @@ export default (Base: React.ComponentClass<BaseVariableRowItemProps>)  => class 
   onTypeChange = (value) => {
     this.props.dispatch(variableTypeChanged(this.props.variable, value));
   }
-  onNameChange = (value) => {
+  onLabelChange = (value) => {
     this.props.dispatch(variableLabelChanged(this.props.variable, value));
   }
   render() {
-    const {onValueChange, onNameChange, onTypeChange} = this;
+    const {onValueChange, onLabelChange, onTypeChange} = this;
     const {variable, ...rest} = this.props;
     return <Base {...rest} variant={cx({
       unlimited: false,
@@ -33,7 +33,7 @@ export default (Base: React.ComponentClass<BaseVariableRowItemProps>)  => class 
       options: [],
       onChange: onValueChange,
       value: variable.value
-    }} unlimitedInputProps={{onChange: onValueChange, value: variable.value}} typeInputProps={{onChange: onTypeChange, options: TYPE_OPTIONS, value: variable.type}} nameInputProps={{onChange: onNameChange, value: variable.label}} colorInputProps={{
+    }} unlimitedInputProps={{onChange: onValueChange, value: variable.value}} typeInputProps={{onChange: onTypeChange, options: TYPE_OPTIONS, value: variable.type}} nameInputProps={{focus: !variable.label, onChangeComplete: onLabelChange, value: variable.label}} colorInputProps={{
       onChange: onValueChange,
       onChangeComplete: onValueChange,
       value: variable.value

@@ -1195,9 +1195,8 @@ export const canvasReducer = (state: RootState, action: Action) => {
 
     case ADD_VARIABLE_BUTTON_CLICKED: {
       const globalDependency = state.graph[state.globalFileUri];
-      const globalVariables = getGlobalVariables(state.graph);
       state = persistRootState(state => {
-        state = persistAddVariable(`Variable ${globalVariables.length}`, globalDependency.content, state);
+        state = persistAddVariable(null, globalDependency.content, state);
         return state;
       }, state);
       return state;
@@ -1206,6 +1205,9 @@ export const canvasReducer = (state: RootState, action: Action) => {
     case VARIABLE_LABEL_CHANGED: {
       const {variable, value: label} = action as VariablePropertyChanged;
       state = persistRootState(state => {
+        if (!label) {
+          return persistRemovePCNode(variable, state);
+        }
         state = persistUpdateVariable({label}, variable, state);
         return state;
       }, state);
