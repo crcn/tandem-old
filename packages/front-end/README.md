@@ -12,6 +12,11 @@ IMMEDIATE:
   - dropdown UI change ()
   - input auto-complete
 
+
+- start refactoring UI to use variables using same color scheme
+  - remove inherited styles
+  - ensure that no wild colors exist (create linting tool)
+
 - selectedVariant fudges with other panes
 - variants don't show up for instances
 - variants for component that inherit instance
