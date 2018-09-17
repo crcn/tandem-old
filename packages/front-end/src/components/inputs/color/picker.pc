@@ -657,7 +657,8 @@
         "box-sizing": "border-box",
         "position": "relative",
         "height": "100px",
-        "width": "100%"
+        "width": "100%",
+        "opacity": 0.991
       },
       "attributes": {},
       "id": "41979411419193",

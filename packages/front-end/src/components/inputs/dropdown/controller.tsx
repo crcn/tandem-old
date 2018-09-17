@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as cx from "classnames";
 import { DropdownMenuItem } from "./menu.pc";
 import { EMPTY_ARRAY } from "tandem-common";
 import { BaseDropdownProps } from "./view.pc";
@@ -6,6 +7,7 @@ import { BaseDropdownProps } from "./view.pc";
 export type DropdownMenuOption = {
   label: string;
   value: any;
+  special?: boolean;
 };
 
 export const dropdownMenuOptionFromValue = (
@@ -87,6 +89,10 @@ export default (Base: React.ComponentClass<BaseDropdownProps>) => {
               return (
                 <DropdownMenuItem
                   key={i}
+                  variant={cx({
+                    alt: Boolean(i % 2),
+                    special: item.special
+                  })}
                   onClick={event => this.onItemClick(item, event)}
                 >
                   {item.label}
