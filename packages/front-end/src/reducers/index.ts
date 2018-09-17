@@ -131,7 +131,11 @@ import {
   PROMPT_CANCEL_BUTTON_CLICKED,
   EDIT_VARIANT_NAME_CONFIRMED,
   EDIT_VARIANT_NAME_BUTTON_CLICKED,
-  ADD_VARIABLE_BUTTON_CLICKED
+  ADD_VARIABLE_BUTTON_CLICKED,
+  VARIABLE_LABEL_CHANGED,
+  VARIABLE_VALUE_CHANGED,
+  VARIABLE_TYPE_CHANGED,
+  VariablePropertyChanged
 } from "../actions";
 import {
   queueOpenFile,
@@ -236,6 +240,7 @@ import {
   createPCComponentInstance,
   getSyntheticVisibleNodeFrame,
   persistAddVariant,
+  persistUpdateVariable,
   persistUpdateVariant,
   persistRemoveVariant,
   SyntheticInstanceElement,
@@ -1193,6 +1198,35 @@ export const canvasReducer = (state: RootState, action: Action) => {
       const globalVariables = getGlobalVariables(state.graph);
       state = persistRootState(state => {
         state = persistAddVariable(`Variable ${globalVariables.length}`, globalDependency.content, state);
+        return state;
+      }, state);
+      return state;
+    }
+
+    case VARIABLE_LABEL_CHANGED: {
+      const {variable, value: label} = action as VariablePropertyChanged;
+      state = persistRootState(state => {
+        state = persistUpdateVariable({label}, variable, state);
+        return state;
+      }, state);
+      return state;
+    }
+
+
+    case VARIABLE_TYPE_CHANGED: {
+      const {variable, value: type} = action as VariablePropertyChanged;
+      state = persistRootState(state => {
+        state = persistUpdateVariable({type}, variable, state);
+        return state;
+      }, state);
+      return state;
+    }
+
+
+    case VARIABLE_VALUE_CHANGED: {
+      const {variable, value} = action as VariablePropertyChanged;
+      state = persistRootState(state => {
+        state = persistUpdateVariable({value}, variable, state);
         return state;
       }, state);
       return state;

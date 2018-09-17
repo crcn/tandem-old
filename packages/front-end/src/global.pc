@@ -7,9 +7,10 @@
     {
       "id": "a9f0ed6f156",
       "name": "variable",
-      "label": null,
+      "label": "a",
       "children": [],
-      "metadata": {}
+      "metadata": {},
+      "value": "rgba(224, 32, 32, 1)"
     },
     {
       "id": "1e748dd215992",

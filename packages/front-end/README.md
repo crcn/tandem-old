@@ -7,6 +7,7 @@ IMMEDIATE:
   - ability to change type
   - ability to change value
     - limited values must be placed in constant location
+  - alias type option
 
 - wire up variables input
   - dropdown UI change ()

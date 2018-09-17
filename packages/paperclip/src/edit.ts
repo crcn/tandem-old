@@ -53,6 +53,7 @@ import {
   filterPCNodes,
   isPCComponentInstance,
   InheritStyle,
+  PCVariable,
   PCBaseVisibleNode,
   createPCSlot,
   getPCNodeContentNode,
@@ -1116,6 +1117,11 @@ const maybeOverride2 = (
 
 export const persistAddVariable = <TState extends PCEditorState>(label: string, module: PCModule, state: TState) => {
   return updateDependencyGraph(replacePCNode(appendChildNode(createPCVariable(label), module), module, state.graph), state);
+};
+
+export const persistUpdateVariable = <TState extends PCEditorState>(properties: Partial<PCVariable>,  { id}: PCVariable, state: TState) => {
+  const target = getPCNode(id, state.graph);
+  return updateDependencyGraph(replacePCNode({...target, ...properties} as PCVariable, target, state.graph), state);
 };
 
 const maybeOverride = (

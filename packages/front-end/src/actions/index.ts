@@ -14,12 +14,11 @@ import {
 } from "tandem-common";
 import { publicActionCreator } from "tandem-common";
 import {
-  Dependency,
-  DependencyGraph,
   ComputedDisplayInfo,
   SyntheticNativeNodeMap,
   SyntheticVisibleNode,
   PCNodeClip,
+  PCVariable,
   Frame,
   PCComponent,
   PCVariant
@@ -91,6 +90,9 @@ export const EDIT_VARIANT_NAME_BUTTON_CLICKED = "EDIT_VARIANT_NAME_BUTTON_CLICKE
 export const EDIT_VARIANT_NAME_CONFIRMED = "EDIT_VARIANT_NAME_CONFIRMED";
 export const STYLE_VARIANT_DROPDOWN_CHANGED = "STYLE_VARIANT_DROPDOWN_CHANGED";
 export const ADD_VARIABLE_BUTTON_CLICKED = "ADD_VARIABLE_BUTTON_CLICKED";
+export const VARIABLE_LABEL_CHANGED = "VARIABLE_LABEL_CHANGED";
+export const VARIABLE_TYPE_CHANGED = "VARIABLE_TYPE_CHANGED";
+export const VARIABLE_VALUE_CHANGED = "VARIABLE_VALUE_CHANGED";
 export const COMPONENT_INSTANCE_VARIANT_TOGGLED =
   "COMPONENT_INSTANCE_VARIANT_TOGGLED";
 export const INSTANCE_VARIANT_RESET_CLICKED = "INSTANCE_VARIANT_RESET_CLICKED";
@@ -198,6 +200,11 @@ export type ToolbarToolClicked = {
 
 export type RawCSSTextChanged = {
   value: string;
+} & Action;
+
+export type VariablePropertyChanged = {
+  variable: PCVariable;
+  value: string
 } & Action;
 
 export type CSSPropertyChanged = {
@@ -564,6 +571,24 @@ export const styleVariantDropdownChanged = (
 
 export const addVariableButtonClicked = (): Action => ({
   type: ADD_VARIABLE_BUTTON_CLICKED
+});
+
+export const variableLabelChanged = (variable: PCVariable, value: string): VariablePropertyChanged => ({
+  variable,
+  type: VARIABLE_LABEL_CHANGED,
+  value,
+});
+
+export const variableTypeChanged = (variable: PCVariable,value: string): VariablePropertyChanged => ({
+  variable,
+  type: VARIABLE_TYPE_CHANGED,
+  value,
+});
+
+export const variableValueChanged = (variable: PCVariable,value: string): VariablePropertyChanged => ({
+  variable,
+  type: VARIABLE_VALUE_CHANGED,
+  value,
 });
 
 export const newStyleVariantButtonClicked = (
