@@ -209,6 +209,7 @@ export type RootState = {
   history: GraphHistory;
   showQuickSearch?: boolean;
   selectedComponentId?: string;
+  globalFileUri?: string;
   queuedScopeSelect?: {
     previousState: RootState;
     scope: SyntheticVisibleNode | SyntheticDocument;

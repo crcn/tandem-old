@@ -72,7 +72,7 @@ export type PCDependency = Dependency<PCModule>;
 
 export type PCModule = {
   version: string;
-  children: Array<PCComponent | PCVisibleNode>;
+  children: Array<PCComponent | PCVisibleNode | PCVariable>;
 } & PCBaseSourceNode<PCSourceTagNames.MODULE>;
 
 export type PCComponentChild = PCVisibleNode | PCVariant | PCOverride | PCSlot;
@@ -116,8 +116,8 @@ export type PCSlot = {
 
 export type PCVariable = {
   label?: string;
-  type: string;
-  value: string;
+  type?: string;
+  value?: string;
 } & PCBaseSourceNode<PCSourceTagNames.VARIABLE>;
 
 export type PCPlug = {
@@ -286,6 +286,17 @@ export const createPCVariant = (
   name: PCSourceTagNames.VARIANT,
   label,
   isDefault,
+  children: EMPTY_ARRAY,
+  metadata: EMPTY_OBJECT
+});
+
+
+export const createPCVariable = (
+  label?: string,
+): PCVariable => ({
+  id: generateUID(),
+  name: PCSourceTagNames.VARIABLE,
+  label,
   children: EMPTY_ARRAY,
   metadata: EMPTY_OBJECT
 });
@@ -609,6 +620,12 @@ export const getPCNodeDependency = memoize(
     return null;
   }
 );
+
+export const getGlobalVariables = memoize((graph: DependencyGraph): PCVariable[] => {
+  return Object.values(graph).reduce((variables, dependency: PCDependency) => {
+    return [...variables, ...dependency.content.children.filter(child => child.name === PCSourceTagNames.VARIABLE)];
+  }, EMPTY_ARRAY);
+});
 
 export const getInstanceSlots = memoize(
   (

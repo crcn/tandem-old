@@ -1,14 +1,15 @@
 IMMEDIATE:
-- variables in tdproject config
 
+- variables input
+  - remove padding
+  - ability to remove
+  - ability to change label
+  - ability to change type
+  - ability to change value
 
-- variables UI
-  - define variable type
-  - define variable value based on type
-  - define variable name
-
-
-
+- wire up variables input
+  - dropdown UI change ()
+  - input auto-complete
 
 - selectedVariant fudges with other panes
 - variants don't show up for instances

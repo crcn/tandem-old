@@ -38,6 +38,7 @@ setup<DesktopRootState>(
   hoveringSyntheticNodeIds: [],
   selectedSyntheticNodeIds: [],
   hoveringInspectorNodeIds: [],
+  globalFileUri: String(query.globalFileUri),
   selectedFileNodeIds: [],
   sourceNodeInspector: createRootInspectorNode(),
   selectedInspectorNodeIds: [],

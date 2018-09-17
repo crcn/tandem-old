@@ -64,8 +64,9 @@ export const compileContentNodeAsVanilla = memoize(
 export const translateModuleToVanilla = memoize(
   (module: PCModule, componentRefMap: KeyValue<PCComponent>) => {
     return module.children
+      .filter(child => child.name !== PCSourceTagNames.VARIABLE)
       .map(
-        child =>
+        (child: PCComponent | PCVisibleNode) =>
           `exports._${child.id} = ${translateContentNode(
             child,
             componentRefMap

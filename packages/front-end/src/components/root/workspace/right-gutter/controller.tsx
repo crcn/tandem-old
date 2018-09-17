@@ -3,7 +3,8 @@ import {
   getSyntheticNodeById,
   SyntheticDocument,
   getSyntheticVisibleNodeDocument,
-  getPCNodeDependency
+  getPCNodeDependency,
+  getGlobalVariables
 } from "paperclip";
 import { memoize, EMPTY_ARRAY, getNestedTreeNodeById } from "tandem-common";
 import { RightGutterTab } from "./tab.pc";
@@ -35,11 +36,6 @@ export type Props = {
   dispatch: Dispatch;
 } & BaseRightGutterProps;
 
-type InnerProps = {
-  setTab: any;
-  currentTab: string;
-} & Props;
-
 type State = {
   currentTab: string;
 };
@@ -54,11 +50,14 @@ export default (Base: React.ComponentClass<BaseRightGutterProps>) =>
     };
     render() {
       const { root, dispatch, ...rest } = this.props;
+      const {globalFileUri} = root;
       const { currentTab } = this.state;
       const { setTab } = this;
       if (!root.selectedInspectorNodeIds.length) {
         return null;
       }
+
+      const globalVariables = getGlobalVariables(root.graph);
 
       const hasSyntheticNodes = root.selectedSyntheticNodeIds.length;
       const availableTabs = hasSyntheticNodes
@@ -110,6 +109,11 @@ export default (Base: React.ComponentClass<BaseRightGutterProps>) =>
             propertiesTab: availableCurrentTab === TAB_NAMES[1],
             variablesTab: availableCurrentTab === TAB_NAMES[2]
           })}
+          variablesTabProps={{
+            dispatch,
+            globalFileUri,
+            globalVariables
+          }}
           stylesProps={{
             visible: availableCurrentTab === TAB_NAMES[0],
             dispatch,

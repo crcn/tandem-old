@@ -14,10 +14,10 @@
       "children": [],
       "metadata": {
         "bounds": {
-          "left": 204,
-          "top": 227,
-          "right": 320,
-          "bottom": 249.41000330706493
+          "left": 152,
+          "top": 72,
+          "right": 268,
+          "bottom": 94.41000330706493
         }
       },
       "label": "Tab"
@@ -704,7 +704,8 @@
                 }
               ],
               "metadata": {},
-              "variant": {}
+              "variant": {},
+              "label": "Variables tab"
             }
           ],
           "metadata": {
@@ -772,9 +773,9 @@
       ],
       "metadata": {
         "bounds": {
-          "left": 368.2438030763085,
+          "left": 376,
           "top": 76,
-          "right": 668,
+          "right": 675.7561969236915,
           "bottom": 1777.3054200488054
         }
       },
@@ -917,10 +918,10 @@
       ],
       "metadata": {
         "bounds": {
-          "left": 122.90514277469708,
-          "top": 384,
-          "right": 368,
-          "bottom": 608.6589618414574
+          "left": 131,
+          "top": 382,
+          "right": 376.0948572253029,
+          "bottom": 606.6589618414574
         }
       },
       "variant": {}
@@ -937,10 +938,10 @@
       "children": [],
       "metadata": {
         "bounds": {
-          "left": 693,
-          "top": 71,
-          "right": 793,
-          "bottom": 171
+          "left": 700,
+          "top": 76,
+          "right": 811.6493937182615,
+          "bottom": 176
         }
       },
       "variant": {}

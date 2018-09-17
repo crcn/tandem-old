@@ -96,6 +96,10 @@ function* openMainWindow() {
     query.previewHost = `localhost:${state.info.previewServer.port}`;
   }
 
+  if (state.tdProject.globalFilePath) {
+    query.globalFileUri = "file://" + path.join(path.dirname(state.tdProjectPath), state.tdProject.globalFilePath);
+  }
+
   mainWindow.loadURL(
     url + (Object.keys(query).length ? "?" + qs.stringify(query) : "")
   );

@@ -10,7 +10,8 @@ import {
   getComponentGraphRefMap,
   PCVisibleNode,
   PCComponent,
-  PCNode
+  PCNode,
+  PCSourceTagNames
 } from "./dsl";
 import {
   compileContentNodeAsVanilla,
@@ -52,7 +53,7 @@ const evaluateModule = memoize(
   (module: PCModule, variants: KeyValue<KeyValue<boolean>>, usedRenderers: VanillaPCRenderers) => {
     return createSytheticDocument(
       module.id,
-      module.children.map(child => {
+      module.children.filter(child => child.name !== PCSourceTagNames.VARIABLE).map(child => {
         return usedRenderers[`_${child.id}`](
           child.id,
           null,

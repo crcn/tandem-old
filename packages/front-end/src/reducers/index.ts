@@ -130,7 +130,8 @@ import {
   PromptConfirmed,
   PROMPT_CANCEL_BUTTON_CLICKED,
   EDIT_VARIANT_NAME_CONFIRMED,
-  EDIT_VARIANT_NAME_BUTTON_CLICKED
+  EDIT_VARIANT_NAME_BUTTON_CLICKED,
+  ADD_VARIABLE_BUTTON_CLICKED
 } from "../actions";
 import {
   queueOpenFile,
@@ -269,7 +270,9 @@ import {
   getSyntheticDocumentDependencyUri,
   getAllParentComponentInstance,
   PCComponent,
-  extendsComponent
+  extendsComponent,
+  getGlobalVariables,
+  persistAddVariable
 } from "paperclip";
 import {
   roundBounds,
@@ -1182,6 +1185,16 @@ export const canvasReducer = (state: RootState, action: Action) => {
         getSyntheticNodeById(targetNodeId, state.documents),
         state
       );
+      return state;
+    }
+
+    case ADD_VARIABLE_BUTTON_CLICKED: {
+      const globalDependency = state.graph[state.globalFileUri];
+      const globalVariables = getGlobalVariables(state.graph);
+      state = persistRootState(state => {
+        state = persistAddVariable(`Variable ${globalVariables.length}`, globalDependency.content, state);
+        return state;
+      }, state);
       return state;
     }
 
