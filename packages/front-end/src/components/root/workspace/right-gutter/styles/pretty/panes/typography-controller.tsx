@@ -1,7 +1,7 @@
 import * as React from "react";
 import { memoize } from "tandem-common";
 import { ButtonBarOption } from "../../../../../../inputs/button-bar/controller";
-import { DropdownMenuOption } from "../../../../../../inputs/dropdown/controller";
+import { DropdownMenuOption, mapVariablesToDropdownOptions } from "../../../../../../inputs/dropdown/controller";
 import {
   cssPropertyChangeCompleted,
   cssPropertyChanged
@@ -9,7 +9,7 @@ import {
 import { FontFamily } from "../../../../../../../state";
 import { BaseTypographProps } from "./typography.pc";
 import { Dispatch } from "redux";
-import { SyntheticElement } from "paperclip";
+import { SyntheticElement, PCVariable, filterVariablesByType, PCVariableType } from "paperclip";
 const {
   TextLeftIcon,
   TextCenterIcon,
@@ -56,7 +56,11 @@ export type Props = {
   dispatch: Dispatch<any>;
   selectedNodes: SyntheticElement[];
   fontFamilies: FontFamily[];
+  globalVariables: PCVariable[];
 };
+
+
+
 
 export default (Base: React.ComponentClass<BaseTypographProps>) =>
   class TypographyController extends React.PureComponent<Props> {
@@ -70,12 +74,13 @@ export default (Base: React.ComponentClass<BaseTypographProps>) =>
 
     render() {
       const { onPropertyChange, onPropertyChangeComplete } = this;
-      const { selectedNodes, fontFamilies } = this.props;
+      const { selectedNodes, fontFamilies, globalVariables } = this.props;
+      const fontVariables = filterVariablesByType(globalVariables, PCVariableType.FONT);
       const node = selectedNodes[0];
       return (
         <Base
           familyInputProps={{
-            options: getFontFamilyOptions(fontFamilies),
+            options: [...mapVariablesToDropdownOptions(fontVariables), ...getFontFamilyOptions(fontFamilies)],
             value: node.style["font-family"],
             onChange: propertyChangeCallback("font-family", onPropertyChange),
             onChangeComplete: propertyChangeCallback(

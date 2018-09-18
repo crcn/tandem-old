@@ -5,7 +5,8 @@ import {
   DependencyGraph,
   InspectorNode,
   SyntheticDocument,
-  PCVariant
+  PCVariant,
+  PCVariable
 } from "paperclip";
 import { BaseElementStylerProps } from "./index.pc";
 import { Dispatch } from "redux";
@@ -24,6 +25,7 @@ export type Props = {
   selectedInspectorNodes: InspectorNode[];
   syntheticDocument: SyntheticDocument;
   fontFamilies: FontFamily[];
+  globalVariables: PCVariable[];
 };
 
 export default (Base: React.ComponentClass<BaseElementStylerProps>) =>

@@ -125,6 +125,7 @@ export default (Base: React.ComponentClass<BaseRightGutterProps>) =>
             selectedNodes: selectedSyntheticNodes,
             selectedInspectorNodes,
             rootInspectorNode,
+            globalVariables,
             selectedVariant: root.selectedVariant,
             graph: root.graph
           }}

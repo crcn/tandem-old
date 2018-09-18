@@ -3,5 +3,51 @@
   "version": "0.0.5",
   "metadata": {},
   "name": "module",
-  "children": []
+  "children": [
+    {
+      "id": "823f978a2483",
+      "name": "variable",
+      "label": "some font",
+      "type": "font",
+      "children": [],
+      "metadata": {},
+      "value": "Al Nile"
+    },
+    {
+      "id": "823f978a2949",
+      "name": "variable",
+      "label": "some measurement",
+      "type": "number",
+      "children": [],
+      "metadata": {},
+      "value": "10px"
+    },
+    {
+      "id": "823f978a3880",
+      "name": "variable",
+      "label": "some color",
+      "type": "color",
+      "children": [],
+      "metadata": {},
+      "value": "rgba(236, 17, 17, 1)"
+    },
+    {
+      "id": "823f978a4966",
+      "name": "variable",
+      "label": "another color",
+      "type": "color",
+      "children": [],
+      "metadata": {},
+      "value": "rgba(106, 0, 255, 1)"
+    },
+    {
+      "id": "823f978a6362",
+      "name": "variable",
+      "label": "another font",
+      "type": "font",
+      "children": [],
+      "metadata": {},
+      "value": "Avenir"
+    }
+  ]
 }

@@ -6,7 +6,8 @@ import {
   SyntheticElement,
   PCVariant,
   DependencyGraph,
-  InspectorNode
+  InspectorNode,
+  PCVariable
 } from "paperclip";
 import { FontFamily } from "../../../../../state";
 
@@ -19,6 +20,7 @@ export type Props = {
   selectedNodes: SyntheticElement[];
   selectedVariant: PCVariant;
   fontFamilies: FontFamily[];
+  globalVariables: PCVariable[];
   graph: DependencyGraph;
 } & BaseStylesProps;
 
@@ -27,6 +29,7 @@ export default (Base: React.ComponentClass<BaseStylesProps>) =>
     render() {
       const {
         visible,
+        globalVariables,
         dispatch,
         syntheticDocument,
         selectedNodes,
@@ -50,6 +53,7 @@ export default (Base: React.ComponentClass<BaseStylesProps>) =>
             graph
           }}
           prettyProps={{
+            globalVariables,
             selectedVariant,
             dispatch,
             selectedInspectorNodes,

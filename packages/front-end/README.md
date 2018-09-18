@@ -1,5 +1,6 @@
 IMMEDIATE:
 
+- variable type must be defined before adding
 - variables input
   - remove padding
   - ability to remove

@@ -1,8 +1,9 @@
 import * as React from "react";
 import * as cx from "classnames";
 import { DropdownMenuItem } from "./menu.pc";
-import { EMPTY_ARRAY } from "tandem-common";
+import { EMPTY_ARRAY, memoize } from "tandem-common";
 import { BaseDropdownProps } from "./view.pc";
+import { PCVariable } from "paperclip";
 
 export type DropdownMenuOption = {
   label: string;
@@ -13,6 +14,15 @@ export type DropdownMenuOption = {
 export const dropdownMenuOptionFromValue = (
   value: string
 ): DropdownMenuOption => ({ label: value || "--", value });
+
+
+export const mapVariablesToDropdownOptions = memoize((variables: PCVariable[]): DropdownMenuOption[] => {
+  return variables.map(variable => ({
+    value: variable,
+    label: variable.label,
+    special: true
+  }))
+});
 
 export type Props = BaseDropdownProps & {
   value?: any;

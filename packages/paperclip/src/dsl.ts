@@ -124,7 +124,7 @@ export enum PCVariableType {
 
 export type PCVariable = {
   label?: string;
-  type?: PCVariableType;
+  type: PCVariableType;
   value?: string;
 } & PCBaseSourceNode<PCSourceTagNames.VARIABLE>;
 
@@ -300,11 +300,13 @@ export const createPCVariant = (
 
 
 export const createPCVariable = (
-  label?: string,
+  label: string,
+  type: PCVariableType
 ): PCVariable => ({
   id: generateUID(),
   name: PCSourceTagNames.VARIABLE,
   label,
+  type,
   children: EMPTY_ARRAY,
   metadata: EMPTY_OBJECT
 });
@@ -633,6 +635,10 @@ export const getGlobalVariables = memoize((graph: DependencyGraph): PCVariable[]
   return Object.values(graph).reduce((variables, dependency: PCDependency) => {
     return [...variables, ...dependency.content.children.filter(child => child.name === PCSourceTagNames.VARIABLE)];
   }, EMPTY_ARRAY);
+});
+
+export const filterVariablesByType = memoize((variables: PCVariable[], type: PCVariableType) => {
+  return variables.filter(variable => variable.type === type);
 });
 
 export const getInstanceSlots = memoize(

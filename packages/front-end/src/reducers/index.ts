@@ -134,8 +134,8 @@ import {
   ADD_VARIABLE_BUTTON_CLICKED,
   VARIABLE_LABEL_CHANGED,
   VARIABLE_VALUE_CHANGED,
-  VARIABLE_TYPE_CHANGED,
-  VariablePropertyChanged
+  VariablePropertyChanged,
+  AddVariableButtonClicked
 } from "../actions";
 import {
   queueOpenFile,
@@ -277,7 +277,8 @@ import {
   PCComponent,
   extendsComponent,
   getGlobalVariables,
-  persistAddVariable
+  persistAddVariable,
+  PCVariableType
 } from "paperclip";
 import {
   roundBounds,
@@ -1194,9 +1195,10 @@ export const canvasReducer = (state: RootState, action: Action) => {
     }
 
     case ADD_VARIABLE_BUTTON_CLICKED: {
+      const {variableType: type} = action as AddVariableButtonClicked;
       const globalDependency = state.graph[state.globalFileUri];
       state = persistRootState(state => {
-        state = persistAddVariable(null, globalDependency.content, state);
+        state = persistAddVariable(null, type, globalDependency.content, state);
         return state;
       }, state);
       return state;
@@ -1209,16 +1211,6 @@ export const canvasReducer = (state: RootState, action: Action) => {
           return persistRemovePCNode(variable, state);
         }
         state = persistUpdateVariable({label}, variable, state);
-        return state;
-      }, state);
-      return state;
-    }
-
-
-    case VARIABLE_TYPE_CHANGED: {
-      const {variable, value: type} = action as VariablePropertyChanged;
-      state = persistRootState(state => {
-        state = persistUpdateVariable({type}, variable, state);
         return state;
       }, state);
       return state;

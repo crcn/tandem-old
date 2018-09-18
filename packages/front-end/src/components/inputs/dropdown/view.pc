@@ -42,108 +42,116 @@
               "id": "ebe8eef3202",
               "children": [
                 {
-                  "id": "8b8bbe2c232831",
-                  "label": "button",
-                  "is": "div",
-                  "name": "element",
-                  "attributes": {},
-                  "style": {
-                    "border-radius": "2px",
-                    "padding": "4px 8px",
-                    "box-sizing": "border-box",
-                    "font-family": "Helvetica",
-                    "display": "flex",
-                    "align-items": "center",
-                    "border": "1px solid rgba(0,0,0,0.08)",
-                    "background": "rgba(255, 255, 255, 1)"
-                  },
+                  "id": "87568a7232485",
                   "children": [
                     {
-                      "id": "69c680a11",
-                      "is": "7149f8199122",
-                      "name": "component-instance",
-                      "attributes": {
-                        "placeholder": "filter"
-                      },
-                      "style": {
-                        "width": "100%",
-                        "padding": "4px 8px",
-                        "border-radius": "0px",
-                        "border": "none",
-                        "box-sizing": "border-box",
-                        "display": "none",
-                        "padding-top": "0px",
-                        "padding-right": "0px",
-                        "padding-bottom": "0px",
-                        "padding-left": "0px"
-                      },
-                      "children": [
-                        {
-                          "id": "69c680a13",
-                          "variantId": "69c680a12",
-                          "propertyName": "style",
-                          "targetIdPath": [],
-                          "value": {
-                            "border-radius": "0px",
-                            "border": "none",
-                            "display": "block"
-                          },
-                          "name": "override",
-                          "children": []
-                        }
-                      ],
-                      "metadata": {
-                        "bounds": {
-                          "left": 435.5632830380766,
-                          "top": 172.7598749633466,
-                          "right": 535.5632830380766,
-                          "bottom": 201.7956837222485
-                        }
-                      },
-                      "label": "filter input"
-                    },
-                    {
-                      "id": "67e386c7935",
-                      "name": "text",
-                      "label": "Label",
-                      "value": "Label",
-                      "style": {
-                        "color": "grey",
-                        "width": "100%",
-                        "display": "block"
-                      },
-                      "children": [],
-                      "metadata": {}
-                    },
-                    {
-                      "id": "628c465922",
-                      "variant": {},
-                      "is": "e186b96e4079",
-                      "name": "component-instance",
+                      "id": "8b8bbe2c232831",
+                      "label": "button",
+                      "is": "div",
+                      "name": "element",
                       "attributes": {},
                       "style": {
-                        "height": "10px",
-                        "position": "relative",
-                        "opacity": "0.4",
-                        "top": "1px"
+                        "border-radius": "2px",
+                        "padding": "4px 8px",
+                        "box-sizing": "border-box",
+                        "font-family": "Helvetica",
+                        "display": "flex",
+                        "align-items": "center",
+                        "border": "1px solid rgba(0,0,0,0.08)",
+                        "background": "rgba(255, 255, 255, 1)"
                       },
                       "children": [
                         {
-                          "id": "a06d2e8129692",
-                          "variantId": null,
-                          "propertyName": "style",
-                          "targetIdPath": [],
-                          "value": {
-                            "display": "none"
+                          "id": "69c680a11",
+                          "is": "7149f8199122",
+                          "name": "component-instance",
+                          "attributes": {
+                            "placeholder": "filter"
                           },
-                          "name": "override",
-                          "children": []
+                          "style": {
+                            "width": "100%",
+                            "padding": "4px 8px",
+                            "border-radius": "0px",
+                            "border": "none",
+                            "box-sizing": "border-box",
+                            "display": "none",
+                            "padding-top": "0px",
+                            "padding-right": "0px",
+                            "padding-bottom": "0px",
+                            "padding-left": "0px"
+                          },
+                          "children": [
+                            {
+                              "id": "69c680a13",
+                              "variantId": "69c680a12",
+                              "propertyName": "style",
+                              "targetIdPath": [],
+                              "value": {
+                                "border-radius": "0px",
+                                "border": "none",
+                                "display": "block"
+                              },
+                              "name": "override",
+                              "children": []
+                            }
+                          ],
+                          "metadata": {
+                            "bounds": {
+                              "left": 435.5632830380766,
+                              "top": 172.7598749633466,
+                              "right": 535.5632830380766,
+                              "bottom": 201.7956837222485
+                            }
+                          },
+                          "label": "filter input"
+                        },
+                        {
+                          "id": "67e386c7935",
+                          "name": "text",
+                          "label": "Label",
+                          "value": "Label",
+                          "style": {
+                            "color": "grey",
+                            "width": "100%",
+                            "display": "block"
+                          },
+                          "children": [],
+                          "metadata": {}
+                        },
+                        {
+                          "id": "628c465922",
+                          "variant": {},
+                          "is": "e186b96e4079",
+                          "name": "component-instance",
+                          "attributes": {},
+                          "style": {
+                            "height": "10px",
+                            "position": "relative",
+                            "opacity": "0.4",
+                            "top": "1px"
+                          },
+                          "children": [
+                            {
+                              "id": "a06d2e8129692",
+                              "variantId": null,
+                              "propertyName": "style",
+                              "targetIdPath": [],
+                              "value": {
+                                "display": "none"
+                              },
+                              "name": "override",
+                              "children": []
+                            }
+                          ],
+                          "metadata": {}
                         }
                       ],
                       "metadata": {}
                     }
                   ],
-                  "metadata": {}
+                  "metadata": {},
+                  "name": "slot",
+                  "label": "button"
                 }
               ],
               "metadata": {},

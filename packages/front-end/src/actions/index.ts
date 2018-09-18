@@ -21,7 +21,8 @@ import {
   PCVariable,
   Frame,
   PCComponent,
-  PCVariant
+  PCVariant,
+  PCVariableType
 } from "paperclip";
 import { RegisteredComponent } from "..";
 import { FrameMode, ToolType, EditorWindow } from "../state";
@@ -91,7 +92,6 @@ export const EDIT_VARIANT_NAME_CONFIRMED = "EDIT_VARIANT_NAME_CONFIRMED";
 export const STYLE_VARIANT_DROPDOWN_CHANGED = "STYLE_VARIANT_DROPDOWN_CHANGED";
 export const ADD_VARIABLE_BUTTON_CLICKED = "ADD_VARIABLE_BUTTON_CLICKED";
 export const VARIABLE_LABEL_CHANGED = "VARIABLE_LABEL_CHANGED";
-export const VARIABLE_TYPE_CHANGED = "VARIABLE_TYPE_CHANGED";
 export const VARIABLE_VALUE_CHANGED = "VARIABLE_VALUE_CHANGED";
 export const COMPONENT_INSTANCE_VARIANT_TOGGLED =
   "COMPONENT_INSTANCE_VARIANT_TOGGLED";
@@ -202,9 +202,15 @@ export type RawCSSTextChanged = {
   value: string;
 } & Action;
 
+
+export type AddVariableButtonClicked = {
+  variableType: PCVariableType;
+} & Action;
+
+
 export type VariablePropertyChanged = {
   variable: PCVariable;
-  value: string
+  value: string;
 } & Action;
 
 export type CSSPropertyChanged = {
@@ -569,19 +575,14 @@ export const styleVariantDropdownChanged = (
   variant
 });
 
-export const addVariableButtonClicked = (): Action => ({
+export const addVariableButtonClicked = (variableType: PCVariableType): AddVariableButtonClicked => ({
+  variableType,
   type: ADD_VARIABLE_BUTTON_CLICKED
 });
 
 export const variableLabelChanged = (variable: PCVariable, value: string): VariablePropertyChanged => ({
   variable,
   type: VARIABLE_LABEL_CHANGED,
-  value,
-});
-
-export const variableTypeChanged = (variable: PCVariable,value: string): VariablePropertyChanged => ({
-  variable,
-  type: VARIABLE_TYPE_CHANGED,
   value,
 });
 
