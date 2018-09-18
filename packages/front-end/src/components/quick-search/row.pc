@@ -1,6 +1,6 @@
 {
   "id": "28fcdf040",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "metadata": {},
   "name": "module",
   "children": [
@@ -9,16 +9,46 @@
       "name": "component",
       "is": "div",
       "style": {
-        "width": "100%",
-        "color": "rgba(122, 122, 122, 1)",
-        "fontSize": "11px",
-        "fontFamily": "Helvetica",
-        "padding": "4px 8px",
-        "boxSizing": "border-box",
-        "marginTop": "1px",
-        "cursor": "pointer",
-        "vertical-align": "center",
-        "display": "flex"
+        "width": {
+          "type": "raw",
+          "value": "100%"
+        },
+        "color": {
+          "type": "raw",
+          "value": "rgba(122, 122, 122, 1)"
+        },
+        "fontSize": {
+          "type": "raw",
+          "value": "11px"
+        },
+        "fontFamily": {
+          "type": "raw",
+          "value": "Helvetica"
+        },
+        "padding": {
+          "type": "raw",
+          "value": "4px 8px"
+        },
+        "boxSizing": {
+          "type": "raw",
+          "value": "border-box"
+        },
+        "marginTop": {
+          "type": "raw",
+          "value": "1px"
+        },
+        "cursor": {
+          "type": "raw",
+          "value": "pointer"
+        },
+        "vertical-align": {
+          "type": "raw",
+          "value": "center"
+        },
+        "display": {
+          "type": "raw",
+          "value": "flex"
+        }
       },
       "attributes": {},
       "label": "Search Result",
@@ -28,8 +58,14 @@
           "name": "element",
           "label": "basename",
           "style": {
-            "display": "inline-block",
-            "margin-right": "8px"
+            "display": {
+              "type": "raw",
+              "value": "inline-block"
+            },
+            "margin-right": {
+              "type": "raw",
+              "value": "8px"
+            }
           },
           "container": "container5ab7d6b5",
           "attributes": {},
@@ -41,10 +77,22 @@
               "label": "Search result item",
               "value": "basename.tsx",
               "style": {
-                "display": "inline-block",
-                "position": "relative",
-                "height": "18",
-                "vertical-align": "center"
+                "display": {
+                  "type": "raw",
+                  "value": "inline-block"
+                },
+                "position": {
+                  "type": "raw",
+                  "value": "relative"
+                },
+                "height": {
+                  "type": "raw",
+                  "value": "18"
+                },
+                "vertical-align": {
+                  "type": "raw",
+                  "value": "center"
+                }
               },
               "children": [],
               "metadata": {},
@@ -58,12 +106,30 @@
           "name": "element",
           "label": "directory",
           "style": {
-            "display": "inline-block",
-            "flex": "1",
-            "width": "100%",
-            "white-space": "nowrap",
-            "overflow": "hidden",
-            "text-overflow": "ellipsis"
+            "display": {
+              "type": "raw",
+              "value": "inline-block"
+            },
+            "flex": {
+              "type": "raw",
+              "value": "1"
+            },
+            "width": {
+              "type": "raw",
+              "value": "100%"
+            },
+            "white-space": {
+              "type": "raw",
+              "value": "nowrap"
+            },
+            "overflow": {
+              "type": "raw",
+              "value": "hidden"
+            },
+            "text-overflow": {
+              "type": "raw",
+              "value": "ellipsis"
+            }
           },
           "container": "container5ab7d6b5",
           "attributes": {},

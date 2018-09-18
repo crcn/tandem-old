@@ -1,6 +1,6 @@
 {
   "id": "296b92da36265",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "metadata": {},
   "name": "module",
   "children": [
@@ -186,8 +186,14 @@
               "name": "element",
               "attributes": {},
               "style": {
-                "box-sizing": "border-box",
-                "display": "block"
+                "box-sizing": {
+                  "type": "raw",
+                  "value": "border-box"
+                },
+                "display": {
+                  "type": "raw",
+                  "value": "block"
+                }
               },
               "children": [
                 {
@@ -264,11 +270,26 @@
               "name": "element",
               "attributes": {},
               "style": {
-                "box-sizing": "border-box",
-                "display": "none",
-                "padding-left": "36px",
-                "text-align": "center",
-                "padding-right": "16px"
+                "box-sizing": {
+                  "type": "raw",
+                  "value": "border-box"
+                },
+                "display": {
+                  "type": "raw",
+                  "value": "none"
+                },
+                "padding-left": {
+                  "type": "raw",
+                  "value": "36px"
+                },
+                "text-align": {
+                  "type": "raw",
+                  "value": "center"
+                },
+                "padding-right": {
+                  "type": "raw",
+                  "value": "16px"
+                }
               },
               "children": [
                 {
@@ -277,8 +298,14 @@
                   "label": "x",
                   "value": "X",
                   "style": {
-                    "display": "block",
-                    "width": "100%"
+                    "display": {
+                      "type": "raw",
+                      "value": "block"
+                    },
+                    "width": {
+                      "type": "raw",
+                      "value": "100%"
+                    }
                   },
                   "children": [],
                   "metadata": {}
@@ -289,8 +316,14 @@
                   "label": "y",
                   "value": "Y",
                   "style": {
-                    "display": "block",
-                    "width": "100%"
+                    "display": {
+                      "type": "raw",
+                      "value": "block"
+                    },
+                    "width": {
+                      "type": "raw",
+                      "value": "100%"
+                    }
                   },
                   "children": [],
                   "metadata": {}
@@ -301,8 +334,14 @@
                   "label": "blur",
                   "value": "Blur",
                   "style": {
-                    "display": "block",
-                    "width": "100%"
+                    "display": {
+                      "type": "raw",
+                      "value": "block"
+                    },
+                    "width": {
+                      "type": "raw",
+                      "value": "100%"
+                    }
                   },
                   "children": [],
                   "metadata": {}
@@ -313,8 +352,14 @@
                   "label": "spread",
                   "value": "Spread\n",
                   "style": {
-                    "display": "block",
-                    "width": "100%"
+                    "display": {
+                      "type": "raw",
+                      "value": "block"
+                    },
+                    "width": {
+                      "type": "raw",
+                      "value": "100%"
+                    }
                   },
                   "children": [],
                   "metadata": {}
@@ -337,10 +382,22 @@
               "name": "element",
               "attributes": {},
               "style": {
-                "box-sizing": "border-box",
-                "display": "flex",
-                "justify-content": "space-between",
-                "align-items": "center"
+                "box-sizing": {
+                  "type": "raw",
+                  "value": "border-box"
+                },
+                "display": {
+                  "type": "raw",
+                  "value": "flex"
+                },
+                "justify-content": {
+                  "type": "raw",
+                  "value": "space-between"
+                },
+                "align-items": {
+                  "type": "raw",
+                  "value": "center"
+                }
               },
               "children": [
                 {
@@ -380,8 +437,14 @@
                           "name": "element",
                           "attributes": {},
                           "style": {
-                            "box-sizing": "border-box",
-                            "display": "block"
+                            "box-sizing": {
+                              "type": "raw",
+                              "value": "border-box"
+                            },
+                            "display": {
+                              "type": "raw",
+                              "value": "block"
+                            }
                           },
                           "children": [],
                           "metadata": {}
@@ -406,10 +469,22 @@
                   "name": "element",
                   "attributes": {},
                   "style": {
-                    "box-sizing": "border-box",
-                    "display": "flex",
-                    "align-items": "center",
-                    "cursor": "pointer"
+                    "box-sizing": {
+                      "type": "raw",
+                      "value": "border-box"
+                    },
+                    "display": {
+                      "type": "raw",
+                      "value": "flex"
+                    },
+                    "align-items": {
+                      "type": "raw",
+                      "value": "center"
+                    },
+                    "cursor": {
+                      "type": "raw",
+                      "value": "pointer"
+                    }
                   },
                   "children": [
                     {
@@ -418,11 +493,26 @@
                       "name": "component-instance",
                       "attributes": {},
                       "style": {
-                        "display": "none",
-                        "height": "1px",
-                        "position": "relative",
-                        "top": "-1px",
-                        "margin-right": "8px"
+                        "display": {
+                          "type": "raw",
+                          "value": "none"
+                        },
+                        "height": {
+                          "type": "raw",
+                          "value": "1px"
+                        },
+                        "position": {
+                          "type": "raw",
+                          "value": "relative"
+                        },
+                        "top": {
+                          "type": "raw",
+                          "value": "-1px"
+                        },
+                        "margin-right": {
+                          "type": "raw",
+                          "value": "8px"
+                        }
                       },
                       "children": [],
                       "metadata": {
@@ -441,8 +531,14 @@
                       "name": "component-instance",
                       "attributes": {},
                       "style": {
-                        "display": "block",
-                        "height": "12px"
+                        "display": {
+                          "type": "raw",
+                          "value": "block"
+                        },
+                        "height": {
+                          "type": "raw",
+                          "value": "12px"
+                        }
                       },
                       "children": [
                         {

@@ -1,6 +1,6 @@
 {
   "id": "ab9eb3a123020",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "metadata": {},
   "name": "module",
   "children": [
@@ -47,8 +47,14 @@
               "name": "component-instance",
               "attributes": {},
               "style": {
-                "width": "100%",
-                "flex": "1"
+                "width": {
+                  "type": "raw",
+                  "value": "100%"
+                },
+                "flex": {
+                  "type": "raw",
+                  "value": "1"
+                }
               },
               "children": [
                 {

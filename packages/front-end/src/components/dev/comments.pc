@@ -1,6 +1,6 @@
 {
   "id": "97a34b159010",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "metadata": {},
   "name": "module",
   "children": [
@@ -23,11 +23,26 @@
               "name": "element",
               "attributes": {},
               "style": {
-                "box-sizing": "border-box",
-                "margin-left": "0px",
-                "margin-top": "0px",
-                "margin-right": "0px",
-                "margin-bottom": "0px"
+                "box-sizing": {
+                  "type": "raw",
+                  "value": "border-box"
+                },
+                "margin-left": {
+                  "type": "raw",
+                  "value": "0px"
+                },
+                "margin-top": {
+                  "type": "raw",
+                  "value": "0px"
+                },
+                "margin-right": {
+                  "type": "raw",
+                  "value": "0px"
+                },
+                "margin-bottom": {
+                  "type": "raw",
+                  "value": "0px"
+                }
               },
               "children": [
                 {
@@ -37,7 +52,10 @@
                   "name": "element",
                   "attributes": {},
                   "style": {
-                    "box-sizing": "border-box"
+                    "box-sizing": {
+                      "type": "raw",
+                      "value": "border-box"
+                    }
                   },
                   "children": [
                     {
@@ -81,13 +99,34 @@
       "label": "Comment",
       "is": "div",
       "style": {
-        "background": "yellow",
-        "overflow": "none",
-        "padding": "8px",
-        "font-family": "Helvetica",
-        "font-size": "12px",
-        "display": "flex",
-        "flex-direction": "column"
+        "background": {
+          "type": "raw",
+          "value": "yellow"
+        },
+        "overflow": {
+          "type": "raw",
+          "value": "none"
+        },
+        "padding": {
+          "type": "raw",
+          "value": "8px"
+        },
+        "font-family": {
+          "type": "raw",
+          "value": "Helvetica"
+        },
+        "font-size": {
+          "type": "raw",
+          "value": "12px"
+        },
+        "display": {
+          "type": "raw",
+          "value": "flex"
+        },
+        "flex-direction": {
+          "type": "raw",
+          "value": "column"
+        }
       },
       "attributes": {},
       "id": "97a34b151010442",
@@ -100,13 +139,34 @@
           "name": "element",
           "attributes": {},
           "style": {
-            "background": "rgba(0,0,0,0.07)",
-            "width": "20px",
-            "height": "20px",
-            "position": "absolute",
-            "right": "0",
-            "transform": "translate(50%, -50%)",
-            "top": "0"
+            "background": {
+              "type": "raw",
+              "value": "rgba(0,0,0,0.07)"
+            },
+            "width": {
+              "type": "raw",
+              "value": "20px"
+            },
+            "height": {
+              "type": "raw",
+              "value": "20px"
+            },
+            "position": {
+              "type": "raw",
+              "value": "absolute"
+            },
+            "right": {
+              "type": "raw",
+              "value": "0"
+            },
+            "transform": {
+              "type": "raw",
+              "value": "translate(50%, -50%)"
+            },
+            "top": {
+              "type": "raw",
+              "value": "0"
+            }
           },
           "children": [],
           "metadata": {}
@@ -118,9 +178,18 @@
           "name": "element",
           "attributes": {},
           "style": {
-            "height": "100%",
-            "width": "100%",
-            "margin-top": "8px"
+            "height": {
+              "type": "raw",
+              "value": "100%"
+            },
+            "width": {
+              "type": "raw",
+              "value": "100%"
+            },
+            "margin-top": {
+              "type": "raw",
+              "value": "8px"
+            }
           },
           "children": [
             {
@@ -133,8 +202,14 @@
                   "label": "Text",
                   "value": "comment text here",
                   "style": {
-                    "color": "#444",
-                    "opacity": "0.8"
+                    "color": {
+                      "type": "raw",
+                      "value": "#444"
+                    },
+                    "opacity": {
+                      "type": "raw",
+                      "value": "0.8"
+                    }
                   },
                   "children": [],
                   "metadata": {}

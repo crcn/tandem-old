@@ -1,6 +1,6 @@
 {
   "id": "1273009774",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "metadata": {},
   "name": "module",
   "children": [
@@ -8,15 +8,42 @@
       "label": "Editor Tab",
       "is": "div",
       "style": {
-        "box-sizing": "border-box",
-        "font-family": "Helvetica",
-        "padding": "8px 16px",
-        "align-items": "center",
-        "background": "rgba(219, 219, 219, 1)",
-        "color": "rgba(112, 112, 112, 1)",
-        "cursor": "pointer",
-        "padding-left": "20px",
-        "height": "100%"
+        "box-sizing": {
+          "type": "raw",
+          "value": "border-box"
+        },
+        "font-family": {
+          "type": "raw",
+          "value": "Helvetica"
+        },
+        "padding": {
+          "type": "raw",
+          "value": "8px 16px"
+        },
+        "align-items": {
+          "type": "raw",
+          "value": "center"
+        },
+        "background": {
+          "type": "raw",
+          "value": "rgba(219, 219, 219, 1)"
+        },
+        "color": {
+          "type": "raw",
+          "value": "rgba(112, 112, 112, 1)"
+        },
+        "cursor": {
+          "type": "raw",
+          "value": "pointer"
+        },
+        "padding-left": {
+          "type": "raw",
+          "value": "20px"
+        },
+        "height": {
+          "type": "raw",
+          "value": "100%"
+        }
       },
       "attributes": {},
       "id": "fde5849e96847",
@@ -37,10 +64,22 @@
           "label": "x button",
           "value": "×",
           "style": {
-            "float": "right",
-            "margin-left": "8px",
-            "visibility": "hidden",
-            "cursor": "pointer"
+            "float": {
+              "type": "raw",
+              "value": "right"
+            },
+            "margin-left": {
+              "type": "raw",
+              "value": "8px"
+            },
+            "visibility": {
+              "type": "raw",
+              "value": "hidden"
+            },
+            "cursor": {
+              "type": "raw",
+              "value": "pointer"
+            }
           },
           "children": [],
           "metadata": {}

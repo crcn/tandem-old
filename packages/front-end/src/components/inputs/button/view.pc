@@ -1,6 +1,6 @@
 {
   "id": "9f364d2139376",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "metadata": {},
   "name": "module",
   "children": [
@@ -8,19 +8,58 @@
       "label": "Button",
       "is": "div",
       "style": {
-        "box-sizing": "border-box",
-        "color": "#777",
-        "cursor": "pointer",
-        "display": "inline-block",
-        "padding-left": "8px",
-        "padding-top": "4px",
-        "padding-right": "8px",
-        "padding-bottom": "4px",
-        "background": "rgba(214, 213, 213, 1)",
-        "border-bottom-left-radius": "2px",
-        "border-top-left-radius": "2px",
-        "border-top-right-radius": "2px",
-        "border-bottom-right-radius": "2px"
+        "box-sizing": {
+          "type": "raw",
+          "value": "border-box"
+        },
+        "color": {
+          "type": "raw",
+          "value": "#777"
+        },
+        "cursor": {
+          "type": "raw",
+          "value": "pointer"
+        },
+        "display": {
+          "type": "raw",
+          "value": "inline-block"
+        },
+        "padding-left": {
+          "type": "raw",
+          "value": "8px"
+        },
+        "padding-top": {
+          "type": "raw",
+          "value": "4px"
+        },
+        "padding-right": {
+          "type": "raw",
+          "value": "8px"
+        },
+        "padding-bottom": {
+          "type": "raw",
+          "value": "4px"
+        },
+        "background": {
+          "type": "raw",
+          "value": "rgba(214, 213, 213, 1)"
+        },
+        "border-bottom-left-radius": {
+          "type": "raw",
+          "value": "2px"
+        },
+        "border-top-left-radius": {
+          "type": "raw",
+          "value": "2px"
+        },
+        "border-top-right-radius": {
+          "type": "raw",
+          "value": "2px"
+        },
+        "border-bottom-right-radius": {
+          "type": "raw",
+          "value": "2px"
+        }
       },
       "attributes": {},
       "id": "9f364d2139415",

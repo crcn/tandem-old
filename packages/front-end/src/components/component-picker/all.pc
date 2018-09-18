@@ -1,6 +1,6 @@
 {
   "id": "a5bde25030259",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "metadata": {},
   "name": "module",
   "children": [
@@ -50,7 +50,10 @@
       "name": "element",
       "attributes": {},
       "style": {
-        "box-sizing": "border-box"
+        "box-sizing": {
+          "type": "raw",
+          "value": "border-box"
+        }
       },
       "children": [
         {

@@ -1,6 +1,6 @@
 {
   "id": "67d74e285",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "metadata": {},
   "name": "module",
   "children": [
@@ -25,12 +25,30 @@
       "label": "Banner",
       "is": "div",
       "style": {
-        "box-sizing": "border-box",
-        "padding-left": "8px",
-        "padding-top": "8px",
-        "padding-right": "8px",
-        "padding-bottom": "8px",
-        "font-family": "Helvetica"
+        "box-sizing": {
+          "type": "raw",
+          "value": "border-box"
+        },
+        "padding-left": {
+          "type": "raw",
+          "value": "8px"
+        },
+        "padding-top": {
+          "type": "raw",
+          "value": "8px"
+        },
+        "padding-right": {
+          "type": "raw",
+          "value": "8px"
+        },
+        "padding-bottom": {
+          "type": "raw",
+          "value": "8px"
+        },
+        "font-family": {
+          "type": "raw",
+          "value": "Helvetica"
+        }
       },
       "attributes": {},
       "id": "67d74e287",

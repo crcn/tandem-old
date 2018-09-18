@@ -1,6 +1,6 @@
 {
   "id": "b34e7ef42461334",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "metadata": {},
   "name": "module",
   "children": [
@@ -8,15 +8,42 @@
       "label": "Layers Pane",
       "is": "b6c162d113",
       "style": {
-        "font-family": "Helvetica",
-        "display": "flex",
-        "flex-direction": "column",
-        "border-bottom": "1px solid rgba(0,0,0,0.05)",
-        "font-size": "11px",
-        "color": "grey",
-        "min-height": "200px",
-        "overflow": "scroll",
-        "height": "100%"
+        "font-family": {
+          "type": "raw",
+          "value": "Helvetica"
+        },
+        "display": {
+          "type": "raw",
+          "value": "flex"
+        },
+        "flex-direction": {
+          "type": "raw",
+          "value": "column"
+        },
+        "border-bottom": {
+          "type": "raw",
+          "value": "1px solid rgba(0,0,0,0.05)"
+        },
+        "font-size": {
+          "type": "raw",
+          "value": "11px"
+        },
+        "color": {
+          "type": "raw",
+          "value": "grey"
+        },
+        "min-height": {
+          "type": "raw",
+          "value": "200px"
+        },
+        "overflow": {
+          "type": "raw",
+          "value": "scroll"
+        },
+        "height": {
+          "type": "raw",
+          "value": "100%"
+        }
       },
       "attributes": {},
       "id": "b34e7ef42482727",

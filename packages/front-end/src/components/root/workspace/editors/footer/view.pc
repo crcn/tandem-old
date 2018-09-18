@@ -1,6 +1,6 @@
 {
   "id": "174f96bb0",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "metadata": {},
   "name": "module",
   "children": [
@@ -8,9 +8,18 @@
       "label": "Editor Footer",
       "is": "div",
       "style": {
-        "box-sizing": "border-box",
-        "font-family": "Helvetica",
-        "padding": "8px 16px"
+        "box-sizing": {
+          "type": "raw",
+          "value": "border-box"
+        },
+        "font-family": {
+          "type": "raw",
+          "value": "Helvetica"
+        },
+        "padding": {
+          "type": "raw",
+          "value": "8px 16px"
+        }
       },
       "attributes": {},
       "id": "174f96bb76034",
@@ -23,7 +32,10 @@
           "name": "element",
           "attributes": {},
           "style": {
-            "box-sizing": "border-box"
+            "box-sizing": {
+              "type": "raw",
+              "value": "border-box"
+            }
           },
           "children": [
             {
@@ -32,7 +44,10 @@
               "label": "Zoom",
               "value": "Zoom:",
               "style": {
-                "margin-right": "4px"
+                "margin-right": {
+                  "type": "raw",
+                  "value": "4px"
+                }
               },
               "children": [],
               "metadata": {}

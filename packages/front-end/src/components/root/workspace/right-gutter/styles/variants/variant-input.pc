@@ -1,6 +1,6 @@
 {
   "id": "42a77ed16",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "metadata": {},
   "name": "module",
   "children": [
@@ -8,15 +8,42 @@
       "label": "Component Instance Variant",
       "is": "div",
       "style": {
-        "box-sizing": "border-box",
-        "font-family": "Helvetica",
-        "padding-left": "12px",
-        "padding-top": "12px",
-        "border-bottom": "1px solid rgba(0,0,0,0.05)",
-        "padding-right": "12px",
-        "font-size": "12px",
-        "padding-bottom": "12px",
-        "outline": "none"
+        "box-sizing": {
+          "type": "raw",
+          "value": "border-box"
+        },
+        "font-family": {
+          "type": "raw",
+          "value": "Helvetica"
+        },
+        "padding-left": {
+          "type": "raw",
+          "value": "12px"
+        },
+        "padding-top": {
+          "type": "raw",
+          "value": "12px"
+        },
+        "border-bottom": {
+          "type": "raw",
+          "value": "1px solid rgba(0,0,0,0.05)"
+        },
+        "padding-right": {
+          "type": "raw",
+          "value": "12px"
+        },
+        "font-size": {
+          "type": "raw",
+          "value": "12px"
+        },
+        "padding-bottom": {
+          "type": "raw",
+          "value": "12px"
+        },
+        "outline": {
+          "type": "raw",
+          "value": "none"
+        }
       },
       "attributes": {},
       "id": "a9046e8412",
@@ -40,10 +67,22 @@
                   "name": "element",
                   "attributes": {},
                   "style": {
-                    "box-sizing": "border-box",
-                    "border": "1px solid rgba(0,0,0,0.1)",
-                    "border-radius": "2px",
-                    "background": "rgba(0,0,0,0.05)"
+                    "box-sizing": {
+                      "type": "raw",
+                      "value": "border-box"
+                    },
+                    "border": {
+                      "type": "raw",
+                      "value": "1px solid rgba(0,0,0,0.1)"
+                    },
+                    "border-radius": {
+                      "type": "raw",
+                      "value": "2px"
+                    },
+                    "background": {
+                      "type": "raw",
+                      "value": "rgba(0,0,0,0.05)"
+                    }
                   },
                   "children": [
                     {
@@ -58,7 +97,10 @@
                           "name": "component-instance",
                           "attributes": {},
                           "style": {
-                            "padding-left": "4px"
+                            "padding-left": {
+                              "type": "raw",
+                              "value": "4px"
+                            }
                           },
                           "children": [
                             {
@@ -103,8 +145,14 @@
                           "name": "component-instance",
                           "attributes": {},
                           "style": {
-                            "padding-left": "4px",
-                            "padding-top": "2px"
+                            "padding-left": {
+                              "type": "raw",
+                              "value": "4px"
+                            },
+                            "padding-top": {
+                              "type": "raw",
+                              "value": "2px"
+                            }
                           },
                           "children": [
                             {
@@ -158,8 +206,14 @@
                           "name": "component-instance",
                           "attributes": {},
                           "style": {
-                            "padding-left": "4px",
-                            "padding-top": "2px"
+                            "padding-left": {
+                              "type": "raw",
+                              "value": "4px"
+                            },
+                            "padding-top": {
+                              "type": "raw",
+                              "value": "2px"
+                            }
                           },
                           "children": [
                             {
@@ -192,7 +246,10 @@
                           "name": "component-instance",
                           "attributes": {},
                           "style": {
-                            "padding-left": "4px"
+                            "padding-left": {
+                              "type": "raw",
+                              "value": "4px"
+                            }
                           },
                           "children": [
                             {
@@ -223,7 +280,10 @@
                           "name": "component-instance",
                           "attributes": {},
                           "style": {
-                            "padding-left": "4px"
+                            "padding-left": {
+                              "type": "raw",
+                              "value": "4px"
+                            }
                           },
                           "children": [
                             {
@@ -256,7 +316,10 @@
                           "name": "component-instance",
                           "attributes": {},
                           "style": {
-                            "padding-left": "4px"
+                            "padding-left": {
+                              "type": "raw",
+                              "value": "4px"
+                            }
                           },
                           "children": [
                             {
@@ -298,7 +361,10 @@
                           "name": "component-instance",
                           "attributes": {},
                           "style": {
-                            "padding-left": "4px"
+                            "padding-left": {
+                              "type": "raw",
+                              "value": "4px"
+                            }
                           },
                           "children": [
                             {

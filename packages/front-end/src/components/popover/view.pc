@@ -1,6 +1,6 @@
 {
   "id": "9b7b527f6219",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "metadata": {},
   "name": "module",
   "children": [
@@ -55,7 +55,10 @@
           "name": "component-instance",
           "attributes": {},
           "style": {
-            "display": "none"
+            "display": {
+              "type": "raw",
+              "value": "none"
+            }
           },
           "children": [
             {
@@ -73,8 +76,14 @@
                       "name": "element",
                       "attributes": {},
                       "style": {
-                        "box-sizing": "border-box",
-                        "display": "block"
+                        "box-sizing": {
+                          "type": "raw",
+                          "value": "border-box"
+                        },
+                        "display": {
+                          "type": "raw",
+                          "value": "block"
+                        }
                       },
                       "children": [],
                       "metadata": {}
@@ -177,7 +186,10 @@
       "label": "Content",
       "is": "div",
       "style": {
-        "width": "100px"
+        "width": {
+          "type": "raw",
+          "value": "100px"
+        }
       },
       "attributes": {},
       "id": "ddec6a12139577",
@@ -194,8 +206,14 @@
               "name": "element",
               "attributes": {},
               "style": {
-                "box-sizing": "border-box",
-                "display": "block"
+                "box-sizing": {
+                  "type": "raw",
+                  "value": "border-box"
+                },
+                "display": {
+                  "type": "raw",
+                  "value": "block"
+                }
               },
               "children": [],
               "metadata": {}

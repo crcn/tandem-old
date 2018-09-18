@@ -1,6 +1,6 @@
 {
   "id": "f657bb0940848",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "metadata": {},
   "name": "module",
   "children": [
@@ -8,8 +8,14 @@
       "label": "Instance Pane",
       "is": "div",
       "style": {
-        "box-sizing": "border-box",
-        "display": "block"
+        "box-sizing": {
+          "type": "raw",
+          "value": "border-box"
+        },
+        "display": {
+          "type": "raw",
+          "value": "block"
+        }
       },
       "attributes": {},
       "id": "f657bb0949423",
@@ -83,10 +89,22 @@
                   "name": "element",
                   "attributes": {},
                   "style": {
-                    "box-sizing": "border-box",
-                    "display": "flex",
-                    "justify-content": "space-between",
-                    "align-items": "center"
+                    "box-sizing": {
+                      "type": "raw",
+                      "value": "border-box"
+                    },
+                    "display": {
+                      "type": "raw",
+                      "value": "flex"
+                    },
+                    "justify-content": {
+                      "type": "raw",
+                      "value": "space-between"
+                    },
+                    "align-items": {
+                      "type": "raw",
+                      "value": "center"
+                    }
                   },
                   "children": [
                     {
@@ -104,8 +122,14 @@
                       "name": "component-instance",
                       "attributes": {},
                       "style": {
-                        "display": "block",
-                        "height": "1em"
+                        "display": {
+                          "type": "raw",
+                          "value": "block"
+                        },
+                        "height": {
+                          "type": "raw",
+                          "value": "1em"
+                        }
                       },
                       "children": [],
                       "metadata": {

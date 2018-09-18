@@ -1,6 +1,6 @@
 {
   "id": "76b155a0869608",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "metadata": {},
   "name": "module",
   "children": [
@@ -8,8 +8,14 @@
       "label": "Input Row",
       "is": "div",
       "style": {
-        "display": "flex",
-        "align-items": "center"
+        "display": {
+          "type": "raw",
+          "value": "flex"
+        },
+        "align-items": {
+          "type": "raw",
+          "value": "center"
+        }
       },
       "attributes": {},
       "id": "2657ec412855",
@@ -29,8 +35,14 @@
       "label": "Input Row Item",
       "is": "div",
       "style": {
-        "margin-right": "8px",
-        "box-sizing": "border-box"
+        "margin-right": {
+          "type": "raw",
+          "value": "8px"
+        },
+        "box-sizing": {
+          "type": "raw",
+          "value": "border-box"
+        }
       },
       "attributes": {},
       "id": "bcda9fb551452",
@@ -50,8 +62,14 @@
       "label": "Background 1 Atom",
       "is": "div",
       "style": {
-        "box-sizing": "border-box",
-        "background": "rgba(255, 255, 255, 1)"
+        "box-sizing": {
+          "type": "raw",
+          "value": "border-box"
+        },
+        "background": {
+          "type": "raw",
+          "value": "rgba(255, 255, 255, 1)"
+        }
       },
       "attributes": {},
       "id": "ca6d1d842",
@@ -71,8 +89,14 @@
       "label": "Border 1 Atom",
       "is": "div",
       "style": {
-        "box-sizing": "border-box",
-        "border": "1px solid rgba(200, 200, 200, 1)"
+        "box-sizing": {
+          "type": "raw",
+          "value": "border-box"
+        },
+        "border": {
+          "type": "raw",
+          "value": "1px solid rgba(200, 200, 200, 1)"
+        }
       },
       "attributes": {},
       "id": "ca6d1d844",
@@ -92,8 +116,14 @@
       "label": "Typography Atom",
       "is": "div",
       "style": {
-        "box-sizing": "border-box",
-        "font-family": "Helvetica"
+        "box-sizing": {
+          "type": "raw",
+          "value": "border-box"
+        },
+        "font-family": {
+          "type": "raw",
+          "value": "Helvetica"
+        }
       },
       "attributes": {},
       "id": "ca6d1d8454",
@@ -123,9 +153,18 @@
       "label": "Heading 3 Atom",
       "is": "div",
       "style": {
-        "box-sizing": "border-box",
-        "font-size": "1.7em",
-        "font-weight": "600"
+        "box-sizing": {
+          "type": "raw",
+          "value": "border-box"
+        },
+        "font-size": {
+          "type": "raw",
+          "value": "1.7em"
+        },
+        "font-weight": {
+          "type": "raw",
+          "value": "600"
+        }
       },
       "attributes": {},
       "id": "ca6d1d8452",
@@ -137,8 +176,14 @@
           "label": "Text",
           "value": "header\n",
           "style": {
-            "font-family": "Avenir Next",
-            "text-transform": "uppercase"
+            "font-family": {
+              "type": "raw",
+              "value": "Avenir Next"
+            },
+            "text-transform": {
+              "type": "raw",
+              "value": "uppercase"
+            }
           },
           "children": [],
           "metadata": {}
@@ -158,9 +203,18 @@
       "label": "Heading 2 Atom",
       "is": "div",
       "style": {
-        "box-sizing": "border-box",
-        "font-size": "1.3em",
-        "font-weight": "600"
+        "box-sizing": {
+          "type": "raw",
+          "value": "border-box"
+        },
+        "font-size": {
+          "type": "raw",
+          "value": "1.3em"
+        },
+        "font-weight": {
+          "type": "raw",
+          "value": "600"
+        }
       },
       "attributes": {},
       "id": "ca6d1d8448",
@@ -172,8 +226,14 @@
           "label": "Text",
           "value": "header\n",
           "style": {
-            "font-family": "Avenir Next",
-            "text-transform": "uppercase"
+            "font-family": {
+              "type": "raw",
+              "value": "Avenir Next"
+            },
+            "text-transform": {
+              "type": "raw",
+              "value": "uppercase"
+            }
           },
           "children": [],
           "metadata": {}
@@ -193,9 +253,18 @@
       "label": "Heading 1 Atom",
       "is": "div",
       "style": {
-        "box-sizing": "border-box",
-        "font-size": "0.9em",
-        "font-weight": "600"
+        "box-sizing": {
+          "type": "raw",
+          "value": "border-box"
+        },
+        "font-size": {
+          "type": "raw",
+          "value": "0.9em"
+        },
+        "font-weight": {
+          "type": "raw",
+          "value": "600"
+        }
       },
       "attributes": {},
       "id": "ca6d1d8450",
@@ -207,8 +276,14 @@
           "label": "Text",
           "value": "header\n",
           "style": {
-            "font-family": "Avenir Next",
-            "text-transform": "uppercase"
+            "font-family": {
+              "type": "raw",
+              "value": "Avenir Next"
+            },
+            "text-transform": {
+              "type": "raw",
+              "value": "uppercase"
+            }
           },
           "children": [],
           "metadata": {}
@@ -228,9 +303,18 @@
       "label": "Padding X 4 Atom",
       "is": "div",
       "style": {
-        "box-sizing": "border-box",
-        "padding-left": "16px",
-        "padding-right": "16px"
+        "box-sizing": {
+          "type": "raw",
+          "value": "border-box"
+        },
+        "padding-left": {
+          "type": "raw",
+          "value": "16px"
+        },
+        "padding-right": {
+          "type": "raw",
+          "value": "16px"
+        }
       },
       "attributes": {},
       "id": "ca6d1d8446",
@@ -242,7 +326,10 @@
           "label": "Text",
           "value": "content",
           "style": {
-            "font-family": "Avenir Next"
+            "font-family": {
+              "type": "raw",
+              "value": "Avenir Next"
+            }
           },
           "children": [],
           "metadata": {}
@@ -262,9 +349,18 @@
       "label": "Padding X 3 Atom",
       "is": "div",
       "style": {
-        "box-sizing": "border-box",
-        "padding-left": "8px",
-        "padding-right": "8px"
+        "box-sizing": {
+          "type": "raw",
+          "value": "border-box"
+        },
+        "padding-left": {
+          "type": "raw",
+          "value": "8px"
+        },
+        "padding-right": {
+          "type": "raw",
+          "value": "8px"
+        }
       },
       "attributes": {},
       "id": "ca6d1d8444",
@@ -276,7 +372,10 @@
           "label": "Text",
           "value": "content",
           "style": {
-            "font-family": "Avenir Next"
+            "font-family": {
+              "type": "raw",
+              "value": "Avenir Next"
+            }
           },
           "children": [],
           "metadata": {}
@@ -296,9 +395,18 @@
       "label": "Padding X 2 Atom",
       "is": "div",
       "style": {
-        "box-sizing": "border-box",
-        "padding-left": "4px",
-        "padding-right": "4px"
+        "box-sizing": {
+          "type": "raw",
+          "value": "border-box"
+        },
+        "padding-left": {
+          "type": "raw",
+          "value": "4px"
+        },
+        "padding-right": {
+          "type": "raw",
+          "value": "4px"
+        }
       },
       "attributes": {},
       "id": "ca6d1d8442",
@@ -310,7 +418,10 @@
           "label": "Text",
           "value": "content",
           "style": {
-            "font-family": "Avenir Next"
+            "font-family": {
+              "type": "raw",
+              "value": "Avenir Next"
+            }
           },
           "children": [],
           "metadata": {}
@@ -330,9 +441,18 @@
       "label": "Padding Y 1 Atom",
       "is": "div",
       "style": {
-        "box-sizing": "border-box",
-        "padding-left": "2px",
-        "padding-right": "2px"
+        "box-sizing": {
+          "type": "raw",
+          "value": "border-box"
+        },
+        "padding-left": {
+          "type": "raw",
+          "value": "2px"
+        },
+        "padding-right": {
+          "type": "raw",
+          "value": "2px"
+        }
       },
       "attributes": {},
       "id": "ca6d1d8440",
@@ -344,7 +464,10 @@
           "label": "Text",
           "value": "content",
           "style": {
-            "font-family": "Avenir Next"
+            "font-family": {
+              "type": "raw",
+              "value": "Avenir Next"
+            }
           },
           "children": [],
           "metadata": {}
@@ -364,9 +487,18 @@
       "label": "Padding X 1 Atom",
       "is": "div",
       "style": {
-        "box-sizing": "border-box",
-        "padding-left": "2px",
-        "padding-right": "2px"
+        "box-sizing": {
+          "type": "raw",
+          "value": "border-box"
+        },
+        "padding-left": {
+          "type": "raw",
+          "value": "2px"
+        },
+        "padding-right": {
+          "type": "raw",
+          "value": "2px"
+        }
       },
       "attributes": {},
       "id": "ca6d1d8438",
@@ -378,7 +510,10 @@
           "label": "Text",
           "value": "content",
           "style": {
-            "font-family": "Avenir Next"
+            "font-family": {
+              "type": "raw",
+              "value": "Avenir Next"
+            }
           },
           "children": [],
           "metadata": {}
@@ -398,8 +533,14 @@
       "label": "Background 2 Atom",
       "is": "div",
       "style": {
-        "box-sizing": "border-box",
-        "background": "rgba(240, 240, 240, 1)"
+        "box-sizing": {
+          "type": "raw",
+          "value": "border-box"
+        },
+        "background": {
+          "type": "raw",
+          "value": "rgba(240, 240, 240, 1)"
+        }
       },
       "attributes": {},
       "id": "ca6d1d8431",
@@ -442,8 +583,14 @@
       "label": "Font Color 1 Atom",
       "is": "div",
       "style": {
-        "box-sizing": "border-box",
-        "color": "#777"
+        "box-sizing": {
+          "type": "raw",
+          "value": "border-box"
+        },
+        "color": {
+          "type": "raw",
+          "value": "#777"
+        }
       },
       "attributes": {},
       "id": "ca6d1d8433",
@@ -456,10 +603,22 @@
           "name": "element",
           "attributes": {},
           "style": {
-            "box-sizing": "border-box",
-            "display": "block",
-            "width": "100%",
-            "height": "100%"
+            "box-sizing": {
+              "type": "raw",
+              "value": "border-box"
+            },
+            "display": {
+              "type": "raw",
+              "value": "block"
+            },
+            "width": {
+              "type": "raw",
+              "value": "100%"
+            },
+            "height": {
+              "type": "raw",
+              "value": "100%"
+            }
           },
           "children": [
             {
@@ -468,8 +627,14 @@
               "label": "Text",
               "value": "text\n",
               "style": {
-                "font-family": "Avenir Next",
-                "color": "#777"
+                "font-family": {
+                  "type": "raw",
+                  "value": "Avenir Next"
+                },
+                "color": {
+                  "type": "raw",
+                  "value": "#777"
+                }
               },
               "children": [],
               "metadata": {}
@@ -497,8 +662,14 @@
       "label": "Background 3 Atom",
       "is": "div",
       "style": {
-        "box-sizing": "border-box",
-        "background": "rgba(203, 203, 203, 1)"
+        "box-sizing": {
+          "type": "raw",
+          "value": "border-box"
+        },
+        "background": {
+          "type": "raw",
+          "value": "rgba(203, 203, 203, 1)"
+        }
       },
       "attributes": {},
       "id": "ba1504245",
@@ -536,8 +707,14 @@
       "label": "Border Radius 1 Atom",
       "is": "div",
       "style": {
-        "box-sizing": "border-box",
-        "border-radius": "2px"
+        "box-sizing": {
+          "type": "raw",
+          "value": "border-box"
+        },
+        "border-radius": {
+          "type": "raw",
+          "value": "2px"
+        }
       },
       "attributes": {},
       "id": "ba1504244",
@@ -557,7 +734,10 @@
       "label": "Font Color 2 Atom",
       "is": "div",
       "style": {
-        "box-sizing": "border-box"
+        "box-sizing": {
+          "type": "raw",
+          "value": "border-box"
+        }
       },
       "attributes": {},
       "id": "7a08e6a03",
@@ -570,10 +750,22 @@
           "name": "element",
           "attributes": {},
           "style": {
-            "box-sizing": "border-box",
-            "display": "block",
-            "width": "100%",
-            "height": "100%"
+            "box-sizing": {
+              "type": "raw",
+              "value": "border-box"
+            },
+            "display": {
+              "type": "raw",
+              "value": "block"
+            },
+            "width": {
+              "type": "raw",
+              "value": "100%"
+            },
+            "height": {
+              "type": "raw",
+              "value": "100%"
+            }
           },
           "children": [
             {
@@ -582,8 +774,14 @@
               "label": "Text",
               "value": "text\n",
               "style": {
-                "font-family": "Avenir Next",
-                "color": "#777"
+                "font-family": {
+                  "type": "raw",
+                  "value": "Avenir Next"
+                },
+                "color": {
+                  "type": "raw",
+                  "value": "#777"
+                }
               },
               "children": [],
               "metadata": {}
@@ -618,9 +816,18 @@
       "label": "Background Selected 1 Atom",
       "is": "div",
       "style": {
-        "box-sizing": "border-box",
-        "background": "#00B5FF",
-        "color": "white"
+        "box-sizing": {
+          "type": "raw",
+          "value": "border-box"
+        },
+        "background": {
+          "type": "raw",
+          "value": "#00B5FF"
+        },
+        "color": {
+          "type": "raw",
+          "value": "white"
+        }
       },
       "attributes": {},
       "id": "7a08e6a08",
@@ -655,10 +862,22 @@
       "label": "Center Atom",
       "is": "div",
       "style": {
-        "box-sizing": "border-box",
-        "left": "50%",
-        "top": "50%",
-        "transform": "translate(-50%, -50%)"
+        "box-sizing": {
+          "type": "raw",
+          "value": "border-box"
+        },
+        "left": {
+          "type": "raw",
+          "value": "50%"
+        },
+        "top": {
+          "type": "raw",
+          "value": "50%"
+        },
+        "transform": {
+          "type": "raw",
+          "value": "translate(-50%, -50%)"
+        }
       },
       "attributes": {},
       "id": "a0687f1d5",

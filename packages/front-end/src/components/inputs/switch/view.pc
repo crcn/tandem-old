@@ -1,6 +1,6 @@
 {
   "id": "eb4cfb9719",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "metadata": {},
   "name": "module",
   "children": [
@@ -28,8 +28,14 @@
       "label": "Switch",
       "is": "div",
       "style": {
-        "box-sizing": "border-box",
-        "cursor": "pointer"
+        "box-sizing": {
+          "type": "raw",
+          "value": "border-box"
+        },
+        "cursor": {
+          "type": "raw",
+          "value": "pointer"
+        }
       },
       "attributes": {},
       "id": "6f30576e8",
@@ -42,12 +48,30 @@
           "name": "element",
           "attributes": {},
           "style": {
-            "box-sizing": "border-box",
-            "width": "20px",
-            "height": "10px",
-            "border-radius": "10px",
-            "background": "rgba(200, 200, 200, 1)",
-            "position": "relative"
+            "box-sizing": {
+              "type": "raw",
+              "value": "border-box"
+            },
+            "width": {
+              "type": "raw",
+              "value": "20px"
+            },
+            "height": {
+              "type": "raw",
+              "value": "10px"
+            },
+            "border-radius": {
+              "type": "raw",
+              "value": "10px"
+            },
+            "background": {
+              "type": "raw",
+              "value": "rgba(200, 200, 200, 1)"
+            },
+            "position": {
+              "type": "raw",
+              "value": "relative"
+            }
           },
           "children": [
             {
@@ -57,14 +81,38 @@
               "name": "element",
               "attributes": {},
               "style": {
-                "box-sizing": "border-box",
-                "width": "10px",
-                "height": "10px",
-                "background": "#333",
-                "border-radius": "10px",
-                "position": "relative",
-                "opacity": "0.4",
-                "top": "r"
+                "box-sizing": {
+                  "type": "raw",
+                  "value": "border-box"
+                },
+                "width": {
+                  "type": "raw",
+                  "value": "10px"
+                },
+                "height": {
+                  "type": "raw",
+                  "value": "10px"
+                },
+                "background": {
+                  "type": "raw",
+                  "value": "#333"
+                },
+                "border-radius": {
+                  "type": "raw",
+                  "value": "10px"
+                },
+                "position": {
+                  "type": "raw",
+                  "value": "relative"
+                },
+                "opacity": {
+                  "type": "raw",
+                  "value": "0.4"
+                },
+                "top": {
+                  "type": "raw",
+                  "value": "r"
+                }
               },
               "children": [],
               "metadata": {}

@@ -1,6 +1,6 @@
 {
   "id": "b78264862",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "metadata": {},
   "name": "module",
   "children": [
@@ -8,13 +8,34 @@
       "label": "Inherit Item",
       "is": "div",
       "style": {
-        "display": "flex",
-        "align-items": "center",
-        "margin-bottom": "8px",
-        "padding-left": "16px",
-        "padding-top": "4px",
-        "padding-right": "16px",
-        "padding-bottom": "4px"
+        "display": {
+          "type": "raw",
+          "value": "flex"
+        },
+        "align-items": {
+          "type": "raw",
+          "value": "center"
+        },
+        "margin-bottom": {
+          "type": "raw",
+          "value": "8px"
+        },
+        "padding-left": {
+          "type": "raw",
+          "value": "16px"
+        },
+        "padding-top": {
+          "type": "raw",
+          "value": "4px"
+        },
+        "padding-right": {
+          "type": "raw",
+          "value": "16px"
+        },
+        "padding-bottom": {
+          "type": "raw",
+          "value": "4px"
+        }
       },
       "attributes": {},
       "id": "9e4a454812260",
@@ -27,16 +48,46 @@
           "name": "element",
           "attributes": {},
           "style": {
-            "width": "22px",
-            "height": "22px",
-            "border": "1px solid rgba(0,0,0,0.1)",
-            "border-radius": "2px",
-            "margin-right": "8px",
-            "padding-left": "4px",
-            "padding-top": "4px",
-            "padding-right": "4px",
-            "padding-bottom": "4px",
-            "box-sizing": "border-box"
+            "width": {
+              "type": "raw",
+              "value": "22px"
+            },
+            "height": {
+              "type": "raw",
+              "value": "22px"
+            },
+            "border": {
+              "type": "raw",
+              "value": "1px solid rgba(0,0,0,0.1)"
+            },
+            "border-radius": {
+              "type": "raw",
+              "value": "2px"
+            },
+            "margin-right": {
+              "type": "raw",
+              "value": "8px"
+            },
+            "padding-left": {
+              "type": "raw",
+              "value": "4px"
+            },
+            "padding-top": {
+              "type": "raw",
+              "value": "4px"
+            },
+            "padding-right": {
+              "type": "raw",
+              "value": "4px"
+            },
+            "padding-bottom": {
+              "type": "raw",
+              "value": "4px"
+            },
+            "box-sizing": {
+              "type": "raw",
+              "value": "border-box"
+            }
           },
           "children": [
             {

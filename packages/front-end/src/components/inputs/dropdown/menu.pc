@@ -1,6 +1,6 @@
 {
   "id": "5d6bd01099",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "metadata": {},
   "name": "module",
   "children": [
@@ -8,13 +8,34 @@
       "label": "Dropdown Menu Item",
       "is": "div",
       "style": {
-        "padding": "4px",
-        "font-family": "Helvetica",
-        "color": "grey",
-        "border-bottom": "1px  rgba(0,0,0,0.05)",
-        "user-select": "none",
-        "cursor": "default",
-        "background": "rgba(250, 250, 250, 1)"
+        "padding": {
+          "type": "raw",
+          "value": "4px"
+        },
+        "font-family": {
+          "type": "raw",
+          "value": "Helvetica"
+        },
+        "color": {
+          "type": "raw",
+          "value": "grey"
+        },
+        "border-bottom": {
+          "type": "raw",
+          "value": "1px  rgba(0,0,0,0.05)"
+        },
+        "user-select": {
+          "type": "raw",
+          "value": "none"
+        },
+        "cursor": {
+          "type": "raw",
+          "value": "default"
+        },
+        "background": {
+          "type": "raw",
+          "value": "rgba(250, 250, 250, 1)"
+        }
       },
       "attributes": {},
       "id": "8b8bbe2c859177",
@@ -26,7 +47,10 @@
           "label": "Text",
           "value": "menu item 1",
           "style": {
-            "padding": "8px"
+            "padding": {
+              "type": "raw",
+              "value": "8px"
+            }
           },
           "children": [],
           "metadata": {}

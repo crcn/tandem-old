@@ -1,6 +1,6 @@
 {
   "id": "328486385",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "metadata": {},
   "name": "module",
   "children": [
@@ -8,14 +8,38 @@
       "label": "Box shadow item",
       "is": "div",
       "style": {
-        "box-sizing": "border-box",
-        "display": "flex",
-        "padding-left": "16px",
-        "padding-top": "4px",
-        "padding-right": "16px",
-        "padding-bottom": "4px",
-        "align-items": "center",
-        "position": "relative"
+        "box-sizing": {
+          "type": "raw",
+          "value": "border-box"
+        },
+        "display": {
+          "type": "raw",
+          "value": "flex"
+        },
+        "padding-left": {
+          "type": "raw",
+          "value": "16px"
+        },
+        "padding-top": {
+          "type": "raw",
+          "value": "4px"
+        },
+        "padding-right": {
+          "type": "raw",
+          "value": "16px"
+        },
+        "padding-bottom": {
+          "type": "raw",
+          "value": "4px"
+        },
+        "align-items": {
+          "type": "raw",
+          "value": "center"
+        },
+        "position": {
+          "type": "raw",
+          "value": "relative"
+        }
       },
       "attributes": {},
       "id": "3fb9d47e20",
@@ -28,11 +52,26 @@
           "name": "element",
           "attributes": {},
           "style": {
-            "box-sizing": "border-box",
-            "display": "flex",
-            "left": "0px",
-            "top": "0px",
-            "align-items": "center"
+            "box-sizing": {
+              "type": "raw",
+              "value": "border-box"
+            },
+            "display": {
+              "type": "raw",
+              "value": "flex"
+            },
+            "left": {
+              "type": "raw",
+              "value": "0px"
+            },
+            "top": {
+              "type": "raw",
+              "value": "0px"
+            },
+            "align-items": {
+              "type": "raw",
+              "value": "center"
+            }
           },
           "children": [
             {
@@ -41,11 +80,26 @@
               "name": "component-instance",
               "attributes": {},
               "style": {
-                "display": "block",
-                "width": "16px",
-                "height": "16px",
-                "flex-shrink": "0",
-                "margin-right": "8px"
+                "display": {
+                  "type": "raw",
+                  "value": "block"
+                },
+                "width": {
+                  "type": "raw",
+                  "value": "16px"
+                },
+                "height": {
+                  "type": "raw",
+                  "value": "16px"
+                },
+                "flex-shrink": {
+                  "type": "raw",
+                  "value": "0"
+                },
+                "margin-right": {
+                  "type": "raw",
+                  "value": "8px"
+                }
               },
               "children": [
                 {
@@ -105,7 +159,10 @@
               "name": "component-instance",
               "attributes": {},
               "style": {
-                "margin-right": "8px"
+                "margin-right": {
+                  "type": "raw",
+                  "value": "8px"
+                }
               },
               "children": [],
               "metadata": {
@@ -124,7 +181,10 @@
               "name": "component-instance",
               "attributes": {},
               "style": {
-                "margin-right": "8px"
+                "margin-right": {
+                  "type": "raw",
+                  "value": "8px"
+                }
               },
               "children": [],
               "metadata": {
@@ -143,7 +203,10 @@
               "name": "component-instance",
               "attributes": {},
               "style": {
-                "margin-right": "8px"
+                "margin-right": {
+                  "type": "raw",
+                  "value": "8px"
+                }
               },
               "children": [],
               "metadata": {

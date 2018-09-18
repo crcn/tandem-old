@@ -1,6 +1,6 @@
 {
   "id": "296b92da26125",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "metadata": {},
   "name": "module",
   "children": [
@@ -66,10 +66,22 @@
               "name": "component-instance",
               "attributes": {},
               "style": {
-                "margin-left": "16px",
-                "margin-top": "4px",
-                "margin-right": "16px",
-                "margin-bottom": "8px"
+                "margin-left": {
+                  "type": "raw",
+                  "value": "16px"
+                },
+                "margin-top": {
+                  "type": "raw",
+                  "value": "4px"
+                },
+                "margin-right": {
+                  "type": "raw",
+                  "value": "16px"
+                },
+                "margin-bottom": {
+                  "type": "raw",
+                  "value": "8px"
+                }
               },
               "children": [],
               "metadata": {
@@ -177,9 +189,18 @@
               "name": "element",
               "attributes": {},
               "style": {
-                "box-sizing": "border-box",
-                "display": "flex",
-                "justify-content": "space-between"
+                "box-sizing": {
+                  "type": "raw",
+                  "value": "border-box"
+                },
+                "display": {
+                  "type": "raw",
+                  "value": "flex"
+                },
+                "justify-content": {
+                  "type": "raw",
+                  "value": "space-between"
+                }
               },
               "children": [
                 {
@@ -209,9 +230,18 @@
                   "name": "element",
                   "attributes": {},
                   "style": {
-                    "box-sizing": "border-box",
-                    "display": "flex",
-                    "align-items": "center"
+                    "box-sizing": {
+                      "type": "raw",
+                      "value": "border-box"
+                    },
+                    "display": {
+                      "type": "raw",
+                      "value": "flex"
+                    },
+                    "align-items": {
+                      "type": "raw",
+                      "value": "center"
+                    }
                   },
                   "children": [
                     {
@@ -221,12 +251,30 @@
                       "name": "element",
                       "attributes": {},
                       "style": {
-                        "box-sizing": "border-box",
-                        "position": "relative",
-                        "top": "-1px",
-                        "margin-right": "8px",
-                        "cursor": "pointer",
-                        "display": "none"
+                        "box-sizing": {
+                          "type": "raw",
+                          "value": "border-box"
+                        },
+                        "position": {
+                          "type": "raw",
+                          "value": "relative"
+                        },
+                        "top": {
+                          "type": "raw",
+                          "value": "-1px"
+                        },
+                        "margin-right": {
+                          "type": "raw",
+                          "value": "8px"
+                        },
+                        "cursor": {
+                          "type": "raw",
+                          "value": "pointer"
+                        },
+                        "display": {
+                          "type": "raw",
+                          "value": "none"
+                        }
                       },
                       "children": [
                         {
@@ -261,9 +309,18 @@
                       "name": "component-instance",
                       "attributes": {},
                       "style": {
-                        "display": "block",
-                        "height": "12px",
-                        "cursor": "pointer"
+                        "display": {
+                          "type": "raw",
+                          "value": "block"
+                        },
+                        "height": {
+                          "type": "raw",
+                          "value": "12px"
+                        },
+                        "cursor": {
+                          "type": "raw",
+                          "value": "pointer"
+                        }
                       },
                       "children": [],
                       "metadata": {

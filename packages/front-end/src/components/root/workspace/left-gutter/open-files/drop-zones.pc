@@ -1,6 +1,6 @@
 {
   "id": "d7a10bcb1",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "metadata": {},
   "name": "module",
   "children": [
@@ -50,17 +50,50 @@
       "label": "Drop Zone",
       "is": "div",
       "style": {
-        "box-sizing": "content-box",
-        "display": "block",
-        "position": "absolute",
-        "right": "0px",
-        "border": "1px solid rgba(255, 255, 255, 1)",
-        "height": "2px",
-        "opacity": "0",
-        "background": "#00B5FF",
-        "width": "100%",
-        "z-index": "1",
-        "transform": "translateY(-50%)"
+        "box-sizing": {
+          "type": "raw",
+          "value": "content-box"
+        },
+        "display": {
+          "type": "raw",
+          "value": "block"
+        },
+        "position": {
+          "type": "raw",
+          "value": "absolute"
+        },
+        "right": {
+          "type": "raw",
+          "value": "0px"
+        },
+        "border": {
+          "type": "raw",
+          "value": "1px solid rgba(255, 255, 255, 1)"
+        },
+        "height": {
+          "type": "raw",
+          "value": "2px"
+        },
+        "opacity": {
+          "type": "raw",
+          "value": "0"
+        },
+        "background": {
+          "type": "raw",
+          "value": "#00B5FF"
+        },
+        "width": {
+          "type": "raw",
+          "value": "100%"
+        },
+        "z-index": {
+          "type": "raw",
+          "value": "1"
+        },
+        "transform": {
+          "type": "raw",
+          "value": "translateY(-50%)"
+        }
       },
       "attributes": {},
       "id": "6f0de1ad85",

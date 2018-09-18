@@ -17,7 +17,7 @@ import {
 import { uniq, isEqual } from "lodash";
 import { Dependency, DependencyGraph, updateGraphDependency } from "./graph";
 
-export const PAPERCLIP_MODULE_VERSION = "0.0.5";
+export const PAPERCLIP_MODULE_VERSION = "0.0.6";
 
 /*------------------------------------------
  * CONSTANTS
@@ -114,13 +114,12 @@ export type PCSlot = {
   label?: string;
 } & PCBaseSourceNode<PCSourceTagNames.SLOT>;
 
-
 export enum PCVariableType {
   UNIT = "unit",
   NUMBER = "number",
   COLOR = "color",
   FONT = "font"
-};
+}
 
 export type PCVariable = {
   label?: string;
@@ -194,9 +193,34 @@ export type InheritStyle = {
   [identifier: string]: InheritStyleItem;
 };
 
+export enum PCStyleValueType {
+  RAW = "raw",
+  REF = "ref"
+}
+
+export type PCBaseStyleValue<TType extends PCStyleValueType> = {
+  type: TType;
+};
+
+export type PCRawStyleValue = {
+  value: string;
+} & PCBaseStyleValue<PCStyleValueType>;
+
+export type PCVarRefStyleValue = {
+  variableId: string;
+} & PCBaseStyleValue<PCStyleValueType>;
+
+export type PCStyleValue = PCRawStyleValue | PCVarRefStyleValue;
+
+export type PCStyle = {
+  [identifier: string]: PCStyleValue;
+};
+
 export type PCBaseVisibleNode<TName extends PCSourceTagNames> = {
   label?: string;
-  style: KeyValue<any>;
+  style: PCStyle;
+
+  // DEPCRECATED
   inheritStyle?: InheritStyle;
 } & PCBaseSourceNode<TName>;
 
@@ -217,10 +241,8 @@ export type PCElement = PCBaseElement<PCSourceTagNames.ELEMENT>;
 export type PCComponentInstanceChild = PCBaseElementChild | PCPlug;
 
 export type PCComponentInstanceElement = {
-  variant: KeyValue<boolean>
-} & PCBaseElement<
-PCSourceTagNames.COMPONENT_INSTANCE
->;
+  variant: KeyValue<boolean>;
+} & PCBaseElement<PCSourceTagNames.COMPONENT_INSTANCE>;
 
 export type PCTextNode = {
   value: string;
@@ -271,7 +293,7 @@ export const createPCModule = (
 export const createPCComponent = (
   label?: string,
   is?: string,
-  style?: KeyValue<string>,
+  style?: PCStyle,
   attributes?: KeyValue<string>,
   children?: PCComponentChild[]
 ): PCComponent => ({
@@ -298,7 +320,6 @@ export const createPCVariant = (
   metadata: EMPTY_OBJECT
 });
 
-
 export const createPCVariable = (
   label: string,
   type: PCVariableType
@@ -313,7 +334,7 @@ export const createPCVariable = (
 
 export const createPCElement = (
   is: string = "div",
-  style: KeyValue<any> = EMPTY_OBJECT,
+  style: PCStyle = EMPTY_OBJECT,
   attributes: KeyValue<string> = EMPTY_OBJECT,
   children: PCBaseElementChild[] = EMPTY_ARRAY,
   label?: string
@@ -330,7 +351,7 @@ export const createPCElement = (
 
 export const createPCComponentInstance = (
   is: string,
-  style: KeyValue<any> = EMPTY_OBJECT,
+  style: PCStyle = EMPTY_OBJECT,
   attributes: KeyValue<string> = EMPTY_OBJECT,
   children: PCComponentInstanceChild[] = EMPTY_ARRAY,
   metadata?: KeyValue<any>
@@ -631,15 +652,27 @@ export const getPCNodeDependency = memoize(
   }
 );
 
-export const getGlobalVariables = memoize((graph: DependencyGraph): PCVariable[] => {
-  return Object.values(graph).reduce((variables, dependency: PCDependency) => {
-    return [...variables, ...dependency.content.children.filter(child => child.name === PCSourceTagNames.VARIABLE)];
-  }, EMPTY_ARRAY);
-});
+export const getGlobalVariables = memoize(
+  (graph: DependencyGraph): PCVariable[] => {
+    return Object.values(graph).reduce(
+      (variables, dependency: PCDependency) => {
+        return [
+          ...variables,
+          ...dependency.content.children.filter(
+            child => child.name === PCSourceTagNames.VARIABLE
+          )
+        ];
+      },
+      EMPTY_ARRAY
+    );
+  }
+);
 
-export const filterVariablesByType = memoize((variables: PCVariable[], type: PCVariableType) => {
-  return variables.filter(variable => variable.type === type);
-});
+export const filterVariablesByType = memoize(
+  (variables: PCVariable[], type: PCVariableType) => {
+    return variables.filter(variable => variable.type === type);
+  }
+);
 
 export const getInstanceSlots = memoize(
   (
@@ -985,10 +1018,13 @@ export const getOverrideMap = memoize((node: PCNode, includeSelf?: boolean) => {
 
     const targetIdPath = [...override.targetIdPath];
     const targetId = targetIdPath.pop() || node.id;
-    if (includeSelf && override.targetIdPath.length && !getNestedTreeNodeById(targetId, node)) {
+    if (
+      includeSelf &&
+      override.targetIdPath.length &&
+      !getNestedTreeNodeById(targetId, node)
+    ) {
       targetIdPath.unshift(node.id);
     }
-
 
     for (const nodeId of targetIdPath) {
       if (!targetOverrides[nodeId]) {
