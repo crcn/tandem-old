@@ -57,6 +57,8 @@ export default (Base: React.ComponentClass<BaseRightGutterProps>) =>
         return null;
       }
 
+      const {fontFamilies} = root;
+
       const globalVariables = getGlobalVariables(root.graph);
 
       const hasSyntheticNodes = root.selectedSyntheticNodeIds.length;
@@ -112,13 +114,14 @@ export default (Base: React.ComponentClass<BaseRightGutterProps>) =>
           variablesTabProps={{
             dispatch,
             globalFileUri,
-            globalVariables
+            globalVariables,
+            fontFamilies
           }}
           stylesProps={{
             visible: availableCurrentTab === TAB_NAMES[0],
             dispatch,
             syntheticDocument,
-            fontFamilies: root.fontFamilies,
+            fontFamilies,
             selectedNodes: selectedSyntheticNodes,
             selectedInspectorNodes,
             rootInspectorNode,

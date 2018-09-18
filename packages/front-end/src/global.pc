@@ -3,13 +3,5 @@
   "version": "0.0.5",
   "metadata": {},
   "name": "module",
-  "children": [
-    {
-      "id": "818d0442621",
-      "name": "variable",
-      "label": "variable",
-      "children": [],
-      "metadata": {}
-    }
-  ]
+  "children": []
 }

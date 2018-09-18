@@ -114,9 +114,17 @@ export type PCSlot = {
   label?: string;
 } & PCBaseSourceNode<PCSourceTagNames.SLOT>;
 
+
+export enum PCVariableType {
+  UNIT = "unit",
+  NUMBER = "number",
+  COLOR = "color",
+  FONT = "font"
+};
+
 export type PCVariable = {
   label?: string;
-  type?: string;
+  type?: PCVariableType;
   value?: string;
 } & PCBaseSourceNode<PCSourceTagNames.VARIABLE>;
 

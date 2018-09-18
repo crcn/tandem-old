@@ -17,11 +17,7 @@ const {
   TextRightIcon
 } = require("../../../../../../../icons/index.pc");
 
-const FONT_FAMILIES: DropdownMenuOption[] = ["Helvetica", "Roboto"].map(
-  value => ({ label: value, value })
-);
-
-const getFontFamilyOptions = memoize((fontFamiles: FontFamily[]) =>
+export const getFontFamilyOptions = memoize((fontFamiles: FontFamily[]) =>
   fontFamiles
     .map(family => ({ label: family.name, value: family.name }))
     .sort((a, b) => (a.label > b.label ? 1 : -1))
