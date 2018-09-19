@@ -34,12 +34,12 @@
                   "value": "Label",
                   "style": {
                     "font-family": "Helvetica",
-                    "color": "grey",
+                    "color": "--d8f6340b1442",
                     "font-size": "0.8em",
                     "margin-bottom": "4px",
                     "display": "inline-block",
                     "margin-left": "2px",
-                    "opacity": "0.4"
+                    "opacity": 1
                   },
                   "children": [],
                   "metadata": {}

@@ -114,6 +114,22 @@
           },
           "name": "override",
           "children": []
+        },
+        {
+          "id": "4b8dc38c41904",
+          "propertyName": "variant",
+          "targetIdPath": [
+            "45055e8e10",
+            "45055e8e8",
+            "73b39db4401",
+            "647e59ac10951",
+            "6489655797375"
+          ],
+          "value": {
+            "15d6c81f3": true
+          },
+          "name": "override",
+          "children": []
         }
       ],
       "metadata": {

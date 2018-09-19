@@ -1089,6 +1089,9 @@
                           "right": 1072,
                           "bottom": 458
                         }
+                      },
+                      "variant": {
+                        "15d6c81f3": true
                       }
                     }
                   ],

@@ -136,7 +136,7 @@
         {
           "id": "cc845f08779",
           "name": "variant",
-          "isDefault": true,
+          "isDefault": false,
           "children": [],
           "metadata": {}
         },
@@ -144,7 +144,7 @@
           "id": "cc845f081098",
           "name": "variant",
           "label": "alt",
-          "isDefault": false,
+          "isDefault": true,
           "children": [],
           "metadata": {}
         },
@@ -154,7 +154,7 @@
           "propertyName": "style",
           "targetIdPath": [],
           "value": {
-            "background": "rgba(227, 227, 227, 1)"
+            "background": "--f63574de434"
           },
           "name": "override",
           "children": []
