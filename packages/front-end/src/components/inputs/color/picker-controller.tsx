@@ -3,7 +3,7 @@ import * as cx from "classnames";
 import { pure, compose, lifecycle, withState, withHandlers } from "recompose";
 import { memoize } from "tandem-common";
 import { GrabberAxis } from "./canvas-controller";
-import { throttle } from "lodash";
+import { throttle, identity } from "lodash";
 import { BasePickerProps, BaseColorPickerProps } from "./picker.pc";
 import {
   ColorSwatchOption,
@@ -27,6 +27,7 @@ type InnerProps = {
   setHSLA: any;
   onColorSwatchChange: any;
   onRGBAInputChange: any;
+  onRGBAInputChangeComplete: any;
   onHSLChange: any;
   onHSLChangeComplete: any;
   onSpectrumChange: any;
@@ -90,9 +91,8 @@ export default compose(
       onSpectrumChangeComplete: colorChangeCompleteCallback(updateHue),
       onOpacityChange: colorChangeCallback(updateOpacity),
       onOpacityChangeComplete: colorChangeCompleteCallback(updateOpacity),
-      onRGBAInputChange: ({ setHSLA }) => rgba => {
-        setHSLA(rgbaToHsla(rgba));
-      },
+      onRGBAInputChange: colorChangeCallback(rgbaToHsla),
+      onRGBAInputChangeComplete: colorChangeCompleteCallback(rgbaToHsla),
       onColorSwatchChange: ({ onChange, onChangeComplete }) => value => {
         if (onChange) {
           onChange(value);
@@ -108,6 +108,7 @@ export default compose(
     value,
     hsla,
     onRGBAInputChange,
+    onRGBAInputChangeComplete,
     onColorSwatchChange,
     onHSLChange,
     onHSLChangeComplete,
@@ -121,6 +122,7 @@ export default compose(
     const rgba = hslaToRgba(hsla);
     return (
       <Base
+        {...rest}
         variant={cx({
           noSwatches: swatchOptions.length === 0
         })}
@@ -155,7 +157,8 @@ export default compose(
         }}
         rgbaInputProps={{
           value: rgba,
-          onChange: onRGBAInputChange
+          onChange: onRGBAInputChange,
+          onChangeComplete: onRGBAInputChangeComplete
         }}
       />
     );
