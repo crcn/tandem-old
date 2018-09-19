@@ -2,6 +2,7 @@ IMMEDIATE:
 
 - refactor styles pane to use computed override map instead of derriving props from synthetic elements.
 - varaible text inputs
+- inherit styles from parent typogograph
 
 - override resets
 

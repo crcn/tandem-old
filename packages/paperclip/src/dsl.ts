@@ -1024,9 +1024,12 @@ export const computeStyleWithVars = (
   for (const key in style) {
     let value = style[key];
 
-    if (value && String(value).substr(0, 2) === "--") {
-      var ref = varMap[value.substr(2)];
-      value = ref && ref.value;
+    if (value && String(value).indexOf("--") !== -1) {
+      const cssVars = getCSSVars(value);
+      for (const cssVar of cssVars) {
+        var ref = varMap[cssVar];
+        value = ref ? value.replace(`--${cssVar}`, ref.value) : value;
+      }
     }
 
     expandedStyle[key] = value;
@@ -1040,8 +1043,11 @@ export const getNodeStyleRefIds = memoize((style: KeyValue<string>) => {
     const value = style[key];
 
     // value c
-    if (value && String(value).substr(0, 2) === "--") {
-      refIds[value.substr(2)] = 1;
+    if (value && String(value).indexOf("--") !== -1) {
+      const cssVars = getCSSVars(value);
+      for (const cssVar of cssVars) {
+        refIds[cssVar] = 1;
+      }
     }
   }
   return Object.keys(refIds);
