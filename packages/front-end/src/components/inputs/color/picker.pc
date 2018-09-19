@@ -1056,6 +1056,25 @@
         }
       },
       "variant": {}
+    },
+    {
+      "id": "61c555e3161",
+      "name": "text",
+      "label": "Text",
+      "value": "Click to edit",
+      "style": {
+        "color": "rgba(255, 0, 0, 1)",
+        "font-family": "--22702c5f1086"
+      },
+      "children": [],
+      "metadata": {
+        "bounds": {
+          "left": -327.23562633271194,
+          "top": 400.57377049180326,
+          "right": -227.23562633271194,
+          "bottom": 500.57377049180326
+        }
+      }
     }
   ]
 }

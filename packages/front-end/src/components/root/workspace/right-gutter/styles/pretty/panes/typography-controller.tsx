@@ -103,12 +103,7 @@ export default (Base: React.ComponentClass<BaseTypographProps>) =>
 
     render() {
       const { onPropertyChange, onPropertyChangeComplete } = this;
-      const {
-        selectedNodes,
-        fontFamilies,
-        globalVariables,
-        computedStyleInfo
-      } = this.props;
+      const { fontFamilies, globalVariables, computedStyleInfo } = this.props;
       const fontVariables = filterVariablesByType(
         globalVariables,
         PCVariableType.FONT

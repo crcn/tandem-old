@@ -107,6 +107,8 @@ export default compose(
   (Base: React.ComponentClass<BaseColorPickerProps>) => ({
     value,
     hsla,
+    onChange,
+    onChangeComplete,
     onRGBAInputChange,
     onRGBAInputChangeComplete,
     onColorSwatchChange,
