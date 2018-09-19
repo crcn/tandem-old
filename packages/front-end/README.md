@@ -1,33 +1,29 @@
 IMMEDIATE:
 
-- variable type must be defined before adding
-- variables input
-  - remove padding
-  - ability to remove
-  - ability to change label
-  - ability to change type
-  - ability to change value
-    - limited values must be placed in constant location
-  - alias type option
+- refactor styles pane to use computed override map instead of derriving props from synthetic elements.
+- varaible text inputs
+
+- override resets
 
 - wire up variables input
   - dropdown UI change ()
   - input auto-complete
 
+* start refactoring UI to use variables using same color scheme
 
-- start refactoring UI to use variables using same color scheme
   - remove inherited styles
   - ensure that no wild colors exist (create linting tool)
 
-- selectedVariant fudges with other panes
-- variants don't show up for instances
-- variants for component that inherit instance
-- inherit styles per variant
--
+* selectedVariant fudges with other panes
+* variants don't show up for instances
+* variants for component that inherit instance
+* inherit styles per variant
+*
 
 - instance style reset
 
 - BUGS
+
   - cannot inherit for instances
 
 - unsaved prompt
@@ -47,6 +43,7 @@ IMMEDIATE:
   - reduce `root` usage
 
 * UX
+
   - secondary input for slider (particularly for opacity)
   - all layers must be expose. For component instances, take component label
   - shortcuts shouldn't be triggered when keys are pressed

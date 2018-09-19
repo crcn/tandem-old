@@ -11,6 +11,7 @@ import {
 import { BaseElementStylerProps } from "./index.pc";
 import { Dispatch } from "redux";
 import { FontFamily } from "../../../../../../state";
+import { ComputedStyleInfo } from "../state";
 
 export type PrettyPaneOuterProps = {
   syntheticNodes: SyntheticNode[];
@@ -21,6 +22,7 @@ export type Props = {
   dispatch: Dispatch<any>;
   selectedNodes: SyntheticElement[];
   graph: DependencyGraph;
+  computedStyleInfo: ComputedStyleInfo;
   rootInspectorNode: InspectorNode;
   selectedInspectorNodes: InspectorNode[];
   syntheticDocument: SyntheticDocument;
@@ -31,21 +33,81 @@ export type Props = {
 export default (Base: React.ComponentClass<BaseElementStylerProps>) =>
   class PrettyStylesController extends React.PureComponent<Props> {
     render() {
-      const props = this.props;
+      const {
+        dispatch,
+        selectedVariant,
+        computedStyleInfo,
+        globalVariables,
+        fontFamilies,
+        selectedNodes,
+        syntheticDocument,
+        graph,
+        selectedInspectorNodes,
+        rootInspectorNode,
+        ...rest
+      } = this.props;
       return (
         <Base
-          {...props}
-          instancePaneProps={props}
-          inheritPaneProps={props}
-          codePaneProps={props}
-          layoutPaneProps={props}
-          typographyPaneProps={props}
-          opacityPaneProps={props}
-          backgroundsPaneProps={props}
-          spacingPaneProps={props}
-          bordersPaneProps={props}
-          outerShadowsPaneProps={props}
-          innerShadowsPaneProps={props}
+          {...rest}
+          instancePaneProps={{
+            selectedInspectorNodes,
+            rootInspectorNode,
+            syntheticDocument,
+            selectedNodes,
+            dispatch,
+            graph,
+            selectedVariant
+          }}
+          inheritPaneProps={{
+            dispatch,
+            selectedNodes,
+            graph
+          }}
+          codePaneProps={{
+            dispatch,
+            selectedNodes
+          }}
+          layoutPaneProps={{
+            dispatch,
+            selectedNodes,
+            syntheticDocument,
+            graph
+          }}
+          typographyPaneProps={{
+            dispatch,
+            selectedNodes,
+            computedStyleInfo,
+            fontFamilies,
+            globalVariables
+          }}
+          opacityPaneProps={{
+            dispatch,
+            selectedNodes
+          }}
+          backgroundsPaneProps={{
+            globalVariables,
+            dispatch,
+            selectedNodes
+          }}
+          spacingPaneProps={{
+            dispatch,
+            selectedNodes
+          }}
+          bordersPaneProps={{
+            globalVariables,
+            dispatch,
+            selectedNodes
+          }}
+          outerShadowsPaneProps={{
+            globalVariables,
+            dispatch,
+            selectedNodes
+          }}
+          innerShadowsPaneProps={{
+            globalVariables,
+            dispatch,
+            selectedNodes
+          }}
         />
       );
     }

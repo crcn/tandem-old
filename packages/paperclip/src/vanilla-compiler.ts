@@ -23,7 +23,9 @@ import {
   computePCNodeStyle,
   PCModule,
   PCVariant,
-  PCOverride
+  computeStyleWithVars,
+  PCOverride,
+  PCVariable
 } from "./dsl";
 import { uniq } from "lodash";
 import { SyntheticElement } from "./synthetic";
@@ -52,24 +54,33 @@ const merge = (a, b) => {
 };
 
 export const compileContentNodeAsVanilla = memoize(
-  (node: PCComponent | PCVisibleNode, refMap: KeyValue<PCComponent>) => {
+  (
+    node: PCComponent | PCVisibleNode,
+    refMap: KeyValue<PCComponent>,
+    varMap: KeyValue<PCVariable>
+  ) => {
     return new Function(
       `generateUID`,
       `merge`,
-      `return ` + translateContentNode(node, refMap)
+      `return ` + translateContentNode(node, refMap, varMap)
     )(generateUID, merge);
   }
 );
 
 export const translateModuleToVanilla = memoize(
-  (module: PCModule, componentRefMap: KeyValue<PCComponent>) => {
+  (
+    module: PCModule,
+    componentRefMap: KeyValue<PCComponent>,
+    varMap: KeyValue<PCVariable>
+  ) => {
     return module.children
       .filter(child => child.name !== PCSourceTagNames.VARIABLE)
       .map(
         (child: PCComponent | PCVisibleNode) =>
           `exports._${child.id} = ${translateContentNode(
             child,
-            componentRefMap
+            componentRefMap,
+            varMap
           )}`
       )
       .join("\n");
@@ -79,15 +90,16 @@ export const translateModuleToVanilla = memoize(
 const translateContentNode = memoize(
   (
     node: PCComponent | PCVisibleNode,
-    componentRefMap: KeyValue<PCComponent>
+    componentRefMap: KeyValue<PCComponent>,
+    varMap: KeyValue<PCVariable>
   ) => {
     let buffer = `(function() {`;
 
     buffer += `var EMPTY_ARRAY = [];\n`;
     buffer += `var EMPTY_OBJECT = {};\n`;
-    buffer += translateStaticNodeProps(node, componentRefMap);
-    buffer += translateStaticOverrides(node as PCComponent);
-    buffer += translateStaticVariants(node);
+    buffer += translateStaticNodeProps(node, componentRefMap, varMap);
+    buffer += translateStaticOverrides(node as PCComponent, varMap);
+    buffer += translateStaticVariants(node, varMap);
 
     buffer += `return function(instanceSourceNodeId, instancePath, attributes, style, variant, overrides, components) {
       ${translateVariants(node)}
@@ -118,7 +130,9 @@ const translateVisibleNode = memoize(
         )}, ${translateDynamicStyle(
           node,
           isContentNode
-        )}, ${translateDynamicVariant(node)}, ${translateDynamicOverrides(node as PCComponent)}, components)`;
+        )}, ${translateDynamicVariant(node)}, ${translateDynamicOverrides(
+          node as PCComponent
+        )}, components)`;
       }
 
       return `{
@@ -221,9 +235,7 @@ const translateDynamicStyle = (
   }Style, overrides._${node.id}Style) : _${node.id}Style`;
 };
 
-const translateDynamicVariant = (
-  node: PCBaseElement<any>
-) => {
+const translateDynamicVariant = (node: PCBaseElement<any>) => {
   return `overrides._${node.id}Variant ? Object.assign({},  _${
     node.id
   }Variant, overrides._${node.id}Variant) : _${node.id}Variant`;
@@ -248,7 +260,10 @@ const translateDynamicOverrides = (
   return buffer + `})`;
 };
 
-const translateStaticOverrides = (contentNode: PCNode) => {
+const translateStaticOverrides = (
+  contentNode: PCNode,
+  varMap: KeyValue<PCVariable>
+) => {
   const instances = [
     ...getTreeNodesByName(PCSourceTagNames.COMPONENT_INSTANCE, contentNode),
     ...getTreeNodesByName(PCSourceTagNames.COMPONENT, contentNode)
@@ -259,21 +274,26 @@ const translateStaticOverrides = (contentNode: PCNode) => {
   for (const instance of instances) {
     const overrideMap = getOverrideMap(instance);
     buffer += `var _${instance.id}Overrides = { ${translateVariantOverrideMap(
-      overrideMap.default
+      overrideMap.default,
+      varMap
     )}};\n`;
   }
 
   return buffer;
 };
 
-const translateStaticVariants = (contentNode: PCNode) => {
+const translateStaticVariants = (
+  contentNode: PCNode,
+  varMap: KeyValue<PCVariable>
+) => {
   const variants = getTreeNodesByName(PCSourceTagNames.VARIANT, contentNode);
   const variantNodes: PCNode[] = uniq(
     (getTreeNodesByName(PCSourceTagNames.OVERRIDE, contentNode) as PCOverride[])
       .filter(override => {
         return (
           override.propertyName === PCOverridablePropertyName.STYLE ||
-          override.propertyName === PCOverridablePropertyName.VARIANT_IS_DEFAULT ||
+          override.propertyName ===
+            PCOverridablePropertyName.VARIANT_IS_DEFAULT ||
           override.propertyName === PCOverridablePropertyName.VARIANT
         );
       })
@@ -287,11 +307,18 @@ const translateStaticVariants = (contentNode: PCNode) => {
   for (const variant of variants) {
     buffer += `_${variant.id}: {`;
     for (const node of variantNodes) {
-      const overrideMap = getOverrideMap(node, node.name === PCSourceTagNames.COMPONENT_INSTANCE || node.name === PCSourceTagNames.COMPONENT);
+      const overrideMap = getOverrideMap(
+        node,
+        node.name === PCSourceTagNames.COMPONENT_INSTANCE ||
+          node.name === PCSourceTagNames.COMPONENT
+      );
       if (!overrideMap[variant.id]) {
         continue;
       }
-      buffer += `${translateVariantOverrideMap(overrideMap[variant.id])}`;
+      buffer += `${translateVariantOverrideMap(
+        overrideMap[variant.id],
+        varMap
+      )}`;
     }
     buffer += `},`;
   }
@@ -300,21 +327,21 @@ const translateStaticVariants = (contentNode: PCNode) => {
 };
 
 const translateVariantOverrideMap = memoize(
-  (map: PCComputedOverrideVariantMap) => {
+  (map: PCComputedOverrideVariantMap, varMap: KeyValue<PCVariable>) => {
     let buffer = ``;
     for (const nodeId in map) {
       const { overrides, children: childMap } = map[nodeId];
 
       for (const override of overrides) {
         if (override.propertyName === PCOverridablePropertyName.STYLE) {
-          buffer += `_${nodeId}Style: ${JSON.stringify(override.value)},`;
+          buffer += `_${nodeId}Style: ${JSON.stringify(
+            computeStyleWithVars(override.value, varMap)
+          )},`;
         }
         if (override.propertyName === PCOverridablePropertyName.ATTRIBUTES) {
           buffer += `_${nodeId}Attributes: ${JSON.stringify(override.value)},`;
         }
-        if (
-          override.propertyName === PCOverridablePropertyName.VARIANT
-        ) {
+        if (override.propertyName === PCOverridablePropertyName.VARIANT) {
           buffer += `_${nodeId}Variant: ${JSON.stringify(override.value)},`;
         }
         if (override.propertyName === PCOverridablePropertyName.TEXT) {
@@ -323,7 +350,7 @@ const translateVariantOverrideMap = memoize(
       }
       buffer += `_${nodeId}Overrides: {`;
 
-      buffer += translateVariantOverrideMap(childMap);
+      buffer += translateVariantOverrideMap(childMap, varMap);
 
       buffer += `},`;
     }
@@ -333,7 +360,11 @@ const translateVariantOverrideMap = memoize(
 );
 
 const translateStaticNodeProps = memoize(
-  (node: PCNode, componentRefMap: KeyValue<PCComponent>) => {
+  (
+    node: PCNode,
+    componentRefMap: KeyValue<PCComponent>,
+    varMap: KeyValue<PCVariable>
+  ) => {
     let buffer = "";
 
     if (isBaseElement(node)) {
@@ -346,18 +377,25 @@ const translateStaticNodeProps = memoize(
 
     if (isBaseElement(node) || node.name === PCSourceTagNames.TEXT) {
       buffer += `var _${node.id}Style = ${JSON.stringify(
-        computePCNodeStyle(node, componentRefMap)
+        computePCNodeStyle(node, componentRefMap, varMap)
       )};`;
     }
 
-    if (node.name === PCSourceTagNames.COMPONENT_INSTANCE || node.name === PCSourceTagNames.COMPONENT) {
+    if (
+      node.name === PCSourceTagNames.COMPONENT_INSTANCE ||
+      node.name === PCSourceTagNames.COMPONENT
+    ) {
       buffer += `var _${node.id}Variant = ${JSON.stringify(
-        (node as any).variant || EMPTY_OBJECT
+        (node as any).variant || EMPTY_OBJECT
       )};`;
     }
 
     for (const child of node.children) {
-      buffer += translateStaticNodeProps(child as PCNode, componentRefMap);
+      buffer += translateStaticNodeProps(
+        child as PCNode,
+        componentRefMap,
+        varMap
+      );
     }
 
     return buffer;

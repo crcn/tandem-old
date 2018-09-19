@@ -9,11 +9,12 @@ import {
 } from "../../../../../../../actions";
 import { BaseBoxShadowsProps } from "./box-shadows.pc";
 import { Dispatch } from "redux";
-import { SyntheticElement } from "paperclip";
+import { SyntheticElement, PCVariable } from "paperclip";
 
 export type Props = {
   inset?: Boolean;
   value?: string;
+  globalVariables: PCVariable[];
   dispatch: Dispatch<any>;
   selectedNodes: SyntheticElement[];
 };
@@ -109,7 +110,7 @@ export default (Base: React.ComponentClass<BaseBoxShadowsProps>) =>
     };
 
     render() {
-      const { selectedNodes, inset } = this.props;
+      const { globalVariables, selectedNodes, inset } = this.props;
       const { selectedBoxShadowIndex } = this.state;
       const {
         onChange,
@@ -137,6 +138,7 @@ export default (Base: React.ComponentClass<BaseBoxShadowsProps>) =>
               onBackgroundClick={() => onItemClick(index)}
               onChange={value => onChange(value, index)}
               onChangeComplete={value => onChangeComplete(value, index)}
+              globalVariables={globalVariables}
             />
           ) : null;
         })

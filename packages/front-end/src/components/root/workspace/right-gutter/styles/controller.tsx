@@ -10,6 +10,7 @@ import {
   PCVariable
 } from "paperclip";
 import { FontFamily } from "../../../../../state";
+import { computeStyleInfo } from "./state";
 
 export type Props = {
   visible: boolean;
@@ -43,6 +44,12 @@ export default (Base: React.ComponentClass<BaseStylesProps>) =>
       if (!selectedNodes.length || !visible) {
         return null;
       }
+      const computedStyleInfo = computeStyleInfo(
+        selectedInspectorNodes,
+        rootInspectorNode,
+        selectedVariant,
+        graph
+      );
       return (
         <Base
           variantsProps={{
@@ -56,6 +63,7 @@ export default (Base: React.ComponentClass<BaseStylesProps>) =>
             globalVariables,
             selectedVariant,
             dispatch,
+            computedStyleInfo,
             selectedInspectorNodes,
             rootInspectorNode,
             syntheticDocument,

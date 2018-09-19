@@ -5,7 +5,7 @@ import {
 } from "../../../../../../../actions";
 import { arraySplice } from "tandem-common";
 import { Dispatch } from "redux";
-import { SyntheticElement } from "paperclip";
+import { SyntheticElement, PCVariable } from "paperclip";
 import { BaseBackgroundsProps } from "./backgrounds.pc";
 import { BackgroundItem } from "./backgrounds.pc";
 
@@ -13,6 +13,7 @@ const DEFAULT_COLOR = "rgba(200, 200, 200, 1)";
 
 export type Props = {
   dispatch: Dispatch;
+  globalVariables: PCVariable[];
   selectedNodes: SyntheticElement[];
 };
 
@@ -52,7 +53,7 @@ export default (Base: React.ComponentClass<BaseBackgroundsProps>) =>
       );
     };
     render() {
-      const { selectedNodes } = this.props;
+      const { selectedNodes, globalVariables } = this.props;
       const { onChange, onChangeComplete, onPlusButtonClick } = this;
 
       const node = selectedNodes[0];
@@ -64,6 +65,7 @@ export default (Base: React.ComponentClass<BaseBackgroundsProps>) =>
               value={background}
               onChange={value => onChange(value, i)}
               onChangeComplete={value => onChangeComplete(value, i)}
+              globalVariables={globalVariables}
             />
           );
         }

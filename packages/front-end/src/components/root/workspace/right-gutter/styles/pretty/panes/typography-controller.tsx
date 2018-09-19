@@ -1,7 +1,11 @@
 import * as React from "react";
-import { memoize } from "tandem-common";
+import { memoize, KeyValue } from "tandem-common";
 import { ButtonBarOption } from "../../../../../../inputs/button-bar/controller";
-import { DropdownMenuOption, mapVariablesToDropdownOptions } from "../../../../../../inputs/dropdown/controller";
+import {
+  DropdownMenuOption,
+  mapVariablesToDropdownOptions,
+  dropdownMenuOptionFromValue
+} from "../../../../../../inputs/dropdown/controller";
 import {
   cssPropertyChangeCompleted,
   cssPropertyChanged
@@ -9,7 +13,19 @@ import {
 import { FontFamily } from "../../../../../../../state";
 import { BaseTypographProps } from "./typography.pc";
 import { Dispatch } from "redux";
-import { SyntheticElement, PCVariable, filterVariablesByType, PCVariableType } from "paperclip";
+import {
+  SyntheticElement,
+  PCVariable,
+  filterVariablesByType,
+  PCVariableType,
+  PCVisibleNode,
+  PCOverride,
+  InspectorNode
+} from "paperclip";
+import {
+  ComputedStyleInfo,
+  mapPCVariablesToColorSwatchOptions
+} from "../../state";
 const {
   TextLeftIcon,
   TextCenterIcon,
@@ -23,15 +39,20 @@ export const getFontFamilyOptions = memoize((fontFamiles: FontFamily[]) =>
     .sort((a, b) => (a.label > b.label ? 1 : -1))
 );
 
-const FONT_WEIGHTS: DropdownMenuOption[] = ["100", "200", "300", "400"].map(
-  value => ({ label: value, value })
-);
+const FONT_WEIGHTS: DropdownMenuOption[] = [
+  undefined,
+  "100",
+  "200",
+  "300",
+  "400"
+].map(dropdownMenuOptionFromValue);
 
 const DECORATIONS: DropdownMenuOption[] = [
+  undefined,
   "underline",
   "overline",
   "line-through"
-].map(value => ({ label: value, value }));
+].map(dropdownMenuOptionFromValue);
 
 const ALIGNMENTS: ButtonBarOption[] = [
   {
@@ -54,13 +75,21 @@ const ALIGNMENTS: ButtonBarOption[] = [
 
 export type Props = {
   dispatch: Dispatch<any>;
+  // DEPRECATED
   selectedNodes: SyntheticElement[];
+  computedStyleInfo: ComputedStyleInfo;
   fontFamilies: FontFamily[];
   globalVariables: PCVariable[];
 };
 
-
-
+const mapVariablesToCSSVarDropdownOptions = (
+  variables: PCVariable[]
+): DropdownMenuOption[] =>
+  variables.map(variable => ({
+    value: `--${variable.id}`,
+    label: variable.label,
+    special: true
+  }));
 
 export default (Base: React.ComponentClass<BaseTypographProps>) =>
   class TypographyController extends React.PureComponent<Props> {
@@ -74,14 +103,24 @@ export default (Base: React.ComponentClass<BaseTypographProps>) =>
 
     render() {
       const { onPropertyChange, onPropertyChangeComplete } = this;
-      const { selectedNodes, fontFamilies, globalVariables } = this.props;
-      const fontVariables = filterVariablesByType(globalVariables, PCVariableType.FONT);
-      const node = selectedNodes[0];
+      const {
+        selectedNodes,
+        fontFamilies,
+        globalVariables,
+        computedStyleInfo
+      } = this.props;
+      const fontVariables = filterVariablesByType(
+        globalVariables,
+        PCVariableType.FONT
+      );
       return (
         <Base
           familyInputProps={{
-            options: [...mapVariablesToDropdownOptions(fontVariables), ...getFontFamilyOptions(fontFamilies)],
-            value: node.style["font-family"],
+            options: [
+              ...mapVariablesToCSSVarDropdownOptions(fontVariables),
+              ...getFontFamilyOptions(fontFamilies)
+            ],
+            value: computedStyleInfo.style["font-family"],
             onChange: propertyChangeCallback("font-family", onPropertyChange),
             onChangeComplete: propertyChangeCallback(
               "font-family",
@@ -90,7 +129,7 @@ export default (Base: React.ComponentClass<BaseTypographProps>) =>
           }}
           weightInputProps={{
             options: FONT_WEIGHTS,
-            value: node.style["font-weight"],
+            value: computedStyleInfo.style["font-weight"],
             onChange: propertyChangeCallback("font-weight", onPropertyChange),
             onChangeComplete: propertyChangeCallback(
               "font-weight",
@@ -99,7 +138,7 @@ export default (Base: React.ComponentClass<BaseTypographProps>) =>
           }}
           decorationInputProps={{
             options: DECORATIONS,
-            value: node.style["text-decoration"],
+            value: computedStyleInfo.style["text-decoration"],
             onChange: propertyChangeCallback(
               "text-decoration",
               onPropertyChange
@@ -110,7 +149,7 @@ export default (Base: React.ComponentClass<BaseTypographProps>) =>
             )
           }}
           lineInputProps={{
-            value: node.style["line-height"],
+            value: computedStyleInfo.style["line-height"],
             onChange: propertyChangeCallback("line-height", onPropertyChange),
             onChangeComplete: propertyChangeCallback(
               "line-height",
@@ -118,7 +157,7 @@ export default (Base: React.ComponentClass<BaseTypographProps>) =>
             )
           }}
           spacingInputProps={{
-            value: node.style["letter-spacing"],
+            value: computedStyleInfo.style["letter-spacing"],
             onChange: propertyChangeCallback(
               "letter-spacing",
               onPropertyChange
@@ -130,11 +169,11 @@ export default (Base: React.ComponentClass<BaseTypographProps>) =>
           }}
           alignmentInputProps={{
             options: ALIGNMENTS,
-            value: node.style["text-align"],
+            value: computedStyleInfo.style["text-align"],
             onChange: propertyChangeCallback("text-align", onPropertyChange)
           }}
           sizeInputProps={{
-            value: node.style["font-size"],
+            value: computedStyleInfo.style["font-size"],
             onChange: propertyChangeCallback("font-size", onPropertyChange),
             onChangeComplete: propertyChangeCallback(
               "font-size",
@@ -142,7 +181,8 @@ export default (Base: React.ComponentClass<BaseTypographProps>) =>
             )
           }}
           colorInputProps={{
-            value: node.style.color,
+            swatchOptions: mapPCVariablesToColorSwatchOptions(globalVariables),
+            value: computedStyleInfo.style.color,
             onChange: propertyChangeCallback("color", onPropertyChange),
             onChangeComplete: propertyChangeCallback(
               "color",

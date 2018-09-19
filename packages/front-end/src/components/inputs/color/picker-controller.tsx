@@ -1,9 +1,14 @@
 import * as React from "react";
+import * as cx from "classnames";
 import { pure, compose, lifecycle, withState, withHandlers } from "recompose";
 import { memoize } from "tandem-common";
 import { GrabberAxis } from "./canvas-controller";
 import { throttle } from "lodash";
 import { BasePickerProps, BaseColorPickerProps } from "./picker.pc";
+import {
+  ColorSwatchOption,
+  maybeConvertSwatchValueToColor
+} from "./color-swatch-controller";
 
 const CHANGE_THROTTLE_MS = 1000 / 20;
 
@@ -14,11 +19,13 @@ export type Props = {
   value: string;
   onChange?: any;
   onChangeComplete?: any;
+  swatchOptions: ColorSwatchOption[];
 };
 
 type InnerProps = {
   hsla: any;
   setHSLA: any;
+  onColorSwatchChange: any;
   onRGBAInputChange: any;
   onHSLChange: any;
   onHSLChangeComplete: any;
@@ -30,14 +37,17 @@ type InnerProps = {
 
 export default compose(
   pure,
-  withState(`hsla`, `setHSLA`, ({ value }) => {
+  withState(`hsla`, `setHSLA`, ({ value, swatchOptions }: Props) => {
+    value = maybeConvertSwatchValueToColor(value, swatchOptions);
     const rgba = parseRGBA(value || "#FF0000");
     return rgbaToHsla(rgba);
   }),
   lifecycle({
     componentWillUpdate(props: InnerProps) {
       if (this.props.value !== props.value) {
-        const rgba = parseRGBA(props.value);
+        const rgba = parseRGBA(
+          maybeConvertSwatchValueToColor(props.value, props.swatchOptions)
+        );
         const hsla = rgbaToHsla(rgba);
         if (hsla.join("") !== props.hsla.join("")) {
           this.props.setHSLA(hsla);
@@ -82,16 +92,28 @@ export default compose(
       onOpacityChangeComplete: colorChangeCompleteCallback(updateOpacity),
       onRGBAInputChange: ({ setHSLA }) => rgba => {
         setHSLA(rgbaToHsla(rgba));
+      },
+      onColorSwatchChange: ({ onChange, onChangeComplete }) => value => {
+        if (onChange) {
+          onChange(value);
+        }
+
+        if (onChangeComplete) {
+          onChangeComplete(value);
+        }
       }
     };
   }),
   (Base: React.ComponentClass<BaseColorPickerProps>) => ({
+    value,
     hsla,
     onRGBAInputChange,
+    onColorSwatchChange,
     onHSLChange,
     onHSLChangeComplete,
     onSpectrumChange,
     onSpectrumChangeComplete,
+    swatchOptions,
     onOpacityChange,
     onOpacityChangeComplete,
     ...rest
@@ -99,6 +121,9 @@ export default compose(
     const rgba = hslaToRgba(hsla);
     return (
       <Base
+        variant={cx({
+          noSwatches: swatchOptions.length === 0
+        })}
         hslProps={{
           draw: hslDrawer(hsla[0]),
           value: hsla,
@@ -122,6 +147,11 @@ export default compose(
           getGraggerPoint: opacityPointer,
           onChangeComplete: onOpacityChangeComplete,
           grabberAxis: GrabberAxis.X
+        }}
+        colorSwatchesProps={{
+          onChange: onColorSwatchChange,
+          options: swatchOptions,
+          value
         }}
         rgbaInputProps={{
           value: rgba,

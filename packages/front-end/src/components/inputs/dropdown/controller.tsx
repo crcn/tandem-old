@@ -15,14 +15,15 @@ export const dropdownMenuOptionFromValue = (
   value: string
 ): DropdownMenuOption => ({ label: value || "--", value });
 
-
-export const mapVariablesToDropdownOptions = memoize((variables: PCVariable[]): DropdownMenuOption[] => {
-  return variables.map(variable => ({
-    value: variable,
-    label: variable.label,
-    special: true
-  }))
-});
+export const mapVariablesToDropdownOptions = memoize(
+  (variables: PCVariable[]): DropdownMenuOption[] => {
+    return variables.map(variable => ({
+      value: variable,
+      label: variable.label,
+      special: true
+    }));
+  }
+);
 
 export type Props = BaseDropdownProps & {
   value?: any;
@@ -111,11 +112,16 @@ export default (Base: React.ComponentClass<BaseDropdownProps>) => {
             })
         : EMPTY_ARRAY;
 
-      const selectedItem = options.find(item => item.value === value);
+      const selectedItem: DropdownMenuOption = options.find(
+        item => item.value === value
+      );
       const showFilter = open && filterable;
 
       return (
         <Base
+          variant={cx({
+            special: selectedItem && selectedItem.special
+          })}
           popoverProps={{
             open,
             onShouldClose: this.onShouldClose

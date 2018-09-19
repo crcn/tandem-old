@@ -2,11 +2,16 @@ import * as React from "react";
 import { EMPTY_ARRAY } from "tandem-common";
 import { BaseColorInputProps } from "./view.pc";
 import { ColorPicker } from "./picker.pc";
+import {
+  ColorSwatchOption,
+  maybeConvertSwatchValueToColor
+} from "./color-swatch-controller";
 
 export type Props = {
   value: any;
   onChange: any;
   onChangeComplete: any;
+  swatchOptions: ColorSwatchOption[];
 } & BaseColorInputProps;
 
 type InnerProps = {
@@ -33,7 +38,13 @@ export default (Base: React.ComponentClass<BaseColorInputProps>) =>
       let popdownChildren: any = EMPTY_ARRAY;
       const { open } = this.state;
 
-      const { value, onChange, onChangeComplete, ...rest } = this.props;
+      const {
+        value,
+        onChange,
+        swatchOptions,
+        onChangeComplete,
+        ...rest
+      } = this.props;
       const { onButtonClick, onShouldClose } = this;
 
       if (open) {
@@ -42,6 +53,7 @@ export default (Base: React.ComponentClass<BaseColorInputProps>) =>
             value={value || "#FF0000"}
             onChange={onChange}
             onChangeComplete={onChangeComplete}
+            swatchOptions={swatchOptions}
           />
         );
       }
@@ -53,7 +65,9 @@ export default (Base: React.ComponentClass<BaseColorInputProps>) =>
             tabIndex: 0,
             onClick: onButtonClick,
             style: {
-              background: value || "transparent"
+              background:
+                maybeConvertSwatchValueToColor(value, swatchOptions) ||
+                "transparent"
             }
           }}
           popoverProps={{

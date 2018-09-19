@@ -4,11 +4,12 @@ import {
   cssPropertyChanged
 } from "../../../../../../../actions";
 import { memoize } from "tandem-common";
-import { SyntheticElement } from "paperclip";
+import { SyntheticElement, PCVariable } from "paperclip";
 import { Dispatch } from "redux";
 import { BaseBorderProps } from "./borders.pc";
 
 export type Props = {
+  globalVariables: PCVariable[];
   selectedNodes: SyntheticElement[];
   dispatch: Dispatch;
 };
@@ -22,7 +23,7 @@ export default (Base: React.ComponentClass<BaseBorderProps>) =>
       this.props.dispatch(cssPropertyChangeCompleted(name, value));
     };
     render() {
-      const { selectedNodes } = this.props;
+      const { selectedNodes, globalVariables } = this.props;
       const { onPropertyChange, onPropertyChangeComplete } = this;
 
       if (!selectedNodes) {
@@ -32,6 +33,7 @@ export default (Base: React.ComponentClass<BaseBorderProps>) =>
       return (
         <Base
           borderStylingProps={{
+            globalVariables,
             selectedNode,
             onPropertyChange,
             onPropertyChangeComplete

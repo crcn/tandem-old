@@ -114,13 +114,12 @@ export type PCSlot = {
   label?: string;
 } & PCBaseSourceNode<PCSourceTagNames.SLOT>;
 
-
 export enum PCVariableType {
   UNIT = "unit",
   NUMBER = "number",
   COLOR = "color",
   FONT = "font"
-};
+}
 
 export type PCVariable = {
   label?: string;
@@ -217,10 +216,8 @@ export type PCElement = PCBaseElement<PCSourceTagNames.ELEMENT>;
 export type PCComponentInstanceChild = PCBaseElementChild | PCPlug;
 
 export type PCComponentInstanceElement = {
-  variant: KeyValue<boolean>
-} & PCBaseElement<
-PCSourceTagNames.COMPONENT_INSTANCE
->;
+  variant: KeyValue<boolean>;
+} & PCBaseElement<PCSourceTagNames.COMPONENT_INSTANCE>;
 
 export type PCTextNode = {
   value: string;
@@ -297,7 +294,6 @@ export const createPCVariant = (
   children: EMPTY_ARRAY,
   metadata: EMPTY_OBJECT
 });
-
 
 export const createPCVariable = (
   label: string,
@@ -429,7 +425,7 @@ export const isValueOverride = (
   return node.propertyName !== PCOverridablePropertyName.CHILDREN;
 };
 
-export const isVisibleNode = (node: PCNode) =>
+export const isVisibleNode = (node: PCNode): node is PCVisibleNode =>
   node.name === PCSourceTagNames.ELEMENT ||
   node.name === PCSourceTagNames.TEXT ||
   isPCComponentInstance(node);
@@ -631,15 +627,27 @@ export const getPCNodeDependency = memoize(
   }
 );
 
-export const getGlobalVariables = memoize((graph: DependencyGraph): PCVariable[] => {
-  return Object.values(graph).reduce((variables, dependency: PCDependency) => {
-    return [...variables, ...dependency.content.children.filter(child => child.name === PCSourceTagNames.VARIABLE)];
-  }, EMPTY_ARRAY);
-});
+export const getGlobalVariables = memoize(
+  (graph: DependencyGraph): PCVariable[] => {
+    return Object.values(graph).reduce(
+      (variables, dependency: PCDependency) => {
+        return [
+          ...variables,
+          ...dependency.content.children.filter(
+            child => child.name === PCSourceTagNames.VARIABLE
+          )
+        ];
+      },
+      EMPTY_ARRAY
+    );
+  }
+);
 
-export const filterVariablesByType = memoize((variables: PCVariable[], type: PCVariableType) => {
-  return variables.filter(variable => variable.type === type);
-});
+export const filterVariablesByType = memoize(
+  (variables: PCVariable[], type: PCVariableType) => {
+    return variables.filter(variable => variable.type === type);
+  }
+);
 
 export const getInstanceSlots = memoize(
   (
@@ -819,9 +827,13 @@ export const getComponentRefIds = memoize(
 );
 
 export const computePCNodeStyle = memoize(
-  (node: PCVisibleNode | PCComponent, componentRefs: KeyValue<PCComponent>) => {
+  (
+    node: PCVisibleNode | PCComponent,
+    componentRefs: KeyValue<PCComponent>,
+    varMap: KeyValue<PCVariable>
+  ) => {
     if (!node.inheritStyle) {
-      return node.style;
+      return computeStyleWithVars(node.style, varMap);
     }
 
     let style = {};
@@ -840,12 +852,15 @@ export const computePCNodeStyle = memoize(
       if (!inheritComponent) {
         continue;
       }
-      Object.assign(style, computePCNodeStyle(inheritComponent, componentRefs));
+      Object.assign(
+        style,
+        computePCNodeStyle(inheritComponent, componentRefs, varMap)
+      );
     }
 
     Object.assign(style, node.style);
 
-    return style;
+    return computeStyleWithVars(style, varMap);
   }
 );
 
@@ -932,8 +947,8 @@ const componentShallowEquals = (a: PCComponent, b: PCComponent) => {
   return elementShallowEquals(a, b) && isEqual(a.controllers, b.controllers);
 };
 
-const componentGraphRefsToMap = memoize(
-  (refs: PCComponent[]): KeyValue<PCComponent> => {
+const nodeAryToRefMap = memoize(
+  <TItem extends PCNode>(refs: TItem[]): KeyValue<TItem> => {
     const componentRefMap = {};
     for (let i = 0, { length } = refs; i < length; i++) {
       const ref = refs[i];
@@ -945,8 +960,42 @@ const componentGraphRefsToMap = memoize(
 );
 
 export const getComponentGraphRefMap = memoize(
+  (node: PCNode, graph: DependencyGraph): KeyValue<PCComponent> =>
+    nodeAryToRefMap(getComponentGraphRefs(node, graph)) as KeyValue<PCComponent>
+);
+
+export const getStyleVariableRefMap = memoize(
   (node: PCNode, graph: DependencyGraph) =>
-    componentGraphRefsToMap(getComponentGraphRefs(node, graph))
+    nodeAryToRefMap(getStyleVariableGraphRefs(node, graph)) as KeyValue<
+      PCVariable
+    >
+);
+
+export const getStyleVariableGraphRefs = memoize(
+  (node: PCNode, graph: DependencyGraph) => {
+    const allRefs: PCVariable[] = [];
+
+    const refIds = isVisibleNode(node)
+      ? getNodeStyleRefIds(node.style)
+      : isPCOverride(node) &&
+        node.propertyName === PCOverridablePropertyName.STYLE
+        ? getNodeStyleRefIds(node.value)
+        : EMPTY_ARRAY;
+
+    for (let i = 0, { length } = refIds; i < length; i++) {
+      const variable = getPCNode(refIds[i], graph) as PCVariable;
+      if (!variable) {
+        continue;
+      }
+      allRefs.push(variable);
+    }
+
+    for (let i = 0, { length } = node.children; i < length; i++) {
+      const child = node.children[i];
+      allRefs.push(...getStyleVariableGraphRefs(child, graph));
+    }
+    return uniq(allRefs);
+  }
 );
 
 export const getPCParentComponentInstances = memoize(
@@ -956,6 +1005,47 @@ export const getPCParentComponentInstances = memoize(
     return parents;
   }
 );
+
+export const styleValueContainsCSSVar = (value: string) => {
+  return value.indexOf(`--`) !== -1;
+};
+
+// not usable yet -- maybe with computed later on
+export const getCSSVars = (value: string) => {
+  return (value.match(/--[^\s]+/g) || EMPTY_ARRAY).map(v => v.substr(2));
+};
+
+// not usable yet -- maybe with computed later on
+export const computeStyleWithVars = (
+  style: KeyValue<string>,
+  varMap: KeyValue<PCVariable>
+) => {
+  const expandedStyle = {};
+  for (const key in style) {
+    let value = style[key];
+
+    if (value && String(value).substr(0, 2) === "--") {
+      var ref = varMap[value.substr(2)];
+      value = ref && ref.value;
+    }
+
+    expandedStyle[key] = value;
+  }
+  return expandedStyle;
+};
+
+export const getNodeStyleRefIds = memoize((style: KeyValue<string>) => {
+  const refIds = {};
+  for (const key in style) {
+    const value = style[key];
+
+    // value c
+    if (value && String(value).substr(0, 2) === "--") {
+      refIds[value.substr(2)] = 1;
+    }
+  }
+  return Object.keys(refIds);
+});
 
 export const filterNestedOverrides = memoize(
   (node: PCNode): PCOverride[] => filterNestedNodes(node, isPCOverride)
@@ -985,10 +1075,13 @@ export const getOverrideMap = memoize((node: PCNode, includeSelf?: boolean) => {
 
     const targetIdPath = [...override.targetIdPath];
     const targetId = targetIdPath.pop() || node.id;
-    if (includeSelf && override.targetIdPath.length && !getNestedTreeNodeById(targetId, node)) {
+    if (
+      includeSelf &&
+      override.targetIdPath.length &&
+      !getNestedTreeNodeById(targetId, node)
+    ) {
       targetIdPath.unshift(node.id);
     }
-
 
     for (const nodeId of targetIdPath) {
       if (!targetOverrides[nodeId]) {

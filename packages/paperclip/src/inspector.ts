@@ -295,9 +295,12 @@ export const getInstanceVariantInfo = memoize(
     const parentInstances = [
       instance,
       ...(node.instancePath
-        ? node.instancePath.split(".").reverse().map(instanceId => {
-            return getPCNode(instanceId, graph) as PCComponentInstanceElement;
-          })
+        ? node.instancePath
+            .split(".")
+            .reverse()
+            .map(instanceId => {
+              return getPCNode(instanceId, graph) as PCComponentInstanceElement;
+            })
         : [])
     ];
 
@@ -305,7 +308,15 @@ export const getInstanceVariantInfo = memoize(
 
     for (const parentInstance of parentInstances) {
       const variant = parentInstance.variant;
-      const variantOverride = parentInstance.children.find((child: PCNode) => child.name === PCSourceTagNames.OVERRIDE && child.propertyName === PCOverridablePropertyName.VARIANT && (last(child.targetIdPath) === instance.id || (child.targetIdPath.length === 0 && parentInstance.id === instance.id)) && child.variantId == selectedVariantId) as PCBaseValueOverride<any, any>;
+      const variantOverride = parentInstance.children.find(
+        (child: PCNode) =>
+          child.name === PCSourceTagNames.OVERRIDE &&
+          child.propertyName === PCOverridablePropertyName.VARIANT &&
+          (last(child.targetIdPath) === instance.id ||
+            (child.targetIdPath.length === 0 &&
+              parentInstance.id === instance.id)) &&
+          child.variantId == selectedVariantId
+      ) as PCBaseValueOverride<any, any>;
       Object.assign(enabled, variant, variantOverride && variantOverride.value);
     }
 
@@ -430,6 +441,56 @@ export const expandSyntheticInspectorNode = (
 
   return updateAlts(rootInspectorNode);
 };
+
+export const getInheritedOverridesOverrides = memoize(
+  (
+    inspectorNode: InspectorNode,
+    rootInspectorNode: InspectorNode,
+    graph: DependencyGraph
+  ) => {
+    const sourceNode = getPCNode(inspectorNode.assocSourceNodeId, graph);
+    let overrides: PCOverride[] = getOverrides(sourceNode);
+    const parent = getParentTreeNode(inspectorNode.id, rootInspectorNode);
+    if (parent && parent.assocSourceNodeId) {
+      overrides.push(
+        ...getInheritedOverridesOverrides(parent, rootInspectorNode, graph)
+      );
+    }
+    return overrides;
+  }
+);
+
+// TODO - move to paperclip
+export const getInspectorNodeOverrides = memoize(
+  (
+    inspectorNode: InspectorNode,
+    rootInspectorNode: InspectorNode,
+    variant: PCVariant,
+    graph: DependencyGraph
+  ) => {
+    let overrides: PCOverride[] = [];
+    const sourceNode = getPCNode(inspectorNode.assocSourceNodeId, graph);
+    const inheritedOverrides = getInheritedOverridesOverrides(
+      inspectorNode,
+      rootInspectorNode,
+      graph
+    );
+    for (const override of inheritedOverrides) {
+      const overrideModule = getPCNodeModule(override.id, graph);
+      if (
+        !override.variantId ||
+        (override.variantId == (variant && variant.id) &&
+          (last(override.targetIdPath) === inspectorNode.assocSourceNodeId ||
+            (override.targetIdPath.length === 0 &&
+              getParentTreeNode(override.id, overrideModule).id ===
+                sourceNode.id)))
+      ) {
+        overrides.push(override);
+      }
+    }
+    return overrides;
+  }
+);
 
 export const getSyntheticNodeInspectorNode = <TState extends PCEditorState>(
   node: SyntheticNode,

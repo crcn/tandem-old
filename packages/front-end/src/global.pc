@@ -5,49 +5,31 @@
   "name": "module",
   "children": [
     {
-      "id": "823f978a2483",
+      "id": "22702c5f1086",
       "name": "variable",
-      "label": "some font",
+      "label": "Default font",
       "type": "font",
       "children": [],
       "metadata": {},
-      "value": "Al Nile"
+      "value": "Avenir Next"
     },
     {
-      "id": "823f978a2949",
+      "id": "d8f6340b1442",
       "name": "variable",
-      "label": "some measurement",
-      "type": "number",
-      "children": [],
-      "metadata": {},
-      "value": "10px"
-    },
-    {
-      "id": "823f978a3880",
-      "name": "variable",
-      "label": "some color",
+      "label": "Font Color 1",
       "type": "color",
       "children": [],
       "metadata": {},
-      "value": "rgba(236, 17, 17, 1)"
+      "value": "rgba(31, 213, 137, 1)"
     },
     {
-      "id": "823f978a4966",
-      "name": "variable",
-      "label": "another color",
-      "type": "color",
-      "children": [],
-      "metadata": {},
-      "value": "rgba(106, 0, 255, 1)"
-    },
-    {
-      "id": "823f978a6362",
+      "id": "687850f18135",
       "name": "variable",
       "label": "another font",
       "type": "font",
       "children": [],
       "metadata": {},
-      "value": "Avenir"
+      "value": "Arial Black"
     }
   ]
 }

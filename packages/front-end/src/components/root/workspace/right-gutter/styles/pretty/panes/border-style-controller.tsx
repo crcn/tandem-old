@@ -2,6 +2,8 @@ import * as React from "react";
 import { dropdownMenuOptionFromValue } from "../../../../../../inputs/dropdown/controller";
 import { memoize, EMPTY_ARRAY } from "tandem-common";
 import { BaseBorderStyleProps } from "./borders.pc";
+import { mapPCVariablesToColorSwatchOptions } from "../../state";
+import { PCVariable } from "paperclip";
 
 const STYLE_OPTIONS = [
   undefined,
@@ -25,6 +27,7 @@ type BorderInfo = {
 };
 
 export type Props = {
+  globalVariables: PCVariable[];
   value: string;
   onChange: any;
   onChangeComplete: any;
@@ -58,7 +61,7 @@ export default (Base: React.ComponentClass<BaseBorderStyleProps>) =>
       );
     };
     render() {
-      const { value } = this.props;
+      const { value, globalVariables } = this.props;
       const {
         onColorChange,
         onColorChangeComplete,
@@ -71,6 +74,7 @@ export default (Base: React.ComponentClass<BaseBorderStyleProps>) =>
       return (
         <Base
           colorInputProps={{
+            swatchOptions: mapPCVariablesToColorSwatchOptions(globalVariables),
             value: color,
             onChange: onColorChange,
             onChangeComplete: onColorChangeComplete

@@ -11,7 +11,8 @@ import {
   PCVisibleNode,
   PCComponent,
   PCNode,
-  PCSourceTagNames
+  PCSourceTagNames,
+  getStyleVariableRefMap
 } from "./dsl";
 import {
   compileContentNodeAsVanilla,
@@ -21,7 +22,7 @@ import {
 import { DependencyGraph } from "./graph";
 import { createSytheticDocument, SyntheticDocument } from "./synthetic";
 
-const reuseComponentGraphMap = reuser(
+const reuseNodeGraphMap = reuser(
   500,
   (value: KeyValue<any>) => Object.keys(value).join(","),
   shallowEquals
@@ -30,7 +31,7 @@ const reuseComponentGraphMap = reuser(
 export type EvalInfo = {
   graph: DependencyGraph;
   variants: KeyValue<KeyValue<boolean>>;
-}
+};
 
 export const evaluateDependencyGraph = memoize(
   ({ graph, variants }): KeyValue<SyntheticDocument> => {
@@ -41,7 +42,7 @@ export const evaluateDependencyGraph = memoize(
       documents[uri] = evaluateModule(
         module,
         variants,
-        reuseComponentGraphMap(filterAssocRenderers(module, graph, renderers))
+        reuseNodeGraphMap(filterAssocRenderers(module, graph, renderers))
       );
     }
 
@@ -50,20 +51,26 @@ export const evaluateDependencyGraph = memoize(
 );
 
 const evaluateModule = memoize(
-  (module: PCModule, variants: KeyValue<KeyValue<boolean>>, usedRenderers: VanillaPCRenderers) => {
+  (
+    module: PCModule,
+    variants: KeyValue<KeyValue<boolean>>,
+    usedRenderers: VanillaPCRenderers
+  ) => {
     return createSytheticDocument(
       module.id,
-      module.children.filter(child => child.name !== PCSourceTagNames.VARIABLE).map(child => {
-        return usedRenderers[`_${child.id}`](
-          child.id,
-          null,
-          EMPTY_OBJECT,
-          EMPTY_OBJECT,
-          variants[child.id] || EMPTY_OBJECT,
-          EMPTY_OBJECT,
-          usedRenderers
-        );
-      })
+      module.children
+        .filter(child => child.name !== PCSourceTagNames.VARIABLE)
+        .map(child => {
+          return usedRenderers[`_${child.id}`](
+            child.id,
+            null,
+            EMPTY_OBJECT,
+            EMPTY_OBJECT,
+            variants[child.id] || EMPTY_OBJECT,
+            EMPTY_OBJECT,
+            usedRenderers
+          );
+        })
     );
   }
 );
@@ -92,7 +99,8 @@ const compileDependencyGraph = (graph: DependencyGraph) => {
     for (const contentNode of module.children) {
       renderers[`_${contentNode.id}`] = compileContentNodeAsVanilla(
         contentNode,
-        reuseComponentGraphMap(getComponentGraphRefMap(contentNode, graph))
+        reuseNodeGraphMap(getComponentGraphRefMap(contentNode, graph)),
+        reuseNodeGraphMap(getStyleVariableRefMap(contentNode, graph))
       );
     }
   }
