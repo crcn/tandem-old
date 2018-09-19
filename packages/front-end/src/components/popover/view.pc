@@ -99,6 +99,16 @@
               },
               "name": "override",
               "children": []
+            },
+            {
+              "id": "bc891e7571",
+              "propertyName": "style",
+              "targetIdPath": [
+                "2c83e997741"
+              ],
+              "value": {},
+              "name": "override",
+              "children": []
             }
           ],
           "metadata": {},

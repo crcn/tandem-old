@@ -971,16 +971,22 @@ export const getStyleVariableRefMap = memoize(
     >
 );
 
+export const getVariableRefMap = memoize(
+  (graph: DependencyGraph) =>
+    nodeAryToRefMap(getGlobalVariables(graph)) as KeyValue<PCVariable>
+);
+
 export const getStyleVariableGraphRefs = memoize(
   (node: PCNode, graph: DependencyGraph) => {
     const allRefs: PCVariable[] = [];
 
-    const refIds = isVisibleNode(node)
-      ? getNodeStyleRefIds(node.style)
-      : isPCOverride(node) &&
-        node.propertyName === PCOverridablePropertyName.STYLE
-        ? getNodeStyleRefIds(node.value)
-        : EMPTY_ARRAY;
+    const refIds =
+      isVisibleNode(node) || node.name === PCSourceTagNames.COMPONENT
+        ? getNodeStyleRefIds(node.style)
+        : isPCOverride(node) &&
+          node.propertyName === PCOverridablePropertyName.STYLE
+          ? getNodeStyleRefIds(node.value)
+          : EMPTY_ARRAY;
 
     for (let i = 0, { length } = refIds; i < length; i++) {
       const variable = getPCNode(refIds[i], graph) as PCVariable;
@@ -1022,19 +1028,24 @@ export const computeStyleWithVars = (
 ) => {
   const expandedStyle = {};
   for (const key in style) {
-    let value = style[key];
-
-    if (value && String(value).indexOf("--") !== -1) {
-      const cssVars = getCSSVars(value);
-      for (const cssVar of cssVars) {
-        var ref = varMap[cssVar];
-        value = ref ? value.replace(`--${cssVar}`, ref.value) : value;
-      }
-    }
-
-    expandedStyle[key] = value;
+    expandedStyle[key] = computeStyleValue(style[key], varMap);
   }
   return expandedStyle;
+};
+
+export const computeStyleValue = (
+  value: string,
+  varMap: KeyValue<PCVariable>
+) => {
+  if (value && String(value).indexOf("--") !== -1) {
+    const cssVars = getCSSVars(value);
+    for (const cssVar of cssVars) {
+      var ref = varMap[cssVar];
+      value = ref ? value.replace(`--${cssVar}`, ref.value) : value;
+    }
+  }
+
+  return value;
 };
 
 export const getNodeStyleRefIds = memoize((style: KeyValue<string>) => {

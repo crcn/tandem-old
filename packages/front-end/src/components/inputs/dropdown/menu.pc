@@ -14,7 +14,7 @@
         "border-bottom": "1px  rgba(0,0,0,0.05)",
         "user-select": "none",
         "cursor": "default",
-        "background": "rgba(250, 250, 250, 1)"
+        "background": "--bc891e755312"
       },
       "attributes": {},
       "id": "8b8bbe2c859177",
@@ -35,7 +35,7 @@
           "id": "cd433e9f899",
           "name": "variant",
           "label": "alt",
-          "isDefault": false,
+          "isDefault": true,
           "children": [],
           "metadata": {}
         },
@@ -45,7 +45,7 @@
           "propertyName": "style",
           "targetIdPath": [],
           "value": {
-            "background": "rgba(255, 255, 255, 1)",
+            "background": "--f63574de434",
             "border-bottom": "0px  rgba(0,0,0,0.05)"
           },
           "name": "override",
@@ -55,7 +55,7 @@
           "id": "cd433e9f6531",
           "name": "variant",
           "label": "special",
-          "isDefault": true,
+          "isDefault": false,
           "children": [],
           "metadata": {}
         },

@@ -29,6 +29,7 @@ import {
   PCComputedNoverOverrideMap,
   PCLabelOverride,
   isPCComponentInstance,
+  computeStyleValue,
   isPCComponentOrInstance,
   getPCNodeModule,
   getPCVariants
@@ -65,7 +66,8 @@ import {
   isSlot,
   PCSlot,
   PCPlug,
-  PCBaseElementChild
+  PCBaseElementChild,
+  getVariableRefMap
 } from "paperclip";
 export const compilePaperclipModuleToReact = (
   entry: PCDependency,
@@ -306,7 +308,8 @@ const translateStyle = (
       context = addLineItem(
         `" ${SVG_STYLE_PROP_MAP[propName] || propName}: ${translateStyleValue(
           key,
-          style[key]
+          style[key],
+          context
         ).replace(/[\n\r]/g, " ")};" + \n`,
         context
       );
@@ -315,10 +318,11 @@ const translateStyle = (
     // TODO - add vendor prefix stuff here
     for (const key in style) {
       context = addLineItem(
-        `" ${kebabCase(key)}: ${translateStyleValue(key, style[key]).replace(
-          /[\n\r]/g,
-          " "
-        )};" + \n`,
+        `" ${kebabCase(key)}: ${translateStyleValue(
+          key,
+          style[key],
+          context
+        ).replace(/[\n\r]/g, " ")};" + \n`,
         context
       );
     }
@@ -376,7 +380,12 @@ const translateStyleVariantOverrides = (
   return context;
 };
 
-const translateStyleValue = (key: string, value: any) => {
+const translateStyleValue = (
+  key: string,
+  value: any,
+  { graph }: TranslateContext
+) => {
+  value = computeStyleValue(value, getVariableRefMap(graph));
   if (typeof value === "number") {
     return value + "px";
   }
@@ -427,7 +436,9 @@ const translateContentNode = (
   }
 
   context = addLine(
-    `var variant = _${contentNode.id}Props.variant != null ? _${contentNode.id}Props.variant.split(" ").map(function(label) { return VARIANT_LABEL_ID_MAP[label.trim()] || label.trim(); }) : EMPTY_ARRAY;`,
+    `var variant = _${contentNode.id}Props.variant != null ? _${
+      contentNode.id
+    }Props.variant.split(" ").map(function(label) { return VARIANT_LABEL_ID_MAP[label.trim()] || label.trim(); }) : EMPTY_ARRAY;`,
     context
   );
 
@@ -594,8 +605,13 @@ const translateUsedComponentOverrides = (
     context
   );
 
-  if (instance.variant && Object.keys(instance.variant).length)  {
-    context = addLine(`variant: "${Object.keys(instance.variant).filter(key => instance.variant[key]).join(" ")}",`, context);
+  if (instance.variant && Object.keys(instance.variant).length) {
+    context = addLine(
+      `variant: "${Object.keys(instance.variant)
+        .filter(key => instance.variant[key])
+        .join(" ")}",`,
+      context
+    );
   }
 
   return context;
@@ -882,12 +898,14 @@ const translateDynamicOverrideKeys = (
   return context;
 };
 
-const translatePlugs = (component: ContentNode,instance:PCComponent | PCComponentInstanceElement, context: TranslateContext) =>{
-
+const translatePlugs = (
+  component: ContentNode,
+  instance: PCComponent | PCComponentInstanceElement,
+  context: TranslateContext
+) => {
   const plugs = instance.children.filter(
     child => child.name === PCSourceTagNames.PLUG
   ) as PCPlug[];
-
 
   for (const plug of plugs) {
     const visibleChildren = plug.children.filter(
@@ -925,7 +943,7 @@ const translatePlugs = (component: ContentNode,instance:PCComponent | PCComponen
   }
 
   return context;
-}
+};
 
 const translateDynamicOverrides = (
   component: ContentNode,
@@ -953,7 +971,6 @@ const translateDynamicOverrides = (
       );
     }
   }
-
 
   return context;
 };
@@ -1021,7 +1038,10 @@ const translateStaticOverride = (
       return addLine(`text: ${JSON.stringify(override.value)},`, context);
     }
     case PCOverridablePropertyName.VARIANT: {
-      return addLine(`variant: "${Object.keys(override.value).join(" ")}",`, context);
+      return addLine(
+        `variant: "${Object.keys(override.value).join(" ")}",`,
+        context
+      );
     }
     case PCOverridablePropertyName.ATTRIBUTES: {
       context = translateInnerAttributes(
