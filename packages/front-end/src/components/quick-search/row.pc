@@ -10,7 +10,7 @@
       "is": "div",
       "style": {
         "width": "100%",
-        "color": "rgba(122, 122, 122, 1)",
+        "color": "--24ce1e4d482",
         "fontSize": "11px",
         "fontFamily": "Helvetica",
         "padding": "4px 8px",
