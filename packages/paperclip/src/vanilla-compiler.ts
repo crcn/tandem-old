@@ -246,7 +246,7 @@ const translateDynamicOverrides = (
 ) => {
   let buffer = `Object.assign({}, _${node.id}Overrides, overrides._${
     node.id
-  }Overrides, {`;
+  }Overrides, overrides, {`;
 
   for (const child of node.children as PCNode[]) {
     if (child.name === PCSourceTagNames.PLUG && child.children.length) {

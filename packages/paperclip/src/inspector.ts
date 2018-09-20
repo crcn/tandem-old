@@ -179,7 +179,8 @@ export const evaluateModuleInspector = (
 const evaluateInspectorNodeChildren = (
   parent: PCNode,
   instancePath: string,
-  graph: DependencyGraph
+  graph: DependencyGraph,
+  fromInstanceShadow?: boolean
 ) => {
   if (extendsComponent(parent)) {
     const component = getPCNode(
@@ -187,9 +188,10 @@ const evaluateInspectorNodeChildren = (
       graph
     ) as PCComponent;
     const shadowInstancePath =
-      parent.name === PCSourceTagNames.COMPONENT_INSTANCE ||
-      getParentTreeNode(parent.id, getPCNodeModule(parent.id, graph)).name ===
-        PCSourceTagNames.MODULE
+      !fromInstanceShadow &&
+      (parent.name === PCSourceTagNames.COMPONENT_INSTANCE ||
+        getParentTreeNode(parent.id, getPCNodeModule(parent.id, graph)).name ===
+          PCSourceTagNames.MODULE)
         ? addInstancePath(instancePath, parent)
         : instancePath;
     return [
@@ -197,7 +199,12 @@ const evaluateInspectorNodeChildren = (
         component,
         shadowInstancePath,
         false,
-        evaluateInspectorNodeChildren(component, shadowInstancePath, graph)
+        evaluateInspectorNodeChildren(
+          component,
+          shadowInstancePath,
+          graph,
+          true
+        )
       ),
       ...getComponentSlots(component, graph).map(slot => {
         const plug = getSlotPlug(parent as PCComponent, slot);

@@ -1161,11 +1161,7 @@ export const canvasReducer = (state: RootState, action: Action) => {
       }
 
       if (!altKey) {
-        state = handleArtboardSelectionFromAction(
-          state,
-          targetNodeId,
-          action as CanvasToolOverlayMouseMoved
-        );
+        state = handleArtboardSelectionFromAction(state, targetNodeId);
         state = updateEditorWindow(
           {
             secondarySelection: false
@@ -1619,11 +1615,7 @@ export const canvasReducer = (state: RootState, action: Action) => {
         ).uri,
         state
       );
-      return handleArtboardSelectionFromAction(
-        state,
-        frame.contentNodeId,
-        action as CanvasToolArtboardTitleClicked
-      );
+      return handleArtboardSelectionFromAction(state, frame.contentNodeId);
     }
     case CANVAS_TOOL_WINDOW_BACKGROUND_CLICKED: {
       return setSelectedSyntheticVisibleNodeIds(state);
@@ -2327,10 +2319,8 @@ const handleArtboardSelectionFromAction = <
   T extends { sourceEvent: React.MouseEvent<any> }
 >(
   state: RootState,
-  nodeId: string,
-  event: T
+  nodeId: string
 ) => {
-  const { sourceEvent } = event;
   state = setRootStateSyntheticVisibleNodeExpanded(nodeId, true, state);
   state = setSelectedSyntheticVisibleNodeIds(state, nodeId);
   return state;

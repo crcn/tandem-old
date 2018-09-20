@@ -1323,7 +1323,7 @@ export const setSelectedSyntheticVisibleNodeIds = (
   const nodeIds = uniq([...selectionIds]).filter(Boolean);
   root = nodeIds.reduce(
     (state, nodeId) =>
-      setRootStateSyntheticVisibleNodeExpanded(nodeId, true, root),
+      setRootStateSyntheticVisibleNodeExpanded(nodeId, true, state),
     root
   );
   root = updateRootState(
