@@ -8,7 +8,11 @@
       "label": "Left Gutter",
       "is": "div",
       "style": {
-        "border-right": "1px solid rgba(230, 230, 230, 1)"
+        "border-right": "1px solid rgba(230, 230, 230, 1)",
+        "display": "flex",
+        "flex-direction": "column",
+        "width": "250px",
+        "height": "100vh"
       },
       "attributes": {},
       "id": "317401b1484197",
@@ -20,7 +24,9 @@
           "is": "b34e7ef42482727",
           "name": "component-instance",
           "attributes": {},
-          "style": {},
+          "style": {
+            "height": "100%"
+          },
           "children": [
             {
               "id": "d3bf183b35",
@@ -104,7 +110,29 @@
               "right": 669.6734828399708,
               "bottom": 624.6903757530276
             }
-          }
+          },
+          "label": "open modules pane"
+        },
+        {
+          "id": "5a14767c294089",
+          "is": "5a14767c291836",
+          "name": "component-instance",
+          "attributes": {},
+          "style": {
+            "flex-grow": "1",
+            "height": "100%"
+          },
+          "children": [],
+          "metadata": {
+            "bounds": {
+              "left": 1511,
+              "top": 454,
+              "right": 1833.3589710213191,
+              "bottom": 726.88545913149
+            }
+          },
+          "variant": {},
+          "label": "file navigator pane"
         }
       ],
       "metadata": {
@@ -112,10 +140,13 @@
           "left": 788.4659960545293,
           "top": 293.94514767932486,
           "right": 1410.3366008365265,
-          "bottom": 1017.6441631504922
+          "bottom": 1205.4946944576616
         }
       },
-      "variant": {}
+      "variant": {},
+      "controllers": [
+        "./controller.tsx"
+      ]
     }
   ]
 }

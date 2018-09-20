@@ -1,52 +1,58 @@
 IMMEDIATE:
 
+- refactor file navigator
 - custom chrome
+  project name in titlebar
+- text preview (code)
 
-- top bar must scroll
-- refactor styles pane to use computed override map instead of derriving props from synthetic elements.
-- varaible text inputs
-- inherit styles from parent typogograph
+- file navigator needs to refresh when new file is added
 
-- override resets
+* top bar must scroll
+* refactor styles pane to use computed override map instead of derriving props from synthetic elements.
+* varaible text inputs
+* inherit styles from parent typogograph
 
-- wire up variables input
+* override resets
+
+* wire up variables input
   - dropdown UI change ()
   - input auto-complete
 
-* start refactoring UI to use variables using same color scheme
+- start refactoring UI to use variables using same color scheme
 
   - remove inherited styles
   - ensure that no wild colors exist (create linting tool)
 
-* selectedVariant fudges with other panes
-* variants don't show up for instances
-* variants for component that inherit instance
-* inherit styles per variant
-*
+- selectedVariant fudges with other panes
+- variants don't show up for instances
+- variants for component that inherit instance
+- inherit styles per variant
+-
 
-- instance style reset
+* instance style reset
 
-- BUGS
+* BUGS
 
+  - clientHeight error when deleting items too quickly
   - cannot inherit for instances
 
-- unsaved prompt
-- unsaved button
+* unsaved prompt
+* unsaved button
 
-* style inheritence
+- style inheritence
 
   - bolden label to indicate override
   - hover over label should show parent
   - fill in typography with parent props
 
-* redesign variants pane
+- redesign variants pane
 
-* EASY
+- EASY
 
   - eliminiate recompose
   - reduce `root` usage
 
-* UX
+- UX
 
   - secondary input for slider (particularly for opacity)
   - all layers must be expose. For component instances, take component label
@@ -54,18 +60,18 @@ IMMEDIATE:
   - unsaved files indicator
   - select parent hotkey
 
-* fix controllers pane
+- fix controllers pane
 
-* prepare for online usage
+- prepare for online usage
 
   - edit code in app
   - preview tab
   - "download app" button
 
-* update variant input
+- update variant input
   - not toggleable
 
-- start redesign (dark)
+* start redesign (dark)
 
 BUGS:
 

@@ -211,6 +211,29 @@
               },
               "children": [
                 {
+                  "id": "7982ea83503",
+                  "is": "5a14767c667",
+                  "name": "component-instance",
+                  "attributes": {},
+                  "style": {
+                    "display": "none",
+                    "height": "1.1em",
+                    "position": "absolute",
+                    "top": "-4px",
+                    "left": "1px"
+                  },
+                  "children": [],
+                  "metadata": {
+                    "bounds": {
+                      "left": 640,
+                      "top": 91,
+                      "right": 1040,
+                      "bottom": 391
+                    }
+                  },
+                  "variant": {}
+                },
+                {
                   "id": "e4317da214899",
                   "is": "e387963e7248",
                   "name": "component-instance",
@@ -624,7 +647,7 @@
           "id": "a6fd80839",
           "name": "variant",
           "label": "file",
-          "isDefault": true,
+          "isDefault": false,
           "children": [],
           "metadata": {}
         },
@@ -634,8 +657,7 @@
           "propertyName": "style",
           "targetIdPath": [],
           "value": {
-            "font-family": "--22702c5f1086",
-            "background": "rgba(223, 222, 222, 1)"
+            "font-family": "--22702c5f1086"
           },
           "name": "override",
           "children": []
@@ -814,6 +836,46 @@
             "d3bf183b18"
           ],
           "value": {},
+          "name": "override",
+          "children": []
+        },
+        {
+          "id": "5a14767c27719",
+          "name": "variant",
+          "label": "header",
+          "isDefault": false,
+          "children": [],
+          "metadata": {}
+        },
+        {
+          "id": "5a14767c28925",
+          "variantId": "5a14767c27719",
+          "propertyName": "style",
+          "targetIdPath": [],
+          "value": {
+            "background": "--d8f6340b1442"
+          },
+          "name": "override",
+          "children": []
+        },
+        {
+          "id": "7982ea828779",
+          "name": "variant",
+          "label": "folder",
+          "isDefault": true,
+          "children": [],
+          "metadata": {}
+        },
+        {
+          "id": "7982ea834108",
+          "variantId": "7982ea828779",
+          "propertyName": "style",
+          "targetIdPath": [
+            "7982ea83503"
+          ],
+          "value": {
+            "display": "block"
+          },
           "name": "override",
           "children": []
         }

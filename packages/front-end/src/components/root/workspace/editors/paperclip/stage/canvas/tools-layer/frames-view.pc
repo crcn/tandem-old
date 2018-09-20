@@ -42,8 +42,8 @@
             "top": "-4px",
             "position": "absolute",
             "width": "100%",
-            "font-family": "Helvetica",
-            "color": "rgba(160, 155, 155, 1)",
+            "font-family": "--22702c5f1086",
+            "color": "--24ce1e4d482",
             "cursor": "default",
             "display": "flex",
             "overflow": "hidden",
@@ -91,7 +91,6 @@
                   "label": "Title",
                   "value": "Title",
                   "style": {
-                    "font-family": "Helvetica",
                     "color": "rgba(160, 155, 155, 1)"
                   },
                   "children": [],
@@ -172,7 +171,9 @@
     {
       "label": "Frames",
       "is": "div",
-      "style": {},
+      "style": {
+        "background": "--bc891e755312"
+      },
       "attributes": {},
       "id": "bae08a2e609807",
       "name": "component",

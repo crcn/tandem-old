@@ -94,17 +94,6 @@
                   },
                   "name": "override",
                   "children": []
-                },
-                {
-                  "id": "eb20349c94474",
-                  "propertyName": "style",
-                  "targetIdPath": [
-                    "5d6bd010465269",
-                    "483373f987275"
-                  ],
-                  "value": {},
-                  "name": "override",
-                  "children": []
                 }
               ],
               "metadata": {},

@@ -16,7 +16,7 @@
         "border-radius": "2px",
         "display": "flex",
         "flex-direction": "column",
-        "border": "1px solid --d8f6340b1442"
+        "border": "1px solid rgba(0,0,0,0.1)"
       },
       "attributes": {},
       "id": "dcd2c13f21458",
@@ -289,15 +289,37 @@
       "children": [],
       "metadata": {
         "bounds": {
-          "left": 662,
-          "top": 294,
-          "right": 1576,
-          "bottom": 317
+          "left": 510,
+          "top": 272,
+          "right": 1424,
+          "bottom": 295
         }
       },
       "controllers": [
         "../focus/controller.tsx"
       ],
+      "variant": {}
+    },
+    {
+      "label": "Component",
+      "is": "div",
+      "style": {
+        "box-sizing": "border-box",
+        "display": "block",
+        "box-shadow": " 0px 0px 10px 0px rgba(0,0,0,1)"
+      },
+      "attributes": {},
+      "id": "babf9bd54",
+      "name": "component",
+      "children": [],
+      "metadata": {
+        "bounds": {
+          "left": -335.14126422199706,
+          "top": 575.7402815827418,
+          "right": -235.14126422199706,
+          "bottom": 675.7402815827418
+        }
+      },
       "variant": {}
     }
   ]

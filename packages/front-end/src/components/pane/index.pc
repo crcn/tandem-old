@@ -30,7 +30,7 @@
             "padding-bottom": "8px",
             "box-sizing": "border-box",
             "text-transform": "uppercase",
-            "color": "--d8f6340b1442",
+            "color": "--30f4693267675",
             "font-size": "0.9em",
             "font-weight": "500",
             "display": "no"

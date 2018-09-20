@@ -202,11 +202,9 @@ export default (Base: React.ComponentClass<BaseNodeLayerProps>) => {
         private makeVisible(selected: boolean) {
           if (selected) {
             const self = ReactDOM.findDOMNode(this) as HTMLSpanElement;
-            console.log(self);
 
             setTimeout(() => {
               const label = self.children[1].children[0].children[1];
-              console.log(label);
 
               // icky, but we're picking the label here
               scrollIntoView(label, {
@@ -320,6 +318,9 @@ export default (Base: React.ComponentClass<BaseNodeLayerProps>) => {
         width: `calc(100% - ${depth * LAYER_PADDING}px)`
       };
 
+      const isFile =
+        isSourceRep && assocSourceNodeName === PCSourceTagNames.MODULE;
+
       return (
         <span style={CONTAINER_STYLE}>
           <BeforeDropZone style={dropZoneStyle} inspectorNode={inspectorNode} />
@@ -333,9 +334,8 @@ export default (Base: React.ComponentClass<BaseNodeLayerProps>) => {
                     labelInputProps={{ onKeyDown: onLabelInputKeyDown }}
                     variant={cx({
                       editingLabel: editingLabel,
-                      file:
-                        isSourceRep &&
-                        assocSourceNodeName === PCSourceTagNames.MODULE,
+                      header: isFile,
+                      file: isFile,
                       component:
                         isSourceRep &&
                         assocSourceNodeName === PCSourceTagNames.COMPONENT,
