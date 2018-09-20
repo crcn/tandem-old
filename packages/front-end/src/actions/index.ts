@@ -83,16 +83,21 @@ export const VARIANT_DEFAULT_SWITCH_CLICKED = "VARIANT_DEFAULT_SWITCH_CLICKED";
 export const VARIANT_LABEL_CHANGED = "VARIANT_LABEL_CHANGED";
 export const ADD_STYLE_BUTTON_CLICKED = "ADD_STYLE_BUTTON_CLICKED";
 export const NEW_STYLE_VARIANT_CONFIRMED = "NEW_STYLE_VARIANT_CONFIRMED";
-export const NEW_STYLE_VARIANT_BUTTON_CLICKED = "NEW_STYLE_VARIANT_BUTTON_CLICKED";
+export const NEW_STYLE_VARIANT_BUTTON_CLICKED =
+  "NEW_STYLE_VARIANT_BUTTON_CLICKED";
 export const PROMPT_OK_BUTTON_CLICKED = "PROMPT_OK_BUTTON_CLICKED";
 export const PROMPT_CANCEL_BUTTON_CLICKED = "PROMPT_CANCEL_BUTTON_CLICKED";
 export const REMOVE_STYLE_BUTTON_CLICKED = "ADD_STYLE_BUTTON_CLICKED";
-export const EDIT_VARIANT_NAME_BUTTON_CLICKED = "EDIT_VARIANT_NAME_BUTTON_CLICKED";
+export const EDIT_VARIANT_NAME_BUTTON_CLICKED =
+  "EDIT_VARIANT_NAME_BUTTON_CLICKED";
 export const EDIT_VARIANT_NAME_CONFIRMED = "EDIT_VARIANT_NAME_CONFIRMED";
 export const STYLE_VARIANT_DROPDOWN_CHANGED = "STYLE_VARIANT_DROPDOWN_CHANGED";
 export const ADD_VARIABLE_BUTTON_CLICKED = "ADD_VARIABLE_BUTTON_CLICKED";
-export const VARIABLE_LABEL_CHANGED = "VARIABLE_LABEL_CHANGED";
+export const VARIABLE_LABEL_CHANGE_COMPLETED =
+  "VARIABLE_LABEL_CHANGE_COMPLETED";
 export const VARIABLE_VALUE_CHANGED = "VARIABLE_VALUE_CHANGED";
+export const VARIABLE_VALUE_CHANGE_COMPLETED =
+  "VARIABLE_VALUE_CHANGE_COMPLETED";
 export const COMPONENT_INSTANCE_VARIANT_TOGGLED =
   "COMPONENT_INSTANCE_VARIANT_TOGGLED";
 export const INSTANCE_VARIANT_RESET_CLICKED = "INSTANCE_VARIANT_RESET_CLICKED";
@@ -202,11 +207,9 @@ export type RawCSSTextChanged = {
   value: string;
 } & Action;
 
-
 export type AddVariableButtonClicked = {
   variableType: PCVariableType;
 } & Action;
-
 
 export type VariablePropertyChanged = {
   variable: PCVariable;
@@ -283,7 +286,6 @@ export type StyleVariantDropdownChanged = {
   variant: PCVariant;
   component: PCComponent;
 } & Action;
-
 
 export type TreeLayerLabelChanged = {
   label: string;
@@ -373,9 +375,7 @@ export type PromptConfirmed = {
   inputValue: string;
 } & Action;
 
-export type PromptCancelButtonClicked = {
-
-} & Action;
+export type PromptCancelButtonClicked = {} & Action;
 
 export type TextValueChanged = {
   value: string;
@@ -535,7 +535,10 @@ export const fileNavigatorToggleDirectoryClicked = (
   type: FILE_NAVIGATOR_TOGGLE_DIRECTORY_CLICKED
 });
 
-export const promptConfirmed = (inputValue: string, actionType: string): PromptConfirmed => ({
+export const promptConfirmed = (
+  inputValue: string,
+  actionType: string
+): PromptConfirmed => ({
   inputValue,
   type: actionType
 });
@@ -575,26 +578,42 @@ export const styleVariantDropdownChanged = (
   variant
 });
 
-export const addVariableButtonClicked = (variableType: PCVariableType): AddVariableButtonClicked => ({
+export const addVariableButtonClicked = (
+  variableType: PCVariableType
+): AddVariableButtonClicked => ({
   variableType,
   type: ADD_VARIABLE_BUTTON_CLICKED
 });
 
-export const variableLabelChanged = (variable: PCVariable, value: string): VariablePropertyChanged => ({
+export const variableLabelChangeCompleted = (
+  variable: PCVariable,
+  value: string
+): VariablePropertyChanged => ({
   variable,
-  type: VARIABLE_LABEL_CHANGED,
-  value,
+  type: VARIABLE_LABEL_CHANGE_COMPLETED,
+  value
 });
 
-export const variableValueChanged = (variable: PCVariable,value: string): VariablePropertyChanged => ({
+export const variableValueChanged = (
+  variable: PCVariable,
+  value: string
+): VariablePropertyChanged => ({
   variable,
   type: VARIABLE_VALUE_CHANGED,
-  value,
+  value
 });
 
-export const newStyleVariantButtonClicked = (
-): Action => ({
-  type: NEW_STYLE_VARIANT_BUTTON_CLICKED,
+export const variableValueChangeCompleted = (
+  variable: PCVariable,
+  value: string
+): VariablePropertyChanged => ({
+  variable,
+  type: VARIABLE_VALUE_CHANGE_COMPLETED,
+  value
+});
+
+export const newStyleVariantButtonClicked = (): Action => ({
+  type: NEW_STYLE_VARIANT_BUTTON_CLICKED
 });
 
 export const removeStyleButtonClicked = (): Action => ({

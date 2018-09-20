@@ -85,7 +85,6 @@ import {
   EDITOR_TAB_CLOSE_BUTTON_CLICKED,
   STYLE_VARIANT_DROPDOWN_CHANGED,
   NEW_STYLE_VARIANT_BUTTON_CLICKED,
-
   StyleVariantDropdownChanged,
   REMOVE_STYLE_BUTTON_CLICKED,
   SHORTCUT_SELECT_NEXT_TAB,
@@ -132,10 +131,11 @@ import {
   EDIT_VARIANT_NAME_CONFIRMED,
   EDIT_VARIANT_NAME_BUTTON_CLICKED,
   ADD_VARIABLE_BUTTON_CLICKED,
-  VARIABLE_LABEL_CHANGED,
+  VARIABLE_LABEL_CHANGE_COMPLETED,
   VARIABLE_VALUE_CHANGED,
   VariablePropertyChanged,
-  AddVariableButtonClicked
+  AddVariableButtonClicked,
+  VARIABLE_VALUE_CHANGE_COMPLETED
 } from "../actions";
 import {
   queueOpenFile,
@@ -1195,7 +1195,7 @@ export const canvasReducer = (state: RootState, action: Action) => {
     }
 
     case ADD_VARIABLE_BUTTON_CLICKED: {
-      const {variableType: type} = action as AddVariableButtonClicked;
+      const { variableType: type } = action as AddVariableButtonClicked;
       const globalDependency = state.graph[state.globalFileUri];
       state = persistRootState(state => {
         state = persistAddVariable(null, type, globalDependency.content, state);
@@ -1204,23 +1204,28 @@ export const canvasReducer = (state: RootState, action: Action) => {
       return state;
     }
 
-    case VARIABLE_LABEL_CHANGED: {
-      const {variable, value: label} = action as VariablePropertyChanged;
+    case VARIABLE_LABEL_CHANGE_COMPLETED: {
+      const { variable, value: label } = action as VariablePropertyChanged;
       state = persistRootState(state => {
         if (!label) {
           return persistRemovePCNode(variable, state);
         }
-        state = persistUpdateVariable({label}, variable, state);
+        state = persistUpdateVariable({ label }, variable, state);
         return state;
       }, state);
       return state;
     }
 
-
     case VARIABLE_VALUE_CHANGED: {
-      const {variable, value} = action as VariablePropertyChanged;
+      const { variable, value } = action as VariablePropertyChanged;
+      state = persistUpdateVariable({ value }, variable, state);
+      return state;
+    }
+
+    case VARIABLE_VALUE_CHANGE_COMPLETED: {
+      const { variable, value } = action as VariablePropertyChanged;
       state = persistRootState(state => {
-        state = persistUpdateVariable({value}, variable, state);
+        state = persistUpdateVariable({ value }, variable, state);
         return state;
       }, state);
       return state;
@@ -1498,30 +1503,39 @@ export const canvasReducer = (state: RootState, action: Action) => {
     }
 
     case EDIT_VARIANT_NAME_BUTTON_CLICKED: {
-      return updateRootState({ prompt: {
-        label: "Style Name",
-        defaultValue: state.selectedVariant.label,
-        okActionType: EDIT_VARIANT_NAME_CONFIRMED
-      }}, state);
+      return updateRootState(
+        {
+          prompt: {
+            label: "Style Name",
+            defaultValue: state.selectedVariant.label,
+            okActionType: EDIT_VARIANT_NAME_CONFIRMED
+          }
+        },
+        state
+      );
     }
 
     case EDIT_VARIANT_NAME_CONFIRMED: {
-      const {inputValue: label} = action as PromptConfirmed;
+      const { inputValue: label } = action as PromptConfirmed;
       const variant = state.selectedVariant;
       state = persistRootState(
-        state => persistUpdateVariant({label}, variant, state),
+        state => persistUpdateVariant({ label }, variant, state),
         state
       );
       state = updateRootState({ prompt: null }, state);
       return state;
     }
 
-
     case NEW_STYLE_VARIANT_BUTTON_CLICKED: {
-      return updateRootState({ prompt: {
-        label: "Style Name",
-        okActionType: NEW_STYLE_VARIANT_CONFIRMED
-      }}, state);
+      return updateRootState(
+        {
+          prompt: {
+            label: "Style Name",
+            okActionType: NEW_STYLE_VARIANT_CONFIRMED
+          }
+        },
+        state
+      );
     }
 
     case PROMPT_CANCEL_BUTTON_CLICKED: {
@@ -1529,7 +1543,7 @@ export const canvasReducer = (state: RootState, action: Action) => {
     }
 
     case NEW_STYLE_VARIANT_CONFIRMED: {
-      const {inputValue} = action as PromptConfirmed;
+      const { inputValue } = action as PromptConfirmed;
 
       const node = getSyntheticNodeById(
         state.selectedSyntheticNodeIds[0],
@@ -2156,7 +2170,10 @@ const shortcutReducer = (state: RootState, action: Action): RootState => {
         );
       }
 
-      let parent: InspectorNode = getParentTreeNode(firstNode.id, state.sourceNodeInspector);
+      let parent: InspectorNode = getParentTreeNode(
+        firstNode.id,
+        state.sourceNodeInspector
+      );
       const index = parent.children.indexOf(firstNode);
 
       state = persistRootState(state => {
@@ -2211,7 +2228,8 @@ const shortcutReducer = (state: RootState, action: Action): RootState => {
 
       const nextSelectedNodeId = nextChildren.length
         ? nextChildren[Math.min(index, nextChildren.length - 1)].id
-        : getParentTreeNode(parent.id, state.sourceNodeInspector).name !== InspectorTreeNodeName.ROOT
+        : getParentTreeNode(parent.id, state.sourceNodeInspector).name !==
+          InspectorTreeNodeName.ROOT
           ? parent.id
           : null;
 
@@ -2239,7 +2257,10 @@ const shortcutReducer = (state: RootState, action: Action): RootState => {
       } else {
         // does not exist as rep
         state = updateRootState(
-          { selectedInspectorNodeIds: EMPTY_ARRAY, selectedSyntheticNodeIds: EMPTY_ARRAY },
+          {
+            selectedInspectorNodeIds: EMPTY_ARRAY,
+            selectedSyntheticNodeIds: EMPTY_ARRAY
+          },
           state
         );
       }

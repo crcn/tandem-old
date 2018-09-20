@@ -66,6 +66,15 @@
       "children": [],
       "metadata": {},
       "value": "rgba(202, 234, 255, 1)"
+    },
+    {
+      "id": "6e691d77322",
+      "name": "variable",
+      "label": "color 5",
+      "type": "color",
+      "children": [],
+      "metadata": {},
+      "value": "rgba(213, 19, 19, 1)"
     }
   ]
 }

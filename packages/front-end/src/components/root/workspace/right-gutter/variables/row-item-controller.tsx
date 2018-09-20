@@ -5,8 +5,9 @@ import { PCVariable, PCVariableType } from "paperclip";
 import { BaseVariableRowItemProps } from "./view.pc";
 import { DropdownMenuOption } from "../../../../inputs/dropdown/controller";
 import {
-  variableLabelChanged,
-  variableValueChanged
+  variableLabelChangeCompleted,
+  variableValueChanged,
+  variableValueChangeCompleted
 } from "../../../../../actions";
 import { EMPTY_ARRAY } from "tandem-common";
 import { FontFamily } from "../../../../../state";
@@ -23,11 +24,22 @@ export default (Base: React.ComponentClass<BaseVariableRowItemProps>) =>
     onValueChange = value => {
       this.props.dispatch(variableValueChanged(this.props.variable, value));
     };
-    onLabelChange = value => {
-      this.props.dispatch(variableLabelChanged(this.props.variable, value));
+    onValueChangeComplete = value => {
+      this.props.dispatch(
+        variableValueChangeCompleted(this.props.variable, value)
+      );
+    };
+    onLabelChangeComplete = value => {
+      this.props.dispatch(
+        variableLabelChangeCompleted(this.props.variable, value)
+      );
     };
     render() {
-      const { onValueChange, onLabelChange } = this;
+      const {
+        onValueChange,
+        onValueChangeComplete,
+        onLabelChangeComplete
+      } = this;
       const { variable, fontFamilies, ...rest } = this.props;
       const limited = variable.type === PCVariableType.FONT;
       const color = variable.type === PCVariableType.COLOR;
@@ -52,21 +64,23 @@ export default (Base: React.ComponentClass<BaseVariableRowItemProps>) =>
           limitedInputProps={{
             options: limitedOptions,
             onChange: onValueChange,
+            onChangeComplete: onValueChangeComplete,
             value: variable.value
           }}
           unlimitedInputProps={{
             onChange: onValueChange,
+            onChangeComplete: onValueChangeComplete,
             value: variable.value
           }}
           nameInputProps={{
             focus: !variable.label,
-            onChangeComplete: onLabelChange,
+            onChangeComplete: onLabelChangeComplete,
             value: variable.label
           }}
           colorInputProps={{
             swatchOptions: EMPTY_ARRAY,
             onChange: onValueChange,
-            onChangeComplete: onValueChange,
+            onChangeComplete: onValueChangeComplete,
             value: variable.value
           }}
         />

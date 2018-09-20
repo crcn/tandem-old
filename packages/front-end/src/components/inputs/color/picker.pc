@@ -1075,27 +1075,6 @@
         }
       },
       "variant": {}
-    },
-    {
-      "id": "61c555e3161",
-      "name": "text",
-      "label": "Text",
-      "value": "Something like this",
-      "style": {
-        "color": "--24ce1e4d482",
-        "font-family": "--22702c5f1086",
-        "opacity": 0.693,
-        "background": "--bc891e755312"
-      },
-      "children": [],
-      "metadata": {
-        "bounds": {
-          "left": -327.23562633271194,
-          "top": 400.57377049180326,
-          "right": -227.23562633271194,
-          "bottom": 500.57377049180326
-        }
-      }
     }
   ]
 }
