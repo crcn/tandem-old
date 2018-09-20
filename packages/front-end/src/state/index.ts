@@ -184,6 +184,7 @@ export type RootState = {
   activeEditorFilePath?: string;
   confirm?: Confirm;
   prompt?: Prompt;
+  prevGraph?: DependencyGraph;
   showSidebar?: boolean;
 
   // TODO - may need to be moved to EditorWindow
@@ -243,7 +244,7 @@ export const persistRootState = (
   persistPaperclipState: (state: RootState) => RootState,
   state: RootState
 ) => {
-  const oldGraph = state.graph;
+  const oldGraph = state.prevGraph || state.graph;
   state = keepActiveFileOpen(
     updateRootState(persistPaperclipState(state), state)
   );
@@ -399,6 +400,16 @@ export const getInsertableSourceNodeScope = memoize(
   }
 );
 
+export const teeHistory = (state: RootState) => {
+  if (state.prevGraph) {
+    return state;
+  }
+  return {
+    ...state,
+    prevGraph: state.graph
+  };
+};
+
 export const getSyntheticRelativesOfParentSource = memoize(
   (
     node: SyntheticVisibleNode,
@@ -458,11 +469,13 @@ const addHistory = (
     });
   }
 
-  const modifiedDeps = getModifiedDependencies(newGraph, oldGraph);
+  const currentGraph = getGraphAtHistoricPoint(items);
+
+  const modifiedDeps = getModifiedDependencies(newGraph, currentGraph);
   const transforms = {};
   for (const dep of modifiedDeps) {
     transforms[dep.uri] = diffTreeNode(
-      oldGraph[dep.uri].content,
+      currentGraph[dep.uri].content,
       dep.content,
       EMPTY_OBJECT
     );
@@ -470,6 +483,7 @@ const addHistory = (
 
   return updateRootState(
     {
+      prevGraph: null,
       history: {
         index: items.length + 1,
         items: [
@@ -493,31 +507,43 @@ const getNextHistorySnapshot = (items: GraphHistoryItem[]) => {
   }
 };
 
-const moveDependencyRecordHistory = (
-  pos: number,
-  state: RootState
-): RootState => {
-  const newIndex = clamp(
-    state.history.index + pos,
-    1,
-    state.history.items.length
-  );
-  const items = state.history.items.slice(0, newIndex);
+const getGraphAtHistoricPoint = (
+  allItems: GraphHistoryItem[],
+  index: number = allItems.length
+) => {
+  const items = allItems.slice(0, index);
   const snapshotItem = getNextHistorySnapshot(items);
   const snapshotIndex = items.indexOf(snapshotItem);
   const transformItems = items.slice(snapshotIndex + 1);
 
   const graphSnapshot = transformItems.reduce((graph, { transforms }) => {
-    const newGraph = {};
+    const newGraph = { ...graph };
     for (const uri in transforms) {
       newGraph[uri] = {
-        ...graph[uri],
+        ...newGraph[uri],
         content: patchTreeNode(transforms[uri], graph[uri].content)
       };
     }
-
     return newGraph;
-  }, snapshotItem.snapshot);
+  }, snapshotItem.snapshot) as DependencyGraph;
+
+  return graphSnapshot;
+};
+
+const moveDependencyRecordHistory = (
+  pos: number,
+  state: RootState
+): RootState => {
+  if (!state.history.items.length) {
+    return state;
+  }
+  const newIndex = clamp(
+    state.history.index + pos,
+    1,
+    state.history.items.length
+  );
+
+  const graphSnapshot = getGraphAtHistoricPoint(state.history.items, newIndex);
 
   state = updateDependencyGraph(graphSnapshot, state);
   state = refreshModuleInspectorNodes(state);

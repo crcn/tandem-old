@@ -1,5 +1,6 @@
 IMMEDIATE:
 
+- cannot use color vars that have undefined values
 - refactor styles pane to use computed override map instead of derriving props from synthetic elements.
 - varaible text inputs
 - inherit styles from parent typogograph

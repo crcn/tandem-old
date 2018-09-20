@@ -1075,6 +1075,38 @@
         }
       },
       "variant": {}
+    },
+    {
+      "id": "56b0faa8161",
+      "label": "Element",
+      "is": "div",
+      "name": "element",
+      "attributes": {},
+      "style": {
+        "box-sizing": "border-box",
+        "display": "block"
+      },
+      "children": [
+        {
+          "id": "56b0faa8322",
+          "name": "text",
+          "label": "Text",
+          "value": "Click to edit",
+          "style": {
+            "color": "--6e691d77322"
+          },
+          "children": [],
+          "metadata": {}
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": -476.8597962534947,
+          "top": 330.2042695445041,
+          "right": -376.8597962534947,
+          "bottom": 430.2042695445041
+        }
+      }
     }
   ]
 }

@@ -191,7 +191,8 @@ import {
   getInsertableSourceNodeFromSyntheticNode,
   getCanvasMouseTargetInspectorNode,
   setHoveringInspectorNodeIds,
-  refreshModuleInspectorNodes
+  refreshModuleInspectorNodes,
+  teeHistory
 } from "../state";
 import {
   PCSourceTagNames,
@@ -1218,6 +1219,7 @@ export const canvasReducer = (state: RootState, action: Action) => {
 
     case VARIABLE_VALUE_CHANGED: {
       const { variable, value } = action as VariablePropertyChanged;
+      state = teeHistory(state);
       state = persistUpdateVariable({ value }, variable, state);
       return state;
     }
@@ -1318,6 +1320,7 @@ export const canvasReducer = (state: RootState, action: Action) => {
     }
     case CSS_PROPERTY_CHANGED: {
       const { name, value } = action as CSSPropertyChanged;
+      state = teeHistory(state);
       return state.selectedSyntheticNodeIds.reduce(
         (state, nodeId) =>
           persistCSSProperty(
