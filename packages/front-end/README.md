@@ -1,5 +1,7 @@
 IMMEDIATE:
 
+- custom chrome
+
 - top bar must scroll
 - refactor styles pane to use computed override map instead of derriving props from synthetic elements.
 - varaible text inputs

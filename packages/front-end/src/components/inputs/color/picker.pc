@@ -46,11 +46,11 @@
               "attributes": {},
               "style": {
                 "box-sizing": "border-box",
-                "background": "rgba(240, 240, 240, 1)",
                 "position": "relative",
                 "height": "180px",
                 "width": "100%",
-                "border": "0px  --d8f6340b1442"
+                "opacity": "0.991",
+                "border": "0px  rgba(230, 230, 230, 1)"
               },
               "children": [],
               "metadata": {},
@@ -1051,42 +1051,6 @@
         }
       },
       "variant": {}
-    },
-    {
-      "id": "91650c54161",
-      "label": "Element",
-      "is": "div",
-      "name": "element",
-      "attributes": {},
-      "style": {
-        "box-sizing": "border-box",
-        "display": "block"
-      },
-      "children": [],
-      "metadata": {
-        "bounds": {
-          "left": -229.16303506520143,
-          "top": 464.11509229098795,
-          "right": -129.16303506520143,
-          "bottom": 564.115092290988
-        }
-      }
-    },
-    {
-      "id": "91650c54322",
-      "name": "text",
-      "label": "Text",
-      "value": "Click to edit",
-      "style": {},
-      "children": [],
-      "metadata": {
-        "bounds": {
-          "left": -447.79061378398535,
-          "top": 545.71552660152,
-          "right": -347.79061378398535,
-          "bottom": 645.71552660152
-        }
-      }
     }
   ]
 }

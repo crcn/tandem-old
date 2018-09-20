@@ -605,7 +605,7 @@
           "id": "3e8417591",
           "name": "variant",
           "label": "alt",
-          "isDefault": true,
+          "isDefault": false,
           "children": [],
           "metadata": {}
         },
@@ -624,7 +624,7 @@
           "id": "a6fd80839",
           "name": "variant",
           "label": "file",
-          "isDefault": false,
+          "isDefault": true,
           "children": [],
           "metadata": {}
         },
@@ -634,7 +634,7 @@
           "propertyName": "style",
           "targetIdPath": [],
           "value": {
-            "font-family": "Helvetica",
+            "font-family": "--22702c5f1086",
             "background": "rgba(223, 222, 222, 1)"
           },
           "name": "override",
@@ -803,6 +803,17 @@
             "display": "block",
             "opacity": 0
           },
+          "name": "override",
+          "children": []
+        },
+        {
+          "id": "ad60565f3004",
+          "variantId": "a6fd80839",
+          "propertyName": "style",
+          "targetIdPath": [
+            "d3bf183b18"
+          ],
+          "value": {},
           "name": "override",
           "children": []
         }
