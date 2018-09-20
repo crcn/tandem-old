@@ -1,9 +1,11 @@
 IMMEDIATE:
 
-- cannot select layout content in right-gutter/index.pc
-- cannot select shadows
-- ability to resize left sidebar
+- left navigator
+
+  - auto-scroll
+
   - must scroll too
+
 - top bar must scroll
 - refactor styles pane to use computed override map instead of derriving props from synthetic elements.
 - varaible text inputs

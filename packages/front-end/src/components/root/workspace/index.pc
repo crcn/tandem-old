@@ -108,7 +108,10 @@
         },
         {
           "id": "33b1b6b171359",
-          "variant": {},
+          "variant": {
+            "2842a72d17": false,
+            "1a11459311": true
+          },
           "is": "8b8bbe2c724435",
           "name": "component-instance",
           "attributes": {},

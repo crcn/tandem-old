@@ -1060,8 +1060,11 @@ const maybeOverride2 = (
     // if instancePath does NOT exist, then we're dealing with a variant
     const targetInstancePathParts = instancePathParts.length
       ? instancePathParts
-      : [nodeId];
-    const [topMostInstanceId, ...nestedInstanceIds] = targetInstancePathParts;
+      : EMPTY_ARRAY;
+    const [
+      topMostInstanceId = contentSourceNode.id,
+      ...nestedInstanceIds
+    ] = targetInstancePathParts;
     const targetIdPathParts = [...nestedInstanceIds];
 
     // if source id is content id, then target is component root

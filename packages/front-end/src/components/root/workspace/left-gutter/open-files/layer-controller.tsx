@@ -22,10 +22,7 @@ import {
   PCModule,
   getPCNodeModule
 } from "paperclip";
-import {
-  InspectorNode,
-  InspectorTreeNodeName
-} from "paperclip";
+import { InspectorNode, InspectorTreeNodeName } from "paperclip";
 import { Dispatch } from "redux";
 import {
   sourceInspectorLayerClicked,
@@ -70,6 +67,11 @@ type InnerProps = {
 const DRAG_TYPE = "INSPECTOR_NODE";
 
 const LAYER_PADDING = 16;
+
+const CONTAINER_STYLE = {
+  display: "inline-block",
+  minWidth: "100%"
+};
 
 export default (Base: React.ComponentClass<BaseNodeLayerProps>) => {
   let EnhancedLayer: React.ComponentClass<Props>;
@@ -300,7 +302,7 @@ export default (Base: React.ComponentClass<BaseNodeLayerProps>) => {
       };
 
       return (
-        <span>
+        <span style={CONTAINER_STYLE}>
           <BeforeDropZone style={dropZoneStyle} inspectorNode={inspectorNode} />
           <FocusComponent focus={editingLabel}>
             {connectDropTarget(

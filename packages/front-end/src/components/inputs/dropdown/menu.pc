@@ -35,7 +35,7 @@
           "id": "cd433e9f899",
           "name": "variant",
           "label": "alt",
-          "isDefault": true,
+          "isDefault": false,
           "children": [],
           "metadata": {}
         },

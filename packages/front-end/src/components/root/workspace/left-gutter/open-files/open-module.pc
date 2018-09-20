@@ -12,7 +12,9 @@
         "flex-direction": "column",
         "font-size": "11px",
         "color": "grey",
-        "font-family": "Helvetica"
+        "font-family": "Helvetica",
+        "display": "inline-block",
+        "min-width": "100%"
       },
       "attributes": {},
       "id": "fe256b416",
@@ -88,7 +90,12 @@
                   "children": []
                 }
               ],
-              "metadata": {}
+              "metadata": {},
+              "variant": {
+                "fc243cf081": false,
+                "d3bf183b25": false,
+                "a6fd80839": true
+              }
             },
             {
               "id": "d3bf183b22",
@@ -139,7 +146,11 @@
                   "children": []
                 }
               ],
-              "metadata": {}
+              "metadata": {},
+              "variant": {
+                "d3bf183b25": true,
+                "d3bf183b37": true
+              }
             },
             {
               "id": "fe256b42",
@@ -198,7 +209,11 @@
                   "children": []
                 }
               ],
-              "metadata": {}
+              "metadata": {},
+              "variant": {
+                "d3bf183b30": true,
+                "3e8417591": true
+              }
             },
             {
               "id": "d3bf183b43",
@@ -268,7 +283,11 @@
                   "children": []
                 }
               ],
-              "metadata": {}
+              "metadata": {},
+              "variant": {
+                "d3bf183b28": true,
+                "a6fd808313": true
+              }
             },
             {
               "id": "d3bf183b52",
@@ -330,7 +349,11 @@
                   "children": []
                 }
               ],
-              "metadata": {}
+              "metadata": {},
+              "variant": {
+                "d3bf183b29": true,
+                "d3bf183b37": true
+              }
             },
             {
               "id": "d3bf183b50",
@@ -375,7 +398,11 @@
                   "children": []
                 }
               ],
-              "metadata": {}
+              "metadata": {},
+              "variant": {
+                "d3bf183b26": true,
+                "3e8417591": true
+              }
             },
             {
               "id": "d3bf183b54",
@@ -442,7 +469,10 @@
                   "children": []
                 }
               ],
-              "metadata": {}
+              "metadata": {},
+              "variant": {
+                "d3bf183b30": true
+              }
             }
           ],
           "metadata": {}

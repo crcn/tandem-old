@@ -42,6 +42,11 @@ const generateLayersPaneContext = memoize(
   })
 );
 
+const CONTENT_STYLE = {
+  display: "inline-block",
+  overflow: "scroll"
+};
+
 export default (Base: React.ComponentClass<BaseLayersPaneProps>) =>
   class LayersPaneController extends React.PureComponent<Props> {
     render() {
@@ -55,31 +60,39 @@ export default (Base: React.ComponentClass<BaseLayersPaneProps>) =>
         ...rest
       } = this.props;
 
-      const content = sourceNodeInspector.children.map((inspectorNode, i) => {
-        const sourceNode = getPCNode(inspectorNode.assocSourceNodeId, graph);
-        const dependency = getPCNodeDependency(sourceNode.id, graph);
-        const document = getSyntheticDocumentByDependencyUri(
-          dependency.uri,
-          documents,
-          graph
-        );
-        return (
-          <LayersPaneContext.Provider
-            key={sourceNode.id}
-            value={generateLayersPaneContext(
-              graph,
-              document,
+      const content = (
+        <div style={CONTENT_STYLE}>
+          {sourceNodeInspector.children.map((inspectorNode, i) => {
+            const sourceNode = getPCNode(
+              inspectorNode.assocSourceNodeId,
+              graph
+            );
+            const dependency = getPCNodeDependency(sourceNode.id, graph);
+            const document = getSyntheticDocumentByDependencyUri(
+              dependency.uri,
               documents,
-              selectedInspectorNodeIds,
-              hoveringInspectorNodeIds,
-              sourceNodeInspector,
-              dispatch
-            )}
-          >
-            <OpenModule inspectorNode={inspectorNode} graph={graph} />
-          </LayersPaneContext.Provider>
-        );
-      });
+              graph
+            );
+            return (
+              <LayersPaneContext.Provider
+                key={sourceNode.id}
+                value={generateLayersPaneContext(
+                  graph,
+                  document,
+                  documents,
+                  selectedInspectorNodeIds,
+                  hoveringInspectorNodeIds,
+                  sourceNodeInspector,
+                  dispatch
+                )}
+              >
+                <OpenModule inspectorNode={inspectorNode} graph={graph} />
+              </LayersPaneContext.Provider>
+            );
+          })}
+        </div>
+      );
+
       return <Base {...rest} contentProps={{ children: content }} />;
     }
   };
