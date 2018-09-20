@@ -18,7 +18,8 @@
         "marginTop": "1px",
         "cursor": "pointer",
         "vertical-align": "center",
-        "display": "flex"
+        "display": "flex",
+        "font-family": "--22702c5f1086"
       },
       "attributes": {},
       "label": "Search Result",

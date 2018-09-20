@@ -127,6 +127,16 @@
                   },
                   "name": "override",
                   "children": []
+                },
+                {
+                  "id": "8e04fdda111334",
+                  "propertyName": "style",
+                  "targetIdPath": [
+                    "73b39db4591"
+                  ],
+                  "value": {},
+                  "name": "override",
+                  "children": []
                 }
               ],
               "metadata": {

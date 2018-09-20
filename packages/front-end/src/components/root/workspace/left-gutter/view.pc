@@ -7,7 +7,9 @@
     {
       "label": "Left Gutter",
       "is": "div",
-      "style": {},
+      "style": {
+        "border-right": "1px solid rgba(230, 230, 230, 1)"
+      },
       "attributes": {},
       "id": "317401b1484197",
       "name": "component",

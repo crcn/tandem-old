@@ -12,7 +12,7 @@
         "background": "--30f4693267675",
         "position": "relative",
         "flex-grow": "0",
-        "height": "30px"
+        "height": "38px"
       },
       "attributes": {},
       "id": "ab406a6b770940",
@@ -29,7 +29,7 @@
             "display": "flex",
             "align-items": "center",
             "padding": "8px 16px",
-            "color": "rgba(108, 108, 108, 1)"
+            "color": "--24ce1e4d482"
           },
           "children": [
             {

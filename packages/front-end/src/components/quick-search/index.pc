@@ -9,7 +9,7 @@
       "name": "component",
       "is": "div",
       "style": {
-        "border": "1px solid  #CCC",
+        "border": "1px solid --d8f6340b1442",
         "border-bottom-left-radius": "2px",
         "border-bottom-right-radius": "2px",
         "border-top": "none",
@@ -302,7 +302,7 @@
             "width": "100%",
             "padding": "4px",
             "border-radius": "2px",
-            "border": "1px solid #CCC",
+            "border": "1px solid --d8f6340b1442",
             "box-sizing": "border-box",
             "background": "transparent",
             "boxSizing": "border-box",

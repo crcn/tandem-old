@@ -79,7 +79,8 @@
       "name": "component-instance",
       "attributes": {},
       "style": {
-        "font-family": "--22702c5f1086"
+        "font-family": "--22702c5f1086",
+        "border-left": "1px solid --d8f6340b1442"
       },
       "children": [
         {
@@ -137,7 +138,9 @@
         "flex-shrink": "0",
         "display": "flex",
         "flex-direction": "column",
-        "height": "100vh"
+        "height": "100vh",
+        "border-left": "1px solid rgba(230, 230, 230, 1)",
+        "z-index": "3"
       },
       "attributes": {},
       "id": "8b8bbe2c724435",

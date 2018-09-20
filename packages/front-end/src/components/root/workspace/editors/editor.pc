@@ -28,8 +28,9 @@
             "display": "flex",
             "position": "relative",
             "flex-grow": "0",
-            "height": "34px",
-            "flex-shrink": "0"
+            "flex-shrink": "0",
+            "background": "--30f4693267675",
+            "height": "36px"
           },
           "children": [
             {
@@ -54,6 +55,14 @@
               "value": {
                 "padding": "4px 16px"
               },
+              "name": "override",
+              "children": []
+            },
+            {
+              "id": "eb20349c161920",
+              "propertyName": "style",
+              "targetIdPath": [],
+              "value": {},
               "name": "override",
               "children": []
             }
