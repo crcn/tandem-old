@@ -9,7 +9,7 @@
       "is": "div",
       "style": {
         "display": "flex",
-        "background": "rgba(209, 209, 209, 1)",
+        "background": "--30f4693267675",
         "position": "relative",
         "flex-grow": "0",
         "height": "30px"

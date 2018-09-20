@@ -33,7 +33,7 @@
                   "label": "Text",
                   "value": "Label",
                   "style": {
-                    "font-family": "Helvetica",
+                    "font-family": "--22702c5f1086",
                     "color": "--d8f6340b1442",
                     "font-size": "0.8em",
                     "margin-bottom": "4px",

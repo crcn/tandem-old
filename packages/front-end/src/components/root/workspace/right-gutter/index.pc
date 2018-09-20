@@ -78,7 +78,9 @@
       "is": "8b8bbe2c724435",
       "name": "component-instance",
       "attributes": {},
-      "style": {},
+      "style": {
+        "font-family": "--22702c5f1086"
+      },
       "children": [
         {
           "id": "cc878eb525848",
