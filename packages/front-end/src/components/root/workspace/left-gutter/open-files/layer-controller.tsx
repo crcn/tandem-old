@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOM from "react-dom";
 import * as path from "path";
 import { FocusComponent } from "../../../../focus";
 import * as cx from "classnames";
@@ -7,18 +8,12 @@ import { DragSource } from "react-dnd";
 import { withNodeDropTarget } from "./dnd-controller";
 import { BeforeDropZone, AfterDropZone } from "./drop-zones.pc";
 import {
-  SyntheticNode,
   PCSourceTagNames,
   getPCNode,
-  DependencyGraph,
   PCVisibleNode,
   getPCNodeDependency,
-  SyntheticDocument,
   PCComponent,
-  PCNode,
   getPCNodeContentNode,
-  getSyntheticDocumentByDependencyUri,
-  getSyntheticSourceNode,
   PCModule,
   getPCNodeModule
 } from "paperclip";
@@ -130,6 +125,7 @@ export default (Base: React.ComponentClass<BaseNodeLayerProps>) => {
         };
       }
     ),
+
     withNodeDropTarget(TreeMoveOffset.PREPEND),
     DragSource(
       DRAG_TYPE,
@@ -160,7 +156,7 @@ export default (Base: React.ComponentClass<BaseNodeLayerProps>) => {
       })
     ),
     Base => {
-      return class LayerController extends React.Component<any, any> {
+      return class LayerController extends React.Component<InnerProps, any> {
         constructor(props) {
           super(props);
           this.state = { editingLabel: false };
@@ -196,6 +192,20 @@ export default (Base: React.ComponentClass<BaseNodeLayerProps>) => {
             );
           }
         };
+        componentDidMount() {
+          this.makeVisible(this.props.isSelected);
+        }
+        componentDidUpdate(prevProps: InnerProps) {
+          this.makeVisible(this.props.isSelected && !prevProps.isSelected);
+        }
+        private makeVisible(selected: boolean) {
+          if (selected) {
+            const self = ReactDOM.findDOMNode(this) as HTMLSpanElement;
+            setTimeout(() => {
+              self.scrollIntoView(true);
+            }, 100);
+          }
+        }
         shouldComponentUpdate(nextProps, nextState) {
           return (
             this.props.depth !== nextProps.depth ||

@@ -3,6 +3,7 @@ IMMEDIATE:
 - left navigator
 
   - auto-scroll
+  - ensure that auto-scroll doesn't scroll parent element
 
   - must scroll too
 
