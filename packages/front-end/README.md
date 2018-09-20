@@ -1,11 +1,5 @@
 IMMEDIATE:
 
-- left navigator
-
-  - auto-scroll
-
-  - must scroll too
-
 - top bar must scroll
 - refactor styles pane to use computed override map instead of derriving props from synthetic elements.
 - varaible text inputs

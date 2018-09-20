@@ -205,7 +205,8 @@ export default (Base: React.ComponentClass<BaseNodeLayerProps>) => {
             console.log(self);
 
             setTimeout(() => {
-              const label = self.children[1];
+              const label = self.children[1].children[0].children[1];
+              console.log(label);
 
               // icky, but we're picking the label here
               scrollIntoView(label, {
