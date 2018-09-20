@@ -10,7 +10,10 @@
       "style": {
         "display": "flex",
         "width": "100vw",
-        "height": "100vh"
+        "height": "100vh",
+        "position": "fixed",
+        "left": "0px",
+        "top": "0px"
       },
       "attributes": {},
       "id": "33b1b6b133319",
@@ -292,10 +295,10 @@
       ],
       "metadata": {
         "bounds": {
-          "left": 70,
-          "top": -5,
-          "right": 2032.851823332688,
-          "bottom": 978.4100056728704
+          "left": 2585,
+          "top": 1860,
+          "right": 4547.851823332688,
+          "bottom": 2843.4100056728703
         }
       }
     },

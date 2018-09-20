@@ -1,6 +1,7 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import * as path from "path";
+import scrollIntoView from "scroll-into-view-if-needed";
 import { FocusComponent } from "../../../../focus";
 import * as cx from "classnames";
 import { compose } from "recompose";
@@ -201,9 +202,16 @@ export default (Base: React.ComponentClass<BaseNodeLayerProps>) => {
         private makeVisible(selected: boolean) {
           if (selected) {
             const self = ReactDOM.findDOMNode(this) as HTMLSpanElement;
+            console.log(self);
+
             setTimeout(() => {
-              self.scrollIntoView(true);
-            }, 100);
+              const label = self.children[1];
+
+              // icky, but we're picking the label here
+              scrollIntoView(label, {
+                scrollMode: "if-needed"
+              });
+            }, 10);
           }
         }
         shouldComponentUpdate(nextProps, nextState) {
