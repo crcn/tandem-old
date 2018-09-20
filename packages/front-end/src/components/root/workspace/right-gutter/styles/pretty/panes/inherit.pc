@@ -190,17 +190,7 @@
                   "style": {},
                   "children": [],
                   "metadata": {},
-                  "inheritStyle": {
-                    "1536416401667": {
-                      "priority": 0
-                    },
-                    "1536416401970": {
-                      "priority": 1
-                    },
-                    "1536416402132": {
-                      "priority": 2
-                    }
-                  }
+                  "inheritStyle": {}
                 },
                 {
                   "id": "a4d4c3d71",

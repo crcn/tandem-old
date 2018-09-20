@@ -20,7 +20,8 @@
         "border-bottom-left-radius": "2px",
         "border-top-left-radius": "2px",
         "border-top-right-radius": "2px",
-        "border-bottom-right-radius": "2px"
+        "border-bottom-right-radius": "2px",
+        "font-family": "--22702c5f1086"
       },
       "attributes": {},
       "id": "9f364d2139415",
@@ -33,12 +34,7 @@
           "value": "Label",
           "style": {},
           "children": [],
-          "metadata": {},
-          "inheritStyle": {
-            "ca6d1d8454": {
-              "priority": 0
-            }
-          }
+          "metadata": {}
         },
         {
           "id": "38b32d581121",
@@ -54,7 +50,8 @@
           "propertyName": "style",
           "targetIdPath": [],
           "value": {
-            "background": "rgba(227, 227, 227, 1)"
+            "background": "rgba(227, 227, 227, 1)",
+            "color": "--24ce1e4d482"
           },
           "name": "override",
           "children": []
@@ -66,11 +63,6 @@
           "top": 120,
           "right": 400,
           "bottom": 220
-        }
-      },
-      "inheritStyle": {
-        "ca6d1d8433": {
-          "priority": 0
         }
       },
       "variant": {}

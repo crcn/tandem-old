@@ -113,7 +113,7 @@
                           "label": "Label",
                           "value": "Label",
                           "style": {
-                            "color": "grey",
+                            "color": "--24ce1e4d482",
                             "width": "100%",
                             "display": "block"
                           },

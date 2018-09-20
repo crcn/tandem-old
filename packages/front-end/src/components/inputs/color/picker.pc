@@ -54,8 +54,7 @@
               },
               "children": [],
               "metadata": {},
-              "label": "HSL",
-              "inheritStyle": {}
+              "label": "HSL"
             },
             {
               "id": "41979411464689",
@@ -208,17 +207,6 @@
       "controllers": [
         "./picker-controller.tsx"
       ],
-      "inheritStyle": {
-        "ca6d1d842": {
-          "priority": 0
-        },
-        "ba1504244": {
-          "priority": 2
-        },
-        "ca6d1d844": {
-          "priority": 2
-        }
-      },
       "variant": {}
     },
     {
@@ -335,11 +323,6 @@
       "controllers": [
         "./rgba-input-controller.tsx"
       ],
-      "inheritStyle": {
-        "ca6d1d8433": {
-          "priority": 0
-        }
-      },
       "variant": {}
     },
     {
@@ -460,11 +443,6 @@
           "bottom": 800
         }
       },
-      "inheritStyle": {
-        "ca6d1d8433": {
-          "priority": 0
-        }
-      },
       "variant": {}
     },
     {
@@ -539,7 +517,6 @@
       "controllers": [
         "./hex-input-controller.tsx"
       ],
-      "inheritStyle": {},
       "variant": {}
     },
     {
@@ -753,7 +730,6 @@
       "controllers": [
         "./canvas-controller.tsx"
       ],
-      "inheritStyle": {},
       "variant": {}
     },
     {
@@ -1075,38 +1051,6 @@
         }
       },
       "variant": {}
-    },
-    {
-      "id": "56b0faa8161",
-      "label": "Element",
-      "is": "div",
-      "name": "element",
-      "attributes": {},
-      "style": {
-        "box-sizing": "border-box",
-        "display": "block"
-      },
-      "children": [
-        {
-          "id": "56b0faa8322",
-          "name": "text",
-          "label": "Text",
-          "value": "Click to edit",
-          "style": {
-            "color": "--6e691d77322"
-          },
-          "children": [],
-          "metadata": {}
-        }
-      ],
-      "metadata": {
-        "bounds": {
-          "left": -476.8597962534947,
-          "top": 330.2042695445041,
-          "right": -376.8597962534947,
-          "bottom": 430.2042695445041
-        }
-      }
     }
   ]
 }

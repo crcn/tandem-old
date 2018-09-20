@@ -49,7 +49,7 @@
                   "style": {
                     "padding": "4px 8px",
                     "border-radius": "2px",
-                    "border": "1px solid rgba(0,0,0,0.05)",
+                    "border": "1px solid --d8f6340b1442",
                     "box-sizing": "border-box",
                     "background": "red",
                     "width": "100%",
@@ -95,6 +95,16 @@
               ],
               "metadata": {},
               "name": "plug"
+            },
+            {
+              "id": "e68983c8240615",
+              "propertyName": "style",
+              "targetIdPath": [
+                "d227ff68826765"
+              ],
+              "value": {},
+              "name": "override",
+              "children": []
             }
           ],
           "metadata": {

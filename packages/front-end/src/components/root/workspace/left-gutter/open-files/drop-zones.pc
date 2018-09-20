@@ -95,7 +95,6 @@
           "bottom": 227
         }
       },
-      "inheritStyle": {},
       "variant": {}
     }
   ]

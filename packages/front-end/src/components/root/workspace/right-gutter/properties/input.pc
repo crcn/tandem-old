@@ -36,10 +36,7 @@
               "targetIdPath": [
                 "7149f8192506"
               ],
-              "value": {
-                "color": "black",
-                "opacity": "0.4"
-              },
+              "value": {},
               "name": "override",
               "children": []
             },

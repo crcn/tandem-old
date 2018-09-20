@@ -5,46 +5,18 @@
   "name": "module",
   "children": [
     {
-      "id": "bfa9209a5",
-      "is": "5d7d4069129476",
-      "name": "component-instance",
-      "attributes": {},
-      "style": {},
-      "children": [
-        {
-          "id": "bfa9209a6",
-          "propertyName": "isDefault",
-          "targetIdPath": [
-            "66d16f05"
-          ],
-          "value": false,
-          "name": "override",
-          "children": []
-        }
-      ],
-      "metadata": {
-        "bounds": {
-          "left": 220,
-          "top": 278,
-          "right": 336,
-          "bottom": 300.4100033070649
-        }
-      },
-      "variant": {}
-    },
-    {
       "label": "Right Gutter Tab",
       "is": "div",
       "style": {
         "font-family": "Helvetica",
-        "color": "grey",
+        "color": "--24ce1e4d482",
         "text-transform": "uppercase",
         "text-align": "center",
         "width": "100%",
         "padding": "8px",
         "font-size": "9px",
         "cursor": "pointer",
-        "background": "rgba(240, 240, 240, 1)"
+        "background": "--d8f6340b1442"
       },
       "attributes": {},
       "id": "5d7d4069129476",
@@ -75,7 +47,7 @@
           "propertyName": "style",
           "targetIdPath": [],
           "value": {
-            "background": "rgba(255, 255, 255, 1)"
+            "background": "--f63574de434"
           },
           "name": "override",
           "children": []

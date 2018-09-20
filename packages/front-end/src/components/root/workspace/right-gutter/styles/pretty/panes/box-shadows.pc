@@ -70,7 +70,13 @@
     {
       "label": "Box Shadows",
       "is": "b6c162d113",
-      "style": {},
+      "style": {
+        "font-family": "Helvetica",
+        "display": "flex",
+        "flex-direction": "column",
+        "font-size": "10px",
+        "color": "grey"
+      },
       "attributes": {},
       "id": "bcda9fb597619",
       "name": "component",

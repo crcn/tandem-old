@@ -7,7 +7,13 @@
     {
       "label": "Typograph",
       "is": "b6c162d113",
-      "style": {},
+      "style": {
+        "font-family": "Helvetica",
+        "display": "flex",
+        "flex-direction": "column",
+        "font-size": "10px",
+        "color": "grey"
+      },
       "attributes": {},
       "id": "73b39db4362",
       "name": "component",
@@ -536,6 +542,18 @@
                                 "e5a8a3332761"
                               ],
                               "value": {},
+                              "name": "override",
+                              "children": []
+                            },
+                            {
+                              "id": "e68983c8218793",
+                              "propertyName": "variant",
+                              "targetIdPath": [
+                                "6489655797375"
+                              ],
+                              "value": {
+                                "15d6c81f3": true
+                              },
                               "name": "override",
                               "children": []
                             }

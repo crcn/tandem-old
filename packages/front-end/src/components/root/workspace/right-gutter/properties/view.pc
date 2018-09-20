@@ -291,7 +291,7 @@
                         "7149f8192506"
                       ],
                       "value": {
-                        "color": "black"
+                        "opacity": "1"
                       },
                       "name": "override",
                       "children": []

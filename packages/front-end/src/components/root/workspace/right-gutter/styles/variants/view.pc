@@ -648,11 +648,6 @@
           "bottom": 485.06315531253676
         }
       },
-      "inheritStyle": {
-        "ca6d1d8454": {
-          "priority": 0
-        }
-      },
       "controllers": [
         "./controller2.tsx"
       ],

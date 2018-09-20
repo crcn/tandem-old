@@ -10,7 +10,7 @@
       "style": {
         "width": "100%",
         "height": "150px",
-        "border": "1px solid rgba(0,0,0,0.1)",
+        "border": "1px solid --d8f6340b1442",
         "border-radius": "2px",
         "box-sizing": "border-box"
       },
