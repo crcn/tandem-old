@@ -4,7 +4,8 @@ import { ButtonBarOption } from "../../../../../../inputs/button-bar/controller"
 import {
   DropdownMenuOption,
   mapVariablesToDropdownOptions,
-  dropdownMenuOptionFromValue
+  dropdownMenuOptionFromValue,
+  NO_OPTION
 } from "../../../../../../inputs/dropdown/controller";
 import {
   cssPropertyChangeCompleted,
@@ -112,6 +113,7 @@ export default (Base: React.ComponentClass<BaseTypographProps>) =>
         <Base
           familyInputProps={{
             options: [
+              NO_OPTION,
               ...mapVariablesToCSSVarDropdownOptions(fontVariables),
               ...getFontFamilyOptions(fontFamilies)
             ],

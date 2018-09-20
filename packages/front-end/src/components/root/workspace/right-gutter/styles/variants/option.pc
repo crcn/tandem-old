@@ -9,7 +9,7 @@
       "is": "div",
       "style": {
         "box-sizing": "border-box",
-        "font-family": "Helvetica",
+        "font-family": "--22702c5f1086",
         "font-size": "10px",
         "padding-left": "12px",
         "padding-top": "2px",

@@ -11,6 +11,11 @@ export type DropdownMenuOption = {
   special?: boolean;
 };
 
+export const NO_OPTION: DropdownMenuOption = {
+  label: "--",
+  value: undefined
+};
+
 export const dropdownMenuOptionFromValue = (
   value: string
 ): DropdownMenuOption => ({ label: value || "--", value });
