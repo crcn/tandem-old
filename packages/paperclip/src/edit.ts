@@ -763,7 +763,6 @@ export const persistToggleInstanceVariant = <TState extends PCEditorState>(
   variant: PCVariant,
   state: TState
 ): TState => {
-
   const instanceVariantInfo = getInstanceVariantInfo(
     instance,
     state.sourceNodeInspector,
@@ -778,15 +777,20 @@ export const persistToggleInstanceVariant = <TState extends PCEditorState>(
     null,
     variant,
     (value, override) => {
-      return override ? {
-        ...override.value,
-        [targetVariantId]: !override.value[targetVariantId]
-      } : { [targetVariantId]: !variantInfo.enabled };
+      return override
+        ? {
+            ...override.value,
+            [targetVariantId]: !override.value[targetVariantId]
+          }
+        : { [targetVariantId]: !variantInfo.enabled };
     },
-    (node: PCComponentInstanceElement) => ({ ...node, variant: {
-      ...node.variant,
-      [targetVariantId]: !variantInfo.enabled
-    }  })
+    (node: PCComponentInstanceElement) => ({
+      ...node,
+      variant: {
+        ...node.variant,
+        [targetVariantId]: !variantInfo.enabled
+      }
+    })
   )(
     instance.instancePath,
     instance.assocSourceNodeId,
@@ -1025,7 +1029,9 @@ const maybeOverride2 = (
     : EMPTY_ARRAY;
 
   // if content node does not exist, then target node must be id
-  const topMostNodeId = instancePathParts.length ? instancePathParts[0] : nodeId;
+  const topMostNodeId = instancePathParts.length
+    ? instancePathParts[0]
+    : nodeId;
   const topMostInspectorNode = getInspectorNodeByAssocId(
     topMostNodeId,
     rootInspector
@@ -1116,15 +1122,38 @@ const maybeOverride2 = (
   return updater(sourceNode, value);
 };
 
-export const persistAddVariable = <TState extends PCEditorState>(label: string, type: PCVariableType, module: PCModule, state: TState) => {
-  return updateDependencyGraph(replacePCNode(appendChildNode(createPCVariable(label, type), module), module, state.graph), state);
+export const persistAddVariable = <TState extends PCEditorState>(
+  label: string,
+  type: PCVariableType,
+  value: string,
+  module: PCModule,
+  state: TState
+) => {
+  return updateDependencyGraph(
+    replacePCNode(
+      appendChildNode(createPCVariable(label, type, value), module),
+      module,
+      state.graph
+    ),
+    state
+  );
 };
 
-export const persistUpdateVariable = <TState extends PCEditorState>(properties: Partial<PCVariable>,  { id}: PCVariable, state: TState) => {
+export const persistUpdateVariable = <TState extends PCEditorState>(
+  properties: Partial<PCVariable>,
+  { id }: PCVariable,
+  state: TState
+) => {
   const target = getPCNode(id, state.graph);
-  return updateDependencyGraph(replacePCNode({...target, ...properties} as PCVariable, target, state.graph), state);
+  return updateDependencyGraph(
+    replacePCNode(
+      { ...target, ...properties } as PCVariable,
+      target,
+      state.graph
+    ),
+    state
+  );
 };
-
 
 const maybeOverride = (
   propertyName: PCOverridablePropertyName,

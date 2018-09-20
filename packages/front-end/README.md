@@ -1,6 +1,6 @@
 IMMEDIATE:
 
-- cannot use color vars that have undefined values
+- cannot select layout content in right-gutter/index.pc
 - refactor styles pane to use computed override map instead of derriving props from synthetic elements.
 - varaible text inputs
 - inherit styles from parent typogograph

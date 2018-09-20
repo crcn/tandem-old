@@ -297,10 +297,12 @@ export const createPCVariant = (
 
 export const createPCVariable = (
   label: string,
-  type: PCVariableType
+  type: PCVariableType,
+  value?: string
 ): PCVariable => ({
   id: generateUID(),
   name: PCSourceTagNames.VARIABLE,
+  value,
   label,
   type,
   children: EMPTY_ARRAY,

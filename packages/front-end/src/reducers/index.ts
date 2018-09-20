@@ -1199,7 +1199,13 @@ export const canvasReducer = (state: RootState, action: Action) => {
       const { variableType: type } = action as AddVariableButtonClicked;
       const globalDependency = state.graph[state.globalFileUri];
       state = persistRootState(state => {
-        state = persistAddVariable(null, type, globalDependency.content, state);
+        state = persistAddVariable(
+          null,
+          type,
+          "",
+          globalDependency.content,
+          state
+        );
         return state;
       }, state);
       return state;
