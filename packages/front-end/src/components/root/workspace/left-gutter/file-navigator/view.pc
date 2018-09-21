@@ -466,7 +466,7 @@
           "id": "5a14767c103012",
           "name": "variant",
           "label": "folder",
-          "isDefault": true,
+          "isDefault": false,
           "children": [],
           "metadata": {}
         },
@@ -615,7 +615,7 @@
           "id": "f8ce55d74655",
           "name": "variant",
           "label": "editing",
-          "isDefault": true,
+          "isDefault": false,
           "children": [],
           "metadata": {}
         },
@@ -644,7 +644,7 @@
           "propertyName": "style",
           "targetIdPath": [],
           "value": {
-            "opacity": 0.249
+            "opacity": 0.419
           },
           "name": "override",
           "children": []
@@ -688,10 +688,10 @@
       ],
       "metadata": {
         "bounds": {
-          "left": 970.4944036511871,
-          "top": 114.95007235206253,
-          "right": 1310.494403651187,
-          "bottom": 139.95007235206253
+          "left": 961,
+          "top": 112,
+          "right": 1301,
+          "bottom": 137
         }
       },
       "variant": {
