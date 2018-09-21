@@ -2,8 +2,8 @@ import * as React from "react";
 import * as path from "path";
 import * as cx from "classnames";
 import { compose } from "recompose";
-import { BaseFileNavigatorLayerProps } from "./view.pc";
-import { FSItem, FSItemTagNames } from "tandem-common";
+import { BaseFileNavigatorLayerProps, NewFileInput } from "./view.pc";
+import { FSItem, FSItemTagNames, Directory } from "tandem-common";
 import { Dispatch } from "redux";
 import {
   fileNavigatorItemClicked,
@@ -22,6 +22,8 @@ export type Props = {
 type ContextProps = {
   selected: boolean;
   dispatch: Dispatch<any>;
+  addingFSItemDirectory: Directory;
+  onNewFileChangeComplete: any;
 };
 
 type InnerProps = Props & ContextProps;
@@ -36,10 +38,20 @@ const ROOT_STYLE = {
 export default (Base: React.ComponentClass<BaseFileNavigatorLayerProps>) => {
   const FileNavigatorLayer = compose<BaseFileNavigatorLayerProps, Props>(
     withFileNavigatorContext<ContextProps, Props>(
-      (props, { selectedFileNodeIds, dispatch }) => {
+      (
+        props,
+        {
+          selectedFileNodeIds,
+          dispatch,
+          addingFSItemDirectory,
+          onNewFileChangeComplete
+        }
+      ) => {
         return {
           selected: selectedFileNodeIds.indexOf(props.item.id) !== -1,
-          dispatch
+          dispatch,
+          addingFSItemDirectory,
+          onNewFileChangeComplete
         };
       }
     ),
@@ -57,7 +69,15 @@ export default (Base: React.ComponentClass<BaseFileNavigatorLayerProps>) => {
           event.stopPropagation();
         };
         render() {
-          const { item, depth = 1, dispatch, selected, ...rest } = this.props;
+          const {
+            item,
+            depth = 1,
+            dispatch,
+            selected,
+            addingFSItemDirectory,
+            onNewFileChangeComplete,
+            ...rest
+          } = this.props;
           const { onClick, onArrowClick } = this;
           const { expanded } = item;
 
@@ -75,6 +95,14 @@ export default (Base: React.ComponentClass<BaseFileNavigatorLayerProps>) => {
             });
           }
 
+          let newFileInput;
+
+          if (addingFSItemDirectory && item.uri == addingFSItemDirectory.uri) {
+            newFileInput = (
+              <NewFileInput onChangeComplete={onNewFileChangeComplete} />
+            );
+          }
+
           return (
             <span style={ROOT_STYLE}>
               <Base
@@ -88,10 +116,12 @@ export default (Base: React.ComponentClass<BaseFileNavigatorLayerProps>) => {
                   folder: item.name === FSItemTagNames.DIRECTORY,
                   file: item.name === FSItemTagNames.FILE,
                   expanded,
-                  selected
+                  selected,
+                  blur: !!addingFSItemDirectory
                 })}
                 label={path.basename(item.uri)}
               />
+              {newFileInput}
               {children}
             </span>
           );

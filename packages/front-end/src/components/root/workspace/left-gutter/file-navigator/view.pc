@@ -84,7 +84,8 @@
                               "bottom": 463
                             }
                           },
-                          "variant": {}
+                          "variant": {},
+                          "label": "add file button"
                         },
                         {
                           "id": "5a14767c291818",
@@ -105,7 +106,8 @@
                               "bottom": 294.56311509322086
                             }
                           },
-                          "variant": {}
+                          "variant": {},
+                          "label": "add folder button"
                         }
                       ],
                       "metadata": {}
@@ -608,6 +610,44 @@
           },
           "name": "override",
           "children": []
+        },
+        {
+          "id": "f8ce55d74655",
+          "name": "variant",
+          "label": "editing",
+          "isDefault": true,
+          "children": [],
+          "metadata": {}
+        },
+        {
+          "id": "f8ce55d75746",
+          "variantId": "f8ce55d74655",
+          "propertyName": "variant",
+          "targetIdPath": [],
+          "value": {
+            "fc243cf081": true
+          },
+          "name": "override",
+          "children": []
+        },
+        {
+          "id": "f8ce55d76837",
+          "name": "variant",
+          "label": "blur",
+          "isDefault": true,
+          "children": [],
+          "metadata": {}
+        },
+        {
+          "id": "f8ce55d77928",
+          "variantId": "f8ce55d76837",
+          "propertyName": "style",
+          "targetIdPath": [],
+          "value": {
+            "opacity": 0.249
+          },
+          "name": "override",
+          "children": []
         }
       ],
       "metadata": {
@@ -626,12 +666,26 @@
       ]
     },
     {
-      "id": "35d42f39754",
+      "label": "New File Input",
       "is": "d3bf183b20",
-      "name": "component-instance",
-      "attributes": {},
       "style": {},
-      "children": [],
+      "attributes": {},
+      "id": "a80047118404",
+      "name": "component",
+      "children": [
+        {
+          "id": "cce8ea6863",
+          "propertyName": "style",
+          "targetIdPath": [
+            "d3bf183b19"
+          ],
+          "value": {
+            "opacity": 0
+          },
+          "name": "override",
+          "children": []
+        }
+      ],
       "metadata": {
         "bounds": {
           "left": 970.4944036511871,
@@ -640,7 +694,12 @@
           "bottom": 139.95007235206253
         }
       },
-      "variant": {}
+      "variant": {
+        "fc243cf081": true
+      },
+      "controllers": [
+        "./new-file-controller.tsx"
+      ]
     }
   ]
 }

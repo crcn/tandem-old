@@ -1,6 +1,17 @@
 import * as React from "react";
-import { BaseFileNavigatorProps, FileNavigatorLayer } from "./view.pc";
-import { Directory, memoize } from "tandem-common";
+import {
+  BaseFileNavigatorProps,
+  FileNavigatorLayer,
+  NewFileInput
+} from "./view.pc";
+import {
+  Directory,
+  memoize,
+  FSItemTagNames,
+  getNestedTreeNodeById,
+  FSItem,
+  getParentTreeNode
+} from "tandem-common";
 import { Dispatch } from "redux";
 import { FileNavigatorContext, FileNavigatorContextProps } from "./contexts";
 export type Props = {
@@ -11,16 +22,58 @@ export type Props = {
 
 const generateFileNavigatorContext = memoize(
   (
+    addingFSItemDirectory: Directory,
     selectedFileNodeIds: string[],
+    onNewFileChangeComplete: any,
     dispatch: Dispatch<any>
   ): FileNavigatorContextProps => ({
+    addingFSItemDirectory,
     selectedFileNodeIds,
+    onNewFileChangeComplete,
     dispatch
   })
 );
 
+type State = {
+  addingFSItem?: FSItemTagNames;
+  addingFSItemDirectory?: Directory;
+};
+
 export default (Base: React.ComponentClass<BaseFileNavigatorProps>) =>
-  class FileNavigatorController extends React.PureComponent<Props> {
+  class FileNavigatorController extends React.PureComponent<Props, State> {
+    state = {
+      addingFSItem: null,
+      addingFSItemDirectory: null
+    };
+    onAddFileButtonClick = () => {
+      this.setAddingFSItem(FSItemTagNames.FILE);
+    };
+    onAddFolderButtonClick = () => {
+      this.setAddingFSItem(FSItemTagNames.DIRECTORY);
+    };
+    onNewFileChangeComplete = (name: string) => {
+      this.setState({
+        ...this.state,
+        addingFSItem: null,
+        addingFSItemDirectory: null
+      });
+    };
+    private setAddingFSItem = (type: FSItemTagNames) => {
+      const selectedFileNode: FSItem = getNestedTreeNodeById(
+        this.props.selectedFileNodeIds[0],
+        this.props.rootDirectory
+      );
+      const dirFile = selectedFileNode
+        ? selectedFileNode.name === FSItemTagNames.DIRECTORY
+          ? selectedFileNode
+          : getParentTreeNode(selectedFileNode.id, this.props.rootDirectory)
+        : this.props.rootDirectory;
+      this.setState({
+        ...this.state,
+        addingFSItem: type,
+        addingFSItemDirectory: dirFile
+      });
+    };
     render() {
       const {
         dispatch,
@@ -28,16 +81,46 @@ export default (Base: React.ComponentClass<BaseFileNavigatorProps>) =>
         selectedFileNodeIds,
         ...rest
       } = this.props;
+      const {
+        onAddFileButtonClick,
+        onAddFolderButtonClick,
+        onNewFileChangeComplete
+      } = this;
+      const { addingFSItemDirectory } = this.state;
 
       const content = rootDirectory.children.map(child => {
         return <FileNavigatorLayer key={child.id} item={child} />;
       });
 
+      if (
+        addingFSItemDirectory &&
+        rootDirectory.uri === addingFSItemDirectory.uri
+      ) {
+        content.unshift(
+          <NewFileInput
+            key="new-file-input"
+            onChangeComplete={onNewFileChangeComplete}
+          />
+        );
+      }
+
       return (
         <FileNavigatorContext.Provider
-          value={generateFileNavigatorContext(selectedFileNodeIds, dispatch)}
+          value={generateFileNavigatorContext(
+            addingFSItemDirectory,
+            selectedFileNodeIds,
+            onNewFileChangeComplete,
+            dispatch
+          )}
         >
-          <Base {...rest} content={content} />
+          <Base
+            {...rest}
+            content={content}
+            addFileButtonProps={{
+              onClick: onAddFileButtonClick
+            }}
+            addFolderButtonProps={{ onClick: onAddFolderButtonClick }}
+          />
         </FileNavigatorContext.Provider>
       );
     }
