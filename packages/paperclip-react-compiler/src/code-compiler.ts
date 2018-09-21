@@ -386,10 +386,10 @@ const translateStyleValue = (
   { graph }: TranslateContext
 ) => {
   value = computeStyleValue(value, getVariableRefMap(graph));
-  if (typeof value === "number") {
+  if (typeof value === "number" && key !== "opacity") {
     return value + "px";
   }
-  return value;
+  return String(value);
 };
 
 const translateContentNode = (
@@ -1012,7 +1012,9 @@ const translateDynamicOverrideSetter = (
       }
       case PCOverridablePropertyName.VARIANT: {
         context = addLine(
-          `${varName}.variant = "${Object.keys(override.value).join(" ")}";`,
+          `${varName}.variant = (${varName}.variant ? ${varName}.variant + " " : "") + "${Object.keys(
+            override.value
+          ).join(" ")}";`,
           context
         );
         return context;

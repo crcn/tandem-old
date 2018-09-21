@@ -504,17 +504,25 @@
               "metadata": {}
             },
             {
-              "id": "d3bf183b18",
-              "name": "text",
-              "label": "label",
-              "value": "Layer",
-              "style": {
-                "user-select": "none",
-                "cursor": "default",
-                "white-space": "nowrap"
-              },
-              "children": [],
-              "metadata": {}
+              "id": "35d42f392709",
+              "children": [
+                {
+                  "id": "d3bf183b18",
+                  "name": "text",
+                  "label": "label",
+                  "value": "Layer",
+                  "style": {
+                    "user-select": "none",
+                    "cursor": "default",
+                    "white-space": "nowrap"
+                  },
+                  "children": [],
+                  "metadata": {}
+                }
+              ],
+              "metadata": {},
+              "name": "slot",
+              "label": "label"
             },
             {
               "id": "fc243cf091",

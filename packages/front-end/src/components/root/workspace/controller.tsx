@@ -24,8 +24,10 @@ export default (Base: React.ComponentClass<BaseWorkspaceProps>) =>
           graph,
           selectedInspectorNodeIds,
           hoveringInspectorNodeIds,
+          selectedFileNodeIds,
           sourceNodeInspector,
-          documents
+          documents,
+          projectDirectory
         } = root;
         const workspaceProps = mapStatetoPromptControllerProps(root);
         return (
@@ -33,12 +35,14 @@ export default (Base: React.ComponentClass<BaseWorkspaceProps>) =>
             <Base
               leftGutterProps={{
                 show: root.showSidebar,
+                selectedFileNodeIds,
                 graph,
                 selectedInspectorNodeIds,
                 hoveringInspectorNodeIds,
                 sourceNodeInspector,
                 documents,
-                dispatch
+                dispatch,
+                rootDirectory: projectDirectory
               }}
               editorWindowsProps={{
                 root,

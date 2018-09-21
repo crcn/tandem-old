@@ -1,6 +1,11 @@
 IMMEDIATE:
 
 - refactor file navigator
+  - selecting files
+  - adding files / folders
+  - moving files / folders
+  - renaming files
+  - refresh when FS changes
 - custom chrome
   project name in titlebar
 - text preview (code)
