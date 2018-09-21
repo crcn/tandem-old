@@ -700,6 +700,35 @@
       "controllers": [
         "./new-file-controller.tsx"
       ]
+    },
+    {
+      "id": "332ba5015794",
+      "is": "97a34b151010442",
+      "name": "component-instance",
+      "attributes": {},
+      "style": {},
+      "children": [
+        {
+          "id": "332ba50118833",
+          "variantId": null,
+          "propertyName": "text",
+          "targetIdPath": [
+            "97a34b151010441"
+          ],
+          "value": "Error UI for existing file (like vscode), ability to move files, ability to delete files",
+          "name": "override",
+          "children": []
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": 1435,
+          "top": 153,
+          "right": 1818.170829127177,
+          "bottom": 353.7213373757045
+        }
+      },
+      "variant": {}
     }
   ]
 }

@@ -14,14 +14,15 @@ import {
   savedFile,
   FileNavigatorNewFileEntered,
   newFileAdded,
-  InsertFileType,
   FILE_NAVIGATOR_DROPPED_ITEM,
   getActiveEditorWindow,
   ADD_COMPONENT_CONTROLLER_BUTTON_CLICKED,
   componentControllerPicked,
   OPEN_CONTROLLER_BUTTON_CLCIKED,
   ComponentPickerItemClick,
-  ComponentControllerItemClicked
+  ComponentControllerItemClicked,
+  FileNavigatorBasenameChanged,
+  FILE_NAVIGATOR_BASENAME_CHANGED
 } from "tandem-front-end";
 import {
   findPaperclipSourceFiles,
@@ -46,6 +47,7 @@ export function* rootSaga() {
   yield fork(handleSaveShortcut);
   // yield fork(handleActivePaperclipFile);
   yield fork(handleNewFileEntered);
+  yield fork(handleBasenameChanged);
   yield fork(handleDroppedFile);
   yield fork(handleProjectDirectory);
   yield fork(receiveServerState);
@@ -72,15 +74,36 @@ function* loadPCFiles() {
   yield put(pcSourceFileUrisReceived(sourceFiles));
 }
 
+function* handleBasenameChanged() {
+  while (1) {
+    const { basename, item }: FileNavigatorBasenameChanged = yield take(
+      FILE_NAVIGATOR_BASENAME_CHANGED
+    );
+    const filePath = stripProtocol(item.uri);
+    const newFilePath = path.join(path.dirname(filePath), basename);
+
+    // TODO - this needs to be a prompt
+    if (fsa.existsSync(newFilePath)) {
+      console.error(
+        `Cannot rename file to ${basename} since the file already exists.`
+      );
+      continue;
+    }
+
+    fsa.renameSync(filePath, newFilePath);
+  }
+}
+
 function* handleNewFileEntered() {
   while (1) {
-    const { basename }: FileNavigatorNewFileEntered = yield take(
+    const {
+      basename,
+      directoryId,
+      insertType
+    }: FileNavigatorNewFileEntered = yield take(
       FILE_NAVIGATOR_NEW_FILE_ENTERED
     );
-    const {
-      insertFileInfo: { directoryId, type: insertType },
-      projectDirectory
-    }: RootState = yield select();
+    const { projectDirectory }: RootState = yield select();
     const directory: Directory = getNestedTreeNodeById(
       directoryId,
       projectDirectory
@@ -92,20 +115,13 @@ function* handleNewFileEntered() {
       continue;
     }
 
-    if (insertType === InsertFileType.FILE) {
+    if (insertType === FSItemTagNames.FILE) {
       fs.writeFileSync(filePath, "");
     } else {
       fs.mkdirSync(filePath);
     }
 
-    yield put(
-      newFileAdded(
-        addProtocol(FILE_PROTOCOL, filePath),
-        insertType === InsertFileType.FILE
-          ? FSItemTagNames.FILE
-          : FSItemTagNames.DIRECTORY
-      )
-    );
+    yield put(newFileAdded(addProtocol(FILE_PROTOCOL, filePath), insertType));
   }
 }
 

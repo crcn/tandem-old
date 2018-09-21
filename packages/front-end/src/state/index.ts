@@ -120,16 +120,6 @@ export type Canvas = {
   translate: Translate;
 };
 
-export enum InsertFileType {
-  FILE,
-  DIRECTORY
-}
-
-export type InsertFileInfo = {
-  type: InsertFileType;
-  directoryId: string;
-};
-
 export type GraphHistoryItem = {
   snapshot?: DependencyGraph;
   transforms?: KeyValue<TreeNodeOperationalTransform[]>;
@@ -206,7 +196,6 @@ export type RootState = {
   selectedComponentVariantName?: string;
   ready?: boolean;
   projectDirectory?: Directory;
-  insertFileInfo?: InsertFileInfo;
   history: GraphHistory;
   showQuickSearch?: boolean;
   selectedComponentId?: string;
@@ -1157,23 +1146,23 @@ export const updateOpenFileCanvas = (
   );
 };
 
-export const setInsertFile = (type: InsertFileType, state: RootState) => {
-  const file = getNestedTreeNodeById(
-    state.selectedFileNodeIds[0] || state.projectDirectory.id,
-    state.projectDirectory
-  );
-  return updateRootState(
-    {
-      insertFileInfo: {
-        type,
-        directoryId: isDirectory(file)
-          ? file.id
-          : getParentTreeNode(file.id, state.projectDirectory).id
-      }
-    },
-    state
-  );
-};
+// export const setInsertFile = (type: InsertFileType, state: RootState) => {
+//   const file = getNestedTreeNodeById(
+//     state.selectedFileNodeIds[0] || state.projectDirectory.id,
+//     state.projectDirectory
+//   );
+//   return updateRootState(
+//     {
+//       insertFileInfo: {
+//         type,
+//         directoryId: isDirectory(file)
+//           ? file.id
+//           : getParentTreeNode(file.id, state.projectDirectory).id
+//       }
+//     },
+//     state
+//   );
+// };
 
 export const setTool = (toolType: ToolType, root: RootState) => {
   if (!root.editorWindows.length) {

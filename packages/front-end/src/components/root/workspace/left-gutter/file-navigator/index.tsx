@@ -18,7 +18,7 @@ import {
   createTreeLayerComponents,
   TreeNodeLayerOuterProps
 } from "../../../../layers";
-import { InsertFileInfo } from "../../../../../state";
+// import { InsertFileInfo } from "../../../../../state";
 import { FocusComponent } from "../../../../focus";
 
 type NewFileInputOuterProps = {
@@ -54,14 +54,14 @@ const FileInputComponent = compose<
   withHandlers({
     onKeyDown: ({ dispatch }) => (event: React.KeyboardEvent<any>) => {
       if (event.key === "Enter") {
-        dispatch(fileNavigatorNewFileEntered((event.target as any).value));
+        // dispatch(fileNavigatorNewFileEntered((event.target as any).value));
       }
     }
   })
 )(BaseFileInputComponent);
 
 type FileNodeLayerOuterProps = {
-  insertFileInfo: InsertFileInfo;
+  insertFileInfo: any;
 } & TreeNodeLayerOuterProps;
 
 const { TreeNodeLayerComponent } = createTreeLayerComponents<
@@ -131,7 +131,7 @@ const BaseFileNavigatorHeaderComponent = ({
 );
 
 type FileNavigatorPaneOuterProps = {
-  insertFileInfo: InsertFileInfo;
+  insertFileInfo: any;
   selectedFileNodeIds: string[];
   dispatch: Dispatch<any>;
   rootDirectory: Directory;

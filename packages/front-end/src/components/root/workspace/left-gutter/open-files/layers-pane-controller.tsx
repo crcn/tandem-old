@@ -44,7 +44,8 @@ const generateLayersPaneContext = memoize(
 
 const CONTENT_STYLE = {
   display: "inline-block",
-  overflow: "scroll"
+  overflow: "scroll",
+  minWidth: "100%"
 };
 
 export default (Base: React.ComponentClass<BaseLayersPaneProps>) =>

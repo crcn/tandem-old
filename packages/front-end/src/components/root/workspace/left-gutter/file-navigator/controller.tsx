@@ -14,6 +14,7 @@ import {
 } from "tandem-common";
 import { Dispatch } from "redux";
 import { FileNavigatorContext, FileNavigatorContextProps } from "./contexts";
+import { fileNavigatorNewFileEntered } from "actions";
 export type Props = {
   rootDirectory: Directory;
   dispatch: Dispatch<any>;
@@ -52,6 +53,13 @@ export default (Base: React.ComponentClass<BaseFileNavigatorProps>) =>
       this.setAddingFSItem(FSItemTagNames.DIRECTORY);
     };
     onNewFileChangeComplete = (name: string) => {
+      this.props.dispatch(
+        fileNavigatorNewFileEntered(
+          name,
+          this.state.addingFSItem,
+          this.state.addingFSItemDirectory.id
+        )
+      );
       this.setState({
         ...this.state,
         addingFSItem: null,

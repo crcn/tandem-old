@@ -60,6 +60,8 @@ export const FILE_NAVIGATOR_NEW_DIRECTORY_CLICKED =
   "FILE_NAVIGATOR_NEW_DIRECTORY_CLICKED";
 export const FILE_NAVIGATOR_TOGGLE_DIRECTORY_CLICKED =
   "FILE_NAVIGATOR_TOGGLE_DIRECTORY_CLICKED";
+export const FILE_NAVIGATOR_BASENAME_CHANGED =
+  "FILE_NAVIGATOR_BASENAME_CHANGED";
 export const FILE_NAVIGATOR_NEW_FILE_ENTERED =
   "FILE_NAVIGATOR_NEW_FILE_ENTERED";
 export const FILE_NAVIGATOR_DROPPED_ITEM = "FILE_NAVIGATOR_DROPPED_ITEM";
@@ -193,6 +195,11 @@ export type DocumentRendered = {
 
 export type FileNavigatorItemClicked = {
   node: FSItem;
+} & Action;
+
+export type FileNavigatorBasenameChanged = {
+  item: FSItem;
+  basename: string;
 } & Action;
 
 export type OpenFilesItemClick = {
@@ -446,7 +453,9 @@ export type FileNavigatorLabelClicked = {
 } & Action;
 
 export type FileNavigatorNewFileEntered = {
+  directoryId: string;
   basename: string;
+  insertType: FSItemTagNames;
 } & Action;
 
 export type FileNavigatorDroppedItem = {
@@ -533,6 +542,15 @@ export const fileNavigatorToggleDirectoryClicked = (
 ): FileNavigatorItemClicked => ({
   node,
   type: FILE_NAVIGATOR_TOGGLE_DIRECTORY_CLICKED
+});
+
+export const fileNavigatorBasenameChanged = (
+  basename: string,
+  item: FSItem
+): FileNavigatorBasenameChanged => ({
+  item,
+  basename,
+  type: FILE_NAVIGATOR_BASENAME_CHANGED
 });
 
 export const promptConfirmed = (
@@ -751,9 +769,13 @@ export const quickSearchBackgroundClick = (): Action => ({
 });
 
 export const fileNavigatorNewFileEntered = (
-  basename: string
+  basename: string,
+  insertType: FSItemTagNames,
+  directoryId: string
 ): FileNavigatorNewFileEntered => ({
   basename,
+  directoryId,
+  insertType,
   type: FILE_NAVIGATOR_NEW_FILE_ENTERED
 });
 

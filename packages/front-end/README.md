@@ -1,16 +1,15 @@
 IMMEDIATE:
 
 - refactor file navigator
-  - selecting files
-  - adding files / folders
   - moving files / folders
-  - renaming files
   - refresh when FS changes
+  - context menu
+    - deleting files
+    - renaming
+  - renaming pc files should reload dependency graph
 - custom chrome
   project name in titlebar
 - text preview (code)
-
-- file navigator needs to refresh when new file is added
 
 * top bar must scroll
 * refactor styles pane to use computed override map instead of derriving props from synthetic elements.

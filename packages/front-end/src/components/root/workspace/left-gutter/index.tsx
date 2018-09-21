@@ -27,12 +27,12 @@ const BaseLeftGutterComponent = ({
       graph={root.graph}
       documents={root.documents}
     />
-    <FileNavigatorPaneComponent
+    {/* <FileNavigatorPaneComponent
       dispatch={dispatch}
       rootDirectory={rootDirectory}
       selectedFileNodeIds={root.selectedFileNodeIds}
       insertFileInfo={root.insertFileInfo}
-    />
+    /> */}
   </GutterComponent>
 );
 

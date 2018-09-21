@@ -166,8 +166,6 @@ import {
   setHoveringSyntheticVisibleNodeIds,
   setRootStateSyntheticVisibleNodeExpanded,
   setSelectedFileNodeIds,
-  InsertFileType,
-  setInsertFile,
   undo,
   redo,
   getEditorWithActiveFileUri,
@@ -386,12 +384,12 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
 
       return state;
     }
-    case FILE_NAVIGATOR_NEW_FILE_CLICKED: {
-      return setInsertFile(InsertFileType.FILE, state);
-    }
-    case FILE_NAVIGATOR_NEW_DIRECTORY_CLICKED: {
-      return setInsertFile(InsertFileType.DIRECTORY, state);
-    }
+    // case FILE_NAVIGATOR_NEW_FILE_CLICKED: {
+    //   return setInsertFile(InsertFileType.FILE, state);
+    // }
+    // case FILE_NAVIGATOR_NEW_DIRECTORY_CLICKED: {
+    //   return setInsertFile(InsertFileType.DIRECTORY, state);
+    // }
 
     case CANVAS_MOUNTED: {
       const { fileUri, element } = action as CanvasMounted;
@@ -479,6 +477,7 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
 
       return state;
     }
+
     case NEW_FILE_ADDED: {
       const { uri, fileType } = action as NewFileAdded;
       const directory = getFileFromUri(
@@ -488,7 +487,6 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
 
       state = updateRootState(
         {
-          insertFileInfo: null,
           projectDirectory: updateNestedNode(
             directory,
             state.projectDirectory,
@@ -2140,7 +2138,6 @@ const shortcutReducer = (state: RootState, action: Action): RootState => {
       } else {
         state = setSelectedSyntheticVisibleNodeIds(state);
         state = setSelectedFileNodeIds(state);
-        state = updateRootState({ insertFileInfo: null }, state);
         return state;
       }
     }
