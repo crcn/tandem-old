@@ -1,6 +1,7 @@
 import { fork, select, take, put, spawn } from "redux-saga/effects";
 import { eventChannel } from "redux-saga";
 import { ipcMain } from "electron";
+import { DesktopState } from "../state";
 export const pid = Date.now() + "_" + Math.random();
 
 export function* ipcSaga() {
@@ -30,6 +31,15 @@ function* apiSaga() {
       event.sender.send("serverState", state);
     }
   });
+
+  yield fork(function* getProjectInfo() {
+    const chan = takeIPCEvents("getProjectInfo");
+    while(1) {
+      const {event} = yield take(chan);
+      const state: DesktopState = yield select();
+      event.sender.send("projectInfo", { config: state.tdProject, path: state.tdProjectPath });
+    }
+  })
 }
 
 const takeIPCEvents = (eventType: string) =>

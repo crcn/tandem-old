@@ -12,6 +12,7 @@ export const TD_PROJECT_FILE_PICKED = "TD_PROJECT_FILE_PICKED";
 export type AppReady = {} & Action;
 export type TDProjectLoaded = {
   project: TDProject;
+  path: string;
 } & Action;
 
 export type TDProjectFilePicked = {
@@ -37,10 +38,11 @@ export const componentControllerPicked = publicActionCreator(
 
 export const mainWindowOpened = (): Action => ({ type: MAIN_WINDOW_OPENED });
 
-export const tdProjectLoaded = (project: TDProject): TDProjectLoaded => ({
+export const tdProjectLoaded = publicActionCreator((project: TDProject, path: string): TDProjectLoaded => ({
   type: TD_PROJECT_LOADED,
-  project
-});
+  project,
+  path
+}));
 
 export const previewServerStarted = (port: number): PreviewServerStarted => ({
   type: PREVIEW_SERVER_STARTED,

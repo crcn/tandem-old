@@ -1,10 +1,7 @@
 import { PCConfig } from "paperclip";
+import { ProjectConfig } from "tandem-front-end";
 
-export type TDProject = {
-  scripts?: {
-    previewServer?: string;
-  };
-} & PCConfig;
+export type TDProject = ProjectConfig;
 
 type PreviewServerInfo = {
   port: number;

@@ -18,7 +18,6 @@ import {
 import {
   PCEditorState,
   updateFrame,
-  syncSyntheticDocuments,
   upsertFrames
 } from "./edit";
 import { addFileCacheItemToDependencyGraph } from "./graph";
@@ -54,7 +53,22 @@ export const paperclipReducer = <
     }
     case PC_SOURCE_FILE_URIS_RECEIVED: {
       const { uris } = action as PCSourceFileUrisReceived;
-      return queueOpenFiles(uris, state);
+      state = queueOpenFiles(uris, state);
+      let graph = {...state.graph};
+      let graphChanged = false;
+      for (const uri in graph) {
+        if (uris.indexOf(uri) === -1) {
+          graphChanged = true;
+          delete graph[uri];
+        }
+      }
+      if (graphChanged) {
+        state = {...(state as any), graph};
+      }
+
+      state = {...(state as any), pcUris: uris };
+
+      return state;
     }
     case PC_SYNTHETIC_FRAME_RENDERED: {
       const { frame, computed } = action as PCFrameRendered;
@@ -69,7 +83,8 @@ export const paperclipReducer = <
     case FS_SANDBOX_ITEM_LOADED: {
       const { uri, content, mimeType } = action as FSSandboxItemLoaded;
 
-      if (mimeType !== PAPERCLIP_MIME_TYPE) {
+      // dependency graph can only load files that are within the scope of the project via PC_SOURCE_FILE_URIS_RECEIVED
+      if (mimeType !== PAPERCLIP_MIME_TYPE || state.pcUris.indexOf(uri) === -1) {
         return state;
       }
 

@@ -1,8 +1,9 @@
 IMMEDIATE:
 
 - refactor file navigator
+  - watch only files that are expanded
+  - allow for pc files to be renamed
   - moving files / folders
-  - refresh when FS changes
   - context menu
     - deleting files
     - renaming

@@ -5,7 +5,9 @@ import {
   pcFrameContainerCreated,
   pcRuntimeEvaluated,
   PC_RUNTIME_EVALUATED,
-  PCRuntimeEvaluated
+  PCRuntimeEvaluated,
+  PC_DEPENDENCY_GRAPH_LOADED,
+  PC_SOURCE_FILE_URIS_RECEIVED
 } from "./actions";
 import {
   SyntheticNativeNodeMap,

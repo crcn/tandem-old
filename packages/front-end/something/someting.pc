@@ -1,0 +1,38 @@
+{
+  "id": "c8cd7a281",
+  "name": "module",
+  "version": "0.0.5",
+  "children": [
+    {
+      "id": "c8cd7a284",
+      "label": "Element",
+      "is": "div",
+      "name": "element",
+      "attributes": {},
+      "style": {
+        "box-sizing": "border-box",
+        "display": "block"
+      },
+      "children": [
+        {
+          "id": "c8cd7a28156",
+          "name": "text",
+          "label": "Text",
+          "value": "Click to edit",
+          "style": {},
+          "children": [],
+          "metadata": {}
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": 525,
+          "top": 157,
+          "right": 625,
+          "bottom": 257
+        }
+      }
+    }
+  ],
+  "metadata": {}
+}

@@ -9,7 +9,7 @@ import {
   fileNavigatorItemClicked,
   fileNavigatorToggleDirectoryClicked,
   fileNavigatorBasenameChanged
-} from "actions";
+} from "../../../../../actions";
 import {
   withFileNavigatorContext,
   FileNavigatorContextProps

@@ -68,7 +68,8 @@ import {
   isSlot,
   Dependency,
   DependencyGraph,
-  getModifiedDependencies
+  getModifiedDependencies,
+  PCConfig
 } from "paperclip";
 import {
   CanvasToolOverlayMouseMoved,
@@ -93,6 +94,16 @@ export enum ToolType {
   POINTER,
   COMPONENT,
   ELEMENT
+}
+
+export type ProjectConfig = {
+  scripts?: {
+    previewServer?: string;
+  };
+} & PCConfig;
+export type ProjectInfo = {
+  config: ProjectConfig;
+  path: string;
 }
 
 export enum FrameMode {

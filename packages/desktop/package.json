@@ -20,11 +20,13 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "chokidar": "^2.0.4",
     "crc32": "^0.2.2",
     "font-manager": "^0.3.0",
     "fs-extra": "^6.0.1",
     "fsbox": "^10.0.24",
     "get-port": "^3.2.0",
+    "lodash": "^4.17.11",
     "paperclip": "^10.0.24",
     "paperclip-migrator": "^10.0.24",
     "redux": "^4.0.0",

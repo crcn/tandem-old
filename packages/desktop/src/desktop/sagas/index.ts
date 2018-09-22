@@ -1,4 +1,6 @@
-import { fork, call, take, select, put } from "redux-saga/effects";
+import { fork, call, take, select, put, cancel, spawn as sspawn, ForkEffect, cancelled, CallEffectFactory } from "redux-saga/effects";
+import { eventChannel, Channel } from "redux-saga";
+
 import { electronSaga } from "./electron";
 import { BrowserWindow, dialog } from "electron";
 import {
@@ -13,6 +15,8 @@ import {
   TD_PROJECT_FILE_PICKED,
   componentControllerPicked
 } from "../actions";
+import { debounce } from "lodash";
+import * as chokidar from "chokidar";
 import { FRONT_END_ENTRY_FILE_PATH } from "../constants";
 import { ipcSaga, pid } from "./ipc";
 import * as getPort from "get-port";
@@ -25,8 +29,7 @@ import {
   convertFlatFilesToNested,
   createDirectory,
   addProtocol,
-  FILE_PROTOCOL,
-  stripProtocol
+  FILE_PROTOCOL
 } from "tandem-common";
 import { shortcutsSaga } from "./menu";
 import * as fs from "fs";
@@ -41,10 +44,11 @@ const DEFAULT_TD_PROJECT: TDProject = {
 const DEFAULT_TD_PROJECT_NAME = "app.tdproject";
 
 export function* rootSaga() {
+  // yield fork(watchProjectDirectory); 
   yield fork(openMainWindow);
   yield fork(electronSaga);
-  yield fork(ipcSaga);
-  yield fork(handleLoadProject);
+  yield fork(ipcSaga);  
+  // yield fork(handleLoadProject);
   yield fork(shortcutsSaga);
   yield fork(previewServer);
   yield fork(handleOpenProject);
@@ -61,7 +65,7 @@ function* initProjectDirectory() {
   }
   yield call(loadTDConfig);
   // yield call(initPCConfig);
-  yield call(loadProjectDirectory);
+  // yield call(loadProjectDirectory);
 }
 
 function* loadTDConfig() {
@@ -74,7 +78,7 @@ function* loadTDConfig() {
   const project = JSON.parse(fs.readFileSync(state.tdProjectPath, "utf8"));
 
   // TODO - validate config here
-  yield put(tdProjectLoaded(project));
+  yield put(tdProjectLoaded(project, state.tdProjectPath));
 }
 
 function* openMainWindow() {
@@ -116,41 +120,41 @@ function* openMainWindow() {
   yield put(mainWindowOpened());
 }
 
-function* handleLoadProject() {
-  while (1) {
-    yield take("APP_LOADED");
-    yield call(loadProjectDirectory);
-  }
-}
+// function* handleLoadProject() {
+//   while (1) {
+//     yield take("APP_LOADED");
+//     yield call(loadProjectDirectory);
+//   }
+// }
 
-function* loadProjectDirectory() {
-  const { tdProject, tdProjectPath }: DesktopState = yield select();
+// function* loadProjectDirectory() {
+//   const { tdProject, tdProjectPath }: DesktopState = yield select();
 
-  if (!tdProject || !tdProjectPath) {
-    yield put(projectDirectoryLoaded(null));
-    return;
-  }
+//   if (!tdProject || !tdProjectPath) {
+//     yield put(projectDirectoryLoaded(null));
+//     return;
+//   }
 
-  const directory = path.join(
-    path.dirname(tdProjectPath),
-    tdProject.rootDir || "."
-  );
+//   const directory = path.join(
+//     path.dirname(tdProjectPath),
+//     tdProject.rootDir || "."
+//   );
 
-  const files: [string, boolean][] = [];
-  walkPCRootDirectory(tdProject, directory, (filePath, isDirectory) => {
-    if (filePath === directory) {
-      return;
-    }
-    files.push([filePath, isDirectory]);
-  });
+//   const files: [string, boolean][] = [];
+//   walkPCRootDirectory(tdProject, directory, (filePath, isDirectory) => {
+//     if (filePath === directory) {
+//       return;
+//     }
+//     files.push([filePath, isDirectory]);
+//   });
 
-  const root = createDirectory(
-    addProtocol(FILE_PROTOCOL, directory),
-    files.length ? convertFlatFilesToNested(files) : []
-  );
+//   const root = createDirectory(
+//     addProtocol(FILE_PROTOCOL, directory),
+//     files.length ? convertFlatFilesToNested(files) : []
+//   );
 
-  yield put(projectDirectoryLoaded(root));
-}
+//   yield put(projectDirectoryLoaded(root));
+// }
 
 function* previewServer() {
   yield take(TD_PROJECT_LOADED);
@@ -245,3 +249,40 @@ function* handleAddControllerClick() {
     yield put(componentControllerPicked(controllerFilePath));
   }
 }
+
+// function* watchProjectDirectory() {
+//   let chan: Channel<any>;
+//   let fork: any;
+  
+  
+//   while(1) {
+//     yield take("PROJECT_DIRECTORY_LOADED");
+//     const { tdProjectPath, tdProject }: DesktopState = yield select();
+//     const tdProjectDir = path.dirname(tdProjectPath);
+//     console.log(`watching ${tdProjectDir}`);
+//     if (chan) {
+//       chan.close();
+//       yield cancel(fork);
+//     }
+//     chan = eventChannel((emit) => {
+//       const watcher = chokidar.watch(tdProjectDir, { ignored: tdProject.exclude ? new RegExp(tdProject.exclude.join("|")) : [] });
+//       const startTime = Date.now();
+//       watcher.on("ready", () => {
+//         watcher.on("all", debounce(() => {
+//           emit({});
+//         }, 100)); 
+//       });
+//       return () => {
+//         watcher.close();
+//       };
+//     });
+      
+//     fork = yield sspawn(function*(){
+//       while(!(yield cancelled())) {
+//         yield take(chan);
+//         console.log(`${tdProjectPath} has changed`);
+//         yield call(loadProjectDirectory);
+//       }
+//     });
+//   }
+// }

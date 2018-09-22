@@ -1,8 +1,9 @@
 import * as fs from "fs";
 const fontManager = require("font-manager");
 import { rootSaga } from "./sagas";
-import { select } from "redux-saga/effects";
+import { select, take } from "redux-saga/effects";
 import { rootReducer } from "./reducers";
+import { ipcRenderer } from "electron";
 import {
   setup,
   RootState,
@@ -20,6 +21,7 @@ import {
   getSyntheticNodeById,
   getPCNodeDependency
 } from "paperclip";
+import { eventChannel } from "redux-saga";
 
 const query = Url.parse(String(location), true).query;
 
@@ -28,7 +30,8 @@ setup<DesktopRootState>(
     return {
       readFile,
       writeFile,
-      openPreview
+      openPreview,
+      loadProjectInfo
     };
   },
   rootReducer,
@@ -76,6 +79,16 @@ function* openPreview(frame: Frame) {
   );
 
   return true;
+}
+
+function* loadProjectInfo() {
+  console.log("OJRECT");
+  const chan = eventChannel((emit) => {
+    ipcRenderer.once("projectInfo", (event, arg) => emit(arg));
+    return () => {};
+  });
+  ipcRenderer.send("getProjectInfo");
+  return yield take(chan);
 }
 
 function getFontFamiles(): FontFamily[] {

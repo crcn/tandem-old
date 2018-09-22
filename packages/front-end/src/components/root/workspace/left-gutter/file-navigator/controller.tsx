@@ -14,7 +14,7 @@ import {
 } from "tandem-common";
 import { Dispatch } from "redux";
 import { FileNavigatorContext, FileNavigatorContextProps } from "./contexts";
-import { fileNavigatorNewFileEntered } from "actions";
+import { fileNavigatorNewFileEntered } from "../../../../../actions";
 export type Props = {
   rootDirectory: Directory;
   dispatch: Dispatch<any>;

@@ -207,7 +207,8 @@ export const getSyntheticDocumentByDependencyUri = memoize(
     graph: DependencyGraph
   ): SyntheticDocument => {
     return documents.find((document: SyntheticDocument) => {
-      return getPCNodeDependency(document.sourceNodeId, graph).uri === uri;
+      const dependency = getPCNodeDependency(document.sourceNodeId, graph);
+      return dependency && dependency.uri === uri;
     });
   }
 );
