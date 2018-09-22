@@ -71,14 +71,14 @@ export const setup = <TState extends RootState>(
       applyMiddleware(sagaMiddleware)
     );
     sagaMiddleware.run(function*() {
-      let { readFile, writeFile, openPreview, loadProjectInfo } = yield call(createSideEffects);
+      let { readFile, writeFile, openPreview, loadProjectInfo, readDirectory } = yield call(createSideEffects);
 
       readFile = setReaderMimetype(
         PAPERCLIP_MIME_TYPE,
         PAPERCLIP_DEFAULT_EXTENSIONS
       )(readFile);
 
-      yield fork(createRootSaga({ openPreview, loadProjectInfo }));
+      yield fork(createRootSaga({ openPreview, loadProjectInfo, readDirectory }));
       if (saga) {
         yield fork(saga);
         yield fork(createFSSandboxSaga({ readFile, writeFile }));

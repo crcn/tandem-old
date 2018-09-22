@@ -25,7 +25,7 @@ import {
   PCVariableType
 } from "paperclip";
 import { RegisteredComponent } from "..";
-import { FrameMode, ToolType, EditorWindow } from "../state";
+import { FrameMode, ToolType, EditorWindow, ProjectConfig, ProjectInfo } from "../state";
 import { InspectorNode } from "paperclip";
 
 export const PROJECT_LOADED = "PROJECT_LOADED";
@@ -115,7 +115,7 @@ export const UNHANDLED_ERROR = "UNHANDLED_ERROR";
 export const COMPONENT_PICKER_ITEM_CLICK = "COMPONENT_PICKER_ITEM_CLICK";
 export const RESIZER_MOUSE_DOWN = "RESIZER_MOUSE_DOWN";
 export const RESIZER_START_DRGG = "RESIZER_START_DRGG";
-export const TD_PROJECT_LOADED = "TD_PROJECT_LOADED";
+export const PROJECT_INFO_LOADED = "PROJECT_INFO_LOADED";
 export const SELECTOR_DOUBLE_CLICKED = "SELECTOR_DOUBLE_CLICKED";
 export const SHORTCUT_ZOOM_IN_KEY_DOWN = "SHORTCUT_ZOOM_IN_KEY_DOWN";
 export const SHORTCUT_ZOOM_OUT_KEY_DOWN = "SHORTCUT_ZOOM_OUT_KEY_DOWN";
@@ -147,6 +147,7 @@ export const APP_LOADED = "APP_LOADED";
 export const SAVED_FILE = "SAVED_FILE";
 export const SAVED_ALL_FILES = "SAVED_ALL_FILES";
 export const NEW_FILE_ENTERED = "NEW_FILE_ENTERED";
+export const PROJECT_DIRECTORY_DIR_LOADED = "PROJECT_DIRECTORY_DIR_LOADED";
 export const NEW_DIRECTORY_ENTERED = "NEW_DIRECTORY_ENTERED";
 export const RAW_CSS_TEXT_CHANGED = "RAW_CSS_TEXT_CHANGED";
 export const CSS_PROPERTY_CHANGED = "CSS_PROPERTY_CHANGED";
@@ -238,6 +239,10 @@ export type ProjectDirectoryLoaded = {
   directory: Directory;
 } & Action;
 
+export type ProjectInfoLoaded = {
+  info: ProjectInfo;
+} & Action;
+
 export type CanvasToolOverlayMousePanStart = {
   documentId: string;
 } & Action;
@@ -286,8 +291,11 @@ export type CanvasWheel = {
 } & Action;
 
 export type TreeLayerMouseOver = {
-  type: string;
   node: TreeNode<any>;
+} & Action;
+
+export type ProjectDirectoryDirLoaded = {
+  items: FSItem[];
 } & Action;
 
 export type StyleVariantDropdownChanged = {
@@ -635,6 +643,11 @@ export const newStyleVariantButtonClicked = (): Action => ({
   type: NEW_STYLE_VARIANT_BUTTON_CLICKED
 });
 
+export const projectDirectoryDirLoaded = (items: FSItem[]): ProjectDirectoryDirLoaded => ({
+  type: PROJECT_DIRECTORY_DIR_LOADED,
+  items
+})
+
 export const removeStyleButtonClicked = (): Action => ({
   type: REMOVE_STYLE_BUTTON_CLICKED
 });
@@ -669,6 +682,10 @@ export const inheritPaneRemoveButtonClick = (
   componentId,
   type: INHERIT_PANE_REMOVE_BUTTON_CLICK
 });
+export const projectInfoLoaded = (info: ProjectInfo): ProjectInfoLoaded => ({
+  type: PROJECT_INFO_LOADED,
+  info,
+})
 
 export const inheritItemComponentTypeChangeComplete = (
   oldComponentId: string,

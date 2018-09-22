@@ -207,6 +207,7 @@ export type RootState = {
   selectedComponentVariantName?: string;
   ready?: boolean;
   projectDirectory?: Directory;
+  projectInfo?: ProjectInfo;
   history: GraphHistory;
   showQuickSearch?: boolean;
   selectedComponentId?: string;

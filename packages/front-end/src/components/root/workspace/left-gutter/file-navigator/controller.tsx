@@ -10,7 +10,8 @@ import {
   FSItemTagNames,
   getNestedTreeNodeById,
   FSItem,
-  getParentTreeNode
+  getParentTreeNode,
+  EMPTY_ARRAY
 } from "tandem-common";
 import { Dispatch } from "redux";
 import { FileNavigatorContext, FileNavigatorContextProps } from "./contexts";
@@ -89,6 +90,10 @@ export default (Base: React.ComponentClass<BaseFileNavigatorProps>) =>
         selectedFileNodeIds,
         ...rest
       } = this.props;
+
+      if (!rootDirectory) {
+        return <Base content={EMPTY_ARRAY} />
+      }
       const {
         onAddFileButtonClick,
         onAddFolderButtonClick,

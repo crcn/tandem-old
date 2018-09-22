@@ -18,7 +18,7 @@ export class RootComponent extends React.PureComponent<RootOuterProps> {
       return null;
     }
 
-    if (!root.projectDirectory) {
+    if (!root.projectInfo) {
       return <Welcome dispatch={dispatch} />;
     }
 

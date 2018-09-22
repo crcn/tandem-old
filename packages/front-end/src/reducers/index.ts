@@ -135,7 +135,11 @@ import {
   VARIABLE_VALUE_CHANGED,
   VariablePropertyChanged,
   AddVariableButtonClicked,
-  VARIABLE_VALUE_CHANGE_COMPLETED
+  VARIABLE_VALUE_CHANGE_COMPLETED,
+  PROJECT_INFO_LOADED,
+  ProjectInfoLoaded,
+  PROJECT_DIRECTORY_DIR_LOADED,
+  ProjectDirectoryDirLoaded
 } from "../actions";
 import {
   queueOpenFile,
@@ -312,7 +316,8 @@ import {
   EMPTY_OBJECT,
   getNestedTreeNodeById,
   EMPTY_ARRAY,
-  containsNestedTreeNodeById
+  mergeFSItems,
+  convertFlatFilesToNested2
 } from "tandem-common";
 import { clamp, last } from "lodash";
 import {
@@ -346,6 +351,12 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
         state
       );
     }
+    case PROJECT_INFO_LOADED: {
+      const { info: projectInfo } = action as ProjectInfoLoaded;
+      return updateRootState(
+        { projectInfo, ready: true }, state
+      )
+    }
     case FILE_NAVIGATOR_ITEM_CLICKED: {
       const { node } = action as FileNavigatorItemClicked;
       const uri = node.uri;
@@ -372,6 +383,16 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
     case FILE_NAVIGATOR_TOGGLE_DIRECTORY_CLICKED: {
       const { node } = action as FileNavigatorItemClicked;
       state = setFileExpanded(node, !node.expanded, state);
+      return state;
+    }
+    case PROJECT_DIRECTORY_DIR_LOADED: {
+      const {items} = action as ProjectDirectoryDirLoaded;
+      const {projectDirectory} = state;
+      state = updateRootState({
+        projectDirectory:  projectDirectory ? mergeFSItems(...items, projectDirectory) : mergeFSItems(...items)
+      }, state);
+      
+      
       return state;
     }
     case FILE_NAVIGATOR_ITEM_DOUBLE_CLICKED: {

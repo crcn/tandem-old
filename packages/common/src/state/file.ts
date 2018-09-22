@@ -6,12 +6,14 @@ import {
   findNestedNode,
   updateNestedNode,
   createTreeNode,
-  appendChildNode
+  appendChildNode,
+  flattenTreeNode,
+  reduceTree
 } from "./tree";
 import { memoize } from "../utils/memoization";
 import * as path from "path";
 import { generateUID } from "../utils/uid";
-import { addProtocol, FILE_PROTOCOL } from "../utils/protocol";
+import { addProtocol, FILE_PROTOCOL, stripProtocol } from "../utils/protocol";
 import { arraySplice, EMPTY_ARRAY } from "..";
 
 export enum FSItemNamespaces {
@@ -144,6 +146,87 @@ export const convertFlatFilesToNested = (files: FilePathPair[]): FSItem[] => {
 
   return sortFSItems(pool[highestDirname]);
 };
+
+export const convertFlatFilesToNested2 = (items: FSItem[]): Directory => {
+  const splitParts = items.map((item) => {
+    return [stripProtocol(item.uri).split("/"), item.name === FSItemTagNames.DIRECTORY, item];
+  }) as [string[], boolean, FSItem][];
+
+  const sortedFiles = splitParts
+    .sort((a, b) => {
+      const [ap, aid] = a;
+      const [bp, bid] = b;
+
+      if (ap.length > bp.length) {
+        return -1;
+      } else if (ap.length < bp.length) {
+        return 1;
+      }
+
+      // same length, just check if it's a directory
+      return aid ? 1 : -1;
+    })
+    .map(([parts, isDirectory]) => {
+      return [parts.join("/"), isDirectory];
+    }) as FilePathPair[];
+
+  const pool = {};
+
+  let highest: FSItem;
+  let highestDirname: string;
+
+  for (const [filePath, isDirectory] of sortedFiles) {
+    const uri = addProtocol(FILE_PROTOCOL, filePath);
+    if (isDirectory) {
+      highest = createDirectory(uri, sortFSItems(pool[uri] || EMPTY_ARRAY));
+    } else {
+      highest = createFile(uri);
+    }
+
+    highestDirname = path.dirname(uri);
+
+    if (!pool[highestDirname]) {
+      pool[highestDirname] = [];
+    }
+
+    pool[highestDirname].push(highest);
+  }
+
+  const highestPool = pool[highestDirname];
+
+  return highestPool.length === 1 && highestPool[0].name === FSItemTagNames.DIRECTORY ? highestPool[0] : createDirectory(highestDirname, sortFSItems(highestPool));
+};
+
+export const mergeFSItems = (...items: FSItem[]) => {
+  const flattenedItems = items.reduce((allItems, item) => {
+    return [...allItems, ...flattenTreeNode(item)];
+  }, EMPTY_ARRAY);
+
+  const itemMap = {};
+
+  for (const item of flattenedItems) {
+    itemMap[item.uri] = item;
+  }
+
+  const mapTree = (node: FSItem) => {
+    const existing = itemMap[node.uri];
+    if (!existing) {
+      return node; 
+    }
+    if (node.name === FSItemTagNames.DIRECTORY) {
+      return {
+        ...node,
+        ...existing,
+        children: node.children.map(mapTree)
+      }
+    } else {
+      return existing;
+    }
+  }
+
+  return mapTree(convertFlatFilesToNested2(flattenedItems));
+};
+
 
 export const sortFSItems = (files: FSItem[]) =>
   [...files].sort((a, b) => {

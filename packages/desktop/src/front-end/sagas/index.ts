@@ -8,7 +8,7 @@ import { eventChannel } from "redux-saga";
 import { ipcRenderer } from "electron";
 import {
   RootState,
-  PROJECT_DIRECTORY_LOADED,
+  // PROJECT_DIRECTORY_LOADED,
   FILE_NAVIGATOR_NEW_FILE_ENTERED,
   SHORTCUT_SAVE_KEY_DOWN,
   savedFile,
@@ -22,7 +22,8 @@ import {
   ComponentPickerItemClick,
   ComponentControllerItemClicked,
   FileNavigatorBasenameChanged,
-  FILE_NAVIGATOR_BASENAME_CHANGED
+  FILE_NAVIGATOR_BASENAME_CHANGED,
+  PROJECT_INFO_LOADED
 } from "tandem-front-end";
 import {
   findPaperclipSourceFiles,
@@ -39,7 +40,7 @@ import {
   FILE_PROTOCOL,
   FSItemTagNames
 } from "tandem-common";
-import { serverStateLoaded, SERVER_STATE_LOADED } from "../actions";
+// import { serverStateLoaded } from "../actions";
 import { DesktopRootState } from "../state";
 
 export function* rootSaga() {
@@ -50,26 +51,26 @@ export function* rootSaga() {
   yield fork(handleBasenameChanged);
   yield fork(handleDroppedFile);
   yield fork(handleProjectDirectory);
-  yield fork(receiveServerState);
+  // yield fork(receiveServerState);
   yield fork(handleOpenController);
 }
 
 function* handleProjectDirectory() {
   while (1) {
-    yield take(SERVER_STATE_LOADED);
+    yield take(PROJECT_INFO_LOADED);
     yield call(loadPCFiles);
   }
 }
 
 function* loadPCFiles() {
-  const { serverState }: DesktopRootState = yield select();
-  if (!serverState || !serverState.tdProject) {
+  const { projectInfo }: DesktopRootState = yield select();
+  if (!projectInfo) {
     return;
   }
 
   const sourceFiles = findPaperclipSourceFiles(
-    serverState.tdProject,
-    stripProtocol(path.dirname(serverState.tdProjectPath))
+    projectInfo.config,
+    stripProtocol(path.dirname(projectInfo.path))
   ).map(path => addProtocol(FILE_PROTOCOL, path));
   yield put(pcSourceFileUrisReceived(sourceFiles));
 }
@@ -163,24 +164,25 @@ const saveFile = (uri: string, content: Buffer) => {
   });
 };
 
-function* receiveServerState() {
-  const chan = eventChannel(emit => {
-    ipcRenderer.on("serverState", (event, arg) => emit(arg));
-    return () => {};
-  });
+// function* 
+// () {
+//   const chan = eventChannel(emit => {
+//     ipcRenderer.on("serverState", (event, arg) => emit(arg));
+//     return () => {};
+//   });
 
-  yield fork(function*() {
-    while (1) {
-      const state = yield take(chan);
-      yield put(serverStateLoaded(state));
-    }
-  });
+//   yield fork(function*() {
+//     while (1) {
+//       const state = yield take(chan);
+//       yield put(serverStateLoaded(state));
+//     }
+//   });
 
-  while (1) {
-    yield take(PROJECT_DIRECTORY_LOADED);
-    ipcRenderer.send("getServerState");
-  }
-}
+//   // while (1) {
+//   //   yield take(PROJECT_DIRECTORY_LOADED);
+//   //   ipcRenderer.send("getServerState");
+//   // }
+// }
 
 function* handleOpenController() {
   while (1) {

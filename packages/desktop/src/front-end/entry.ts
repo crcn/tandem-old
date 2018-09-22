@@ -1,7 +1,7 @@
 import * as fs from "fs";
 const fontManager = require("font-manager");
 import { rootSaga } from "./sagas";
-import { select, take } from "redux-saga/effects";
+import { select, take, call } from "redux-saga/effects";
 import { rootReducer } from "./reducers";
 import { ipcRenderer } from "electron";
 import {
@@ -10,7 +10,7 @@ import {
   FontFamily,
   createRootInspectorNode
 } from "tandem-front-end";
-import { stripProtocol } from "tandem-common";
+import { stripProtocol, createDirectory, addProtocol, FILE_PROTOCOL, createFile } from "tandem-common";
 import { DesktopRootState } from "./state";
 import * as path from "path";
 import * as Url from "url";
@@ -31,7 +31,8 @@ setup<DesktopRootState>(
       readFile,
       writeFile,
       openPreview,
-      loadProjectInfo
+      loadProjectInfo,
+      readDirectory
     };
   },
   rootReducer,
@@ -82,13 +83,29 @@ function* openPreview(frame: Frame) {
 }
 
 function* loadProjectInfo() {
-  console.log("OJRECT");
   const chan = eventChannel((emit) => {
     ipcRenderer.once("projectInfo", (event, arg) => emit(arg));
     return () => {};
   });
   ipcRenderer.send("getProjectInfo");
   return yield take(chan);
+}
+
+function* readDirectory(dirUri: string): any {
+  const dir = stripProtocol(dirUri);
+  const dirBasenames: string[] = yield call(() => new Promise((resolve) => {
+    fs.readdir(dir, (err, basenames) => resolve(basenames));
+  }));
+
+  return dirBasenames.map(basename => {
+    const fullPath = path.join(dir, basename);
+    const uri = addProtocol(FILE_PROTOCOL, fullPath);
+    if (fs.lstatSync(fullPath).isDirectory()) {
+      return createDirectory(uri);
+    } else {
+      return createFile(uri);
+    }
+  });
 }
 
 function getFontFamiles(): FontFamily[] {

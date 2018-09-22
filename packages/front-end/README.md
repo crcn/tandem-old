@@ -1,5 +1,6 @@
 IMMEDIATE:
 
+- quick search needs to work
 - refactor file navigator
   - watch only files that are expanded
   - allow for pc files to be renamed

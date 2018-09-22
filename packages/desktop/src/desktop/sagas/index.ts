@@ -10,7 +10,7 @@ import {
   TD_PROJECT_LOADED,
   previewServerStarted,
   OPEN_PROJECT_MENU_ITEM_CLICKED,
-  projectDirectoryLoaded,
+  // projectDirectoryLoaded,
   tdProjectFilePicked,
   TD_PROJECT_FILE_PICKED,
   componentControllerPicked

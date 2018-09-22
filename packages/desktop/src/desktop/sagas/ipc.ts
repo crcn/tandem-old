@@ -23,14 +23,14 @@ function* actionSaga() {
 }
 
 function* apiSaga() {
-  yield fork(function* getState() {
-    const chan = takeIPCEvents("getServerState");
-    while (1) {
-      const { event } = yield take(chan);
-      const state = yield select();
-      event.sender.send("serverState", state);
-    }
-  });
+  // yield fork(function* getState() {
+  //   const chan = takeIPCEvents("getServerState");
+  //   while (1) {
+  //     const { event } = yield take(chan);
+  //     const state = yield select();
+  //     event.sender.send("serverState", state);
+  //   }
+  // });
 
   yield fork(function* getProjectInfo() {
     const chan = takeIPCEvents("getProjectInfo");

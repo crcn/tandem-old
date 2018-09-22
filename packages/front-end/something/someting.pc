@@ -18,7 +18,7 @@
           "id": "c8cd7a28156",
           "name": "text",
           "label": "Text",
-          "value": "Click to edit",
+          "value": "Something",
           "style": {},
           "children": [],
           "metadata": {}
@@ -26,10 +26,10 @@
       ],
       "metadata": {
         "bounds": {
-          "left": 525,
-          "top": 157,
-          "right": 625,
-          "bottom": 257
+          "left": 445,
+          "top": 93,
+          "right": 545,
+          "bottom": 193
         }
       }
     }
