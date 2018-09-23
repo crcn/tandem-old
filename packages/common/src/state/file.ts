@@ -8,7 +8,8 @@ import {
   createTreeNode,
   appendChildNode,
   flattenTreeNode,
-  reduceTree
+  reduceTree,
+  getParentTreeNode
 } from "./tree";
 import { memoize } from "../utils/memoization";
 import * as path from "path";
@@ -28,6 +29,7 @@ export enum FSItemTagNames {
 
 type BaseFSItem<TName extends string> = {
   uri: string;
+  alt?: boolean;
   expanded?: boolean;
   selected?: boolean;
 } & TreeNode<TName>;
@@ -59,10 +61,12 @@ export const createFile = (uri: string): File => ({
 
 export const createDirectory = (
   uri: string,
-  children: FSItem[] = []
+  children: FSItem[] = [],
+  expanded?: boolean
 ): Directory => ({
   id: generateUID(),
   name: FSItemTagNames.DIRECTORY,
+  expanded,
   uri,
   children: children || []
 });
@@ -195,7 +199,7 @@ export const convertFlatFilesToNested2 = (items: FSItem[]): Directory => {
 
   const highestPool = pool[highestDirname];
 
-  return highestPool.length === 1 && highestPool[0].name === FSItemTagNames.DIRECTORY ? highestPool[0] : createDirectory(highestDirname, sortFSItems(highestPool));
+  return updateFSItemAlts(highestPool.length === 1 && highestPool[0].name === FSItemTagNames.DIRECTORY ? highestPool[0] : createDirectory(highestDirname, sortFSItems(highestPool), true));
 };
 
 export const mergeFSItems = (...items: FSItem[]) => {
@@ -225,8 +229,40 @@ export const mergeFSItems = (...items: FSItem[]) => {
     }
   }
 
-  return mapTree(convertFlatFilesToNested2(flattenedItems));
+  return updateFSItemAlts(mapTree(convertFlatFilesToNested2(flattenedItems)));
 };
+
+
+export const updateFSItemAlts = <TItem extends FSItem>(root: TItem): TItem => {
+  const flattened = flattenTreeNode(root).filter(
+    node =>
+      getParentTreeNode(node.id, root) &&
+      getParentTreeNode(node.id, root).expanded
+  );
+
+  const map = (node: FSItem) => {
+    const alt = flattened.indexOf(node) % 2 !== 0;
+
+    let children = node.children;
+
+    if (node.expanded) {
+      children = node.children.map(map);
+    }
+
+    if (node.alt !== alt || node.children !== children) {
+      return {
+        ...node,
+        alt,
+        children
+      };
+    }
+
+    return node;
+  };
+
+  return map(root) as TItem;
+};
+
 
 
 export const sortFSItems = (files: FSItem[]) =>

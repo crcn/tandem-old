@@ -2,23 +2,26 @@ import * as React from "react";
 import * as path from "path";
 import * as cx from "classnames";
 import { compose } from "recompose";
-import { BaseFileNavigatorLayerProps, NewFileInput } from "./view.pc";
-import { FSItem, FSItemTagNames, Directory } from "tandem-common";
+import { BaseFileNavigatorLayerProps, NewFileInput, FileNavigatorLayerContainer} from "./view.pc";
+import { FSItem, FSItemTagNames, Directory, TreeMoveOffset } from "tandem-common";
 import { Dispatch } from "redux";
 import {
   fileNavigatorItemClicked,
   fileNavigatorToggleDirectoryClicked,
-  fileNavigatorBasenameChanged
+  fileNavigatorBasenameChanged,
+  fileNavigatorDroppedItem
 } from "../../../../../actions";
 import {
   withFileNavigatorContext,
   FileNavigatorContextProps
 } from "./contexts";
+import { DragSource, DropTarget } from "react-dnd";
 import { FocusComponent } from "../../../../focus";
 
 export type Props = {
   item: FSItem;
   depth?: number;
+  draggingOver: boolean;
 } & BaseFileNavigatorLayerProps;
 
 type ContextProps = {
@@ -28,7 +31,13 @@ type ContextProps = {
   onNewFileChangeComplete: any;
 };
 
-type InnerProps = Props & ContextProps;
+type InnerProps = {
+  connectDragSource: any;
+  connectDropTarget: any;
+  isDragging: boolean;
+  canDrop: boolean;
+  isOver;
+} & Props & ContextProps;
 
 const LAYER_PADDING = 16;
 
@@ -61,6 +70,38 @@ export default (Base: React.ComponentClass<BaseFileNavigatorLayerProps>) => {
         };
       }
     ),
+    DragSource("FILE", {
+        beginDrag({ item }: Props) {
+          return item;
+        },
+        canDrag() {
+          return true;
+        }
+      },
+      (connect, monitor) => ({
+        connectDragSource: connect.dragSource(),
+        connectDragPreview: connect.dragPreview(),
+        isDragging: monitor.isDragging()
+      })
+    ),
+    DropTarget("FILE", 
+    {
+      canDrop: ({ item }: ContextProps & Props, monitor) => {
+        return item.name === FSItemTagNames.DIRECTORY && monitor.isOver({ shallow: true });
+      },
+      drop: ({ dispatch, item: directory }, monitor) => {
+        const droppedItem = monitor.getItem() as FSItem;
+        console.log("DROp");
+        dispatch(fileNavigatorDroppedItem(droppedItem, directory as Directory, TreeMoveOffset.PREPEND));
+      }
+    },
+    (connect, monitor) => {
+      return {
+        connectDropTarget: connect.dropTarget(),
+        isOver: monitor.isOver({ shallow: true }),
+        canDrop: monitor.canDrop()
+      };
+    }),
     (Base: React.ComponentClass<BaseFileNavigatorLayerProps>) => {
       return class FileNavigatorLayerController extends React.PureComponent<
         InnerProps,
@@ -101,10 +142,16 @@ export default (Base: React.ComponentClass<BaseFileNavigatorLayerProps>) => {
             depth = 1,
             dispatch,
             selected,
+            isDragging,
+            isOver,
+            connectDragSource,
+            connectDropTarget,
+            canDrop,
             addingFSItemDirectory,
             onNewFileChangeComplete,
             ...rest
           } = this.props;
+          let {draggingOver} = this.props;
           const {
             onClick,
             onArrowClick,
@@ -116,6 +163,7 @@ export default (Base: React.ComponentClass<BaseFileNavigatorLayerProps>) => {
           const { expanded } = item;
 
           let children;
+          draggingOver = draggingOver || (isOver && canDrop);
 
           if (expanded) {
             children = item.children.map(child => {
@@ -124,6 +172,7 @@ export default (Base: React.ComponentClass<BaseFileNavigatorLayerProps>) => {
                   key={child.id}
                   item={child as FSItem}
                   depth={depth + 1}
+                  draggingOver={draggingOver}
                 />
               );
             });
@@ -139,10 +188,13 @@ export default (Base: React.ComponentClass<BaseFileNavigatorLayerProps>) => {
 
           const basename = path.basename(item.uri);
 
-          return (
-            <span style={ROOT_STYLE}>
+
+          let div = <div style={ROOT_STYLE}>
+            <FileNavigatorLayerContainer variant={cx({
+              hovering: draggingOver
+            })}>
               <FocusComponent focus={editing}>
-                <Base
+                {connectDragSource(<div><Base
                   {...rest}
                   style={{
                     paddingLeft: LAYER_PADDING * depth
@@ -160,18 +212,25 @@ export default (Base: React.ComponentClass<BaseFileNavigatorLayerProps>) => {
                   variant={cx({
                     folder: item.name === FSItemTagNames.DIRECTORY,
                     file: item.name === FSItemTagNames.FILE,
+                    alt: item.alt && !draggingOver && !selected,
                     editing,
                     expanded,
-                    selected,
+                    selected: selected && !draggingOver,
                     blur: !!addingFSItemDirectory
                   })}
                   label={editing ? "" : basename}
-                />
+                /></div>)}
               </FocusComponent>
               {newFileInput}
               {children}
-            </span>
-          );
+            </FileNavigatorLayerContainer>
+          </div>;
+
+          if (item.name === FSItemTagNames.DIRECTORY) {
+            div = connectDropTarget(div);
+          }
+
+          return div;
         }
       };
     }

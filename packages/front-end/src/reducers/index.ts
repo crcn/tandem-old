@@ -333,7 +333,8 @@ import {
   convertFlatFilesToNested2,
   stripProtocol,
   addProtocol,
-  FILE_PROTOCOL
+  FILE_PROTOCOL,
+  updateFSItemAlts
 } from "tandem-common";
 import { clamp, last } from "lodash";
 import {
@@ -2019,17 +2020,18 @@ const getInsertFilter = (state: RootState) => {
   return filter;
 };
 
+
 const setFileExpanded = (node: FSItem, value: boolean, state: RootState) => {
   state = updateRootState(
     {
-      projectDirectory: updateNestedNode(
+      projectDirectory: updateFSItemAlts(updateNestedNode(
         node,
         state.projectDirectory,
         (node: FSItem) => ({
           ...node,
           expanded: value
         })
-      )
+      ))
     },
     state
   );

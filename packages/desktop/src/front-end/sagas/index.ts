@@ -8,7 +8,6 @@ import { exec } from "child_process";
 import * as path from "path";
 import { ipcSaga } from "./ipc";
 import { eventChannel } from "redux-saga";
-import { ipcRenderer } from "electron";
 import {
   RootState,
   // PROJECT_DIRECTORY_LOADED,

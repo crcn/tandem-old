@@ -86,7 +86,6 @@ export const createPaperclipSaga = ({ createRuntime, getRuntimeVariants }: Paper
         }
 
         if (graph !== state.graph) {
-          console.log(action.type, state.graph);
           graph = state.graph;
         }
         rt.setInfo(getRuntimeInfo(state.graph, getRuntimeVariants(state)));

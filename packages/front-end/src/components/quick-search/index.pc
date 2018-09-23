@@ -103,7 +103,9 @@
                   "id": "33e083be6",
                   "name": "component-instance",
                   "is": "808486bb13",
-                  "variant": {},
+                  "variant": {
+                    "1dc9871d3624": true
+                  },
                   "style": {
                     "left": 0,
                     "top": 0,

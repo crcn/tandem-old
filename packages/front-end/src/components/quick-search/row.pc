@@ -98,6 +98,17 @@
             }
           ],
           "metadata": {}
+        },
+        {
+          "id": "1dc9871d4870",
+          "variantId": "1dc9871d3624",
+          "propertyName": "style",
+          "targetIdPath": [],
+          "value": {
+            "background": "--f63574de434"
+          },
+          "name": "override",
+          "children": []
         }
       ],
       "metadata": {

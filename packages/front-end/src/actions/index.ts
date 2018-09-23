@@ -492,7 +492,7 @@ export type FileNavigatorNewFileEntered = {
 } & Action;
 
 export type FileNavigatorDroppedItem = {
-  node: File;
+  node: FSItem;
   targetNode: FSItem;
   offset: TreeMoveOffset;
 } & Action;
@@ -543,7 +543,7 @@ export type InheritItemClick = {
 } & Action;
 
 export const fileNavigatorDroppedItem = (
-  node: File,
+  node: FSItem,
   targetNode: Directory,
   offset: TreeMoveOffset
 ): FileNavigatorDroppedItem => ({
