@@ -180,6 +180,7 @@ export const COMPONENT_CONTROLLER_PICKED = "COMPONENT_CONTROLLER_PICKED";
 export const COMPONENT_VARIANT_NAME_DEFAULT_TOGGLE_CLICK =
   "COMPONENT_VARIANT_NAME_DEFAULT_TOGGLE_CLICK";
 export const ELEMENT_VARIANT_TOGGLED = "ELEMENT_VARIANT_TOGGLED";
+export const FILE_CHANGED = "FILE_CHANGED";
 
 export type WrappedEvent<T> = {
   sourceEvent: T;
@@ -193,6 +194,19 @@ export type DocumentRendered = {
   nativeMap: SyntheticNativeNodeMap;
   documentId: string;
   info: ComputedDisplayInfo;
+} & Action;
+
+export enum FileChangedEventType {  
+  UNLINK = "unlink",
+  ADD = "add",
+  UNLINK_DIR = "unlinkDir",
+  ADD_DIR = "addDir",
+  CHANGE = "change"
+};
+
+export type FileChanged = {
+  eventType: FileChangedEventType;
+  uri: string;
 } & Action;
 
 export type FileNavigatorItemClicked = {
@@ -538,6 +552,12 @@ export const editorTabCloseButtonClicked = (uri: string): EditorTabClicked => ({
   uri,
   type: EDITOR_TAB_CLOSE_BUTTON_CLICKED
 });
+
+export const fileChanged = (eventType: FileChangedEventType, uri: string): FileChanged => ({
+  type: FILE_CHANGED,
+  eventType,
+  uri,
+})
 
 export const fileNavigatorItemClicked = (
   node: FSItem

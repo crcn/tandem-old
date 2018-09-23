@@ -1,8 +1,8 @@
 IMMEDIATE:
 
-- quick search needs to work
+- quick search needs to workc
+- refresh when files change
 - refactor file navigator
-  - watch only files that are expanded
   - allow for pc files to be renamed
   - moving files / folders
   - context menu

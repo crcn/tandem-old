@@ -139,7 +139,12 @@ import {
   PROJECT_INFO_LOADED,
   ProjectInfoLoaded,
   PROJECT_DIRECTORY_DIR_LOADED,
-  ProjectDirectoryDirLoaded
+  ProjectDirectoryDirLoaded,
+  FILE_CHANGED,
+  FileChanged,
+  FileChangedEventType,
+  FILE_NAVIGATOR_BASENAME_CHANGED,
+  FileNavigatorBasenameChanged
 } from "../actions";
 import {
   queueOpenFile,
@@ -317,7 +322,10 @@ import {
   getNestedTreeNodeById,
   EMPTY_ARRAY,
   mergeFSItems,
-  convertFlatFilesToNested2
+  convertFlatFilesToNested2,
+  stripProtocol,
+  addProtocol,
+  FILE_PROTOCOL
 } from "tandem-common";
 import { clamp, last } from "lodash";
 import {
@@ -393,6 +401,51 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
       }, state);
       
       
+      return state;
+    }
+    case FILE_CHANGED: {
+      const {eventType, uri}: FileChanged = action as FileChanged;
+
+      if (eventType === FileChangedEventType.ADD || eventType === FileChangedEventType.ADD_DIR) {
+        const existing = getFileFromUri(uri, state.projectDirectory);
+        if (existing) {
+          return state;
+        }
+
+        if (eventType === FileChangedEventType.ADD_DIR) {
+          state = updateRootState({
+            projectDirectory:  mergeFSItems(createDirectory(uri), state.projectDirectory)
+          }, state);
+        } else if (eventType === FileChangedEventType.ADD) {
+          const file = createFile(uri);
+          const projectDirectory =  mergeFSItems(file, state.projectDirectory);
+          state = updateRootState({
+            projectDirectory,
+          }, state);
+        }
+      } else if (eventType === FileChangedEventType.UNLINK || eventType === FileChangedEventType.UNLINK_DIR) {
+        const fsItem = getFileFromUri(uri, state.projectDirectory);
+          
+        // TODO - check for renamed file
+        state = fsItem ? updateRootState({
+          projectDirectory:  removeNestedTreeNode(fsItem, state.projectDirectory)
+        }, state) : state;
+      }
+
+      return state;
+    }
+    case FILE_NAVIGATOR_BASENAME_CHANGED: {
+      const {item, basename }: FileNavigatorBasenameChanged = action as FileNavigatorBasenameChanged;
+      
+      const updatedItem = {
+        ...item,
+        uri: addProtocol(FILE_PROTOCOL, path.join(path.dirname(stripProtocol(item.uri)), basename))
+      };
+
+      
+      let projectDirectory = removeNestedTreeNode(item, state.projectDirectory);
+      projectDirectory = mergeFSItems(updatedItem, projectDirectory);
+      state = updateRootState({ projectDirectory }, state);
       return state;
     }
     case FILE_NAVIGATOR_ITEM_DOUBLE_CLICKED: {

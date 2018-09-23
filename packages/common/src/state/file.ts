@@ -13,6 +13,7 @@ import {
 import { memoize } from "../utils/memoization";
 import * as path from "path";
 import { generateUID } from "../utils/uid";
+import { uniqBy } from "lodash";
 import { addProtocol, FILE_PROTOCOL, stripProtocol } from "../utils/protocol";
 import { arraySplice, EMPTY_ARRAY } from "..";
 
@@ -198,9 +199,9 @@ export const convertFlatFilesToNested2 = (items: FSItem[]): Directory => {
 };
 
 export const mergeFSItems = (...items: FSItem[]) => {
-  const flattenedItems = items.reduce((allItems, item) => {
+  const flattenedItems = uniqBy(items.reduce((allItems, item) => {
     return [...allItems, ...flattenTreeNode(item)];
-  }, EMPTY_ARRAY);
+  }, EMPTY_ARRAY), (item: FSItem) => item.uri);
 
   const itemMap = {};
 

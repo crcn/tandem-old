@@ -12,7 +12,8 @@ import {
   savedFile,
   projectInfoLoaded,
   PROJECT_INFO_LOADED,
-  projectDirectoryDirLoaded
+  projectDirectoryDirLoaded,
+  FILE_NAVIGATOR_TOGGLE_DIRECTORY_CLICKED
 } from "../actions";
 import {
   File,
@@ -68,7 +69,8 @@ export function projectSaga({ loadProjectInfo, readDirectory }: ProjectSagaOptio
 
   function* handleFileNavigatorItemClick() {
     while(1) {
-      const { node }: FileNavigatorItemClicked = yield take(FILE_NAVIGATOR_ITEM_CLICKED,);
+      
+      const { node, type }: FileNavigatorItemClicked = yield take([FILE_NAVIGATOR_TOGGLE_DIRECTORY_CLICKED, FILE_NAVIGATOR_ITEM_CLICKED]);
       if (node.name !== FSItemTagNames.DIRECTORY) {
         continue;
       }

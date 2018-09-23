@@ -1,6 +1,8 @@
-import { fork, select, take, call, put } from "redux-saga/effects";
+import { cancelled, cancel, fork, select, take, call, put, spawn as spawn2 } from "redux-saga/effects";
 import * as fs from "fs";
+import * as chokidar from "chokidar";
 import * as fsa from "fs-extra";
+import { debounce } from "lodash";
 import { exec } from "child_process";
 import * as path from "path";
 import { ipcSaga } from "./ipc";
@@ -23,7 +25,12 @@ import {
   ComponentControllerItemClicked,
   FileNavigatorBasenameChanged,
   FILE_NAVIGATOR_BASENAME_CHANGED,
-  PROJECT_INFO_LOADED
+  PROJECT_INFO_LOADED,
+  PROJECT_DIRECTORY_DIR_LOADED,
+  fileChanged,
+  FileChanged,
+  FILE_CHANGED,
+  FileChangedEventType
 } from "tandem-front-end";
 import {
   findPaperclipSourceFiles,
@@ -38,7 +45,8 @@ import {
   stripProtocol,
   Directory,
   FILE_PROTOCOL,
-  FSItemTagNames
+  FSItemTagNames,
+  flattenTreeNode
 } from "tandem-common";
 // import { serverStateLoaded } from "../actions";
 import { DesktopRootState } from "../state";
@@ -53,6 +61,7 @@ export function* rootSaga() {
   yield fork(handleProjectDirectory);
   // yield fork(receiveServerState);
   yield fork(handleOpenController);
+  yield fork(watchProjectDirectory);
 }
 
 function* handleProjectDirectory() {
@@ -163,6 +172,77 @@ const saveFile = (uri: string, content: Buffer) => {
     });
   });
 };
+
+
+function* watchProjectDirectory() {
+
+  let watcher;
+  let watching: string[] = [];
+
+  yield fork(function* startWatcher() {
+
+
+    const chan = eventChannel((emit) => {
+      watcher = chokidar.watch([], {
+        depth: 1,
+        ignoreInitial: false,
+        persistent: true
+      });
+
+      let actions: FileChanged[] = [];
+
+      // batch to prevent flickering
+      const batch = debounce(() => {
+        const _actions = actions;
+        actions = [];
+        _actions.forEach(emit);
+      }, 10);
+      watcher.once("ready", () => {
+        watcher.on("all", (event, path) => {
+          actions.push(fileChanged(event, addProtocol(FILE_PROTOCOL, path)));
+          batch();
+        });
+      });
+      return () => {
+        watcher.close();
+      }
+    }); 
+    while(1) {
+      yield put(yield take(chan));
+    }
+  }) 
+
+  yield fork(function* handleDirsLoaded() {
+    while(1) {
+      yield take(PROJECT_DIRECTORY_DIR_LOADED);
+      const { projectDirectory }: RootState = yield select();
+      const expandedFilePaths = flattenTreeNode(projectDirectory).map(item => stripProtocol(item.uri));
+      watching.push(...expandedFilePaths);
+      watcher.add(expandedFilePaths);
+    }
+  });
+
+  yield fork(function* handleChangedFiles() {
+    while(1) {
+      const { eventType, uri }: FileChanged = yield take(FILE_CHANGED);
+      const filePath = stripProtocol(uri);
+      switch(eventType) {
+        case FileChangedEventType.ADD_DIR: 
+        case FileChangedEventType.ADD: {
+          if (watching.indexOf(filePath) === -1) { 
+            watching.push(filePath);
+            watcher.add(filePath);
+          }
+          break;
+        }
+        case FileChangedEventType.UNLINK_DIR:
+        case FileChangedEventType.UNLINK: {
+          break;
+        }
+      }
+    }
+  });
+}
 
 // function* 
 // () {
