@@ -177,12 +177,41 @@ export type FontFamily = {
   name: string;
 };
 
+export enum QuickSearchResultType {
+  URI = "uri",
+  COMPONENT = "component"
+};
+
+export type BaseQuickSearchResult<TType extends QuickSearchResultType> = {
+  label: string;
+  description: string;
+  type: TType
+};
+
+export type QuickSearchUriResult = {
+  uri: string
+} & BaseQuickSearchResult<QuickSearchResultType.URI>;
+
+export type QuickSearchComponentResult = {
+  componentId: string;
+} & BaseQuickSearchResult<QuickSearchResultType.COMPONENT>;
+
+export type QuickSearchResult = QuickSearchUriResult | QuickSearchComponentResult;
+
+export type QuickSearch = {
+  filter: string;
+
+  // TODO - will eventually need to interface things like components
+  matches: QuickSearchResult[];
+};
+
 export type RootState = {
   editorWindows: EditorWindow[];
   mount: Element;
   openFiles: OpenFile[];
   toolType?: ToolType;
   activeEditorFilePath?: string;
+  quickSearch?: QuickSearch;
   confirm?: Confirm;
   prompt?: Prompt;
   prevGraph?: DependencyGraph;

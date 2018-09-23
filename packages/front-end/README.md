@@ -1,9 +1,10 @@
 IMMEDIATE:
 
-- quick search
+- left gutter
+  - highlight file in navigator pane when file selected
+  - dnd
+  - resizable
 
-- allow for PC files to be renamed
-- refresh when files change
 - refactor file navigator
   - allow for pc files to be renamed
   - moving files / folders

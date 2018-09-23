@@ -25,7 +25,7 @@ import {
   PCVariableType
 } from "paperclip";
 import { RegisteredComponent } from "..";
-import { FrameMode, ToolType, EditorWindow, ProjectConfig, ProjectInfo } from "../state";
+import { FrameMode, ToolType, EditorWindow, ProjectConfig, ProjectInfo, BaseQuickSearchResult, QuickSearchResult } from "../state";
 import { InspectorNode } from "paperclip";
 
 export const PROJECT_LOADED = "PROJECT_LOADED";
@@ -95,6 +95,8 @@ export const EDIT_VARIANT_NAME_BUTTON_CLICKED =
 export const EDIT_VARIANT_NAME_CONFIRMED = "EDIT_VARIANT_NAME_CONFIRMED";
 export const STYLE_VARIANT_DROPDOWN_CHANGED = "STYLE_VARIANT_DROPDOWN_CHANGED";
 export const ADD_VARIABLE_BUTTON_CLICKED = "ADD_VARIABLE_BUTTON_CLICKED";
+export const QUICK_SEARCH_FILTER_CHANGED = "QUICK_SEARCH_FILTER_CHANGED";
+export const QUICK_SEARCH_RESULT_LOADED = "QUICK_SEARCH_RESULT_LOADED";
 export const VARIABLE_LABEL_CHANGE_COMPLETED =
   "VARIABLE_LABEL_CHANGE_COMPLETED";
 export const VARIABLE_VALUE_CHANGED = "VARIABLE_VALUE_CHANGED";
@@ -325,13 +327,21 @@ export type TreeLayerLabelChanged = {
 export type TreeLayerDroppedNode = {
   node: TreeNode<any>;
   targetNode: TreeNode<any>;
-  offset?: 0 | -1 | 1;
+  offset?: TreeMoveOffset;
 } & Action;
 
 export type SourceInspectorLayerDropped = {
   source: InspectorNode;
   target: InspectorNode;
   offset: TreeMoveOffset;
+} & Action;
+
+export type QuickSearchFilterChanged = {
+  value: string;
+} & Action;
+
+export type QuickSearchResultLoaded = {
+  matches: QuickSearchResult[]
 } & Action;
 
 export type TreeLayerClick = TreeLayerMouseOver &
@@ -445,7 +455,7 @@ export type SelectorDoubleClicked = {
 export type ShortcutKeyDown = {};
 
 export type QuickSearchItemClicked = {
-  file: File;
+  item: QuickSearchResult;
 } & Action;
 
 export type ComponentPickerItemClick = {
@@ -732,6 +742,16 @@ export const removeVariantButtonClicked = (): Action => ({
   type: REMOVE_VARIANT_BUTTON_CLICKED
 });
 
+export const quickSearchFilterChanged = (value: string): QuickSearchFilterChanged => ({
+  type: QUICK_SEARCH_FILTER_CHANGED,
+  value
+});
+
+export const quickSearchFilterResultLoaded = (matches: QuickSearchResult[]): QuickSearchResultLoaded => ({
+  matches,
+  type: QUICK_SEARCH_RESULT_LOADED
+});
+
 export const variantDefaultSwitchClicked = (
   variant: PCVariant
 ): VariantDefaultSwitchClicked => ({
@@ -769,8 +789,8 @@ export const componentPickerItemClick = (
   type: COMPONENT_PICKER_ITEM_CLICK
 });
 
-export const quickSearchItemClicked = (file: File): QuickSearchItemClicked => ({
-  file,
+export const quickSearchItemClicked = (item: QuickSearchResult): QuickSearchItemClicked => ({
+  item,
   type: QUICK_SEARCH_ITEM_CLICKED
 });
 

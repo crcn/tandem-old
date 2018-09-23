@@ -9,7 +9,19 @@
       "name": "component-instance",
       "attributes": {},
       "style": {},
-      "children": [],
+      "children": [
+        {
+          "id": "9f4be3b0178",
+          "variantId": null,
+          "propertyName": "text",
+          "targetIdPath": [
+            "aa30134349"
+          ],
+          "value": "Now\n",
+          "name": "override",
+          "children": []
+        }
+      ],
       "metadata": {
         "bounds": {
           "left": 301,

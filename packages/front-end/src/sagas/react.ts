@@ -1,4 +1,4 @@
-import { put, take, select, spawn } from "redux-saga/effects";
+import { put, take, select, spawn, call } from "redux-saga/effects";
 import { RootComponent } from "../components/root";
 import * as ReactDOM from "react-dom";
 import * as React from "react";
@@ -19,6 +19,7 @@ export function* reactSaga() {
   });
 
   while (1) {
+    // yield call(() => new Promise(requestAnimationFrame));
     const root: RootState = yield select();
     ReactDOM.render(
       React.createElement(

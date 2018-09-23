@@ -1,4 +1,4 @@
-import { cancelled, cancel, fork, select, take, call, put, spawn as spawn2 } from "redux-saga/effects";
+import { cancelled, cancel, fork, select, take, call, put, spawn as spawn2, throttle } from "redux-saga/effects";
 import { delay } from "redux-saga";
 import * as fs from "fs";
 import * as chokidar from "chokidar";
@@ -32,7 +32,11 @@ import {
   FileChanged,
   FILE_CHANGED,
   FileChangedEventType,
-  ProjectInfoLoaded
+  ProjectInfoLoaded,
+  QUICK_SEARCH_FILTER_CHANGED,
+  QuickSearchUriResult,
+  quickSearchFilterResultLoaded,
+  QuickSearchResultType
 } from "tandem-front-end";
 import {
   findPaperclipSourceFiles,
@@ -40,7 +44,8 @@ import {
   getSyntheticSourceUri,
   getSyntheticNodeById,
   getSyntheticSourceNode,
-  isPaperclipUri
+  isPaperclipUri,
+  walkPCRootDirectory
 } from "paperclip";
 import {
   getNestedTreeNodeById,
@@ -66,6 +71,7 @@ export function* rootSaga() {
   // yield fork(receiveServerState);
   yield fork(handleOpenController);
   yield fork(watchProjectDirectory);
+  yield fork(handleQuickSearch);
 }
 
 
@@ -305,4 +311,36 @@ function* handleOpenController() {
       }
     });
   }
+}
+
+function* handleQuickSearch() {
+  yield throttle(10, QUICK_SEARCH_FILTER_CHANGED, function*() {
+    
+    const {quickSearch, projectInfo}: RootState = yield select();
+    if (!projectInfo) {
+      return;
+    }
+    if (!quickSearch.filter) {
+      return;
+    }
+
+    const pattern = new RegExp(quickSearch.filter.split(" ").join(".*?"));
+
+    const projectDir = path.dirname(projectInfo.path);
+
+    let results: QuickSearchUriResult[] = [];
+
+    walkPCRootDirectory(projectInfo.config, projectDir, (filePath) => {
+      if (pattern.test(filePath)) {
+        results.push({
+          uri: addProtocol(FILE_PROTOCOL, filePath),
+          label: path.basename(filePath),
+          description: path.dirname(filePath),
+          type: QuickSearchResultType.URI
+        });
+      }
+    });
+    yield put(quickSearchFilterResultLoaded(results.slice(0, 50)));
+
+  });
 }

@@ -146,7 +146,11 @@ import {
   FileChanged,
   FileChangedEventType,
   FILE_NAVIGATOR_BASENAME_CHANGED,
-  FileNavigatorBasenameChanged
+  FileNavigatorBasenameChanged,
+  QUICK_SEARCH_RESULT_LOADED,
+  QuickSearchFilterChanged,
+  QUICK_SEARCH_FILTER_CHANGED,
+  QuickSearchResultLoaded
 } from "../actions";
 import {
   queueOpenFile,
@@ -202,7 +206,8 @@ import {
   setHoveringInspectorNodeIds,
   refreshModuleInspectorNodes,
   teeHistory,
-  pruneOpenFiles
+  pruneOpenFiles,
+  QuickSearchResultType
 } from "../state";
 import {
   PCSourceTagNames,
@@ -382,10 +387,14 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
       return state;
     }
     case QUICK_SEARCH_ITEM_CLICKED: {
-      const { file } = action as QuickSearchItemClicked;
-      const uri = file.uri;
-      state = openFile(uri, false, false, state);
-      state = updateRootState({ showQuickSearch: false }, state);
+      const { item } = action as QuickSearchItemClicked;
+      if (item.type === QuickSearchResultType.URI) {
+        const uri = item.uri;
+        state = openFile(uri, false, false, state);
+        state = updateRootState({ showQuickSearch: false }, state);
+      } else {
+
+      }
       return state;
     }
     case QUICK_SEARCH_BACKGROUND_CLICK: {
@@ -504,6 +513,32 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
 
       return state;
     }
+
+    case QUICK_SEARCH_RESULT_LOADED: {
+      const {matches} = action as QuickSearchResultLoaded;
+      state = updateRootState({
+        quickSearch: {
+          ...state.quickSearch,
+          matches: [...state.quickSearch.matches, ...matches].sort((a, b) => {
+            return a.label < b.label ? -1 : 1;
+          })
+        }
+      }, state);
+      return state;
+
+    }
+
+    case QUICK_SEARCH_FILTER_CHANGED: {
+      const {value} = action as QuickSearchFilterChanged;
+      state = updateRootState({
+        quickSearch: {
+          filter: value,
+          matches: []
+        }
+      }, state);
+      return state;
+    }
+
     case FILE_NAVIGATOR_ITEM_DOUBLE_CLICKED: {
       const { node } = action as FileNavigatorItemClicked;
       const uri = node.uri;

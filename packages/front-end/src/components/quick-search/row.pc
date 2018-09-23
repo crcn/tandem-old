@@ -27,7 +27,7 @@
         {
           "id": "808486bb15",
           "name": "element",
-          "label": "basename",
+          "label": "label",
           "style": {
             "display": "inline-block",
             "margin-right": "8px"
@@ -37,19 +37,27 @@
           "is": "div",
           "children": [
             {
-              "id": "808486bb16",
-              "name": "text",
-              "label": "Search result item",
-              "value": "basename.tsx",
-              "style": {
-                "display": "inline-block",
-                "position": "relative",
-                "height": "18",
-                "vertical-align": "center"
-              },
-              "children": [],
+              "id": "c9e5dd7680092",
+              "children": [
+                {
+                  "id": "808486bb16",
+                  "name": "text",
+                  "label": "text",
+                  "value": "basename.tsx",
+                  "style": {
+                    "display": "inline-block",
+                    "position": "relative",
+                    "height": "18",
+                    "vertical-align": "center"
+                  },
+                  "children": [],
+                  "metadata": {},
+                  "attributes": {}
+                }
+              ],
               "metadata": {},
-              "attributes": {}
+              "name": "slot",
+              "label": "label"
             }
           ],
           "metadata": {}
@@ -57,7 +65,7 @@
         {
           "id": "63257bfd1439557",
           "name": "element",
-          "label": "directory",
+          "label": "description",
           "style": {
             "display": "inline-block",
             "flex": "1",
@@ -71,14 +79,22 @@
           "is": "div",
           "children": [
             {
-              "id": "63257bfd1439558",
-              "name": "text",
-              "label": "Search result item",
-              "value": "super/nested/directory/path/that/will/wa",
-              "style": {},
-              "children": [],
+              "id": "c9e5dd7680107",
+              "children": [
+                {
+                  "id": "63257bfd1439558",
+                  "name": "text",
+                  "label": "text",
+                  "value": "super/nested/directory/path/that/will/wa",
+                  "style": {},
+                  "children": [],
+                  "metadata": {},
+                  "attributes": {}
+                }
+              ],
               "metadata": {},
-              "attributes": {}
+              "name": "slot",
+              "label": "description"
             }
           ],
           "metadata": {}

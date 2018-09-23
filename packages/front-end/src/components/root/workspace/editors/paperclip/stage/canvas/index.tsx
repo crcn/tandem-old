@@ -133,11 +133,14 @@ const BaseCanvasComponent = ({
             {connectDropTarget(
               <div
                 style={{
+                  willChange: `transform`,
+                  WebkitFontSmoothing: `subpixel-antialiased`,
+                  backfaceVisibility: `hidden`,
                   transform: `translate(${translate.left}px, ${
                     translate.top
                   }px) scale(${translate.zoom})`,
                   transformOrigin: "top left"
-                }}
+                } as any}
               >
                 <PreviewLayerComponent
                   frames={activeFrames}
@@ -171,34 +174,45 @@ const enhance = compose<CanvasInnerProps, CanvasOuterProps>(
   pure,
   withState("canvasOuter", "setCanvasOuter", null),
   withState("canvasContainer", "setCanvasContainer", null),
-  withHandlers({
-    onMouseEvent: ({ dispatch, editorWindow }) => (
-      event: React.MouseEvent<any>
-    ) => {
-      dispatch(canvasMouseMoved(editorWindow, event));
-    },
-    onMotionRest: ({ dispatch }) => () => {
-      dispatch(canvasMotionRested());
-    },
-    onMouseClick: ({ dispatch }) => (event: React.MouseEvent<any>) => {
-      dispatch(canvasMouseClicked(event));
-    },
-    onMouseDoubleClick: ({ dispatch }) => (event: React.MouseEvent<any>) => {
-      dispatch(canvasMouseDoubleClicked(event));
-    },
-    setCanvasContainer: ({ dispatch, editorWindow }) => (
-      element: HTMLDivElement
-    ) => {
-      dispatch(canvasContainerMounted(element, editorWindow.activeFilePath));
-    },
-    onWheel: ({ dispatch, canvasOuter }: CanvasInnerProps) => (
-      event: React.WheelEvent<any>
-    ) => {
-      const rect = canvasOuter.getBoundingClientRect();
-      event.preventDefault();
-      event.stopPropagation();
-      dispatch(canvasWheel(rect.width, rect.height, event));
-    }
+  withHandlers(() => {
+
+    // throttle to prevent jankiness
+    const onWheel = (event, dispatch, canvasOuter) => {
+      requestAnimationFrame(() => {
+        const rect = canvasOuter.getBoundingClientRect();
+        dispatch(canvasWheel(rect.width, rect.height, event));
+      });
+    };
+
+    return {
+      onMouseEvent: ({ dispatch, editorWindow }) => (
+        event: React.MouseEvent<any>
+      ) => {
+        dispatch(canvasMouseMoved(editorWindow, event));
+      },
+      onMotionRest: ({ dispatch }) => () => {
+        dispatch(canvasMotionRested());
+      },
+      onMouseClick: ({ dispatch }) => (event: React.MouseEvent<any>) => {
+        dispatch(canvasMouseClicked(event));
+      },
+      onMouseDoubleClick: ({ dispatch }) => (event: React.MouseEvent<any>) => {
+        dispatch(canvasMouseDoubleClicked(event));
+      },
+      setCanvasContainer: ({ dispatch, editorWindow }) => (
+        element: HTMLDivElement
+      ) => {
+        dispatch(canvasContainerMounted(element, editorWindow.activeFilePath));
+      },
+      onWheel: ({ dispatch, canvasOuter }: CanvasInnerProps) => (
+        event: React.WheelEvent<any>
+      ) => {
+        event.persist();
+        event.preventDefault();
+        event.stopPropagation();
+        onWheel(event, dispatch, canvasOuter);
+      }
+    };
   }),
   DropTarget(
     [REGISTERED_COMPONENT, "FILE", "INSPECTOR_NODE"],

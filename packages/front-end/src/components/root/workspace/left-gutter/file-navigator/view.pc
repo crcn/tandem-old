@@ -10,7 +10,7 @@
       "style": {
         "box-sizing": "border-box",
         "display": "block",
-        "max-height": "400px"
+        "max-height": "70%"
       },
       "attributes": {},
       "id": "5a14767c291836",

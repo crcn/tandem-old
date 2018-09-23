@@ -1,12 +1,13 @@
 import * as React from "react";
-import { flattenTreeNode, File, isFile, memoize } from "tandem-common";
-import { RootState } from "../../state";
+import { flattenTreeNode, File, isFile, memoize, EMPTY_ARRAY } from "tandem-common";
+import { RootState, QuickSearch } from "../../state";
 import { Dispatch } from "redux";
 import { BaseQuickSearchProps } from "./index.pc";
 import { SearchResult } from "./row.pc";
+import { quickSearchFilterChanged } from "actions";
 
 export type Props = {
-  root: RootState;
+  quickSearch: QuickSearch;
   dispatch: Dispatch<any>;
 };
 
@@ -16,59 +17,33 @@ const getFilterTester = memoize(
   (filter: string[]) => new RegExp(filter.join(".*?"))
 );
 
-type State = {
-  filter: string[];
-};
 
 export default (Base: React.ComponentClass<BaseQuickSearchProps>) =>
-  class QuickSearchController extends React.PureComponent<Props, State> {
-    state = {
-      filter: null
-    };
-    setFilter = (value: string[]) => {
-      this.setState({ ...this.state, filter: value });
-    };
+  class QuickSearchController extends React.PureComponent<Props> {
     onInputChange = value => {
-      const filter = String(value || "")
-        .toLowerCase()
-        .trim()
-        .split(/\s+/g);
-
-      this.setFilter(filter);
+      this.props.dispatch(quickSearchFilterChanged(String(value || "")
+      .toLowerCase().trim()));
     };
     render() {
-      const { root, dispatch } = this.props;
-      const { filter } = this.state;
+      const { quickSearch, dispatch } = this.props;
       const { onInputChange } = this;
 
-      const allFiles = flattenTreeNode(root.projectDirectory) as File[];
+      const matches = quickSearch && quickSearch.matches || EMPTY_ARRAY;
+      const filter = quickSearch && quickSearch.filter;
 
-      const results = filter
-        ? allFiles
-            .filter(file => {
-              if (!isFile(file)) {
-                return false;
-              }
-              const uri = file.uri;
-              let lastIndex = 0;
-              return getFilterTester(filter).test(uri);
-            })
-            .slice(0, MAX_RESULTS)
-            .map(file => {
-              return (
-                <SearchResult
-                  filter={filter}
-                  cwd={root.projectDirectory.uri}
-                  file={file}
-                  key={file.id}
-                  textProps={{
-                    children: file.uri
-                  }}
-                  dispatch={dispatch}
-                />
-              );
-            })
-        : [];
+      const results = matches.map((quickSearchResult, i) => {
+        return (
+          <SearchResult
+            filter={filter}
+            item={quickSearchResult}
+            key={i}
+            textProps={{
+              value: quickSearchResult.label
+            }}
+            dispatch={dispatch}
+          />
+        );
+      });
 
       return (
         <Base
@@ -76,6 +51,7 @@ export default (Base: React.ComponentClass<BaseQuickSearchProps>) =>
             children: results
           }}
           quickSearchInputProps={{
+            defaultValue: filter,
             onChange: onInputChange,
             focus: true
           }}

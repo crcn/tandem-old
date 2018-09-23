@@ -26,7 +26,7 @@ export default (Base: React.ComponentClass<BaseModalProps>) =>
             onClick: onBackgroundClick
           }}
           quickSearchProps={{
-            root,
+            quickSearch: root.quickSearch,
             dispatch
           }}
         />

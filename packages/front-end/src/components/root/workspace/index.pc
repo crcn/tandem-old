@@ -30,7 +30,20 @@
             "width": "250px",
             "flex-shrink": "0"
           },
-          "children": [],
+          "children": [
+            {
+              "id": "815b9395115315",
+              "propertyName": "style",
+              "targetIdPath": [
+                "5a14767c294089"
+              ],
+              "value": {
+                "flex-shrink": "1"
+              },
+              "name": "override",
+              "children": []
+            }
+          ],
           "metadata": {
             "bounds": {
               "left": 798.4659960545293,
