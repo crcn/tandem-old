@@ -215,6 +215,9 @@ function* watchProjectDirectory() {
       }, 10);
       watcher.once("ready", () => {
         watcher.on("all", (event, path) => {
+          if (/\.DS_Store/.test(path)) {
+            return;
+          }
           actions.push(fileChanged(event, addProtocol(FILE_PROTOCOL, path)));
           batch();
         });

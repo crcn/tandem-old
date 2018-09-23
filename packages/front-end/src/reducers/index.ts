@@ -1,3 +1,5 @@
+// behold the ~~blob~~ 
+
 import { Action } from "redux";
 import * as path from "path";
 import { xmlToPCNode } from "../utils/paperclip";
@@ -199,7 +201,8 @@ import {
   getCanvasMouseTargetInspectorNode,
   setHoveringInspectorNodeIds,
   refreshModuleInspectorNodes,
-  teeHistory
+  teeHistory,
+  pruneOpenFiles
 } from "../state";
 import {
   PCSourceTagNames,
@@ -425,11 +428,31 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
         }
       } else if (eventType === FileChangedEventType.UNLINK || eventType === FileChangedEventType.UNLINK_DIR) {
         const fsItem = getFileFromUri(uri, state.projectDirectory);
+
+        let fileCache = state.fileCache;
+        let graph = state.graph;
+
+        // ick -- these files shouldn't be
+
+        if (fileCache[uri]) {
+          fileCache = {...fileCache};
+          delete fileCache[uri];
+        }
+
+        if (graph[uri]) {
+          graph = {...graph};
+          delete graph[uri];
+        }
           
         // TODO - check for renamed file
-        state = fsItem ? updateRootState({
-          projectDirectory:  removeNestedTreeNode(fsItem, state.projectDirectory)
-        }, state) : state;
+        state = updateRootState({
+          fileCache,
+          graph,
+          projectDirectory:  fsItem ? removeNestedTreeNode(fsItem, state.projectDirectory) : state.projectDirectory
+        }, state);
+
+        state = refreshModuleInspectorNodes(state);
+        state = pruneOpenFiles(state);
       }
 
       return state;
@@ -442,10 +465,43 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
         uri: addProtocol(FILE_PROTOCOL, path.join(path.dirname(stripProtocol(item.uri)), basename))
       };
 
+      const existingItem = getFileFromUri(updatedItem.uri, state.projectDirectory);
+
+      // directory expanded so we can safely dispatch alert here
+      if (existingItem) {
+        return confirm(`The name "${basename}" is already taken. Please choose a different name.`, ConfirmType.ERROR, state);
+      }
       
       let projectDirectory = removeNestedTreeNode(item, state.projectDirectory);
       projectDirectory = mergeFSItems(updatedItem, projectDirectory);
       state = updateRootState({ projectDirectory }, state);
+
+      // TODO - this also needs to work with directories
+      const editorWindow = getEditorWindowWithFileUri(item.uri, state);
+      if (editorWindow) {
+        let graph = {...state.graph};
+        let fileCache = {...state.fileCache};
+        graph[updatedItem.uri] = graph[item.uri];
+        fileCache[updatedItem.uri] = fileCache[item.uri];
+        delete graph[item.uri];
+        delete fileCache[item.uri];
+        state = updateEditorWindow({
+          tabUris: editorWindow.tabUris.map(uri => {
+            return item.uri === uri ? updatedItem.uri : uri
+          }),
+          activeFilePath: editorWindow.activeFilePath === item.uri ? updatedItem.uri : editorWindow.activeFilePath,
+        }, item.uri, state);
+        state = updateRootState({
+          graph,
+          fileCache,
+          activeEditorFilePath: state.activeEditorFilePath === item.uri ? updatedItem.uri : state.activeEditorFilePath,
+          openFiles: state.openFiles.map(openFile => ({
+            ...openFile,
+            uri: openFile.uri === item.uri ? updatedItem.uri : openFile.uri
+          })),
+        }, state);
+      }
+
       return state;
     }
     case FILE_NAVIGATOR_ITEM_DOUBLE_CLICKED: {
@@ -587,7 +643,7 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
     }
 
     case FS_SANDBOX_ITEM_LOADED: {
-      const { uri, content } = action as FSSandboxItemLoaded;
+      const { content } = action as FSSandboxItemLoaded;
 
       if (state.queuedDndInfo) {
         const { item, point, editorUri } = state.queuedDndInfo;
@@ -599,8 +655,6 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
           content
         );
       }
-
-      const editor = getEditorWindowWithFileUri(uri, state);
 
       state = refreshModuleInspectorNodes(state);
 

@@ -1,7 +1,8 @@
 IMMEDIATE:
 
+- quick search
+
 - allow for PC files to be renamed
-- quick search needs to workc
 - refresh when files change
 - refactor file navigator
   - allow for pc files to be renamed

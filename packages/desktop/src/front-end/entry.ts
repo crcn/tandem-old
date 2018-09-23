@@ -93,9 +93,9 @@ function* loadProjectInfo() {
 
 function* readDirectory(dirUri: string): any {
   const dir = stripProtocol(dirUri);
-  const dirBasenames: string[] = yield call(() => new Promise((resolve) => {
+  const dirBasenames: string[] = (yield call(() => new Promise((resolve) => {
     fs.readdir(dir, (err, basenames) => resolve(basenames));
-  }));
+  }))).filter(basename => basename !== ".DS_Store");
 
   return dirBasenames.map(basename => {
     const fullPath = path.join(dir, basename);

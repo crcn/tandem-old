@@ -724,6 +724,36 @@ export const getSyntheticWindowBounds = memoize(
 );
 
 export const isImageMimetype = (mimeType: string) => /^image\//.test(mimeType);
+export const pruneOpenFiles = (state: RootState) => {
+
+  const openFiles = state.openFiles.filter(openFile => {
+    return !!state.fileCache[openFile.uri];
+  });
+  
+  const editorWindows = state.editorWindows.map(window => {
+    const tabUris = window.tabUris.filter(uri => {
+      return !!state.fileCache[uri];
+    });
+
+    if (!tabUris.length) {
+      return null;
+    }
+    return ({
+      ...window,
+      tabUris,
+    })
+  }).filter(Boolean);
+
+  state = updateRootState({
+    openFiles,
+    editorWindows,
+    activeEditorFilePath: null
+  }, state);
+
+  state = setNextOpenFile(state);
+
+  return state;
+};
 
 export const openEditorFileUri = (
   uri: string,
