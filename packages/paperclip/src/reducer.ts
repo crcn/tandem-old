@@ -20,7 +20,7 @@ import {
   updateFrame,
   upsertFrames
 } from "./edit";
-import { addFileCacheItemToDependencyGraph } from "./graph";
+import { addFileCacheItemToDependencyGraph, DependencyGraph } from "./graph";
 import { PAPERCLIP_MIME_TYPE } from "./constants";
 
 export const paperclipReducer = <
@@ -59,7 +59,7 @@ export const paperclipReducer = <
       for (const uri in graph) {
         if (uris.indexOf(uri) === -1) {
           graphChanged = true;
-          delete graph[uri];
+          // delete graph[uri];
         }
       }
       if (graphChanged) {
@@ -88,10 +88,36 @@ export const paperclipReducer = <
         return state;
       }
 
-      const graph = addFileCacheItemToDependencyGraph(
+      let graph = addFileCacheItemToDependencyGraph(
         { uri, content },
         state.graph
       );
+
+      let fullyLoaded: boolean = true;
+
+      for (const uri of state.pcUris) {
+        if (!graph[uri]) {
+          fullyLoaded = false;
+        }
+      }
+
+      // prune old deps
+      if (fullyLoaded) {
+        let newGraph: DependencyGraph;
+        for (const uri in graph) {
+          if (state.pcUris.indexOf(uri) === -1) {
+            if (!newGraph) {
+              newGraph = {...graph};
+            }
+            delete newGraph[uri];
+          }
+        }
+
+        if (newGraph) {
+          graph = newGraph;
+        }
+      }
+
       return { ...(state as any), graph };
     }
   }

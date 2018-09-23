@@ -102,6 +102,9 @@ export default (Base: React.ComponentClass<BaseNodeLayerProps>) => {
             assocSourceNode.name === PCSourceTagNames.COMPONENT_INSTANCE
           ) {
             const component = getPCNode(assocSourceNode.is, graph);
+            if (!component) {
+              console.log(graph);
+            }
             label = (component as PCComponent).label;
           } else if (assocSourceNode.name === PCSourceTagNames.ELEMENT) {
             label = assocSourceNode.is || "Element";

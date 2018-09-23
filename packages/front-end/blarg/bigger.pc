@@ -1,0 +1,25 @@
+{
+  "id": "aa301343311",
+  "name": "module",
+  "version": "0.0.5",
+  "children": [
+    {
+      "id": "aa301343316",
+      "is": "aa30134350",
+      "name": "component-instance",
+      "attributes": {},
+      "style": {},
+      "children": [],
+      "metadata": {
+        "bounds": {
+          "left": 301,
+          "top": 136,
+          "right": 401,
+          "bottom": 236
+        }
+      },
+      "variant": {}
+    }
+  ],
+  "metadata": {}
+}

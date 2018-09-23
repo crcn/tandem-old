@@ -1,4 +1,5 @@
 import { cancelled, cancel, fork, select, take, call, put, spawn as spawn2 } from "redux-saga/effects";
+import { delay } from "redux-saga";
 import * as fs from "fs";
 import * as chokidar from "chokidar";
 import * as fsa from "fs-extra";
@@ -30,14 +31,16 @@ import {
   fileChanged,
   FileChanged,
   FILE_CHANGED,
-  FileChangedEventType
+  FileChangedEventType,
+  ProjectInfoLoaded
 } from "tandem-front-end";
 import {
   findPaperclipSourceFiles,
   pcSourceFileUrisReceived,
   getSyntheticSourceUri,
   getSyntheticNodeById,
-  getSyntheticSourceNode
+  getSyntheticSourceNode,
+  isPaperclipUri
 } from "paperclip";
 import {
   getNestedTreeNodeById,
@@ -50,6 +53,7 @@ import {
 } from "tandem-common";
 // import { serverStateLoaded } from "../actions";
 import { DesktopRootState } from "../state";
+import { Action } from "redux";
 
 export function* rootSaga() {
   yield fork(ipcSaga);
@@ -64,10 +68,22 @@ export function* rootSaga() {
   yield fork(watchProjectDirectory);
 }
 
+
 function* handleProjectDirectory() {
-  while (1) {
-    yield take(PROJECT_INFO_LOADED);
-    yield call(loadPCFiles);
+  let task;
+  while(1) {
+    const action = yield take((action: ProjectInfoLoaded | FileChanged) => {
+      return action.type === PROJECT_INFO_LOADED || (action.type === FILE_CHANGED && /add|unlink/.test((action as FileChanged).eventType) && isPaperclipUri((action as FileChanged).uri));
+    });
+
+    if (task) {
+      yield cancel(task);
+    }
+
+    task = yield fork(function*() {
+      yield delay(10);
+      yield call(loadPCFiles);
+    });
   }
 }
 
