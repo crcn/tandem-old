@@ -33,7 +33,8 @@
             "color": "--30f4693267675",
             "font-size": "0.9em",
             "font-weight": "500",
-            "display": "no"
+            "display": "no",
+            "letter-spacing": "0.1em"
           },
           "children": [
             {

@@ -109,6 +109,7 @@ export const paperclipReducer = <
             if (!newGraph) {
               newGraph = {...graph};
             }
+            console.log("DEL", uri);
             delete newGraph[uri];
           }
         }

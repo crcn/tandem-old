@@ -217,7 +217,7 @@
         "margin-top": "10px",
         "display": "flex",
         "align-items": "center",
-        "font-family": "Helvetica",
+        "font-family": "--22702c5f1086",
         "color": "--24ce1e4d482"
       },
       "attributes": {},
@@ -333,7 +333,7 @@
         "margin-top": "10px",
         "display": "flex",
         "align-items": "center",
-        "font-family": "Helvetica",
+        "font-family": "--22702c5f1086",
         "color": "--24ce1e4d482"
       },
       "attributes": {},
@@ -453,7 +453,7 @@
         "margin-top": "10px",
         "display": "flex",
         "align-items": "center",
-        "font-family": "Helvetica",
+        "font-family": "--22702c5f1086",
         "color": "--24ce1e4d482"
       },
       "attributes": {},

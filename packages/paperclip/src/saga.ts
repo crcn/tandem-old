@@ -76,11 +76,18 @@ export const createPaperclipSaga = ({ createRuntime, getRuntimeVariants }: Paper
         }
       });
 
+      let graph;
+
       while (1) {
-        yield take();
+        const action = yield take();
         const state: PCEditorState = yield select();
         if (fsCacheBusy(state.fileCache)) {
           continue;
+        }
+
+        if (graph !== state.graph) {
+          console.log(action.type, state.graph);
+          graph = state.graph;
         }
         rt.setInfo(getRuntimeInfo(state.graph, getRuntimeVariants(state)));
       }

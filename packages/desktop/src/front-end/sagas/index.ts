@@ -54,7 +54,8 @@ import {
   Directory,
   FILE_PROTOCOL,
   FSItemTagNames,
-  flattenTreeNode
+  flattenTreeNode,
+  getFileFromUri
 } from "tandem-common";
 // import { serverStateLoaded } from "../actions";
 import { DesktopRootState } from "../state";
@@ -206,8 +207,8 @@ function* watchProjectDirectory() {
 
     const chan = eventChannel((emit) => {
       watcher = chokidar.watch([], {
-        depth: 1,
-        ignoreInitial: false,
+        depth: 0,
+        ignoreInitial: true,
         persistent: true
       });
 
@@ -221,6 +222,7 @@ function* watchProjectDirectory() {
       }, 10);
       watcher.once("ready", () => {
         watcher.on("all", (event, path) => {
+          console.log(event, path);
           if (/\.DS_Store/.test(path)) {
             return;
           }
@@ -233,7 +235,8 @@ function* watchProjectDirectory() {
       }
     }); 
     while(1) {
-      yield put(yield take(chan));
+      const action: FileChanged = yield take(chan);
+      yield put(action);
     }
   }) 
 
@@ -262,6 +265,10 @@ function* watchProjectDirectory() {
         }
         case FileChangedEventType.UNLINK_DIR:
         case FileChangedEventType.UNLINK: {
+          const i = watching.indexOf(filePath);
+          if (i !== -1) {
+            watching.splice(i, 1);
+          }
           break;
         }
       }

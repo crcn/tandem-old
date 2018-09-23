@@ -1,9 +1,9 @@
 IMMEDIATE:
 
 - left gutter
-  - highlight file in navigator pane when file selected
   - dnd
   - resizable
+  - highlight file in navigator pane when file selected
 
 - refactor file navigator
   - allow for pc files to be renamed

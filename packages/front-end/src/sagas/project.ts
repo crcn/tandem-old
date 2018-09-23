@@ -51,6 +51,7 @@ export function projectSaga({ loadProjectInfo, readDirectory }: ProjectSagaOptio
   function* handleProjectLoaded() {
     while(1) {
       yield take(PROJECT_INFO_LOADED);
+      console.log("INF");
       const { projectInfo }: RootState = yield select();
 
       // may not have loaded if tandem was opened without pointing to project
