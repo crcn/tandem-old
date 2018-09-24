@@ -159,6 +159,7 @@
                     "margin-right": "4px",
                     "position": "relative",
                     "top": "2px",
+                    "user-select": "none",
                     "width": "30px",
                     "flex-shrink": "0",
                     "text-align": "right"
@@ -539,6 +540,7 @@
                     "margin-right": "4px",
                     "position": "relative",
                     "top": "2px",
+                    "user-select": "none",
                     "width": "30px",
                     "flex-shrink": "0",
                     "text-align": "right"

@@ -45,7 +45,11 @@ const FONT_WEIGHTS: DropdownMenuOption[] = [
   "100",
   "200",
   "300",
-  "400"
+  "400",
+  "500",
+  "600",
+  "700",
+  "800"
 ].map(dropdownMenuOptionFromValue);
 
 const DECORATIONS: DropdownMenuOption[] = [

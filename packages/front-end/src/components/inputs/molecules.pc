@@ -33,14 +33,16 @@
                   "label": "Text",
                   "value": "Label",
                   "style": {
-                    "font-family": "--22702c5f1086",
-                    "color": "--d8f6340b1442",
+                    "font-family": "Avenir Next",
+                    "color": "rgba(230, 230, 230, 1)",
                     "font-size": "0.8em",
                     "margin-bottom": "4px",
                     "display": "inline-block",
                     "margin-left": "2px",
-                    "opacity": 1,
-                    "letter-spacing": "0.02em"
+                    "opacity": "1",
+                    "letter-spacing": "0.02em",
+                    "user-select": "none",
+                    "pointer": "default"
                   },
                   "children": [],
                   "metadata": {}

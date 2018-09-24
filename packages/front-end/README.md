@@ -1,5 +1,8 @@
 IMMEDIATE:
 
+- performance
+  - refreshInspectorPane takes 1s in some cases.
+
 - right gutter polish 
   - use mapped style props
   - UI for overrides

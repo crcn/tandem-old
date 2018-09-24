@@ -106,7 +106,7 @@
                   "name": "component-instance",
                   "attributes": {},
                   "style": {
-                    "background": "rgba(152, 255, 132, 1)"
+                    "background": "rgba(117, 201, 101, 1)"
                   },
                   "children": [],
                   "metadata": {
@@ -133,7 +133,8 @@
                 "box-sizing": "border-box",
                 "display": "inline-block",
                 "align-self": "center",
-                "user-select": "none"
+                "user-select": "none",
+                "font-weight": "500"
               },
               "children": [
                 {

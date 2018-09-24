@@ -9,16 +9,17 @@
       "is": "div",
       "style": {
         "font-family": "Helvetica",
-        "color": "--24ce1e4d482",
+        "color": "rgba(123, 123, 123, 1)",
         "text-transform": "uppercase",
         "text-align": "center",
         "width": "100%",
         "padding": "8px",
         "font-size": "9px",
         "cursor": "pointer",
-        "background": "--d8f6340b1442",
+        "background": "rgba(230, 230, 230, 1)",
         "padding-top": "13px",
-        "padding-bottom": "13px"
+        "padding-bottom": "13px",
+        "user-select": "none"
       },
       "attributes": {},
       "id": "5d7d4069129476",
