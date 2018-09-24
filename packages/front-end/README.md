@@ -6,12 +6,17 @@ IMMEDIATE:
   - display inherited typography
 
 - ability to load images
+
+- Examples
+  - TodoMVC
+  - Astroids game
+
 - website
 
 * instance style reset
 
 * BUGS
-
+  - make hotkeys in app
   - clientHeight error when deleting items too quickly
 
 - style inheritence

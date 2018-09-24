@@ -579,7 +579,7 @@
       "name": "element",
       "attributes": {},
       "style": {
-        "background": "grey"
+        "background": "--24ce1e4d482"
       },
       "children": [
         {
@@ -663,8 +663,8 @@
         "bounds": {
           "left": -55,
           "top": 885,
-          "right": 727.0920951245917,
-          "bottom": 1455.5906702797574
+          "right": 619.3156420694501,
+          "bottom": 1459.8171978505472
         }
       }
     },
@@ -1021,7 +1021,7 @@
           "id": "a5ab78791",
           "name": "variant",
           "label": "selected",
-          "isDefault": false,
+          "isDefault": true,
           "children": [],
           "metadata": {}
         },
@@ -1031,7 +1031,7 @@
           "propertyName": "style",
           "targetIdPath": [],
           "value": {
-            "background": "rgba(113, 188, 253, 1)",
+            "background": "--24ce1e4d13456",
             "margin-right": "4px",
             "padding-left": "2px",
             "padding-top": "2px",
