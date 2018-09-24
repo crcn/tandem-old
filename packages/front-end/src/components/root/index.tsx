@@ -4,6 +4,7 @@ import { Dispatch } from "redux";
 import { Workspace } from "./workspace/index.pc";
 import { Welcome } from "./welcome/view.pc";
 import { RootState } from "../../state";
+import { Chrome  } from "./chrome.pc";
 
 export type RootOuterProps = {
   root: RootState;
@@ -18,14 +19,20 @@ export class RootComponent extends React.PureComponent<RootOuterProps> {
       return null;
     }
 
+    let content;
+
     if (!root.projectInfo) {
-      return <Welcome dispatch={dispatch} />;
+      content = <Welcome dispatch={dispatch} />;
+    } else {
+      content = <div className="m-root">
+        <Workspace root={root} dispatch={dispatch} />
+      </div>;
     }
 
-    return (
-      <div className="m-root">
-        <Workspace root={root} dispatch={dispatch} />
-      </div>
-    );
+    if (root.customChrome) {
+      content = <Chrome content={content} projectInfo={root.projectInfo} dispatch={dispatch} />;
+    }
+
+    return content;
   }
 }

@@ -37,8 +37,8 @@
         "box-sizing": "border-box",
         "display": "block",
         "flex-direction": "row",
-        "height": "100vh",
-        "width": "100vw"
+        "height": "100%",
+        "width": "100%"
       },
       "attributes": {},
       "id": "2b5298ab6",

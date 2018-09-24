@@ -91,8 +91,8 @@ const setStyleConstraintsIfRoot = (
     }
     nativeElement.style.top = "0px";
     nativeElement.style.left = "0px";
-    nativeElement.style.width = "100vw";
-    nativeElement.style.height = "100vh";
+    nativeElement.style.width = "100%";
+    nativeElement.style.height = "100%";
     nativeElement.style.minHeight = "unset";
     nativeElement.style.minWidth = "unset";
     nativeElement.style.maxWidth = "unset";

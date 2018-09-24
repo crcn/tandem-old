@@ -216,7 +216,8 @@ export type RootState = {
   prompt?: Prompt;
   prevGraph?: DependencyGraph;
   showSidebar?: boolean;
-
+  customChrome: boolean;
+  
   // TODO - may need to be moved to EditorWindow
   selectedVariant?: PCVariant;
 

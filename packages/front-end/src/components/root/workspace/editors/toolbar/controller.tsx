@@ -63,9 +63,7 @@ export default (Base: React.ComponentClass<BaseToolbarProps>) =>
       const tabs = editorWindow.tabUris.map(uri => {
         return (
           <EditorTab
-            className={cx("tab", {
-              selected: editorWindow.activeFilePath === uri
-            })}
+            variant={cx({ selected: editorWindow.activeFilePath === uri })}
             xButtonProps={{
               className: "x-button",
               onClick: event => onTabCloseButtonClick(uri, event)

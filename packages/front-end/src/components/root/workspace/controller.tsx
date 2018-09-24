@@ -15,6 +15,11 @@ export type Props = {
   dispatch: Dispatch<any>;
 };
 
+const WORKSPACE_STYLE = {
+  width: "100%",
+  height: "100%",
+};
+
 export default (Base: React.ComponentClass<BaseWorkspaceProps>) =>
   DragDropContext(HTML5Backend)(
     class WorkspaceController extends React.PureComponent<Props> {
@@ -31,7 +36,7 @@ export default (Base: React.ComponentClass<BaseWorkspaceProps>) =>
         } = root;
         const workspaceProps = mapStatetoPromptControllerProps(root);
         return (
-          <div>
+          <div style={WORKSPACE_STYLE}>
             <Base
               leftGutterProps={{
                 show: root.showSidebar,

@@ -10,7 +10,6 @@
       "style": {
         "border-right": "1px solid rgba(230, 230, 230, 1)",
         "flex-direction": "column",
-        "width": "250px",
         "height": "100%",
         "align-items": "stretch",
         "justify-content": "flex-start",
@@ -137,7 +136,8 @@
             "flex-grow": "1",
             "height": "70%",
             "flex-shrink": "1",
-            "display": "block"
+            "display": "flex",
+            "flex-direction": "column"
           },
           "children": [],
           "metadata": {
@@ -183,7 +183,7 @@
         "bounds": {
           "left": 788,
           "top": -625,
-          "right": 1409.870604781997,
+          "right": 1232.661582347638,
           "bottom": 820.3618583498433
         }
       },

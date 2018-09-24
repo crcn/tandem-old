@@ -304,7 +304,7 @@ const translateStyle = (
   if (isSVG) {
     // TODO - add vendor prefix stuff here
     for (const key in style) {
-      const propName = kebabCase(key);
+      const propName = key;
       context = addLineItem(
         `" ${SVG_STYLE_PROP_MAP[propName] || propName}: ${translateStyleValue(
           key,
@@ -318,7 +318,7 @@ const translateStyle = (
     // TODO - add vendor prefix stuff here
     for (const key in style) {
       context = addLineItem(
-        `" ${kebabCase(key)}: ${translateStyleValue(
+        `" ${key}: ${translateStyleValue(
           key,
           style[key],
           context

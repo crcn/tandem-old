@@ -1,42 +1,15 @@
 IMMEDIATE:
 
-- left gutter
-  - dnd
-  - resizable
-  - highlight file in navigator pane when file selected
-
-- refactor file navigator
-  - allow for pc files to be renamed
-  - moving files / folders
-  - context menu
-    - deleting files
-    - renaming
-  - renaming pc files should reload dependency graph
 - custom chrome
-  project name in titlebar
-- text preview (code)
+  save dot
+- ability to load images
+- prompt to save if unsaved
+- right gutter polish 
+  - use mapped style props
+  - UI for overrides
+  - display inherited typography
 
-* top bar must scroll
-* refactor styles pane to use computed override map instead of derriving props from synthetic elements.
-* varaible text inputs
-* inherit styles from parent typogograph
-
-* override resets
-
-* wire up variables input
-  - dropdown UI change ()
-  - input auto-complete
-
-- start refactoring UI to use variables using same color scheme
-
-  - remove inherited styles
-  - ensure that no wild colors exist (create linting tool)
-
-- selectedVariant fudges with other panes
-- variants don't show up for instances
-- variants for component that inherit instance
-- inherit styles per variant
--
+- website
 
 * instance style reset
 

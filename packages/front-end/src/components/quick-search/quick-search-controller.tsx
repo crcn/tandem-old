@@ -4,7 +4,7 @@ import { RootState, QuickSearch } from "../../state";
 import { Dispatch } from "redux";
 import { BaseQuickSearchProps } from "./index.pc";
 import { SearchResult } from "./row.pc";
-import { quickSearchFilterChanged } from "actions";
+import { quickSearchFilterChanged } from "../../actions";
 
 export type Props = {
   quickSearch: QuickSearch;

@@ -9,6 +9,7 @@ const calcPortalStyle = (anchorRect: Bounds, portalRect: Bounds) => {
   const anchorSize = getBoundsSize(anchorRect);
   return {
     position: "absolute",
+    zIndex: 1024,
     left: Math.min(anchorRect.left, window.innerWidth - portalSize.width),
     top: Math.min(
       anchorRect.top + anchorSize.height,

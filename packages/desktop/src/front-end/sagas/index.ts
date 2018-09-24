@@ -8,6 +8,7 @@ import { exec } from "child_process";
 import * as path from "path";
 import { ipcSaga } from "./ipc";
 import { eventChannel } from "redux-saga";
+import {remote} from "electron";
 import {
   RootState,
   // PROJECT_DIRECTORY_LOADED,
@@ -35,7 +36,11 @@ import {
   QUICK_SEARCH_FILTER_CHANGED,
   QuickSearchUriResult,
   quickSearchFilterResultLoaded,
-  QuickSearchResultType
+  QuickSearchResultType,
+  CHROME_HEADER_MOUSE_DOWN,
+  CHROME_CLOSE_BUTTON_CLICKED,
+  CHROME_MAXIMIZE_BUTTON_CLICKED,
+  CHROME_MINIMIZE_BUTTON_CLICKED
 } from "tandem-front-end";
 import {
   findPaperclipSourceFiles,
@@ -72,6 +77,7 @@ export function* rootSaga() {
   yield fork(handleOpenController);
   yield fork(watchProjectDirectory);
   yield fork(handleQuickSearch);
+  yield fork(chromeSaga);
 }
 
 
@@ -348,4 +354,35 @@ function* handleQuickSearch() {
     yield put(quickSearchFilterResultLoaded(results.slice(0, 50)));
 
   });
+}
+
+function* chromeSaga() {
+  yield fork(function* handleHeaderClick() {
+    while(1) {
+      yield take(CHROME_HEADER_MOUSE_DOWN);
+    }
+  })
+
+  yield fork(function* handleCloseClick() {
+    while(1) {
+      yield take(CHROME_CLOSE_BUTTON_CLICKED);
+      
+      // TODO - confirm if unsaved files
+      remote.BrowserWindow.getFocusedWindow().close();
+    }
+  })
+
+  yield fork(function* handleMinimizeClick() {
+    while(1) {
+      yield take(CHROME_MINIMIZE_BUTTON_CLICKED);
+      remote.BrowserWindow.getFocusedWindow().minimize();
+    }
+  });
+
+  yield fork(function* handleMaximizeClick() {
+    while(1) {
+      yield take(CHROME_MAXIMIZE_BUTTON_CLICKED);
+      remote.BrowserWindow.getFocusedWindow().setFullScreen(!remote.BrowserWindow.getFocusedWindow().isFullScreen());
+    }
+  })
 }

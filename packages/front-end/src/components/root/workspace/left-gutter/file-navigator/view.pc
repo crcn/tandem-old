@@ -131,9 +131,10 @@
                   "attributes": {},
                   "style": {
                     "box-sizing": "border-box",
-                    "display": "block",
+                    "display": "flex",
                     "overflow": "scroll",
-                    "height": "100%"
+                    "height": "100%",
+                    "flex-direction": "column"
                   },
                   "children": [
                     {
@@ -424,7 +425,9 @@
                 "padding-left": "0px",
                 "padding-top": "0px",
                 "padding-right": "0px",
-                "padding-bottom": "0px"
+                "padding-bottom": "0px",
+                "display": "flex",
+                "flex-direction": "column"
               },
               "name": "override",
               "children": []

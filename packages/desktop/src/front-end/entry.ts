@@ -42,6 +42,7 @@ setup<DesktopRootState>(
   hoveringSyntheticNodeIds: [],
   selectedSyntheticNodeIds: [],
   hoveringInspectorNodeIds: [],
+  customChrome: Boolean(query.customChrome),
   globalFileUri: String(query.globalFileUri),
   selectedFileNodeIds: [],
   sourceNodeInspector: createRootInspectorNode(),

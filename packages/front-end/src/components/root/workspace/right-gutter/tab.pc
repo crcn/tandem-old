@@ -16,7 +16,9 @@
         "padding": "8px",
         "font-size": "9px",
         "cursor": "pointer",
-        "background": "--d8f6340b1442"
+        "background": "--d8f6340b1442",
+        "padding-top": "13px",
+        "padding-bottom": "13px"
       },
       "attributes": {},
       "id": "5d7d4069129476",
@@ -37,7 +39,7 @@
           "id": "66d16f05",
           "name": "variant",
           "label": "selected",
-          "isDefault": true,
+          "isDefault": false,
           "children": [],
           "metadata": {}
         },
@@ -47,7 +49,7 @@
           "propertyName": "style",
           "targetIdPath": [],
           "value": {
-            "background": "--f63574de434"
+            "background": "rgba(255, 255, 255, 1)"
           },
           "name": "override",
           "children": []
@@ -58,7 +60,36 @@
           "left": 454,
           "top": 294,
           "right": 570,
-          "bottom": 316.4100033070649
+          "bottom": 329.99299530568595
+        }
+      },
+      "variant": {}
+    },
+    {
+      "id": "a0c265a6155173",
+      "is": "97a34b151010442",
+      "name": "component-instance",
+      "attributes": {},
+      "style": {},
+      "children": [
+        {
+          "id": "a0c265a6184739",
+          "variantId": null,
+          "propertyName": "text",
+          "targetIdPath": [
+            "97a34b151010441"
+          ],
+          "value": "padding is a bit uneven here to match editor tabs",
+          "name": "override",
+          "children": []
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": 602,
+          "top": 233,
+          "right": 985.1708291271775,
+          "bottom": 433.7213373757045
         }
       },
       "variant": {}

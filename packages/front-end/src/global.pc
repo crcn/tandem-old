@@ -84,6 +84,15 @@
       "type": "color",
       "children": [],
       "metadata": {}
+    },
+    {
+      "id": "32ef79b7820935",
+      "name": "variable",
+      "value": "rgba(1, 0, 0, 0.16)",
+      "label": "black transparent",
+      "type": "color",
+      "children": [],
+      "metadata": {}
     }
   ]
 }

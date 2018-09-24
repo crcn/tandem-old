@@ -84,10 +84,12 @@ function* loadTDConfig() {
 function* openMainWindow() {
   yield take(APP_READY);
   const state: DesktopState = yield select();
+  const withFrame = false;
 
   const mainWindow = new BrowserWindow({
     width: 800,
-    height: 600
+    height: 600,
+    frame: withFrame
   });
 
   let url = FRONT_END_ENTRY_FILE_PATH;
@@ -98,6 +100,10 @@ function* openMainWindow() {
 
   if (state.info.previewServer) {
     query.previewHost = `localhost:${state.info.previewServer.port}`;
+  }
+
+  if (!withFrame) {
+    query.customChrome = true;
   }
 
   if (state.tdProject.globalFilePath) {
