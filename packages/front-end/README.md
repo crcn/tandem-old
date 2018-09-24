@@ -6,6 +6,7 @@ IMMEDIATE:
   - display inherited typography
 
 - ability to load images
+- ability to create new project
 
 - Examples
   - TodoMVC
