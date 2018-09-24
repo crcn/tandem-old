@@ -1,12 +1,11 @@
 IMMEDIATE:
 
-- ability to load images
-- prompt to save if unsaved
 - right gutter polish 
   - use mapped style props
   - UI for overrides
   - display inherited typography
 
+- ability to load images
 - website
 
 * instance style reset
@@ -14,10 +13,6 @@ IMMEDIATE:
 * BUGS
 
   - clientHeight error when deleting items too quickly
-  - cannot inherit for instances
-
-* unsaved prompt
-* unsaved button
 
 - style inheritence
 
@@ -25,20 +20,14 @@ IMMEDIATE:
   - hover over label should show parent
   - fill in typography with parent props
 
-- redesign variants pane
-
-- EASY
-
-  - eliminiate recompose
-  - reduce `root` usage
-
 - UX
 
+  - possibly _export_ functionality for code
   - secondary input for slider (particularly for opacity)
-  - all layers must be expose. For component instances, take component label
+  - all layers must be exposed. For component instances, take component label
   - shortcuts shouldn't be triggered when keys are pressed
-  - unsaved files indicator
   - select parent hotkey
+  - breadcrumbs
 
 - fix controllers pane
 
