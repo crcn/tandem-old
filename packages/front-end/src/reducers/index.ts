@@ -334,7 +334,8 @@ import {
   stripProtocol,
   addProtocol,
   FILE_PROTOCOL,
-  updateFSItemAlts
+  updateFSItemAlts,
+  replaceNestedNode
 } from "tandem-common";
 import { clamp, last } from "lodash";
 import {
@@ -622,19 +623,28 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
           ? targetNode
           : getParentTreeNode(targetNode.id, state.projectDirectory);
       const targetUri = targetDir.uri;
+      
       state = updateRootState(
         {
           projectDirectory: updateNestedNode(
             targetDir,
             state.projectDirectory,
             targetNode => {
-              return appendChildNode(
+              
+              targetNode = appendChildNode(
                 {
                   ...node,
                   uri: nodeUri.replace(parentUri, targetUri)
                 } as FSItem,
                 targetNode
               );
+
+              targetNode = {
+                ...targetNode,
+                children: sortFSItems(targetNode.children as FSItem[])
+              };
+
+              return targetNode;
             }
           )
         },

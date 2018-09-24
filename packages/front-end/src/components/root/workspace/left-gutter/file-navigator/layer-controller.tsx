@@ -91,7 +91,6 @@ export default (Base: React.ComponentClass<BaseFileNavigatorLayerProps>) => {
       },
       drop: ({ dispatch, item: directory }, monitor) => {
         const droppedItem = monitor.getItem() as FSItem;
-        console.log("DROp");
         dispatch(fileNavigatorDroppedItem(droppedItem, directory as Directory, TreeMoveOffset.PREPEND));
       }
     },

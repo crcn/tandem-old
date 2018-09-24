@@ -221,7 +221,6 @@ function* watchProjectDirectory() {
       }, 10);
       watcher.once("ready", () => {
         watcher.on("all", (event, path) => {
-          console.log(event, path);
           if (/\.DS_Store/.test(path)) {
             return;
           }
