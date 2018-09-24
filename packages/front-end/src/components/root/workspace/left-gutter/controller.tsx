@@ -2,7 +2,7 @@ import * as React from "react";
 import { BaseLeftGutterProps } from "./view.pc";
 import { DependencyGraph, InspectorNode, SyntheticDocument } from "paperclip";
 import { Dispatch } from "redux";
-import { Directory } from "tandem-common";
+import { Directory, startDOMDrag } from "tandem-common";
 export type Props = {
   show?: boolean;
   graph: DependencyGraph;
@@ -15,8 +15,30 @@ export type Props = {
   documents: SyntheticDocument[];
 } & BaseLeftGutterProps;
 
+type State = {
+  width: number
+};
+
+const MIN_WIDTH = 200;
+
 export default (Base: React.ComponentClass<BaseLeftGutterProps>) =>
-  class LeftGutterController extends React.PureComponent<Props> {
+  class LeftGutterController extends React.PureComponent<Props, State> {
+    state = {
+      width: 250
+    };
+
+    private _dragger: HTMLDivElement;
+    setDragger = (dragger: HTMLDivElement) => {
+      this._dragger = dragger;
+    };
+    onDraggerMouseDown = (event: React.MouseEvent<any>) => {
+      const initialWidth = this.state.width;
+      startDOMDrag(event, () => {
+
+      }, (event, data) => {
+        this.setState({ width: Math.max(MIN_WIDTH, event.clientX) });
+      });
+    }
     render() {
       const {
         graph,
@@ -30,6 +52,7 @@ export default (Base: React.ComponentClass<BaseLeftGutterProps>) =>
         show,
         ...rest
       } = this.props;
+      const {setDragger, onDraggerMouseDown} = this;
       if (show === false) {
         return null;
       }
@@ -37,6 +60,9 @@ export default (Base: React.ComponentClass<BaseLeftGutterProps>) =>
       return (
         <Base
           {...rest}
+          style={{
+            width: this.state.width
+          }}
           openModulesPaneProps={{
             graph,
             selectedInspectorNodeIds,
@@ -49,6 +75,10 @@ export default (Base: React.ComponentClass<BaseLeftGutterProps>) =>
             rootDirectory,
             dispatch,
             selectedFileNodeIds
+          }}
+          draggerProps={{
+            ref: setDragger,
+            onMouseDown: onDraggerMouseDown
           }}
         />
       );

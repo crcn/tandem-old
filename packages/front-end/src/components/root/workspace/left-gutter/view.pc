@@ -150,6 +150,33 @@
           },
           "variant": {},
           "label": "file navigator pane"
+        },
+        {
+          "id": "3282be2099",
+          "label": "dragger",
+          "is": "div",
+          "name": "element",
+          "attributes": {},
+          "style": {
+            "box-sizing": "border-box",
+            "display": "block",
+            "background": "rgba(200, 200, 200, 1)",
+            "position": "absolute",
+            "height": "100%",
+            "right": "0px",
+            "width": "4px",
+            "cursor": "ew-resize",
+            "opacity": 0
+          },
+          "children": [],
+          "metadata": {
+            "bounds": {
+              "left": 647.2883883128435,
+              "top": -432.14405006841923,
+              "right": 747.2883883128435,
+              "bottom": -332.14405006841923
+            }
+          }
         }
       ],
       "metadata": {

@@ -110,7 +110,7 @@ const BaseCanvasComponent = ({
         className="canvas-component-isolate"
         onWheel={onWheel}
         scrolling={false}
-        translateMousePositions={false}
+        translateMousePositions={true}
       >
         <span>
           <style>
