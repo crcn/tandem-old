@@ -5,6 +5,7 @@ init({
   mount: document.getElementById("application"),
   hoveringSyntheticNodeIds: [],
   editorWindows: [],
+  customChrome: false,
   selectedSyntheticNodeIds: [],
   hoveringInspectorNodeIds: [],
   selectedFileNodeIds: [],
