@@ -1,7 +1,5 @@
 IMMEDIATE:
 
-- custom chrome
-  save dot
 - ability to load images
 - prompt to save if unsaved
 - right gutter polish 

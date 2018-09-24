@@ -601,6 +601,8 @@ const moveDependencyRecordHistory = (
   return state;
 };
 
+export const isUnsaved = (state: RootState) => state.openFiles.some((openFile) => Boolean(openFile.newContent));
+
 const DEFAULT_CANVAS: Canvas = {
   backgroundColor: "#EEE",
   translate: {

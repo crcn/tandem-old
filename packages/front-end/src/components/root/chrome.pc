@@ -152,6 +152,19 @@
                   "metadata": {},
                   "name": "slot",
                   "label": "title"
+                },
+                {
+                  "id": "9f8abd4b15261",
+                  "label": "unsaved circle",
+                  "is": "div",
+                  "name": "element",
+                  "attributes": {},
+                  "style": {
+                    "box-sizing": "border-box",
+                    "display": "none"
+                  },
+                  "children": [],
+                  "metadata": {}
                 }
               ],
               "metadata": {}
@@ -194,6 +207,51 @@
             }
           ],
           "metadata": {}
+        },
+        {
+          "id": "9f8abd4b7720",
+          "name": "variant",
+          "label": "unsaved",
+          "isDefault": true,
+          "children": [],
+          "metadata": {}
+        },
+        {
+          "id": "9f8abd4b30346",
+          "variantId": "9f8abd4b7720",
+          "propertyName": "style",
+          "targetIdPath": [
+            "9f8abd4b15261"
+          ],
+          "value": {
+            "width": "6px",
+            "height": "6px",
+            "display": "inline-block",
+            "background": "--32ef79b7820935",
+            "border-bottom-left-radius": "99px",
+            "border-top-left-radius": "99px",
+            "border-top-right-radius": "99px",
+            "border-bottom-right-radius": "99px",
+            "margin-left": "8px",
+            "position": "relative",
+            "top": "1px"
+          },
+          "name": "override",
+          "children": []
+        },
+        {
+          "id": "9f8abd4b113309",
+          "variantId": "9f8abd4b7720",
+          "propertyName": "style",
+          "targetIdPath": [
+            "32ef79b7242"
+          ],
+          "value": {
+            "display": "inline-flex",
+            "align-items": "center"
+          },
+          "name": "override",
+          "children": []
         }
       ],
       "metadata": {

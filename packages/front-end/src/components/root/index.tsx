@@ -3,7 +3,7 @@ import * as React from "react";
 import { Dispatch } from "redux";
 import { Workspace } from "./workspace/index.pc";
 import { Welcome } from "./welcome/view.pc";
-import { RootState } from "../../state";
+import { RootState, isUnsaved } from "../../state";
 import { Chrome  } from "./chrome.pc";
 
 export type RootOuterProps = {
@@ -30,7 +30,7 @@ export class RootComponent extends React.PureComponent<RootOuterProps> {
     }
 
     if (root.customChrome) {
-      content = <Chrome content={content} projectInfo={root.projectInfo} dispatch={dispatch} />;
+      content = <Chrome content={content} unsaved={isUnsaved(root)} projectInfo={root.projectInfo} dispatch={dispatch} />;
     }
 
     return content;

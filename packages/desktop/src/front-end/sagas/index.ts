@@ -8,7 +8,7 @@ import { exec } from "child_process";
 import * as path from "path";
 import { ipcSaga } from "./ipc";
 import { eventChannel } from "redux-saga";
-import {remote} from "electron";
+import {remote, dialog} from "electron";
 import {
   RootState,
   // PROJECT_DIRECTORY_LOADED,
@@ -40,7 +40,9 @@ import {
   CHROME_HEADER_MOUSE_DOWN,
   CHROME_CLOSE_BUTTON_CLICKED,
   CHROME_MAXIMIZE_BUTTON_CLICKED,
-  CHROME_MINIMIZE_BUTTON_CLICKED
+  CHROME_MINIMIZE_BUTTON_CLICKED,
+  isUnsaved,
+  CONFIRM_SAVE_CHANGES
 } from "tandem-front-end";
 import {
   findPaperclipSourceFiles,
@@ -179,13 +181,17 @@ function* handleDroppedFile() {
 function* handleSaveShortcut() {
   while (1) {
     yield take(SHORTCUT_SAVE_KEY_DOWN);
-    const state: RootState = yield select();
-    const activeEditor = getActiveEditorWindow(state);
-    for (const openFile of state.openFiles) {
-      if (openFile.newContent) {
-        yield call(saveFile, openFile.uri, openFile.newContent);
-        yield put(savedFile(openFile.uri));
-      }
+    yield call(saveChanges);
+  }
+}
+
+function* saveChanges() {
+  const state: RootState = yield select();
+  const activeEditor = getActiveEditorWindow(state);
+  for (const openFile of state.openFiles) {
+    if (openFile.newContent) {
+      yield call(saveFile, openFile.uri, openFile.newContent);
+      yield put(savedFile(openFile.uri));
     }
   }
 }
@@ -366,11 +372,25 @@ function* chromeSaga() {
   yield fork(function* handleCloseClick() {
     while(1) {
       yield take(CHROME_CLOSE_BUTTON_CLICKED);
-      
-      // TODO - confirm if unsaved files
-      remote.BrowserWindow.getFocusedWindow().close();
+      yield call(maybeCloseWindow);
     }
-  })
+  });
+
+  function* maybeCloseWindow() {
+    const cwindow = remote.BrowserWindow.getFocusedWindow();
+    const state: RootState = yield select();
+    if (isUnsaved(state)) {
+
+      // TODO - this needs to be three options
+      // if(!confirm("Do you want to save changes?")) {
+      //   return;
+      // }
+      // yield call(saveChanges);
+    }
+      
+    // TODO - confirm if unsaved files
+    cwindow.close();
+  }
 
   yield fork(function* handleMinimizeClick() {
     while(1) {

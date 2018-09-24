@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as cx from "classnames";
 import * as path from "path";
 import { BaseChromeProps } from "./chrome.pc";
 import { Dispatch } from "redux";
@@ -8,6 +9,7 @@ import { CHROME_HEADER_MOUSE_DOWN, CHROME_CLOSE_BUTTON_CLICKED, CHROME_MINIMIZE_
 export type Props = {
   dispatch: Dispatch<any>;
   projectInfo: ProjectInfo;
+  unsaved: boolean;
 } & BaseChromeProps;
 
 export default (Base: React.ComponentClass<BaseChromeProps>) => class ChromeController extends React.PureComponent<Props> {
@@ -27,7 +29,7 @@ export default (Base: React.ComponentClass<BaseChromeProps>) => class ChromeCont
     event.stopPropagation();
   }
   render() {
-    const {projectInfo, ...rest} = this.props;
+    const {projectInfo, unsaved, ...rest} = this.props;
     const {onHeaderClick, onCloseClick, onMinimizeClick, onMaximizeClick} = this;
 
     let title: string = "";
@@ -36,7 +38,7 @@ export default (Base: React.ComponentClass<BaseChromeProps>) => class ChromeCont
       title = path.basename(projectInfo.path);
     }
 
-    return <Base {...rest} title={title} headerProps={{
+    return <Base {...rest} title={title} variant={cx({ unsaved })} headerProps={{
       onClick: onHeaderClick
     }} closeButtonProps={{
       onClick: onCloseClick
