@@ -4,7 +4,7 @@ const {
   QuickSearch: BaseQuickSearch,
   SearchResult: BaseSearchResult,
   QuickSearchInput
-} = require("./index.pc");
+} = require("./view.pc");
 import { RootState } from "../../state";
 import { Dispatch } from "redux";
 import {

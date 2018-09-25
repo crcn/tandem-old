@@ -1,5 +1,5 @@
 import * as React from "react";
-import { BaseInstancePaneProps } from "./index.pc";
+import { BaseInstancePaneProps } from "./view.pc";
 import { Dispatch } from "redux";
 import {
   SyntheticDocument,

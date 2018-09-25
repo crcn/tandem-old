@@ -1,7 +1,7 @@
 import "./index.scss";
 import * as React from "react";
 import { Dispatch } from "redux";
-import { Workspace } from "./workspace/index.pc";
+import { Workspace } from "./workspace/view.pc";
 import { Welcome } from "./welcome/view.pc";
 import { RootState, isUnsaved } from "../../state";
 import { Chrome  } from "./chrome.pc";

@@ -2,7 +2,7 @@ import "./index.scss";
 import * as React from "react";
 import { Dispatch } from "redux";
 import { PaneComponent } from "../../../../pane";
-// import { Item: BaseItem } from "./index.pc";
+// import { Item: BaseItem } from "./view.pc";
 import {
   REGISTERED_COMPONENT,
   RegisteredComponent

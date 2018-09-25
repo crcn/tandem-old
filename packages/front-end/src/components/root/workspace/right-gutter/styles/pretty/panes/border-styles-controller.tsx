@@ -8,7 +8,7 @@ import { ComputedStyleInfo } from "../../state";
 const {
   EmptySquareIcon,
   BordersIcon
-} = require("../../../../../../../icons/index.pc");
+} = require("../../../../../../../icons/view.pc");
 
 enum TOGGLE_OPTION {
   ALL,

@@ -10,7 +10,7 @@ import { memoize, EMPTY_ARRAY, getNestedTreeNodeById } from "tandem-common";
 import { RightGutterTab } from "./tab.pc";
 import * as cx from "classnames";
 import { InspectorNode } from "paperclip";
-import { BaseRightGutterProps } from "./index.pc";
+import { BaseRightGutterProps } from "./view.pc";
 import { RootState } from "../../../../state";
 import { Dispatch } from "redux";
 

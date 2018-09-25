@@ -8,7 +8,7 @@ import {
   PCVariant,
   PCVariable
 } from "paperclip";
-import { BaseElementStylerProps } from "./index.pc";
+import { BaseElementStylerProps } from "./view.pc";
 import { Dispatch } from "redux";
 import { FontFamily } from "../../../../../../state";
 import { ComputedStyleInfo } from "../state";

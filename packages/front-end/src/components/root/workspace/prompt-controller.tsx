@@ -1,5 +1,5 @@
 import * as React from "react";
-import { BaseWorkspacePromptProps } from "./index.pc";
+import { BaseWorkspacePromptProps } from "./view.pc";
 import { Dispatch } from "redux";
 import { RootState, Prompt } from "../../../state";
 import { promptConfirmed, promptCancelButtonClicked } from "../../../actions";

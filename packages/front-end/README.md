@@ -1,7 +1,13 @@
-IMMEDIATE:
+CURRENT GOAL: Polish Tandem & put in 
 
-EASY:
-  - change index.pc to view.pc
+REQUIRED BEFORE RELEASE:
+
+- ability to start new project
+- example project
+- right pane polish
+
+
+NEXT:
 
 - ability to change component types
 - default labels must be exported

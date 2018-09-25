@@ -2,7 +2,7 @@ import * as React from "react";
 import { flattenTreeNode, File, isFile, memoize, EMPTY_ARRAY } from "tandem-common";
 import { RootState, QuickSearch } from "../../state";
 import { Dispatch } from "redux";
-import { BaseQuickSearchProps } from "./index.pc";
+import { BaseQuickSearchProps } from "./view.pc";
 import { SearchResult } from "./row.pc";
 import { quickSearchFilterChanged } from "../../actions";
 

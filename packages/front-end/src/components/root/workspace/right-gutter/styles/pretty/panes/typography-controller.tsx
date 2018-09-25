@@ -33,7 +33,7 @@ const {
   TextCenterIcon,
   TextJustifyIcon,
   TextRightIcon
-} = require("../../../../../../../icons/index.pc");
+} = require("../../../../../../../icons/view.pc");
 
 export const getFontFamilyOptions = memoize((fontFamiles: FontFamily[]) =>
   fontFamiles

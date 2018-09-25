@@ -4,10 +4,10 @@ import { Dispatch } from "redux";
 const {
   Modal: ComponentPickerModal
 } = require("../../component-picker/modal.pc");
-const { Modal: QuickSearchModal } = require("../../quick-search/index.pc");
+const { Modal: QuickSearchModal } = require("../../quick-search/view.pc");
 import { DragDropContext } from "react-dnd";
 import HTML5Backend from "react-dnd-html5-backend";
-import { BaseWorkspaceProps, WorkspacePrompt } from "./index.pc";
+import { BaseWorkspaceProps, WorkspacePrompt } from "./view.pc";
 import { mapStateToProps as mapStatetoPromptControllerProps } from "./prompt-controller";
 
 export type Props = {

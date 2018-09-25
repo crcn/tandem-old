@@ -1065,67 +1065,6 @@
         }
       },
       "variant": {}
-    },
-    {
-      "id": "eb7a4eaa678",
-      "is": "eb7a4eaa513",
-      "name": "component-instance",
-      "attributes": {},
-      "style": {},
-      "children": [
-        {
-          "id": "eb7a4eaa1180",
-          "propertyName": "style",
-          "targetIdPath": [
-            "eb7a4eaa512"
-          ],
-          "value": {},
-          "name": "override",
-          "children": []
-        }
-      ],
-      "metadata": {
-        "bounds": {
-          "left": -99,
-          "top": 329,
-          "right": 1,
-          "bottom": 429
-        }
-      },
-      "variant": {}
-    },
-    {
-      "label": "Element",
-      "is": "div",
-      "style": {
-        "box-sizing": "border-box",
-        "display": "block"
-      },
-      "attributes": {},
-      "id": "eb7a4eaa513",
-      "name": "component",
-      "children": [
-        {
-          "id": "eb7a4eaa512",
-          "name": "text",
-          "label": "Text",
-          "value": "Click to edit",
-          "style": {
-            "font-size": "10px"
-          },
-          "children": [],
-          "metadata": {}
-        }
-      ],
-      "metadata": {
-        "bounds": {
-          "left": -218.44327058778512,
-          "top": 333.31938325991194,
-          "right": -118.44327058778512,
-          "bottom": 433.31938325991194
-        }
-      },
-      "variant": {}
     }
   ]
 }
