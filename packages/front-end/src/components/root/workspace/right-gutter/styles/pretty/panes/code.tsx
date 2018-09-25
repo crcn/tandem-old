@@ -4,10 +4,11 @@ import { rawCssTextChanged } from "../../../../../../../actions";
 import { BaseCodeProps } from "./code.pc";
 import { Dispatch } from "redux";
 import { SyntheticElement } from "paperclip";
+import { ComputedStyleInfo } from "../../state";
 
 export type Props = {
   dispatch: Dispatch<any>;
-  selectedNodes: SyntheticElement[];
+  computedStyleInfo: ComputedStyleInfo;
 };
 
 export type InnerProps = {
@@ -22,8 +23,8 @@ export default (Base: React.ComponentClass<BaseCodeProps>) =>
 
     render() {
       const { onChange } = this;
-      const { selectedNodes, ...rest } = this.props;
-      const cssText = getSelectedNodeStyle(selectedNodes);
+      const { computedStyleInfo, ...rest } = this.props;
+      const cssText = getSelectedNodeStyle(computedStyleInfo);
       return (
         <Base
           {...rest}
@@ -36,11 +37,10 @@ export default (Base: React.ComponentClass<BaseCodeProps>) =>
     }
   };
 
-const getSelectedNodeStyle = selectedNodes => {
-  const node = selectedNodes[0];
+const getSelectedNodeStyle = (info: ComputedStyleInfo) => {
   return (
-    node &&
-    stringifyStyle(node.style || EMPTY_OBJECT)
+    info &&
+    stringifyStyle(info.style || EMPTY_OBJECT)
       .split(";")
       .join(";\n")
   );

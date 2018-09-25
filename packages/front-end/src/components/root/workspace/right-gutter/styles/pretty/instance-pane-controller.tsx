@@ -17,7 +17,6 @@ export type Props = {
   selectedInspectorNodes: InspectorNode[];
   rootInspectorNode: InspectorNode;
   syntheticDocument: SyntheticDocument;
-  selectedNodes: SyntheticNode[];
   dispatch: Dispatch<any>;
   graph: DependencyGraph;
   selectedVariant: PCVariant;
@@ -28,7 +27,6 @@ export default (Base: React.ComponentClass<BaseInstancePaneProps>) =>
     render() {
       const {
         syntheticDocument,
-        selectedNodes,
         selectedInspectorNodes,
         rootInspectorNode,
         selectedVariant,

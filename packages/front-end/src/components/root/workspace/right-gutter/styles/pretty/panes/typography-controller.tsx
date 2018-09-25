@@ -80,8 +80,6 @@ const ALIGNMENTS: ButtonBarOption[] = [
 
 export type Props = {
   dispatch: Dispatch<any>;
-  // DEPRECATED
-  selectedNodes: SyntheticElement[];
   computedStyleInfo: ComputedStyleInfo;
   fontFamilies: FontFamily[];
   globalVariables: PCVariable[];

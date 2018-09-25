@@ -53,7 +53,6 @@ export default (Base: React.ComponentClass<BaseElementStylerProps>) =>
             selectedInspectorNodes,
             rootInspectorNode,
             syntheticDocument,
-            selectedNodes,
             dispatch,
             graph,
             selectedVariant
@@ -65,7 +64,7 @@ export default (Base: React.ComponentClass<BaseElementStylerProps>) =>
           }}
           codePaneProps={{
             dispatch,
-            selectedNodes
+            computedStyleInfo
           }}
           layoutPaneProps={{
             dispatch,
@@ -77,7 +76,6 @@ export default (Base: React.ComponentClass<BaseElementStylerProps>) =>
           }}
           typographyPaneProps={{
             dispatch,
-            selectedNodes,
             computedStyleInfo,
             fontFamilies,
             globalVariables
