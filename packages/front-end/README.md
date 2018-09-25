@@ -1,11 +1,23 @@
 IMMEDIATE:
 
+EASY:
+  - change index.pc to view.pc
+
+- ability to change component types
+- default labels must be exported
+- ability to unset values
+- properties tab
+  - export name
+- override reset
+- bolden overridden props
+- inherit typography styles
+- overrides not working quite right
+
 - performance
   - refreshInspectorPane takes 1s in some cases.
     - calc OTs instead of refreshing pane (possibly re-usable with synthetic graph)
 
 - right gutter polish 
-  - auto-input text
   - UI for overrides
   - display inherited typography
 

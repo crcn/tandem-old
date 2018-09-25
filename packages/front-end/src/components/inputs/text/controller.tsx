@@ -17,7 +17,6 @@ export const withPureInputHandlers = () => (
     WithInputHandlersProps
   > {
 
-
     // needed so that sub components get updates value if source doesn't change.
     state = {
       value: null,
@@ -41,14 +40,14 @@ export const withPureInputHandlers = () => (
         }
         
         if (key === "Enter" && onChangeComplete) {
-          onChangeComplete(newValue || "");
+          onChangeComplete(newValue || undefined);
         }
       });
     };
     onBlur = event => {
       const { onChangeComplete } = this.props;
       if (onChangeComplete) {
-        onChangeComplete(event.target.value);
+        onChangeComplete(event.target.value || undefined);
       }
     };
     componentDidUpdate(props) {

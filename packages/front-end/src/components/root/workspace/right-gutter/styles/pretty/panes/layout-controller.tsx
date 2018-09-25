@@ -180,8 +180,7 @@ export default (Base: React.ComponentClass<BaseLayoutProps>) =>
             onChangeComplete: propertyChangeCallback(
               "left",
               onPropertyChangeComplete
-            ),
-            autoCompleteOptions: mapVariablesToCSSVarDropdownOptions(filterVariablesByType(globalVariables, PCVariableType.UNIT))
+            )
           }}
           topInputProps={{
             value: computedStyleInfo.style.top,

@@ -89,26 +89,26 @@
           "id": "e73029b42675",
           "children": [
             {
-              "id": "7149f81910505",
-              "variant": {},
-              "is": "7149f8192509",
+              "id": "80232641803",
+              "is": "9672de3b377339",
               "name": "component-instance",
               "attributes": {},
               "style": {},
               "children": [
                 {
-                  "id": "7149f81937515",
+                  "id": "802326414789",
+                  "variantId": null,
                   "propertyName": "text",
                   "targetIdPath": [
-                    "7149f8192506"
+                    "9672de3b390342"
                   ],
                   "value": "Display",
                   "name": "override",
                   "children": []
                 },
                 {
-                  "slotId": "e73029b416045",
-                  "id": "e73029b417441",
+                  "slotId": "8023264116860",
+                  "id": "8023264128372",
                   "children": [
                     {
                       "id": "aec1d08b2308",
@@ -144,7 +144,17 @@
                   "name": "plug"
                 }
               ],
-              "metadata": {}
+              "metadata": {
+                "bounds": {
+                  "left": 0,
+                  "top": 424,
+                  "right": 278.36714911702734,
+                  "bottom": 597.5183718636592
+                }
+              },
+              "variant": {
+                "9672de3b425023": false
+              }
             },
             {
               "id": "6b3dde2e16265",
@@ -678,20 +688,21 @@
                           "id": "89a7d9283885",
                           "children": [
                             {
-                              "id": "89a7d9283884",
-                              "is": "7149f8199122",
+                              "id": "a329dd6d19803",
+                              "is": "a329dd6d16879",
                               "name": "component-instance",
                               "attributes": {},
                               "style": {},
                               "children": [],
                               "metadata": {
                                 "bounds": {
-                                  "left": 384,
-                                  "top": 298,
-                                  "right": 484,
-                                  "bottom": 327.0358087589019
+                                  "left": 783.484050288946,
+                                  "top": 164.5285555122662,
+                                  "right": 883.484050288946,
+                                  "bottom": 193.56436427116807
                                 }
                               },
+                              "variant": {},
                               "label": "flex basis input"
                             }
                           ],
@@ -1126,18 +1137,18 @@
                       "id": "6b3dde2e30982",
                       "children": [
                         {
-                          "id": "d3dca34c6641",
-                          "is": "2c83e997743",
+                          "id": "9def6b022738",
+                          "is": "7149f8199122",
                           "name": "component-instance",
                           "attributes": {},
                           "style": {},
                           "children": [],
                           "metadata": {
                             "bounds": {
-                              "left": 535,
-                              "top": 296,
-                              "right": 742.9668420825287,
-                              "bottom": 396
+                              "left": 384,
+                              "top": 298,
+                              "right": 484,
+                              "bottom": 327.0358087589019
                             }
                           },
                           "variant": {},
@@ -1447,6 +1458,16 @@
           ],
           "metadata": {},
           "name": "plug"
+        },
+        {
+          "id": "8023264121794",
+          "propertyName": "style",
+          "targetIdPath": [
+            "b6c162d140"
+          ],
+          "value": {},
+          "name": "override",
+          "children": []
         }
       ],
       "metadata": {

@@ -639,20 +639,21 @@
                           "id": "a05ecb4e930",
                           "children": [
                             {
-                              "id": "a05ecb4e929",
-                              "is": "7149f8199122",
+                              "id": "a329dd6d24650",
+                              "is": "a329dd6d16879",
                               "name": "component-instance",
                               "attributes": {},
                               "style": {},
                               "children": [],
                               "metadata": {
                                 "bounds": {
-                                  "left": 384,
-                                  "top": 298,
-                                  "right": 484,
-                                  "bottom": 327.0358087589019
+                                  "left": 783.484050288946,
+                                  "top": 164.5285555122662,
+                                  "right": 883.484050288946,
+                                  "bottom": 193.56436427116807
                                 }
                               },
+                              "variant": {},
                               "label": "size input"
                             }
                           ],

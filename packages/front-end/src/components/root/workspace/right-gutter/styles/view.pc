@@ -122,9 +122,7 @@
                   "targetIdPath": [
                     "9e4a45489816"
                   ],
-                  "value": {
-                    "display": "none"
-                  },
+                  "value": {},
                   "name": "override",
                   "children": []
                 },

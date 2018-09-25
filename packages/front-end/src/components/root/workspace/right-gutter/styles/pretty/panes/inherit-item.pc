@@ -213,6 +213,52 @@
           "value": true,
           "name": "override",
           "children": []
+        },
+        {
+          "id": "c7da0a1d90996",
+          "name": "variant",
+          "label": "alt",
+          "isDefault": true,
+          "children": [],
+          "metadata": {}
+        },
+        {
+          "id": "c7da0a1d96284",
+          "variantId": "c7da0a1d90996",
+          "propertyName": "style",
+          "targetIdPath": [],
+          "value": {
+            "background": "--bc891e755312"
+          },
+          "name": "override",
+          "children": []
+        },
+        {
+          "id": "6bb53bbd671",
+          "variantId": "c7da0a1d90996",
+          "propertyName": "style",
+          "targetIdPath": [
+            "308dd31392"
+          ],
+          "value": {
+            "color": "--24ce1e4d482"
+          },
+          "name": "override",
+          "children": []
+        },
+        {
+          "id": "6bb53bbd915",
+          "variantId": "c7da0a1d90996",
+          "propertyName": "style",
+          "targetIdPath": [
+            "9e4a454812258"
+          ],
+          "value": {
+            "color": "--24ce1e4d482",
+            "border": "1px solid --24ce1e4d482"
+          },
+          "name": "override",
+          "children": []
         }
       ],
       "metadata": {

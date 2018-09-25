@@ -17,8 +17,7 @@
         "font-family": "--22702c5f1086",
         "color": "grey",
         "position": "relative",
-        "width": "300px",
-        "left": "--d4703981180"
+        "width": "300px"
       },
       "attributes": {},
       "id": "67e386c762",
@@ -756,7 +755,7 @@
           "attributes": {},
           "style": {
             "box-sizing": "border-box",
-            "display": "block",
+            "display": "inline-block",
             "padding-left": "2px",
             "padding-top": "2px",
             "padding-right": "2px",
@@ -965,6 +964,20 @@
           "value": true,
           "name": "override",
           "children": []
+        },
+        {
+          "id": "c7da0a1d39133",
+          "label": "Element",
+          "is": "div",
+          "name": "element",
+          "attributes": {},
+          "style": {
+            "box-sizing": "border-box",
+            "display": "inline-flex",
+            "align-items": "center"
+          },
+          "children": [],
+          "metadata": {}
         }
       ],
       "metadata": {
@@ -1054,24 +1067,51 @@
       "variant": {}
     },
     {
-      "id": "d47039811301",
+      "id": "eb7a4eaa678",
+      "is": "eb7a4eaa513",
+      "name": "component-instance",
+      "attributes": {},
+      "style": {},
+      "children": [
+        {
+          "id": "eb7a4eaa1180",
+          "propertyName": "style",
+          "targetIdPath": [
+            "eb7a4eaa512"
+          ],
+          "value": {},
+          "name": "override",
+          "children": []
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": -99,
+          "top": 329,
+          "right": 1,
+          "bottom": 429
+        }
+      },
+      "variant": {}
+    },
+    {
       "label": "Element",
       "is": "div",
-      "name": "element",
-      "attributes": {},
       "style": {
         "box-sizing": "border-box",
         "display": "block"
       },
+      "attributes": {},
+      "id": "eb7a4eaa513",
+      "name": "component",
       "children": [
         {
-          "id": "d47039811463",
+          "id": "eb7a4eaa512",
           "name": "text",
           "label": "Text",
           "value": "Click to edit",
           "style": {
-            "position": "relative",
-            "left": "--d47039814708"
+            "font-size": "10px"
           },
           "children": [],
           "metadata": {}
@@ -1079,12 +1119,13 @@
       ],
       "metadata": {
         "bounds": {
-          "left": -283.43968132893315,
-          "top": 324.31096487422826,
-          "right": -183.43968132893315,
-          "bottom": 424.31096487422826
+          "left": -218.44327058778512,
+          "top": 333.31938325991194,
+          "right": -118.44327058778512,
+          "bottom": 433.31938325991194
         }
-      }
+      },
+      "variant": {}
     }
   ]
 }

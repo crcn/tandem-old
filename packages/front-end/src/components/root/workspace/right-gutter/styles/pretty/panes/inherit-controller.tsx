@@ -72,9 +72,12 @@ export default (Base: React.ComponentClass<BaseInheritProps>) => {
             ? -1
             : 1;
         })
-        .map(componentId => {
+        .map((componentId, i) => {
           return (
             <InheritItem
+              variant={cx({
+                alt: Boolean(i % 2)
+              })}
               key={componentId}
               onClick={onInheritItemClick}
               selected={selectedInheritItemComponentId === componentId}
