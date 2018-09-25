@@ -15,9 +15,16 @@ import {
   isSyntheticVisibleNodeResizable,
   SyntheticDocument,
   isSyntheticElement,
-  DependencyGraph
+  DependencyGraph,
+  getPCNodeModule,
+  isPCContentNode,
+  PCNode,
+  InspectorNode,
+  InspectorTreeNodeName,
+  PCVariant
 } from "paperclip";
 import { Dispatch } from "redux";
+import { ComputedStyleInfo, computeStyleInfo } from "../../state";
 
 export const DISPLAY_MENU_OPTIONS: DropdownMenuOption[] = [
   undefined,
@@ -87,9 +94,11 @@ const ALIGN_SELF_OPTIONS: DropdownMenuOption[] = [
 
 export type Props = {
   dispatch: Dispatch<any>;
-  selectedNodes: SyntheticVisibleNode[];
-  syntheticDocument: SyntheticDocument;
   graph: DependencyGraph;
+  selectedVariant: PCVariant;
+  rootInspectorNode: InspectorNode;
+  computedStyleInfo: ComputedStyleInfo;
+  selectedInspectorNodes: InspectorNode[];
 };
 
 export type InnerProps = {
@@ -109,30 +118,37 @@ export default (Base: React.ComponentClass<BaseLayoutProps>) =>
     };
 
     render() {
-      const { selectedNodes, graph, syntheticDocument, ...rest } = this.props;
+      const { computedStyleInfo, rootInspectorNode, selectedVariant, selectedInspectorNodes, graph, ...rest } = this.props;
       const { onPropertyChange, onPropertyChangeComplete } = this;
-      if (!selectedNodes) {
-        return null;
-      }
-      const node = selectedNodes[0];
-      const showMoveInputs = isSyntheticVisibleNodeMovable(node, graph);
-      const showSizeInputs = isSyntheticVisibleNodeResizable(node, graph);
+
+      // computeStyleInfo
+
+      const node = computedStyleInfo.sourceNodes[0];
+      const inspectorNode = selectedInspectorNodes[0];
+      const module = getPCNodeModule(node.id, graph);
+      
+      const showMoveInputs = isPCContentNode(node, graph) ||  /fixed|relative|absolute/.test(computedStyleInfo.style.position || "static"); 
+      const showSizeInputs = showMoveInputs || /block|inline-block|flex|inline-flex/.test(computedStyleInfo.style.display || "inline");
       const showParentFlexInputs =
-        node.style.display === "flex" || node.style.display === "inline-flex";
-      const parentNode: SyntheticVisibleNode = getParentTreeNode(
-        node.id,
-        syntheticDocument
-      );
+      computedStyleInfo.style.display === "flex" || computedStyleInfo.style.display === "inline-flex";
+      
+      let parentInspectorNode: InspectorNode;
+
+      do {
+        parentInspectorNode = getParentTreeNode(inspectorNode.id, rootInspectorNode);
+      } while(parentInspectorNode.name !== InspectorTreeNodeName.SOURCE_REP && (parentInspectorNode = getParentTreeNode(parentInspectorNode.id, rootInspectorNode)));
+
+      const parentComputedInfo = computeStyleInfo([parentInspectorNode], rootInspectorNode, selectedVariant, graph);
+
       const showChildFlexInputs =
-        isSyntheticElement(parentNode) &&
-        (parentNode.style.display === "flex" ||
-          parentNode.style.display === "inline-flex");
+        (parentComputedInfo.style.display === "flex" ||
+        parentComputedInfo.style.display === "inline-flex");
 
       return (
         <Base
           {...rest}
           displayInputProps={{
-            value: node.style.display,
+            value: computedStyleInfo.style.display,
             options: DISPLAY_MENU_OPTIONS,
             onChangeComplete: propertyChangeCallback(
               "display",
@@ -140,7 +156,7 @@ export default (Base: React.ComponentClass<BaseLayoutProps>) =>
             )
           }}
           positionInputProps={{
-            value: node.style.position,
+            value: computedStyleInfo.style.position,
             options: POSITION_MENU_OPTIONS,
             onChangeComplete: propertyChangeCallback(
               "position",
@@ -148,21 +164,21 @@ export default (Base: React.ComponentClass<BaseLayoutProps>) =>
             )
           }}
           leftInputProps={{
-            value: node.style.left,
+            value: computedStyleInfo.style.left,
             onChangeComplete: propertyChangeCallback(
               "left",
               onPropertyChangeComplete
             )
           }}
           topInputProps={{
-            value: node.style.top,
+            value: computedStyleInfo.style.top,
             onChangeComplete: propertyChangeCallback(
               "top",
               onPropertyChangeComplete
             )
           }}
           widthInputProps={{
-            value: node.style.width,
+            value: computedStyleInfo.style.width,
             onChange: propertyChangeCallback("width", onPropertyChange),
             onChangeComplete: propertyChangeCallback(
               "width",
@@ -170,7 +186,7 @@ export default (Base: React.ComponentClass<BaseLayoutProps>) =>
             )
           }}
           heightInputProps={{
-            value: node.style.height,
+            value: computedStyleInfo.style.height,
             onChange: propertyChangeCallback("height", onPropertyChange),
             onChangeComplete: propertyChangeCallback(
               "height",
@@ -188,7 +204,7 @@ export default (Base: React.ComponentClass<BaseLayoutProps>) =>
             }
           }}
           flexDirectionInputProps={{
-            value: node.style["flex-direction"],
+            value: computedStyleInfo.style["flex-direction"],
             options: FLEX_DIRECTION_OPTIONS,
             onChangeComplete: propertyChangeCallback(
               "flex-direction",
@@ -196,7 +212,7 @@ export default (Base: React.ComponentClass<BaseLayoutProps>) =>
             )
           }}
           flexWrapInputProps={{
-            value: node.style["flex-wrap"],
+            value: computedStyleInfo.style["flex-wrap"],
             options: FLEX_WRAP_OPTIONS,
             onChangeComplete: propertyChangeCallback(
               "flex-wrap",
@@ -204,7 +220,7 @@ export default (Base: React.ComponentClass<BaseLayoutProps>) =>
             )
           }}
           justifyContentInputProps={{
-            value: node.style["justify-content"],
+            value: computedStyleInfo.style["justify-content"],
             options: JUSTIFY_CONTENT_OPTIONS,
             onChangeComplete: propertyChangeCallback(
               "justify-content",
@@ -212,7 +228,7 @@ export default (Base: React.ComponentClass<BaseLayoutProps>) =>
             )
           }}
           alignItemsInputProps={{
-            value: node.style["align-items"],
+            value: computedStyleInfo.style["align-items"],
             options: ALIGN_ITEMS_OPTIONS,
             onChangeComplete: propertyChangeCallback(
               "align-items",
@@ -220,7 +236,7 @@ export default (Base: React.ComponentClass<BaseLayoutProps>) =>
             )
           }}
           alignContentInputProps={{
-            value: node.style["align-content"],
+            value: computedStyleInfo.style["align-content"],
             options: ALIGN_CONTENT_OPTIONS,
             onChangeComplete: propertyChangeCallback(
               "align-content",
@@ -228,7 +244,7 @@ export default (Base: React.ComponentClass<BaseLayoutProps>) =>
             )
           }}
           flexBasisInputProps={{
-            value: node.style["flex-basis"],
+            value: computedStyleInfo.style["flex-basis"],
             onChange: propertyChangeCallback("flex-basis", onPropertyChange),
             onChangeComplete: propertyChangeCallback(
               "flex-basis",
@@ -236,7 +252,7 @@ export default (Base: React.ComponentClass<BaseLayoutProps>) =>
             )
           }}
           flexGrowInputProps={{
-            value: node.style["flex-grow"],
+            value: computedStyleInfo.style["flex-grow"],
             onChange: propertyChangeCallback("flex-grow", onPropertyChange),
             onChangeComplete: propertyChangeCallback(
               "flex-grow",
@@ -244,7 +260,7 @@ export default (Base: React.ComponentClass<BaseLayoutProps>) =>
             )
           }}
           flexShrinkInputProps={{
-            value: node.style["flex-shrink"],
+            value: computedStyleInfo.style["flex-shrink"],
             onChange: propertyChangeCallback("flex-shrink", onPropertyChange),
             onChangeComplete: propertyChangeCallback(
               "flex-shrink",
@@ -252,7 +268,7 @@ export default (Base: React.ComponentClass<BaseLayoutProps>) =>
             )
           }}
           alignSelfInputProps={{
-            value: node.style["align-self"],
+            value: computedStyleInfo.style["align-self"],
             options: ALIGN_SELF_OPTIONS,
             onChangeComplete: propertyChangeCallback(
               "align-self",

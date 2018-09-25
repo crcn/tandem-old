@@ -748,7 +748,12 @@ export const filterPCNodes = (
   return found;
 };
 
-export const getPCNodeModule = (nodeId: string, graph: DependencyGraph) => {
+export const isPCContentNode = (node: PCNode, graph: DependencyGraph) => {
+  const module = getPCNodeModule(node.id, graph);
+  return module.children.some(child => child.id === node.id);
+}
+
+export const getPCNodeModule = (nodeId: string, graph: DependencyGraph): PCModule => {
   const dep = getPCNodeDependency(nodeId, graph);
   return dep && dep.content;
 };

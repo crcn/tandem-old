@@ -7,11 +7,12 @@ import { memoize } from "tandem-common";
 import { SyntheticElement, PCVariable } from "paperclip";
 import { Dispatch } from "redux";
 import { BaseBorderProps } from "./borders.pc";
+import { ComputedStyleInfo } from "../../state";
 
 export type Props = {
   globalVariables: PCVariable[];
-  selectedNodes: SyntheticElement[];
   dispatch: Dispatch;
+  computedStyleInfo: ComputedStyleInfo;
 };
 
 export default (Base: React.ComponentClass<BaseBorderProps>) =>
@@ -23,23 +24,22 @@ export default (Base: React.ComponentClass<BaseBorderProps>) =>
       this.props.dispatch(cssPropertyChangeCompleted(name, value));
     };
     render() {
-      const { selectedNodes, globalVariables } = this.props;
+      const { computedStyleInfo, globalVariables } = this.props;
       const { onPropertyChange, onPropertyChangeComplete } = this;
 
-      if (!selectedNodes) {
+      if (!computedStyleInfo) {
         return null;
       }
-      const selectedNode = selectedNodes[0];
       return (
         <Base
           borderStylingProps={{
             globalVariables,
-            selectedNode,
+            computedStyleInfo,
             onPropertyChange,
             onPropertyChangeComplete
           }}
           bottomLeftRadiusInputProps={{
-            value: selectedNode.style["border-bottom-left-radius"],
+            value: computedStyleInfo.style["border-bottom-left-radius"],
             onChange: propertyChangeCallback(
               "border-bottom-left-radius",
               onPropertyChange
@@ -50,7 +50,7 @@ export default (Base: React.ComponentClass<BaseBorderProps>) =>
             )
           }}
           bottomRightRadiusInputProps={{
-            value: selectedNode.style["border-bottom-right-radius"],
+            value: computedStyleInfo.style["border-bottom-right-radius"],
             onChange: propertyChangeCallback(
               "border-bottom-right-radius",
               onPropertyChange
@@ -61,7 +61,7 @@ export default (Base: React.ComponentClass<BaseBorderProps>) =>
             )
           }}
           topLeftRadiusInputProps={{
-            value: selectedNode.style["border-top-left-radius"],
+            value: computedStyleInfo.style["border-top-left-radius"],
             onChange: propertyChangeCallback(
               "border-top-left-radius",
               onPropertyChange
@@ -72,7 +72,7 @@ export default (Base: React.ComponentClass<BaseBorderProps>) =>
             )
           }}
           topRightRadiusInputProps={{
-            value: selectedNode.style["border-top-right-radius"],
+            value: computedStyleInfo.style["border-top-right-radius"],
             onChange: propertyChangeCallback(
               "border-top-right-radius",
               onPropertyChange

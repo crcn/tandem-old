@@ -10,13 +10,14 @@ import {
 import { BaseBoxShadowsProps } from "./box-shadows.pc";
 import { Dispatch } from "redux";
 import { SyntheticElement, PCVariable } from "paperclip";
+import { ComputedStyleInfo } from "../../state";
 
 export type Props = {
   inset?: Boolean;
   value?: string;
   globalVariables: PCVariable[];
   dispatch: Dispatch<any>;
-  selectedNodes: SyntheticElement[];
+  computedStyleInfo: ComputedStyleInfo;
 };
 
 export type InnerProps = {
@@ -42,10 +43,9 @@ export default (Base: React.ComponentClass<BaseBoxShadowsProps>) =>
     };
 
     onChange = (item, index) => {
-      const { selectedNodes, dispatch } = this.props;
-      const selectedNode = selectedNodes[0];
+      const { computedStyleInfo, dispatch } = this.props;
       const info = arraySplice(
-        parseBoxShadows(selectedNode.style["box-shadow"]),
+        parseBoxShadows(computedStyleInfo.style["box-shadow"]),
         index,
         1,
         item
@@ -53,10 +53,9 @@ export default (Base: React.ComponentClass<BaseBoxShadowsProps>) =>
       dispatch(cssPropertyChanged("box-shadow", stringifyBoxShadowInfo(info)));
     };
     onChangeComplete = (item, index) => {
-      const { selectedNodes, dispatch } = this.props;
-      const selectedNode = selectedNodes[0];
+      const { computedStyleInfo, dispatch } = this.props;
       const info = arraySplice(
-        parseBoxShadows(selectedNode.style["box-shadow"]),
+        parseBoxShadows(computedStyleInfo.style["box-shadow"]),
         index,
         1,
         item
@@ -66,10 +65,9 @@ export default (Base: React.ComponentClass<BaseBoxShadowsProps>) =>
       );
     };
     onAddButtonClick = () => {
-      const { selectedNodes, dispatch, inset } = this.props;
-      const selectedNode = selectedNodes[0];
+      const { computedStyleInfo, dispatch, inset } = this.props;
       const info: BoxShadowInfo[] = [
-        ...parseBoxShadows(selectedNode.style["box-shadow"]),
+        ...parseBoxShadows(computedStyleInfo.style["box-shadow"]),
         {
           inset: Boolean(inset),
           color: "rgba(0,0,0,1)",
@@ -85,13 +83,12 @@ export default (Base: React.ComponentClass<BaseBoxShadowsProps>) =>
     };
 
     onRemoveButtonClick = () => {
-      const { selectedNodes, dispatch } = this.props;
+      const { computedStyleInfo, dispatch } = this.props;
       const { selectedBoxShadowIndex } = this.state;
       const { setSelectedBoxShadowIndex } = this;
       console.log(selectedBoxShadowIndex);
-      const selectedNode = selectedNodes[0];
       const info = arraySplice(
-        parseBoxShadows(selectedNode.style["box-shadow"]),
+        parseBoxShadows(computedStyleInfo.style["box-shadow"]),
         selectedBoxShadowIndex,
         1
       );
@@ -110,7 +107,7 @@ export default (Base: React.ComponentClass<BaseBoxShadowsProps>) =>
     };
 
     render() {
-      const { globalVariables, selectedNodes, inset } = this.props;
+      const { globalVariables, computedStyleInfo, inset } = this.props;
       const { selectedBoxShadowIndex } = this.state;
       const {
         onChange,
@@ -120,12 +117,11 @@ export default (Base: React.ComponentClass<BaseBoxShadowsProps>) =>
         onRemoveButtonClick
       } = this;
 
-      if (!selectedNodes || selectedNodes.length === 0) {
+      if (!computedStyleInfo) {
         return null;
       }
 
-      const selectedNode = selectedNodes[0];
-      const boxShadowInfo = parseBoxShadows(selectedNode.style["box-shadow"]);
+      const boxShadowInfo = parseBoxShadows(computedStyleInfo.style["box-shadow"]);
       const hasSelectedShadow = selectedBoxShadowIndex != null;
 
       const items = boxShadowInfo

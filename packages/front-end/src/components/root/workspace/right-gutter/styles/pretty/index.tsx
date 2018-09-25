@@ -69,8 +69,10 @@ export default (Base: React.ComponentClass<BaseElementStylerProps>) =>
           }}
           layoutPaneProps={{
             dispatch,
-            selectedNodes,
-            syntheticDocument,
+            selectedVariant,
+            rootInspectorNode,
+            selectedInspectorNodes,
+            computedStyleInfo,
             graph
           }}
           typographyPaneProps={{
@@ -82,31 +84,31 @@ export default (Base: React.ComponentClass<BaseElementStylerProps>) =>
           }}
           opacityPaneProps={{
             dispatch,
-            selectedNodes
+            computedStyleInfo
           }}
           backgroundsPaneProps={{
             globalVariables,
             dispatch,
-            selectedNodes
+            computedStyleInfo
           }}
           spacingPaneProps={{
             dispatch,
-            selectedNodes
+            computedStyleInfo
           }}
           bordersPaneProps={{
             globalVariables,
             dispatch,
-            selectedNodes
+            computedStyleInfo
           }}
           outerShadowsPaneProps={{
             globalVariables,
             dispatch,
-            selectedNodes
+            computedStyleInfo
           }}
           innerShadowsPaneProps={{
             globalVariables,
             dispatch,
-            selectedNodes
+            computedStyleInfo
           }}
         />
       );

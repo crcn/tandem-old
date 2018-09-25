@@ -11,6 +11,7 @@ import { memoize } from "tandem-common";
 import { SyntheticVisibleNode, SyntheticElement } from "paperclip";
 import { BaseBoxModelProps } from "./spacing.pc";
 import { Dispatch } from "redux";
+import { ComputedStyleInfo } from "../../state";
 
 const BOX_SIZING_OPTIONS: DropdownMenuOption[] = [
   undefined,
@@ -20,7 +21,7 @@ const BOX_SIZING_OPTIONS: DropdownMenuOption[] = [
 
 export type Props = {
   dispatch: Dispatch<any>;
-  selectedNodes: SyntheticElement[];
+  computedStyleInfo: ComputedStyleInfo;
 };
 
 export default (Base: React.ComponentClass<BaseBoxModelProps>) =>
@@ -36,20 +37,19 @@ export default (Base: React.ComponentClass<BaseBoxModelProps>) =>
 
     render() {
       const { onPropertyChange, onPropertyChangeComplete } = this;
-      const { selectedNodes } = this.props;
-      const node: SyntheticVisibleNode = selectedNodes[0];
+      const { computedStyleInfo } = this.props;
       return (
         <Base
           boxSizingInputProps={{
             options: BOX_SIZING_OPTIONS,
-            value: node.style["box-sizing"],
+            value: computedStyleInfo.style["box-sizing"],
             onChangeComplete: propertyChangeCallback(
               "box-sizing",
               onPropertyChangeComplete
             )
           }}
           marginLeftInputProps={{
-            value: node.style["margin-left"],
+            value: computedStyleInfo.style["margin-left"],
             onChange: propertyChangeCallback("margin-left", onPropertyChange),
             onChangeComplete: propertyChangeCallback(
               "margin-left",
@@ -57,7 +57,7 @@ export default (Base: React.ComponentClass<BaseBoxModelProps>) =>
             )
           }}
           marginTopInputProps={{
-            value: node.style["margin-top"],
+            value: computedStyleInfo.style["margin-top"],
             onChange: propertyChangeCallback("margin-top", onPropertyChange),
             onChangeComplete: propertyChangeCallback(
               "margin-top",
@@ -65,7 +65,7 @@ export default (Base: React.ComponentClass<BaseBoxModelProps>) =>
             )
           }}
           marginRightInputProps={{
-            value: node.style["margin-right"],
+            value: computedStyleInfo.style["margin-right"],
             onChange: propertyChangeCallback("margin-right", onPropertyChange),
             onChangeComplete: propertyChangeCallback(
               "margin-right",
@@ -73,7 +73,7 @@ export default (Base: React.ComponentClass<BaseBoxModelProps>) =>
             )
           }}
           marginBottomInputProps={{
-            value: node.style["margin-bottom"],
+            value: computedStyleInfo.style["margin-bottom"],
             onChange: propertyChangeCallback("margin-bottom", onPropertyChange),
             onChangeComplete: propertyChangeCallback(
               "margin-bottom",
@@ -81,7 +81,7 @@ export default (Base: React.ComponentClass<BaseBoxModelProps>) =>
             )
           }}
           paddingLeftInputProps={{
-            value: node.style["padding-left"],
+            value: computedStyleInfo.style["padding-left"],
             onChange: propertyChangeCallback("padding-left", onPropertyChange),
             onChangeComplete: propertyChangeCallback(
               "padding-left",
@@ -89,7 +89,7 @@ export default (Base: React.ComponentClass<BaseBoxModelProps>) =>
             )
           }}
           paddingTopInputProps={{
-            value: node.style["padding-top"],
+            value: computedStyleInfo.style["padding-top"],
             onChange: propertyChangeCallback("padding-top", onPropertyChange),
             onChangeComplete: propertyChangeCallback(
               "padding-top",
@@ -97,7 +97,7 @@ export default (Base: React.ComponentClass<BaseBoxModelProps>) =>
             )
           }}
           paddingRightInputProps={{
-            value: node.style["padding-right"],
+            value: computedStyleInfo.style["padding-right"],
             onChange: propertyChangeCallback("padding-right", onPropertyChange),
             onChangeComplete: propertyChangeCallback(
               "padding-right",
@@ -105,7 +105,7 @@ export default (Base: React.ComponentClass<BaseBoxModelProps>) =>
             )
           }}
           paddingBottomInputProps={{
-            value: node.style["padding-bottom"],
+            value: computedStyleInfo.style["padding-bottom"],
             onChange: propertyChangeCallback(
               "padding-bottom",
               onPropertyChange

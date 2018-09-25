@@ -4,6 +4,7 @@ import { memoize } from "tandem-common";
 import { ButtonBarOption } from "../../../../../../inputs/button-bar/controller";
 import { BaseBorderStylesProps } from "./borders.pc";
 import { SyntheticElement, PCVariable } from "paperclip";
+import { ComputedStyleInfo } from "../../state";
 const {
   EmptySquareIcon,
   BordersIcon
@@ -27,9 +28,9 @@ const TOGGLE_OPTIONS: ButtonBarOption[] = [
 
 export type Props = {
   globalVariables: PCVariable[];
-  selectedNode: SyntheticElement;
   onPropertyChange: any;
   onPropertyChangeComplete: any;
+  computedStyleInfo: ComputedStyleInfo;
 };
 
 type State = {
@@ -40,13 +41,13 @@ export default (Base: React.ComponentClass<BaseBorderStylesProps>) =>
   class BorderStylesController extends React.PureComponent<Props, State> {
     constructor(props) {
       super(props);
-      const { selectedNode } = props;
+      const { computedStyleInfo } = props;
       this.state = {
         borderStyling:
-          selectedNode.style["border-left"] ||
-          selectedNode.style["border-right"] ||
-          selectedNode.style["border-top"] ||
-          selectedNode.style["border-bottom"]
+          computedStyleInfo.style["border-left"] ||
+          computedStyleInfo.style["border-right"] ||
+          computedStyleInfo.style["border-top"] ||
+          computedStyleInfo.style["border-bottom"]
             ? TOGGLE_OPTION.INDIVIDUAL
             : TOGGLE_OPTION.ALL
       };
@@ -63,7 +64,7 @@ export default (Base: React.ComponentClass<BaseBorderStylesProps>) =>
         globalVariables,
         onPropertyChange,
         onPropertyChangeComplete,
-        selectedNode,
+        computedStyleInfo,
         ...rest
       } = this.props;
       const { borderStyling } = this.state;
@@ -83,7 +84,7 @@ export default (Base: React.ComponentClass<BaseBorderStylesProps>) =>
           }}
           borderInputProps={{
             globalVariables,
-            value: selectedNode.style.border,
+            value: computedStyleInfo.style.border,
             onChange: propertyChangeCallback("border", onPropertyChange),
             onChangeComplete: propertyChangeCallback(
               "border",
@@ -92,7 +93,7 @@ export default (Base: React.ComponentClass<BaseBorderStylesProps>) =>
           }}
           borderLeftInputProps={{
             globalVariables,
-            value: selectedNode.style["border-left"],
+            value: computedStyleInfo.style["border-left"],
             onChange: propertyChangeCallback("border-left", onPropertyChange),
             onChangeComplete: propertyChangeCallback(
               "border-left",
@@ -101,7 +102,7 @@ export default (Base: React.ComponentClass<BaseBorderStylesProps>) =>
           }}
           borderRightInputProps={{
             globalVariables,
-            value: selectedNode.style["border-right"],
+            value: computedStyleInfo.style["border-right"],
             onChange: propertyChangeCallback("border-right", onPropertyChange),
             onChangeComplete: propertyChangeCallback(
               "border-right",
@@ -110,7 +111,7 @@ export default (Base: React.ComponentClass<BaseBorderStylesProps>) =>
           }}
           borderTopInputProps={{
             globalVariables,
-            value: selectedNode.style["border-top"],
+            value: computedStyleInfo.style["border-top"],
             onChange: propertyChangeCallback("border-top", onPropertyChange),
             onChangeComplete: propertyChangeCallback(
               "border-top",
@@ -119,7 +120,7 @@ export default (Base: React.ComponentClass<BaseBorderStylesProps>) =>
           }}
           borderBottomInputProps={{
             globalVariables,
-            value: selectedNode.style["border-bottom"],
+            value: computedStyleInfo.style["border-bottom"],
             onChange: propertyChangeCallback("border-bottom", onPropertyChange),
             onChangeComplete: propertyChangeCallback(
               "border-bottom",

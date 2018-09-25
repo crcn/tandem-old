@@ -1051,6 +1051,41 @@
         }
       },
       "variant": {}
+    },
+    {
+      "id": "45cd2b2b180",
+      "label": "Element",
+      "is": "div",
+      "name": "element",
+      "attributes": {},
+      "style": {
+        "box-sizing": "border-box",
+        "display": "flex",
+        "flex-direction": "column"
+      },
+      "children": [
+        {
+          "id": "6873f3c1181",
+          "label": "Element",
+          "is": "div",
+          "name": "element",
+          "attributes": {},
+          "style": {
+            "box-sizing": "border-box",
+            "display": "block"
+          },
+          "children": [],
+          "metadata": {}
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": -409.45652680084794,
+          "top": -925.300969976378,
+          "right": -309.45652680084794,
+          "bottom": -825.300969976378
+        }
+      }
     }
   ]
 }

@@ -2,9 +2,10 @@ IMMEDIATE:
 
 - performance
   - refreshInspectorPane takes 1s in some cases.
+    - calc OTs instead of refreshing pane (possibly re-usable with synthetic graph)
 
 - right gutter polish 
-  - use mapped style props
+  - auto-input text
   - UI for overrides
   - display inherited typography
 

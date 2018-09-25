@@ -6,10 +6,11 @@ import {
 import { Dispatch } from "redux";
 import { SyntheticElement } from "paperclip";
 import { BaseOpacityPaneProps } from "./opacity.pc";
+import { ComputedStyleInfo } from "../../state";
 
 export type Props = {
   dispatch: Dispatch<any>;
-  selectedNodes: SyntheticElement[];
+  computedStyleInfo: ComputedStyleInfo;
 };
 
 export default (Base: React.ComponentClass<BaseOpacityPaneProps>) =>
@@ -23,17 +24,13 @@ export default (Base: React.ComponentClass<BaseOpacityPaneProps>) =>
 
     render() {
       const { onChange, onChangeComplete } = this;
-      const { selectedNodes } = this.props;
-      if (!selectedNodes) {
-        return null;
-      }
-      const node = selectedNodes[0];
+      const { computedStyleInfo } = this.props;
       return (
         <Base
           sliderInputProps={{
             min: 0,
             max: 1,
-            value: node.style.opacity || 1,
+            value: Number(computedStyleInfo.style.opacity || 1),
             onChange,
             onChangeComplete
           }}

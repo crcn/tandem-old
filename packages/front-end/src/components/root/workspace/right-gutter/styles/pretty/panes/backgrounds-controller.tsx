@@ -8,13 +8,14 @@ import { Dispatch } from "redux";
 import { SyntheticElement, PCVariable } from "paperclip";
 import { BaseBackgroundsProps } from "./backgrounds.pc";
 import { BackgroundItem } from "./backgrounds.pc";
+import { ComputedStyleInfo } from "../../state";
 
 const DEFAULT_COLOR = "rgba(200, 200, 200, 1)";
 
 export type Props = {
   dispatch: Dispatch;
   globalVariables: PCVariable[];
-  selectedNodes: SyntheticElement[];
+  computedStyleInfo: ComputedStyleInfo;
 };
 
 type InnerProps = {
@@ -26,15 +27,13 @@ type InnerProps = {
 export default (Base: React.ComponentClass<BaseBackgroundsProps>) =>
   class BackgroundsController extends React.PureComponent<Props> {
     onChange = (item, index) => {
-      const node = this.props.selectedNodes[0];
-      const value = node.style.background;
+      const value = this.props.computedStyleInfo.style.background;
       this.props.dispatch(
         cssPropertyChanged("background", replaceBackground(value, item, index))
       );
     };
     onChangeComplete = (item, index) => {
-      const node = this.props.selectedNodes[0];
-      const value = node.style.background;
+      const value = this.props.computedStyleInfo.style.background;
       this.props.dispatch(
         cssPropertyChangeCompleted(
           "background",
@@ -43,8 +42,7 @@ export default (Base: React.ComponentClass<BaseBackgroundsProps>) =>
       );
     };
     onPlusButtonClick = () => {
-      const node = this.props.selectedNodes[0];
-      const value = node.style.background;
+      const value = this.props.computedStyleInfo.style.background;
       this.props.dispatch(
         cssPropertyChangeCompleted(
           "background",
@@ -53,11 +51,10 @@ export default (Base: React.ComponentClass<BaseBackgroundsProps>) =>
       );
     };
     render() {
-      const { selectedNodes, globalVariables } = this.props;
+      const { computedStyleInfo, globalVariables,  } = this.props;
       const { onChange, onChangeComplete, onPlusButtonClick } = this;
 
-      const node = selectedNodes[0];
-      const children = splitBackgrounds(node.style.background).map(
+      const children = splitBackgrounds(computedStyleInfo.style.background).map(
         (background, i) => {
           return (
             <BackgroundItem
