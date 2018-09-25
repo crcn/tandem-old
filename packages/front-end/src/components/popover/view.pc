@@ -5,6 +5,69 @@
   "name": "module",
   "children": [
     {
+      "id": "d3dca34c388",
+      "is": "9b7b527f175442",
+      "name": "component-instance",
+      "attributes": {},
+      "style": {
+        "font-family": "--22702c5f1086"
+      },
+      "children": [
+        {
+          "slotId": "c00d8561361",
+          "id": "d3dca34c813",
+          "children": [
+            {
+              "id": "d3dca34c812",
+              "name": "text",
+              "label": "Text",
+              "value": "button",
+              "style": {},
+              "children": [],
+              "metadata": {}
+            }
+          ],
+          "metadata": {},
+          "name": "plug"
+        },
+        {
+          "slotId": "e6638364254",
+          "id": "d3dca34c2830",
+          "children": [
+            {
+              "id": "d3dca34c2722",
+              "name": "text",
+              "label": "Text",
+              "value": "Click to edit",
+              "style": {},
+              "children": [],
+              "metadata": {
+                "bounds": {
+                  "left": 226,
+                  "top": 557.3606686878522,
+                  "right": 326,
+                  "bottom": 657.3606686878522
+                }
+              }
+            }
+          ],
+          "metadata": {},
+          "name": "plug"
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": 241,
+          "top": 554,
+          "right": 341,
+          "bottom": 654
+        }
+      },
+      "variant": {
+        "e691a1d98281": true
+      }
+    },
+    {
       "label": "Popover",
       "is": "div",
       "style": {},
@@ -129,6 +192,19 @@
           "isDefault": true,
           "children": [],
           "metadata": {}
+        },
+        {
+          "id": "d3dca34c4329",
+          "variantId": "e691a1d98281",
+          "propertyName": "style",
+          "targetIdPath": [
+            "ddec6a12139578"
+          ],
+          "value": {
+            "display": "block"
+          },
+          "name": "override",
+          "children": []
         }
       ],
       "metadata": {

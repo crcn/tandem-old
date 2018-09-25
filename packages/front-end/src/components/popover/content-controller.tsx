@@ -32,12 +32,12 @@ export default compose<any, Props>(
       setContainer = (container: HTMLDivElement) => {
         const { onShouldClose } = this.props;
         if (this._emptySpaceListener) {
-          document.body.removeEventListener("click", this._emptySpaceListener);
+          document.body.removeEventListener("mousedown", this._emptySpaceListener);
           document.removeEventListener("scroll", this._scrollListener, true);
         }
         if (container && onShouldClose) {
           document.body.addEventListener(
-            "click",
+            "mousedown",
             (this._emptySpaceListener = event => {
               if (!container.contains(event.target)) {
                 // beat onClick handler for dropdown button
@@ -78,6 +78,9 @@ export default compose<any, Props>(
   withState(`style`, `setStyle`, null),
   portal({
     didMount: ({ anchorRect, setStyle }) => portalMount => {
+      if (!portalMount || !portalMount.children[0] || !portalMount.children[0].children[0]) {
+        return;
+      }
       const newStyle = calcPortalStyle(
         anchorRect,
         calcInnerBounds(portalMount.children[0].children[0]

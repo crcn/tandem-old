@@ -27,6 +27,7 @@ import {
   ComputedStyleInfo,
   mapPCVariablesToColorSwatchOptions
 } from "../../state";
+import { mapVariablesToCSSVarDropdownOptions } from "./utils";
 const {
   TextLeftIcon,
   TextCenterIcon,
@@ -85,14 +86,7 @@ export type Props = {
   globalVariables: PCVariable[];
 };
 
-const mapVariablesToCSSVarDropdownOptions = (
-  variables: PCVariable[]
-): DropdownMenuOption[] =>
-  variables.map(variable => ({
-    value: `--${variable.id}`,
-    label: variable.label,
-    special: true
-  }));
+
 
 export default (Base: React.ComponentClass<BaseTypographProps>) =>
   class TypographyController extends React.PureComponent<Props> {

@@ -1126,20 +1126,21 @@
                       "id": "6b3dde2e30982",
                       "children": [
                         {
-                          "id": "6b3dde2e30981",
-                          "is": "7149f8199122",
+                          "id": "d3dca34c6641",
+                          "is": "2c83e997743",
                           "name": "component-instance",
                           "attributes": {},
                           "style": {},
                           "children": [],
                           "metadata": {
                             "bounds": {
-                              "left": 384,
-                              "top": 298,
-                              "right": 484,
-                              "bottom": 327.0358087589019
+                              "left": 535,
+                              "top": 296,
+                              "right": 742.9668420825287,
+                              "bottom": 396
                             }
                           },
+                          "variant": {},
                           "label": "left input"
                         }
                       ],

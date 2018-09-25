@@ -68,6 +68,7 @@ export default (Base: React.ComponentClass<BaseElementStylerProps>) =>
           }}
           layoutPaneProps={{
             dispatch,
+            globalVariables,
             selectedVariant,
             rootInspectorNode,
             selectedInspectorNodes,

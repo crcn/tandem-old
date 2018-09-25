@@ -93,6 +93,60 @@
       "type": "color",
       "children": [],
       "metadata": {}
+    },
+    {
+      "id": "d4703981180",
+      "name": "variable",
+      "value": "2px",
+      "label": "spacing 1",
+      "type": "unit",
+      "children": [],
+      "metadata": {}
+    },
+    {
+      "id": "d47039812112",
+      "name": "variable",
+      "value": "4px",
+      "label": "spacing 2",
+      "type": "unit",
+      "children": [],
+      "metadata": {}
+    },
+    {
+      "id": "d47039812599",
+      "name": "variable",
+      "value": "6px",
+      "label": "spacing 3",
+      "type": "unit",
+      "children": [],
+      "metadata": {}
+    },
+    {
+      "id": "d47039813248",
+      "name": "variable",
+      "value": "8px",
+      "label": "spacing 4",
+      "type": "unit",
+      "children": [],
+      "metadata": {}
+    },
+    {
+      "id": "d47039814221",
+      "name": "variable",
+      "value": "10px",
+      "label": "spacing 5",
+      "type": "unit",
+      "children": [],
+      "metadata": {}
+    },
+    {
+      "id": "d47039814708",
+      "name": "variable",
+      "value": "12px",
+      "label": "spacing 6",
+      "type": "unit",
+      "children": [],
+      "metadata": {}
     }
   ]
 }
