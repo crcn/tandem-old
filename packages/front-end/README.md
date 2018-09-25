@@ -4,6 +4,8 @@ REQUIRED BEFORE RELEASE:
 
 - ability to start new project
 - example project
+- website
+- icon
 - right pane polish
 
 
