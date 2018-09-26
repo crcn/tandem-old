@@ -15,7 +15,15 @@
     "build-front-end": "webpack",
     "clean": "rm -rf lib; rm -rf node_modules",
     "prepare": "npm run build",
-    "build-dist": "electron-packager . Tandem --out=dist --overwrite"
+    "build-dist": "electron-packager . Tandem --out=dist --overwrite --icon=assets/tandem.icns"
+  },
+  "build": {
+    "appId": "com.tandemcode.app",
+    "fileAssociations": [{
+      "ext": "tdproject",
+      "name": "Tandem Project",
+      "role": "Editor"
+    }]
   },
   "author": "",
   "license": "ISC",
