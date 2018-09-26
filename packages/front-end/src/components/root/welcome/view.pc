@@ -38,28 +38,20 @@
           },
           "children": [
             {
-              "id": "83e8944c9",
-              "is": "83e8944c4",
+              "id": "db85797e114",
+              "is": "9f364d2139415",
               "name": "component-instance",
               "attributes": {},
               "style": {
-                "box-sizing": "border-box",
-                "display": "inline-block",
-                "padding-left": "16px",
-                "padding-top": "8px",
-                "padding-right": "16px",
-                "text-align": "center",
-                "border-radius": "4px",
-                "background": "rgba(224, 224, 224, 1)",
-                "margin-right": "16px"
+                "margin-right": "8px"
               },
               "children": [
                 {
-                  "id": "83e8944c12",
+                  "id": "db85797e489",
                   "variantId": null,
                   "propertyName": "text",
                   "targetIdPath": [
-                    "83e8944c5"
+                    "9f364d2139650"
                   ],
                   "value": "Open project",
                   "name": "override",
@@ -68,36 +60,28 @@
               ],
               "metadata": {
                 "bounds": {
-                  "left": 1029.6472850476437,
-                  "top": 82.1850188166938,
-                  "right": 1129.6472850476437,
-                  "bottom": 182.1850188166938
+                  "left": 543,
+                  "top": 21,
+                  "right": 643,
+                  "bottom": 121
                 }
               },
-              "label": "Open project button"
+              "variant": {},
+              "label": "Open project Button"
             },
             {
-              "id": "83e8944c10",
-              "is": "83e8944c4",
+              "id": "db85797e57",
+              "is": "9f364d2139415",
               "name": "component-instance",
               "attributes": {},
-              "style": {
-                "box-sizing": "border-box",
-                "display": "inline-block",
-                "padding-left": "16px",
-                "padding-top": "8px",
-                "padding-right": "16px",
-                "text-align": "center",
-                "border-radius": "4px",
-                "background": "rgba(224, 224, 224, 1)"
-              },
+              "style": {},
               "children": [
                 {
-                  "id": "83e8944c13",
+                  "id": "db85797e236",
                   "variantId": null,
                   "propertyName": "text",
                   "targetIdPath": [
-                    "83e8944c5"
+                    "9f364d2139650"
                   ],
                   "value": "Create project",
                   "name": "override",
@@ -106,11 +90,14 @@
               ],
               "metadata": {
                 "bounds": {
-                  "left": 1029.6472850476437,
-                  "top": 82.1850188166938,
-                  "right": 1129.6472850476437,
-                  "bottom": 182.1850188166938
+                  "left": 543,
+                  "top": 21,
+                  "right": 643,
+                  "bottom": 121
                 }
+              },
+              "variant": {
+                "38b32d581121": true
               },
               "label": "Create project button"
             }
@@ -129,48 +116,6 @@
       "controllers": [
         "./controller.tsx"
       ],
-      "variant": {}
-    },
-    {
-      "label": "Welcome button",
-      "is": "div",
-      "style": {
-        "box-sizing": "border-box",
-        "display": "inline-block",
-        "padding-left": "16px",
-        "padding-top": "8px",
-        "padding-right": "16px",
-        "padding-bottom": "8px",
-        "cursor": "pointer",
-        "user-select": "none",
-        "text-align": "center",
-        "border-radius": "4px",
-        "background": "rgba(224, 224, 224, 1)"
-      },
-      "attributes": {},
-      "id": "83e8944c4",
-      "name": "component",
-      "children": [
-        {
-          "id": "83e8944c5",
-          "name": "text",
-          "label": "Text",
-          "value": "label",
-          "style": {
-            "font-family": "Avenir Next"
-          },
-          "children": [],
-          "metadata": {}
-        }
-      ],
-      "metadata": {
-        "bounds": {
-          "left": 1029.6472850476437,
-          "top": 82.1850188166938,
-          "right": 1129.6472850476437,
-          "bottom": 182.1850188166938
-        }
-      },
       "variant": {}
     }
   ]

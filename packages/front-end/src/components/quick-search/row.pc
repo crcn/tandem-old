@@ -16,6 +16,7 @@
         "padding": "4px 8px",
         "boxSizing": "border-box",
         "marginTop": "1px",
+        "user-select": "none",
         "cursor": "pointer",
         "vertical-align": "center",
         "display": "flex",
@@ -30,7 +31,8 @@
           "label": "label",
           "style": {
             "display": "inline-block",
-            "margin-right": "8px"
+            "margin-right": "8px",
+            "user-select": "none"
           },
           "container": "container5ab7d6b5",
           "attributes": {},
@@ -72,7 +74,8 @@
             "width": "100%",
             "white-space": "nowrap",
             "overflow": "hidden",
-            "text-overflow": "ellipsis"
+            "text-overflow": "ellipsis",
+            "user-select": "none"
           },
           "container": "container5ab7d6b5",
           "attributes": {},

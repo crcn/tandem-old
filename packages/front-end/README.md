@@ -3,11 +3,16 @@ CURRENT GOAL: Polish Tandem & put in
 REQUIRED BEFORE RELEASE:
 
 - history must be specific to file
+  - possibly breaking dependents - allow for instances to be created without components (show warning)
+- ability for instances to be created without components
 - prompt before closing tab
   - prompt API
 - example project
 - website
 - right pane polish
+- limit to 2 tabs when double clicking
+- quick search
+  - open file in new tab
 
 - Welcome screen
   - [ ] tutorial videos
