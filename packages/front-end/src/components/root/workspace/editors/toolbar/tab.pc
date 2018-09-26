@@ -60,7 +60,7 @@
           "targetIdPath": [],
           "value": {
             "font-family": "--22702c5f1086",
-            "background": "--d8f6340b1442",
+            "background": "--bc891e755312",
             "user-select": "none"
           },
           "name": "override",
