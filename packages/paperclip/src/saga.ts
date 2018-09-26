@@ -95,15 +95,27 @@ export const createPaperclipSaga = ({ createRuntime, getRuntimeVariants }: Paper
 
     let initedFrames = {};
 
-    function pruneInitedFrames(frames: KeyValue<boolean>, state: PCEditorState) {
-      const newInitedFrames = {};
-      for (const syntheticContentNodeId in frames) {
-        if (getPCNode(syntheticContentNodeId, state.graph), getSyntheticNodeById(syntheticContentNodeId, state.documents)) {
-          newInitedFrames[syntheticContentNodeId] = true;
-        }
-      }
-      return newInitedFrames;
-    }
+    // function pruneInitedFrames(frames: KeyValue<boolean>, state: PCEditorState) {
+    //   const newInitedFrames = {};
+    //   for (const syntheticContentNodeId in frames) {
+    //     if (getSyntheticNodeById(syntheticContentNodeId, state.documents)) {
+    //       newInitedFrames[syntheticContentNodeId] = true;
+    //     }
+    //   }
+    //   return newInitedFrames;
+    // }
+
+    // function* handleLoaded() {
+    //   while(1) {
+    //     yield take(PC_SOURCE_FILE_URIS_RECEIVED);
+    //     console.log("YIELD");
+    //     const state: PCEditorState = yield select();
+
+    //     // will happen for projects that are re-opened
+    //     initedFrames = pruneInitedFrames(initedFrames, state);
+    //     console.log("INITED", initedFrames);
+    //   }
+    // }
 
     function* nativeRenderer() {
       yield fork(function* captureFrameChanges() {
@@ -127,8 +139,6 @@ export const createPaperclipSaga = ({ createRuntime, getRuntimeVariants }: Paper
             if (!newDocument) {
               continue;
             }
-            // will happen for projects that are re-opened
-            initedFrames = pruneInitedFrames(initedFrames, state);
 
             const ots = diffs[uri] || EMPTY_ARRAY;
 
@@ -136,7 +146,9 @@ export const createPaperclipSaga = ({ createRuntime, getRuntimeVariants }: Paper
               newDocument,
               state.frames
             )) {
-              if (!initedFrames[newFrame.syntheticContentNodeId]) {
+
+              // container may not exist of project is reloaded
+              if (!initedFrames[newFrame.syntheticContentNodeId] || !newFrame.$container) {
                 initedFrames[newFrame.syntheticContentNodeId] = true;
                 yield spawn(initContainer, newFrame, state.graph);
               } else {
