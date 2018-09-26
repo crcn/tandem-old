@@ -38,6 +38,7 @@ import { shortcutsSaga } from "./menu";
 import * as fs from "fs";
 import * as fsa from "fs-extra";
 import * as path from "path";
+import { ConfirmCloseWindow } from "tandem-front-end";
 
 const DEFAULT_TD_PROJECT: TDProject = {
   scripts: {},
@@ -73,6 +74,7 @@ export function* rootSaga() {
   yield fork(initProjectDirectory);
   yield fork(handleOpenedWorkspaceDirectory);
   yield fork(handleAddControllerClick);
+  yield fork(handleChrome);
 }
 
 function* initProjectDirectory() {
@@ -178,6 +180,7 @@ function* openMainWindow() {
 function* previewServer() {
   yield take(TD_PROJECT_LOADED);
   const state: DesktopState = yield select();
+
   if (
     !state.tdProject ||
     !state.tdProject.scripts ||
@@ -253,6 +256,26 @@ function* handleCreateProject() {
     }
     yield put(tdProjectFilePicked(filePath));
   }
+}
+
+function* handleChrome() {
+ 
+  yield fork(function* handleCloseClick() {
+    while(1) {
+      const {unsaved, origin} = yield take("CHROME_CLOSE_BUTTON_CLICKED");
+      const sender: BrowserWindow = origin.sender;
+      if (!unsaved) {
+        yield put({ type: "CONFIRM_CLOSE_WINDOW", "@@public": true, closeWithoutSaving: true, cancel: false, save: false } as ConfirmCloseWindow);
+        continue;
+      }
+
+      const option = dialog.showMessageBox({
+        message: "Do you want to save changes?",
+        buttons: ["Save", "Cancel", "Don't save"]
+      });
+      yield put({ type: "CONFIRM_CLOSE_WINDOW", "@@public": true, closeWithoutSaving: option === 2, cancel: option === 1, save: option === 0 } as ConfirmCloseWindow);
+    }
+  });
 }
 
 function* handleOpenedWorkspaceDirectory() {

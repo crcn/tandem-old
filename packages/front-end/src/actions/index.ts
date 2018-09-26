@@ -118,6 +118,7 @@ export const COMPONENT_PICKER_ITEM_CLICK = "COMPONENT_PICKER_ITEM_CLICK";
 export const RESIZER_MOUSE_DOWN = "RESIZER_MOUSE_DOWN";
 export const RESIZER_START_DRGG = "RESIZER_START_DRGG";
 export const TD_PROJECT_LOADED = "TD_PROJECT_LOADED";
+export const CONFIRM_CLOSE_WINDOW = "CONFIRM_CLOSE_WINDOW";
 export const PROJECT_INFO_LOADED = "PROJECT_INFO_LOADED";
 export const SELECTOR_DOUBLE_CLICKED = "SELECTOR_DOUBLE_CLICKED";
 export const SHORTCUT_ZOOM_IN_KEY_DOWN = "SHORTCUT_ZOOM_IN_KEY_DOWN";
@@ -426,6 +427,13 @@ export type PromptCancelButtonClicked = {} & Action;
 
 export type TextValueChanged = {
   value: string;
+} & Action;
+
+export type ConfirmCloseWindow = {
+  type: string;
+  closeWithoutSaving: boolean;
+  cancel: boolean;
+  save: boolean;
 } & Action;
 
 export type ElementTypeChanged = {

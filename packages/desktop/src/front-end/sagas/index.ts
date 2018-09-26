@@ -42,7 +42,9 @@ import {
   CHROME_MAXIMIZE_BUTTON_CLICKED,
   CHROME_MINIMIZE_BUTTON_CLICKED,
   isUnsaved,
-  CONFIRM_SAVE_CHANGES
+  CONFIRM_SAVE_CHANGES,
+  CONFIRM_CLOSE_WINDOW,
+  ConfirmCloseWindow
 } from "tandem-front-end";
 import {
   findPaperclipSourceFiles,
@@ -369,28 +371,6 @@ function* chromeSaga() {
     }
   })
 
-  yield fork(function* handleCloseClick() {
-    while(1) {
-      yield take(CHROME_CLOSE_BUTTON_CLICKED);
-      yield call(maybeCloseWindow);
-    }
-  });
-
-  function* maybeCloseWindow() {
-    const cwindow = remote.BrowserWindow.getFocusedWindow();
-    const state: RootState = yield select();
-    if (isUnsaved(state)) {
-
-      // TODO - this needs to be three options
-      // if(!confirm("Do you want to save changes?")) {
-      //   return;
-      // }
-      // yield call(saveChanges);
-    }
-      
-    // TODO - confirm if unsaved files
-    cwindow.close();
-  }
 
   yield fork(function* handleMinimizeClick() {
     while(1) {
@@ -403,6 +383,22 @@ function* chromeSaga() {
     while(1) {
       yield take(CHROME_MAXIMIZE_BUTTON_CLICKED);
       remote.BrowserWindow.getFocusedWindow().setFullScreen(!remote.BrowserWindow.getFocusedWindow().isFullScreen());
+    }
+  })
+
+  yield fork(function* handleConfirmClose() {
+    while(1) {
+      const { save, cancel, closeWithoutSaving}: ConfirmCloseWindow = yield take(CONFIRM_CLOSE_WINDOW);
+      if (cancel) {
+        continue;
+      }
+      if (save) {
+        yield call(saveChanges);
+      }
+
+      if (save || closeWithoutSaving) {
+        window.close();
+      }
     }
   })
 }

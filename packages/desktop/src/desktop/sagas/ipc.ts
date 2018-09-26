@@ -13,11 +13,11 @@ function* actionSaga() {
   const chan = takeIPCEvents("message");
 
   while (1) {
-    const { arg: message } = yield take(chan);
+    const { arg: message, event } = yield take(chan);
     message["@@" + pid] = true;
     console.log("incomming IPC message:", message);
     yield spawn(function*() {
-      yield put(message);
+      yield put({...message, origin: event});
     });
   }
 }

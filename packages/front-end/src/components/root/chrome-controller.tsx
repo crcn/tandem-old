@@ -17,15 +17,16 @@ export default (Base: React.ComponentClass<BaseChromeProps>) => class ChromeCont
     this.props.dispatch({ type: CHROME_HEADER_MOUSE_DOWN });
   }
   onCloseClick = (event: React.MouseEvent<any>) => {
-    this.props.dispatch({ type: CHROME_CLOSE_BUTTON_CLICKED });
+    const {unsaved} = this.props;
+    this.props.dispatch({ type: CHROME_CLOSE_BUTTON_CLICKED, unsaved, "@@public": true });
     event.stopPropagation();
   }
   onMinimizeClick = (event: React.MouseEvent<any>) => {
-    this.props.dispatch({ type: CHROME_MINIMIZE_BUTTON_CLICKED });
+    this.props.dispatch({ type: CHROME_MINIMIZE_BUTTON_CLICKED, "@@public": true  });
     event.stopPropagation();
   }
   onMaximizeClick = (event: React.MouseEvent<any>) => {
-    this.props.dispatch({ type: CHROME_MAXIMIZE_BUTTON_CLICKED });
+    this.props.dispatch({ type: CHROME_MAXIMIZE_BUTTON_CLICKED, "@@public": true  });
     event.stopPropagation();
   }
   render() {

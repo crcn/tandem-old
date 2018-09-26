@@ -2,7 +2,9 @@ CURRENT GOAL: Polish Tandem & put in
 
 REQUIRED BEFORE RELEASE:
 
-- prompt before closing
+- history must be specific to file
+- prompt before closing tab
+  - prompt API
 - example project
 - website
 - right pane polish
