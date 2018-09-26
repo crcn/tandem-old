@@ -11,7 +11,7 @@ import { RightGutterTab } from "./tab.pc";
 import * as cx from "classnames";
 import { InspectorNode } from "paperclip";
 import { BaseRightGutterProps } from "./view.pc";
-import { RootState } from "../../../../state";
+import { RootState, getGlobalFileUri } from "../../../../state";
 import { Dispatch } from "redux";
 
 const getSelectedSyntheticNodes = memoize(
@@ -49,8 +49,8 @@ export default (Base: React.ComponentClass<BaseRightGutterProps>) =>
       this.setState({ ...this.state, currentTab: value });
     };
     render() {
-      const { root, dispatch, ...rest } = this.props;
-      const {globalFileUri} = root;
+      const { root, dispatch, ...rest } = this.props; 
+      const globalFileUri = root.projectInfo && getGlobalFileUri(root.projectInfo);
       const { currentTab } = this.state;
       const { setTab } = this;
       if (!root.selectedInspectorNodeIds.length) {

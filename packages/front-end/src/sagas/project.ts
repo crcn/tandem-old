@@ -9,6 +9,7 @@ import {
   OpenFilesItemClick,
   OPEN_FILE_ITEM_CLICKED,
   SHORTCUT_SAVE_KEY_DOWN,
+  TD_PROJECT_LOADED,
   savedFile,
   projectInfoLoaded,
   PROJECT_INFO_LOADED,
@@ -40,6 +41,7 @@ export function projectSaga({ loadProjectInfo, readDirectory }: ProjectSagaOptio
   return function*() {
     yield fork(init);
     yield fork(handleProjectLoaded);
+    yield fork(handleProjectInfoLoaded);
     yield fork(handleFileNavigatorItemClick);
   }
   
@@ -47,14 +49,21 @@ export function projectSaga({ loadProjectInfo, readDirectory }: ProjectSagaOptio
     yield put(projectInfoLoaded(yield call(loadProjectInfo)));
   }
 
-
   function* handleProjectLoaded() {
+    while(1) {
+      yield take(TD_PROJECT_LOADED);
+      yield call(init);
+    }
+  }
+
+
+  function* handleProjectInfoLoaded() {
     while(1) {
       yield take(PROJECT_INFO_LOADED);
       const { projectInfo }: RootState = yield select();
 
       // may not have loaded if tandem was opened without pointing to project
-      if (!projectInfo) {
+      if (!projectInfo || !projectInfo.config) {
         continue;
       }
       

@@ -147,7 +147,7 @@ export type ComputedDisplayInfo = {
 };
 
 export type Frame = {
-  contentNodeId: string;
+  syntheticContentNodeId: string;
   bounds: Bounds;
 
   // internal only
@@ -167,7 +167,7 @@ export const getFramesContentNodeIdMap = memoize(
   } => {
     const map = {};
     for (const frame of frames) {
-      map[frame.contentNodeId] = frame;
+      map[frame.syntheticContentNodeId] = frame;
     }
     return map;
   }
@@ -212,12 +212,12 @@ export const getSyntheticVisibleNodeFrame = memoize(
     frames.find(
       frame =>
         Boolean(frame.computed && frame.computed[syntheticNode.id]) ||
-        frame.contentNodeId === syntheticNode.id
+        frame.syntheticContentNodeId === syntheticNode.id
     )
 );
 export const getFrameByContentNodeId = memoize(
   (nodeId: string, frames: Frame[]) =>
-    frames.find(frame => frame.contentNodeId === nodeId)
+    frames.find(frame => frame.syntheticContentNodeId === nodeId)
 );
 
 export const getSyntheticVisibleNodeRelativeBounds = memoize(
@@ -238,7 +238,7 @@ export const getSyntheticVisibleNodeRelativeBounds = memoize(
 
 export const getFrameSyntheticNode = memoize(
   (frame: Frame, documents: SyntheticDocument[]) =>
-    getSyntheticNodeById(frame.contentNodeId, documents)
+    getSyntheticNodeById(frame.syntheticContentNodeId, documents)
 );
 
 export const getPCNodeClip = (
@@ -294,10 +294,10 @@ export const replaceDependency = <TState extends PCEditorState>(
 ) => updateDependencyGraph({ [dep.uri]: dep }, state);
 
 export const removeFrame = <TState extends PCEditorState>(
-  { contentNodeId }: Frame,
+  { syntheticContentNodeId }: Frame,
   state: TState
 ) => {
-  const frame = getFrameByContentNodeId(contentNodeId, state.frames);
+  const frame = getFrameByContentNodeId(syntheticContentNodeId, state.frames);
   if (frame == null) {
     throw new Error(`Frame does not exist`);
   }
@@ -377,19 +377,19 @@ export const updateSyntheticVisibleNode = <TState extends PCEditorState>(
 
 export const updateFramePosition = <TState extends PCEditorState>(
   position: Point,
-  { contentNodeId }: Frame,
+  { syntheticContentNodeId }: Frame,
   state: TState
 ) => {
-  const frame = getFrameByContentNodeId(contentNodeId, state.frames);
+  const frame = getFrameByContentNodeId(syntheticContentNodeId, state.frames);
   return updateFrameBounds(moveBounds(frame.bounds, position), frame, state);
 };
 
 export const updateFrame = <TState extends PCEditorState>(
   properties: Partial<Frame>,
-  { contentNodeId }: Frame,
+  { syntheticContentNodeId }: Frame,
   state: TState
 ) => {
-  const frame = getFrameByContentNodeId(contentNodeId, state.frames);
+  const frame = getFrameByContentNodeId(syntheticContentNodeId, state.frames);
   if (!frame) {
     throw new Error("frame does not exist");
   }
@@ -506,7 +506,7 @@ export const upsertFrames = <TState extends PCEditorState>(state: TState) => {
         );
       } else {
         frames.push({
-          contentNodeId: contentNode.id,
+          syntheticContentNodeId: contentNode.id,
 
           // todo add warning here that bounds do not exist when they should.
           bounds:

@@ -36,6 +36,8 @@ export default (Base: React.ComponentClass<BaseChromeProps>) => class ChromeCont
 
     if (projectInfo) {
       title = path.basename(projectInfo.path);
+    } else {
+      title = "Welcome";
     }
 
     return <Base {...rest} title={title} variant={cx({ unsaved })} headerProps={{

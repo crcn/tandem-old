@@ -1,3 +1,4 @@
+import * as path from "path";
 import {
   arraySplice,
   Directory,
@@ -27,7 +28,9 @@ import {
   findNestedNode,
   findTreeNodeParent,
   containsNestedTreeNodeById,
-  updateProperties
+  updateProperties,
+  addProtocol,
+  FILE_PROTOCOL
 } from "tandem-common";
 import {
   SyntheticVisibleNode,
@@ -100,7 +103,14 @@ export type ProjectConfig = {
   scripts?: {
     previewServer?: string;
   };
+
+  // relative path to main file
+  mainFilePath?: string;
+
+  // path to PC file where all global data is stored
+  globalFilePath?: string;
 } & PCConfig;
+
 export type ProjectInfo = {
   config: ProjectConfig;
   path: string;
@@ -241,7 +251,6 @@ export type RootState = {
   history: GraphHistory;
   showQuickSearch?: boolean;
   selectedComponentId?: string;
-  globalFileUri?: string;
   queuedScopeSelect?: {
     previousState: RootState;
     scope: SyntheticVisibleNode | SyntheticDocument;
@@ -528,6 +537,11 @@ const addHistory = (
     state
   );
 };
+
+export const getGlobalFileUri = (info: ProjectInfo) => {
+  const globalRelativeFilePath = info && info.config.globalFilePath || info.config.mainFilePath;
+  return globalRelativeFilePath && addProtocol(FILE_PROTOCOL, path.join(path.dirname(info.path), globalRelativeFilePath));
+}
 
 const getNextHistorySnapshot = (items: GraphHistoryItem[]) => {
   for (let i = items.length; i--; ) {
@@ -1253,7 +1267,7 @@ export const getActiveFrames = (root: RootState): Frame[] =>
     frame =>
       getActiveEditorWindow(root).activeFilePath ===
       getSyntheticDocumentDependencyUri(
-        getSyntheticVisibleNodeDocument(frame.contentNodeId, root.documents),
+        getSyntheticVisibleNodeDocument(frame.syntheticContentNodeId, root.documents),
         root.graph
       )
   );
@@ -1326,7 +1340,7 @@ export const getCanvasMouseTargetNodeIdFromPoint = (
 
   if (!frame) return null;
   const contentNode = getSyntheticNodeById(
-    frame.contentNodeId,
+    frame.syntheticContentNodeId,
     state.documents
   );
 

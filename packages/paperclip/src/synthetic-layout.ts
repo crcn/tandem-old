@@ -40,7 +40,7 @@ export const getRelativeParent = memoize(
   (node: SyntheticVisibleNode, document: SyntheticDocument, frame: Frame) => {
     return (
       findTreeNodeParent(node.id, document, isRelativeNode) ||
-      getNestedTreeNodeById(frame.contentNodeId, document)
+      getNestedTreeNodeById(frame.syntheticContentNodeId, document)
     );
   }
 );
@@ -70,7 +70,7 @@ export const getFixedSyntheticVisibleNodeStaticPosition = memoize(
     frame: Frame
   ): Point => {
     const position = getStyleProp(node, "position");
-    if (position === "fixed" || frame.contentNodeId === node.id) {
+    if (position === "fixed" || frame.syntheticContentNodeId === node.id) {
       return {
         left: 0,
         top: 0

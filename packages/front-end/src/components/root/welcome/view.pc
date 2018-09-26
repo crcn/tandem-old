@@ -11,7 +11,6 @@
         "box-sizing": "border-box",
         "display": "block",
         "flex-direction": "row",
-        "height": "100%",
         "width": "100%"
       },
       "attributes": {},

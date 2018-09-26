@@ -66,9 +66,9 @@ export const paperclipReducer = <
         state = {...(state as any), graph};
       }
 
-      state = {...(state as any), pcUris: uris };
+      state = {...(state as any), pcUris: uris } as TState;
 
-      return state;
+      return pruneDependencyGraph(state as any);
     }
     case PC_SYNTHETIC_FRAME_RENDERED: {
       const { frame, computed } = action as PCFrameRendered;
@@ -84,7 +84,7 @@ export const paperclipReducer = <
       const { uri, content, mimeType } = action as FSSandboxItemLoaded;
 
       // dependency graph can only load files that are within the scope of the project via PC_SOURCE_FILE_URIS_RECEIVED
-      if (mimeType !== PAPERCLIP_MIME_TYPE || state.pcUris.indexOf(uri) === -1) {
+      if (mimeType !== PAPERCLIP_MIME_TYPE) {
         return state;
       }
 
@@ -92,35 +92,47 @@ export const paperclipReducer = <
         { uri, content },
         state.graph
       );
+      
 
-      let fullyLoaded: boolean = true;
 
-      for (const uri of state.pcUris) {
-        if (!graph[uri]) {
-          fullyLoaded = false;
-        }
-      }
-
-      // prune old deps
-      if (fullyLoaded) {
-        let newGraph: DependencyGraph;
-        for (const uri in graph) {
-          if (state.pcUris.indexOf(uri) === -1) {
-            if (!newGraph) {
-              newGraph = {...graph};
-            }
-            console.log("DEL", uri);
-            delete newGraph[uri];
-          }
-        }
-
-        if (newGraph) {
-          graph = newGraph;
-        }
-      }
-
-      return { ...(state as any), graph };
+      return pruneDependencyGraph({ ...(state as any), graph });
     }
   }
+  return state;
+};
+
+
+const pruneDependencyGraph = <TState extends PCEditorState>(state: TState): TState => {
+  if (!state.pcUris) {
+    return state;
+  }
+
+  const {graph} = state;
+
+  let fullyLoaded: boolean = true;
+
+  for (const uri of state.pcUris) {
+    if (!graph[uri]) {
+      fullyLoaded = false;
+    }
+  }
+
+  // prune old deps
+  if (fullyLoaded) {
+    let newGraph: DependencyGraph;
+    for (const uri in graph) {
+      if (state.pcUris.indexOf(uri) === -1) {
+        if (!newGraph) {
+          newGraph = {...graph};
+        }
+        delete newGraph[uri];
+      }
+    }
+
+    if (newGraph) {
+      return {...(state as any), graph: newGraph} as TState;
+    }
+  }
+
   return state;
 };

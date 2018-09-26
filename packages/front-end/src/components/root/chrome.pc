@@ -269,6 +269,57 @@
       ]
     },
     {
+      "id": "1503b1927954",
+      "is": "8d443eb52140093",
+      "name": "component-instance",
+      "attributes": {},
+      "style": {},
+      "children": [
+        {
+          "slotId": "32ef79b7590",
+          "id": "1503b1927955",
+          "children": [
+            {
+              "id": "1503b192167864",
+              "is": "2b5298ab6",
+              "name": "component-instance",
+              "attributes": {},
+              "style": {},
+              "children": [],
+              "metadata": {},
+              "variant": {}
+            }
+          ],
+          "metadata": {},
+          "name": "plug"
+        },
+        {
+          "id": "1503b1927959",
+          "propertyName": "style",
+          "targetIdPath": [
+            "32ef79b725"
+          ],
+          "value": {
+            "padding-top": "12px",
+            "padding-bottom": "12px",
+            "font-weight": "400"
+          },
+          "name": "override",
+          "children": []
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": 1265,
+          "top": 1903,
+          "right": 3251.2998338659963,
+          "bottom": 2944.8391994102403
+        }
+      },
+      "variant": {},
+      "label": "Welcome Preview"
+    },
+    {
       "id": "8d443eb52162144",
       "is": "8d443eb52140093",
       "name": "component-instance",

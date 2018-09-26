@@ -103,7 +103,7 @@ function* handleProjectDirectory() {
 
 function* loadPCFiles() {
   const { projectInfo }: DesktopRootState = yield select();
-  if (!projectInfo) {
+  if (!projectInfo || !projectInfo.config) {
     return;
   }
 

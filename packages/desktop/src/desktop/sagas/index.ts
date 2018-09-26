@@ -13,7 +13,8 @@ import {
   // projectDirectoryLoaded,
   tdProjectFilePicked,
   TD_PROJECT_FILE_PICKED,
-  componentControllerPicked
+  componentControllerPicked,
+  NEW_PROJECT_MENU_ITEM_CLICKED
 } from "../actions";
 import { debounce } from "lodash";
 import * as chokidar from "chokidar";
@@ -22,23 +23,39 @@ import { ipcSaga, pid } from "./ipc";
 import * as getPort from "get-port";
 import * as qs from "querystring";
 import { spawn } from "child_process";
-import { walkPCRootDirectory } from "paperclip";
+import { walkPCRootDirectory, createPCModule, createPCComponent, PCVisibleNodeMetadataKey, createPCTextNode } from "paperclip";
 import { DesktopState, TDProject } from "../state";
 import {
   isPublicAction,
   convertFlatFilesToNested,
   createDirectory,
   addProtocol,
-  FILE_PROTOCOL
+  FILE_PROTOCOL,
+  EMPTY_ARRAY,
+  createBounds
 } from "tandem-common";
 import { shortcutsSaga } from "./menu";
 import * as fs from "fs";
+import * as fsa from "fs-extra";
 import * as path from "path";
 
 const DEFAULT_TD_PROJECT: TDProject = {
   scripts: {},
   rootDir: ".",
-  exclude: ["node_modules"]
+  exclude: ["node_modules"],
+  mainFilePath: "./src/main.pc"
+};
+
+const DEFAULT_TD_PROJECT_FILES = {
+  "./src/main.pc": () => {
+    return JSON.stringify(createPCModule([
+      createPCComponent("Application", null, null, null, [
+        createPCTextNode("App content")
+      ], {
+        [PCVisibleNodeMetadataKey.BOUNDS]: createBounds(0, 600, 0, 400)
+      })
+    ]), null, 2)
+  }
 };
 
 const DEFAULT_TD_PROJECT_NAME = "app.tdproject";
@@ -87,7 +104,7 @@ function* openMainWindow() {
   const withFrame = false;
 
   const mainWindow = new BrowserWindow({
-    width: 800,
+    width: 900,
     height: 600,
     frame: withFrame
   });
@@ -104,10 +121,6 @@ function* openMainWindow() {
 
   if (!withFrame) {
     query.customChrome = true;
-  }
-
-  if (state.tdProject.globalFilePath) {
-    query.globalFileUri = "file://" + path.join(path.dirname(state.tdProjectPath), state.tdProject.globalFilePath);
   }
 
   mainWindow.loadURL(
@@ -210,7 +223,7 @@ function* handleOpenProject() {
 
 function* handleCreateProject() {
   while (1) {
-    yield take(["CREATE_PROJECT_BUTTON_CLICKED"]);
+    yield take(["CREATE_PROJECT_BUTTON_CLICKED", NEW_PROJECT_MENU_ITEM_CLICKED]);
     const [directory] = dialog.showOpenDialog({
       title: "Choose project directory",
       properties: ["openDirectory"]
@@ -227,6 +240,16 @@ function* handleCreateProject() {
         JSON.stringify(DEFAULT_TD_PROJECT, null, 2),
         "utf8"
       );
+
+      for (const relativePath in DEFAULT_TD_PROJECT_FILES) {
+        const fullPath = path.join(directory, relativePath);
+        try {
+          fsa.mkdirpSync(path.dirname(fullPath));
+        } catch(e) {
+
+        }
+        fs.writeFileSync(fullPath, DEFAULT_TD_PROJECT_FILES[relativePath](), "utf8");
+      }
     }
     yield put(tdProjectFilePicked(filePath));
   }

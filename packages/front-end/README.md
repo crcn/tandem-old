@@ -2,11 +2,17 @@ CURRENT GOAL: Polish Tandem & put in
 
 REQUIRED BEFORE RELEASE:
 
-- ability to start new project
+- prompt before closing
 - example project
 - website
-- icon
 - right pane polish
+
+- Welcome screen
+  - [ ] tutorial videos
+  - [ ] documentation
+  - [ ] example projects
+
+- fix hotkeys
 
 
 NEXT:

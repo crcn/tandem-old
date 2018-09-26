@@ -43,7 +43,6 @@ setup<DesktopRootState>(
   selectedSyntheticNodeIds: [],
   hoveringInspectorNodeIds: [],
   customChrome: Boolean(query.customChrome),
-  globalFileUri: String(query.globalFileUri),
   selectedFileNodeIds: [],
   sourceNodeInspector: createRootInspectorNode(),
   selectedInspectorNodeIds: [],
@@ -69,7 +68,7 @@ function* openPreview(frame: Frame) {
   const state: RootState = yield select();
 
   const sourceNode = getSyntheticSourceNode(
-    getSyntheticNodeById(frame.contentNodeId, state.documents),
+    getSyntheticNodeById(frame.syntheticContentNodeId, state.documents),
     state.graph
   );
   const dep = getPCNodeDependency(sourceNode.id, state.graph);
@@ -85,11 +84,11 @@ function* openPreview(frame: Frame) {
 
 function* loadProjectInfo() {
   const chan = eventChannel((emit) => {
-    ipcRenderer.once("projectInfo", (event, arg) => emit(arg));
+    ipcRenderer.once("projectInfo", (event, arg) => emit({ ret: arg }));
     return () => {};
   });
   ipcRenderer.send("getProjectInfo");
-  return yield take(chan);
+  return (yield take(chan)).ret;
 }
 
 function* readDirectory(dirUri: string): any {

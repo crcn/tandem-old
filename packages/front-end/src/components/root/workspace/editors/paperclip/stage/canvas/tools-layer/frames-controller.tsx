@@ -50,16 +50,16 @@ export default (Base: React.ComponentClass<BaseFramesProps>) =>
         graph
       );
 
-      const frameComponents = activeFrames.map((frame, i) => {
+      const frameComponents = activeFrames.map((frame: Frame, i) => {
         const contentNode = getSyntheticNodeById(
-          frame.contentNodeId,
+          frame.syntheticContentNodeId,
           documents
         );
 
         const sourceNode = getSyntheticSourceNode(contentNode, graph);
         return (
           <FrameComponent
-            key={frame.contentNodeId}
+            key={frame.syntheticContentNodeId}
             sourceNode={sourceNode}
             frame={frame}
             contentNode={contentNode}

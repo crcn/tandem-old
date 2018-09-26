@@ -33,6 +33,7 @@ import {
 } from "./synthetic";
 import { PCRuntime, LocalRuntimeInfo } from "./runtime";
 import { fsCacheBusy } from "fsbox";
+import { getPCNode } from "./dsl";
 
 export type PaperclipSagaOptions = {
   createRuntime(): PCRuntime;
@@ -92,7 +93,17 @@ export const createPaperclipSaga = ({ createRuntime, getRuntimeVariants }: Paper
       }
     }
 
-    const initedFrames = {};
+    let initedFrames = {};
+
+    function pruneInitedFrames(frames: KeyValue<boolean>, state: PCEditorState) {
+      const newInitedFrames = {};
+      for (const syntheticContentNodeId in frames) {
+        if (getPCNode(syntheticContentNodeId, state.graph), getSyntheticNodeById(syntheticContentNodeId, state.documents)) {
+          newInitedFrames[syntheticContentNodeId] = true;
+        }
+      }
+      return newInitedFrames;
+    }
 
     function* nativeRenderer() {
       yield fork(function* captureFrameChanges() {
@@ -116,18 +127,21 @@ export const createPaperclipSaga = ({ createRuntime, getRuntimeVariants }: Paper
             if (!newDocument) {
               continue;
             }
+            // will happen for projects that are re-opened
+            initedFrames = pruneInitedFrames(initedFrames, state);
+
             const ots = diffs[uri] || EMPTY_ARRAY;
 
             for (const newFrame of getSyntheticDocumentFrames(
               newDocument,
               state.frames
             )) {
-              if (!initedFrames[newFrame.contentNodeId]) {
-                initedFrames[newFrame.contentNodeId] = true;
+              if (!initedFrames[newFrame.syntheticContentNodeId]) {
+                initedFrames[newFrame.syntheticContentNodeId] = true;
                 yield spawn(initContainer, newFrame, state.graph);
               } else {
                 const frameOts = mapContentNodeOperationalTransforms(
-                  newFrame.contentNodeId,
+                  newFrame.syntheticContentNodeId,
                   newDocument,
                   ots
                 );
@@ -135,7 +149,7 @@ export const createPaperclipSaga = ({ createRuntime, getRuntimeVariants }: Paper
                   prevState &&
                   prevState.frames.find(
                     oldFrame =>
-                      oldFrame.contentNodeId === newFrame.contentNodeId
+                      oldFrame.syntheticContentNodeId === newFrame.syntheticContentNodeId
                   );
 
                 // Equality check on bounds since that's the only prop needed for re-rendering the frame. Equality check
@@ -154,7 +168,7 @@ export const createPaperclipSaga = ({ createRuntime, getRuntimeVariants }: Paper
                   yield spawn(
                     patchContainer,
                     newFrame,
-                    getNestedTreeNodeById(newFrame.contentNodeId, oldDocument),
+                    getNestedTreeNodeById(newFrame.syntheticContentNodeId, oldDocument),
                     frameOts
                   );
                 }
@@ -170,12 +184,12 @@ export const createPaperclipSaga = ({ createRuntime, getRuntimeVariants }: Paper
     }
 
     const mapContentNodeOperationalTransforms = (
-      contentNodeId: string,
+      syntheticContentNodeId: string,
       document: SyntheticDocument,
       ots: TreeNodeOperationalTransform[]
     ) => {
       const index = document.children.findIndex(
-        child => child.id === contentNodeId
+        child => child.id === syntheticContentNodeId
       );
       return ots.filter(ot => ot.nodePath[0] === index).map(ot => ({
         ...ot,
@@ -222,7 +236,7 @@ export const createPaperclipSaga = ({ createRuntime, getRuntimeVariants }: Paper
         if (eventType === "load") {
           const state: PCEditorState = yield select();
           const contentNode = getSyntheticNodeById(
-            frame.contentNodeId,
+            frame.syntheticContentNodeId,
             state.documents
           );
           const graph = state.graph;
@@ -231,7 +245,7 @@ export const createPaperclipSaga = ({ createRuntime, getRuntimeVariants }: Paper
             pcFrameRendered(
               frame,
               computeDisplayInfo(
-                (frameNodeMap[frame.contentNodeId] = renderDOM(
+                (frameNodeMap[frame.syntheticContentNodeId] = renderDOM(
                   body,
                   contentNode
                 ))
@@ -260,17 +274,17 @@ export const createPaperclipSaga = ({ createRuntime, getRuntimeVariants }: Paper
         return;
       }
 
-      frameNodeMap[frame.contentNodeId] = patchDOM(
+      frameNodeMap[frame.syntheticContentNodeId] = patchDOM(
         ots,
         contentNode,
         body,
-        frameNodeMap[frame.contentNodeId]
+        frameNodeMap[frame.syntheticContentNodeId]
       );
 
       yield put(
         pcFrameRendered(
           frame,
-          computeDisplayInfo(frameNodeMap[frame.contentNodeId])
+          computeDisplayInfo(frameNodeMap[frame.syntheticContentNodeId])
         )
       );
 

@@ -28,8 +28,8 @@ export class PreviewLayerComponent extends React.PureComponent<
       <div className="m-preview-layer">
         {frames.map(frame => (
           <DocumentPreviewComponent
-            key={frame.contentNodeId}
-            contentNode={getSyntheticNodeById(frame.contentNodeId, documents)}
+            key={frame.syntheticContentNodeId}
+            contentNode={getSyntheticNodeById(frame.syntheticContentNodeId, documents)}
             frame={frame}
             dependency={dependency}
           />

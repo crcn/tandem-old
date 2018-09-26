@@ -9,7 +9,6 @@ init({
   selectedSyntheticNodeIds: [],
   hoveringInspectorNodeIds: [],
   selectedFileNodeIds: [],
-  globalFileUri: null,
   sourceNodeInspector: createRootInspectorNode(),
   selectedInspectorNodeIds: [],
   history: {

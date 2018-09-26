@@ -37,7 +37,7 @@ function* apiSaga() {
     while(1) {
       const {event} = yield take(chan);
       const state: DesktopState = yield select();
-      event.sender.send("projectInfo", { config: state.tdProject, path: state.tdProjectPath });
+      event.sender.send("projectInfo", state.tdProject && { config: state.tdProject, path: state.tdProjectPath });
     }
   })
 }

@@ -40,7 +40,7 @@ const createPreviewSaga = ({ openPreview }: FrontEndSagaOptions) => {
       const state: RootState = yield select();
 
       const sourceNode = getSyntheticSourceNode(
-        getSyntheticNodeById(frame.contentNodeId, state.documents),
+        getSyntheticNodeById(frame.syntheticContentNodeId, state.documents),
         state.graph
       );
       const dep = getPCNodeDependency(sourceNode.id, state.graph);

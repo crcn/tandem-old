@@ -82,13 +82,13 @@ class ArtboardOverlayTools extends React.PureComponent<
 > {
   onPanStart = event => {
     this.props.dispatch(
-      canvasToolOverlayMousePanStart(this.props.frame.contentNodeId)
+      canvasToolOverlayMousePanStart(this.props.frame.syntheticContentNodeId)
     );
   };
   onPan = event => {
     this.props.dispatch(
       canvasToolOverlayMousePanning(
-        this.props.frame.contentNodeId,
+        this.props.frame.syntheticContentNodeId,
         { left: event.center.x, top: event.center.y },
         event.deltaY,
         event.velocityY
@@ -99,7 +99,7 @@ class ArtboardOverlayTools extends React.PureComponent<
     event.preventDefault();
     setImmediate(() => {
       this.props.dispatch(
-        canvasToolOverlayMousePanEnd(this.props.frame.contentNodeId)
+        canvasToolOverlayMousePanEnd(this.props.frame.syntheticContentNodeId)
       );
     });
   };
@@ -143,7 +143,7 @@ class ArtboardOverlayTools extends React.PureComponent<
               dispatch,
               canvasToolOverlayMouseDoubleClicked.bind(
                 this,
-                frame.contentNodeId
+                frame.syntheticContentNodeId
               )
             )}
           >
@@ -152,7 +152,7 @@ class ArtboardOverlayTools extends React.PureComponent<
                 zoom={zoom}
                 key={nodeId}
                 bounds={
-                  frame.contentNodeId === nodeId
+                  frame.syntheticContentNodeId === nodeId
                     ? getDocumentRelativeBounds(frame)
                     : frame.computed[nodeId] && frame.computed[nodeId].bounds
                 }
@@ -177,7 +177,7 @@ const getHoveringSyntheticVisibleNodes = memoize(
       nodeId =>
         selectionRefIds.indexOf(nodeId) === -1 &&
         ((frame.computed && frame.computed[nodeId]) ||
-          frame.contentNodeId === nodeId)
+          frame.syntheticContentNodeId === nodeId)
     );
   }
 );
@@ -203,10 +203,10 @@ export class NodeOverlaysTool extends React.PureComponent<VisualToolsProps> {
 
     return (
       <div className="visual-tools-layer-component">
-        {activeFrames.map((frame, i) => {
+        {activeFrames.map((frame: Frame, i) => {
           return (
             <ArtboardOverlayTools
-              key={frame.contentNodeId}
+              key={frame.syntheticContentNodeId}
               frame={frame}
               hoveringSyntheticNodeIds={getHoveringSyntheticVisibleNodes(
                 hoveringSyntheticNodeIds,

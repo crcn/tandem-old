@@ -270,7 +270,8 @@ export const createPCComponent = (
   is?: string,
   style?: KeyValue<string>,
   attributes?: KeyValue<string>,
-  children?: PCComponentChild[]
+  children?: PCComponentChild[],
+  metadata?: any
 ): PCComponent => ({
   label,
   is: is || "div",

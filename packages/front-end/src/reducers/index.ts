@@ -207,7 +207,8 @@ import {
   refreshModuleInspectorNodes,
   teeHistory,
   pruneOpenFiles,
-  QuickSearchResultType
+  QuickSearchResultType,
+  getGlobalFileUri
 } from "../state";
 import {
   PCSourceTagNames,
@@ -349,6 +350,7 @@ import {
   inspectorNodeInShadow,
   getSyntheticInspectorNode
 } from "paperclip";
+import { instanceOf } from "prop-types";
 
 const ZOOM_SENSITIVITY = process.platform === "win32" ? 2500 : 250;
 const MIN_ZOOM = 0.02;
@@ -371,9 +373,26 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
     }
     case PROJECT_INFO_LOADED: {
       const { info: projectInfo } = action as ProjectInfoLoaded;
-      return updateRootState(
-        { projectInfo, ready: true }, state
-      )
+
+      state =  updateRootState(
+        { 
+          projectInfo, 
+          ready: true, 
+          openFiles: [], 
+          fileCache: {}, 
+          graph: {}, 
+          documents: [], 
+          frames: [],
+          editorWindows: []
+        }, state
+      );
+
+      if (projectInfo && projectInfo.config.mainFilePath) {
+        const fullMainFilePath = path.join(path.dirname(projectInfo.path), projectInfo.config.mainFilePath);
+        state = openFile(addProtocol(FILE_PROTOCOL, fullMainFilePath), true, false, state);
+      }
+
+      return state;
     }
     case FILE_NAVIGATOR_ITEM_CLICKED: {
       const { node } = action as FileNavigatorItemClicked;
@@ -992,7 +1011,7 @@ export const canvasReducer = (state: RootState, action: Action) => {
       );
       const frame = getSyntheticVisibleNodeFrame(node, state.frames);
       const contentNode = getSyntheticNodeById(
-        frame.contentNodeId,
+        frame.syntheticContentNodeId,
         state.documents
       );
       state = persistRootState(
@@ -1365,7 +1384,8 @@ export const canvasReducer = (state: RootState, action: Action) => {
 
     case ADD_VARIABLE_BUTTON_CLICKED: {
       const { variableType: type } = action as AddVariableButtonClicked;
-      const globalDependency = state.graph[state.globalFileUri];
+      const globalFileUri = getGlobalFileUri(state.projectInfo);
+      const globalDependency = state.graph[globalFileUri];
       state = persistRootState(state => {
         state = persistAddVariable(
           null,
@@ -1486,7 +1506,7 @@ export const canvasReducer = (state: RootState, action: Action) => {
       state = persistRootState(state => {
         return persistSyntheticNodeMetadata(
           { mode },
-          getSyntheticNodeById(frame.contentNodeId, state.documents),
+          getSyntheticNodeById(frame.syntheticContentNodeId, state.documents),
           state
         );
       }, state);
@@ -1728,7 +1748,7 @@ export const canvasReducer = (state: RootState, action: Action) => {
       );
       const frame = getSyntheticVisibleNodeFrame(node, state.frames);
       const contentNode = getSyntheticNodeById(
-        frame.contentNodeId,
+        frame.syntheticContentNodeId,
         state.documents
       );
       state = persistRootState(
@@ -1787,7 +1807,7 @@ export const canvasReducer = (state: RootState, action: Action) => {
         ).uri,
         state
       );
-      return handleArtboardSelectionFromAction(state, frame.contentNodeId);
+      return handleArtboardSelectionFromAction(state, frame.syntheticContentNodeId);
     }
     case CANVAS_TOOL_WINDOW_BACKGROUND_CLICKED: {
       return setSelectedSyntheticVisibleNodeIds(state);
