@@ -295,7 +295,8 @@ import {
   extendsComponent,
   getGlobalVariables,
   persistAddVariable,
-  PCVariableType
+  PCVariableType,
+  createRootInspectorNode
 } from "paperclip";
 import {
   roundBounds,
@@ -379,7 +380,9 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
           projectInfo, 
           ready: true, 
           openFiles: [], 
-          fileCache: {}, 
+          fileCache: {},
+          sourceNodeInspector: createRootInspectorNode(), 
+          projectDirectory: null,
           graph: {}, 
           documents: [], 
           frames: [],
