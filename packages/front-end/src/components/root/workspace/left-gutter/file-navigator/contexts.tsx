@@ -1,11 +1,14 @@
 import * as React from "react";
 import { Dispatch } from "redux";
 import { FSItemTagNames, Directory } from "tandem-common";
+import { NewFSItemInfo } from "./controller";
+
 export type FileNavigatorContextProps = {
-  addingFSItemDirectory: Directory;
+  newFileInfo: NewFSItemInfo;
   selectedFileNodeIds: string[];
   dispatch: Dispatch<any>;
   onNewFileChangeComplete: any;
+  onNewFileInputChange: any;
 };
 
 export const FileNavigatorContext = React.createContext<

@@ -17,6 +17,7 @@ import {
 } from "./contexts";
 import { DragSource, DropTarget } from "react-dnd";
 import { FocusComponent } from "../../../../focus";
+import { NewFSItemInfo } from "./controller";
 
 export type Props = {
   item: FSItem;
@@ -27,8 +28,9 @@ export type Props = {
 type ContextProps = {
   selected: boolean;
   dispatch: Dispatch<any>;
-  addingFSItemDirectory: Directory;
+  newFileInfo: NewFSItemInfo;
   onNewFileChangeComplete: any;
+  onNewFileInputChange: any;
 };
 
 type InnerProps = {
@@ -58,15 +60,17 @@ export default (Base: React.ComponentClass<BaseFileNavigatorLayerProps>) => {
         {
           selectedFileNodeIds,
           dispatch,
-          addingFSItemDirectory,
-          onNewFileChangeComplete
+          newFileInfo,
+          onNewFileChangeComplete,
+          onNewFileInputChange
         }
       ) => {
         return {
           selected: selectedFileNodeIds.indexOf(props.item.id) !== -1,
           dispatch,
-          addingFSItemDirectory,
-          onNewFileChangeComplete
+          newFileInfo,
+          onNewFileChangeComplete,
+          onNewFileInputChange
         };
       }
     ),
@@ -146,7 +150,8 @@ export default (Base: React.ComponentClass<BaseFileNavigatorLayerProps>) => {
             connectDragSource,
             connectDropTarget,
             canDrop,
-            addingFSItemDirectory,
+            newFileInfo,
+            onNewFileInputChange,
             onNewFileChangeComplete,
             ...rest
           } = this.props;
@@ -179,9 +184,9 @@ export default (Base: React.ComponentClass<BaseFileNavigatorLayerProps>) => {
 
           let newFileInput;
 
-          if (addingFSItemDirectory && item.uri == addingFSItemDirectory.uri) {
+          if (newFileInfo && item.uri == newFileInfo.directory.uri) {
             newFileInput = (
-              <NewFileInput onChangeComplete={onNewFileChangeComplete} />
+              <NewFileInput onChangeComplete={onNewFileChangeComplete} onChange={onNewFileInputChange} />
             );
           }
 
@@ -215,7 +220,7 @@ export default (Base: React.ComponentClass<BaseFileNavigatorLayerProps>) => {
                     editing,
                     expanded,
                     selected: selected && !draggingOver,
-                    blur: !!addingFSItemDirectory
+                    blur: Boolean(newFileInfo && newFileInfo.directory)
                   })}
                   label={editing ? "" : basename}
                 /></div>)}

@@ -6,6 +6,7 @@ import scrollIntoView from "scroll-into-view-if-needed";
 
 export type Props = {
   onChangeComplete: any;
+  onChange: any;
 } & BaseNewFileInputProps;
 
 export default (Base: React.ComponentClass<BaseNewFileInputProps>) =>
@@ -14,9 +15,14 @@ export default (Base: React.ComponentClass<BaseNewFileInputProps>) =>
       this.props.onChangeComplete(event.target.value);
     };
     onKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
-      if (event.key === "Enter") {
-        this.props.onChangeComplete((event.target as HTMLInputElement).value);
-      }
+      const target = event.target;
+      const key = event.key;
+      setTimeout(() => {
+        this.props.onChange((target as HTMLInputElement).value);
+        if (key === "Enter") {
+          this.props.onChangeComplete((target as HTMLInputElement).value);
+        }
+      });
     };
     componentDidMount() {
       const self = ReactDOM.findDOMNode(this) as HTMLDivElement;
@@ -26,7 +32,7 @@ export default (Base: React.ComponentClass<BaseNewFileInputProps>) =>
       });
     }
     render() {
-      const { onChangeComplete, ...rest } = this.props;
+      const { onChange, onChangeComplete, ...rest } = this.props;
       const { onBlur, onKeyDown } = this;
       return (
         <FocusComponent>

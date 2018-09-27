@@ -131,7 +131,6 @@ export type PCEditorState = {
   sourceNodeInspector: InspectorNode;
   inEdit?: boolean;
   documents: SyntheticDocument[];
-  pcUris?: string[];
 
   // key = frame id, value = evaluated frame
   frames: Frame[];

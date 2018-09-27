@@ -484,14 +484,11 @@ export const getInspectorNodeOverrides = memoize(
     );
     for (const override of inheritedOverrides) {
       const overrideModule = getPCNodeModule(override.id, graph);
-      if (
-        !override.variantId ||
-        (override.variantId == (variant && variant.id) &&
-          (last(override.targetIdPath) === inspectorNode.assocSourceNodeId ||
-            (override.targetIdPath.length === 0 &&
-              getParentTreeNode(override.id, overrideModule).id ===
-                sourceNode.id)))
-      ) {
+      const matchesVariant = !override.variantId || override.variantId == (variant && variant.id);
+      const overrideIsTarget = last(override.targetIdPath) === inspectorNode.assocSourceNodeId;
+      const overrideTargetIsParent = override.targetIdPath.length === 0 && getParentTreeNode(override.id, overrideModule).id === sourceNode.id;
+
+      if (matchesVariant && (overrideIsTarget || overrideTargetIsParent)) {
         overrides.push(override);
       }
     }

@@ -121,7 +121,14 @@
                   "label": "maximize button"
                 }
               ],
-              "metadata": {}
+              "metadata": {
+                "bounds": {
+                  "left": 179,
+                  "top": 74,
+                  "right": 579,
+                  "bottom": 374
+                }
+              }
             },
             {
               "id": "32ef79b7242",
@@ -171,7 +178,14 @@
               "metadata": {}
             }
           ],
-          "metadata": {}
+          "metadata": {
+            "bounds": {
+              "left": 107,
+              "top": 47,
+              "right": 507,
+              "bottom": 347
+            }
+          }
         },
         {
           "id": "32ef79b755",

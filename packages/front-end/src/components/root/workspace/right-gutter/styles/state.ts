@@ -15,7 +15,6 @@ import {
   PCVariableType
 } from "paperclip";
 import { memoize, getParentTreeNode, KeyValue } from "tandem-common";
-import { last } from "lodash";
 import { ColorSwatchOption } from "../../../../inputs/color/color-swatch-controller";
 
 export type ComputedStyleInfo = {

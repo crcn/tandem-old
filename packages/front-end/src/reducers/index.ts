@@ -682,10 +682,10 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
         path.dirname(uri),
         state.projectDirectory
       );
-
+      
       state = updateRootState(
         {
-          projectDirectory: updateNestedNode(
+          projectDirectory: updateFSItemAlts(updateNestedNode(
             directory,
             state.projectDirectory,
             dir => {
@@ -699,7 +699,7 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
                 ])
               };
             }
-          )
+          ))
         },
         state
       );

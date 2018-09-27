@@ -63,29 +63,71 @@
                       },
                       "children": [
                         {
-                          "id": "5a14767c291817",
-                          "is": "a6fd80837",
+                          "id": "9aafcac8899",
+                          "is": "50e32bec2591",
                           "name": "component-instance",
                           "attributes": {},
                           "style": {
-                            "display": "inline-block",
-                            "height": "1em",
-                            "position": "relative",
-                            "top": "-1px",
-                            "margin-right": "4px",
-                            "cursor": "pointer"
+                            "display": "inline-flex",
+                            "width": "12px"
                           },
-                          "children": [],
+                          "children": [
+                            {
+                              "slotId": "87568a7232485",
+                              "id": "9aafcac82782",
+                              "children": [
+                                {
+                                  "id": "5a14767c291817",
+                                  "is": "a6fd80837",
+                                  "name": "component-instance",
+                                  "attributes": {},
+                                  "style": {
+                                    "display": "inline-block",
+                                    "height": "1em",
+                                    "position": "relative",
+                                    "top": "-1px",
+                                    "margin-right": "4px",
+                                    "cursor": "pointer"
+                                  },
+                                  "children": [],
+                                  "metadata": {
+                                    "bounds": {
+                                      "left": -2548,
+                                      "top": 163,
+                                      "right": -2148,
+                                      "bottom": 463
+                                    }
+                                  },
+                                  "variant": {},
+                                  "label": "add file button"
+                                }
+                              ],
+                              "metadata": {},
+                              "name": "plug"
+                            },
+                            {
+                              "id": "784b91d3799",
+                              "propertyName": "style",
+                              "targetIdPath": [
+                                "806ffd0684"
+                              ],
+                              "value": {
+                                "width": "100px"
+                              },
+                              "name": "override",
+                              "children": []
+                            }
+                          ],
                           "metadata": {
                             "bounds": {
-                              "left": -2548,
-                              "top": 163,
-                              "right": -2148,
-                              "bottom": 463
+                              "left": 994,
+                              "top": 31,
+                              "right": 1195,
+                              "bottom": 273.2360321797467
                             }
                           },
                           "variant": {},
-                          "label": "add file button"
+                          "label": "add file dropdown"
                         },
                         {
                           "id": "5a14767c291818",
@@ -447,9 +489,9 @@
       "metadata": {
         "bounds": {
           "left": 574,
-          "top": 114,
+          "top": 115,
           "right": 896.3589710213191,
-          "bottom": 386.88545913149
+          "bottom": 387.88545913149
         }
       },
       "variant": {},
@@ -734,18 +776,18 @@
       "variant": {}
     },
     {
-      "label": "File Navigator layer container",
+      "label": "File navigator layer container",
       "is": "div",
       "style": {
         "box-sizing": "border-box",
         "display": "block"
       },
       "attributes": {},
-      "id": "e39b3ba41788",
+      "id": "b75388d71912",
       "name": "component",
       "children": [
         {
-          "id": "e39b3ba43527",
+          "id": "b75388d73795",
           "name": "variant",
           "label": "hovering",
           "isDefault": true,
@@ -753,8 +795,8 @@
           "metadata": {}
         },
         {
-          "id": "e39b3ba44397",
-          "variantId": "e39b3ba43527",
+          "id": "b75388d74737",
+          "variantId": "b75388d73795",
           "propertyName": "style",
           "targetIdPath": [],
           "value": {
@@ -766,10 +808,10 @@
       ],
       "metadata": {
         "bounds": {
-          "left": 996.0854145635885,
-          "top": 343.442729565745,
-          "right": 1096.0854145635885,
-          "bottom": 443.442729565745
+          "left": 984.0854145635885,
+          "top": 350.942729565745,
+          "right": 1084.0854145635885,
+          "bottom": 450.942729565745
         }
       },
       "variant": {}
