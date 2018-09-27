@@ -31,10 +31,6 @@ export const withPureInputHandlers = () => (
           key,
           target: { value: newValue }
         } = nativeEvent;
-
-        if (oldValue == newValue) {
-          return;
-        }
         if (onChange) {
           onChange(newValue || undefined);
         }

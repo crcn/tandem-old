@@ -1065,6 +1065,27 @@
         }
       },
       "variant": {}
+    },
+    {
+      "id": "81cad0fe183",
+      "label": "Element",
+      "is": "div",
+      "name": "element",
+      "attributes": {},
+      "style": {
+        "box-sizing": "border-box",
+        "display": "block",
+        "width": "100px"
+      },
+      "children": [],
+      "metadata": {
+        "bounds": {
+          "left": -217,
+          "top": 261,
+          "right": -117,
+          "bottom": 361
+        }
+      }
     }
   ]
 }
