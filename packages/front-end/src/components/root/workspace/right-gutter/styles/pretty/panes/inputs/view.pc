@@ -169,8 +169,29 @@
         "bounds": {
           "left": 783.484050288946,
           "top": 164.5285555122662,
-          "right": 883.484050288946,
+          "right": 1015.484050288946,
           "bottom": 193.56436427116807
+        }
+      },
+      "variant": {},
+      "controllers": [
+        "./style-value-controller.tsx"
+      ]
+    },
+    {
+      "label": "CSS Dropdown Input",
+      "is": "50e32bec2591",
+      "style": {},
+      "attributes": {},
+      "id": "d2bdce074664",
+      "name": "component",
+      "children": [],
+      "metadata": {
+        "bounds": {
+          "left": 779,
+          "top": 247,
+          "right": 980,
+          "bottom": 334.77512727534497
         }
       },
       "variant": {},
