@@ -1067,30 +1067,11 @@
       "variant": {}
     },
     {
-      "id": "d2bdce071902",
-      "is": "532bed64351",
-      "name": "component-instance",
-      "attributes": {},
-      "style": {
-        "display": "flex"
-      },
-      "children": [],
-      "metadata": {
-        "bounds": {
-          "left": 107,
-          "top": 254,
-          "right": 207,
-          "bottom": 354
-        }
-      },
-      "variant": {},
-      "label": "C"
-    },
-    {
       "label": "B",
       "is": "8f0efe1b836",
       "style": {
-        "display": "inline-block"
+        "display": "block",
+        "background": "rgba(41, 203, 136, 1)"
       },
       "attributes": {},
       "id": "532bed64351",
@@ -1098,10 +1079,10 @@
       "children": [],
       "metadata": {
         "bounds": {
-          "left": -23,
-          "top": 257,
-          "right": 77,
-          "bottom": 357
+          "left": -26,
+          "top": 258,
+          "right": 74,
+          "bottom": 358
         }
       },
       "variant": {}
@@ -1112,8 +1093,9 @@
       "style": {
         "box-sizing": "border-box",
         "width": "100px",
-        "background": "rgba(200, 200, 200, 1)",
-        "height": "100px"
+        "background": "rgba(203, 41, 41, 1)",
+        "height": "100px",
+        "display": "block"
       },
       "attributes": {},
       "id": "8f0efe1b836",
@@ -1141,11 +1123,33 @@
       "name": "component",
       "children": [
         {
-          "id": "d2bdce071036",
-          "is": "8f0efe1b836",
+          "id": "cc45b95d12288",
+          "is": "532bed64351",
           "name": "component-instance",
           "attributes": {},
-          "style": {},
+          "style": {
+            "display": "none"
+          },
+          "children": [],
+          "metadata": {
+            "bounds": {
+              "left": -16,
+              "top": 268,
+              "right": 84,
+              "bottom": 368
+            }
+          },
+          "variant": {}
+        },
+        {
+          "id": "d2bdce071036",
+          "is": "532bed64351",
+          "name": "component-instance",
+          "attributes": {},
+          "style": {
+            "font-size": "unset",
+            "display": "inline-block"
+          },
           "children": [],
           "metadata": {
             "bounds": {
@@ -1162,7 +1166,9 @@
           "is": "532bed64351",
           "name": "component-instance",
           "attributes": {},
-          "style": {},
+          "style": {
+            "display": "inline-block"
+          },
           "children": [],
           "metadata": {
             "bounds": {
@@ -1180,7 +1186,7 @@
           "left": -146,
           "top": 441,
           "right": 188.43401072106326,
-          "bottom": 614.1943291391555
+          "bottom": 765.0008043260395
         }
       },
       "variant": {}

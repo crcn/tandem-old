@@ -32,10 +32,17 @@ const SLOW_ACTION_INTERVAL = 10;
 // Dirty, but okay for now. Want to eventually display a prettyier message that reports diagnostics, but
 // that needs to happen _outside_ of the application's scope.
 
+let alerted = false;
+
 const onError = error => {
-  alert(
-    `An unknown error occured, please save changes and restart Tandem. Details:\n${error}`
-  );
+
+  // prevent blasted errors
+  if (!alerted) {
+    alerted = true;
+    alert(
+      `An unknown error occured, please save changes and restart Tandem. Details:\n${error}`
+    );
+  }
   console.error(error);
 };
 window.onerror = onError;

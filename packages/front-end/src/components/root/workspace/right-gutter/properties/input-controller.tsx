@@ -1,11 +1,11 @@
 import * as React from "react";
 import { attributeChanged } from "../../../../../actions";
-import { SyntheticElement } from "paperclip";
+import { SyntheticElement, PCComponent, PCElement, PCComponentInstanceElement } from "paperclip";
 import { Dispatch } from "redux";
 
 export type Props = {
   dispatch: Dispatch<any>;
-  selectedNodes: SyntheticElement[];
+  sourceNode: PCComponent | PCElement | PCComponentInstanceElement;
 };
 
 export default (Base: React.ComponentClass<any>) =>
@@ -14,16 +14,12 @@ export default (Base: React.ComponentClass<any>) =>
       this.props.dispatch(attributeChanged("placeholder", value));
     };
     render() {
-      const { selectedNodes } = this.props;
+      const { sourceNode } = this.props;
       const { onPlaceholderChange } = this;
-      if (!selectedNodes.length) {
-        return null;
-      }
-      const element = selectedNodes[0];
       return (
         <Base
           placeholderInputProps={{
-            value: element.attributes.placeholder,
+            value: sourceNode.attributes.placeholder,
             onChange: onPlaceholderChange
           }}
         />

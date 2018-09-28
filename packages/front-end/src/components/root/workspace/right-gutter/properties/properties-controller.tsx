@@ -4,7 +4,8 @@ import {
   PCSourceTagNames,
   getPCNode,
   DependencyGraph,
-  SyntheticElement
+  SyntheticElement,
+  PCVisibleNode
 } from "paperclip";
 import { BasePropertiesProps } from "./view.pc";
 import { InspectorNode } from "paperclip";
@@ -64,7 +65,8 @@ export default (Base: React.ComponentClass<BasePropertiesProps>) =>
             selectedNodes
           }}
           elementProps={{
-            selectedNodes,
+            sourceNode: sourceNode as PCVisibleNode,
+            graph,
             dispatch
           }}
         />

@@ -24,7 +24,7 @@ import {
   EMPTY_ARRAY,
   updateProperties
 } from "tandem-common";
-import { values, identity, uniq, last } from "lodash";
+import { values, identity, uniq, last, pickBy, isNull } from "lodash";
 import { DependencyGraph, Dependency } from "./graph";
 import {
   PCNode,
@@ -59,7 +59,8 @@ import {
   getPCNodeContentNode,
   PCModule,
   createPCVariable,
-  PCVariableType
+  PCVariableType,
+  isVoidTagName
 } from "./dsl";
 import {
   SyntheticVisibleNode,
@@ -997,15 +998,35 @@ export const persistChangeSyntheticTextNodeValue = <
 };
 
 export const persistChangeElementType = <TState extends PCEditorState>(
-  value: string,
-  node: SyntheticElement,
+  typeOrComponentId: string,
+  sourceNode: PCComponent | PCComponent | PCElement,
   state: TState
 ) => {
-  let sourceNode = getSyntheticSourceNode(node, state.graph) as PCElement;
-  sourceNode = {
-    ...sourceNode,
-    is: value
-  };
+  const maybeComponent = getPCNode(typeOrComponentId, state.graph);
+
+  if (maybeComponent || sourceNode.name === PCSourceTagNames.COMPONENT) {
+    sourceNode = {
+      ...sourceNode,
+      variant: EMPTY_OBJECT,
+      name: sourceNode.name === PCSourceTagNames.COMPONENT ? PCSourceTagNames.COMPONENT : PCSourceTagNames.COMPONENT_INSTANCE,
+      is: typeOrComponentId,
+
+      // obliterate children, slots, and overrides associated with previous component since we don't have
+      // an exact way to map slots and other stuff over to the new instance type. Might change later on though if we match labels.
+      // We _could_ also display "orphaned" plugs that may be re-targeted to slots
+      children: EMPTY_ARRAY
+    } as PCComponent;
+  } else {
+    sourceNode = {
+      ...sourceNode,
+      name: PCSourceTagNames.ELEMENT,
+      is: typeOrComponentId,
+
+      // only copy children over if the prevuous node was an element
+      children: sourceNode.name === PCSourceTagNames.ELEMENT && !isVoidTagName(typeOrComponentId) ? sourceNode.children : EMPTY_ARRAY
+    } as PCElement;
+  }
+
   state = replaceDependencyGraphPCNode(sourceNode, sourceNode, state);
   return state;
 };
@@ -1407,6 +1428,13 @@ export const persistRawCSSText = <TState extends PCEditorState>(
     state
   );
 
+
+const omitNull = (object: KeyValue<any>) => {
+  return pickBy(object, value => {
+    return value != null;
+  });
+};
+
 export const persistCSSProperty = <TState extends PCEditorState>(
   name: string,
   value: string,
@@ -1417,24 +1445,28 @@ export const persistCSSProperty = <TState extends PCEditorState>(
   if (value === "") {
     value = undefined;
   }
+
   const updatedNode = maybeOverride2(
     PCOverridablePropertyName.STYLE,
     { [name]: value },
     variant,
     (style, override) => {
       const prevStyle = (override && override.value) || EMPTY_OBJECT;
-      return overrideKeyValue(node.style, prevStyle, {
+
+      // note that we're omitting null since that kind of value may accidentally override parent props which
+      // doesn't transpile to actually overrides styles.
+      return overrideKeyValue(node.style, prevStyle, omitNull({
         ...prevStyle,
         ...style
-      });
+      }));
     },
     (sourceNode: PCVisibleNode) =>
       ({
         ...sourceNode,
-        style: {
+        style: omitNull({
           ...sourceNode.style,
           [name]: value
-        }
+        })
       } as PCVisibleNode)
   )(
     node.instancePath,

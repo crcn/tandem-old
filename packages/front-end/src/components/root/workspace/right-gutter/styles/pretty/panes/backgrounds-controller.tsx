@@ -82,5 +82,5 @@ const splitBackgrounds = value =>
 // TODO - validation here
 const replaceBackground = (oldValue, replacement, index) =>
   arraySplice(splitBackgrounds(oldValue), index, 1, replacement)
-    .filter(v => Boolean(v.trim()))
+    .filter(v => Boolean(v && v.trim()))
     .join(",") || undefined;

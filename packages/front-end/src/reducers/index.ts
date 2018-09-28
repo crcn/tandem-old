@@ -296,7 +296,8 @@ import {
   getGlobalVariables,
   persistAddVariable,
   PCVariableType,
-  createRootInspectorNode
+  createRootInspectorNode,
+  PCElement
 } from "paperclip";
 import {
   roundBounds,
@@ -1787,12 +1788,14 @@ export const canvasReducer = (state: RootState, action: Action) => {
     case ELEMENT_TYPE_CHANGED: {
       const { value } = action as ElementTypeChanged;
       state = persistRootState(state => {
+        const selectedNode = getSyntheticNodeById(
+          state.selectedSyntheticNodeIds[0],
+          state.documents
+        ) as SyntheticElement;
+        const sourceNode = getSyntheticSourceNode(selectedNode, state.graph) as PCElement;
         return persistChangeElementType(
           value,
-          getSyntheticNodeById(
-            state.selectedSyntheticNodeIds[0],
-            state.documents
-          ) as SyntheticElement,
+          sourceNode,
           state
         );
       }, state);

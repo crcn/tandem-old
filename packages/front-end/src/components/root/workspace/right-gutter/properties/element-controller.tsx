@@ -2,13 +2,22 @@ import * as React from "react";
 import {
   PCSourceTagNames,
   SyntheticVisibleNode,
-  SyntheticElement
+  SyntheticElement,
+  DependencyGraph,
+  getAllPCComponents,
+  PCComponent,
+  PCNode,
+  PCComponentInstanceElement,
+  PCElement,
+  getNativeComponentName,
+  PCTextNode
 } from "paperclip";
 import { elementTypeChanged } from "../../../../../actions";
-import { DropdownMenuOption } from "../../../../inputs/dropdown/controller";
+import { DropdownMenuOption, dropdownMenuOptionFromValue } from "../../../../inputs/dropdown/controller";
 import { BaseElementPropertiesProps } from "./view.pc";
 import { Dispatch } from "redux";
 import { InputProperties } from "./input.pc";
+import { memoize } from "tandem-common";
 
 const TYPE_MENU_OPTIONS: DropdownMenuOption[] = [
   "a",
@@ -116,11 +125,23 @@ const TYPE_MENU_OPTIONS: DropdownMenuOption[] = [
   "var",
   "video",
   "wbr"
-].map(value => ({ label: value, value }));
+].map(dropdownMenuOptionFromValue);
+
+const getComponentDropdownOptions = memoize((components: PCComponent[]): DropdownMenuOption[] => {
+  return components.map(component => ({
+    label: component.label,
+    value: component.id
+  }))
+});
+
+const getTypeMenuOptions = memoize((components: PCComponent[]) => {
+  return [...TYPE_MENU_OPTIONS, ...getComponentDropdownOptions(components)].sort((a, b) => a.label.toLowerCase() < b.label.toLowerCase() ? -1 : 1);
+});
 
 export type Props = {
+  sourceNode: PCElement | PCComponent | PCComponentInstanceElement | PCTextNode;
   dispatch: Dispatch<any>;
-  selectedNodes: SyntheticElement[];
+  graph: DependencyGraph;
 } & BaseElementPropertiesProps;
 
 export default (Base: React.ComponentClass<BaseElementPropertiesProps>) => {
@@ -130,23 +151,18 @@ export default (Base: React.ComponentClass<BaseElementPropertiesProps>) => {
     };
     render() {
       const { onTypeChange } = this;
-      const { selectedNodes, dispatch, ...rest } = this.props;
-      if (!selectedNodes.length) {
+      const { dispatch, sourceNode, graph, ...rest } = this.props;
+
+      if (!sourceNode || (sourceNode.name !== PCSourceTagNames.COMPONENT && sourceNode.name !== PCSourceTagNames.ELEMENT && sourceNode.name !== PCSourceTagNames.COMPONENT_INSTANCE)) {
         return null;
       }
-
-      const element = selectedNodes.find(
-        (node: SyntheticVisibleNode) => node.name !== PCSourceTagNames.TEXT
-      ) as SyntheticElement;
-
-      if (!element) {
-        return null;
-      }
+      const components = getAllPCComponents(graph);
+      const nativeName = getNativeComponentName(sourceNode, graph);
 
       let fieldChild;
-      if (element.name === "input") {
+      if (nativeName === "input") {
         fieldChild = (
-          <InputProperties dispatch={dispatch} selectedNodes={selectedNodes} />
+          <InputProperties dispatch={dispatch} sourceNode={sourceNode} />
         );
       }
 
@@ -155,8 +171,8 @@ export default (Base: React.ComponentClass<BaseElementPropertiesProps>) => {
           {...rest}
           fieldsProps={{ children: fieldChild || [] }}
           typeInputProps={{
-            value: element.name,
-            options: TYPE_MENU_OPTIONS,
+            value: sourceNode.is,
+            options: getTypeMenuOptions(components),
             onChange: onTypeChange
           }}
         />
