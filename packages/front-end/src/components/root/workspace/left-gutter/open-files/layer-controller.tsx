@@ -56,6 +56,7 @@ type InnerProps = {
   onLabelDoubleClick: () => any;
   onArrowButtonClick: () => any;
   onLabelInputKeyDown: () => any;
+  onLabelInputBlur: () => any;
   assocSourceNodeName: string;
 } & ContextProps &
   Props;
@@ -180,19 +181,25 @@ export default (Base: React.ComponentClass<BaseNodeLayerProps>) => {
             this.setState({ ...this.state, editingLabel: true });
           }
         };
-        onLabelInputKeyDown = event => {
+        onLabelInputKeyDown = (event) => {
           if (event.key === "Enter") {
-            const label = String((event.target as any).value || "").trim();
-            this.setState({ ...this.state, editingLabel: false });
-            this.props.dispatch(
-              sourceInspectorLayerLabelChanged(
-                this.props.inspectorNode,
-                label,
-                event
-              )
-            );
+            this.persistLabelChange(event);
           }
         };
+        onLabelInputBlur = (event) => {
+          this.persistLabelChange(event);
+        }
+        private persistLabelChange = (event) => {
+          const label = String((event.target as any).value || "").trim();
+          this.setState({ ...this.state, editingLabel: false });
+          this.props.dispatch(
+            sourceInspectorLayerLabelChanged(
+              this.props.inspectorNode,
+              label,
+              event
+            )
+          );
+        }
         componentDidMount() {
           this.makeVisible(this.props.isSelected);
         }
@@ -248,7 +255,8 @@ export default (Base: React.ComponentClass<BaseNodeLayerProps>) => {
             onLabelClick,
             onArrowButtonClick,
             onLabelDoubleClick,
-            onLabelInputKeyDown
+            onLabelInputKeyDown,
+            onLabelInputBlur
           } = this;
           return (
             <Base
@@ -256,6 +264,7 @@ export default (Base: React.ComponentClass<BaseNodeLayerProps>) => {
               onArrowButtonClick={onArrowButtonClick}
               onLabelDoubleClick={onLabelDoubleClick}
               onLabelInputKeyDown={onLabelInputKeyDown}
+              onLabelInputBlur={onLabelInputBlur}
               editingLabel={editingLabel}
               depth={depth}
               isSelected={isSelected}
@@ -285,6 +294,7 @@ export default (Base: React.ComponentClass<BaseNodeLayerProps>) => {
       onArrowButtonClick,
       onLabelDoubleClick,
       onLabelInputKeyDown,
+      onLabelInputBlur,
       connectDragSource,
       label,
       connectDropTarget,
@@ -331,7 +341,7 @@ export default (Base: React.ComponentClass<BaseNodeLayerProps>) => {
                   <Base
                     onClick={onLabelClick}
                     onDoubleClick={onLabelDoubleClick}
-                    labelInputProps={{ onKeyDown: onLabelInputKeyDown }}
+                    labelInputProps={{ onKeyDown: onLabelInputKeyDown, onBlur: onLabelInputBlur }}
                     variant={cx({
                       editingLabel: editingLabel,
                       header: isFile,

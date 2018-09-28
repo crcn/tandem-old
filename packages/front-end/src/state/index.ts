@@ -1353,14 +1353,15 @@ export const getCanvasMouseTargetNodeIdFromPoint = (
   const intersectingBounds: Bounds[] = [];
   const intersectingBoundsMap = new Map<Bounds, string>();
   const mouseFramePoint = { left: mouseX, top: mouseY };
-  for (const $id in computedInfo) {
-    const { bounds } = computedInfo[$id];
+  for (const id in computedInfo) {
+    const { bounds } = computedInfo[id];
     if (
       pointIntersectsBounds(mouseFramePoint, bounds) &&
-      (!filter || filter(getNestedTreeNodeById($id, contentNode)))
+      (!filter || filter(getNestedTreeNodeById(id, contentNode)))
     ) {
-      intersectingBounds.push(bounds);
-      intersectingBoundsMap.set(bounds, $id);
+
+      intersectingBounds.unshift(bounds);
+      intersectingBoundsMap.set(bounds, id);
     }
   }
 
