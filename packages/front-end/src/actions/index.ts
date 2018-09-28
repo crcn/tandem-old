@@ -120,7 +120,6 @@ export const RESIZER_START_DRGG = "RESIZER_START_DRGG";
 export const TD_PROJECT_LOADED = "TD_PROJECT_LOADED";
 export const CONFIRM_CLOSE_WINDOW = "CONFIRM_CLOSE_WINDOW";
 export const PROJECT_INFO_LOADED = "PROJECT_INFO_LOADED";
-export const SELECTOR_DOUBLE_CLICKED = "SELECTOR_DOUBLE_CLICKED";
 export const SHORTCUT_ZOOM_IN_KEY_DOWN = "SHORTCUT_ZOOM_IN_KEY_DOWN";
 export const SHORTCUT_ZOOM_OUT_KEY_DOWN = "SHORTCUT_ZOOM_OUT_KEY_DOWN";
 export const SHORTCUT_ESCAPE_KEY_DOWN = "SHORTCUT_ESCAPE_KEY_DOWN";
@@ -1265,13 +1264,4 @@ export const resizerStartDrag = (
 ): ResizerMouseDown => ({
   sourceEvent,
   type: RESIZER_START_DRGG
-});
-
-export const selectorDoubleClicked = (
-  nodeId: string,
-  sourceEvent: React.MouseEvent<any>
-): SelectorDoubleClicked => ({
-  nodeId,
-  type: SELECTOR_DOUBLE_CLICKED,
-  sourceEvent
 });

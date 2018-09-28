@@ -1327,6 +1327,9 @@ export const canvasReducer = (state: RootState, action: Action) => {
       return handleCanvasMouseClicked(state, action as CanvasToolOverlayClicked);
     }
     case CANVAS_MOUSE_DOUBLE_CLICKED: {
+
+      // looped in since there may be nested shadows
+
       const targetNodeId = getCanvasMouseTargetNodeId(
         state,
         action as CanvasToolOverlayMouseMoved
@@ -1342,14 +1345,29 @@ export const canvasReducer = (state: RootState, action: Action) => {
       if (sourceNode.name === PCSourceTagNames.COMPONENT_INSTANCE) {
         const document = getSyntheticVisibleNodeDocument(syntheticNode.id, state.documents);        
         const inspectorNode = getSyntheticInspectorNode(syntheticNode, document, state.sourceNodeInspector, state.graph);
-        const inspectorShadowNode = getInspectorInstanceShadow(inspectorNode);
-        state = {
-          ...state,
-          selectedShadowInspectorNodeId: inspectorShadowNode.id
-        };
+        
+        let currentInstance = inspectorNode;
 
-        state = handleCanvasMouseClicked(state, action as CanvasToolOverlayClicked);
-      }
+        // break past nested shadows
+        while(currentInstance) {
+          const inspectorShadowNode = getInspectorInstanceShadow(currentInstance);
+          if (!inspectorShadowNode) {
+            break;
+          }
+          state = {
+            ...state,
+            selectedShadowInspectorNodeId: inspectorShadowNode.id
+          };
+
+          state = handleCanvasMouseClicked(state, action as CanvasToolOverlayClicked);
+
+          if (state.selectedSyntheticNodeIds.length && state.selectedSyntheticNodeIds[0] !== syntheticNode.id) {
+            break;
+          }
+
+          currentInstance = inspectorShadowNode;
+        }
+      } 
 
       return state;
     }

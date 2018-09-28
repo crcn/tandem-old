@@ -74,7 +74,8 @@ import {
   getModifiedDependencies,
   PCConfig,
   inspectorNodeInShadow,
-  getInspectorContentNodeContainingChild
+  getInspectorContentNodeContainingChild,
+  getInspectorNodeParentShadow
 } from "paperclip";
 import {
   CanvasToolOverlayMouseMoved,
@@ -1369,8 +1370,21 @@ export const getCanvasMouseTargetNodeIdFromPoint = (
       const inspectorNode = getSyntheticInspectorNode(syntheticNode, document, state.sourceNodeInspector, state.graph);
       const contentNode = getInspectorContentNodeContainingChild(inspectorNode, state.sourceNodeInspector) || inspectorNode;
 
-      if (inspectorNodeInShadow(inspectorNode, contentNode) && !(state.selectedShadowInspectorNodeId && containsNestedTreeNodeById(inspectorNode.id, getNestedTreeNodeById(state.selectedShadowInspectorNodeId, state.sourceNodeInspector)))) {
-        continue;
+      if (inspectorNodeInShadow(inspectorNode, contentNode)) {
+        if (state.selectedShadowInspectorNodeId) {
+          const selectedShadowInspectorNode = getNestedTreeNodeById(state.selectedShadowInspectorNodeId, state.sourceNodeInspector);
+          const inspectorParentShadow = getInspectorNodeParentShadow(inspectorNode, state.sourceNodeInspector);
+          
+          const inspectorNodeWithinSelectedShadow = containsNestedTreeNodeById(inspectorNode.id, selectedShadowInspectorNode) && selectedShadowInspectorNode.id === inspectorParentShadow.id;
+          const selectedShadowWithinInspectorParentShadow = containsNestedTreeNodeById(selectedShadowInspectorNode.id, inspectorParentShadow);
+          // console.log(inspectorNodeWithinSelectedShadow, containsNestedTreeNodeById(inspectorNode.id, selectedShadowInspectorNode), inspectorNode, getParentTreeNode(inspectorNode.id, state.sourceNodeInspector), inspectorParentShadow, selectedShadowInspectorNode);
+          if (!inspectorNodeWithinSelectedShadow && !selectedShadowWithinInspectorParentShadow) {
+            continue;
+          }
+          
+        } else {
+          continue;
+        }
       }
 
       intersectingBounds.unshift(bounds);

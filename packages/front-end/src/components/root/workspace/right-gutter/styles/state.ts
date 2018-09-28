@@ -43,7 +43,6 @@ export const computeStyleInfo = memoize(
     const sourceNodes: (PCVisibleNode | PCComponent)[] = [];
     const styleOverridesMap: KeyValue<PCStyleOverride[]> = {};
 
-
     for (const inspectorNode of selectedInspectorNodes) {
       const sourceNode = getPCNode(
         inspectorNode.assocSourceNodeId,

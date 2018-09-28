@@ -120,7 +120,7 @@
                       "children": [
                         {
                           "id": "574872ad1",
-                          "is": "7149f8199122",
+                          "is": "a329dd6d16879",
                           "name": "component-instance",
                           "attributes": {},
                           "style": {},
@@ -133,7 +133,8 @@
                               "bottom": 327.0358087589019
                             }
                           },
-                          "label": "bottom left radius input"
+                          "label": "bottom left radius input",
+                          "variant": {}
                         }
                       ],
                       "metadata": {},
@@ -215,7 +216,7 @@
                       "children": [
                         {
                           "id": "574872ad2",
-                          "is": "7149f8199122",
+                          "is": "a329dd6d16879",
                           "name": "component-instance",
                           "attributes": {},
                           "style": {},
@@ -228,7 +229,8 @@
                               "bottom": 327.0358087589019
                             }
                           },
-                          "label": "top left radius input"
+                          "label": "top left radius input",
+                          "variant": {}
                         }
                       ],
                       "metadata": {},
@@ -317,7 +319,7 @@
                       "children": [
                         {
                           "id": "574872ad3",
-                          "is": "7149f8199122",
+                          "is": "a329dd6d16879",
                           "name": "component-instance",
                           "attributes": {},
                           "style": {},
@@ -330,7 +332,8 @@
                               "bottom": 327.0358087589019
                             }
                           },
-                          "label": "top right radius input"
+                          "label": "top right radius input",
+                          "variant": {}
                         }
                       ],
                       "metadata": {},
@@ -411,7 +414,7 @@
                       "children": [
                         {
                           "id": "574872ad4",
-                          "is": "7149f8199122",
+                          "is": "a329dd6d16879",
                           "name": "component-instance",
                           "attributes": {},
                           "style": {},
@@ -424,7 +427,8 @@
                               "bottom": 327.0358087589019
                             }
                           },
-                          "label": "bottom right radius input"
+                          "label": "bottom right radius input",
+                          "variant": {}
                         }
                       ],
                       "metadata": {},

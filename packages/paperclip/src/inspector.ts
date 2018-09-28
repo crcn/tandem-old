@@ -449,8 +449,7 @@ export const expandSyntheticInspectorNode = (
   return updateAlts(rootInspectorNode);
 };
 
-export const getInheritedOverridesOverrides = memoize(
-  (
+export const getInheritedOverridesOverrides = (
     inspectorNode: InspectorNode,
     rootInspectorNode: InspectorNode,
     graph: DependencyGraph
@@ -459,13 +458,10 @@ export const getInheritedOverridesOverrides = memoize(
     let overrides: PCOverride[] = getOverrides(sourceNode);
     const parent = getParentTreeNode(inspectorNode.id, rootInspectorNode);
     if (parent && parent.assocSourceNodeId) {
-      overrides.push(
-        ...getInheritedOverridesOverrides(parent, rootInspectorNode, graph)
-      );
+      overrides = [...overrides, ...getInheritedOverridesOverrides(parent, rootInspectorNode, graph)];
     }
     return overrides;
   }
-);
 
 // TODO - move to paperclip
 export const getInspectorNodeOverrides = memoize(
@@ -542,6 +538,18 @@ export const getInspectorInstanceShadowContentNode = (inspectorNode: InspectorNo
   const shadow = getInspectorInstanceShadow(inspectorNode);
   return shadow && shadow.children[0];
 };
+
+export const getInspectorNodeParentShadow = memoize((inspectorNode: InspectorNode, root: InspectorNode) => {
+  let current: InspectorNode = inspectorNode;
+  while(current) {
+    const parent = getParentTreeNode(current.id, root) as InspectorNode;
+    if (parent.name === InspectorTreeNodeName.SHADOW) {
+      return parent;
+    }
+    current = parent;
+  }
+  return null;
+});
 
 export const getSyntheticInspectorNode = memoize(
   (

@@ -9,7 +9,6 @@ import {
   getSelectionBounds,
   Canvas
 } from "../../../../../../../../../state";
-import { selectorDoubleClicked } from "../../../../../../../../../actions";
 import {
   getSyntheticVisibleNodeFrame,
   getSyntheticNodeById,
@@ -89,7 +88,7 @@ export class SelectionCanvasTool extends React.PureComponent<
       graph
     );
     if (selection.length === 1) {
-      dispatch(selectorDoubleClicked(selection[0], event));
+      // dispatch(selectorDoubleClicked(selection[0], event));
     }
   };
   render() {
