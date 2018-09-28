@@ -6,7 +6,9 @@ import {
   InspectorNode,
   SyntheticDocument,
   PCVariant,
-  PCVariable
+  PCVariable,
+  getSyntheticSourceNode,
+  PCVisibleNode
 } from "paperclip";
 import { BaseElementStylerProps } from "./view.pc";
 import { Dispatch } from "redux";
@@ -46,9 +48,14 @@ export default (Base: React.ComponentClass<BaseElementStylerProps>) =>
         rootInspectorNode,
         ...rest
       } = this.props;
+      const selectedNode = (selectedNodes.length ? getSyntheticSourceNode(selectedNodes[0], graph) : null) as PCVisibleNode;
       return (
         <Base
           {...rest}
+          framePaneProps={{
+            selectedNode,
+            graph
+          }}
           instancePaneProps={{
             selectedInspectorNodes,
             rootInspectorNode,
