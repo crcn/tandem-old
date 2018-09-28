@@ -1,6 +1,6 @@
 {
   "name": "paperclip-linter",
-  "version": "1.0.0",
+  "version": "10.0.25",
   "description": "TODOS:   - config to turn linting features on or off   - check when colors are not from global space",
   "main": "index.js",
   "scripts": {
