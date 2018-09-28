@@ -72,7 +72,9 @@ import {
   Dependency,
   DependencyGraph,
   getModifiedDependencies,
-  PCConfig
+  PCConfig,
+  inspectorNodeInShadow,
+  getInspectorContentNodeContainingChild
 } from "paperclip";
 import {
   CanvasToolOverlayMouseMoved,
@@ -227,6 +229,7 @@ export type RootState = {
   prevGraph?: DependencyGraph;
   showSidebar?: boolean;
   customChrome: boolean;
+  selectedShadowInspectorNodeId?: string;
   
   // TODO - may need to be moved to EditorWindow
   selectedVariant?: PCVariant;
@@ -1360,6 +1363,16 @@ export const getCanvasMouseTargetNodeIdFromPoint = (
       (!filter || filter(getNestedTreeNodeById(id, contentNode)))
     ) {
 
+      // TODO - whitelisted shadow node
+      const syntheticNode = getSyntheticNodeById(id, state.documents);
+      const document = getSyntheticVisibleNodeDocument(id, state.documents);
+      const inspectorNode = getSyntheticInspectorNode(syntheticNode, document, state.sourceNodeInspector, state.graph);
+      const contentNode = getInspectorContentNodeContainingChild(inspectorNode, state.sourceNodeInspector) || inspectorNode;
+
+      if (inspectorNodeInShadow(inspectorNode, contentNode) && !(state.selectedShadowInspectorNodeId && containsNestedTreeNodeById(inspectorNode.id, getNestedTreeNodeById(state.selectedShadowInspectorNodeId, state.sourceNodeInspector)))) {
+        continue;
+      }
+
       intersectingBounds.unshift(bounds);
       intersectingBoundsMap.set(bounds, id);
     }
@@ -1428,7 +1441,10 @@ export const setSelectedSyntheticVisibleNodeIds = (
 
   root = updateRootState(
     {
-      selectedInspectorNodeIds: assocInspectorNodes.map(node => node.id)
+      selectedInspectorNodeIds: assocInspectorNodes.map(node => node.id),
+
+      // deselect shadow inspector node if no selected inspector nodes are within the selected shadow node
+      selectedShadowInspectorNodeId: root.selectedShadowInspectorNodeId ? assocInspectorNodes.some(node => containsNestedTreeNodeById(node.id, getNestedTreeNodeById(root.selectedShadowInspectorNodeId, root.sourceNodeInspector))) ? root.selectedShadowInspectorNodeId : null : null
     },
     root
   );

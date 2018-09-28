@@ -534,6 +534,15 @@ export const getInspectorContentNodeContainingChild = memoize(
   }
 );
 
+export const getInspectorInstanceShadow = memoize((inspectorNode: InspectorNode) => {
+  return inspectorNode.children[0];
+});
+
+export const getInspectorInstanceShadowContentNode = (inspectorNode: InspectorNode) => {
+  const shadow = getInspectorInstanceShadow(inspectorNode);
+  return shadow && shadow.children[0];
+};
+
 export const getSyntheticInspectorNode = memoize(
   (
     node: SyntheticNode,

@@ -297,7 +297,9 @@ import {
   persistAddVariable,
   PCVariableType,
   createRootInspectorNode,
-  PCElement
+  PCElement,
+  getInspectorInstanceShadowContentNode,
+  getInspectorInstanceShadow
 } from "paperclip";
 import {
   roundBounds,
@@ -1322,63 +1324,7 @@ export const canvasReducer = (state: RootState, action: Action) => {
     }
 
     case CANVAS_MOUSE_CLICKED: {
-      if (state.toolType != null) {
-        return state;
-      }
-
-      state = deselectRootProjectFiles(state);
-
-      const { sourceEvent } = action as CanvasToolOverlayClicked;
-      if (/textarea|input/i.test((sourceEvent.target as Element).nodeName)) {
-        return state;
-      }
-
-      // alt key opens up a new link
-      const altKey = sourceEvent.altKey;
-
-      const editorWindow = getActiveEditorWindow(state);
-      const openFile = getOpenFile(
-        editorWindow.activeFilePath,
-        state.openFiles
-      );
-
-      // do not allow selection while window is panning (scrolling)
-      if (openFile.canvas.panning || editorWindow.movingOrResizing) {
-        return state;
-      }
-
-
-      const targetNodeId = getCanvasMouseTargetNodeId(
-        state,
-        action as CanvasToolOverlayMouseMoved
-      );
-
-      // meta key
-      if (targetNodeId && sourceEvent.metaKey) {
-        state = openSyntheticVisibleNodeOriginFile(
-          getSyntheticNodeById(targetNodeId, state.documents),
-          state
-        );
-        return state;
-      }
-
-      if (!targetNodeId) {
-        return setSelectedSyntheticVisibleNodeIds(state);
-      }
-
-      if (!altKey) {
-        state = handleArtboardSelectionFromAction(state, targetNodeId);
-        state = updateEditorWindow(
-          {
-            secondarySelection: false
-          },
-          editorWindow.activeFilePath,
-          state
-        );
-
-        return state;
-      }
-      return state;
+      return handleCanvasMouseClicked(state, action as CanvasToolOverlayClicked);
     }
     case CANVAS_MOUSE_DOUBLE_CLICKED: {
       const targetNodeId = getCanvasMouseTargetNodeId(
@@ -1390,10 +1336,21 @@ export const canvasReducer = (state: RootState, action: Action) => {
         return state;
       }
 
-      state = openSyntheticVisibleNodeOriginFile(
-        getSyntheticNodeById(targetNodeId, state.documents),
-        state
-      );
+      const syntheticNode = getSyntheticNodeById(targetNodeId, state.documents);
+      const sourceNode = getSyntheticSourceNode(syntheticNode, state.graph);
+
+      if (sourceNode.name === PCSourceTagNames.COMPONENT_INSTANCE) {
+        const document = getSyntheticVisibleNodeDocument(syntheticNode.id, state.documents);        
+        const inspectorNode = getSyntheticInspectorNode(syntheticNode, document, state.sourceNodeInspector, state.graph);
+        const inspectorShadowNode = getInspectorInstanceShadow(inspectorNode);
+        state = {
+          ...state,
+          selectedShadowInspectorNodeId: inspectorShadowNode.id
+        };
+
+        state = handleCanvasMouseClicked(state, action as CanvasToolOverlayClicked);
+      }
+
       return state;
     }
 
@@ -1907,6 +1864,65 @@ const isJavaScriptFile = (file: string) => /(ts|js)x?$/.test(file);
 
 const INSERT_ARTBOARD_WIDTH = 100;
 const INSERT_ARTBOARD_HEIGHT = 100;
+
+const handleCanvasMouseClicked = (state: RootState, action: CanvasToolOverlayClicked) => {
+  if (state.toolType != null) {
+    return state;
+  }
+
+  state = deselectRootProjectFiles(state);
+  const {sourceEvent} = action;
+
+  if (/textarea|input/i.test((sourceEvent.target as Element).nodeName)) {
+    return state;
+  }
+
+  // alt key opens up a new link
+  const altKey = sourceEvent.altKey;
+
+  const editorWindow = getActiveEditorWindow(state);
+  const openFile = getOpenFile(
+    editorWindow.activeFilePath,
+    state.openFiles
+  );
+
+  // do not allow selection while window is panning (scrolling)
+  if (openFile.canvas.panning || editorWindow.movingOrResizing) {
+    return state;
+  }
+
+  const targetNodeId = getCanvasMouseTargetNodeId(
+    state,
+    action as CanvasToolOverlayMouseMoved
+  );
+
+  // meta key
+  if (targetNodeId && sourceEvent.metaKey) {
+    state = openSyntheticVisibleNodeOriginFile(
+      getSyntheticNodeById(targetNodeId, state.documents),
+      state
+    );
+    return state;
+  }
+
+  if (!targetNodeId) {
+    return setSelectedSyntheticVisibleNodeIds(state);
+  }
+
+  if (!altKey) {
+    state = handleArtboardSelectionFromAction(state, targetNodeId);
+    state = updateEditorWindow(
+      {
+        secondarySelection: false
+      },
+      editorWindow.activeFilePath,
+      state
+    );
+
+    return state;
+  }
+  return state;
+};
 
 const persistInsertNodeFromPoint = (
   node: PCVisibleNode,
