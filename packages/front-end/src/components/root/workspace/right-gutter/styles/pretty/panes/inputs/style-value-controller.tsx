@@ -1,14 +1,14 @@
 import * as React from "react";
 
 type BaseProps = {
-  value: string;
+  value?: string;
   onChange?: any;
   onChangeComplete?: any;
 }
 
 export type Props = BaseProps;
 
-export default (Base: React.ComponentClass<BaseProps>) => {
+export default <TProps extends BaseProps>(Base: React.ComponentClass<BaseProps>) => {
   return class StyleValueController extends React.PureComponent<Props> {
     onChange = (value) => {
       if (this.props.onChange) {

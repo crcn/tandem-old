@@ -302,7 +302,9 @@
                       "children": [
                         {
                           "id": "9208d19537684",
-                          "variant": {},
+                          "variant": {
+                            "69c680a12": true
+                          },
                           "is": "50e32bec2591",
                           "name": "component-instance",
                           "attributes": {},

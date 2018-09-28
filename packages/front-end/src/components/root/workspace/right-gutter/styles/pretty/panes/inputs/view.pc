@@ -196,7 +196,7 @@
       },
       "variant": {},
       "controllers": [
-        "./style-value-controller.tsx"
+        "./dropdown-controller.tsx"
       ]
     }
   ],

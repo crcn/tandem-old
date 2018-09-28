@@ -172,6 +172,7 @@ export default (Base: React.ComponentClass<BaseElementPropertiesProps>) => {
           fieldsProps={{ children: fieldChild || [] }}
           typeInputProps={{
             value: sourceNode.is,
+            filterable: true,
             options: getTypeMenuOptions(components),
             onChange: onTypeChange
           }}
