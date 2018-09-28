@@ -1343,13 +1343,24 @@ export const canvasReducer = (state: RootState, action: Action) => {
       );
 
       // do not allow selection while window is panning (scrolling)
-      if (openFile.canvas.panning || editorWindow.movingOrResizing)
+      if (openFile.canvas.panning || editorWindow.movingOrResizing) {
         return state;
+      }
+
 
       const targetNodeId = getCanvasMouseTargetNodeId(
         state,
         action as CanvasToolOverlayMouseMoved
       );
+
+      // meta key
+      if (targetNodeId && sourceEvent.metaKey) {
+        state = openSyntheticVisibleNodeOriginFile(
+          getSyntheticNodeById(targetNodeId, state.documents),
+          state
+        );
+        return state;
+      }
 
       if (!targetNodeId) {
         return setSelectedSyntheticVisibleNodeIds(state);
