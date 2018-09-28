@@ -64,6 +64,11 @@ export default (Base: React.ComponentClass<BaseDropdownProps>) => {
     onFilterChange = value => {
       this.setState({ ...this.state, filter: value });
     };
+    componentWillUpdate(props) {
+      if (this.props.value !== props.value && this.state.filter) {
+        this.setState({ ...this.state, filter: null });
+      }
+    }
     onItemClick = (item, event) => {
       const { onChange, onChangeComplete } = this.props;
       if (onChange) {

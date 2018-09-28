@@ -1342,7 +1342,7 @@ export const canvasReducer = (state: RootState, action: Action) => {
       const syntheticNode = getSyntheticNodeById(targetNodeId, state.documents);
       const sourceNode = getSyntheticSourceNode(syntheticNode, state.graph);
 
-      if (sourceNode.name === PCSourceTagNames.COMPONENT_INSTANCE) {
+      if (sourceNode.name === PCSourceTagNames.COMPONENT_INSTANCE || sourceNode.name === PCSourceTagNames.COMPONENT) {
         const document = getSyntheticVisibleNodeDocument(syntheticNode.id, state.documents);        
         const inspectorNode = getSyntheticInspectorNode(syntheticNode, document, state.sourceNodeInspector, state.graph);
         

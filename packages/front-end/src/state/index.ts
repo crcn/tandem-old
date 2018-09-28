@@ -1262,7 +1262,6 @@ export const setTool = (toolType: ToolType, root: RootState) => {
   }
   root = { ...root, selectedComponentId: null };
   root = updateRootState({ toolType }, root);
-  root = setSelectedSyntheticVisibleNodeIds(root);
   return root;
 };
 

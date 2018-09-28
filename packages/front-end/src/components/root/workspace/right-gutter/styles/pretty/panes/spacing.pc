@@ -75,54 +75,34 @@
                   "id": "2c64e9ae110",
                   "children": [
                     {
-                      "id": "5d7d406951766",
-                      "variant": {},
-                      "is": "bcda9fb551452",
+                      "id": "ec9547562459",
+                      "is": "d2bdce074664",
                       "name": "component-instance",
                       "attributes": {},
-                      "style": {
-                        "width": "100%"
-                      },
+                      "style": {},
                       "children": [
                         {
-                          "id": "5d7d406951767",
-                          "variant": {},
-                          "is": "50e32bec2591",
-                          "name": "component-instance",
-                          "attributes": {},
-                          "style": {},
-                          "children": [
-                            {
-                              "id": "5d7d406951768",
-                              "propertyName": "text",
-                              "targetIdPath": [
-                                "67e386c7935"
-                              ],
-                              "value": "Context box",
-                              "name": "override",
-                              "children": []
-                            }
+                          "id": "ec9547565073",
+                          "variantId": null,
+                          "propertyName": "text",
+                          "targetIdPath": [
+                            "67e386c7935"
                           ],
-                          "metadata": {
-                            "bounds": {
-                              "left": 18,
-                              "top": 339,
-                              "right": 218.8212880775559,
-                              "bottom": 439
-                            }
-                          },
-                          "label": "box sizing input"
+                          "value": "border-box",
+                          "name": "override",
+                          "children": []
                         }
                       ],
                       "metadata": {
                         "bounds": {
-                          "left": 1152,
-                          "top": 397,
-                          "right": 1252,
-                          "bottom": 497
+                          "left": 779,
+                          "top": 247,
+                          "right": 980,
+                          "bottom": 334.77512727534497
                         }
                       },
-                      "label": ""
+                      "variant": {},
+                      "label": "box sizing input"
                     }
                   ],
                   "metadata": {},
@@ -219,10 +199,12 @@
                       "children": [
                         {
                           "id": "855076905158",
-                          "is": "7149f8199122",
+                          "is": "a329dd6d16879",
                           "name": "component-instance",
                           "attributes": {},
-                          "style": {},
+                          "style": {
+                            "padding-left": "unset"
+                          },
                           "children": [],
                           "metadata": {
                             "bounds": {
@@ -232,7 +214,8 @@
                               "bottom": 327.0358087589019
                             }
                           },
-                          "label": "padding left input"
+                          "label": "padding left input",
+                          "variant": {}
                         }
                       ],
                       "metadata": {},
@@ -306,7 +289,7 @@
                       "children": [
                         {
                           "id": "855076905726",
-                          "is": "7149f8199122",
+                          "is": "a329dd6d16879",
                           "name": "component-instance",
                           "attributes": {},
                           "style": {},
@@ -319,7 +302,8 @@
                               "bottom": 327.0358087589019
                             }
                           },
-                          "label": "padding top input"
+                          "label": "padding top input",
+                          "variant": {}
                         }
                       ],
                       "metadata": {},
@@ -393,7 +377,7 @@
                       "children": [
                         {
                           "id": "855076906298",
-                          "is": "7149f8199122",
+                          "is": "a329dd6d16879",
                           "name": "component-instance",
                           "attributes": {},
                           "style": {},
@@ -406,7 +390,8 @@
                               "bottom": 327.0358087589019
                             }
                           },
-                          "label": "padding right input"
+                          "label": "padding right input",
+                          "variant": {}
                         }
                       ],
                       "metadata": {},
@@ -479,7 +464,7 @@
                       "children": [
                         {
                           "id": "855076906874",
-                          "is": "7149f8199122",
+                          "is": "a329dd6d16879",
                           "name": "component-instance",
                           "attributes": {},
                           "style": {},
@@ -492,7 +477,8 @@
                               "bottom": 327.0358087589019
                             }
                           },
-                          "label": "padding bottom input"
+                          "label": "padding bottom input",
+                          "variant": {}
                         }
                       ],
                       "metadata": {},
@@ -600,7 +586,7 @@
                       "children": [
                         {
                           "id": "855076902926",
-                          "is": "7149f8199122",
+                          "is": "a329dd6d16879",
                           "name": "component-instance",
                           "attributes": {},
                           "style": {},
@@ -613,7 +599,8 @@
                               "bottom": 327.0358087589019
                             }
                           },
-                          "label": "margin left input"
+                          "label": "margin left input",
+                          "variant": {}
                         }
                       ],
                       "metadata": {},
@@ -688,7 +675,7 @@
                       "children": [
                         {
                           "id": "855076903478",
-                          "is": "7149f8199122",
+                          "is": "a329dd6d16879",
                           "name": "component-instance",
                           "attributes": {},
                           "style": {},
@@ -701,7 +688,8 @@
                               "bottom": 327.0358087589019
                             }
                           },
-                          "label": "margin top input"
+                          "label": "margin top input",
+                          "variant": {}
                         }
                       ],
                       "metadata": {},
@@ -775,7 +763,7 @@
                       "children": [
                         {
                           "id": "855076904034",
-                          "is": "7149f8199122",
+                          "is": "a329dd6d16879",
                           "name": "component-instance",
                           "attributes": {},
                           "style": {},
@@ -788,7 +776,8 @@
                               "bottom": 327.0358087589019
                             }
                           },
-                          "label": "margin right input"
+                          "label": "margin right input",
+                          "variant": {}
                         }
                       ],
                       "metadata": {},
@@ -861,7 +850,7 @@
                       "children": [
                         {
                           "id": "855076904594",
-                          "is": "7149f8199122",
+                          "is": "a329dd6d16879",
                           "name": "component-instance",
                           "attributes": {},
                           "style": {},
@@ -874,7 +863,8 @@
                               "bottom": 327.0358087589019
                             }
                           },
-                          "label": "margin bottom input"
+                          "label": "margin bottom input",
+                          "variant": {}
                         }
                       ],
                       "metadata": {},
