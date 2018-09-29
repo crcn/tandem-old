@@ -306,7 +306,8 @@ import {
   createRootInspectorNode,
   PCElement,
   getInspectorInstanceShadowContentNode,
-  getInspectorInstanceShadow
+  getInspectorInstanceShadow,
+  updateAlts
 } from "paperclip";
 import {
   roundBounds,
@@ -488,12 +489,14 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
           graph = {...graph};
           delete graph[uri];
         }
-          
+
+        
+        
         // TODO - check for renamed file
         state = updateRootState({
           fileCache,
           graph,
-          projectDirectory:  fsItem ? removeNestedTreeNode(fsItem, state.projectDirectory) : state.projectDirectory
+          projectDirectory:  fsItem ? updateFSItemAlts(removeNestedTreeNode(fsItem, state.projectDirectory)) : state.projectDirectory
         }, state);
 
         state = refreshModuleInspectorNodes(state);

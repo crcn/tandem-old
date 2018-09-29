@@ -93,7 +93,7 @@ export function projectSaga({ loadProjectInfo, readDirectory, deleteFile }: Proj
     while(1) {
       yield take();
       const { activeEditorFilePath }: RootState = yield select();
-      if (prevUri === activeEditorFilePath) {
+      if (prevUri == activeEditorFilePath) {
         continue;
       }
       prevUri = activeEditorFilePath;

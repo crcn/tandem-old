@@ -234,14 +234,12 @@ function* watchProjectDirectory() {
         actions = [];
         _actions.forEach(emit);
       }, 10);
-      watcher.once("ready", () => {
-        watcher.on("all", (event, path) => {
-          if (/\.DS_Store/.test(path)) {
-            return;
-          }
-          actions.push(fileChanged(event, addProtocol(FILE_PROTOCOL, path)));
-          batch();
-        });
+      watcher.on("all", (event, path) => {
+        if (/\.DS_Store/.test(path)) {
+          return;
+        }
+        actions.push(fileChanged(event, addProtocol(FILE_PROTOCOL, path)));
+        batch();
       });
       return () => {
         watcher.close();
