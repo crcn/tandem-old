@@ -11,7 +11,8 @@ import {
   fileNavigatorItemClicked,
   fileNavigatorToggleDirectoryClicked,
   fileNavigatorBasenameChanged,
-  fileNavigatorDroppedItem
+  fileNavigatorDroppedItem,
+  fileItemRightClicked
 } from "../../../../../actions";
 import {
   withFileNavigatorContext,
@@ -122,7 +123,7 @@ export default (Base: React.ComponentClass<BaseFileNavigatorLayerProps>) => {
           this.props.dispatch(fileNavigatorItemClicked(this.props.item));
         };
         onContextMenu = (event: React.MouseEvent<any>) => {
-          console.log(event);
+          this.props.dispatch(fileItemRightClicked(this.props.item, event));
         }
         onDoubleClick = () => {
           this.setState({ ...this.state, editing: true });

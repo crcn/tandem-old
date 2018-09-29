@@ -93,7 +93,7 @@ export default (Base: React.ComponentClass<BaseFileNavigatorProps>) =>
       }
       const {newFSItemInfo} = this.state;
 
-      if (newFSItemInfo.fileType === AddFileType.COMPONENT) {
+      if (newFSItemInfo.fileType === AddFileType.COMPONENT && !/\.pc$/.test(name)) {
         name += ".pc";
       }
 

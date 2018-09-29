@@ -7,7 +7,7 @@ import {
 } from "../actions";
 import { popupSaga } from "./popup";
 import { projectSaga, ProjectSagaOptions } from "./project";
-import { shortcutSaga } from "./shortcuts";
+import { shortcutSaga, ShortcutSagaOptions, createShortcutSaga } from "./shortcuts";
 import { copyPasteSaga } from "./copy-paste";
 import {
   getSyntheticNodeById,
@@ -18,13 +18,14 @@ import {
 
 export type FrontEndSagaOptions = {
   openPreview(frame: Frame, state: RootState);
-} & ProjectSagaOptions;
+} & ProjectSagaOptions & ShortcutSagaOptions;
 
 export const createRootSaga = (options: FrontEndSagaOptions) => {
   return function* rootSaga() {
     yield fork(copyPasteSaga);
     yield fork(reactSaga);
     yield fork(popupSaga);
+    yield fork(createShortcutSaga(options));
     // yield fork(PaperclipStateSaga);
     yield fork(projectSaga(options));
     yield fork(shortcutSaga);

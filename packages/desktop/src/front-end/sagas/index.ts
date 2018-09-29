@@ -8,7 +8,7 @@ import { exec } from "child_process";
 import * as path from "path";
 import { ipcSaga } from "./ipc";
 import { eventChannel } from "redux-saga";
-import {remote, dialog} from "electron";
+import {remote, dialog, Menu} from "electron";
 import {
   RootState,
   // PROJECT_DIRECTORY_LOADED,
@@ -68,6 +68,7 @@ import {
 // import { serverStateLoaded } from "../actions";
 import { DesktopRootState } from "../state";
 import { Action } from "redux";
+
 
 export function* rootSaga() {
   yield fork(ipcSaga);

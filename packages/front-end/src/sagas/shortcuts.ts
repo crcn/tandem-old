@@ -1,13 +1,46 @@
-import { fork, put, take, call, spawn } from "redux-saga/effects";
+import { fork, put, take, call, spawn, takeEvery } from "redux-saga/effects";
 import { eventChannel } from "redux-saga";
 import { mapKeys } from "lodash";
 import {
   shortcutKeyDown,
   SHORTCUT_DELETE_KEY_DOWN,
-  SHORTCUT_ESCAPE_KEY_DOWN
+  SHORTCUT_ESCAPE_KEY_DOWN,
+  FILE_ITEM_RIGHT_CLICKED,
+  FileItemRightClicked,
+  fileItemContextMenuDeleteClicked
 } from "../actions";
+import { ContextMenuItem, ContextMenuOptionType, ContextMenuOption } from "../state";
+import { Point } from "tandem-common";
+
+export type ShortcutSagaOptions = {
+  openContextMenu: (anchor: Point, options: ContextMenuOption[]) => void;
+}
+
+export const createShortcutSaga = ({ openContextMenu }: ShortcutSagaOptions) => {
+  return function*() {
+    yield takeEvery(FILE_ITEM_RIGHT_CLICKED, function* handleFileItemRightClick({event, item}: FileItemRightClicked) {
+      yield call(openContextMenu, {
+        left: event.pageX,
+        top: event.pageY
+      }, [
+        {
+          type: ContextMenuOptionType.GROUP,
+          options: [
+            {
+              type: ContextMenuOptionType.ITEM,
+              label: "Delete",
+              action: fileItemContextMenuDeleteClicked(item)
+            }
+          ]
+        }
+      ]);
+
+    });
+  }
+}
 
 export function* shortcutSaga() {
+  // yield fork(handleFileItemRightClick);
   // yield fork(mapHotkeys({
   //   // artboard
   //   "a": wrapDispatch(SHORTCUT_A_KEY_DOWN),
@@ -21,6 +54,7 @@ export function* shortcutSaga() {
   //   "backspace": wrapDispatch(SHORTCUT_DELETE_KEY_DOWN)
   // }));
 }
+
 
 const wrapDispatch = (type: string) =>
   function*(sourceEvent) {

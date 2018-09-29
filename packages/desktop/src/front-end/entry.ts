@@ -1,4 +1,5 @@
 import * as fs from "fs";
+import * as fsa from "fs-extra";
 const fontManager = require("font-manager");
 import { rootSaga } from "./sagas";
 import { select, take, call } from "redux-saga/effects";
@@ -8,9 +9,10 @@ import {
   setup,
   RootState,
   FontFamily,
-  createRootInspectorNode
+  createRootInspectorNode,
+  ContextMenuItem
 } from "tandem-front-end";
-import { stripProtocol, createDirectory, addProtocol, FILE_PROTOCOL, createFile } from "tandem-common";
+import { stripProtocol, createDirectory, addProtocol, FILE_PROTOCOL, createFile, Point } from "tandem-common";
 import { DesktopRootState } from "./state";
 import * as path from "path";
 import * as Url from "url";
@@ -23,6 +25,7 @@ import {
 } from "paperclip";
 import { eventChannel } from "redux-saga";
 
+
 const query = Url.parse(String(location), true).query;
 
 setup<DesktopRootState>(
@@ -32,7 +35,9 @@ setup<DesktopRootState>(
       writeFile,
       openPreview,
       loadProjectInfo,
-      readDirectory
+      readDirectory,
+      openContextMenu,
+      deleteFile
     };
   },
   rootReducer,
@@ -106,6 +111,22 @@ function* readDirectory(dirUri: string): any {
       return createFile(uri);
     }
   });
+}
+
+function* openContextMenu(point: Point, options: ContextMenuItem[]) {
+  ipcRenderer.send("openContextMenu", {
+    point,
+    options
+  })
+}
+
+function* deleteFile(uri: string) {
+  const path = stripProtocol(uri);
+  if (fs.lstatSync(path).isDirectory()) {
+    fsa.rmdirSync(path);
+  } else {
+    fsa.unlinkSync(path);
+  }
 }
 
 function getFontFamiles(): FontFamily[] {

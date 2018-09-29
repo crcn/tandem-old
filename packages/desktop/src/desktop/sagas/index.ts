@@ -111,6 +111,8 @@ function* openMainWindow() {
     frame: withFrame
   });
 
+  mainWindow.webContents.on
+
   let url = FRONT_END_ENTRY_FILE_PATH;
 
   const query: any = {

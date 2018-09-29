@@ -1,7 +1,8 @@
 import { fork, select, take, put, spawn } from "redux-saga/effects";
 import { eventChannel } from "redux-saga";
-import { ipcMain } from "electron";
+import { ipcMain, MenuItemConstructorOptions, Menu } from "electron";
 import { DesktopState } from "../state";
+import { ContextMenuOption } from "tandem-front-end";
 export const pid = Date.now() + "_" + Math.random();
 
 export function* ipcSaga() {
@@ -39,7 +40,53 @@ function* apiSaga() {
       const state: DesktopState = yield select();
       event.sender.send("projectInfo", state.tdProject && { config: state.tdProject, path: state.tdProjectPath });
     }
-  })
+  });
+
+  yield fork(function* openContextMenu() {
+    const chan = takeIPCEvents("openContextMenu");
+    while(1) {
+      const {event, arg: { point, options }} = yield take(chan);
+      const menuChan = eventChannel((emit) => {
+        const menu = generateMenu(options, emit);
+        menu.popup({ window: event.sender, x: point.left, y: point.top });
+        return () => {
+          menu.closePopup();
+        }
+      });
+
+      yield put(yield take(menuChan));
+    }
+  });
+}
+
+const generateMenu = (options: ContextMenuOption[], dispatch: any) => {
+  const tpl = generateMenuTpl(options, dispatch);
+  const menu = Menu.buildFromTemplate(tpl);
+  return menu;
+};
+
+
+const generateMenuTpl = (options: ContextMenuOption[], click: any): MenuItemConstructorOptions[] => {
+  return options.reduce((items, option, i) => {
+    if (option.type === "group") {
+      items = [
+        ...items,
+        ...generateMenuTpl(option.options, click),
+      ];
+      if (i !== options.length - 1) {
+        items.push({ type: "separator" });
+      }
+      return items;
+    } else if (option.type === "item") {
+      return [
+        ...items,
+        {
+          label: option.label,
+          click: () => click(option.action)
+        }
+      ]
+    }
+  }, [])
 }
 
 const takeIPCEvents = (eventType: string) =>

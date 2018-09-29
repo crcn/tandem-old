@@ -139,6 +139,7 @@ export const SHORTCUT_CONVERT_TO_COMPONENT_KEY_DOWN =
 export const SHORTCUT_WRAP_IN_SLOT_KEY_DOWN = "SHORTCUT_WRAP_IN_SLOT_KEY_DOWN";
 export const SHORTCUT_TOGGLE_SIDEBAR = "SHORTCUT_TOGGLE_SIDEBAR";
 export const INHERIT_PANE_ADD_BUTTON_CLICK = "INHERIT_PANE_ADD_BUTTON_CLICK";
+export const FILE_ITEM_CONTEXT_MENU_DELETE_CLICKED = "FILE_ITEM_CONTEXT_MENU_DELETE_CLICKED";
 export const INHERIT_PANE_REMOVE_BUTTON_CLICK =
   "INHERIT_PANE_REMOVE_BUTTON_CLICK";
 export const ACTIVE_EDITOR_URI_DIRS_LOADED = "ACTIVE_EDITOR_URI_DIRS_LOADED";
@@ -162,6 +163,7 @@ export const ATTRIBUTE_CHANGED = "ATTRIBUTE_CHANGED";
 export const SLOT_TOGGLE_CLICK = "SLOT_TOGGLE_CLICK";
 export const TEXT_VALUE_CHANGED = "TEXT_VALUE_CHANGED";
 export const ELEMENT_TYPE_CHANGED = "ELEMENT_TYPE_CHANGED";
+export const FILE_ITEM_RIGHT_CLICKED = "FILE_ITEM_RIGHT_CLICKED";
 export const SOURCE_INSPECTOR_LAYER_CLICKED = "SOURCE_INSPECTOR_LAYER_CLICKED";
 export const SOURCE_INSPECTOR_LAYER_ARROW_CLICKED =
   "SOURCE_INSPECTOR_LAYER_ARROW_CLICKED";
@@ -391,6 +393,10 @@ export type NewVariantNameEntered = {
   value: string;
 } & Action;
 
+export type FileItemContextMenuAction = {
+  item: FSItem;
+} & Action;
+
 export type ComponentVariantNameChanged = {
   oldName: string;
   newName: string;
@@ -420,6 +426,7 @@ export type ComponentVariantNameDefaultToggleClick = {
   name: string;
   value: boolean;
 } & Action;
+
 
 export type PromptConfirmed = {
   inputValue: string;
@@ -506,6 +513,12 @@ export type FrameBoundsChanged = {
   newBounds: Bounds
 } & Action;
 
+export type FileItemRightClicked = {
+  event: React.MouseEvent<any>;
+  type: string;
+  item: FSItem;
+} & Action;
+
 export type FileNavigatorNewFileEntered = {
   directoryId: string;
   basename: string;
@@ -578,6 +591,12 @@ export const editorTabClicked = (uri: string): EditorTabClicked => ({
   uri,
   type: EDITOR_TAB_CLICKED
 });
+
+
+export const fileItemContextMenuDeleteClicked = publicActionCreator((item: FSItem): FileItemContextMenuAction => ({
+  item, 
+  type: FILE_ITEM_CONTEXT_MENU_DELETE_CLICKED
+}));
 
 export const editorTabCloseButtonClicked = (uri: string): EditorTabClicked => ({
   uri,
@@ -753,6 +772,12 @@ export const componentPickerBackgroundClick = (): Action => ({
 export const addVariantButtonClicked = (): Action => ({
   type: ADD_VARIANT_BUTTON_CLICKED
 });
+
+export const fileItemRightClicked = (item: FSItem, event: React.MouseEvent<any>): FileItemRightClicked => ({
+  type: FILE_ITEM_RIGHT_CLICKED,
+  event,
+  item
+})
 
 export const unhandledError = (error: Error): UnhandledError => ({
   error,

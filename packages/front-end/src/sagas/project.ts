@@ -1,4 +1,4 @@
-import { fork, put, call, take, select } from "redux-saga/effects";
+import { fork, put, call, take, select, takeEvery } from "redux-saga/effects";
 import * as path from "path";
 import {
   projectDirectoryLoaded,
@@ -15,7 +15,9 @@ import {
   PROJECT_INFO_LOADED,
   projectDirectoryDirLoaded,
   FILE_NAVIGATOR_TOGGLE_DIRECTORY_CLICKED,
-  activeEditorUriDirsLoaded
+  activeEditorUriDirsLoaded,
+  FILE_ITEM_CONTEXT_MENU_DELETE_CLICKED,
+  FileItemContextMenuAction
 } from "../actions";
 import {
   File,
@@ -38,15 +40,17 @@ import { ProjectConfig, ProjectInfo, RootState } from "../state";
 export type ProjectSagaOptions = {
   loadProjectInfo(): IterableIterator<ProjectInfo>;
   readDirectory(path: string): IterableIterator<FSItem>;
+  deleteFile(path: string): IterableIterator<any>;
 }
 
-export function projectSaga({ loadProjectInfo, readDirectory }: ProjectSagaOptions) {
+export function projectSaga({ loadProjectInfo, readDirectory, deleteFile }: ProjectSagaOptions) {
   return function*() {
     yield fork(init);
     yield fork(handleProjectLoaded);
     yield fork(handleProjectInfoLoaded);
     yield fork(handleFileNavigatorItemClick);
     yield fork(handleActiveFileUri);
+    yield fork(handleFileItemContextMenuDeleted);
   }
   
   function* init() {
@@ -60,6 +64,15 @@ export function projectSaga({ loadProjectInfo, readDirectory }: ProjectSagaOptio
     }
   }
 
+  function* handleFileItemContextMenuDeleted() {
+    yield takeEvery(FILE_ITEM_CONTEXT_MENU_DELETE_CLICKED, function*({item}: FileItemContextMenuAction) {
+      if (!confirm("Are you sure you want to delete this file?")) {
+        return;
+      }
+
+      yield call(deleteFile, item.uri);
+    });
+  }
 
   function* handleProjectInfoLoaded() {
     while(1) {

@@ -94,6 +94,8 @@ import {
   InspectorNode,
   getInsertableInspectorNode
 } from "paperclip";
+import { ContextMenuItem } from "../components/context-menu/view.pc";
+import { Action } from "redux";
 
 export enum ToolType {
   TEXT,
@@ -200,6 +202,25 @@ export type BaseQuickSearchResult<TType extends QuickSearchResultType> = {
   description: string;
   type: TType
 };
+
+export enum ContextMenuOptionType {
+  GROUP = "group",
+  ITEM = "item"
+}
+
+export type ContextMenuItem = {
+  type: ContextMenuOptionType.ITEM;
+  label: string;
+  action: Action;
+  keyCombo?: string;
+};
+
+export type ContextMenuGroup = {
+  type: ContextMenuOptionType.GROUP;
+  options: ContextMenuItem[]
+}
+
+export type ContextMenuOption = ContextMenuGroup | ContextMenuItem;
 
 export type QuickSearchUriResult = {
   uri: string

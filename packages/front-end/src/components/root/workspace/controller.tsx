@@ -9,6 +9,7 @@ import { DragDropContext } from "react-dnd";
 import HTML5Backend from "react-dnd-html5-backend";
 import { BaseWorkspaceProps, WorkspacePrompt } from "./view.pc";
 import { mapStateToProps as mapStatetoPromptControllerProps } from "./prompt-controller";
+import { ContextMenu } from "../../context-menu/view.pc";
 
 export type Props = {
   root: RootState;

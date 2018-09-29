@@ -10,10 +10,14 @@
       "style": {
         "min-width": "150px",
         "background": "--bc891e755312",
-        "position": "absolute",
+        "position": "fixed",
         "border-radius": "2px",
-        "box-shadow": " 2px 2px 4px 0px rgba(0, 0, 0, 0.23)",
-        "color": "--24ce1e4d482"
+        "box-shadow": "2px 2px 4px 0px rgba(0, 0, 0, 0.23)",
+        "color": "--24ce1e4d482",
+        "width": "unset",
+        "left": "0px",
+        "top": "0px",
+        "z-index": "9999"
       },
       "attributes": {},
       "id": "8c06472162847",
@@ -99,8 +103,8 @@
         "bounds": {
           "left": 2627,
           "top": 137,
-          "right": 2852.5019681236713,
-          "bottom": 390.3912943733761
+          "right": 2863,
+          "bottom": 388
         }
       },
       "variant": {},

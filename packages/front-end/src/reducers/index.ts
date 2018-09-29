@@ -154,7 +154,9 @@ import {
   FRAME_BOUNDS_CHANGE_COMPLETED,
   FRAME_BOUNDS_CHANGED,
   FrameBoundsChanged,
-  ACTIVE_EDITOR_URI_DIRS_LOADED
+  ACTIVE_EDITOR_URI_DIRS_LOADED,
+  FILE_ITEM_RIGHT_CLICKED,
+  FileItemRightClicked
 } from "../actions";
 import {
   queueOpenFile,
@@ -359,7 +361,6 @@ import {
   inspectorNodeInShadow,
   getSyntheticInspectorNode
 } from "paperclip";
-import { instanceOf } from "prop-types";
 
 const ZOOM_SENSITIVITY = process.platform === "win32" ? 2500 : 250;
 const MIN_ZOOM = 0.02;
