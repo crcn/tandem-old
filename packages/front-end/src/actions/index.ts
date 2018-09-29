@@ -149,6 +149,8 @@ export const SYNTHETIC_NODES_PASTED = "SYNTHETIC_NODES_PASTED";
 export const APP_LOADED = "APP_LOADED";
 export const SAVED_FILE = "SAVED_FILE";
 export const SAVED_ALL_FILES = "SAVED_ALL_FILES";
+export const FRAME_BOUNDS_CHANGED = "FRAME_BOUNDS_CHANGED";
+export const FRAME_BOUNDS_CHANGE_COMPLETED = "FRAME_BOUNDS_CHANGE_COMPLETED";
 export const NEW_FILE_ENTERED = "NEW_FILE_ENTERED";
 export const PROJECT_DIRECTORY_DIR_LOADED = "PROJECT_DIRECTORY_DIR_LOADED";
 export const NEW_DIRECTORY_ENTERED = "NEW_DIRECTORY_ENTERED";
@@ -497,6 +499,10 @@ export type SyntheticVisibleNodesPasted = {
 
 export type FileNavigatorLabelClicked = {
   fileId: string;
+} & Action;
+
+export type FrameBoundsChanged = {
+  newBounds: Bounds
 } & Action;
 
 export type FileNavigatorNewFileEntered = {
@@ -1227,6 +1233,16 @@ export const resizerPathMoved = (
   originalBounds,
   newBounds,
   sourceEvent
+});
+
+export const frameBoundsChanged = (newBounds: Bounds) => ({
+  type: FRAME_BOUNDS_CHANGED,
+  newBounds,
+});
+
+export const frameBoundsChangeCompleted = (newBounds: Bounds) => ({
+  type: FRAME_BOUNDS_CHANGE_COMPLETED,
+  newBounds,
 });
 
 export const resizerPathStoppedMoving = (

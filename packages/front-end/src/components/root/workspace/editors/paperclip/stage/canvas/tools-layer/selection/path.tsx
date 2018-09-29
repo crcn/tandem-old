@@ -5,7 +5,7 @@ import {
   resizerPathMoved,
   resizerPathStoppedMoving
 } from "../../../../../../../../../actions";
-import { startDOMDrag, Point, Bounds } from "tandem-common";
+import { startDOMDrag, Point, Bounds, roundBounds } from "tandem-common";
 
 export type PathOuterProps = {
   points: Point[];
@@ -26,6 +26,8 @@ export class Path extends React.PureComponent<PathOuterProps> {
     event.stopPropagation();
     const sourceEvent = { ...event };
 
+    
+
     const wrapActionCreator = createAction => (event, info) => {
       const delta = {
         left: info.delta.x / zoom,
@@ -34,13 +36,13 @@ export class Path extends React.PureComponent<PathOuterProps> {
       dispatch(
         createAction(
           point,
-          bounds,
-          {
+          roundBounds(bounds),
+          roundBounds({
             left: point.left === 0 ? bounds.left + delta.left : bounds.left,
             top: point.top === 0 ? bounds.top + delta.top : bounds.top,
             right: point.left === 1 ? bounds.right + delta.left : bounds.right,
             bottom: point.top === 1 ? bounds.bottom + delta.top : bounds.bottom
-          },
+          }),
           event
         )
       );

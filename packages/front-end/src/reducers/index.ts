@@ -150,7 +150,10 @@ import {
   QUICK_SEARCH_RESULT_LOADED,
   QuickSearchFilterChanged,
   QUICK_SEARCH_FILTER_CHANGED,
-  QuickSearchResultLoaded
+  QuickSearchResultLoaded,
+  FRAME_BOUNDS_CHANGE_COMPLETED,
+  FRAME_BOUNDS_CHANGED,
+  FrameBoundsChanged
 } from "../actions";
 import {
   queueOpenFile,
@@ -977,6 +980,23 @@ export const canvasReducer = (state: RootState, action: Action) => {
         }
       }
 
+      return state;
+    }
+    case FRAME_BOUNDS_CHANGED: {
+      const {newBounds} = action as FrameBoundsChanged;
+      state = persistSyntheticNodeMetadata({
+        [PCVisibleNodeMetadataKey.BOUNDS]: newBounds
+      }, getSyntheticNodeById(state.selectedSyntheticNodeIds[0], state.documents), state);
+      return state;
+    }
+    case FRAME_BOUNDS_CHANGE_COMPLETED: {
+      const {newBounds} = action as FrameBoundsChanged;
+      state = persistRootState((state) => {
+        state = persistSyntheticNodeMetadata({
+          [PCVisibleNodeMetadataKey.BOUNDS]: newBounds
+        }, getSyntheticNodeById(state.selectedSyntheticNodeIds[0], state.documents), state);
+        return state;
+      }, state);
       return state;
     }
     case RESIZER_MOUSE_DOWN: {

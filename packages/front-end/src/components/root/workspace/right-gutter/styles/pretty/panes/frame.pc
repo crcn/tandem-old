@@ -64,6 +64,44 @@
                           "value": "Preset",
                           "name": "override",
                           "children": []
+                        },
+                        {
+                          "slotId": "e73029b416045",
+                          "id": "28a93a0794",
+                          "children": [
+                            {
+                              "id": "28a93a0793",
+                              "is": "50e32bec2591",
+                              "name": "component-instance",
+                              "attributes": {},
+                              "style": {},
+                              "children": [
+                                {
+                                  "id": "28a93a072386",
+                                  "variantId": null,
+                                  "propertyName": "text",
+                                  "targetIdPath": [
+                                    "67e386c7935"
+                                  ],
+                                  "value": "iPhone 8+",
+                                  "name": "override",
+                                  "children": []
+                                }
+                              ],
+                              "metadata": {
+                                "bounds": {
+                                  "left": 133,
+                                  "top": 279,
+                                  "right": 334,
+                                  "bottom": 521.2360321797468
+                                }
+                              },
+                              "variant": {},
+                              "label": "preset input"
+                            }
+                          ],
+                          "metadata": {},
+                          "name": "plug"
                         }
                       ],
                       "metadata": {
@@ -116,6 +154,32 @@
                           "value": "X",
                           "name": "override",
                           "children": []
+                        },
+                        {
+                          "slotId": "e73029b416045",
+                          "id": "28a93a074390",
+                          "children": [
+                            {
+                              "id": "28a93a074389",
+                              "is": "7149f8199122",
+                              "name": "component-instance",
+                              "attributes": {},
+                              "style": {},
+                              "children": [],
+                              "metadata": {
+                                "bounds": {
+                                  "left": 384,
+                                  "top": 298,
+                                  "right": 484,
+                                  "bottom": 327.0358087589019
+                                }
+                              },
+                              "variant": {},
+                              "label": "xInput"
+                            }
+                          ],
+                          "metadata": {},
+                          "name": "plug"
                         }
                       ],
                       "metadata": {
@@ -145,6 +209,32 @@
                           "value": "Y",
                           "name": "override",
                           "children": []
+                        },
+                        {
+                          "slotId": "e73029b416045",
+                          "id": "28a93a074537",
+                          "children": [
+                            {
+                              "id": "28a93a074536",
+                              "is": "7149f8199122",
+                              "name": "component-instance",
+                              "attributes": {},
+                              "style": {},
+                              "children": [],
+                              "metadata": {
+                                "bounds": {
+                                  "left": 384,
+                                  "top": 298,
+                                  "right": 484,
+                                  "bottom": 327.0358087589019
+                                }
+                              },
+                              "variant": {},
+                              "label": "yInput"
+                            }
+                          ],
+                          "metadata": {},
+                          "name": "plug"
                         }
                       ],
                       "metadata": {
@@ -190,6 +280,32 @@
                           "value": "Width",
                           "name": "override",
                           "children": []
+                        },
+                        {
+                          "slotId": "e73029b416045",
+                          "id": "28a93a074686",
+                          "children": [
+                            {
+                              "id": "28a93a074685",
+                              "is": "7149f8199122",
+                              "name": "component-instance",
+                              "attributes": {},
+                              "style": {},
+                              "children": [],
+                              "metadata": {
+                                "bounds": {
+                                  "left": 384,
+                                  "top": 298,
+                                  "right": 484,
+                                  "bottom": 327.0358087589019
+                                }
+                              },
+                              "variant": {},
+                              "label": "widthInput"
+                            }
+                          ],
+                          "metadata": {},
+                          "name": "plug"
                         }
                       ],
                       "metadata": {
@@ -219,6 +335,32 @@
                           "value": "Height",
                           "name": "override",
                           "children": []
+                        },
+                        {
+                          "slotId": "e73029b416045",
+                          "id": "2cdf775e1065",
+                          "children": [
+                            {
+                              "id": "2cdf775e1064",
+                              "is": "7149f8199122",
+                              "name": "component-instance",
+                              "attributes": {},
+                              "style": {},
+                              "children": [],
+                              "metadata": {
+                                "bounds": {
+                                  "left": 384,
+                                  "top": 298,
+                                  "right": 484,
+                                  "bottom": 327.0358087589019
+                                }
+                              },
+                              "variant": {},
+                              "label": "heightInput"
+                            }
+                          ],
+                          "metadata": {},
+                          "name": "plug"
                         }
                       ],
                       "metadata": {

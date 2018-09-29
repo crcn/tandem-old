@@ -53,6 +53,7 @@ export default (Base: React.ComponentClass<BaseElementStylerProps>) =>
         <Base
           {...rest}
           framePaneProps={{
+            dispatch,
             selectedNode,
             graph
           }}
