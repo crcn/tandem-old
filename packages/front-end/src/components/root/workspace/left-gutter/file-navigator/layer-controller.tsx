@@ -118,9 +118,12 @@ export default (Base: React.ComponentClass<BaseFileNavigatorLayerProps>) => {
         state = {
           editing: false
         };
-        onClick = () => {
+        onClick = (event: React.MouseEvent<any>) => {
           this.props.dispatch(fileNavigatorItemClicked(this.props.item));
         };
+        onContextMenu = (event: React.MouseEvent<any>) => {
+          console.log(event);
+        }
         onDoubleClick = () => {
           this.setState({ ...this.state, editing: true });
         };
@@ -182,6 +185,7 @@ export default (Base: React.ComponentClass<BaseFileNavigatorLayerProps>) => {
           let {draggingOver} = this.props;
           const {
             onClick,
+            onContextMenu,
             onArrowClick,
             onBasenameInputKeyDown,
             onBasenameInputBlur,
@@ -228,6 +232,7 @@ export default (Base: React.ComponentClass<BaseFileNavigatorLayerProps>) => {
                   }}
                   onDoubleClick={onDoubleClick}
                   onClick={onClick}
+                  onContextMenu={onContextMenu}
                   labelInputProps={
                     {
                       defaultValue: basename,
