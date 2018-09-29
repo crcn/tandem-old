@@ -27,6 +27,7 @@ export default (Base: React.ComponentClass<BaseWorkspaceProps>) =>
         const { root, dispatch } = this.props;
         const {
           graph,
+          activeEditorFilePath: activeEditorUri,
           selectedInspectorNodeIds,
           hoveringInspectorNodeIds,
           selectedFileNodeIds,
@@ -39,6 +40,7 @@ export default (Base: React.ComponentClass<BaseWorkspaceProps>) =>
           <div style={WORKSPACE_STYLE}>
             <Base
               leftGutterProps={{
+                activeEditorUri,
                 show: root.showSidebar,
                 selectedFileNodeIds,
                 graph,

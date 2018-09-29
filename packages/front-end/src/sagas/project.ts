@@ -14,7 +14,8 @@ import {
   projectInfoLoaded,
   PROJECT_INFO_LOADED,
   projectDirectoryDirLoaded,
-  FILE_NAVIGATOR_TOGGLE_DIRECTORY_CLICKED
+  FILE_NAVIGATOR_TOGGLE_DIRECTORY_CLICKED,
+  activeEditorUriDirsLoaded
 } from "../actions";
 import {
   File,
@@ -27,7 +28,9 @@ import {
   getTreeNodeFromPath,
   getFilePathFromNodePath,
   FSItem,
-  FSItemTagNames
+  FSItemTagNames,
+  getFileFromUri,
+  stripProtocol
 } from "tandem-common";
 import { ProjectConfig, ProjectInfo, RootState } from "../state";
 
@@ -43,6 +46,7 @@ export function projectSaga({ loadProjectInfo, readDirectory }: ProjectSagaOptio
     yield fork(handleProjectLoaded);
     yield fork(handleProjectInfoLoaded);
     yield fork(handleFileNavigatorItemClick);
+    yield fork(handleActiveFileUri);
   }
   
   function* init() {
@@ -71,9 +75,37 @@ export function projectSaga({ loadProjectInfo, readDirectory }: ProjectSagaOptio
     }
   }
 
-  function* loadDirectory(path: string) {
-    const items = (yield call(readDirectory, path));
-    yield put(projectDirectoryDirLoaded(items));
+  function* handleActiveFileUri() {
+    let prevUri: string;
+    while(1) {
+      yield take();
+      const { activeEditorFilePath }: RootState = yield select();
+      if (prevUri === activeEditorFilePath) {
+        continue;
+      }
+      prevUri = activeEditorFilePath;
+      yield call(loadDirectory, path.dirname(activeEditorFilePath));
+      yield put(activeEditorUriDirsLoaded());
+    }
+  }
+
+  function* loadDirectory(dir: string) {
+    const {projectInfo, projectDirectory}: RootState = yield select();
+    const projectDir = path.dirname(stripProtocol(projectInfo.path));
+    const relativePathParts = stripProtocol(dir).replace(projectDir, "").split("/");
+    for (let i = 0, {length} = relativePathParts; i < length; i++) {
+      const subdir = path.join(projectDir, ...relativePathParts.slice(0, i + 1));
+
+      const subdirUri = addProtocol(FILE_PROTOCOL, subdir);
+      
+      // files should be watched, so skip any already laoded dirs
+      if (projectDirectory && getFileFromUri(subdirUri, projectDirectory) && getFileFromUri(subdirUri, projectDirectory).children.length) {
+        continue;
+      }
+
+      const items = (yield call(readDirectory, subdirUri));
+      yield put(projectDirectoryDirLoaded(items));
+    }
   }
 
   function* handleFileNavigatorItemClick() {

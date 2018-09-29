@@ -147,6 +147,15 @@
       "type": "unit",
       "children": [],
       "metadata": {}
+    },
+    {
+      "id": "32c1eebd7630",
+      "name": "variable",
+      "value": "rgba(113, 188, 253, 0.15)",
+      "label": "blue 3",
+      "type": "color",
+      "children": [],
+      "metadata": {}
     }
   ]
 }

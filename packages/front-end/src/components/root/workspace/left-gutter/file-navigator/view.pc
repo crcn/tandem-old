@@ -397,7 +397,9 @@
                                 "5a14767c103012": false,
                                 "5a14767c144940": true,
                                 "5a14767c104431": true,
-                                "5a14767c125042": true
+                                "5a14767c125042": true,
+                                "32c1eebd4262": true,
+                                "5a14767c120802": false
                               }
                             },
                             {
@@ -693,6 +695,25 @@
           },
           "name": "override",
           "children": []
+        },
+        {
+          "id": "32c1eebd4262",
+          "name": "variant",
+          "label": "active",
+          "isDefault": true,
+          "children": [],
+          "metadata": {}
+        },
+        {
+          "id": "32c1eebd5385",
+          "variantId": "32c1eebd4262",
+          "propertyName": "style",
+          "targetIdPath": [],
+          "value": {
+            "background": "--32c1eebd7630"
+          },
+          "name": "override",
+          "children": []
         }
       ],
       "metadata": {
@@ -704,7 +725,8 @@
         }
       },
       "variant": {
-        "7982ea828779": false
+        "7982ea828779": false,
+        "a6fd80839": false
       },
       "controllers": [
         "./layer-controller.tsx"

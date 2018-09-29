@@ -6,6 +6,7 @@ import { Directory, startDOMDrag } from "tandem-common";
 export type Props = {
   show?: boolean;
   graph: DependencyGraph;
+  activeEditorUri: string;
   selectedInspectorNodeIds: string[];
   hoveringInspectorNodeIds: string[];
   selectedFileNodeIds: string[];
@@ -42,6 +43,7 @@ export default (Base: React.ComponentClass<BaseLeftGutterProps>) =>
     render() {
       const {
         graph,
+        activeEditorUri,
         selectedInspectorNodeIds,
         hoveringInspectorNodeIds,
         selectedFileNodeIds,
@@ -72,6 +74,7 @@ export default (Base: React.ComponentClass<BaseLeftGutterProps>) =>
             documents
           }}
           fileNavigatorPaneProps={{
+            activeEditorUri,
             rootDirectory,
             dispatch,
             selectedFileNodeIds

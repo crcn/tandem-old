@@ -1,8 +1,10 @@
 import * as React from "react";
+import * as ReactDOM from "react-dom";
 import * as path from "path";
 import * as cx from "classnames";
 import { compose } from "recompose";
 import { BaseFileNavigatorLayerProps, NewFileInput, FileNavigatorLayerContainer} from "./view.pc";
+import scrollIntoView from "scroll-into-view-if-needed";
 import { FSItem, FSItemTagNames, Directory, TreeMoveOffset } from "tandem-common";
 import { Dispatch } from "redux";
 import {
@@ -31,6 +33,7 @@ type ContextProps = {
   newFileInfo: NewFSItemInfo;
   onNewFileChangeComplete: any;
   onNewFileInputChange: any;
+  active: boolean;
 };
 
 type InnerProps = {
@@ -62,13 +65,15 @@ export default (Base: React.ComponentClass<BaseFileNavigatorLayerProps>) => {
           dispatch,
           newFileInfo,
           onNewFileChangeComplete,
-          onNewFileInputChange
+          onNewFileInputChange,
+          activeEditorUri
         }
       ) => {
         return {
           selected: selectedFileNodeIds.indexOf(props.item.id) !== -1,
           dispatch,
           newFileInfo,
+          active: activeEditorUri === props.item.uri,
           onNewFileChangeComplete,
           onNewFileInputChange
         };
@@ -136,6 +141,24 @@ export default (Base: React.ComponentClass<BaseFileNavigatorLayerProps>) => {
             this.setState({ ...this.state, editing: false });
           }
         };
+        componentDidUpdate(prevProps) {
+          this.makeVisible(this.props.active && !prevProps.active);
+        }
+        componentDidMount() {
+          this.makeVisible(this.props.active);
+        }
+        private makeVisible(active: boolean) {
+          if (active) {
+            const self = ReactDOM.findDOMNode(this) as HTMLSpanElement;
+            setTimeout(() => {
+              const label = self.children[0].children[0].children[0].children[1].children[0];
+              // icky, but we're picking the label here
+              scrollIntoView(label, {
+                scrollMode: "if-needed"
+              });
+            }, 10);
+          }
+        }
         onBasenameInputBlur = (eent: React.KeyboardEvent<any>) => {
           this.setState({ ...this.state, editing: false });
         };
@@ -150,6 +173,7 @@ export default (Base: React.ComponentClass<BaseFileNavigatorLayerProps>) => {
             connectDragSource,
             connectDropTarget,
             canDrop,
+            active,
             newFileInfo,
             onNewFileInputChange,
             onNewFileChangeComplete,
@@ -192,7 +216,6 @@ export default (Base: React.ComponentClass<BaseFileNavigatorLayerProps>) => {
 
           const basename = path.basename(item.uri);
 
-
           let div = <div style={ROOT_STYLE}>
             <FileNavigatorLayerContainer variant={cx({
               hovering: draggingOver
@@ -214,6 +237,7 @@ export default (Base: React.ComponentClass<BaseFileNavigatorLayerProps>) => {
                   }
                   arrowProps={{ onClick: onArrowClick }}
                   variant={cx({
+                    active: active && !selected,
                     folder: item.name === FSItemTagNames.DIRECTORY,
                     file: item.name === FSItemTagNames.FILE,
                     alt: item.alt && !draggingOver && !selected,

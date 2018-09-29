@@ -212,7 +212,6 @@ export default (Base: React.ComponentClass<BaseNodeLayerProps>) => {
 
             setTimeout(() => {
               const label = self.children[1].children[0].children[1];
-
               // icky, but we're picking the label here
               scrollIntoView(label, {
                 scrollMode: "if-needed"

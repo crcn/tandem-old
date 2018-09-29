@@ -141,6 +141,7 @@ export const SHORTCUT_TOGGLE_SIDEBAR = "SHORTCUT_TOGGLE_SIDEBAR";
 export const INHERIT_PANE_ADD_BUTTON_CLICK = "INHERIT_PANE_ADD_BUTTON_CLICK";
 export const INHERIT_PANE_REMOVE_BUTTON_CLICK =
   "INHERIT_PANE_REMOVE_BUTTON_CLICK";
+export const ACTIVE_EDITOR_URI_DIRS_LOADED = "ACTIVE_EDITOR_URI_DIRS_LOADED";
 export const INHERIT_ITEM_COMPONENT_TYPE_CHANGE_COMPLETE =
   "INHERIT_ITEM_COMPONENT_TYPE_CHANGE_COMPLETE";
 export const INHERIT_ITEM_CLICK = "INHERIT_ITEM_CLICK";
@@ -870,6 +871,10 @@ export const openFilesItemCloseClick = (uri: string): OpenFilesItemClick => ({
   uri,
   sourceEvent: null,
   type: OPEN_FILE_ITEM_CLOSE_CLICKED
+});
+
+export const activeEditorUriDirsLoaded = (): Action => ({
+  type: ACTIVE_EDITOR_URI_DIRS_LOADED
 });
 
 export const frameModeChangeComplete = (

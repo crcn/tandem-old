@@ -1079,15 +1079,16 @@ export const setRootStateSyntheticVisibleNodeLabelEditing = (
   return state;
 };
 
+
 export const setRootStateFileNodeExpanded = (
   nodeId: string,
   value: boolean,
   state: RootState
-) => {
+) => {  
   return updateRootState(
     {
-      projectDirectory: updateNestedNode(
-        getNestedTreeNodeById(nodeId, state.projectDirectory),
+      projectDirectory: updateNestedNodeTrail(
+        getTreeNodePath(nodeId, state.projectDirectory),
         state.projectDirectory,
         (child: FSItem) => ({
           ...child,

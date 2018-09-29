@@ -153,7 +153,8 @@ import {
   QuickSearchResultLoaded,
   FRAME_BOUNDS_CHANGE_COMPLETED,
   FRAME_BOUNDS_CHANGED,
-  FrameBoundsChanged
+  FrameBoundsChanged,
+  ACTIVE_EDITOR_URI_DIRS_LOADED
 } from "../actions";
 import {
   queueOpenFile,
@@ -211,7 +212,8 @@ import {
   teeHistory,
   pruneOpenFiles,
   QuickSearchResultType,
-  getGlobalFileUri
+  getGlobalFileUri,
+  setRootStateFileNodeExpanded
 } from "../state";
 import {
   PCSourceTagNames,
@@ -439,10 +441,13 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
       const {items} = action as ProjectDirectoryDirLoaded;
       const {projectDirectory} = state;
       state = updateRootState({
-        projectDirectory:  projectDirectory ? mergeFSItems(...items, projectDirectory) : mergeFSItems(...items)
+        projectDirectory:  projectDirectory ? mergeFSItems(projectDirectory, ...items) : mergeFSItems(...items)
       }, state);
       
-      
+      return state;
+    }
+    case ACTIVE_EDITOR_URI_DIRS_LOADED: {
+      state = setRootStateFileNodeExpanded(getFileFromUri(state.activeEditorFilePath, state.projectDirectory).id, true, state);
       return state;
     }
     case FILE_CHANGED: {

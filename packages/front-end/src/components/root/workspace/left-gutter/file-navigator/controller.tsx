@@ -19,6 +19,7 @@ import { fileNavigatorNewFileEntered } from "../../../../../actions";
 import { mapVariablesToCSSVarDropdownOptions } from "../../right-gutter/styles/pretty/panes/utils";
 import { dropdownMenuOptionFromValue, DropdownMenuOption } from "../../../../inputs/dropdown/controller";
 export type Props = {
+  activeEditorUri: string;
   rootDirectory: Directory;
   dispatch: Dispatch<any>;
   selectedFileNodeIds: string[];
@@ -30,13 +31,15 @@ const generateFileNavigatorContext = memoize(
     selectedFileNodeIds: string[],
     onNewFileChangeComplete: any,
     onNewFileInputChange: any,
+    activeEditorUri: string,
     dispatch: Dispatch<any>
   ): FileNavigatorContextProps => ({
     newFileInfo,
     selectedFileNodeIds,
     onNewFileChangeComplete,
     onNewFileInputChange,
-    dispatch
+    dispatch,
+    activeEditorUri
   })
 );
 
@@ -129,6 +132,7 @@ export default (Base: React.ComponentClass<BaseFileNavigatorProps>) =>
         dispatch,
         rootDirectory,
         selectedFileNodeIds,
+        activeEditorUri,
         ...rest
       } = this.props;
 
@@ -167,6 +171,7 @@ export default (Base: React.ComponentClass<BaseFileNavigatorProps>) =>
             selectedFileNodeIds,
             onNewFileChangeComplete,
             onNewFileInputChange,
+            activeEditorUri,
             dispatch
           )}
         >
