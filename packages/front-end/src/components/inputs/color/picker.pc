@@ -197,10 +197,10 @@
       ],
       "metadata": {
         "bounds": {
-          "left": -580,
-          "top": 689,
-          "right": -149.77594754084498,
-          "bottom": 1045.984364557568
+          "left": -581,
+          "top": 678,
+          "right": -150.77594754084498,
+          "bottom": 1034.984364557568
         },
         "mode": "preview"
       },
@@ -1224,10 +1224,10 @@
       ],
       "metadata": {
         "bounds": {
-          "left": -41,
-          "top": 175,
-          "right": 59,
-          "bottom": 275
+          "left": -34,
+          "top": 177,
+          "right": 66,
+          "bottom": 277
         }
       },
       "variant": {}

@@ -54,6 +54,11 @@ export default (Base: React.ComponentClass<BasePropertiesProps>) =>
             text: sourceNode.name === PCSourceTagNames.TEXT,
             element: sourceNode.name !== PCSourceTagNames.TEXT
           })}
+          framePaneProps={{
+            dispatch,
+            selectedNode: sourceNode as PCVisibleNode,
+            graph
+          }}
           controllersPaneProps={{
             selectedNodes,
             graph,

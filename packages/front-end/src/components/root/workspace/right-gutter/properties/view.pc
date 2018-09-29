@@ -176,7 +176,7 @@
       "variant": {}
     },
     {
-      "label": "Element Properties",
+      "label": "element properties",
       "is": "div",
       "style": {},
       "attributes": {},
@@ -397,6 +397,24 @@
       "id": "9208d19593983",
       "name": "component",
       "children": [
+        {
+          "id": "68832d8a200758",
+          "is": "ca37a81113095",
+          "name": "component-instance",
+          "attributes": {},
+          "style": {},
+          "children": [],
+          "metadata": {
+            "bounds": {
+              "left": -65,
+              "top": 16,
+              "right": 227.82673252505197,
+              "bottom": 271.2630833318601
+            }
+          },
+          "variant": {},
+          "label": "frame pane"
+        },
         {
           "id": "9208d19593981",
           "variant": {},

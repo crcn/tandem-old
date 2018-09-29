@@ -52,11 +52,6 @@ export default (Base: React.ComponentClass<BaseElementStylerProps>) =>
       return (
         <Base
           {...rest}
-          framePaneProps={{
-            dispatch,
-            selectedNode,
-            graph
-          }}
           instancePaneProps={{
             selectedInspectorNodes,
             rootInspectorNode,
