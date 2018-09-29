@@ -4,8 +4,8 @@ import {isEqual} from "lodash";
 import { PCVisibleNode, DependencyGraph, isPCContentNode, PCVisibleNodeMetadataKey } from "paperclip";
 import { Bounds, memoize, resizeBounds, moveBounds, createBounds, getBoundsSize } from "tandem-common";
 import { Dispatch } from "redux";
-import { frameBoundsChangeCompleted, frameBoundsChanged } from "actions";
-import { DropdownMenuOption } from "../../../../../../inputs/dropdown/controller";
+import { frameBoundsChangeCompleted, frameBoundsChanged } from "../../../../../actions";
+import { DropdownMenuOption } from "../../../../inputs/dropdown/controller";
 
 export type Props = {
   dispatch: Dispatch<any>;
