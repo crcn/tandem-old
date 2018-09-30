@@ -471,6 +471,7 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
       return state;
     }
     case ACTIVE_EDITOR_URI_DIRS_LOADED: {
+      console.log(state.activeEditorFilePath);
       state = setRootStateFileNodeExpanded(
         getFileFromUri(state.activeEditorFilePath, state.projectDirectory).id,
         true,

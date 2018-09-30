@@ -98,7 +98,7 @@ export function projectSaga({
     while (1) {
       yield take();
       const { activeEditorFilePath }: RootState = yield select();
-      if (prevUri == activeEditorFilePath) {
+      if (prevUri == activeEditorFilePath || !activeEditorFilePath) {
         continue;
       }
       prevUri = activeEditorFilePath;
