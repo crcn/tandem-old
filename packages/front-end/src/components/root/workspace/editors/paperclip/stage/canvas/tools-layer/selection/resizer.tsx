@@ -41,6 +41,13 @@ const POINT_RADIUS = 4;
 
 export class Resizer extends React.PureComponent<ResizerOuterProps> {
   onMouseDown = (event: React.MouseEvent<any>) => {
+
+    // 2 if right click. Don't want that or else this will happen:
+    // https://github.com/tandemcode/tandem/issues/503
+    if (event.button !== 0) {
+      return;
+    }
+    
     const {
       dispatch,
       canvas,

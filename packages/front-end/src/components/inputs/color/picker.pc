@@ -1067,6 +1067,23 @@
       "variant": {}
     },
     {
+      "id": "69a3e59d8987",
+      "is": "77d88356850",
+      "name": "component-instance",
+      "attributes": {},
+      "style": {},
+      "children": [],
+      "metadata": {
+        "bounds": {
+          "left": 97,
+          "top": 168,
+          "right": 197,
+          "bottom": 268
+        }
+      },
+      "variant": {}
+    },
+    {
       "label": "Element",
       "is": "div",
       "style": {
