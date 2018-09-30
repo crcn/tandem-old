@@ -35,7 +35,6 @@ const SLOW_ACTION_INTERVAL = 10;
 let alerted = false;
 
 const onError = error => {
-
   // prevent blasted errors
   if (!alerted) {
     alerted = true;
@@ -46,7 +45,6 @@ const onError = error => {
   console.error(error);
 };
 window.onerror = onError;
-
 
 export const setup = <TState extends RootState>(
   createSideEffects: SideEffectCreator,
@@ -78,14 +76,30 @@ export const setup = <TState extends RootState>(
       applyMiddleware(sagaMiddleware)
     );
     sagaMiddleware.run(function*() {
-      let { readFile, writeFile, openPreview, loadProjectInfo, readDirectory, openContextMenu, deleteFile  } = yield call(createSideEffects);
+      let {
+        readFile,
+        writeFile,
+        openPreview,
+        loadProjectInfo,
+        readDirectory,
+        openContextMenu,
+        deleteFile
+      } = yield call(createSideEffects);
 
       readFile = setReaderMimetype(
         PAPERCLIP_MIME_TYPE,
         PAPERCLIP_DEFAULT_EXTENSIONS
       )(readFile);
 
-      yield fork(createRootSaga({ openPreview, loadProjectInfo, readDirectory, openContextMenu, deleteFile }));
+      yield fork(
+        createRootSaga({
+          openPreview,
+          loadProjectInfo,
+          readDirectory,
+          openContextMenu,
+          deleteFile
+        })
+      );
       if (saga) {
         yield fork(saga);
         yield fork(createFSSandboxSaga({ readFile, writeFile }));
@@ -98,12 +112,18 @@ export const setup = <TState extends RootState>(
               if (!state.selectedVariant) {
                 return EMPTY_OBJECT;
               }
-              const module = getPCNodeModule(state.selectedVariant.id, state.graph);
+              const module = getPCNodeModule(
+                state.selectedVariant.id,
+                state.graph
+              );
               // variant does not exist
               if (!module) {
                 return EMPTY_OBJECT;
               }
-              const component = getParentTreeNode(state.selectedVariant.id, module) as PCComponent;
+              const component = getParentTreeNode(
+                state.selectedVariant.id,
+                module
+              ) as PCComponent;
               return getVariants(component.id, state.selectedVariant.id);
             }
           })
@@ -115,7 +135,7 @@ export const setup = <TState extends RootState>(
   };
 };
 
-const getVariants = memoize((componentId: string, variantId: string)  => ({
+const getVariants = memoize((componentId: string, variantId: string) => ({
   [componentId]: {
     [variantId]: true
   }

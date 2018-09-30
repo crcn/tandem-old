@@ -1,5 +1,15 @@
-import { cancelled, cancel, fork, select, take, call, put, spawn as spawn2, throttle } from "redux-saga/effects";
-import { delay } from "redux-saga";
+import {
+  cancelled,
+  cancel,
+  fork,
+  select,
+  take,
+  call,
+  put,
+  spawn as spawn2,
+  throttle
+} from "redux-saga/effects";
+import { delay } from "redux-saga";
 import * as fs from "fs";
 import * as chokidar from "chokidar";
 import * as fsa from "fs-extra";
@@ -8,7 +18,7 @@ import { exec } from "child_process";
 import * as path from "path";
 import { ipcSaga } from "./ipc";
 import { eventChannel } from "redux-saga";
-import {remote, dialog, Menu} from "electron";
+import { remote, dialog, Menu } from "electron";
 import {
   RootState,
   // PROJECT_DIRECTORY_LOADED,
@@ -69,7 +79,6 @@ import {
 import { DesktopRootState } from "../state";
 import { Action } from "redux";
 
-
 export function* rootSaga() {
   yield fork(ipcSaga);
   yield fork(handleSaveShortcut);
@@ -85,12 +94,16 @@ export function* rootSaga() {
   yield fork(chromeSaga);
 }
 
-
 function* handleProjectDirectory() {
   let task;
-  while(1) {
+  while (1) {
     const action = yield take((action: ProjectInfoLoaded | FileChanged) => {
-      return action.type === PROJECT_INFO_LOADED || (action.type === FILE_CHANGED && /add|unlink/.test((action as FileChanged).eventType) && isPaperclipUri((action as FileChanged).uri));
+      return (
+        action.type === PROJECT_INFO_LOADED ||
+        (action.type === FILE_CHANGED &&
+          /add|unlink/.test((action as FileChanged).eventType) &&
+          isPaperclipUri((action as FileChanged).uri))
+      );
     });
 
     if (task) {
@@ -210,16 +223,12 @@ const saveFile = (uri: string, content: Buffer) => {
   });
 };
 
-
 function* watchProjectDirectory() {
-
   let watcher;
   let watching: string[] = [];
 
   yield fork(function* startWatcher() {
-
-
-    const chan = eventChannel((emit) => {
+    const chan = eventChannel(emit => {
       watcher = chokidar.watch([], {
         depth: 0,
         ignoreInitial: true,
@@ -243,32 +252,34 @@ function* watchProjectDirectory() {
       });
       return () => {
         watcher.close();
-      }
-    }); 
-    while(1) {
+      };
+    });
+    while (1) {
       const action: FileChanged = yield take(chan);
       yield put(action);
     }
-  }) 
+  });
 
   yield fork(function* handleDirsLoaded() {
-    while(1) {
+    while (1) {
       yield take(PROJECT_DIRECTORY_DIR_LOADED);
       const { projectDirectory }: RootState = yield select();
-      const expandedFilePaths = flattenTreeNode(projectDirectory).map(item => stripProtocol(item.uri));
+      const expandedFilePaths = flattenTreeNode(projectDirectory).map(item =>
+        stripProtocol(item.uri)
+      );
       watching.push(...expandedFilePaths);
       watcher.add(expandedFilePaths);
     }
   });
 
   yield fork(function* handleChangedFiles() {
-    while(1) {
+    while (1) {
       const { eventType, uri }: FileChanged = yield take(FILE_CHANGED);
       const filePath = stripProtocol(uri);
-      switch(eventType) {
-        case FileChangedEventType.ADD_DIR: 
+      switch (eventType) {
+        case FileChangedEventType.ADD_DIR:
         case FileChangedEventType.ADD: {
-          if (watching.indexOf(filePath) === -1) { 
+          if (watching.indexOf(filePath) === -1) {
             watching.push(filePath);
             watcher.add(filePath);
           }
@@ -287,7 +298,7 @@ function* watchProjectDirectory() {
   });
 }
 
-// function* 
+// function*
 // () {
 //   const chan = eventChannel(emit => {
 //     ipcRenderer.on("serverState", (event, arg) => emit(arg));
@@ -333,8 +344,7 @@ function* handleOpenController() {
 
 function* handleQuickSearch() {
   yield throttle(10, QUICK_SEARCH_FILTER_CHANGED, function*() {
-    
-    const {quickSearch, projectInfo}: RootState = yield select();
+    const { quickSearch, projectInfo }: RootState = yield select();
     if (!projectInfo) {
       return;
     }
@@ -348,7 +358,7 @@ function* handleQuickSearch() {
 
     let results: QuickSearchUriResult[] = [];
 
-    walkPCRootDirectory(projectInfo.config, projectDir, (filePath) => {
+    walkPCRootDirectory(projectInfo.config, projectDir, filePath => {
       if (pattern.test(filePath)) {
         results.push({
           uri: addProtocol(FILE_PROTOCOL, filePath),
@@ -359,35 +369,39 @@ function* handleQuickSearch() {
       }
     });
     yield put(quickSearchFilterResultLoaded(results.slice(0, 50)));
-
   });
 }
 
 function* chromeSaga() {
   yield fork(function* handleHeaderClick() {
-    while(1) {
+    while (1) {
       yield take(CHROME_HEADER_MOUSE_DOWN);
     }
-  })
-
+  });
 
   yield fork(function* handleMinimizeClick() {
-    while(1) {
+    while (1) {
       yield take(CHROME_MINIMIZE_BUTTON_CLICKED);
       remote.BrowserWindow.getFocusedWindow().minimize();
     }
   });
 
   yield fork(function* handleMaximizeClick() {
-    while(1) {
+    while (1) {
       yield take(CHROME_MAXIMIZE_BUTTON_CLICKED);
-      remote.BrowserWindow.getFocusedWindow().setFullScreen(!remote.BrowserWindow.getFocusedWindow().isFullScreen());
+      remote.BrowserWindow.getFocusedWindow().setFullScreen(
+        !remote.BrowserWindow.getFocusedWindow().isFullScreen()
+      );
     }
-  })
+  });
 
   yield fork(function* handleConfirmClose() {
-    while(1) {
-      const { save, cancel, closeWithoutSaving}: ConfirmCloseWindow = yield take(CONFIRM_CLOSE_WINDOW);
+    while (1) {
+      const {
+        save,
+        cancel,
+        closeWithoutSaving
+      }: ConfirmCloseWindow = yield take(CONFIRM_CLOSE_WINDOW);
       if (cancel) {
         continue;
       }
@@ -399,5 +413,5 @@ function* chromeSaga() {
         window.close();
       }
     }
-  })
+  });
 }

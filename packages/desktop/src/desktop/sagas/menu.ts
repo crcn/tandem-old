@@ -1,10 +1,20 @@
-import { Menu, MenuItem, MenuItemConstructorOptions, app, clipboard } from "electron";
+import {
+  Menu,
+  MenuItem,
+  MenuItemConstructorOptions,
+  app,
+  clipboard
+} from "electron";
 import { fork, put, take, takeEvery } from "redux-saga/effects";
 import { eventChannel } from "redux-saga";
 import { exec } from "child_process";
-import { MAIN_WINDOW_OPENED, OPEN_PROJECT_MENU_ITEM_CLICKED, NEW_PROJECT_MENU_ITEM_CLICKED } from "../actions";
+import {
+  MAIN_WINDOW_OPENED,
+  OPEN_PROJECT_MENU_ITEM_CLICKED,
+  NEW_PROJECT_MENU_ITEM_CLICKED
+} from "../actions";
 import { publicActionCreator, stripProtocol } from "tandem-common";
-import {  FileItemContextMenuAction } from "tandem-front-end";
+import { FileItemContextMenuAction } from "tandem-front-end";
 
 const shortcutKeyDown = publicActionCreator((type: string) => ({
   type
@@ -17,16 +27,25 @@ export function* shortcutsSaga() {
 }
 
 function* handleFSItemContextMenuOptions() {
-  yield takeEvery("FILE_ITEM_CONTEXT_MENU_COPY_PATH_CLICKED", ({item}: FileItemContextMenuAction) => {
-    clipboard.writeText(stripProtocol(item.uri));
-  });
-  yield takeEvery("FILE_ITEM_CONTEXT_MENU_OPEN_IN_FINDER_CLICKED", ({item}: FileItemContextMenuAction) => {
-    const path = stripProtocol(item.uri);
-  });
-  yield takeEvery("FILE_ITEM_CONTEXT_MENU_OPEN_CLICKED", ({item}: FileItemContextMenuAction) => {
-    const path = stripProtocol(item.uri);
-    exec(`open ${path}`);
-  });
+  yield takeEvery(
+    "FILE_ITEM_CONTEXT_MENU_COPY_PATH_CLICKED",
+    ({ item }: FileItemContextMenuAction) => {
+      clipboard.writeText(stripProtocol(item.uri));
+    }
+  );
+  yield takeEvery(
+    "FILE_ITEM_CONTEXT_MENU_OPEN_IN_FINDER_CLICKED",
+    ({ item }: FileItemContextMenuAction) => {
+      const path = stripProtocol(item.uri);
+    }
+  );
+  yield takeEvery(
+    "FILE_ITEM_CONTEXT_MENU_OPEN_CLICKED",
+    ({ item }: FileItemContextMenuAction) => {
+      const path = stripProtocol(item.uri);
+      exec(`open ${path}`);
+    }
+  );
 }
 
 function* handleMenu() {

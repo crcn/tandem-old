@@ -50,32 +50,33 @@ export enum PCOverridablePropertyName {
   LABEL = "label",
   SLOT = "slot",
   CONTENT = "content"
-};
+}
 
-
-export const VOID_TAG_NAMES = [ 'area',
-'base',
-'basefont',
-'bgsound',
-'br',
-'col',
-'command',
-'embed',
-'frame',
-'hr',
-'image',
-'img',
-'input',
-'isindex',
-'keygen',
-'link',
-'menuitem',
-'meta',
-'nextid',
-'param',
-'source',
-'track',
-'wbr' ];
+export const VOID_TAG_NAMES = [
+  "area",
+  "base",
+  "basefont",
+  "bgsound",
+  "br",
+  "col",
+  "command",
+  "embed",
+  "frame",
+  "hr",
+  "image",
+  "img",
+  "input",
+  "isindex",
+  "keygen",
+  "link",
+  "menuitem",
+  "meta",
+  "nextid",
+  "param",
+  "source",
+  "track",
+  "wbr"
+];
 
 export enum PCVisibleNodeMetadataKey {
   // defined when dropped into the root document
@@ -572,7 +573,6 @@ export const getVisibleChildren = memoize(
   (node: PCNode) => node.children.filter(isVisibleNode) as PCVisibleNode[]
 );
 
-
 export const getVisibleOrSlotChildren = memoize(
   (node: PCNode) =>
     node.children.filter(
@@ -778,9 +778,12 @@ export const filterPCNodes = (
 export const isPCContentNode = (node: PCNode, graph: DependencyGraph) => {
   const module = getPCNodeModule(node.id, graph);
   return module.children.some(child => child.id === node.id);
-}
+};
 
-export const getPCNodeModule = (nodeId: string, graph: DependencyGraph): PCModule => {
+export const getPCNodeModule = (
+  nodeId: string,
+  graph: DependencyGraph
+): PCModule => {
   const dep = getPCNodeDependency(nodeId, graph);
   return dep && dep.content;
 };
@@ -833,7 +836,8 @@ export const getAllPCComponents = memoize(
   }
 );
 
-export const isVoidTagName = (name: string) => VOID_TAG_NAMES.indexOf(name) !== -1;
+export const isVoidTagName = (name: string) =>
+  VOID_TAG_NAMES.indexOf(name) !== -1;
 
 export const getComponentRefIds = memoize(
   (node: PCNode): string[] => {

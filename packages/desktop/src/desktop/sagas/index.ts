@@ -1,5 +1,16 @@
-import { fork, call, take, select, put, cancel, spawn as sspawn, ForkEffect, cancelled, CallEffectFactory } from "redux-saga/effects";
-import { eventChannel, Channel } from "redux-saga";
+import {
+  fork,
+  call,
+  take,
+  select,
+  put,
+  cancel,
+  spawn as sspawn,
+  ForkEffect,
+  cancelled,
+  CallEffectFactory
+} from "redux-saga/effects";
+import { eventChannel, Channel } from "redux-saga";
 
 import { electronSaga } from "./electron";
 import { BrowserWindow, dialog } from "electron";
@@ -23,7 +34,13 @@ import { ipcSaga, pid } from "./ipc";
 import * as getPort from "get-port";
 import * as qs from "querystring";
 import { spawn } from "child_process";
-import { walkPCRootDirectory, createPCModule, createPCComponent, PCVisibleNodeMetadataKey, createPCTextNode } from "paperclip";
+import {
+  walkPCRootDirectory,
+  createPCModule,
+  createPCComponent,
+  PCVisibleNodeMetadataKey,
+  createPCTextNode
+} from "paperclip";
 import { DesktopState, TDProject } from "../state";
 import {
   isPublicAction,
@@ -49,23 +66,32 @@ const DEFAULT_TD_PROJECT: TDProject = {
 
 const DEFAULT_TD_PROJECT_FILES = {
   "./src/main.pc": () => {
-    return JSON.stringify(createPCModule([
-      createPCComponent("Application", null, null, null, [
-        createPCTextNode("App content")
-      ], {
-        [PCVisibleNodeMetadataKey.BOUNDS]: createBounds(0, 600, 0, 400)
-      })
-    ]), null, 2)
+    return JSON.stringify(
+      createPCModule([
+        createPCComponent(
+          "Application",
+          null,
+          null,
+          null,
+          [createPCTextNode("App content")],
+          {
+            [PCVisibleNodeMetadataKey.BOUNDS]: createBounds(0, 600, 0, 400)
+          }
+        )
+      ]),
+      null,
+      2
+    );
   }
 };
 
 const DEFAULT_TD_PROJECT_NAME = "app.tdproject";
 
 export function* rootSaga() {
-  // yield fork(watchProjectDirectory); 
+  // yield fork(watchProjectDirectory);
   yield fork(openMainWindow);
   yield fork(electronSaga);
-  yield fork(ipcSaga);  
+  yield fork(ipcSaga);
   // yield fork(handleLoadProject);
   yield fork(shortcutsSaga);
   yield fork(previewServer);
@@ -111,7 +137,7 @@ function* openMainWindow() {
     frame: withFrame
   });
 
-  mainWindow.webContents.on
+  mainWindow.webContents.on;
 
   let url = FRONT_END_ENTRY_FILE_PATH;
 
@@ -228,7 +254,10 @@ function* handleOpenProject() {
 
 function* handleCreateProject() {
   while (1) {
-    yield take(["CREATE_PROJECT_BUTTON_CLICKED", NEW_PROJECT_MENU_ITEM_CLICKED]);
+    yield take([
+      "CREATE_PROJECT_BUTTON_CLICKED",
+      NEW_PROJECT_MENU_ITEM_CLICKED
+    ]);
     const [directory] = dialog.showOpenDialog({
       title: "Choose project directory",
       properties: ["openDirectory"]
@@ -250,10 +279,12 @@ function* handleCreateProject() {
         const fullPath = path.join(directory, relativePath);
         try {
           fsa.mkdirpSync(path.dirname(fullPath));
-        } catch(e) {
-
-        }
-        fs.writeFileSync(fullPath, DEFAULT_TD_PROJECT_FILES[relativePath](), "utf8");
+        } catch (e) {}
+        fs.writeFileSync(
+          fullPath,
+          DEFAULT_TD_PROJECT_FILES[relativePath](),
+          "utf8"
+        );
       }
     }
     yield put(tdProjectFilePicked(filePath));
@@ -261,13 +292,18 @@ function* handleCreateProject() {
 }
 
 function* handleChrome() {
- 
   yield fork(function* handleCloseClick() {
-    while(1) {
-      const {unsaved, origin} = yield take("CHROME_CLOSE_BUTTON_CLICKED");
+    while (1) {
+      const { unsaved, origin } = yield take("CHROME_CLOSE_BUTTON_CLICKED");
       const sender: BrowserWindow = origin.sender;
       if (!unsaved) {
-        yield put({ type: "CONFIRM_CLOSE_WINDOW", "@@public": true, closeWithoutSaving: true, cancel: false, save: false } as ConfirmCloseWindow);
+        yield put({
+          type: "CONFIRM_CLOSE_WINDOW",
+          "@@public": true,
+          closeWithoutSaving: true,
+          cancel: false,
+          save: false
+        } as ConfirmCloseWindow);
         continue;
       }
 
@@ -275,7 +311,13 @@ function* handleChrome() {
         message: "Do you want to save changes?",
         buttons: ["Save", "Cancel", "Don't save"]
       });
-      yield put({ type: "CONFIRM_CLOSE_WINDOW", "@@public": true, closeWithoutSaving: option === 2, cancel: option === 1, save: option === 0 } as ConfirmCloseWindow);
+      yield put({
+        type: "CONFIRM_CLOSE_WINDOW",
+        "@@public": true,
+        closeWithoutSaving: option === 2,
+        cancel: option === 1,
+        save: option === 0
+      } as ConfirmCloseWindow);
     }
   });
 }
@@ -307,8 +349,7 @@ function* handleAddControllerClick() {
 // function* watchProjectDirectory() {
 //   let chan: Channel<any>;
 //   let fork: any;
-  
-  
+
 //   while(1) {
 //     yield take("PROJECT_DIRECTORY_LOADED");
 //     const { tdProjectPath, tdProject }: DesktopState = yield select();
@@ -324,13 +365,13 @@ function* handleAddControllerClick() {
 //       watcher.on("ready", () => {
 //         watcher.on("all", debounce(() => {
 //           emit({});
-//         }, 100)); 
+//         }, 100));
 //       });
 //       return () => {
 //         watcher.close();
 //       };
 //     });
-      
+
 //     fork = yield sspawn(function*(){
 //       while(!(yield cancelled())) {
 //         yield take(chan);

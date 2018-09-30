@@ -18,7 +18,7 @@ export type Props = {
 } & BaseLeftGutterProps;
 
 type State = {
-  width: number
+  width: number;
 };
 
 const MIN_WIDTH = 200;
@@ -35,12 +35,14 @@ export default (Base: React.ComponentClass<BaseLeftGutterProps>) =>
     };
     onDraggerMouseDown = (event: React.MouseEvent<any>) => {
       const initialWidth = this.state.width;
-      startDOMDrag(event, () => {
-
-      }, (event, data) => {
-        this.setState({ width: Math.max(MIN_WIDTH, event.clientX) });
-      });
-    }
+      startDOMDrag(
+        event,
+        () => {},
+        (event, data) => {
+          this.setState({ width: Math.max(MIN_WIDTH, event.clientX) });
+        }
+      );
+    };
     render() {
       const {
         graph,
@@ -56,7 +58,7 @@ export default (Base: React.ComponentClass<BaseLeftGutterProps>) =>
         show,
         ...rest
       } = this.props;
-      const {setDragger, onDraggerMouseDown} = this;
+      const { setDragger, onDraggerMouseDown } = this;
       if (show === false) {
         return null;
       }

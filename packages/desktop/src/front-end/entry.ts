@@ -12,7 +12,14 @@ import {
   createRootInspectorNode,
   ContextMenuItem
 } from "tandem-front-end";
-import { stripProtocol, createDirectory, addProtocol, FILE_PROTOCOL, createFile, Point } from "tandem-common";
+import {
+  stripProtocol,
+  createDirectory,
+  addProtocol,
+  FILE_PROTOCOL,
+  createFile,
+  Point
+} from "tandem-common";
 import { DesktopRootState } from "./state";
 import * as path from "path";
 import * as Url from "url";
@@ -24,7 +31,6 @@ import {
   getPCNodeDependency
 } from "paperclip";
 import { eventChannel } from "redux-saga";
-
 
 const query = Url.parse(String(location), true).query;
 
@@ -88,7 +94,7 @@ function* openPreview(frame: Frame) {
 }
 
 function* loadProjectInfo() {
-  const chan = eventChannel((emit) => {
+  const chan = eventChannel(emit => {
     ipcRenderer.once("projectInfo", (event, arg) => emit({ ret: arg }));
     return () => {};
   });
@@ -98,9 +104,12 @@ function* loadProjectInfo() {
 
 function* readDirectory(dirUri: string): any {
   const dir = stripProtocol(dirUri);
-  const dirBasenames: string[] = (yield call(() => new Promise((resolve) => {
-    fs.readdir(dir, (err, basenames) => resolve(basenames));
-  }))).filter(basename => basename !== ".DS_Store");
+  const dirBasenames: string[] = (yield call(
+    () =>
+      new Promise(resolve => {
+        fs.readdir(dir, (err, basenames) => resolve(basenames));
+      })
+  )).filter(basename => basename !== ".DS_Store");
 
   return dirBasenames.map(basename => {
     const fullPath = path.join(dir, basename);
@@ -117,7 +126,7 @@ function* openContextMenu(point: Point, options: ContextMenuItem[]) {
   ipcRenderer.send("openContextMenu", {
     point,
     options
-  })
+  });
 }
 
 function* deleteFile(uri: string) {

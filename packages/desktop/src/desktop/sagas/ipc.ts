@@ -18,7 +18,7 @@ function* actionSaga() {
     message["@@" + pid] = true;
     console.log("incomming IPC message:", message);
     yield spawn(function*() {
-      yield put({...message, origin: event});
+      yield put({ ...message, origin: event });
     });
   }
 }
@@ -35,18 +35,27 @@ function* apiSaga() {
 
   yield fork(function* getProjectInfo() {
     const chan = takeIPCEvents("getProjectInfo");
-    while(1) {
-      const {event} = yield take(chan);
+    while (1) {
+      const { event } = yield take(chan);
       const state: DesktopState = yield select();
-      event.sender.send("projectInfo", state.tdProject && { config: state.tdProject, path: state.tdProjectPath });
+      event.sender.send(
+        "projectInfo",
+        state.tdProject && {
+          config: state.tdProject,
+          path: state.tdProjectPath
+        }
+      );
     }
   });
 
   yield fork(function* openContextMenu() {
     const chan = takeIPCEvents("openContextMenu");
-    while(1) {
-      const {event, arg: { point, options }} = yield take(chan);
-      const menuChan = eventChannel((emit) => {
+    while (1) {
+      const {
+        event,
+        arg: { point, options }
+      } = yield take(chan);
+      const menuChan = eventChannel(emit => {
         const menu = generateMenu(options, emit);
         menu.popup({ window: event.sender, x: point.left, y: point.top });
 
@@ -55,7 +64,7 @@ function* apiSaga() {
 
         return () => {
           menu.closePopup();
-        }
+        };
       });
 
       const action = yield take(menuChan);
@@ -72,14 +81,13 @@ const generateMenu = (options: ContextMenuOption[], dispatch: any) => {
   return menu;
 };
 
-
-const generateMenuTpl = (options: ContextMenuOption[], click: any): MenuItemConstructorOptions[] => {
+const generateMenuTpl = (
+  options: ContextMenuOption[],
+  click: any
+): MenuItemConstructorOptions[] => {
   return options.reduce((items, option, i) => {
     if (option.type === "group") {
-      items = [
-        ...items,
-        ...generateMenuTpl(option.options, click),
-      ];
+      items = [...items, ...generateMenuTpl(option.options, click)];
       if (i !== options.length - 1) {
         items.push({ type: "separator" });
       }
@@ -91,10 +99,10 @@ const generateMenuTpl = (options: ContextMenuOption[], click: any): MenuItemCons
           label: option.label,
           click: () => click(option.action)
         }
-      ]
+      ];
     }
-  }, [])
-}
+  }, []);
+};
 
 const takeIPCEvents = (eventType: string) =>
   eventChannel(emit => {

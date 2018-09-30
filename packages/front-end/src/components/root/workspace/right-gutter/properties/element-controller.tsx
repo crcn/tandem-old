@@ -13,7 +13,10 @@ import {
   PCTextNode
 } from "paperclip";
 import { elementTypeChanged } from "../../../../../actions";
-import { DropdownMenuOption, dropdownMenuOptionFromValue } from "../../../../inputs/dropdown/controller";
+import {
+  DropdownMenuOption,
+  dropdownMenuOptionFromValue
+} from "../../../../inputs/dropdown/controller";
 import { BaseElementPropertiesProps } from "./view.pc";
 import { Dispatch } from "redux";
 import { InputProperties } from "./input.pc";
@@ -127,15 +130,23 @@ const TYPE_MENU_OPTIONS: DropdownMenuOption[] = [
   "wbr"
 ].map(dropdownMenuOptionFromValue);
 
-const getComponentDropdownOptions = memoize((components: PCComponent[]): DropdownMenuOption[] => {
-  return components.map(component => ({
-    label: component.label,
-    value: component.id
-  }))
-});
+const getComponentDropdownOptions = memoize(
+  (components: PCComponent[]): DropdownMenuOption[] => {
+    return components.map(component => ({
+      label: component.label,
+      value: component.id
+    }));
+  }
+);
 
 const getTypeMenuOptions = memoize((components: PCComponent[]) => {
-  return [...TYPE_MENU_OPTIONS, ...getComponentDropdownOptions(components)].sort((a, b) => String(a.label).toLowerCase() < String(b.label).toLowerCase() ? -1 : 1);
+  return [
+    ...TYPE_MENU_OPTIONS,
+    ...getComponentDropdownOptions(components)
+  ].sort(
+    (a, b) =>
+      String(a.label).toLowerCase() < String(b.label).toLowerCase() ? -1 : 1
+  );
 });
 
 export type Props = {
@@ -153,7 +164,12 @@ export default (Base: React.ComponentClass<BaseElementPropertiesProps>) => {
       const { onTypeChange } = this;
       const { dispatch, sourceNode, graph, ...rest } = this.props;
 
-      if (!sourceNode || (sourceNode.name !== PCSourceTagNames.COMPONENT && sourceNode.name !== PCSourceTagNames.ELEMENT && sourceNode.name !== PCSourceTagNames.COMPONENT_INSTANCE)) {
+      if (
+        !sourceNode ||
+        (sourceNode.name !== PCSourceTagNames.COMPONENT &&
+          sourceNode.name !== PCSourceTagNames.ELEMENT &&
+          sourceNode.name !== PCSourceTagNames.COMPONENT_INSTANCE)
+      ) {
         return null;
       }
       const components = getAllPCComponents(graph);

@@ -1,4 +1,12 @@
-import { fork, put, take, call, spawn, takeEvery, select } from "redux-saga/effects";
+import {
+  fork,
+  put,
+  take,
+  call,
+  spawn,
+  takeEvery,
+  select
+} from "redux-saga/effects";
 import { eventChannel } from "redux-saga";
 import { mapKeys } from "lodash";
 import {
@@ -21,125 +29,198 @@ import {
   syntheticNodeContextMenuConvertToComponentClicked,
   syntheticNodeContextMenuRemoveClicked
 } from "../actions";
-import { ContextMenuItem, ContextMenuOptionType, ContextMenuOption, RootState, getCanvasMouseTargetNodeIdFromPoint, getCanvasMouseTargetNodeId } from "../state";
+import {
+  ContextMenuItem,
+  ContextMenuOptionType,
+  ContextMenuOption,
+  RootState,
+  getCanvasMouseTargetNodeIdFromPoint,
+  getCanvasMouseTargetNodeId
+} from "../state";
 import { Point, FSItemTagNames } from "tandem-common";
-import { getSyntheticNodeById, getSyntheticSourceNode, PCSourceTagNames, getPCNodeContentNode, getSyntheticInspectorNode, getSyntheticVisibleNodeDocument, syntheticNodeIsInShadow, getPCNodeModule, SyntheticNode, getInspectorSyntheticNode } from "paperclip";
+import {
+  getSyntheticNodeById,
+  getSyntheticSourceNode,
+  PCSourceTagNames,
+  getPCNodeContentNode,
+  getSyntheticInspectorNode,
+  getSyntheticVisibleNodeDocument,
+  syntheticNodeIsInShadow,
+  getPCNodeModule,
+  SyntheticNode,
+  getInspectorSyntheticNode
+} from "paperclip";
 
 export type ShortcutSagaOptions = {
   openContextMenu: (anchor: Point, options: ContextMenuOption[]) => void;
-}
+};
 
-export const createShortcutSaga = ({ openContextMenu }: ShortcutSagaOptions) => {
+export const createShortcutSaga = ({
+  openContextMenu
+}: ShortcutSagaOptions) => {
   return function*() {
-    yield takeEvery(FILE_ITEM_RIGHT_CLICKED, function* handleFileItemRightClick({event, item}: FileItemRightClicked) {
-      yield call(openContextMenu, {
-        left: event.pageX,
-        top: event.pageY
-      }, [
-        {
-          type: ContextMenuOptionType.GROUP,
-          options: [
+    yield takeEvery(
+      FILE_ITEM_RIGHT_CLICKED,
+      function* handleFileItemRightClick({
+        event,
+        item
+      }: FileItemRightClicked) {
+        yield call(
+          openContextMenu,
+          {
+            left: event.pageX,
+            top: event.pageY
+          },
+          [
             {
-              type: ContextMenuOptionType.ITEM,
-              label: "Copy Path",
-              action: fileItemContextMenuCopyPathClicked(item)
+              type: ContextMenuOptionType.GROUP,
+              options: [
+                {
+                  type: ContextMenuOptionType.ITEM,
+                  label: "Copy Path",
+                  action: fileItemContextMenuCopyPathClicked(item)
+                },
+                {
+                  type: ContextMenuOptionType.ITEM,
+                  label:
+                    item.name === FSItemTagNames.DIRECTORY
+                      ? "Open in Finder"
+                      : "Open in Text Editor",
+                  action: fileItemContextMenuOpenClicked(item)
+                }
+              ] as ContextMenuItem[]
             },
             {
-              type: ContextMenuOptionType.ITEM,
-              label: item.name === FSItemTagNames.DIRECTORY ? "Open in Finder" : "Open in Text Editor",
-              action: fileItemContextMenuOpenClicked(item)
-            }
-          ] as ContextMenuItem[]
-        },
-        {
-          type: ContextMenuOptionType.GROUP,
-          options: [
-            {
-              type: ContextMenuOptionType.ITEM,
-              label: "Rename",
-              action: fileItemContextMenuRenameClicked(item)
-            },
-            {
-              type: ContextMenuOptionType.ITEM,
-              label: "Delete",
-              action: fileItemContextMenuDeleteClicked(item)
+              type: ContextMenuOptionType.GROUP,
+              options: [
+                {
+                  type: ContextMenuOptionType.ITEM,
+                  label: "Rename",
+                  action: fileItemContextMenuRenameClicked(item)
+                },
+                {
+                  type: ContextMenuOptionType.ITEM,
+                  label: "Delete",
+                  action: fileItemContextMenuDeleteClicked(item)
+                }
+              ]
             }
           ]
-        }
-      ]);
+        );
+      }
+    );
 
-    });
-
-
-    yield takeEvery(CANVAS_RIGHT_CLICKED, function* handleFileItemRightClick({event, item}: FileItemRightClicked) {
+    yield takeEvery(CANVAS_RIGHT_CLICKED, function* handleFileItemRightClick({
+      event,
+      item
+    }: FileItemRightClicked) {
       const state: RootState = yield select();
       const targetNodeId = getCanvasMouseTargetNodeId(state, event);
       if (targetNodeId) {
-        yield call(openCanvasSyntheticNodeContextMenu, targetNodeId, event,state);
+        yield call(
+          openCanvasSyntheticNodeContextMenu,
+          targetNodeId,
+          event,
+          state
+        );
       }
     });
 
-    function* openCanvasSyntheticNodeContextMenu(targetNodeId: string, event: React.MouseEvent<any>, state: RootState) {
-
-      const ownerWindow = (event.nativeEvent.target as HTMLDivElement).ownerDocument.defaultView;
+    function* openCanvasSyntheticNodeContextMenu(
+      targetNodeId: string,
+      event: React.MouseEvent<any>,
+      state: RootState
+    ) {
+      const ownerWindow = (event.nativeEvent.target as HTMLDivElement)
+        .ownerDocument.defaultView;
       const parent = ownerWindow.top;
-      const ownerIframe = Array.from(parent.document.querySelectorAll("iframe")).find((iframe: HTMLIFrameElement) => {
+      const ownerIframe = Array.from(
+        parent.document.querySelectorAll("iframe")
+      ).find((iframe: HTMLIFrameElement) => {
         return iframe.contentDocument === ownerWindow.document;
       });
 
       const rect = ownerIframe.getBoundingClientRect();
 
-      yield call(openSyntheticNodeContextMenu, getSyntheticNodeById(targetNodeId, state.documents), {
-        left: event.pageX + rect.left,
-        top: event.pageY + rect.top
-      }, state);
+      yield call(
+        openSyntheticNodeContextMenu,
+        getSyntheticNodeById(targetNodeId, state.documents),
+        {
+          left: event.pageX + rect.left,
+          top: event.pageY + rect.top
+        },
+        state
+      );
     }
 
-
-    yield takeEvery(PC_LAYER_RIGHT_CLICKED, function* handleFileItemRightClick({event, item}: PCLayerRightClicked) {
+    yield takeEvery(PC_LAYER_RIGHT_CLICKED, function* handleFileItemRightClick({
+      event,
+      item
+    }: PCLayerRightClicked) {
       const state: RootState = yield select();
 
-      yield call(openSyntheticNodeContextMenu, getInspectorSyntheticNode(item, state.documents), {
-        left: event.pageX,
-        top: event.pageY
-      }, state);
+      yield call(
+        openSyntheticNodeContextMenu,
+        getInspectorSyntheticNode(item, state.documents),
+        {
+          left: event.pageX,
+          top: event.pageY
+        },
+        state
+      );
     });
 
-
-    function* openSyntheticNodeContextMenu(node: SyntheticNode, point: Point, state: RootState) {
-
+    function* openSyntheticNodeContextMenu(
+      node: SyntheticNode,
+      point: Point,
+      state: RootState
+    ) {
       const syntheticNode = getSyntheticNodeById(node.id, state.documents);
       const sourceNode = getSyntheticSourceNode(syntheticNode, state.graph);
-      const syntheticDocument = getSyntheticVisibleNodeDocument(syntheticNode.id, state.documents);
-      const contentNode = getPCNodeContentNode(sourceNode.id, getPCNodeModule(sourceNode.id, state.graph));
+      const syntheticDocument = getSyntheticVisibleNodeDocument(
+        syntheticNode.id,
+        state.documents
+      );
+      const contentNode = getPCNodeContentNode(
+        sourceNode.id,
+        getPCNodeModule(sourceNode.id, state.graph)
+      );
 
-      
       yield call(openContextMenu, point, [
-
-        syntheticNodeIsInShadow(syntheticNode, syntheticDocument, state.graph) ? {
-          type: ContextMenuOptionType.ITEM,
-          label: "Hide",
-          action: syntheticNodeContextMenuRemoveClicked(syntheticNode)
-        } : {
-          type: ContextMenuOptionType.GROUP,
-          options: [
-            {
+        syntheticNodeIsInShadow(syntheticNode, syntheticDocument, state.graph)
+          ? {
               type: ContextMenuOptionType.ITEM,
-              label: "Remove",
+              label: "Hide",
               action: syntheticNodeContextMenuRemoveClicked(syntheticNode)
+            }
+          : {
+              type: ContextMenuOptionType.GROUP,
+              options: [
+                {
+                  type: ContextMenuOptionType.ITEM,
+                  label: "Remove",
+                  action: syntheticNodeContextMenuRemoveClicked(syntheticNode)
+                },
+                sourceNode.name !== PCSourceTagNames.COMPONENT
+                  ? {
+                      type: ContextMenuOptionType.ITEM,
+                      label: "Convert to Component",
+                      action: syntheticNodeContextMenuConvertToComponentClicked(
+                        syntheticNode
+                      )
+                    }
+                  : null,
+                contentNode.name === PCSourceTagNames.COMPONENT
+                  ? {
+                      type: ContextMenuOptionType.ITEM,
+                      label: "Wrap in Slot",
+                      action: syntheticNodeContextMenuWrapInSlotClicked(
+                        syntheticNode
+                      )
+                    }
+                  : null
+              ].filter(Boolean) as ContextMenuItem[]
             },
-            sourceNode.name !== PCSourceTagNames.COMPONENT ? {
-              type: ContextMenuOptionType.ITEM,
-              label: "Convert to Component",
-              action: syntheticNodeContextMenuConvertToComponentClicked(syntheticNode)
-            } : null,
-            contentNode.name === PCSourceTagNames.COMPONENT ? {
-              type: ContextMenuOptionType.ITEM,
-              label: "Wrap in Slot",
-              action: syntheticNodeContextMenuWrapInSlotClicked(syntheticNode)
-            } : null
-          ].filter(Boolean) as ContextMenuItem[]
-        },
         {
           type: ContextMenuOptionType.GROUP,
           options: [
@@ -151,14 +232,16 @@ export const createShortcutSaga = ({ openContextMenu }: ShortcutSagaOptions) => 
             {
               type: ContextMenuOptionType.ITEM,
               label: "Select Source Node",
-              action: syntheticNodeContextMenuSelectSourceNodeClicked(syntheticNode)
+              action: syntheticNodeContextMenuSelectSourceNodeClicked(
+                syntheticNode
+              )
             }
           ]
         }
       ].filter(Boolean) as ContextMenuOption[]);
     }
-  }
-}
+  };
+};
 
 export function* shortcutSaga() {
   // yield fork(handleFileItemRightClick);
@@ -175,7 +258,6 @@ export function* shortcutSaga() {
   //   "backspace": wrapDispatch(SHORTCUT_DELETE_KEY_DOWN)
   // }));
 }
-
 
 const wrapDispatch = (type: string) =>
   function*(sourceEvent) {

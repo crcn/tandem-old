@@ -40,13 +40,22 @@ export type PaperclipSagaOptions = {
   getRuntimeVariants(state: PCEditorState): KeyValue<KeyValue<boolean>>;
 };
 
-const getRuntimeInfo = memoize((graph: DependencyGraph, variants: KeyValue<KeyValue<boolean>>): LocalRuntimeInfo => {
-  return {
-  graph,
-  variants,
-}});
+const getRuntimeInfo = memoize(
+  (
+    graph: DependencyGraph,
+    variants: KeyValue<KeyValue<boolean>>
+  ): LocalRuntimeInfo => {
+    return {
+      graph,
+      variants
+    };
+  }
+);
 
-export const createPaperclipSaga = ({ createRuntime, getRuntimeVariants }: PaperclipSagaOptions) =>
+export const createPaperclipSaga = ({
+  createRuntime,
+  getRuntimeVariants
+}: PaperclipSagaOptions) =>
   function* paperclipSaga() {
     yield fork(runtime);
     yield fork(nativeRenderer);
@@ -146,9 +155,11 @@ export const createPaperclipSaga = ({ createRuntime, getRuntimeVariants }: Paper
               newDocument,
               state.frames
             )) {
-
               // container may not exist of project is reloaded
-              if (!initedFrames[newFrame.syntheticContentNodeId] || !newFrame.$container) {
+              if (
+                !initedFrames[newFrame.syntheticContentNodeId] ||
+                !newFrame.$container
+              ) {
                 initedFrames[newFrame.syntheticContentNodeId] = true;
                 yield spawn(initContainer, newFrame, state.graph);
               } else {
@@ -161,7 +172,8 @@ export const createPaperclipSaga = ({ createRuntime, getRuntimeVariants }: Paper
                   prevState &&
                   prevState.frames.find(
                     oldFrame =>
-                      oldFrame.syntheticContentNodeId === newFrame.syntheticContentNodeId
+                      oldFrame.syntheticContentNodeId ===
+                      newFrame.syntheticContentNodeId
                   );
 
                 // Equality check on bounds since that's the only prop needed for re-rendering the frame. Equality check
@@ -180,7 +192,10 @@ export const createPaperclipSaga = ({ createRuntime, getRuntimeVariants }: Paper
                   yield spawn(
                     patchContainer,
                     newFrame,
-                    getNestedTreeNodeById(newFrame.syntheticContentNodeId, oldDocument),
+                    getNestedTreeNodeById(
+                      newFrame.syntheticContentNodeId,
+                      oldDocument
+                    ),
                     frameOts
                   );
                 }

@@ -1,4 +1,4 @@
-// behold the ~~blob~~ 
+// behold the ~~blob~~
 
 import { Action } from "redux";
 import * as path from "path";
@@ -394,24 +394,33 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
     case PROJECT_INFO_LOADED: {
       const { info: projectInfo } = action as ProjectInfoLoaded;
 
-      state =  updateRootState(
-        { 
-          projectInfo, 
-          ready: true, 
-          openFiles: [], 
+      state = updateRootState(
+        {
+          projectInfo,
+          ready: true,
+          openFiles: [],
           fileCache: {},
-          sourceNodeInspector: createRootInspectorNode(), 
+          sourceNodeInspector: createRootInspectorNode(),
           projectDirectory: null,
-          graph: {}, 
-          documents: [], 
+          graph: {},
+          documents: [],
           frames: [],
           editorWindows: []
-        }, state
+        },
+        state
       );
 
       if (projectInfo && projectInfo.config.mainFilePath) {
-        const fullMainFilePath = path.join(path.dirname(projectInfo.path), projectInfo.config.mainFilePath);
-        state = openFile(addProtocol(FILE_PROTOCOL, fullMainFilePath), true, false, state);
+        const fullMainFilePath = path.join(
+          path.dirname(projectInfo.path),
+          projectInfo.config.mainFilePath
+        );
+        state = openFile(
+          addProtocol(FILE_PROTOCOL, fullMainFilePath),
+          true,
+          false,
+          state
+        );
       }
 
       return state;
@@ -436,7 +445,6 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
         state = openFile(uri, false, false, state);
         state = updateRootState({ showQuickSearch: false }, state);
       } else {
-
       }
       return state;
     }
@@ -449,39 +457,63 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
       return state;
     }
     case PROJECT_DIRECTORY_DIR_LOADED: {
-      const {items} = action as ProjectDirectoryDirLoaded;
-      const {projectDirectory} = state;
-      state = updateRootState({
-        projectDirectory:  projectDirectory ? mergeFSItems(projectDirectory, ...items) : mergeFSItems(...items)
-      }, state);
-      
+      const { items } = action as ProjectDirectoryDirLoaded;
+      const { projectDirectory } = state;
+      state = updateRootState(
+        {
+          projectDirectory: projectDirectory
+            ? mergeFSItems(projectDirectory, ...items)
+            : mergeFSItems(...items)
+        },
+        state
+      );
+
       return state;
     }
     case ACTIVE_EDITOR_URI_DIRS_LOADED: {
-      state = setRootStateFileNodeExpanded(getFileFromUri(state.activeEditorFilePath, state.projectDirectory).id, true, state);
+      state = setRootStateFileNodeExpanded(
+        getFileFromUri(state.activeEditorFilePath, state.projectDirectory).id,
+        true,
+        state
+      );
       return state;
     }
     case FILE_CHANGED: {
-      const {eventType, uri}: FileChanged = action as FileChanged;
+      const { eventType, uri }: FileChanged = action as FileChanged;
 
-      if (eventType === FileChangedEventType.ADD || eventType === FileChangedEventType.ADD_DIR) {
+      if (
+        eventType === FileChangedEventType.ADD ||
+        eventType === FileChangedEventType.ADD_DIR
+      ) {
         const existing = getFileFromUri(uri, state.projectDirectory);
         if (existing) {
           return state;
         }
 
         if (eventType === FileChangedEventType.ADD_DIR) {
-          state = updateRootState({
-            projectDirectory:  mergeFSItems(createDirectory(uri), state.projectDirectory)
-          }, state);
+          state = updateRootState(
+            {
+              projectDirectory: mergeFSItems(
+                createDirectory(uri),
+                state.projectDirectory
+              )
+            },
+            state
+          );
         } else if (eventType === FileChangedEventType.ADD) {
           const file = createFile(uri);
-          const projectDirectory =  mergeFSItems(file, state.projectDirectory);
-          state = updateRootState({
-            projectDirectory,
-          }, state);
+          const projectDirectory = mergeFSItems(file, state.projectDirectory);
+          state = updateRootState(
+            {
+              projectDirectory
+            },
+            state
+          );
         }
-      } else if (eventType === FileChangedEventType.UNLINK || eventType === FileChangedEventType.UNLINK_DIR) {
+      } else if (
+        eventType === FileChangedEventType.UNLINK ||
+        eventType === FileChangedEventType.UNLINK_DIR
+      ) {
         const fsItem = getFileFromUri(uri, state.projectDirectory);
 
         let fileCache = state.fileCache;
@@ -490,23 +522,28 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
         // ick -- these files shouldn't be
 
         if (fileCache[uri]) {
-          fileCache = {...fileCache};
+          fileCache = { ...fileCache };
           delete fileCache[uri];
         }
 
         if (graph[uri]) {
-          graph = {...graph};
+          graph = { ...graph };
           delete graph[uri];
         }
 
-        
-        
         // TODO - check for renamed file
-        state = updateRootState({
-          fileCache,
-          graph,
-          projectDirectory:  fsItem ? updateFSItemAlts(removeNestedTreeNode(fsItem, state.projectDirectory)) : state.projectDirectory
-        }, state);
+        state = updateRootState(
+          {
+            fileCache,
+            graph,
+            projectDirectory: fsItem
+              ? updateFSItemAlts(
+                  removeNestedTreeNode(fsItem, state.projectDirectory)
+                )
+              : state.projectDirectory
+          },
+          state
+        );
 
         state = refreshModuleInspectorNodes(state);
         state = pruneOpenFiles(state);
@@ -515,22 +552,35 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
       return state;
     }
     case FILE_NAVIGATOR_BASENAME_CHANGED: {
-      const {item, basename }: FileNavigatorBasenameChanged = action as FileNavigatorBasenameChanged;
-      
+      const {
+        item,
+        basename
+      }: FileNavigatorBasenameChanged = action as FileNavigatorBasenameChanged;
+
       const updatedItem = {
         ...item,
-        uri: addProtocol(FILE_PROTOCOL, path.join(path.dirname(stripProtocol(item.uri)), basename))
+        uri: addProtocol(
+          FILE_PROTOCOL,
+          path.join(path.dirname(stripProtocol(item.uri)), basename)
+        )
       };
 
-      state = {...state, editingBasenameUri: null};
+      state = { ...state, editingBasenameUri: null };
 
-      const existingItem = getFileFromUri(updatedItem.uri, state.projectDirectory);
+      const existingItem = getFileFromUri(
+        updatedItem.uri,
+        state.projectDirectory
+      );
 
       // directory expanded so we can safely dispatch alert here
       if (existingItem) {
-        return confirm(`The name "${basename}" is already taken. Please choose a different name.`, ConfirmType.ERROR, state);
+        return confirm(
+          `The name "${basename}" is already taken. Please choose a different name.`,
+          ConfirmType.ERROR,
+          state
+        );
       }
-      
+
       let projectDirectory = removeNestedTreeNode(item, state.projectDirectory);
       projectDirectory = mergeFSItems(updatedItem, projectDirectory);
       state = updateRootState({ projectDirectory }, state);
@@ -538,59 +588,79 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
       // TODO - this also needs to work with directories
       const editorWindow = getEditorWindowWithFileUri(item.uri, state);
       if (editorWindow) {
-        let graph = {...state.graph};
-        let fileCache = {...state.fileCache};
+        let graph = { ...state.graph };
+        let fileCache = { ...state.fileCache };
         graph[updatedItem.uri] = graph[item.uri];
         fileCache[updatedItem.uri] = fileCache[item.uri];
         delete graph[item.uri];
         delete fileCache[item.uri];
-        state = updateEditorWindow({
-          tabUris: editorWindow.tabUris.map(uri => {
-            return item.uri === uri ? updatedItem.uri : uri
-          }),
-          activeFilePath: editorWindow.activeFilePath === item.uri ? updatedItem.uri : editorWindow.activeFilePath,
-        }, item.uri, state);
-        state = updateRootState({
-          graph,
-          fileCache,
-          activeEditorFilePath: state.activeEditorFilePath === item.uri ? updatedItem.uri : state.activeEditorFilePath,
-          openFiles: state.openFiles.map(openFile => ({
-            ...openFile,
-            uri: openFile.uri === item.uri ? updatedItem.uri : openFile.uri
-          })),
-        }, state);
+        state = updateEditorWindow(
+          {
+            tabUris: editorWindow.tabUris.map(uri => {
+              return item.uri === uri ? updatedItem.uri : uri;
+            }),
+            activeFilePath:
+              editorWindow.activeFilePath === item.uri
+                ? updatedItem.uri
+                : editorWindow.activeFilePath
+          },
+          item.uri,
+          state
+        );
+        state = updateRootState(
+          {
+            graph,
+            fileCache,
+            activeEditorFilePath:
+              state.activeEditorFilePath === item.uri
+                ? updatedItem.uri
+                : state.activeEditorFilePath,
+            openFiles: state.openFiles.map(openFile => ({
+              ...openFile,
+              uri: openFile.uri === item.uri ? updatedItem.uri : openFile.uri
+            }))
+          },
+          state
+        );
       }
 
       return state;
     }
 
     case QUICK_SEARCH_RESULT_LOADED: {
-      const {matches} = action as QuickSearchResultLoaded;
-      state = updateRootState({
-        quickSearch: {
-          ...state.quickSearch,
-          matches: [...state.quickSearch.matches, ...matches].sort((a, b) => {
-            return a.label < b.label ? -1 : 1;
-          })
-        }
-      }, state);
+      const { matches } = action as QuickSearchResultLoaded;
+      state = updateRootState(
+        {
+          quickSearch: {
+            ...state.quickSearch,
+            matches: [...state.quickSearch.matches, ...matches].sort((a, b) => {
+              return a.label < b.label ? -1 : 1;
+            })
+          }
+        },
+        state
+      );
       return state;
-
     }
 
     case QUICK_SEARCH_FILTER_CHANGED: {
-      const {value} = action as QuickSearchFilterChanged;
-      state = updateRootState({
-        quickSearch: {
-          filter: value,
-          matches: []
-        }
-      }, state);
+      const { value } = action as QuickSearchFilterChanged;
+      state = updateRootState(
+        {
+          quickSearch: {
+            filter: value,
+            matches: []
+          }
+        },
+        state
+      );
       return state;
     }
 
     case FILE_ITEM_CONTEXT_MENU_RENAME_CLICKED: {
-      const {item: {uri}} = action as FileItemContextMenuAction;
+      const {
+        item: { uri }
+      } = action as FileItemContextMenuAction;
       state = {
         ...state,
         editingBasenameUri: uri
@@ -599,7 +669,9 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
     }
 
     case FILE_NAVIGATOR_ITEM_DOUBLE_CLICKED: {
-      const { node: {uri} } = action as FileNavigatorItemClicked;
+      const {
+        node: { uri }
+      } = action as FileNavigatorItemClicked;
       state = {
         ...state,
         editingBasenameUri: uri
@@ -686,14 +758,13 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
           ? targetNode
           : getParentTreeNode(targetNode.id, state.projectDirectory);
       const targetUri = targetDir.uri;
-      
+
       state = updateRootState(
         {
           projectDirectory: updateNestedNode(
             targetDir,
             state.projectDirectory,
             targetNode => {
-              
               targetNode = appendChildNode(
                 {
                   ...node,
@@ -723,13 +794,11 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
         path.dirname(uri),
         state.projectDirectory
       );
-      
+
       state = updateRootState(
         {
-          projectDirectory: updateFSItemAlts(updateNestedNode(
-            directory,
-            state.projectDirectory,
-            dir => {
+          projectDirectory: updateFSItemAlts(
+            updateNestedNode(directory, state.projectDirectory, dir => {
               return {
                 ...dir,
                 children: sortFSItems([
@@ -739,8 +808,8 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
                     : createDirectory(uri)
                 ])
               };
-            }
-          ))
+            })
+          )
         },
         state
       );
@@ -1002,18 +1071,32 @@ export const canvasReducer = (state: RootState, action: Action) => {
       return state;
     }
     case FRAME_BOUNDS_CHANGED: {
-      const {newBounds} = action as FrameBoundsChanged;
-      state = persistSyntheticNodeMetadata({
-        [PCVisibleNodeMetadataKey.BOUNDS]: newBounds
-      }, getSyntheticNodeById(state.selectedSyntheticNodeIds[0], state.documents), state);
+      const { newBounds } = action as FrameBoundsChanged;
+      state = persistSyntheticNodeMetadata(
+        {
+          [PCVisibleNodeMetadataKey.BOUNDS]: newBounds
+        },
+        getSyntheticNodeById(
+          state.selectedSyntheticNodeIds[0],
+          state.documents
+        ),
+        state
+      );
       return state;
     }
     case FRAME_BOUNDS_CHANGE_COMPLETED: {
-      const {newBounds} = action as FrameBoundsChanged;
-      state = persistRootState((state) => {
-        state = persistSyntheticNodeMetadata({
-          [PCVisibleNodeMetadataKey.BOUNDS]: newBounds
-        }, getSyntheticNodeById(state.selectedSyntheticNodeIds[0], state.documents), state);
+      const { newBounds } = action as FrameBoundsChanged;
+      state = persistRootState(state => {
+        state = persistSyntheticNodeMetadata(
+          {
+            [PCVisibleNodeMetadataKey.BOUNDS]: newBounds
+          },
+          getSyntheticNodeById(
+            state.selectedSyntheticNodeIds[0],
+            state.documents
+          ),
+          state
+        );
         return state;
       }, state);
       return state;
@@ -1363,10 +1446,12 @@ export const canvasReducer = (state: RootState, action: Action) => {
     }
 
     case CANVAS_MOUSE_CLICKED: {
-      return handleCanvasMouseClicked(state, action as CanvasToolOverlayClicked);
+      return handleCanvasMouseClicked(
+        state,
+        action as CanvasToolOverlayClicked
+      );
     }
     case CANVAS_MOUSE_DOUBLE_CLICKED: {
-
       // looped in since there may be nested shadows
 
       const targetNodeId = getCanvasMouseTargetNodeId(
@@ -1381,15 +1466,28 @@ export const canvasReducer = (state: RootState, action: Action) => {
       const syntheticNode = getSyntheticNodeById(targetNodeId, state.documents);
       const sourceNode = getSyntheticSourceNode(syntheticNode, state.graph);
 
-      if (sourceNode.name === PCSourceTagNames.COMPONENT_INSTANCE || sourceNode.name === PCSourceTagNames.COMPONENT) {
-        const document = getSyntheticVisibleNodeDocument(syntheticNode.id, state.documents);        
-        const inspectorNode = getSyntheticInspectorNode(syntheticNode, document, state.sourceNodeInspector, state.graph);
-        
+      if (
+        sourceNode.name === PCSourceTagNames.COMPONENT_INSTANCE ||
+        sourceNode.name === PCSourceTagNames.COMPONENT
+      ) {
+        const document = getSyntheticVisibleNodeDocument(
+          syntheticNode.id,
+          state.documents
+        );
+        const inspectorNode = getSyntheticInspectorNode(
+          syntheticNode,
+          document,
+          state.sourceNodeInspector,
+          state.graph
+        );
+
         let currentInstance = inspectorNode;
 
         // break past nested shadows
-        while(currentInstance) {
-          const inspectorShadowNode = getInspectorInstanceShadow(currentInstance);
+        while (currentInstance) {
+          const inspectorShadowNode = getInspectorInstanceShadow(
+            currentInstance
+          );
           if (!inspectorShadowNode) {
             break;
           }
@@ -1398,15 +1496,21 @@ export const canvasReducer = (state: RootState, action: Action) => {
             selectedShadowInspectorNodeId: inspectorShadowNode.id
           };
 
-          state = handleCanvasMouseClicked(state, action as CanvasToolOverlayClicked);
+          state = handleCanvasMouseClicked(
+            state,
+            action as CanvasToolOverlayClicked
+          );
 
-          if (state.selectedSyntheticNodeIds.length && state.selectedSyntheticNodeIds[0] !== syntheticNode.id) {
+          if (
+            state.selectedSyntheticNodeIds.length &&
+            state.selectedSyntheticNodeIds[0] !== syntheticNode.id
+          ) {
             break;
           }
 
           currentInstance = inspectorShadowNode;
         }
-      } 
+      }
 
       return state;
     }
@@ -1817,12 +1921,11 @@ export const canvasReducer = (state: RootState, action: Action) => {
           state.selectedSyntheticNodeIds[0],
           state.documents
         ) as SyntheticElement;
-        const sourceNode = getSyntheticSourceNode(selectedNode, state.graph) as PCElement;
-        return persistChangeElementType(
-          value,
-          sourceNode,
-          state
-        );
+        const sourceNode = getSyntheticSourceNode(
+          selectedNode,
+          state.graph
+        ) as PCElement;
+        return persistChangeElementType(value, sourceNode, state);
       }, state);
       return state;
     }
@@ -1838,7 +1941,10 @@ export const canvasReducer = (state: RootState, action: Action) => {
         ).uri,
         state
       );
-      return handleArtboardSelectionFromAction(state, frame.syntheticContentNodeId);
+      return handleArtboardSelectionFromAction(
+        state,
+        frame.syntheticContentNodeId
+      );
     }
     case CANVAS_TOOL_WINDOW_BACKGROUND_CLICKED: {
       return setSelectedSyntheticVisibleNodeIds(state);
@@ -1922,13 +2028,16 @@ const isJavaScriptFile = (file: string) => /(ts|js)x?$/.test(file);
 const INSERT_ARTBOARD_WIDTH = 100;
 const INSERT_ARTBOARD_HEIGHT = 100;
 
-const handleCanvasMouseClicked = (state: RootState, action: CanvasToolOverlayClicked) => {
+const handleCanvasMouseClicked = (
+  state: RootState,
+  action: CanvasToolOverlayClicked
+) => {
   if (state.toolType != null) {
     return state;
   }
 
   state = deselectRootProjectFiles(state);
-  const {sourceEvent} = action;
+  const { sourceEvent } = action;
 
   if (/textarea|input/i.test((sourceEvent.target as Element).nodeName)) {
     return state;
@@ -1938,10 +2047,7 @@ const handleCanvasMouseClicked = (state: RootState, action: CanvasToolOverlayCli
   const altKey = sourceEvent.altKey;
 
   const editorWindow = getActiveEditorWindow(state);
-  const openFile = getOpenFile(
-    editorWindow.activeFilePath,
-    state.openFiles
-  );
+  const openFile = getOpenFile(editorWindow.activeFilePath, state.openFiles);
 
   // do not allow selection while window is panning (scrolling)
   if (openFile.canvas.panning || editorWindow.movingOrResizing) {
@@ -2140,18 +2246,15 @@ const getInsertFilter = (state: RootState) => {
   return filter;
 };
 
-
 const setFileExpanded = (node: FSItem, value: boolean, state: RootState) => {
   state = updateRootState(
     {
-      projectDirectory: updateFSItemAlts(updateNestedNode(
-        node,
-        state.projectDirectory,
-        (node: FSItem) => ({
+      projectDirectory: updateFSItemAlts(
+        updateNestedNode(node, state.projectDirectory, (node: FSItem) => ({
           ...node,
           expanded: value
-        })
-      ))
+        }))
+      )
     },
     state
   );
@@ -2339,16 +2442,27 @@ const shortcutReducer = (state: RootState, action: Action): RootState => {
     }
 
     case SYNTHETIC_NODE_CONTEXT_MENU_SELECT_PARENT_CLICKED: {
-      const {item} = action as SyntheticNodeContextMenuAction;
-      const document = getSyntheticVisibleNodeDocument(item.id, state.documents);
-      const inspectorNode = getSyntheticInspectorNode(item, document, state.sourceNodeInspector, state.graph);
-      const parent = getParentTreeNode(inspectorNode.id, state.sourceNodeInspector);
-      state = parent ?selectInspectorNode(parent, state) : state;
+      const { item } = action as SyntheticNodeContextMenuAction;
+      const document = getSyntheticVisibleNodeDocument(
+        item.id,
+        state.documents
+      );
+      const inspectorNode = getSyntheticInspectorNode(
+        item,
+        document,
+        state.sourceNodeInspector,
+        state.graph
+      );
+      const parent = getParentTreeNode(
+        inspectorNode.id,
+        state.sourceNodeInspector
+      );
+      state = parent ? selectInspectorNode(parent, state) : state;
       return state;
     }
 
     case SYNTHETIC_NODE_CONTEXT_MENU_SELECT_SOURCE_NODE_CLICKED: {
-      const {item} = action as SyntheticNodeContextMenuAction;
+      const { item } = action as SyntheticNodeContextMenuAction;
       state = openSyntheticVisibleNodeOriginFile(
         getSyntheticNodeById(item.id, state.documents),
         state
@@ -2356,22 +2470,22 @@ const shortcutReducer = (state: RootState, action: Action): RootState => {
       return state;
     }
     case SYNTHETIC_NODE_CONTEXT_MENU_REMOVE_CLICKED: {
-      const {item} = action as SyntheticNodeContextMenuAction;
-      state = persistRootState((state) => {
-        return persistRemoveSyntheticVisibleNode(item, state)
+      const { item } = action as SyntheticNodeContextMenuAction;
+      state = persistRootState(state => {
+        return persistRemoveSyntheticVisibleNode(item, state);
       }, state);
       state = setSelectedSyntheticVisibleNodeIds(state);
       return state;
     }
 
     case SYNTHETIC_NODE_CONTEXT_MENU_WRAP_IN_SLOT_CLICKED: {
-      const {item} = action as SyntheticNodeContextMenuAction;
+      const { item } = action as SyntheticNodeContextMenuAction;
       state = wrapSyntheticNodeInSlot(item, state);
       return state;
     }
 
     case SYNTHETIC_NODE_CONTEXT_MENU_CONVERT_TO_COMPONENT_CLICKED: {
-      const {item} = action as SyntheticNodeContextMenuAction;
+      const { item } = action as SyntheticNodeContextMenuAction;
       state = convertSyntheticNodeToComponent(item, state);
       return state;
     }
@@ -2382,7 +2496,13 @@ const shortcutReducer = (state: RootState, action: Action): RootState => {
         return state;
       }
 
-      state = convertSyntheticNodeToComponent(getSyntheticNodeById(state.selectedSyntheticNodeIds[0], state.documents), state);
+      state = convertSyntheticNodeToComponent(
+        getSyntheticNodeById(
+          state.selectedSyntheticNodeIds[0],
+          state.documents
+        ),
+        state
+      );
       return state;
     }
     case SHORTCUT_WRAP_IN_SLOT_KEY_DOWN: {
@@ -2633,36 +2753,39 @@ const normalizeZoom = zoom => {
   return zoom < 1 ? 1 / Math.round(1 / zoom) : Math.round(zoom);
 };
 
-const convertSyntheticNodeToComponent = ({id}: SyntheticVisibleNode, state: RootState) => {
+const convertSyntheticNodeToComponent = (
+  { id }: SyntheticVisibleNode,
+  state: RootState
+) => {
   const oldState = state;
 
-      state = persistRootState(
-        state =>
-          persistConvertNodeToComponent(
-            getSyntheticNodeById(
-              id,
-              state.documents
-            ),
-            state
-          ),
+  state = persistRootState(
+    state =>
+      persistConvertNodeToComponent(
+        getSyntheticNodeById(id, state.documents),
         state
-      );
+      ),
+    state
+  );
 
-      state = setSelectedSyntheticVisibleNodeIds(state);
+  state = setSelectedSyntheticVisibleNodeIds(state);
 
-      state = queueSelectInsertedSyntheticVisibleNodes(
-        oldState,
-        state,
-        getSyntheticDocumentByDependencyUri(
-          state.activeEditorFilePath,
-          state.documents,
-          state.graph
-        )
-      );
+  state = queueSelectInsertedSyntheticVisibleNodes(
+    oldState,
+    state,
+    getSyntheticDocumentByDependencyUri(
+      state.activeEditorFilePath,
+      state.documents,
+      state.graph
+    )
+  );
   return state;
-}
+};
 
-const wrapSyntheticNodeInSlot = ({id}: SyntheticVisibleNode, state: RootState) => {
+const wrapSyntheticNodeInSlot = (
+  { id }: SyntheticVisibleNode,
+  state: RootState
+) => {
   const node = getSyntheticNodeById(id, state.documents);
 
   const sourceNode = getSyntheticSourceNode(node, state.graph);
@@ -2704,17 +2827,14 @@ const wrapSyntheticNodeInSlot = ({id}: SyntheticVisibleNode, state: RootState) =
   }, state);
 
   return state;
-}
+};
 
 const selectInspectorNode = (node: InspectorNode, state: RootState) => {
   state = updateSourceInspectorNode(state, sourceNodeInspector => {
     return expandInspectorNode(node, sourceNodeInspector);
   });
 
-  const assocSyntheticNode = getInspectorSyntheticNode(
-    node,
-    state.documents
-  );
+  const assocSyntheticNode = getInspectorSyntheticNode(node, state.documents);
 
   state = updateRootState(
     {
@@ -2726,4 +2846,4 @@ const selectInspectorNode = (node: InspectorNode, state: RootState) => {
     state
   );
   return state;
-}
+};

@@ -86,8 +86,6 @@ export type Props = {
   globalVariables: PCVariable[];
 };
 
-
-
 export default (Base: React.ComponentClass<BaseTypographProps>) =>
   class TypographyController extends React.PureComponent<Props> {
     onPropertyChange = (name, value) => {

@@ -3,9 +3,18 @@ import * as ReactDOM from "react-dom";
 import * as path from "path";
 import * as cx from "classnames";
 import { compose } from "recompose";
-import { BaseFileNavigatorLayerProps, NewFileInput, FileNavigatorLayerContainer} from "./view.pc";
+import {
+  BaseFileNavigatorLayerProps,
+  NewFileInput,
+  FileNavigatorLayerContainer
+} from "./view.pc";
 import scrollIntoView from "scroll-into-view-if-needed";
-import { FSItem, FSItemTagNames, Directory, TreeMoveOffset } from "tandem-common";
+import {
+  FSItem,
+  FSItemTagNames,
+  Directory,
+  TreeMoveOffset
+} from "tandem-common";
 import { Dispatch } from "redux";
 import {
   fileNavigatorItemClicked,
@@ -46,7 +55,8 @@ type InnerProps = {
   isDragging: boolean;
   canDrop: boolean;
   isOver;
-} & Props & ContextProps;
+} & Props &
+  ContextProps;
 
 const LAYER_PADDING = 16;
 
@@ -66,7 +76,7 @@ export default (Base: React.ComponentClass<BaseFileNavigatorLayerProps>) => {
           onNewFileChangeComplete,
           onNewFileInputChange,
           activeEditorUri,
-          editingFileNameUri,
+          editingFileNameUri
         }
       ) => {
         return {
@@ -80,7 +90,9 @@ export default (Base: React.ComponentClass<BaseFileNavigatorLayerProps>) => {
         };
       }
     ),
-    DragSource("FILE", {
+    DragSource(
+      "FILE",
+      {
         beginDrag({ item }: Props) {
           return item;
         },
@@ -94,23 +106,34 @@ export default (Base: React.ComponentClass<BaseFileNavigatorLayerProps>) => {
         isDragging: monitor.isDragging()
       })
     ),
-    DropTarget("FILE", 
-    {
-      canDrop: ({ item }: ContextProps & Props, monitor) => {
-        return item.name === FSItemTagNames.DIRECTORY && monitor.isOver({ shallow: true });
+    DropTarget(
+      "FILE",
+      {
+        canDrop: ({ item }: ContextProps & Props, monitor) => {
+          return (
+            item.name === FSItemTagNames.DIRECTORY &&
+            monitor.isOver({ shallow: true })
+          );
+        },
+        drop: ({ dispatch, item: directory }, monitor) => {
+          const droppedItem = monitor.getItem() as FSItem;
+          dispatch(
+            fileNavigatorDroppedItem(
+              droppedItem,
+              directory as Directory,
+              TreeMoveOffset.PREPEND
+            )
+          );
+        }
       },
-      drop: ({ dispatch, item: directory }, monitor) => {
-        const droppedItem = monitor.getItem() as FSItem;
-        dispatch(fileNavigatorDroppedItem(droppedItem, directory as Directory, TreeMoveOffset.PREPEND));
+      (connect, monitor) => {
+        return {
+          connectDropTarget: connect.dropTarget(),
+          isOver: monitor.isOver({ shallow: true }),
+          canDrop: monitor.canDrop()
+        };
       }
-    },
-    (connect, monitor) => {
-      return {
-        connectDropTarget: connect.dropTarget(),
-        isOver: monitor.isOver({ shallow: true }),
-        canDrop: monitor.canDrop()
-      };
-    }),
+    ),
     (Base: React.ComponentClass<BaseFileNavigatorLayerProps>) => {
       return class FileNavigatorLayerController extends React.PureComponent<
         InnerProps
@@ -120,7 +143,7 @@ export default (Base: React.ComponentClass<BaseFileNavigatorLayerProps>) => {
         };
         onContextMenu = (event: React.MouseEvent<any>) => {
           this.props.dispatch(fileItemRightClicked(this.props.item, event));
-        }
+        };
         onDoubleClick = () => {
           this.props.dispatch(fileNavigatorItemDoubleClicked(this.props.item));
         };
@@ -150,7 +173,9 @@ export default (Base: React.ComponentClass<BaseFileNavigatorLayerProps>) => {
           if (active) {
             const self = ReactDOM.findDOMNode(this) as HTMLSpanElement;
             setTimeout(() => {
-              const label = self.children[0].children[0].children[0].children[1].children[0];
+              const label =
+                self.children[0].children[0].children[0].children[1]
+                  .children[0];
               // icky, but we're picking the label here
               scrollIntoView(label, {
                 scrollMode: "if-needed"
@@ -179,7 +204,7 @@ export default (Base: React.ComponentClass<BaseFileNavigatorLayerProps>) => {
             editingBasename,
             ...rest
           } = this.props;
-          let {draggingOver} = this.props;
+          let { draggingOver } = this.props;
           const {
             onClick,
             onContextMenu,
@@ -210,50 +235,61 @@ export default (Base: React.ComponentClass<BaseFileNavigatorLayerProps>) => {
 
           if (newFileInfo && item.uri == newFileInfo.directory.uri) {
             newFileInput = (
-              <NewFileInput onChangeComplete={onNewFileChangeComplete} onChange={onNewFileInputChange} />
+              <NewFileInput
+                onChangeComplete={onNewFileChangeComplete}
+                onChange={onNewFileInputChange}
+              />
             );
           }
 
           const basename = path.basename(item.uri);
 
-          let div = <div style={ROOT_STYLE}>
-            <FileNavigatorLayerContainer variant={cx({
-              hovering: draggingOver
-            })}>
-              <FocusComponent focus={editingBasename}>
-                {connectDragSource(<div><Base
-                  {...rest}
-                  style={{
-                    paddingLeft: LAYER_PADDING * depth
-                  }}
-                  onDoubleClick={onDoubleClick}
-                  onClick={onClick}
-                  onContextMenu={onContextMenu}
-                  labelInputProps={
-                    {
-                      defaultValue: basename,
-                      onKeyDown: onBasenameInputKeyDown,
-                      onBlur: onBasenameInputBlur
-                    } as any
-                  }
-                  arrowProps={{ onClick: onArrowClick }}
-                  variant={cx({
-                    active: active && !selected,
-                    folder: item.name === FSItemTagNames.DIRECTORY,
-                    file: item.name === FSItemTagNames.FILE,
-                    alt: item.alt && !draggingOver && !selected,
-                    editing: editingBasename,
-                    expanded,
-                    selected: selected && !draggingOver,
-                    blur: Boolean(newFileInfo && newFileInfo.directory)
-                  })}
-                  label={editingBasename ? "" : basename}
-                /></div>)}
-              </FocusComponent>
-              {newFileInput}
-              {children}
-            </FileNavigatorLayerContainer>
-          </div>;
+          let div = (
+            <div style={ROOT_STYLE}>
+              <FileNavigatorLayerContainer
+                variant={cx({
+                  hovering: draggingOver
+                })}
+              >
+                <FocusComponent focus={editingBasename}>
+                  {connectDragSource(
+                    <div>
+                      <Base
+                        {...rest}
+                        style={{
+                          paddingLeft: LAYER_PADDING * depth
+                        }}
+                        onDoubleClick={onDoubleClick}
+                        onClick={onClick}
+                        onContextMenu={onContextMenu}
+                        labelInputProps={
+                          {
+                            defaultValue: basename,
+                            onKeyDown: onBasenameInputKeyDown,
+                            onBlur: onBasenameInputBlur
+                          } as any
+                        }
+                        arrowProps={{ onClick: onArrowClick }}
+                        variant={cx({
+                          active: active && !selected,
+                          folder: item.name === FSItemTagNames.DIRECTORY,
+                          file: item.name === FSItemTagNames.FILE,
+                          alt: item.alt && !draggingOver && !selected,
+                          editing: editingBasename,
+                          expanded,
+                          selected: selected && !draggingOver,
+                          blur: Boolean(newFileInfo && newFileInfo.directory)
+                        })}
+                        label={editingBasename ? "" : basename}
+                      />
+                    </div>
+                  )}
+                </FocusComponent>
+                {newFileInput}
+                {children}
+              </FileNavigatorLayerContainer>
+            </div>
+          );
 
           if (item.name === FSItemTagNames.DIRECTORY) {
             div = connectDropTarget(div);

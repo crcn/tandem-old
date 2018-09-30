@@ -137,15 +137,17 @@ const BaseCanvasComponent = ({
           >
             {connectDropTarget(
               <div
-                style={{
-                  willChange: `transform`,
-                  WebkitFontSmoothing: `subpixel-antialiased`,
-                  backfaceVisibility: `hidden`,
-                  transform: `translate(${translate.left}px, ${
-                    translate.top
-                  }px) scale(${translate.zoom})`,
-                  transformOrigin: "top left"
-                } as any}
+                style={
+                  {
+                    willChange: `transform`,
+                    WebkitFontSmoothing: `subpixel-antialiased`,
+                    backfaceVisibility: `hidden`,
+                    transform: `translate(${translate.left}px, ${
+                      translate.top
+                    }px) scale(${translate.zoom})`,
+                    transformOrigin: "top left"
+                  } as any
+                }
               >
                 <PreviewLayerComponent
                   frames={activeFrames}
@@ -180,7 +182,6 @@ const enhance = compose<CanvasInnerProps, CanvasOuterProps>(
   withState("canvasOuter", "setCanvasOuter", null),
   withState("canvasContainer", "setCanvasContainer", null),
   withHandlers(() => {
-
     // throttle to prevent jankiness
     const onWheel = (event, dispatch, canvasOuter) => {
       requestAnimationFrame(() => {
@@ -204,7 +205,7 @@ const enhance = compose<CanvasInnerProps, CanvasOuterProps>(
       onMouseDoubleClick: ({ dispatch }) => (event: React.MouseEvent<any>) => {
         dispatch(canvasMouseDoubleClicked(event));
       },
-      onContextMenu: ({ dispatch}) => (event: React.MouseEvent<any>) => {
+      onContextMenu: ({ dispatch }) => (event: React.MouseEvent<any>) => {
         console.log("CONTEXT MENU");
         dispatch(canvasRightClicked(event));
         event.preventDefault();

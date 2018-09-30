@@ -18,7 +18,7 @@ export type Props = {
 
 const WORKSPACE_STYLE = {
   width: "100%",
-  height: "100%",
+  height: "100%"
 };
 
 export default (Base: React.ComponentClass<BaseWorkspaceProps>) =>

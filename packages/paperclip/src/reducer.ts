@@ -15,12 +15,12 @@ import {
   PC_RUNTIME_EVALUATED,
   PCRuntimeEvaluated
 } from "./actions";
+import { PCEditorState, updateFrame, upsertFrames } from "./edit";
 import {
-  PCEditorState,
-  updateFrame,
-  upsertFrames
-} from "./edit";
-import { addFileCacheItemToDependencyGraph, DependencyGraph, isPaperclipUri } from "./graph";
+  addFileCacheItemToDependencyGraph,
+  DependencyGraph,
+  isPaperclipUri
+} from "./graph";
 import { PAPERCLIP_MIME_TYPE } from "./constants";
 
 export const paperclipReducer = <
@@ -78,8 +78,6 @@ export const paperclipReducer = <
         { uri, content },
         state.graph
       );
-      
-
 
       return pruneDependencyGraph({ ...(state as any), graph });
     }
@@ -87,13 +85,13 @@ export const paperclipReducer = <
   return state;
 };
 
-
-const pruneDependencyGraph = <TState extends PCEditorState>(state: TState): TState => {
-
-  const {graph} = state;
+const pruneDependencyGraph = <TState extends PCEditorState>(
+  state: TState
+): TState => {
+  const { graph } = state;
 
   let fullyLoaded: boolean = true;
-  
+
   for (const uri in state.fileCache) {
     if (isPaperclipUri(uri) && !graph[uri]) {
       fullyLoaded = false;
@@ -106,15 +104,15 @@ const pruneDependencyGraph = <TState extends PCEditorState>(state: TState): TSta
     for (const uri in graph) {
       if (!state.fileCache[uri]) {
         if (!newGraph) {
-          newGraph = {...graph};
+          newGraph = { ...graph };
         }
-        
+
         delete newGraph[uri];
       }
     }
 
     if (newGraph) {
-      return {...(state as any), graph: newGraph} as TState;
+      return { ...(state as any), graph: newGraph } as TState;
     }
   }
 

@@ -1,6 +1,11 @@
 import * as React from "react";
 import { attributeChanged } from "../../../../../actions";
-import { SyntheticElement, PCComponent, PCElement, PCComponentInstanceElement } from "paperclip";
+import {
+  SyntheticElement,
+  PCComponent,
+  PCElement,
+  PCComponentInstanceElement
+} from "paperclip";
 import { Dispatch } from "redux";
 
 export type Props = {

@@ -119,7 +119,7 @@ export type ProjectConfig = {
 export type ProjectInfo = {
   config: ProjectConfig;
   path: string;
-}
+};
 
 export enum FrameMode {
   PREVIEW = "preview",
@@ -195,12 +195,12 @@ export type FontFamily = {
 export enum QuickSearchResultType {
   URI = "uri",
   COMPONENT = "component"
-};
+}
 
 export type BaseQuickSearchResult<TType extends QuickSearchResultType> = {
   label: string;
   description: string;
-  type: TType
+  type: TType;
 };
 
 export enum ContextMenuOptionType {
@@ -217,20 +217,22 @@ export type ContextMenuItem = {
 
 export type ContextMenuGroup = {
   type: ContextMenuOptionType.GROUP;
-  options: ContextMenuItem[]
-}
+  options: ContextMenuItem[];
+};
 
 export type ContextMenuOption = ContextMenuGroup | ContextMenuItem;
 
 export type QuickSearchUriResult = {
-  uri: string
+  uri: string;
 } & BaseQuickSearchResult<QuickSearchResultType.URI>;
 
 export type QuickSearchComponentResult = {
   componentId: string;
 } & BaseQuickSearchResult<QuickSearchResultType.COMPONENT>;
 
-export type QuickSearchResult = QuickSearchUriResult | QuickSearchComponentResult;
+export type QuickSearchResult =
+  | QuickSearchUriResult
+  | QuickSearchComponentResult;
 
 export type QuickSearch = {
   filter: string;
@@ -255,7 +257,7 @@ export type RootState = {
   showSidebar?: boolean;
   customChrome: boolean;
   selectedShadowInspectorNodeId?: string;
-  
+
   // TODO - may need to be moved to EditorWindow
   selectedVariant?: PCVariant;
 
@@ -567,9 +569,16 @@ const addHistory = (
 };
 
 export const getGlobalFileUri = (info: ProjectInfo) => {
-  const globalRelativeFilePath = info && info.config.globalFilePath || info.config.mainFilePath;
-  return globalRelativeFilePath && addProtocol(FILE_PROTOCOL, path.join(path.dirname(info.path), globalRelativeFilePath));
-}
+  const globalRelativeFilePath =
+    (info && info.config.globalFilePath) || info.config.mainFilePath;
+  return (
+    globalRelativeFilePath &&
+    addProtocol(
+      FILE_PROTOCOL,
+      path.join(path.dirname(info.path), globalRelativeFilePath)
+    )
+  );
+};
 
 const getNextHistorySnapshot = (items: GraphHistoryItem[]) => {
   for (let i = items.length; i--; ) {
@@ -643,7 +652,8 @@ const moveDependencyRecordHistory = (
   return state;
 };
 
-export const isUnsaved = (state: RootState) => state.openFiles.some((openFile) => Boolean(openFile.newContent));
+export const isUnsaved = (state: RootState) =>
+  state.openFiles.some(openFile => Boolean(openFile.newContent));
 
 const DEFAULT_CANVAS: Canvas = {
   backgroundColor: "#EEE",
@@ -799,30 +809,34 @@ export const getSyntheticWindowBounds = memoize(
 
 export const isImageMimetype = (mimeType: string) => /^image\//.test(mimeType);
 export const pruneOpenFiles = (state: RootState) => {
-
   const openFiles = state.openFiles.filter(openFile => {
     return !!state.fileCache[openFile.uri];
   });
-  
-  const editorWindows = state.editorWindows.map(window => {
-    const tabUris = window.tabUris.filter(uri => {
-      return !!state.fileCache[uri];
-    });
 
-    if (!tabUris.length) {
-      return null;
-    }
-    return ({
-      ...window,
-      tabUris,
+  const editorWindows = state.editorWindows
+    .map(window => {
+      const tabUris = window.tabUris.filter(uri => {
+        return !!state.fileCache[uri];
+      });
+
+      if (!tabUris.length) {
+        return null;
+      }
+      return {
+        ...window,
+        tabUris
+      };
     })
-  }).filter(Boolean);
+    .filter(Boolean);
 
-  state = updateRootState({
-    openFiles,
-    editorWindows,
-    activeEditorFilePath: null
-  }, state);
+  state = updateRootState(
+    {
+      openFiles,
+      editorWindows,
+      activeEditorFilePath: null
+    },
+    state
+  );
 
   state = setNextOpenFile(state);
 
@@ -1103,12 +1117,11 @@ export const setRootStateSyntheticVisibleNodeLabelEditing = (
   return state;
 };
 
-
 export const setRootStateFileNodeExpanded = (
   nodeId: string,
   value: boolean,
   state: RootState
-) => {  
+) => {
   return updateRootState(
     {
       projectDirectory: updateNestedNodeTrail(
@@ -1295,7 +1308,10 @@ export const getActiveFrames = (root: RootState): Frame[] =>
     frame =>
       getActiveEditorWindow(root).activeFilePath ===
       getSyntheticDocumentDependencyUri(
-        getSyntheticVisibleNodeDocument(frame.syntheticContentNodeId, root.documents),
+        getSyntheticVisibleNodeDocument(
+          frame.syntheticContentNodeId,
+          root.documents
+        ),
         root.graph
       )
   );
@@ -1335,7 +1351,11 @@ export const getCanvasMouseTargetInspectorNode = (
   event: CanvasToolOverlayMouseMoved | CanvasToolOverlayClicked,
   filter?: (node: TreeNode<any>) => boolean
 ): InspectorNode => {
-  const syntheticNodeId = getCanvasMouseTargetNodeId(state, event.sourceEvent, filter);
+  const syntheticNodeId = getCanvasMouseTargetNodeId(
+    state,
+    event.sourceEvent,
+    filter
+  );
   if (!syntheticNodeId) {
     return null;
   }
@@ -1387,29 +1407,52 @@ export const getCanvasMouseTargetNodeIdFromPoint = (
       pointIntersectsBounds(mouseFramePoint, bounds) &&
       (!filter || filter(getNestedTreeNodeById(id, contentNode)))
     ) {
-
       const syntheticNode = getSyntheticNodeById(id, state.documents);
       const document = getSyntheticVisibleNodeDocument(id, state.documents);
-      const inspectorNode = getSyntheticInspectorNode(syntheticNode, document, state.sourceNodeInspector, state.graph);
+      const inspectorNode = getSyntheticInspectorNode(
+        syntheticNode,
+        document,
+        state.sourceNodeInspector,
+        state.graph
+      );
 
       // this will happen briefly if synthetic nodes are out of sync with the main thread (e.g: right click element + convert to component)
       if (!inspectorNode) {
         continue;
       }
-      const contentNode = getInspectorContentNodeContainingChild(inspectorNode, state.sourceNodeInspector) || inspectorNode;
+      const contentNode =
+        getInspectorContentNodeContainingChild(
+          inspectorNode,
+          state.sourceNodeInspector
+        ) || inspectorNode;
 
       if (inspectorNodeInShadow(inspectorNode, contentNode)) {
         if (state.selectedShadowInspectorNodeId) {
-          const selectedShadowInspectorNode = getNestedTreeNodeById(state.selectedShadowInspectorNodeId, state.sourceNodeInspector);
-          const inspectorParentShadow = getInspectorNodeParentShadow(inspectorNode, state.sourceNodeInspector);
-          
-          const inspectorNodeWithinSelectedShadow = containsNestedTreeNodeById(inspectorNode.id, selectedShadowInspectorNode) && selectedShadowInspectorNode.id === inspectorParentShadow.id;
-          const selectedShadowWithinInspectorParentShadow = containsNestedTreeNodeById(selectedShadowInspectorNode.id, inspectorParentShadow);
+          const selectedShadowInspectorNode = getNestedTreeNodeById(
+            state.selectedShadowInspectorNodeId,
+            state.sourceNodeInspector
+          );
+          const inspectorParentShadow = getInspectorNodeParentShadow(
+            inspectorNode,
+            state.sourceNodeInspector
+          );
+
+          const inspectorNodeWithinSelectedShadow =
+            containsNestedTreeNodeById(
+              inspectorNode.id,
+              selectedShadowInspectorNode
+            ) && selectedShadowInspectorNode.id === inspectorParentShadow.id;
+          const selectedShadowWithinInspectorParentShadow = containsNestedTreeNodeById(
+            selectedShadowInspectorNode.id,
+            inspectorParentShadow
+          );
           // console.log(inspectorNodeWithinSelectedShadow, containsNestedTreeNodeById(inspectorNode.id, selectedShadowInspectorNode), inspectorNode, getParentTreeNode(inspectorNode.id, state.sourceNodeInspector), inspectorParentShadow, selectedShadowInspectorNode);
-          if (!inspectorNodeWithinSelectedShadow && !selectedShadowWithinInspectorParentShadow) {
+          if (
+            !inspectorNodeWithinSelectedShadow &&
+            !selectedShadowWithinInspectorParentShadow
+          ) {
             continue;
           }
-          
         } else {
           continue;
         }
@@ -1486,7 +1529,19 @@ export const setSelectedSyntheticVisibleNodeIds = (
       selectedInspectorNodeIds: assocInspectorNodes.map(node => node.id),
 
       // deselect shadow inspector node if no selected inspector nodes are within the selected shadow node
-      selectedShadowInspectorNodeId: root.selectedShadowInspectorNodeId ? assocInspectorNodes.some(node => containsNestedTreeNodeById(node.id, getNestedTreeNodeById(root.selectedShadowInspectorNodeId, root.sourceNodeInspector))) ? root.selectedShadowInspectorNodeId : null : null
+      selectedShadowInspectorNodeId: root.selectedShadowInspectorNodeId
+        ? assocInspectorNodes.some(node =>
+            containsNestedTreeNodeById(
+              node.id,
+              getNestedTreeNodeById(
+                root.selectedShadowInspectorNodeId,
+                root.sourceNodeInspector
+              )
+            )
+          )
+          ? root.selectedShadowInspectorNodeId
+          : null
+        : null
     },
     root
   );

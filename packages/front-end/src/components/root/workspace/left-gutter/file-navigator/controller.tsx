@@ -17,7 +17,10 @@ import { Dispatch } from "redux";
 import { FileNavigatorContext, FileNavigatorContextProps } from "./contexts";
 import { fileNavigatorNewFileEntered } from "../../../../../actions";
 import { mapVariablesToCSSVarDropdownOptions } from "../../right-gutter/styles/pretty/panes/utils";
-import { dropdownMenuOptionFromValue, DropdownMenuOption } from "../../../../inputs/dropdown/controller";
+import {
+  dropdownMenuOptionFromValue,
+  DropdownMenuOption
+} from "../../../../inputs/dropdown/controller";
 export type Props = {
   activeEditorUri: string;
   rootDirectory: Directory;
@@ -50,14 +53,12 @@ enum AddFileType {
   BLANK,
   COMPONENT,
   DIRECTORY
-};
-
+}
 
 export type NewFSItemInfo = {
   fileType: AddFileType;
   directory: Directory;
-}
-
+};
 
 type State = {
   newFSItemInfo?: NewFSItemInfo;
@@ -86,17 +87,19 @@ export default (Base: React.ComponentClass<BaseFileNavigatorProps>) =>
       this.setAddingFSItem(value);
     };
     onNewFileInputChange = (value: string) => {
-
       // TODO - error checking here
       // console.log("ON NEW FILE INPUT", value);
-    }
+    };
     onNewFileChangeComplete = (name: string) => {
       if (!name) {
         return;
       }
-      const {newFSItemInfo} = this.state;
+      const { newFSItemInfo } = this.state;
 
-      if (newFSItemInfo.fileType === AddFileType.COMPONENT && !/\.pc$/.test(name)) {
+      if (
+        newFSItemInfo.fileType === AddFileType.COMPONENT &&
+        !/\.pc$/.test(name)
+      ) {
         name += ".pc";
       }
 
@@ -107,7 +110,9 @@ export default (Base: React.ComponentClass<BaseFileNavigatorProps>) =>
       this.props.dispatch(
         fileNavigatorNewFileEntered(
           name,
-          newFSItemInfo.fileType === AddFileType.DIRECTORY ? FSItemTagNames.DIRECTORY : FSItemTagNames.FILE,
+          newFSItemInfo.fileType === AddFileType.DIRECTORY
+            ? FSItemTagNames.DIRECTORY
+            : FSItemTagNames.FILE,
           newFSItemInfo.directory.id
         )
       );
@@ -141,7 +146,7 @@ export default (Base: React.ComponentClass<BaseFileNavigatorProps>) =>
       } = this.props;
 
       if (!rootDirectory) {
-        return <Base content={EMPTY_ARRAY} />
+        return <Base content={EMPTY_ARRAY} />;
       }
       const {
         onAddFolderButtonClick,
@@ -155,10 +160,7 @@ export default (Base: React.ComponentClass<BaseFileNavigatorProps>) =>
         return <FileNavigatorLayer key={child.id} item={child} />;
       });
 
-      if (
-        newFSItemInfo &&
-        rootDirectory.uri === newFSItemInfo.directory.uri
-      ) {
+      if (newFSItemInfo && rootDirectory.uri === newFSItemInfo.directory.uri) {
         content.unshift(
           <NewFileInput
             key="new-file-input"

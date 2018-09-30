@@ -48,7 +48,9 @@ export default (Base: React.ComponentClass<BaseElementStylerProps>) =>
         rootInspectorNode,
         ...rest
       } = this.props;
-      const selectedNode = (selectedNodes.length ? getSyntheticSourceNode(selectedNodes[0], graph) : null) as PCVisibleNode;
+      const selectedNode = (selectedNodes.length
+        ? getSyntheticSourceNode(selectedNodes[0], graph)
+        : null) as PCVisibleNode;
       return (
         <Base
           {...rest}

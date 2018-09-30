@@ -25,7 +25,15 @@ import {
   PCVariableType
 } from "paperclip";
 import { RegisteredComponent } from "..";
-import { FrameMode, ToolType, EditorWindow, ProjectConfig, ProjectInfo, BaseQuickSearchResult, QuickSearchResult } from "../state";
+import {
+  FrameMode,
+  ToolType,
+  EditorWindow,
+  ProjectConfig,
+  ProjectInfo,
+  BaseQuickSearchResult,
+  QuickSearchResult
+} from "../state";
 import { InspectorNode } from "paperclip";
 
 export const PROJECT_LOADED = "PROJECT_LOADED";
@@ -54,8 +62,7 @@ export const CANVAS_TOOL_PREVIEW_BUTTON_CLICKED =
 export const FILE_NAVIGATOR_ITEM_CLICKED = "FILE_NAVIGATOR_ITEM_CLICKED";
 export const FILE_NAVIGATOR_ITEM_DOUBLE_CLICKED =
   "FILE_NAVIGATOR_ITEM_DOUBLE_CLICKED";
-  export const FILE_NAVIGATOR_ITEM_BLURRED =
-    "FILE_NAVIGATOR_ITEM_BLURRED";
+export const FILE_NAVIGATOR_ITEM_BLURRED = "FILE_NAVIGATOR_ITEM_BLURRED";
 export const FILE_NAVIGATOR_NEW_FILE_CLICKED =
   "FILE_NAVIGATOR_NEW_FILE_CLICKED";
 export const FILE_NAVIGATOR_NEW_DIRECTORY_CLICKED =
@@ -141,16 +148,26 @@ export const SHORTCUT_CONVERT_TO_COMPONENT_KEY_DOWN =
 export const SHORTCUT_WRAP_IN_SLOT_KEY_DOWN = "SHORTCUT_WRAP_IN_SLOT_KEY_DOWN";
 export const SHORTCUT_TOGGLE_SIDEBAR = "SHORTCUT_TOGGLE_SIDEBAR";
 export const INHERIT_PANE_ADD_BUTTON_CLICK = "INHERIT_PANE_ADD_BUTTON_CLICK";
-export const FILE_ITEM_CONTEXT_MENU_DELETE_CLICKED = "FILE_ITEM_CONTEXT_MENU_DELETE_CLICKED";
-export const FILE_ITEM_CONTEXT_MENU_OPEN_CLICKED = "FILE_ITEM_CONTEXT_MENU_OPEN_CLICKED";
-export const FILE_ITEM_CONTEXT_MENU_OPEN_IN_FINDER_CLICKED = "FILE_ITEM_CONTEXT_MENU_OPEN_IN_FINDER_CLICKED";
-export const FILE_ITEM_CONTEXT_MENU_COPY_PATH_CLICKED = "FILE_ITEM_CONTEXT_MENU_COPY_PATH_CLICKED";
-export const FILE_ITEM_CONTEXT_MENU_RENAME_CLICKED = "FILE_ITEM_CONTEXT_MENU_RENAME_CLICKED";
-export const SYNTHETIC_NODE_CONTEXT_MENU_CONVERT_TO_COMPONENT_CLICKED = "SYNTHETIC_NODE_CONTEXT_MENU_CONVERT_TO_COMPONENT_CLICKED";
-export const SYNTHETIC_NODE_CONTEXT_MENU_REMOVE_CLICKED = "SYNTHETIC_NODE_CONTEXT_MENU_REMOVE_CLICKED";
-export const SYNTHETIC_NODE_CONTEXT_MENU_WRAP_IN_SLOT_CLICKED = "SYNTHETIC_NODE_CONTEXT_MENU_WRAP_IN_SLOT_CLICKED";
-export const SYNTHETIC_NODE_CONTEXT_MENU_SELECT_PARENT_CLICKED = "SYNTHETIC_NODE_CONTEXT_MENU_SELECT_PARENT_CLICKED";
-export const SYNTHETIC_NODE_CONTEXT_MENU_SELECT_SOURCE_NODE_CLICKED = "SYNTHETIC_NODE_CONTEXT_MENU_SELECT_SOURCE_NODE_CLICKED";
+export const FILE_ITEM_CONTEXT_MENU_DELETE_CLICKED =
+  "FILE_ITEM_CONTEXT_MENU_DELETE_CLICKED";
+export const FILE_ITEM_CONTEXT_MENU_OPEN_CLICKED =
+  "FILE_ITEM_CONTEXT_MENU_OPEN_CLICKED";
+export const FILE_ITEM_CONTEXT_MENU_OPEN_IN_FINDER_CLICKED =
+  "FILE_ITEM_CONTEXT_MENU_OPEN_IN_FINDER_CLICKED";
+export const FILE_ITEM_CONTEXT_MENU_COPY_PATH_CLICKED =
+  "FILE_ITEM_CONTEXT_MENU_COPY_PATH_CLICKED";
+export const FILE_ITEM_CONTEXT_MENU_RENAME_CLICKED =
+  "FILE_ITEM_CONTEXT_MENU_RENAME_CLICKED";
+export const SYNTHETIC_NODE_CONTEXT_MENU_CONVERT_TO_COMPONENT_CLICKED =
+  "SYNTHETIC_NODE_CONTEXT_MENU_CONVERT_TO_COMPONENT_CLICKED";
+export const SYNTHETIC_NODE_CONTEXT_MENU_REMOVE_CLICKED =
+  "SYNTHETIC_NODE_CONTEXT_MENU_REMOVE_CLICKED";
+export const SYNTHETIC_NODE_CONTEXT_MENU_WRAP_IN_SLOT_CLICKED =
+  "SYNTHETIC_NODE_CONTEXT_MENU_WRAP_IN_SLOT_CLICKED";
+export const SYNTHETIC_NODE_CONTEXT_MENU_SELECT_PARENT_CLICKED =
+  "SYNTHETIC_NODE_CONTEXT_MENU_SELECT_PARENT_CLICKED";
+export const SYNTHETIC_NODE_CONTEXT_MENU_SELECT_SOURCE_NODE_CLICKED =
+  "SYNTHETIC_NODE_CONTEXT_MENU_SELECT_SOURCE_NODE_CLICKED";
 export const INHERIT_PANE_REMOVE_BUTTON_CLICK =
   "INHERIT_PANE_REMOVE_BUTTON_CLICK";
 export const ACTIVE_EDITOR_URI_DIRS_LOADED = "ACTIVE_EDITOR_URI_DIRS_LOADED";
@@ -223,13 +240,13 @@ export type DocumentRendered = {
   info: ComputedDisplayInfo;
 } & Action;
 
-export enum FileChangedEventType {  
+export enum FileChangedEventType {
   UNLINK = "unlink",
   ADD = "add",
   UNLINK_DIR = "unlinkDir",
   ADD_DIR = "addDir",
   CHANGE = "change"
-};
+}
 
 export type FileChanged = {
   eventType: FileChangedEventType;
@@ -366,7 +383,7 @@ export type QuickSearchFilterChanged = {
 } & Action;
 
 export type QuickSearchResultLoaded = {
-  matches: QuickSearchResult[]
+  matches: QuickSearchResult[];
 } & Action;
 
 export type TreeLayerClick = TreeLayerMouseOver &
@@ -443,7 +460,6 @@ export type ComponentVariantNameDefaultToggleClick = {
   name: string;
   value: boolean;
 } & Action;
-
 
 export type PromptConfirmed = {
   inputValue: string;
@@ -527,7 +543,7 @@ export type FileNavigatorLabelClicked = {
 } & Action;
 
 export type FrameBoundsChanged = {
-  newBounds: Bounds
+  newBounds: Bounds;
 } & Action;
 
 export type FileItemRightClicked = {
@@ -618,66 +634,89 @@ export const editorTabClicked = (uri: string): EditorTabClicked => ({
   type: EDITOR_TAB_CLICKED
 });
 
-export const fileItemContextMenuDeleteClicked = publicActionCreator((item: FSItem): FileItemContextMenuAction => ({
-  item, 
-  type: FILE_ITEM_CONTEXT_MENU_DELETE_CLICKED
-}));
+export const fileItemContextMenuDeleteClicked = publicActionCreator(
+  (item: FSItem): FileItemContextMenuAction => ({
+    item,
+    type: FILE_ITEM_CONTEXT_MENU_DELETE_CLICKED
+  })
+);
 
-export const fileItemContextMenuCopyPathClicked = publicActionCreator((item: FSItem): FileItemContextMenuAction => ({
-  item, 
-  type: FILE_ITEM_CONTEXT_MENU_COPY_PATH_CLICKED
-}));
+export const fileItemContextMenuCopyPathClicked = publicActionCreator(
+  (item: FSItem): FileItemContextMenuAction => ({
+    item,
+    type: FILE_ITEM_CONTEXT_MENU_COPY_PATH_CLICKED
+  })
+);
 
-export const fileItemContextMenuRenameClicked = publicActionCreator((item: FSItem): FileItemContextMenuAction => ({
-  item, 
-  type: FILE_ITEM_CONTEXT_MENU_RENAME_CLICKED
-}));
+export const fileItemContextMenuRenameClicked = publicActionCreator(
+  (item: FSItem): FileItemContextMenuAction => ({
+    item,
+    type: FILE_ITEM_CONTEXT_MENU_RENAME_CLICKED
+  })
+);
 
-export const fileItemContextMenuOpenClicked = publicActionCreator((item: FSItem): FileItemContextMenuAction => ({
-  item, 
-  type: FILE_ITEM_CONTEXT_MENU_OPEN_CLICKED
-}));
+export const fileItemContextMenuOpenClicked = publicActionCreator(
+  (item: FSItem): FileItemContextMenuAction => ({
+    item,
+    type: FILE_ITEM_CONTEXT_MENU_OPEN_CLICKED
+  })
+);
 
-export const fileItemContextMenuOpenInFinderClicked = publicActionCreator((item: FSItem): FileItemContextMenuAction => ({
-  item, 
-  type: FILE_ITEM_CONTEXT_MENU_OPEN_IN_FINDER_CLICKED
-}));
+export const fileItemContextMenuOpenInFinderClicked = publicActionCreator(
+  (item: FSItem): FileItemContextMenuAction => ({
+    item,
+    type: FILE_ITEM_CONTEXT_MENU_OPEN_IN_FINDER_CLICKED
+  })
+);
 
-export const syntheticNodeContextMenuConvertToComponentClicked = publicActionCreator((item: SyntheticVisibleNode): SyntheticNodeContextMenuAction => ({
-  type: SYNTHETIC_NODE_CONTEXT_MENU_CONVERT_TO_COMPONENT_CLICKED,
-  item
-}));
+export const syntheticNodeContextMenuConvertToComponentClicked = publicActionCreator(
+  (item: SyntheticVisibleNode): SyntheticNodeContextMenuAction => ({
+    type: SYNTHETIC_NODE_CONTEXT_MENU_CONVERT_TO_COMPONENT_CLICKED,
+    item
+  })
+);
 
-export const syntheticNodeContextMenuRemoveClicked = publicActionCreator((item: SyntheticVisibleNode): SyntheticNodeContextMenuAction => ({
-  type: SYNTHETIC_NODE_CONTEXT_MENU_REMOVE_CLICKED,
-  item
-}));
+export const syntheticNodeContextMenuRemoveClicked = publicActionCreator(
+  (item: SyntheticVisibleNode): SyntheticNodeContextMenuAction => ({
+    type: SYNTHETIC_NODE_CONTEXT_MENU_REMOVE_CLICKED,
+    item
+  })
+);
 
-export const syntheticNodeContextMenuWrapInSlotClicked = publicActionCreator((item: SyntheticVisibleNode): SyntheticNodeContextMenuAction => ({
-  type: SYNTHETIC_NODE_CONTEXT_MENU_WRAP_IN_SLOT_CLICKED,
-  item
-}));
+export const syntheticNodeContextMenuWrapInSlotClicked = publicActionCreator(
+  (item: SyntheticVisibleNode): SyntheticNodeContextMenuAction => ({
+    type: SYNTHETIC_NODE_CONTEXT_MENU_WRAP_IN_SLOT_CLICKED,
+    item
+  })
+);
 
-export const syntheticNodeContextMenuSelectParentClicked = publicActionCreator((item: SyntheticVisibleNode): SyntheticNodeContextMenuAction => ({
-  type: SYNTHETIC_NODE_CONTEXT_MENU_SELECT_PARENT_CLICKED,
-  item
-}));
+export const syntheticNodeContextMenuSelectParentClicked = publicActionCreator(
+  (item: SyntheticVisibleNode): SyntheticNodeContextMenuAction => ({
+    type: SYNTHETIC_NODE_CONTEXT_MENU_SELECT_PARENT_CLICKED,
+    item
+  })
+);
 
-export const syntheticNodeContextMenuSelectSourceNodeClicked = publicActionCreator((item: SyntheticVisibleNode): SyntheticNodeContextMenuAction => ({
-  type: SYNTHETIC_NODE_CONTEXT_MENU_SELECT_SOURCE_NODE_CLICKED,
-  item
-}));
+export const syntheticNodeContextMenuSelectSourceNodeClicked = publicActionCreator(
+  (item: SyntheticVisibleNode): SyntheticNodeContextMenuAction => ({
+    type: SYNTHETIC_NODE_CONTEXT_MENU_SELECT_SOURCE_NODE_CLICKED,
+    item
+  })
+);
 
 export const editorTabCloseButtonClicked = (uri: string): EditorTabClicked => ({
   uri,
   type: EDITOR_TAB_CLOSE_BUTTON_CLICKED
 });
 
-export const fileChanged = (eventType: FileChangedEventType, uri: string): FileChanged => ({
+export const fileChanged = (
+  eventType: FileChangedEventType,
+  uri: string
+): FileChanged => ({
   type: FILE_CHANGED,
   eventType,
-  uri,
-})
+  uri
+});
 
 export const fileNavigatorItemClicked = (
   node: FSItem
@@ -783,10 +822,12 @@ export const newStyleVariantButtonClicked = (): Action => ({
   type: NEW_STYLE_VARIANT_BUTTON_CLICKED
 });
 
-export const projectDirectoryDirLoaded = (items: FSItem[]): ProjectDirectoryDirLoaded => ({
+export const projectDirectoryDirLoaded = (
+  items: FSItem[]
+): ProjectDirectoryDirLoaded => ({
   type: PROJECT_DIRECTORY_DIR_LOADED,
   items
-})
+});
 
 export const removeStyleButtonClicked = (): Action => ({
   type: REMOVE_STYLE_BUTTON_CLICKED
@@ -824,8 +865,8 @@ export const inheritPaneRemoveButtonClick = (
 });
 export const projectInfoLoaded = (info: ProjectInfo): ProjectInfoLoaded => ({
   type: PROJECT_INFO_LOADED,
-  info,
-})
+  info
+});
 
 export const inheritItemComponentTypeChangeComplete = (
   oldComponentId: string,
@@ -843,18 +884,26 @@ export const addVariantButtonClicked = (): Action => ({
   type: ADD_VARIANT_BUTTON_CLICKED
 });
 
-export const fileItemRightClicked = (item: FSItem, event: React.MouseEvent<any>): FileItemRightClicked => ({
+export const fileItemRightClicked = (
+  item: FSItem,
+  event: React.MouseEvent<any>
+): FileItemRightClicked => ({
   type: FILE_ITEM_RIGHT_CLICKED,
   event,
   item
 });
 
-export const canvasRightClicked = (event: React.MouseEvent<any>): CanvasRightClicked => ({
+export const canvasRightClicked = (
+  event: React.MouseEvent<any>
+): CanvasRightClicked => ({
   type: CANVAS_RIGHT_CLICKED,
   event
 });
 
-export const pcLayerRightClicked = (item: InspectorNode, event: React.MouseEvent<any>): PCLayerRightClicked => ({
+export const pcLayerRightClicked = (
+  item: InspectorNode,
+  event: React.MouseEvent<any>
+): PCLayerRightClicked => ({
   item,
   type: PC_LAYER_RIGHT_CLICKED,
   event
@@ -869,12 +918,16 @@ export const removeVariantButtonClicked = (): Action => ({
   type: REMOVE_VARIANT_BUTTON_CLICKED
 });
 
-export const quickSearchFilterChanged = (value: string): QuickSearchFilterChanged => ({
+export const quickSearchFilterChanged = (
+  value: string
+): QuickSearchFilterChanged => ({
   type: QUICK_SEARCH_FILTER_CHANGED,
   value
 });
 
-export const quickSearchFilterResultLoaded = (matches: QuickSearchResult[]): QuickSearchResultLoaded => ({
+export const quickSearchFilterResultLoaded = (
+  matches: QuickSearchResult[]
+): QuickSearchResultLoaded => ({
   matches,
   type: QUICK_SEARCH_RESULT_LOADED
 });
@@ -916,7 +969,9 @@ export const componentPickerItemClick = (
   type: COMPONENT_PICKER_ITEM_CLICK
 });
 
-export const quickSearchItemClicked = (item: QuickSearchResult): QuickSearchItemClicked => ({
+export const quickSearchItemClicked = (
+  item: QuickSearchResult
+): QuickSearchItemClicked => ({
   item,
   type: QUICK_SEARCH_ITEM_CLICKED
 });
@@ -1355,12 +1410,12 @@ export const resizerPathMoved = (
 
 export const frameBoundsChanged = (newBounds: Bounds) => ({
   type: FRAME_BOUNDS_CHANGED,
-  newBounds,
+  newBounds
 });
 
 export const frameBoundsChangeCompleted = (newBounds: Bounds) => ({
   type: FRAME_BOUNDS_CHANGE_COMPLETED,
-  newBounds,
+  newBounds
 });
 
 export const resizerPathStoppedMoving = (

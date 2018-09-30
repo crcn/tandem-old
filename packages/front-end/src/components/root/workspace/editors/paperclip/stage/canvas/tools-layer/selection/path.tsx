@@ -26,8 +26,6 @@ export class Path extends React.PureComponent<PathOuterProps> {
     event.stopPropagation();
     const sourceEvent = { ...event };
 
-    
-
     const wrapActionCreator = createAction => (event, info) => {
       const delta = {
         left: info.delta.x / zoom,

@@ -39,11 +39,13 @@ export const componentControllerPicked = publicActionCreator(
 
 export const mainWindowOpened = (): Action => ({ type: MAIN_WINDOW_OPENED });
 
-export const tdProjectLoaded = publicActionCreator((project: TDProject, path: string): TDProjectLoaded => ({
-  type: TD_PROJECT_LOADED,
-  project,
-  path
-}));
+export const tdProjectLoaded = publicActionCreator(
+  (project: TDProject, path: string): TDProjectLoaded => ({
+    type: TD_PROJECT_LOADED,
+    project,
+    path
+  })
+);
 
 export const previewServerStarted = (port: number): PreviewServerStarted => ({
   type: PREVIEW_SERVER_STARTED,

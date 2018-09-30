@@ -38,7 +38,7 @@ export default (Base: React.ComponentClass<BaseStyleSwitcherProps>) =>
     };
     onEditNameButtonClick = () => {
       this.props.dispatch(editVariantNameButtonClicked());
-    }
+    };
     onStyleChange = value => {
       const contentNode = getSyntheticContentNode(
         this.props.selectedNodes[0],

@@ -49,15 +49,16 @@ export default (Base: React.ComponentClass<BaseRightGutterProps>) =>
       this.setState({ ...this.state, currentTab: value });
     };
     render() {
-      const { root, dispatch, ...rest } = this.props; 
-      const globalFileUri = root.projectInfo && getGlobalFileUri(root.projectInfo);
+      const { root, dispatch, ...rest } = this.props;
+      const globalFileUri =
+        root.projectInfo && getGlobalFileUri(root.projectInfo);
       const { currentTab } = this.state;
       const { setTab } = this;
       if (!root.selectedInspectorNodeIds.length) {
         return null;
       }
 
-      const {fontFamilies} = root;
+      const { fontFamilies } = root;
 
       const globalVariables = getGlobalVariables(root.graph);
 

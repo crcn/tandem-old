@@ -51,7 +51,7 @@ export default (Base: React.ComponentClass<BaseBackgroundsProps>) =>
       );
     };
     render() {
-      const { computedStyleInfo, globalVariables,  } = this.props;
+      const { computedStyleInfo, globalVariables } = this.props;
       const { onChange, onChangeComplete, onPlusButtonClick } = this;
 
       const children = splitBackgrounds(computedStyleInfo.style.background).map(

@@ -318,11 +318,10 @@ const translateStyle = (
     // TODO - add vendor prefix stuff here
     for (const key in style) {
       context = addLineItem(
-        `" ${key}: ${translateStyleValue(
-          key,
-          style[key],
-          context
-        ).replace(/[\n\r]/g, " ")};" + \n`,
+        `" ${key}: ${translateStyleValue(key, style[key], context).replace(
+          /[\n\r]/g,
+          " "
+        )};" + \n`,
         context
       );
     }

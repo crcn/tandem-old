@@ -18,20 +18,36 @@ export const mapStateToProps = ({ prompt }: RootState): MappedProps => {
   }
 
   return {
-    options: prompt,
-  }
+    options: prompt
+  };
 };
 
-export default (Base: React.ComponentClass<BaseWorkspacePromptProps>) => class WorkspacePromptController extends React.PureComponent<Props> {
-  onOk = (value: string) => {
-    this.props.dispatch(value ? promptConfirmed(value, this.props.options.okActionType) : promptCancelButtonClicked());
-  }
-  onCancel = () => {
-    this.props.dispatch(promptCancelButtonClicked());
-  }
-  render() {
-    const {options: {label, defaultValue}, ...rest} = this.props;
-    const {onCancel, onOk} = this;
-    return <Base {...rest} label={label} defaultValue={defaultValue} onCancel={onCancel} onOk={onOk} />
-  }
-}
+export default (Base: React.ComponentClass<BaseWorkspacePromptProps>) =>
+  class WorkspacePromptController extends React.PureComponent<Props> {
+    onOk = (value: string) => {
+      this.props.dispatch(
+        value
+          ? promptConfirmed(value, this.props.options.okActionType)
+          : promptCancelButtonClicked()
+      );
+    };
+    onCancel = () => {
+      this.props.dispatch(promptCancelButtonClicked());
+    };
+    render() {
+      const {
+        options: { label, defaultValue },
+        ...rest
+      } = this.props;
+      const { onCancel, onOk } = this;
+      return (
+        <Base
+          {...rest}
+          label={label}
+          defaultValue={defaultValue}
+          onCancel={onCancel}
+          onOk={onOk}
+        />
+      );
+    }
+  };

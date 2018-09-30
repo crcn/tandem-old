@@ -34,7 +34,7 @@ export interface PCRuntime extends EventEmitter {
 export type LocalRuntimeInfo = {
   graph: DependencyGraph;
   variants: KeyValue<KeyValue<boolean>>;
-}
+};
 
 class LocalPCRuntime extends EventEmitter implements PCRuntime {
   private _evaluating: boolean;
@@ -186,10 +186,17 @@ export class RemotePCRuntime extends EventEmitter implements PCRuntime {
       }
     }
 
-    if (Object.keys(changes).length || (!isEqual(value.variants, (oldInfo || EMPTY_OBJECT).variants))) {
+    if (
+      Object.keys(changes).length ||
+      !isEqual(value.variants, (oldInfo || EMPTY_OBJECT).variants)
+    ) {
       this._remote.postMessage({
         type: "infoChanges",
-        payload: { changes, variants: value.variants, lastUpdatedAt: (this._lastUpdatedAt = timestamp) }
+        payload: {
+          changes,
+          variants: value.variants,
+          lastUpdatedAt: (this._lastUpdatedAt = timestamp)
+        }
       });
     }
   }
@@ -285,7 +292,11 @@ export const hookRemotePCRuntime = async (
     } else if (type === "infoChanges") {
       const localInfo = localRuntime.getInfo() || EMPTY_OBJECT;
       localRuntime.setInfo(
-        { ...localInfo, variants: payload.variants, graph: patchDependencyGraph(payload.changes, localInfo.graph) },
+        {
+          ...localInfo,
+          variants: payload.variants,
+          graph: patchDependencyGraph(payload.changes, localInfo.graph)
+        },
         payload.lastUpdatedAt
       );
     }

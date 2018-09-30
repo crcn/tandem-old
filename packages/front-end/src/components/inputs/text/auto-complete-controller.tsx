@@ -15,58 +15,78 @@ export type Props = {
   autoCompleteOptions: DropdownMenuOption[];
 } & BaseAutoComleteTextInputProps;
 
-
-
 export default compose(
-  (Base: React.ComponentClass<BaseAutoComleteTextInputProps>) => class AutoCompleteController extends React.PureComponent<Props> {
-    state = {
-      openPopover: false,
-      value: this.props.value,
-      prevValue: this.props.value
-    };
+  (Base: React.ComponentClass<BaseAutoComleteTextInputProps>) =>
+    class AutoCompleteController extends React.PureComponent<Props> {
+      state = {
+        openPopover: false,
+        value: this.props.value,
+        prevValue: this.props.value
+      };
 
-    onShouldClosePopover = () => {
-      this.setState({ ...this.state, openPopover: false });
-    }
-    onBlur = (event) => {
-      this.setState({ ...this.state, openPopover: false });
-      this.props.onBlur && this.props.onBlur(event);
-    }
-    onFocus = () => {
-      this.setState({ ...this.state, openPopover: true });
-    }
-    componentWillUpdate(props, state) {
-      if (props.value !== state.prevValue) {
-        this.setState({ value: props.value, prevValue: props.value });
+      onShouldClosePopover = () => {
+        this.setState({ ...this.state, openPopover: false });
+      };
+      onBlur = event => {
+        this.setState({ ...this.state, openPopover: false });
+        this.props.onBlur && this.props.onBlur(event);
+      };
+      onFocus = () => {
+        this.setState({ ...this.state, openPopover: true });
+      };
+      componentWillUpdate(props, state) {
+        if (props.value !== state.prevValue) {
+          this.setState({ value: props.value, prevValue: props.value });
+        }
+      }
+      onChange = value => {
+        this.setState({ value, prevValue: this.props.value });
+        if (this.props.onChange) {
+          this.props.onChange(value);
+        }
+      };
+      render() {
+        const {
+          onKeyDown,
+          autoCompleteOptions,
+          onChangeComplete = noop,
+          ...rest
+        } = this.props;
+        const { onShouldClosePopover, onFocus, onBlur, onChange } = this;
+        const { openPopover, value } = this.state;
+        const open = openPopover && !value;
+
+        const menuItems = open
+          ? autoCompleteOptions.map((option, i) => {
+              return (
+                <DropdownMenuItem
+                  variant={cx({
+                    alt: Boolean(i % 2),
+                    special: option.special
+                  })}
+                  onClick={() => onChangeComplete(option.value)}
+                >
+                  {option.label}
+                </DropdownMenuItem>
+              );
+            })
+          : EMPTY_ARRAY;
+
+        return (
+          <Base
+            {...rest}
+            textInputProps={{
+              value,
+              onFocus,
+              onChange
+            }}
+            popoverProps={{
+              open,
+              onShouldClose: onShouldClosePopover
+            }}
+            menu={menuItems}
+          />
+        );
       }
     }
-    onChange = (value) => {
-      this.setState({ value, prevValue: this.props.value });
-      if (this.props.onChange) {
-        this.props.onChange(value);
-      }
-    }
-    render() {
-      const {onKeyDown, autoCompleteOptions, onChangeComplete = noop, ...rest} = this.props;
-      const { onShouldClosePopover, onFocus, onBlur, onChange } = this;
-      const {openPopover, value} = this.state;
-      const open = openPopover && !value;
-
-      const menuItems = open ? autoCompleteOptions.map((option, i) => {
-        return <DropdownMenuItem variant={cx({
-          alt: Boolean(i % 2),
-          special: option.special
-        })} onClick={() => onChangeComplete(option.value)}>{option.label}</DropdownMenuItem>;
-      }) : EMPTY_ARRAY;
-
-      return <Base {...rest} textInputProps={{
-        value,
-        onFocus,
-        onChange,
-      }} popoverProps={{
-        open,
-        onShouldClose: onShouldClosePopover
-      }} menu={menuItems} />;
-    }
-  }
 );

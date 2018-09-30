@@ -450,18 +450,21 @@ export const expandSyntheticInspectorNode = (
 };
 
 export const getInheritedOverridesOverrides = (
-    inspectorNode: InspectorNode,
-    rootInspectorNode: InspectorNode,
-    graph: DependencyGraph
-  ) => {
-    const sourceNode = getPCNode(inspectorNode.assocSourceNodeId, graph);
-    let overrides: PCOverride[] = getOverrides(sourceNode);
-    const parent = getParentTreeNode(inspectorNode.id, rootInspectorNode);
-    if (parent && parent.assocSourceNodeId) {
-      overrides = [...overrides, ...getInheritedOverridesOverrides(parent, rootInspectorNode, graph)];
-    }
-    return overrides;
+  inspectorNode: InspectorNode,
+  rootInspectorNode: InspectorNode,
+  graph: DependencyGraph
+) => {
+  const sourceNode = getPCNode(inspectorNode.assocSourceNodeId, graph);
+  let overrides: PCOverride[] = getOverrides(sourceNode);
+  const parent = getParentTreeNode(inspectorNode.id, rootInspectorNode);
+  if (parent && parent.assocSourceNodeId) {
+    overrides = [
+      ...overrides,
+      ...getInheritedOverridesOverrides(parent, rootInspectorNode, graph)
+    ];
   }
+  return overrides;
+};
 
 // TODO - move to paperclip
 export const getInspectorNodeOverrides = memoize(
@@ -480,9 +483,13 @@ export const getInspectorNodeOverrides = memoize(
     );
     for (const override of inheritedOverrides) {
       const overrideModule = getPCNodeModule(override.id, graph);
-      const matchesVariant = !override.variantId || override.variantId == (variant && variant.id);
-      const overrideIsTarget = last(override.targetIdPath) === inspectorNode.assocSourceNodeId;
-      const overrideTargetIsParent = override.targetIdPath.length === 0 && getParentTreeNode(override.id, overrideModule).id === sourceNode.id;
+      const matchesVariant =
+        !override.variantId || override.variantId == (variant && variant.id);
+      const overrideIsTarget =
+        last(override.targetIdPath) === inspectorNode.assocSourceNodeId;
+      const overrideTargetIsParent =
+        override.targetIdPath.length === 0 &&
+        getParentTreeNode(override.id, overrideModule).id === sourceNode.id;
 
       if (matchesVariant && (overrideIsTarget || overrideTargetIsParent)) {
         overrides.push(override);
@@ -530,26 +537,32 @@ export const getInspectorContentNodeContainingChild = memoize(
   }
 );
 
-export const getInspectorInstanceShadow = memoize((inspectorNode: InspectorNode) => {
-  return inspectorNode.children[0];
-});
+export const getInspectorInstanceShadow = memoize(
+  (inspectorNode: InspectorNode) => {
+    return inspectorNode.children[0];
+  }
+);
 
-export const getInspectorInstanceShadowContentNode = (inspectorNode: InspectorNode) => {
+export const getInspectorInstanceShadowContentNode = (
+  inspectorNode: InspectorNode
+) => {
   const shadow = getInspectorInstanceShadow(inspectorNode);
   return shadow && shadow.children[0];
 };
 
-export const getInspectorNodeParentShadow = memoize((inspectorNode: InspectorNode, root: InspectorNode) => {
-  let current: InspectorNode = inspectorNode;
-  while(current) {
-    const parent = getParentTreeNode(current.id, root) as InspectorNode;
-    if (parent.name === InspectorTreeNodeName.SHADOW) {
-      return parent;
+export const getInspectorNodeParentShadow = memoize(
+  (inspectorNode: InspectorNode, root: InspectorNode) => {
+    let current: InspectorNode = inspectorNode;
+    while (current) {
+      const parent = getParentTreeNode(current.id, root) as InspectorNode;
+      if (parent.name === InspectorTreeNodeName.SHADOW) {
+        return parent;
+      }
+      current = parent;
     }
-    current = parent;
+    return null;
   }
-  return null;
-});
+);
 
 export const getSyntheticInspectorNode = memoize(
   (

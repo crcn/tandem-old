@@ -153,8 +153,12 @@ export const convertFlatFilesToNested = (files: FilePathPair[]): FSItem[] => {
 };
 
 export const convertFlatFilesToNested2 = (items: FSItem[]): Directory => {
-  const splitParts = items.map((item) => {
-    return [stripProtocol(item.uri).split("/"), item.name === FSItemTagNames.DIRECTORY, item];
+  const splitParts = items.map(item => {
+    return [
+      stripProtocol(item.uri).split("/"),
+      item.name === FSItemTagNames.DIRECTORY,
+      item
+    ];
   }) as [string[], boolean, FSItem][];
 
   const sortedFiles = splitParts
@@ -199,13 +203,20 @@ export const convertFlatFilesToNested2 = (items: FSItem[]): Directory => {
 
   const highestPool = pool[highestDirname];
 
-  return updateFSItemAlts(highestPool.length === 1 && highestPool[0].name === FSItemTagNames.DIRECTORY ? highestPool[0] : createDirectory(highestDirname, sortFSItems(highestPool), true));
+  return updateFSItemAlts(
+    highestPool.length === 1 && highestPool[0].name === FSItemTagNames.DIRECTORY
+      ? highestPool[0]
+      : createDirectory(highestDirname, sortFSItems(highestPool), true)
+  );
 };
 
 export const mergeFSItems = (...items: FSItem[]) => {
-  const flattenedItems = uniqBy(items.reduce((allItems, item) => {
-    return [...allItems, ...flattenTreeNode(item)];
-  }, EMPTY_ARRAY), (item: FSItem) => item.uri);
+  const flattenedItems = uniqBy(
+    items.reduce((allItems, item) => {
+      return [...allItems, ...flattenTreeNode(item)];
+    }, EMPTY_ARRAY),
+    (item: FSItem) => item.uri
+  );
 
   const itemMap = {};
 
@@ -216,22 +227,21 @@ export const mergeFSItems = (...items: FSItem[]) => {
   const mapTree = (node: FSItem) => {
     const existing = itemMap[node.uri];
     if (!existing) {
-      return node; 
+      return node;
     }
     if (node.name === FSItemTagNames.DIRECTORY) {
       return {
         ...node,
         ...existing,
         children: node.children.map(mapTree)
-      }
+      };
     } else {
       return existing;
     }
-  }
+  };
 
   return updateFSItemAlts(mapTree(convertFlatFilesToNested2(flattenedItems)));
 };
-
 
 export const updateFSItemAlts = <TItem extends FSItem>(root: TItem): TItem => {
   const flattened = flattenTreeNode(root).filter(
@@ -262,8 +272,6 @@ export const updateFSItemAlts = <TItem extends FSItem>(root: TItem): TItem => {
 
   return map(root) as TItem;
 };
-
-
 
 export const sortFSItems = (files: FSItem[]) =>
   [...files].sort((a, b) => {

@@ -7,7 +7,11 @@ import {
 } from "../actions";
 import { popupSaga } from "./popup";
 import { projectSaga, ProjectSagaOptions } from "./project";
-import { shortcutSaga, ShortcutSagaOptions, createShortcutSaga } from "./shortcuts";
+import {
+  shortcutSaga,
+  ShortcutSagaOptions,
+  createShortcutSaga
+} from "./shortcuts";
 import { copyPasteSaga } from "./copy-paste";
 import {
   getSyntheticNodeById,
@@ -18,7 +22,8 @@ import {
 
 export type FrontEndSagaOptions = {
   openPreview(frame: Frame, state: RootState);
-} & ProjectSagaOptions & ShortcutSagaOptions;
+} & ProjectSagaOptions &
+  ShortcutSagaOptions;
 
 export const createRootSaga = (options: FrontEndSagaOptions) => {
   return function* rootSaga() {

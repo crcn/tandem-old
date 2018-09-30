@@ -184,17 +184,19 @@ export default (Base: React.ComponentClass<BaseNodeLayerProps>) => {
           }
         };
         onLabelRightClick = (event: React.MouseEvent<any>) => {
-          this.props.dispatch(pcLayerRightClicked(this.props.inspectorNode, event));
-        }
-        onLabelInputKeyDown = (event) => {
+          this.props.dispatch(
+            pcLayerRightClicked(this.props.inspectorNode, event)
+          );
+        };
+        onLabelInputKeyDown = event => {
           if (event.key === "Enter") {
             this.persistLabelChange(event);
           }
         };
-        onLabelInputBlur = (event) => {
+        onLabelInputBlur = event => {
           this.persistLabelChange(event);
-        }
-        private persistLabelChange = (event) => {
+        };
+        private persistLabelChange = event => {
           const label = String((event.target as any).value || "").trim();
           this.setState({ ...this.state, editingLabel: false });
           this.props.dispatch(
@@ -204,7 +206,7 @@ export default (Base: React.ComponentClass<BaseNodeLayerProps>) => {
               event
             )
           );
-        }
+        };
         componentDidMount() {
           this.makeVisible(this.props.isSelected);
         }
@@ -349,7 +351,10 @@ export default (Base: React.ComponentClass<BaseNodeLayerProps>) => {
                     onClick={onLabelClick}
                     onDoubleClick={onLabelDoubleClick}
                     onContextMenu={onLabelRightClick}
-                    labelInputProps={{ onKeyDown: onLabelInputKeyDown, onBlur: onLabelInputBlur }}
+                    labelInputProps={{
+                      onKeyDown: onLabelInputKeyDown,
+                      onBlur: onLabelInputBlur
+                    }}
                     variant={cx({
                       editingLabel: editingLabel,
                       header: isFile,

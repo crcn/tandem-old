@@ -121,7 +121,9 @@ export default (Base: React.ComponentClass<BaseBoxShadowsProps>) =>
         return null;
       }
 
-      const boxShadowInfo = parseBoxShadows(computedStyleInfo.style["box-shadow"]);
+      const boxShadowInfo = parseBoxShadows(
+        computedStyleInfo.style["box-shadow"]
+      );
       const hasSelectedShadow = selectedBoxShadowIndex != null;
 
       const items = boxShadowInfo

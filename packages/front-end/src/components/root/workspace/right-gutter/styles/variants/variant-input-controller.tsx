@@ -53,7 +53,7 @@ export default (
         rootInspectorNode,
         graph,
         selectedVariant,
-        dispatch,
+        dispatch
       } = this.props;
       const variantInfo = getInstanceVariantInfo(
         selectedInspectorNode,
@@ -75,7 +75,6 @@ export default (
             variant={variant}
             dispatch={dispatch}
             onToggle={onVariantToggle}
-
           />
         );
       });

@@ -16,7 +16,6 @@ export const withPureInputHandlers = () => (
   return class InputHandlersWrapper extends React.PureComponent<
     WithInputHandlersProps
   > {
-
     // needed so that sub components get updates value if source doesn't change.
     state = {
       value: null,
@@ -34,7 +33,7 @@ export const withPureInputHandlers = () => (
         if (onChange) {
           onChange(newValue || undefined);
         }
-        
+
         if (key === "Enter" && onChangeComplete) {
           onChangeComplete(newValue || undefined);
         }
@@ -56,7 +55,7 @@ export const withPureInputHandlers = () => (
     }
     render() {
       const { onKeyDown, onBlur } = this;
-      return <Base {...this.props}  onKeyDown={onKeyDown} onBlur={onBlur} />;
+      return <Base {...this.props} onKeyDown={onKeyDown} onBlur={onBlur} />;
     }
   };
 };

@@ -63,7 +63,7 @@ export default (Base: React.ComponentClass<BaseToolbarProps>) =>
       const tabs = editorWindow.tabUris.map(uri => {
         return (
           <EditorTab
-          className="tab"
+            className="tab"
             variant={cx({ selected: editorWindow.activeFilePath === uri })}
             xButtonProps={{
               className: "x-button",

@@ -1,10 +1,25 @@
 import * as React from "react";
 import { BaseFramePaneProps } from "./frame.pc";
-import {isEqual} from "lodash";
-import { PCVisibleNode, DependencyGraph, isPCContentNode, PCVisibleNodeMetadataKey } from "paperclip";
-import { Bounds, memoize, resizeBounds, moveBounds, createBounds, getBoundsSize } from "tandem-common";
+import { isEqual } from "lodash";
+import {
+  PCVisibleNode,
+  DependencyGraph,
+  isPCContentNode,
+  PCVisibleNodeMetadataKey
+} from "paperclip";
+import {
+  Bounds,
+  memoize,
+  resizeBounds,
+  moveBounds,
+  createBounds,
+  getBoundsSize
+} from "tandem-common";
 import { Dispatch } from "redux";
-import { frameBoundsChangeCompleted, frameBoundsChanged } from "../../../../../actions";
+import {
+  frameBoundsChangeCompleted,
+  frameBoundsChanged
+} from "../../../../../actions";
 import { DropdownMenuOption } from "../../../../inputs/dropdown/controller";
 
 export type Props = {
@@ -54,89 +69,112 @@ const PRESETS: DropdownMenuOption[] = [
     label: "Microsoft Surface Book",
     value: createBounds(0, 1500, 0, 1000)
   }
-]
+];
 
+export default (Base: React.ComponentClass<BaseFramePaneProps>) =>
+  class FramePaneController extends React.PureComponent<Props> {
+    onPresetChangeComplete = (value: Bounds) => {
+      const newBounds = resizeBounds(
+        this.props.selectedNode.metadata[PCVisibleNodeMetadataKey.BOUNDS],
+        getBoundsSize(value)
+      );
+      this.props.dispatch(frameBoundsChangeCompleted(newBounds));
+    };
 
-export default (Base: React.ComponentClass<BaseFramePaneProps>) => class FramePaneController extends React.PureComponent<Props> {
+    onChange = (prop: string, value: number, complete: boolean) => {
+      value = Number(value || 0);
 
-  onPresetChangeComplete = (value: Bounds) => {
-    const newBounds = resizeBounds(this.props.selectedNode.metadata[PCVisibleNodeMetadataKey.BOUNDS], getBoundsSize(value));
-    this.props.dispatch(frameBoundsChangeCompleted(newBounds));
-  }
-
-  onChange = (prop: string, value: number, complete: boolean) => {
-
-    value = Number(value || 0);
-
-    let newBounds = this.props.selectedNode.metadata[PCVisibleNodeMetadataKey.BOUNDS];
-    switch(prop) {
-      case "left": {
-        newBounds = moveBounds(newBounds, { left: value, top: newBounds.top });
-        break;
+      let newBounds = this.props.selectedNode.metadata[
+        PCVisibleNodeMetadataKey.BOUNDS
+      ];
+      switch (prop) {
+        case "left": {
+          newBounds = moveBounds(newBounds, {
+            left: value,
+            top: newBounds.top
+          });
+          break;
+        }
+        case "top": {
+          newBounds = moveBounds(newBounds, {
+            left: newBounds.left,
+            top: value
+          });
+          break;
+        }
+        case "width": {
+          newBounds = resizeBounds(newBounds, {
+            width: value,
+            height: newBounds.bottom - newBounds.top
+          });
+          break;
+        }
+        case "height": {
+          newBounds = resizeBounds(newBounds, {
+            width: newBounds.right - newBounds.left,
+            height: value
+          });
+          break;
+        }
       }
-      case "top": {
-        newBounds = moveBounds(newBounds, { left: newBounds.left, top: value });
-        break;
+
+      this.props.dispatch(
+        (complete ? frameBoundsChangeCompleted : frameBoundsChanged)(newBounds)
+      );
+    };
+
+    render() {
+      const { selectedNode, graph, ...rest } = this.props;
+      const { onChange, onPresetChangeComplete } = this;
+      if (!isPCContentNode(selectedNode, graph)) {
+        return null;
       }
-      case "width": {
-        newBounds = resizeBounds(newBounds, {
-          width: value,
-          height: newBounds.bottom - newBounds.top
-        })
-        break;
-      }
-      case "height": {
-        newBounds = resizeBounds(newBounds, {
-          width: newBounds.right - newBounds.left,
-          height: value
-        })
-        break;
-      }
+      const { left, top, right, bottom }: Bounds = selectedNode.metadata[
+        PCVisibleNodeMetadataKey.BOUNDS
+      ];
+      const width = right - left || null;
+      const height = bottom - top || null;
+      const size = { width, height };
+
+      const presetValueOption = PRESETS.find(preset => {
+        return isEqual(getBoundsSize(preset.value), size);
+      });
+
+      return (
+        <Base
+          {...rest}
+          presetInputProps={{
+            value: presetValueOption && presetValueOption.value,
+            options: PRESETS,
+            onChangeComplete: onPresetChangeComplete
+          }}
+          xInputProps={{
+            value: left,
+            onChange: wrapOnChange("left", onChange),
+            onChangeComplete: wrapOnChange("left", onChange, true)
+          }}
+          yInputProps={{
+            value: top,
+            onChange: wrapOnChange("top", onChange),
+            onChangeComplete: wrapOnChange("top", onChange, true)
+          }}
+          widthInputProps={{
+            value: width,
+            onChange: wrapOnChange("width", onChange),
+            onChangeComplete: wrapOnChange("width", onChange, true)
+          }}
+          heightInputProps={{
+            value: height,
+            onChange: wrapOnChange("height", onChange),
+            onChangeComplete: wrapOnChange("height", onChange, true)
+          }}
+        />
+      );
     }
+  };
 
-
-    this.props.dispatch((complete ? frameBoundsChangeCompleted : frameBoundsChanged)(newBounds));
+const wrapOnChange = memoize(
+  (prop: string, onChange: any, complete?: boolean) => {
+    return value => onChange(prop, Number(value || 0), complete);
   }
-  
-  render() {
-    const {selectedNode, graph,...rest} = this.props;
-    const {onChange, onPresetChangeComplete} = this;
-    if (!isPCContentNode(selectedNode, graph)) {
-      return null;
-    }
-    const {left, top, right, bottom}: Bounds = selectedNode.metadata[PCVisibleNodeMetadataKey.BOUNDS];
-    const width = right - left || null;
-    const height = bottom - top || null;
-    const size = {width, height};
-
-    const presetValueOption = PRESETS.find(preset => {
-      return isEqual(getBoundsSize(preset.value), size);
-    });
-    
-    return <Base {...rest} presetInputProps={{
-      value: presetValueOption && presetValueOption.value,
-      options: PRESETS,
-      onChangeComplete: onPresetChangeComplete
-    }} xInputProps={{
-      value: left,
-      onChange: wrapOnChange("left", onChange),
-      onChangeComplete: wrapOnChange("left", onChange, true),
-    }}  yInputProps={{
-      value: top,
-      onChange: wrapOnChange("top", onChange),
-      onChangeComplete: wrapOnChange("top", onChange, true),
-    }}  widthInputProps={{
-      value: width,
-      onChange: wrapOnChange("width", onChange),
-      onChangeComplete: wrapOnChange("width", onChange, true),
-    }}  heightInputProps={{
-      value: height,
-      onChange: wrapOnChange("height", onChange),
-      onChangeComplete: wrapOnChange("height", onChange, true),
-    }} />;
-  }
-}
-
-const wrapOnChange = memoize((prop: string, onChange: any, complete?: boolean) => {
-  return (value) => onChange(prop, Number(value || 0), complete);
-});
+);

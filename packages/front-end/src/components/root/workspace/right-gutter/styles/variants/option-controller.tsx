@@ -63,7 +63,7 @@ export default (Base: React.ComponentClass<BaseVariantOptionProps>) =>
       return (
         <Base
           {...rest}
-          variant={cx({alt})}
+          variant={cx({ alt })}
           switchProps={{
             value: enabled,
             onChangeComplete: onSwitchChange

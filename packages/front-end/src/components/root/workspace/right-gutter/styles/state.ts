@@ -20,7 +20,7 @@ import {
   isPCComponentOrInstance,
   PCElement
 } from "paperclip";
-import {defaults} from "lodash";
+import { defaults } from "lodash";
 import { memoize, getParentTreeNode, KeyValue } from "tandem-common";
 import { ColorSwatchOption } from "../../../../inputs/color/color-swatch-controller";
 
@@ -44,23 +44,23 @@ export const computeStyleInfo = memoize(
     const styleOverridesMap: KeyValue<PCStyleOverride[]> = {};
 
     for (const inspectorNode of selectedInspectorNodes) {
-      const sourceNode = getPCNode(
-        inspectorNode.assocSourceNodeId,
-        graph
-      ) as PCVisibleNode | PCComponent;
+      const sourceNode = getPCNode(inspectorNode.assocSourceNodeId, graph) as
+        | PCVisibleNode
+        | PCComponent;
       sourceNodes.push(sourceNode);
       let current: PCNode = sourceNode;
-      while(extendsComponent(current)) {
-        const parent: PCElement
-         = getPCNode((current as PCComponent).is, graph) as PCElement;
+      while (extendsComponent(current)) {
+        const parent: PCElement = getPCNode(
+          (current as PCComponent).is,
+          graph
+        ) as PCElement;
         if (isPCComponentOrInstance(parent)) {
-
           // defaults -- parents cannot disable
           defaults(style, parent.style);
         }
         current = parent;
       }
-      
+
       const overrides = getInspectorNodeOverrides(
         inspectorNode,
         rootInspectorNode,
@@ -89,8 +89,6 @@ export const computeStyleInfo = memoize(
     };
   }
 );
-
-
 
 export const mapPCVariablesToColorSwatchOptions = memoize(
   (globalVariables: PCVariable[]): ColorSwatchOption[] => {

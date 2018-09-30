@@ -1008,7 +1008,10 @@ export const persistChangeElementType = <TState extends PCEditorState>(
     sourceNode = {
       ...sourceNode,
       variant: EMPTY_OBJECT,
-      name: sourceNode.name === PCSourceTagNames.COMPONENT ? PCSourceTagNames.COMPONENT : PCSourceTagNames.COMPONENT_INSTANCE,
+      name:
+        sourceNode.name === PCSourceTagNames.COMPONENT
+          ? PCSourceTagNames.COMPONENT
+          : PCSourceTagNames.COMPONENT_INSTANCE,
       is: typeOrComponentId,
 
       // obliterate children, slots, and overrides associated with previous component since we don't have
@@ -1023,7 +1026,11 @@ export const persistChangeElementType = <TState extends PCEditorState>(
       is: typeOrComponentId,
 
       // only copy children over if the prevuous node was an element
-      children: sourceNode.name === PCSourceTagNames.ELEMENT && !isVoidTagName(typeOrComponentId) ? sourceNode.children : EMPTY_ARRAY
+      children:
+        sourceNode.name === PCSourceTagNames.ELEMENT &&
+        !isVoidTagName(typeOrComponentId)
+          ? sourceNode.children
+          : EMPTY_ARRAY
     } as PCElement;
   }
 
@@ -1428,7 +1435,6 @@ export const persistRawCSSText = <TState extends PCEditorState>(
     state
   );
 
-
 const omitNull = (object: KeyValue<any>) => {
   return pickBy(object, value => {
     return value != null;
@@ -1455,10 +1461,14 @@ export const persistCSSProperty = <TState extends PCEditorState>(
 
       // note that we're omitting null since that kind of value may accidentally override parent props which
       // doesn't transpile to actually overrides styles.
-      return overrideKeyValue(node.style, prevStyle, omitNull({
-        ...prevStyle,
-        ...style
-      }));
+      return overrideKeyValue(
+        node.style,
+        prevStyle,
+        omitNull({
+          ...prevStyle,
+          ...style
+        })
+      );
     },
     (sourceNode: PCVisibleNode) =>
       ({

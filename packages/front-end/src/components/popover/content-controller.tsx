@@ -32,7 +32,10 @@ export default compose<any, Props>(
       setContainer = (container: HTMLDivElement) => {
         const { onShouldClose } = this.props;
         if (this._emptySpaceListener) {
-          document.body.removeEventListener("mousedown", this._emptySpaceListener);
+          document.body.removeEventListener(
+            "mousedown",
+            this._emptySpaceListener
+          );
           document.removeEventListener("scroll", this._scrollListener, true);
         }
         if (container && onShouldClose) {
@@ -78,7 +81,11 @@ export default compose<any, Props>(
   withState(`style`, `setStyle`, null),
   portal({
     didMount: ({ anchorRect, setStyle }) => portalMount => {
-      if (!portalMount || !portalMount.children[0] || !portalMount.children[0].children[0]) {
+      if (
+        !portalMount ||
+        !portalMount.children[0] ||
+        !portalMount.children[0].children[0]
+      ) {
         return;
       }
       const newStyle = calcPortalStyle(

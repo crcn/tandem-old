@@ -123,7 +123,15 @@ export default (Base: React.ComponentClass<BaseLayoutProps>) =>
     };
 
     render() {
-      const { computedStyleInfo, globalVariables, rootInspectorNode, selectedVariant, selectedInspectorNodes, graph, ...rest } = this.props;
+      const {
+        computedStyleInfo,
+        globalVariables,
+        rootInspectorNode,
+        selectedVariant,
+        selectedInspectorNodes,
+        graph,
+        ...rest
+      } = this.props;
       const { onPropertyChange, onPropertyChangeComplete } = this;
 
       // computeStyleInfo
@@ -134,27 +142,47 @@ export default (Base: React.ComponentClass<BaseLayoutProps>) =>
       }
       const inspectorNode = selectedInspectorNodes[0];
       const module = getPCNodeModule(node.id, graph);
-      
-      const showMoveInputs = isPCContentNode(node, graph) ||  /fixed|relative|absolute/.test(computedStyleInfo.style.position || "static"); 
-      const showSizeInputs = showMoveInputs || /block|inline-block|flex|inline-flex/.test(computedStyleInfo.style.display || "inline");
+
+      const showMoveInputs =
+        isPCContentNode(node, graph) ||
+        /fixed|relative|absolute/.test(
+          computedStyleInfo.style.position || "static"
+        );
+      const showSizeInputs =
+        showMoveInputs ||
+        /block|inline-block|flex|inline-flex/.test(
+          computedStyleInfo.style.display || "inline"
+        );
       const showParentFlexInputs =
-      computedStyleInfo.style.display === "flex" || computedStyleInfo.style.display === "inline-flex";
-      
+        computedStyleInfo.style.display === "flex" ||
+        computedStyleInfo.style.display === "inline-flex";
+
       let parentInspectorNode: InspectorNode;
       let currentInspectorNode: InspectorNode = inspectorNode;
-      while(1) {
-        parentInspectorNode = getParentTreeNode(currentInspectorNode.id, rootInspectorNode);
+      while (1) {
+        parentInspectorNode = getParentTreeNode(
+          currentInspectorNode.id,
+          rootInspectorNode
+        );
         if (parentInspectorNode.name === InspectorTreeNodeName.SOURCE_REP) {
           break;
         }
         currentInspectorNode = parentInspectorNode;
       }
 
-      const parentComputedInfo = parentInspectorNode && computeStyleInfo([parentInspectorNode], rootInspectorNode, selectedVariant, graph);
+      const parentComputedInfo =
+        parentInspectorNode &&
+        computeStyleInfo(
+          [parentInspectorNode],
+          rootInspectorNode,
+          selectedVariant,
+          graph
+        );
 
-      const showChildFlexInputs = parentInspectorNode && 
+      const showChildFlexInputs =
+        parentInspectorNode &&
         (parentComputedInfo.style.display === "flex" ||
-        parentComputedInfo.style.display === "inline-flex");
+          parentComputedInfo.style.display === "inline-flex");
 
       return (
         <Base
