@@ -1317,14 +1317,14 @@ export const getScaledMouseCanvasPosition = (
 
 export const getCanvasMouseTargetNodeId = (
   state: RootState,
-  event: CanvasToolOverlayMouseMoved | CanvasToolOverlayClicked,
+  event: React.MouseEvent<any>,
   filter?: (node: TreeNode<any>) => boolean
 ): string => {
   return getCanvasMouseTargetNodeIdFromPoint(
     state,
     {
-      left: event.sourceEvent.pageX,
-      top: event.sourceEvent.pageY
+      left: event.pageX,
+      top: event.pageY
     },
     filter
   );
@@ -1335,7 +1335,7 @@ export const getCanvasMouseTargetInspectorNode = (
   event: CanvasToolOverlayMouseMoved | CanvasToolOverlayClicked,
   filter?: (node: TreeNode<any>) => boolean
 ): InspectorNode => {
-  const syntheticNodeId = getCanvasMouseTargetNodeId(state, event, filter);
+  const syntheticNodeId = getCanvasMouseTargetNodeId(state, event.sourceEvent, filter);
   if (!syntheticNodeId) {
     return null;
   }
@@ -1388,10 +1388,14 @@ export const getCanvasMouseTargetNodeIdFromPoint = (
       (!filter || filter(getNestedTreeNodeById(id, contentNode)))
     ) {
 
-      // TODO - whitelisted shadow node
       const syntheticNode = getSyntheticNodeById(id, state.documents);
       const document = getSyntheticVisibleNodeDocument(id, state.documents);
       const inspectorNode = getSyntheticInspectorNode(syntheticNode, document, state.sourceNodeInspector, state.graph);
+
+      // this will happen briefly if synthetic nodes are out of sync with the main thread (e.g: right click element + convert to component)
+      if (!inspectorNode) {
+        continue;
+      }
       const contentNode = getInspectorContentNodeContainingChild(inspectorNode, state.sourceNodeInspector) || inspectorNode;
 
       if (inspectorNodeInShadow(inspectorNode, contentNode)) {

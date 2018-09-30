@@ -146,6 +146,10 @@ export const FILE_ITEM_CONTEXT_MENU_OPEN_CLICKED = "FILE_ITEM_CONTEXT_MENU_OPEN_
 export const FILE_ITEM_CONTEXT_MENU_OPEN_IN_FINDER_CLICKED = "FILE_ITEM_CONTEXT_MENU_OPEN_IN_FINDER_CLICKED";
 export const FILE_ITEM_CONTEXT_MENU_COPY_PATH_CLICKED = "FILE_ITEM_CONTEXT_MENU_COPY_PATH_CLICKED";
 export const FILE_ITEM_CONTEXT_MENU_RENAME_CLICKED = "FILE_ITEM_CONTEXT_MENU_RENAME_CLICKED";
+export const SYNTHETIC_NODE_CONTEXT_MENU_CONVERT_TO_COMPONENT_CLICKED = "SYNTHETIC_NODE_CONTEXT_MENU_CONVERT_TO_COMPONENT_CLICKED";
+export const SYNTHETIC_NODE_CONTEXT_MENU_WRAP_IN_SLOT_CLICKED = "SYNTHETIC_NODE_CONTEXT_MENU_WRAP_IN_SLOT_CLICKED";
+export const SYNTHETIC_NODE_CONTEXT_MENU_SELECT_PARENT_CLICKED = "SYNTHETIC_NODE_CONTEXT_MENU_SELECT_PARENT_CLICKED";
+export const SYNTHETIC_NODE_CONTEXT_MENU_SELECT_SOURCE_NODE_CLICKED = "SYNTHETIC_NODE_CONTEXT_MENU_SELECT_SOURCE_NODE_CLICKED";
 export const INHERIT_PANE_REMOVE_BUTTON_CLICK =
   "INHERIT_PANE_REMOVE_BUTTON_CLICK";
 export const ACTIVE_EDITOR_URI_DIRS_LOADED = "ACTIVE_EDITOR_URI_DIRS_LOADED";
@@ -170,6 +174,8 @@ export const SLOT_TOGGLE_CLICK = "SLOT_TOGGLE_CLICK";
 export const TEXT_VALUE_CHANGED = "TEXT_VALUE_CHANGED";
 export const ELEMENT_TYPE_CHANGED = "ELEMENT_TYPE_CHANGED";
 export const FILE_ITEM_RIGHT_CLICKED = "FILE_ITEM_RIGHT_CLICKED";
+export const CANVAS_RIGHT_CLICKED = "CANVAS_RIGHT_CLICKED";
+export const PC_LAYER_RIGHT_CLICKED = "PC_LAYER_RIGHT_CLICKED";
 export const SOURCE_INSPECTOR_LAYER_CLICKED = "SOURCE_INSPECTOR_LAYER_CLICKED";
 export const SOURCE_INSPECTOR_LAYER_ARROW_CLICKED =
   "SOURCE_INSPECTOR_LAYER_ARROW_CLICKED";
@@ -403,6 +409,10 @@ export type FileItemContextMenuAction = {
   item: FSItem;
 } & Action;
 
+export type SyntheticNodeContextMenuAction = {
+  item: SyntheticVisibleNode;
+} & Action;
+
 export type ComponentVariantNameChanged = {
   oldName: string;
   newName: string;
@@ -525,6 +535,15 @@ export type FileItemRightClicked = {
   item: FSItem;
 } & Action;
 
+export type CanvasRightClicked = {
+  event: React.MouseEvent<any>;
+} & Action;
+
+export type PCLayerRightClicked = {
+  item: InspectorNode;
+  event: React.MouseEvent<any>;
+} & Action;
+
 export type FileNavigatorNewFileEntered = {
   directoryId: string;
   basename: string;
@@ -598,7 +617,6 @@ export const editorTabClicked = (uri: string): EditorTabClicked => ({
   type: EDITOR_TAB_CLICKED
 });
 
-
 export const fileItemContextMenuDeleteClicked = publicActionCreator((item: FSItem): FileItemContextMenuAction => ({
   item, 
   type: FILE_ITEM_CONTEXT_MENU_DELETE_CLICKED
@@ -619,10 +637,29 @@ export const fileItemContextMenuOpenClicked = publicActionCreator((item: FSItem)
   type: FILE_ITEM_CONTEXT_MENU_OPEN_CLICKED
 }));
 
-
 export const fileItemContextMenuOpenInFinderClicked = publicActionCreator((item: FSItem): FileItemContextMenuAction => ({
   item, 
   type: FILE_ITEM_CONTEXT_MENU_OPEN_IN_FINDER_CLICKED
+}));
+
+export const syntheticNodeContextMenuConvertToComponentClicked = publicActionCreator((item: SyntheticVisibleNode): SyntheticNodeContextMenuAction => ({
+  type: SYNTHETIC_NODE_CONTEXT_MENU_CONVERT_TO_COMPONENT_CLICKED,
+  item
+}));
+
+export const syntheticNodeContextMenuWrapInSlotClicked = publicActionCreator((item: SyntheticVisibleNode): SyntheticNodeContextMenuAction => ({
+  type: SYNTHETIC_NODE_CONTEXT_MENU_WRAP_IN_SLOT_CLICKED,
+  item
+}));
+
+export const syntheticNodeContextMenuSelectParentClicked = publicActionCreator((item: SyntheticVisibleNode): SyntheticNodeContextMenuAction => ({
+  type: SYNTHETIC_NODE_CONTEXT_MENU_SELECT_PARENT_CLICKED,
+  item
+}));
+
+export const syntheticNodeContextMenuSelectSourceNodeClicked = publicActionCreator((item: SyntheticVisibleNode): SyntheticNodeContextMenuAction => ({
+  type: SYNTHETIC_NODE_CONTEXT_MENU_SELECT_SOURCE_NODE_CLICKED,
+  item
 }));
 
 export const editorTabCloseButtonClicked = (uri: string): EditorTabClicked => ({
@@ -804,7 +841,18 @@ export const fileItemRightClicked = (item: FSItem, event: React.MouseEvent<any>)
   type: FILE_ITEM_RIGHT_CLICKED,
   event,
   item
-})
+});
+
+export const canvasRightClicked = (event: React.MouseEvent<any>): CanvasRightClicked => ({
+  type: CANVAS_RIGHT_CLICKED,
+  event
+});
+
+export const pcLayerRightClicked = (item: InspectorNode, event: React.MouseEvent<any>): PCLayerRightClicked => ({
+  item,
+  type: PC_LAYER_RIGHT_CLICKED,
+  event
+});
 
 export const unhandledError = (error: Error): UnhandledError => ({
   error,

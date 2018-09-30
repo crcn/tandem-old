@@ -23,7 +23,8 @@ import { Dispatch } from "redux";
 import {
   sourceInspectorLayerClicked,
   sourceInspectorLayerArrowClicked,
-  sourceInspectorLayerLabelChanged
+  sourceInspectorLayerLabelChanged,
+  pcLayerRightClicked
 } from "../../../../../actions";
 import {
   containsNestedTreeNodeById,
@@ -53,6 +54,7 @@ type InnerProps = {
   onLabelClick: () => any;
   connectDragSource?: any;
   connectDropTarget?: any;
+  onLabelRightClick: () => any;
   onLabelDoubleClick: () => any;
   onArrowButtonClick: () => any;
   onLabelInputKeyDown: () => any;
@@ -181,6 +183,9 @@ export default (Base: React.ComponentClass<BaseNodeLayerProps>) => {
             this.setState({ ...this.state, editingLabel: true });
           }
         };
+        onLabelRightClick = (event: React.MouseEvent<any>) => {
+          this.props.dispatch(pcLayerRightClicked(this.props.inspectorNode, event));
+        }
         onLabelInputKeyDown = (event) => {
           if (event.key === "Enter") {
             this.persistLabelChange(event);
@@ -254,6 +259,7 @@ export default (Base: React.ComponentClass<BaseNodeLayerProps>) => {
             onLabelClick,
             onArrowButtonClick,
             onLabelDoubleClick,
+            onLabelRightClick,
             onLabelInputKeyDown,
             onLabelInputBlur
           } = this;
@@ -262,6 +268,7 @@ export default (Base: React.ComponentClass<BaseNodeLayerProps>) => {
               onLabelClick={onLabelClick}
               onArrowButtonClick={onArrowButtonClick}
               onLabelDoubleClick={onLabelDoubleClick}
+              onLabelRightClick={onLabelRightClick}
               onLabelInputKeyDown={onLabelInputKeyDown}
               onLabelInputBlur={onLabelInputBlur}
               editingLabel={editingLabel}
@@ -292,6 +299,7 @@ export default (Base: React.ComponentClass<BaseNodeLayerProps>) => {
       inspectorNode,
       onArrowButtonClick,
       onLabelDoubleClick,
+      onLabelRightClick,
       onLabelInputKeyDown,
       onLabelInputBlur,
       connectDragSource,
@@ -340,6 +348,7 @@ export default (Base: React.ComponentClass<BaseNodeLayerProps>) => {
                   <Base
                     onClick={onLabelClick}
                     onDoubleClick={onLabelDoubleClick}
+                    onContextMenu={onLabelRightClick}
                     labelInputProps={{ onKeyDown: onLabelInputKeyDown, onBlur: onLabelInputBlur }}
                     variant={cx({
                       editingLabel: editingLabel,

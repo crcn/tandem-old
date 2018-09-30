@@ -1067,7 +1067,7 @@
       "variant": {}
     },
     {
-      "id": "beb32d903789",
+      "id": "cb2f73a51384",
       "is": "77d88356850",
       "name": "component-instance",
       "attributes": {},
@@ -1075,23 +1075,27 @@
       "children": [
         {
           "slotId": "beb32d902943",
-          "id": "beb32d904509",
+          "id": "cb2f73a52823",
           "children": [
             {
-              "id": "beb32d904508",
+              "id": "cb2f73a53004",
               "label": "Element",
               "is": "div",
               "name": "element",
               "attributes": {},
               "style": {
                 "box-sizing": "border-box",
-                "display": "block",
-                "width": "100%",
-                "height": "100%",
-                "background": "rgba(216, 58, 58, 1)"
+                "display": "block"
               },
               "children": [],
-              "metadata": {}
+              "metadata": {
+                "bounds": {
+                  "left": 132.5904284619398,
+                  "top": 150.53604819786244,
+                  "right": 232.5904284619398,
+                  "bottom": 250.53604819786244
+                }
+              }
             }
           ],
           "metadata": {},
@@ -1099,23 +1103,27 @@
         },
         {
           "slotId": "beb32d903112",
-          "id": "beb32d904691",
+          "id": "cb2f73a53186",
           "children": [
             {
-              "id": "beb32d904690",
+              "id": "cb2f73a52642",
               "label": "Element",
               "is": "div",
               "name": "element",
               "attributes": {},
               "style": {
                 "box-sizing": "border-box",
-                "display": "block",
-                "height": "100%",
-                "width": "100%",
-                "background": "rgba(217, 24, 24, 1)"
+                "display": "block"
               },
               "children": [],
-              "metadata": {}
+              "metadata": {
+                "bounds": {
+                  "left": 132.5904284619398,
+                  "top": 150.53604819786244,
+                  "right": 232.5904284619398,
+                  "bottom": 250.53604819786244
+                }
+              }
             }
           ],
           "metadata": {},
@@ -1124,10 +1132,10 @@
       ],
       "metadata": {
         "bounds": {
-          "left": 137,
-          "top": 179,
-          "right": 314,
-          "bottom": 340
+          "left": 207,
+          "top": 164,
+          "right": 422,
+          "bottom": 313
         }
       },
       "variant": {}

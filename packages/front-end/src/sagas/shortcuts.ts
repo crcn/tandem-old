@@ -1,4 +1,4 @@
-import { fork, put, take, call, spawn, takeEvery } from "redux-saga/effects";
+import { fork, put, take, call, spawn, takeEvery, select } from "redux-saga/effects";
 import { eventChannel } from "redux-saga";
 import { mapKeys } from "lodash";
 import {
@@ -11,10 +11,18 @@ import {
   fileItemContextMenuDeleteClicked,
   fileItemContextMenuCopyPathClicked,
   fileItemContextMenuOpenClicked,
-  fileItemContextMenuRenameClicked
+  fileItemContextMenuRenameClicked,
+  CANVAS_RIGHT_CLICKED,
+  PC_LAYER_RIGHT_CLICKED,
+  PCLayerRightClicked,
+  syntheticNodeContextMenuWrapInSlotClicked,
+  syntheticNodeContextMenuSelectParentClicked,
+  syntheticNodeContextMenuSelectSourceNodeClicked,
+  syntheticNodeContextMenuConvertToComponentClicked
 } from "../actions";
-import { ContextMenuItem, ContextMenuOptionType, ContextMenuOption } from "../state";
+import { ContextMenuItem, ContextMenuOptionType, ContextMenuOption, RootState, getCanvasMouseTargetNodeIdFromPoint, getCanvasMouseTargetNodeId } from "../state";
 import { Point, FSItemTagNames } from "tandem-common";
+import { getSyntheticNodeById, getSyntheticSourceNode, PCSourceTagNames, getPCNodeContentNode, getSyntheticInspectorNode, getSyntheticVisibleNodeDocument, syntheticNodeIsInShadow, getPCNodeModule } from "paperclip";
 
 export type ShortcutSagaOptions = {
   openContextMenu: (anchor: Point, options: ContextMenuOption[]) => void;
@@ -59,6 +67,74 @@ export const createShortcutSaga = ({ openContextMenu }: ShortcutSagaOptions) => 
         }
       ]);
 
+    });
+
+
+    yield takeEvery(CANVAS_RIGHT_CLICKED, function* handleFileItemRightClick({event, item}: FileItemRightClicked) {
+      const state: RootState = yield select();
+      const targetNodeId = getCanvasMouseTargetNodeId(state, event);
+      if (targetNodeId) {
+        yield call(openCanvasSyntheticNodeContextMenu, targetNodeId, event,state);
+      }
+    });
+
+    function* openCanvasSyntheticNodeContextMenu(targetNodeId: string, event: React.MouseEvent<any>, state: RootState) {
+      const syntheticNode = getSyntheticNodeById(targetNodeId, state.documents);
+      const sourceNode = getSyntheticSourceNode(syntheticNode, state.graph);
+      const syntheticDocument = getSyntheticVisibleNodeDocument(syntheticNode.id, state.documents);
+      const contentNode = getPCNodeContentNode(sourceNode.id, getPCNodeModule(sourceNode.id, state.graph));
+
+
+      const ownerWindow = (event.nativeEvent.target as HTMLDivElement).ownerDocument.defaultView;
+      const parent = ownerWindow.top;
+      const ownerIframe = Array.from(parent.document.querySelectorAll("iframe")).find((iframe: HTMLIFrameElement) => {
+        return iframe.contentDocument === ownerWindow.document;
+      });
+
+      const rect = ownerIframe.getBoundingClientRect();
+      
+
+      
+      yield call(openContextMenu, {
+        left: event.pageX + rect.left,
+        top: event.pageY + rect.top
+      }, [
+
+        syntheticNodeIsInShadow(syntheticNode, syntheticDocument, state.graph) ? null : {
+          type: ContextMenuOptionType.GROUP,
+          options: [
+            sourceNode.name !== PCSourceTagNames.COMPONENT ? {
+              type: ContextMenuOptionType.ITEM,
+              label: "Convert to Component",
+              action: syntheticNodeContextMenuConvertToComponentClicked(syntheticNode)
+            } : null,
+            contentNode.name === PCSourceTagNames.COMPONENT ? {
+              type: ContextMenuOptionType.ITEM,
+              label: "Wrap in Slot",
+              action: syntheticNodeContextMenuWrapInSlotClicked(syntheticNode)
+            } : null
+          ].filter(Boolean) as ContextMenuItem[]
+        },
+        {
+          type: ContextMenuOptionType.GROUP,
+          options: [
+            {
+              type: ContextMenuOptionType.ITEM,
+              label: "Select Parent",
+              action: syntheticNodeContextMenuSelectParentClicked(syntheticNode)
+            },
+            {
+              type: ContextMenuOptionType.ITEM,
+              label: "Select Source Node",
+              action: syntheticNodeContextMenuSelectSourceNodeClicked(syntheticNode)
+            }
+          ]
+        }
+      ].filter(Boolean) as ContextMenuOption[])
+    }
+
+
+    yield takeEvery(PC_LAYER_RIGHT_CLICKED, function* handleFileItemRightClick({event, item}: PCLayerRightClicked) {
     });
   }
 }

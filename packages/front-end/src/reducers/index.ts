@@ -159,7 +159,12 @@ import {
   FileItemRightClicked,
   FILE_ITEM_CONTEXT_MENU_RENAME_CLICKED,
   FileItemContextMenuAction,
-  FILE_NAVIGATOR_ITEM_BLURRED
+  FILE_NAVIGATOR_ITEM_BLURRED,
+  SYNTHETIC_NODE_CONTEXT_MENU_CONVERT_TO_COMPONENT_CLICKED,
+  SyntheticNodeContextMenuAction,
+  SYNTHETIC_NODE_CONTEXT_MENU_WRAP_IN_SLOT_CLICKED,
+  SYNTHETIC_NODE_CONTEXT_MENU_SELECT_PARENT_CLICKED,
+  SYNTHETIC_NODE_CONTEXT_MENU_SELECT_SOURCE_NODE_CLICKED
 } from "../actions";
 import {
   queueOpenFile,
@@ -891,24 +896,8 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
     }
     case SOURCE_INSPECTOR_LAYER_CLICKED: {
       const { node } = action as InspectorLayerEvent;
-      state = updateSourceInspectorNode(state, sourceNodeInspector => {
-        return expandInspectorNode(node, sourceNodeInspector);
-      });
 
-      const assocSyntheticNode = getInspectorSyntheticNode(
-        node,
-        state.documents
-      );
-
-      state = updateRootState(
-        {
-          selectedInspectorNodeIds: [node.id],
-          selectedSyntheticNodeIds: assocSyntheticNode
-            ? [assocSyntheticNode.id]
-            : []
-        },
-        state
-      );
+      state = selectInspectorNode(node, state);
 
       return state;
     }
@@ -1329,7 +1318,7 @@ export const canvasReducer = (state: RootState, action: Action) => {
         } else {
           targetNodeId = getCanvasMouseTargetNodeId(
             state,
-            action as CanvasToolOverlayMouseMoved
+            (action as CanvasToolOverlayMouseMoved).sourceEvent
           );
           state = setHoveringSyntheticVisibleNodeIds(
             state,
@@ -1381,7 +1370,7 @@ export const canvasReducer = (state: RootState, action: Action) => {
 
       const targetNodeId = getCanvasMouseTargetNodeId(
         state,
-        action as CanvasToolOverlayMouseMoved
+        (action as CanvasToolOverlayMouseMoved).sourceEvent
       );
 
       if (!targetNodeId) {
@@ -1960,7 +1949,7 @@ const handleCanvasMouseClicked = (state: RootState, action: CanvasToolOverlayCli
 
   const targetNodeId = getCanvasMouseTargetNodeId(
     state,
-    action as CanvasToolOverlayMouseMoved
+    (action as CanvasToolOverlayMouseMoved).sourceEvent
   );
 
   // meta key
@@ -2347,37 +2336,44 @@ const shortcutReducer = (state: RootState, action: Action): RootState => {
         ? state
         : setTool(ToolType.COMPONENT, state);
     }
+
+    case SYNTHETIC_NODE_CONTEXT_MENU_SELECT_PARENT_CLICKED: {
+      const {item} = action as SyntheticNodeContextMenuAction;
+      const document = getSyntheticVisibleNodeDocument(item.id, state.documents);
+      const inspectorNode = getSyntheticInspectorNode(item, document, state.sourceNodeInspector, state.graph);
+      const parent = getParentTreeNode(inspectorNode.id, state.sourceNodeInspector);
+      state = parent ?selectInspectorNode(parent, state) : state;
+      return state;
+    }
+
+    case SYNTHETIC_NODE_CONTEXT_MENU_SELECT_SOURCE_NODE_CLICKED: {
+      const {item} = action as SyntheticNodeContextMenuAction;
+      state = openSyntheticVisibleNodeOriginFile(
+        getSyntheticNodeById(item.id, state.documents),
+        state
+      );
+      return state;
+    }
+
+    case SYNTHETIC_NODE_CONTEXT_MENU_WRAP_IN_SLOT_CLICKED: {
+      const {item} = action as SyntheticNodeContextMenuAction;
+      state = wrapSyntheticNodeInSlot(item, state);
+      return state;
+    }
+
+    case SYNTHETIC_NODE_CONTEXT_MENU_CONVERT_TO_COMPONENT_CLICKED: {
+      const {item} = action as SyntheticNodeContextMenuAction;
+      state = convertSyntheticNodeToComponent(item, state);
+      return state;
+    }
+
     case SHORTCUT_CONVERT_TO_COMPONENT_KEY_DOWN: {
       // TODO - should be able to conver all selected nodes to components
       if (state.selectedSyntheticNodeIds.length > 1) {
         return state;
       }
 
-      const oldState = state;
-
-      state = persistRootState(
-        state =>
-          persistConvertNodeToComponent(
-            getSyntheticNodeById(
-              state.selectedSyntheticNodeIds[0],
-              state.documents
-            ),
-            state
-          ),
-        state
-      );
-
-      state = setSelectedSyntheticVisibleNodeIds(state);
-
-      state = queueSelectInsertedSyntheticVisibleNodes(
-        oldState,
-        state,
-        getSyntheticDocumentByDependencyUri(
-          state.activeEditorFilePath,
-          state.documents,
-          state.graph
-        )
-      );
+      state = convertSyntheticNodeToComponent(getSyntheticNodeById(state.selectedSyntheticNodeIds[0], state.documents), state);
       return state;
     }
     case SHORTCUT_WRAP_IN_SLOT_KEY_DOWN: {
@@ -2385,43 +2381,7 @@ const shortcutReducer = (state: RootState, action: Action): RootState => {
         state.selectedSyntheticNodeIds[0],
         state.documents
       );
-      const sourceNode = getSyntheticSourceNode(selectedNode, state.graph);
-      const sourceModule = getPCNodeModule(sourceNode.id, state.graph);
-      const contentNode = getPCNodeContentNode(sourceNode.id, sourceModule);
-
-      if (
-        syntheticNodeIsInShadow(
-          selectedNode,
-          getSyntheticVisibleNodeDocument(selectedNode.id, state.documents),
-          state.graph
-        )
-      ) {
-        return confirm(
-          "Cannot perform this action for shadow elements.",
-          ConfirmType.ERROR,
-          state
-        );
-      }
-
-      if (contentNode.name !== PCSourceTagNames.COMPONENT) {
-        return confirm(
-          "Slots are only supported for elements that are within a component.",
-          ConfirmType.ERROR,
-          state
-        );
-      }
-
-      if (sourceNode.id === contentNode.id) {
-        return confirm(
-          "Cannot convert components into slots.",
-          ConfirmType.ERROR,
-          state
-        );
-      }
-
-      state = persistRootState(state => {
-        return persistWrapInSlot(selectedNode, state);
-      }, state);
+      state = wrapSyntheticNodeInSlot(selectedNode, state);
       return state;
     }
     case SHORTCUT_ESCAPE_KEY_DOWN: {
@@ -2663,3 +2623,98 @@ const normalizePoint = (translate: Translate, point: Point) => {
 const normalizeZoom = zoom => {
   return zoom < 1 ? 1 / Math.round(1 / zoom) : Math.round(zoom);
 };
+
+const convertSyntheticNodeToComponent = ({id}: SyntheticVisibleNode, state: RootState) => {
+  const oldState = state;
+
+      state = persistRootState(
+        state =>
+          persistConvertNodeToComponent(
+            getSyntheticNodeById(
+              id,
+              state.documents
+            ),
+            state
+          ),
+        state
+      );
+
+      state = setSelectedSyntheticVisibleNodeIds(state);
+
+      state = queueSelectInsertedSyntheticVisibleNodes(
+        oldState,
+        state,
+        getSyntheticDocumentByDependencyUri(
+          state.activeEditorFilePath,
+          state.documents,
+          state.graph
+        )
+      );
+  return state;
+}
+
+const wrapSyntheticNodeInSlot = ({id}: SyntheticVisibleNode, state: RootState) => {
+  const node = getSyntheticNodeById(id, state.documents);
+
+  const sourceNode = getSyntheticSourceNode(node, state.graph);
+  const sourceModule = getPCNodeModule(sourceNode.id, state.graph);
+  const contentNode = getPCNodeContentNode(sourceNode.id, sourceModule);
+
+  if (
+    syntheticNodeIsInShadow(
+      node,
+      getSyntheticVisibleNodeDocument(node.id, state.documents),
+      state.graph
+    )
+  ) {
+    return confirm(
+      "Cannot perform this action for shadow elements.",
+      ConfirmType.ERROR,
+      state
+    );
+  }
+
+  if (contentNode.name !== PCSourceTagNames.COMPONENT) {
+    return confirm(
+      "Slots are only supported for elements that are within a component.",
+      ConfirmType.ERROR,
+      state
+    );
+  }
+
+  if (sourceNode.id === contentNode.id) {
+    return confirm(
+      "Cannot convert components into slots.",
+      ConfirmType.ERROR,
+      state
+    );
+  }
+
+  state = persistRootState(state => {
+    return persistWrapInSlot(node, state);
+  }, state);
+
+  return state;
+}
+
+const selectInspectorNode = (node: InspectorNode, state: RootState) => {
+  state = updateSourceInspectorNode(state, sourceNodeInspector => {
+    return expandInspectorNode(node, sourceNodeInspector);
+  });
+
+  const assocSyntheticNode = getInspectorSyntheticNode(
+    node,
+    state.documents
+  );
+
+  state = updateRootState(
+    {
+      selectedInspectorNodeIds: [node.id],
+      selectedSyntheticNodeIds: assocSyntheticNode
+        ? [assocSyntheticNode.id]
+        : []
+    },
+    state
+  );
+  return state;
+}

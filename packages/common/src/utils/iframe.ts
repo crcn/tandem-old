@@ -74,6 +74,7 @@ export function bubbleHTMLIframeEvents(
     "paste",
     "mousemove",
     "mousedown",
+    "contextmenu",
     "mouseup",
     "keyup",
     "keydown",

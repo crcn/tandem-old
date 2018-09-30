@@ -29,7 +29,9 @@ import {
   canvasMotionRested,
   canvasDroppedItem,
   canvasDraggedOver,
-  canvasMouseDoubleClicked
+  canvasMouseDoubleClicked,
+  pcLayerRightClicked,
+  canvasRightClicked
 } from "../../../../../../../actions";
 import { DropTarget, DropTargetMonitor } from "react-dnd";
 import { InspectorNode } from "paperclip";
@@ -62,6 +64,7 @@ export type CanvasInnerProps = {
   onMouseEvent: (event: React.SyntheticEvent<any>) => any;
   onMouseClick: (event: React.SyntheticEvent<any>) => any;
   onDragOver: (event: React.SyntheticEvent<any>) => any;
+  onContextMenu: (event: React.MouseEvent<any>) => any;
   onDragExit: (event: React.SyntheticEvent<any>) => any;
   setCanvasOuter: (element: HTMLElement) => any;
   onMouseDoubleClick: (event: any) => any;
@@ -86,6 +89,7 @@ const BaseCanvasComponent = ({
   onMouseEvent,
   onDragOver,
   onMouseDoubleClick,
+  onContextMenu,
   onMouseClick,
   sourceNodeInspector,
   connectDropTarget,
@@ -123,6 +127,7 @@ const BaseCanvasComponent = ({
             ref={setCanvasOuter}
             onMouseMove={onMouseEvent}
             onDragOver={onDragOver}
+            onContextMenu={onContextMenu}
             onDrop={onDrop}
             onClick={onMouseClick}
             onDoubleClick={onMouseDoubleClick}
@@ -198,6 +203,9 @@ const enhance = compose<CanvasInnerProps, CanvasOuterProps>(
       },
       onMouseDoubleClick: ({ dispatch }) => (event: React.MouseEvent<any>) => {
         dispatch(canvasMouseDoubleClicked(event));
+      },
+      onContextMenu: ({ dispatch}) => (event: React.MouseEvent<any>) => {
+        dispatch(canvasRightClicked(event));
       },
       setCanvasContainer: ({ dispatch, editorWindow }) => (
         element: HTMLDivElement

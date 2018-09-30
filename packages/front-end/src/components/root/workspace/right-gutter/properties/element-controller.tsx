@@ -135,7 +135,7 @@ const getComponentDropdownOptions = memoize((components: PCComponent[]): Dropdow
 });
 
 const getTypeMenuOptions = memoize((components: PCComponent[]) => {
-  return [...TYPE_MENU_OPTIONS, ...getComponentDropdownOptions(components)].sort((a, b) => a.label.toLowerCase() < b.label.toLowerCase() ? -1 : 1);
+  return [...TYPE_MENU_OPTIONS, ...getComponentDropdownOptions(components)].sort((a, b) => String(a.label).toLowerCase() < String(b.label).toLowerCase() ? -1 : 1);
 });
 
 export type Props = {
