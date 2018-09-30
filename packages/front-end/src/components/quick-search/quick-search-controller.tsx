@@ -17,12 +17,6 @@ export type Props = {
   dispatch: Dispatch<any>;
 };
 
-const MAX_RESULTS = 50;
-
-const getFilterTester = memoize(
-  (filter: string[]) => new RegExp(filter.join(".*?"))
-);
-
 export default (Base: React.ComponentClass<BaseQuickSearchProps>) =>
   class QuickSearchController extends React.PureComponent<Props> {
     onInputChange = value => {

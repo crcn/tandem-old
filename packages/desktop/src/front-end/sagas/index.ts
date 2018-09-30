@@ -342,6 +342,10 @@ function* handleOpenController() {
   }
 }
 
+function escapeRegExp(string) {
+  return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); // $& means the whole matched string
+}
+
 function* handleQuickSearch() {
   yield throttle(10, QUICK_SEARCH_FILTER_CHANGED, function*() {
     const { quickSearch, projectInfo }: RootState = yield select();
@@ -352,7 +356,11 @@ function* handleQuickSearch() {
       return;
     }
 
-    const pattern = new RegExp(quickSearch.filter.split(" ").join(".*?"));
+    const pattern = new RegExp(
+      escapeRegExp(quickSearch.filter)
+        .split(" ")
+        .join(".*?")
+    );
 
     const projectDir = path.dirname(projectInfo.path);
 
