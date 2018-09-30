@@ -306,7 +306,7 @@ export const createPCComponent = (
   id: generateUID(),
   name: PCSourceTagNames.COMPONENT,
   children: children || EMPTY_ARRAY,
-  metadata: EMPTY_OBJECT,
+  metadata: metadata,
   variant: EMPTY_OBJECT
 });
 
