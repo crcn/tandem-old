@@ -1,8 +1,10 @@
-import { Menu, MenuItem, MenuItemConstructorOptions, app } from "electron";
-import { fork, put, take } from "redux-saga/effects";
+import { Menu, MenuItem, MenuItemConstructorOptions, app, clipboard } from "electron";
+import { fork, put, take, takeEvery } from "redux-saga/effects";
 import { eventChannel } from "redux-saga";
+import { exec } from "child_process";
 import { MAIN_WINDOW_OPENED, OPEN_PROJECT_MENU_ITEM_CLICKED, NEW_PROJECT_MENU_ITEM_CLICKED } from "../actions";
-import { publicActionCreator } from "tandem-common";
+import { publicActionCreator, stripProtocol } from "tandem-common";
+import {  FileItemContextMenuAction } from "tandem-front-end";
 
 const shortcutKeyDown = publicActionCreator((type: string) => ({
   type
@@ -10,6 +12,24 @@ const shortcutKeyDown = publicActionCreator((type: string) => ({
 
 export function* shortcutsSaga() {
   yield take(MAIN_WINDOW_OPENED);
+  yield fork(handleMenu);
+  yield fork(handleFSItemContextMenuOptions);
+}
+
+function* handleFSItemContextMenuOptions() {
+  yield takeEvery("FILE_ITEM_CONTEXT_MENU_COPY_PATH_CLICKED", ({item}: FileItemContextMenuAction) => {
+    clipboard.writeText(stripProtocol(item.uri));
+  });
+  yield takeEvery("FILE_ITEM_CONTEXT_MENU_OPEN_IN_FINDER_CLICKED", ({item}: FileItemContextMenuAction) => {
+    const path = stripProtocol(item.uri);
+  });
+  yield takeEvery("FILE_ITEM_CONTEXT_MENU_OPEN_TEXT_EDITOR_CLICKED", ({item}: FileItemContextMenuAction) => {
+    const path = stripProtocol(item.uri);
+    exec(`open ${path}`);
+  });
+}
+
+function* handleMenu() {
   const menu = new Menu();
 
   const chan = eventChannel(emit => {

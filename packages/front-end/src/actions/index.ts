@@ -140,6 +140,9 @@ export const SHORTCUT_WRAP_IN_SLOT_KEY_DOWN = "SHORTCUT_WRAP_IN_SLOT_KEY_DOWN";
 export const SHORTCUT_TOGGLE_SIDEBAR = "SHORTCUT_TOGGLE_SIDEBAR";
 export const INHERIT_PANE_ADD_BUTTON_CLICK = "INHERIT_PANE_ADD_BUTTON_CLICK";
 export const FILE_ITEM_CONTEXT_MENU_DELETE_CLICKED = "FILE_ITEM_CONTEXT_MENU_DELETE_CLICKED";
+export const FILE_ITEM_CONTEXT_MENU_OPEN_TEXT_EDITOR_CLICKED = "FILE_ITEM_CONTEXT_MENU_OPEN_TEXT_EDITOR_CLICKED";
+export const FILE_ITEM_CONTEXT_MENU_OPEN_IN_FINDER_CLICKED = "FILE_ITEM_CONTEXT_MENU_OPEN_IN_FINDER_CLICKED";
+export const FILE_ITEM_CONTEXT_MENU_COPY_PATH_CLICKED = "FILE_ITEM_CONTEXT_MENU_COPY_PATH_CLICKED";
 export const INHERIT_PANE_REMOVE_BUTTON_CLICK =
   "INHERIT_PANE_REMOVE_BUTTON_CLICK";
 export const ACTIVE_EDITOR_URI_DIRS_LOADED = "ACTIVE_EDITOR_URI_DIRS_LOADED";
@@ -596,6 +599,22 @@ export const editorTabClicked = (uri: string): EditorTabClicked => ({
 export const fileItemContextMenuDeleteClicked = publicActionCreator((item: FSItem): FileItemContextMenuAction => ({
   item, 
   type: FILE_ITEM_CONTEXT_MENU_DELETE_CLICKED
+}));
+
+export const fileItemContextMenuCopyPathClicked = publicActionCreator((item: FSItem): FileItemContextMenuAction => ({
+  item, 
+  type: FILE_ITEM_CONTEXT_MENU_COPY_PATH_CLICKED
+}));
+
+export const fileItemContextMenuOpenTextEditorClicked = publicActionCreator((item: FSItem): FileItemContextMenuAction => ({
+  item, 
+  type: FILE_ITEM_CONTEXT_MENU_OPEN_TEXT_EDITOR_CLICKED
+}));
+
+
+export const fileItemContextMenuOpenInFinderClicked = publicActionCreator((item: FSItem): FileItemContextMenuAction => ({
+  item, 
+  type: FILE_ITEM_CONTEXT_MENU_OPEN_IN_FINDER_CLICKED
 }));
 
 export const editorTabCloseButtonClicked = (uri: string): EditorTabClicked => ({

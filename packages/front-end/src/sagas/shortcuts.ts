@@ -7,10 +7,13 @@ import {
   SHORTCUT_ESCAPE_KEY_DOWN,
   FILE_ITEM_RIGHT_CLICKED,
   FileItemRightClicked,
-  fileItemContextMenuDeleteClicked
+  fileItemContextMenuOpenInFinderClicked,
+  fileItemContextMenuDeleteClicked,
+  fileItemContextMenuCopyPathClicked,
+  fileItemContextMenuOpenTextEditorClicked
 } from "../actions";
 import { ContextMenuItem, ContextMenuOptionType, ContextMenuOption } from "../state";
-import { Point } from "tandem-common";
+import { Point, FSItemTagNames } from "tandem-common";
 
 export type ShortcutSagaOptions = {
   openContextMenu: (anchor: Point, options: ContextMenuOption[]) => void;
@@ -23,6 +26,21 @@ export const createShortcutSaga = ({ openContextMenu }: ShortcutSagaOptions) => 
         left: event.pageX,
         top: event.pageY
       }, [
+        {
+          type: ContextMenuOptionType.GROUP,
+          options: [
+            {
+              type: ContextMenuOptionType.ITEM,
+              label: "Copy Path",
+              action: fileItemContextMenuCopyPathClicked(item)
+            },
+            item.name === FSItemTagNames.DIRECTORY ? null : {
+              type: ContextMenuOptionType.ITEM,
+              label: "Open in Text Editor",
+              action: fileItemContextMenuOpenTextEditorClicked(item)
+            }
+          ].filter(Boolean) as ContextMenuItem[]
+        },
         {
           type: ContextMenuOptionType.GROUP,
           options: [
