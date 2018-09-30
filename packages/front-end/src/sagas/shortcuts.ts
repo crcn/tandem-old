@@ -22,7 +22,7 @@ import {
 } from "../actions";
 import { ContextMenuItem, ContextMenuOptionType, ContextMenuOption, RootState, getCanvasMouseTargetNodeIdFromPoint, getCanvasMouseTargetNodeId } from "../state";
 import { Point, FSItemTagNames } from "tandem-common";
-import { getSyntheticNodeById, getSyntheticSourceNode, PCSourceTagNames, getPCNodeContentNode, getSyntheticInspectorNode, getSyntheticVisibleNodeDocument, syntheticNodeIsInShadow, getPCNodeModule } from "paperclip";
+import { getSyntheticNodeById, getSyntheticSourceNode, PCSourceTagNames, getPCNodeContentNode, getSyntheticInspectorNode, getSyntheticVisibleNodeDocument, syntheticNodeIsInShadow, getPCNodeModule, SyntheticNode, getInspectorSyntheticNode } from "paperclip";
 
 export type ShortcutSagaOptions = {
   openContextMenu: (anchor: Point, options: ContextMenuOption[]) => void;
@@ -79,11 +79,6 @@ export const createShortcutSaga = ({ openContextMenu }: ShortcutSagaOptions) => 
     });
 
     function* openCanvasSyntheticNodeContextMenu(targetNodeId: string, event: React.MouseEvent<any>, state: RootState) {
-      const syntheticNode = getSyntheticNodeById(targetNodeId, state.documents);
-      const sourceNode = getSyntheticSourceNode(syntheticNode, state.graph);
-      const syntheticDocument = getSyntheticVisibleNodeDocument(syntheticNode.id, state.documents);
-      const contentNode = getPCNodeContentNode(sourceNode.id, getPCNodeModule(sourceNode.id, state.graph));
-
 
       const ownerWindow = (event.nativeEvent.target as HTMLDivElement).ownerDocument.defaultView;
       const parent = ownerWindow.top;
@@ -92,13 +87,33 @@ export const createShortcutSaga = ({ openContextMenu }: ShortcutSagaOptions) => 
       });
 
       const rect = ownerIframe.getBoundingClientRect();
-      
 
-      
-      yield call(openContextMenu, {
+      yield call(openSyntheticNodeContextMenu, getSyntheticNodeById(targetNodeId, state.documents), {
         left: event.pageX + rect.left,
         top: event.pageY + rect.top
-      }, [
+      }, state);
+    }
+
+
+    yield takeEvery(PC_LAYER_RIGHT_CLICKED, function* handleFileItemRightClick({event, item}: PCLayerRightClicked) {
+      const state: RootState = yield select();
+
+      yield call(openSyntheticNodeContextMenu, getInspectorSyntheticNode(item, state.documents), {
+        left: event.pageX,
+        top: event.pageY
+      }, state);
+    });
+
+
+    function* openSyntheticNodeContextMenu(node: SyntheticNode, point: Point, state: RootState) {
+
+      const syntheticNode = getSyntheticNodeById(node.id, state.documents);
+      const sourceNode = getSyntheticSourceNode(syntheticNode, state.graph);
+      const syntheticDocument = getSyntheticVisibleNodeDocument(syntheticNode.id, state.documents);
+      const contentNode = getPCNodeContentNode(sourceNode.id, getPCNodeModule(sourceNode.id, state.graph));
+
+      
+      yield call(openContextMenu, point, [
 
         syntheticNodeIsInShadow(syntheticNode, syntheticDocument, state.graph) ? null : {
           type: ContextMenuOptionType.GROUP,
@@ -130,12 +145,8 @@ export const createShortcutSaga = ({ openContextMenu }: ShortcutSagaOptions) => 
             }
           ]
         }
-      ].filter(Boolean) as ContextMenuOption[])
+      ].filter(Boolean) as ContextMenuOption[]);
     }
-
-
-    yield takeEvery(PC_LAYER_RIGHT_CLICKED, function* handleFileItemRightClick({event, item}: PCLayerRightClicked) {
-    });
   }
 }
 
