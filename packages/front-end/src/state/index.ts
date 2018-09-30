@@ -246,6 +246,9 @@ export type RootState = {
   toolType?: ToolType;
   activeEditorFilePath?: string;
   quickSearch?: QuickSearch;
+
+  // defined by context menu
+  editingBasenameUri?: string;
   confirm?: Confirm;
   prompt?: Prompt;
   prevGraph?: DependencyGraph;

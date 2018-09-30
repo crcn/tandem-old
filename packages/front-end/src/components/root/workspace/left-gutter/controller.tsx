@@ -13,6 +13,7 @@ export type Props = {
   sourceNodeInspector: InspectorNode;
   rootDirectory: Directory;
   dispatch: Dispatch<any>;
+  editingFileNameUri: string;
   documents: SyntheticDocument[];
 } & BaseLeftGutterProps;
 
@@ -50,6 +51,7 @@ export default (Base: React.ComponentClass<BaseLeftGutterProps>) =>
         sourceNodeInspector,
         dispatch,
         documents,
+        editingFileNameUri,
         rootDirectory,
         show,
         ...rest
@@ -74,6 +76,7 @@ export default (Base: React.ComponentClass<BaseLeftGutterProps>) =>
             documents
           }}
           fileNavigatorPaneProps={{
+            editingFileNameUri,
             activeEditorUri,
             rootDirectory,
             dispatch,

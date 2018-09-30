@@ -23,7 +23,7 @@ function* handleFSItemContextMenuOptions() {
   yield takeEvery("FILE_ITEM_CONTEXT_MENU_OPEN_IN_FINDER_CLICKED", ({item}: FileItemContextMenuAction) => {
     const path = stripProtocol(item.uri);
   });
-  yield takeEvery("FILE_ITEM_CONTEXT_MENU_OPEN_TEXT_EDITOR_CLICKED", ({item}: FileItemContextMenuAction) => {
+  yield takeEvery("FILE_ITEM_CONTEXT_MENU_OPEN_CLICKED", ({item}: FileItemContextMenuAction) => {
     const path = stripProtocol(item.uri);
     exec(`open ${path}`);
   });

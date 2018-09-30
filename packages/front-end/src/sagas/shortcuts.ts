@@ -10,7 +10,8 @@ import {
   fileItemContextMenuOpenInFinderClicked,
   fileItemContextMenuDeleteClicked,
   fileItemContextMenuCopyPathClicked,
-  fileItemContextMenuOpenTextEditorClicked
+  fileItemContextMenuOpenClicked,
+  fileItemContextMenuRenameClicked
 } from "../actions";
 import { ContextMenuItem, ContextMenuOptionType, ContextMenuOption } from "../state";
 import { Point, FSItemTagNames } from "tandem-common";
@@ -34,16 +35,21 @@ export const createShortcutSaga = ({ openContextMenu }: ShortcutSagaOptions) => 
               label: "Copy Path",
               action: fileItemContextMenuCopyPathClicked(item)
             },
-            item.name === FSItemTagNames.DIRECTORY ? null : {
+            {
               type: ContextMenuOptionType.ITEM,
-              label: "Open in Text Editor",
-              action: fileItemContextMenuOpenTextEditorClicked(item)
+              label: item.name === FSItemTagNames.DIRECTORY ? "Open in Finder" : "Open in Text Editor",
+              action: fileItemContextMenuOpenClicked(item)
             }
-          ].filter(Boolean) as ContextMenuItem[]
+          ] as ContextMenuItem[]
         },
         {
           type: ContextMenuOptionType.GROUP,
           options: [
+            {
+              type: ContextMenuOptionType.ITEM,
+              label: "Rename",
+              action: fileItemContextMenuRenameClicked(item)
+            },
             {
               type: ContextMenuOptionType.ITEM,
               label: "Delete",

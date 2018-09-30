@@ -156,7 +156,10 @@ import {
   FrameBoundsChanged,
   ACTIVE_EDITOR_URI_DIRS_LOADED,
   FILE_ITEM_RIGHT_CLICKED,
-  FileItemRightClicked
+  FileItemRightClicked,
+  FILE_ITEM_CONTEXT_MENU_RENAME_CLICKED,
+  FileItemContextMenuAction,
+  FILE_NAVIGATOR_ITEM_BLURRED
 } from "../actions";
 import {
   queueOpenFile,
@@ -513,6 +516,8 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
         uri: addProtocol(FILE_PROTOCOL, path.join(path.dirname(stripProtocol(item.uri)), basename))
       };
 
+      state = {...state, editingBasenameUri: null};
+
       const existingItem = getFileFromUri(updatedItem.uri, state.projectDirectory);
 
       // directory expanded so we can safely dispatch alert here
@@ -578,14 +583,29 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
       return state;
     }
 
-    case FILE_NAVIGATOR_ITEM_DOUBLE_CLICKED: {
-      const { node } = action as FileNavigatorItemClicked;
-      const uri = node.uri;
-      const file = getFileFromUri(uri, state.projectDirectory);
-      if (isFile(file)) {
-        state = openFile(uri, false, false, state);
-      }
+    case FILE_ITEM_CONTEXT_MENU_RENAME_CLICKED: {
+      const {item: {uri}} = action as FileItemContextMenuAction;
+      state = {
+        ...state,
+        editingBasenameUri: uri
+      };
+      return state;
+    }
 
+    case FILE_NAVIGATOR_ITEM_DOUBLE_CLICKED: {
+      const { node: {uri} } = action as FileNavigatorItemClicked;
+      state = {
+        ...state,
+        editingBasenameUri: uri
+      };
+      return state;
+    }
+
+    case FILE_NAVIGATOR_ITEM_BLURRED: {
+      state = {
+        ...state,
+        editingBasenameUri: null
+      };
       return state;
     }
     // case FILE_NAVIGATOR_NEW_FILE_CLICKED: {

@@ -122,11 +122,7 @@ function* openContextMenu(point: Point, options: ContextMenuItem[]) {
 
 function* deleteFile(uri: string) {
   const path = stripProtocol(uri);
-  if (fs.lstatSync(path).isDirectory()) {
-    fsa.rmdirSync(path);
-  } else {
-    fsa.unlinkSync(path);
-  }
+  fsa.removeSync(path);
 }
 
 function getFontFamiles(): FontFamily[] {

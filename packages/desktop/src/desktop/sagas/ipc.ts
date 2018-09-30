@@ -49,12 +49,19 @@ function* apiSaga() {
       const menuChan = eventChannel((emit) => {
         const menu = generateMenu(options, emit);
         menu.popup({ window: event.sender, x: point.left, y: point.top });
+
+        // come after click
+        menu.once("menu-will-close", () => setTimeout(emit, 10, "CLOSED"));
+
         return () => {
           menu.closePopup();
         }
       });
 
-      yield put(yield take(menuChan));
+      const action = yield take(menuChan);
+      if (action !== "CLOSED") {
+        yield put(action);
+      }
     }
   });
 }

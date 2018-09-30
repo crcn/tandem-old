@@ -54,6 +54,8 @@ export const CANVAS_TOOL_PREVIEW_BUTTON_CLICKED =
 export const FILE_NAVIGATOR_ITEM_CLICKED = "FILE_NAVIGATOR_ITEM_CLICKED";
 export const FILE_NAVIGATOR_ITEM_DOUBLE_CLICKED =
   "FILE_NAVIGATOR_ITEM_DOUBLE_CLICKED";
+  export const FILE_NAVIGATOR_ITEM_BLURRED =
+    "FILE_NAVIGATOR_ITEM_BLURRED";
 export const FILE_NAVIGATOR_NEW_FILE_CLICKED =
   "FILE_NAVIGATOR_NEW_FILE_CLICKED";
 export const FILE_NAVIGATOR_NEW_DIRECTORY_CLICKED =
@@ -140,9 +142,10 @@ export const SHORTCUT_WRAP_IN_SLOT_KEY_DOWN = "SHORTCUT_WRAP_IN_SLOT_KEY_DOWN";
 export const SHORTCUT_TOGGLE_SIDEBAR = "SHORTCUT_TOGGLE_SIDEBAR";
 export const INHERIT_PANE_ADD_BUTTON_CLICK = "INHERIT_PANE_ADD_BUTTON_CLICK";
 export const FILE_ITEM_CONTEXT_MENU_DELETE_CLICKED = "FILE_ITEM_CONTEXT_MENU_DELETE_CLICKED";
-export const FILE_ITEM_CONTEXT_MENU_OPEN_TEXT_EDITOR_CLICKED = "FILE_ITEM_CONTEXT_MENU_OPEN_TEXT_EDITOR_CLICKED";
+export const FILE_ITEM_CONTEXT_MENU_OPEN_CLICKED = "FILE_ITEM_CONTEXT_MENU_OPEN_CLICKED";
 export const FILE_ITEM_CONTEXT_MENU_OPEN_IN_FINDER_CLICKED = "FILE_ITEM_CONTEXT_MENU_OPEN_IN_FINDER_CLICKED";
 export const FILE_ITEM_CONTEXT_MENU_COPY_PATH_CLICKED = "FILE_ITEM_CONTEXT_MENU_COPY_PATH_CLICKED";
+export const FILE_ITEM_CONTEXT_MENU_RENAME_CLICKED = "FILE_ITEM_CONTEXT_MENU_RENAME_CLICKED";
 export const INHERIT_PANE_REMOVE_BUTTON_CLICK =
   "INHERIT_PANE_REMOVE_BUTTON_CLICK";
 export const ACTIVE_EDITOR_URI_DIRS_LOADED = "ACTIVE_EDITOR_URI_DIRS_LOADED";
@@ -606,9 +609,14 @@ export const fileItemContextMenuCopyPathClicked = publicActionCreator((item: FSI
   type: FILE_ITEM_CONTEXT_MENU_COPY_PATH_CLICKED
 }));
 
-export const fileItemContextMenuOpenTextEditorClicked = publicActionCreator((item: FSItem): FileItemContextMenuAction => ({
+export const fileItemContextMenuRenameClicked = publicActionCreator((item: FSItem): FileItemContextMenuAction => ({
   item, 
-  type: FILE_ITEM_CONTEXT_MENU_OPEN_TEXT_EDITOR_CLICKED
+  type: FILE_ITEM_CONTEXT_MENU_RENAME_CLICKED
+}));
+
+export const fileItemContextMenuOpenClicked = publicActionCreator((item: FSItem): FileItemContextMenuAction => ({
+  item, 
+  type: FILE_ITEM_CONTEXT_MENU_OPEN_CLICKED
 }));
 
 
@@ -940,6 +948,13 @@ export const fileNavigatorItemDoubleClicked = (
 ): FileNavigatorItemClicked => ({
   node,
   type: FILE_NAVIGATOR_ITEM_DOUBLE_CLICKED
+});
+
+export const fileNavigatorItemBlurred = (
+  node: FSItem
+): FileNavigatorItemClicked => ({
+  node,
+  type: FILE_NAVIGATOR_ITEM_BLURRED
 });
 
 export const sourceInspectorLayerClicked = (

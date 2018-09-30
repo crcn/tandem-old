@@ -10,6 +10,7 @@ export type FileNavigatorContextProps = {
   onNewFileChangeComplete: any;
   onNewFileInputChange: any;
   activeEditorUri: string;
+  editingFileNameUri: string;
 };
 
 export const FileNavigatorContext = React.createContext<

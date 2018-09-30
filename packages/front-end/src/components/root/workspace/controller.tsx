@@ -42,6 +42,7 @@ export default (Base: React.ComponentClass<BaseWorkspaceProps>) =>
             <Base
               leftGutterProps={{
                 activeEditorUri,
+                editingFileNameUri: root.editingBasenameUri,
                 show: root.showSidebar,
                 selectedFileNodeIds,
                 graph,

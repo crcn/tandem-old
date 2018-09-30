@@ -12,7 +12,9 @@ import {
   fileNavigatorToggleDirectoryClicked,
   fileNavigatorBasenameChanged,
   fileNavigatorDroppedItem,
-  fileItemRightClicked
+  fileItemRightClicked,
+  fileNavigatorItemDoubleClicked,
+  fileNavigatorItemBlurred
 } from "../../../../../actions";
 import {
   withFileNavigatorContext,
@@ -35,6 +37,7 @@ type ContextProps = {
   onNewFileChangeComplete: any;
   onNewFileInputChange: any;
   active: boolean;
+  editingBasename: boolean;
 };
 
 type InnerProps = {
@@ -51,11 +54,6 @@ const ROOT_STYLE = {
   display: "inline-block",
   minWidth: "100%"
 };
-
-type State = {
-  editing: boolean;
-};
-
 export default (Base: React.ComponentClass<BaseFileNavigatorLayerProps>) => {
   const FileNavigatorLayer = compose<BaseFileNavigatorLayerProps, Props>(
     withFileNavigatorContext<ContextProps, Props>(
@@ -67,7 +65,8 @@ export default (Base: React.ComponentClass<BaseFileNavigatorLayerProps>) => {
           newFileInfo,
           onNewFileChangeComplete,
           onNewFileInputChange,
-          activeEditorUri
+          activeEditorUri,
+          editingFileNameUri,
         }
       ) => {
         return {
@@ -75,6 +74,7 @@ export default (Base: React.ComponentClass<BaseFileNavigatorLayerProps>) => {
           dispatch,
           newFileInfo,
           active: activeEditorUri === props.item.uri,
+          editingBasename: editingFileNameUri === props.item.uri,
           onNewFileChangeComplete,
           onNewFileInputChange
         };
@@ -113,12 +113,8 @@ export default (Base: React.ComponentClass<BaseFileNavigatorLayerProps>) => {
     }),
     (Base: React.ComponentClass<BaseFileNavigatorLayerProps>) => {
       return class FileNavigatorLayerController extends React.PureComponent<
-        InnerProps,
-        State
+        InnerProps
       > {
-        state = {
-          editing: false
-        };
         onClick = (event: React.MouseEvent<any>) => {
           this.props.dispatch(fileNavigatorItemClicked(this.props.item));
         };
@@ -126,7 +122,7 @@ export default (Base: React.ComponentClass<BaseFileNavigatorLayerProps>) => {
           this.props.dispatch(fileItemRightClicked(this.props.item, event));
         }
         onDoubleClick = () => {
-          this.setState({ ...this.state, editing: true });
+          this.props.dispatch(fileNavigatorItemDoubleClicked(this.props.item));
         };
         onArrowClick = (event: React.MouseEvent<any>) => {
           this.props.dispatch(
@@ -142,7 +138,6 @@ export default (Base: React.ComponentClass<BaseFileNavigatorLayerProps>) => {
                 this.props.item
               )
             );
-            this.setState({ ...this.state, editing: false });
           }
         };
         componentDidUpdate(prevProps) {
@@ -164,7 +159,7 @@ export default (Base: React.ComponentClass<BaseFileNavigatorLayerProps>) => {
           }
         }
         onBasenameInputBlur = (eent: React.KeyboardEvent<any>) => {
-          this.setState({ ...this.state, editing: false });
+          this.props.dispatch(fileNavigatorItemBlurred(this.props.item));
         };
         render() {
           const {
@@ -181,6 +176,7 @@ export default (Base: React.ComponentClass<BaseFileNavigatorLayerProps>) => {
             newFileInfo,
             onNewFileInputChange,
             onNewFileChangeComplete,
+            editingBasename,
             ...rest
           } = this.props;
           let {draggingOver} = this.props;
@@ -192,7 +188,6 @@ export default (Base: React.ComponentClass<BaseFileNavigatorLayerProps>) => {
             onBasenameInputBlur,
             onDoubleClick
           } = this;
-          const { editing } = this.state;
           const { expanded } = item;
 
           let children;
@@ -225,7 +220,7 @@ export default (Base: React.ComponentClass<BaseFileNavigatorLayerProps>) => {
             <FileNavigatorLayerContainer variant={cx({
               hovering: draggingOver
             })}>
-              <FocusComponent focus={editing}>
+              <FocusComponent focus={editingBasename}>
                 {connectDragSource(<div><Base
                   {...rest}
                   style={{
@@ -247,12 +242,12 @@ export default (Base: React.ComponentClass<BaseFileNavigatorLayerProps>) => {
                     folder: item.name === FSItemTagNames.DIRECTORY,
                     file: item.name === FSItemTagNames.FILE,
                     alt: item.alt && !draggingOver && !selected,
-                    editing,
+                    editing: editingBasename,
                     expanded,
                     selected: selected && !draggingOver,
                     blur: Boolean(newFileInfo && newFileInfo.directory)
                   })}
-                  label={editing ? "" : basename}
+                  label={editingBasename ? "" : basename}
                 /></div>)}
               </FocusComponent>
               {newFileInput}

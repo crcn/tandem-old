@@ -23,6 +23,7 @@ export type Props = {
   rootDirectory: Directory;
   dispatch: Dispatch<any>;
   selectedFileNodeIds: string[];
+  editingFileNameUri: string;
 } & BaseFileNavigatorProps;
 
 const generateFileNavigatorContext = memoize(
@@ -32,6 +33,7 @@ const generateFileNavigatorContext = memoize(
     onNewFileChangeComplete: any,
     onNewFileInputChange: any,
     activeEditorUri: string,
+    editingFileNameUri: string,
     dispatch: Dispatch<any>
   ): FileNavigatorContextProps => ({
     newFileInfo,
@@ -39,7 +41,8 @@ const generateFileNavigatorContext = memoize(
     onNewFileChangeComplete,
     onNewFileInputChange,
     dispatch,
-    activeEditorUri
+    activeEditorUri,
+    editingFileNameUri
   })
 );
 
@@ -133,6 +136,7 @@ export default (Base: React.ComponentClass<BaseFileNavigatorProps>) =>
         rootDirectory,
         selectedFileNodeIds,
         activeEditorUri,
+        editingFileNameUri,
         ...rest
       } = this.props;
 
@@ -172,6 +176,7 @@ export default (Base: React.ComponentClass<BaseFileNavigatorProps>) =>
             onNewFileChangeComplete,
             onNewFileInputChange,
             activeEditorUri,
+            editingFileNameUri,
             dispatch
           )}
         >
