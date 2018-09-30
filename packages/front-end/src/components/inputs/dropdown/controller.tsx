@@ -66,18 +66,18 @@ export default (Base: React.ComponentClass<BaseDropdownProps>) => {
     };
     componentWillUpdate(props) {
       if (this.props.value !== props.value && this.state.filter) {
-        this.setState({ ...this.state, filter: null });
+        this.setState({ ...this.state, filter: null, open: false });
       }
     }
     onItemClick = (item, event) => {
       const { onChange, onChangeComplete } = this.props;
+      this.setState({ ...this.state, open: false });
       if (onChange) {
         onChange(item.value);
       }
       if (onChangeComplete) {
         onChangeComplete(item.value);
       }
-      this.setState({ ...this.state, open: false });
     };
     onKeyDown = event => {
       if (event.key === "Enter") {
