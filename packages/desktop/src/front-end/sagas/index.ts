@@ -63,7 +63,10 @@ import {
   getSyntheticNodeById,
   getSyntheticSourceNode,
   isPaperclipUri,
-  walkPCRootDirectory
+  walkPCRootDirectory,
+  createPCModule,
+  createPCElement,
+  PCVisibleNodeMetadataKey
 } from "paperclip";
 import {
   getNestedTreeNodeById,
@@ -73,7 +76,9 @@ import {
   FILE_PROTOCOL,
   FSItemTagNames,
   flattenTreeNode,
-  getFileFromUri
+  getFileFromUri,
+  EMPTY_ARRAY,
+  createBounds
 } from "tandem-common";
 // import { serverStateLoaded } from "../actions";
 import { DesktopRootState } from "../state";
@@ -172,7 +177,7 @@ function* handleNewFileEntered() {
     }
 
     if (insertType === FSItemTagNames.FILE) {
-      fs.writeFileSync(filePath, "");
+      fs.writeFileSync(filePath, generateBlankFileContent(basename));
     } else {
       fs.mkdirSync(filePath);
     }
@@ -180,6 +185,21 @@ function* handleNewFileEntered() {
     yield put(newFileAdded(addProtocol(FILE_PROTOCOL, filePath), insertType));
   }
 }
+
+const generateBlankFileContent = (basename: string) => {
+  if (/\.pc$/.test(basename)) {
+    return JSON.stringify(
+      createPCModule([
+        createPCElement("div", {}, {}, EMPTY_ARRAY, "Frame", {
+          [PCVisibleNodeMetadataKey.BOUNDS]: createBounds(0, 600, 0, 400)
+        })
+      ]),
+      null,
+      2
+    );
+  }
+  return "";
+};
 
 function* handleDroppedFile() {
   while (1) {

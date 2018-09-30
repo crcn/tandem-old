@@ -306,7 +306,7 @@ export const createPCComponent = (
   id: generateUID(),
   name: PCSourceTagNames.COMPONENT,
   children: children || EMPTY_ARRAY,
-  metadata: metadata,
+  metadata: metadata || EMPTY_OBJECT,
   variant: EMPTY_OBJECT
 });
 
@@ -341,7 +341,8 @@ export const createPCElement = (
   style: KeyValue<any> = EMPTY_OBJECT,
   attributes: KeyValue<string> = EMPTY_OBJECT,
   children: PCBaseElementChild[] = EMPTY_ARRAY,
-  label?: string
+  label?: string,
+  metadata?: KeyValue<any>
 ): PCElement => ({
   id: generateUID(),
   label,
@@ -350,7 +351,7 @@ export const createPCElement = (
   attributes: attributes || EMPTY_OBJECT,
   style: style || EMPTY_OBJECT,
   children: children || EMPTY_ARRAY,
-  metadata: EMPTY_OBJECT
+  metadata: metadata || EMPTY_OBJECT
 });
 
 export const createPCComponentInstance = (

@@ -263,6 +263,8 @@ export type RootState = {
   // TODO - may need to be moved to EditorWindow
   selectedVariant?: PCVariant;
 
+  recenterUriAfterEvaluation: string;
+
   // TODO - should be actual instances for type safety
   hoveringSyntheticNodeIds: string[];
 

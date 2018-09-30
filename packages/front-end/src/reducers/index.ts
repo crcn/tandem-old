@@ -816,12 +816,16 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
 
       if (fileType === FSItemTagNames.FILE && isPaperclipUri(uri)) {
         state = openFile(uri, false, false, state);
+        state = {
+          ...state,
+          recenterUriAfterEvaluation: uri
+        };
       }
       return state;
     }
 
     case FS_SANDBOX_ITEM_LOADED: {
-      const { content } = action as FSSandboxItemLoaded;
+      const { content, uri } = action as FSSandboxItemLoaded;
 
       if (state.queuedDndInfo) {
         const { item, point, editorUri } = state.queuedDndInfo;
@@ -1780,6 +1784,19 @@ export const canvasReducer = (state: RootState, action: Action) => {
       }
 
       state = pruneStaleSyntheticNodes(state);
+
+      // happens for newly added files
+      if (
+        state.recenterUriAfterEvaluation &&
+        getSyntheticDocumentByDependencyUri(
+          state.recenterUriAfterEvaluation,
+          state.documents,
+          state.graph
+        )
+      ) {
+        state = centerEditorCanvas(state, state.recenterUriAfterEvaluation);
+        state = { ...state, recenterUriAfterEvaluation: null };
+      }
 
       return updateRootState({ queuedScopeSelect: null }, state);
     }

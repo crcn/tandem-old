@@ -106,6 +106,7 @@ const pruneDependencyGraph = <TState extends PCEditorState>(
         if (!newGraph) {
           newGraph = { ...graph };
         }
+        console.log("DEL", uri);
 
         delete newGraph[uri];
       }
