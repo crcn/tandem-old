@@ -18,7 +18,8 @@ import {
   syntheticNodeContextMenuWrapInSlotClicked,
   syntheticNodeContextMenuSelectParentClicked,
   syntheticNodeContextMenuSelectSourceNodeClicked,
-  syntheticNodeContextMenuConvertToComponentClicked
+  syntheticNodeContextMenuConvertToComponentClicked,
+  syntheticNodeContextMenuRemoveClicked
 } from "../actions";
 import { ContextMenuItem, ContextMenuOptionType, ContextMenuOption, RootState, getCanvasMouseTargetNodeIdFromPoint, getCanvasMouseTargetNodeId } from "../state";
 import { Point, FSItemTagNames } from "tandem-common";
@@ -115,9 +116,18 @@ export const createShortcutSaga = ({ openContextMenu }: ShortcutSagaOptions) => 
       
       yield call(openContextMenu, point, [
 
-        syntheticNodeIsInShadow(syntheticNode, syntheticDocument, state.graph) ? null : {
+        syntheticNodeIsInShadow(syntheticNode, syntheticDocument, state.graph) ? {
+          type: ContextMenuOptionType.ITEM,
+          label: "Hide",
+          action: syntheticNodeContextMenuRemoveClicked(syntheticNode)
+        } : {
           type: ContextMenuOptionType.GROUP,
           options: [
+            {
+              type: ContextMenuOptionType.ITEM,
+              label: "Remove",
+              action: syntheticNodeContextMenuRemoveClicked(syntheticNode)
+            },
             sourceNode.name !== PCSourceTagNames.COMPONENT ? {
               type: ContextMenuOptionType.ITEM,
               label: "Convert to Component",

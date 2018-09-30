@@ -164,7 +164,8 @@ import {
   SyntheticNodeContextMenuAction,
   SYNTHETIC_NODE_CONTEXT_MENU_WRAP_IN_SLOT_CLICKED,
   SYNTHETIC_NODE_CONTEXT_MENU_SELECT_PARENT_CLICKED,
-  SYNTHETIC_NODE_CONTEXT_MENU_SELECT_SOURCE_NODE_CLICKED
+  SYNTHETIC_NODE_CONTEXT_MENU_SELECT_SOURCE_NODE_CLICKED,
+  SYNTHETIC_NODE_CONTEXT_MENU_REMOVE_CLICKED
 } from "../actions";
 import {
   queueOpenFile,
@@ -2352,6 +2353,14 @@ const shortcutReducer = (state: RootState, action: Action): RootState => {
         getSyntheticNodeById(item.id, state.documents),
         state
       );
+      return state;
+    }
+    case SYNTHETIC_NODE_CONTEXT_MENU_REMOVE_CLICKED: {
+      const {item} = action as SyntheticNodeContextMenuAction;
+      state = persistRootState((state) => {
+        return persistRemoveSyntheticVisibleNode(item, state)
+      }, state);
+      state = setSelectedSyntheticVisibleNodeIds(state);
       return state;
     }
 
