@@ -166,44 +166,13 @@ function* openMainWindow() {
     }
   });
 
+  // Fixes https://github.com/tandemcode/tandem/issues/492
+  mainWindow.once("close", () => {
+    process.exit();
+  });
+
   yield put(mainWindowOpened());
 }
-
-// function* handleLoadProject() {
-//   while (1) {
-//     yield take("APP_LOADED");
-//     yield call(loadProjectDirectory);
-//   }
-// }
-
-// function* loadProjectDirectory() {
-//   const { tdProject, tdProjectPath }: DesktopState = yield select();
-
-//   if (!tdProject || !tdProjectPath) {
-//     yield put(projectDirectoryLoaded(null));
-//     return;
-//   }
-
-//   const directory = path.join(
-//     path.dirname(tdProjectPath),
-//     tdProject.rootDir || "."
-//   );
-
-//   const files: [string, boolean][] = [];
-//   walkPCRootDirectory(tdProject, directory, (filePath, isDirectory) => {
-//     if (filePath === directory) {
-//       return;
-//     }
-//     files.push([filePath, isDirectory]);
-//   });
-
-//   const root = createDirectory(
-//     addProtocol(FILE_PROTOCOL, directory),
-//     files.length ? convertFlatFilesToNested(files) : []
-//   );
-
-//   yield put(projectDirectoryLoaded(root));
-// }
 
 function* previewServer() {
   yield take(TD_PROJECT_LOADED);
