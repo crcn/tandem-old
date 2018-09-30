@@ -1493,7 +1493,8 @@ export const canvasReducer = (state: RootState, action: Action) => {
           }
           state = {
             ...state,
-            selectedShadowInspectorNodeId: inspectorShadowNode.id
+            selectedInspectorNodeIds: [inspectorShadowNode.id],
+            selectedSyntheticNodeIds: EMPTY_ARRAY
           };
 
           state = handleCanvasMouseClicked(

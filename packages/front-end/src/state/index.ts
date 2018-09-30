@@ -75,7 +75,9 @@ import {
   PCConfig,
   inspectorNodeInShadow,
   getInspectorContentNodeContainingChild,
-  getInspectorNodeParentShadow
+  getInspectorNodeParentShadow,
+  getInspectorSourceNode,
+  InspectorTreeNodeName
 } from "paperclip";
 import {
   CanvasToolOverlayMouseMoved,
@@ -256,7 +258,7 @@ export type RootState = {
   prevGraph?: DependencyGraph;
   showSidebar?: boolean;
   customChrome: boolean;
-  selectedShadowInspectorNodeId?: string;
+  // selectedShadowInspectorNodeId?: string;
 
   // TODO - may need to be moved to EditorWindow
   selectedVariant?: PCVariant;
@@ -1377,10 +1379,83 @@ export const getCanvasMouseTargetInspectorNode = (
   return insertableSourceNode;
 };
 
+const getSelectedInspectorNodeParentShadowId = (state: RootState) => {
+  const nodeId = state.selectedInspectorNodeIds[0];
+  if (!nodeId) {
+    return null;
+  }
+  const inspectorNode = getNestedTreeNodeById(
+    nodeId,
+    state.sourceNodeInspector
+  );
+  const shadow =
+    inspectorNode.name === InspectorTreeNodeName.SHADOW
+      ? inspectorNode
+      : getInspectorNodeParentShadow(inspectorNode, state.sourceNodeInspector);
+  return shadow && shadow.id;
+};
+
+const defaultCanvasNodeFilter = ({ id }: SyntheticNode, state: RootState) => {
+  const syntheticNode = getSyntheticNodeById(id, state.documents);
+  const document = getSyntheticVisibleNodeDocument(id, state.documents);
+  const inspectorNode = getSyntheticInspectorNode(
+    syntheticNode,
+    document,
+    state.sourceNodeInspector,
+    state.graph
+  );
+
+  const contentNode =
+    getInspectorContentNodeContainingChild(
+      inspectorNode,
+      state.sourceNodeInspector
+    ) || inspectorNode;
+
+  if (inspectorNodeInShadow(inspectorNode, contentNode)) {
+    const selectedParentShadowId = getSelectedInspectorNodeParentShadowId(
+      state
+    );
+
+    if (selectedParentShadowId) {
+      const selectedShadowInspectorNode = getNestedTreeNodeById(
+        selectedParentShadowId,
+        state.sourceNodeInspector
+      );
+      const inspectorParentShadow = getInspectorNodeParentShadow(
+        inspectorNode,
+        state.sourceNodeInspector
+      );
+
+      const inspectorNodeWithinSelectedShadow =
+        containsNestedTreeNodeById(
+          inspectorNode.id,
+          selectedShadowInspectorNode
+        ) && selectedShadowInspectorNode.id === inspectorParentShadow.id;
+      const selectedShadowWithinInspectorParentShadow = containsNestedTreeNodeById(
+        selectedShadowInspectorNode.id,
+        inspectorParentShadow
+      );
+      // console.log(inspectorNodeWithinSelectedShadow, containsNestedTreeNodeById(inspectorNode.id, selectedShadowInspectorNode), inspectorNode, getParentTreeNode(inspectorNode.id, state.sourceNodeInspector), inspectorParentShadow, selectedShadowInspectorNode);
+      if (
+        !inspectorNodeWithinSelectedShadow &&
+        !selectedShadowWithinInspectorParentShadow
+      ) {
+        return false;
+      }
+    } else {
+      return false;
+    }
+  }
+  return true;
+};
+
 export const getCanvasMouseTargetNodeIdFromPoint = (
   state: RootState,
   point: Point,
-  filter?: (node: TreeNode<any>) => boolean
+  filter: (
+    node: TreeNode<any>,
+    state: RootState
+  ) => boolean = defaultCanvasNodeFilter
 ): string => {
   const scaledMousePos = getScaledMouseCanvasPosition(state, point);
 
@@ -1405,59 +1480,8 @@ export const getCanvasMouseTargetNodeIdFromPoint = (
     const { bounds } = computedInfo[id];
     if (
       pointIntersectsBounds(mouseFramePoint, bounds) &&
-      (!filter || filter(getNestedTreeNodeById(id, contentNode)))
+      filter(getNestedTreeNodeById(id, contentNode), state)
     ) {
-      const syntheticNode = getSyntheticNodeById(id, state.documents);
-      const document = getSyntheticVisibleNodeDocument(id, state.documents);
-      const inspectorNode = getSyntheticInspectorNode(
-        syntheticNode,
-        document,
-        state.sourceNodeInspector,
-        state.graph
-      );
-
-      // this will happen briefly if synthetic nodes are out of sync with the main thread (e.g: right click element + convert to component)
-      if (!inspectorNode) {
-        continue;
-      }
-      const contentNode =
-        getInspectorContentNodeContainingChild(
-          inspectorNode,
-          state.sourceNodeInspector
-        ) || inspectorNode;
-
-      if (inspectorNodeInShadow(inspectorNode, contentNode)) {
-        if (state.selectedShadowInspectorNodeId) {
-          const selectedShadowInspectorNode = getNestedTreeNodeById(
-            state.selectedShadowInspectorNodeId,
-            state.sourceNodeInspector
-          );
-          const inspectorParentShadow = getInspectorNodeParentShadow(
-            inspectorNode,
-            state.sourceNodeInspector
-          );
-
-          const inspectorNodeWithinSelectedShadow =
-            containsNestedTreeNodeById(
-              inspectorNode.id,
-              selectedShadowInspectorNode
-            ) && selectedShadowInspectorNode.id === inspectorParentShadow.id;
-          const selectedShadowWithinInspectorParentShadow = containsNestedTreeNodeById(
-            selectedShadowInspectorNode.id,
-            inspectorParentShadow
-          );
-          // console.log(inspectorNodeWithinSelectedShadow, containsNestedTreeNodeById(inspectorNode.id, selectedShadowInspectorNode), inspectorNode, getParentTreeNode(inspectorNode.id, state.sourceNodeInspector), inspectorParentShadow, selectedShadowInspectorNode);
-          if (
-            !inspectorNodeWithinSelectedShadow &&
-            !selectedShadowWithinInspectorParentShadow
-          ) {
-            continue;
-          }
-        } else {
-          continue;
-        }
-      }
-
       intersectingBounds.unshift(bounds);
       intersectingBoundsMap.set(bounds, id);
     }
@@ -1526,22 +1550,22 @@ export const setSelectedSyntheticVisibleNodeIds = (
 
   root = updateRootState(
     {
-      selectedInspectorNodeIds: assocInspectorNodes.map(node => node.id),
+      selectedInspectorNodeIds: assocInspectorNodes.map(node => node.id)
 
       // deselect shadow inspector node if no selected inspector nodes are within the selected shadow node
-      selectedShadowInspectorNodeId: root.selectedShadowInspectorNodeId
-        ? assocInspectorNodes.some(node =>
-            containsNestedTreeNodeById(
-              node.id,
-              getNestedTreeNodeById(
-                root.selectedShadowInspectorNodeId,
-                root.sourceNodeInspector
-              )
-            )
-          )
-          ? root.selectedShadowInspectorNodeId
-          : null
-        : null
+      // selectedShadowInspectorNodeId: root.selectedShadowInspectorNodeId
+      //   ? assocInspectorNodes.some(node =>
+      //       containsNestedTreeNodeById(
+      //         node.id,
+      //         getNestedTreeNodeById(
+      //           root.selectedShadowInspectorNodeId,
+      //           root.sourceNodeInspector
+      //         )
+      //       )
+      //     )
+      //     ? root.selectedShadowInspectorNodeId
+      //     : null
+      //   : null
     },
     root
   );

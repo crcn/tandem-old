@@ -206,7 +206,6 @@ const enhance = compose<CanvasInnerProps, CanvasOuterProps>(
         dispatch(canvasMouseDoubleClicked(event));
       },
       onContextMenu: ({ dispatch }) => (event: React.MouseEvent<any>) => {
-        console.log("CONTEXT MENU");
         dispatch(canvasRightClicked(event));
         event.preventDefault();
         event.stopPropagation();

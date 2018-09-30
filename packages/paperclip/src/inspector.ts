@@ -555,7 +555,7 @@ export const getInspectorNodeParentShadow = memoize(
     let current: InspectorNode = inspectorNode;
     while (current) {
       const parent = getParentTreeNode(current.id, root) as InspectorNode;
-      if (parent.name === InspectorTreeNodeName.SHADOW) {
+      if (parent && parent.name === InspectorTreeNodeName.SHADOW) {
         return parent;
       }
       current = parent;
