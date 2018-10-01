@@ -187,6 +187,7 @@ const evaluateInspectorNodeChildren = (
       (parent as PCComponent).is,
       graph
     ) as PCComponent;
+
     const shadowInstancePath =
       !fromInstanceShadow &&
       (parent.name === PCSourceTagNames.COMPONENT_INSTANCE ||

@@ -258,12 +258,12 @@ export type RootState = {
   prevGraph?: DependencyGraph;
   showSidebar?: boolean;
   customChrome: boolean;
-  // selectedShadowInspectorNodeId?: string;
 
   // TODO - may need to be moved to EditorWindow
   selectedVariant?: PCVariant;
 
   recenterUriAfterEvaluation: string;
+  openedMain?: boolean;
 
   // TODO - should be actual instances for type safety
   hoveringSyntheticNodeIds: string[];

@@ -400,6 +400,7 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
           ready: true,
           openFiles: [],
           fileCache: {},
+          openedMain: false,
           sourceNodeInspector: createRootInspectorNode(),
           projectDirectory: null,
           graph: {},
@@ -409,19 +410,6 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
         },
         state
       );
-
-      if (projectInfo && projectInfo.config.mainFilePath) {
-        const fullMainFilePath = path.join(
-          path.dirname(projectInfo.path),
-          projectInfo.config.mainFilePath
-        );
-        state = openFile(
-          addProtocol(FILE_PROTOCOL, fullMainFilePath),
-          true,
-          false,
-          state
-        );
-      }
 
       return state;
     }
@@ -471,7 +459,6 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
       return state;
     }
     case ACTIVE_EDITOR_URI_DIRS_LOADED: {
-      console.log(state.activeEditorFilePath);
       state = setRootStateFileNodeExpanded(
         getFileFromUri(state.activeEditorFilePath, state.projectDirectory).id,
         true,
@@ -1775,6 +1762,28 @@ export const canvasReducer = (state: RootState, action: Action) => {
 
     case PC_RUNTIME_EVALUATED: {
       const queuedScopeSelect = state.queuedScopeSelect;
+      const projectInfo = state.projectInfo;
+
+      if (projectInfo && projectInfo.config.mainFilePath && !state.openedMain) {
+        const fullMainFilePath = path.join(
+          path.dirname(projectInfo.path),
+          projectInfo.config.mainFilePath
+        );
+
+        const mainUri = addProtocol(FILE_PROTOCOL, fullMainFilePath);
+
+        state = {
+          ...state,
+          openedMain: true,
+
+          // dumb fix -- PC_RUNTIME_EVALUATED is dispatched a few times so we'll
+          // leverave this functionality to center the canvas when it happens next. 90% sure
+          // this is a bug, but 🤷🏻‍♂️
+          recenterUriAfterEvaluation: mainUri
+        };
+
+        state = openFile(mainUri, true, false, state);
+      }
 
       if (queuedScopeSelect) {
         state = selectInsertedSyntheticVisibleNodes(
