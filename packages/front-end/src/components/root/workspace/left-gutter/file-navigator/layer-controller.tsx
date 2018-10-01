@@ -187,7 +187,7 @@ export default (Base: React.ComponentClass<BaseFileNavigatorLayerProps>) => {
           this.props.dispatch(fileNavigatorItemBlurred(this.props.item));
         };
         render() {
-          const {
+          let {
             item,
             depth = 1,
             dispatch,
@@ -202,9 +202,9 @@ export default (Base: React.ComponentClass<BaseFileNavigatorLayerProps>) => {
             onNewFileInputChange,
             onNewFileChangeComplete,
             editingBasename,
+            draggingOver,
             ...rest
           } = this.props;
-          let { draggingOver } = this.props;
           const {
             onClick,
             onContextMenu,

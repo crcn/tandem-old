@@ -15,12 +15,17 @@ import {
   inspectorNodeInShadow,
   getInspectorNodeParentShadow,
   getInspectorInstanceShadowContentNode,
-  getTopMostInspectorInstance
+  getTopMostInspectorInstance,
+  PCVisibleNode
 } from "paperclip";
 import { ComputedStyleInfo } from "../../state";
 import { dropdownMenuOptionFromValue } from "../../../../../../inputs/dropdown/controller";
 import { cssResetPropertyOptionClicked } from "../../../../../../../actions";
-import { getParentTreeNode, containsNestedTreeNodeById } from "tandem-common";
+import {
+  getParentTreeNode,
+  containsNestedTreeNodeById,
+  EMPTY_ARRAY
+} from "tandem-common";
 
 export type Props = {
   selectedInspectorNodes: InspectorNode[];
@@ -74,22 +79,24 @@ export default (Base: React.ComponentClass<BaseInstancePaneProps>) =>
         selectedInspectorNode,
         rootInspectorNode
       );
+
       const instanceSourceNode = getInspectorSourceNode(
         instance,
         rootInspectorNode,
         graph
-      );
+      ) as PCVisibleNode;
 
-      const overrideKeys = Object.keys(
-        computedStyleInfo.styleOverridesMap
-      ).filter(key => {
-        const overrides = computedStyleInfo.styleOverridesMap[key];
+      const overrideKeys = [
+        ...Object.keys(computedStyleInfo.style).filter(key => {
+          const overrides =
+            computedStyleInfo.styleOverridesMap[key] || EMPTY_ARRAY;
 
-        const inCurrentShadow = overrides.some(override =>
-          containsNestedTreeNodeById(override.id, instanceSourceNode)
-        );
-        return inCurrentShadow;
-      });
+          const inCurrentShadow = overrides.some(override =>
+            containsNestedTreeNodeById(override.id, instanceSourceNode)
+          );
+          return inCurrentShadow || Boolean(instanceSourceNode.style[key]);
+        })
+      ];
 
       return (
         <Base
