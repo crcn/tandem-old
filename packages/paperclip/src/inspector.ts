@@ -373,6 +373,20 @@ const getInspectorNodeOwnerSlot = (
   );
 };
 
+export const getTopMostInspectorInstance = (
+  current: InspectorNode,
+  root: InspectorNode
+) => {
+  while (
+    inspectorNodeInShadow(current, root) ||
+    current.name === InspectorTreeNodeName.SHADOW
+  ) {
+    current = getParentTreeNode(current.id, root);
+  }
+
+  return current;
+};
+
 export const getInsertableInspectorNode = (
   child: InspectorNode,
   root: InspectorNode,

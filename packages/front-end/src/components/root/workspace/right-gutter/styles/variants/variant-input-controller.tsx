@@ -19,7 +19,10 @@ import {
   InspectorNode,
   getInstanceVariantInfo,
   getInheritedAndSelfOverrides,
-  PCOverridablePropertyName
+  PCOverridablePropertyName,
+  PCSourceTagNames,
+  extendsComponent,
+  PCNode
 } from "paperclip";
 import { memoize, KeyValue } from "tandem-common";
 import { Dispatch } from "redux";
@@ -32,6 +35,7 @@ import {
 import { BaseComponentInstanceVariantProps } from "./variant-input.pc";
 
 export type Props = {
+  sourceNode: PCNode;
   selectedInspectorNode: InspectorNode;
   rootInspectorNode: InspectorNode;
   dispatch: Dispatch<any>;
@@ -52,9 +56,19 @@ export default (
         selectedInspectorNode,
         rootInspectorNode,
         graph,
+        sourceNode,
         selectedVariant,
         dispatch
       } = this.props;
+
+      if (
+        sourceNode.name !== PCSourceTagNames.COMPONENT_INSTANCE &&
+        (sourceNode.name !== PCSourceTagNames.COMPONENT ||
+          !extendsComponent(sourceNode))
+      ) {
+        return null;
+      }
+
       const variantInfo = getInstanceVariantInfo(
         selectedInspectorNode,
         rootInspectorNode,

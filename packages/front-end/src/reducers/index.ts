@@ -165,7 +165,9 @@ import {
   SYNTHETIC_NODE_CONTEXT_MENU_WRAP_IN_SLOT_CLICKED,
   SYNTHETIC_NODE_CONTEXT_MENU_SELECT_PARENT_CLICKED,
   SYNTHETIC_NODE_CONTEXT_MENU_SELECT_SOURCE_NODE_CLICKED,
-  SYNTHETIC_NODE_CONTEXT_MENU_REMOVE_CLICKED
+  SYNTHETIC_NODE_CONTEXT_MENU_REMOVE_CLICKED,
+  CSS_RESET_PROPERTY_OPTION_CLICKED,
+  ResetPropertyOptionClicked
 } from "../actions";
 import {
   queueOpenFile,
@@ -1652,6 +1654,24 @@ export const canvasReducer = (state: RootState, action: Action) => {
           ),
         state
       );
+    }
+    case CSS_RESET_PROPERTY_OPTION_CLICKED: {
+      const { property } = action as ResetPropertyOptionClicked;
+      const node = state.selectedInspectorNodeIds[0];
+
+      state = persistRootState(state => {
+        return persistCSSProperty(
+          property,
+          undefined,
+          getSyntheticNodeById(
+            state.selectedSyntheticNodeIds[0],
+            state.documents
+          ),
+          null,
+          state
+        );
+      }, state);
+      return state;
     }
 
     case CSS_PROPERTY_CHANGE_COMPLETED: {

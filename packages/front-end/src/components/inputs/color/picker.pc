@@ -1067,12 +1067,51 @@
       "variant": {}
     },
     {
-      "id": "69a3e59d8987",
-      "is": "77d88356850",
+      "id": "e4a59743634",
+      "is": "e4a59743454",
       "name": "component-instance",
       "attributes": {},
       "style": {},
-      "children": [],
+      "children": [
+        {
+          "id": "703fb1de464",
+          "propertyName": "style",
+          "targetIdPath": [
+            "77d883561014"
+          ],
+          "value": {},
+          "name": "override",
+          "children": []
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": 75,
+          "top": 298,
+          "right": 175,
+          "bottom": 398
+        }
+      },
+      "variant": {}
+    },
+    {
+      "is": "77d88356850",
+      "style": {},
+      "attributes": {},
+      "id": "e4a59743454",
+      "name": "component",
+      "children": [
+        {
+          "id": "e4a59743453",
+          "propertyName": "style",
+          "targetIdPath": [
+            "77d883561014"
+          ],
+          "value": {},
+          "name": "override",
+          "children": []
+        }
+      ],
       "metadata": {
         "bounds": {
           "left": 97,

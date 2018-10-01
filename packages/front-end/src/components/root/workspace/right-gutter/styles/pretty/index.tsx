@@ -55,6 +55,7 @@ export default (Base: React.ComponentClass<BaseElementStylerProps>) =>
         <Base
           {...rest}
           instancePaneProps={{
+            computedStyleInfo,
             selectedInspectorNodes,
             rootInspectorNode,
             syntheticDocument,

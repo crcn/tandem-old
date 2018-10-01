@@ -262,7 +262,7 @@ export type RootState = {
   // TODO - may need to be moved to EditorWindow
   selectedVariant?: PCVariant;
 
-  recenterUriAfterEvaluation: string;
+  recenterUriAfterEvaluation?: string;
   openedMain?: boolean;
 
   // TODO - should be actual instances for type safety
@@ -1406,6 +1406,10 @@ const defaultCanvasNodeFilter = ({ id }: SyntheticNode, state: RootState) => {
     state.sourceNodeInspector,
     state.graph
   );
+
+  if (!inspectorNode) {
+    return false;
+  }
 
   const contentNode =
     getInspectorContentNodeContainingChild(

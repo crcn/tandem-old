@@ -19,7 +19,7 @@
       "children": [
         {
           "id": "65d1fb8f36900",
-          "is": "d31aa238604111",
+          "is": "f657bb0949423",
           "name": "component-instance",
           "attributes": {},
           "style": {},
@@ -32,7 +32,8 @@
               "bottom": 453.1408602999202
             }
           },
-          "label": "instance pane"
+          "label": "instance pane",
+          "variant": {}
         },
         {
           "id": "9e4a45489816",
@@ -369,136 +370,6 @@
       },
       "controllers": [
         "./index.tsx"
-      ],
-      "variant": {}
-    },
-    {
-      "label": "Instance Pane",
-      "is": "div",
-      "style": {
-        "box-sizing": "border-box",
-        "display": "block"
-      },
-      "attributes": {},
-      "id": "d31aa238604111",
-      "name": "component",
-      "children": [
-        {
-          "id": "d31aa238620218",
-          "is": "b6c162d113",
-          "name": "component-instance",
-          "attributes": {},
-          "style": {},
-          "children": [
-            {
-              "id": "d31aa238624256",
-              "variantId": null,
-              "propertyName": "text",
-              "targetIdPath": [
-                "b6c162d1281"
-              ],
-              "value": "Instance",
-              "name": "override",
-              "children": []
-            },
-            {
-              "slotId": "d6261ad52883",
-              "id": "d31aa238681023",
-              "children": [
-                {
-                  "id": "d31aa238681022",
-                  "is": "a9046e8412",
-                  "name": "component-instance",
-                  "attributes": {},
-                  "style": {
-                    "padding-left": "0px",
-                    "padding-top": "0px",
-                    "padding-right": "0px",
-                    "padding-bottom": "0px"
-                  },
-                  "children": [
-                    {
-                      "id": "d31aa238731246",
-                      "variantId": null,
-                      "propertyName": "text",
-                      "targetIdPath": [
-                        "2c32917124",
-                        "2c32917122"
-                      ],
-                      "value": "variant 1",
-                      "name": "override",
-                      "children": []
-                    },
-                    {
-                      "id": "d31aa238806578",
-                      "variantId": null,
-                      "propertyName": "text",
-                      "targetIdPath": [
-                        "2c32917125",
-                        "2c32917122"
-                      ],
-                      "value": "variant 2",
-                      "name": "override",
-                      "children": []
-                    },
-                    {
-                      "id": "d31aa238881909",
-                      "variantId": null,
-                      "propertyName": "text",
-                      "targetIdPath": [
-                        "2c3291716",
-                        "7149f8192506"
-                      ],
-                      "value": "Variant",
-                      "name": "override",
-                      "children": []
-                    }
-                  ],
-                  "metadata": {
-                    "bounds": {
-                      "left": 311,
-                      "top": 149,
-                      "right": 643,
-                      "bottom": 482
-                    }
-                  },
-                  "label": "variant input"
-                }
-              ],
-              "metadata": {},
-              "name": "plug"
-            },
-            {
-              "id": "d31aa238685209",
-              "propertyName": "style",
-              "targetIdPath": [
-                "b6c162d140"
-              ],
-              "value": {},
-              "name": "override",
-              "children": []
-            }
-          ],
-          "metadata": {
-            "bounds": {
-              "left": 321,
-              "top": 189,
-              "right": 525,
-              "bottom": 287.3571410945104
-            }
-          }
-        }
-      ],
-      "metadata": {
-        "bounds": {
-          "left": 676,
-          "top": 110,
-          "right": 967.5113534536454,
-          "bottom": 453.1408602999202
-        }
-      },
-      "controllers": [
-        "./instance-pane-controller.tsx"
       ],
       "variant": {}
     }

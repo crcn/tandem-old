@@ -22,7 +22,8 @@ import {
   Frame,
   PCComponent,
   PCVariant,
-  PCVariableType
+  PCVariableType,
+  PCOverride
 } from "paperclip";
 import { RegisteredComponent } from "..";
 import {
@@ -225,6 +226,8 @@ export const CHROME_HEADER_MOUSE_DOWN = "CHROME_HEADER_MOUSE_DOWN";
 export const CHROME_CLOSE_BUTTON_CLICKED = "CHROME_CLOSE_BUTTON_CLICKED";
 export const CHROME_MINIMIZE_BUTTON_CLICKED = "CHROME_MINIMIZE_BUTTON_CLICKED";
 export const CHROME_MAXIMIZE_BUTTON_CLICKED = "CHROME_MAXIMIZE_BUTTON_CLICKED";
+export const CSS_RESET_PROPERTY_OPTION_CLICKED =
+  "CSS_RESET_PROPERTY_OPTION_CLICKED";
 
 export type WrappedEvent<T> = {
   sourceEvent: T;
@@ -310,6 +313,10 @@ export type CanvasToolOverlayMousePanning = {
   deltaY: number;
   velocityY: number;
   center: Point;
+} & Action;
+
+export type ResetPropertyOptionClicked = {
+  property: string;
 } & Action;
 
 export type CanvasMouseMoved = {
@@ -703,6 +710,13 @@ export const syntheticNodeContextMenuSelectSourceNodeClicked = publicActionCreat
     item
   })
 );
+
+export const cssResetPropertyOptionClicked = (
+  property: string
+): ResetPropertyOptionClicked => ({
+  type: CSS_RESET_PROPERTY_OPTION_CLICKED,
+  property
+});
 
 export const editorTabCloseButtonClicked = (uri: string): EditorTabClicked => ({
   uri,

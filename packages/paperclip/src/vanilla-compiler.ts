@@ -244,9 +244,9 @@ const translateDynamicVariant = (node: PCBaseElement<any>) => {
 const translateDynamicOverrides = (
   node: PCComponent | PCComponentInstanceElement
 ) => {
-  let buffer = `Object.assign({}, _${node.id}Overrides, overrides._${
+  let buffer = `merge(_${node.id}Overrides, merge(merge(overrides._${
     node.id
-  }Overrides, overrides, {`;
+  }Overrides, overrides), {`;
 
   for (const child of node.children as PCNode[]) {
     if (child.name === PCSourceTagNames.PLUG && child.children.length) {
@@ -257,7 +257,7 @@ const translateDynamicOverrides = (
     }
   }
 
-  return buffer + `})`;
+  return buffer + `}))`;
 };
 
 const translateStaticOverrides = (
