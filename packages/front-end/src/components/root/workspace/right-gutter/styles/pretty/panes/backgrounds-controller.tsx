@@ -5,7 +5,7 @@ import {
 } from "../../../../../../../actions";
 import { arraySplice } from "tandem-common";
 import { Dispatch } from "redux";
-import { SyntheticElement, PCVariable } from "paperclip";
+import { SyntheticElement, PCVariable, PCSourceTagNames } from "paperclip";
 import { BaseBackgroundsProps } from "./backgrounds.pc";
 import { BackgroundItem } from "./backgrounds.pc";
 import { ComputedStyleInfo } from "../../state";
@@ -53,6 +53,13 @@ export default (Base: React.ComponentClass<BaseBackgroundsProps>) =>
     render() {
       const { computedStyleInfo, globalVariables } = this.props;
       const { onChange, onChangeComplete, onPlusButtonClick } = this;
+
+      const { sourceNodes } = computedStyleInfo;
+
+      // Typography pane is only available to text nodes to prevent cascading styles
+      if (sourceNodes[0].name === PCSourceTagNames.TEXT) {
+        return null;
+      }
 
       const children = splitBackgrounds(computedStyleInfo.style.background).map(
         (background, i) => {

@@ -24,7 +24,8 @@ import {
   InspectorTreeNodeName,
   PCVariant,
   PCVariable,
-  PCVariableType
+  PCVariableType,
+  PCSourceTagNames
 } from "paperclip";
 import { Dispatch } from "redux";
 import { ComputedStyleInfo, computeStyleInfo } from "../../state";
@@ -132,6 +133,12 @@ export default (Base: React.ComponentClass<BaseLayoutProps>) =>
         graph,
         ...rest
       } = this.props;
+      const { sourceNodes } = computedStyleInfo;
+
+      // Typography pane is only available to text nodes to prevent cascading styles
+      if (sourceNodes[0].name === PCSourceTagNames.TEXT) {
+        return null;
+      }
       const { onPropertyChange, onPropertyChangeComplete } = this;
 
       // computeStyleInfo

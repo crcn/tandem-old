@@ -1086,7 +1086,8 @@
             "e76ec5882422"
           ],
           "value": {
-            "color": "rgba(234, 6, 6, 1)"
+            "color": "rgba(234, 6, 6, 1)",
+            "font-family": "--22702c5f1086"
           },
           "name": "override",
           "children": []

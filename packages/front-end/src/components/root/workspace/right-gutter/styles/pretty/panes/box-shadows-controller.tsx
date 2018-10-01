@@ -9,7 +9,7 @@ import {
 } from "../../../../../../../actions";
 import { BaseBoxShadowsProps } from "./box-shadows.pc";
 import { Dispatch } from "redux";
-import { SyntheticElement, PCVariable } from "paperclip";
+import { SyntheticElement, PCVariable, PCSourceTagNames } from "paperclip";
 import { ComputedStyleInfo } from "../../state";
 
 export type Props = {
@@ -116,6 +116,12 @@ export default (Base: React.ComponentClass<BaseBoxShadowsProps>) =>
         onAddButtonClick,
         onRemoveButtonClick
       } = this;
+
+      const { sourceNodes } = computedStyleInfo;
+
+      if (sourceNodes[0].name === PCSourceTagNames.TEXT) {
+        return null;
+      }
 
       if (!computedStyleInfo) {
         return null;

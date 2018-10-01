@@ -21,7 +21,8 @@ import {
   PCVariableType,
   PCVisibleNode,
   PCOverride,
-  InspectorNode
+  InspectorNode,
+  PCSourceTagNames
 } from "paperclip";
 import {
   ComputedStyleInfo,
@@ -99,6 +100,12 @@ export default (Base: React.ComponentClass<BaseTypographProps>) =>
     render() {
       const { onPropertyChange, onPropertyChangeComplete } = this;
       const { fontFamilies, globalVariables, computedStyleInfo } = this.props;
+      const { sourceNodes } = computedStyleInfo;
+
+      // Typography pane is only available to text nodes to prevent cascading styles
+      if (sourceNodes[0].name !== PCSourceTagNames.TEXT) {
+        return null;
+      }
       const fontVariables = filterVariablesByType(
         globalVariables,
         PCVariableType.FONT
