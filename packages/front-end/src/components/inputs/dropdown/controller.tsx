@@ -104,7 +104,10 @@ export default (Base: React.ComponentClass<BaseDropdownProps>) => {
         ? options
             .filter(
               ({ label }) =>
-                !filter || label.toLowerCase().indexOf(filter) !== -1
+                !filter ||
+                String(label)
+                  .toLowerCase()
+                  .indexOf(filter) !== -1
             )
             .map((item, i) => {
               return (

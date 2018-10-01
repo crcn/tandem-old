@@ -60,7 +60,9 @@ import {
   PCModule,
   createPCVariable,
   PCVariableType,
-  isVoidTagName
+  isVoidTagName,
+  PCSlot,
+  getDerrivedPCLabel
 } from "./dsl";
 import {
   SyntheticVisibleNode,
@@ -575,7 +577,14 @@ export const persistConvertNodeToComponent = <TState extends PCEditorState>(
     state
   );
 
-  const componentInstance = createPCComponentInstance(component.id);
+  const componentInstance = createPCComponentInstance(
+    component.id,
+    null,
+    null,
+    null,
+    null,
+    sourceNode.label
+  );
 
   state = replaceDependencyGraphPCNode(componentInstance, sourceNode, state);
 
@@ -917,7 +926,14 @@ export const persistAppendPCClips = <TState extends PCEditorState>(
 
     // is component
     if (sourceNode.name === PCSourceTagNames.COMPONENT) {
-      const componentInstance = createPCComponentInstance(sourceNode.id);
+      const componentInstance = createPCComponentInstance(
+        sourceNode.id,
+        null,
+        null,
+        null,
+        null,
+        getDerrivedPCLabel(sourceNode as PCComponent, state.graph)
+      );
 
       if (targetNodeIsModule) {
         content = insertChildNode(

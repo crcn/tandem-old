@@ -19,7 +19,7 @@ import {
 } from "paperclip";
 import { ComputedStyleInfo } from "../../state";
 import { dropdownMenuOptionFromValue } from "../../../../../../inputs/dropdown/controller";
-import { cssResetPropertyOptionClicked } from "actions";
+import { cssResetPropertyOptionClicked } from "../../../../../../../actions";
 import { getParentTreeNode, containsNestedTreeNodeById } from "tandem-common";
 
 export type Props = {

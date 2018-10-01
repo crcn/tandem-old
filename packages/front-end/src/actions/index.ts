@@ -171,6 +171,7 @@ export const SYNTHETIC_NODE_CONTEXT_MENU_SELECT_SOURCE_NODE_CLICKED =
   "SYNTHETIC_NODE_CONTEXT_MENU_SELECT_SOURCE_NODE_CLICKED";
 export const INHERIT_PANE_REMOVE_BUTTON_CLICK =
   "INHERIT_PANE_REMOVE_BUTTON_CLICK";
+export const EXPORT_NAME_CHANGED = "EXPORT_NAME_CHANGED";
 export const ACTIVE_EDITOR_URI_DIRS_LOADED = "ACTIVE_EDITOR_URI_DIRS_LOADED";
 export const INHERIT_ITEM_COMPONENT_TYPE_CHANGE_COMPLETE =
   "INHERIT_ITEM_COMPONENT_TYPE_CHANGE_COMPLETE";
@@ -580,6 +581,10 @@ export type FileNavigatorDroppedItem = {
   offset: TreeMoveOffset;
 } & Action;
 
+export type ExportNameChanged = {
+  value: string;
+} & Action;
+
 export type EditorTabClicked = {
   uri: string;
 } & Action;
@@ -761,6 +766,11 @@ export const promptConfirmed = (
 ): PromptConfirmed => ({
   inputValue,
   type: actionType
+});
+
+export const exportNameChanged = (value: string): ExportNameChanged => ({
+  type: EXPORT_NAME_CHANGED,
+  value
 });
 
 export const promptCancelButtonClicked = (): PromptCancelButtonClicked => ({

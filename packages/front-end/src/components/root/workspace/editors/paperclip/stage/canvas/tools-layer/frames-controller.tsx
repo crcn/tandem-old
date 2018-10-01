@@ -59,6 +59,7 @@ export default (Base: React.ComponentClass<BaseFramesProps>) =>
         const sourceNode = getSyntheticSourceNode(contentNode, graph);
         return (
           <FrameComponent
+            graph={graph}
             key={frame.syntheticContentNodeId}
             sourceNode={sourceNode}
             frame={frame}

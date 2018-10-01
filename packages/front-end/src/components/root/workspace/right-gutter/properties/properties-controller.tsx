@@ -21,6 +21,7 @@ export type Props = {
   className?: string;
   dispatch: Dispatch<any>;
   sourceNodeUri: string;
+  rootInspectorNode: InspectorNode;
 } & BasePropertiesProps;
 
 export default (Base: React.ComponentClass<BasePropertiesProps>) =>
@@ -30,6 +31,7 @@ export default (Base: React.ComponentClass<BasePropertiesProps>) =>
         visible,
         className,
         selectedInspectorNodes,
+        rootInspectorNode,
         selectedNodes,
         graph,
         dispatch,

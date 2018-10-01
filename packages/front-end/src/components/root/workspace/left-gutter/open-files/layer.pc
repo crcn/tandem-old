@@ -870,7 +870,7 @@
           "id": "7982ea828779",
           "name": "variant",
           "label": "folder",
-          "isDefault": true,
+          "isDefault": false,
           "children": [],
           "metadata": {}
         },
@@ -883,6 +883,27 @@
           ],
           "value": {
             "display": "block"
+          },
+          "name": "override",
+          "children": []
+        },
+        {
+          "id": "dc084d6f5902",
+          "name": "variant",
+          "label": "unlabeled",
+          "isDefault": false,
+          "children": [],
+          "metadata": {}
+        },
+        {
+          "id": "dc084d6f81605",
+          "variantId": "dc084d6f5902",
+          "propertyName": "style",
+          "targetIdPath": [
+            "d3bf183b18"
+          ],
+          "value": {
+            "display": "none"
           },
           "name": "override",
           "children": []

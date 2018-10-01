@@ -13,7 +13,6 @@ import {
   getPCNode,
   PCVisibleNode,
   getPCNodeDependency,
-  PCComponent,
   getPCNodeContentNode,
   PCModule,
   getPCNodeModule
@@ -94,6 +93,8 @@ export default (Base: React.ComponentClass<BaseNodeLayerProps>) => {
 
         let label = (assocSourceNode as PCVisibleNode).label;
 
+        // note that "Layer" is used as a default label here
+        // to show layers that have an undefined label (which shouldn't exist)
         if (!label) {
           if (assocSourceNode.name === PCSourceTagNames.MODULE) {
             const dependency = getPCNodeDependency(
@@ -101,15 +102,17 @@ export default (Base: React.ComponentClass<BaseNodeLayerProps>) => {
               graph
             );
             label = path.basename(dependency.uri);
+          } else if (assocSourceNode.name === PCSourceTagNames.ELEMENT) {
+            label = assocSourceNode.is || "Layer";
           } else if (
             assocSourceNode.name === PCSourceTagNames.COMPONENT_INSTANCE
           ) {
-            const component = getPCNode(assocSourceNode.is, graph);
-            label = (component as PCComponent).label;
-          } else if (assocSourceNode.name === PCSourceTagNames.ELEMENT) {
-            label = assocSourceNode.is || "Element";
-          }
-          if (assocSourceNode.name === PCSourceTagNames.SLOT) {
+            label = "Layer";
+          } else if (assocSourceNode.name === PCSourceTagNames.TEXT) {
+            label = "Layer";
+          } else if (assocSourceNode.name === PCSourceTagNames.COMPONENT) {
+            label = "Layer";
+          } else if (assocSourceNode.name === PCSourceTagNames.SLOT) {
             label = assocSourceNode.label;
           }
         }
@@ -198,6 +201,11 @@ export default (Base: React.ComponentClass<BaseNodeLayerProps>) => {
         };
         private persistLabelChange = event => {
           const label = String((event.target as any).value || "").trim();
+
+          // labels SHOULD NOT be undefined
+          if (!label) {
+            return;
+          }
           this.setState({ ...this.state, editingLabel: false });
           this.props.dispatch(
             sourceInspectorLayerLabelChanged(

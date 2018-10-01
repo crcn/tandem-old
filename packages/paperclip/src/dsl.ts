@@ -310,6 +310,26 @@ export const createPCComponent = (
   variant: EMPTY_OBJECT
 });
 
+export const getDerrivedPCLabel = (
+  node: PCVisibleNode | PCComponent,
+  graph: DependencyGraph
+) => {
+  let label: string = node.label;
+  if (label) {
+    return label;
+  }
+  let current = node;
+  while (extendsComponent(current)) {
+    current = getPCNode((current as PCComponent).is, graph) as PCComponent;
+    label = current.label;
+    if (label) {
+      break;
+    }
+  }
+
+  return label;
+};
+
 export const createPCVariant = (
   label?: string,
   isDefault?: boolean
@@ -359,10 +379,12 @@ export const createPCComponentInstance = (
   style: KeyValue<any> = EMPTY_OBJECT,
   attributes: KeyValue<string> = EMPTY_OBJECT,
   children: PCComponentInstanceChild[] = EMPTY_ARRAY,
-  metadata?: KeyValue<any>
+  metadata?: KeyValue<any>,
+  label?: string
 ): PCComponentInstanceElement => ({
   id: generateUID(),
   is: is || "div",
+  label,
   name: PCSourceTagNames.COMPONENT_INSTANCE,
   attributes: attributes || EMPTY_OBJECT,
   style: style || EMPTY_OBJECT,

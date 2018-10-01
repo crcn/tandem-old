@@ -134,6 +134,7 @@ export default (Base: React.ComponentClass<BaseRightGutterProps>) =>
             children: tabs
           }}
           propertiesProps={{
+            rootInspectorNode,
             visible: availableCurrentTab === TAB_NAMES[1],
             sourceNodeUri:
               selectedInspectorNodes[0] &&

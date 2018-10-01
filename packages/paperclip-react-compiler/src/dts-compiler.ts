@@ -65,7 +65,7 @@ const translateModule = (module: PCModule, context: TranslateContext) => {
           );
           context = addLine(
             `import ${controllerClassName}, {Props as ${controllerClassName}Props} from "${controllerPath.replace(
-              /.tsx?/,
+              /\.tsx?$/,
               ""
             )}";`,
             context

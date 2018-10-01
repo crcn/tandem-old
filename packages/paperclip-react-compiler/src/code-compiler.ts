@@ -397,6 +397,7 @@ const translateContentNode = (
   context: TranslateContext
 ) => {
   context = setCurrentScope(module.id, context);
+
   context = addScopedLayerLabel(contentNode.label, contentNode.id, context);
   const internalVarName = getInternalVarName(contentNode);
   const publicClassName = getPublicComponentClassName(contentNode, context);

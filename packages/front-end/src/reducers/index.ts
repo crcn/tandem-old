@@ -167,7 +167,9 @@ import {
   SYNTHETIC_NODE_CONTEXT_MENU_SELECT_SOURCE_NODE_CLICKED,
   SYNTHETIC_NODE_CONTEXT_MENU_REMOVE_CLICKED,
   CSS_RESET_PROPERTY_OPTION_CLICKED,
-  ResetPropertyOptionClicked
+  ResetPropertyOptionClicked,
+  EXPORT_NAME_CHANGED,
+  ExportNameChanged
 } from "../actions";
 import {
   queueOpenFile,
@@ -318,7 +320,8 @@ import {
   PCElement,
   getInspectorInstanceShadowContentNode,
   getInspectorInstanceShadow,
-  updateAlts
+  updateAlts,
+  getDerrivedPCLabel
 } from "paperclip";
 import {
   roundBounds,
@@ -1691,7 +1694,6 @@ export const canvasReducer = (state: RootState, action: Action) => {
       }, state);
       return state;
     }
-
     case ATTRIBUTE_CHANGED: {
       const { name, value } = action as CSSPropertyChanged;
       state = persistRootState(() => {
@@ -2026,7 +2028,7 @@ export const canvasReducer = (state: RootState, action: Action) => {
         case ToolType.COMPONENT: {
           const componentId = state.selectedComponentId;
           state = { ...state, selectedComponentId: null };
-          const component = getPCNode(componentId, state.graph);
+          const component = getPCNode(componentId, state.graph) as PCComponent;
 
           return persistInsertNodeFromPoint(
             createPCComponentInstance(
@@ -2034,7 +2036,8 @@ export const canvasReducer = (state: RootState, action: Action) => {
               null,
               null,
               null,
-              component.metadata
+              component.metadata,
+              getDerrivedPCLabel(component, state.graph)
             ),
             fileUri,
             point,

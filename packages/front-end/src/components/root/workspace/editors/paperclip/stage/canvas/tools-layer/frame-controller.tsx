@@ -7,7 +7,9 @@ import {
   Frame,
   PCNode,
   isComponent,
-  PCComponent
+  PCComponent,
+  PCVisibleNode,
+  DependencyGraph
 } from "paperclip";
 import { getBoundsSize, Translate } from "tandem-common";
 import {
@@ -33,6 +35,7 @@ export type Props = {
   sourceNode: PCNode;
   contentNode: SyntheticVisibleNode;
   translate: Translate;
+  graph: DependencyGraph;
 };
 
 type InnerProps = {
@@ -57,7 +60,7 @@ export default (Base: React.ComponentClass<BaseFrameProps>) =>
       this.props.dispatch(frameModeChangeComplete(this.props.frame, mode));
     };
     render() {
-      const { frame, translate, contentNode, sourceNode } = this.props;
+      const { frame, translate, contentNode, sourceNode, graph } = this.props;
 
       const { onTitleClick, onModeChangeComplete, onPreviewButtonClick } = this;
 
@@ -103,7 +106,7 @@ export default (Base: React.ComponentClass<BaseFrameProps>) =>
           }}
           titleProps={{
             text:
-              (sourceNode && (sourceNode as PCComponent).label) || "Untitled",
+              (sourceNode && (sourceNode as PCVisibleNode).label) || "Untitled",
             onClick: onTitleClick
           }}
           controlsProps={{
