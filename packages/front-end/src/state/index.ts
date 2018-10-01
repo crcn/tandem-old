@@ -1001,7 +1001,7 @@ export const openSyntheticVisibleNodeOriginFile = (
     ),
     state.graph
   );
-  state = openFile(uri, false, true, state);
+  state = openFile(uri, false, false, state);
   state = setSelectedSyntheticVisibleNodeIds(state, instance.id);
   state = centerCanvasToSelectedNodes(state);
   return state;

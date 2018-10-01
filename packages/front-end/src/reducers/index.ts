@@ -1802,7 +1802,7 @@ export const canvasReducer = (state: RootState, action: Action) => {
           recenterUriAfterEvaluation: mainUri
         };
 
-        state = openFile(mainUri, true, false, state);
+        state = openFile(mainUri, false, false, state);
       }
 
       if (queuedScopeSelect) {

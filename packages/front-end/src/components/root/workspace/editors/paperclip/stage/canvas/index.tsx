@@ -101,8 +101,9 @@ const BaseCanvasComponent = ({
     documents,
     graph
   );
+  const openFile = getOpenFile(editorWindow.activeFilePath, openFiles);
 
-  const canvas = getOpenFile(editorWindow.activeFilePath, openFiles).canvas;
+  const canvas = openFile.canvas;
   const translate = canvas.translate;
 
   return (
