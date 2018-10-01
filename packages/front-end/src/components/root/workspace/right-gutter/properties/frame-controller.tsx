@@ -46,10 +46,6 @@ const PRESETS: DropdownMenuOption[] = [
     value: createBounds(0, 384, 0, 640)
   },
   {
-    label: "Google Nexus 5x",
-    value: createBounds(0, 360, 0, 640)
-  },
-  {
     label: "Google Nexus 6",
     value: createBounds(0, 411, 0, 731)
   },
@@ -63,7 +59,7 @@ const PRESETS: DropdownMenuOption[] = [
   },
   {
     label: "Apple Macbook Pro",
-    value: createBounds(0, 1440, 0, 900)
+    value: createBounds(0, 2560, 0, 1600)
   },
   {
     label: "Microsoft Surface Book",
