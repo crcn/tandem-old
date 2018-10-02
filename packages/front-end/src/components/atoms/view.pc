@@ -1,0 +1,7 @@
+{
+  "id": "6ceccc4089",
+  "name": "module",
+  "version": "0.0.5",
+  "children": [],
+  "metadata": {}
+}

@@ -1486,14 +1486,15 @@ export const persistCSSProperty = <TState extends PCEditorState>(
         })
       );
     },
-    (sourceNode: PCVisibleNode) =>
-      ({
+    (sourceNode: PCVisibleNode) => {
+      return {
         ...sourceNode,
         style: omitNull({
           ...sourceNode.style,
           [name]: value
         })
-      } as PCVisibleNode)
+      } as PCVisibleNode;
+    }
   )(
     node.instancePath,
     node.sourceNodeId,

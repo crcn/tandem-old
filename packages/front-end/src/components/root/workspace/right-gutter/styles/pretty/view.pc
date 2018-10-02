@@ -43,9 +43,8 @@
           "attributes": {},
           "style": {
             "font-family": "Helvetica",
-            "display": "none",
+            "display": "flex",
             "flex-direction": "column",
-            "border-bottom": "1px solid rgba(0,0,0,0.05)",
             "font-size": "10px",
             "color": "grey",
             "width": "100%",
@@ -62,12 +61,7 @@
               "targetIdPath": [
                 "b6c162d140"
               ],
-              "value": {
-                "padding-left": "0px",
-                "padding-top": "0px",
-                "padding-right": "0px",
-                "padding-bottom": "0px"
-              },
+              "value": {},
               "name": "override",
               "children": []
             },
@@ -83,13 +77,13 @@
               "children": []
             },
             {
-              "id": "c7da0a1d194976",
+              "id": "717be0e9259673",
               "variantId": null,
               "propertyName": "text",
               "targetIdPath": [
                 "308dd31378"
               ],
-              "value": "inherited styles",
+              "value": "extends",
               "name": "override",
               "children": []
             }

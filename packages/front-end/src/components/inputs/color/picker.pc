@@ -1075,9 +1075,7 @@
       "label": "Element",
       "name": "component-instance",
       "attributes": {},
-      "style": {
-        "background": "rgba(200, 200, 200, 1)"
-      },
+      "style": {},
       "children": [
         {
           "id": "e76ec5882590",
@@ -1087,7 +1085,8 @@
           ],
           "value": {
             "color": "rgba(234, 6, 6, 1)",
-            "font-family": "--22702c5f1086"
+            "font-family": "--22702c5f1086",
+            "opacity": 1
           },
           "name": "override",
           "children": []
@@ -1106,10 +1105,7 @@
     {
       "label": "Element",
       "is": "div",
-      "style": {
-        "box-sizing": "border-box",
-        "display": "block"
-      },
+      "style": {},
       "attributes": {},
       "id": "e76ec5881430",
       "name": "component",
@@ -1122,17 +1118,37 @@
           "style": {},
           "children": [],
           "metadata": {}
+        },
+        {
+          "id": "ed02066e1276",
+          "name": "variant",
+          "label": "blarg",
+          "isDefault": true,
+          "children": [],
+          "metadata": {}
+        },
+        {
+          "id": "ed02066e1444",
+          "variantId": "ed02066e1276",
+          "propertyName": "style",
+          "targetIdPath": [
+            "e76ec5882422"
+          ],
+          "value": {},
+          "name": "override",
+          "children": []
         }
       ],
       "metadata": {
         "bounds": {
-          "left": -221.39379668818285,
-          "top": 236.90438579371317,
-          "right": -121.39379668818285,
-          "bottom": 336.9043857937132
+          "left": -221,
+          "top": 236,
+          "right": -121,
+          "bottom": 336
         }
       },
-      "variant": {}
+      "variant": {},
+      "inheritStyle": {}
     }
   ]
 }

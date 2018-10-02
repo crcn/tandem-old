@@ -16,7 +16,11 @@ import {
   getInspectorNodeParentShadow,
   getInspectorInstanceShadowContentNode,
   getTopMostInspectorInstance,
-  PCVisibleNode
+  PCVisibleNode,
+  PCOverride,
+  PCComponent,
+  getPCNodeContentNode,
+  getPCNodeModule
 } from "paperclip";
 import { ComputedStyleInfo } from "../../state";
 import { dropdownMenuOptionFromValue } from "../../../../../../inputs/dropdown/controller";
@@ -63,6 +67,11 @@ export default (Base: React.ComponentClass<BaseInstancePaneProps>) =>
         selectedInspectorNode,
         rootInspectorNode,
         graph
+      ) as PCVisibleNode | PCComponent;
+
+      const contentNode = getPCNodeContentNode(
+        sourceNode.id,
+        getPCNodeModule(sourceNode.id, graph)
       );
 
       if (
@@ -71,7 +80,10 @@ export default (Base: React.ComponentClass<BaseInstancePaneProps>) =>
           !extendsComponent(sourceNode))
       ) {
         if (!inspectorNodeInShadow(selectedInspectorNode, rootInspectorNode)) {
-          return null;
+          // needs to show up within components particularly for variants
+          if (contentNode.name !== PCSourceTagNames.COMPONENT) {
+            return null;
+          }
         }
       }
 
@@ -84,17 +96,32 @@ export default (Base: React.ComponentClass<BaseInstancePaneProps>) =>
         instance,
         rootInspectorNode,
         graph
-      ) as PCVisibleNode;
+      ) as PCVisibleNode | PCComponent;
+
+      // if top most source node is not component or instance, then the target node is _not_ in a shadow
+      const topMostSourceNode =
+        instanceSourceNode.name === PCSourceTagNames.COMPONENT_INSTANCE ||
+        instanceSourceNode.name === PCSourceTagNames.COMPONENT
+          ? instanceSourceNode
+          : contentNode;
 
       const overrideKeys = [
         ...Object.keys(computedStyleInfo.style).filter(key => {
           const overrides =
             computedStyleInfo.styleOverridesMap[key] || EMPTY_ARRAY;
 
-          const inCurrentShadow = overrides.some(override =>
-            containsNestedTreeNodeById(override.id, instanceSourceNode)
+          const inCurrentInstance = overrides.some((override: PCOverride) => {
+            return (
+              containsNestedTreeNodeById(override.id, topMostSourceNode) &&
+              override.variantId == (selectedVariant && selectedVariant.id)
+            );
+          });
+
+          // if variant is selected, then override must be present
+          return (
+            inCurrentInstance ||
+            (!selectedVariant && Boolean(instanceSourceNode.style[key]))
           );
-          return inCurrentShadow || Boolean(instanceSourceNode.style[key]);
         })
       ];
 

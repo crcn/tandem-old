@@ -92,12 +92,14 @@
           "style": {
             "height": "100%",
             "width": "100%",
-            "padding": "16px",
             "padding-top": "8px",
             "box-sizing": "border-box",
             "flex": "1",
             "position": "relative",
-            "color": "--24ce1e4d482"
+            "color": "--24ce1e4d482",
+            "padding-left": "16px",
+            "padding-right": "16px",
+            "padding-bottom": "16px"
           },
           "children": [
             {

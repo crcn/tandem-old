@@ -198,7 +198,7 @@
           "propertyName": "style",
           "targetIdPath": [],
           "value": {
-            "background": "rgba(207, 226, 251, 1)"
+            "background": "--32c1eebd7630"
           },
           "name": "override",
           "children": []

@@ -1660,7 +1660,6 @@ export const canvasReducer = (state: RootState, action: Action) => {
     }
     case CSS_RESET_PROPERTY_OPTION_CLICKED: {
       const { property } = action as ResetPropertyOptionClicked;
-      const node = state.selectedInspectorNodeIds[0];
 
       state = persistRootState(state => {
         return persistCSSProperty(
@@ -1670,7 +1669,7 @@ export const canvasReducer = (state: RootState, action: Action) => {
             state.selectedSyntheticNodeIds[0],
             state.documents
           ),
-          null,
+          state.selectedVariant,
           state
         );
       }, state);
