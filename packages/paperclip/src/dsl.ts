@@ -24,16 +24,34 @@ export const PAPERCLIP_MODULE_VERSION = "0.0.5";
  *-----------------------------------------*/
 
 export enum PCSourceTagNames {
+  // the root node which contains all pc nodes
   MODULE = "module",
+
+  // components are living UI that are exported to application code
   COMPONENT = "component",
+
+  // Style mixins define re-usable groups of styles, and nested styles. Maybe
+  // this later on: https://css-tricks.com/part-theme-explainer/
+  STYLE_MIXIN = "style-mixin",
+
+  // Variables define a single value (like colors) that can be used in any style property (and attributes later on)
   VARIABLE = "variable",
   ELEMENT = "element",
   COMPONENT_INSTANCE = "component-instance",
   VARIANT = "variant",
+
+  // Slots are sections of components where text & elements can be inserted into
   SLOT = "slot",
+
+  // Plugs provide content for slots
   PLUG = "plug",
+
+  // An override is a node that overrides a specific property or style within a variant, or shadow.
   OVERRIDE = "override",
+
   TEXT = "text",
+
+  // TOD
   INHERIT_STYLE = "inherit-style"
 }
 
@@ -123,6 +141,8 @@ export type PCComponent = {
   is?: string;
   children: PCComponentChild[];
 } & PCBaseElement<PCSourceTagNames.COMPONENT>;
+
+export type PCStyleMixin = {} & PCBaseElement<PCSourceTagNames.ATOM>;
 
 export type PCVariant = {
   label?: string;
@@ -258,7 +278,8 @@ export type PCNode =
   | PCVisibleNode
   | PCSlot
   | PCPlug
-  | PCVariable;
+  | PCVariable
+  | PCStyleMixin;
 
 export type PCComputedOverrideMap = {
   [COMPUTED_OVERRIDE_DEFAULT_KEY]: PCComputedOverrideVariantMap;

@@ -27,6 +27,7 @@ import {
   syntheticNodeContextMenuSelectParentClicked,
   syntheticNodeContextMenuSelectSourceNodeClicked,
   syntheticNodeContextMenuConvertToComponentClicked,
+  syntheticNodeContextMenuConvertToStyleMixinClicked,
   syntheticNodeContextMenuRemoveClicked
 } from "../actions";
 import {
@@ -210,11 +211,23 @@ export const createShortcutSaga = ({
                       )
                     }
                   : null,
-                contentNode.name === PCSourceTagNames.COMPONENT
+                contentNode.name === PCSourceTagNames.COMPONENT &&
+                contentNode.id !== sourceNode.id
                   ? {
                       type: ContextMenuOptionType.ITEM,
                       label: "Wrap in Slot",
                       action: syntheticNodeContextMenuWrapInSlotClicked(
+                        syntheticNode
+                      )
+                    }
+                  : null,
+                contentNode.id === sourceNode.id &&
+                (sourceNode.name === PCSourceTagNames.ELEMENT ||
+                  sourceNode.name === PCSourceTagNames.TEXT)
+                  ? {
+                      type: ContextMenuOptionType.ITEM,
+                      label: "Convert to Style Mixin",
+                      action: syntheticNodeContextMenuConvertToStyleMixinClicked(
                         syntheticNode
                       )
                     }
@@ -224,11 +237,15 @@ export const createShortcutSaga = ({
         {
           type: ContextMenuOptionType.GROUP,
           options: [
-            {
-              type: ContextMenuOptionType.ITEM,
-              label: "Select Parent",
-              action: syntheticNodeContextMenuSelectParentClicked(syntheticNode)
-            },
+            contentNode.id !== sourceNode.id
+              ? {
+                  type: ContextMenuOptionType.ITEM,
+                  label: "Select Parent",
+                  action: syntheticNodeContextMenuSelectParentClicked(
+                    syntheticNode
+                  )
+                }
+              : null,
             {
               type: ContextMenuOptionType.ITEM,
               label: "Select Source Node",
@@ -236,7 +253,7 @@ export const createShortcutSaga = ({
                 syntheticNode
               )
             }
-          ]
+          ].filter(Boolean) as ContextMenuItem[]
         }
       ].filter(Boolean) as ContextMenuOption[]);
     }

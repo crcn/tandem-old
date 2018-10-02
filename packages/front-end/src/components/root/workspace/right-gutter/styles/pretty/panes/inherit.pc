@@ -115,6 +115,18 @@
                       "value": true,
                       "name": "override",
                       "children": []
+                    },
+                    {
+                      "id": "406b307b73141",
+                      "variantId": null,
+                      "propertyName": "text",
+                      "targetIdPath": [
+                        "14f530171",
+                        "67e386c7935"
+                      ],
+                      "value": "Atom 1",
+                      "name": "override",
+                      "children": []
                     }
                   ],
                   "metadata": {}
@@ -138,6 +150,18 @@
                       "value": "Component 2",
                       "name": "override",
                       "children": []
+                    },
+                    {
+                      "id": "406b307b335072",
+                      "variantId": null,
+                      "propertyName": "text",
+                      "targetIdPath": [
+                        "14f530171",
+                        "67e386c7935"
+                      ],
+                      "value": "Primary background",
+                      "name": "override",
+                      "children": []
                     }
                   ],
                   "metadata": {}
@@ -159,48 +183,16 @@
                       "value": {},
                       "name": "override",
                       "children": []
-                    }
-                  ],
-                  "metadata": {}
-                },
-                {
-                  "id": "c7da0a1d122720",
-                  "variant": {
-                    "c7da0a1d90996": true
-                  },
-                  "is": "9e4a454812260",
-                  "name": "component-instance",
-                  "attributes": {},
-                  "style": {},
-                  "children": [
+                    },
                     {
-                      "id": "c7da0a1d122721",
-                      "propertyName": "style",
+                      "id": "406b307b624099",
+                      "variantId": null,
+                      "propertyName": "text",
                       "targetIdPath": [
-                        "9e4a454812259"
+                        "14f530171",
+                        "67e386c7935"
                       ],
-                      "value": {},
-                      "name": "override",
-                      "children": []
-                    }
-                  ],
-                  "metadata": {}
-                },
-                {
-                  "id": "9e4a454812261",
-                  "variant": {},
-                  "is": "9e4a454812260",
-                  "name": "component-instance",
-                  "attributes": {},
-                  "style": {},
-                  "children": [
-                    {
-                      "id": "5b95850810210",
-                      "propertyName": "style",
-                      "targetIdPath": [
-                        "9e4a454812259"
-                      ],
-                      "value": {},
+                      "value": "Primary Typography",
                       "name": "override",
                       "children": []
                     }
@@ -236,7 +228,7 @@
                   "id": "308dd31378",
                   "name": "text",
                   "label": "Text",
-                  "value": "extends",
+                  "value": "Mixins",
                   "style": {},
                   "children": [],
                   "metadata": {},

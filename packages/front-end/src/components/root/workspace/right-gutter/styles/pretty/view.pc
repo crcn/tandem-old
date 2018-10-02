@@ -41,19 +41,7 @@
           "is": "9e4a45489771",
           "name": "component-instance",
           "attributes": {},
-          "style": {
-            "font-family": "Helvetica",
-            "display": "none",
-            "flex-direction": "column",
-            "font-size": "10px",
-            "color": "grey",
-            "width": "100%",
-            "padding": "none",
-            "box-sizing": "border-box",
-            "flex": "1",
-            "position": "relative",
-            "height": "auto"
-          },
+          "style": {},
           "children": [
             {
               "id": "9ed18c7c1679",
@@ -83,7 +71,7 @@
               "targetIdPath": [
                 "308dd31378"
               ],
-              "value": "extends",
+              "value": "mixins",
               "name": "override",
               "children": []
             }
