@@ -43,7 +43,7 @@
           "attributes": {},
           "style": {
             "font-family": "Helvetica",
-            "display": "flex",
+            "display": "none",
             "flex-direction": "column",
             "font-size": "10px",
             "color": "grey",
