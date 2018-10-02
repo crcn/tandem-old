@@ -7,6 +7,7 @@ import scrollIntoView from "scroll-into-view-if-needed";
 export type Props = {
   onChangeComplete: any;
   onChange: any;
+  onEscape: any;
 } & BaseNewFileInputProps;
 
 export default (Base: React.ComponentClass<BaseNewFileInputProps>) =>
@@ -21,6 +22,10 @@ export default (Base: React.ComponentClass<BaseNewFileInputProps>) =>
         this.props.onChange((target as HTMLInputElement).value);
         if (key === "Enter") {
           this.props.onChangeComplete((target as HTMLInputElement).value);
+        }
+
+        if (key === "Escape" && this.props.onEscape) {
+          this.props.onEscape();
         }
       });
     };

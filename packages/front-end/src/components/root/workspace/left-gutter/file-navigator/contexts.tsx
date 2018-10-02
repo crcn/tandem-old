@@ -9,6 +9,7 @@ export type FileNavigatorContextProps = {
   dispatch: Dispatch<any>;
   onNewFileChangeComplete: any;
   onNewFileInputChange: any;
+  onNewFileEscape: any;
   activeEditorUri: string;
   editingFileNameUri: string;
 };

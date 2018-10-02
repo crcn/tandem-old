@@ -45,6 +45,7 @@ type ContextProps = {
   newFileInfo: NewFSItemInfo;
   onNewFileChangeComplete: any;
   onNewFileInputChange: any;
+  onNewFileEscape: any;
   active: boolean;
   editingBasename: boolean;
 };
@@ -75,6 +76,7 @@ export default (Base: React.ComponentClass<BaseFileNavigatorLayerProps>) => {
           newFileInfo,
           onNewFileChangeComplete,
           onNewFileInputChange,
+          onNewFileEscape,
           activeEditorUri,
           editingFileNameUri
         }
@@ -86,7 +88,8 @@ export default (Base: React.ComponentClass<BaseFileNavigatorLayerProps>) => {
           active: activeEditorUri === props.item.uri,
           editingBasename: editingFileNameUri === props.item.uri,
           onNewFileChangeComplete,
-          onNewFileInputChange
+          onNewFileInputChange,
+          onNewFileEscape: onNewFileEscape
         };
       }
     ),
@@ -203,6 +206,7 @@ export default (Base: React.ComponentClass<BaseFileNavigatorLayerProps>) => {
             onNewFileChangeComplete,
             editingBasename,
             draggingOver,
+            onNewFileEscape,
             ...rest
           } = this.props;
           const {
@@ -238,6 +242,7 @@ export default (Base: React.ComponentClass<BaseFileNavigatorLayerProps>) => {
               <NewFileInput
                 onChangeComplete={onNewFileChangeComplete}
                 onChange={onNewFileInputChange}
+                onEscape={onNewFileEscape}
               />
             );
           }

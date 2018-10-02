@@ -35,6 +35,7 @@ const generateFileNavigatorContext = memoize(
     selectedFileNodeIds: string[],
     onNewFileChangeComplete: any,
     onNewFileInputChange: any,
+    onNewFileEscape: any,
     activeEditorUri: string,
     editingFileNameUri: string,
     dispatch: Dispatch<any>
@@ -43,6 +44,7 @@ const generateFileNavigatorContext = memoize(
     selectedFileNodeIds,
     onNewFileChangeComplete,
     onNewFileInputChange,
+    onNewFileEscape,
     dispatch,
     activeEditorUri,
     editingFileNameUri
@@ -117,6 +119,9 @@ export default (Base: React.ComponentClass<BaseFileNavigatorProps>) =>
         )
       );
     };
+    onNewFileEscape = () => {
+      this.setState({ ...this.state, newFSItemInfo: null });
+    };
     private setAddingFSItem = (type: AddFileType) => {
       const selectedFileNode: FSItem = getNestedTreeNodeById(
         this.props.selectedFileNodeIds[0],
@@ -152,7 +157,8 @@ export default (Base: React.ComponentClass<BaseFileNavigatorProps>) =>
         onAddFolderButtonClick,
         onNewFileChangeComplete,
         onFileDropdownComplete,
-        onNewFileInputChange
+        onNewFileInputChange,
+        onNewFileEscape
       } = this;
       const { newFSItemInfo } = this.state;
 
@@ -166,6 +172,7 @@ export default (Base: React.ComponentClass<BaseFileNavigatorProps>) =>
             key="new-file-input"
             onChangeComplete={onNewFileChangeComplete}
             onChange={onNewFileInputChange}
+            onEscape={onNewFileEscape}
           />
         );
       }
@@ -177,6 +184,7 @@ export default (Base: React.ComponentClass<BaseFileNavigatorProps>) =>
             selectedFileNodeIds,
             onNewFileChangeComplete,
             onNewFileInputChange,
+            onNewFileEscape,
             activeEditorUri,
             editingFileNameUri,
             dispatch
