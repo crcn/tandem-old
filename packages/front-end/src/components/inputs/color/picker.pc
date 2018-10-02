@@ -1149,6 +1149,42 @@
       },
       "variant": {},
       "inheritStyle": {}
+    },
+    {
+      "id": "f0da9c28444",
+      "label": "Element",
+      "is": "div",
+      "name": "element",
+      "attributes": {},
+      "style": {
+        "box-sizing": "border-box",
+        "display": "block"
+      },
+      "children": [
+        {
+          "id": "f0da9c28613",
+          "label": "Element",
+          "is": "input",
+          "name": "element",
+          "attributes": {
+            "type": "checkbox"
+          },
+          "style": {
+            "box-sizing": "border-box",
+            "display": "block"
+          },
+          "children": [],
+          "metadata": {}
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": -647.867529994581,
+          "top": 363.017851489992,
+          "right": -547.867529994581,
+          "bottom": 463.017851489992
+        }
+      }
     }
   ]
 }

@@ -173,24 +173,20 @@ export default (Base: React.ComponentClass<BaseElementPropertiesProps>) => {
         return null;
       }
       const components = getAllPCComponents(graph);
-      const nativeName = getNativeComponentName(sourceNode, graph);
-
-      let fieldChild;
-      if (nativeName === "input") {
-        fieldChild = (
-          <InputProperties dispatch={dispatch} sourceNode={sourceNode} />
-        );
-      }
 
       return (
         <Base
           {...rest}
-          fieldsProps={{ children: fieldChild || [] }}
-          typeInputProps={{
+          elementTypeInputProps={{
             value: sourceNode.is,
             filterable: true,
             options: getTypeMenuOptions(components),
             onChange: onTypeChange
+          }}
+          inputTagPropertiesProps={{
+            dispatch,
+            graph,
+            sourceNode
           }}
         />
       );

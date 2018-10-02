@@ -267,78 +267,6 @@
                   }
                 },
                 {
-                  "id": "9208d19537680",
-                  "variant": {},
-                  "is": "7149f8192509",
-                  "name": "component-instance",
-                  "attributes": {},
-                  "style": {},
-                  "children": [
-                    {
-                      "id": "9208d19537681",
-                      "propertyName": "text",
-                      "targetIdPath": [
-                        "7149f8192506"
-                      ],
-                      "value": "Type",
-                      "name": "override",
-                      "children": []
-                    },
-                    {
-                      "id": "9208d19537686",
-                      "propertyName": "style",
-                      "targetIdPath": [
-                        "7149f8192506"
-                      ],
-                      "value": {
-                        "opacity": "1"
-                      },
-                      "name": "override",
-                      "children": []
-                    },
-                    {
-                      "slotId": "e73029b416045",
-                      "id": "2c64e9ae28538",
-                      "children": [
-                        {
-                          "id": "9208d19537684",
-                          "variant": {
-                            "69c680a12": true
-                          },
-                          "is": "50e32bec2591",
-                          "name": "component-instance",
-                          "attributes": {},
-                          "style": {},
-                          "children": [
-                            {
-                              "id": "9208d19537685",
-                              "propertyName": "text",
-                              "targetIdPath": [
-                                "67e386c7935"
-                              ],
-                              "value": "img",
-                              "name": "override",
-                              "children": []
-                            }
-                          ],
-                          "metadata": {
-                            "bounds": {
-                              "left": 18,
-                              "top": 339,
-                              "right": 218.8212880775559,
-                              "bottom": 439
-                            }
-                          },
-                          "label": "Type Input"
-                        }
-                      ],
-                      "metadata": {},
-                      "name": "plug"
-                    }
-                  ],
-                  "metadata": {}
-                },
-                {
                   "id": "6e2729d446435",
                   "label": "Fields",
                   "is": "div",
@@ -346,6 +274,74 @@
                   "attributes": {},
                   "style": {},
                   "children": [
+                    {
+                      "id": "842b4e57167073",
+                      "is": "7149f8192509",
+                      "label": "type section",
+                      "name": "component-instance",
+                      "attributes": {},
+                      "style": {},
+                      "children": [
+                        {
+                          "slotId": "e73029b416045",
+                          "id": "842b4e57203338",
+                          "children": [
+                            {
+                              "id": "842b4e57203337",
+                              "is": "50e32bec2591",
+                              "label": "element type input",
+                              "name": "component-instance",
+                              "attributes": {},
+                              "style": {},
+                              "children": [
+                                {
+                                  "id": "842b4e57283230",
+                                  "variantId": null,
+                                  "propertyName": "text",
+                                  "targetIdPath": [
+                                    "67e386c7935"
+                                  ],
+                                  "value": "Input",
+                                  "name": "override",
+                                  "children": []
+                                }
+                              ],
+                              "metadata": {
+                                "bounds": {
+                                  "left": 133,
+                                  "top": 279,
+                                  "right": 334,
+                                  "bottom": 521.2360321797468
+                                }
+                              },
+                              "variant": {}
+                            }
+                          ],
+                          "metadata": {},
+                          "name": "plug"
+                        },
+                        {
+                          "id": "842b4e57208665",
+                          "variantId": null,
+                          "propertyName": "text",
+                          "targetIdPath": [
+                            "7149f8192506"
+                          ],
+                          "value": "Element Type",
+                          "name": "override",
+                          "children": []
+                        }
+                      ],
+                      "metadata": {
+                        "bounds": {
+                          "left": 823.3979390479592,
+                          "top": -131.06259153309617,
+                          "right": 923.3979390479592,
+                          "bottom": -83.47932369981635
+                        }
+                      },
+                      "variant": {}
+                    },
                     {
                       "id": "6e2729d452224",
                       "variant": {},
@@ -355,7 +351,7 @@
                       "style": {},
                       "children": [],
                       "metadata": {},
-                      "label": "Input"
+                      "label": "input tag properties"
                     }
                   ],
                   "metadata": {}
@@ -454,7 +450,7 @@
           "id": "50ae5f7b3",
           "name": "variant",
           "label": "element",
-          "isDefault": false,
+          "isDefault": true,
           "children": [],
           "metadata": {}
         },

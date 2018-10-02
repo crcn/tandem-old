@@ -4,28 +4,65 @@ import {
   SyntheticElement,
   PCComponent,
   PCElement,
-  PCComponentInstanceElement
+  PCComponentInstanceElement,
+  getNativeComponentName,
+  DependencyGraph
 } from "paperclip";
 import { Dispatch } from "redux";
+import { BaseInputPropertiesProps } from "./input.pc";
+import { dropdownMenuOptionFromValue } from "../../../../inputs/dropdown/controller";
 
 export type Props = {
   dispatch: Dispatch<any>;
   sourceNode: PCComponent | PCElement | PCComponentInstanceElement;
+  graph: DependencyGraph;
 };
 
-export default (Base: React.ComponentClass<any>) =>
+const INPUT_TYPE_OPTIONS = [
+  "color",
+  "date",
+  "datetime-local",
+  "email",
+  "month",
+  "number",
+  "range",
+  "search",
+  "tel",
+  "time",
+  "url",
+  "week",
+  "checkbox"
+]
+  .map(dropdownMenuOptionFromValue)
+  .sort((a, b) => {
+    return a < b ? -1 : 1;
+  });
+
+export default (Base: React.ComponentClass<BaseInputPropertiesProps>) =>
   class InputController extends React.PureComponent<Props> {
     onPlaceholderChange = value => {
       this.props.dispatch(attributeChanged("placeholder", value));
     };
+    onInputTypeChange = value => {
+      this.props.dispatch(attributeChanged("type", value));
+    };
     render() {
-      const { sourceNode } = this.props;
-      const { onPlaceholderChange } = this;
+      const { sourceNode, graph } = this.props;
+      const nativeName = getNativeComponentName(sourceNode, graph);
+      if (nativeName !== "input") {
+        return null;
+      }
+      const { onPlaceholderChange, onInputTypeChange } = this;
       return (
         <Base
           placeholderInputProps={{
             value: sourceNode.attributes.placeholder,
             onChange: onPlaceholderChange
+          }}
+          inputTypeInputProps={{
+            options: INPUT_TYPE_OPTIONS,
+            onChangeComplete: onInputTypeChange,
+            value: sourceNode.attributes.type
           }}
         />
       );
