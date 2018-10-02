@@ -13,6 +13,12 @@ export type Props = {
 export default (Base: React.ComponentClass<BaseNewFileInputProps>) =>
   class NewFileInputController extends React.PureComponent<Props> {
     onBlur = (event: React.FocusEvent<any>) => {
+      if (!event.target.value) {
+        if (this.props.onEscape) {
+          this.props.onEscape();
+        }
+        return;
+      }
       this.props.onChangeComplete(event.target.value);
     };
     onKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {

@@ -11,7 +11,8 @@ import {
   getNestedTreeNodeById,
   FSItem,
   getParentTreeNode,
-  EMPTY_ARRAY
+  EMPTY_ARRAY,
+  getFileFromUri
 } from "tandem-common";
 import { Dispatch } from "redux";
 import { FileNavigatorContext, FileNavigatorContextProps } from "./contexts";
@@ -88,13 +89,10 @@ export default (Base: React.ComponentClass<BaseFileNavigatorProps>) =>
     private onFileDropdownComplete = (value: AddFileType) => {
       this.setAddingFSItem(value);
     };
-    onNewFileInputChange = (value: string) => {
-      // TODO - error checking here
-      // console.log("ON NEW FILE INPUT", value);
-    };
+    onNewFileInputChange = (value: string) => {};
     onNewFileChangeComplete = (name: string) => {
       if (!name) {
-        return;
+        return this.onNewFileEscape();
       }
       const { newFSItemInfo } = this.state;
 
@@ -127,10 +125,17 @@ export default (Base: React.ComponentClass<BaseFileNavigatorProps>) =>
         this.props.selectedFileNodeIds[0],
         this.props.rootDirectory
       );
-      const dirFile = selectedFileNode
-        ? selectedFileNode.name === FSItemTagNames.DIRECTORY
-          ? selectedFileNode
-          : getParentTreeNode(selectedFileNode.id, this.props.rootDirectory)
+
+      const activeFileNode: FSItem =
+        this.props.activeEditorUri &&
+        getFileFromUri(this.props.activeEditorUri, this.props.rootDirectory);
+
+      const targetFileNode = activeFileNode || selectedFileNode;
+
+      const dirFile = targetFileNode
+        ? targetFileNode.name === FSItemTagNames.DIRECTORY
+          ? targetFileNode
+          : getParentTreeNode(targetFileNode.id, this.props.rootDirectory)
         : this.props.rootDirectory;
       this.setState({
         ...this.state,

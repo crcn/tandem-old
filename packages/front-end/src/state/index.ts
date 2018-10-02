@@ -858,9 +858,17 @@ export const openEditorFileUri = (
 
   return {
     ...state,
-    hoveringSyntheticNodeIds: [],
-    selectedSyntheticNodeIds: [],
-    hoveringInspectorNodeIds: [],
+    selectedFileNodeIds:
+      state.selectedFileNodeIds.length === 1 &&
+      (getNestedTreeNodeById(
+        state.selectedFileNodeIds[0],
+        state.projectDirectory
+      ) as FSItem).uri === uri
+        ? state.selectedFileNodeIds
+        : EMPTY_ARRAY,
+    hoveringSyntheticNodeIds: EMPTY_ARRAY,
+    selectedSyntheticNodeIds: EMPTY_ARRAY,
+    hoveringInspectorNodeIds: EMPTY_ARRAY,
     activeEditorFilePath: uri,
     editorWindows: editor
       ? arraySplice(
