@@ -619,7 +619,7 @@ export const persistConvertSyntheticVisibleNodeStyleToMixin = <
     variant,
     state.graph,
     {
-      inheritedStyles: true,
+      inheritedStyles: false,
       parentStyles: false,
       overrides: true
     }
@@ -923,10 +923,10 @@ export const persistInheritStyle = <TState extends PCEditorState>(
     },
     (node: PCBaseVisibleNode<any>) => ({
       ...node,
-      inheritStyle: {
+      inheritStyle: omitNull({
         ...(node.inheritStyle || EMPTY_OBJECT),
         ...inheritStyle
-      }
+      })
     })
   )(node, state.documents, state.graph);
 
@@ -1524,13 +1524,11 @@ export const persistRawCSSText = <TState extends PCEditorState>(
   node: SyntheticVisibleNode,
   variant: PCVariant,
   state: TState
-) =>
-  persistSyntheticVisibleNodeStyle(
-    parseStyle(text || ""),
-    node,
-    variant,
-    state
-  );
+) => {
+  const newStyle = parseStyle(text || "");
+
+  return persistSyntheticVisibleNodeStyle(newStyle, node, variant, state);
+};
 
 const omitNull = (object: KeyValue<any>) => {
   return pickBy(object, value => {
@@ -1620,33 +1618,41 @@ export const persistAttribute = <TState extends PCEditorState>(
 };
 
 export const persistSyntheticVisibleNodeStyle = <TState extends PCEditorState>(
-  style: any,
+  newStyle: any,
   node: SyntheticVisibleNode,
   variant: PCVariant,
   state: TState
 ) => {
-  // state = replaceSyntheticVisibleNode({ ...node, style: merge(node.style, style) }, node, state);
-  // TODO - need to move
-  const updatedNode = maybeOverride(
-    PCOverridablePropertyName.STYLE,
-    style,
+  const document = getSyntheticVisibleNodeDocument(node.id, state.documents);
+  const existingStyle = computeStyleInfo(
+    [
+      getSyntheticInspectorNode(
+        node,
+        document,
+        state.sourceNodeInspector,
+        state.graph
+      )
+    ],
+    state.sourceNodeInspector,
     variant,
-    (style, override) => {
-      return overrideKeyValue(
-        node.style,
-        (override && override.value) || EMPTY_OBJECT,
-        style
-      );
-    },
-    sourceNode =>
-      ({
-        ...sourceNode,
-        style
-      } as PCVisibleNode)
-  )(node, state.documents, state.graph);
+    state.graph
+  ).style;
 
-  // todo - need to consider variants here
-  return replaceDependencyGraphPCNode(updatedNode, updatedNode, state);
+  for (const key in newStyle) {
+    if (newStyle[key] === existingStyle[key]) {
+      continue;
+    }
+    state = persistCSSProperty(key, newStyle[key], node, variant, state);
+  }
+
+  for (const key in existingStyle) {
+    if (newStyle[key]) {
+      continue;
+    }
+    state = persistCSSProperty(key, undefined, node, variant, state);
+  }
+
+  return state;
 };
 
 export const canRemoveSyntheticVisibleNode = <TState extends PCEditorState>(
