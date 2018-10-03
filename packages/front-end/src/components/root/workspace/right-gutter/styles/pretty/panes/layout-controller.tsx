@@ -19,6 +19,7 @@ import {
   getPCNodeModule,
   isPCContentNode,
   filterVariablesByType,
+  computeStyleInfo,
   PCNode,
   InspectorNode,
   InspectorTreeNodeName,
@@ -26,10 +27,10 @@ import {
   PCVariable,
   PCVariableType,
   PCSourceTagNames,
-  isTextLikePCNode
+  isTextLikePCNode,
+  ComputedStyleInfo
 } from "paperclip";
 import { Dispatch } from "redux";
-import { ComputedStyleInfo, computeStyleInfo } from "../../state";
 import { mapVariablesToCSSVarDropdownOptions } from "./utils";
 
 export const DISPLAY_MENU_OPTIONS: DropdownMenuOption[] = [
@@ -141,8 +142,6 @@ export default (Base: React.ComponentClass<BaseLayoutProps>) =>
         return null;
       }
       const { onPropertyChange, onPropertyChangeComplete } = this;
-
-      // computeStyleInfo
 
       const node = computedStyleInfo.sourceNodes[0];
       if (!node) {

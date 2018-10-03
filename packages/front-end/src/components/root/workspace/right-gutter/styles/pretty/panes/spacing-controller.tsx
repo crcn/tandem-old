@@ -8,10 +8,9 @@ import {
   dropdownMenuOptionFromValue
 } from "../../../../../../inputs/dropdown/controller";
 import { memoize } from "tandem-common";
-import { SyntheticVisibleNode, SyntheticElement } from "paperclip";
+import { ComputedStyleInfo } from "paperclip";
 import { BaseBoxModelProps } from "./spacing.pc";
 import { Dispatch } from "redux";
-import { ComputedStyleInfo } from "../../state";
 
 const BOX_SIZING_OPTIONS: DropdownMenuOption[] = [
   undefined,

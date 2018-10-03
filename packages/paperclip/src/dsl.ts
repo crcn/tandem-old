@@ -17,6 +17,7 @@ import {
 } from "tandem-common";
 import { uniq, isEqual } from "lodash";
 import { Dependency, DependencyGraph, updateGraphDependency } from "./graph";
+import { getInspectorNodeOverrides } from "./inspector";
 
 export const PAPERCLIP_MODULE_VERSION = "0.0.5";
 
@@ -1090,9 +1091,13 @@ export const getStyleVariableGraphRefs = memoize(
 
     if ((node as PCVisibleNode).inheritStyle) {
       for (const styleMixinId in (node as PCVisibleNode).inheritStyle) {
-        allRefs.push(
-          ...getStyleVariableGraphRefs(getPCNode(styleMixinId, graph), graph)
-        );
+        const styleMixin = getPCNode(styleMixinId, graph);
+
+        // may have been deleted, or is new
+        if (!styleMixin) {
+          continue;
+        }
+        allRefs.push(...getStyleVariableGraphRefs(styleMixin, graph));
       }
     }
 
@@ -1259,4 +1264,12 @@ export const replacePCNode = (
     dependency.uri,
     graph
   );
+};
+
+export type ComputedStyleInfo = {
+  sourceNodes: (PCVisibleNode | PCComponent)[];
+  styleOverridesMap: KeyValue<PCStyleOverride[]>;
+  style: {
+    [identifier: string]: string;
+  };
 };

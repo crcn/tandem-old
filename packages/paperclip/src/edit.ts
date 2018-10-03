@@ -103,6 +103,7 @@ import {
   getInspectorContentNodeContainingChild,
   getInspectorNodeByAssocId
 } from "./inspector";
+import { computeStyleInfo } from "./style";
 
 /*------------------------------------------
  * CONSTANTS
@@ -602,8 +603,22 @@ export const persistConvertSyntheticVisibleNodeStyleToMixin = <
   variant: PCVariant,
   state: TState
 ) => {
-  const style = node.style;
   const sourceNode = getSyntheticSourceNode(node, state.graph) as PCVisibleNode;
+  const document = getSyntheticVisibleNodeDocument(node.id, state.documents);
+  const computedStyle = computeStyleInfo(
+    [
+      getSyntheticInspectorNode(
+        node,
+        document,
+        state.sourceNodeInspector,
+        state.graph
+      )
+    ],
+    state.sourceNodeInspector,
+    variant,
+    state.graph
+  );
+  const style = computedStyle.style;
   let styleMixin: PCStyleMixin;
   const newLabel = `${sourceNode.label} style`;
 

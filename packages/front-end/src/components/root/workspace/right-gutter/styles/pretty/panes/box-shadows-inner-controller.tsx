@@ -1,8 +1,7 @@
 import * as React from "react";
-import { SyntheticElement, PCVariable } from "paperclip";
+import { SyntheticElement, PCVariable, ComputedStyleInfo } from "paperclip";
 import { Dispatch } from "redux";
 import { BaseInnerShadowsProps } from "./box-shadows.pc";
-import { ComputedStyleInfo } from "../../state";
 
 export type Props = {
   globalVariables: PCVariable[];

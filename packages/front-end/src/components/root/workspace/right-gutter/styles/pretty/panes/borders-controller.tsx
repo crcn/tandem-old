@@ -8,11 +8,11 @@ import {
   SyntheticElement,
   PCVariable,
   PCSourceTagNames,
-  isTextLikePCNode
+  isTextLikePCNode,
+  ComputedStyleInfo
 } from "paperclip";
 import { Dispatch } from "redux";
 import { BaseBorderProps } from "./borders.pc";
-import { ComputedStyleInfo } from "../../state";
 
 export type Props = {
   globalVariables: PCVariable[];

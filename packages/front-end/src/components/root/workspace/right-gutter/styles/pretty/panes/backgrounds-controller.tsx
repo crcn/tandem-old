@@ -9,11 +9,11 @@ import {
   SyntheticElement,
   PCVariable,
   PCSourceTagNames,
-  isTextLikePCNode
+  isTextLikePCNode,
+  ComputedStyleInfo
 } from "paperclip";
 import { BaseBackgroundsProps } from "./backgrounds.pc";
 import { BackgroundItem } from "./backgrounds.pc";
-import { ComputedStyleInfo } from "../../state";
 
 const DEFAULT_COLOR = "rgba(200, 200, 200, 1)";
 

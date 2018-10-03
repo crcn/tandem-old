@@ -21,15 +21,13 @@ import {
   PCVariableType,
   PCVisibleNode,
   PCOverride,
+  ComputedStyleInfo,
   InspectorNode,
   PCSourceTagNames,
   isTextLikePCNode
 } from "paperclip";
-import {
-  ComputedStyleInfo,
-  mapPCVariablesToColorSwatchOptions
-} from "../../state";
 import { mapVariablesToCSSVarDropdownOptions } from "./utils";
+import { mapPCVariablesToColorSwatchOptions } from "../../state";
 const {
   TextLeftIcon,
   TextCenterIcon,

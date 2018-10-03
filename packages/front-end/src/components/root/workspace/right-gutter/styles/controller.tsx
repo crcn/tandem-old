@@ -7,10 +7,10 @@ import {
   PCVariant,
   DependencyGraph,
   InspectorNode,
-  PCVariable
+  PCVariable,
+  computeStyleInfo
 } from "paperclip";
 import { FontFamily } from "../../../../../state";
-import { computeStyleInfo } from "./state";
 
 export type Props = {
   visible: boolean;

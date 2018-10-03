@@ -4,9 +4,8 @@ import {
   cssPropertyChangeCompleted
 } from "../../../../../../../actions";
 import { Dispatch } from "redux";
-import { SyntheticElement } from "paperclip";
+import { SyntheticElement, ComputedStyleInfo } from "paperclip";
 import { BaseOpacityPaneProps } from "./opacity.pc";
-import { ComputedStyleInfo } from "../../state";
 
 export type Props = {
   dispatch: Dispatch<any>;

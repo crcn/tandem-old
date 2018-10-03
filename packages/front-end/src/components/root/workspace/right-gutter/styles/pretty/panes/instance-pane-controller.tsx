@@ -20,9 +20,9 @@ import {
   PCOverride,
   PCComponent,
   getPCNodeContentNode,
-  getPCNodeModule
+  getPCNodeModule,
+  ComputedStyleInfo
 } from "paperclip";
-import { ComputedStyleInfo } from "../../state";
 import { dropdownMenuOptionFromValue } from "../../../../../../inputs/dropdown/controller";
 import { cssResetPropertyOptionClicked } from "../../../../../../../actions";
 import {

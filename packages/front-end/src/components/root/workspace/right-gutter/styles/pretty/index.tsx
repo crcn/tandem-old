@@ -7,13 +7,13 @@ import {
   SyntheticDocument,
   PCVariant,
   PCVariable,
+  ComputedStyleInfo,
   getSyntheticSourceNode,
   PCVisibleNode
 } from "paperclip";
 import { BaseElementStylerProps } from "./view.pc";
 import { Dispatch } from "redux";
 import { FontFamily } from "../../../../../../state";
-import { ComputedStyleInfo } from "../state";
 
 export type PrettyPaneOuterProps = {
   syntheticNodes: SyntheticNode[];

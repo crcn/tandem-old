@@ -13,9 +13,9 @@ import {
   SyntheticElement,
   PCVariable,
   PCSourceTagNames,
-  isTextLikePCNode
+  isTextLikePCNode,
+  ComputedStyleInfo
 } from "paperclip";
-import { ComputedStyleInfo } from "../../state";
 
 export type Props = {
   inset?: Boolean;

@@ -3,8 +3,7 @@ import * as cx from "classnames";
 import { memoize } from "tandem-common";
 import { ButtonBarOption } from "../../../../../../inputs/button-bar/controller";
 import { BaseBorderStylesProps } from "./borders.pc";
-import { SyntheticElement, PCVariable } from "paperclip";
-import { ComputedStyleInfo } from "../../state";
+import { SyntheticElement, PCVariable, ComputedStyleInfo } from "paperclip";
 const {
   EmptySquareIcon,
   BordersIcon
