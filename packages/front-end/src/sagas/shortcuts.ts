@@ -226,7 +226,7 @@ export const createShortcutSaga = ({
                   sourceNode.name === PCSourceTagNames.TEXT)
                   ? {
                       type: ContextMenuOptionType.ITEM,
-                      label: "Convert to Style Mixin",
+                      label: "Move Style to Mixin",
                       action: syntheticNodeContextMenuConvertToStyleMixinClicked(
                         syntheticNode
                       )

@@ -40,56 +40,18 @@
           },
           "children": [
             {
-              "id": "308dd31392",
-              "is": "bc641d484882",
+              "id": "899e765b754",
+              "is": "ec3f9b216704",
+              "label": "Color Palette Icon",
               "name": "component-instance",
               "attributes": {},
               "style": {},
               "children": [
                 {
-                  "id": "308dd31393",
-                  "variantId": null,
+                  "id": "899e765b915",
                   "propertyName": "style",
                   "targetIdPath": [
-                    "289d8e3452"
-                  ],
-                  "value": {
-                    "display": "block"
-                  },
-                  "name": "override",
-                  "children": []
-                },
-                {
-                  "id": "308dd31394",
-                  "variantId": null,
-                  "propertyName": "style",
-                  "targetIdPath": [
-                    "289d8e3452"
-                  ],
-                  "value": {
-                    "height": "100%"
-                  },
-                  "name": "override",
-                  "children": []
-                },
-                {
-                  "id": "308dd31395",
-                  "variantId": null,
-                  "propertyName": "style",
-                  "targetIdPath": [
-                    "289d8e3452"
-                  ],
-                  "value": {
-                    "opacity": 0.45
-                  },
-                  "name": "override",
-                  "children": []
-                },
-                {
-                  "id": "37e36bbf215362",
-                  "propertyName": "style",
-                  "targetIdPath": [
-                    "289d8e3453"
+                    "ec3f9b216703"
                   ],
                   "value": {
                     "background": "--24ce1e4d482"
@@ -100,12 +62,13 @@
               ],
               "metadata": {
                 "bounds": {
-                  "left": -1257,
-                  "top": 828,
-                  "right": -857,
-                  "bottom": 1128
+                  "left": -1125,
+                  "top": -666,
+                  "right": -725,
+                  "bottom": -366
                 }
-              }
+              },
+              "variant": {}
             }
           ],
           "metadata": {}

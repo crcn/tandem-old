@@ -99,6 +99,12 @@ export const withNodeDropTarget = (offset: TreeMoveOffset) =>
             offset === TreeMoveOffset.APPEND ||
             offset === TreeMoveOffset.PREPEND
           ) {
+            // do not allow style mixins to have children for now. This may change
+            // later on if ::part functionality is added.
+            if (sourceNode.name === PCSourceTagNames.STYLE_MIXIN) {
+              return false;
+            }
+
             if (
               sourceNode.name === PCSourceTagNames.TEXT ||
               sourceNode.name === PCSourceTagNames.COMPONENT_INSTANCE ||

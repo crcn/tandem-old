@@ -28,7 +28,8 @@ import {
   getPCVariantOverrides,
   extendsComponent,
   getPCNodeModule,
-  PCModule
+  PCModule,
+  PCStyleMixin
 } from "./dsl";
 import { diffTreeNode, patchTreeNode } from "./ot";
 
@@ -189,7 +190,11 @@ export const getSyntheticSourceNode = (
   node: SyntheticVisibleNode | SyntheticDocument,
   graph: DependencyGraph
 ) =>
-  getPCNode(node.sourceNodeId, graph) as PCVisibleNode | PCComponent | PCModule;
+  getPCNode(node.sourceNodeId, graph) as
+    | PCVisibleNode
+    | PCComponent
+    | PCModule
+    | PCStyleMixin;
 
 export const getSyntheticSourceFrame = (
   node: SyntheticVisibleNode,

@@ -22,7 +22,8 @@ import {
   PCVisibleNode,
   PCOverride,
   InspectorNode,
-  PCSourceTagNames
+  PCSourceTagNames,
+  isTextLikePCNode
 } from "paperclip";
 import {
   ComputedStyleInfo,
@@ -103,7 +104,7 @@ export default (Base: React.ComponentClass<BaseTypographProps>) =>
       const { sourceNodes } = computedStyleInfo;
 
       // Typography pane is only available to text nodes to prevent cascading styles
-      if (sourceNodes[0].name !== PCSourceTagNames.TEXT) {
+      if (!isTextLikePCNode(sourceNodes[0])) {
         return null;
       }
       const fontVariables = filterVariablesByType(

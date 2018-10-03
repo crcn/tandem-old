@@ -9,7 +9,12 @@ import {
 } from "../../../../../../../actions";
 import { BaseBoxShadowsProps } from "./box-shadows.pc";
 import { Dispatch } from "redux";
-import { SyntheticElement, PCVariable, PCSourceTagNames } from "paperclip";
+import {
+  SyntheticElement,
+  PCVariable,
+  PCSourceTagNames,
+  isTextLikePCNode
+} from "paperclip";
 import { ComputedStyleInfo } from "../../state";
 
 export type Props = {
@@ -119,7 +124,7 @@ export default (Base: React.ComponentClass<BaseBoxShadowsProps>) =>
 
       const { sourceNodes } = computedStyleInfo;
 
-      if (sourceNodes[0].name === PCSourceTagNames.TEXT) {
+      if (isTextLikePCNode(sourceNodes[0])) {
         return null;
       }
 

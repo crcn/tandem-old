@@ -380,6 +380,9 @@ export default (Base: React.ComponentClass<BaseNodeLayerProps>) => {
                       text:
                         isSourceRep &&
                         assocSourceNodeName === PCSourceTagNames.TEXT,
+                      styleMixin:
+                        isSourceRep &&
+                        assocSourceNodeName === PCSourceTagNames.STYLE_MIXIN,
                       expanded,
                       selected: isSelected,
                       slot:

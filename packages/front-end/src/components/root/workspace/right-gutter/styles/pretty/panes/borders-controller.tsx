@@ -4,7 +4,12 @@ import {
   cssPropertyChanged
 } from "../../../../../../../actions";
 import { memoize } from "tandem-common";
-import { SyntheticElement, PCVariable, PCSourceTagNames } from "paperclip";
+import {
+  SyntheticElement,
+  PCVariable,
+  PCSourceTagNames,
+  isTextLikePCNode
+} from "paperclip";
 import { Dispatch } from "redux";
 import { BaseBorderProps } from "./borders.pc";
 import { ComputedStyleInfo } from "../../state";
@@ -29,7 +34,8 @@ export default (Base: React.ComponentClass<BaseBorderProps>) =>
       const { sourceNodes } = computedStyleInfo;
 
       // Typography pane is only available to text nodes to prevent cascading styles
-      if (sourceNodes[0].name === PCSourceTagNames.TEXT) {
+
+      if (isTextLikePCNode(sourceNodes[0])) {
         return null;
       }
 

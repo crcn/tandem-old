@@ -169,7 +169,8 @@ import {
   CSS_RESET_PROPERTY_OPTION_CLICKED,
   ResetPropertyOptionClicked,
   EXPORT_NAME_CHANGED,
-  ExportNameChanged
+  ExportNameChanged,
+  SYNTHETIC_NODE_CONTEXT_MENU_CONVERT_TO_STYLE_MIXIN_CLICKED
 } from "../actions";
 import {
   queueOpenFile,
@@ -321,7 +322,8 @@ import {
   getInspectorInstanceShadowContentNode,
   getInspectorInstanceShadow,
   updateAlts,
-  getDerrivedPCLabel
+  getDerrivedPCLabel,
+  persistConvertSyntheticVisibleNodeStyleToMixin
 } from "paperclip";
 import {
   roundBounds,
@@ -679,12 +681,6 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
       };
       return state;
     }
-    // case FILE_NAVIGATOR_NEW_FILE_CLICKED: {
-    //   return setInsertFile(InsertFileType.FILE, state);
-    // }
-    // case FILE_NAVIGATOR_NEW_DIRECTORY_CLICKED: {
-    //   return setInsertFile(InsertFileType.DIRECTORY, state);
-    // }
 
     case CANVAS_MOUNTED: {
       const { fileUri, element } = action as CanvasMounted;
@@ -2288,8 +2284,13 @@ const getDragFilter = (item: any, state: RootState) => {
 const getInsertFilter = (state: RootState) => {
   let filter = (node: SyntheticVisibleNode) => {
     const document = getSyntheticVisibleNodeDocument(node.id, state.documents);
-    return Boolean(
-      getInsertableSourceNodeFromSyntheticNode(node, document, state.graph)
+    const sourceNode = getSyntheticSourceNode(node, state.graph);
+
+    return (
+      sourceNode.name !== PCSourceTagNames.STYLE_MIXIN &&
+      Boolean(
+        getInsertableSourceNodeFromSyntheticNode(node, document, state.graph)
+      )
     );
   };
 
@@ -2537,6 +2538,12 @@ const shortcutReducer = (state: RootState, action: Action): RootState => {
     case SYNTHETIC_NODE_CONTEXT_MENU_CONVERT_TO_COMPONENT_CLICKED: {
       const { item } = action as SyntheticNodeContextMenuAction;
       state = convertSyntheticNodeToComponent(item, state);
+      return state;
+    }
+
+    case SYNTHETIC_NODE_CONTEXT_MENU_CONVERT_TO_STYLE_MIXIN_CLICKED: {
+      const { item } = action as SyntheticNodeContextMenuAction;
+      state = convertSyntheticStyleToMixin(item, state);
       return state;
     }
 
@@ -2801,6 +2808,37 @@ const normalizePoint = (translate: Translate, point: Point) => {
 
 const normalizeZoom = zoom => {
   return zoom < 1 ? 1 / Math.round(1 / zoom) : Math.round(zoom);
+};
+
+const convertSyntheticStyleToMixin = (
+  node: SyntheticVisibleNode,
+  state: RootState
+) => {
+  const oldState = state;
+
+  state = persistRootState(
+    state =>
+      persistConvertSyntheticVisibleNodeStyleToMixin(
+        node,
+        state.selectedVariant,
+        state
+      ),
+    state
+  );
+
+  state = setSelectedSyntheticVisibleNodeIds(state);
+
+  state = queueSelectInsertedSyntheticVisibleNodes(
+    oldState,
+    state,
+    getSyntheticDocumentByDependencyUri(
+      state.activeEditorFilePath,
+      state.documents,
+      state.graph
+    )
+  );
+
+  return state;
 };
 
 const convertSyntheticNodeToComponent = (

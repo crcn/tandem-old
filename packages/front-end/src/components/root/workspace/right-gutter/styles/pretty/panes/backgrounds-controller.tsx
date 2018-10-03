@@ -5,7 +5,12 @@ import {
 } from "../../../../../../../actions";
 import { arraySplice } from "tandem-common";
 import { Dispatch } from "redux";
-import { SyntheticElement, PCVariable, PCSourceTagNames } from "paperclip";
+import {
+  SyntheticElement,
+  PCVariable,
+  PCSourceTagNames,
+  isTextLikePCNode
+} from "paperclip";
 import { BaseBackgroundsProps } from "./backgrounds.pc";
 import { BackgroundItem } from "./backgrounds.pc";
 import { ComputedStyleInfo } from "../../state";
@@ -57,7 +62,7 @@ export default (Base: React.ComponentClass<BaseBackgroundsProps>) =>
       const { sourceNodes } = computedStyleInfo;
 
       // Typography pane is only available to text nodes to prevent cascading styles
-      if (sourceNodes[0].name === PCSourceTagNames.TEXT) {
+      if (isTextLikePCNode(sourceNodes[0])) {
         return null;
       }
 

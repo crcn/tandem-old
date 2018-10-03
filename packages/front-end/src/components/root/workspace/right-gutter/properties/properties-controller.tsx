@@ -5,7 +5,10 @@ import {
   getPCNode,
   DependencyGraph,
   SyntheticElement,
-  PCVisibleNode
+  PCVisibleNode,
+  isPCContentNode,
+  isElementLikePCNode,
+  isTextLikePCNode
 } from "paperclip";
 import { BasePropertiesProps } from "./view.pc";
 import { InspectorNode } from "paperclip";
@@ -53,8 +56,9 @@ export default (Base: React.ComponentClass<BasePropertiesProps>) =>
           variant={cx({
             slot: sourceNode.name === PCSourceTagNames.SLOT,
             component: sourceNode.name === PCSourceTagNames.COMPONENT,
-            text: sourceNode.name === PCSourceTagNames.TEXT,
-            element: sourceNode.name !== PCSourceTagNames.TEXT
+            text: isTextLikePCNode(sourceNode),
+            element: isElementLikePCNode(sourceNode),
+            contentNode: isPCContentNode(sourceNode, graph)
           })}
           framePaneProps={{
             dispatch,

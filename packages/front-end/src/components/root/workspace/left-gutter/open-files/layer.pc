@@ -47,7 +47,9 @@
       "controllers": [
         "./layer-controller.tsx"
       ],
-      "variant": {}
+      "variant": {
+        "d3bf183b30": false
+      }
     },
     {
       "id": "49fa9371788676",
@@ -211,6 +213,26 @@
               },
               "children": [
                 {
+                  "id": "ec3f9b2111374",
+                  "is": "ec3f9b216704",
+                  "label": "Color Palette Icon",
+                  "name": "component-instance",
+                  "attributes": {},
+                  "style": {
+                    "display": "none"
+                  },
+                  "children": [],
+                  "metadata": {
+                    "bounds": {
+                      "left": 409.62008535856904,
+                      "top": 360.00145686527543,
+                      "right": 809.620085358569,
+                      "bottom": 660.0014568652755
+                    }
+                  },
+                  "variant": {}
+                },
+                {
                   "id": "7982ea83503",
                   "is": "5a14767c667",
                   "name": "component-instance",
@@ -231,7 +253,8 @@
                       "bottom": 391
                     }
                   },
-                  "variant": {}
+                  "variant": {},
+                  "label": "Folder Icon"
                 },
                 {
                   "id": "e4317da214899",
@@ -265,7 +288,8 @@
                       "right": 728.3086321774881,
                       "bottom": 496.0777278837443
                     }
-                  }
+                  },
+                  "label": "Dotted box icon"
                 },
                 {
                   "id": "e4317da22959",
@@ -298,7 +322,8 @@
                       "right": 398.3344974153082,
                       "bottom": 296.0008730614811
                     }
-                  }
+                  },
+                  "label": "Replace Icon"
                 },
                 {
                   "id": "a6fd80838",
@@ -332,7 +357,8 @@
                       "right": 1118.6352174637805,
                       "bottom": 495.6958179138901
                     }
-                  }
+                  },
+                  "label": "File Icon"
                 },
                 {
                   "id": "fe256b411",
@@ -581,14 +607,6 @@
           "metadata": {}
         },
         {
-          "id": "d3bf183b30",
-          "name": "variant",
-          "label": "text",
-          "isDefault": false,
-          "children": [],
-          "metadata": {}
-        },
-        {
           "id": "d3bf183b33",
           "variantId": "d3bf183b25",
           "propertyName": "style",
@@ -830,7 +848,6 @@
             "d3bf183b19"
           ],
           "value": {
-            "display": "block",
             "opacity": 0
           },
           "name": "override",
@@ -904,6 +921,104 @@
           ],
           "value": {
             "display": "none"
+          },
+          "name": "override",
+          "children": []
+        },
+        {
+          "id": "ec3f9b2120158",
+          "variantId": "ec3f9b2118805",
+          "propertyName": "style",
+          "targetIdPath": [
+            "ec3f9b2111374"
+          ],
+          "value": {
+            "display": "block",
+            "height": "10px"
+          },
+          "name": "override",
+          "children": []
+        },
+        {
+          "id": "ec3f9b2127595",
+          "name": "variant",
+          "label": "style mixin",
+          "isDefault": false,
+          "children": [],
+          "metadata": {}
+        },
+        {
+          "id": "ec3f9b2128272",
+          "variantId": "ec3f9b2127595",
+          "propertyName": "style",
+          "targetIdPath": [
+            "ec3f9b2111374"
+          ],
+          "value": {
+            "display": "block",
+            "height": "1em",
+            "position": "relative",
+            "top": "2px"
+          },
+          "name": "override",
+          "children": []
+        },
+        {
+          "id": "ce14f3ea3162",
+          "variantId": "ec3f9b2127595",
+          "propertyName": "style",
+          "targetIdPath": [
+            "d3bf183b16"
+          ],
+          "value": {
+            "height": "unset"
+          },
+          "name": "override",
+          "children": []
+        },
+        {
+          "id": "3106b4c2936",
+          "variantId": "ec3f9b2127595",
+          "propertyName": "style",
+          "targetIdPath": [
+            "d3bf183b19"
+          ],
+          "value": {
+            "opacity": 0
+          },
+          "name": "override",
+          "children": []
+        },
+        {
+          "id": "2b1d356f6469",
+          "name": "variant",
+          "label": "text",
+          "isDefault": true,
+          "children": [],
+          "metadata": {}
+        },
+        {
+          "id": "2b1d356f6925",
+          "variantId": "2b1d356f6469",
+          "propertyName": "style",
+          "targetIdPath": [
+            "d3bf183b19"
+          ],
+          "value": {
+            "opacity": 0
+          },
+          "name": "override",
+          "children": []
+        },
+        {
+          "id": "2b1d356f7381",
+          "variantId": "2b1d356f6469",
+          "propertyName": "style",
+          "targetIdPath": [
+            "d3bf183b31"
+          ],
+          "value": {
+            "display": "block"
           },
           "name": "override",
           "children": []

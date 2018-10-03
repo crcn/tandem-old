@@ -25,7 +25,8 @@ import {
   PCVariant,
   computeStyleWithVars,
   PCOverride,
-  PCVariable
+  PCVariable,
+  PCStyleMixin
 } from "./dsl";
 import { uniq } from "lodash";
 import { SyntheticElement } from "./synthetic";
@@ -76,7 +77,7 @@ export const translateModuleToVanilla = memoize(
     return module.children
       .filter(child => child.name !== PCSourceTagNames.VARIABLE)
       .map(
-        (child: PCComponent | PCVisibleNode) =>
+        (child: PCComponent | PCVisibleNode | PCStyleMixin) =>
           `exports._${child.id} = ${translateContentNode(
             child,
             componentRefMap,
@@ -89,7 +90,7 @@ export const translateModuleToVanilla = memoize(
 
 const translateContentNode = memoize(
   (
-    node: PCComponent | PCVisibleNode,
+    node: PCComponent | PCVisibleNode | PCStyleMixin,
     componentRefMap: KeyValue<PCComponent>,
     varMap: KeyValue<PCVariable>
   ) => {
@@ -117,7 +118,10 @@ const isBaseElement = (node: PCNode): node is PCBaseElement<any> =>
   node.name === PCSourceTagNames.COMPONENT_INSTANCE;
 
 const translateVisibleNode = memoize(
-  (node: PCComponent | PCVisibleNode, isContentNode?: boolean) => {
+  (
+    node: PCComponent | PCStyleMixin | PCVisibleNode,
+    isContentNode?: boolean
+  ) => {
     if (isBaseElement(node)) {
       if (extendsComponent(node)) {
         return `components._${node.is}(${
@@ -161,10 +165,41 @@ const translateVisibleNode = memoize(
       value: overrides._${node.id}Value || ${JSON.stringify(node.value)},
       children: EMPTY_ARRAY
     }`;
+    } else if (node.name === PCSourceTagNames.STYLE_MIXIN) {
+      // note that element style mixins have children here since they _may_ be used to style "parts"
+      // in the future.
+      if (node.targetType === PCSourceTagNames.ELEMENT) {
+        return `{
+          id: generateUID(),
+          sourceNodeId: "${node.id}",
+          style: ${translateDynamicStyle(node, isContentNode)},
+          instancePath: childInstancePath,
+          metadata: EMPTY_OBJECT,
+          name: "element",
+          attributes: EMPTY_OBJECT,
+          children: [${node.children
+            .map(translateElementChild)
+            .filter(Boolean)
+            .join(",")}]
+        }`;
+      } else if (node.targetType === PCSourceTagNames.TEXT) {
+        return `{
+          id: generateUID(),
+          sourceNodeId: "${node.id}",
+          style: ${translateDynamicStyle(node, isContentNode)},
+          instancePath: childInstancePath,
+          metadata: EMPTY_OBJECT,
+          name: "text",
+          value: ${JSON.stringify(node.value)},
+          children: EMPTY_ARRAY
+        }`;
+      }
     }
   }
 );
-const translateVariants = (contentNode: PCVisibleNode | PCComponent) => {
+const translateVariants = (
+  contentNode: PCVisibleNode | PCComponent | PCStyleMixin
+) => {
   const variants = (getTreeNodesByName(
     PCSourceTagNames.VARIANT,
     contentNode
@@ -219,7 +254,7 @@ const translateDynamicAttributes = (
 };
 
 const translateDynamicStyle = (
-  node: PCBaseElement<any> | PCTextNode,
+  node: PCBaseElement<any> | PCTextNode | PCStyleMixin,
   isContentNode: boolean
 ) => {
   if (isContentNode) {
@@ -375,7 +410,11 @@ const translateStaticNodeProps = memoize(
       buffer += `};\n`;
     }
 
-    if (isBaseElement(node) || node.name === PCSourceTagNames.TEXT) {
+    if (
+      isBaseElement(node) ||
+      node.name === PCSourceTagNames.TEXT ||
+      node.name === PCSourceTagNames.STYLE_MIXIN
+    ) {
       buffer += `var _${node.id}Style = ${JSON.stringify(
         computePCNodeStyle(node, componentRefMap, varMap)
       )};`;

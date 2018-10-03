@@ -62,7 +62,11 @@ import {
   PCVariableType,
   isVoidTagName,
   PCSlot,
-  getDerrivedPCLabel
+  getDerrivedPCLabel,
+  PCTextStyleMixin,
+  createPCTextStyleMixin,
+  createPCElementStyleMixin,
+  PCStyleMixin
 } from "./dsl";
 import {
   SyntheticVisibleNode,
@@ -587,6 +591,54 @@ export const persistConvertNodeToComponent = <TState extends PCEditorState>(
   );
 
   state = replaceDependencyGraphPCNode(componentInstance, sourceNode, state);
+
+  return state;
+};
+
+export const persistConvertSyntheticVisibleNodeStyleToMixin = <
+  TState extends PCEditorState
+>(
+  node: SyntheticVisibleNode,
+  variant: PCVariant,
+  state: TState
+) => {
+  const style = node.style;
+  const sourceNode = getSyntheticSourceNode(node, state.graph) as PCVisibleNode;
+  let styleMixin: PCStyleMixin;
+  const newLabel = `${sourceNode.label} style`;
+
+  if (sourceNode.name === PCSourceTagNames.TEXT) {
+    styleMixin = createPCTextStyleMixin(
+      style,
+      (node as SyntheticTextNode).value,
+      newLabel
+    );
+  } else if (sourceNode.name === PCSourceTagNames.ELEMENT) {
+    styleMixin = createPCElementStyleMixin(style, newLabel);
+  }
+  const module = getPCNodeModule(sourceNode.id, state.graph);
+  state = replaceDependencyGraphPCNode(
+    appendChildNode(addBoundsMetadata(node, styleMixin, state), module),
+    module,
+    state
+  );
+
+  // remove styles from synthetic node since they've been moved to a mixin
+  for (const key in style) {
+    state = persistCSSProperty(key, undefined, node, variant, state);
+  }
+
+  state = persistInheritStyle(
+    {
+      [styleMixin.id]: {
+        // TODO - this needs to be part of the variant
+        priority: Object.keys(sourceNode.inheritStyle || EMPTY_OBJECT).length
+      }
+    },
+    node,
+    variant,
+    state
+  );
 
   return state;
 };
@@ -1415,9 +1467,10 @@ export const persistSyntheticNodeMetadata = <TState extends PCEditorState>(
 
 const addBoundsMetadata = (
   node: SyntheticVisibleNode,
-  child: PCVisibleNode | PCComponent,
+  child: PCVisibleNode | PCComponent | PCStyleMixin,
   state: PCEditorState
 ) => {
+  const document = getSyntheticVisibleNodeDocument(node.id, state.documents);
   const frame = getSyntheticVisibleNodeFrame(node, state.frames);
   const syntheticNodeBounds = getSyntheticVisibleNodeRelativeBounds(
     node,
@@ -1428,7 +1481,9 @@ const addBoundsMetadata = (
   let bestBounds = syntheticNodeBounds
     ? moveBounds(syntheticNodeBounds, frame.bounds)
     : DEFAULT_FRAME_BOUNDS;
-  bestBounds = moveBoundsToEmptySpace(bestBounds, state.frames);
+
+  const documentFrames = getSyntheticDocumentFrames(document, state.frames);
+  bestBounds = moveBoundsToEmptySpace(bestBounds, documentFrames);
 
   return updatePCNodeMetadata(
     {

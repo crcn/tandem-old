@@ -7,9 +7,12 @@ import {
   getSyntheticSourceNode,
   DependencyGraph,
   getPCNode,
-  getAllPCComponents,
   SyntheticElement,
-  PCVisibleNode
+  PCVisibleNode,
+  getAllStyleMixins,
+  PCSourceTagNames,
+  PCComponent,
+  PCStyleMixin
 } from "paperclip";
 import {
   inheritPaneAddButtonClick,
@@ -24,29 +27,27 @@ export type Props = {
 };
 
 type State = {
-  selectedInheritItemComponentId: string;
+  selectedStyleMixinId: string;
 };
 
 export default (Base: React.ComponentClass<BaseInheritProps>) => {
   return class InheritController extends React.PureComponent<Props, State> {
     constructor(props) {
       super(props);
-      this.state = { selectedInheritItemComponentId: null };
+      this.state = { selectedStyleMixinId: null };
     }
     onAddButtonClick = () => {
       this.props.dispatch(inheritPaneAddButtonClick());
     };
     onRemoveButtonClick = () => {
       this.props.dispatch(
-        inheritPaneRemoveButtonClick(this.state.selectedInheritItemComponentId)
+        inheritPaneRemoveButtonClick(this.state.selectedStyleMixinId)
       );
     };
-    onInheritItemClick = (componentId: string) => {
+    onInheritItemClick = (styleMixinId: string) => {
       this.setState({
-        selectedInheritItemComponentId:
-          this.state.selectedInheritItemComponentId === componentId
-            ? null
-            : componentId
+        selectedStyleMixinId:
+          this.state.selectedStyleMixinId === styleMixinId ? null : styleMixinId
       });
     };
     render() {
@@ -55,14 +56,26 @@ export default (Base: React.ComponentClass<BaseInheritProps>) => {
         onRemoveButtonClick,
         onInheritItemClick
       } = this;
-      const { selectedInheritItemComponentId } = this.state;
+      const { selectedStyleMixinId } = this.state;
       const { selectedNodes, dispatch, graph } = this.props;
       const node = selectedNodes[0];
-      const sourceNode = getSyntheticSourceNode(node, graph) as PCVisibleNode;
+      const sourceNode = getSyntheticSourceNode(node, graph) as
+        | PCVisibleNode
+        | PCComponent
+        | PCStyleMixin;
 
-      const hasItemSelected = Boolean(selectedInheritItemComponentId);
+      const hasItemSelected = Boolean(selectedStyleMixinId);
 
-      const allComponents = getAllPCComponents(graph);
+      const allStyleMixins = getAllStyleMixins(
+        graph,
+        sourceNode.name === PCSourceTagNames.COMPONENT ||
+        sourceNode.name === PCSourceTagNames.COMPONENT_INSTANCE ||
+        sourceNode.name === PCSourceTagNames.ELEMENT ||
+        (sourceNode.name === PCSourceTagNames.STYLE_MIXIN &&
+          sourceNode.targetType === PCSourceTagNames.ELEMENT)
+          ? PCSourceTagNames.ELEMENT
+          : PCSourceTagNames.TEXT
+      );
 
       const items = Object.keys(sourceNode.inheritStyle || EMPTY_OBJECT)
         .filter(k => Boolean(sourceNode.inheritStyle[k]))
@@ -72,18 +85,18 @@ export default (Base: React.ComponentClass<BaseInheritProps>) => {
             ? -1
             : 1;
         })
-        .map((componentId, i) => {
+        .map((styleMixinId, i) => {
           return (
             <InheritItem
               variant={cx({
                 alt: Boolean(i % 2)
               })}
-              key={componentId}
+              key={styleMixinId}
               onClick={onInheritItemClick}
-              selected={selectedInheritItemComponentId === componentId}
-              componentId={componentId}
-              component={getPCNode(componentId, graph)}
-              allComponents={allComponents}
+              selected={selectedStyleMixinId === styleMixinId}
+              styleMixinId={styleMixinId}
+              styleMixin={getPCNode(styleMixinId, graph)}
+              allStyleMixins={allStyleMixins}
               dispatch={dispatch}
             />
           );
