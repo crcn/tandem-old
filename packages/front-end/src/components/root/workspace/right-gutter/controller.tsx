@@ -29,7 +29,7 @@ const getSelectedInspectorNodes = memoize(
   }
 );
 
-const TAB_NAMES = ["styles", "properties", "variables"];
+const TAB_NAMES = ["styles", "properties"];
 const INSPECTOR_NODE_TAB_NAMES = ["properties"];
 
 export type Props = {
@@ -78,7 +78,8 @@ export default (Base: React.ComponentClass<BaseRightGutterProps>) =>
             root.documents
           )
         : null;
-      const documentColors = getSyntheticNodeStyleColors(syntheticDocument);
+      const documentColors =
+        syntheticDocument && getSyntheticNodeStyleColors(syntheticDocument);
 
       const selectedSyntheticNodes = hasSyntheticNodes
         ? getSelectedSyntheticNodes(
@@ -111,8 +112,7 @@ export default (Base: React.ComponentClass<BaseRightGutterProps>) =>
           {...rest}
           variant={cx({
             stylesTab: availableCurrentTab === TAB_NAMES[0],
-            propertiesTab: availableCurrentTab === TAB_NAMES[1],
-            variablesTab: availableCurrentTab === TAB_NAMES[2]
+            propertiesTab: availableCurrentTab === TAB_NAMES[1]
           })}
           variablesTabProps={{
             dispatch,

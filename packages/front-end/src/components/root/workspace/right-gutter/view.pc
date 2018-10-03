@@ -410,7 +410,8 @@
                 "width": "100%",
                 "padding": "8px",
                 "font-size": "9px",
-                "cursor": "pointer"
+                "cursor": "pointer",
+                "display": "none"
               },
               "children": [
                 {
