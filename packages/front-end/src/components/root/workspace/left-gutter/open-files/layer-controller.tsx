@@ -203,10 +203,10 @@ export default (Base: React.ComponentClass<BaseNodeLayerProps>) => {
           const label = String((event.target as any).value || "").trim();
 
           // labels SHOULD NOT be undefined
+          this.setState({ ...this.state, editingLabel: false });
           if (!label) {
             return;
           }
-          this.setState({ ...this.state, editingLabel: false });
           this.props.dispatch(
             sourceInspectorLayerLabelChanged(
               this.props.inspectorNode,
@@ -361,7 +361,8 @@ export default (Base: React.ComponentClass<BaseNodeLayerProps>) => {
                     onContextMenu={onLabelRightClick}
                     labelInputProps={{
                       onKeyDown: onLabelInputKeyDown,
-                      onBlur: onLabelInputBlur
+                      onBlur: onLabelInputBlur,
+                      defaultValue: label
                     }}
                     variant={cx({
                       editingLabel: editingLabel,
