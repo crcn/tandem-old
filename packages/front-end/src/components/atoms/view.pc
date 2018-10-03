@@ -6,7 +6,7 @@
     {
       "id": "33b5126b196",
       "name": "style-mixin",
-      "label": "Label style",
+      "label": "label font",
       "style": {
         "font-family": "Avenir Next",
         "color": "rgba(230, 230, 230, 1)",
@@ -28,6 +28,93 @@
           "top": 153,
           "right": 595,
           "bottom": 171
+        }
+      }
+    },
+    {
+      "id": "dc3b39eb1275",
+      "name": "style-mixin",
+      "label": "Base font",
+      "style": {
+        "font-family": "Avenir Next",
+        "color": "rgba(136, 136, 136, 1)"
+      },
+      "value": "Base font",
+      "targetType": "text",
+      "children": [],
+      "metadata": {
+        "bounds": {
+          "left": 606,
+          "top": 95,
+          "right": 706,
+          "bottom": 138
+        }
+      }
+    },
+    {
+      "id": "dc3b39eb1627",
+      "name": "style-mixin",
+      "label": "Header font style",
+      "style": {
+        "text-transform": "uppercase",
+        "font-size": "0.8em",
+        "color": "rgba(180, 180, 180, 1)"
+      },
+      "value": "header",
+      "targetType": "text",
+      "children": [],
+      "metadata": {
+        "bounds": {
+          "left": 734,
+          "top": 98,
+          "right": 834,
+          "bottom": 198
+        }
+      },
+      "inheritStyle": {
+        "dc3b39eb1275": {
+          "priority": 0
+        }
+      }
+    },
+    {
+      "id": "aba9fbe4695",
+      "name": "text",
+      "label": "Text",
+      "value": "Click to edit",
+      "style": {},
+      "children": [],
+      "metadata": {
+        "bounds": {
+          "left": 531.5,
+          "top": 258.5,
+          "right": 631.5,
+          "bottom": 358.5
+        }
+      },
+      "inheritStyle": {
+        "aba9fbe41197": {
+          "priority": 0
+        }
+      }
+    },
+    {
+      "id": "aba9fbe41197",
+      "name": "style-mixin",
+      "label": "Text style",
+      "style": {
+        "font-family": "Avenir",
+        "color": "rgba(255, 77, 77, 1)"
+      },
+      "value": "Click to edit",
+      "targetType": "text",
+      "children": [],
+      "metadata": {
+        "bounds": {
+          "left": 711,
+          "top": 247,
+          "right": 811,
+          "bottom": 347
         }
       }
     }

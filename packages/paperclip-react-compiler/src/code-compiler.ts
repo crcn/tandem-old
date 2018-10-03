@@ -288,8 +288,8 @@ const getInheritedStyle = (
     const compStyle =
       computed[styleMixinId] ||
       (computed[styleMixinId] = {
-        ...styleMixin.style,
-        ...getInheritedStyle(styleMixin.inheritStyle, context, computed)
+        ...getInheritedStyle(styleMixin.inheritStyle, context, computed),
+        ...styleMixin.style
       });
     return { ...style, ...compStyle };
   }, {});

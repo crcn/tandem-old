@@ -626,10 +626,15 @@ export const persistConvertSyntheticVisibleNodeStyleToMixin = <
     styleMixin = createPCTextStyleMixin(
       style,
       (node as SyntheticTextNode).value,
+      sourceNode.inheritStyle,
       newLabel
     );
   } else if (sourceNode.name === PCSourceTagNames.ELEMENT) {
-    styleMixin = createPCElementStyleMixin(style, newLabel);
+    styleMixin = createPCElementStyleMixin(
+      style,
+      sourceNode.inheritStyle,
+      newLabel
+    );
   }
   const module = getPCNodeModule(sourceNode.id, state.graph);
   state = replaceDependencyGraphPCNode(

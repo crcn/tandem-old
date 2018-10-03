@@ -375,12 +375,14 @@ export const getDerrivedPCLabel = (
 export const createPCTextStyleMixin = (
   style: KeyValue<string>,
   textValue: string,
+  inheritStyle?: InheritStyle,
   label?: string
 ): PCTextStyleMixin => ({
   id: generateUID(),
   name: PCSourceTagNames.STYLE_MIXIN,
   label,
   style,
+  inheritStyle,
   value: textValue,
   targetType: PCSourceTagNames.TEXT,
   children: EMPTY_ARRAY,
@@ -389,12 +391,14 @@ export const createPCTextStyleMixin = (
 
 export const createPCElementStyleMixin = (
   style: KeyValue<string>,
+  inheritStyle?: InheritStyle,
   label?: string
 ): PCElementStyleMixin => ({
   id: generateUID(),
   label,
   name: PCSourceTagNames.STYLE_MIXIN,
   style,
+  inheritStyle,
   targetType: PCSourceTagNames.ELEMENT,
   children: EMPTY_ARRAY,
   metadata: EMPTY_OBJECT
