@@ -2,6 +2,23 @@
   "id": "6ceccc4089",
   "name": "module",
   "version": "0.0.5",
-  "children": [],
+  "children": [
+    {
+      "id": "d8d772181020",
+      "name": "text",
+      "label": "Text",
+      "value": "Click to edit",
+      "style": {},
+      "children": [],
+      "metadata": {
+        "bounds": {
+          "left": 415.6589410069982,
+          "top": 151.14972808671558,
+          "right": 515.6589410069982,
+          "bottom": 251.14972808671558
+        }
+      }
+    }
+  ],
   "metadata": {}
 }

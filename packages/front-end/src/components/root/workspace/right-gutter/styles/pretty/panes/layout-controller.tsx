@@ -106,7 +106,6 @@ export type Props = {
   rootInspectorNode: InspectorNode;
   computedStyleInfo: ComputedStyleInfo;
   selectedInspectorNodes: InspectorNode[];
-  globalVariables: PCVariable[];
 };
 
 export type InnerProps = {
@@ -128,7 +127,6 @@ export default (Base: React.ComponentClass<BaseLayoutProps>) =>
     render() {
       const {
         computedStyleInfo,
-        globalVariables,
         rootInspectorNode,
         selectedVariant,
         selectedInspectorNodes,

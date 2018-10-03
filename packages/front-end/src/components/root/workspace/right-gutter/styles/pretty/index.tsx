@@ -20,6 +20,7 @@ export type PrettyPaneOuterProps = {
 };
 
 export type Props = {
+  documentColors: string[];
   selectedVariant: PCVariant;
   dispatch: Dispatch<any>;
   selectedNodes: SyntheticElement[];
@@ -41,6 +42,7 @@ export default (Base: React.ComponentClass<BaseElementStylerProps>) =>
         computedStyleInfo,
         globalVariables,
         fontFamilies,
+        documentColors,
         selectedNodes,
         syntheticDocument,
         graph,
@@ -74,7 +76,6 @@ export default (Base: React.ComponentClass<BaseElementStylerProps>) =>
           }}
           layoutPaneProps={{
             dispatch,
-            globalVariables,
             selectedVariant,
             rootInspectorNode,
             selectedInspectorNodes,
@@ -83,6 +84,7 @@ export default (Base: React.ComponentClass<BaseElementStylerProps>) =>
           }}
           typographyPaneProps={{
             dispatch,
+            documentColors,
             computedStyleInfo,
             fontFamilies,
             globalVariables
@@ -92,7 +94,7 @@ export default (Base: React.ComponentClass<BaseElementStylerProps>) =>
             computedStyleInfo
           }}
           backgroundsPaneProps={{
-            globalVariables,
+            documentColors,
             dispatch,
             computedStyleInfo
           }}
@@ -101,17 +103,17 @@ export default (Base: React.ComponentClass<BaseElementStylerProps>) =>
             computedStyleInfo
           }}
           bordersPaneProps={{
-            globalVariables,
+            documentColors,
             dispatch,
             computedStyleInfo
           }}
           outerShadowsPaneProps={{
-            globalVariables,
+            documentColors,
             dispatch,
             computedStyleInfo
           }}
           innerShadowsPaneProps={{
-            globalVariables,
+            documentColors,
             dispatch,
             computedStyleInfo
           }}

@@ -20,7 +20,7 @@ import {
 export type Props = {
   inset?: Boolean;
   value?: string;
-  globalVariables: PCVariable[];
+  documentColors: string[];
   dispatch: Dispatch<any>;
   computedStyleInfo: ComputedStyleInfo;
 };
@@ -112,7 +112,7 @@ export default (Base: React.ComponentClass<BaseBoxShadowsProps>) =>
     };
 
     render() {
-      const { globalVariables, computedStyleInfo, inset } = this.props;
+      const { documentColors, computedStyleInfo, inset } = this.props;
       const { selectedBoxShadowIndex } = this.state;
       const {
         onChange,
@@ -147,7 +147,7 @@ export default (Base: React.ComponentClass<BaseBoxShadowsProps>) =>
               onBackgroundClick={() => onItemClick(index)}
               onChange={value => onChange(value, index)}
               onChangeComplete={value => onChangeComplete(value, index)}
-              globalVariables={globalVariables}
+              documentColors={documentColors}
             />
           ) : null;
         })

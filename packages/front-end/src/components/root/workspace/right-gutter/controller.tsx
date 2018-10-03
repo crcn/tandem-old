@@ -4,7 +4,8 @@ import {
   SyntheticDocument,
   getSyntheticVisibleNodeDocument,
   getPCNodeDependency,
-  getGlobalVariables
+  getGlobalVariables,
+  getSyntheticNodeStyleColors
 } from "paperclip";
 import { memoize, EMPTY_ARRAY, getNestedTreeNodeById } from "tandem-common";
 import { RightGutterTab } from "./tab.pc";
@@ -77,6 +78,7 @@ export default (Base: React.ComponentClass<BaseRightGutterProps>) =>
             root.documents
           )
         : null;
+      const documentColors = getSyntheticNodeStyleColors(syntheticDocument);
 
       const selectedSyntheticNodes = hasSyntheticNodes
         ? getSelectedSyntheticNodes(
@@ -120,6 +122,7 @@ export default (Base: React.ComponentClass<BaseRightGutterProps>) =>
           }}
           stylesProps={{
             visible: availableCurrentTab === TAB_NAMES[0],
+            documentColors,
             dispatch,
             syntheticDocument,
             fontFamilies,

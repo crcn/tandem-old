@@ -14,7 +14,7 @@ import {
   containsNestedTreeNodeById
 } from "tandem-common";
 import { DependencyGraph } from "./graph";
-import { last } from "lodash";
+import { last, uniq } from "lodash";
 import {
   getPCNode,
   PCVisibleNode,
@@ -185,6 +185,31 @@ export const getInheritedAndSelfOverrides = memoize(
     }, getPCVariantOverrides(getSyntheticSourceNode(instance, graph) as PCComponentInstanceElement, variantId));
   }
 );
+
+export const getSyntheticNodeStyleColors = memoize((node: SyntheticNode) => {
+  return uniq(_getSyntheticNodeStyleColors(node));
+});
+
+export const _getSyntheticNodeStyleColors = memoize((node: SyntheticNode) => {
+  const colors: string[] = [];
+  if ((node as SyntheticVisibleNode).style) {
+    for (const key in (node as SyntheticVisibleNode).style) {
+      const value: string = (node as SyntheticVisibleNode).style[key];
+      const colorParts = String(value).match(/((rgba?|hsl)\(.*\)|#[^\s]+)/);
+      if (colorParts) {
+        colors.push(colorParts[1]);
+      }
+    }
+  }
+
+  for (let i = 0, { length } = node.children; i < length; i++) {
+    colors.push(
+      ..._getSyntheticNodeStyleColors(node.children[i] as SyntheticNode)
+    );
+  }
+
+  return colors;
+});
 
 export const getSyntheticSourceNode = (
   node: SyntheticVisibleNode | SyntheticDocument,

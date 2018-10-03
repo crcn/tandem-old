@@ -14,6 +14,7 @@ import { FontFamily } from "../../../../../state";
 
 export type Props = {
   visible: boolean;
+  documentColors: string[];
   dispatch: Dispatch<any>;
   rootInspectorNode: InspectorNode;
   selectedInspectorNodes: InspectorNode[];
@@ -39,6 +40,7 @@ export default (Base: React.ComponentClass<BaseStylesProps>) =>
         graph,
         selectedInspectorNodes,
         rootInspectorNode,
+        documentColors,
         ...rest
       } = this.props;
       if (!selectedNodes.length || !visible) {
@@ -63,6 +65,7 @@ export default (Base: React.ComponentClass<BaseStylesProps>) =>
             globalVariables,
             selectedVariant,
             dispatch,
+            documentColors,
             computedStyleInfo,
             selectedInspectorNodes,
             rootInspectorNode,

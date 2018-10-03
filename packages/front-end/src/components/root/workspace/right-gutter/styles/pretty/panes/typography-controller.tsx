@@ -28,6 +28,7 @@ import {
 } from "paperclip";
 import { mapVariablesToCSSVarDropdownOptions } from "./utils";
 import { mapPCVariablesToColorSwatchOptions } from "../../state";
+import { getColorSwatchOptionsFromValues } from "../../../../../../inputs/color/color-swatch-controller";
 const {
   TextLeftIcon,
   TextCenterIcon,
@@ -83,6 +84,7 @@ export type Props = {
   dispatch: Dispatch<any>;
   computedStyleInfo: ComputedStyleInfo;
   fontFamilies: FontFamily[];
+  documentColors: string[];
   globalVariables: PCVariable[];
 };
 
@@ -98,7 +100,12 @@ export default (Base: React.ComponentClass<BaseTypographProps>) =>
 
     render() {
       const { onPropertyChange, onPropertyChangeComplete } = this;
-      const { fontFamilies, globalVariables, computedStyleInfo } = this.props;
+      const {
+        fontFamilies,
+        globalVariables,
+        documentColors,
+        computedStyleInfo
+      } = this.props;
       const { sourceNodes } = computedStyleInfo;
 
       // Typography pane is only available to text nodes to prevent cascading styles
@@ -178,7 +185,7 @@ export default (Base: React.ComponentClass<BaseTypographProps>) =>
             )
           }}
           colorInputProps={{
-            swatchOptions: mapPCVariablesToColorSwatchOptions(globalVariables),
+            swatchOptions: getColorSwatchOptionsFromValues(documentColors),
             value: computedStyleInfo.style.color,
             onChange: propertyChangeCallback("color", onPropertyChange),
             onChangeComplete: propertyChangeCallback(

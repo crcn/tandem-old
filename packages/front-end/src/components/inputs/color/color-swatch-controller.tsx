@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as cx from "classnames";
 import { BaseColorSwatchesProps, ColorSwatchItem } from "./picker.pc";
-import { EMPTY_ARRAY } from "tandem-common";
+import { EMPTY_ARRAY, memoize } from "tandem-common";
 
 export const maybeConvertSwatchValueToColor = (
   value: string,
@@ -15,6 +15,15 @@ export type ColorSwatchOption = {
   value: string;
   color: string;
 };
+
+export const mapValueToColorSwatch = (value: string): ColorSwatchOption => ({
+  value,
+  color: value
+});
+
+export const getColorSwatchOptionsFromValues = memoize((value: string[]) =>
+  value.map(mapValueToColorSwatch)
+);
 
 export type Props = {
   onChange: (value: string) => any;

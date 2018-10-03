@@ -4,6 +4,7 @@ import { memoize, EMPTY_ARRAY } from "tandem-common";
 import { BaseBorderStyleProps } from "./borders.pc";
 import { mapPCVariablesToColorSwatchOptions } from "../../state";
 import { PCVariable } from "paperclip";
+import { getColorSwatchOptionsFromValues } from "../../../../../../inputs/color/color-swatch-controller";
 
 const STYLE_OPTIONS = [
   undefined,
@@ -27,7 +28,7 @@ type BorderInfo = {
 };
 
 export type Props = {
-  globalVariables: PCVariable[];
+  documentColors: string[];
   value: string;
   onChange: any;
   onChangeComplete: any;
@@ -61,7 +62,7 @@ export default (Base: React.ComponentClass<BaseBorderStyleProps>) =>
       );
     };
     render() {
-      const { value, globalVariables } = this.props;
+      const { value, documentColors } = this.props;
       const {
         onColorChange,
         onColorChangeComplete,
@@ -74,7 +75,7 @@ export default (Base: React.ComponentClass<BaseBorderStyleProps>) =>
       return (
         <Base
           colorInputProps={{
-            swatchOptions: mapPCVariablesToColorSwatchOptions(globalVariables),
+            swatchOptions: getColorSwatchOptionsFromValues(documentColors),
             value: color,
             onChange: onColorChange,
             onChangeComplete: onColorChangeComplete

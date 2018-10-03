@@ -4,7 +4,7 @@ import { Dispatch } from "redux";
 import { BaseInnerShadowsProps } from "./box-shadows.pc";
 
 export type Props = {
-  globalVariables: PCVariable[];
+  documentColors: string[];
   value?: string;
   dispatch: Dispatch<any>;
   computedStyleInfo: ComputedStyleInfo;

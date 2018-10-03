@@ -3,6 +3,7 @@ import * as cx from "classnames";
 import { BaseBoxShadowItemProps } from "./box-shadow.pc";
 import { mapPCVariablesToColorSwatchOptions } from "../../state";
 import { PCVariable } from "paperclip";
+import { getColorSwatchOptionsFromValues } from "../../../../../../inputs/color/color-swatch-controller";
 export type BoxShadowInfo = {
   inset: boolean;
   color: string;
@@ -14,7 +15,7 @@ export type BoxShadowInfo = {
 
 export type Props = {
   selected: boolean;
-  globalVariables: PCVariable[];
+  documentColors: string[];
   value: BoxShadowInfo;
   onChange: any;
   onChangeComplete: any;
@@ -68,7 +69,7 @@ export default (Base: React.ComponentClass<BaseBoxShadowItemProps>) =>
       const {
         value: { color, x, y, blur, spread },
         selected,
-        globalVariables,
+        documentColors,
         onChange,
         onChangeComplete,
         onBackgroundClick,
@@ -92,7 +93,7 @@ export default (Base: React.ComponentClass<BaseBoxShadowItemProps>) =>
           variant={cx({ selected })}
           colorInputProps={{
             value: color,
-            swatchOptions: mapPCVariablesToColorSwatchOptions(globalVariables),
+            swatchOptions: getColorSwatchOptionsFromValues(documentColors),
             onClick: stopPropagation,
             onChange: onColorChange,
             onChangeComplete: onColorChangeComplete

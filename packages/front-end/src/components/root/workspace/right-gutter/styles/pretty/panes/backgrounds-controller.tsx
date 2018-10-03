@@ -18,8 +18,8 @@ import { BackgroundItem } from "./backgrounds.pc";
 const DEFAULT_COLOR = "rgba(200, 200, 200, 1)";
 
 export type Props = {
+  documentColors: string[];
   dispatch: Dispatch;
-  globalVariables: PCVariable[];
   computedStyleInfo: ComputedStyleInfo;
 };
 
@@ -56,7 +56,7 @@ export default (Base: React.ComponentClass<BaseBackgroundsProps>) =>
       );
     };
     render() {
-      const { computedStyleInfo, globalVariables } = this.props;
+      const { computedStyleInfo, documentColors } = this.props;
       const { onChange, onChangeComplete, onPlusButtonClick } = this;
 
       const { sourceNodes } = computedStyleInfo;
@@ -74,7 +74,7 @@ export default (Base: React.ComponentClass<BaseBackgroundsProps>) =>
               value={background}
               onChange={value => onChange(value, i)}
               onChangeComplete={value => onChangeComplete(value, i)}
-              globalVariables={globalVariables}
+              documentColors={documentColors}
             />
           );
         }
