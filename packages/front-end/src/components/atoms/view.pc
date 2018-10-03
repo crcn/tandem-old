@@ -76,6 +76,46 @@
           "priority": 0
         }
       }
+    },
+    {
+      "id": "d7593558250",
+      "is": "d7593558214",
+      "label": "Element",
+      "name": "component-instance",
+      "attributes": {},
+      "style": {},
+      "children": [],
+      "metadata": {
+        "bounds": {
+          "left": 891,
+          "top": 182,
+          "right": 991,
+          "bottom": 282
+        }
+      },
+      "variant": {}
+    },
+    {
+      "label": "Element",
+      "is": "div",
+      "style": {
+        "box-sizing": "border-box",
+        "display": "block",
+        "background": "rgba(200, 200, 200, 1)"
+      },
+      "attributes": {},
+      "id": "d7593558214",
+      "name": "component",
+      "children": [],
+      "metadata": {
+        "bounds": {
+          "left": 706,
+          "top": 185,
+          "right": 806,
+          "bottom": 285
+        }
+      },
+      "variant": {}
     }
   ],
   "metadata": {}

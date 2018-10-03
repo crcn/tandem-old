@@ -16,7 +16,8 @@ import {
   ComputedStyleInfo,
   PCElement,
   isPCComponentInstance,
-  PCOverridablePropertyName
+  PCOverridablePropertyName,
+  isPCComponentOrInstance
 } from "./dsl";
 import { DependencyGraph } from "./graph";
 
@@ -57,7 +58,7 @@ export const computeStyleInfo = memoize(
             (current as PCComponent).is,
             graph
           ) as PCElement;
-          if (isPCComponentInstance(parent)) {
+          if (isPCComponentOrInstance(parent)) {
             // defaults -- parents cannot disable
             defaults(style, parent.style);
           }

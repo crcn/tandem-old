@@ -66,7 +66,8 @@ import {
   PCTextStyleMixin,
   createPCTextStyleMixin,
   createPCElementStyleMixin,
-  PCStyleMixin
+  PCStyleMixin,
+  isElementLikePCNode
 } from "./dsl";
 import {
   SyntheticVisibleNode,
@@ -616,7 +617,12 @@ export const persistConvertSyntheticVisibleNodeStyleToMixin = <
     ],
     state.sourceNodeInspector,
     variant,
-    state.graph
+    state.graph,
+    {
+      inheritedStyles: true,
+      parentStyles: false,
+      overrides: true
+    }
   );
   const style = computedStyle.style;
   let styleMixin: PCStyleMixin;
@@ -629,7 +635,7 @@ export const persistConvertSyntheticVisibleNodeStyleToMixin = <
       sourceNode.inheritStyle,
       newLabel
     );
-  } else if (sourceNode.name === PCSourceTagNames.ELEMENT) {
+  } else if (isElementLikePCNode(sourceNode)) {
     styleMixin = createPCElementStyleMixin(
       style,
       sourceNode.inheritStyle,
