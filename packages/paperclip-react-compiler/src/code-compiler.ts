@@ -69,6 +69,7 @@ import {
   PCBaseElementChild,
   getVariableRefMap
 } from "paperclip";
+import { PCStyleMixin } from "paperclip";
 export const compilePaperclipModuleToReact = (
   entry: PCDependency,
   graph: DependencyGraph
@@ -233,7 +234,7 @@ const translateComponentStyleInner = (
         isVisibleNode(node) || node.name === PCSourceTagNames.COMPONENT
     )
     .reduce((context, node: ContentNode) => {
-      if (Object.keys(node.style).length === 0) {
+      if (!hasStyle(node)) {
         return context;
       }
       context = addOpenTag(`"._${node.id} {" + \n`, context);
@@ -273,22 +274,22 @@ const getInheritedStyle = (
   if (!inheritStyle) {
     return {};
   }
-  const componentIds = Object.keys(inheritStyle)
+  const styleMixinIds = Object.keys(inheritStyle)
     .filter(a => Boolean(inheritStyle[a]))
     .sort(
       (a, b) => (inheritStyle[a].priority > inheritStyle[b].priority ? 1 : -1)
     );
 
-  return componentIds.reduce((style, componentId) => {
-    const component = getPCNode(componentId, context.graph) as PCComponent;
-    if (!component) {
+  return styleMixinIds.reduce((style, styleMixinId) => {
+    const styleMixin = getPCNode(styleMixinId, context.graph) as PCStyleMixin;
+    if (!styleMixin) {
       return style;
     }
     const compStyle =
-      computed[componentId] ||
-      (computed[componentId] = {
-        ...component.style,
-        ...getInheritedStyle(component.inheritStyle, context, computed)
+      computed[styleMixinId] ||
+      (computed[styleMixinId] = {
+        ...styleMixin.style,
+        ...getInheritedStyle(styleMixin.inheritStyle, context, computed)
       });
     return { ...style, ...compStyle };
   }, {});
@@ -1095,6 +1096,13 @@ const getNodePropsVarName = (
     : `${getPublicLayerVarName(`${node.label} Props`, node.id, context)}`;
 };
 
+const hasStyle = (node: PCVisibleNode | PCComponent) => {
+  return (
+    Object.keys(node.style).length > 0 ||
+    (node.inheritStyle && Object.keys(node.inheritStyle).length > 0)
+  );
+};
+
 const translateVisibleNode = (node: PCNode, context: TranslateContext) => {
   switch (node.name) {
     case PCSourceTagNames.TEXT: {
@@ -1102,7 +1110,7 @@ const translateVisibleNode = (node: PCNode, context: TranslateContext) => {
         node.value
       )}`;
 
-      if (Object.keys(node.style).length) {
+      if (hasStyle(node)) {
         return addLineItem(
           `React.createElement("span", _toNativeProps(_${
             node.id

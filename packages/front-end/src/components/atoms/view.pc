@@ -4,18 +4,30 @@
   "version": "0.0.5",
   "children": [
     {
-      "id": "d8d772181020",
-      "name": "text",
-      "label": "Text",
-      "value": "Click to edit",
-      "style": {},
+      "id": "33b5126b196",
+      "name": "style-mixin",
+      "label": "Label style",
+      "style": {
+        "font-family": "Avenir Next",
+        "color": "rgba(230, 230, 230, 1)",
+        "font-size": "0.8em",
+        "margin-bottom": "4px",
+        "display": "inline-block",
+        "margin-left": "2px",
+        "opacity": "1",
+        "letter-spacing": "0.02em",
+        "user-select": "none",
+        "pointer": "default"
+      },
+      "value": "Label",
+      "targetType": "text",
       "children": [],
       "metadata": {
         "bounds": {
-          "left": 415.6589410069982,
-          "top": 151.14972808671558,
-          "right": 515.6589410069982,
-          "bottom": 251.14972808671558
+          "left": 538,
+          "top": 153,
+          "right": 595,
+          "bottom": 171
         }
       }
     }

@@ -32,20 +32,14 @@
                   "name": "text",
                   "label": "Text",
                   "value": "Label",
-                  "style": {
-                    "font-family": "Avenir Next",
-                    "color": "rgba(230, 230, 230, 1)",
-                    "font-size": "0.8em",
-                    "margin-bottom": "4px",
-                    "display": "inline-block",
-                    "margin-left": "2px",
-                    "opacity": "1",
-                    "letter-spacing": "0.02em",
-                    "user-select": "none",
-                    "pointer": "default"
-                  },
+                  "style": {},
                   "children": [],
-                  "metadata": {}
+                  "metadata": {},
+                  "inheritStyle": {
+                    "33b5126b196": {
+                      "priority": 0
+                    }
+                  }
                 }
               ],
               "metadata": {},

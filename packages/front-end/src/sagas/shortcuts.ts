@@ -221,9 +221,10 @@ export const createShortcutSaga = ({
                       )
                     }
                   : null,
-                contentNode.id === sourceNode.id &&
-                (sourceNode.name === PCSourceTagNames.ELEMENT ||
-                  sourceNode.name === PCSourceTagNames.TEXT)
+                sourceNode.name === PCSourceTagNames.COMPONENT ||
+                sourceNode.name === PCSourceTagNames.COMPONENT_INSTANCE ||
+                sourceNode.name === PCSourceTagNames.ELEMENT ||
+                sourceNode.name === PCSourceTagNames.TEXT
                   ? {
                       type: ContextMenuOptionType.ITEM,
                       label: "Move Style to Mixin",
