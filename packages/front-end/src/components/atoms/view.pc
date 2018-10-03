@@ -24,10 +24,10 @@
       "children": [],
       "metadata": {
         "bounds": {
-          "left": 538,
-          "top": 153,
-          "right": 595,
-          "bottom": 171
+          "left": 606,
+          "top": 132,
+          "right": 663,
+          "bottom": 150
         }
       }
     },
@@ -46,8 +46,8 @@
         "bounds": {
           "left": 606,
           "top": 95,
-          "right": 706,
-          "bottom": 138
+          "right": 695,
+          "bottom": 120
         }
       }
     },
@@ -65,56 +65,15 @@
       "children": [],
       "metadata": {
         "bounds": {
-          "left": 734,
-          "top": 98,
-          "right": 834,
-          "bottom": 198
+          "left": 706,
+          "top": 94,
+          "right": 769,
+          "bottom": 119
         }
       },
       "inheritStyle": {
         "dc3b39eb1275": {
           "priority": 0
-        }
-      }
-    },
-    {
-      "id": "aba9fbe4695",
-      "name": "text",
-      "label": "Text",
-      "value": "Click to edit",
-      "style": {},
-      "children": [],
-      "metadata": {
-        "bounds": {
-          "left": 531.5,
-          "top": 258.5,
-          "right": 631.5,
-          "bottom": 358.5
-        }
-      },
-      "inheritStyle": {
-        "aba9fbe41197": {
-          "priority": 0
-        }
-      }
-    },
-    {
-      "id": "aba9fbe41197",
-      "name": "style-mixin",
-      "label": "Text style",
-      "style": {
-        "font-family": "Avenir",
-        "color": "rgba(255, 77, 77, 1)"
-      },
-      "value": "Click to edit",
-      "targetType": "text",
-      "children": [],
-      "metadata": {
-        "bounds": {
-          "left": 711,
-          "top": 247,
-          "right": 811,
-          "bottom": 347
         }
       }
     }
