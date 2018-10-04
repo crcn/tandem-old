@@ -70,6 +70,9 @@ export default (Base: React.ComponentClass<BaseChromeProps>) =>
           headerProps={{
             onClick: onHeaderClick
           }}
+          contentProps={{
+            onScroll: resetScroll
+          }}
           closeButtonProps={{
             onClick: onCloseClick
           }}
@@ -83,3 +86,9 @@ export default (Base: React.ComponentClass<BaseChromeProps>) =>
       );
     }
   };
+
+// prevents pushing content up when auto scrolling file navigator and layers
+const resetScroll = event => {
+  event.preventDefault();
+  event.currentTarget.scrollTop = event.currentTarget.scrollLeft = 0;
+};

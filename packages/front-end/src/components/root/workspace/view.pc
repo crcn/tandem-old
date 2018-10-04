@@ -89,7 +89,9 @@
               "is": "5d6bd010465271",
               "name": "component-instance",
               "attributes": {},
-              "style": {},
+              "style": {
+                "height": "100%"
+              },
               "children": [
                 {
                   "id": "5dee72434",
