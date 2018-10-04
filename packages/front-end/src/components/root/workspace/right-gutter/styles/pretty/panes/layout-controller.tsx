@@ -135,10 +135,6 @@ export default (Base: React.ComponentClass<BaseLayoutProps>) =>
       } = this.props;
       const { sourceNodes } = computedStyleInfo;
 
-      // Typography pane is only available to text nodes to prevent cascading styles
-      if (isTextLikePCNode(sourceNodes[0])) {
-        return null;
-      }
       const { onPropertyChange, onPropertyChangeComplete } = this;
 
       const node = computedStyleInfo.sourceNodes[0];
