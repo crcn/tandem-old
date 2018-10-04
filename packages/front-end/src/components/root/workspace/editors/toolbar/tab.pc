@@ -19,7 +19,7 @@
         "height": "100%",
         "overflow": "hidden",
         "white-space": "nowrap",
-        "text-overflow": "ellipsis"
+        "text-overflow": "\"\""
       },
       "attributes": {},
       "id": "fde5849e96847",

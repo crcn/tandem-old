@@ -295,6 +295,11 @@ const getInheritedStyle = (
   }, {});
 };
 
+const stringifyValue = (value: string) => {
+  let newValue = JSON.stringify(value);
+  return newValue.substr(1, newValue.length - 2);
+};
+
 const translateStyle = (
   target: ContentNode,
   style: any,
@@ -307,11 +312,9 @@ const translateStyle = (
     for (const key in style) {
       const propName = key;
       context = addLineItem(
-        `" ${SVG_STYLE_PROP_MAP[propName] || propName}: ${translateStyleValue(
-          key,
-          style[key],
-          context
-        ).replace(/[\n\r]/g, " ")};" + \n`,
+        `" ${SVG_STYLE_PROP_MAP[propName] || propName}: ${stringifyValue(
+          translateStyleValue(key, style[key], context).replace(/[\n\r]/g, " ")
+        )};" + \n`,
         context
       );
     }
@@ -319,9 +322,8 @@ const translateStyle = (
     // TODO - add vendor prefix stuff here
     for (const key in style) {
       context = addLineItem(
-        `" ${key}: ${translateStyleValue(key, style[key], context).replace(
-          /[\n\r]/g,
-          " "
+        `" ${key}: ${stringifyValue(
+          translateStyleValue(key, style[key], context).replace(/[\n\r]/g, " ")
         )};" + \n`,
         context
       );
