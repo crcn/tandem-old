@@ -1541,10 +1541,34 @@ export const persistCSSProperty = <TState extends PCEditorState>(
   value: string,
   node: SyntheticVisibleNode,
   variant: PCVariant,
-  state: TState
+  state: TState,
+  allowUnset?: boolean
 ) => {
   if (value === "") {
     value = undefined;
+  }
+
+  if (value == null) {
+    const overridingStyles = computeStyleInfo(
+      [
+        getSyntheticInspectorNode(
+          node,
+          getSyntheticVisibleNodeDocument(node.id, state.documents),
+          state.sourceNodeInspector,
+          state.graph
+        )
+      ],
+      state.sourceNodeInspector,
+      variant,
+      state.graph,
+      {
+        self: false
+      }
+    );
+
+    if (overridingStyles.style[name] && allowUnset !== false) {
+      value = "unset";
+    }
   }
 
   const updatedNode = maybeOverride2(
@@ -1649,7 +1673,7 @@ export const persistSyntheticVisibleNodeStyle = <TState extends PCEditorState>(
     if (newStyle[key]) {
       continue;
     }
-    state = persistCSSProperty(key, undefined, node, variant, state);
+    state = persistCSSProperty(key, undefined, node, variant, state, false);
   }
 
   return state;

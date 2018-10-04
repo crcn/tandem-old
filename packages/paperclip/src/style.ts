@@ -25,14 +25,18 @@ export type ComputeStyleOptions = {
   inheritedStyles?: boolean;
   overrides?: boolean;
   parentStyles?: boolean;
+  self?: boolean;
 };
 
 const DEFAULT_COMPUTE_STYLE_OPTIONS: ComputeStyleOptions = {
   inheritedStyles: true,
   overrides: true,
-  parentStyles: true
+  parentStyles: true,
+  self: true
 };
 
+// TODO - take single inspector node and use merging function instead of taking
+// array here.
 export const computeStyleInfo = memoize(
   (
     inspectorNodes: InspectorNode[],
@@ -66,7 +70,9 @@ export const computeStyleInfo = memoize(
         }
       }
 
-      Object.assign(style, sourceNode.style);
+      if (options.self !== false) {
+        Object.assign(style, sourceNode.style);
+      }
 
       if (options.inheritedStyles !== false && sourceNode.inheritStyle) {
         for (const styleMixinId in sourceNode.inheritStyle) {

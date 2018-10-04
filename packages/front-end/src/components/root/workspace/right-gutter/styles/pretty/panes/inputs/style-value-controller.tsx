@@ -14,12 +14,12 @@ export default <TProps extends BaseProps>(
   return class StyleValueController extends React.PureComponent<Props> {
     onChange = value => {
       if (this.props.onChange) {
-        this.props.onChange(value == null ? "unset" : value);
+        this.props.onChange(value);
       }
     };
     onChangeComplete = value => {
       if (this.props.onChangeComplete) {
-        this.props.onChangeComplete(value == null ? "unset" : value);
+        this.props.onChangeComplete(value);
       }
     };
     render() {
