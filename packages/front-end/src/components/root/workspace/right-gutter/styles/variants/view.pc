@@ -475,9 +475,7 @@
                     "display": "flex",
                     "padding-bottom": "4px",
                     "align-items": "center",
-                    "justify-content": "space-between",
-                    "opacity": "0.385",
-                    "color": "--30f4693267675"
+                    "justify-content": "space-between"
                   },
                   "children": [
                     {
@@ -485,11 +483,14 @@
                       "name": "text",
                       "label": "Text",
                       "value": "Style",
-                      "style": {
-                        "font-size": "0.8em"
-                      },
+                      "style": {},
                       "children": [],
-                      "metadata": {}
+                      "metadata": {},
+                      "inheritStyle": {
+                        "33b5126b196": {
+                          "priority": 0
+                        }
+                      }
                     },
                     {
                       "id": "4a49eea9109443",

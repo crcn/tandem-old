@@ -923,6 +923,16 @@ export const getComponentRefIds = memoize(
   }
 );
 
+export const getSortedStyleMixinIds = memoize(
+  (node: PCVisibleNode | PCStyleMixin) => {
+    return Object.keys(node.inheritStyle).sort((a, b) => {
+      return node.inheritStyle[a].priority > node.inheritStyle[b].priority
+        ? -1
+        : 1;
+    });
+  }
+);
+
 export const computePCNodeStyle = memoize(
   (
     node: PCVisibleNode | PCComponent | PCStyleMixin,
@@ -1268,12 +1278,4 @@ export const replacePCNode = (
     dependency.uri,
     graph
   );
-};
-
-export type ComputedStyleInfo = {
-  sourceNodes: (PCVisibleNode | PCComponent)[];
-  styleOverridesMap: KeyValue<PCStyleOverride[]>;
-  style: {
-    [identifier: string]: string;
-  };
 };

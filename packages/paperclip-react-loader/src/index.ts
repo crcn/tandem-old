@@ -1,8 +1,10 @@
-import * as fs from "fs";
-import * as path from "path";
 import { translatePaperclipModuleToReact } from "paperclip-react-compiler";
 import * as migrate from "paperclip-migrator";
-import { loadFSDependencyGraphSync } from "paperclip";
+import {
+  loadFSDependencyGraphSync,
+  getComponentGraphRefMap,
+  getPCNodeDependency
+} from "paperclip";
 const loaderUtils = require("loader-utils");
 
 // TODO - use options for
@@ -20,6 +22,16 @@ module.exports = function(source) {
   const entry = graph["file://" + uri];
 
   let content = translatePaperclipModuleToReact(entry, graph);
+  const refMap = getComponentGraphRefMap(entry.content, graph);
+  const depUriMap = {};
+  for (const refId in refMap) {
+    const ref = getPCNodeDependency(refId, graph);
+    depUriMap[ref.uri] = 1;
+  }
+
+  Object.keys(depUriMap).forEach(uri => {
+    this.addDependency(uri.replace("file://", ""));
+  });
 
   if (useHMR) {
     content +=

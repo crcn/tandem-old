@@ -101,6 +101,27 @@
         }
       },
       "variant": {}
+    },
+    {
+      "id": "6cd19195293343",
+      "name": "text",
+      "label": "Text",
+      "value": "Click to edit",
+      "style": {},
+      "children": [],
+      "metadata": {
+        "bounds": {
+          "left": 576.9683893627741,
+          "top": 129.87588974954872,
+          "right": 676.9683893627741,
+          "bottom": 229.87588974954872
+        }
+      },
+      "inheritStyle": {
+        "dc3b39eb1275": {
+          "priority": 0
+        }
+      }
     }
   ]
 }

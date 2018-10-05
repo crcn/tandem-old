@@ -10,12 +10,12 @@
       "style": {
         "font-family": "Avenir Next",
         "color": "rgba(180, 180, 180, 1)",
-        "font-size": "0.8em",
+        "font-size": "9px",
         "margin-bottom": "4px",
         "display": "inline-block",
         "margin-left": "2px",
         "opacity": "1",
-        "letter-spacing": "0.02em",
+        "letter-spacing": "0.05em",
         "user-select": "none",
         "pointer": "default"
       },

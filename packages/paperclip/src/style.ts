@@ -13,11 +13,12 @@ import {
   PCNode,
   extendsComponent,
   PCVariant,
-  ComputedStyleInfo,
   PCElement,
   isPCComponentInstance,
   PCOverridablePropertyName,
-  isPCComponentOrInstance
+  isPCComponentOrInstance,
+  PCStyleMixin,
+  getSortedStyleMixinIds
 } from "./dsl";
 import { DependencyGraph } from "./graph";
 
@@ -35,6 +36,14 @@ const DEFAULT_COMPUTE_STYLE_OPTIONS: ComputeStyleOptions = {
   self: true
 };
 
+export type ComputedStyleInfo = {
+  sourceNodes: PCNode[];
+  styleOverridesMap: KeyValue<PCStyleOverride[]>;
+  style: {
+    [identifier: string]: string;
+  };
+};
+
 // TODO - take single inspector node and use merging function instead of taking
 // array here.
 export const computeStyleInfo = memoize(
@@ -45,7 +54,7 @@ export const computeStyleInfo = memoize(
     graph: DependencyGraph,
     options: ComputeStyleOptions = DEFAULT_COMPUTE_STYLE_OPTIONS
   ): ComputedStyleInfo => {
-    const style = {};
+    let style = {};
     const sourceNodes: (PCVisibleNode | PCComponent)[] = [];
     const styleOverridesMap: KeyValue<PCStyleOverride[]> = {};
 
@@ -53,7 +62,6 @@ export const computeStyleInfo = memoize(
       const sourceNode = getPCNode(inspectorNode.assocSourceNodeId, graph) as
         | PCVisibleNode
         | PCComponent;
-
       sourceNodes.push(sourceNode);
       let current: PCNode = sourceNode;
 
@@ -76,25 +84,27 @@ export const computeStyleInfo = memoize(
       }
 
       if (options.inheritedStyles !== false && sourceNode.inheritStyle) {
-        for (const styleMixinId in sourceNode.inheritStyle) {
-          const styleMixinInspectorNode = getInspectorNodeByAssocId(
-            styleMixinId,
-            rootInspectorNode
-          );
-          if (!styleMixinInspectorNode) {
-            continue;
-          }
+        style = computeMixinStyle(sourceNode as PCVisibleNode, graph, false);
+        // for (const styleMixinId in sourceNode.inheritStyle) {
+        //   const styleMixinInspectorNode = getInspectorNodeByAssocId(
+        //     styleMixinId,
+        //     rootInspectorNode
+        //   );
 
-          defaults(
-            style,
-            computeStyleInfo(
-              toArray(styleMixinInspectorNode),
-              rootInspectorNode,
-              null,
-              graph
-            ).style
-          );
-        }
+        //   if (!styleMixinInspectorNode) {
+        //     continue;
+        //   }
+
+        //   defaults(
+        //     style,
+        //     computeStyleInfo(
+        //       toArray(styleMixinInspectorNode),
+        //       rootInspectorNode,
+        //       null,
+        //       graph
+        //     ).style
+        //   );
+        // }
       }
 
       if (options.overrides !== false) {
@@ -126,5 +136,29 @@ export const computeStyleInfo = memoize(
     };
   }
 );
+
+const computeMixinStyle = (
+  node: PCVisibleNode | PCStyleMixin,
+  graph: DependencyGraph,
+  includeSelf?: boolean
+) => {
+  let style = {};
+  if (includeSelf) {
+    Object.assign(style, node.style);
+  }
+  if (node.inheritStyle) {
+    const sortedStyleMixinIds = getSortedStyleMixinIds(node);
+    for (const styleMixinId of sortedStyleMixinIds) {
+      const styleMixin = getPCNode(styleMixinId, graph) as PCStyleMixin;
+
+      // may have been deleted by user
+      if (!styleMixin) {
+        continue;
+      }
+      defaults(style, computeMixinStyle(styleMixin, graph, true));
+    }
+  }
+  return style;
+};
 
 const toArray = memoize(<TValue>(value: TValue) => [value]);
