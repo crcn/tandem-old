@@ -28,7 +28,10 @@ import {
   syntheticNodeContextMenuSelectSourceNodeClicked,
   syntheticNodeContextMenuConvertToComponentClicked,
   syntheticNodeContextMenuConvertToStyleMixinClicked,
-  syntheticNodeContextMenuRemoveClicked
+  syntheticNodeContextMenuRemoveClicked,
+  EDITOR_TAB_RIGHT_CLICKED,
+  EditorTabClicked,
+  editorTabContextMenuOpenInBottomTabOptionClicked
 } from "../actions";
 import {
   ContextMenuItem,
@@ -105,6 +108,26 @@ export const createShortcutSaga = ({
                   action: fileItemContextMenuDeleteClicked(item)
                 }
               ]
+            }
+          ]
+        );
+      }
+    );
+
+    yield takeEvery(
+      EDITOR_TAB_RIGHT_CLICKED,
+      function* handleEditorRightClicked({ event, uri }: EditorTabClicked) {
+        yield call(
+          openContextMenu,
+          {
+            left: event.pageX,
+            top: event.pageY
+          },
+          [
+            {
+              type: ContextMenuOptionType.ITEM,
+              label: "Open in Bottom Tab",
+              action: editorTabContextMenuOpenInBottomTabOptionClicked(uri)
             }
           ]
         );

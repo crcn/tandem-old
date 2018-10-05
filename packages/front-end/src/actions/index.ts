@@ -77,8 +77,11 @@ export const FILE_NAVIGATOR_NEW_FILE_ENTERED =
 export const FILE_NAVIGATOR_DROPPED_ITEM = "FILE_NAVIGATOR_DROPPED_ITEM";
 export const TOOLBAR_TOOL_CLICKED = "TOOLBAR_TOOL_CLICKED";
 export const EDITOR_TAB_CLICKED = "EDITOR_TAB_CLICKED";
+export const EDITOR_TAB_RIGHT_CLICKED = "EDITOR_TAB_RIGHT_CLICKED";
 export const EDITOR_TAB_CLOSE_BUTTON_CLICKED =
   "EDITOR_TAB_CLOSE_BUTTON_CLICKED";
+export const EDITOR_TAB_CONTEXT_MENU_OPEN_IN_BOTTOM_OPTION_CLICKED =
+  "EDITOR_TAB_CONTEXT_MENU_OPEN_IN_BOTTOM_OPTION_CLICKED";
 export const OPEN_FILE_ITEM_CLICKED = "OPEN_FILE_ITEM_CLICKED";
 export const OPEN_FILE_ITEM_CLOSE_CLICKED = "OPEN_FILE_ITEM_CLOSE_CLICKED";
 export const CANVAS_MOUNTED = "CANVAS_MOUNTED";
@@ -177,6 +180,7 @@ export const EXPORT_NAME_CHANGED = "EXPORT_NAME_CHANGED";
 export const ACTIVE_EDITOR_URI_DIRS_LOADED = "ACTIVE_EDITOR_URI_DIRS_LOADED";
 export const INHERIT_ITEM_COMPONENT_TYPE_CHANGE_COMPLETE =
   "INHERIT_ITEM_COMPONENT_TYPE_CHANGE_COMPLETE";
+
 export const INHERIT_ITEM_CLICK = "INHERIT_ITEM_CLICK";
 export const INSERT_TOOL_FINISHED = "INSERT_TOOL_FINISHED";
 export const SYNTHETIC_NODES_PASTED = "SYNTHETIC_NODES_PASTED";
@@ -255,6 +259,10 @@ export enum FileChangedEventType {
   ADD_DIR = "addDir",
   CHANGE = "change"
 }
+
+export type EditorTabContextMenuOpenInBottomTabOptionClicked = {
+  uri: string;
+} & Action;
 
 export type FileChanged = {
   eventType: FileChangedEventType;
@@ -594,6 +602,7 @@ export type ExportNameChanged = {
 } & Action;
 
 export type EditorTabClicked = {
+  event: React.MouseEvent<any>;
   uri: string;
 } & Action;
 
@@ -656,9 +665,29 @@ export const fileNavigatorDroppedItem = (
   type: FILE_NAVIGATOR_DROPPED_ITEM
 });
 
-export const editorTabClicked = (uri: string): EditorTabClicked => ({
+export const editorTabClicked = (
+  event: React.MouseEvent<any>,
+  uri: string
+): EditorTabClicked => ({
   uri,
+  event,
   type: EDITOR_TAB_CLICKED
+});
+
+export const editorTabContextMenuOpenInBottomTabOptionClicked = publicActionCreator(
+  (uri: string): EditorTabContextMenuOpenInBottomTabOptionClicked => ({
+    type: EDITOR_TAB_CONTEXT_MENU_OPEN_IN_BOTTOM_OPTION_CLICKED,
+    uri
+  })
+);
+
+export const editorTabRightClicked = (
+  event: React.MouseEvent<any>,
+  uri: string
+): EditorTabClicked => ({
+  uri,
+  event,
+  type: EDITOR_TAB_RIGHT_CLICKED
 });
 
 export const fileItemContextMenuDeleteClicked = publicActionCreator(
@@ -745,8 +774,12 @@ export const cssResetPropertyOptionClicked = (
   property
 });
 
-export const editorTabCloseButtonClicked = (uri: string): EditorTabClicked => ({
+export const editorTabCloseButtonClicked = (
+  event: React.MouseEvent<any>,
+  uri: string
+): EditorTabClicked => ({
   uri,
+  event,
   type: EDITOR_TAB_CLOSE_BUTTON_CLICKED
 });
 

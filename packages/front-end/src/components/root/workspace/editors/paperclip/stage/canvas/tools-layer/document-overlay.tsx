@@ -20,6 +20,8 @@ import {
   canvasToolOverlayMouseDoubleClicked
 } from "../../../../../../../../actions";
 
+import { NodeOverlay as BaseNodeOverlay } from "./node-overlay.pc";
+
 export type VisualToolsProps = {
   editorWindow: EditorWindow;
   zoom: number;
@@ -54,18 +56,34 @@ class NodeOverlay extends React.PureComponent<NodeOverlayProps> {
 
     const borderWidth = 2 / zoom;
 
+    const width = Math.ceil(bounds.right - bounds.left);
+    const height = Math.ceil(bounds.bottom - bounds.top);
+
+    const titleScale = Math.max(1 / zoom, 0.03);
+
+    const textStyle = {
+      transformOrigin: `top right`,
+      transform: `scale(${titleScale})`
+    };
+
     const style = {
       left: bounds.left,
       top: bounds.top,
 
       // round to ensure that the bounds match up with the selection bounds
-      width: Math.ceil(bounds.right - bounds.left),
-      height: Math.ceil(bounds.bottom - bounds.top),
-      boxShadow: `inset 0 0 0 ${borderWidth}px #00B5FF`
+      width,
+      height,
+      boxShadow: `inset 0 0 0 ${borderWidth}px rgba(88, 185, 255, 1)`
     };
 
     return (
-      <div className={cx("visual-tools-node-overlay hovering")} style={style} />
+      <BaseNodeOverlay
+        style={style}
+        labelContainerProps={{ style: textStyle }}
+        labelProps={{
+          text: `${width} x ${height}`
+        }}
+      />
     );
   }
 }

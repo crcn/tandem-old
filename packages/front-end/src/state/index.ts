@@ -863,7 +863,7 @@ export const openEditorFileUri = (
   if (
     secondaryTab &&
     editor === state.editorWindows[0] &&
-    editor.tabUris.length > 1
+    (editor.tabUris.length > 1 || state.editorWindows.length > 1)
   ) {
     state = closeEditorWindowUri(uri, state);
     state = openEditorFileUri(uri, true, state);

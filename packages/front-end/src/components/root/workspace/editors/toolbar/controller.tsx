@@ -6,7 +6,8 @@ import * as cx from "classnames";
 import {
   toolbarToolClicked,
   editorTabClicked,
-  editorTabCloseButtonClicked
+  editorTabCloseButtonClicked,
+  editorTabRightClicked
 } from "../../../../../actions";
 import { ToolType, EditorWindow } from "../../../../../state";
 import { Dispatch } from "redux";
@@ -29,11 +30,11 @@ type InnerProps = {
 
 export default (Base: React.ComponentClass<BaseToolbarProps>) =>
   class ToolbarController extends React.PureComponent<Props> {
-    onTabClick = uri => {
-      this.props.dispatch(editorTabClicked(uri));
+    onTabClick = (event, uri) => {
+      this.props.dispatch(editorTabClicked(event, uri));
     };
     onTabCloseButtonClick = (uri, event) => {
-      this.props.dispatch(editorTabCloseButtonClicked(uri));
+      this.props.dispatch(editorTabCloseButtonClicked(event, uri));
       event.stopPropagation();
     };
     onPointerClick = () => {
@@ -49,6 +50,10 @@ export default (Base: React.ComponentClass<BaseToolbarProps>) =>
       this.props.dispatch(toolbarToolClicked(ToolType.ELEMENT));
     };
 
+    onRightClickEditorTab = (event, uri) => {
+      this.props.dispatch(editorTabRightClicked(event, uri));
+    };
+
     render() {
       const { editorWindow } = this.props;
       const {
@@ -57,7 +62,8 @@ export default (Base: React.ComponentClass<BaseToolbarProps>) =>
         onPointerClick,
         onTextClick,
         onComponentClick,
-        onElementClick
+        onElementClick,
+        onRightClickEditorTab
       } = this;
 
       const tabs = editorWindow.tabUris.map(uri => {
@@ -73,7 +79,8 @@ export default (Base: React.ComponentClass<BaseToolbarProps>) =>
               text: path.basename(uri)
             }}
             key={uri}
-            onClick={() => onTabClick(uri)}
+            onClick={event => onTabClick(event, uri)}
+            onContextMenu={event => onRightClickEditorTab(event, uri)}
           />
         );
       });

@@ -130,19 +130,24 @@
                   "label": "Text",
                   "value": "Padding",
                   "style": {
-                    "font-family": "Helvetica",
                     "display": "inline-block",
                     "margin-left": "2px",
                     "margin-right": "4px",
                     "position": "relative",
-                    "top": "2px",
+                    "top": "5px",
                     "user-select": "none",
-                    "width": "30px",
                     "flex-shrink": "0",
-                    "text-align": "right"
+                    "text-align": "right",
+                    "width": "44px",
+                    "font-size": "unset"
                   },
                   "children": [],
-                  "metadata": {}
+                  "metadata": {},
+                  "styleMixins": {
+                    "33b5126b196": {
+                      "priority": 0
+                    }
+                  }
                 },
                 {
                   "id": "52309d3e76181",
@@ -199,9 +204,7 @@
                           "is": "a329dd6d16879",
                           "name": "component-instance",
                           "attributes": {},
-                          "style": {
-                            "padding-left": "unset"
-                          },
+                          "style": {},
                           "children": [],
                           "metadata": {
                             "bounds": {
@@ -514,22 +517,23 @@
                   "label": "Text",
                   "value": "Margin",
                   "style": {
-                    "font-family": "Helvetica",
-                    "color": "grey",
-                    "font-size": "0.8em",
                     "display": "inline-block",
                     "margin-left": "2px",
-                    "opacity": "0.4",
                     "margin-right": "4px",
                     "position": "relative",
-                    "top": "2px",
+                    "top": "5px",
                     "user-select": "none",
-                    "width": "30px",
+                    "width": "44px",
                     "flex-shrink": "0",
                     "text-align": "right"
                   },
                   "children": [],
-                  "metadata": {}
+                  "metadata": {},
+                  "styleMixins": {
+                    "33b5126b196": {
+                      "priority": 0
+                    }
+                  }
                 },
                 {
                   "id": "52309d3e5718",

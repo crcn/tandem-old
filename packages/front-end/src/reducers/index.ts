@@ -172,7 +172,9 @@ import {
   ExportNameChanged,
   SYNTHETIC_NODE_CONTEXT_MENU_CONVERT_TO_STYLE_MIXIN_CLICKED,
   QUICK_SEARCH_RESULT_ITEM_SPLIT_BUTTON_CLICKED,
-  QuickSearchResultItemSplitButtonClicked
+  QuickSearchResultItemSplitButtonClicked,
+  EditorTabContextMenuOpenInBottomTabOptionClicked,
+  EDITOR_TAB_CONTEXT_MENU_OPEN_IN_BOTTOM_OPTION_CLICKED
 } from "../actions";
 import {
   queueOpenFile,
@@ -1007,6 +1009,13 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
     case EDITOR_TAB_CLOSE_BUTTON_CLICKED: {
       const { uri } = action as EditorTabClicked;
       return closeFile(uri, state);
+    }
+    case EDITOR_TAB_CONTEXT_MENU_OPEN_IN_BOTTOM_OPTION_CLICKED: {
+      const {
+        uri
+      } = action as EditorTabContextMenuOpenInBottomTabOptionClicked;
+      state = openFile(uri, false, true, state);
+      return state;
     }
     case PC_DEPENDENCY_GRAPH_LOADED: {
       state = centerEditorCanvas(state, state.activeEditorFilePath);
@@ -2937,10 +2946,16 @@ const selectInspectorNode = (node: InspectorNode, state: RootState) => {
 
   state = updateRootState(
     {
-      selectedInspectorNodeIds: [node.id],
-      selectedSyntheticNodeIds: assocSyntheticNode
-        ? [assocSyntheticNode.id]
-        : []
+      selectedInspectorNodeIds:
+        assocSyntheticNode &&
+        assocSyntheticNode.name !== SYNTHETIC_DOCUMENT_NODE_NAME
+          ? [node.id]
+          : EMPTY_ARRAY,
+      selectedSyntheticNodeIds:
+        assocSyntheticNode &&
+        assocSyntheticNode.name !== SYNTHETIC_DOCUMENT_NODE_NAME
+          ? [assocSyntheticNode.id]
+          : EMPTY_ARRAY
     },
     state
   );
