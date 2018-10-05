@@ -53,6 +53,7 @@ export const computeStyleInfo = memoize(
       const sourceNode = getPCNode(inspectorNode.assocSourceNodeId, graph) as
         | PCVisibleNode
         | PCComponent;
+
       sourceNodes.push(sourceNode);
       let current: PCNode = sourceNode;
 

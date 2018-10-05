@@ -43,7 +43,7 @@ export default (Base: React.ComponentClass<BaseStylesProps>) =>
         documentColors,
         ...rest
       } = this.props;
-      if (!selectedNodes.length || !visible) {
+      if (!selectedInspectorNodes.length || !selectedNodes.length || !visible) {
         return null;
       }
       const computedStyleInfo = computeStyleInfo(
