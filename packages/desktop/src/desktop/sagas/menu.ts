@@ -14,7 +14,10 @@ import {
   NEW_PROJECT_MENU_ITEM_CLICKED
 } from "../actions";
 import { publicActionCreator, stripProtocol } from "tandem-common";
-import { FileItemContextMenuAction } from "tandem-front-end";
+import {
+  FileItemContextMenuAction,
+  OpenTextEditorButtonClicked
+} from "tandem-front-end";
 
 const shortcutKeyDown = publicActionCreator((type: string) => ({
   type
@@ -39,10 +42,19 @@ function* handleFSItemContextMenuOptions() {
       const path = stripProtocol(item.uri);
     }
   );
+
   yield takeEvery(
     "FILE_ITEM_CONTEXT_MENU_OPEN_CLICKED",
     ({ item }: FileItemContextMenuAction) => {
       const path = stripProtocol(item.uri);
+      exec(`open ${path}`);
+    }
+  );
+
+  yield takeEvery(
+    "OPEN_TEXT_EDITOR_BUTTON_CLICKED",
+    ({ uri }: OpenTextEditorButtonClicked) => {
+      const path = stripProtocol(uri);
       exec(`open ${path}`);
     }
   );

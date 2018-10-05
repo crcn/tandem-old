@@ -147,6 +147,8 @@ export const SHORTCUT_T_KEY_DOWN = "SHORTCUT_T_KEY_DOWN";
 export const SHORTCUT_SELECT_NEXT_TAB = "SHORTCUT_SELECT_NEXT_TAB";
 export const SHORTCUT_SELECT_PREVIOUS_TAB = "SHORTCUT_SELECT_PREVIOUS_TAB";
 export const SHORTCUT_CLOSE_CURRENT_TAB = "SHORTCUT_CLOSE_CURRENT_TAB";
+export const OPEN_TEXT_EDITOR_BUTTON_CLICKED =
+  "OPEN_TEXT_EDITOR_BUTTON_CLICKED";
 export const SHORTCUT_CONVERT_TO_COMPONENT_KEY_DOWN =
   "SHORTCUT_CONVERT_TO_COMPONENT_KEY_DOWN";
 export const SHORTCUT_WRAP_IN_SLOT_KEY_DOWN = "SHORTCUT_WRAP_IN_SLOT_KEY_DOWN";
@@ -440,6 +442,10 @@ export type CanvasToolWindowKeyDown = {
 export type CanvasToolArtboardTitleClicked = {
   frame: Frame;
 } & WrappedEvent<React.MouseEvent<any>>;
+
+export type OpenTextEditorButtonClicked = {
+  uri: string;
+} & Action;
 
 export type SlotToggleClick = {} & Action;
 
@@ -831,6 +837,13 @@ export const exportNameChanged = (value: string): ExportNameChanged => ({
 export const promptCancelButtonClicked = (): PromptCancelButtonClicked => ({
   type: PROMPT_CANCEL_BUTTON_CLICKED
 });
+
+export const openTextEditorButtonClicked = publicActionCreator(
+  (uri: string): OpenTextEditorButtonClicked => ({
+    uri,
+    type: OPEN_TEXT_EDITOR_BUTTON_CLICKED
+  })
+);
 
 export const newFileAdded = (
   uri: string,

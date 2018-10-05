@@ -6,6 +6,7 @@ import { ImageEditorWindowComponent } from "./image";
 import { PAPERCLIP_MIME_TYPE } from "paperclip";
 import { getFSItem } from "fsbox";
 import { BaseEditorProps } from "./editor.pc";
+import { TextEditorWindow } from "./text";
 
 export type Props = {
   editorWindow: EditorWindow;
@@ -53,6 +54,13 @@ export default (Base: React.ComponentClass<BaseEditorProps>) =>
         } else if (isImageMimetype(fileCacheItem.mimeType)) {
           stage = (
             <ImageEditorWindowComponent
+              dispatch={dispatch}
+              fileCacheItem={fileCacheItem}
+            />
+          );
+        } else {
+          stage = (
+            <TextEditorWindow
               dispatch={dispatch}
               fileCacheItem={fileCacheItem}
             />

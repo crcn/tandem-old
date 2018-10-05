@@ -5,6 +5,36 @@
   "name": "module",
   "children": [
     {
+      "id": "5c9686b875966",
+      "is": "50e32bec2591",
+      "label": "Dropdown",
+      "name": "component-instance",
+      "attributes": {},
+      "style": {},
+      "children": [
+        {
+          "id": "5c9686b876903",
+          "variantId": null,
+          "propertyName": "text",
+          "targetIdPath": [
+            "67e386c7935"
+          ],
+          "value": "super long label that should ellipsis if it overflows",
+          "name": "override",
+          "children": []
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": 357,
+          "top": 282,
+          "right": 558,
+          "bottom": 524.2360321797468
+        }
+      },
+      "variant": {}
+    },
+    {
       "label": "Dropdown",
       "is": "div",
       "style": {
@@ -122,6 +152,9 @@
                           "styleMixins": {
                             "dc3b39eb1275": {
                               "priority": 0
+                            },
+                            "61225017220906": {
+                              "priority": 1
                             }
                           }
                         },
