@@ -561,6 +561,16 @@
                               },
                               "name": "override",
                               "children": []
+                            },
+                            {
+                              "id": "dd72066811014",
+                              "propertyName": "style",
+                              "targetIdPath": [
+                                "6489655782901"
+                              ],
+                              "value": {},
+                              "name": "override",
+                              "children": []
                             }
                           ],
                           "metadata": {},

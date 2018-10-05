@@ -34,7 +34,6 @@
                 "width": "100%",
                 "text-align": "center",
                 "position": "relative",
-                "height": "22px",
                 "border-top-left-radius": "2px",
                 "border-bottom-left-radius": "2px"
               },
@@ -89,7 +88,6 @@
                 "width": "100%",
                 "text-align": "center",
                 "position": "relative",
-                "height": "22px",
                 "border-right": "1px solid rgba(200, 200, 200, 1)"
               },
               "children": [
@@ -137,14 +135,7 @@
               "name": "component-instance",
               "attributes": {},
               "style": {
-                "background": "rgba(0,0,0,0.05)",
-                "padding": "4px 8px",
-                "box-sizing": "border-box",
-                "font-family": "Helvetic",
-                "width": "100%",
-                "text-align": "center",
-                "position": "relative",
-                "height": "22px"
+                "width": "100%"
               },
               "children": [
                 {
@@ -232,23 +223,6 @@
         "./controller.tsx"
       ],
       "variant": {}
-    },
-    {
-      "id": "70ef61a614847",
-      "variant": {},
-      "is": "6489655782851",
-      "name": "component-instance",
-      "attributes": {},
-      "style": {},
-      "children": [],
-      "metadata": {
-        "bounds": {
-          "left": 464,
-          "top": 425,
-          "right": 564,
-          "bottom": 451
-        }
-      }
     }
   ]
 }
