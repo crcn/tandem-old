@@ -67,7 +67,7 @@
                   ],
                   "label": "text",
                   "metadata": {},
-                  "inheritStyle": {
+                  "styleMixins": {
                     "dc3b39eb1627": {
                       "priority": 0
                     }
@@ -119,7 +119,7 @@
                   "children": [],
                   "label": "inner",
                   "metadata": {},
-                  "inheritStyle": {
+                  "styleMixins": {
                     "dc3b39eb1275": {
                       "priority": 0
                     }

@@ -486,7 +486,7 @@
                       "style": {},
                       "children": [],
                       "metadata": {},
-                      "inheritStyle": {
+                      "styleMixins": {
                         "33b5126b196": {
                           "priority": 0
                         }

@@ -149,7 +149,7 @@
           "bottom": 438.5938443057661
         }
       },
-      "inheritStyle": {
+      "styleMixins": {
         "ca6d1d8454": {
           "priority": 0
         },

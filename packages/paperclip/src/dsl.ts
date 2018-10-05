@@ -60,7 +60,7 @@ export enum PCSourceTagNames {
 export enum PCOverridablePropertyName {
   TEXT = "text",
   CHILDREN = "children",
-  INHERIT_STYLE = "inheritStyle",
+  INHERIT_STYLE = "styleMixins",
 
   // DEPRECATED
   VARIANT_IS_DEFAULT = "isDefault",
@@ -256,7 +256,7 @@ export type PCBaseVisibleNode<TName extends PCSourceTagNames> = {
   style: KeyValue<any>;
 
   // DEPRECATED - used styleMixins instead
-  inheritStyle?: InheritStyle;
+  styleMixins?: InheritStyle;
 } & PCBaseSourceNode<TName>;
 
 export type PCBaseElementChild =
@@ -375,14 +375,14 @@ export const getDerrivedPCLabel = (
 export const createPCTextStyleMixin = (
   style: KeyValue<string>,
   textValue: string,
-  inheritStyle?: InheritStyle,
+  styleMixins?: InheritStyle,
   label?: string
 ): PCTextStyleMixin => ({
   id: generateUID(),
   name: PCSourceTagNames.STYLE_MIXIN,
   label,
   style,
-  inheritStyle,
+  styleMixins,
   value: textValue,
   targetType: PCSourceTagNames.TEXT,
   children: EMPTY_ARRAY,
@@ -391,14 +391,14 @@ export const createPCTextStyleMixin = (
 
 export const createPCElementStyleMixin = (
   style: KeyValue<string>,
-  inheritStyle?: InheritStyle,
+  styleMixins?: InheritStyle,
   label?: string
 ): PCElementStyleMixin => ({
   id: generateUID(),
   label,
   name: PCSourceTagNames.STYLE_MIXIN,
   style,
-  inheritStyle,
+  styleMixins,
   targetType: PCSourceTagNames.ELEMENT,
   children: EMPTY_ARRAY,
   metadata: EMPTY_OBJECT
@@ -909,11 +909,8 @@ export const getComponentRefIds = memoize(
             iss = [...iss, node.is];
           }
 
-          if ((node as PCVisibleNode).inheritStyle) {
-            iss = [
-              ...iss,
-              ...Object.keys((node as PCVisibleNode).inheritStyle)
-            ];
+          if ((node as PCVisibleNode).styleMixins) {
+            iss = [...iss, ...Object.keys((node as PCVisibleNode).styleMixins)];
           }
           return iss;
         },
@@ -924,9 +921,9 @@ export const getComponentRefIds = memoize(
 );
 
 export const getSortedStyleMixinIds = memoize(
-  (node: PCVisibleNode | PCStyleMixin) => {
-    return Object.keys(node.inheritStyle).sort((a, b) => {
-      return node.inheritStyle[a].priority > node.inheritStyle[b].priority
+  (node: PCVisibleNode | PCStyleMixin | PCComponent) => {
+    return Object.keys(node.styleMixins || EMPTY_OBJECT).sort((a, b) => {
+      return node.styleMixins[a].priority > node.styleMixins[b].priority
         ? -1
         : 1;
     });
@@ -939,23 +936,15 @@ export const computePCNodeStyle = memoize(
     componentRefs: KeyValue<PCComponent>,
     varMap: KeyValue<PCVariable>
   ) => {
-    if (!node.inheritStyle) {
+    if (!node.styleMixins) {
       return computeStyleWithVars(node.style, varMap);
     }
 
     let style = {};
 
-    const inheritStyleComponentIds = Object.keys(
-      node.inheritStyle || EMPTY_OBJECT
-    )
-      .filter(key => node.inheritStyle[key])
-      .sort((a, b) => {
-        return node.inheritStyle[a].priority > node.inheritStyle[b].priority
-          ? 1
-          : -1;
-      });
-    for (let i = 0, { length } = inheritStyleComponentIds; i < length; i++) {
-      const inheritComponent = componentRefs[inheritStyleComponentIds[i]];
+    const styleMixinIds = getSortedStyleMixinIds(node);
+    for (let i = 0, { length } = styleMixinIds; i < length; i++) {
+      const inheritComponent = componentRefs[styleMixinIds[i]];
       if (!inheritComponent) {
         continue;
       }
@@ -1103,8 +1092,8 @@ export const getStyleVariableGraphRefs = memoize(
       allRefs.push(variable);
     }
 
-    if ((node as PCVisibleNode).inheritStyle) {
-      for (const styleMixinId in (node as PCVisibleNode).inheritStyle) {
+    if ((node as PCVisibleNode).styleMixins) {
+      for (const styleMixinId in (node as PCVisibleNode).styleMixins) {
         const styleMixin = getPCNode(styleMixinId, graph);
 
         // may have been deleted, or is new

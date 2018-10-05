@@ -232,7 +232,7 @@
                   "style": {},
                   "children": [],
                   "metadata": {},
-                  "inheritStyle": {}
+                  "styleMixins": {}
                 },
                 {
                   "id": "a4d4c3d71",
@@ -320,7 +320,7 @@
         },
         {
           "id": "d19a927258",
-          "propertyName": "inheritStyle",
+          "propertyName": "styleMixins",
           "targetIdPath": [
             "b6c162d140"
           ],

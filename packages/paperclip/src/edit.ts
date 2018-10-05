@@ -638,13 +638,13 @@ export const persistConvertSyntheticVisibleNodeStyleToMixin = <
     styleMixin = createPCTextStyleMixin(
       style,
       (node as SyntheticTextNode).value,
-      sourceNode.inheritStyle,
+      sourceNode.styleMixins,
       newLabel
     );
   } else if (isElementLikePCNode(sourceNode)) {
     styleMixin = createPCElementStyleMixin(
       style,
-      sourceNode.inheritStyle,
+      sourceNode.styleMixins,
       newLabel
     );
   }
@@ -664,7 +664,7 @@ export const persistConvertSyntheticVisibleNodeStyleToMixin = <
     {
       [styleMixin.id]: {
         // TODO - this needs to be part of the variant
-        priority: Object.keys(sourceNode.inheritStyle || EMPTY_OBJECT).length
+        priority: Object.keys(sourceNode.styleMixins || EMPTY_OBJECT).length
       }
     },
     node,
@@ -911,7 +911,7 @@ export const persistRemoveVariantOverride = <TState extends PCEditorState>(
 };
 
 export const persistInheritStyle = <TState extends PCEditorState>(
-  inheritStyle: InheritStyle,
+  styleMixins: InheritStyle,
   node: SyntheticVisibleNode,
   variant: PCVariant,
   state: TState
@@ -919,7 +919,7 @@ export const persistInheritStyle = <TState extends PCEditorState>(
   const sourceNode = getSyntheticSourceNode(node, state.graph) as PCVisibleNode;
   // const sourceNode = maybeOverride(
   //   PCOverridablePropertyName.INHERIT_STYLE,
-  //   inheritStyle,
+  //   styleMixins,
   //   variant,
   //   (value, override) => {
   //     const prevStyle = (override && override.value) || EMPTY_OBJECT;
@@ -930,9 +930,9 @@ export const persistInheritStyle = <TState extends PCEditorState>(
   //   },
   //   (node: PCBaseVisibleNode<any>) => ({
   //     ...node,
-  //     inheritStyle: omitNull({
-  //       ...(node.inheritStyle || EMPTY_OBJECT),
-  //       ...inheritStyle
+  //     styleMixins: omitNull({
+  //       ...(node.styleMixins || EMPTY_OBJECT),
+  //       ...styleMixins
   //     })
   //   })
   // )(node, state.documents, state.graph);
@@ -940,9 +940,9 @@ export const persistInheritStyle = <TState extends PCEditorState>(
   state = replaceDependencyGraphPCNode(
     {
       ...sourceNode,
-      inheritStyle: omitNull({
-        ...(sourceNode.inheritStyle || EMPTY_OBJECT),
-        ...inheritStyle
+      styleMixins: omitNull({
+        ...(sourceNode.styleMixins || EMPTY_OBJECT),
+        ...styleMixins
       })
     } as PCVisibleNode,
     sourceNode,
@@ -973,10 +973,10 @@ export const persistInheritStyleComponentId = <TState extends PCEditorState>(
   //   },
   //   (node: PCBaseVisibleNode<any>) => ({
   //     ...node,
-  // inheritStyle: {
-  //   ...(node.inheritStyle || EMPTY_OBJECT),
+  // styleMixins: {
+  //   ...(node.styleMixins || EMPTY_OBJECT),
   //   [oldComponentId]: undefined,
-  //   [newComponentId]: node.inheritStyle[oldComponentId]
+  //   [newComponentId]: node.styleMixins[oldComponentId]
   // }
   //   })
   // )(node, state.documents, state.graph);
@@ -985,10 +985,10 @@ export const persistInheritStyleComponentId = <TState extends PCEditorState>(
   state = replaceDependencyGraphPCNode(
     {
       ...sourceNode,
-      inheritStyle: {
-        ...(sourceNode.inheritStyle || EMPTY_OBJECT),
+      styleMixins: {
+        ...(sourceNode.styleMixins || EMPTY_OBJECT),
         [oldComponentId]: undefined,
-        [newComponentId]: sourceNode.inheritStyle[oldComponentId]
+        [newComponentId]: sourceNode.styleMixins[oldComponentId]
       }
     } as PCVisibleNode,
     sourceNode,

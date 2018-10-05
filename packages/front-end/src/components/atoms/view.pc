@@ -72,7 +72,7 @@
           "bottom": 119
         }
       },
-      "inheritStyle": {
+      "styleMixins": {
         "dc3b39eb1275": {
           "priority": 0
         }

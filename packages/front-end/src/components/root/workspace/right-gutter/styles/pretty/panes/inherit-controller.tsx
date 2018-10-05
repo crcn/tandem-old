@@ -77,11 +77,11 @@ export default (Base: React.ComponentClass<BaseInheritProps>) => {
           : PCSourceTagNames.TEXT
       );
 
-      const items = Object.keys(sourceNode.inheritStyle || EMPTY_OBJECT)
-        .filter(k => Boolean(sourceNode.inheritStyle[k]))
+      const items = Object.keys(sourceNode.styleMixins || EMPTY_OBJECT)
+        .filter(k => Boolean(sourceNode.styleMixins[k]))
         .sort((a, b) => {
-          return sourceNode.inheritStyle[a].priority >
-            sourceNode.inheritStyle[b].priority
+          return sourceNode.styleMixins[a].priority >
+            sourceNode.styleMixins[b].priority
             ? -1
             : 1;
         })

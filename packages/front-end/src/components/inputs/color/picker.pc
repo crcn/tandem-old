@@ -1068,30 +1068,6 @@
         }
       },
       "variant": {}
-    },
-    {
-      "id": "3e20432f1584",
-      "name": "text",
-      "label": "Text",
-      "value": "Click to edit",
-      "style": {},
-      "children": [],
-      "metadata": {
-        "bounds": {
-          "left": -191.86628147456537,
-          "top": 168.14330167013392,
-          "right": -91.86628147456537,
-          "bottom": 268.14330167013395
-        }
-      },
-      "inheritStyle": {
-        "33b5126b196": {
-          "priority": 1
-        },
-        "dc3b39eb1275": {
-          "priority": 2
-        }
-      }
     }
   ]
 }

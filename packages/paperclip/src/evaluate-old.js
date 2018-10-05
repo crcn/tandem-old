@@ -210,21 +210,21 @@ const evaluateStyle = (
   overrides: EvalOverrides
 ) => {
   const style = {};
-  const inheritStyle = {};
+  const styleMixins = {};
 
-  if (node.inheritStyle) {
-    Object.assign(inheritStyle, node.inheritStyle);
+  if (node.styleMixins) {
+    Object.assign(styleMixins, node.styleMixins);
   }
 
-  if (overrides[selfPath] && overrides[selfPath].inheritStyle) {
-    Object.assign(inheritStyle, overrides[selfPath].inheritStyle);
+  if (overrides[selfPath] && overrides[selfPath].styleMixins) {
+    Object.assign(styleMixins, overrides[selfPath].styleMixins);
   }
 
-  const componentIds = Object.keys(inheritStyle)
-    .filter(b => inheritStyle[b])
+  const componentIds = Object.keys(styleMixins)
+    .filter(b => styleMixins[b])
     .sort(
       (a, b) =>
-        inheritStyle[a].priority > node.inheritStyle[b].priority ? 1 : -1
+        styleMixins[a].priority > node.styleMixins[b].priority ? 1 : -1
     );
   for (const componentId of componentIds) {
     if (!componentMap[componentId]) {
@@ -601,11 +601,11 @@ const registerOverrides = (
     );
   }
 
-  if (node.inheritStyle) {
+  if (node.styleMixins) {
     registerOverride(
       null,
       PCOverridablePropertyName.INHERIT_STYLE,
-      node.inheritStyle,
+      node.styleMixins,
       selfPath,
       overrides
     );
@@ -639,7 +639,7 @@ const registerOverrides = (
           text: null,
           style: null,
           isDefault: false,
-          inheritStyle: null,
+          styleMixins: null,
           label: null,
           children: evaluateChildren(
             child,
@@ -697,7 +697,7 @@ const registerOverride = (
   if (!overrides[nodePath]) {
     overrides[nodePath] = {
       style: null,
-      inheritStyle: null,
+      styleMixins: null,
       attributes: null,
       children: null,
       isDefault: null,

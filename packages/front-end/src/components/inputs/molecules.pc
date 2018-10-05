@@ -35,7 +35,7 @@
                   "style": {},
                   "children": [],
                   "metadata": {},
-                  "inheritStyle": {
+                  "styleMixins": {
                     "33b5126b196": {
                       "priority": 0
                     }
@@ -117,7 +117,7 @@
           "bottom": 229.87588974954872
         }
       },
-      "inheritStyle": {
+      "styleMixins": {
         "dc3b39eb1275": {
           "priority": 0
         }

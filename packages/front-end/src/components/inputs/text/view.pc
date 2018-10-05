@@ -31,7 +31,7 @@
         "./controller.tsx"
       ],
       "variant": {},
-      "inheritStyle": {
+      "styleMixins": {
         "c29da5f4213993": {
           "priority": 0
         }

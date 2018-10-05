@@ -83,28 +83,8 @@ export const computeStyleInfo = memoize(
         Object.assign(style, sourceNode.style);
       }
 
-      if (options.inheritedStyles !== false && sourceNode.inheritStyle) {
+      if (options.inheritedStyles !== false && sourceNode.styleMixins) {
         style = computeMixinStyle(sourceNode as PCVisibleNode, graph, false);
-        // for (const styleMixinId in sourceNode.inheritStyle) {
-        //   const styleMixinInspectorNode = getInspectorNodeByAssocId(
-        //     styleMixinId,
-        //     rootInspectorNode
-        //   );
-
-        //   if (!styleMixinInspectorNode) {
-        //     continue;
-        //   }
-
-        //   defaults(
-        //     style,
-        //     computeStyleInfo(
-        //       toArray(styleMixinInspectorNode),
-        //       rootInspectorNode,
-        //       null,
-        //       graph
-        //     ).style
-        //   );
-        // }
       }
 
       if (options.overrides !== false) {
@@ -146,7 +126,7 @@ const computeMixinStyle = (
   if (includeSelf) {
     Object.assign(style, node.style);
   }
-  if (node.inheritStyle) {
+  if (node.styleMixins) {
     const sortedStyleMixinIds = getSortedStyleMixinIds(node);
     for (const styleMixinId of sortedStyleMixinIds) {
       const styleMixin = getPCNode(styleMixinId, graph) as PCStyleMixin;

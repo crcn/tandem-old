@@ -119,7 +119,7 @@
                           },
                           "children": [],
                           "metadata": {},
-                          "inheritStyle": {
+                          "styleMixins": {
                             "dc3b39eb1275": {
                               "priority": 0
                             }
@@ -154,7 +154,7 @@
                         }
                       ],
                       "metadata": {},
-                      "inheritStyle": {
+                      "styleMixins": {
                         "c29da5f4213993": {
                           "priority": 0
                         }
@@ -488,7 +488,7 @@
             },
             {
               "id": "c29da5f4830054",
-              "propertyName": "inheritStyle",
+              "propertyName": "styleMixins",
               "targetIdPath": [
                 "67e386c7935"
               ],

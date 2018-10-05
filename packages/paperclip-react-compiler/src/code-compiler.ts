@@ -240,7 +240,7 @@ const translateComponentStyleInner = (
       context = addOpenTag(`"._${node.id} {" + \n`, context);
       context = translateStyle(
         node,
-        { ...getInheritedStyle(node.inheritStyle, context), ...node.style },
+        { ...getInheritedStyle(node.styleMixins, context), ...node.style },
         context
       );
       context = addCloseTag(`"}" + \n`, context);
@@ -267,17 +267,17 @@ const SVG_STYLE_PROP_MAP = {
 };
 
 const getInheritedStyle = (
-  inheritStyle: InheritStyle,
+  styleMixins: InheritStyle,
   context: TranslateContext,
   computed = {}
 ) => {
-  if (!inheritStyle) {
+  if (!styleMixins) {
     return {};
   }
-  const styleMixinIds = Object.keys(inheritStyle)
-    .filter(a => Boolean(inheritStyle[a]))
+  const styleMixinIds = Object.keys(styleMixins)
+    .filter(a => Boolean(styleMixins[a]))
     .sort(
-      (a, b) => (inheritStyle[a].priority > inheritStyle[b].priority ? 1 : -1)
+      (a, b) => (styleMixins[a].priority > styleMixins[b].priority ? 1 : -1)
     );
 
   return styleMixinIds.reduce((style, styleMixinId) => {
@@ -288,7 +288,7 @@ const getInheritedStyle = (
     const compStyle =
       computed[styleMixinId] ||
       (computed[styleMixinId] = {
-        ...getInheritedStyle(styleMixin.inheritStyle, context, computed),
+        ...getInheritedStyle(styleMixin.styleMixins, context, computed),
         ...styleMixin.style
       });
     return { ...style, ...compStyle };
@@ -1101,7 +1101,7 @@ const getNodePropsVarName = (
 const hasStyle = (node: PCVisibleNode | PCComponent) => {
   return (
     Object.keys(node.style).length > 0 ||
-    (node.inheritStyle && Object.keys(node.inheritStyle).length > 0)
+    (node.styleMixins && Object.keys(node.styleMixins).length > 0)
   );
 };
 

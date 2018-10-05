@@ -1740,7 +1740,7 @@ export const canvasReducer = (state: RootState, action: Action) => {
         state = persistInheritStyle(
           {
             [Date.now()]: {
-              priority: Object.keys(sourceNode.inheritStyle || EMPTY_OBJECT)
+              priority: Object.keys(sourceNode.styleMixins || EMPTY_OBJECT)
                 .length
             }
           },
