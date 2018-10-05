@@ -758,6 +758,40 @@
       "name": "component",
       "children": [
         {
+          "id": "52771059438",
+          "is": "50e32bec2591",
+          "label": "Dropdown",
+          "name": "component-instance",
+          "attributes": {},
+          "style": {
+            "margin-bottom": "8px",
+            "margin-top": "4px",
+            "display": "none"
+          },
+          "children": [
+            {
+              "id": "527710593085",
+              "variantId": null,
+              "propertyName": "text",
+              "targetIdPath": [
+                "67e386c7935"
+              ],
+              "value": "Global colors",
+              "name": "override",
+              "children": []
+            }
+          ],
+          "metadata": {
+            "bounds": {
+              "left": 133,
+              "top": 279,
+              "right": 334,
+              "bottom": 521.2360321797468
+            }
+          },
+          "variant": {}
+        },
+        {
           "id": "b9d1103b3",
           "label": "Element",
           "is": "div",
