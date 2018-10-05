@@ -1,6 +1,6 @@
 {
   "name": "tandem-front-end",
-  "version": "10.0.27",
+  "version": "10.0.28",
   "description": "Visual editor for web components",
   "main": "index.js",
   "scripts": {
@@ -41,7 +41,7 @@
     "mocha": "^3.4.2",
     "node-sass": "^4.7.2",
     "null-loader": "^0.1.1",
-    "paperclip-react-loader": "^10.0.26",
+    "paperclip-react-loader": "^10.0.28",
     "react-hot-loader": "^3.1.2",
     "sass-loader": "^7.0.3",
     "source-map": "^0.5.7",
@@ -69,7 +69,7 @@
     "lodash": "^4.17.10",
     "md5": "^2.2.1",
     "mousetrap": "^1.6.1",
-    "paperclip": "^10.0.26",
+    "paperclip": "^10.0.28",
     "paperclip-migrator": "^10.0.26",
     "react": "^16.4.2",
     "react-dnd": "^5.0.0",
