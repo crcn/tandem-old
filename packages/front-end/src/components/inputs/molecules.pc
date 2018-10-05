@@ -21,7 +21,9 @@
           "is": "div",
           "name": "element",
           "attributes": {},
-          "style": {},
+          "style": {
+            "margin-bottom": "4px"
+          },
           "children": [
             {
               "label": "label",
@@ -32,7 +34,9 @@
                   "name": "text",
                   "label": "Text",
                   "value": "Label",
-                  "style": {},
+                  "style": {
+                    "margin-bottom": "unset"
+                  },
                   "children": [],
                   "metadata": {},
                   "styleMixins": {

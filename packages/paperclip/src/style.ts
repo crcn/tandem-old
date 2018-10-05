@@ -84,7 +84,10 @@ export const computeStyleInfo = memoize(
       }
 
       if (options.inheritedStyles !== false && sourceNode.styleMixins) {
-        style = computeMixinStyle(sourceNode as PCVisibleNode, graph, false);
+        defaults(
+          style,
+          computeMixinStyle(sourceNode as PCVisibleNode, graph, false)
+        );
       }
 
       if (options.overrides !== false) {

@@ -922,11 +922,13 @@ export const getComponentRefIds = memoize(
 
 export const getSortedStyleMixinIds = memoize(
   (node: PCVisibleNode | PCStyleMixin | PCComponent) => {
-    return Object.keys(node.styleMixins || EMPTY_OBJECT).sort((a, b) => {
-      return node.styleMixins[a].priority > node.styleMixins[b].priority
-        ? -1
-        : 1;
-    });
+    return Object.keys(node.styleMixins || EMPTY_OBJECT)
+      .filter(nodeId => Boolean(node.styleMixins[nodeId]))
+      .sort((a, b) => {
+        return node.styleMixins[a].priority > node.styleMixins[b].priority
+          ? -1
+          : 1;
+      });
   }
 );
 
