@@ -36,8 +36,7 @@
                     "box-sizing": "border-box",
                     "display": "block",
                     "padding-bottom": "4px",
-                    "font-size": "8px",
-                    "color": "--d8f6340b1442"
+                    "font-size": "8px"
                   },
                   "children": [
                     {
@@ -48,11 +47,7 @@
                           "name": "text",
                           "label": "Text",
                           "value": "Label",
-                          "style": {
-                            "color": "--d8f6340b1442",
-                            "font-family": "--22702c5f1086",
-                            "padding-bottom": "4px"
-                          },
+                          "style": {},
                           "children": [],
                           "metadata": {}
                         }

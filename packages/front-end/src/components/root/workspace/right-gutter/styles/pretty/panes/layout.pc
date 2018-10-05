@@ -90,36 +90,25 @@
           "children": [
             {
               "id": "80232641803",
-              "is": "9672de3b377339",
+              "is": "7149f8192509",
               "name": "component-instance",
               "attributes": {},
               "style": {},
               "children": [
                 {
-                  "id": "802326414789",
-                  "variantId": null,
-                  "propertyName": "text",
-                  "targetIdPath": [
-                    "9672de3b390342"
-                  ],
-                  "value": "Display",
-                  "name": "override",
-                  "children": []
-                },
-                {
-                  "slotId": "8023264116860",
-                  "id": "8023264128372",
+                  "slotId": "e73029b416045",
+                  "id": "74a0e29115699",
                   "children": [
                     {
-                      "id": "aec1d08b2308",
-                      "variant": {},
+                      "id": "74a0e29115698",
                       "is": "d2bdce074664",
+                      "label": "display input",
                       "name": "component-instance",
                       "attributes": {},
                       "style": {},
                       "children": [
                         {
-                          "id": "c780a51d2308",
+                          "id": "74a0e29116752",
                           "variantId": null,
                           "propertyName": "text",
                           "targetIdPath": [
@@ -132,17 +121,39 @@
                       ],
                       "metadata": {
                         "bounds": {
-                          "left": 18,
-                          "top": 339,
-                          "right": 218.8212880775559,
-                          "bottom": 439
+                          "left": 779,
+                          "top": 247,
+                          "right": 980,
+                          "bottom": 334.77512727534497
                         }
                       },
-                      "label": "Display Input"
+                      "variant": {}
                     }
                   ],
                   "metadata": {},
                   "name": "plug"
+                },
+                {
+                  "id": "74a0e29124117",
+                  "variantId": null,
+                  "propertyName": "text",
+                  "targetIdPath": [
+                    "7149f8192506"
+                  ],
+                  "value": "Display",
+                  "name": "override",
+                  "children": []
+                },
+                {
+                  "id": "74a0e29131482",
+                  "variantId": null,
+                  "propertyName": "text",
+                  "targetIdPath": [
+                    "38fc2a4724622"
+                  ],
+                  "value": "Display",
+                  "name": "override",
+                  "children": []
                 }
               ],
               "metadata": {
@@ -153,9 +164,7 @@
                   "bottom": 597.5183718636592
                 }
               },
-              "variant": {
-                "9672de3b425023": false
-              }
+              "variant": {}
             },
             {
               "id": "6b3dde2e16265",
