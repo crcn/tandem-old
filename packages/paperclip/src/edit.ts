@@ -498,6 +498,12 @@ export const upsertFrames = <TState extends PCEditorState>(state: TState) => {
         contentNode as SyntheticNode,
         state.graph
       );
+
+      // synthetic document may be out of sync
+      if (!sourceNode) {
+        continue;
+      }
+
       const existingFrame = framesByContentNodeId[contentNode.id];
 
       if (existingFrame) {
