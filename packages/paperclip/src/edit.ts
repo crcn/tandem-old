@@ -916,27 +916,38 @@ export const persistInheritStyle = <TState extends PCEditorState>(
   variant: PCVariant,
   state: TState
 ) => {
-  const sourceNode = maybeOverride(
-    PCOverridablePropertyName.INHERIT_STYLE,
-    inheritStyle,
-    variant,
-    (value, override) => {
-      const prevStyle = (override && override.value) || EMPTY_OBJECT;
-      return overrideKeyValue(node.style, prevStyle, {
-        ...prevStyle,
-        ...value
-      });
-    },
-    (node: PCBaseVisibleNode<any>) => ({
-      ...node,
+  const sourceNode = getSyntheticSourceNode(node, state.graph) as PCVisibleNode;
+  // const sourceNode = maybeOverride(
+  //   PCOverridablePropertyName.INHERIT_STYLE,
+  //   inheritStyle,
+  //   variant,
+  //   (value, override) => {
+  //     const prevStyle = (override && override.value) || EMPTY_OBJECT;
+  //     return overrideKeyValue(node.style, prevStyle, {
+  //       ...prevStyle,
+  //       ...value
+  //     });
+  //   },
+  //   (node: PCBaseVisibleNode<any>) => ({
+  //     ...node,
+  //     inheritStyle: omitNull({
+  //       ...(node.inheritStyle || EMPTY_OBJECT),
+  //       ...inheritStyle
+  //     })
+  //   })
+  // )(node, state.documents, state.graph);
+
+  state = replaceDependencyGraphPCNode(
+    {
+      ...sourceNode,
       inheritStyle: omitNull({
-        ...(node.inheritStyle || EMPTY_OBJECT),
+        ...(sourceNode.inheritStyle || EMPTY_OBJECT),
         ...inheritStyle
       })
-    })
-  )(node, state.documents, state.graph);
-
-  state = replaceDependencyGraphPCNode(sourceNode, sourceNode, state);
+    } as PCVisibleNode,
+    sourceNode,
+    state
+  );
 
   return state;
 };
@@ -948,29 +959,43 @@ export const persistInheritStyleComponentId = <TState extends PCEditorState>(
   variant: PCVariant,
   state: TState
 ) => {
-  const sourceNode = maybeOverride(
-    PCOverridablePropertyName.INHERIT_STYLE,
-    null,
-    variant,
-    (value, override) => {
-      const prevStyle = (override && override.value) || EMPTY_OBJECT;
-      return overrideKeyValue(node.style, prevStyle, {
-        ...prevStyle,
-        [oldComponentId]: undefined,
-        [newComponentId]: prevStyle[oldComponentId] || { priority: 0 }
-      });
-    },
-    (node: PCBaseVisibleNode<any>) => ({
-      ...node,
-      inheritStyle: {
-        ...(node.inheritStyle || EMPTY_OBJECT),
-        [oldComponentId]: undefined,
-        [newComponentId]: node.inheritStyle[oldComponentId]
-      }
-    })
-  )(node, state.documents, state.graph);
+  // const sourceNode = maybeOverride(
+  //   PCOverridablePropertyName.INHERIT_STYLE,
+  //   null,
+  //   variant,
+  //   (value, override) => {
+  //     const prevStyle = (override && override.value) || EMPTY_OBJECT;
+  //     return overrideKeyValue(node.style, prevStyle, {
+  //       ...prevStyle,
+  //       [oldComponentId]: undefined,
+  //       [newComponentId]: prevStyle[oldComponentId] || { priority: 0 }
+  //     });
+  //   },
+  //   (node: PCBaseVisibleNode<any>) => ({
+  //     ...node,
+  // inheritStyle: {
+  //   ...(node.inheritStyle || EMPTY_OBJECT),
+  //   [oldComponentId]: undefined,
+  //   [newComponentId]: node.inheritStyle[oldComponentId]
+  // }
+  //   })
+  // )(node, state.documents, state.graph);
+  const sourceNode = getSyntheticSourceNode(node, state.graph) as PCVisibleNode;
 
-  state = replaceDependencyGraphPCNode(sourceNode, sourceNode, state);
+  state = replaceDependencyGraphPCNode(
+    {
+      ...sourceNode,
+      inheritStyle: {
+        ...(sourceNode.inheritStyle || EMPTY_OBJECT),
+        [oldComponentId]: undefined,
+        [newComponentId]: sourceNode.inheritStyle[oldComponentId]
+      }
+    } as PCVisibleNode,
+    sourceNode,
+    state
+  );
+
+  // state = replaceDependencyGraphPCNode(sourceNode, sourceNode, state);
 
   return state;
 };

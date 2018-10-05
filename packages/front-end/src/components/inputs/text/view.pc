@@ -9,10 +9,11 @@
       "is": "input",
       "style": {
         "width": "100%",
-        "padding": "4px 8px",
-        "border-radius": "2px",
-        "border": "1px solid --d8f6340b1442",
-        "box-sizing": "border-box"
+        "box-sizing": "border-box",
+        "padding-left": "8px",
+        "padding-top": "4px",
+        "padding-right": "4px",
+        "padding-bottom": "8px"
       },
       "attributes": {},
       "id": "7149f8199122",
@@ -29,7 +30,12 @@
       "controllers": [
         "./controller.tsx"
       ],
-      "variant": {}
+      "variant": {},
+      "inheritStyle": {
+        "c29da5f4213993": {
+          "priority": 0
+        }
+      }
     },
     {
       "id": "2c83e997767",

@@ -9,7 +9,7 @@
       "label": "label font",
       "style": {
         "font-family": "Avenir Next",
-        "color": "rgba(230, 230, 230, 1)",
+        "color": "rgba(180, 180, 180, 1)",
         "font-size": "0.8em",
         "margin-bottom": "4px",
         "display": "inline-block",
@@ -37,17 +37,18 @@
       "label": "Base font",
       "style": {
         "font-family": "Avenir Next",
-        "color": "rgba(136, 136, 136, 1)"
+        "color": "rgba(136, 136, 136, 1)",
+        "font-size": "12px"
       },
       "value": "Base font",
       "targetType": "text",
       "children": [],
       "metadata": {
         "bounds": {
-          "left": 606,
-          "top": 95,
-          "right": 695,
-          "bottom": 120
+          "left": 578,
+          "top": 33,
+          "right": 667,
+          "bottom": 58
         }
       }
     },
@@ -74,6 +75,28 @@
       "inheritStyle": {
         "dc3b39eb1275": {
           "priority": 0
+        }
+      }
+    },
+    {
+      "id": "c29da5f4213993",
+      "label": "Default border",
+      "name": "style-mixin",
+      "style": {
+        "border-bottom-left-radius": "2px",
+        "border-top-left-radius": "2px",
+        "border-top-right-radius": "2px",
+        "border-bottom-right-radius": "2px",
+        "border": "1px solid rgba(180, 180, 180, 1)"
+      },
+      "targetType": "element",
+      "children": [],
+      "metadata": {
+        "bounds": {
+          "left": 802,
+          "top": -80,
+          "right": 902,
+          "bottom": 20
         }
       }
     }
