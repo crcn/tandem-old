@@ -12,7 +12,9 @@ import {
   getAllStyleMixins,
   PCSourceTagNames,
   PCComponent,
-  PCStyleMixin
+  PCStyleMixin,
+  isElementLikePCNode,
+  getNativeComponentName
 } from "paperclip";
 import {
   inheritPaneAddButtonClick,
@@ -68,12 +70,10 @@ export default (Base: React.ComponentClass<BaseInheritProps>) => {
 
       const allStyleMixins = getAllStyleMixins(
         graph,
-        sourceNode.name === PCSourceTagNames.COMPONENT ||
-        sourceNode.name === PCSourceTagNames.COMPONENT_INSTANCE ||
-        sourceNode.name === PCSourceTagNames.ELEMENT ||
-        (sourceNode.name === PCSourceTagNames.STYLE_MIXIN &&
-          sourceNode.targetType === PCSourceTagNames.ELEMENT)
-          ? PCSourceTagNames.ELEMENT
+        isElementLikePCNode(sourceNode)
+          ? getNativeComponentName(sourceNode, graph) === "input"
+            ? null
+            : PCSourceTagNames.ELEMENT
           : PCSourceTagNames.TEXT
       );
 

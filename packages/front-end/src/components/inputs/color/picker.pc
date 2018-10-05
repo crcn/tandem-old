@@ -219,9 +219,7 @@
         "flex-shrink": "0",
         "margin-top": "10px",
         "display": "flex",
-        "align-items": "center",
-        "font-family": "--22702c5f1086",
-        "color": "--24ce1e4d482"
+        "align-items": "center"
       },
       "attributes": {},
       "id": "d227ff68422143",
@@ -237,7 +235,12 @@
             "margin-right": "8px"
           },
           "children": [],
-          "metadata": {}
+          "metadata": {},
+          "styleMixins": {
+            "dc3b39eb1275": {
+              "priority": 0
+            }
+          }
         },
         {
           "id": "d227ff68422139",
@@ -335,9 +338,7 @@
         "flex-shrink": "0",
         "margin-top": "10px",
         "display": "flex",
-        "align-items": "center",
-        "font-family": "--22702c5f1086",
-        "color": "--24ce1e4d482"
+        "align-items": "center"
       },
       "attributes": {},
       "id": "d227ff68507402",
@@ -349,11 +350,15 @@
           "label": "Label",
           "value": "HSLA",
           "style": {
-            "font-size": "0.8em",
             "margin-right": "8px"
           },
           "children": [],
-          "metadata": {}
+          "metadata": {},
+          "styleMixins": {
+            "dc3b39eb1275": {
+              "priority": 0
+            }
+          }
         },
         {
           "id": "d227ff68507399",
@@ -455,9 +460,7 @@
         "flex-shrink": "0",
         "margin-top": "10px",
         "display": "flex",
-        "align-items": "center",
-        "font-family": "--22702c5f1086",
-        "color": "--24ce1e4d482"
+        "align-items": "center"
       },
       "attributes": {},
       "id": "d227ff68554496",
@@ -469,7 +472,6 @@
           "label": "Label",
           "value": "HEX",
           "style": {
-            "font-size": "0.8em",
             "margin-right": "8px"
           },
           "children": [],
@@ -479,6 +481,11 @@
               "top": 230.5,
               "right": 326.90625,
               "bottom": 245.5
+            }
+          },
+          "styleMixins": {
+            "dc3b39eb1275": {
+              "priority": 0
             }
           }
         },

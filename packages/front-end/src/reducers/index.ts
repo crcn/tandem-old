@@ -170,7 +170,9 @@ import {
   ResetPropertyOptionClicked,
   EXPORT_NAME_CHANGED,
   ExportNameChanged,
-  SYNTHETIC_NODE_CONTEXT_MENU_CONVERT_TO_STYLE_MIXIN_CLICKED
+  SYNTHETIC_NODE_CONTEXT_MENU_CONVERT_TO_STYLE_MIXIN_CLICKED,
+  QUICK_SEARCH_RESULT_ITEM_SPLIT_BUTTON_CLICKED,
+  QuickSearchResultItemSplitButtonClicked
 } from "../actions";
 import {
   queueOpenFile,
@@ -1628,6 +1630,14 @@ export const canvasReducer = (state: RootState, action: Action) => {
       return state;
     }
 
+    case QUICK_SEARCH_RESULT_ITEM_SPLIT_BUTTON_CLICKED: {
+      const { item } = action as QuickSearchResultItemSplitButtonClicked;
+      if (item.type === QuickSearchResultType.URI) {
+        state = openFile(item.uri, false, true, state);
+      }
+      return state;
+    }
+
     case FRAME_MODE_CHANGE_COMPLETE: {
       const { frame, mode } = action as FrameModeChangeComplete;
       state = persistRootState(state => {
@@ -1666,7 +1676,8 @@ export const canvasReducer = (state: RootState, action: Action) => {
             state.documents
           ),
           state.selectedVariant,
-          state
+          state,
+          false
         );
       }, state);
       return state;

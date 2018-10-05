@@ -24,7 +24,11 @@ import {
   ComputedStyleInfo,
   InspectorNode,
   PCSourceTagNames,
-  isTextLikePCNode
+  isTextLikePCNode,
+  isVoidTagName,
+  isElementLikePCNode,
+  getNativeComponentName,
+  DependencyGraph
 } from "paperclip";
 import { mapVariablesToCSSVarDropdownOptions } from "./utils";
 import { mapPCVariablesToColorSwatchOptions } from "../../state";
@@ -85,6 +89,7 @@ export type Props = {
   computedStyleInfo: ComputedStyleInfo;
   fontFamilies: FontFamily[];
   documentColors: string[];
+  graph: DependencyGraph;
   globalVariables: PCVariable[];
 };
 
@@ -101,15 +106,22 @@ export default (Base: React.ComponentClass<BaseTypographProps>) =>
     render() {
       const { onPropertyChange, onPropertyChangeComplete } = this;
       const {
+        graph,
         fontFamilies,
         globalVariables,
         documentColors,
         computedStyleInfo
       } = this.props;
       const { sourceNodes } = computedStyleInfo;
+      const sourceNode = sourceNodes[0];
 
-      // Typography pane is only available to text nodes to prevent cascading styles
-      if (!isTextLikePCNode(sourceNodes[0])) {
+      // Typography pane is only available to text nodes to prevent cascading styles, and void tags (like input) that
+      // cannot have children
+      if (
+        !isTextLikePCNode(sourceNodes[0]) ||
+        (isElementLikePCNode(sourceNode) &&
+          getNativeComponentName(sourceNode, graph) === "input")
+      ) {
         return null;
       }
       const fontVariables = filterVariablesByType(

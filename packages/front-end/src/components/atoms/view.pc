@@ -99,6 +99,27 @@
           "bottom": 20
         }
       }
+    },
+    {
+      "id": "61225017220906",
+      "name": "style-mixin",
+      "label": "Nowrap ellipsis",
+      "style": {
+        "overflow": "hidden",
+        "text-overflow": "ellipsis",
+        "white-space": "nowrap"
+      },
+      "value": "Super long text that should be ellipsises",
+      "targetType": "text",
+      "children": [],
+      "metadata": {
+        "bounds": {
+          "left": 912,
+          "top": -139,
+          "right": 1012,
+          "bottom": -39
+        }
+      }
     }
   ],
   "metadata": {}

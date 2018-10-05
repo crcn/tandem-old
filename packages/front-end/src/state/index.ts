@@ -854,7 +854,21 @@ export const openEditorFileUri = (
 ): RootState => {
   const editor =
     getEditorWindowWithFileUri(uri, state) ||
-    (secondaryTab ? null : state.editorWindows[0]);
+    (secondaryTab
+      ? state.editorWindows.length > 1
+        ? state.editorWindows[1]
+        : null
+      : state.editorWindows[0]);
+
+  if (
+    secondaryTab &&
+    editor === state.editorWindows[0] &&
+    editor.tabUris.length > 1
+  ) {
+    state = closeEditorWindowUri(uri, state);
+    state = openEditorFileUri(uri, true, state);
+    return state;
+  }
 
   return {
     ...state,
@@ -925,9 +939,8 @@ const removeEditorWindow = (
   };
 };
 
-export const closeFile = (uri: string, state: RootState): RootState => {
+const closeEditorWindowUri = (uri: string, state: RootState): RootState => {
   const editorWindow = getEditorWindowWithFileUri(uri, state);
-
   if (editorWindow.tabUris.length === 1) {
     state = removeEditorWindow(editorWindow, state);
   } else {
@@ -945,6 +958,11 @@ export const closeFile = (uri: string, state: RootState): RootState => {
 
     state = updateRootState({ activeEditorFilePath: nextActiveUri }, state);
   }
+  return state;
+};
+
+export const closeFile = (uri: string, state: RootState): RootState => {
+  state = closeEditorWindowUri(uri, state);
 
   state = updateRootState(
     {

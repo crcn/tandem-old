@@ -53,8 +53,9 @@
                     "box-sizing": "border-box",
                     "background": "red",
                     "width": "100%",
-                    "height": "22px",
-                    "cursor": "pointer"
+                    "height": "23px",
+                    "cursor": "pointer",
+                    "display": "block"
                   },
                   "children": [],
                   "metadata": {}

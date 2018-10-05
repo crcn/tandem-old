@@ -83,6 +83,7 @@ export default (Base: React.ComponentClass<BaseElementStylerProps>) =>
             graph
           }}
           typographyPaneProps={{
+            graph,
             dispatch,
             documentColors,
             computedStyleInfo,

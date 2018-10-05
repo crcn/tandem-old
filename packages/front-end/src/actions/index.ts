@@ -190,6 +190,8 @@ export const PROJECT_DIRECTORY_DIR_LOADED = "PROJECT_DIRECTORY_DIR_LOADED";
 export const NEW_DIRECTORY_ENTERED = "NEW_DIRECTORY_ENTERED";
 export const RAW_CSS_TEXT_CHANGED = "RAW_CSS_TEXT_CHANGED";
 export const CSS_PROPERTY_CHANGED = "CSS_PROPERTY_CHANGED";
+export const QUICK_SEARCH_RESULT_ITEM_SPLIT_BUTTON_CLICKED =
+  "QUICK_SEARCH_RESULT_ITEM_SPLIT_BUTTON_CLICKED";
 export const CSS_PROPERTY_CHANGE_COMPLETED = "CSS_PROPERTY_CHANGE_COMPLETED";
 export const ATTRIBUTE_CHANGED = "ATTRIBUTE_CHANGED";
 export const SLOT_TOGGLE_CLICK = "SLOT_TOGGLE_CLICK";
@@ -386,6 +388,10 @@ export type SourceInspectorLayerDropped = {
   source: InspectorNode;
   target: InspectorNode;
   offset: TreeMoveOffset;
+} & Action;
+
+export type QuickSearchResultItemSplitButtonClicked = {
+  item: QuickSearchResult;
 } & Action;
 
 export type QuickSearchFilterChanged = {
@@ -631,6 +637,13 @@ export type InheritItemComponentTypeChangeComplete = {
 export type InheritItemClick = {
   componentId: string;
 } & Action;
+
+export const quickSearchResultItemSplitButtonClick = (
+  item: QuickSearchResult
+): QuickSearchResultItemSplitButtonClicked => ({
+  item,
+  type: QUICK_SEARCH_RESULT_ITEM_SPLIT_BUTTON_CLICKED
+});
 
 export const fileNavigatorDroppedItem = (
   node: FSItem,

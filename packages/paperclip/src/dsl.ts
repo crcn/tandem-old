@@ -285,7 +285,7 @@ export type PCTextNode = {
 
 export type PCVisibleNode = PCElement | PCTextNode | PCComponentInstanceElement;
 export type PCTextLikeNode = PCTextNode | PCTextStyleMixin;
-export type PCElementLinkNode =
+export type PCElementLikeNode =
   | PCElement
   | PCComponent
   | PCComponentInstanceElement
@@ -582,7 +582,7 @@ export const isTextLikePCNode = (node: PCNode) =>
   node.name === PCSourceTagNames.TEXT ||
   (node.name === PCSourceTagNames.STYLE_MIXIN &&
     node.targetType === PCSourceTagNames.TEXT);
-export const isElementLikePCNode = (node: PCNode) =>
+export const isElementLikePCNode = (node: PCNode): node is PCElementLikeNode =>
   node.name === PCSourceTagNames.ELEMENT ||
   node.name === PCSourceTagNames.COMPONENT ||
   node.name === PCSourceTagNames.COMPONENT_INSTANCE ||
@@ -663,10 +663,7 @@ export const getPCImportedChildrenSourceUris = (
 };
 
 export const getNativeComponentName = memoize(
-  (
-    { id }: PCElement | PCComponent | PCComponentInstanceElement,
-    graph: DependencyGraph
-  ) => {
+  ({ id }: PCElementLikeNode, graph: DependencyGraph) => {
     let current = getPCNode(id, graph) as PCComponent;
     while (extendsComponent(current)) {
       current = getPCNode(current.is, graph) as PCComponent;

@@ -34,6 +34,9 @@
       "styleMixins": {
         "c29da5f4213993": {
           "priority": 0
+        },
+        "dc3b39eb1275": {
+          "priority": 1
         }
       }
     },

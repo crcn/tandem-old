@@ -41,9 +41,6 @@ export default (Base: React.ComponentClass<BaseQuickSearchProps>) =>
             filter={filter}
             item={quickSearchResult}
             key={i}
-            textProps={{
-              value: quickSearchResult.label
-            }}
             dispatch={dispatch}
           />
         );

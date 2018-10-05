@@ -77,7 +77,8 @@
                 "boxSizing": "border-box",
                 "overflow": "scroll",
                 "position": "relative",
-                "max-height": "200px"
+                "max-height": "200px",
+                "flex-direction": "column"
               },
               "container": "containerb0459d53",
               "attributes": {},
@@ -95,7 +96,45 @@
                     "bottom": 300,
                     "background": "--24ce1e4d22305"
                   },
-                  "children": [],
+                  "children": [
+                    {
+                      "id": "612250171128",
+                      "propertyName": "style",
+                      "targetIdPath": [
+                        "63257bfd1439557"
+                      ],
+                      "value": {
+                        "width": "100%"
+                      },
+                      "name": "override",
+                      "children": []
+                    },
+                    {
+                      "id": "6122501749454",
+                      "propertyName": "style",
+                      "targetIdPath": [
+                        "63257bfd1439558"
+                      ],
+                      "value": {
+                        "width": "100%",
+                        "overflow": "auto",
+                        "white-space": "auto"
+                      },
+                      "name": "override",
+                      "children": []
+                    },
+                    {
+                      "id": "6122501777285",
+                      "variantId": null,
+                      "propertyName": "text",
+                      "targetIdPath": [
+                        "63257bfd1439558"
+                      ],
+                      "value": "super/nested/directory/path/that/will/wa",
+                      "name": "override",
+                      "children": []
+                    }
+                  ],
                   "metadata": {},
                   "attributes": {}
                 },
@@ -112,7 +151,18 @@
                     "right": 400,
                     "bottom": 300
                   },
-                  "children": [],
+                  "children": [
+                    {
+                      "id": "61225017269179",
+                      "propertyName": "style",
+                      "targetIdPath": [
+                        "63257bfd1439557"
+                      ],
+                      "value": {},
+                      "name": "override",
+                      "children": []
+                    }
+                  ],
                   "metadata": {},
                   "attributes": {}
                 },
