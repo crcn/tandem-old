@@ -95,6 +95,15 @@ export const createFSSandboxSaga = ({
             action.eventType === FileChangedEventType.CHANGE
           );
         });
+
+        const state: FSSandboxRootState = yield select();
+
+        // This will happen if FileChanged is fired on a FS item that isn't also in cache. I.e:
+        // the changed FS item has not _explicitly_ been added via queueOpenFile
+        if (!state.fileCache[uri]) {
+          continue;
+        }
+
         yield spawn(function*() {
           yield call(loadFile, uri);
         });

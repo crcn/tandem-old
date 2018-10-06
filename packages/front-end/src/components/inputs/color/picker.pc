@@ -1109,6 +1109,26 @@
         }
       },
       "variant": {}
+    },
+    {
+      "id": "feddd7a8654",
+      "label": "Element",
+      "is": "div",
+      "name": "element",
+      "attributes": {},
+      "style": {
+        "box-sizing": "border-box",
+        "display": "block"
+      },
+      "children": [],
+      "metadata": {
+        "bounds": {
+          "left": -98,
+          "top": 446,
+          "right": 2,
+          "bottom": 546
+        }
+      }
     }
   ]
 }
