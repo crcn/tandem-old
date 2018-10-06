@@ -1043,7 +1043,7 @@
           "id": "60ea77f719",
           "name": "variant",
           "label": "has controller selected",
-          "isDefault": false,
+          "isDefault": true,
           "children": [],
           "metadata": {}
         },
@@ -1078,6 +1078,40 @@
             "60ea77f75"
           ],
           "value": true,
+          "name": "override",
+          "children": []
+        },
+        {
+          "id": "c18b62ea4333",
+          "name": "variant",
+          "label": "has controller",
+          "isDefault": false,
+          "children": [],
+          "metadata": {}
+        },
+        {
+          "id": "c18b62ea5664",
+          "variantId": "c18b62ea4333",
+          "propertyName": "style",
+          "targetIdPath": [
+            "60ea77f716"
+          ],
+          "value": {
+            "display": "none"
+          },
+          "name": "override",
+          "children": []
+        },
+        {
+          "id": "c18b62ea14975",
+          "variantId": "c18b62ea4333",
+          "propertyName": "style",
+          "targetIdPath": [
+            "60ea77f717"
+          ],
+          "value": {
+            "display": "block"
+          },
           "name": "override",
           "children": []
         }

@@ -26,11 +26,6 @@ export type Props = {
   sourceNodeUri: string;
 } & BaseComponentPropertiesProps;
 
-type InnerProps = {
-  onRemoveControllerClick: any;
-  onAddControllerClick: any;
-} & Props;
-
 type State = {
   selectedControllerRelativePath: string;
 };

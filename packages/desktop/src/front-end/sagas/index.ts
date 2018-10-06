@@ -29,11 +29,6 @@ import {
   newFileAdded,
   FILE_NAVIGATOR_DROPPED_ITEM,
   getActiveEditorWindow,
-  ADD_COMPONENT_CONTROLLER_BUTTON_CLICKED,
-  componentControllerPicked,
-  OPEN_CONTROLLER_BUTTON_CLCIKED,
-  ComponentPickerItemClick,
-  ComponentControllerItemClicked,
   FileNavigatorBasenameChanged,
   FILE_NAVIGATOR_BASENAME_CHANGED,
   PROJECT_INFO_LOADED,
@@ -44,21 +39,14 @@ import {
   quickSearchFilterResultLoaded,
   QuickSearchResultType,
   CHROME_HEADER_MOUSE_DOWN,
-  CHROME_CLOSE_BUTTON_CLICKED,
   CHROME_MAXIMIZE_BUTTON_CLICKED,
   CHROME_MINIMIZE_BUTTON_CLICKED,
-  isUnsaved,
-  CONFIRM_SAVE_CHANGES,
   CONFIRM_CLOSE_WINDOW,
   ConfirmCloseWindow
 } from "tandem-front-end";
 import {
   findPaperclipSourceFiles,
   pcSourceFileUrisReceived,
-  getSyntheticSourceUri,
-  getSyntheticNodeById,
-  getSyntheticSourceNode,
-  isPaperclipUri,
   walkPCRootDirectory,
   createPCModule,
   createPCElement,
@@ -89,13 +77,10 @@ import { Action } from "redux";
 export function* rootSaga() {
   yield fork(ipcSaga);
   yield fork(handleSaveShortcut);
-  // yield fork(handleActivePaperclipFile);
   yield fork(handleNewFileEntered);
   yield fork(handleBasenameChanged);
   yield fork(handleDroppedFile);
   yield fork(handleProjectDirectory);
-  // yield fork(receiveServerState);
-  yield fork(handleOpenController);
   yield fork(watchProjectDirectory);
   yield fork(handleQuickSearch);
   yield fork(chromeSaga);
@@ -302,50 +287,6 @@ function* watchProjectDirectory() {
       }
     }
   });
-}
-
-// function*
-// () {
-//   const chan = eventChannel(emit => {
-//     ipcRenderer.on("serverState", (event, arg) => emit(arg));
-//     return () => {};
-//   });
-
-//   yield fork(function*() {
-//     while (1) {
-//       const state = yield take(chan);
-//       yield put(serverStateLoaded(state));
-//     }
-//   });
-
-//   // while (1) {
-//   //   yield take(PROJECT_DIRECTORY_LOADED);
-//   //   ipcRenderer.send("getServerState");
-//   // }
-// }
-
-function* handleOpenController() {
-  while (1) {
-    const { relativePath }: ComponentControllerItemClicked = yield take(
-      OPEN_CONTROLLER_BUTTON_CLCIKED
-    );
-    const state: DesktopRootState = yield select();
-    const node = getSyntheticNodeById(
-      state.selectedSyntheticNodeIds[0],
-      state.documents
-    );
-    const sourceNodeUri = getSyntheticSourceUri(node, state.graph);
-    const controllerPath = path.join(
-      path.dirname(stripProtocol(sourceNodeUri)),
-      relativePath
-    );
-    console.log("opening controller %s", controllerPath);
-    exec(`open "${controllerPath}"`, error => {
-      if (error) {
-        alert(error.message);
-      }
-    });
-  }
 }
 
 function escapeRegExp(string) {

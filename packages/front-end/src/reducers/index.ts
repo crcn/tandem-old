@@ -171,7 +171,8 @@ import {
   QUICK_SEARCH_RESULT_ITEM_SPLIT_BUTTON_CLICKED,
   QuickSearchResultItemSplitButtonClicked,
   EditorTabContextMenuOpenInBottomTabOptionClicked,
-  EDITOR_TAB_CONTEXT_MENU_OPEN_IN_BOTTOM_OPTION_CLICKED
+  EDITOR_TAB_CONTEXT_MENU_OPEN_IN_BOTTOM_OPTION_CLICKED,
+  OPEN_CONTROLLER_BUTTON_CLICKED
 } from "../actions";
 import {
   queueOpenFile,
@@ -327,7 +328,8 @@ import {
   getInspectorInstanceShadow,
   updateAlts,
   getDerrivedPCLabel,
-  persistConvertSyntheticVisibleNodeStyleToMixin
+  persistConvertSyntheticVisibleNodeStyleToMixin,
+  getSyntheticSourceUri
 } from "paperclip";
 import {
   roundBounds,
@@ -2025,6 +2027,27 @@ export const canvasReducer = (state: RootState, action: Action) => {
         state => persistAddComponentController(filePath, node, state),
         state
       );
+      return state;
+    }
+    case OPEN_CONTROLLER_BUTTON_CLICKED: {
+      const { relativePath } = action as ComponentControllerItemClicked;
+      const node = getSyntheticNodeById(
+        state.selectedSyntheticNodeIds[0],
+        state.documents
+      );
+      const sourceNodeUri = getSyntheticSourceUri(node, state.graph);
+      const controllerPath = path.join(
+        path.dirname(stripProtocol(sourceNodeUri)),
+        relativePath
+      );
+
+      state = openFile(
+        addProtocol(FILE_PROTOCOL, controllerPath),
+        false,
+        false,
+        state
+      );
+
       return state;
     }
     case REMOVE_COMPONENT_CONTROLLER_BUTTON_CLICKED: {
