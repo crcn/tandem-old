@@ -1,17 +1,4 @@
-import {
-  fork,
-  call,
-  take,
-  select,
-  put,
-  cancel,
-  spawn as sspawn,
-  ForkEffect,
-  cancelled,
-  CallEffectFactory
-} from "redux-saga/effects";
-import { eventChannel, Channel } from "redux-saga";
-
+import { fork, call, take, select, put } from "redux-saga/effects";
 import { electronSaga } from "./electron";
 import { BrowserWindow, dialog } from "electron";
 import {
@@ -25,10 +12,9 @@ import {
   tdProjectFilePicked,
   TD_PROJECT_FILE_PICKED,
   componentControllerPicked,
-  NEW_PROJECT_MENU_ITEM_CLICKED
+  NEW_PROJECT_MENU_ITEM_CLICKED,
+  imagePathPicked
 } from "../actions";
-import { debounce } from "lodash";
-import * as chokidar from "chokidar";
 import { FRONT_END_ENTRY_FILE_PATH } from "../constants";
 import { ipcSaga, pid } from "./ipc";
 import * as getPort from "get-port";
@@ -100,6 +86,7 @@ export function* rootSaga() {
   yield fork(initProjectDirectory);
   yield fork(handleOpenedWorkspaceDirectory);
   yield fork(handleAddControllerClick);
+  yield fork(handleBrowseImage);
   yield fork(handleChrome);
 }
 
@@ -315,38 +302,22 @@ function* handleAddControllerClick() {
   }
 }
 
-// function* watchProjectDirectory() {
-//   let chan: Channel<any>;
-//   let fork: any;
+function* handleBrowseImage() {
+  while (1) {
+    yield take(["IMAGE_BROWSE_BUTTON_CLICKED"]);
+    const [filePath] = dialog.showOpenDialog({
+      filters: [
+        {
+          name: "Tandem Project File",
+          extensions: ["png", "jpg", "jpeg", "gif", "apng", "svg", "bmp"]
+        }
+      ],
+      properties: ["openFile"]
+    }) || [undefined];
+    if (!filePath) {
+      continue;
+    }
 
-//   while(1) {
-//     yield take("PROJECT_DIRECTORY_LOADED");
-//     const { tdProjectPath, tdProject }: DesktopState = yield select();
-//     const tdProjectDir = path.dirname(tdProjectPath);
-//     console.log(`watching ${tdProjectDir}`);
-//     if (chan) {
-//       chan.close();
-//       yield cancel(fork);
-//     }
-//     chan = eventChannel((emit) => {
-//       const watcher = chokidar.watch(tdProjectDir, { ignored: tdProject.exclude ? new RegExp(tdProject.exclude.join("|")) : [] });
-//       const startTime = Date.now();
-//       watcher.on("ready", () => {
-//         watcher.on("all", debounce(() => {
-//           emit({});
-//         }, 100));
-//       });
-//       return () => {
-//         watcher.close();
-//       };
-//     });
-
-//     fork = yield sspawn(function*(){
-//       while(!(yield cancelled())) {
-//         yield take(chan);
-//         console.log(`${tdProjectPath} has changed`);
-//         yield call(loadProjectDirectory);
-//       }
-//     });
-//   }
-// }
+    yield put(imagePathPicked(filePath));
+  }
+}

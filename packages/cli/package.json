@@ -9,7 +9,7 @@
     "build-watch": "echo ''"
   },
   "scripts": {
-    "postinstall": "node install.js",
+    "postinstall-old": "node install.js",
     "clean": "rm -rf  node_modules"
   },
   "author": "",

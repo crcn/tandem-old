@@ -5,7 +5,7 @@ const fs = require("fs");
 module.exports = {
   devtool: 'none',
   entry: {
-    index: ['react-hot-loader/patch', __dirname + '/src/index.ts']
+    index: [__dirname + '/src/index.ts']
   },
   output: {
     path: resolve(__dirname, 'lib', 'front-end'),
@@ -13,7 +13,7 @@ module.exports = {
     filename: '[name].bundle.js'
   },
   resolve: {
-    extensions: ['.js', '.ts', '.tsx'],
+    extensions: ['.js', '.ts', '.tsx', '.json'],
     alias: {
       cluster: 'null-loader?cluster',
       net: 'null-loader?net',
@@ -22,7 +22,11 @@ module.exports = {
     },
     modules: [
       resolve(__dirname, 'src'),
-      resolve(__dirname, 'node_modules')
+      resolve(__dirname, 'node_modules'),
+      'node_modules'
+
+      // fixes bug for resolving mime-db
+      // resolve(__dirname, 'node_modules', 'mime-types', 'node_modules')
     ]
   },
   module: {

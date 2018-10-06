@@ -174,7 +174,9 @@ import {
   EDITOR_TAB_CONTEXT_MENU_OPEN_IN_BOTTOM_OPTION_CLICKED,
   OPEN_CONTROLLER_BUTTON_CLICKED,
   IMAGE_SOURCE_INPUT_CHANGED,
-  ImageSourceInputChanged
+  ImageSourceInputChanged,
+  IMAGE_PATH_PICKED,
+  ImagePathPicked
 } from "../actions";
 import {
   queueOpenFile,
@@ -2576,6 +2578,43 @@ const shortcutReducer = (state: RootState, action: Action): RootState => {
       state = persistRootState(state => {
         return persistAttribute("src", value, element, state);
       }, state);
+      return state;
+    }
+
+    case IMAGE_PATH_PICKED: {
+      const { filePath } = action as ImagePathPicked;
+      const node = getSyntheticNodeById(
+        state.selectedSyntheticNodeIds[0],
+        state.documents
+      );
+      const document = getSyntheticVisibleNodeDocument(
+        node.id,
+        state.documents
+      );
+
+      // we want to fetch the current URI of the selected synthetic element since the relative path
+      // will need to be based on where the override currently is (_if_ there's an override, otherwise this URI will point to the original source node dep)
+      const moduleUri = getSyntheticDocumentDependencyUri(
+        document,
+        state.graph
+      );
+
+      const relativePath = path.relative(
+        path.dirname(stripProtocol(moduleUri)),
+        filePath
+      );
+      console.log(node);
+
+      if (node.name === "img") {
+        state = persistRootState(state => {
+          return persistAttribute(
+            "src",
+            relativePath,
+            node as SyntheticElement,
+            state
+          );
+        }, state);
+      }
       return state;
     }
     case SYNTHETIC_NODE_CONTEXT_MENU_REMOVE_CLICKED: {

@@ -9,6 +9,7 @@ export const PREVIEW_SERVER_STARTED = "PREVIEW_SERVER_STARTED";
 export const OPEN_PROJECT_MENU_ITEM_CLICKED = "OPEN_PROJECT_MENU_ITEM_CLICKED";
 export const NEW_PROJECT_MENU_ITEM_CLICKED = "NEW_PROJECT_MENU_ITEM_CLICKED";
 export const TD_PROJECT_FILE_PICKED = "TD_PROJECT_FILE_PICKED";
+export const IMAGE_PATH_PICKED = "IMAGE_PATH_PICKED";
 
 export type AppReady = {} & Action;
 export type TDProjectLoaded = {
@@ -20,9 +21,18 @@ export type TDProjectFilePicked = {
   filePath: string;
 } & Action;
 
+export type ImagePathPicked = {
+  filePath: string;
+} & Action;
+
 export type PreviewServerStarted = {
   port: number;
 } & Action;
+
+export const imagePathPicked = publicActionCreator((filePath: string) => ({
+  filePath,
+  type: IMAGE_PATH_PICKED
+}));
 
 export const appReady = (): AppReady => ({ type: APP_READY });
 export const tdProjectFilePicked = (filePath: string): TDProjectFilePicked => ({

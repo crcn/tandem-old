@@ -7,7 +7,10 @@ import {
 } from "paperclip";
 import { Dispatch } from "redux";
 import { BaseImgPropertiesProps } from "./view.pc";
-import { imageSourceInputChanged, imageBrowseButtonClicked } from "actions";
+import {
+  imageSourceInputChanged,
+  imageBrowseButtonClicked
+} from "../../../../../actions";
 
 export type Props = {
   sourceNode: PCElement | PCComponentInstanceElement | PCComponent;

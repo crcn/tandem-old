@@ -240,6 +240,7 @@ export const CSS_RESET_PROPERTY_OPTION_CLICKED =
   "CSS_RESET_PROPERTY_OPTION_CLICKED";
 export const IMAGE_BROWSE_BUTTON_CLICKED = "IMAGE_BROWSE_BUTTON_CLICKED";
 export const IMAGE_SOURCE_INPUT_CHANGED = "IMAGE_SOURCE_INPUT_CHANGED";
+export const IMAGE_PATH_PICKED = "IMAGE_PATH_PICKED";
 
 export type WrappedEvent<T> = {
   sourceEvent: T;
@@ -364,6 +365,10 @@ export type TreeLayerMouseOver = {
 
 export type ProjectDirectoryDirLoaded = {
   items: FSItem[];
+} & Action;
+
+export type ImagePathPicked = {
+  filePath: string;
 } & Action;
 
 export type StyleVariantDropdownChanged = {
