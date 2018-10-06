@@ -1130,24 +1130,6 @@
         }
       },
       "variant": {}
-    },
-    {
-      "id": "84a46745697",
-      "is": "img",
-      "name": "element",
-      "attributes": {
-        "src": "../../../images/NEDM.jpg"
-      },
-      "style": {},
-      "children": [],
-      "metadata": {
-        "bounds": {
-          "left": -193,
-          "top": 91,
-          "right": 207,
-          "bottom": 391
-        }
-      }
     }
   ]
 }

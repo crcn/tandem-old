@@ -306,7 +306,8 @@ function* handleQuickSearch() {
     const pattern = new RegExp(
       escapeRegExp(quickSearch.filter)
         .split(" ")
-        .join(".*?")
+        .join(".*?"),
+      "i"
     );
 
     const projectDir = path.dirname(projectInfo.path);
