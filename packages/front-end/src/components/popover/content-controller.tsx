@@ -45,6 +45,7 @@ export default compose<any, Props>(
             this._emptySpaceListener
           );
           document.removeEventListener("scroll", this._scrollListener, true);
+          this._emptySpaceListener = null;
         }
         if (container && onShouldClose) {
           // note that we keep track of how many popovers there are currently in the root in case any pop over

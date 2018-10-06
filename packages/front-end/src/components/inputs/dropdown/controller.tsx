@@ -55,10 +55,15 @@ export default (Base: React.ComponentClass<BaseDropdownProps>) => {
         filter: null
       };
     }
-    onClick = event => {
-      this.setState({ ...this.state, open: !this.state.open });
-      if (this.props.onClick) {
-        this.props.onClick(event);
+    onMouseDown = event => {
+      // only open if _not_ opened yet. The popover will call onShouldClose if already open
+      // since the button is technically out of the popover scope.
+      if (!this.state.open) {
+        this.setState({ ...this.state, open: true });
+      }
+
+      if (this.props.onMouseDown) {
+        this.props.onMouseDown(event);
       }
     };
     onFilterChange = value => {
@@ -93,7 +98,7 @@ export default (Base: React.ComponentClass<BaseDropdownProps>) => {
         value,
         options = EMPTY_ARRAY,
         filterable,
-        onClick,
+        onMouseDown,
         onChange,
         onChangeComplete,
         ...rest
@@ -132,6 +137,7 @@ export default (Base: React.ComponentClass<BaseDropdownProps>) => {
 
       return (
         <Base
+          {...rest}
           variant={cx({
             special: selectedItem && selectedItem.special
           })}
@@ -156,8 +162,7 @@ export default (Base: React.ComponentClass<BaseDropdownProps>) => {
             },
             text: (selectedItem && selectedItem.label) || "--"
           }}
-          onClick={this.onClick}
-          {...rest}
+          onMouseDown={this.onMouseDown}
         />
       );
     }
