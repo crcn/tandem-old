@@ -343,6 +343,24 @@
                       "variant": {}
                     },
                     {
+                      "id": "891523ff61156",
+                      "is": "891523ff46326",
+                      "label": "img tag properties",
+                      "name": "component-instance",
+                      "attributes": {},
+                      "style": {},
+                      "children": [],
+                      "metadata": {
+                        "bounds": {
+                          "left": 1420,
+                          "top": 31,
+                          "right": 1635,
+                          "bottom": 131
+                        }
+                      },
+                      "variant": {}
+                    },
+                    {
                       "id": "6e2729d452224",
                       "variant": {},
                       "is": "6e2729d443544",
@@ -359,6 +377,17 @@
               ],
               "metadata": {},
               "name": "plug"
+            },
+            {
+              "id": "891523ff73536",
+              "variantId": null,
+              "propertyName": "style",
+              "targetIdPath": [
+                "b6c162d140"
+              ],
+              "value": {},
+              "name": "override",
+              "children": []
             }
           ],
           "metadata": {
@@ -369,15 +398,15 @@
               "bottom": 277.3571410945104
             }
           },
-          "label": ""
+          "label": "Pane"
         }
       ],
       "metadata": {
         "bounds": {
-          "left": 860,
-          "top": 5,
-          "right": 1214,
-          "bottom": 242
+          "left": 855,
+          "top": -132,
+          "right": 1264,
+          "bottom": 204
         }
       },
       "controllers": [
@@ -1418,18 +1447,18 @@
       ]
     },
     {
-      "id": "661631b34639",
       "label": "Img Properties",
       "is": "div",
-      "name": "element",
-      "attributes": {},
       "style": {
         "box-sizing": "border-box",
         "display": "block"
       },
+      "attributes": {},
+      "id": "891523ff46326",
+      "name": "component",
       "children": [
         {
-          "id": "661631b36069",
+          "id": "891523ff46319",
           "is": "7149f8192509",
           "label": "Labeled Input",
           "name": "component-instance",
@@ -1437,7 +1466,7 @@
           "style": {},
           "children": [
             {
-              "id": "c5165c653531",
+              "id": "891523ff46320",
               "variantId": null,
               "propertyName": "text",
               "targetIdPath": [
@@ -1449,28 +1478,30 @@
             },
             {
               "slotId": "e73029b416045",
-              "id": "c5165c659979",
+              "id": "891523ff46321",
               "children": [
                 {
-                  "id": "c5165c659978",
+                  "id": "891523ff46322",
                   "label": "Element",
                   "is": "div",
                   "name": "element",
                   "attributes": {},
                   "style": {
                     "box-sizing": "border-box",
-                    "display": "block"
+                    "display": "flex"
                   },
                   "children": [
                     {
-                      "id": "c5165c6541899",
+                      "id": "891523ff46323",
                       "is": "7149f8199122",
                       "label": "Text Input",
                       "name": "component-instance",
                       "attributes": {
-                        "placeholder": "../img.pngc"
+                        "placeholder": "../img.png"
                       },
-                      "style": {},
+                      "style": {
+                        "margin-right": "8px"
+                      },
                       "children": [],
                       "metadata": {
                         "bounds": {
@@ -1478,6 +1509,36 @@
                           "top": 298,
                           "right": 484,
                           "bottom": 327.0358087589019
+                        }
+                      },
+                      "variant": {}
+                    },
+                    {
+                      "id": "891523ff46324",
+                      "is": "9f364d2139415",
+                      "label": "Button",
+                      "name": "component-instance",
+                      "attributes": {},
+                      "style": {},
+                      "children": [
+                        {
+                          "id": "891523ff46325",
+                          "variantId": null,
+                          "propertyName": "text",
+                          "targetIdPath": [
+                            "9f364d2139650"
+                          ],
+                          "value": "Upload\n",
+                          "name": "override",
+                          "children": []
+                        }
+                      ],
+                      "metadata": {
+                        "bounds": {
+                          "left": 1596.3122366520206,
+                          "top": -19.485754611163074,
+                          "right": 1696.3122366520206,
+                          "bottom": 80.51424538883691
                         }
                       },
                       "variant": {}
@@ -1508,7 +1569,11 @@
           "right": 1625,
           "bottom": 121
         }
-      }
+      },
+      "variant": {},
+      "controllers": [
+        "./img-controller.tsx"
+      ]
     }
   ]
 }

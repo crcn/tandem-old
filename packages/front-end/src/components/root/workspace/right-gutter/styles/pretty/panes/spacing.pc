@@ -203,7 +203,9 @@
                           "id": "855076905158",
                           "is": "a329dd6d16879",
                           "name": "component-instance",
-                          "attributes": {},
+                          "attributes": {
+                            "placeholder": "0px"
+                          },
                           "style": {},
                           "children": [],
                           "metadata": {
@@ -291,7 +293,9 @@
                           "id": "855076905726",
                           "is": "a329dd6d16879",
                           "name": "component-instance",
-                          "attributes": {},
+                          "attributes": {
+                            "placeholder": "0px"
+                          },
                           "style": {},
                           "children": [],
                           "metadata": {
@@ -379,7 +383,9 @@
                           "id": "855076906298",
                           "is": "a329dd6d16879",
                           "name": "component-instance",
-                          "attributes": {},
+                          "attributes": {
+                            "placeholder": "0px"
+                          },
                           "style": {},
                           "children": [],
                           "metadata": {
@@ -466,7 +472,9 @@
                           "id": "855076906874",
                           "is": "a329dd6d16879",
                           "name": "component-instance",
-                          "attributes": {},
+                          "attributes": {
+                            "placeholder": "0px"
+                          },
                           "style": {},
                           "children": [],
                           "metadata": {
@@ -589,7 +597,9 @@
                           "id": "855076902926",
                           "is": "a329dd6d16879",
                           "name": "component-instance",
-                          "attributes": {},
+                          "attributes": {
+                            "placeholder": "0px"
+                          },
                           "style": {},
                           "children": [],
                           "metadata": {
@@ -678,7 +688,9 @@
                           "id": "855076903478",
                           "is": "a329dd6d16879",
                           "name": "component-instance",
-                          "attributes": {},
+                          "attributes": {
+                            "placeholder": "0px"
+                          },
                           "style": {},
                           "children": [],
                           "metadata": {
@@ -766,7 +778,9 @@
                           "id": "855076904034",
                           "is": "a329dd6d16879",
                           "name": "component-instance",
-                          "attributes": {},
+                          "attributes": {
+                            "placeholder": "0px"
+                          },
                           "style": {},
                           "children": [],
                           "metadata": {
@@ -853,7 +867,9 @@
                           "id": "855076904594",
                           "is": "a329dd6d16879",
                           "name": "component-instance",
-                          "attributes": {},
+                          "attributes": {
+                            "placeholder": "0px"
+                          },
                           "style": {},
                           "children": [],
                           "metadata": {

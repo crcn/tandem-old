@@ -348,7 +348,9 @@
                           "id": "203a2611912",
                           "is": "a329dd6d16879",
                           "name": "component-instance",
-                          "attributes": {},
+                          "attributes": {
+                            "placeholder": "auto"
+                          },
                           "style": {},
                           "children": [],
                           "metadata": {
@@ -419,7 +421,9 @@
                           "id": "203a26111828",
                           "is": "a329dd6d16879",
                           "name": "component-instance",
-                          "attributes": {},
+                          "attributes": {
+                            "placeholder": "auto"
+                          },
                           "style": {},
                           "children": [],
                           "metadata": {
@@ -657,7 +661,9 @@
                               "id": "a329dd6d24650",
                               "is": "a329dd6d16879",
                               "name": "component-instance",
-                              "attributes": {},
+                              "attributes": {
+                                "placeholder": "auto"
+                              },
                               "style": {},
                               "children": [],
                               "metadata": {

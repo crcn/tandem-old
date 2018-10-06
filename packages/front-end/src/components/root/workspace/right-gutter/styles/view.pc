@@ -162,8 +162,8 @@
         "bounds": {
           "left": 247,
           "top": 134,
-          "right": 678.1147377325349,
-          "bottom": 2162.3630884514405
+          "right": 678,
+          "bottom": 2659
         }
       },
       "controllers": [

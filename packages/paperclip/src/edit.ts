@@ -1664,10 +1664,10 @@ export const persistAttribute = <TState extends PCEditorState>(
     (sourceNode: PCElement) =>
       ({
         ...sourceNode,
-        attributes: {
+        attributes: omitNull({
           ...sourceNode.attributes,
           [name]: value
-        }
+        })
       } as PCVisibleNode)
   )(element, state.documents, state.graph);
 
