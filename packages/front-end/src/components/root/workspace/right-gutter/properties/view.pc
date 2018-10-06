@@ -1416,6 +1416,45 @@
       "controllers": [
         "./exports-name-input-controller.tsx"
       ]
+    },
+    {
+      "id": "661631b34639",
+      "label": "Img Properties",
+      "is": "div",
+      "name": "element",
+      "attributes": {},
+      "style": {
+        "box-sizing": "border-box",
+        "display": "block"
+      },
+      "children": [
+        {
+          "id": "661631b36069",
+          "is": "7149f8192509",
+          "label": "Labeled Input",
+          "name": "component-instance",
+          "attributes": {},
+          "style": {},
+          "children": [],
+          "metadata": {
+            "bounds": {
+              "left": 486,
+              "top": 306,
+              "right": 586,
+              "bottom": 353.5832678332798
+            }
+          },
+          "variant": {}
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": 1410.3017592808665,
+          "top": 21.266053161234296,
+          "right": 1510.3017592808665,
+          "bottom": 121.2660531612343
+        }
+      }
     }
   ]
 }

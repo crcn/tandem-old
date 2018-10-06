@@ -14,6 +14,7 @@ type InsertLayerOuterProps = {
   dispatch: Dispatch<any>;
   insertInspectorNode: InspectorNode;
   insertInspectorNodeBounds: Bounds;
+  activeEditorUri: string;
 };
 
 const CURSOR_MAP = {
@@ -56,7 +57,19 @@ export class InsertLayer extends React.PureComponent<
   };
 
   render() {
-    const { insertInspectorNodeBounds, canvas, zoom, toolType } = this.props;
+    const {
+      insertInspectorNodeBounds,
+      canvas,
+      zoom,
+      toolType,
+      editorWindow,
+      activeEditorUri
+    } = this.props;
+
+    if (editorWindow.activeFilePath !== activeEditorUri) {
+      return null;
+    }
+
     const { onMouseDown } = this;
 
     const { previewBounds } = this.state;

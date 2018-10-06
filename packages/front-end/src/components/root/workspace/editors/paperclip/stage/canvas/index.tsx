@@ -80,6 +80,7 @@ const BaseCanvasComponent = ({
   toolType,
   setCanvasOuter,
   editorWindow,
+  activeFilePath,
   setCanvasContainer,
   onWheel,
   onDrop,
@@ -157,6 +158,7 @@ const BaseCanvasComponent = ({
                 />
                 <ToolsLayerComponent
                   toolType={toolType}
+                  activeEditorUri={activeFilePath}
                   openFiles={openFiles}
                   sourceNodeInspector={sourceNodeInspector}
                   selectedSyntheticNodeIds={selectedSyntheticNodeIds}

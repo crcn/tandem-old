@@ -45,6 +45,7 @@ export type ToolsLayerComponentProps = {
   editorWindow: EditorWindow;
   zoom: number;
   toolType: ToolType;
+  activeEditorUri: string;
   hoveringInspectorNodeIds: string[];
   selectedSyntheticNodeIds: string[];
   hoveringSyntheticNodeIds: string[];
@@ -66,6 +67,7 @@ export class ToolsLayerComponent extends React.PureComponent<
       selectedSyntheticNodeIds,
       hoveringSyntheticNodeIds,
       sourceNodeInspector,
+      activeEditorUri,
       openFiles,
       zoom,
       dispatch,
@@ -91,6 +93,7 @@ export class ToolsLayerComponent extends React.PureComponent<
     return (
       <div className="m-tools-layer">
         <InsertLayer
+          activeEditorUri={activeEditorUri}
           canvas={canvas}
           zoom={zoom}
           editorWindow={editorWindow}
