@@ -142,9 +142,6 @@ import {
   ProjectInfoLoaded,
   PROJECT_DIRECTORY_DIR_LOADED,
   ProjectDirectoryDirLoaded,
-  FILE_CHANGED,
-  FileChanged,
-  FileChangedEventType,
   FILE_NAVIGATOR_BASENAME_CHANGED,
   FileNavigatorBasenameChanged,
   QUICK_SEARCH_RESULT_LOADED,
@@ -183,7 +180,10 @@ import {
   hasFileCacheItem,
   FS_SANDBOX_ITEM_LOADED,
   FSSandboxItemLoaded,
-  isSvgUri
+  isSvgUri,
+  FILE_CHANGED,
+  FileChanged,
+  FileChangedEventType
 } from "fsbox";
 import {
   RootState,

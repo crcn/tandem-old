@@ -47,7 +47,7 @@ function* handleFSItemContextMenuOptions() {
     "FILE_ITEM_CONTEXT_MENU_OPEN_CLICKED",
     ({ item }: FileItemContextMenuAction) => {
       const path = stripProtocol(item.uri);
-      exec(`open ${path}`);
+      exec(`open ${path.replace(/\s/g, "\\ ")}`);
     }
   );
 
@@ -55,7 +55,7 @@ function* handleFSItemContextMenuOptions() {
     "OPEN_TEXT_EDITOR_BUTTON_CLICKED",
     ({ uri }: OpenTextEditorButtonClicked) => {
       const path = stripProtocol(uri);
-      exec(`open ${path}`);
+      exec(`open ${path.replace(/\s/g, "\\ ")}`);
     }
   );
 }

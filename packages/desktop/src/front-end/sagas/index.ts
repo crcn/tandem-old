@@ -38,10 +38,6 @@ import {
   FILE_NAVIGATOR_BASENAME_CHANGED,
   PROJECT_INFO_LOADED,
   PROJECT_DIRECTORY_DIR_LOADED,
-  fileChanged,
-  FileChanged,
-  FILE_CHANGED,
-  FileChangedEventType,
   ProjectInfoLoaded,
   QUICK_SEARCH_FILTER_CHANGED,
   QuickSearchUriResult,
@@ -68,6 +64,12 @@ import {
   createPCElement,
   PCVisibleNodeMetadataKey
 } from "paperclip";
+import {
+  fileChanged,
+  FileChanged,
+  FILE_CHANGED,
+  FileChangedEventType
+} from "fsbox";
 import {
   getNestedTreeNodeById,
   addProtocol,

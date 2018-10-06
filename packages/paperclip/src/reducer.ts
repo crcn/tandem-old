@@ -4,7 +4,9 @@ import {
   FSSandboxRootState,
   FS_SANDBOX_ITEM_LOADED,
   FSSandboxItemLoaded,
-  queueOpenFile
+  queueOpenFile,
+  FILE_CHANGED,
+  FileChangedEventType
 } from "fsbox";
 import {
   PC_SYNTHETIC_FRAME_RENDERED,
@@ -71,17 +73,17 @@ export const paperclipReducer = <
 
     // ick, this needs to be strongly typed and pulled fron fsbox. Currently
     // living in front-end
-    case "FILE_CHANGED": {
+    case FILE_CHANGED: {
       const { uri, eventType } = action as any;
       if (isPaperclipUri(uri)) {
-        if (eventType === "unlink") {
+        if (eventType === FileChangedEventType.ADD) {
           const newGraph = { ...state.graph };
           delete newGraph[uri];
           state = {
             ...(state as any),
             graph: newGraph
           };
-        } else if (eventType === "add") {
+        } else if (eventType === FileChangedEventType.UNLINK) {
           state = queueOpenFile(uri, state);
         }
       }

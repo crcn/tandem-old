@@ -10,7 +10,10 @@ import {
   fsSandboxItemLoading,
   fsSandboxItemSaving,
   fsSandboxItemLoaded,
-  fsSandboxItemSaved
+  fsSandboxItemSaved,
+  FileChanged,
+  FILE_CHANGED,
+  FileChangedEventType
 } from "./actions";
 
 export type FSReadResult = {
@@ -83,4 +86,15 @@ export const createFSSandboxSaga = ({
       yield call(writeFile, uri, content);
       yield put(fsSandboxItemSaved(uri));
     }
+
+    yield fork(function* handleLocalChanges() {
+      while (1) {
+        const { uri }: FileChanged = yield take(
+          (action: FileChanged) =>
+            action.type === FILE_CHANGED &&
+            action.eventType === FileChangedEventType.CHANGE
+        );
+        console.log(uri);
+      }
+    });
   };
