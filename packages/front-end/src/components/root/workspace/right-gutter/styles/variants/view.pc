@@ -512,7 +512,7 @@
                           "attributes": {},
                           "style": {
                             "display": "block",
-                            "height": "1px",
+                            "height": "2px",
                             "margin-right": "4px",
                             "position": "relative",
                             "top": "1px"

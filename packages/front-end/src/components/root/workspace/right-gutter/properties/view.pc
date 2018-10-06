@@ -1435,7 +1435,61 @@
           "name": "component-instance",
           "attributes": {},
           "style": {},
-          "children": [],
+          "children": [
+            {
+              "id": "c5165c653531",
+              "variantId": null,
+              "propertyName": "text",
+              "targetIdPath": [
+                "7149f8192506"
+              ],
+              "value": "src",
+              "name": "override",
+              "children": []
+            },
+            {
+              "slotId": "e73029b416045",
+              "id": "c5165c659979",
+              "children": [
+                {
+                  "id": "c5165c659978",
+                  "label": "Element",
+                  "is": "div",
+                  "name": "element",
+                  "attributes": {},
+                  "style": {
+                    "box-sizing": "border-box",
+                    "display": "block"
+                  },
+                  "children": [
+                    {
+                      "id": "c5165c6541899",
+                      "is": "7149f8199122",
+                      "label": "Text Input",
+                      "name": "component-instance",
+                      "attributes": {
+                        "placeholder": "../img.pngc"
+                      },
+                      "style": {},
+                      "children": [],
+                      "metadata": {
+                        "bounds": {
+                          "left": 384,
+                          "top": 298,
+                          "right": 484,
+                          "bottom": 327.0358087589019
+                        }
+                      },
+                      "variant": {}
+                    }
+                  ],
+                  "metadata": {}
+                }
+              ],
+              "metadata": {},
+              "name": "plug"
+            }
+          ],
           "metadata": {
             "bounds": {
               "left": 486,
@@ -1449,10 +1503,10 @@
       ],
       "metadata": {
         "bounds": {
-          "left": 1410.3017592808665,
-          "top": 21.266053161234296,
-          "right": 1510.3017592808665,
-          "bottom": 121.2660531612343
+          "left": 1410,
+          "top": 21,
+          "right": 1625,
+          "bottom": 121
         }
       }
     }

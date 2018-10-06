@@ -512,6 +512,30 @@
                   "value": {},
                   "name": "override",
                   "children": []
+                },
+                {
+                  "id": "c5165c65293837",
+                  "variantId": "1a11459311",
+                  "propertyName": "style",
+                  "targetIdPath": [
+                    "d31aa238431030",
+                    "4a49eea9118690"
+                  ],
+                  "value": {},
+                  "name": "override",
+                  "children": []
+                },
+                {
+                  "id": "c5165c65431526",
+                  "variantId": "1a11459311",
+                  "propertyName": "style",
+                  "targetIdPath": [
+                    "d31aa238431030",
+                    "4a49eea9109443"
+                  ],
+                  "value": {},
+                  "name": "override",
+                  "children": []
                 }
               ],
               "metadata": {
@@ -640,7 +664,7 @@
           "id": "2842a72d18",
           "name": "variant",
           "label": "variables tab",
-          "isDefault": true,
+          "isDefault": false,
           "children": [],
           "metadata": {}
         },
@@ -648,7 +672,7 @@
           "id": "1a11459311",
           "name": "variant",
           "label": "styles tab",
-          "isDefault": false,
+          "isDefault": true,
           "children": [],
           "metadata": {}
         },
@@ -685,7 +709,7 @@
           "id": "2c202ccf114501",
           "name": "variant",
           "label": "unselected nodes",
-          "isDefault": true,
+          "isDefault": false,
           "children": [],
           "metadata": {}
         },
