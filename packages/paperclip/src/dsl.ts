@@ -240,15 +240,15 @@ export type PCOverride =
   | PCLabelOverride
   | PCVariant2Override;
 
-export type InheritStyleItem = {
+export type StyleMixinItem = {
   priority: number;
 
   // not actually implemented het
   variantId?: string;
 };
 
-export type InheritStyle = {
-  [identifier: string]: InheritStyleItem;
+export type StyleMixins = {
+  [identifier: string]: StyleMixinItem;
 };
 
 export type PCBaseVisibleNode<TName extends PCSourceTagNames> = {
@@ -256,7 +256,7 @@ export type PCBaseVisibleNode<TName extends PCSourceTagNames> = {
   style: KeyValue<any>;
 
   // DEPRECATED - used styleMixins instead
-  styleMixins?: InheritStyle;
+  styleMixins?: StyleMixins;
 } & PCBaseSourceNode<TName>;
 
 export type PCBaseElementChild =
@@ -339,13 +339,15 @@ export const createPCComponent = (
   style?: KeyValue<string>,
   attributes?: KeyValue<string>,
   children?: PCComponentChild[],
-  metadata?: any
+  metadata?: any,
+  styleMixins?: StyleMixins
 ): PCComponent => ({
   label,
   is: is || "div",
   style: style || EMPTY_OBJECT,
   attributes: attributes || EMPTY_OBJECT,
   id: generateUID(),
+  styleMixins,
   name: PCSourceTagNames.COMPONENT,
   children: children || EMPTY_ARRAY,
   metadata: metadata || EMPTY_OBJECT,
@@ -375,7 +377,7 @@ export const getDerrivedPCLabel = (
 export const createPCTextStyleMixin = (
   style: KeyValue<string>,
   textValue: string,
-  styleMixins?: InheritStyle,
+  styleMixins?: StyleMixins,
   label?: string
 ): PCTextStyleMixin => ({
   id: generateUID(),
@@ -391,7 +393,7 @@ export const createPCTextStyleMixin = (
 
 export const createPCElementStyleMixin = (
   style: KeyValue<string>,
-  styleMixins?: InheritStyle,
+  styleMixins?: StyleMixins,
   label?: string
 ): PCElementStyleMixin => ({
   id: generateUID(),

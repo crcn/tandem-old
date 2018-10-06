@@ -290,8 +290,8 @@ import {
   persistRemoveVariantOverride,
   getPCVariants,
   canRemoveSyntheticVisibleNode,
-  persistInheritStyle,
-  persistInheritStyleComponentId,
+  persistStyleMixin,
+  persistStyleMixinComponentId,
   isPaperclipUri,
   syntheticNodeIsInShadow,
   getSyntheticContentNode,
@@ -1734,7 +1734,7 @@ export const canvasReducer = (state: RootState, action: Action) => {
         state.documents
       );
       state = persistRootState(state => {
-        return persistInheritStyle(
+        return persistStyleMixin(
           { [componentId]: undefined },
           node,
           state.selectedVariant,
@@ -1757,7 +1757,7 @@ export const canvasReducer = (state: RootState, action: Action) => {
 
       state = persistRootState(state => {
         // undefined so that nothing is selected in dropdown.
-        state = persistInheritStyle(
+        state = persistStyleMixin(
           {
             [Date.now()]: {
               priority: Object.keys(sourceNode.styleMixins || EMPTY_OBJECT)
@@ -1785,7 +1785,7 @@ export const canvasReducer = (state: RootState, action: Action) => {
         state.documents
       );
       state = persistRootState(state => {
-        state = persistInheritStyleComponentId(
+        state = persistStyleMixinComponentId(
           oldComponentId,
           newComponentId,
           node,

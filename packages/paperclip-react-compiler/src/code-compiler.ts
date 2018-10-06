@@ -62,7 +62,7 @@ import {
   addScopedLayerLabel
 } from "./utils";
 import {
-  InheritStyle,
+  StyleMixins,
   isSlot,
   PCSlot,
   PCPlug,
@@ -267,7 +267,7 @@ const SVG_STYLE_PROP_MAP = {
 };
 
 const getInheritedStyle = (
-  styleMixins: InheritStyle,
+  styleMixins: StyleMixins,
   context: TranslateContext,
   computed = {}
 ) => {

@@ -52,7 +52,7 @@ import {
   PCComponentInstanceElement,
   filterPCNodes,
   isPCComponentInstance,
-  InheritStyle,
+  StyleMixins,
   PCVariable,
   PCBaseVisibleNode,
   createPCSlot,
@@ -568,7 +568,9 @@ export const persistConvertNodeToComponent = <TState extends PCEditorState>(
     (sourceNode as PCElement).attributes,
     sourceNode.name === PCSourceTagNames.TEXT
       ? [cloneTreeNode(sourceNode)]
-      : (sourceNode.children || []).map(node => cloneTreeNode(node))
+      : (sourceNode.children || []).map(node => cloneTreeNode(node)),
+    null,
+    sourceNode.styleMixins
   );
 
   if (isSyntheticContentNode(node, state.graph)) {
@@ -660,7 +662,7 @@ export const persistConvertSyntheticVisibleNodeStyleToMixin = <
     state = persistCSSProperty(key, undefined, node, variant, state);
   }
 
-  state = persistInheritStyle(
+  state = persistStyleMixin(
     {
       [styleMixin.id]: {
         // TODO - this needs to be part of the variant
@@ -910,8 +912,8 @@ export const persistRemoveVariantOverride = <TState extends PCEditorState>(
   return replaceDependencyGraphPCNode(null, override, state);
 };
 
-export const persistInheritStyle = <TState extends PCEditorState>(
-  styleMixins: InheritStyle,
+export const persistStyleMixin = <TState extends PCEditorState>(
+  styleMixins: StyleMixins,
   node: SyntheticVisibleNode,
   variant: PCVariant,
   state: TState
@@ -952,7 +954,7 @@ export const persistInheritStyle = <TState extends PCEditorState>(
   return state;
 };
 
-export const persistInheritStyleComponentId = <TState extends PCEditorState>(
+export const persistStyleMixinComponentId = <TState extends PCEditorState>(
   oldComponentId: string,
   newComponentId: string,
   node: SyntheticVisibleNode,

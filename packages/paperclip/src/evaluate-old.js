@@ -31,7 +31,7 @@ import {
   getPCVariants,
   PCVariant,
   isComponent,
-  InheritStyle,
+  StyleMixins,
   PCSlot,
   PCPlug,
   isVisibleNode,
@@ -52,7 +52,7 @@ type EvalOverride = {
 
   [PCOverridablePropertyName.CHILDREN]: SyntheticVisibleNode[];
   [PCOverridablePropertyName.VARIANT_IS_DEFAULT]: boolean;
-  [PCOverridablePropertyName.INHERIT_STYLE]: InheritStyle;
+  [PCOverridablePropertyName.INHERIT_STYLE]: StyleMixins;
   [PCOverridablePropertyName.TEXT]: string;
   [PCOverridablePropertyName.LABEL]: string;
 };
