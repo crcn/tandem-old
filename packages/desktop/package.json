@@ -1,6 +1,6 @@
 {
   "name": "tandem-desktop",
-  "version": "10.0.28",
+  "version": "10.0.29",
   "description": "",
   "private": true,
   "main": "lib/index.js",
@@ -34,15 +34,16 @@
     "crc32": "^0.2.2",
     "font-manager": "^0.3.0",
     "fs-extra": "^6.0.1",
-    "fsbox": "^10.0.26",
+    "fsbox": "^10.0.29",
     "get-port": "^3.2.0",
     "lodash": "^4.17.11",
-    "paperclip": "^10.0.28",
+    "mime-types": "^2.1.20",
+    "paperclip": "^10.0.29",
     "paperclip-migrator": "^10.0.26",
     "redux": "^4.0.0",
     "redux-saga": "^0.16.0",
     "tandem-common": "^10.0.26",
-    "tandem-front-end": "^10.0.28"
+    "tandem-front-end": "^10.0.29"
   },
   "devDependencies": {
     "@types/express": "^4.11.1",
