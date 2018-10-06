@@ -69,13 +69,13 @@ export const createFSSandboxSaga = ({
 
     function* handleUpdatedFile(item: FileCacheItem) {
       if (item.status === FileCacheItemStatus.CREATED) {
-        yield call(loadFile, item);
+        yield call(loadFile, item.uri);
       } else if (item.status === FileCacheItemStatus.SAVE_REQUESTED) {
         yield call(saveFile, item);
       }
     }
 
-    function* loadFile({ uri }: FileCacheItem) {
+    function* loadFile(uri: string) {
       yield put(fsSandboxItemLoading(uri));
       const { content, mimeType } = yield call(readFile, uri);
       yield put(fsSandboxItemLoaded(uri, content, mimeType));
@@ -89,12 +89,15 @@ export const createFSSandboxSaga = ({
 
     yield fork(function* handleLocalChanges() {
       while (1) {
-        const { uri }: FileChanged = yield take(
-          (action: FileChanged) =>
+        const { uri }: FileChanged = yield take((action: FileChanged) => {
+          return (
             action.type === FILE_CHANGED &&
             action.eventType === FileChangedEventType.CHANGE
-        );
-        console.log(uri);
+          );
+        });
+        yield spawn(function*() {
+          yield call(loadFile, uri);
+        });
       }
     });
   };
