@@ -3,7 +3,8 @@ import {
   queueOpenFiles,
   FSSandboxRootState,
   FS_SANDBOX_ITEM_LOADED,
-  FSSandboxItemLoaded
+  FSSandboxItemLoaded,
+  queueOpenFile
 } from "fsbox";
 import {
   PC_SYNTHETIC_FRAME_RENDERED,
@@ -22,6 +23,7 @@ import {
   isPaperclipUri
 } from "./graph";
 import { PAPERCLIP_MIME_TYPE } from "./constants";
+// import { FILE_CHANGED, FileChanged, FileChangedEventType } from "index";
 
 export const paperclipReducer = <
   TState extends PCEditorState & FSSandboxRootState
@@ -66,6 +68,25 @@ export const paperclipReducer = <
         state
       );
     }
+
+    // ick, this needs to be strongly typed and pulled fron fsbox. Currently
+    // living in front-end
+    case "FILE_CHANGED": {
+      const { uri, eventType } = action as any;
+      if (isPaperclipUri(uri)) {
+        if (eventType === "unlink") {
+          const newGraph = { ...state.graph };
+          delete newGraph[uri];
+          state = {
+            ...(state as any),
+            graph: newGraph
+          };
+        } else if (eventType === "add") {
+          state = queueOpenFile(uri, state);
+        }
+      }
+      return state;
+    }
     case FS_SANDBOX_ITEM_LOADED: {
       const { uri, content, mimeType } = action as FSSandboxItemLoaded;
 
@@ -106,8 +127,6 @@ const pruneDependencyGraph = <TState extends PCEditorState>(
         if (!newGraph) {
           newGraph = { ...graph };
         }
-        console.log("DEL", uri);
-
         delete newGraph[uri];
       }
     }

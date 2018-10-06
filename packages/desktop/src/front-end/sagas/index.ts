@@ -100,25 +100,9 @@ export function* rootSaga() {
 }
 
 function* handleProjectDirectory() {
-  let task;
   while (1) {
-    const action = yield take((action: ProjectInfoLoaded | FileChanged) => {
-      return (
-        action.type === PROJECT_INFO_LOADED ||
-        (action.type === FILE_CHANGED &&
-          /add|unlink/.test((action as FileChanged).eventType) &&
-          isPaperclipUri((action as FileChanged).uri))
-      );
-    });
-
-    if (task) {
-      yield cancel(task);
-    }
-
-    task = yield fork(function*() {
-      yield delay(10);
-      yield call(loadPCFiles);
-    });
+    yield take(PROJECT_INFO_LOADED);
+    yield call(loadPCFiles);
   }
 }
 
