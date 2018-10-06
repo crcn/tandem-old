@@ -23,6 +23,7 @@ export type Props = {
   documentColors: string[];
   dispatch: Dispatch<any>;
   computedStyleInfo: ComputedStyleInfo;
+  globalVariables: PCVariable[];
 };
 
 export type InnerProps = {
@@ -112,7 +113,12 @@ export default (Base: React.ComponentClass<BaseBoxShadowsProps>) =>
     };
 
     render() {
-      const { documentColors, computedStyleInfo, inset } = this.props;
+      const {
+        documentColors,
+        computedStyleInfo,
+        globalVariables,
+        inset
+      } = this.props;
       const { selectedBoxShadowIndex } = this.state;
       const {
         onChange,
@@ -141,6 +147,7 @@ export default (Base: React.ComponentClass<BaseBoxShadowsProps>) =>
         .map((info, index) => {
           return info.inset === Boolean(inset) ? (
             <BoxShadowItem
+              globalVariables={globalVariables}
               selected={index === selectedBoxShadowIndex}
               key={index}
               value={info}

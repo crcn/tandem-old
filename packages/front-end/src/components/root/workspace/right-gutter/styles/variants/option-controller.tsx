@@ -11,9 +11,9 @@ import { BaseVariantOptionProps } from "./option.pc";
 const { TextInput } = require("../../../../../inputs/text/view.pc");
 
 export type Props = {
-  variant: PCVariant;
+  item: PCVariant;
   alt?: boolean;
-  enabled: boolean;
+  enabled?: boolean;
   dispatch: Dispatch<any>;
   onToggle?: any;
   onClick?: any;
@@ -34,11 +34,11 @@ export default (Base: React.ComponentClass<BaseVariantOptionProps>) =>
       this.setState({ ...this.state, editingLabel: value });
     };
     onSwitchChange = () => {
-      const { onToggle, dispatch, variant } = this.props;
+      const { onToggle, dispatch, item } = this.props;
       if (onToggle) {
-        onToggle(variant, event);
+        onToggle(item, event);
       } else {
-        dispatch(variantDefaultSwitchClicked(variant));
+        dispatch(variantDefaultSwitchClicked(item));
       }
     };
     onInputClick = event => {
@@ -49,15 +49,15 @@ export default (Base: React.ComponentClass<BaseVariantOptionProps>) =>
       }
     };
     onLabelChange = (value: string) => {
-      const { variant, dispatch } = this.props;
+      const { item, dispatch } = this.props;
       this.setEditingLabel(false);
-      dispatch(variantLabelChanged(variant, value));
+      dispatch(variantLabelChanged(item, value));
     };
     render() {
       const { onSwitchChange, onInputClick, onLabelChange } = this;
       const { editingLabel } = this.state;
-      const { variant, onReset, alt, enabled, ...rest } = this.props;
-      if (!variant) {
+      const { item, onReset, alt, enabled, ...rest } = this.props;
+      if (!item) {
         return null;
       }
       return (
@@ -69,7 +69,7 @@ export default (Base: React.ComponentClass<BaseVariantOptionProps>) =>
             onChangeComplete: onSwitchChange
           }}
           resetButtonProps={{
-            onClick: onReset && (() => onReset(variant)),
+            onClick: onReset && (() => onReset(item)),
             style: {
               display: onReset ? "block" : "none"
             }
@@ -80,13 +80,13 @@ export default (Base: React.ComponentClass<BaseVariantOptionProps>) =>
               <FocusComponent>
                 {
                   <TextInput
-                    value={variant.label}
+                    value={item.label}
                     onChangeComplete={onLabelChange}
                   />
                 }
               </FocusComponent>
             ) : (
-              variant.label || "Click to edit"
+              item.label || "Click to edit"
             )
           }}
         />

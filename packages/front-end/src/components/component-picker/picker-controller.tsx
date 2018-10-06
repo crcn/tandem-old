@@ -55,7 +55,6 @@ export default (Base: React.ComponentClass<BasePickerProps>) => {
           return (
             <ComponentOption
               key={component.id}
-              component={component}
               onClick={() => onClickComponent(component)}
               centerProps={{ children: component.label }}
             />

@@ -36,7 +36,7 @@ import { NewFSItemInfo } from "./controller";
 export type Props = {
   item: FSItem;
   depth?: number;
-  draggingOver: boolean;
+  draggingOver?: boolean;
 } & BaseFileNavigatorLayerProps;
 
 type ContextProps = {

@@ -5,6 +5,7 @@ import { BaseInnerShadowsProps } from "./box-shadows.pc";
 
 export type Props = {
   documentColors: string[];
+  globalVariables: PCVariable[];
   value?: string;
   dispatch: Dispatch<any>;
   computedStyleInfo: ComputedStyleInfo;

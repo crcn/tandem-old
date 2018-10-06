@@ -87,7 +87,7 @@ export default (Base: React.ComponentClass<BaseLayersPaneProps>) =>
                   dispatch
                 )}
               >
-                <OpenModule inspectorNode={inspectorNode} graph={graph} />
+                <OpenModule inspectorNode={inspectorNode} />
               </LayersPaneContext.Provider>
             );
           })}

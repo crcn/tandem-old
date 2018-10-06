@@ -95,6 +95,7 @@ export default (Base: React.ComponentClass<BaseElementStylerProps>) =>
             computedStyleInfo
           }}
           backgroundsPaneProps={{
+            globalVariables,
             documentColors,
             dispatch,
             computedStyleInfo
@@ -110,11 +111,13 @@ export default (Base: React.ComponentClass<BaseElementStylerProps>) =>
             computedStyleInfo
           }}
           outerShadowsPaneProps={{
+            globalVariables,
             documentColors,
             dispatch,
             computedStyleInfo
           }}
           innerShadowsPaneProps={{
+            globalVariables,
             documentColors,
             dispatch,
             computedStyleInfo

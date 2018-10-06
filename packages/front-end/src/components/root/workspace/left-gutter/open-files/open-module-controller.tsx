@@ -7,24 +7,15 @@ import { NodeLayer } from "./layer.pc";
 
 export type Props = {
   inspectorNode: InspectorNode;
-  document: SyntheticDocument;
-  graph: DependencyGraph;
-  dispatch: Dispatch<any>;
 };
 
 export default (Base: React.ComponentClass<BaseOpenModuleProps>) =>
   class OpenModuleController extends React.PureComponent<Props> {
     render() {
-      const { graph, dispatch, inspectorNode, ...rest } = this.props;
+      const { inspectorNode, ...rest } = this.props;
       return (
         <Base {...rest}>
-          <NodeLayer
-            depth={2}
-            graph={graph}
-            dispatch={dispatch}
-            document={document}
-            inspectorNode={inspectorNode}
-          />
+          <NodeLayer depth={2} inspectorNode={inspectorNode} />
         </Base>
       );
     }

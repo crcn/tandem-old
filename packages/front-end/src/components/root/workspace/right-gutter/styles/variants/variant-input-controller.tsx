@@ -86,7 +86,7 @@ export default (
             alt={Boolean(i % 2)}
             enabled={enabled}
             key={variant.id}
-            variant={variant}
+            item={variant}
             dispatch={dispatch}
             onToggle={onVariantToggle}
           />

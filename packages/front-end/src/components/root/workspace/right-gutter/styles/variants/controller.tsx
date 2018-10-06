@@ -62,14 +62,7 @@ export default (Base: React.ComponentClass<BaseVariantsProps>) =>
 
       const variantOptions = variants.map(variant => {
         return (
-          <VariantOption
-            key={variant.id}
-            selected={
-              selectedVariant ? variant.id === selectedVariant.id : false
-            }
-            dispatch={dispatch}
-            variant={variant}
-          />
+          <VariantOption key={variant.id} dispatch={dispatch} item={variant} />
         );
       });
 

@@ -21,13 +21,8 @@ export type Props = {
   documentColors: string[];
   dispatch: Dispatch;
   computedStyleInfo: ComputedStyleInfo;
+  globalVariables: PCVariable[];
 };
-
-type InnerProps = {
-  onChange: any;
-  onChangeComplete: any;
-  onPlusButtonClick: any;
-} & Props;
 
 export default (Base: React.ComponentClass<BaseBackgroundsProps>) =>
   class BackgroundsController extends React.PureComponent<Props> {
@@ -56,7 +51,7 @@ export default (Base: React.ComponentClass<BaseBackgroundsProps>) =>
       );
     };
     render() {
-      const { computedStyleInfo, documentColors } = this.props;
+      const { computedStyleInfo, documentColors, globalVariables } = this.props;
       const { onChange, onChangeComplete, onPlusButtonClick } = this;
 
       const { sourceNodes } = computedStyleInfo;
@@ -72,6 +67,7 @@ export default (Base: React.ComponentClass<BaseBackgroundsProps>) =>
             <BackgroundItem
               key={i}
               value={background}
+              globalVariables={globalVariables}
               onChange={value => onChange(value, i)}
               onChangeComplete={value => onChangeComplete(value, i)}
               documentColors={documentColors}

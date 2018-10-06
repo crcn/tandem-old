@@ -7,7 +7,7 @@ import {
 } from "./dnd-controller";
 import { TreeMoveOffset } from "tandem-common";
 
-export type Props = WithNodeDropTargetProps;
+export type Props = WithNodeDropTargetProps & React.HTMLAttributes<any>;
 
 export default compose<Props, Props>(
   withDndContext,

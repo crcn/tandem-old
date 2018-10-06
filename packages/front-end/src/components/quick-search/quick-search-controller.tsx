@@ -37,12 +37,7 @@ export default (Base: React.ComponentClass<BaseQuickSearchProps>) =>
 
       const results = matches.map((quickSearchResult, i) => {
         return (
-          <SearchResult
-            filter={filter}
-            item={quickSearchResult}
-            key={i}
-            dispatch={dispatch}
-          />
+          <SearchResult item={quickSearchResult} key={i} dispatch={dispatch} />
         );
       });
 

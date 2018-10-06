@@ -88,14 +88,12 @@ export default (Base: React.ComponentClass<BaseInheritProps>) => {
         .map((styleMixinId, i) => {
           return (
             <InheritItem
-              variant={cx({
-                alt: Boolean(i % 2)
-              })}
+              alt={Boolean(i % 2)}
               key={styleMixinId}
-              onClick={onInheritItemClick}
+              onClick={onInheritItemClick as any}
               selected={selectedStyleMixinId === styleMixinId}
               styleMixinId={styleMixinId}
-              styleMixin={getPCNode(styleMixinId, graph)}
+              styleMixin={getPCNode(styleMixinId, graph) as PCStyleMixin}
               allStyleMixins={allStyleMixins}
               dispatch={dispatch}
             />

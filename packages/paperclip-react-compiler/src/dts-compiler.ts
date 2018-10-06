@@ -213,7 +213,7 @@ const translateComponent = (
       context
     );
     context = addLine(
-      `export const ${componentClassName}: (props: ${controllerClassName}Props) => any;\n`,
+      `export const ${componentClassName}: (props: ${controllerClassName}Props) => React.ReactElement<${controllerClassName}Props>;\n`,
       context
     );
     return context;
@@ -224,7 +224,7 @@ const translateComponent = (
     context
   );
   context = addLine(
-    `export const ${componentClassName}: (props: Base${componentPropsName}) => any;\n`,
+    `export const ${componentClassName}: (props: Base${componentPropsName}) => React.ReactElement<Base${componentPropsName}>;\n`,
     context
   );
   return context;

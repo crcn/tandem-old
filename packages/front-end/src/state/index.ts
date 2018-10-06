@@ -96,7 +96,10 @@ import {
   InspectorNode,
   getInsertableInspectorNode
 } from "paperclip";
-import { ContextMenuItem } from "../components/context-menu/view.pc";
+import {
+  ContextMenuItem,
+  ContextMenu
+} from "../components/context-menu/view.pc";
 import { Action } from "redux";
 
 export enum ToolType {

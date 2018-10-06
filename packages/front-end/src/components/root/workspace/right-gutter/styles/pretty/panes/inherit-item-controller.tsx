@@ -7,8 +7,9 @@ import { inheritItemComponentTypeChangeComplete } from "../../../../../../../act
 import { Dispatch } from "redux";
 import { BaseInheritItemProps } from "./inherit-item.pc";
 
-export type Props = {
+export type Props = BaseInheritItemProps & {
   onClick: any;
+  alt?: boolean;
   dispatch: Dispatch<any>;
   styleMixinId: string;
   styleMixin: PCStyleMixin;
@@ -30,13 +31,14 @@ export default (Base: React.ComponentClass<BaseInheritItemProps>) =>
       this.props.onClick(this.props.styleMixinId);
     };
     render() {
+      const { selected, styleMixin, allStyleMixins, alt, ...rest } = this.props;
       const { onClick, onChangeComplete } = this;
-      const { selected, styleMixin, allStyleMixins } = this.props;
 
       return (
         <Base
+          {...rest}
           onClick={onClick}
-          variant={cx({ selected })}
+          variant={cx({ selected, alt })}
           dropdownProps={{
             onClick: event => event.stopPropagation(),
             filterable: true,

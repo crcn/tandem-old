@@ -11,8 +11,6 @@ import { BaseQuickSearchResult, QuickSearchResult } from "state";
 
 export type Props = {
   item: QuickSearchResult;
-  file: File;
-  cwd: string;
   dispatch: Dispatch<any>;
 };
 
@@ -62,26 +60,3 @@ export default (Base: React.ComponentClass<BaseSearchResultProps>) =>
       );
     }
   };
-
-// const MATCH_STYLE: any = { fontWeight: 600, color: "#5f87cd" };
-
-// const getFilterReplacer = memoize(
-//   (filter: string[]) => new RegExp(filter.join("|"), "g")
-// );
-
-// const highlightFilterMatches = (str, filter: string[]) =>
-//   str
-//     .replace(getFilterReplacer(filter), match => {
-//       return `%%MATCH%%${match}%%MATCH%%`;
-//     })
-//     .split("%%MATCH%%")
-//     .map(
-//       (match, i) =>
-//         getFilterReplacer(filter).test(match) ? (
-//           <span style={MATCH_STYLE} key={i}>
-//             {match}
-//           </span>
-//         ) : (
-//           match
-//         )
-//     );

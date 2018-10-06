@@ -6,7 +6,6 @@ import { BaseControllerItemProps } from "./controller-item.pc";
 
 export type Props = {
   selected: boolean;
-  hovering: boolean;
   onClick: any;
   dispatch: Dispatch<any>;
   relativePath: string;

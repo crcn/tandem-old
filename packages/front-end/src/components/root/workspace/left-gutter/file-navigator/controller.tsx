@@ -168,7 +168,7 @@ export default (Base: React.ComponentClass<BaseFileNavigatorProps>) =>
       const { newFSItemInfo } = this.state;
 
       const content = rootDirectory.children.map(child => {
-        return <FileNavigatorLayer key={child.id} item={child} />;
+        return <FileNavigatorLayer key={child.id} item={child as FSItem} />;
       });
 
       if (newFSItemInfo && rootDirectory.uri === newFSItemInfo.directory.uri) {
@@ -176,7 +176,7 @@ export default (Base: React.ComponentClass<BaseFileNavigatorProps>) =>
           <NewFileInput
             key="new-file-input"
             onChangeComplete={onNewFileChangeComplete}
-            onChange={onNewFileInputChange}
+            onChange={onNewFileInputChange as any}
             onEscape={onNewFileEscape}
           />
         );
