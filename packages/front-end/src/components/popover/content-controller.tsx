@@ -18,6 +18,10 @@ const calcPortalStyle = (anchorRect: Bounds, portalRect: Bounds) => {
   };
 };
 
+// ick, but okay for now. Will need to change
+// when tests are added
+let _popoverCount = 0;
+
 export type Props = {
   onShouldClose: any;
   anchorRect: Bounds;
@@ -29,9 +33,13 @@ export default compose<any, Props>(
     return class extends React.Component<any, any> {
       private _emptySpaceListener: any;
       private _scrollListener: any;
+      private _popoverIndex: number;
       setContainer = (container: HTMLDivElement) => {
         const { onShouldClose } = this.props;
         if (this._emptySpaceListener) {
+          if (this._popoverIndex) {
+            _popoverCount--;
+          }
           document.body.removeEventListener(
             "mousedown",
             this._emptySpaceListener
@@ -39,10 +47,17 @@ export default compose<any, Props>(
           document.removeEventListener("scroll", this._scrollListener, true);
         }
         if (container && onShouldClose) {
+          // note that we keep track of how many popovers there are currently in the root in case any pop over
+          // opens a separate popover -- in this case the user will need to click multiple times in order to close
+          // all popovers
+          this._popoverIndex = ++_popoverCount;
           document.body.addEventListener(
             "mousedown",
             (this._emptySpaceListener = event => {
-              if (!container.contains(event.target)) {
+              if (
+                !container.contains(event.target) &&
+                _popoverCount === this._popoverIndex
+              ) {
                 // beat onClick handler for dropdown button
                 setImmediate(() => {
                   onShouldClose(event);

@@ -1118,7 +1118,8 @@
       "attributes": {},
       "style": {
         "box-sizing": "border-box",
-        "display": "block"
+        "display": "block",
+        "background": "--24ce1e4d482"
       },
       "children": [],
       "metadata": {
