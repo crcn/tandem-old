@@ -533,6 +533,7 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
         // TODO - check for renamed file
         state = updateRootState(
           {
+            selectedFileNodeIds: [],
             fileCache,
             graph,
             projectDirectory: fsItem
