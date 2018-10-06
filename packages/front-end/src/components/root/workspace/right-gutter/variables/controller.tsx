@@ -9,13 +9,14 @@ export type Props = {
   dispatch: Dispatch<any>;
   globalVariables: PCVariable[];
   fontFamilies: FontFamily[];
+  show?: boolean;
 };
 
 const TYPE_OPTIONS = [
-  PCVariableType.UNIT,
-  PCVariableType.NUMBER,
-  PCVariableType.COLOR,
-  PCVariableType.FONT
+  // PCVariableType.UNIT,
+  // PCVariableType.NUMBER,
+  PCVariableType.COLOR
+  // PCVariableType.FONT
 
   // TODO
   // "Alias"
@@ -33,7 +34,13 @@ export default (Base: React.ComponentClass<BaseVariablesInputProps>) =>
     };
     render() {
       const { onVariableButtonClick } = this;
-      const { dispatch, globalVariables, fontFamilies, ...rest } = this.props;
+      const {
+        dispatch,
+        globalVariables,
+        show,
+        fontFamilies,
+        ...rest
+      } = this.props;
 
       const items = globalVariables.map(variable => {
         return (

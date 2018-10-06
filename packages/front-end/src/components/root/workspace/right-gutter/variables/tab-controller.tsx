@@ -6,6 +6,7 @@ import { PCVariable } from "paperclip";
 import { FontFamily } from "../../../../../state";
 
 export type Props = {
+  show?: boolean;
   dispatch: Dispatch<any>;
   globalFileUri: string;
   globalVariables: PCVariable[];
@@ -17,11 +18,15 @@ export default (Base: React.ComponentClass<BaseVariablesTabProps>) =>
     render() {
       const {
         dispatch,
+        show,
         globalFileUri,
         globalVariables,
         fontFamilies,
         ...rest
       } = this.props;
+      if (show === false) {
+        return null;
+      }
       return (
         <Base
           {...rest}

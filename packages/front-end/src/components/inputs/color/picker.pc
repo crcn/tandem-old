@@ -760,13 +760,13 @@
         {
           "id": "52771059438",
           "is": "50e32bec2591",
-          "label": "Dropdown",
+          "label": "swatch source input",
           "name": "component-instance",
           "attributes": {},
           "style": {
             "margin-bottom": "8px",
             "margin-top": "4px",
-            "display": "none"
+            "display": "block"
           },
           "children": [
             {

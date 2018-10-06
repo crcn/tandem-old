@@ -55,9 +55,6 @@ export default (Base: React.ComponentClass<BaseRightGutterProps>) =>
         root.projectInfo && getGlobalFileUri(root.projectInfo);
       const { currentTab } = this.state;
       const { setTab } = this;
-      if (!root.selectedInspectorNodeIds.length) {
-        return null;
-      }
 
       const { fontFamilies } = root;
 
@@ -112,10 +109,12 @@ export default (Base: React.ComponentClass<BaseRightGutterProps>) =>
           {...rest}
           variant={cx({
             stylesTab: availableCurrentTab === TAB_NAMES[0],
-            propertiesTab: availableCurrentTab === TAB_NAMES[1]
+            propertiesTab: availableCurrentTab === TAB_NAMES[1],
+            unselectedNodes: selectedSyntheticNodes.length === 0
           })}
-          variablesTabProps={{
+          variablesSectionProps={{
             dispatch,
+            show: selectedSyntheticNodes.length === 0,
             globalFileUri,
             globalVariables,
             fontFamilies

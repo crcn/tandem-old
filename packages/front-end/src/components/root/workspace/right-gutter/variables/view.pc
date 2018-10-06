@@ -330,7 +330,7 @@
                       "id": "f300c6aa57981",
                       "name": "text",
                       "label": "Text",
-                      "value": "Variables\n",
+                      "value": "Global Properties\n",
                       "style": {
                         "font-family": "Helvetica",
                         "color": "grey",
