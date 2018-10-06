@@ -80,8 +80,8 @@
       "name": "component-instance",
       "attributes": {},
       "style": {
-        "font-family": "--22702c5f1086",
-        "border-left": "1px solid --d8f6340b1442"
+        "font-family": "var(--22702c5f1086)",
+        "border-left": "1px solid var(--d8f6340b1442)"
       },
       "children": [
         {

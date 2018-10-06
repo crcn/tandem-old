@@ -14,7 +14,7 @@
         "border-bottom": "1px  rgba(0,0,0,0.05)",
         "user-select": "none",
         "cursor": "default",
-        "background": "--bc891e755312"
+        "background": "var(--bc891e755312)"
       },
       "attributes": {},
       "id": "8b8bbe2c859177",
@@ -45,7 +45,7 @@
           "propertyName": "style",
           "targetIdPath": [],
           "value": {
-            "background": "--f63574de434",
+            "background": "var(--f63574de434)",
             "border-bottom": "0px  rgba(0,0,0,0.05)"
           },
           "name": "override",

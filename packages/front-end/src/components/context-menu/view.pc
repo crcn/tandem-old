@@ -9,11 +9,11 @@
       "is": "div",
       "style": {
         "min-width": "150px",
-        "background": "--bc891e755312",
+        "background": "var(--bc891e755312)",
         "position": "fixed",
         "border-radius": "2px",
         "box-shadow": "2px 2px 4px 0px rgba(0, 0, 0, 0.23)",
-        "color": "--24ce1e4d482",
+        "color": "var(--24ce1e4d482)",
         "width": "unset",
         "left": "0px",
         "top": "0px",
@@ -191,7 +191,7 @@
           "propertyName": "style",
           "targetIdPath": [],
           "value": {
-            "background": "--d8f6340b1442"
+            "background": "var(--d8f6340b1442)"
           },
           "name": "override",
           "children": []
@@ -211,7 +211,7 @@
       "label": "Divider",
       "is": "div",
       "style": {
-        "background": "--d8f6340b1442"
+        "background": "var(--d8f6340b1442)"
       },
       "attributes": {},
       "id": "8c0647211142703",

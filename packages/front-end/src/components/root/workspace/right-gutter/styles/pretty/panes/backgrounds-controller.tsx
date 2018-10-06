@@ -85,7 +85,7 @@ export default (Base: React.ComponentClass<BaseBackgroundsProps>) =>
   };
 
 const splitBackgrounds = value =>
-  (value || "").match(/(rgba\(.*?\)|[\w-]+|#[^,])/g) || [];
+  (value || "").match(/(\w+\(.*?\)|[\w-]+|#[^,])/g) || [];
 
 // TODO - validation here
 const replaceBackground = (oldValue, replacement, index) =>

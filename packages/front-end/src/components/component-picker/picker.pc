@@ -11,7 +11,7 @@
         "box-sizing": "border-box",
         "width": "400px",
         "height": "300px",
-        "background": "--bc891e755312",
+        "background": "var(--bc891e755312)",
         "padding": "8px",
         "border-radius": "2px",
         "display": "flex",

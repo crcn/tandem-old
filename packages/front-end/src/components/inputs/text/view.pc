@@ -67,7 +67,7 @@
             "2c83e997741"
           ],
           "value": {
-            "border": "1px solid --d8f6340b1442"
+            "border": "1px solid var(--d8f6340b1442)"
           },
           "name": "override",
           "children": []
@@ -155,7 +155,7 @@
                     "border-top-left-radius": "2px",
                     "border-top-right-radius": "2px",
                     "border-bottom-right-radius": "2px",
-                    "border": "1px solid --d8f6340b1442",
+                    "border": "1px solid var(--d8f6340b1442)",
                     "overflow": "scroll"
                   },
                   "children": [

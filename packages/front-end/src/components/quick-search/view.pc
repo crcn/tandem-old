@@ -9,7 +9,7 @@
       "name": "component",
       "is": "div",
       "style": {
-        "border": "1px solid --d8f6340b1442",
+        "border": "1px solid var(--d8f6340b1442)",
         "border-bottom-left-radius": "2px",
         "border-bottom-right-radius": "2px",
         "border-top": "none",
@@ -95,7 +95,7 @@
                     "top": 0,
                     "right": 400,
                     "bottom": 300,
-                    "background": "--24ce1e4d22305"
+                    "background": "var(--24ce1e4d22305)"
                   },
                   "children": [
                     {
@@ -355,7 +355,7 @@
             "width": "100%",
             "padding": "4px",
             "border-radius": "2px",
-            "border": "1px solid --d8f6340b1442",
+            "border": "1px solid var(--d8f6340b1442)",
             "box-sizing": "border-box",
             "background": "transparent",
             "boxSizing": "border-box",

@@ -1122,12 +1122,14 @@ export const getPCParentComponentInstances = memoize(
 );
 
 export const styleValueContainsCSSVar = (value: string) => {
-  return value.indexOf(`--`) !== -1;
+  return value.search(/var\(.*?\)/) !== -1;
 };
 
 // not usable yet -- maybe with computed later on
 export const getCSSVars = (value: string) => {
-  return (value.match(/--[^\s]+/g) || EMPTY_ARRAY).map(v => v.substr(2));
+  return (value.match(/var\(--[^\s]+?\)/g) || EMPTY_ARRAY).map(
+    v => v.match(/var\(--(.*?)\)/)[1]
+  );
 };
 
 // not usable yet -- maybe with computed later on
@@ -1146,11 +1148,11 @@ export const computeStyleValue = (
   value: string,
   varMap: KeyValue<PCVariable>
 ) => {
-  if (value && String(value).indexOf("--") !== -1) {
+  if (value && styleValueContainsCSSVar(String(value))) {
     const cssVars = getCSSVars(value);
     for (const cssVar of cssVars) {
       var ref = varMap[cssVar];
-      value = ref ? value.replace(`--${cssVar}`, ref.value) : value;
+      value = ref ? value.replace(`var(--${cssVar})`, ref.value) : value;
     }
   }
 
@@ -1163,7 +1165,7 @@ export const getNodeStyleRefIds = memoize((style: KeyValue<string>) => {
     const value = style[key];
 
     // value c
-    if (value && String(value).indexOf("--") !== -1) {
+    if (value && styleValueContainsCSSVar(String(value))) {
       const cssVars = getCSSVars(value);
       for (const cssVar of cssVars) {
         refIds[cssVar] = 1;

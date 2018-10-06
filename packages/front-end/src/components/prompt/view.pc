@@ -47,8 +47,8 @@
             "font-family": "Helvetica",
             "flex-direction": "column",
             "font-size": "11px",
-            "border": "1px solid --d8f6340b1442",
-            "color": "--24ce1e4d482"
+            "border": "1px solid var(--d8f6340b1442)",
+            "color": "var(--24ce1e4d482)"
           },
           "children": [
             {
@@ -203,7 +203,7 @@
                 "9f364d217179"
               ],
               "value": {
-                "background": "--bc891e755312"
+                "background": "var(--bc891e755312)"
               },
               "name": "override",
               "children": []

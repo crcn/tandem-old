@@ -110,7 +110,7 @@
           "attributes": {},
           "style": {
             "box-sizing": "border-box",
-            "background": "--bc891e755312",
+            "background": "var(--bc891e755312)",
             "width": "100%",
             "height": "100%"
           },

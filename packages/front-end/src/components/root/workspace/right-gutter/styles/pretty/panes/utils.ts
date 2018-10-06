@@ -7,7 +7,7 @@ export const mapVariablesToCSSVarDropdownOptions = (
   variables: PCVariable[]
 ): DropdownMenuOption[] =>
   variables.map(variable => ({
-    value: `--${variable.id}`,
+    value: `var(--${variable.id})`,
     label: variable.label,
     special: true
   }));
@@ -18,20 +18,24 @@ export const getPrettyPaneColorSwatchOptionGroups = memoize(
     globalVariables: PCVariable[]
   ): ColorSwatchGroup[] => {
     return [
-      {
-        label: "Global Variables",
-        options: globalVariables.map(variable => ({
-          color: variable.value,
-          value: `--${variable.id}`
-        }))
-      },
-      {
-        label: "Document Colors",
-        options: documentColors.map(color => ({
-          color,
-          value: color
-        }))
-      }
-    ];
+      documentColors.length
+        ? {
+            label: "Document Colors",
+            options: documentColors.map(color => ({
+              color,
+              value: color
+            }))
+          }
+        : null,
+      globalVariables.length
+        ? {
+            label: "Global Colors",
+            options: globalVariables.map(variable => ({
+              color: variable.value,
+              value: `var(--${variable.id})`
+            }))
+          }
+        : null
+    ].filter(Boolean);
   }
 );

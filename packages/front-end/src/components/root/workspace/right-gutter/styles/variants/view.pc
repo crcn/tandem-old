@@ -11,7 +11,7 @@
       "name": "component-instance",
       "attributes": {},
       "style": {
-        "font-family": "--22702c5f1086"
+        "font-family": "var(--22702c5f1086)"
       },
       "children": [],
       "metadata": {
@@ -440,7 +440,7 @@
       "is": "div",
       "style": {
         "box-sizing": "border-box",
-        "font-family": "--22702c5f1086",
+        "font-family": "var(--22702c5f1086)",
         "display": "block",
         "padding-left": "12px",
         "padding-top": "8px",

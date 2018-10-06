@@ -710,7 +710,7 @@
           "propertyName": "style",
           "targetIdPath": [],
           "value": {
-            "background": "--32c1eebd7630"
+            "background": "var(--32c1eebd7630)"
           },
           "name": "override",
           "children": []
@@ -822,7 +822,7 @@
           "propertyName": "style",
           "targetIdPath": [],
           "value": {
-            "background": "--24ce1e4d22305"
+            "background": "var(--24ce1e4d22305)"
           },
           "name": "override",
           "children": []

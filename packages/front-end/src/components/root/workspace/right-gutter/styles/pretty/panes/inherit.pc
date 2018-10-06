@@ -30,7 +30,7 @@
           ],
           "value": {
             "padding-top": "0px",
-            "color": "--24ce1e4d482",
+            "color": "var(--24ce1e4d482)",
             "padding-left": "0px",
             "padding-right": "0px",
             "padding-bottom": "8px"

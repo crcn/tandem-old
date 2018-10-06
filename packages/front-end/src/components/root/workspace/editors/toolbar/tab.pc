@@ -9,10 +9,10 @@
       "is": "div",
       "style": {
         "box-sizing": "border-box",
-        "font-family": "--22702c5f1086",
+        "font-family": "var(--22702c5f1086)",
         "padding": "8px 16px",
         "align-items": "center",
-        "background": "--d8f6340b1442",
+        "background": "var(--d8f6340b1442)",
         "color": "rgba(112, 112, 112, 1)",
         "cursor": "pointer",
         "padding-left": "20px",
@@ -61,8 +61,8 @@
           "propertyName": "style",
           "targetIdPath": [],
           "value": {
-            "font-family": "--22702c5f1086",
-            "background": "--bc891e755312",
+            "font-family": "var(--22702c5f1086)",
+            "background": "var(--bc891e755312)",
             "user-select": "none"
           },
           "name": "override",

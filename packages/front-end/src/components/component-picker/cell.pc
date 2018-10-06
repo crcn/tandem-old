@@ -13,8 +13,8 @@
         "height": "100px",
         "display": "inline-block",
         "padding": "8px",
-        "font-family": "--22702c5f1086",
-        "color": "--24ce1e4d482"
+        "font-family": "var(--22702c5f1086)",
+        "color": "var(--24ce1e4d482)"
       },
       "attributes": {},
       "id": "dcd2c13f1453155",
@@ -28,7 +28,7 @@
           "attributes": {},
           "style": {
             "box-sizing": "border-box",
-            "border": "1px solid --d8f6340b1442",
+            "border": "1px solid var(--d8f6340b1442)",
             "width": "100%",
             "height": "100%",
             "border-radius": "2px",

@@ -109,10 +109,10 @@
         "user-select": "none",
         "align-items": "center",
         "justify-content": "space-between",
-        "font-family": "--22702c5f1086",
+        "font-family": "var(--22702c5f1086)",
         "position": "relative",
         "font-size": "12px",
-        "color": "--24ce1e4d482"
+        "color": "var(--24ce1e4d482)"
       },
       "attributes": {},
       "id": "d3bf183b20",
@@ -664,7 +664,7 @@
           "propertyName": "style",
           "targetIdPath": [],
           "value": {
-            "background": "--bc891e755312"
+            "background": "var(--bc891e755312)"
           },
           "name": "override",
           "children": []
@@ -683,7 +683,7 @@
           "propertyName": "style",
           "targetIdPath": [],
           "value": {
-            "font-family": "--22702c5f1086"
+            "font-family": "var(--22702c5f1086)"
           },
           "name": "override",
           "children": []
@@ -878,7 +878,7 @@
           "propertyName": "style",
           "targetIdPath": [],
           "value": {
-            "background": "--d8f6340b1442"
+            "background": "var(--d8f6340b1442)"
           },
           "name": "override",
           "children": []

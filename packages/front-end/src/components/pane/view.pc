@@ -8,12 +8,12 @@
       "label": "Pane",
       "is": "div",
       "style": {
-        "font-family": "--22702c5f1086",
+        "font-family": "var(--22702c5f1086)",
         "display": "flex",
         "flex-direction": "column",
-        "border-bottom": "1px solid --bc891e755312",
+        "border-bottom": "1px solid var(--bc891e755312)",
         "font-size": "10px",
-        "color": "--24ce1e4d482"
+        "color": "var(--24ce1e4d482)"
       },
       "attributes": {},
       "id": "b6c162d113",
@@ -101,7 +101,7 @@
             "box-sizing": "border-box",
             "flex": "1",
             "position": "relative",
-            "color": "--24ce1e4d482",
+            "color": "var(--24ce1e4d482)",
             "padding-left": "16px",
             "padding-right": "16px",
             "padding-bottom": "16px"

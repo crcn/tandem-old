@@ -8,7 +8,7 @@ export const mapPCVariablesToColorSwatchOptions = memoize(
       .filter(variable => variable.type === PCVariableType.COLOR)
       .map(variable => ({
         color: variable.value,
-        value: `--${variable.id}`
+        value: `var(--${variable.id})`
       }));
   }
 );

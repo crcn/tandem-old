@@ -200,7 +200,7 @@
             "position": "relative",
             "flex-grow": "1",
             "overflow": "hidden",
-            "background": "--bc891e755312"
+            "background": "var(--bc891e755312)"
           },
           "children": [
             {
@@ -242,7 +242,7 @@
             "width": "6px",
             "height": "6px",
             "display": "inline-block",
-            "background": "--32ef79b7820935",
+            "background": "var(--32ef79b7820935)",
             "border-bottom-left-radius": "99px",
             "border-top-left-radius": "99px",
             "border-top-right-radius": "99px",

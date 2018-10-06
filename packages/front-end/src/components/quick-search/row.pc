@@ -122,7 +122,7 @@
           "propertyName": "style",
           "targetIdPath": [],
           "value": {
-            "background": "--f63574de434"
+            "background": "var(--f63574de434)"
           },
           "name": "override",
           "children": []

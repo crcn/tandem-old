@@ -9,7 +9,7 @@
       "is": "div",
       "style": {
         "display": "flex",
-        "background": "--d8f6340b1442",
+        "background": "var(--d8f6340b1442)",
         "position": "relative",
         "flex-grow": "0",
         "height": "38px"
@@ -29,7 +29,7 @@
             "display": "flex",
             "align-items": "center",
             "padding": "8px 16px",
-            "color": "--24ce1e4d482"
+            "color": "var(--24ce1e4d482)"
           },
           "children": [
             {
@@ -427,7 +427,7 @@
           "name": "component-instance",
           "attributes": {},
           "style": {
-            "background": "--bc891e755312",
+            "background": "var(--bc891e755312)",
             "height": "100%",
             "position": "relative"
           },

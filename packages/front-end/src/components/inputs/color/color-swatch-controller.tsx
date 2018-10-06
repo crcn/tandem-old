@@ -44,13 +44,49 @@ export type Props = {
 
 export type State = {
   selectedGroupIndex: number;
+  value: string;
+};
+
+const getColorSwatchGroupFromValue = (
+  value: string,
+  groups: ColorSwatchGroup[]
+) => {
+  if (!groups.length) {
+    return 0;
+  }
+  for (const group of groups) {
+    const option = group.options.find(option => option.value === value);
+    if (option) {
+      return group;
+    }
+  }
+  return groups[0];
 };
 
 export default (Base: React.ComponentClass<BaseColorSwatchesProps>) =>
   class ColorSwatchesController extends React.PureComponent<Props, State> {
     state = {
-      selectedGroupIndex: 0
+      selectedGroupIndex: 0,
+      value: null
     };
+    static getDerivedStateFromProps(nextProps: Props, prevState: State): State {
+      if (
+        nextProps.value !== prevState.value &&
+        nextProps.optionGroups.length
+      ) {
+        const selectedGroup = getColorSwatchGroupFromValue(
+          nextProps.value,
+          nextProps.optionGroups
+        );
+        return {
+          selectedGroupIndex: selectedGroup
+            ? nextProps.optionGroups.indexOf(selectedGroup)
+            : 0,
+          value: nextProps.value
+        };
+      }
+      return null;
+    }
     onGroupChange = (group: ColorSwatchGroup) => {
       this.setState({
         ...this.state,
@@ -74,9 +110,10 @@ export default (Base: React.ComponentClass<BaseColorSwatchesProps>) =>
       const selectedGroup =
         optionGroups[Math.min(selectedGroupIndex, optionGroups.length - 1)];
 
-      const content = selectedGroup.options.map(({ color, value }) => {
+      const content = selectedGroup.options.map(({ color, value }, i) => {
         return (
           <ColorSwatchItem
+            key={i}
             variant={cx({
               selected: selectedValue === value
             })}
@@ -93,6 +130,9 @@ export default (Base: React.ComponentClass<BaseColorSwatchesProps>) =>
       return (
         <Base
           {...rest}
+          variant={cx({
+            hasMultipleGroups: optionGroups.length > 1
+          })}
           swatchSourceInputProps={{
             value: selectedGroup,
             options: mapColorSwatchGroupsToDropdownOptions(optionGroups),
