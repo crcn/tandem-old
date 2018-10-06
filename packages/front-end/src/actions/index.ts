@@ -238,6 +238,8 @@ export const CHROME_MINIMIZE_BUTTON_CLICKED = "CHROME_MINIMIZE_BUTTON_CLICKED";
 export const CHROME_MAXIMIZE_BUTTON_CLICKED = "CHROME_MAXIMIZE_BUTTON_CLICKED";
 export const CSS_RESET_PROPERTY_OPTION_CLICKED =
   "CSS_RESET_PROPERTY_OPTION_CLICKED";
+export const IMAGE_BROWSE_BUTTON_CLICKED = "IMAGE_BROWSE_BUTTON_CLICKED";
+export const IMAGE_SOURCE_INPUT_CHANGED = "IMAGE_SOURCE_INPUT_CHANGED";
 
 export type WrappedEvent<T> = {
   sourceEvent: T;
@@ -428,6 +430,10 @@ export type CanvasToolWindowKeyDown = {
 export type CanvasToolArtboardTitleClicked = {
   frame: Frame;
 } & WrappedEvent<React.MouseEvent<any>>;
+
+export type ImageSourceInputChanged = {
+  value: string;
+} & Action;
 
 export type OpenTextEditorButtonClicked = {
   uri: string;
@@ -723,6 +729,19 @@ export const syntheticNodeContextMenuConvertToComponentClicked = publicActionCre
     item
   })
 );
+
+export const imageBrowseButtonClicked = publicActionCreator(
+  (): Action => ({
+    type: IMAGE_BROWSE_BUTTON_CLICKED
+  })
+);
+
+export const imageSourceInputChanged = (
+  value: string
+): ImageSourceInputChanged => ({
+  value,
+  type: IMAGE_SOURCE_INPUT_CHANGED
+});
 
 export const syntheticNodeContextMenuConvertToStyleMixinClicked = publicActionCreator(
   (item: SyntheticVisibleNode): SyntheticNodeContextMenuAction => ({

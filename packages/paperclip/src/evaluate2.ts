@@ -100,7 +100,8 @@ const compileDependencyGraph = (graph: DependencyGraph) => {
       renderers[`_${contentNode.id}`] = compileContentNodeAsVanilla(
         contentNode,
         reuseNodeGraphMap(getComponentGraphRefMap(contentNode, graph)),
-        reuseNodeGraphMap(getStyleVariableRefMap(contentNode, graph))
+        reuseNodeGraphMap(getStyleVariableRefMap(contentNode, graph)),
+        uri
       );
     }
   }

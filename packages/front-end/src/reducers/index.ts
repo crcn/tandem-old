@@ -172,7 +172,9 @@ import {
   QuickSearchResultItemSplitButtonClicked,
   EditorTabContextMenuOpenInBottomTabOptionClicked,
   EDITOR_TAB_CONTEXT_MENU_OPEN_IN_BOTTOM_OPTION_CLICKED,
-  OPEN_CONTROLLER_BUTTON_CLICKED
+  OPEN_CONTROLLER_BUTTON_CLICKED,
+  IMAGE_SOURCE_INPUT_CHANGED,
+  ImageSourceInputChanged
 } from "../actions";
 import {
   queueOpenFile,
@@ -2562,6 +2564,18 @@ const shortcutReducer = (state: RootState, action: Action): RootState => {
         getSyntheticNodeById(item.id, state.documents),
         state
       );
+      return state;
+    }
+
+    case IMAGE_SOURCE_INPUT_CHANGED: {
+      const { value } = action as ImageSourceInputChanged;
+      const element = getSyntheticNodeById(
+        state.selectedSyntheticNodeIds[0],
+        state.documents
+      ) as SyntheticElement;
+      state = persistRootState(state => {
+        return persistAttribute("src", value, element, state);
+      }, state);
       return state;
     }
     case SYNTHETIC_NODE_CONTEXT_MENU_REMOVE_CLICKED: {

@@ -183,6 +183,11 @@ export default (Base: React.ComponentClass<BaseElementPropertiesProps>) => {
             options: getTypeMenuOptions(components),
             onChange: onTypeChange
           }}
+          imgTagPropertiesProps={{
+            dispatch,
+            graph,
+            sourceNode
+          }}
           inputTagPropertiesProps={{
             dispatch,
             graph,

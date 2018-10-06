@@ -1,4 +1,5 @@
 import { memoize } from "tandem-common";
+import * as mime from "mime-types";
 
 export type FSSandboxRootState = {
   fileCache: FileCache;
@@ -47,7 +48,8 @@ export const queueOpenFiles = <TState extends FSSandboxRootState>(
 export const getFSItem = (uri: string, state: FSSandboxRootState) =>
   state.fileCache[uri];
 
-export const isImageUri = (uri: string) => /\.(svg|jpeg|png)$/.test(uri);
+export const isImageUri = (uri: string) =>
+  /^image\//.test(mime.lookup(uri) || "");
 export const isSvgUri = (uri: string) => /\.svg$/.test(uri);
 
 export const queueSaveFile = <TState extends FSSandboxRootState>(

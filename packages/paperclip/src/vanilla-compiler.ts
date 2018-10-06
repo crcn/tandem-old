@@ -4,7 +4,10 @@ import {
   getTreeNodesByName,
   KeyValue,
   getParentTreeNode,
-  EMPTY_OBJECT
+  EMPTY_OBJECT,
+  stripProtocol,
+  FILE_PROTOCOL,
+  addProtocol
 } from "tandem-common";
 import {
   PCNode,
@@ -28,6 +31,7 @@ import {
   PCVariable,
   PCStyleMixin
 } from "./dsl";
+import * as path from "path";
 import { uniq } from "lodash";
 import { SyntheticElement } from "./synthetic";
 
@@ -58,12 +62,13 @@ export const compileContentNodeAsVanilla = memoize(
   (
     node: PCComponent | PCVisibleNode,
     refMap: KeyValue<PCComponent>,
-    varMap: KeyValue<PCVariable>
+    varMap: KeyValue<PCVariable>,
+    sourceUri: string
   ) => {
     return new Function(
       `generateUID`,
       `merge`,
-      `return ` + translateContentNode(node, refMap, varMap)
+      `return ` + translateContentNode(node, refMap, varMap, sourceUri)
     )(generateUID, merge);
   }
 );
@@ -72,7 +77,8 @@ export const translateModuleToVanilla = memoize(
   (
     module: PCModule,
     componentRefMap: KeyValue<PCComponent>,
-    varMap: KeyValue<PCVariable>
+    varMap: KeyValue<PCVariable>,
+    sourceUri: string
   ) => {
     return module.children
       .filter(child => child.name !== PCSourceTagNames.VARIABLE)
@@ -81,7 +87,8 @@ export const translateModuleToVanilla = memoize(
           `exports._${child.id} = ${translateContentNode(
             child,
             componentRefMap,
-            varMap
+            varMap,
+            sourceUri
           )}`
       )
       .join("\n");
@@ -92,13 +99,19 @@ const translateContentNode = memoize(
   (
     node: PCComponent | PCVisibleNode | PCStyleMixin,
     componentRefMap: KeyValue<PCComponent>,
-    varMap: KeyValue<PCVariable>
+    varMap: KeyValue<PCVariable>,
+    sourceUri: string
   ) => {
     let buffer = `(function() {`;
 
     buffer += `var EMPTY_ARRAY = [];\n`;
     buffer += `var EMPTY_OBJECT = {};\n`;
-    buffer += translateStaticNodeProps(node, componentRefMap, varMap);
+    buffer += translateStaticNodeProps(
+      node,
+      componentRefMap,
+      varMap,
+      sourceUri
+    );
     buffer += translateStaticOverrides(node as PCComponent, varMap);
     buffer += translateStaticVariants(node, varMap);
 
@@ -398,14 +411,24 @@ const translateStaticNodeProps = memoize(
   (
     node: PCNode,
     componentRefMap: KeyValue<PCComponent>,
-    varMap: KeyValue<PCVariable>
+    varMap: KeyValue<PCVariable>,
+    sourceUri: string
   ) => {
     let buffer = "";
 
     if (isBaseElement(node)) {
       buffer += `var _${node.id}Attributes = {\n`;
       for (const name in node.attributes) {
-        buffer += `"${name}": "${node.attributes[name]}",\n`;
+        let value = node.attributes[name];
+
+        if (node.is === "img" && !/\w+:\/\//.test(value)) {
+          value = addProtocol(
+            FILE_PROTOCOL,
+            path.resolve(path.dirname(stripProtocol(sourceUri)), value)
+          );
+        }
+
+        buffer += `"${name}": "${value}",\n`;
       }
       buffer += `};\n`;
     }
@@ -433,7 +456,8 @@ const translateStaticNodeProps = memoize(
       buffer += translateStaticNodeProps(
         child as PCNode,
         componentRefMap,
-        varMap
+        varMap,
+        sourceUri
       );
     }
 

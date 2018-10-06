@@ -5,6 +5,7 @@ import { rootSaga } from "./sagas";
 import { select, take, call } from "redux-saga/effects";
 import { rootReducer } from "./reducers";
 import { ipcRenderer } from "electron";
+import * as mime from "mime-types";
 import {
   setup,
   RootState,
@@ -152,11 +153,7 @@ function getFontFamiles(): FontFamily[] {
 function readFile(uri) {
   return Promise.resolve({
     content: fs.readFileSync(stripProtocol(uri)),
-    mimeType: {
-      ".svg": "image/svg+xml",
-      ".png": "image/png",
-      ".json": "application/json"
-    }[path.extname(uri)]
+    mimeType: mime.lookup(uri) || null
   });
 }
 

@@ -1,15 +1,47 @@
 import * as React from "react";
-import { PCNode, InspectorNode } from "paperclip";
-import { BaseBackgroundImageInputProps } from "../styles/pretty/panes/backgrounds.pc";
+import {
+  DependencyGraph,
+  PCComponent,
+  PCComponentInstanceElement,
+  PCElement
+} from "paperclip";
+import { Dispatch } from "redux";
+import { BaseImgPropertiesProps } from "./view.pc";
+import { imageSourceInputChanged, imageBrowseButtonClicked } from "actions";
 
 export type Props = {
-  selectedInspectorNode: InspectorNode;
-} & BaseBackgroundImageInputProps;
+  sourceNode: PCElement | PCComponentInstanceElement | PCComponent;
+  dispatch: Dispatch<any>;
+  graph: DependencyGraph;
+} & BaseImgPropertiesProps;
 
-export default (Base: React.ComponentClass<BaseBackgroundImageInputProps>) =>
+export default (Base: React.ComponentClass<BaseImgPropertiesProps>) =>
   class ImgPropertyController extends React.PureComponent<Props> {
+    onPathChangeComplete = (value: string) => {
+      this.props.dispatch(imageSourceInputChanged(value));
+    };
+    onUploadButtonClick = () => {
+      this.props.dispatch(imageBrowseButtonClicked());
+    };
     render() {
-      const { selectedInspectorNode, ...rest } = this.props;
-      return <Base {...rest} />;
+      const { sourceNode, ...rest } = this.props;
+      const { onUploadButtonClick, onPathChangeComplete } = this;
+
+      if (sourceNode.is !== "img") {
+        return null;
+      }
+
+      return (
+        <Base
+          {...rest}
+          pathInputProps={{
+            value: sourceNode.attributes.src,
+            onChangeComplete: onPathChangeComplete
+          }}
+          uploadButtonProps={{
+            onClick: onUploadButtonClick
+          }}
+        />
+      );
     }
   };
