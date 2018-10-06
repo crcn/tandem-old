@@ -26,6 +26,7 @@ const TOGGLE_OPTIONS: ButtonBarOption[] = [
 ];
 
 export type Props = {
+  globalVariables: PCVariable[];
   documentColors: string[];
   onPropertyChange: any;
   onPropertyChangeComplete: any;
@@ -64,6 +65,7 @@ export default (Base: React.ComponentClass<BaseBorderStylesProps>) =>
         onPropertyChange,
         onPropertyChangeComplete,
         computedStyleInfo,
+        globalVariables,
         ...rest
       } = this.props;
       const { borderStyling } = this.state;
@@ -83,6 +85,7 @@ export default (Base: React.ComponentClass<BaseBorderStylesProps>) =>
           }}
           borderInputProps={{
             documentColors,
+            globalVariables,
             value: computedStyleInfo.style.border,
             onChange: propertyChangeCallback("border", onPropertyChange),
             onChangeComplete: propertyChangeCallback(
@@ -92,6 +95,7 @@ export default (Base: React.ComponentClass<BaseBorderStylesProps>) =>
           }}
           borderLeftInputProps={{
             documentColors,
+            globalVariables,
             value: computedStyleInfo.style["border-left"],
             onChange: propertyChangeCallback("border-left", onPropertyChange),
             onChangeComplete: propertyChangeCallback(
@@ -101,6 +105,7 @@ export default (Base: React.ComponentClass<BaseBorderStylesProps>) =>
           }}
           borderRightInputProps={{
             documentColors,
+            globalVariables,
             value: computedStyleInfo.style["border-right"],
             onChange: propertyChangeCallback("border-right", onPropertyChange),
             onChangeComplete: propertyChangeCallback(
@@ -110,6 +115,7 @@ export default (Base: React.ComponentClass<BaseBorderStylesProps>) =>
           }}
           borderTopInputProps={{
             documentColors,
+            globalVariables,
             value: computedStyleInfo.style["border-top"],
             onChange: propertyChangeCallback("border-top", onPropertyChange),
             onChangeComplete: propertyChangeCallback(
@@ -119,6 +125,7 @@ export default (Base: React.ComponentClass<BaseBorderStylesProps>) =>
           }}
           borderBottomInputProps={{
             documentColors,
+            globalVariables,
             value: computedStyleInfo.style["border-bottom"],
             onChange: propertyChangeCallback("border-bottom", onPropertyChange),
             onChangeComplete: propertyChangeCallback(

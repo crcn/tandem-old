@@ -4,6 +4,7 @@ import { BaseBoxShadowItemProps } from "./box-shadow.pc";
 import { mapPCVariablesToColorSwatchOptions } from "../../state";
 import { PCVariable } from "paperclip";
 import { getColorSwatchOptionsFromValues } from "../../../../../../inputs/color/color-swatch-controller";
+import { getPrettyPaneColorSwatchOptionGroups } from "./utils";
 export type BoxShadowInfo = {
   inset: boolean;
   color: string;
@@ -20,6 +21,7 @@ export type Props = {
   onChange: any;
   onChangeComplete: any;
   onBackgroundClick: any;
+  globalVariables: PCVariable[];
 };
 
 export default (Base: React.ComponentClass<BaseBoxShadowItemProps>) =>
@@ -73,6 +75,7 @@ export default (Base: React.ComponentClass<BaseBoxShadowItemProps>) =>
         onChange,
         onChangeComplete,
         onBackgroundClick,
+        globalVariables,
         ...rest
       } = this.props;
       const {
@@ -93,7 +96,10 @@ export default (Base: React.ComponentClass<BaseBoxShadowItemProps>) =>
           variant={cx({ selected })}
           colorInputProps={{
             value: color,
-            swatchOptions: getColorSwatchOptionsFromValues(documentColors),
+            swatchOptionGroups: getPrettyPaneColorSwatchOptionGroups(
+              documentColors,
+              globalVariables
+            ),
             onClick: stopPropagation,
             onChange: onColorChange,
             onChangeComplete: onColorChangeComplete

@@ -2,13 +2,24 @@ import * as React from "react";
 import * as cx from "classnames";
 import { BaseColorSwatchesProps, ColorSwatchItem } from "./picker.pc";
 import { EMPTY_ARRAY, memoize } from "tandem-common";
+import { DropdownMenuOption } from "../dropdown/controller";
 
 export const maybeConvertSwatchValueToColor = (
   value: string,
-  swatchOptions: ColorSwatchOption[] = []
+  swatchOptionGroups: ColorSwatchGroup[] = []
 ) => {
-  const option = swatchOptions.find(option => option.value === value);
-  return option ? option.color : value;
+  for (const group of swatchOptionGroups) {
+    const option = group.options.find(option => option.value === value);
+    if (option) {
+      return option.color;
+    }
+  }
+  return value;
+};
+
+export type ColorSwatchGroup = {
+  label: string;
+  options: ColorSwatchOption[];
 };
 
 export type ColorSwatchOption = {
@@ -28,18 +39,42 @@ export const getColorSwatchOptionsFromValues = memoize((value: string[]) =>
 export type Props = {
   onChange: (value: string) => any;
   value: string;
-  options: ColorSwatchOption[];
+  optionGroups: ColorSwatchGroup[];
 };
+
+export type State = {
+  selectedGroupIndex: number;
+};
+
 export default (Base: React.ComponentClass<BaseColorSwatchesProps>) =>
-  class ColorSwatchesController extends React.PureComponent<Props> {
+  class ColorSwatchesController extends React.PureComponent<Props, State> {
+    state = {
+      selectedGroupIndex: 0
+    };
+    onGroupChange = (group: ColorSwatchGroup) => {
+      this.setState({
+        ...this.state,
+        selectedGroupIndex: this.props.optionGroups.indexOf(group)
+      });
+    };
     render() {
       const {
         value: selectedValue,
-        options = EMPTY_ARRAY,
+        optionGroups = EMPTY_ARRAY,
         onChange,
         ...rest
       } = this.props;
-      const content = options.map(({ color, value }) => {
+      const { onGroupChange } = this;
+      const { selectedGroupIndex } = this.state;
+
+      if (!optionGroups.length) {
+        return null;
+      }
+
+      const selectedGroup =
+        optionGroups[Math.min(selectedGroupIndex, optionGroups.length - 1)];
+
+      const content = selectedGroup.options.map(({ color, value }) => {
         return (
           <ColorSwatchItem
             variant={cx({
@@ -55,6 +90,25 @@ export default (Base: React.ComponentClass<BaseColorSwatchesProps>) =>
         );
       });
 
-      return <Base {...rest} content={content} />;
+      return (
+        <Base
+          {...rest}
+          swatchSourceInputProps={{
+            value: selectedGroup,
+            options: mapColorSwatchGroupsToDropdownOptions(optionGroups),
+            onChangeComplete: onGroupChange
+          }}
+          content={content}
+        />
+      );
     }
   };
+
+const mapColorSwatchGroupsToDropdownOptions = memoize(
+  (groups: ColorSwatchGroup[]): DropdownMenuOption[] => {
+    return groups.map(group => ({
+      label: group.label,
+      value: group
+    }));
+  }
+);

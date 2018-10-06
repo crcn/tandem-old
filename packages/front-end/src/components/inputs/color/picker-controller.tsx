@@ -7,7 +7,8 @@ import { throttle, identity } from "lodash";
 import { BasePickerProps, BaseColorPickerProps } from "./picker.pc";
 import {
   ColorSwatchOption,
-  maybeConvertSwatchValueToColor
+  maybeConvertSwatchValueToColor,
+  ColorSwatchGroup
 } from "./color-swatch-controller";
 
 const CHANGE_THROTTLE_MS = 1000 / 20;
@@ -19,12 +20,13 @@ export type Props = {
   value: string;
   onChange?: any;
   onChangeComplete?: any;
-  swatchOptions: ColorSwatchOption[];
+  swatchOptionGroups: ColorSwatchGroup[];
 };
 
 type InnerProps = {
   hsla: any;
   setHSLA: any;
+  selectedSwatchGroupIndex: number;
   onColorSwatchChange: any;
   onRGBAInputChange: any;
   onRGBAInputChangeComplete: any;
@@ -38,8 +40,8 @@ type InnerProps = {
 
 export default compose(
   pure,
-  withState(`hsla`, `setHSLA`, ({ value, swatchOptions }: Props) => {
-    value = maybeConvertSwatchValueToColor(value, swatchOptions);
+  withState(`hsla`, `setHSLA`, ({ value, swatchOptionGroups }: Props) => {
+    value = maybeConvertSwatchValueToColor(value, swatchOptionGroups);
     const rgba = parseRGBA(value || "#FF0000");
     return rgbaToHsla(rgba);
   }),
@@ -47,7 +49,7 @@ export default compose(
     componentWillUpdate(props: InnerProps) {
       if (this.props.value !== props.value) {
         const rgba = parseRGBA(
-          maybeConvertSwatchValueToColor(props.value, props.swatchOptions)
+          maybeConvertSwatchValueToColor(props.value, props.swatchOptionGroups)
         );
         const hsla = rgbaToHsla(rgba);
         if (hsla.join("") !== props.hsla.join("")) {
@@ -116,7 +118,7 @@ export default compose(
     onHSLChangeComplete,
     onSpectrumChange,
     onSpectrumChangeComplete,
-    swatchOptions,
+    swatchOptionGroups,
     onOpacityChange,
     onOpacityChangeComplete,
     ...rest
@@ -126,7 +128,7 @@ export default compose(
       <Base
         {...rest}
         variant={cx({
-          noSwatches: swatchOptions.length === 0
+          noSwatches: swatchOptionGroups.length === 0
         })}
         hslProps={{
           draw: hslDrawer(hsla[0]),
@@ -154,7 +156,7 @@ export default compose(
         }}
         colorSwatchesProps={{
           onChange: onColorSwatchChange,
-          options: swatchOptions,
+          optionGroups: swatchOptionGroups,
           value
         }}
         rgbaInputProps={{

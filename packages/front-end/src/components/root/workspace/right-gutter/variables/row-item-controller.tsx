@@ -78,7 +78,7 @@ export default (Base: React.ComponentClass<BaseVariableRowItemProps>) =>
             value: variable.label
           }}
           colorInputProps={{
-            swatchOptions: EMPTY_ARRAY,
+            swatchOptionGroups: EMPTY_ARRAY,
             onChange: onValueChange,
             onChangeComplete: onValueChangeComplete,
             value: variable.value

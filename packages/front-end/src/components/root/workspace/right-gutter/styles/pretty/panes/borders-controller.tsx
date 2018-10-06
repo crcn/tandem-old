@@ -15,6 +15,7 @@ import { Dispatch } from "redux";
 import { BaseBorderProps } from "./borders.pc";
 
 export type Props = {
+  globalVariables: PCVariable[];
   documentColors: string[];
   dispatch: Dispatch;
   computedStyleInfo: ComputedStyleInfo;
@@ -29,7 +30,7 @@ export default (Base: React.ComponentClass<BaseBorderProps>) =>
       this.props.dispatch(cssPropertyChangeCompleted(name, value));
     };
     render() {
-      const { computedStyleInfo, documentColors } = this.props;
+      const { computedStyleInfo, documentColors, globalVariables } = this.props;
       const { onPropertyChange, onPropertyChangeComplete } = this;
       const { sourceNodes } = computedStyleInfo;
 
@@ -47,6 +48,7 @@ export default (Base: React.ComponentClass<BaseBorderProps>) =>
           borderStylingProps={{
             documentColors,
             computedStyleInfo,
+            globalVariables,
             onPropertyChange,
             onPropertyChangeComplete
           }}

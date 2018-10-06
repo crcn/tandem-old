@@ -3,27 +3,16 @@ import { EMPTY_ARRAY } from "tandem-common";
 import { BaseColorInputProps } from "./view.pc";
 import { ColorPicker } from "./picker.pc";
 import {
-  ColorSwatchOption,
-  maybeConvertSwatchValueToColor
+  maybeConvertSwatchValueToColor,
+  ColorSwatchGroup
 } from "./color-swatch-controller";
 
 export type Props = {
   value: any;
   onChange: any;
   onChangeComplete: any;
-  swatchOptions: ColorSwatchOption[];
+  swatchOptionGroups: ColorSwatchGroup[];
 } & BaseColorInputProps;
-
-type InnerProps = {
-  open: boolean;
-  setOpen: any;
-  onButtonClick: any;
-  onShouldClose: any;
-} & Props;
-
-type State = {
-  open: boolean;
-};
 
 export default (Base: React.ComponentClass<BaseColorInputProps>) =>
   class ColorInputController extends React.PureComponent<Props> {
@@ -41,7 +30,7 @@ export default (Base: React.ComponentClass<BaseColorInputProps>) =>
       const {
         value,
         onChange,
-        swatchOptions,
+        swatchOptionGroups,
         onChangeComplete,
         ...rest
       } = this.props;
@@ -53,7 +42,7 @@ export default (Base: React.ComponentClass<BaseColorInputProps>) =>
             value={value || "#FF0000"}
             onChange={onChange}
             onChangeComplete={onChangeComplete}
-            swatchOptions={swatchOptions}
+            swatchOptionGroups={swatchOptionGroups}
           />
         );
       }
@@ -66,7 +55,7 @@ export default (Base: React.ComponentClass<BaseColorInputProps>) =>
             onClick: onButtonClick,
             style: {
               background:
-                maybeConvertSwatchValueToColor(value, swatchOptions) ||
+                maybeConvertSwatchValueToColor(value, swatchOptionGroups) ||
                 "transparent"
             }
           }}

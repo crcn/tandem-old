@@ -30,7 +30,10 @@ import {
   getNativeComponentName,
   DependencyGraph
 } from "paperclip";
-import { mapVariablesToCSSVarDropdownOptions } from "./utils";
+import {
+  mapVariablesToCSSVarDropdownOptions,
+  getPrettyPaneColorSwatchOptionGroups
+} from "./utils";
 import { mapPCVariablesToColorSwatchOptions } from "../../state";
 import { getColorSwatchOptionsFromValues } from "../../../../../../inputs/color/color-swatch-controller";
 const {
@@ -197,7 +200,10 @@ export default (Base: React.ComponentClass<BaseTypographProps>) =>
             )
           }}
           colorInputProps={{
-            swatchOptions: getColorSwatchOptionsFromValues(documentColors),
+            swatchOptionGroups: getPrettyPaneColorSwatchOptionGroups(
+              documentColors,
+              globalVariables
+            ),
             value: computedStyleInfo.style.color,
             onChange: propertyChangeCallback("color", onPropertyChange),
             onChangeComplete: propertyChangeCallback(

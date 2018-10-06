@@ -104,6 +104,7 @@ export default (Base: React.ComponentClass<BaseElementStylerProps>) =>
             computedStyleInfo
           }}
           bordersPaneProps={{
+            globalVariables,
             documentColors,
             dispatch,
             computedStyleInfo

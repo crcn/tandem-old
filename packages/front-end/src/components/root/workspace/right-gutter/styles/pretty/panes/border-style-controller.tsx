@@ -5,6 +5,7 @@ import { BaseBorderStyleProps } from "./borders.pc";
 import { mapPCVariablesToColorSwatchOptions } from "../../state";
 import { PCVariable } from "paperclip";
 import { getColorSwatchOptionsFromValues } from "../../../../../../inputs/color/color-swatch-controller";
+import { getPrettyPaneColorSwatchOptionGroups } from "./utils";
 
 const STYLE_OPTIONS = [
   undefined,
@@ -32,6 +33,7 @@ export type Props = {
   value: string;
   onChange: any;
   onChangeComplete: any;
+  globalVariables: PCVariable[];
 };
 
 export default (Base: React.ComponentClass<BaseBorderStyleProps>) =>
@@ -62,7 +64,7 @@ export default (Base: React.ComponentClass<BaseBorderStyleProps>) =>
       );
     };
     render() {
-      const { value, documentColors } = this.props;
+      const { value, documentColors, globalVariables } = this.props;
       const {
         onColorChange,
         onColorChangeComplete,
@@ -75,7 +77,10 @@ export default (Base: React.ComponentClass<BaseBorderStyleProps>) =>
       return (
         <Base
           colorInputProps={{
-            swatchOptions: getColorSwatchOptionsFromValues(documentColors),
+            swatchOptionGroups: getPrettyPaneColorSwatchOptionGroups(
+              documentColors,
+              globalVariables
+            ),
             value: color,
             onChange: onColorChange,
             onChangeComplete: onColorChangeComplete
