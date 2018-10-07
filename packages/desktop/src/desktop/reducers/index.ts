@@ -6,7 +6,9 @@ import {
   PREVIEW_SERVER_STARTED,
   PreviewServerStarted,
   TD_PROJECT_FILE_PICKED,
-  TDProjectFilePicked
+  TDProjectFilePicked,
+  LOCAL_FILE_LOADED,
+  LocalFileLoaded
 } from "../actions";
 
 export const rootReducer = (
@@ -17,6 +19,16 @@ export const rootReducer = (
     case TD_PROJECT_FILE_PICKED: {
       const { filePath } = action as TDProjectFilePicked;
       return { ...state, tdProjectPath: filePath };
+    }
+    case LOCAL_FILE_LOADED: {
+      const { path } = action as LocalFileLoaded;
+      if (/.tdproject/.test(path)) {
+        return {
+          ...state,
+          tdProjectPath: path
+        };
+      }
+      return state;
     }
     case TD_PROJECT_LOADED: {
       const { project: tdProject } = action as TDProjectLoaded;

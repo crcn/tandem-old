@@ -1,6 +1,6 @@
 import { fork, call, take, select, put } from "redux-saga/effects";
 import { electronSaga } from "./electron";
-import { BrowserWindow, dialog } from "electron";
+import { BrowserWindow, dialog, app } from "electron";
 import {
   APP_READY,
   mainWindowOpened,
@@ -13,7 +13,9 @@ import {
   TD_PROJECT_FILE_PICKED,
   componentControllerPicked,
   NEW_PROJECT_MENU_ITEM_CLICKED,
-  imagePathPicked
+  imagePathPicked,
+  localFileOpened,
+  LOCAL_FILE_LOADED
 } from "../actions";
 import { FRONT_END_ENTRY_FILE_PATH } from "../constants";
 import { ipcSaga, pid } from "./ipc";
@@ -42,6 +44,7 @@ import * as fs from "fs";
 import * as fsa from "fs-extra";
 import * as path from "path";
 import { ConfirmCloseWindow } from "tandem-front-end";
+import { eventChannel } from "redux-saga";
 
 const DEFAULT_TD_PROJECT: TDProject = {
   scripts: {},
@@ -88,6 +91,7 @@ export function* rootSaga() {
   yield fork(handleAddControllerClick);
   yield fork(handleBrowseImage);
   yield fork(handleChrome);
+  yield fork(handleOpenedLocalFile);
 }
 
 function* initProjectDirectory() {
@@ -187,6 +191,18 @@ function* previewServer() {
 
   yield put(previewServerStarted(port));
 }
+function* handleOpenedLocalFile() {
+  const chan = eventChannel(emit => {
+    app.on("open-file", (event, path) => {
+      emit(path);
+    });
+    return () => {};
+  });
+
+  while (1) {
+    yield put(localFileOpened(yield take(chan)));
+  }
+}
 
 function* handleOpenProject() {
   while (1) {
@@ -280,7 +296,7 @@ function* handleChrome() {
 
 function* handleOpenedWorkspaceDirectory() {
   while (1) {
-    yield take(TD_PROJECT_FILE_PICKED);
+    yield take([TD_PROJECT_FILE_PICKED, LOCAL_FILE_LOADED]);
     yield call(initProjectDirectory);
   }
 }
