@@ -1,6 +1,6 @@
 {
   "name": "tandem-front-end",
-  "version": "10.0.30",
+  "version": "10.0.31",
   "description": "Visual editor for web components",
   "main": "index.js",
   "scripts": {
@@ -41,12 +41,12 @@
     "mocha": "^3.4.2",
     "node-sass": "^4.7.2",
     "null-loader": "^0.1.1",
-    "paperclip-react-loader": "^10.0.30",
+    "paperclip-react-loader": "^10.0.31",
     "react-hot-loader": "^3.1.2",
     "sass-loader": "^7.0.3",
     "source-map": "^0.5.7",
     "style-loader": "^0.18.2",
-    "tandem-webpack-preview-server": "^10.0.30",
+    "tandem-webpack-preview-server": "^10.0.31",
     "text-loader": "^0.0.1",
     "ts-loader": "^5.1.0",
     "typescript": "3.0.x",
@@ -63,15 +63,15 @@
     "@types/recompose": "0.x.x",
     "classnames": "^2.2.5",
     "crc32": "^0.2.2",
-    "fsbox": "^10.0.30",
+    "fsbox": "^10.0.31",
     "glob": "^7.1.2",
     "http-proxy": "^1.16.2",
     "lodash": "^4.17.10",
     "md5": "^2.2.1",
     "mime-types": "^2.1.20",
     "mousetrap": "^1.6.1",
-    "paperclip": "^10.0.30",
-    "paperclip-migrator": "^10.0.30",
+    "paperclip": "^10.0.31",
+    "paperclip-migrator": "^10.0.31",
     "react": "^16.4.2",
     "react-dnd": "^5.0.0",
     "react-dnd-html5-backend": "^5.0.1",
@@ -85,8 +85,8 @@
     "scroll-into-view-if-needed": "^2.2.16",
     "socket.io": "^2.0.3",
     "socket.io-client": "^2.0.3",
-    "tandem-common": "^10.0.30",
+    "tandem-common": "^10.0.31",
     "xml-js": "^1.6.4"
   },
-  "gitHead": "5f4140ab9161222cbab0100b00cc2916384637af"
+  "gitHead": "f00a13e7aa7430632868865c77a3e5cf910d464d"
 }

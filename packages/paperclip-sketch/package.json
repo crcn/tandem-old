@@ -1,6 +1,6 @@
 {
   "name": "paperclip-sketch",
-  "version": "10.0.30",
+  "version": "10.0.31",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -8,5 +8,6 @@
     "clean": "rm -rf lib; rm -rf node_modules"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "gitHead": "f00a13e7aa7430632868865c77a3e5cf910d464d"
 }
