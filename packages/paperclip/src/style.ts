@@ -1,9 +1,10 @@
-import { memoize, KeyValue } from "tandem-common";
-import { defaults } from "lodash";
+import { memoize, KeyValue, getParentTreeNode } from "tandem-common";
+import { defaults, pick } from "lodash";
 import {
   InspectorNode,
   getInspectorNodeOverrides,
-  getInspectorNodeByAssocId
+  getInspectorNodeByAssocId,
+  InspectorTreeNodeName
 } from "./inspector";
 import {
   PCComponent,
@@ -18,8 +19,12 @@ import {
   PCOverridablePropertyName,
   isPCComponentOrInstance,
   PCStyleMixin,
-  getSortedStyleMixinIds
+  getSortedStyleMixinIds,
+  getPCNodeModule,
+  INHERITABLE_STYLE_NAMES,
+  PCSourceTagNames
 } from "./dsl";
+
 import { DependencyGraph } from "./graph";
 
 export type ComputeStyleOptions = {
@@ -62,6 +67,7 @@ export const computeStyleInfo = memoize(
     const sourceNode = getPCNode(inspectorNode.assocSourceNodeId, graph) as
       | PCVisibleNode
       | PCComponent;
+    const module = getPCNodeModule(sourceNode.id, graph);
     let current: PCNode = sourceNode;
 
     if (options.parentStyles !== false) {
@@ -107,6 +113,34 @@ export const computeStyleInfo = memoize(
             style[key] = override.value[key];
           }
         }
+      }
+    }
+    if (options.inheritedStyles !== false) {
+      let parent = getParentTreeNode(
+        inspectorNode.id,
+        rootInspectorNode
+      ) as InspectorNode;
+      while (parent) {
+        if (parent.name === InspectorTreeNodeName.SOURCE_REP) {
+          const parentSource = getPCNode(
+            parent.assocSourceNodeId,
+            graph
+          ) as PCVisibleNode;
+          if (parentSource.name === PCSourceTagNames.ELEMENT) {
+            defaults(
+              style,
+              pick(
+                computeStyleInfo(parent, rootInspectorNode, variant, graph)
+                  .style,
+                INHERITABLE_STYLE_NAMES
+              )
+            );
+          }
+        }
+        parent = getParentTreeNode(
+          parent.id,
+          rootInspectorNode
+        ) as InspectorNode;
       }
     }
 

@@ -1139,7 +1139,8 @@
       "attributes": {},
       "style": {
         "box-sizing": "border-box",
-        "display": "block"
+        "display": "block",
+        "color": "rgba(253, 23, 23, 1)"
       },
       "children": [
         {

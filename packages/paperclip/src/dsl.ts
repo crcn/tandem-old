@@ -98,6 +98,51 @@ export const VOID_TAG_NAMES = [
   "wbr"
 ];
 
+// TODO - need more
+export const INHERITABLE_STYLE_NAMES = [
+  "azimuth",
+  "border-collapse",
+  "border-spacing",
+  "caption-side",
+  "color",
+  "cursor",
+  "direction",
+  "elevation",
+  "empty-cells",
+  "font-family",
+  "font-size",
+  "font-style",
+  "font-variant",
+  "font-weight",
+  "font",
+  "letter-spacing",
+  "line-height",
+  "list-style-image",
+  "list-style-position",
+  "list-style-type",
+  "list-style",
+  "orphans",
+  "pitch-range",
+  "pitch",
+  "quotes",
+  "richness",
+  "speak-header",
+  "speak-numeral",
+  "speak-punctuation",
+  "speak",
+  "speech-rate",
+  "stress",
+  "text-align",
+  "text-indent",
+  "text-transform",
+  "visibility",
+  "voice-family",
+  "volume",
+  "white-space",
+  "widows",
+  "word-spacing"
+];
+
 export enum PCVisibleNodeMetadataKey {
   // defined when dropped into the root document
   BOUNDS = "bounds"

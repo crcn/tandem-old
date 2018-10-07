@@ -17,20 +17,6 @@ const FRAME_WIDTH = 1440;
 const FRAME_HEIGHT = 900;
 const MAX_LABEL_LENGTH = 10;
 
-const TEXT_STYLE_NAMES = [
-  "color",
-  "font-family",
-  "font-size",
-  "font-style",
-  "font-variant",
-  "font-weight",
-  "font",
-  "text-align",
-  "text-indent",
-  "text-transform",
-  "word-spacing"
-];
-
 const BLACKLIST_ATTRIBUTES = {
   style: true,
   class: true,
