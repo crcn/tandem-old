@@ -361,6 +361,24 @@
                       "variant": {}
                     },
                     {
+                      "id": "45cb3afa43284",
+                      "is": "45cb3afa42261",
+                      "label": "a properties",
+                      "name": "component-instance",
+                      "attributes": {},
+                      "style": {},
+                      "children": [],
+                      "metadata": {
+                        "bounds": {
+                          "left": 622,
+                          "top": 517,
+                          "right": 897,
+                          "bottom": 673
+                        }
+                      },
+                      "variant": {}
+                    },
+                    {
                       "id": "6e2729d452224",
                       "variant": {},
                       "is": "6e2729d443544",
@@ -1573,6 +1591,89 @@
       "variant": {},
       "controllers": [
         "./img-controller.tsx"
+      ]
+    },
+    {
+      "label": "a properties",
+      "is": "div",
+      "style": {
+        "box-sizing": "border-box",
+        "display": "block"
+      },
+      "attributes": {},
+      "id": "45cb3afa42261",
+      "name": "component",
+      "children": [
+        {
+          "id": "45cb3afa42257",
+          "is": "7149f8192509",
+          "label": "Labeled Input",
+          "name": "component-instance",
+          "attributes": {},
+          "style": {},
+          "children": [
+            {
+              "slotId": "e73029b416045",
+              "id": "45cb3afa42258",
+              "children": [
+                {
+                  "id": "45cb3afa42259",
+                  "is": "7149f8199122",
+                  "label": "href input",
+                  "name": "component-instance",
+                  "attributes": {
+                    "placeholder": "http://website.com/"
+                  },
+                  "style": {},
+                  "children": [],
+                  "metadata": {
+                    "bounds": {
+                      "left": 384,
+                      "top": 298,
+                      "right": 484,
+                      "bottom": 327.0358087589019
+                    }
+                  },
+                  "variant": {}
+                }
+              ],
+              "metadata": {},
+              "name": "plug"
+            },
+            {
+              "id": "45cb3afa42260",
+              "variantId": null,
+              "propertyName": "text",
+              "targetIdPath": [
+                "7149f8192506"
+              ],
+              "value": "href",
+              "name": "override",
+              "children": []
+            }
+          ],
+          "metadata": {
+            "bounds": {
+              "left": 486,
+              "top": 306,
+              "right": 586,
+              "bottom": 353.5832678332798
+            }
+          },
+          "variant": {}
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": 1399,
+          "top": 142,
+          "right": 1674,
+          "bottom": 298
+        }
+      },
+      "variant": {},
+      "controllers": [
+        "./a-controller.tsx"
       ]
     }
   ]
