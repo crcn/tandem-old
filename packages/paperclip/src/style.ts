@@ -24,7 +24,8 @@ import {
   INHERITABLE_STYLE_NAMES,
   PCSourceTagNames,
   PCComponentInstanceElement,
-  PCBaseElement
+  PCBaseElement,
+  TEXT_STYLE_NAMES
 } from "./dsl";
 
 import { DependencyGraph } from "./graph";
@@ -186,4 +187,32 @@ const computeMixinStyle = (
   return style;
 };
 
-const toArray = memoize(<TValue>(value: TValue) => [value]);
+export const filterTextStyles = (style: any) => {
+  return pick(style, TEXT_STYLE_NAMES);
+};
+
+export const getTextStyles = (
+  inspectorNode: InspectorNode,
+  rootInspectorNode: InspectorNode,
+  variant: PCVariant,
+  graph: DependencyGraph
+) =>
+  filterTextStyles(
+    computeStyleInfo(inspectorNode, rootInspectorNode, variant, graph, {
+      styleMixins: false,
+      inheritedStyles: false,
+      overrides: true,
+      parentStyles: false,
+      self: true
+    }).style
+  );
+export const hasTextStyles = (
+  inspectorNode: InspectorNode,
+  rootInspectorNode: InspectorNode,
+  variant: PCVariant,
+  graph: DependencyGraph
+) =>
+  Boolean(
+    Object.keys(getTextStyles(inspectorNode, rootInspectorNode, variant, graph))
+      .length
+  );

@@ -168,6 +168,8 @@ export const SYNTHETIC_NODE_CONTEXT_MENU_CONVERT_TO_COMPONENT_CLICKED =
   "SYNTHETIC_NODE_CONTEXT_MENU_CONVERT_TO_COMPONENT_CLICKED";
 export const SYNTHETIC_NODE_CONTEXT_MENU_CONVERT_TO_STYLE_MIXIN_CLICKED =
   "SYNTHETIC_NODE_CONTEXT_MENU_CONVERT_TO_STYLE_MIXIN_CLICKED";
+export const SYNTHETIC_NODE_CONTEXT_MENU_CONVERT_TEXT_STYLES_TO_MIXIN_CLICKED =
+  "SYNTHETIC_NODE_CONTEXT_MENU_CONVERT_TEXT_STYLES_TO_MIXIN_CLICKED";
 export const SYNTHETIC_NODE_CONTEXT_MENU_REMOVE_CLICKED =
   "SYNTHETIC_NODE_CONTEXT_MENU_REMOVE_CLICKED";
 export const SYNTHETIC_NODE_CONTEXT_MENU_WRAP_IN_SLOT_CLICKED =
@@ -764,6 +766,13 @@ export const imageSourceInputChanged = (
 export const syntheticNodeContextMenuConvertToStyleMixinClicked = publicActionCreator(
   (item: SyntheticVisibleNode): SyntheticNodeContextMenuAction => ({
     type: SYNTHETIC_NODE_CONTEXT_MENU_CONVERT_TO_STYLE_MIXIN_CLICKED,
+    item
+  })
+);
+
+export const syntheticNodeContextMenuConvertTextStylesToMixinClicked = publicActionCreator(
+  (item: SyntheticVisibleNode): SyntheticNodeContextMenuAction => ({
+    type: SYNTHETIC_NODE_CONTEXT_MENU_CONVERT_TEXT_STYLES_TO_MIXIN_CLICKED,
     item
   })
 );

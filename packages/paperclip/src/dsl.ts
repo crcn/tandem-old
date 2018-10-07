@@ -15,9 +15,10 @@ import {
   flattenTreeNode,
   getTreeNodesByName
 } from "tandem-common";
-import { uniq, isEqual } from "lodash";
+import { uniq, isEqual, pick } from "lodash";
 import { Dependency, DependencyGraph, updateGraphDependency } from "./graph";
 import { getInspectorNodeOverrides } from "./inspector";
+import { computeStyleInfo } from "./style";
 
 export const PAPERCLIP_MODULE_VERSION = "0.0.5";
 
@@ -98,24 +99,33 @@ export const VOID_TAG_NAMES = [
   "wbr"
 ];
 
-export const INHERITABLE_STYLE_NAMES = [
-  "azimuth",
-  "border-collapse",
-  "border-spacing",
-  "caption-side",
-  "color",
-  "cursor",
-  "direction",
-  "elevation",
-  "empty-cells",
+export const TEXT_STYLE_NAMES = [
   "font-family",
   "font-size",
   "font-style",
   "font-variant",
   "font-weight",
-  "font",
   "letter-spacing",
+  "font",
+  "color",
+  "text-align",
+  "text-indent",
   "line-height",
+  "text-transform",
+  "word-spacing",
+  "white-space"
+];
+
+export const INHERITABLE_STYLE_NAMES = [
+  ...TEXT_STYLE_NAMES,
+  "azimuth",
+  "border-collapse",
+  "border-spacing",
+  "caption-side",
+  "cursor",
+  "direction",
+  "elevation",
+  "empty-cells",
   "list-style-image",
   "list-style-position",
   "list-style-type",
@@ -131,15 +141,10 @@ export const INHERITABLE_STYLE_NAMES = [
   "speak",
   "speech-rate",
   "stress",
-  "text-align",
-  "text-indent",
-  "text-transform",
   "visibility",
   "voice-family",
   "volume",
-  "white-space",
-  "widows",
-  "word-spacing"
+  "widows"
 ];
 
 export const CSS_COLOR_ALIASES = {

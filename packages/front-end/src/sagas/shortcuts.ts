@@ -31,7 +31,8 @@ import {
   syntheticNodeContextMenuRemoveClicked,
   EDITOR_TAB_RIGHT_CLICKED,
   EditorTabClicked,
-  editorTabContextMenuOpenInBottomTabOptionClicked
+  editorTabContextMenuOpenInBottomTabOptionClicked,
+  syntheticNodeContextMenuConvertTextStylesToMixinClicked
 } from "../actions";
 import {
   ContextMenuItem,
@@ -52,7 +53,10 @@ import {
   syntheticNodeIsInShadow,
   getPCNodeModule,
   SyntheticNode,
-  getInspectorSyntheticNode
+  getInspectorSyntheticNode,
+  isTextLikePCNode,
+  isElementLikePCNode,
+  hasTextStyles
 } from "paperclip";
 
 export type ShortcutSagaOptions = {
@@ -205,6 +209,12 @@ export const createShortcutSaga = ({
         syntheticNode.id,
         state.documents
       );
+      const inspectorNode = getSyntheticInspectorNode(
+        syntheticNode,
+        syntheticDocument,
+        state.sourceNodeInspector,
+        state.graph
+      );
       const contentNode = getPCNodeContentNode(
         sourceNode.id,
         getPCNodeModule(sourceNode.id, state.graph)
@@ -244,14 +254,34 @@ export const createShortcutSaga = ({
                       )
                     }
                   : null,
+
                 sourceNode.name === PCSourceTagNames.COMPONENT ||
                 sourceNode.name === PCSourceTagNames.COMPONENT_INSTANCE ||
                 sourceNode.name === PCSourceTagNames.ELEMENT ||
                 sourceNode.name === PCSourceTagNames.TEXT
                   ? {
                       type: ContextMenuOptionType.ITEM,
-                      label: "Move Style to Mixin",
+                      label: "Move All Styles to Mixin",
                       action: syntheticNodeContextMenuConvertToStyleMixinClicked(
+                        syntheticNode
+                      )
+                    }
+                  : null,
+
+                (sourceNode.name === PCSourceTagNames.COMPONENT ||
+                  sourceNode.name === PCSourceTagNames.COMPONENT_INSTANCE ||
+                  sourceNode.name === PCSourceTagNames.ELEMENT ||
+                  sourceNode.name === PCSourceTagNames.TEXT) &&
+                hasTextStyles(
+                  inspectorNode,
+                  state.sourceNodeInspector,
+                  state.selectedVariant,
+                  state.graph
+                )
+                  ? {
+                      type: ContextMenuOptionType.ITEM,
+                      label: "Move Text Styles to Mixin",
+                      action: syntheticNodeContextMenuConvertTextStylesToMixinClicked(
                         syntheticNode
                       )
                     }

@@ -1476,7 +1476,6 @@ const defaultCanvasNodeFilter = ({ id }: SyntheticNode, state: RootState) => {
         selectedShadowInspectorNode.id,
         inspectorParentShadow
       );
-      // console.log(inspectorNodeWithinSelectedShadow, containsNestedTreeNodeById(inspectorNode.id, selectedShadowInspectorNode), inspectorNode, getParentTreeNode(inspectorNode.id, state.sourceNodeInspector), inspectorParentShadow, selectedShadowInspectorNode);
       if (
         !inspectorNodeWithinSelectedShadow &&
         !selectedShadowWithinInspectorParentShadow

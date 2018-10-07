@@ -104,7 +104,7 @@ import {
   getInspectorContentNodeContainingChild,
   getInspectorNodeByAssocId
 } from "./inspector";
-import { computeStyleInfo } from "./style";
+import { computeStyleInfo, getTextStyles, filterTextStyles } from "./style";
 
 /*------------------------------------------
  * CONSTANTS
@@ -610,7 +610,8 @@ export const persistConvertSyntheticVisibleNodeStyleToMixin = <
 >(
   node: SyntheticVisibleNode,
   variant: PCVariant,
-  state: TState
+  state: TState,
+  justTextStyles?: boolean
 ) => {
   const sourceNode = getSyntheticSourceNode(node, state.graph) as PCVisibleNode;
   const document = getSyntheticVisibleNodeDocument(node.id, state.documents);
@@ -631,7 +632,10 @@ export const persistConvertSyntheticVisibleNodeStyleToMixin = <
       overrides: true
     }
   );
-  const style = computedStyle.style;
+
+  const style = justTextStyles
+    ? filterTextStyles(computedStyle.style)
+    : computedStyle.style;
   let styleMixin: PCStyleMixin;
   const newLabel = `${sourceNode.label} style`;
 

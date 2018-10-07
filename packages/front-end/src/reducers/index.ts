@@ -178,7 +178,8 @@ import {
   IMAGE_PATH_PICKED,
   ImagePathPicked,
   CSS_INHERITED_FROM_LABEL_CLICKED,
-  CSSInheritedFromLabelClicked
+  CSSInheritedFromLabelClicked,
+  SYNTHETIC_NODE_CONTEXT_MENU_CONVERT_TEXT_STYLES_TO_MIXIN_CLICKED
 } from "../actions";
 import {
   queueOpenFile,
@@ -2652,6 +2653,12 @@ const shortcutReducer = (state: RootState, action: Action): RootState => {
       return state;
     }
 
+    case SYNTHETIC_NODE_CONTEXT_MENU_CONVERT_TEXT_STYLES_TO_MIXIN_CLICKED: {
+      const { item } = action as SyntheticNodeContextMenuAction;
+      state = convertSyntheticStyleToMixin(item, state, true);
+      return state;
+    }
+
     case SHORTCUT_CONVERT_TO_COMPONENT_KEY_DOWN: {
       // TODO - should be able to conver all selected nodes to components
       if (state.selectedSyntheticNodeIds.length > 1) {
@@ -2917,7 +2924,8 @@ const normalizeZoom = zoom => {
 
 const convertSyntheticStyleToMixin = (
   node: SyntheticVisibleNode,
-  state: RootState
+  state: RootState,
+  justTextStyles?: boolean
 ) => {
   const oldState = state;
 
@@ -2926,7 +2934,8 @@ const convertSyntheticStyleToMixin = (
       persistConvertSyntheticVisibleNodeStyleToMixin(
         node,
         state.selectedVariant,
-        state
+        state,
+        justTextStyles
       ),
     state
   );
