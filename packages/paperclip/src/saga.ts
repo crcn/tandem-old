@@ -5,9 +5,7 @@ import {
   pcFrameContainerCreated,
   pcRuntimeEvaluated,
   PC_RUNTIME_EVALUATED,
-  PCRuntimeEvaluated,
-  PC_DEPENDENCY_GRAPH_LOADED,
-  PC_SOURCE_FILE_URIS_RECEIVED
+  PCRuntimeEvaluated
 } from "./actions";
 import {
   SyntheticNativeNodeMap,
@@ -103,28 +101,6 @@ export const createPaperclipSaga = ({
     }
 
     let initedFrames = {};
-
-    // function pruneInitedFrames(frames: KeyValue<boolean>, state: PCEditorState) {
-    //   const newInitedFrames = {};
-    //   for (const syntheticContentNodeId in frames) {
-    //     if (getSyntheticNodeById(syntheticContentNodeId, state.documents)) {
-    //       newInitedFrames[syntheticContentNodeId] = true;
-    //     }
-    //   }
-    //   return newInitedFrames;
-    // }
-
-    // function* handleLoaded() {
-    //   while(1) {
-    //     yield take(PC_SOURCE_FILE_URIS_RECEIVED);
-    //     console.log("YIELD");
-    //     const state: PCEditorState = yield select();
-
-    //     // will happen for projects that are re-opened
-    //     initedFrames = pruneInitedFrames(initedFrames, state);
-    //     console.log("INITED", initedFrames);
-    //   }
-    // }
 
     function* nativeRenderer() {
       yield fork(function* captureFrameChanges() {

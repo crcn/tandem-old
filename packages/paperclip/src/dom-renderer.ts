@@ -4,7 +4,8 @@ import {
   SyntheticElement,
   SyntheticTextNode,
   SYNTHETIC_DOCUMENT_NODE_NAME,
-  isSyntheticContentNode
+  isSyntheticContentNode,
+  SyntheticNode
 } from "./synthetic";
 import { ComputedDisplayInfo } from "./edit";
 import {
@@ -12,7 +13,8 @@ import {
   roundBounds,
   EMPTY_OBJECT,
   memoize,
-  pmark
+  pmark,
+  stringifyStyle
 } from "tandem-common";
 import {
   TreeNodeOperationalTransformType,
@@ -41,7 +43,8 @@ export const renderDOM = (
   }
 
   const nativeMap = {};
-  native.appendChild(createNativeNode(synthetic, document, nativeMap, true));
+  applySyntheticNodeProps(native, synthetic, nativeMap, true);
+  // native.appendChild(createNativeNode(synthetic, document, nativeMap, true));
 
   return nativeMap;
 };
@@ -85,19 +88,19 @@ const setStyleConstraintsIfRoot = (
   isContentNode: boolean
 ) => {
   if (isContentNode) {
-    nativeElement.style.position = "fixed";
-    if (nativeElement.tagName === "SPAN") {
-      nativeElement.style.display = "block";
-    }
-    nativeElement.style.top = "0px";
-    nativeElement.style.left = "0px";
-    nativeElement.style.width = "100%";
-    nativeElement.style.height = "100%";
-    nativeElement.style.minHeight = "unset";
-    nativeElement.style.minWidth = "unset";
-    nativeElement.style.maxWidth = "unset";
-    nativeElement.style.maxHeight = "unset";
-    nativeElement.style.boxSizing = "border-box";
+    // nativeElement.style.position = "fixed";
+    // if (nativeElement.tagName === "SPAN") {
+    //   nativeElement.style.display = "block";
+    // }
+    // nativeElement.style.top = "0px";
+    // nativeElement.style.left = "0px";
+    // nativeElement.style.width = "100%";
+    // nativeElement.style.height = "100%";
+    // nativeElement.style.minHeight = "unset";
+    // nativeElement.style.minWidth = "unset";
+    // nativeElement.style.maxWidth = "unset";
+    // nativeElement.style.maxHeight = "unset";
+    // nativeElement.style.boxSizing = "border-box";
   }
 };
 
@@ -125,7 +128,8 @@ const setStyle = (target: HTMLElement, style: any) => {
   } else {
     cstyle = normalizedStyle;
   }
-  Object.assign(target.style, cstyle, target.namespaceURI);
+  // target.setAttribute("style", stringifyStyle(cstyle));
+  Object.assign(target.style, cstyle);
 };
 
 const createNativeNode = (
@@ -148,6 +152,21 @@ const createNativeNode = (
   const nativeElement = (xmlns
     ? document.createElementNS(xmlns, tagName)
     : document.createElement(tagName)) as HTMLElement;
+
+  applySyntheticNodeProps(nativeElement, synthetic, map, isContentNode);
+
+  return (map[synthetic.id] = nativeElement);
+};
+
+const applySyntheticNodeProps = (
+  nativeElement: HTMLElement,
+  synthetic: SyntheticVisibleNode,
+  map: SyntheticNativeNodeMap,
+  isContentNode: boolean,
+  xmlns?: string
+) => {
+  const isText = synthetic.name === PCSourceTagNames.TEXT;
+  const attrs = (synthetic as SyntheticElement).attributes || EMPTY_OBJECT;
 
   for (const name in attrs) {
     setAttribute(nativeElement, name, attrs[name]);
@@ -341,6 +360,9 @@ const resetElementStyle = (
   } else {
     removeClickableStyle(target, synthetic);
     target.setAttribute("style", "");
+    if (target.tagName === "BODY") {
+      target.style.margin = "0px";
+    }
   }
   setStyle(target, synthetic.style || EMPTY_OBJECT);
 };
@@ -375,11 +397,3 @@ const normalizeStyle = (value: any) =>
 
     return value;
   });
-
-const getElementFromPath = (path: number[], root: HTMLElement) => {
-  let current = root;
-  for (const part of path) {
-    current = current.children[part] as HTMLElement;
-  }
-  return current;
-};

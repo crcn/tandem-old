@@ -187,10 +187,12 @@ const parseBoxShadows = memoize(
       EMPTY_ARRAY
     )
       .map(shadow => {
-        const inset = shadow.indexOf("inset") !== -1;
-        const [, , x, y, blur, spread, color] = shadow.match(
-          /(inset\s)?([^\s]+)\s([^\s]+)\s([^\s]+)\s([^\s]+)\s(.*)/
-        );
+        const inset = String(shadow).indexOf("inset") !== -1;
+        const [, , x, y, blur, spread, color] =
+          String(shadow + "").match(
+            /(inset\s)?([^\s]+)\s([^\s]+)\s([^\s]+)\s([^\s]+)\s(.*)/
+          ) || EMPTY_ARRAY;
+
         return {
           inset: Boolean(inset),
           x,

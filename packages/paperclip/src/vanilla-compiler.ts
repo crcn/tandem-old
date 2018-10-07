@@ -428,7 +428,7 @@ const translateStaticNodeProps = memoize(
           );
         }
 
-        buffer += `"${name}": "${value}",\n`;
+        buffer += `"${name}": ${JSON.stringify(value)},\n`;
       }
       buffer += `};\n`;
     }
