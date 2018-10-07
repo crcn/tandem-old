@@ -59,7 +59,8 @@ import {
   getInternalVarName,
   addLineItem,
   setCurrentScope,
-  addScopedLayerLabel
+  addScopedLayerLabel,
+  makeSafeVarName
 } from "./utils";
 import {
   StyleMixins,
@@ -528,7 +529,10 @@ const getVariantLabelMap = (contentNode: ContentNode) => {
   const map = {};
   const variants = getPCVariants(contentNode);
   for (const variant of variants) {
-    map[variant.id] = [camelCase(variant.label), variant.isDefault];
+    map[variant.id] = [
+      makeSafeVarName(camelCase(variant.label)),
+      variant.isDefault
+    ];
   }
   return map;
 };
@@ -923,7 +927,8 @@ const translatePlugs = (
     }
 
     // context = addScopedLayerLabel(slot.label, slot.id, context);
-    const publicLayerVarName = slot.label && camelCase(slot.label);
+    const publicLayerVarName =
+      slot.label && makeSafeVarName(camelCase(slot.label));
 
     // We use the slot's name here so that developers can programatically override
     // the slot via controllers. This value should be unique, so if there's ever colliding slot names,
@@ -1084,7 +1089,7 @@ const translateInnerAttributes = (
     if (key === "src" && node.is === "img") {
       value = `require(${value})`;
     }
-    context = addLine(`${camelCase(key)}: ${value},`, context);
+    context = addLine(`${makeSafeVarName(camelCase(key))}: ${value},`, context);
   }
   return context;
 };

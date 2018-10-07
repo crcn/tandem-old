@@ -637,16 +637,17 @@ export const persistConvertSyntheticVisibleNodeStyleToMixin = <
     ? filterTextStyles(computedStyle.style)
     : computedStyle.style;
   let styleMixin: PCStyleMixin;
-  const newLabel = `${sourceNode.label} style`;
 
-  if (sourceNode.name === PCSourceTagNames.TEXT) {
+  if (sourceNode.name === PCSourceTagNames.TEXT || justTextStyles) {
+    const newLabel = `${sourceNode.label} text style`;
     styleMixin = createPCTextStyleMixin(
       style,
-      (node as SyntheticTextNode).value,
+      (node as SyntheticTextNode).value || newLabel,
       sourceNode.styleMixins,
       newLabel
     );
   } else if (isElementLikePCNode(sourceNode)) {
+    const newLabel = `${sourceNode.label} style`;
     styleMixin = createPCElementStyleMixin(
       style,
       sourceNode.styleMixins,

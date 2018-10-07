@@ -144,7 +144,14 @@ export const getPublicLayerVarName = (
   context: TranslateContext
 ) => {
   const i = getScopedLayerLabelIndex(label, id, context);
-  return camelCase(label || "child") + (i === 0 ? "" : i);
+  return makeSafeVarName(camelCase(label || "child") + (i === 0 ? "" : i));
+};
+
+export const makeSafeVarName = (varName: string) => {
+  if (/^\d/.test(varName)) {
+    varName = "$" + varName;
+  }
+  return varName;
 };
 
 export const addWarning = (warning: Error, context: TranslateContext) => ({
