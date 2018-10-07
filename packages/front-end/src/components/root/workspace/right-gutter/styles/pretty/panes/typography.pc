@@ -47,35 +47,17 @@
           "children": [
             {
               "id": "201dfad710361",
-              "variant": {},
-              "is": "7149f8192509",
+              "variant": {
+                "82e036ac8235": true
+              },
+              "is": "82e036ac7328",
               "name": "component-instance",
               "attributes": {},
               "style": {},
               "children": [
                 {
-                  "id": "201dfad710362",
-                  "propertyName": "text",
-                  "targetIdPath": [
-                    "7149f8192506"
-                  ],
-                  "value": "Family",
-                  "name": "override",
-                  "children": []
-                },
-                {
-                  "id": "201dfad710367",
-                  "propertyName": "style",
-                  "targetIdPath": [
-                    "7149f8192506"
-                  ],
-                  "value": {},
-                  "name": "override",
-                  "children": []
-                },
-                {
-                  "slotId": "e73029b416045",
-                  "id": "4c348fda109",
+                  "slotId": "82e036ac25545",
+                  "id": "82e036ac46501",
                   "children": [
                     {
                       "id": "201dfad710365",
@@ -99,10 +81,10 @@
                       ],
                       "metadata": {
                         "bounds": {
-                          "left": 18,
-                          "top": 339,
-                          "right": 218.8212880775559,
-                          "bottom": 439
+                          "left": 255,
+                          "top": 109,
+                          "right": 455.8212880775559,
+                          "bottom": 209
                         }
                       },
                       "label": "Family Input"
@@ -110,9 +92,21 @@
                   ],
                   "metadata": {},
                   "name": "plug"
+                },
+                {
+                  "id": "82e036ac227890",
+                  "variantId": null,
+                  "propertyName": "text",
+                  "targetIdPath": [
+                    "82e036ac28300"
+                  ],
+                  "value": "Font Family",
+                  "name": "override",
+                  "children": []
                 }
               ],
-              "metadata": {}
+              "metadata": {},
+              "label": "font family input container"
             },
             {
               "id": "bcda9fb558220",
@@ -129,8 +123,10 @@
               "children": [
                 {
                   "id": "201dfad716070",
-                  "variant": {},
-                  "is": "7149f8192509",
+                  "variant": {
+                    "82e036ac8235": true
+                  },
+                  "is": "82e036ac7328",
                   "name": "component-instance",
                   "attributes": {},
                   "style": {
@@ -140,28 +136,19 @@
                   },
                   "children": [
                     {
-                      "id": "201dfad716071",
+                      "id": "82e036ac113239",
+                      "variantId": null,
                       "propertyName": "text",
                       "targetIdPath": [
-                        "7149f8192506"
+                        "82e036ac28300"
                       ],
                       "value": "Weight",
                       "name": "override",
                       "children": []
                     },
                     {
-                      "id": "201dfad716076",
-                      "propertyName": "style",
-                      "targetIdPath": [
-                        "7149f8192506"
-                      ],
-                      "value": {},
-                      "name": "override",
-                      "children": []
-                    },
-                    {
-                      "slotId": "e73029b416045",
-                      "id": "74ea1fd9445",
+                      "slotId": "82e036ac25545",
+                      "id": "82e036ac203617",
                       "children": [
                         {
                           "id": "201dfad716074",
@@ -185,10 +172,10 @@
                           ],
                           "metadata": {
                             "bounds": {
-                              "left": 18,
-                              "top": 339,
-                              "right": 218.8212880775559,
-                              "bottom": 439
+                              "left": 324,
+                              "top": 754,
+                              "right": 524.8212880775559,
+                              "bottom": 854
                             }
                           },
                           "label": "Weight Input"
@@ -198,12 +185,13 @@
                       "name": "plug"
                     }
                   ],
-                  "metadata": {}
+                  "metadata": {},
+                  "label": "weight input container"
                 },
                 {
                   "id": "647e59ac25172",
                   "variant": {},
-                  "is": "7149f8192509",
+                  "is": "82e036ac7328",
                   "name": "component-instance",
                   "attributes": {},
                   "style": {
@@ -212,28 +200,19 @@
                   },
                   "children": [
                     {
-                      "id": "647e59ac25173",
+                      "id": "82e036ac87959",
+                      "variantId": null,
                       "propertyName": "text",
                       "targetIdPath": [
-                        "7149f8192506"
+                        "82e036ac28300"
                       ],
                       "value": "Decoration",
                       "name": "override",
                       "children": []
                     },
                     {
-                      "id": "647e59ac25177",
-                      "propertyName": "style",
-                      "targetIdPath": [
-                        "7149f8192506"
-                      ],
-                      "value": {},
-                      "name": "override",
-                      "children": []
-                    },
-                    {
-                      "slotId": "e73029b416045",
-                      "id": "74ea1fd91331",
+                      "slotId": "82e036ac25545",
+                      "id": "82e036ac200582",
                       "children": [
                         {
                           "id": "647e59ac25175",
@@ -257,10 +236,10 @@
                           ],
                           "metadata": {
                             "bounds": {
-                              "left": 18,
-                              "top": 339,
-                              "right": 218.8212880775559,
-                              "bottom": 439
+                              "left": 746,
+                              "top": 793,
+                              "right": 946.8212880775559,
+                              "bottom": 893
                             }
                           },
                           "label": "Decoration Input"
@@ -270,7 +249,8 @@
                       "name": "plug"
                     }
                   ],
-                  "metadata": {}
+                  "metadata": {},
+                  "label": "decoration input container"
                 }
               ],
               "metadata": {
@@ -298,7 +278,7 @@
                 {
                   "id": "a258f470587",
                   "variant": {},
-                  "is": "7149f8192509",
+                  "is": "82e036ac7328",
                   "name": "component-instance",
                   "attributes": {},
                   "style": {
@@ -308,41 +288,19 @@
                   },
                   "children": [
                     {
-                      "id": "a258f470588",
+                      "id": "82e036ac125142",
+                      "variantId": null,
                       "propertyName": "text",
                       "targetIdPath": [
-                        "7149f8192506"
+                        "82e036ac28300"
                       ],
                       "value": "Line",
                       "name": "override",
                       "children": []
                     },
                     {
-                      "id": "a258f470590",
-                      "propertyName": "style",
-                      "targetIdPath": [
-                        "7149f8192506"
-                      ],
-                      "value": {
-                        "text-alignment": "center"
-                      },
-                      "name": "override",
-                      "children": []
-                    },
-                    {
-                      "id": "a258f470591",
-                      "propertyName": "text",
-                      "targetIdPath": [
-                        "7149f8199969",
-                        "7149f8199121"
-                      ],
-                      "value": "12pt",
-                      "name": "override",
-                      "children": []
-                    },
-                    {
-                      "slotId": "e73029b416045",
-                      "id": "203a2611913",
+                      "slotId": "82e036ac25545",
+                      "id": "82e036ac196030",
                       "children": [
                         {
                           "id": "203a2611912",
@@ -355,10 +313,10 @@
                           "children": [],
                           "metadata": {
                             "bounds": {
-                              "left": 384,
-                              "top": 298,
-                              "right": 484,
-                              "bottom": 327.0358087589019
+                              "left": 360,
+                              "top": 750,
+                              "right": 460,
+                              "bottom": 779.035808758902
                             }
                           },
                           "label": "line input",
@@ -369,12 +327,13 @@
                       "name": "plug"
                     }
                   ],
-                  "metadata": {}
+                  "metadata": {},
+                  "label": "line input container"
                 },
                 {
                   "id": "647e59ac1753",
                   "variant": {},
-                  "is": "7149f8192509",
+                  "is": "82e036ac7328",
                   "name": "component-instance",
                   "attributes": {},
                   "style": {
@@ -383,39 +342,19 @@
                   },
                   "children": [
                     {
-                      "id": "647e59ac1754",
+                      "id": "82e036ac134107",
+                      "variantId": null,
                       "propertyName": "text",
                       "targetIdPath": [
-                        "7149f8192506"
+                        "82e036ac28300"
                       ],
                       "value": "Spacing",
                       "name": "override",
                       "children": []
                     },
                     {
-                      "id": "647e59ac1756",
-                      "propertyName": "style",
-                      "targetIdPath": [
-                        "7149f8192506"
-                      ],
-                      "value": {},
-                      "name": "override",
-                      "children": []
-                    },
-                    {
-                      "id": "647e59ac1757",
-                      "propertyName": "text",
-                      "targetIdPath": [
-                        "7149f8199969",
-                        "7149f8199121"
-                      ],
-                      "value": "12pt",
-                      "name": "override",
-                      "children": []
-                    },
-                    {
-                      "slotId": "e73029b416045",
-                      "id": "203a26111829",
+                      "slotId": "82e036ac25545",
+                      "id": "82e036ac191478",
                       "children": [
                         {
                           "id": "203a26111828",
@@ -428,10 +367,10 @@
                           "children": [],
                           "metadata": {
                             "bounds": {
-                              "left": 384,
-                              "top": 298,
-                              "right": 484,
-                              "bottom": 327.0358087589019
+                              "left": 498,
+                              "top": 729,
+                              "right": 598,
+                              "bottom": 758.035808758902
                             }
                           },
                           "label": "spacing input",
@@ -442,7 +381,8 @@
                       "name": "plug"
                     }
                   ],
-                  "metadata": {}
+                  "metadata": {},
+                  "label": "spacing input container"
                 }
               ],
               "metadata": {
@@ -471,7 +411,7 @@
                 {
                   "id": "647e59ac5707",
                   "variant": {},
-                  "is": "7149f8192509",
+                  "is": "82e036ac7328",
                   "name": "component-instance",
                   "attributes": {},
                   "style": {
@@ -482,49 +422,19 @@
                   },
                   "children": [
                     {
-                      "id": "647e59ac5708",
+                      "id": "82e036ac147605",
+                      "variantId": null,
                       "propertyName": "text",
                       "targetIdPath": [
-                        "7149f8192506"
+                        "82e036ac28300"
                       ],
                       "value": "Alignment",
                       "name": "override",
                       "children": []
                     },
                     {
-                      "id": "647e59ac5710",
-                      "propertyName": "style",
-                      "targetIdPath": [
-                        "7149f8192506"
-                      ],
-                      "value": {},
-                      "name": "override",
-                      "children": []
-                    },
-                    {
-                      "id": "647e59ac5711",
-                      "propertyName": "text",
-                      "targetIdPath": [
-                        "7149f8199969",
-                        "7149f8199121"
-                      ],
-                      "value": "12pt",
-                      "name": "override",
-                      "children": []
-                    },
-                    {
-                      "id": "a42cfca0124351",
-                      "propertyName": "style",
-                      "targetIdPath": [
-                        "7149f81937818"
-                      ],
-                      "value": {},
-                      "name": "override",
-                      "children": []
-                    },
-                    {
-                      "slotId": "e73029b416045",
-                      "id": "9d12819b3000",
+                      "slotId": "82e036ac25545",
+                      "id": "82e036ac186926",
                       "children": [
                         {
                           "id": "647e59ac10951",
@@ -577,7 +487,14 @@
                               "children": []
                             }
                           ],
-                          "metadata": {},
+                          "metadata": {
+                            "bounds": {
+                              "left": 363,
+                              "top": 804,
+                              "right": 763,
+                              "bottom": 1104
+                            }
+                          },
                           "label": "Alignment Input"
                         }
                       ],
@@ -586,7 +503,7 @@
                     }
                   ],
                   "metadata": {},
-                  "label": "Alignment"
+                  "label": "alignment input container"
                 },
                 {
                   "id": "647e59ac32628",
@@ -603,7 +520,7 @@
                     {
                       "id": "201dfad754349",
                       "variant": {},
-                      "is": "7149f8192509",
+                      "is": "82e036ac7328",
                       "name": "component-instance",
                       "attributes": {},
                       "style": {
@@ -613,49 +530,19 @@
                       },
                       "children": [
                         {
-                          "id": "201dfad754350",
+                          "id": "82e036ac165684",
+                          "variantId": null,
                           "propertyName": "text",
                           "targetIdPath": [
-                            "7149f8192506"
+                            "82e036ac28300"
                           ],
                           "value": "Size",
                           "name": "override",
                           "children": []
                         },
                         {
-                          "id": "201dfad754354",
-                          "propertyName": "style",
-                          "targetIdPath": [
-                            "7149f8192506"
-                          ],
-                          "value": {},
-                          "name": "override",
-                          "children": []
-                        },
-                        {
-                          "id": "201dfad755261",
-                          "propertyName": "text",
-                          "targetIdPath": [
-                            "7149f8199969",
-                            "7149f8199121"
-                          ],
-                          "value": "0.9em",
-                          "name": "override",
-                          "children": []
-                        },
-                        {
-                          "id": "a42cfca0122410",
-                          "propertyName": "style",
-                          "targetIdPath": [
-                            "7149f81937818"
-                          ],
-                          "value": {},
-                          "name": "override",
-                          "children": []
-                        },
-                        {
-                          "slotId": "e73029b416045",
-                          "id": "a05ecb4e930",
+                          "slotId": "82e036ac25545",
+                          "id": "82e036ac185408",
                           "children": [
                             {
                               "id": "a329dd6d24650",
@@ -668,10 +555,10 @@
                               "children": [],
                               "metadata": {
                                 "bounds": {
-                                  "left": 783.484050288946,
-                                  "top": 164.5285555122662,
-                                  "right": 883.484050288946,
-                                  "bottom": 193.56436427116807
+                                  "left": 462,
+                                  "top": 758,
+                                  "right": 562,
+                                  "bottom": 787.0358087589019
                                 }
                               },
                               "variant": {},
@@ -683,12 +570,14 @@
                         }
                       ],
                       "metadata": {},
-                      "label": "Size"
+                      "label": "size input container"
                     },
                     {
                       "id": "647e59ac5712",
-                      "variant": {},
-                      "is": "7149f8192509",
+                      "variant": {
+                        "82e036ac8235": true
+                      },
+                      "is": "82e036ac7328",
                       "name": "component-instance",
                       "attributes": {},
                       "style": {
@@ -697,39 +586,19 @@
                       },
                       "children": [
                         {
-                          "id": "647e59ac5713",
+                          "id": "82e036ac173270",
+                          "variantId": null,
                           "propertyName": "text",
                           "targetIdPath": [
-                            "7149f8192506"
+                            "82e036ac28300"
                           ],
                           "value": "Color",
                           "name": "override",
                           "children": []
                         },
                         {
-                          "id": "647e59ac5715",
-                          "propertyName": "style",
-                          "targetIdPath": [
-                            "7149f8192506"
-                          ],
-                          "value": {},
-                          "name": "override",
-                          "children": []
-                        },
-                        {
-                          "id": "647e59ac5716",
-                          "propertyName": "text",
-                          "targetIdPath": [
-                            "7149f8199969",
-                            "7149f8199121"
-                          ],
-                          "value": "12pt",
-                          "name": "override",
-                          "children": []
-                        },
-                        {
-                          "slotId": "e73029b416045",
-                          "id": "9d12819b13352",
+                          "slotId": "82e036ac25545",
+                          "id": "82e036ac183890",
                           "children": [
                             {
                               "id": "d227ff68835744",
@@ -764,7 +633,14 @@
                                   "children": []
                                 }
                               ],
-                              "metadata": {},
+                              "metadata": {
+                                "bounds": {
+                                  "left": 534,
+                                  "top": 741,
+                                  "right": 934,
+                                  "bottom": 1041
+                                }
+                              },
                               "label": "Color Input"
                             }
                           ],
@@ -773,7 +649,7 @@
                         }
                       ],
                       "metadata": {},
-                      "label": "Color"
+                      "label": "color input container"
                     }
                   ],
                   "metadata": {}

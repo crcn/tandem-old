@@ -241,6 +241,8 @@ export const CSS_RESET_PROPERTY_OPTION_CLICKED =
 export const IMAGE_BROWSE_BUTTON_CLICKED = "IMAGE_BROWSE_BUTTON_CLICKED";
 export const IMAGE_SOURCE_INPUT_CHANGED = "IMAGE_SOURCE_INPUT_CHANGED";
 export const IMAGE_PATH_PICKED = "IMAGE_PATH_PICKED";
+export const CSS_INHERITED_FROM_LABEL_CLICKED =
+  "CSS_INHERITED_FROM_LABEL_CLICKED";
 
 export type WrappedEvent<T> = {
   sourceEvent: T;
@@ -465,6 +467,10 @@ export type ComponentVariantNameChanged = {
 
 export type ComponentVariantNameClicked = {
   name: string;
+} & Action;
+
+export type CSSInheritedFromLabelClicked = {
+  inheritedFromNode: InspectorNode;
 } & Action;
 
 export type ComponentControllerPicked = {
@@ -740,6 +746,13 @@ export const imageBrowseButtonClicked = publicActionCreator(
     type: IMAGE_BROWSE_BUTTON_CLICKED
   })
 );
+
+export const cssInheritedFromLabelClicked = (
+  inheritedFromNode: InspectorNode
+): CSSInheritedFromLabelClicked => ({
+  type: CSS_INHERITED_FROM_LABEL_CLICKED,
+  inheritedFromNode
+});
 
 export const imageSourceInputChanged = (
   value: string

@@ -1,9 +1,9 @@
 import * as React from "react";
-import { memoize, KeyValue } from "tandem-common";
+import * as cx from "classnames";
+import { memoize } from "tandem-common";
 import { ButtonBarOption } from "../../../../../../inputs/button-bar/controller";
 import {
   DropdownMenuOption,
-  mapVariablesToDropdownOptions,
   dropdownMenuOptionFromValue,
   NO_OPTION
 } from "../../../../../../inputs/dropdown/controller";
@@ -28,8 +28,6 @@ import {
   mapVariablesToCSSVarDropdownOptions,
   getPrettyPaneColorSwatchOptionGroups
 } from "./utils";
-import { mapPCVariablesToColorSwatchOptions } from "../../state";
-import { getColorSwatchOptionsFromValues } from "../../../../../../inputs/color/color-swatch-controller";
 const {
   TextLeftIcon,
   TextCenterIcon,
@@ -108,6 +106,7 @@ export default (Base: React.ComponentClass<BaseTypographProps>) =>
         fontFamilies,
         globalVariables,
         documentColors,
+        dispatch,
         computedStyleInfo,
         projectOptions
       } = this.props;
@@ -127,8 +126,48 @@ export default (Base: React.ComponentClass<BaseTypographProps>) =>
         globalVariables,
         PCVariableType.FONT
       );
+
       return (
         <Base
+          fontFamilyInputContainerProps={{
+            dispatch,
+            inheritedFromNode:
+              computedStyleInfo.styleInheritanceMap["font-family"]
+          }}
+          weightInputContainerProps={{
+            dispatch,
+            inheritedFromNode:
+              computedStyleInfo.styleInheritanceMap["font-weight"]
+          }}
+          decorationInputContainerProps={{
+            dispatch,
+            inheritedFromNode:
+              computedStyleInfo.styleInheritanceMap["text-decoration"]
+          }}
+          lineInputContainerProps={{
+            dispatch,
+            inheritedFromNode:
+              computedStyleInfo.styleInheritanceMap["line-height"]
+          }}
+          spacingInputContainerProps={{
+            dispatch,
+            inheritedFromNode:
+              computedStyleInfo.styleInheritanceMap["letter-spacing"]
+          }}
+          sizeInputContainerProps={{
+            dispatch,
+            inheritedFromNode:
+              computedStyleInfo.styleInheritanceMap["font-size"]
+          }}
+          alignmentInputContainerProps={{
+            dispatch,
+            inheritedFromNode:
+              computedStyleInfo.styleInheritanceMap["text-align"]
+          }}
+          colorInputContainerProps={{
+            dispatch,
+            inheritedFromNode: computedStyleInfo.styleInheritanceMap["color"]
+          }}
           familyInputProps={{
             options: [
               NO_OPTION,

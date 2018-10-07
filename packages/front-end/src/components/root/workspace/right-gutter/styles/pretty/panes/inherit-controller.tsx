@@ -21,7 +21,7 @@ import {
   inheritPaneRemoveButtonClick
 } from "../../../../../../../actions";
 import { BaseInheritProps } from "./inherit.pc";
-import { ProjectOptions } from "state";
+import { ProjectOptions } from "../../../../../../../state";
 
 export type Props = {
   dispatch: Dispatch<any>;

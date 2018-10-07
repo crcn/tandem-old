@@ -36,7 +36,8 @@
                   "value": "Label",
                   "style": {
                     "margin-bottom": "unset",
-                    "margin-left": "2px"
+                    "margin-left": "2px",
+                    "color": "var(--30f4693267675)"
                   },
                   "children": [],
                   "metadata": {},

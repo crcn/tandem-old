@@ -22,7 +22,9 @@ import {
   getSortedStyleMixinIds,
   getPCNodeModule,
   INHERITABLE_STYLE_NAMES,
-  PCSourceTagNames
+  PCSourceTagNames,
+  PCComponentInstanceElement,
+  PCBaseElement
 } from "./dsl";
 
 import { DependencyGraph } from "./graph";
@@ -46,6 +48,7 @@ const DEFAULT_COMPUTE_STYLE_OPTIONS: ComputeStyleOptions = {
 export type ComputedStyleInfo = {
   sourceNode: PCNode;
   styleOverridesMap: KeyValue<PCStyleOverride[]>;
+  styleInheritanceMap: KeyValue<InspectorNode>;
   style: {
     [identifier: string]: string;
   };
@@ -115,6 +118,9 @@ export const computeStyleInfo = memoize(
         }
       }
     }
+
+    const styleInheritanceMap: KeyValue<InspectorNode> = {};
+
     if (options.inheritedStyles !== false) {
       let parent = getParentTreeNode(
         inspectorNode.id,
@@ -127,14 +133,17 @@ export const computeStyleInfo = memoize(
             graph
           ) as PCVisibleNode;
           if (parentSource.name === PCSourceTagNames.ELEMENT) {
-            defaults(
-              style,
-              pick(
-                computeStyleInfo(parent, rootInspectorNode, variant, graph)
-                  .style,
-                INHERITABLE_STYLE_NAMES
-              )
+            const inheritedStyle = pick(
+              computeStyleInfo(parent, rootInspectorNode, variant, graph).style,
+              INHERITABLE_STYLE_NAMES
             );
+
+            for (const key in inheritedStyle) {
+              if (!style[key]) {
+                styleInheritanceMap[key] = parent;
+                style[key] = inheritedStyle[key];
+              }
+            }
           }
         }
         parent = getParentTreeNode(
@@ -147,6 +156,7 @@ export const computeStyleInfo = memoize(
     return {
       sourceNode,
       styleOverridesMap,
+      styleInheritanceMap,
       style
     };
   }

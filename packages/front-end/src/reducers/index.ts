@@ -176,7 +176,9 @@ import {
   IMAGE_SOURCE_INPUT_CHANGED,
   ImageSourceInputChanged,
   IMAGE_PATH_PICKED,
-  ImagePathPicked
+  ImagePathPicked,
+  CSS_INHERITED_FROM_LABEL_CLICKED,
+  CSSInheritedFromLabelClicked
 } from "../actions";
 import {
   queueOpenFile,
@@ -2578,6 +2580,12 @@ const shortcutReducer = (state: RootState, action: Action): RootState => {
       state = persistRootState(state => {
         return persistAttribute("src", value, element, state);
       }, state);
+      return state;
+    }
+
+    case CSS_INHERITED_FROM_LABEL_CLICKED: {
+      const { inheritedFromNode } = action as CSSInheritedFromLabelClicked;
+      state = selectInspectorNode(inheritedFromNode, state);
       return state;
     }
 

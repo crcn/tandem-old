@@ -1130,42 +1130,6 @@
         }
       },
       "variant": {}
-    },
-    {
-      "id": "c47c0a28658",
-      "label": "Element",
-      "is": "div",
-      "name": "element",
-      "attributes": {},
-      "style": {
-        "box-sizing": "border-box",
-        "display": "block",
-        "color": "rgba(253, 23, 23, 1)"
-      },
-      "children": [
-        {
-          "id": "c47c0a281796",
-          "name": "text",
-          "label": "Text",
-          "value": "Click to edit",
-          "style": {},
-          "children": [],
-          "metadata": {}
-        }
-      ],
-      "metadata": {
-        "bounds": {
-          "left": 0.8144029169117388,
-          "top": 217.46035897879636,
-          "right": 100.81440291691175,
-          "bottom": 317.46035897879636
-        }
-      },
-      "styleMixins": {
-        "dc3b39eb1275": {
-          "priority": 0
-        }
-      }
     }
   ]
 }

@@ -7,7 +7,6 @@
     "module": "commonjs",
     "outDir": "lib",
     "jsx": "react",
-    "baseUrl": "src",
     "experimentalDecorators": true
   },
   "exclude": [
