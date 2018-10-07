@@ -133,11 +133,11 @@ export default (Base: React.ComponentClass<BaseLayoutProps>) =>
         graph,
         ...rest
       } = this.props;
-      const { sourceNodes } = computedStyleInfo;
+      const { sourceNode } = computedStyleInfo;
 
       const { onPropertyChange, onPropertyChangeComplete } = this;
 
-      const node = computedStyleInfo.sourceNodes[0];
+      const node = computedStyleInfo.sourceNode;
       if (!node) {
         return null;
       }
@@ -174,7 +174,7 @@ export default (Base: React.ComponentClass<BaseLayoutProps>) =>
       const parentComputedInfo =
         parentInspectorNode &&
         computeStyleInfo(
-          [parentInspectorNode],
+          parentInspectorNode,
           rootInspectorNode,
           selectedVariant,
           graph

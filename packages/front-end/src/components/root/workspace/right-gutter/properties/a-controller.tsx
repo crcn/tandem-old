@@ -7,7 +7,7 @@ import {
   PCComponent,
   PCComponentInstanceElement
 } from "paperclip";
-import { attributeChanged } from "actions";
+import { attributeChanged } from "../../../../../actions";
 
 export type Props = {
   dispatch: Dispatch<any>;

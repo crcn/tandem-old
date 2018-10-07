@@ -32,11 +32,11 @@ export default (Base: React.ComponentClass<BaseBorderProps>) =>
     render() {
       const { computedStyleInfo, documentColors, globalVariables } = this.props;
       const { onPropertyChange, onPropertyChangeComplete } = this;
-      const { sourceNodes } = computedStyleInfo;
+      const { sourceNode } = computedStyleInfo;
 
       // Typography pane is only available to text nodes to prevent cascading styles
 
-      if (isTextLikePCNode(sourceNodes[0])) {
+      if (isTextLikePCNode(sourceNode)) {
         return null;
       }
 

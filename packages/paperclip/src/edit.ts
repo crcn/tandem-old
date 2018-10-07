@@ -615,19 +615,18 @@ export const persistConvertSyntheticVisibleNodeStyleToMixin = <
   const sourceNode = getSyntheticSourceNode(node, state.graph) as PCVisibleNode;
   const document = getSyntheticVisibleNodeDocument(node.id, state.documents);
   const computedStyle = computeStyleInfo(
-    [
-      getSyntheticInspectorNode(
-        node,
-        document,
-        state.sourceNodeInspector,
-        state.graph
-      )
-    ],
+    getSyntheticInspectorNode(
+      node,
+      document,
+      state.sourceNodeInspector,
+      state.graph
+    ),
     state.sourceNodeInspector,
     variant,
     state.graph,
     {
       inheritedStyles: false,
+      styleMixins: false,
       parentStyles: false,
       overrides: true
     }
@@ -1583,14 +1582,12 @@ export const persistCSSProperty = <TState extends PCEditorState>(
 
   if (value == null) {
     const overridingStyles = computeStyleInfo(
-      [
-        getSyntheticInspectorNode(
-          node,
-          getSyntheticVisibleNodeDocument(node.id, state.documents),
-          state.sourceNodeInspector,
-          state.graph
-        )
-      ],
+      getSyntheticInspectorNode(
+        node,
+        getSyntheticVisibleNodeDocument(node.id, state.documents),
+        state.sourceNodeInspector,
+        state.graph
+      ),
       state.sourceNodeInspector,
       variant,
       state.graph,
@@ -1682,14 +1679,12 @@ export const persistSyntheticVisibleNodeStyle = <TState extends PCEditorState>(
 ) => {
   const document = getSyntheticVisibleNodeDocument(node.id, state.documents);
   const existingStyle = computeStyleInfo(
-    [
-      getSyntheticInspectorNode(
-        node,
-        document,
-        state.sourceNodeInspector,
-        state.graph
-      )
-    ],
+    getSyntheticInspectorNode(
+      node,
+      document,
+      state.sourceNodeInspector,
+      state.graph
+    ),
     state.sourceNodeInspector,
     variant,
     state.graph

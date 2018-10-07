@@ -128,9 +128,9 @@ export default (Base: React.ComponentClass<BaseBoxShadowsProps>) =>
         onRemoveButtonClick
       } = this;
 
-      const { sourceNodes } = computedStyleInfo;
+      const { sourceNode } = computedStyleInfo;
 
-      if (isTextLikePCNode(sourceNodes[0])) {
+      if (isTextLikePCNode(sourceNode)) {
         return null;
       }
 

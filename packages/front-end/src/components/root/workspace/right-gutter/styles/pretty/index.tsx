@@ -13,7 +13,7 @@ import {
 } from "paperclip";
 import { BaseElementStylerProps } from "./view.pc";
 import { Dispatch } from "redux";
-import { FontFamily } from "../../../../../../state";
+import { FontFamily, ProjectOptions } from "../../../../../../state";
 
 export type PrettyPaneOuterProps = {
   syntheticNodes: SyntheticNode[];
@@ -31,6 +31,7 @@ export type Props = {
   syntheticDocument: SyntheticDocument;
   fontFamilies: FontFamily[];
   globalVariables: PCVariable[];
+  projectOptions: ProjectOptions;
 };
 
 export default (Base: React.ComponentClass<BaseElementStylerProps>) =>
@@ -44,6 +45,7 @@ export default (Base: React.ComponentClass<BaseElementStylerProps>) =>
         fontFamilies,
         documentColors,
         selectedNodes,
+        projectOptions,
         syntheticDocument,
         graph,
         selectedInspectorNodes,
@@ -66,6 +68,7 @@ export default (Base: React.ComponentClass<BaseElementStylerProps>) =>
             selectedVariant
           }}
           inheritPaneProps={{
+            projectOptions,
             dispatch,
             selectedNodes,
             graph
@@ -83,6 +86,7 @@ export default (Base: React.ComponentClass<BaseElementStylerProps>) =>
             graph
           }}
           typographyPaneProps={{
+            projectOptions,
             graph,
             dispatch,
             documentColors,

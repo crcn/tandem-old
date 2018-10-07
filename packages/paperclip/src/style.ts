@@ -23,6 +23,7 @@ import {
 import { DependencyGraph } from "./graph";
 
 export type ComputeStyleOptions = {
+  styleMixins?: boolean;
   inheritedStyles?: boolean;
   overrides?: boolean;
   parentStyles?: boolean;
@@ -30,6 +31,7 @@ export type ComputeStyleOptions = {
 };
 
 const DEFAULT_COMPUTE_STYLE_OPTIONS: ComputeStyleOptions = {
+  styleMixins: true,
   inheritedStyles: true,
   overrides: true,
   parentStyles: true,
@@ -37,7 +39,7 @@ const DEFAULT_COMPUTE_STYLE_OPTIONS: ComputeStyleOptions = {
 };
 
 export type ComputedStyleInfo = {
-  sourceNodes: PCNode[];
+  sourceNode: PCNode;
   styleOverridesMap: KeyValue<PCStyleOverride[]>;
   style: {
     [identifier: string]: string;
@@ -48,72 +50,68 @@ export type ComputedStyleInfo = {
 // array here.
 export const computeStyleInfo = memoize(
   (
-    inspectorNodes: InspectorNode[],
+    inspectorNode: InspectorNode,
     rootInspectorNode: InspectorNode,
     variant: PCVariant,
     graph: DependencyGraph,
     options: ComputeStyleOptions = DEFAULT_COMPUTE_STYLE_OPTIONS
   ): ComputedStyleInfo => {
     let style = {};
-    const sourceNodes: (PCVisibleNode | PCComponent)[] = [];
     const styleOverridesMap: KeyValue<PCStyleOverride[]> = {};
 
-    for (const inspectorNode of inspectorNodes) {
-      const sourceNode = getPCNode(inspectorNode.assocSourceNodeId, graph) as
-        | PCVisibleNode
-        | PCComponent;
-      sourceNodes.push(sourceNode);
-      let current: PCNode = sourceNode;
+    const sourceNode = getPCNode(inspectorNode.assocSourceNodeId, graph) as
+      | PCVisibleNode
+      | PCComponent;
+    let current: PCNode = sourceNode;
 
-      if (options.parentStyles !== false) {
-        while (extendsComponent(current)) {
-          const parent: PCElement = getPCNode(
-            (current as PCComponent).is,
-            graph
-          ) as PCElement;
-          if (isPCComponentOrInstance(parent)) {
-            // defaults -- parents cannot disable
-            defaults(style, parent.style);
-          }
-          current = parent;
-        }
-      }
-
-      if (options.self !== false) {
-        Object.assign(style, sourceNode.style);
-      }
-
-      if (options.inheritedStyles !== false && sourceNode.styleMixins) {
-        defaults(
-          style,
-          computeMixinStyle(sourceNode as PCVisibleNode, graph, false)
-        );
-      }
-
-      if (options.overrides !== false) {
-        const overrides = getInspectorNodeOverrides(
-          inspectorNode,
-          rootInspectorNode,
-          variant,
+    if (options.parentStyles !== false) {
+      while (extendsComponent(current)) {
+        const parent: PCElement = getPCNode(
+          (current as PCComponent).is,
           graph
-        );
+        ) as PCElement;
+        if (isPCComponentOrInstance(parent)) {
+          // defaults -- parents cannot disable
+          defaults(style, parent.style);
+        }
+        current = parent;
+      }
+    }
 
-        for (const override of overrides) {
-          if (override.propertyName === PCOverridablePropertyName.STYLE) {
-            for (const key in override.value) {
-              if (!styleOverridesMap[key]) {
-                styleOverridesMap[key] = [];
-              }
-              styleOverridesMap[key].push(override);
-              style[key] = override.value[key];
+    if (options.self !== false) {
+      Object.assign(style, sourceNode.style);
+    }
+
+    if (options.styleMixins !== false && sourceNode.styleMixins) {
+      defaults(
+        style,
+        computeMixinStyle(sourceNode as PCVisibleNode, graph, false)
+      );
+    }
+
+    if (options.overrides !== false) {
+      const overrides = getInspectorNodeOverrides(
+        inspectorNode,
+        rootInspectorNode,
+        variant,
+        graph
+      );
+
+      for (const override of overrides) {
+        if (override.propertyName === PCOverridablePropertyName.STYLE) {
+          for (const key in override.value) {
+            if (!styleOverridesMap[key]) {
+              styleOverridesMap[key] = [];
             }
+            styleOverridesMap[key].push(override);
+            style[key] = override.value[key];
           }
         }
       }
     }
 
     return {
-      sourceNodes,
+      sourceNode,
       styleOverridesMap,
       style
     };

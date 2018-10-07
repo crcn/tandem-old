@@ -10,11 +10,12 @@ import {
   PCVariable,
   computeStyleInfo
 } from "paperclip";
-import { FontFamily } from "../../../../../state";
+import { FontFamily, ProjectOptions } from "../../../../../state";
 
 export type Props = {
   visible: boolean;
   documentColors: string[];
+  projectOptions: ProjectOptions;
   dispatch: Dispatch<any>;
   rootInspectorNode: InspectorNode;
   selectedInspectorNodes: InspectorNode[];
@@ -38,6 +39,7 @@ export default (Base: React.ComponentClass<BaseStylesProps>) =>
         selectedVariant,
         fontFamilies,
         graph,
+        projectOptions,
         selectedInspectorNodes,
         rootInspectorNode,
         documentColors,
@@ -47,7 +49,7 @@ export default (Base: React.ComponentClass<BaseStylesProps>) =>
         return null;
       }
       const computedStyleInfo = computeStyleInfo(
-        selectedInspectorNodes,
+        selectedInspectorNodes[0],
         rootInspectorNode,
         selectedVariant,
         graph
@@ -62,6 +64,7 @@ export default (Base: React.ComponentClass<BaseStylesProps>) =>
             graph
           }}
           prettyProps={{
+            projectOptions,
             globalVariables,
             selectedVariant,
             dispatch,

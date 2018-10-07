@@ -129,8 +129,6 @@ const addDOMSnapshot = (node: HTMLElement, root: PCModule): PCModule => {
     newSnapshot
   );
 
-  newSnapshot = moveFontStylesToTextNodes(newSnapshot);
-
   root = appendChildNode(newSnapshot, root);
 
   // 2 collect typography styles
@@ -241,31 +239,6 @@ const computeGroupingRule = (
   return computedStyle;
 };
 
-const moveFontStylesToTextNodes = <TNode extends PCVisibleNode>(
-  node: TNode,
-  currentTextStyle: any = {}
-) => {
-  if (node.name === PCSourceTagNames.TEXT) {
-    if (Object.keys(currentTextStyle).length) {
-      return {
-        ...(node as any),
-        style: currentTextStyle
-      };
-    }
-  } else {
-    const textStyles = { ...currentTextStyle, ...getTextStyles(node.style) };
-    return {
-      ...(node as any),
-      style: removeTextStyles(node.style),
-      children: node.children.map((child: PCVisibleNode) => {
-        return moveFontStylesToTextNodes(child, textStyles);
-      })
-    };
-  }
-
-  return node;
-};
-
 const getElementAttributes = (element: HTMLElement) => {
   const attributes = {};
   for (let i = 0, { length } = element.attributes; i < length; i++) {
@@ -290,50 +263,4 @@ const parseStyle = (value: string) => {
       [key.trim()]: value.trim()
     };
   }, {});
-};
-
-const cssDeclarationToObject = (decl: CSSStyleDeclaration) => {
-  const style = {};
-  for (let i = 0, { length } = decl; i < length; i++) {
-    const key = decl[i];
-    style[key] = decl[key];
-  }
-
-  return style;
-};
-
-const getTextStyles = (style: any) => {
-  const textStyle = {};
-  for (const key in style) {
-    if (TEXT_STYLE_NAMES.indexOf(key) !== -1) {
-      textStyle[key] = style[key];
-    }
-  }
-
-  return textStyle;
-};
-
-const removeTextStyles = (style: any) => {
-  const localizedStyle = {};
-  for (const key in style) {
-    if (TEXT_STYLE_NAMES.indexOf(key) === -1) {
-      localizedStyle[key] = style[key];
-    }
-  }
-
-  return localizedStyle;
-};
-
-const pickDOMStyles = (
-  unfilteredStyle: any,
-  filter?: (property: string, value: string) => boolean
-) => {
-  const style = {};
-  for (const property in unfilteredStyle) {
-    const value = unfilteredStyle[property];
-    if (!filter || filter(property, value)) {
-      style[property] = value;
-    }
-  }
-  return style;
 };

@@ -21,11 +21,13 @@ import {
   inheritPaneRemoveButtonClick
 } from "../../../../../../../actions";
 import { BaseInheritProps } from "./inherit.pc";
+import { ProjectOptions } from "state";
 
 export type Props = {
   dispatch: Dispatch<any>;
   selectedNodes: SyntheticElement[];
   graph: DependencyGraph;
+  projectOptions: ProjectOptions;
 };
 
 type State = {
@@ -59,7 +61,7 @@ export default (Base: React.ComponentClass<BaseInheritProps>) => {
         onInheritItemClick
       } = this;
       const { selectedStyleMixinId } = this.state;
-      const { selectedNodes, dispatch, graph } = this.props;
+      const { selectedNodes, dispatch, graph, projectOptions } = this.props;
       const node = selectedNodes[0];
       const sourceNode = getSyntheticSourceNode(node, graph) as
         | PCVisibleNode
@@ -70,11 +72,13 @@ export default (Base: React.ComponentClass<BaseInheritProps>) => {
 
       const allStyleMixins = getAllStyleMixins(
         graph,
-        isElementLikePCNode(sourceNode)
-          ? getNativeComponentName(sourceNode, graph) === "input"
-            ? null
-            : PCSourceTagNames.ELEMENT
-          : PCSourceTagNames.TEXT
+        projectOptions.allowCascadeFonts === false
+          ? isElementLikePCNode(sourceNode)
+            ? getNativeComponentName(sourceNode, graph) === "input"
+              ? null
+              : PCSourceTagNames.ELEMENT
+            : PCSourceTagNames.TEXT
+          : null
       );
 
       const items = Object.keys(sourceNode.styleMixins || EMPTY_OBJECT)

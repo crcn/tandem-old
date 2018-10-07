@@ -11,21 +11,15 @@ import {
   cssPropertyChangeCompleted,
   cssPropertyChanged
 } from "../../../../../../../actions";
-import { FontFamily } from "../../../../../../../state";
+import { FontFamily, ProjectOptions } from "../../../../../../../state";
 import { BaseTypographProps } from "./typography.pc";
 import { Dispatch } from "redux";
 import {
-  SyntheticElement,
   PCVariable,
   filterVariablesByType,
   PCVariableType,
-  PCVisibleNode,
-  PCOverride,
   ComputedStyleInfo,
-  InspectorNode,
-  PCSourceTagNames,
   isTextLikePCNode,
-  isVoidTagName,
   isElementLikePCNode,
   getNativeComponentName,
   DependencyGraph
@@ -94,6 +88,7 @@ export type Props = {
   documentColors: string[];
   graph: DependencyGraph;
   globalVariables: PCVariable[];
+  projectOptions: ProjectOptions;
 };
 
 export default (Base: React.ComponentClass<BaseTypographProps>) =>
@@ -113,15 +108,16 @@ export default (Base: React.ComponentClass<BaseTypographProps>) =>
         fontFamilies,
         globalVariables,
         documentColors,
-        computedStyleInfo
+        computedStyleInfo,
+        projectOptions
       } = this.props;
-      const { sourceNodes } = computedStyleInfo;
-      const sourceNode = sourceNodes[0];
+      const { sourceNode } = computedStyleInfo;
 
       // Typography pane is only available to text nodes to prevent cascading styles, and void tags (like input) that
       // cannot have children
       if (
-        !isTextLikePCNode(sourceNodes[0]) ||
+        (projectOptions.allowCascadeFonts === false &&
+          !isTextLikePCNode(sourceNode)) ||
         (isElementLikePCNode(sourceNode) &&
           getNativeComponentName(sourceNode, graph) === "input")
       ) {

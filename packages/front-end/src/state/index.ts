@@ -109,6 +109,10 @@ export enum ToolType {
   ELEMENT
 }
 
+export type ProjectOptions = {
+  allowCascadeFonts?: boolean;
+};
+
 export type ProjectConfig = {
   scripts?: {
     previewServer?: string;
@@ -119,6 +123,8 @@ export type ProjectConfig = {
 
   // path to PC file where all global data is stored
   globalFilePath?: string;
+
+  options?: ProjectOptions;
 } & PCConfig;
 
 export type ProjectInfo = {

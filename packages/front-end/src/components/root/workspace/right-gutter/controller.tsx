@@ -7,7 +7,12 @@ import {
   getGlobalVariables,
   getSyntheticNodeStyleColors
 } from "paperclip";
-import { memoize, EMPTY_ARRAY, getNestedTreeNodeById } from "tandem-common";
+import {
+  memoize,
+  EMPTY_ARRAY,
+  getNestedTreeNodeById,
+  EMPTY_OBJECT
+} from "tandem-common";
 import { RightGutterTab } from "./tab.pc";
 import * as cx from "classnames";
 import { InspectorNode } from "paperclip";
@@ -56,7 +61,10 @@ export default (Base: React.ComponentClass<BaseRightGutterProps>) =>
       const { currentTab } = this.state;
       const { setTab } = this;
 
-      const { fontFamilies } = root;
+      const { fontFamilies, projectInfo } = root;
+      const projectOptions =
+        (projectInfo && projectInfo.config && projectInfo.config.options) ||
+        EMPTY_OBJECT;
 
       const globalVariables = getGlobalVariables(root.graph);
 
@@ -120,6 +128,7 @@ export default (Base: React.ComponentClass<BaseRightGutterProps>) =>
             fontFamilies
           }}
           stylesProps={{
+            projectOptions,
             visible: availableCurrentTab === TAB_NAMES[0],
             documentColors,
             dispatch,
