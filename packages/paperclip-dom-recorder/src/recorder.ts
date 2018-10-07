@@ -9,9 +9,21 @@ import {
   createPCTextNode,
   createPCElement,
   PCBaseElementChild,
-  PCVisibleNode
+  PCVisibleNode,
+  createPCVariable,
+  PCVariableType,
+  PCVariable,
+  CSS_COLOR_ALIASES,
+  PCTextStyleMixin,
+  createPCTextStyleMixin
 } from "paperclip";
-import { appendChildNode } from "tandem-common";
+import {
+  appendChildNode,
+  EMPTY_ARRAY,
+  KeyValue,
+  EMPTY_OBJECT
+} from "tandem-common";
+import { normalize } from "path";
 
 const FRAME_WIDTH = 1440;
 const FRAME_HEIGHT = 900;
@@ -31,6 +43,23 @@ const BLACKLIST_TAG_NAMES = {
   script: true,
   link: true
 };
+
+export const TYPOGRAPHY_STYLE_NAMES = [
+  "color",
+  "font-family",
+  "font-size",
+  "font-style",
+  "font-variant",
+  "font-weight",
+  "font",
+  "letter-spacing",
+  "line-height",
+  "text-align",
+  "text-indent",
+  "text-transform",
+  "white-space",
+  "word-spacing"
+];
 
 const LOG_PREFIX = "[Paperclip DOM Recorder] ";
 
@@ -60,11 +89,11 @@ export class PCDOMRecorder {
   }
 
   public print() {
-    console.log(JSON.stringify(this._snapshotRoot, null, 2));
+    console.log(JSON.stringify(this.prepareSnapshotRoot(), null, 2));
   }
 
   public copy() {
-    window["copy"](JSON.stringify(this._snapshotRoot, null, 2));
+    window["copy"](JSON.stringify(this.prepareSnapshotRoot(), null, 2));
     console.log(
       LOG_PREFIX +
         "%cCopied module content to clipboard. You can now paste to a *.pc file: %cpbpaste > my-module.pc",
@@ -72,6 +101,12 @@ export class PCDOMRecorder {
       "color: maroon; font-weight: bold;"
     );
   }
+
+  private prepareSnapshotRoot = () => {
+    let root = this._snapshotRoot;
+    root = elevateCommonStylesToGlobal(root);
+    return root;
+  };
 
   private onDOMChanges = () => {
     this.takeSnapshot();
@@ -170,6 +205,159 @@ const convertDOMToPC = (node: Node): PCNode => {
   return null;
 };
 
+const elevateCommonStylesToGlobal = (root: PCModule) => {
+  root = elevateColorsToGlobal(root);
+
+  // don't do this for now because it causes messiness. Instead focus on
+  // tooling that makes it easier to elevate typography to mixins.
+  // root = elevateTypographyToMixins(root);
+  return root;
+};
+
+const elevateColorsToGlobal = (root: PCModule) => {
+  const colorVarMap: KeyValue<PCVariable> = {};
+  const moveColorsToMap = (node: PCNode) => {
+    if (
+      node.name === PCSourceTagNames.ELEMENT ||
+      node.name === PCSourceTagNames.TEXT
+    ) {
+      let newStyle;
+      for (const key in node.style) {
+        let value: string = node.style[key];
+        const colors = findCSSColors(node.style[key]);
+        if (colors.length) {
+          if (!newStyle) {
+            newStyle = { ...node.style };
+          }
+
+          for (const color of colors) {
+            const colorVar: PCVariable =
+              colorVarMap[color] ||
+              (colorVarMap[color] = createPCVariable(
+                `Color ${Object.keys(colorVarMap).length + 1}`,
+                PCVariableType.COLOR,
+                color
+              ));
+            value = value.replace(color, `var(--${colorVar.id})`);
+          }
+
+          newStyle[key] = value;
+        }
+      }
+
+      if (newStyle) {
+        node = {
+          ...node,
+          style: newStyle
+        };
+      }
+    }
+
+    if (node.children.length) {
+      return {
+        ...node,
+        children: node.children.map(moveColorsToMap)
+      };
+    }
+
+    return node;
+  };
+  root = moveColorsToMap(root);
+
+  for (const color in colorVarMap) {
+    const pcVar = colorVarMap[color];
+    root = appendChildNode(pcVar, root);
+  }
+
+  return root;
+};
+
+const elevateTypographyToMixins = (root: PCModule) => {
+  const typographyMixinMap: KeyValue<PCTextStyleMixin> = {};
+
+  const moveTypographyToMap = (node: PCNode) => {
+    if (
+      node.name === PCSourceTagNames.ELEMENT ||
+      node.name === PCSourceTagNames.TEXT
+    ) {
+      const typographyStyle = {};
+      const otherStyle = {};
+      for (const key in node.style) {
+        if (TYPOGRAPHY_STYLE_NAMES.indexOf(key) !== -1) {
+          typographyStyle[key] = node.style[key];
+        } else {
+          otherStyle[key] = node.style[key];
+        }
+      }
+      if (Object.keys(typographyStyle).length) {
+        const key = JSON.stringify(typographyStyle);
+        const mixin =
+          typographyMixinMap[key] ||
+          (typographyMixinMap[key] = createPCTextStyleMixin(
+            typographyStyle,
+            `Text Style ${Object.keys(typographyStyle).length + 1}`
+          ));
+        node = {
+          ...node,
+          style: otherStyle,
+          styleMixins: {
+            ...(node.styleMixins || EMPTY_OBJECT),
+            [mixin.id]: {
+              priority: 1
+            }
+          }
+        };
+      }
+    }
+
+    if (node.children.length) {
+      return {
+        ...node,
+        children: node.children.map(moveTypographyToMap)
+      };
+    }
+
+    return node;
+  };
+
+  root = moveTypographyToMap(root);
+
+  let i = 0;
+
+  for (const key in typographyMixinMap) {
+    let mixin = typographyMixinMap[key];
+    const size = 100;
+    const left = i++ * (size + FRAME_PADDING);
+    const top = -(size + FRAME_PADDING);
+    mixin = {
+      ...mixin,
+      metadata: {
+        ...mixin.metadata,
+        [PCVisibleNodeMetadataKey.BOUNDS]: {
+          left,
+          top,
+          right: left + size,
+          bottom: top + size
+        }
+      }
+    };
+
+    root = appendChildNode(mixin, root);
+  }
+
+  return root;
+};
+
+const COLOR_REGEXP = new RegExp(
+  `(rgba?|hsla?)\\(.*?\\)|#[^\\s]+|${Object.keys(CSS_COLOR_ALIASES).join("|")}`,
+  "gi"
+);
+
+// TODO - need to get map of all css colors
+const findCSSColors = (value: string) => {
+  return String(value).match(COLOR_REGEXP) || EMPTY_ARRAY;
+};
+
 const trimLabel = (label: string) => {
   return label.length > MAX_LABEL_LENGTH ? label.substr(0, 10) + "..." : label;
 };
@@ -188,7 +376,35 @@ const computeStyle = (element: HTMLElement) => {
     Object.assign(computedStyle, parseStyle(element.getAttribute("style")));
   }
 
-  return computedStyle;
+  return normalizeStyleProps(computedStyle);
+};
+
+const normalizeStyleProps = (style: any) => {
+  const normalizedStyle = {};
+
+  for (const key in style) {
+    const value = style[key];
+    if (key === "font") {
+      const fontParts = value.replace(",", "").match(/["'].*?["']|[^\s]+/g);
+      for (const part of fontParts) {
+        if (/em|px|pt/.test(part)) {
+          const [fontSize, lineHeight] = part.split("/");
+          normalizedStyle["font-size"] = fontSize;
+          normalizedStyle["line-height"] = lineHeight;
+        } else if (/["']/.test(part)) {
+          normalizedStyle["font-family"] = part.substr(1, part.length - 2);
+        } else if (/\d{3}/.test(part)) {
+          normalizedStyle["font-weight"] = part;
+        }
+      }
+
+      console.log(fontParts, normalizedStyle);
+    } else {
+      normalizedStyle[key] = value;
+    }
+  }
+
+  return normalizedStyle;
 };
 
 const computeGroupingRule = (
@@ -230,7 +446,7 @@ const getElementAttributes = (element: HTMLElement) => {
   for (let i = 0, { length } = element.attributes; i < length; i++) {
     const attr = element.attributes[i];
     const name = attr.name.toLowerCase();
-    if (BLACKLIST_ATTRIBUTES[name]) {
+    if (BLACKLIST_ATTRIBUTES[name] || /^data\-/.test(name)) {
       continue;
     }
     attributes[name] = attr.value;
