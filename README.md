@@ -5,7 +5,7 @@
 
 <br />
 
-> Tandem is still very new, so expects bugs, missing features, and major changes. Because of that, you shouldn't be using Tandem for production apps _right now_.
+> This repository is _temporarily_ private until bugs the UX have been worked out. 
 
 <br />
 
