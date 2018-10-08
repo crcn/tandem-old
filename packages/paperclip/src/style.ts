@@ -25,7 +25,8 @@ import {
   PCSourceTagNames,
   PCComponentInstanceElement,
   PCBaseElement,
-  TEXT_STYLE_NAMES
+  TEXT_STYLE_NAMES,
+  isElementLikePCNode
 } from "./dsl";
 
 import { DependencyGraph } from "./graph";
@@ -133,7 +134,7 @@ export const computeStyleInfo = memoize(
             parent.assocSourceNodeId,
             graph
           ) as PCVisibleNode;
-          if (parentSource.name === PCSourceTagNames.ELEMENT) {
+          if (isElementLikePCNode(parentSource)) {
             const inheritedStyle = pick(
               computeStyleInfo(parent, rootInspectorNode, variant, graph).style,
               INHERITABLE_STYLE_NAMES

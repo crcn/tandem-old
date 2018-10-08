@@ -169,6 +169,7 @@ export default (Base: React.ComponentClass<BaseTypographProps>) =>
             inheritedFromNode: computedStyleInfo.styleInheritanceMap["color"]
           }}
           familyInputProps={{
+            filterable: true,
             options: [
               NO_OPTION,
               ...mapVariablesToCSSVarDropdownOptions(fontVariables),
