@@ -6,8 +6,6 @@
 <br />
 
 > Tandem is still very new, so expects bugs, missing features, and major changes. Because of that, you shouldn't be using Tandem for production apps _right now_.
->
-> If you want to get involved, send me a Twitter message at [@craigjcondon](https://twitter.com/craigjcondon).
 
 <br />
 
