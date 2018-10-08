@@ -1,1 +1,1 @@
-### 1. Getting Started
+To get started, you'll need to first

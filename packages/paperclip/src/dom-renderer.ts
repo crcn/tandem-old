@@ -91,19 +91,19 @@ const setStyleConstraintsIfRoot = (
   isContentNode: boolean
 ) => {
   if (isContentNode) {
-    // nativeElement.style.position = "fixed";
-    // if (nativeElement.tagName === "SPAN") {
-    //   nativeElement.style.display = "block";
-    // }
-    // nativeElement.style.top = "0px";
-    // nativeElement.style.left = "0px";
-    // nativeElement.style.width = "100%";
-    // nativeElement.style.height = "100%";
-    // nativeElement.style.minHeight = "unset";
-    // nativeElement.style.minWidth = "unset";
-    // nativeElement.style.maxWidth = "unset";
-    // nativeElement.style.maxHeight = "unset";
-    // nativeElement.style.boxSizing = "border-box";
+    nativeElement.style.position = "fixed";
+    if (nativeElement.tagName === "SPAN") {
+      nativeElement.style.display = "block";
+    }
+    nativeElement.style.top = "0px";
+    nativeElement.style.left = "0px";
+    nativeElement.style.width = "100%";
+    nativeElement.style.height = "100%";
+    nativeElement.style.minHeight = "unset";
+    nativeElement.style.minWidth = "unset";
+    nativeElement.style.maxWidth = "unset";
+    nativeElement.style.maxHeight = "unset";
+    nativeElement.style.boxSizing = "border-box";
   }
 };
 
