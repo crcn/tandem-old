@@ -15,5 +15,6 @@ Tandem is a visual editor for building web applications. It's intended to to rep
 
 ### Resources
 
-- [User Guide](https://github.com/tandemcode/)
+- [User Guide](./docs/user-guide.md)
+- [Terminology & Concepts](./docs/concepts.md)
 - [Examples](https://github.com/tandemcode/examples)

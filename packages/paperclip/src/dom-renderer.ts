@@ -43,8 +43,11 @@ export const renderDOM = (
   }
 
   const nativeMap = {};
-  applySyntheticNodeProps(native, synthetic, nativeMap, true);
-  // native.appendChild(createNativeNode(synthetic, document, nativeMap, true));
+
+  // Not ethat we cannot render directly to the element passed in
+  // since we need to assume that its type is immutable (like body)
+  // applySyntheticNodeProps(native, synthetic, nativeMap, true);
+  native.appendChild(createNativeNode(synthetic, document, nativeMap, true));
 
   return nativeMap;
 };

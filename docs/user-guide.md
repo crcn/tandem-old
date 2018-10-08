@@ -1,7 +1,1 @@
-TODO
-
-### Features
-
-#### Hotkeys
-
-## Terminology
+### 1. Getting Started

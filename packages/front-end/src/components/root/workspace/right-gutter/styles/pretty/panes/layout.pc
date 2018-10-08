@@ -805,7 +805,7 @@
                               "is": "a329dd6d16879",
                               "name": "component-instance",
                               "attributes": {
-                                "placeholder": "1"
+                                "placeholder": "0"
                               },
                               "style": {},
                               "children": [],
@@ -902,7 +902,7 @@
                               "is": "a329dd6d16879",
                               "name": "component-instance",
                               "attributes": {
-                                "placeholder": "1"
+                                "placeholder": "0"
                               },
                               "style": {},
                               "children": [],
