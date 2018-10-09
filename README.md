@@ -60,4 +60,5 @@ Ready to get started? Here are a few resources to help you out:
 - [User Guide](./docs/user-guide.md)
 - [Terminology & Concepts](./docs/concepts.md)
 - [Goals & Non-goals](./docs/goals.md)
+- [Design process](./docs/design-process.md)
 - [Examples](https://github.com/tandemcode/examples)
