@@ -26,3 +26,5 @@ CH 1. Welcome
 - Ch 3.1. Connecting react code
 
 - Ch 3.2. Generating static site
+
+- Ch 4.1 Migrating existing websites
