@@ -29,7 +29,7 @@ Compile UI files to your language or framework of choice. You can even compile t
 
 #### Immediate Feedback
 
-No need to wait around for your code to compile. Tandem provides immediate feedback of your HTML & CSS, so you can dramatically cut down the amount of time it takes to build your web app.
+No need to wait around for your code to compile. Tandem provides immediate feedback of your HTML & CSS, so you can cut down the amount of time it takes to build your web app.
 
 [GIF]
 
@@ -41,7 +41,7 @@ UI files use CSS but without the "cascading" part of it, so you don't have to wo
 
 [GIF]
 
-#### Built Like an IDE
+#### Organizes like code
 
 Tandem's design was inspired by existing IDEs. Transparent, and unopinionated about how you work or organize your application.
 
