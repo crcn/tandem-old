@@ -1,21 +1,21 @@
 TODO:
 
-CH 1. Welcome
+- CH 1. Welcome
 
-- Welcome
+  - Welcome
 
-  - target audience
-  - What is Tandem (visual web development)
-  - Why Tandem (easier to write html & css, better QA)
-  - integrating Tandem (intended to be used with existing frameworks)
+    - target audience
+    - What is Tandem (visual web development)
+    - Why Tandem (easier to write html & css, better QA)
+    - integrating Tandem (intended to be used with existing frameworks)
 
-- high-level Guide (don't need to go into detail, just brief descriptions)
+  - high-level Guide (don't need to go into detail, just brief descriptions)
 
-  - layers
-  - file panel
-  - style
-  - properties
-  - global variables
+    - layers
+    - file panel
+    - style
+    - properties
+    - global variables
 
 - Ch 2. Building a simple todo app (take framer design, or suck one in)
 
