@@ -3,7 +3,8 @@ TODO:
 CH 1. Welcome
 
 - Welcome
-  
+
+  - target audience
   - What is Tandem (visual web development)
   - Why Tandem (easier to write html & css, better QA)
   - integrating Tandem (intended to be used with existing frameworks)
