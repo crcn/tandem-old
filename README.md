@@ -9,7 +9,7 @@
 
 <br />
 
-Tandem is a visual editor for building simple web components. It can cover _most_ of your HTML & CSS development, and is designed to be compatible with most web-based languages, and frameworks. It currently works with React.
+Tandem is a visual editor for building web components. It can cover _most_ of your HTML & CSS development, and is designed to be compatible with most web-based languages, and frameworks. It currently works with React.
 
 ### Features
 
@@ -43,7 +43,7 @@ UI files use CSS but without the "cascading" part of it, so you don't have to wo
 
 #### Organizes like code
 
-Tandem's design was inspired by existing IDEs. Transparent, and unopinionated about how you work or organize your application.
+Transparent, and unopinionated about how you work or organize your application.
 
 [GIF]
 
