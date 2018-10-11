@@ -34,7 +34,7 @@ TODO:
 
 This doc is aimed to take you step-by-step through developing your _first_ application with Tandem. Example code and videos are also provided with each phase to help you along the way.
 
-There are many nuances, patterns, and terminology used in the app, so I wouldn't recomend skipping through any section. Cliff-notes (TL;DR's) are available for each section for anyone in a rush. I also provide some personal that that you can also skip.
+There are many nuances, patterns, and terminology used in the app, so I wouldn't recomend skipping through any section. Cliff-notes (TL;DR's) are available for each section for anyone in a rush. I also provide some personal notes that aren't really that important and you can skip.
 
 ### What is Tandem and why should I use it?
 
