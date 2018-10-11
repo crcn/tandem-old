@@ -48,7 +48,9 @@ Tandem was developed to be a faster & more intuitive tool around creating web co
 2. You can compile Tandem UIs to multiple language and framework targets.
 3. Your app logic is better encapsulated from your UI code.
 
-I can spell this out on other ways, but basically Tandem is aimed **not** to be an _easier_ way to build web components, but a _better_, and _safer_ way around building web components that allows you to focus on the more complicated parts of your product: code & product.
+I can spell this out on other ways, but basically Tandem is aimed **not** to be an _easier_ way to build web components, but a _better_, and _safer_ way around building web components that allows you to focus on the more complicated parts of your app: code & product.
+
+> Why should you trust that Tandem works? Well, you probably shouldn't _completely_. Like any tool, Tandem isn't able to solve every visual development problem you have (It shouldn't be a hammer where everything looks like a nail), nor will Tandem be compatible with _every_ framework, or language. I think it's prudent to look at how this app may be compatible with your product & team, and to involve safety hatches that enable you to migrate away from Tandem if it isn't a good fit. A lot of these safety hatches are baked in (decoupling UI from your code, and migration tools in the pipeline), but it'd be disengenous for me to ask to "just trust" the app when I have a hard to believing in perfect solutions. I can tell you though that Tandem is _actively_ being used in building products (including itself), so a lot of its features & patterns are as stated above, being _discovered_, instead of speculated.
 
 #### TL;DR
 
