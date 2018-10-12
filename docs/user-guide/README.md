@@ -116,6 +116,18 @@ Tools provide you with a way to insert new `elements`, `text`, and `component in
 
 ### Creating HTML & CSS
 
-We'll start off building our HTML & CSS. I _generally_ like to start with vanilla code first since it's quick and I allows me to iterate more easily. We don't have to worry about making things re-usable now since Tandem contains migration tooling to help with that.
+[VIDEO]
+
+We'll start off constructing our HTML & CSS. I _generally_ like to start with vanilla code first since it's quick and I allows me to iterate more easily. We don't have to worry about making things re-usable now since Tandem contains migration tooling to help with that. We're also not going to design our app. Tandem isn't a design tool since it deals with web constraints that prohibit you from quickly iterating over designing UIs. Tandem for example doesn't allow you to drag elements around on the canvas, and you don't have nuancy tools like SVG editing (yet!). Instead, we'll be using a special-purpose designer app called Sketch. :)
+
+If you don't have Sketch, you can download the code in this section [here]() and follow along in the video above. After that, just jump straight to [Converting HTML & CSS to re-usable components](#Converting-HTML-CSS-to-re-usable-components)
+
+If you _do_ have Sketch, go ahead and download the Chatroom design file here: [LINK].
+
+TODO:
+
+- open up sketch file
+- create 1-1 map of layers
+- copy CSS
 
 ### Converting HTML & CSS to re-usable components
