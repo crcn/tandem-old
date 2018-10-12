@@ -50,7 +50,7 @@ Tandem was developed to be a faster & more intuitive tool around creating web co
 
 I can spell this out on other ways, but basically Tandem is aimed **not** to be an _easier_ way to build web components, but a _better_, and _safer_ way around building web components that allows you to focus on the more complicated parts of your app: code & product.
 
-> Why should you trust that Tandem works? Well, you probably shouldn't _completely_. Like any tool, Tandem isn't able to solve every visual development problem you have (It shouldn't be a hammer where everything looks like a nail), nor will Tandem be compatible with _every_ framework, or language. I think it's prudent to look at how this app may be compatible with your product & team, and to involve safety hatches that enable you to migrate away from Tandem if it isn't a good fit. A lot of these safety hatches are baked in (decoupling UI from your code, and migration tools in the pipeline), but it'd be disengenous for me to ask to "just trust" the app when _I myself_ have a hard to believing in perfect solutions. I can tell you though that Tandem is _actively_ being used in building products (including itself), so a lot of its features & patterns are, as stated above, being _discovered_ instead of speculated.
+> Why should you trust that Tandem works? Well, you probably shouldn't _completely_. Like any tool, Tandem isn't able to solve every visual development problem you have (It shouldn't be a hammer where everything looks like a nail), nor will Tandem be compatible with _every_ framework, or language. I think it's prudent to look at how this app may be compatible with your product & team, and to involve safety hatches that enable you to migrate away from Tandem if it isn't a good fit. A lot of these safety hatches are baked in (decoupling UI from your code, and migration tools in the pipeline), but it'd be disengenous for me to ask to "just trust" the app when _I myself_ have a hard to believing in perfect solutions. I can tell you though that Tandem is _actively_ being used in building products (including itself), so a lot of its features & patterns are being _discovered_ instead of speculated.
 
 #### TL;DR
 
@@ -120,7 +120,7 @@ Tools provide you with a way to insert new `elements`, `text`, and `component in
 
 We'll start off constructing our HTML & CSS. I _generally_ like to start with vanilla code first since it's quick and I allows me to iterate more easily. We don't have to worry about making things re-usable now since Tandem contains migration tooling to help with that. We're also not going to design our app. Tandem isn't a design tool since it deals with web constraints that prohibit you from quickly iterating over designing UIs. Tandem for example doesn't allow you to drag elements around on the canvas, and you don't have nuancy tools like SVG editing (yet!). Instead, we'll be translating a Sketch design file over to HTML & CSS.
 
-If you don't have Sketch, you can download the code in this section [here]() and follow along in the video above. After that, just jump straight to [Converting HTML & CSS to re-usable components](#Converting-HTML-CSS-to-re-usable-components)
+If you don't have Sketch, you can download the code in this section [here](). After that, just jump straight to [Converting HTML & CSS to re-usable components](#Converting-HTML-CSS-to-re-usable-components)
 
 If you _do_ have Sketch, go ahead and download the Chatroom design file here: [LINK].
 
