@@ -86,7 +86,7 @@ The `*.tdproject` file contains your Tandem project configuration. You can check
 
 #### src/
 
-The `src` directory contains all of your source files including your component files (`*.js`), and JavaScript files. Anything that gets built basically.
+The `src` directory contains all of your source files including your component files (`*.pc`), and JavaScript files. Anything that gets built basically.
 
 #### src/main.pc
 
