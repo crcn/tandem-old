@@ -57,8 +57,9 @@ Tandem makes it easier to translate design files from Sketch & Figma. Just copy 
 
 Ready to get started? Here are a few resources to help you out:
 
-- [User Guide](./docs/user-guide.md)
+- [User Guide](./docs/user-guide)
 - [Terminology & Concepts](./docs/concepts.md)
 - [Goals & Non-goals](./docs/goals.md)
 - [Design process](./docs/design-process.md)
 - [Examples](https://github.com/tandemcode/examples)
+- [Document format](./docs/document-format.md)
