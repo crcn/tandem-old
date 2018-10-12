@@ -82,7 +82,7 @@ With the selected directory, Tandem will create a new group of files which make 
 
 #### app.tdproject
 
-The `*.tdproject` file is your tandem project files which contains configuration information about your app. You can checkout more information about it [here](./app-config.md).
+The `*.tdproject` file contains your Tandem project configuration. You can checkout more information about it [here](./app-config.md).
 
 #### src/
 
