@@ -98,7 +98,7 @@ We'll jump into explaining the UI real quick. I won't go into too much detail he
 
 ![select app](assets/select-app.gif)
 
-Here's a map of what you see:
+Here's a basic map of the editor:
 
 ![basic explaination](assets/basic-ui-explaination.png)
 
