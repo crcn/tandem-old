@@ -96,11 +96,11 @@ The `main.pc` is your main component file (`pc` stands for paperclip). You're we
 
 We'll jump into explaining the UI real quick. I won't go into too much detail here since more UI explainations will come later on when we start building things. Go ahead and select the main `Application` frame you see in the canvas.
 
-![create new project](assets/select-app.gif)
+![select app](assets/select-app.gif)
 
 Here's a map of what you see:
 
-![create new project](assets/simple-screenshot.gif)
+![basic explaination](assets/basic-ui-explaination.png)
 
 #### Project files
 
