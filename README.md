@@ -19,39 +19,33 @@ Here are just a few highlights of what Tandem can do:
 
 Tandem covers most of your web UI creation, so you can say goodbye to writing HTML & CSS by hand for the most part (except for more complex cases).
 
-[GIF]
-
 #### Compiles to code
 
 Compile UI files to your language or framework of choice. You can even compile to _multiple_ targets if you want to. Want to target PHP (coming soon) _and_ React code? You can do that.
 
-[GIF]
+[DIAGRM POINTING TO REACT AND OTHER TARGETS]
 
 #### Immediate Feedback
 
 No need to wait around for your code to compile. Tandem provides immediate feedback of your HTML & CSS, so you can cut down the amount of time it takes to build your web app.
 
-[GIF]
-
-More tooling & optimizations are in the pipeline to make Tandem feel like pen & paper
+More tooling & optimizations are in the pipeline to make Tandem feel more like pen & paper.
 
 #### Safety First
 
 UI files use CSS but without the "cascading" part of it, so you don't have to worry about styles overridding each other. If your using a strongly typed language like TypeScript, Tandem provides utilities around generating typed definition files for design files.
 
-[GIF]
-
 #### Organizes like code
 
 Transparent, and unopinionated about how you work or organize your application.
 
-[GIF]
+[GIF SCANNING CHATROOM APP]
 
 #### Translate designs faster
 
 Tandem makes it easier to translate design files from Sketch & Figma. Just copy & paste:
 
-[GIF]
+[COPY PASTE SKETCH GIF]
 
 ## Resources
 

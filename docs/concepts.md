@@ -70,3 +70,9 @@ If you want to go a step further and _prohibit_ cascading typography completely,
 ```
 
 > You can learn more about application config settings [here](./app-config.md)
+
+#### Variant styles
+
+Style variants enable you to define different states of a component.
+
+![inherited css](../assets/tiny-demos/creating-variants.gif)
