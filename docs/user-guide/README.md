@@ -54,7 +54,7 @@ I can spell this out on other ways, but basically Tandem is aimed **not** to be 
 
 #### TL;DR
 
-Tandem allows you to visually create web components, and integrates with your existing codebase. Features for building HTML & CSS are actively being discovered based on real world usage (via product development, and that Tandem was used to build itself).
+Tandem allows you to visually create web components, and integrates with your existing codebase. Features for building HTML & CSS are actively being discovered based on real world usage (via product development, and that Tandem is used to build itself).
 
 ## Building your first app
 
