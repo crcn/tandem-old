@@ -100,7 +100,7 @@ Here's a basic map of the editor:
 
 #### Project files
 
-Starting in the lower left, the `Files` pane contains _all_ of your application's project files including your JavaScript, component files, images, configurations.
+Starting in the lower left section, the `Files` pane contains _all_ of your project files including your JavaScript, component files, images, and other assets.
 
 #### Layers
 
@@ -114,9 +114,9 @@ Tools provide you with a way to insert new `elements`, `text`, and `component in
 
 [VIDEO]
 
-We'll start off constructing our HTML & CSS. I _generally_ like to start with vanilla code first since it's quick and I allows me to iterate more easily. We don't have to worry about making things re-usable now since Tandem contains migration tooling to help with that (refactoring, migrating, and maintaning are very important stories in developing apps, and I think that exercising those practices throughout the lifecycle of an app are integral). We're also not going to design our app. Tandem isn't a design tool since it deals with web constraints that prohibit you from quickly iterating over designing UIs. Tandem for example doesn't allow you to drag elements around on the canvas, and you don't have nuancy tools like SVG editing (yet!). Instead, we'll be translating a Sketch design file over to HTML & CSS.
+We'll start off constructing our HTML & CSS. I _generally_ like to start with vanilla code first since it's quick and I allows me to iterate more easily. We don't have to worry about making things re-usable now since Tandem contains migration tooling to help with that. We're also not going to design our app. Tandem isn't a design tool since it deals with web constraints that prohibit you from quickly iterating over designing UIs. Instead, we'll be translating a Sketch design file over to HTML & CSS. Don't worry, this process is quick & easy.
 
-If you don't have Sketch, you can download the code in this section [here](). After that, just jump straight to [Converting HTML & CSS to re-usable components](#Converting-HTML-CSS-to-re-usable-components)
+If you don't have Sketch, you can download the code in this section [here](TODO). After that, just jump straight to [Converting HTML & CSS to re-usable components](#converting-html--css-to-re-usable-components)
 
 If you _do_ have Sketch, go ahead and download the Chatroom design file here: [LINK].
 
