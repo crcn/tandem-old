@@ -2838,13 +2838,20 @@ const clipboardReducer = (state: RootState, action: Action) => {
           scopeNode.id,
           getSyntheticVisibleNodeDocument(scopeNode.id, state.documents)
         );
-      } else {
+      } else if (
+        state.activeEditorFilePath &&
+        isPaperclipUri(state.activeEditorFilePath)
+      ) {
         offset = TreeMoveOffset.PREPEND;
         scopeNode = targetNode = getSyntheticDocumentByDependencyUri(
           state.activeEditorFilePath,
           state.documents,
           state.graph
         );
+      }
+
+      if (!targetNode) {
+        return state;
       }
 
       state = persistRootState(

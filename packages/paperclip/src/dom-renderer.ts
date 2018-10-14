@@ -131,7 +131,6 @@ const setStyle = (target: HTMLElement, style: any) => {
   } else {
     cstyle = normalizedStyle;
   }
-  // target.setAttribute("style", stringifyStyle(cstyle));
   Object.assign(target.style, cstyle);
 };
 
@@ -156,7 +155,13 @@ const createNativeNode = (
     ? document.createElementNS(xmlns, tagName)
     : document.createElement(tagName)) as HTMLElement;
 
-  applySyntheticNodeProps(nativeElement, synthetic, map, isContentNode);
+  applySyntheticNodeProps(
+    nativeElement,
+    synthetic,
+    map,
+    isContentNode,
+    nativeElement.namespaceURI
+  );
 
   return (map[synthetic.id] = nativeElement);
 };

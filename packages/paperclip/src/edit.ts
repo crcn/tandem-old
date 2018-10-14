@@ -130,9 +130,9 @@ export const DEFAULT_FRAME_BOUNDS: Bounds = {
  *-----------------------------------------*/
 
 export type PCNodeClip = {
-  uri: string;
+  uri?: string;
   node: PCNode;
-  fixedBounds: Bounds;
+  fixedBounds?: Bounds;
 };
 
 // namespaced to ensure that key doesn't conflict with others
@@ -1031,7 +1031,7 @@ export const persistAppendPCClips = <TState extends PCEditorState>(
 
   let content = targetDep.content;
 
-  for (const { uri, node, fixedBounds } of clips) {
+  for (const { node, fixedBounds = DEFAULT_FRAME_BOUNDS } of clips) {
     const sourceNode = node;
 
     // If there is NO source node, then possibly create a detached node and add to target component
