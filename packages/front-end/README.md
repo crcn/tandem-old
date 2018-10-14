@@ -5,3 +5,4 @@ IMMEDIATE:
   - [ ] global colors
   - [ ] use DIV for everything
   - [ ] symbols to components
+  - [ ] ability to limit to style mixins
