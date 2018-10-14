@@ -61,11 +61,13 @@ Tandem allows you to visually create web components, and integrates with your ex
 
 In this section we'll build a simple app and go over the core features of Tandem.
 
-### Downloading Tandem
+### Prerequisites
 
 You'll need to have basic knowledge of HTML & CSS in order to get started, and a little coding experience doesn't hurt either if you're looking to add behavior to your UIs. Don't worry about needing to know how to code _before_ using Tandem though.
 
 Assuming that you have some HTML & CSS chops, you can go ahead and download the current _preview_ version of Tandem here: https://www.dropbox.com/s/bwvotfx13u8rsvw/latest.zip?dl=0.
+
+We'll be using [NodeJS](https://nodejs.org/) and [yarn](TODO) in this tutorial, so be sure to have those installed too.
 
 ### Starting a project
 
@@ -114,16 +116,47 @@ Tools provide you with a way to insert new `elements`, `text`, and `component in
 
 [VIDEO]
 
-We'll start off constructing our HTML & CSS. I _generally_ like to start with vanilla code first since it's quick and I allows me to iterate more easily. We don't have to worry about making things re-usable now since Tandem contains migration tooling to help with that. We're also not going to design our app. Tandem isn't a design tool since it deals with web constraints that prohibit you from quickly iterating over designing UIs. Instead, we'll be translating a Sketch design file over to HTML & CSS. Don't worry, this process is quick & easy.
+We'll start off constructing our HTML & CSS. No need to worry about how our HTML & CSS integrates with actual code since that will come later. (I generally like to start with something simple like this since it reduces cognitive over head [for me], and allows me to iterate more quickly). We're also not going to design our app. Tandem isn't a design tool since it deals with web constraints that prohibit you from quickly iterating over designing UIs. Instead, we'll tranlate a Sketch design file like the good 'ol fashion way. Don't worry, this process is quick & easy.
 
-If you don't have Sketch, you can download the code in this section [here](TODO). After that, just jump straight to [Converting HTML & CSS to re-usable components](#converting-html--css-to-re-usable-components)
+We're going to use some tooling to help automate the process of converting Sketch designs over to Tandem component files.
 
-If you _do_ have Sketch, go ahead and download the Chatroom design file here: [LINK].
+First up, download the Sketch design file here:
 
-TODO:
+Next, _move_ the Sketch design file over to a new directory called `assets` in your chatroom project.
 
-- open up sketch file
-- create 1-1 map of layers
-- copy CSS
+[GIF MOVING DESIGN FILE OVER]
 
-### Converting HTML & CSS to re-usable components
+Head over to Terminal and run:
+
+```
+npm install paperclip-sketch-converter -g
+```
+
+Finally, run:
+
+```
+paperclip-sketch-converter path/to/chatroom/project/assets/chatroom.sketch > main.pc
+```
+
+[GIF]
+
+The above command will convert the Sketch file to basic HTML & CSS.
+
+[GIF SHOWING LACK OF RESPONSIVENESS]
+
+Our HTML & CSS at this point is _very_ incomplete since it lacks responsiveness to things like resizing the browser. We'll need to fix this by digging into each
+layer and explicitly defining how we want stuff to behave.
+
+### Converting Sketch designs to the web
+
+This needs to be DRY.
+
+- Start converting groups into elements
+- Convert elements into components where we see repeated items
+- Introduce variants for UIs
+- convert layer types & toggle variants
+- Possibly introduce slots & plugs somewhere in here. Overrides too
+
+Later:
+
+- need to ensure that sketch design

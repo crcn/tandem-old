@@ -1,5 +1,4 @@
 import { fork, take, select, put } from "redux-saga/effects";
-import * as xml from "xml-js";
 import { eventChannel } from "redux-saga";
 import { RootState } from "../state";
 import { getSyntheticNodeById, PCNodeClip, getPCNodeClip } from "paperclip";
