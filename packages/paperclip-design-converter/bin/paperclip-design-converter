@@ -1,0 +1,17 @@
+#!/usr/bin/env node
+const argv = require('yargs').argv;
+const {convertDesign, openDesign} = require('../lib');
+
+const [path] = argv._;
+
+
+openDesign(path).then((design) => {
+  convertDesign(design, {
+    components: Boolean(argv.components),
+    colors: Boolean(argv.colors),
+    exports: Boolean(argv.exports),
+    styleMixins: Boolean(argv.exports)
+  }).then((result) => {
+    console.log(JSON.stringify(result, null, 2));
+  });
+});

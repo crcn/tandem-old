@@ -17,6 +17,9 @@ paperclip-design-converter path/to/design/file.sketch --only-symbols --only-styl
 
 # convert only clobal color swatches
 paperclip-design-converter path/to/design/file.sketch --only-colors > path/to/tandem/globals.pc
+
+# only convert icons
+paperclip-design-converter path/to/design/file.sketch --only-exports > path/to/tandem/icons.pc
 ```
 
 #### TODOS
@@ -24,6 +27,8 @@ paperclip-design-converter path/to/design/file.sketch --only-colors > path/to/ta
 - convert style mixins
 - convert symbols to components
 - convert color swatches to global variables
+- Figma support
+- warning for unsupported styles
 
 #### CLI Options
 

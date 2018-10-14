@@ -1842,6 +1842,7 @@ export const canvasReducer = (state: RootState, action: Action) => {
       }
 
       state = pruneStaleSyntheticNodes(state);
+      // console.log("RUNE", state.selectedSyntheticNodeIds);
 
       // happens for newly added files
       if (

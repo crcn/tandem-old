@@ -671,13 +671,14 @@ export const createPCComponentInstance = (
 
 export const createPCTextNode = (
   value: string,
-  label?: string
+  label?: string,
+  style: any = EMPTY_OBJECT
 ): PCTextNode => ({
   id: generateUID(),
   name: PCSourceTagNames.TEXT,
   label: label || value,
   value,
-  style: {},
+  style: style || EMPTY_OBJECT,
   children: [],
   metadata: {}
 });

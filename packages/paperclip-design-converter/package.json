@@ -4,8 +4,26 @@
   "description": "",
   "main": "lib/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "tsc",
+    "build-watch": "tsc --watch"
+  },
+  "bin": {
+    "paperclip-design-converter": "./bin/paperclip-design-converter"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "@types/fs-extra": "^5.0.4",
+    "@types/jszip": "^3.1.4",
+    "@types/tar": "^4.0.0",
+    "fs-extra": "^7.0.0",
+    "jszip": "^3.1.5",
+    "node-sketch": "^0.10.0",
+    "paperclip": "^10.0.33",
+    "tar": "^4.4.6",
+    "yargs": "^12.0.2"
+  },
+  "devDependencies": {
+    "@types/node": "^10.11.7"
+  }
 }
