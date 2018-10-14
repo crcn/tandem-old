@@ -180,6 +180,10 @@ export const findTreeNodeParent = (
   }
 };
 
+export const getTreeNodeAncestors = (nodeId: string, root: TreeNode<any>) => {
+  return filterTreeNodeParents(nodeId, root, () => true);
+};
+
 export const filterTreeNodeParents = (
   nodeId: string,
   root: TreeNode<any>,

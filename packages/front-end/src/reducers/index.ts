@@ -336,7 +336,8 @@ import {
   updateAlts,
   getDerrivedPCLabel,
   persistConvertSyntheticVisibleNodeStyleToMixin,
-  getSyntheticSourceUri
+  getSyntheticSourceUri,
+  inspectorNodeInInstanceOfComponent
 } from "paperclip";
 import {
   roundBounds,
@@ -2185,7 +2186,7 @@ const handleCanvasMouseClicked = (
 };
 
 const persistInsertNodeFromPoint = (
-  node: PCVisibleNode,
+  newNode: PCVisibleNode,
   fileUri: string,
   point: Point,
   state: RootState
@@ -2200,7 +2201,7 @@ const persistInsertNodeFromPoint = (
   let targetNode: SyntheticVisibleNode | SyntheticDocument =
     targetNodeId && getSyntheticNodeById(targetNodeId, state.documents);
 
-  let insertableSourceNode =
+  let insertableSourceNode: PCNode =
     targetNodeId &&
     getInsertableSourceNodeFromSyntheticNode(
       targetNode,
@@ -2225,16 +2226,16 @@ const persistInsertNodeFromPoint = (
       top: 0,
       right: INSERT_ARTBOARD_WIDTH,
       bottom: INSERT_ARTBOARD_HEIGHT,
-      ...(node.metadata[PCVisibleNodeMetadataKey.BOUNDS] || {})
+      ...(newNode.metadata[PCVisibleNodeMetadataKey.BOUNDS] || {})
     };
 
     bounds = moveBounds(bounds, newPoint);
 
-    node = updatePCNodeMetadata(
+    newNode = updatePCNodeMetadata(
       {
         [PCVisibleNodeMetadataKey.BOUNDS]: bounds
       },
-      node
+      newNode
     );
 
     insertableSourceNode = state.graph[fileUri].content;
@@ -2244,6 +2245,33 @@ const persistInsertNodeFromPoint = (
       state.documents,
       state.graph
     );
+  }
+
+  // check for circular references
+  if (newNode.name === PCSourceTagNames.COMPONENT_INSTANCE) {
+    const targetDocument = getSyntheticVisibleNodeDocument(
+      targetNode.id,
+      state.documents
+    );
+    const targetInspectorNode = getSyntheticInspectorNode(
+      targetNode,
+      targetDocument,
+      state.sourceNodeInspector,
+      state.graph
+    );
+    if (
+      inspectorNodeInInstanceOfComponent(
+        newNode.is,
+        targetInspectorNode,
+        state.sourceNodeInspector
+      )
+    ) {
+      return confirm(
+        `Cannot insert component in itself`,
+        ConfirmType.ERROR,
+        state
+      );
+    }
   }
 
   state = persistRootState(state => {
@@ -2256,7 +2284,7 @@ const persistInsertNodeFromPoint = (
     }
 
     return persistInsertNode(
-      node,
+      newNode,
       insertableSourceNode,
       TreeMoveOffset.APPEND,
       state

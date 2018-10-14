@@ -1,4 +1,4 @@
-TODO:
+IMMEDIATE:
 
-- [ ] testing instructions
-- [ ] description
+- [ ] edit text on stage
+- [ ] user guide

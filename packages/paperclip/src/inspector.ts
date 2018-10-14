@@ -52,7 +52,8 @@ import {
   updateNestedNodeTrail,
   getTreeNodePath,
   getNestedTreeNodeById,
-  containsNestedTreeNodeById
+  containsNestedTreeNodeById,
+  getTreeNodeAncestors
 } from "tandem-common";
 import { PCEditorState } from "./edit";
 // import { SyntheticNode, PCNode, PCModule, PCComponent, DependencyGraph, PCComponentInstanceElement, PCSourceTagNames, PCOverride, PCChildrenOverride } from "paperclip";
@@ -404,6 +405,25 @@ export const getInsertableInspectorNode = (
   } else {
     return child;
   }
+};
+
+/**
+ * Used primarily to check for circular references
+ */
+
+export const inspectorNodeInInstanceOfComponent = (
+  componentId: string,
+  inspectorNode: InspectorNode,
+  root: InspectorNode
+) => {
+  return [inspectorNode, ...getTreeNodeAncestors(inspectorNode.id, root)].some(
+    (parent: InspectorNode) => {
+      return (
+        parent.name === InspectorTreeNodeName.SOURCE_REP &&
+        parent.assocSourceNodeId === componentId
+      );
+    }
+  );
 };
 
 export const expandInspectorNode = (
