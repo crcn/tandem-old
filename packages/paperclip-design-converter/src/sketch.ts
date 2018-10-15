@@ -1,13 +1,10 @@
 import { BaseDesign, DesignType, ConversionOptions } from "./base";
 import { PCModule, createPCModule, PCVisibleNodeMetadataKey } from "paperclip";
-import * as path from "path";
-import * as fsa from "fs-extra";
-import * as fs from "fs";
-import * as os from "os";
 import * as ns from "node-sketch";
-import { appendChildNode } from "tandem-common";
+import { appendChildNode, EMPTY_OBJECT } from "tandem-common";
 import { PCNode, createPCElement } from "paperclip";
 import { createPCTextNode } from "paperclip";
+import { PCSourceTagNames } from "paperclip";
 
 const EMPTY_ARRAY = [];
 
@@ -61,46 +58,47 @@ const mapPage = (page: any): PCNode[] => {
 const mapLayer = (layer: any): PCNode => {
   switch (layer._class) {
     case "text": {
-      return createPCTextNode(
-        layer.attributedString.string,
-        layer.name,
-        mapStyle(layer)
-      );
+      return {
+        name: PCSourceTagNames.TEXT,
+        id: layer.do_objectID.replace(/-/g, ""),
+        value: layer.attributedString.string,
+        style: mapStyle(layer),
+        metadata: EMPTY_OBJECT,
+        children: EMPTY_ARRAY,
+        label: layer.name
+      };
     }
+    case "rectangle":
     case "group": {
-      return createPCElement(
-        `div`,
-        mapStyle(layer),
-        {},
-        (layer.layers || EMPTY_ARRAY).map(mapLayer).filter(Boolean),
-        layer.name
-      );
-    }
-    case "rectangle": {
-      return createPCElement(
-        `div`,
-        mapStyle(layer),
-        {},
-        (layer.layers || EMPTY_ARRAY).map(mapLayer).filter(Boolean),
-        layer.name
-      );
+      return {
+        name: PCSourceTagNames.ELEMENT,
+        id: layer.do_objectID.replace(/-/g, ""),
+        is: "div",
+        label: layer.name,
+        attributes: EMPTY_OBJECT,
+        style: mapStyle(layer),
+        metadata: EMPTY_OBJECT,
+        children: (layer.layers || EMPTY_ARRAY).map(mapLayer).filter(Boolean)
+      };
     }
     case "artboard": {
-      return createPCElement(
-        `div`,
-        {},
-        {},
-        (layer.layers || EMPTY_ARRAY).map(mapLayer),
-        layer.name,
-        {
+      return {
+        name: PCSourceTagNames.ELEMENT,
+        id: layer.do_objectID.replace(/-/g, ""),
+        is: "div",
+        attributes: EMPTY_OBJECT,
+        label: layer.name,
+        style: mapStyle(layer),
+        metadata: {
           [PCVisibleNodeMetadataKey.BOUNDS]: {
             left: layer.frame.x,
             top: layer.frame.y,
             right: layer.frame.x + layer.frame.width,
             bottom: layer.frame.y + layer.frame.height
           }
-        }
-      );
+        },
+        children: (layer.layers || EMPTY_ARRAY).map(mapLayer).filter(Boolean)
+      };
     }
     default: {
       // throw new Error(`Unsupported layer type: ${layer._class}`);
@@ -116,18 +114,35 @@ const mapStyle = (layer: any) => {
 
   if (layer.frame) {
     convertedStyle.position = "absolute";
-    convertedStyle.left = layer.frame.x;
-    convertedStyle.top = layer.frame.y;
-    convertedStyle.width = layer.frame.width;
-    convertedStyle.height = layer.frame.height;
+    convertedStyle.left = `${layer.frame.x.toFixed(2)}px`;
+    convertedStyle.top = `${layer.frame.y.toFixed(2)}px`;
+    convertedStyle.width = `${layer.frame.width.toFixed(2)}px`;
+    convertedStyle.height = `${layer.frame.height.toFixed(2)}px`;
   }
 
   if (!style) {
     return convertedStyle;
   }
-  const { blur, shadows, borders, fills, textStyle } = style;
+  const { fixedRadius, isVisible } = layer;
+  const { blur, shadows, borders, fills, textStyle, contextSettings } = style;
+  const filters: string[] = [];
 
-  if (blur) {
+  if (!isVisible) {
+    convertedStyle["display"] = "none";
+  }
+
+  if (fixedRadius) {
+    convertedStyle["border-top-left-radius"] = convertedStyle[
+      "border-bottom-left-radius"
+    ] = convertedStyle["border-top-right-radius"] = convertedStyle[
+      "border-bottom-right-radius"
+    ] = `${fixedRadius}px`;
+  }
+
+  if (contextSettings) {
+    if (contextSettings.opacity) {
+      convertedStyle["opacity"] = Number(contextSettings.opacity.toFixed(2));
+    }
   }
 
   if (textStyle) {
@@ -143,8 +158,6 @@ const mapStyle = (layer: any) => {
       convertedStyle["color"] = mapColor(color);
     }
     convertedStyle["letter-spacing"] = textStyle.encodedAttributes.kerning;
-
-    // console.log(textStyle.encodedAttributes);
   }
 
   if (shadows) {
@@ -159,8 +172,10 @@ const mapStyle = (layer: any) => {
 
   if (borders) {
     // todo - possibly use box shadows here instead
-    for (const { color, thickness } of borders) {
-      convertedStyle.border = `${thickness}px solid ${mapColor(color)}`;
+    for (const { color, thickness, isEnabled } of borders) {
+      if (isEnabled) {
+        convertedStyle.border = `${thickness}px solid ${mapColor(color)}`;
+      }
     }
   }
 
@@ -172,20 +187,44 @@ const mapStyle = (layer: any) => {
 
         // gradient
       } else if (fillType === 1) {
+        const from = gradient.from
+          .match(/\{(.*?),(.*?)\}/)
+          .slice(1)
+          .map(Number);
+        const to = gradient.to
+          .match(/\{(.*?),(.*?)\}/)
+          .slice(1)
+          .map(Number);
+        const angle = calcAngle(from, to);
+
+        // calcLayerLength(layer.frame.width, layer.frame.height, angle);
+        const stops = gradient.stops.map(({ color, position, ...rest }) => {
+          // TODO - position length should be to - from distance + angle + max angle length
+          return `${mapColor(color)} ${Math.round(position * 100)}%`;
+        });
+        convertedStyle[
+          "background-image"
+        ] = `linear-gradient(${angle}deg, ${stops.join(", ")})`;
       }
-      if (color) {
-        // console.log("COL");
-      }
-      if (gradient) {
-        // convertedStyle["background-image"] = `linear-gradient(${})`;
-      }
-      // console.log(gradient);
     }
-    // console.log(fills);
-    // console.log(fills);
+  }
+
+  if (filters.length) {
+    convertedStyle.filter = filters.join(", ");
   }
 
   return convertedStyle;
+};
+
+const calcLayerLength = (width, height, angle) => {
+  const [cx, cy] = [width / 2, height / 2];
+  // console.log(angle);
+};
+
+const calcAngle = ([fx, fy]: number[], [tx, ty]: number[]) => {
+  const angleRadians = Math.atan2(ty - fy, tx - fx);
+  const angleDeg = ((angleRadians + Math.PI / 2) * 180) / Math.PI;
+  return angleDeg;
 };
 
 const mapColor = ({ red, blue, green, alpha }) =>

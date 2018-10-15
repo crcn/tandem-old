@@ -20,6 +20,7 @@
     "jszip": "^3.1.5",
     "node-sketch": "^0.10.0",
     "paperclip": "^10.0.33",
+    "tandem-common": "^10.0.31",
     "tar": "^4.4.6",
     "yargs": "^12.0.2"
   },
