@@ -26,5 +26,6 @@
   },
   "devDependencies": {
     "@types/node": "^10.11.7"
-  }
+  },
+  "gitHead": "8a2054dd6bb83cf6d3852bcab448fc58fc774f8b"
 }

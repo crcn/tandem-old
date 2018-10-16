@@ -11,6 +11,7 @@ The ideas behind Tandem are continuing to evolve based on real-world usage, so t
 - Escape hatches to help people migrate away from Tandem if they wany to.
 - Provide tooling that can easily be used in teams.
 - Develop features with scalability & maintainability in mind.
+- Use existing knowledge & practices around building HTML & CSS.
 
 #### Non-goals
 
@@ -20,3 +21,4 @@ The ideas behind Tandem are continuing to evolve based on real-world usage, so t
 - Make web development easier. Easiness _may_ be a side effect, but features are generally considered if they provide a _better_ way of doing something.
 - Cover _all_ front-end user interface development cases. Tandem will target _simple_ use cases. Complex use cases will be deferred to other software and and hand written code where it makes sense.
 - To cover the entire development process between mock-up -> design -> prototype -> development -> deploy.
+- Abstractions around HTML & CSS.

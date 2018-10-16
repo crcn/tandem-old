@@ -8,12 +8,6 @@ import { PCSourceTagNames } from "paperclip";
 
 const EMPTY_ARRAY = [];
 
-type Layer = {
-  children: Layer[];
-};
-
-type SketchPage = {} & Layer;
-
 export type SketchDesign = {
   document: any;
   pages: any[];
@@ -100,10 +94,57 @@ const mapLayer = (layer: any): PCNode => {
         children: (layer.layers || EMPTY_ARRAY).map(mapLayer).filter(Boolean)
       };
     }
+    case "oval":
+    case "shapeGroup":
+    case "shapePath": {
+      return null;
+      // return {
+      //   name: PCSourceTagNames.ELEMENT,
+      //   id: "svg" + layer.do_objectID.replace(/-/g, ""),
+      //   is: "svg",
+      //   attributes: {
+      //     width: `${layer.frame.width}px`,
+      //     height: `${layer.frame.height}px`,
+      //     version: "1.1",
+      //     xmlns: "http://www.w3.org/2000/svg",
+      //     "xmlns:xlink": "http://www.w3.org/1999/xlink"
+      //   },
+      //   style: {
+      //     position: "absolute",
+      //     left: `${layer.frame.x}px`,
+      //     top: `${layer.frame.y}px`
+      //   },
+      //   children: [mapSVG(layer, true)],
+      //   metadata: EMPTY_OBJECT,
+      //   label: layer.name
+      // }
+    }
     default: {
+      // console.log(layer._class);
       // throw new Error(`Unsupported layer type: ${layer._class}`);
     }
   }
+};
+
+const mapSVG = (layer: any, isRoot?: boolean) => {
+  switch (layer._class) {
+    case "shapeGroup": {
+      break;
+    }
+
+    case "oval": {
+      break;
+    }
+
+    case "shapePath": {
+      const { points } = layer;
+      if (layer.name === "blahh") {
+        console.log(layer);
+      }
+      break;
+    }
+  }
+  return null;
 };
 
 const mapStyle = (layer: any) => {
