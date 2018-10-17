@@ -68,6 +68,11 @@ export default (Base: React.ComponentClass<BaseLayersPaneProps>) =>
               inspectorNode.assocSourceNodeId,
               graph
             );
+
+            if (!sourceNode) {
+              console.log("NO SOURCE NODE", inspectorNode);
+              return null;
+            }
             const dependency = getPCNodeDependency(sourceNode.id, graph);
             const document = getSyntheticDocumentByDependencyUri(
               dependency.uri,
