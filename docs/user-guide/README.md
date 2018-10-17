@@ -378,7 +378,7 @@ If the above commands executed properly, your browser should be opened displayin
 
 In the Files pane, select the `src` directory and create a new file called `application-controller.tsx`. Select your `Applicaton` and head over to the **properties tab**. Under Controllers, click the `+` button and select `application-controller.tsx`.
 
-![Adding controllers](adding-controllers.gif)
+![Adding controllers](./assets/adding-controllers.gif)
 
 Next, open `application-controller.tsx` in your text editor and paste in the following content:
 
