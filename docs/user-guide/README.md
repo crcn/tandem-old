@@ -456,7 +456,7 @@ Save that, rebuild, and refresh the browser. Here's what you should see now:
 
 ![Replace slot children](./assets/replacing-slot-children.png)
 
-We should allow the todo item label to be changed, so head over to Tandem and layer name of the list item text node to something descriptive like "label".
+We should allow the todo item label to be changed, so head over to Tandem and change the layer name of the list item text to something descriptive like "label".
 
 ![Replace slot children](./assets/rename-text-layer.gif)
 
