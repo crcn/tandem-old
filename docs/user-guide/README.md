@@ -496,7 +496,7 @@ That's basically it for adding custom behavior. All that you need to do is defin
 
 At some point you'll probably want to move components into separate files. Good news for you because it's super easy. Just create a new component file & drag any layer you want into it.
 
-![Replace slot children](./assets/moving-components.gif)
+![Replace slot children](./assets/move-components.gif)
 
 You may also need to update code that uses the component. The `application-controller.tsx` file for example would be refactored to look like this:
 
