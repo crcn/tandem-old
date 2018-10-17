@@ -78,7 +78,7 @@ The primary function of the layers pane is to allow you to give you a structured
 
 #### Tools
 
-Tools provide you with a way to insert new `elements`, `text`, and `component instances` into your canvas. Click _any_ tool to and you should see crosshairs. Selecting anywhere on the canvas will insert a item.
+Tools provide you with a way to insert new `elements`, `text`, and `component instances` into your canvas. Click _any_ tool to and you should see crosshairs. Selecting anywhere on the canvas will insert an item.
 
 You also have hotkey options for all tools:
 
