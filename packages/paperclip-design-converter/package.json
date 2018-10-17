@@ -1,6 +1,6 @@
 {
   "name": "paperclip-design-converter",
-  "version": "10.0.34",
+  "version": "10.0.35",
   "description": "",
   "main": "lib/index.js",
   "scripts": {
@@ -19,8 +19,8 @@
     "fs-extra": "^7.0.0",
     "jszip": "^3.1.5",
     "node-sketch": "^0.10.0",
-    "paperclip": "^10.0.34",
-    "tandem-common": "^10.0.34",
+    "paperclip": "^10.0.35",
+    "tandem-common": "^10.0.35",
     "tar": "^4.4.6",
     "yargs": "^12.0.2"
   },
