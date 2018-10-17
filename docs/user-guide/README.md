@@ -407,7 +407,7 @@ Next, we'll need to edit the Application component to expose areas where the con
 
 The slot provides an area of the component where children can be replaced. The slot that we just made will be the area where we insert dynamic TODO items.
 
-After that, go ahead and run `yarn build-definitions` (this will re-create typed definition files for Tandem component files), and head back over to your `application-controller.tsx` file. If you're using VSCode, you should have autocomplete available when you start adding props to your `Base` component. Go ahead and type in `items={[]}` (or whatever the name of your slot is). Your file should look something like this:
+After that, go ahead and run `yarn build-definitions` (this will re-create typed definition files for Tandem component files), and head back over to your `application-controller.tsx` file. Go ahead and type `items={[]}` where you're defining `<Base />` (or whatever the name of your slot is). Your file should look something like this:
 
 ```typescript
 import * as React from "react";
