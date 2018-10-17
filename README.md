@@ -23,8 +23,6 @@ Tandem covers most of your web UI creation, so you can say goodbye to writing HT
 
 Compile UI files to your language or framework of choice. You can even compile to _multiple_ targets if you want to. Want to target PHP (coming soon) _and_ React code? You can do that.
 
-[DIAGRM POINTING TO REACT AND OTHER TARGETS]
-
 #### Immediate Feedback
 
 No need to wait around for your code to compile. Tandem provides immediate feedback of your HTML & CSS, so you can cut down the amount of time it takes to build your web app.
@@ -39,13 +37,9 @@ UI files use CSS but without the "cascading" part of it, so you don't have to wo
 
 Transparent, and unopinionated about how you work or organize your application.
 
-[GIF SCANNING CHATROOM APP]
-
 #### Translate designs faster
 
-Tandem makes it easier to translate design files from Sketch & Figma. Just copy & paste:
-
-[COPY PASTE SKETCH GIF]
+Tandem makes it easier to translate design files from Sketch & Figma with [CLI tooling](./packages/paperclip-design-converter). You'll soon be able to even use your original design files as the source of truth for basic styles like colors & fonts.
 
 ## Resources
 
@@ -57,3 +51,4 @@ Ready to get started? Here are a few resources to help you out:
 - [Design process](./docs/design-process.md)
 - [Examples](https://github.com/tandemcode/examples)
 - [Document format](./docs/document-format.md)
+- [Contributing](./docs/contributing)
