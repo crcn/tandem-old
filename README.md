@@ -5,7 +5,7 @@
 
 <br />
 
-> This repository is _temporarily_ private until bugs the UX have been worked out.
+> This repository is _temporarily_ private until bugs the UX have been worked out. Please do not share the distribution while Tandem is in _Preview_ mode. I'd like to make sure that the app is solid before public testing. 🙂
 
 <br />
 
