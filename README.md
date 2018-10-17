@@ -11,31 +11,26 @@
 
 Tandem is a visual editor for building web components. It can cover _most_ of your HTML & CSS development, and is designed to be compatible with most web-based languages, and frameworks. It currently works with React.
 
+
 ## Features
 
-Here are just a few highlights of what Tandem can do:
+Features are actively being _discovered_ while Tandem is applied to real problems (currently being used to build itself). Here are just a few highlights:
 
 #### Compiles to code
 
-Compile UI files to your language or framework of choice. You can even compile to _multiple_ targets if you want to. Want to target PHP (coming soon) _and_ React code? You can do that.
+Compile UI files to your language or framework of choice. You can even compile to _multiple_ targets if you want to. React is currently supported, static HTML, PHP, Vue, and other targets are in the pipeline.
 
 #### Immediate Feedback
 
-No need to wait around for your code to compile. Tandem provides immediate feedback of your HTML & CSS, so you can cut down the amount of time it takes to build your web app.
-
-More tooling & optimizations are in the pipeline to make Tandem feel more like pen & paper.
-
-#### Safety First
-
-UI files use CSS but without the "cascading" part of it, so you don't have to worry about styles overridding each other. If your using a strongly typed language like TypeScript, Tandem provides utilities around generating typed definition files for design files.
+Visually manipulate HTML & CSS. No need to wait for builds, or refreshing the browser. More tools and optimizations (like using Rust) are in the pipeline to further speed up the process of creating HTML & CSS.
 
 #### Organizes like code
 
-Transparent, and unopinionated about how you work or organize your application.
+Transparent, and unopinionated about how you work or organize your application. 
 
-#### Translate designs faster
+#### Automatically translate designs from Sketch & Figma
 
-Tandem makes it easier to translate design files from Sketch & Figma with [CLI tooling](./packages/paperclip-design-converter). You'll soon be able to even use your original design files as the source of truth for basic styles like colors & fonts.
+Tandem provides [CLI tooling](./packages/paperclip-design-converter) for Sketch & figma that allow you to quickly translate design files (not completely though, you still need to specify layout constraints however). You'll soon be able to even use your original design files as the source of truth for basic styles like colors & fonts.
 
 ## Resources
 
