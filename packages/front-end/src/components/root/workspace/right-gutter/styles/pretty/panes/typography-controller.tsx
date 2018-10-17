@@ -22,7 +22,8 @@ import {
   isTextLikePCNode,
   isElementLikePCNode,
   getNativeComponentName,
-  DependencyGraph
+  DependencyGraph,
+  isVoidTagName
 } from "paperclip";
 import {
   mapVariablesToCSSVarDropdownOptions,
@@ -115,10 +116,10 @@ export default (Base: React.ComponentClass<BaseTypographProps>) =>
       // Typography pane is only available to text nodes to prevent cascading styles, and void tags (like input) that
       // cannot have children
       if (
-        (projectOptions.allowCascadeFonts === false &&
-          !isTextLikePCNode(sourceNode)) ||
-        (isElementLikePCNode(sourceNode) &&
-          getNativeComponentName(sourceNode, graph) === "input")
+        projectOptions.allowCascadeFonts === false &&
+        (!isTextLikePCNode(sourceNode) ||
+          (isElementLikePCNode(sourceNode) &&
+            getNativeComponentName(sourceNode, graph) !== "input"))
       ) {
         return null;
       }

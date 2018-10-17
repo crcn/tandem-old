@@ -8,6 +8,10 @@ A component is a re-usable element that can also be connected (controlled) with 
 
 To convert an element into a component, right cick any node and select `Convert to Component`. To create an _instance_ of a component, either select the puzzle icon in the toolbar, or select any component, then copy & paste.
 
+#### Component instance
+
+An instance is linked to its associated component. If the component changes, so does the instance. All instances contain a [shadow](#shadow-nodes) that allows you to override node attribute or style in the instance.
+
 #### Slot
 
 A slot is a replaceable section of a component.
@@ -71,7 +75,7 @@ If you want to go a step further and _prohibit_ cascading typography completely,
 
 > You can learn more about application config settings [here](./app-config.md)
 
-#### Variant styles
+#### style variants
 
 Style variants enable you to define different states of a component.
 
