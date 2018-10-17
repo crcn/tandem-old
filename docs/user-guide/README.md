@@ -211,7 +211,7 @@ Next up we're going to start integrating code.
 
 ### Integrating with Code
 
-Video wiring up todo app: https://www.youtube.com/watch?v=WFb81eK6DfI&feature=youtu.be
+Video wiring up todo app: https://www.youtube.com/watch?v=jI8bZabDrxg&feature=youtu.be
 
 At this point you're ready to add code to the todo app (yay!). This section assumes that you
 have some knowledge of Terminal, Webpack, React, and TypeScript. Source code for this section is [here](https://github.com/tandemcode/examples/tree/master/user-guide-exercises/3%20adding%20custom%20code).
