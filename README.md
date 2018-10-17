@@ -15,10 +15,6 @@ Tandem is a visual editor for building web components. It can cover _most_ of yo
 
 Here are just a few highlights of what Tandem can do:
 
-#### Create HTML & CSS visually
-
-Tandem covers most of your web UI creation, so you can say goodbye to writing HTML & CSS by hand for the most part (except for more complex cases).
-
 #### Compiles to code
 
 Compile UI files to your language or framework of choice. You can even compile to _multiple_ targets if you want to. Want to target PHP (coming soon) _and_ React code? You can do that.
