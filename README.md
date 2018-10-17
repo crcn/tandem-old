@@ -51,4 +51,5 @@ Ready to get started? Here are a few resources to help you out:
 - [Design process](./docs/design-process.md)
 - [Examples](https://github.com/tandemcode/examples)
 - [Document format](./docs/document-format.md)
-- [Contributing](./docs/contributing)
+- Contributing
+  - [Development](./docs/contributing/development.md)
