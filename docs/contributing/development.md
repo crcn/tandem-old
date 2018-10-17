@@ -1,3 +1,5 @@
+Public contributions are more than welcome.
+
 ## Getting Started
 
 To install, run:
@@ -29,4 +31,3 @@ npm run build-watch; # build & watch all packages
 npm run design-front-end; # start Tandem for front-end
 npm run build-desktop-dist; # build desktop app
 ```
-
