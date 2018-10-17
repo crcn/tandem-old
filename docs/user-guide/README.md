@@ -2,7 +2,7 @@
 
 This doc is aimed to take you step-by-step through developing your _first_ application with Tandem. Example code and videos are also provided with each phase to help you along the way.
 
-There are many nuances, patterns, and terminology used in the app, so I wouldn't recomend skipping through any section. Cliff notes are available for each section for anyone in a rush. I also added some personal thoughts, workflows, and philosophies into the user guide here that may seem obvious to experienced developers, or people may disagree with, but a minor intent in spelling some of the higher level ideas is to show how Tandem _aims_ to be a wholesome tool.
+There are many nuances, patterns, and terminology used in the app, so I wouldn't recomend skipping through any section. I also added some personal thoughts, workflows, and philosophies into the user guide here that may seem obvious to experienced developers, or people may disagree with, but a minor intent in spelling some of the higher level ideas is to show how Tandem _aims_ to be a wholesome tool.
 
 ## What is Tandem and why should I use it?
 
