@@ -1,6 +1,6 @@
 {
   "name": "paperclip",
-  "version": "10.0.35",
+  "version": "10.0.36",
   "description": "Paperclip DSL specific for visual development.",
   "bin": {
     "paperclip-vanilla-compiler": "./bin/paperclip-vanilla-compiler"
@@ -18,12 +18,12 @@
   "dependencies": {
     "chai": "^4.1.2",
     "crc32": "^0.2.2",
-    "fsbox": "^10.0.35",
+    "fsbox": "^10.0.36",
     "lodash": "^4.17.10",
-    "paperclip-migrator": "^10.0.35",
+    "paperclip-migrator": "^10.0.36",
     "redux": "^4.0.0",
     "redux-saga": "^0.16.0",
-    "tandem-common": "^10.0.35"
+    "tandem-common": "^10.0.36"
   },
   "devDependencies": {
     "@types/mocha": "^5.2.0",
@@ -35,5 +35,5 @@
     "mocha": "^5.2.0",
     "typescript": "3.0.x"
   },
-  "gitHead": "8a2054dd6bb83cf6d3852bcab448fc58fc774f8b"
+  "gitHead": "61552458fb4697d72287bdc01f1cdc19066a7b52"
 }

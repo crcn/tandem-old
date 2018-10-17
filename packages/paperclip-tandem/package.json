@@ -1,6 +1,6 @@
 {
   "name": "paperclip-tandem",
-  "version": "10.0.35",
+  "version": "10.0.36",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -14,5 +14,5 @@
   "devDependencies": {
     "typescript": "3.0.x"
   },
-  "gitHead": "8a2054dd6bb83cf6d3852bcab448fc58fc774f8b"
+  "gitHead": "61552458fb4697d72287bdc01f1cdc19066a7b52"
 }

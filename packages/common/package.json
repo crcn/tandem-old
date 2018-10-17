@@ -1,6 +1,6 @@
 {
   "name": "tandem-common",
-  "version": "10.0.35",
+  "version": "10.0.36",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -24,5 +24,5 @@
     "lint-staged": "^7.1.2",
     "typescript": "3.0.x"
   },
-  "gitHead": "8a2054dd6bb83cf6d3852bcab448fc58fc774f8b"
+  "gitHead": "61552458fb4697d72287bdc01f1cdc19066a7b52"
 }
