@@ -426,7 +426,7 @@ export default (Base: React.ComponentClass<BaseApplicationProps>) =>
 
 Rebuild your app by running `yarn build-dist`, and refresh the browser. How you should see an app without any todo items.
 
-![Empty todos](./assets/empty-todos.gif)
+![Empty todos](./assets/empty-todos.png)
 
 The `items` prop takes React elements, so let's add some. Write out the following code in your controller file:
 
