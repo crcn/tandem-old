@@ -490,7 +490,7 @@ Build that (`yarn build` runs definition & webpack script), refresh the browser,
 
 ![Replace slot children](./assets/setting-layer-props.png)
 
-That's basically it for adding custom behavior. All that you need to do is define props & slots. If you want to see a completed version of this app, you can checkout the source code for this section [here](./https://github.com/tandemcode/examples/tree/master/user-guide-exercises/1%20creating%20HTML%20%26%20CSS).
+That's basically it for adding custom behavior. All that you need to do is define props & slots. If you want to see a completed version of this app, you can checkout the source code for this section [here](https://github.com/tandemcode/examples/tree/master/user-guide-exercises/1%20creating%20HTML%20%26%20CSS).
 
 #### Splitting components into separate files
 
