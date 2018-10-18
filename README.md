@@ -28,6 +28,10 @@ Compile UI files to your language or framework of choice. You can also compile t
 
 Tandem allows you to split components out into separate files that can be integrated into your existing codebase, and organized however you want. Take a look at the Tandem source code for an example on how this can be done: https://github.com/crcn/tandem-preview/tree/master/packages/front-end/src/components
 
+#### Safety
+
+Tandem provides safety measures to ensure that your web components are built correctly. Tools like typed definition file generation for TypeScript-based projects, and QA testing tools (soon) to provide you with a screenshot of every visual state of your application. 
+
 #### Automatically translate designs from Sketch & Figma
 
 Tandem provides [CLI tooling](./packages/paperclip-design-converter) for Sketch & figma that allow you to quickly translate design files (not completely though, you still need to specify layout constraints however). You'll soon be able to even use your original design files as the source of truth for basic styles like colors & fonts.
