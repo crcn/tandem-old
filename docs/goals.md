@@ -22,3 +22,4 @@ The ideas behind Tandem are continuing to evolve based on real-world usage, so t
 - Cover _all_ front-end user interface development cases. Tandem will target _simple_ use cases. Complex use cases will be deferred to other software and hand written code where it makes sense.
 - To cover the entire development process between mock-up -> design -> prototype -> development -> deploy.
 - Abstractions around HTML & CSS.
+
