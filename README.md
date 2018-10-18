@@ -24,6 +24,10 @@ The aim for Tandem is to offer visual programming tools where it makes more sens
 
 Compile UI files to your language or framework of choice. You can also compile to _multiple_ targets if you want to. React is currently supported, static HTML, PHP, Vue, and other targets are in the pipeline.
 
+#### Organizes like code
+
+Tandem allows you to split components out into separate files that can be integrated into your existing codebase. Take a look at the Tandem source code for an example of how this can be done: https://github.com/crcn/tandem-preview/tree/master/packages/front-end/src/components
+
 #### Automatically translate designs from Sketch & Figma
 
 Tandem provides [CLI tooling](./packages/paperclip-design-converter) for Sketch & figma that allow you to quickly translate design files (not completely though, you still need to specify layout constraints however). You'll soon be able to even use your original design files as the source of truth for basic styles like colors & fonts.
