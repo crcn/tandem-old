@@ -35,7 +35,7 @@ Tandem allows you to split components out into separate files that can be integr
 
 #### Safety
 
-Tandem provides safety measures to ensure that your web components are built correctly. Tools like typed definition file generation for TypeScript-based projects, QA testing tools (soon) to provide you with a screenshot of every visual state of your application, and automated visual regression testing (soon). Visual tooling is also crafted to ensure that you can scale & manage Tandem components to any project size. 
+Tandem provides safety measures to ensure that your web components are built correctly. Tools like typed definition file generation for TypeScript-based projects, QA testing tools (soon) to provide you with a screenshot of every visual state of your application, and automated visual regression testing (soon). Visual tooling is also crafted to ensure that you can scale & manage Tandem components to any project size (todo - more on this). 
 
 #### Automatically translate designs from Sketch & Figma
 
