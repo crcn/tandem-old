@@ -30,7 +30,7 @@ Tandem allows you to split components out into separate files that can be integr
 
 #### Safety
 
-Tandem provides safety measures to ensure that your web components are built correctly. Tools like typed definition file generation for TypeScript-based projects, and QA testing tools (soon) to provide you with a screenshot of every visual state of your application. 
+Tandem provides safety measures to ensure that your web components are built correctly. Tools like typed definition file generation for TypeScript-based projects, and QA testing tools (soon) to provide you with a screenshot of every visual state of your application. Tooling is also provided to prevent CSS from colliding with each other (via components, style mixins, and prohibiting cascading font styles if you choose). 
 
 #### Automatically translate designs from Sketch & Figma
 
