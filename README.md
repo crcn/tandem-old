@@ -16,17 +16,13 @@ Tandem is a visual editor for building web components. It can cover _most_ of yo
 
 Features are actively being _discovered_ while Tandem is applied to real problems (currently being used to build itself). Here are just a few highlights:
 
-#### Visual designer mixed with an IDE
-
-Like Sketch or Figma but purpose-built for creating HTML & CSS. The layout is also organized like an IDE to provide you with a _transparent_ view over your application structure. 
-
-#### Compiles to code
-
-Compile UI files to your language or framework of choice. You can even compile to _multiple_ targets if you want to. React is currently supported, static HTML, PHP, Vue, and other targets are in the pipeline.
-
 #### Visual programming where it makes sense
 
 The aim for Tandem is to offer visual programming tools where it makes more sense to do visually than by hand. This means HTML, CSS, and _simple_ behavior. Everything else can be added with code in the language of your choice. 
+
+#### Compiles to code
+
+Compile UI files to your language or framework of choice. You can also compile to _multiple_ targets if you want to. React is currently supported, static HTML, PHP, Vue, and other targets are in the pipeline.
 
 #### Automatically translate designs from Sketch & Figma
 
