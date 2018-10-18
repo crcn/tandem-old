@@ -20,6 +20,6 @@ The ideas behind Tandem are continuing to evolve based on real-world usage, so t
 - Runtimes or any other non-native functionality. Tandem files will always be compilable down to static HTML & CSS.
 - Make web development easier. Easiness _may_ be a side effect, but features are generally considered if they provide a _better_ way of doing something.
 - Cover _all_ front-end user interface development cases. Tandem will target _simple_ use cases. Complex use cases will be deferred to other software and hand written code where it makes sense.
-- To cover the entire development process between mock-up -> design -> prototype -> development -> deploy.
+- To cover the entire development process between `mock-up -> design -> prototype -> development -> deploy`. Tandem may provide tooling to make each step more efficient, but will always focus on the `development` process. 
 - Abstractions around HTML & CSS. Tandem will always try to aim to provide transparent tooling that _augment_ HTML & CSS creation. 
 
