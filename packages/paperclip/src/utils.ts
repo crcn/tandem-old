@@ -48,19 +48,25 @@ const convertXMLJSONToPCNode = node => {
   }
 };
 
-export const elevateCommonStylesToGlobal = (root: PCModule) => {
-  root = elevateColorsToGlobal(root);
+export const elevateCommonStylesToGlobal = (
+  root: PCModule,
+  dest: PCModule = root
+): [PCModule, PCModule] => {
+  [root, dest] = elevateColorsToGlobal(root, dest);
 
   // don't do this for now because it causes messiness. Instead focus on
   // tooling that makes it easier to elevate typography to mixins.
-  root = elevateTypographyToMixins(root);
-  return root;
+  [root, dest] = elevateTypographyToMixins(root, dest);
+  return [root, dest];
 };
 
-export const elevateColorsToGlobal = (root: PCModule) => {
+export const elevateColorsToGlobal = (
+  root: PCModule,
+  dest: PCModule = root
+): [PCModule, PCModule] => {
   const colorVarMap: KeyValue<PCVariable> = {};
 
-  for (const child of root.children) {
+  for (const child of dest.children) {
     if (
       child.name === PCSourceTagNames.VARIABLE &&
       (child as PCVariable).type === PCVariableType.COLOR
@@ -86,11 +92,16 @@ export const elevateColorsToGlobal = (root: PCModule) => {
           for (const color of colors) {
             const colorVar: PCVariable =
               colorVarMap[color] ||
-              (colorVarMap[color] = createPCVariable(
-                `Color ${Object.keys(colorVarMap).length + 1}`,
-                PCVariableType.COLOR,
-                color
-              ));
+              (colorVarMap[color] = {
+                name: PCSourceTagNames.VARIABLE,
+                label: `Color ${Object.keys(colorVarMap).length + 1}`,
+                id: `via${node.id}`,
+                value: color,
+                type: PCVariableType.COLOR,
+                children: EMPTY_ARRAY,
+                metadata: EMPTY_OBJECT
+              });
+
             value = value.replace(color, `var(--${colorVar.id})`);
           }
 
@@ -119,21 +130,25 @@ export const elevateColorsToGlobal = (root: PCModule) => {
 
   for (const color in colorVarMap) {
     const pcVar = colorVarMap[color];
-    root = appendChildNode(pcVar, root);
+    dest = appendChildNode(pcVar, dest);
   }
 
-  return root;
+  return [root, dest];
 };
 
-export const elevateTypographyToMixins = (root: PCModule) => {
+export const elevateTypographyToMixins = (
+  root: PCModule,
+  dest: PCModule = root
+): [PCModule, PCModule] => {
   const typographyMixinMap: KeyValue<PCTextStyleMixin> = {};
 
-  for (const child of root.children) {
+  for (const child of dest.children) {
     if (
       child.name === PCSourceTagNames.STYLE_MIXIN &&
       (child as PCStyleMixin).targetType === PCSourceTagNames.TEXT
     ) {
       const styleMixin = child as PCTextStyleMixin;
+      console.log("ELEVATE");
       typographyMixinMap[JSON.stringify(styleMixin.style)] = styleMixin;
     }
   }
@@ -156,10 +171,16 @@ export const elevateTypographyToMixins = (root: PCModule) => {
         const key = JSON.stringify(typographyStyle);
         const mixin =
           typographyMixinMap[key] ||
-          (typographyMixinMap[key] = createPCTextStyleMixin(
-            typographyStyle,
-            `Text Style ${Object.keys(typographyStyle).length + 1}`
-          ));
+          (typographyMixinMap[key] = {
+            id: `via${node.id}`,
+            name: PCSourceTagNames.STYLE_MIXIN,
+            targetType: PCSourceTagNames.TEXT,
+            style: typographyStyle,
+            value: `Text Style ${Object.keys(typographyMixinMap).length + 1}`,
+            label: `Text Style ${Object.keys(typographyMixinMap).length + 1}`,
+            children: EMPTY_ARRAY,
+            metadata: EMPTY_OBJECT
+          });
         node = {
           ...node,
           style: otherStyle,
@@ -205,10 +226,10 @@ export const elevateTypographyToMixins = (root: PCModule) => {
       }
     };
 
-    root = appendChildNode(mixin, root);
+    dest = appendChildNode(mixin, dest);
   }
 
-  return root;
+  return [root, dest];
 };
 
 const COLOR_REGEXP = new RegExp(

@@ -112,8 +112,8 @@ const translateContentNode = memoize(
       varMap,
       sourceUri
     );
-    buffer += translateStaticOverrides(node as PCComponent, varMap);
-    buffer += translateStaticVariants(node, varMap);
+    buffer += translateStaticOverrides(node as PCComponent, varMap, sourceUri);
+    buffer += translateStaticVariants(node, varMap, sourceUri);
 
     buffer += `return function(instanceSourceNodeId, instancePath, attributes, style, variant, overrides, components) {
       ${translateVariants(node)}
@@ -310,7 +310,8 @@ const translateDynamicOverrides = (
 
 const translateStaticOverrides = (
   contentNode: PCNode,
-  varMap: KeyValue<PCVariable>
+  varMap: KeyValue<PCVariable>,
+  sourceUri: string
 ) => {
   const instances = [
     ...getTreeNodesByName(PCSourceTagNames.COMPONENT_INSTANCE, contentNode),
@@ -323,7 +324,8 @@ const translateStaticOverrides = (
     const overrideMap = getOverrideMap(instance);
     buffer += `var _${instance.id}Overrides = { ${translateVariantOverrideMap(
       overrideMap.default,
-      varMap
+      varMap,
+      sourceUri
     )}};\n`;
   }
 
@@ -332,7 +334,8 @@ const translateStaticOverrides = (
 
 const translateStaticVariants = (
   contentNode: PCNode,
-  varMap: KeyValue<PCVariable>
+  varMap: KeyValue<PCVariable>,
+  sourceUri: string
 ) => {
   const variants = getTreeNodesByName(PCSourceTagNames.VARIANT, contentNode);
   const variantNodes: PCNode[] = uniq(
@@ -365,7 +368,8 @@ const translateStaticVariants = (
       }
       buffer += `${translateVariantOverrideMap(
         overrideMap[variant.id],
-        varMap
+        varMap,
+        sourceUri
       )}`;
     }
     buffer += `},`;
@@ -374,8 +378,36 @@ const translateStaticVariants = (
   return buffer + `};\n`;
 };
 
+const mapStyles = (style: any, sourceUri: string) => {
+  let newStyle;
+  for (const key in style) {
+    let value = style[key];
+    let newValue = value;
+    if (
+      typeof value === "string" &&
+      key === "background" &&
+      /url\(.*?\)/.test(value) &&
+      !/:\/\//.test(value)
+    ) {
+      newValue = value.replace(
+        /url\(["']?(.*?)["']?\)/,
+        `url(${path.dirname(sourceUri)}/$1)`
+      );
+    }
+    if (newValue !== value) {
+      if (!newStyle) newStyle = { ...style };
+      newStyle[key] = newValue;
+    }
+  }
+  return newStyle || style;
+};
+
 const translateVariantOverrideMap = memoize(
-  (map: PCComputedOverrideVariantMap, varMap: KeyValue<PCVariable>) => {
+  (
+    map: PCComputedOverrideVariantMap,
+    varMap: KeyValue<PCVariable>,
+    sourceUri: string
+  ) => {
     let buffer = ``;
     for (const nodeId in map) {
       const { overrides, children: childMap } = map[nodeId];
@@ -383,7 +415,7 @@ const translateVariantOverrideMap = memoize(
       for (const override of overrides) {
         if (override.propertyName === PCOverridablePropertyName.STYLE) {
           buffer += `_${nodeId}Style: ${JSON.stringify(
-            computeStyleWithVars(override.value, varMap)
+            mapStyles(computeStyleWithVars(override.value, varMap), sourceUri)
           )},`;
         }
         if (override.propertyName === PCOverridablePropertyName.ATTRIBUTES) {
@@ -398,7 +430,7 @@ const translateVariantOverrideMap = memoize(
       }
       buffer += `_${nodeId}Overrides: {`;
 
-      buffer += translateVariantOverrideMap(childMap, varMap);
+      buffer += translateVariantOverrideMap(childMap, varMap, sourceUri);
 
       buffer += `},`;
     }
@@ -439,7 +471,7 @@ const translateStaticNodeProps = memoize(
       node.name === PCSourceTagNames.STYLE_MIXIN
     ) {
       buffer += `var _${node.id}Style = ${JSON.stringify(
-        computePCNodeStyle(node, componentRefMap, varMap)
+        mapStyles(computePCNodeStyle(node, componentRefMap, varMap), sourceUri)
       )};`;
     }
 

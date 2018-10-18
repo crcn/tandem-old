@@ -1,4 +1,5 @@
 import * as fs from "fs";
+import * as path from "path";
 import { kebabCase } from "lodash";
 import { PCModule } from "paperclip/src";
 
@@ -27,5 +28,21 @@ export type ConvertResultItem = {
 
 export type ConvertResult = ConvertResultItem[];
 
-export const getResultItemBasename = ({ name, extension }: ConvertResultItem) =>
-  kebabCase(name) + "." + extension;
+export const getResultItemBasename = ({
+  name,
+  extension
+}: ConvertResultItem) => {
+  return kebabCase(name) + "." + extension;
+};
+
+export const getResultItemRelativePath = (
+  item: ConvertResultItem,
+  toType?: string
+) => {
+  const basename = getResultItemBasename(item);
+  return item.extension === "pc"
+    ? basename
+    : !toType || toType === "pc"
+      ? path.join("assets", basename)
+      : basename;
+};

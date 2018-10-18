@@ -2,7 +2,8 @@ import {
   ConversionOptions,
   DesignType,
   ConvertResultItem,
-  getResultItemBasename
+  getResultItemBasename,
+  getResultItemRelativePath
 } from "./base";
 import * as fsa from "fs-extra";
 import * as sketch from "./sketch";
@@ -23,6 +24,7 @@ export const convertDesign = (design: Design, options: ConversionOptions) => {
 
 type OpenOptions = {
   figmaToken?: string;
+  vectorFormat?: string;
 };
 
 export const openDesign = (path: string, options: OpenOptions = {}) => {
@@ -39,12 +41,13 @@ export const writeConvertedDesignFiles = async (
   items: ConvertResultItem[],
   directory: string
 ) => {
-  try {
-    fsa.mkdirpSync(directory);
-  } catch (e) {}
   const fullPaths: string[] = [];
   for (const item of items) {
-    const fullPath = path.join(directory, getResultItemBasename(item));
+    const fullPath = path.join(directory, getResultItemRelativePath(item));
+    const dir = path.dirname(fullPath);
+    try {
+      fsa.mkdirpSync(dir);
+    } catch (e) {}
     fs.writeFileSync(fullPath, item.content);
     fullPaths.push(fullPath);
   }

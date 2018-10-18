@@ -35,8 +35,8 @@ paperclip-design-converter eBjqeLULnzNdsruu8J66Mx9w --figma-token=abcde --write=
 
 #### CLI Options
 
-- `only-colors` - convert convert only colors
-- `only-style-mixins` - convert only style mixins
-- `only-symbols` - convert only symbols
+- `no-colors` - convert convert only colors
+- `no-style-mixins` - convert only style mixins
+- `no-components` - convert only symbols
 
 ####

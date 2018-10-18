@@ -531,7 +531,11 @@ The Tandem [front-end package](../../packages/front-end/src/components) is a pre
 
 There are some utilities that you can use in order to speed up the process of creating UIs depending on your workflow.
 
-### Importing from Sketch or Figma
+### Importing from Figma or Sketch
+
+We'll go over how you can trans
+
+1. Setup access token
 
 TODO:
 

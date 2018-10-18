@@ -7,7 +7,8 @@ import {
   ConversionOptions,
   ConvertResult,
   ConvertResultItem,
-  getResultItemBasename
+  getResultItemBasename,
+  getResultItemRelativePath
 } from "./base";
 import {
   PCModule,
@@ -18,19 +19,20 @@ import {
   PCVisibleNodeMetadataKey,
   PCElement,
   PCNode,
-  PCComponent
+  PCComponent,
+  elevateCommonStylesToGlobal
 } from "paperclip";
-import { kebabCase } from "lodash";
 import {
   KeyValue,
   EMPTY_OBJECT,
-  appendChildNode,
   EMPTY_ARRAY,
   Point,
   shiftPoint,
-  flipPoint
+  flipPoint,
+  appendChildNode
 } from "tandem-common";
 import { px } from "./utils";
+import { BlendMode } from "figma-js";
 
 export type FigmaDesign = {
   document: figma.Document;
@@ -40,16 +42,20 @@ export type FigmaDesign = {
 
 type FigmaOpenOptions = {
   figmaToken: string;
-};
+  vectorFormat: "svg" | "png";
+} & ConversionOptions;
 
 export const isSupportedPath = (
   projectId: string,
   options: { figmaToken?: string }
 ): options is FigmaOpenOptions => Boolean(options.figmaToken);
 
+const DOWNLOAD_CHUNK_SIZE = 10;
+const PC_EXT_NAME = "pc";
+
 export const openDesign = async (
   projectId: string,
-  { figmaToken }: FigmaOpenOptions
+  { figmaToken, vectorFormat = "svg" }: FigmaOpenOptions
 ): Promise<FigmaDesign> => {
   const client = figma.Client({
     personalAccessToken: figmaToken
@@ -68,7 +74,9 @@ export const openDesign = async (
 
   if (imageIds.length) {
     console.log(
-      `Loading ${imageIds.length} image${imageIds.length > 1 ? "s" : ""}`
+      `Loading ${imageIds.length} ${vectorFormat} image${
+        imageIds.length > 1 ? "s" : ""
+      }`
     );
 
     const {
@@ -76,30 +84,47 @@ export const openDesign = async (
     } = await client.fileImages(projectId, {
       ids: imageIds,
       scale: 1,
-      format: "svg",
-      svg_include_id: true
+      format: vectorFormat,
+      svg_include_id: false
     });
 
-    for (const imageId in images) {
-      const url = images[imageId];
-      console.log(`Downloading: ${url}`);
-      const response = await fetch(url);
-      const data = await new Promise<ConvertResultItem>(resolve => {
-        let buffers = [];
-        response.headers.get;
-        response.body.on("data", chunk => {
-          buffers.push(chunk);
-        });
-        response.body.on("end", () => {
-          resolve({
-            name: imageId,
-            extension: mime.getExtension(response.headers.get("Content-Type")),
-            content: Buffer.concat(buffers)
-          });
-        });
-      });
+    const imageIdChunks = imageIds.reduce(
+      (chunks, id) => {
+        if (chunks[0].length < DOWNLOAD_CHUNK_SIZE) {
+          return [[id, ...chunks[0]], ...chunks.slice(1)];
+        }
+        return [[id], ...chunks];
+      },
+      [[]]
+    );
 
-      loadedImages[imageId] = data;
+    for (const imageIdChunk of imageIdChunks) {
+      await Promise.all(
+        imageIdChunk.map(async imageId => {
+          const url = images[imageId];
+          console.log(`Downloading: ${url}`);
+          const response = await fetch(url);
+          const data = await new Promise<ConvertResultItem>(resolve => {
+            let buffers = [];
+            response.body.on("data", chunk => {
+              buffers.push(chunk);
+            });
+            response.body.on("end", () => {
+              if (!buffers.length) {
+                console.log(`${url} returned empty response.`);
+              }
+              resolve({
+                name: imageId,
+                extension: mime.getExtension(
+                  response.headers.get("Content-Type")
+                ),
+                content: Buffer.concat(buffers)
+              });
+            });
+          });
+          loadedImages[imageId] = data;
+        })
+      );
     }
   }
 
@@ -129,6 +154,7 @@ const figmaNodeReducer = <T>(
   };
   return iter;
 };
+
 // const { data } = await client.projectFiles(projectId);
 const getFigmaImageIds = figmaNodeReducer((vectorIds: string[], node) => {
   let imageRefId: string;
@@ -159,10 +185,24 @@ export const convertDesign = async (
 
   const result: ConvertResultItem[] = Object.values(images);
 
+  // messy, so don't do this.
+  // let globalsModule: PCModule = createPCModule();
+
+  for (const pageName in modules) {
+    modules[pageName] = elevateComponents(modules[pageName]);
+    // [modules[pageName], globalsModule] = elevateCommonStylesToGlobal(modules[pageName], globalsModule);
+  }
+
+  // result.push({
+  //   name: "globals",
+  //   extension: PC_EXT_NAME,
+  //   content: new Buffer(JSON.stringify(globalsModule, null, 2))
+  // });
+
   for (const pageName in modules) {
     result.push({
       name: pageName,
-      extension: "pc",
+      extension: PC_EXT_NAME,
       content: new Buffer(JSON.stringify(modules[pageName], null, 2))
     });
   }
@@ -181,6 +221,27 @@ const convertDocument = (document: figma.Document, design: FigmaDesign) => {
   }
 
   return modules;
+};
+
+const elevateComponents = (root: PCModule) => {
+  const components: PCComponent[] = [];
+
+  const map = (node: PCNode) => {
+    if (node.name === PCSourceTagNames.COMPONENT) {
+      components.push(node);
+      return null;
+    }
+    return {
+      ...node,
+      children: node.children.map(map).filter(Boolean)
+    };
+  };
+  root = map(root);
+
+  for (const component of components) {
+    root = appendChildNode(component, root);
+  }
+  return root;
 };
 
 const convertFigmaNode = (offsetPosition: Point, design: FigmaDesign) => (
@@ -283,13 +344,96 @@ const convertFigmaNode = (offsetPosition: Point, design: FigmaDesign) => (
       break;
     }
     case "VECTOR": {
-      const image = design.images[node.id].content;
+      const result = design.images[node.id];
+      if (!result) {
+        console.warn(`Didn't load vector: ${node.id}`);
+        return null;
+      }
+      const image = result.content;
+      const position = shiftPoint(
+        getFigmaNodePoint(node),
+        flipPoint(offsetPosition)
+      );
+
+      const style = convertVectorStyle(node, position);
+
+      if (result.extension === "svg") {
+        try {
+          pcNode = {
+            ...xmlToPCNode(image.toString("utf8")),
+            style,
+            id: node.id
+          };
+        } catch (e) {
+          console.error(`Unable to parse: ${node.id}`);
+          console.error(e.stack);
+          console.error(result);
+        }
+      } else {
+        pcNode = {
+          name: PCSourceTagNames.ELEMENT,
+          attributes: {
+            src: "./" + getResultItemRelativePath(result, PC_EXT_NAME)
+          },
+          children: EMPTY_ARRAY,
+          metadata: EMPTY_OBJECT,
+          is: "img",
+          style,
+          id: node.id
+        };
+      }
+      break;
+    }
+    case "COMPONENT": {
+      const newOffsetPosition = getFigmaNodePoint(node);
+
       pcNode = {
-        ...xmlToPCNode(image.toString("utf8")),
-        id: node.id
+        id: "component_" + node.id,
+        name: PCSourceTagNames.COMPONENT,
+        is: "div",
+        variant: EMPTY_OBJECT,
+        style: convertComponentStyle(node, newOffsetPosition),
+        attributes: EMPTY_OBJECT,
+        metadata: {
+          [PCVisibleNodeMetadataKey.BOUNDS]: {
+            ...newOffsetPosition,
+            right: node.absoluteBoundingBox.x + node.absoluteBoundingBox.width,
+            bottom: node.absoluteBoundingBox.y + node.absoluteBoundingBox.height
+          }
+        },
+        children: node.children
+          .map(
+            convertFigmaNode(
+              shiftPoint(newOffsetPosition, {
+                left: 0,
+                top: 0
+              }),
+              design
+            )
+          )
+          .filter(Boolean)
       };
       break;
     }
+
+    case "INSTANCE": {
+      const position = shiftPoint(
+        getFigmaNodePoint(node),
+        flipPoint(offsetPosition)
+      );
+      pcNode = {
+        id: node.id,
+        name: PCSourceTagNames.COMPONENT_INSTANCE,
+        style: convertInstanceStyle(node, position),
+        is: "component_" + node.componentId.replace(/:/g, "_"),
+        variant: EMPTY_OBJECT,
+        attributes: EMPTY_OBJECT,
+        metadata: EMPTY_OBJECT,
+        children: EMPTY_ARRAY
+      };
+      break;
+    }
+
     default: {
       console.warn(`Unsupported node type: ${node.type}`);
     }
@@ -303,11 +447,24 @@ const cleanId = (node: PCNode): PCNode => ({
   id: node.id.replace(/:/g, "_")
 });
 const getFigmaNodePoint = (
-  node: figma.Frame | figma.Rectangle | figma.Group | figma.Text
+  node:
+    | figma.Frame
+    | figma.Rectangle
+    | figma.Group
+    | figma.Text
+    | figma.Vector
+    | figma.Component
+    | figma.Instance
 ) => ({
   left: node.absoluteBoundingBox.x,
   top: node.absoluteBoundingBox.y
 });
+
+const convertVectorStyle = (node: figma.Vector, position: Point) => {
+  return {
+    ...getNodeBoxStyle(node, position)
+  };
+};
 
 const convertTextStyle = (node: figma.Text, position: Point) => {
   const { fills, style: textStyle } = node;
@@ -336,7 +493,18 @@ const convertTextStyle = (node: figma.Text, position: Point) => {
 
   return {
     ...style,
+    ...convertBlendMode(node),
     ...convertEffects(node)
+  };
+};
+
+const convertComponentStyle = (node: figma.Component, position: Point) => {
+  return {};
+};
+
+const convertInstanceStyle = (node: figma.Instance, position: Point) => {
+  return {
+    ...getNodeBoxStyle(node, position)
   };
 };
 
@@ -351,7 +519,7 @@ const convertRectangleStyle = (
   design: FigmaDesign,
   position: Point
 ) => {
-  const { fills, strokes, strokeWeight } = node;
+  const { fills, strokes, strokeWeight, cornerRadius } = node;
 
   let style = { ...getNodeBoxStyle(node, position) };
 
@@ -359,18 +527,31 @@ const convertRectangleStyle = (
   let borders: string[] = [];
   // let backgroundBlendModes: string[]
 
-  console.log(fills);
   if (fills) {
     for (const fill of fills) {
       if (fill.visible === false) continue;
       switch (fill.type) {
+        case "GRADIENT_LINEAR": {
+          backgrounds.push(convertLinearGradient(fill));
+          break;
+        }
+        case "GRADIENT_RADIAL": {
+          backgrounds.push(convertRadialGradient(fill));
+          break;
+        }
         case "SOLID": {
           backgrounds.push(convertColor(fill.color));
           break;
         }
         case "IMAGE": {
           const image = design.images[node.id];
-          backgrounds.push(`url(./${getResultItemBasename(image)})`);
+          if (!image) {
+            console.warn(`Didn't load image for Rectangle: ${node.id}`);
+          } else {
+            backgrounds.push(
+              `url(./${getResultItemRelativePath(image, PC_EXT_NAME)})`
+            );
+          }
           break;
         }
         default: {
@@ -380,11 +561,19 @@ const convertRectangleStyle = (
     }
   }
 
+  if (cornerRadius) {
+    style["border-bottom-left-radius"] = style[
+      "border-top-left-radius"
+    ] = style["border-bottom-right-radius"] = style[
+      "border-top-right-radius"
+    ] = px(cornerRadius);
+  }
+
   if (strokes) {
     for (const stroke of strokes) {
       switch (stroke.type) {
         case "SOLID": {
-          borders.push(`${strokeWeight} solid ${convertColor(stroke.color)}`);
+          borders.push(`${strokeWeight}px solid ${convertColor(stroke.color)}`);
           break;
         }
       }
@@ -401,7 +590,30 @@ const convertRectangleStyle = (
 
   return {
     ...style,
+    ...convertBlendMode(node),
     ...convertEffects(node)
+  };
+};
+
+const convertBlendMode = (node: figma.Rectangle | figma.Text | figma.Group) => {
+  const blendMode = String(node.blendMode);
+  if (blendMode === "NORMAL") {
+    return EMPTY_OBJECT;
+  }
+
+  const cssBlendMode = blendMode.replace(/_/g, "-").toLowerCase();
+
+  if (
+    !/normal|multiply|screen|overlay|darken|lighten|color-dodge|saturation|color|luminosity/.test(
+      cssBlendMode
+    )
+  ) {
+    console.warn(`Unknown blend mode: ${blendMode}`);
+    return EMPTY_OBJECT;
+  }
+
+  return {
+    "mix-blend-mode": cssBlendMode
   };
 };
 
@@ -409,6 +621,7 @@ const convertEffects = (node: figma.Text | figma.Rectangle | figma.Group) => {
   let style = {};
   const { effects } = node;
   const filters: string[] = [];
+  const boxShadows: string[] = [];
   if (effects) {
     for (const effect of effects) {
       switch (effect.type) {
@@ -417,11 +630,12 @@ const convertEffects = (node: figma.Text | figma.Rectangle | figma.Group) => {
           break;
         }
         case "DROP_SHADOW": {
-          filters.push(
-            `drop-shadow(${px(effect.offset.x)} ${px(effect.offset.y)} ${px(
-              effect.radius
-            )} ${convertColor(effect.color)})`
-          );
+          filters.push(`drop-shadow(${convertShadow(effect)})`);
+          break;
+        }
+
+        case "INNER_SHADOW": {
+          boxShadows.push(convertInnerShadow(effect));
           break;
         }
         default: {
@@ -436,13 +650,24 @@ const convertEffects = (node: figma.Text | figma.Rectangle | figma.Group) => {
     style["filter"] = filters.join(", ");
   }
 
+  if (boxShadows.length) {
+    style["box-shadow"] = boxShadows.join(", ");
+  }
+
   return style;
 };
 
 const getNodeBoxStyle = (
-  node: figma.Group | figma.Rectangle | figma.Text,
+  node:
+    | figma.Group
+    | figma.Rectangle
+    | figma.Text
+    | figma.Vector
+    | figma.Component
+    | figma.Instance,
   position: Point
 ) => ({
+  display: node.visible === false ? "none" : "inline-block",
   left: px(position.left),
   top: px(position.top),
   width: px(node.absoluteBoundingBox.width),
@@ -452,13 +677,52 @@ const getNodeBoxStyle = (
 });
 
 const convertGroupStyle = (group: figma.Group, position: Point) => {
-  let style = {};
   return {
+    ...convertBlendMode(group),
     ...getNodeBoxStyle(group, position),
     ...convertEffects(group)
   };
 };
 
 const convertColor = ({ r, g, b, a }: figma.Color) => {
-  return `rgba(${r * 255}, ${g * 255}, ${b * 255}, ${a * 255})`;
+  return `rgba(${r * 255}, ${g * 255}, ${b * 255}, ${a})`;
+};
+
+// https://github.com/figma/figma-api-demo/blob/master/figma-to-react/lib/figma.js
+const convertLinearGradient = (paint: figma.Paint): string => {
+  const handles = paint.gradientHandlePositions;
+  const handle0 = handles[0];
+  const handle1 = handles[1];
+
+  const ydiff = handle1.y - handle0.y;
+  const xdiff = handle0.x - handle1.x;
+
+  const angle = Math.atan2(-xdiff, -ydiff);
+  const stops = paint.gradientStops
+    .map(stop => {
+      return `${convertColor(stop.color)} ${Math.round(stop.position * 100)}%`;
+    })
+    .join(", ");
+  return `linear-gradient(${angle}rad, ${stops})`;
+};
+
+const convertRadialGradient = (paint: figma.Paint) => {
+  const stops = paint.gradientStops
+    .map(stop => {
+      return `${convertColor(stop.color)} ${Math.round(stop.position * 60)}%`;
+    })
+    .join(", ");
+
+  return `radial-gradient(${stops})`;
+};
+const convertShadow = (effect: figma.Effect) => {
+  return `${effect.offset.x}px ${effect.offset.y}px ${
+    effect.radius
+  }px ${convertColor(effect.color)}`;
+};
+
+const convertInnerShadow = (effect: figma.Effect) => {
+  return `inset ${effect.offset.x}px ${effect.offset.y}px ${
+    effect.radius
+  }px ${convertColor(effect.color)}`;
 };

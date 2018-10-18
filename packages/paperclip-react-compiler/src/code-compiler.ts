@@ -395,7 +395,7 @@ const translateStyleValue = (
   }
 
   if (typeof value === "string") {
-    if (/url\(.*?\)/.test(value)) {
+    if (/url\(.*?\)/.test(value) && !/:\/\//.test(value)) {
       value = value.replace(
         /url\(["']?(.*?)["']?\)/,
         `url(" + require("$1") + ")`
