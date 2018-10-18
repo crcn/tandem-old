@@ -10,16 +10,19 @@ paperclip-design-converter path/to/design/file.sketch > path/to/tandem/component
 paperclip-design-converter path/to/design/file.sketch --only-style-mixins > path/to/tandem/mixins.pc
 
 # convert only symbols
-paperclip-design-converter path/to/design/file.sketch --only-symbols > path/to/tandem/mixins.pc
+paperclip-design-converter path/to/design/file.sketch --only-symbols --write=path/to/component/dir
 
 # convert style mixins & symbols
-paperclip-design-converter path/to/design/file.sketch --only-symbols --only-style-mixins > path/to/tandem/mixins.pc
+paperclip-design-converter path/to/design/file.sketch --only-symbols --only-style-mixins --write=path/to/component/dir
 
 # convert only clobal color swatches
-paperclip-design-converter path/to/design/file.sketch --only-colors > path/to/tandem/globals.pc
+paperclip-design-converter path/to/design/file.sketch --only-colors > --write=path/to/component/dir
 
 # only convert icons
-paperclip-design-converter path/to/design/file.sketch --only-exports > path/to/tandem/icons.pc
+paperclip-design-converter path/to/design/file.sketch --only-exports --write=path/to/component/dir
+
+# also works with figma
+paperclip-design-converter eBjqeLULnzNdsruu8J66Mx9w --figma-token=abcde --write=path/to/component/dir
 ```
 
 #### TODOS

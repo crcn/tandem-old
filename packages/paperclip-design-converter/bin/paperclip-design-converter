@@ -1,17 +1,33 @@
 #!/usr/bin/env node
+const fs = require('fs');
 const argv = require('yargs').argv;
-const {convertDesign, openDesign} = require('../lib');
+const path = require("path");
+const {convertDesign, openDesign, writeConvertedDesignFiles} = require('../lib');
 
-const [path] = argv._;
+const [source] = argv._;
+let outputDirectory = argv.outputDirectory;
 
+if (!outputDirectory) {
+  console.error(`missing --output-directory`);
+  process.exit(1);
+}
 
-openDesign(path).then((design) => {
-  convertDesign(design, {
+const cwd = process.cwd();
+outputDirectory = outputDirectory.replace(/^\~/, process.env.HOME);
+outputDirectory = outputDirectory.charAt(0) === "/" ? outputDirectory : path.join(cwd, outputDirectory);
+
+openDesign(source, argv).then((design) => {
+  return convertDesign(design, {
     components: Boolean(argv.components),
     colors: Boolean(argv.colors),
     exports: Boolean(argv.exports),
-    styleMixins: Boolean(argv.exports)
-  }).then((result) => {
-    console.log(JSON.stringify(result, null, 2));
+    styleMixins: Boolean(argv.exports),
+    pages: Boolean(argv.pages)
   });
+}).then((result) => {
+  return writeConvertedDesignFiles(result, outputDirectory);
+}).then((files) => {
+  for (const file of files) {
+    console.log(`Wrote ${file}`);
+  }
 });

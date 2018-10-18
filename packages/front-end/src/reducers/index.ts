@@ -2,7 +2,6 @@
 
 import { Action } from "redux";
 import * as path from "path";
-import { xmlToPCNode } from "../utils/paperclip";
 import {
   CanvasToolArtboardTitleClicked,
   NEW_FILE_ADDED,
@@ -330,6 +329,7 @@ import {
   persistAddVariable,
   PCVariableType,
   createRootInspectorNode,
+  xmlToPCNode,
   PCElement,
   getInspectorInstanceShadowContentNode,
   getInspectorInstanceShadow,
