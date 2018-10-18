@@ -323,8 +323,9 @@ const translateStyle = (
     // TODO - add vendor prefix stuff here
     for (const key in style) {
       context = addLineItem(
-        `" ${key}: ${stringifyValue(
-          translateStyleValue(key, style[key], context).replace(/[\n\r]/g, " ")
+        `" ${key}: ${translateStyleValue(key, style[key], context).replace(
+          /[\n\r]/g,
+          " "
         )};" + \n`,
         context
       );
@@ -392,6 +393,18 @@ const translateStyleValue = (
   if (typeof value === "number" && key !== "opacity") {
     return value + "px";
   }
+
+  if (typeof value === "string") {
+    if (/url\(.*?\)/.test(value)) {
+      value = value.replace(
+        /url\(["']?(.*?)["']?\)/,
+        `url(" + require("$1") + ")`
+      );
+    } else {
+      value = stringifyValue(value);
+    }
+  }
+
   return String(value);
 };
 
