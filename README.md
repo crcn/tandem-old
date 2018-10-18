@@ -24,6 +24,10 @@ Like Sketch or Figma but purpose-built for creating HTML & CSS. The layout is al
 
 Compile UI files to your language or framework of choice. You can even compile to _multiple_ targets if you want to. React is currently supported, static HTML, PHP, Vue, and other targets are in the pipeline.
 
+#### Visual programming where it makes sense
+
+The aim for Tandem is to offer visual programming tools where it makes more sense to do visually than by hand. This means HTML, CSS, and _simple_ behavior. Everything else can be added with code in the language of your choice. 
+
 #### Automatically translate designs from Sketch & Figma
 
 Tandem provides [CLI tooling](./packages/paperclip-design-converter) for Sketch & figma that allow you to quickly translate design files (not completely though, you still need to specify layout constraints however). You'll soon be able to even use your original design files as the source of truth for basic styles like colors & fonts.
