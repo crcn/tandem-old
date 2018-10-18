@@ -26,7 +26,7 @@ Compile UI files to your language or framework of choice. You can also compile t
 
 #### Organizes like code
 
-Tandem allows you to split components out into separate files that can be integrated into your existing codebase. Take a look at the Tandem source code for an example of how this can be done: https://github.com/crcn/tandem-preview/tree/master/packages/front-end/src/components
+Tandem allows you to split components out into separate files that can be integrated into your existing codebase, and organized however you want. Take a look at the Tandem source code for an example on how this can be done: https://github.com/crcn/tandem-preview/tree/master/packages/front-end/src/components
 
 #### Automatically translate designs from Sketch & Figma
 
