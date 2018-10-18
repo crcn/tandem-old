@@ -22,11 +22,16 @@ The aim for Tandem is to offer visual programming tools where it makes more sens
 
 #### Compiles to code
 
-Compile UI files to your language or framework of choice. You can also compile to _multiple_ targets if you want to. React is currently supported, static HTML, PHP, Vue, and other targets are in the pipeline.
+Compile UI files to your language or framework of choice. React is currently supported, static HTML, PHP, Vue, and other targets are in the pipeline.
+
+#### Decoupled from your code
+
+Tandem components are decoupled from your code, so you can re-use your UIs however you want. 
 
 #### Organizes like code
 
 Tandem allows you to split components out into separate files that can be integrated into your existing codebase, and organized however you want. Take a look at the Tandem source code for an example on how this can be done: https://github.com/crcn/tandem-preview/tree/master/packages/front-end/src/components
+
 
 #### Safety
 
