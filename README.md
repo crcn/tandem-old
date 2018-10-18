@@ -32,6 +32,9 @@ Tandem components are decoupled from your code, so you can re-use your UIs howev
 
 Tandem allows you to split components out into separate files that can be integrated into your existing codebase, and organized however you want. Take a look at the Tandem source code for an example on how this can be done: https://github.com/crcn/tandem-preview/tree/master/packages/front-end/src/components
 
+#### Basically code
+
+Tandem provides a _thin_ layer on top of HTML & CSS so you should be able to build just about anything you want. 
 
 #### Safety
 
