@@ -1,4 +1,4 @@
-CLI tool for converting design files (currently only supports sketch) to Paperclip
+CLI tool for converting design files (currently only supports sketch) to Paperclip. Video demo: https://www.youtube.com/watch?v=Ofqkcwc-eKE&feature=youtu.be
 
 Example:
 
