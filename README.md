@@ -5,41 +5,40 @@
 
 <br />
 
-> This repository is _temporarily_ private until bugs the UX have been worked out.
+> This repository is _temporarily_ private until bugs & UX issues have been worked out. I'd like to make sure that everything is solid before public testing, so please don't share the app. 🙂
 
 <br />
 
 Tandem is a visual editor for building web components. It can cover _most_ of your HTML & CSS development, and is designed to be compatible with most web-based languages, and frameworks. It currently works with React.
 
+
 ## Features
 
-Here are just a few highlights of what Tandem can do:
+Features are actively being _discovered_ while Tandem is applied to real problems (currently being used to build itself). Here are just a few highlights:
 
-#### Create HTML & CSS visually
+#### Visual programming where it makes sense
 
-Tandem covers most of your web UI creation, so you can say goodbye to writing HTML & CSS by hand for the most part (except for more complex cases).
+The aim for Tandem is to offer visual programming tools where it makes more sense to do visually than by hand. This means HTML, CSS, and _simple_ behavior. Everything else can be added with code in the language of your choice. 
 
 #### Compiles to code
 
-Compile UI files to your language or framework of choice. You can even compile to _multiple_ targets if you want to. Want to target PHP (coming soon) _and_ React code? You can do that.
+Compile UI files to your language or framework of choice. React is currently supported, static HTML, PHP, Vue, and other targets are in the pipeline.
 
-#### Immediate Feedback
+#### Decoupled from your code
 
-No need to wait around for your code to compile. Tandem provides immediate feedback of your HTML & CSS, so you can cut down the amount of time it takes to build your web app.
-
-More tooling & optimizations are in the pipeline to make Tandem feel more like pen & paper.
-
-#### Safety First
-
-UI files use CSS but without the "cascading" part of it, so you don't have to worry about styles overridding each other. If your using a strongly typed language like TypeScript, Tandem provides utilities around generating typed definition files for design files.
+Tandem components are decoupled from your code, so you can re-use your UIs however you want. 
 
 #### Organizes like code
 
-Transparent, and unopinionated about how you work or organize your application.
+Tandem allows you to split components out into separate files that can be integrated into your existing codebase, and organized however you want. Take a look at the Tandem source code for an example on how this can be done: https://github.com/crcn/tandem-preview/tree/master/packages/front-end/src/components
 
-#### Translate designs faster
+#### Safety
 
-Tandem makes it easier to translate design files from Sketch & Figma with [CLI tooling](./packages/paperclip-design-converter). You'll soon be able to even use your original design files as the source of truth for basic styles like colors & fonts.
+Tandem provides safety measures to ensure that your web components are built correctly. Tools like typed definition file generation for TypeScript-based projects, QA testing tools (soon) to provide you with a screenshot of every visual state of your application, and automated visual regression testing (soon). Visual tooling is also crafted to ensure that you can scale & manage Tandem components to any project size (todo - more on this). 
+
+#### Automatically translate designs from Sketch & Figma
+
+Tandem provides [CLI tooling](./packages/paperclip-design-converter) for Sketch & figma that allow you to quickly translate design files (not completely though, you still need to specify layout constraints however). You'll soon be able to even use your original design files as the source of truth for basic styles like colors & fonts.
 
 ## Resources
 
