@@ -16,8 +16,10 @@ export type ConversionOptions = {
   mainPageFileName?: string;
   symbols: boolean;
   colors: boolean;
+  pages: boolean;
   styleMixins: boolean;
   exports: boolean;
+  mixinLabelPattern?: string;
 };
 
 export type ConvertResultItem = {

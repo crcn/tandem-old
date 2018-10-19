@@ -22,21 +22,14 @@ paperclip-design-converter path/to/design/file.sketch --only-colors > --write=pa
 paperclip-design-converter path/to/design/file.sketch --only-exports --write=path/to/component/dir
 
 # also works with figma
-paperclip-design-converter eBjqeLULnzNdsruu8J66Mx9w --figma-token=abcde --write=path/to/component/dir
+paperclip-design-converter eBjqeLULnzNdsruu8J66Mx9w --figma-token=abcde --write=path/to/component/dir --mixin-label-pattern="[MIXIN]"
 ```
-
-#### TODOS
-
-- convert style mixins
-- convert symbols to components
-- convert color swatches to global variables
-- Figma support
-- warning for unsupported styles
 
 #### CLI Options
 
-- `no-colors` - convert convert only colors
 - `no-style-mixins` - convert only style mixins
 - `no-components` - convert only symbols
+- `mixin-label-pattern` - Elevate layers to mixins with this pattern.
+- `no-pages` - do not generate pages component file
 
 ####

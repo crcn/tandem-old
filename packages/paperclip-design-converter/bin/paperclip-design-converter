@@ -18,11 +18,12 @@ outputDirectory = outputDirectory.charAt(0) === "/" ? outputDirectory : path.joi
 
 openDesign(source, argv).then((design) => {
   return convertDesign(design, {
-    components: Boolean(argv.components),
-    colors: Boolean(argv.colors),
-    exports: Boolean(argv.exports),
-    styleMixins: Boolean(argv.exports),
-    pages: Boolean(argv.pages)
+    components: argv.components !== false,
+    colors: argv.colors !== false,
+    exports: argv.exports !== false,
+    styleMixins: argv.exports !== false,
+    mixinLabelPattern: argv.mixinLabelPattern,
+    pages: argv.pages !== false
   });
 }).then((result) => {
   return writeConvertedDesignFiles(result, outputDirectory);

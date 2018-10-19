@@ -33,6 +33,17 @@ import {
 } from "tandem-common";
 import { px } from "./utils";
 import { BlendMode } from "figma-js";
+import {
+  isElementLikePCNode,
+  isTextLikePCNode,
+  PCVisibleNode,
+  PCStyleMixin,
+  createPCTextStyleMixin,
+  filterTextStyles,
+  PCTextLikeNode,
+  PCTextNode,
+  createPCElementStyleMixin
+} from "paperclip";
 
 export type FigmaDesign = {
   document: figma.Document;
@@ -193,21 +204,99 @@ export const convertDesign = async (
     // [modules[pageName], globalsModule] = elevateCommonStylesToGlobal(modules[pageName], globalsModule);
   }
 
-  // result.push({
-  //   name: "globals",
-  //   extension: PC_EXT_NAME,
-  //   content: new Buffer(JSON.stringify(globalsModule, null, 2))
-  // });
-
-  for (const pageName in modules) {
+  if (options.mixinLabelPattern) {
+    const tester = new RegExp(
+      options.mixinLabelPattern.replace(/([\[\]\{\}])+/g, "\\$1")
+    );
+    let mixinsModule = createPCModule();
+    for (const pageName in modules) {
+      [modules[pageName], mixinsModule] = elevateMixinsWithLabelTester(
+        modules[pageName],
+        mixinsModule,
+        tester
+      );
+    }
     result.push({
-      name: pageName,
+      name: "mixins",
       extension: PC_EXT_NAME,
-      content: new Buffer(JSON.stringify(modules[pageName], null, 2))
+      content: new Buffer(JSON.stringify(mixinsModule, null, 2))
     });
   }
 
+  if (options.pages) {
+    for (const pageName in modules) {
+      result.push({
+        name: pageName,
+        extension: PC_EXT_NAME,
+        content: new Buffer(JSON.stringify(modules[pageName], null, 2))
+      });
+    }
+  }
+
   return result;
+};
+
+const elevateMixinsWithLabelTester = (
+  root: PCModule,
+  dest: PCModule,
+  tester: RegExp
+) => {
+  const mixins: PCStyleMixin[] = [];
+  const map = (node: PCNode) => {
+    if (isElementLikePCNode(node) || isTextLikePCNode(node)) {
+      let visNode = node as PCVisibleNode;
+      if (visNode.label && tester.test(visNode.label)) {
+        let updatedStyle = {};
+        let mixin: PCStyleMixin;
+        const label = visNode.label.replace(tester, "");
+
+        // no need to filter styles since Figma does that for us.
+        if (isTextLikePCNode(node)) {
+          const text = node as PCTextNode;
+          mixin = createPCTextStyleMixin(text.style, text.value, null, label);
+        } else if (isElementLikePCNode(node)) {
+          const element = node as PCElement;
+          mixin = createPCElementStyleMixin(element.style, null, label);
+        }
+        mixin = cleanId({ ...mixin, id: `mixin_${node.id}` });
+
+        delete mixin.style.left;
+        delete mixin.style.top;
+        delete mixin.style.display;
+        delete mixin.style.width;
+        delete mixin.style.height;
+        delete mixin.style.position;
+        delete mixin.style["box-sizing"];
+
+        mixins.push(mixin);
+
+        visNode = {
+          ...visNode,
+          style: {},
+          label,
+          styleMixins: {
+            [mixin.id]: {
+              priority: 1
+            }
+          },
+          children: visNode.children.map(map)
+        };
+
+        return visNode;
+      }
+    }
+
+    return {
+      ...node,
+      children: node.children.map(map)
+    };
+  };
+
+  root = map(root);
+  for (const mixin of mixins) {
+    dest = appendChildNode(mixin, dest);
+  }
+  return [root, dest];
 };
 
 const convertDocument = (document: figma.Document, design: FigmaDesign) => {
@@ -391,6 +480,7 @@ const convertFigmaNode = (offsetPosition: Point, design: FigmaDesign) => (
         id: "component_" + node.id,
         name: PCSourceTagNames.COMPONENT,
         is: "div",
+        label: node.name,
         variant: EMPTY_OBJECT,
         style: convertComponentStyle(node, newOffsetPosition),
         attributes: EMPTY_OBJECT,
@@ -423,6 +513,7 @@ const convertFigmaNode = (offsetPosition: Point, design: FigmaDesign) => (
       );
       pcNode = {
         id: node.id,
+        label: node.name,
         name: PCSourceTagNames.COMPONENT_INSTANCE,
         style: convertInstanceStyle(node, position),
         is: "component_" + node.componentId.replace(/:/g, "_"),
@@ -442,8 +533,8 @@ const convertFigmaNode = (offsetPosition: Point, design: FigmaDesign) => (
   return pcNode && cleanId(pcNode);
 };
 
-const cleanId = (node: PCNode): PCNode => ({
-  ...node,
+const cleanId = <TNode extends PCNode>(node: TNode): TNode => ({
+  ...(node as any),
   id: node.id.replace(/:/g, "_")
 });
 const getFigmaNodePoint = (

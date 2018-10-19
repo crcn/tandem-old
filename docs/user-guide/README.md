@@ -533,18 +533,26 @@ There are some utilities that you can use in order to speed up the process of cr
 
 ### Importing from Figma or Sketch
 
-We'll go over how you can trans
+Video: https://www.youtube.com/watch?v=Ofqkcwc-eKE&feature=youtu.be
 
-1. Setup access token
+First up, you'll need to install the [Paperclip design converter CLI tool](../../packages/paperclip-design-converter). In Terminal, run:
 
-TODO:
+```
+npm install paperclip-design-converter -g
+```
 
-- not everything translated
-- Refactor stories
-- using Sketch as source of truth for colors & typography
+After that, we can start import our design. If you're coming from Sketch, you'll need to use Figma to import it into Tandem. Here's how you do that: https://help.figma.com/import/importing-sketch-files
 
-### Recordng websites
+Next, you'll need to set up a a Personal Access Token under your account settings. Copy & paste it in a safe place.
 
-TODO:
+After that, open up your Figma project and copy the ID in the URL.
 
-- Migration tool
+![Replace slot children](./assets/copy-figma-project-id.gif)
+
+Head over to terminal and change the `cwd` to your Tandem project, then run:
+
+```
+paperclip-design-converter [PROJECT_ID] --figma-token=[PERSONAL_ACCESS_TOKEN] --output-directory=src/figma --vector-format=svg
+```
+
+Run, that, and it'll import your Figma project into Tandem. Keep in mind that the design at this point isn't ready for the web since it's unresponsive to layout changes, so you'll need to update _every_ layer to make sure that it conforms to web standards.
