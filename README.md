@@ -11,6 +11,9 @@
 
 Tandem is a visual editor for building web components. It can cover _most_ of your HTML & CSS development, and is designed to be compatible with most web-based languages, and frameworks. It currently works with React.
 
+![Split view](./assets/screenshots/split-view-figma-import.png)
+
+Tandem is created with scalability & maintainability in mind first, and as a litmus test, Tandem is being used to build itself.
 
 ## Features
 
@@ -18,7 +21,7 @@ Features are actively being _discovered_ while Tandem is applied to real problem
 
 #### Visual programming where it makes sense
 
-The aim for Tandem is to offer visual programming tools where it makes more sense to do visually than by hand. This means HTML, CSS, and _simple_ behavior. Everything else can be added with code in the language of your choice. 
+The aim for Tandem is to offer visual programming tools where it makes more sense to do visually than by hand. This means HTML, CSS, and _simple_ behavior. Everything else can be added with code in the language of your choice.
 
 #### Compiles to code
 
@@ -26,7 +29,7 @@ Compile UI files to your language or framework of choice. React is currently sup
 
 #### Decoupled from your code
 
-Tandem components are decoupled from your code, so you can re-use your UIs however you want. 
+Tandem components are decoupled from your code, so you can re-use your UIs however you want.
 
 #### Organizes like code
 
@@ -34,7 +37,7 @@ Tandem allows you to split components out into separate files that can be integr
 
 #### Safety
 
-Tandem provides safety measures to ensure that your web components are built correctly. Tools like typed definition file generation for TypeScript-based projects, QA testing tools (soon) to provide you with a screenshot of every visual state of your application, and automated visual regression testing (soon). Visual tooling is also crafted to ensure that you can scale & manage Tandem components to any project size (todo - more on this). 
+Tandem provides safety measures to ensure that your web components are built correctly. Tools like typed definition file generation for TypeScript-based projects, QA testing tools (soon) to provide you with a screenshot of every visual state of your application, and automated visual regression testing (soon). Visual tooling is also crafted to ensure that you can scale & manage Tandem components to any project size (todo - more on this).
 
 #### Automatically translate designs from Sketch & Figma
 

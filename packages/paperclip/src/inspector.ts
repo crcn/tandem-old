@@ -35,7 +35,11 @@ import {
   getSyntheticSourceNode
 } from "./synthetic";
 
-import { diffTreeNode, patchTreeNode } from "./ot";
+import {
+  diffTreeNode,
+  patchTreeNode,
+  TreeNodeOperationalTransform
+} from "./ot";
 
 import {
   TreeNode,
@@ -705,3 +709,46 @@ export const updateAlts = (root: InspectorNode) => {
 
   return map(root);
 };
+
+/*
+
+Considerations:
+
+- components
+- slots
+- plugs
+
+To ignore:
+
+- overrides
+
+
+*/
+
+export const calcTransformsFromGraph = memoize(
+  (
+    oldRootInspector: InspectorNode,
+    oldGraph: DependencyGraph,
+    newGraph: DependencyGraph
+  ) => {
+    let newRootInspector = oldRootInspector;
+
+    for (const uri in oldGraph) {
+      const oldDependency = oldGraph[uri];
+      const newDependency = newGraph[uri];
+      if (!oldDependency || !newDependency) {
+        continue;
+      }
+      const oldModule = oldDependency[uri];
+      const newModule = newDependency[uri];
+      const diffs = diffTreeNode(oldModule, newModule);
+
+      for (const diff of diffs) {
+        for (const index of diff.nodePath) {
+        }
+      }
+    }
+
+    return newRootInspector;
+  }
+);
