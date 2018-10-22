@@ -1,6 +1,6 @@
 {
   "name": "tandem-desktop",
-  "version": "10.0.37",
+  "version": "10.0.38",
   "description": "",
   "private": true,
   "main": "lib/index.js",

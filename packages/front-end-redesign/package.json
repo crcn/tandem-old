@@ -1,7 +1,8 @@
 {
   "name": "front-end-redesign",
-  "version": "10.0.37",
+  "version": "10.0.38",
   "description": "",
+  "private": true,
   "main": "index.js",
   "scripts": {
     "test": "echo \"\"",
