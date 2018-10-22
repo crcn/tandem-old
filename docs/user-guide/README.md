@@ -399,7 +399,7 @@ export default (Base: React.ComponentClass<BaseApplicationProps>) =>
   };
 ```
 
-This is _basic_ controller code for Tandem components. They basically wrap around the target component and is used wherever the component is used.
+This is basic controller code for Tandem components. It wraps around the target component and is used whenever the component is used.
 
 Next, we'll need to edit the Application component to expose areas where the controller can add behavior. Select the _first_ todo item, right click it, and select "Wrap in slot". After that, rename the [slot](../concepts.md#slot) to something more specific and then drop all of the other todo items in that layer.
 
