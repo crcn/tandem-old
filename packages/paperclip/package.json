@@ -23,7 +23,8 @@
     "paperclip-migrator": "^10.0.37",
     "redux": "^4.0.0",
     "redux-saga": "^0.16.0",
-    "tandem-common": "^10.0.37"
+    "tandem-common": "^10.0.37",
+    "xml-js": "^1.6.8"
   },
   "devDependencies": {
     "@types/mocha": "^5.2.0",

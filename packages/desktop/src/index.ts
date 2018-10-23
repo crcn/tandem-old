@@ -4,13 +4,7 @@ import * as fs from "fs";
 import { init } from "./desktop";
 import { TDProject } from "./desktop/state";
 
-let projectPath =
-  process.argv
-    .join(" ")
-    .toLowerCase()
-    .indexOf("electron") !== -1
-    ? process.argv[2]
-    : process.argv[1];
+let projectPath = process.argv[2];
 let project: TDProject;
 
 if (projectPath) {
