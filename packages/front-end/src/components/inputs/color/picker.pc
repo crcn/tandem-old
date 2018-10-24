@@ -1130,6 +1130,66 @@
         }
       },
       "variant": {}
+    },
+    {
+      "label": "Element",
+      "is": "div",
+      "style": {
+        "box-sizing": "border-box",
+        "display": "block"
+      },
+      "attributes": {},
+      "id": "9f403f03642",
+      "name": "component",
+      "children": [
+        {
+          "id": "f8e70c72646",
+          "children": [
+            {
+              "id": "12e7cd48645",
+              "label": "Element",
+              "is": "div",
+              "name": "element",
+              "attributes": {},
+              "style": {
+                "box-sizing": "border-box",
+                "display": "block"
+              },
+              "children": [],
+              "metadata": {}
+            }
+          ],
+          "metadata": {},
+          "name": "slot"
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": -186,
+          "top": 474,
+          "right": -86,
+          "bottom": 574
+        }
+      },
+      "variant": {}
+    },
+    {
+      "id": "12e7cd48642",
+      "is": "9f403f03642",
+      "label": "Element",
+      "name": "component-instance",
+      "attributes": {},
+      "style": {},
+      "children": [],
+      "metadata": {
+        "bounds": {
+          "left": -39,
+          "top": 406,
+          "right": 61,
+          "bottom": 506
+        }
+      },
+      "variant": {}
     }
   ]
 }

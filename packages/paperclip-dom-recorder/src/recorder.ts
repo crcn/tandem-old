@@ -104,7 +104,7 @@ export class PCDOMRecorder {
 
   private prepareSnapshotRoot = () => {
     let root = this._snapshotRoot;
-    root = elevateCommonStylesToGlobal(root);
+    [root] = elevateCommonStylesToGlobal(root);
     return root;
   };
 

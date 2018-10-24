@@ -57,6 +57,7 @@ setup<DesktopRootState>(
   customChrome: Boolean(query.customChrome),
   selectedFileNodeIds: [],
   sourceNodeInspector: createRootInspectorNode(),
+  sourceNodeInspectorMap: {},
   selectedInspectorNodeIds: [],
   editorWindows: [],
   frames: [],
