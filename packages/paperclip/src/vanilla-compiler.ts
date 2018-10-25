@@ -43,7 +43,8 @@ export type VanillaPCRenderer = (
   style: any,
   variant: any,
   overrides: any,
-  components: VanillaPCRenderers
+  components: VanillaPCRenderers,
+  isRoot?: boolean
 ) => SyntheticElement;
 
 // Note: we're not using immutability here because this thing needs to be _fast_
@@ -115,9 +116,14 @@ const translateContentNode = memoize(
     buffer += translateStaticOverrides(node as PCComponent, varMap, sourceUri);
     buffer += translateStaticVariants(node, varMap, sourceUri);
 
-    buffer += `return function(instanceSourceNodeId, instancePath, attributes, style, variant, overrides, components) {
+    buffer += `return function(instanceSourceNodeId, instancePath, attributes, style, variant, overrides, components, isRoot) {
       ${translateVariants(node)}
       var childInstancePath = instancePath == null ? "" : (instancePath ? instancePath + "." : "") + instanceSourceNodeId;
+
+      // tiny optimization
+      if (style.display === "none" && !isRoot) {
+        return null;
+      }
       return ${translateVisibleNode(node, true)};
     }`;
 
@@ -149,7 +155,7 @@ const translateVisibleNode = memoize(
           isContentNode
         )}, ${translateDynamicVariant(node)}, ${translateDynamicOverrides(
           node as PCComponent
-        )}, components)`;
+        )}, components, ${isContentNode ? "isRoot" : "false"})`;
       }
 
       return `{
@@ -165,7 +171,7 @@ const translateVisibleNode = memoize(
       children: [${node.children
         .map(translateElementChild)
         .filter(Boolean)
-        .join(",")}]
+        .join(",")}].filter(Boolean)
     }`;
     } else if (node.name === PCSourceTagNames.TEXT) {
       return `{
@@ -193,7 +199,7 @@ const translateVisibleNode = memoize(
           children: [${node.children
             .map(translateElementChild)
             .filter(Boolean)
-            .join(",")}]
+            .join(",")}].filter(Boolean)
         }`;
       } else if (node.targetType === PCSourceTagNames.TEXT) {
         return `{
@@ -295,13 +301,12 @@ const translateDynamicOverrides = (
   let buffer = `merge(_${node.id}Overrides, merge(merge(overrides._${
     node.id
   }Overrides, overrides), {`;
-
   for (const child of node.children as PCNode[]) {
     if (child.name === PCSourceTagNames.PLUG && child.children.length) {
       buffer += `_${child.slotId}Children: [${child.children
         .map(translateElementChild)
         .filter(Boolean)
-        .join(",")}],\n`;
+        .join(",")}].filter(Boolean),\n`;
     }
   }
 

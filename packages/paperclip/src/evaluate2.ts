@@ -68,7 +68,8 @@ const evaluateModule = memoize(
             EMPTY_OBJECT,
             variants[child.id] || EMPTY_OBJECT,
             EMPTY_OBJECT,
-            usedRenderers
+            usedRenderers,
+            true
           );
         })
     );

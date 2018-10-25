@@ -1137,7 +1137,9 @@
       "label": "Element",
       "name": "component-instance",
       "attributes": {},
-      "style": {},
+      "style": {
+        "display": "none"
+      },
       "children": [
         {
           "slotId": "f8e70c72646",
