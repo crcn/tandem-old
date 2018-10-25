@@ -33,7 +33,8 @@ import {
   EditorTabClicked,
   editorTabContextMenuOpenInBottomTabOptionClicked,
   syntheticNodeContextMenuConvertTextStylesToMixinClicked,
-  syntheticNodeContextMenuRenameClicked
+  syntheticNodeContextMenuRenameClicked,
+  syntheticNodeContextMenuShowInCanvasClicked
 } from "../actions";
 import {
   ContextMenuItem,
@@ -324,6 +325,11 @@ export const createShortcutSaga = ({
               action: syntheticNodeContextMenuSelectSourceNodeClicked(
                 syntheticNode
               )
+            },
+            {
+              type: ContextMenuOptionType.ITEM,
+              label: "Show in Canvas",
+              action: syntheticNodeContextMenuShowInCanvasClicked(syntheticNode)
             }
           ].filter(Boolean) as ContextMenuItem[]
         }

@@ -181,7 +181,8 @@ import {
   SYNTHETIC_NODE_CONTEXT_MENU_CONVERT_TEXT_STYLES_TO_MIXIN_CLICKED,
   SYNTHETIC_NODE_CONTEXT_MENU_RENAME_CLICKED,
   PC_LAYER_DOUBLE_CLICKED,
-  PCLayerRightClicked
+  PCLayerRightClicked,
+  SYNTHETIC_NODE_CONTEXT_MENU_SHOW_IN_CANVAS_CLICKED
 } from "../actions";
 import {
   queueOpenFile,
@@ -340,7 +341,8 @@ import {
   getDerrivedPCLabel,
   persistConvertSyntheticVisibleNodeStyleToMixin,
   getSyntheticSourceUri,
-  inspectorNodeInInstanceOfComponent
+  inspectorNodeInInstanceOfComponent,
+  getSyntheticVisibleNodeComputedBounds
 } from "paperclip";
 import {
   roundBounds,
@@ -2678,6 +2680,27 @@ const shortcutReducer = (state: RootState, action: Action): RootState => {
           state.graph
         ).id
       };
+      return state;
+    }
+
+    case SYNTHETIC_NODE_CONTEXT_MENU_SHOW_IN_CANVAS_CLICKED: {
+      const { item } = action as SyntheticNodeContextMenuAction;
+
+      if (!item) {
+        return state;
+      }
+
+      const uri = getSyntheticDocumentDependencyUri(
+        getSyntheticVisibleNodeDocument(item.id, state.documents),
+        state.graph
+      );
+      const frame = getSyntheticVisibleNodeFrame(item, state.frames);
+      const bounds = getSyntheticVisibleNodeComputedBounds(
+        item,
+        frame,
+        state.graph
+      );
+      state = centerEditorCanvas(state, uri, shiftBounds(bounds, frame.bounds));
       return state;
     }
 

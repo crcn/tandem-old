@@ -180,6 +180,8 @@ export const SYNTHETIC_NODE_CONTEXT_MENU_SELECT_PARENT_CLICKED =
   "SYNTHETIC_NODE_CONTEXT_MENU_SELECT_PARENT_CLICKED";
 export const SYNTHETIC_NODE_CONTEXT_MENU_SELECT_SOURCE_NODE_CLICKED =
   "SYNTHETIC_NODE_CONTEXT_MENU_SELECT_SOURCE_NODE_CLICKED";
+export const SYNTHETIC_NODE_CONTEXT_MENU_SHOW_IN_CANVAS_CLICKED =
+  "SYNTHETIC_NODE_CONTEXT_MENU_SHOW_IN_CANVAS_CLICKED";
 export const INHERIT_PANE_REMOVE_BUTTON_CLICK =
   "INHERIT_PANE_REMOVE_BUTTON_CLICK";
 export const EXPORT_NAME_CHANGED = "EXPORT_NAME_CHANGED";
@@ -811,6 +813,13 @@ export const syntheticNodeContextMenuSelectParentClicked = publicActionCreator(
 export const syntheticNodeContextMenuSelectSourceNodeClicked = publicActionCreator(
   (item: SyntheticVisibleNode): SyntheticNodeContextMenuAction => ({
     type: SYNTHETIC_NODE_CONTEXT_MENU_SELECT_SOURCE_NODE_CLICKED,
+    item
+  })
+);
+
+export const syntheticNodeContextMenuShowInCanvasClicked = publicActionCreator(
+  (item: SyntheticVisibleNode): SyntheticNodeContextMenuAction => ({
+    type: SYNTHETIC_NODE_CONTEXT_MENU_SHOW_IN_CANVAS_CLICKED,
     item
   })
 );
