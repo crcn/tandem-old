@@ -23,7 +23,8 @@ import {
   sourceInspectorLayerClicked,
   sourceInspectorLayerArrowClicked,
   sourceInspectorLayerLabelChanged,
-  pcLayerRightClicked
+  pcLayerRightClicked,
+  pcLayerDoubleClicked
 } from "../../../../../actions";
 import {
   containsNestedTreeNodeById,
@@ -41,6 +42,7 @@ export type Props = {
 
 type ContextProps = {
   isSelected: boolean;
+  editingLabel: boolean;
   isHovering: boolean;
   dispatch: Dispatch<any>;
   label: string;
@@ -83,6 +85,7 @@ export default (Base: React.ComponentClass<BaseNodeLayerProps>) => {
           selectedInspectorNodeIds,
           hoveringInspectorNodeIds,
           dispatch,
+          renameInspectorNodeId,
           rootInspectorNode
         }: LayersPaneContextProps
       ) => {
@@ -116,9 +119,9 @@ export default (Base: React.ComponentClass<BaseNodeLayerProps>) => {
             label = assocSourceNode.label;
           }
         }
-
         return {
           dispatch,
+          editingLabel: renameInspectorNodeId === inspectorNode.id,
           isSelected: selectedInspectorNodeIds.indexOf(inspectorNode.id) !== -1,
           isHovering: hoveringInspectorNodeIds.indexOf(inspectorNode.id) !== -1,
           label,
@@ -164,10 +167,6 @@ export default (Base: React.ComponentClass<BaseNodeLayerProps>) => {
     ),
     Base => {
       return class LayerController extends React.Component<InnerProps, any> {
-        constructor(props) {
-          super(props);
-          this.state = { editingLabel: false };
-        }
         onLabelClick = event => {
           this.props.dispatch(
             sourceInspectorLayerClicked(this.props.inspectorNode, event)
@@ -179,11 +178,13 @@ export default (Base: React.ComponentClass<BaseNodeLayerProps>) => {
             sourceInspectorLayerArrowClicked(this.props.inspectorNode, event)
           );
         };
-        onLabelDoubleClick = () => {
+        onLabelDoubleClick = event => {
           if (
             this.props.inspectorNode.name === InspectorTreeNodeName.SOURCE_REP
           ) {
-            this.setState({ ...this.state, editingLabel: true });
+            this.props.dispatch(
+              pcLayerDoubleClicked(this.props.inspectorNode, event)
+            );
           }
         };
         onLabelRightClick = (event: React.MouseEvent<any>) => {
@@ -201,9 +202,6 @@ export default (Base: React.ComponentClass<BaseNodeLayerProps>) => {
         };
         private persistLabelChange = event => {
           const label = String((event.target as any).value || "").trim();
-
-          // labels SHOULD NOT be undefined
-          this.setState({ ...this.state, editingLabel: false });
           if (!label) {
             return;
           }
@@ -247,7 +245,7 @@ export default (Base: React.ComponentClass<BaseNodeLayerProps>) => {
             this.props.connectDropTarget !== nextProps.connectDropTarget ||
             this.props.inShadow !== nextProps.inShadow ||
             this.props.assocSourceNodeName !== nextProps.assocSourceNodeName ||
-            this.state.editingLabel !== nextState.editingLabel
+            this.props.editingLabel !== nextProps.editingLabel
           );
         }
         render() {
@@ -262,9 +260,9 @@ export default (Base: React.ComponentClass<BaseNodeLayerProps>) => {
             label,
             connectDropTarget,
             inShadow,
+            editingLabel,
             assocSourceNodeName
           } = this.props;
-          const { editingLabel } = this.state;
           const {
             onLabelClick,
             onArrowButtonClick,

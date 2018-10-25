@@ -267,6 +267,7 @@ export type RootState = {
   prevGraph?: DependencyGraph;
   showSidebar?: boolean;
   customChrome: boolean;
+  renameInspectorNodeId?: string;
 
   // TODO - may need to be moved to EditorWindow
   selectedVariant?: PCVariant;

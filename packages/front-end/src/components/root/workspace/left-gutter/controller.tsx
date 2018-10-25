@@ -12,6 +12,7 @@ export type Props = {
   selectedFileNodeIds: string[];
   sourceNodeInspector: InspectorNode;
   rootDirectory: Directory;
+  renameInspectorNodeId: string;
   dispatch: Dispatch<any>;
   editingFileNameUri: string;
   documents: SyntheticDocument[];
@@ -51,6 +52,7 @@ export default (Base: React.ComponentClass<BaseLeftGutterProps>) =>
         hoveringInspectorNodeIds,
         selectedFileNodeIds,
         sourceNodeInspector,
+        renameInspectorNodeId,
         dispatch,
         documents,
         editingFileNameUri,
@@ -73,6 +75,7 @@ export default (Base: React.ComponentClass<BaseLeftGutterProps>) =>
             graph,
             selectedInspectorNodeIds,
             hoveringInspectorNodeIds,
+            renameInspectorNodeId,
             sourceNodeInspector,
             dispatch,
             documents

@@ -18,6 +18,7 @@ export type Props = {
   hoveringInspectorNodeIds: string[];
   selectedInspectorNodeIds: string[];
   sourceNodeInspector: InspectorNode;
+  renameInspectorNodeId: string;
   documents: SyntheticDocument[];
   dispatch: Dispatch<any>;
 };
@@ -29,6 +30,7 @@ const generateLayersPaneContext = memoize(
     documents: SyntheticDocument[],
     selectedInspectorNodeIds: string[],
     hoveringInspectorNodeIds: string[],
+    renameInspectorNodeId: string,
     rootInspectorNode: InspectorNode,
     dispatch: Dispatch
   ): LayersPaneContextProps => ({
@@ -36,6 +38,7 @@ const generateLayersPaneContext = memoize(
     document,
     documents,
     rootInspectorNode,
+    renameInspectorNodeId,
     selectedInspectorNodeIds,
     hoveringInspectorNodeIds,
     dispatch
@@ -58,6 +61,7 @@ export default (Base: React.ComponentClass<BaseLayersPaneProps>) =>
         dispatch,
         selectedInspectorNodeIds,
         hoveringInspectorNodeIds,
+        renameInspectorNodeId,
         ...rest
       } = this.props;
 
@@ -88,6 +92,7 @@ export default (Base: React.ComponentClass<BaseLayersPaneProps>) =>
                   documents,
                   selectedInspectorNodeIds,
                   hoveringInspectorNodeIds,
+                  renameInspectorNodeId,
                   sourceNodeInspector,
                   dispatch
                 )}

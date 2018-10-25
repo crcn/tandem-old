@@ -10,6 +10,7 @@ export type LayersPaneContextProps = {
   selectedInspectorNodeIds: string[];
   document: SyntheticDocument;
   documents: SyntheticDocument[];
+  renameInspectorNodeId: string;
   dispatch: Dispatch<any>;
 };
 
