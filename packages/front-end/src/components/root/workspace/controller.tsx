@@ -34,7 +34,8 @@ export default (Base: React.ComponentClass<BaseWorkspaceProps>) =>
           selectedFileNodeIds,
           sourceNodeInspector,
           documents,
-          projectDirectory
+          projectDirectory,
+          renameInspectorNodeId
         } = root;
         const workspaceProps = mapStatetoPromptControllerProps(root);
         return (
@@ -42,6 +43,7 @@ export default (Base: React.ComponentClass<BaseWorkspaceProps>) =>
             <Base
               leftGutterProps={{
                 activeEditorUri,
+                renameInspectorNodeId,
                 editingFileNameUri: root.editingBasenameUri,
                 show: root.showSidebar,
                 selectedFileNodeIds,

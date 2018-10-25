@@ -172,12 +172,16 @@ export const SYNTHETIC_NODE_CONTEXT_MENU_CONVERT_TEXT_STYLES_TO_MIXIN_CLICKED =
   "SYNTHETIC_NODE_CONTEXT_MENU_CONVERT_TEXT_STYLES_TO_MIXIN_CLICKED";
 export const SYNTHETIC_NODE_CONTEXT_MENU_REMOVE_CLICKED =
   "SYNTHETIC_NODE_CONTEXT_MENU_REMOVE_CLICKED";
+export const SYNTHETIC_NODE_CONTEXT_MENU_RENAME_CLICKED =
+  "SYNTHETIC_NODE_CONTEXT_MENU_RENAME_CLICKED";
 export const SYNTHETIC_NODE_CONTEXT_MENU_WRAP_IN_SLOT_CLICKED =
   "SYNTHETIC_NODE_CONTEXT_MENU_WRAP_IN_SLOT_CLICKED";
 export const SYNTHETIC_NODE_CONTEXT_MENU_SELECT_PARENT_CLICKED =
   "SYNTHETIC_NODE_CONTEXT_MENU_SELECT_PARENT_CLICKED";
 export const SYNTHETIC_NODE_CONTEXT_MENU_SELECT_SOURCE_NODE_CLICKED =
   "SYNTHETIC_NODE_CONTEXT_MENU_SELECT_SOURCE_NODE_CLICKED";
+export const SYNTHETIC_NODE_CONTEXT_MENU_SHOW_IN_CANVAS_CLICKED =
+  "SYNTHETIC_NODE_CONTEXT_MENU_SHOW_IN_CANVAS_CLICKED";
 export const INHERIT_PANE_REMOVE_BUTTON_CLICK =
   "INHERIT_PANE_REMOVE_BUTTON_CLICK";
 export const EXPORT_NAME_CHANGED = "EXPORT_NAME_CHANGED";
@@ -208,6 +212,7 @@ export const ELEMENT_TYPE_CHANGED = "ELEMENT_TYPE_CHANGED";
 export const FILE_ITEM_RIGHT_CLICKED = "FILE_ITEM_RIGHT_CLICKED";
 export const CANVAS_RIGHT_CLICKED = "CANVAS_RIGHT_CLICKED";
 export const PC_LAYER_RIGHT_CLICKED = "PC_LAYER_RIGHT_CLICKED";
+export const PC_LAYER_DOUBLE_CLICKED = "PC_LAYER_DOUBLE_CLICKED";
 export const SOURCE_INSPECTOR_LAYER_CLICKED = "SOURCE_INSPECTOR_LAYER_CLICKED";
 export const SOURCE_INSPECTOR_LAYER_ARROW_CLICKED =
   "SOURCE_INSPECTOR_LAYER_ARROW_CLICKED";
@@ -784,6 +789,13 @@ export const syntheticNodeContextMenuRemoveClicked = publicActionCreator(
   })
 );
 
+export const syntheticNodeContextMenuRenameClicked = publicActionCreator(
+  (item: SyntheticVisibleNode): SyntheticNodeContextMenuAction => ({
+    type: SYNTHETIC_NODE_CONTEXT_MENU_RENAME_CLICKED,
+    item
+  })
+);
+
 export const syntheticNodeContextMenuWrapInSlotClicked = publicActionCreator(
   (item: SyntheticVisibleNode): SyntheticNodeContextMenuAction => ({
     type: SYNTHETIC_NODE_CONTEXT_MENU_WRAP_IN_SLOT_CLICKED,
@@ -801,6 +813,13 @@ export const syntheticNodeContextMenuSelectParentClicked = publicActionCreator(
 export const syntheticNodeContextMenuSelectSourceNodeClicked = publicActionCreator(
   (item: SyntheticVisibleNode): SyntheticNodeContextMenuAction => ({
     type: SYNTHETIC_NODE_CONTEXT_MENU_SELECT_SOURCE_NODE_CLICKED,
+    item
+  })
+);
+
+export const syntheticNodeContextMenuShowInCanvasClicked = publicActionCreator(
+  (item: SyntheticVisibleNode): SyntheticNodeContextMenuAction => ({
+    type: SYNTHETIC_NODE_CONTEXT_MENU_SHOW_IN_CANVAS_CLICKED,
     item
   })
 );
@@ -1021,6 +1040,15 @@ export const pcLayerRightClicked = (
 ): PCLayerRightClicked => ({
   item,
   type: PC_LAYER_RIGHT_CLICKED,
+  event
+});
+
+export const pcLayerDoubleClicked = (
+  item: InspectorNode,
+  event: React.MouseEvent<any>
+): PCLayerRightClicked => ({
+  item,
+  type: PC_LAYER_DOUBLE_CLICKED,
   event
 });
 

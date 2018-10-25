@@ -14,7 +14,8 @@ import {
   EMPTY_OBJECT,
   memoize,
   pmark,
-  stringifyStyle
+  stringifyStyle,
+  Bounds
 } from "tandem-common";
 import {
   TreeNodeOperationalTransformType,
@@ -74,10 +75,16 @@ export const computeDisplayInfo = (
 
   for (const id in map) {
     const node = map[id];
+    const rect = (node as HTMLElement).getBoundingClientRect();
     if (node.nodeType === 1) {
       computed[id] = {
         style: window.getComputedStyle(node as HTMLElement),
-        bounds: (node as HTMLElement).getBoundingClientRect()
+        bounds: {
+          left: rect.left,
+          top: rect.top,
+          right: rect.right,
+          bottom: rect.bottom
+        }
       };
     }
   }

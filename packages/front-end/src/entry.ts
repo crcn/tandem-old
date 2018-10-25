@@ -10,6 +10,7 @@ init({
   hoveringInspectorNodeIds: [],
   selectedFileNodeIds: [],
   sourceNodeInspector: createRootInspectorNode(),
+  sourceNodeInspectorMap: {},
   selectedInspectorNodeIds: [],
   history: {
     index: 0,

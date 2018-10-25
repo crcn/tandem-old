@@ -32,7 +32,9 @@ import {
   EDITOR_TAB_RIGHT_CLICKED,
   EditorTabClicked,
   editorTabContextMenuOpenInBottomTabOptionClicked,
-  syntheticNodeContextMenuConvertTextStylesToMixinClicked
+  syntheticNodeContextMenuConvertTextStylesToMixinClicked,
+  syntheticNodeContextMenuRenameClicked,
+  syntheticNodeContextMenuShowInCanvasClicked
 } from "../actions";
 import {
   ContextMenuItem,
@@ -42,7 +44,7 @@ import {
   getCanvasMouseTargetNodeIdFromPoint,
   getCanvasMouseTargetNodeId
 } from "../state";
-import { Point, FSItemTagNames } from "tandem-common";
+import { Point, FSItemTagNames, EMPTY_OBJECT } from "tandem-common";
 import {
   getSyntheticNodeById,
   getSyntheticSourceNode,
@@ -61,6 +63,10 @@ import {
 
 export type ShortcutSagaOptions = {
   openContextMenu: (anchor: Point, options: ContextMenuOption[]) => void;
+};
+
+type OpenSyntheticNodeContextMenuOptions = {
+  showRenameLabelOption?: boolean;
 };
 
 export const createShortcutSaga = ({
@@ -194,14 +200,18 @@ export const createShortcutSaga = ({
           left: event.pageX,
           top: event.pageY
         },
-        state
+        state,
+        { showRenameLabelOption: true }
       );
     });
 
     function* openSyntheticNodeContextMenu(
       node: SyntheticNode,
       point: Point,
-      state: RootState
+      state: RootState,
+      {
+        showRenameLabelOption
+      }: OpenSyntheticNodeContextMenuOptions = EMPTY_OBJECT
     ) {
       const syntheticNode = getSyntheticNodeById(node.id, state.documents);
       const sourceNode = getSyntheticSourceNode(syntheticNode, state.graph);
@@ -230,6 +240,15 @@ export const createShortcutSaga = ({
           : {
               type: ContextMenuOptionType.GROUP,
               options: [
+                showRenameLabelOption
+                  ? {
+                      type: ContextMenuOptionType.ITEM,
+                      label: "Rename",
+                      action: syntheticNodeContextMenuRenameClicked(
+                        syntheticNode
+                      )
+                    }
+                  : null,
                 {
                   type: ContextMenuOptionType.ITEM,
                   label: "Remove",
@@ -306,6 +325,11 @@ export const createShortcutSaga = ({
               action: syntheticNodeContextMenuSelectSourceNodeClicked(
                 syntheticNode
               )
+            },
+            {
+              type: ContextMenuOptionType.ITEM,
+              label: "Show in Canvas",
+              action: syntheticNodeContextMenuShowInCanvasClicked(syntheticNode)
             }
           ].filter(Boolean) as ContextMenuItem[]
         }

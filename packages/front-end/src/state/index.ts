@@ -267,6 +267,7 @@ export type RootState = {
   prevGraph?: DependencyGraph;
   showSidebar?: boolean;
   customChrome: boolean;
+  renameInspectorNodeId?: string;
 
   // TODO - may need to be moved to EditorWindow
   selectedVariant?: PCVariant;
@@ -286,6 +287,10 @@ export type RootState = {
   hoveringInspectorNodeIds: string[];
   fontFamilies?: FontFamily[];
   sourceNodeInspector: InspectorTreeBaseNode<any>;
+  sourceNodeInspectorMap: KeyValue<string[]>;
+
+  // used for syncing
+  sourceNodeInspectorGraph?: DependencyGraph;
   selectedFileNodeIds: string[];
   selectedComponentVariantName?: string;
   ready?: boolean;
@@ -752,25 +757,27 @@ export const openFile = (
 };
 
 export const refreshModuleInspectorNodes = (state: RootState) => {
-  return updateRootState(
+  const [sourceNodeInspector, sourceNodeInspectorMap] = refreshInspectorTree(
+    state.sourceNodeInspector,
+    state.graph,
+    state.openFiles.map(({ uri }) => uri).filter(Boolean),
+    state.sourceNodeInspectorMap,
+    state.sourceNodeInspectorGraph
+  );
+
+  state = updateRootState(
     {
-      sourceNodeInspector: updateAlts({
-        ...state.sourceNodeInspector,
-        children: state.openFiles
-          .filter(openFile => Boolean(state.graph[openFile.uri]))
-          .map(openFile => {
-            const module = state.graph[openFile.uri].content;
-            const inspector = state.sourceNodeInspector.children.find(
-              inspector => inspector.assocSourceNodeId === module.id
-            );
-            return inspector
-              ? refreshInspectorTree(inspector, state.graph)
-              : evaluateModuleInspector(module, state.graph);
-          })
-      })
+      sourceNodeInspector,
+      sourceNodeInspectorMap,
+      sourceNodeInspectorGraph: state.graph,
+      selectedInspectorNodeIds: state.selectedInspectorNodeIds.filter(nodeId =>
+        Boolean(getNestedTreeNodeById(nodeId, sourceNodeInspector))
+      )
     },
     state
   );
+
+  return state;
 };
 
 export const updateSourceInspectorNode = (
@@ -1402,6 +1409,7 @@ export const getCanvasMouseTargetInspectorNode = (
     syntheticNodeId,
     state.documents
   ) as SyntheticVisibleNode;
+
   const assocInspectorNode = getSyntheticInspectorNode(
     syntheticNode,
     getSyntheticVisibleNodeDocument(syntheticNode.id, state.documents),
@@ -1518,10 +1526,13 @@ export const getCanvasMouseTargetNodeIdFromPoint = (
   const mouseFramePoint = { left: mouseX, top: mouseY };
   for (const id in computedInfo) {
     const { bounds } = computedInfo[id];
-    if (
-      pointIntersectsBounds(mouseFramePoint, bounds) &&
-      filter(getNestedTreeNodeById(id, contentNode), state)
-    ) {
+    const node = getNestedTreeNodeById(id, contentNode);
+
+    // synth nodes may be lagging behind graph
+    if (!node) {
+      continue;
+    }
+    if (pointIntersectsBounds(mouseFramePoint, bounds) && filter(node, state)) {
       intersectingBounds.unshift(bounds);
       intersectingBoundsMap.set(bounds, id);
     }
@@ -1591,21 +1602,6 @@ export const setSelectedSyntheticVisibleNodeIds = (
   root = updateRootState(
     {
       selectedInspectorNodeIds: assocInspectorNodes.map(node => node.id)
-
-      // deselect shadow inspector node if no selected inspector nodes are within the selected shadow node
-      // selectedShadowInspectorNodeId: root.selectedShadowInspectorNodeId
-      //   ? assocInspectorNodes.some(node =>
-      //       containsNestedTreeNodeById(
-      //         node.id,
-      //         getNestedTreeNodeById(
-      //           root.selectedShadowInspectorNodeId,
-      //           root.sourceNodeInspector
-      //         )
-      //       )
-      //     )
-      //     ? root.selectedShadowInspectorNodeId
-      //     : null
-      //   : null
     },
     root
   );

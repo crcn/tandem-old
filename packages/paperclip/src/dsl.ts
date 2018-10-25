@@ -689,7 +689,8 @@ export const createPCSlot = (
   id: generateUID(),
   children: defaultChildren || EMPTY_ARRAY,
   metadata: EMPTY_OBJECT,
-  name: PCSourceTagNames.SLOT
+  name: PCSourceTagNames.SLOT,
+  label: "Slot"
 });
 
 export const createPCPlug = (

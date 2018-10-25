@@ -178,7 +178,11 @@ import {
   ImagePathPicked,
   CSS_INHERITED_FROM_LABEL_CLICKED,
   CSSInheritedFromLabelClicked,
-  SYNTHETIC_NODE_CONTEXT_MENU_CONVERT_TEXT_STYLES_TO_MIXIN_CLICKED
+  SYNTHETIC_NODE_CONTEXT_MENU_CONVERT_TEXT_STYLES_TO_MIXIN_CLICKED,
+  SYNTHETIC_NODE_CONTEXT_MENU_RENAME_CLICKED,
+  PC_LAYER_DOUBLE_CLICKED,
+  PCLayerRightClicked,
+  SYNTHETIC_NODE_CONTEXT_MENU_SHOW_IN_CANVAS_CLICKED
 } from "../actions";
 import {
   queueOpenFile,
@@ -337,7 +341,8 @@ import {
   getDerrivedPCLabel,
   persistConvertSyntheticVisibleNodeStyleToMixin,
   getSyntheticSourceUri,
-  inspectorNodeInInstanceOfComponent
+  inspectorNodeInInstanceOfComponent,
+  getSyntheticVisibleNodeComputedBounds
 } from "paperclip";
 import {
   roundBounds,
@@ -991,7 +996,7 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
     }
     case SOURCE_INSPECTOR_LAYER_LABEL_CHANGED: {
       const { node, label } = action as InspectorLayerLabelChanged;
-
+      state = { ...state, renameInspectorNodeId: null };
       state = persistRootState(
         browser =>
           persistChangeLabel(
@@ -2661,6 +2666,50 @@ const shortcutReducer = (state: RootState, action: Action): RootState => {
         return persistRemoveSyntheticVisibleNode(item, state);
       }, state);
       state = setSelectedSyntheticVisibleNodeIds(state);
+      return state;
+    }
+
+    case SYNTHETIC_NODE_CONTEXT_MENU_RENAME_CLICKED: {
+      const { item } = action as SyntheticNodeContextMenuAction;
+      state = {
+        ...state,
+        renameInspectorNodeId: getSyntheticInspectorNode(
+          item,
+          getSyntheticVisibleNodeDocument(item.id, state.documents),
+          state.sourceNodeInspector,
+          state.graph
+        ).id
+      };
+      return state;
+    }
+
+    case SYNTHETIC_NODE_CONTEXT_MENU_SHOW_IN_CANVAS_CLICKED: {
+      const { item } = action as SyntheticNodeContextMenuAction;
+
+      if (!item) {
+        return state;
+      }
+
+      const uri = getSyntheticDocumentDependencyUri(
+        getSyntheticVisibleNodeDocument(item.id, state.documents),
+        state.graph
+      );
+      const frame = getSyntheticVisibleNodeFrame(item, state.frames);
+      const bounds = getSyntheticVisibleNodeComputedBounds(
+        item,
+        frame,
+        state.graph
+      );
+      state = centerEditorCanvas(state, uri, shiftBounds(bounds, frame.bounds));
+      return state;
+    }
+
+    case PC_LAYER_DOUBLE_CLICKED: {
+      const { item } = action as PCLayerRightClicked;
+      state = {
+        ...state,
+        renameInspectorNodeId: item.id
+      };
       return state;
     }
 
