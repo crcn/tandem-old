@@ -776,8 +776,6 @@ export const refreshModuleInspectorNodes = (state: RootState) => {
     state
   );
 
-  console.log(state.selectedInspectorNodeIds, state.selectedSyntheticNodeIds);
-
   return state;
 };
 
@@ -1411,14 +1409,12 @@ export const getCanvasMouseTargetInspectorNode = (
     state.documents
   ) as SyntheticVisibleNode;
 
-  console.log(syntheticNode.instancePath);
   const assocInspectorNode = getSyntheticInspectorNode(
     syntheticNode,
     getSyntheticVisibleNodeDocument(syntheticNode.id, state.documents),
     state.sourceNodeInspector,
     state.graph
   );
-  console.log("ASSOC INSPEC", assocInspectorNode, state.sourceNodeInspector);
   const insertableSourceNode = getInsertableInspectorNode(
     assocInspectorNode,
     state.sourceNodeInspector,

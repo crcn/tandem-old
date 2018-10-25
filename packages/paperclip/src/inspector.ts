@@ -60,7 +60,8 @@ import {
   EMPTY_OBJECT,
   getTreeNodeFromPath,
   replaceNestedNode,
-  insertChildNode
+  insertChildNode,
+  arraySplice
 } from "tandem-common";
 import { PCEditorState } from "./edit";
 // import { SyntheticNode, PCNode, PCModule, PCComponent, DependencyGraph, PCComponentInstanceElement, PCSourceTagNames, PCOverride, PCChildrenOverride } from "paperclip";
@@ -200,6 +201,23 @@ const addSourceMap = (
     inspectorNode.id
   ];
   return map;
+};
+
+const removeSourceMap = (
+  inspectorNode: InspectorNode,
+  map: KeyValue<string[]>
+) => {
+  const index = map[inspectorNode.assocSourceNodeId].indexOf(inspectorNode.id);
+  return index !== -1
+    ? {
+        ...map,
+        [inspectorNode.assocSourceNodeId]: arraySplice(
+          map[inspectorNode.assocSourceNodeId],
+          index,
+          1
+        )
+      }
+    : map;
 };
 
 const getShadowInstance = (shadow: InspectorNode, root: InspectorNode) => {
@@ -349,7 +367,6 @@ export const refreshInspectorTree = (
   sourceMap: KeyValue<string[]>,
   oldGraph: DependencyGraph = EMPTY_OBJECT
 ): [InspectorNode, KeyValue<string[]>] => {
-  console.log("REF NODE");
   let newSourceMap: KeyValue<string[]> = {};
 
   // 1. remove source map info
@@ -421,13 +438,25 @@ const patchInspectorTree = (
   let newSourceMap = { ...sourceMap };
 
   for (const ot of ots) {
-    const targetNode = getTreeNodeFromPath(ot.nodePath, oldModule);
-    const assocInspectorNodeIds = sourceMap[targetNode.id];
+    const targetNode = getTreeNodeFromPath(ot.nodePath, oldModule) as PCNode;
+    const assocId =
+      targetNode.name === PCSourceTagNames.PLUG
+        ? targetNode.slotId
+        : targetNode.id;
+    const assocInspectorNodeIds = sourceMap[assocId];
     for (const assocInspectorNodeId of assocInspectorNodeIds) {
       let assocInspectorNode = getNestedTreeNodeById(
         assocInspectorNodeId,
         rootInspectorNode
       ) as InspectorNode;
+
+      if (!assocInspectorNode) {
+        console.error(
+          `No inspector node assoc found for`,
+          targetNode,
+          assocInspectorNodeId
+        );
+      }
       const inShadow = inspectorNodeInShadow(
         assocInspectorNode,
         getInspectorContentNode(assocInspectorNode, rootInspectorNode)
@@ -505,12 +534,44 @@ const patchInspectorTree = (
               inShadow,
               newSourceMap
             );
-            if (child.name === PCSourceTagNames.PLUG) {
+
+            if (targetNode.name === PCSourceTagNames.PLUG) {
+              if (assocInspectorNode.name === InspectorTreeNodeName.CONTENT) {
+                const newChild = createInspectorSourceRep(
+                  pcChild,
+                  instancePath,
+                  false,
+                  inspectorChildren
+                );
+                newSourceMap = addSourceMap(newChild, sourceMap);
+                assocInspectorNode = insertChildNode(
+                  newChild,
+                  index,
+                  assocInspectorNode
+                );
+                rootInspectorNode = replaceNestedNode(
+                  assocInspectorNode,
+                  assocInspectorNode.id,
+                  rootInspectorNode
+                );
+              }
+            } else if (pcChild.name === PCSourceTagNames.PLUG) {
+              const slot = getPCNode(pcChild.slotId, newGraph) as PCSlot;
               const newChild = createInstanceContent(
-                child,
+                slot,
                 instancePath,
                 false,
                 inspectorChildren
+              );
+              newSourceMap = addSourceMap(newChild, newSourceMap);
+              const existingPlug = assocInspectorNode.children.find(
+                child => child.assocSourceNodeId === slot.id
+              );
+              newSourceMap = removeSourceMap(existingPlug, newSourceMap);
+              rootInspectorNode = replaceNestedNode(
+                newChild,
+                existingPlug.id,
+                rootInspectorNode
               );
             } else {
               const newChild = createInspectorSourceRep(
@@ -551,21 +612,24 @@ const patchInspectorTree = (
           break;
         }
         case TreeNodeOperationalTransformType.REMOVE_CHILD: {
-          const { index } = ot;
-          const childInspectorNode = assocInspectorNode.children[index];
-          rootInspectorNode = removeNestedTreeNode(
-            childInspectorNode,
-            rootInspectorNode
-          );
-          newSourceMap = flattenTreeNode(childInspectorNode).reduce(
-            (map, node) => {
+          if (
+            targetNode.name !== PCSourceTagNames.PLUG ||
+            assocInspectorNode.name === InspectorTreeNodeName.CONTENT
+          ) {
+            const { index } = ot;
+            const childInspectorNode = assocInspectorNode.children[index];
+            const pcChild = targetNode.children[index];
+            rootInspectorNode = removeNestedTreeNode(
+              childInspectorNode,
+              rootInspectorNode
+            );
+            newSourceMap = flattenTreeNode(pcChild).reduce((map, node) => {
               return {
                 ...map,
                 [node.id]: undefined
               };
-            },
-            newSourceMap
-          );
+            }, newSourceMap);
+          }
           break;
         }
         case TreeNodeOperationalTransformType.SET_PROPERTY: {
@@ -574,8 +638,6 @@ const patchInspectorTree = (
       }
     }
   }
-
-  console.log("ROOTE", Date.now() - now);
 
   return [rootInspectorNode, newSourceMap];
 };
