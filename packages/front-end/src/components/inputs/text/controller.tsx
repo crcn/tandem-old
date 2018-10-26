@@ -25,7 +25,7 @@ export const withPureInputHandlers = () => (
     onKeyDown = event => {
       const { onChange, onChangeComplete, value: oldValue } = this.props;
       const nativeEvent = event.nativeEvent;
-      setImmediate(() => {
+      setTimeout(() => {
         const {
           key,
           target: { value: newValue }
