@@ -42,10 +42,11 @@ export default (Base: React.ComponentClass<BaseVariablesInputProps>) =>
         ...rest
       } = this.props;
 
-      const items = globalVariables.map(variable => {
+      const items = globalVariables.map((variable, i) => {
         return (
           <VariableRowItem
             key={variable.id}
+            alt={Boolean(i % 2)}
             variable={variable}
             fontFamilies={fontFamilies}
             dispatch={dispatch}

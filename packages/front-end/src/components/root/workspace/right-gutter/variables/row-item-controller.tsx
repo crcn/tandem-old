@@ -14,6 +14,7 @@ import { FontFamily } from "../../../../../state";
 import { getFontFamilyOptions } from "../styles/pretty/panes/typography-controller";
 
 export type Props = {
+  alt: boolean;
   dispatch: Dispatch<any>;
   variable: PCVariable;
   fontFamilies: FontFamily[];
@@ -40,7 +41,7 @@ export default (Base: React.ComponentClass<BaseVariableRowItemProps>) =>
         onValueChangeComplete,
         onLabelChangeComplete
       } = this;
-      const { variable, fontFamilies, ...rest } = this.props;
+      const { variable, fontFamilies, alt, ...rest } = this.props;
       const limited = variable.type === PCVariableType.FONT;
       const color = variable.type === PCVariableType.COLOR;
       const unlimited =
@@ -57,6 +58,7 @@ export default (Base: React.ComponentClass<BaseVariableRowItemProps>) =>
         <Base
           {...rest}
           variant={cx({
+            alt,
             unlimited,
             limited,
             color

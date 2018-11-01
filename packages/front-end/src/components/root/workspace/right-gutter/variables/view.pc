@@ -577,7 +577,6 @@
                   "variantId": "3a6461fb961320",
                   "propertyName": "style",
                   "targetIdPath": [
-                    "3a6461fb916875"
                   ],
                   "value": {
                     "display": "block",
@@ -734,7 +733,6 @@
                   "variantId": "4b46931a1525369",
                   "propertyName": "style",
                   "targetIdPath": [
-                    "4b46931a1511119"
                   ],
                   "value": {
                     "display": "none"
@@ -747,7 +745,6 @@
                   "variantId": "3a6461fb961320",
                   "propertyName": "style",
                   "targetIdPath": [
-                    "4b46931a1511119"
                   ],
                   "value": {
                     "display": "none"

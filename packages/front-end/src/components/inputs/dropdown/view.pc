@@ -171,17 +171,6 @@
                             "top": "1px"
                           },
                           "children": [
-                            {
-                              "id": "a06d2e8129692",
-                              "variantId": null,
-                              "propertyName": "style",
-                              "targetIdPath": [],
-                              "value": {
-                                "display": "none"
-                              },
-                              "name": "override",
-                              "children": []
-                            }
                           ],
                           "metadata": {}
                         }
@@ -493,19 +482,6 @@
               ],
               "metadata": {},
               "name": "plug"
-            },
-            {
-              "id": "188d32b58761",
-              "propertyName": "style",
-              "targetIdPath": [
-                "8b8bbe2c232831"
-              ],
-              "value": {
-                "border": "1px none rgba(0,0,0,0.08)",
-                "background": "rgba(255, 255, 255, 0)"
-              },
-              "name": "override",
-              "children": []
             },
             {
               "id": "22702c5f14240",

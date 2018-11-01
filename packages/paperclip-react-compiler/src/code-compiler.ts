@@ -372,11 +372,14 @@ const translateStyleVariantOverrides = (
   component: ContentNode,
   context: TranslateContext
 ) => {
-  const styleOverrides = getOverrides(instance).filter(
+  // FIXME: need to sort based on variant priority
+  const styleOverrides = (getOverrides(instance).filter(
     node =>
       node.propertyName === PCOverridablePropertyName.STYLE &&
       Object.keys(node.value).length
-  ) as PCStyleOverride[];
+  ) as PCStyleOverride[]).sort((a, b) => {
+    return a.variantId ? 1 : -1;
+  });
 
   for (const override of styleOverrides) {
     // include the target ID path and all of the instances paths
@@ -488,7 +491,7 @@ const translateContentNode = (
       }StaticProps, props);\n`,
       context
     );
-    context = addClassNameCheck(`${contentNode.id}`, `props`, `props`, context);
+    context = addClassNameCheck(`${contentNode.id}`, `props`, context);
   } else {
     context = addLine(
       `var _${contentNode.id}Props = Object.assign({}, overrides, props);`,
@@ -520,14 +523,7 @@ const translateContentNode = (
       );
 
       if (node.name !== PCSourceTagNames.COMPONENT_INSTANCE) {
-        context = addClassNameCheck(
-          node.id,
-          `_${contentNode.id}Props.${propsVarName} && _${
-            contentNode.id
-          }Props.${propsVarName}`,
-          `_${contentNode.id}Props.${propsVarName}`,
-          context
-        );
+        context = addClassNameCheck(node.id, `_${node.id}Props`, context);
       }
 
       // context = addLine(
@@ -600,13 +596,15 @@ const getVariantLabelMap = (contentNode: ContentNode) => {
 
 const addClassNameCheck = (
   id: string,
-  check: string,
   varName: string,
   context: TranslateContext
 ) => {
-  context = addOpenTag(`if(${check}.hasOwnProperty("className")) {\n`, context);
+  context = addOpenTag(
+    `if(${varName}.className !== _${id}StaticProps.className) {\n`,
+    context
+  );
   context = addLine(
-    `_${id}Props.className = _${id}StaticProps.className + " " + ${varName}.className;`,
+    `_${id}Props.className = _${id}StaticProps.className + (${varName}.className ? " " + ${varName}.className : "");`,
     context
   );
   context = addCloseTag(`}\n\n`, context);

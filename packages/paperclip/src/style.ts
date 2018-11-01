@@ -72,7 +72,6 @@ export const computeStyleInfo = memoize(
     const sourceNode = getPCNode(inspectorNode.assocSourceNodeId, graph) as
       | PCVisibleNode
       | PCComponent;
-    const module = getPCNodeModule(sourceNode.id, graph);
     let current: PCNode = sourceNode;
 
     if (options.parentStyles !== false) {
