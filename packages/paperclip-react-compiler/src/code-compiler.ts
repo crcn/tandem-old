@@ -470,12 +470,16 @@ const translateContentNode = (
     `return _variantMapCache[variant] || (_variantMapCache[variant] = variant.split(" ").map(function(label) { return VARIANT_LABEL_ID_MAP[label.trim()] || label.trim(); }));`,
     context
   );
-  context = addCloseTag(`}\n`, context);
+  context = addCloseTag(`};\n\n`, context);
 
   context = addOpenTag(
-    `var render${publicClassName} = function(props) {\n`,
+    `var Base${publicClassName} = class extends React.PureComponent {\n`,
     context
   );
+
+  context = addOpenTag(`render() {\n`, context);
+
+  context = addLine(`var props = this.props;\n`, context);
 
   if (isPCComponentOrInstance(contentNode) && !extendsComponent(contentNode)) {
     context = addLineItem(
@@ -555,17 +559,18 @@ const translateContentNode = (
   }
   context = addLine(";", context);
 
-  context = addCloseTag(`};\n`, context);
+  context = addCloseTag(`}\n`, context);
+  context = addCloseTag(`}\n\n`, context);
 
   if (isComponent(contentNode)) {
     context = translateControllers(
-      `render${publicClassName}`,
+      `Base${publicClassName}`,
       contentNode,
       context
     );
   }
 
-  context = addLine(`return render${publicClassName};`, context);
+  context = addLine(`return Base${publicClassName};`, context);
 
   context = addCloseTag(`};\n`, context);
 
