@@ -71,6 +71,12 @@ import {
   getVariableRefMap
 } from "paperclip";
 import { PCStyleMixin } from "paperclip";
+import {
+  PCComputedOverrideMap,
+  getPCParentComponentInstances,
+  getAllParentComponentInstance
+} from "paperclip/src";
+import { EMPTY_ARRAY } from "tandem-common";
 export const compilePaperclipModuleToReact = (
   entry: PCDependency,
   graph: DependencyGraph
@@ -201,8 +207,16 @@ const translateComponentStyles = (
   component: ContentNode,
   context: TranslateContext
 ) => {
+  context = addLine(
+    `const styleVariantKey = (overrides.variantPrefixSelectors ? JSON.stringify(overrides.variantPrefixSelectors) : "${
+      component.id
+    }") + "Style";`,
+    context
+  );
   context = addOpenTag(
-    `if (typeof document !== "undefined" && !_${component.id}.style) {\n`,
+    `if (typeof document !== "undefined" && !_${
+      component.id
+    }[styleVariantKey]) {\n`,
     context
   );
   const styleVarName = getInternalVarName(component) + "Style";
@@ -210,7 +224,7 @@ const translateComponentStyles = (
   context = addLine(
     `var ${styleVarName} = _${
       component.id
-    }.style = document.createElement("style");`,
+    }[styleVariantKey] = document.createElement("style");`,
     context
   );
   context = addLine(`${styleVarName}.type = "text/css";`, context);
@@ -363,16 +377,33 @@ const translateStyleVariantOverrides = (
       node.propertyName === PCOverridablePropertyName.STYLE &&
       Object.keys(node.value).length
   ) as PCStyleOverride[];
-  const prefix =
-    instance.name === PCSourceTagNames.COMPONENT_INSTANCE
-      ? `._${component.id} `
-      : "";
 
   for (const override of styleOverrides) {
-    let selector = `._${override.id}`;
-    if (override.variantId) {
-      selector += `._${override.variantId}`;
+    // include the target ID path and all of the instances paths
+    let selector = `${override.targetIdPath.map(id => `._${id}`).join(" ")}`;
+
+    // If an instance, then is a child of component and we should include in the scope
+    // of the style override to ensure that we don't override other instances.
+    if (instance.name === PCSourceTagNames.COMPONENT_INSTANCE) {
+      selector = `._${instance.id} ${selector}`;
     }
+
+    // if variant is defined, then it will be defined at the component level. Note that
+    // we'll need to include combo variants here at some point. Also note that component ID isn't necessary
+    // here since variant IDS are specific to components.
+    if (override.variantId) {
+      selector = `" + (overrides.variantPrefixSelectors && overrides.variantPrefixSelectors["${
+        override.variantId
+      }"] && overrides.variantPrefixSelectors["${
+        override.variantId
+      }"].map(prefix => prefix + " ${selector}").join(", ") + ", " || "") + "._${
+        override.variantId
+      } ${selector}`;
+    } else {
+      // component id is necessary to ensure that the override doesn't bleed into other components
+      selector = `._${component.id} ${selector}`;
+    }
+
     context = addOpenTag(`"${selector} {" + \n`, context);
     context = translateStyle(
       getPCNode(last(override.targetIdPath), context.graph) as ContentNode,
@@ -426,11 +457,20 @@ const translateContentNode = (
   context = translateComponentStyles(contentNode, context);
 
   const variantLabelMap = getVariantLabelMap(contentNode);
+
   context = addOpenTag(`const VARIANT_LABEL_ID_MAP = {\n`, context);
   for (const id in variantLabelMap) {
     context = addLine(`"${variantLabelMap[id][0]}": "${id}",`, context);
   }
   context = addCloseTag(`};\n`, context);
+
+  context = addLine(`var _variantMapCache = {};\n`, context);
+  context = addOpenTag(`var getVariantMap = function(variant) {\n`, context);
+  context = addLine(
+    `return _variantMapCache[variant] || (_variantMapCache[variant] = variant.split(" ").map(function(label) { return VARIANT_LABEL_ID_MAP[label.trim()] || label.trim(); }));`,
+    context
+  );
+  context = addCloseTag(`}\n`, context);
 
   context = addOpenTag(
     `var render${publicClassName} = function(props) {\n`,
@@ -451,11 +491,8 @@ const translateContentNode = (
       context
     );
   }
-
   context = addLine(
-    `var variant = _${contentNode.id}Props.variant != null ? _${
-      contentNode.id
-    }Props.variant.split(" ").map(function(label) { return VARIANT_LABEL_ID_MAP[label.trim()] || label.trim(); }) : EMPTY_ARRAY;`,
+    `var variant = props.variant != null ? getVariantMap(props.variant) : EMPTY_ARRAY;`,
     context
   );
 
@@ -471,16 +508,22 @@ const translateContentNode = (
       const propsVarName = getNodePropsVarName(node, context);
 
       context = defineNestedObject([`_${node.id}Props`], false, context);
-      context = addLineItem(`var _${node.id}Props = `, context);
+      // context = addLineItem(`var _${node.id}Props = (_${contentNode.id}Props.${propsVarName} || _${contentNode.id}Props._${node.id}) && `, context);
       context = addLine(
-        `Object.assign({}, _${node.id}StaticProps, _${contentNode.id}Props._${
-          node.id
-        }, _${contentNode.id}Props.${propsVarName});`,
+        `var _${node.id}Props = Object.assign({}, _${node.id}StaticProps, _${
+          contentNode.id
+        }Props._${node.id}, _${contentNode.id}Props.${propsVarName});`,
         context
       );
 
       if (node.name !== PCSourceTagNames.COMPONENT_INSTANCE) {
-        context = addClassNameCheck(node.id, `_${node.id}Props`, context);
+        context = addClassNameCheck(
+          node.id,
+          `_${contentNode.id}Props.${propsVarName} && _${
+            contentNode.id
+          }Props.${propsVarName}`,
+          context
+        );
       }
 
       // context = addLine(
@@ -576,13 +619,20 @@ const translatedUsedComponentInstances = (
     isPCComponentInstance
   );
 
+  // dirty 🙈
+  let usedComponent = false;
+
   if (isPCComponentOrInstance(component) && extendsComponent(component)) {
+    usedComponent = true;
     context = translateUsedComponentInstance(
       component as PCComponentInstanceElement,
       context
     );
   }
   for (const instance of componentInstances) {
+    if (instance === component && usedComponent) {
+      continue;
+    }
     context = translateUsedComponentInstance(
       instance as PCComponentInstanceElement,
       context
@@ -615,6 +665,85 @@ const translateUsedComponentInstance = (
   return context;
 };
 
+const translateVariantSelectors = (
+  instance: PCComponentInstanceElement | PCComponent,
+  map: PCComputedOverrideMap,
+  context: TranslateContext
+) => {
+  const variantSelectors = {};
+
+  for (const key in map) {
+    const instanceMap = map[key][instance.id] || EMPTY_OBJECT;
+
+    const overrides: PCOverride[] = instanceMap.overrides || EMPTY_ARRAY;
+    for (const override of overrides) {
+      if (override.propertyName !== PCOverridablePropertyName.VARIANT) {
+        continue;
+      }
+
+      let instancePathSelector = override.targetIdPath.map(id => `._${id}`);
+
+      let newKey: string;
+
+      if (key === COMPUTED_OVERRIDE_DEFAULT_KEY) {
+        newKey = instance.id;
+      } else {
+        newKey = key;
+      }
+
+      for (const variantId in override.value) {
+        if (!variantSelectors[variantId]) {
+          variantSelectors[variantId] = [];
+        }
+
+        // tee-up for combo classes
+        variantSelectors[variantId].push(`._${newKey} ${instancePathSelector}`);
+      }
+    }
+  }
+
+  return variantSelectors;
+};
+
+const getInstanceVariantOverrideMap = (
+  instance: PCComponentInstanceElement | PCComponent,
+  map: PCComputedOverrideMap,
+  context: TranslateContext
+) => {
+  const newMap = {};
+
+  for (const key in map) {
+    const instanceMap = map[key][instance.id] || EMPTY_OBJECT;
+
+    const overrides = instanceMap.overrides || EMPTY_ARRAY;
+    for (const override of overrides) {
+      if (override.propertyName !== PCOverridablePropertyName.VARIANT) {
+        continue;
+      }
+
+      let newKey: string;
+
+      if (key === COMPUTED_OVERRIDE_DEFAULT_KEY) {
+        newKey = context.currentScope;
+        console.log(context.currentScope);
+      } else {
+        newKey = key;
+      }
+
+      for (const variantId in override.value) {
+        if (!newMap[variantId]) {
+          newMap[variantId] = [];
+        }
+
+        // tee-up for combo classes
+        newMap[variantId].push([newKey]);
+      }
+    }
+  }
+
+  return newMap;
+};
+
 const translateUsedComponentOverrides = (
   instance: PCComponentInstanceElement | PCComponent,
   context: TranslateContext
@@ -625,11 +754,16 @@ const translateUsedComponentOverrides = (
     context
   );
 
-  if (instance.variant && Object.keys(instance.variant).length) {
+  // const variantOverrideMap = getInstanceVariantOverrideMap(instance, overrideMap, context);
+  const variantSelectors = translateVariantSelectors(
+    instance,
+    overrideMap,
+    context
+  );
+
+  if (Object.keys(variantSelectors).length) {
     context = addLine(
-      `variant: "${Object.keys(instance.variant)
-        .filter(key => instance.variant[key])
-        .join(" ")}",`,
+      `variantPrefixSelectors: ${JSON.stringify(variantSelectors)},`,
       context
     );
   }
@@ -713,13 +847,6 @@ const translateStaticOverrides = (
   return context;
 };
 
-const getPCOverrideVarName = memoize(
-  (override: PCOverride, component: ContentNode) => {
-    const parent = getParentTreeNode(override.id, component);
-    return `_${parent.id}_${override.targetIdPath.join("_")}Props`;
-  }
-);
-
 const translateControllers = (
   renderName: string,
   component: PCComponent,
@@ -774,12 +901,12 @@ const translateContentNodeVariantOverrides = (
   component: ContentNode,
   context: TranslateContext
 ) => {
-  const instances = filterNestedNodes(
-    component,
-    node =>
-      node.name === PCSourceTagNames.COMPONENT ||
-      node.name === PCSourceTagNames.COMPONENT_INSTANCE
-  );
+  // const instances = filterNestedNodes(
+  //   component,
+  //   node =>
+  //     node.name === PCSourceTagNames.COMPONENT ||
+  //     node.name === PCSourceTagNames.COMPONENT_INSTANCE
+  // );
 
   const variants = getPCVariants(component);
   for (const variant of variants) {
@@ -787,19 +914,28 @@ const translateContentNodeVariantOverrides = (
       `if (variant.indexOf("${variant.id}") !== -1) {\n`,
       context
     );
-    for (let i = instances.length; i--; ) {
-      const instance = instances[i];
-      const overrideMap = getOverrideMap(instance);
-      if (!overrideMap[variant.id]) {
-        continue;
-      }
-      context = translateDynamicOverrides(
-        component,
-        instance,
-        variant.id,
-        context
-      );
-    }
+
+    context = addLine(
+      `_${context.currentScope}Props.className = (_${
+        context.currentScope
+      }Props.className ? _${
+        context.currentScope
+      }Props.className + " " : "") + "_${variant.id}";`,
+      context
+    );
+    // for (let i = instances.length; i--; ) {
+    //   const instance = instances[i];
+    //   const overrideMap = getOverrideMap(instance);
+    //   if (!overrideMap[variant.id]) {
+    //     continue;
+    //   }
+    //   context = translateDynamicOverrides(
+    //     component,
+    //     instance,
+    //     variant.id,
+    //     context
+    //   );
+    // }
     context = addCloseTag(`}\n`, context);
   }
 
@@ -1132,9 +1268,7 @@ const translateVisibleNode = (node: PCNode, context: TranslateContext) => {
 
       if (hasStyle(node)) {
         return addLineItem(
-          `React.createElement("span", _toNativeProps(_${
-            node.id
-          }Props), ${textValue})`,
+          `React.createElement("span", _${node.id}Props, ${textValue})`,
           context
         );
       } else {

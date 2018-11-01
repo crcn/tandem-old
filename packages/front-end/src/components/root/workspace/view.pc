@@ -288,19 +288,6 @@
           },
           "name": "override",
           "children": []
-        },
-        {
-          "id": "6d3eb14312",
-          "variantId": null,
-          "propertyName": "style",
-          "targetIdPath": [
-            "317401b1720367"
-          ],
-          "value": {
-            "display": "none"
-          },
-          "name": "override",
-          "children": []
         }
       ],
       "metadata": {

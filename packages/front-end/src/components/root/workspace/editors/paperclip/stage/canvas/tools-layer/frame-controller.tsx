@@ -38,12 +38,6 @@ export type Props = {
   graph: DependencyGraph;
 };
 
-type InnerProps = {
-  onTitleClick: any;
-  onPreviewButtonClick: any;
-  onModeChangeComplete: any;
-} & Props;
-
 export default (Base: React.ComponentClass<BaseFrameProps>) =>
   class FrameController extends React.PureComponent<Props> {
     onTitleClick = (event: React.MouseEvent<any>) => {
@@ -60,9 +54,9 @@ export default (Base: React.ComponentClass<BaseFrameProps>) =>
       this.props.dispatch(frameModeChangeComplete(this.props.frame, mode));
     };
     render() {
-      const { frame, translate, contentNode, sourceNode, graph } = this.props;
+      const { frame, translate, sourceNode } = this.props;
 
-      const { onTitleClick, onModeChangeComplete, onPreviewButtonClick } = this;
+      const { onTitleClick, onPreviewButtonClick } = this;
 
       const { width, height } = getBoundsSize(frame.bounds);
 

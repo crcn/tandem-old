@@ -37,7 +37,11 @@ import {
   getSyntheticSourceNode
 } from "./synthetic";
 
-import { diffTreeNode, TreeNodeOperationalTransformType } from "./ot";
+import {
+  diffTreeNode,
+  TreeNodeOperationalTransformType,
+  patchTreeNode
+} from "./ot";
 
 import {
   TreeNode,
@@ -423,6 +427,11 @@ export const refreshInspectorTree = (
   return [root, newSourceMap];
 };
 
+const isUnreppedSourceNode = (node: PCNode) =>
+  node.name === PCSourceTagNames.VARIABLE ||
+  node.name === PCSourceTagNames.OVERRIDE ||
+  node.name === PCSourceTagNames.VARIANT;
+
 const patchInspectorTree = (
   rootInspectorNode: InspectorTreeBaseNode<any>,
   newGraph: DependencyGraph,
@@ -430,7 +439,6 @@ const patchInspectorTree = (
   sourceMap: KeyValue<string[]>,
   oldGraph: DependencyGraph
 ): [InspectorNode, KeyValue<string[]>] => {
-  const now = Date.now();
   const newModule = newGraph[uri].content;
   const oldModule = oldGraph[uri].content;
   const ots = diffTreeNode(oldModule, newModule);
@@ -439,6 +447,7 @@ const patchInspectorTree = (
 
   for (const ot of ots) {
     const targetNode = getTreeNodeFromPath(ot.nodePath, oldModule) as PCNode;
+    const patchedTarget = patchTreeNode([ot], targetNode);
     const assocId =
       targetNode.name === PCSourceTagNames.PLUG
         ? targetNode.slotId
@@ -470,11 +479,17 @@ const patchInspectorTree = (
                 rootInspectorNode
               )
             : null;
-      const shadowInstance =
-        shadow && getShadowInstance(shadow, rootInspectorNode);
       switch (ot.type) {
         case TreeNodeOperationalTransformType.INSERT_CHILD: {
-          const { child, index } = ot;
+          const { child } = ot;
+
+          if (isUnreppedSourceNode(child as PCNode)) {
+            break;
+          }
+
+          const index = patchedTarget.children
+            .filter(child => !isUnreppedSourceNode(child))
+            .indexOf(child);
 
           const pcChild = child as PCNode;
           const instancePath = assocInspectorNode.instancePath;
@@ -617,8 +632,19 @@ const patchInspectorTree = (
             assocInspectorNode.name === InspectorTreeNodeName.CONTENT
           ) {
             const { index } = ot;
-            const childInspectorNode = assocInspectorNode.children[index];
-            const pcChild = targetNode.children[index];
+
+            const child = targetNode.children[index];
+            if (isUnreppedSourceNode(child)) {
+              break;
+            }
+
+            const inspectorIndex = targetNode.children
+              .filter(child => !isUnreppedSourceNode(child))
+              .indexOf(child);
+
+            const childInspectorNode =
+              assocInspectorNode.children[inspectorIndex];
+            const pcChild = targetNode.children[inspectorIndex];
             rootInspectorNode = removeNestedTreeNode(
               childInspectorNode,
               rootInspectorNode
