@@ -19,15 +19,6 @@ export type Props = {
   dispatch: Dispatch<any>;
 };
 
-type InnerProps = {
-  onPointerClick: any;
-  onTextClick: any;
-  onTabClick: any;
-  onComponentClick: any;
-  onElementClick: any;
-  onTabCloseButtonClick: any;
-} & Props;
-
 export default (Base: React.ComponentClass<BaseToolbarProps>) =>
   class ToolbarController extends React.PureComponent<Props> {
     onTabClick = (event, uri) => {

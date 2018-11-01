@@ -488,7 +488,7 @@ const translateContentNode = (
       }StaticProps, props);\n`,
       context
     );
-    context = addClassNameCheck(`${contentNode.id}`, `props`, context);
+    context = addClassNameCheck(`${contentNode.id}`, `props`, `props`, context);
   } else {
     context = addLine(
       `var _${contentNode.id}Props = Object.assign({}, overrides, props);`,
@@ -507,7 +507,6 @@ const translateContentNode = (
     .reduce((context, node: ContentNode) => {
       if (node === contentNode) return context;
       context = addScopedLayerLabel(`${node.label} Props`, node.id, context);
-      context = addLine("", context);
 
       const propsVarName = getNodePropsVarName(node, context);
 
@@ -526,6 +525,7 @@ const translateContentNode = (
           `_${contentNode.id}Props.${propsVarName} && _${
             contentNode.id
           }Props.${propsVarName}`,
+          `_${contentNode.id}Props.${propsVarName}`,
           context
         );
       }
@@ -600,18 +600,16 @@ const getVariantLabelMap = (contentNode: ContentNode) => {
 
 const addClassNameCheck = (
   id: string,
+  check: string,
   varName: string,
   context: TranslateContext
 ) => {
-  context = addOpenTag(
-    `if(${varName}.hasOwnProperty("className")) {\n`,
-    context
-  );
+  context = addOpenTag(`if(${check}.hasOwnProperty("className")) {\n`, context);
   context = addLine(
-    `_${id}Props.className = _${id}StaticProps.className + (${varName}.className ? " " + ${varName}.className : "");`,
+    `_${id}Props.className = _${id}StaticProps.className + " " + ${varName}.className;`,
     context
   );
-  context = addCloseTag(`}\n`, context);
+  context = addCloseTag(`}\n\n`, context);
   return context;
 };
 
