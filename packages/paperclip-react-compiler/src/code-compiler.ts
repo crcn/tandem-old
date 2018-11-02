@@ -42,7 +42,8 @@ import {
   stripProtocol,
   filterNestedNodes,
   memoize,
-  getParentTreeNode
+  getParentTreeNode,
+  reduceTree
 } from "tandem-common";
 import * as path from "path";
 import {
@@ -74,9 +75,13 @@ import { PCStyleMixin } from "paperclip";
 import {
   PCComputedOverrideMap,
   getPCParentComponentInstances,
-  getAllParentComponentInstance
-} from "paperclip/src";
+  getAllParentComponentInstance,
+  filterNestedOverrides,
+  mergeVariantOverrides
+} from "paperclip";
 import { EMPTY_ARRAY } from "tandem-common";
+import { getTreeNodesByName } from "tandem-common";
+import { getPCNodeContentNode } from "paperclip";
 export const compilePaperclipModuleToReact = (
   entry: PCDependency,
   graph: DependencyGraph
@@ -382,14 +387,21 @@ const translateStyleVariantOverrides = (
   });
 
   for (const override of styleOverrides) {
-    // include the target ID path and all of the instances paths
-    let selector = `${override.targetIdPath.map(id => `._${id}`).join(" ")}`;
+    // console.log(instance.id, component.id, override.targetIdPath.length === 0 && instance.id === component.id);
+
+    // override id is added as className to target element when imported. Necessary
+    // to ensure that edge-cases like portals still maintain override values.
+    let selector = `._${
+      override.targetIdPath.length === 0 && instance.id === component.id
+        ? instance.id
+        : override.id
+    }`;
 
     // If an instance, then is a child of component and we should include in the scope
     // of the style override to ensure that we don't override other instances.
-    if (instance.name === PCSourceTagNames.COMPONENT_INSTANCE) {
-      selector = `._${instance.id} ${selector}`;
-    }
+    // if (instance.name === PCSourceTagNames.COMPONENT_INSTANCE) {
+    //   selector = `._${instance.id} ${selector}`;
+    // }
 
     // if variant is defined, then it will be defined at the component level. Note that
     // we'll need to include combo variants here at some point. Also note that component ID isn't necessary
@@ -401,10 +413,7 @@ const translateStyleVariantOverrides = (
         override.variantId
       }"].map(prefix => prefix + " ${selector}").join(", ") + ", " || "") + "._${
         override.variantId
-      } ${selector}`;
-    } else {
-      // component id is necessary to ensure that the override doesn't bleed into other components
-      selector = `._${component.id} ${selector}`;
+      } ${selector}, ._${override.variantId}${selector}`;
     }
 
     context = addOpenTag(`"${selector} {" + \n`, context);
@@ -661,7 +670,15 @@ const translateUsedComponentInstance = (
     context
   );
   context = translateUsedComponentOverrides(instance, context);
-  context = addLine(`className: "_${instance.id}",`, context);
+  const contentNode =
+    getPCNodeContentNode(instance.id, context.entry.content) || instance;
+  context = translateStaticStyleOverride(
+    instance.id,
+    getAllNodeOverrides(instance.id, contentNode),
+    context,
+    true
+  );
+  // context = addLine(`className: "_${instance.id}",`, context);
   context = addCloseTag(`}, ${overrideProp}));\n\n`, context);
   return context;
 };
@@ -726,7 +743,6 @@ const getInstanceVariantOverrideMap = (
 
       if (key === COMPUTED_OVERRIDE_DEFAULT_KEY) {
         newKey = context.currentScope;
-        console.log(context.currentScope);
       } else {
         newKey = key;
       }
@@ -751,7 +767,7 @@ const translateUsedComponentOverrides = (
 ) => {
   const overrideMap = getOverrideMap(instance);
   context = translateUsedComponentOverrideMap(
-    overrideMap[COMPUTED_OVERRIDE_DEFAULT_KEY],
+    mergeVariantOverrides(overrideMap),
     context
   );
 
@@ -783,6 +799,7 @@ const translateUsedComponentOverrideMap = (
       for (const override of overrides) {
         context = translateStaticOverride(override, context);
       }
+      context = translateStaticStyleOverride(key, overrides, context, false);
       context = translateUsedComponentOverrideMap(children, context);
       context = addCloseTag(`},\n`, context);
     }
@@ -832,6 +849,7 @@ const translateStaticOverrides = (
     if (node.name !== PCSourceTagNames.COMPONENT_INSTANCE) {
       context = addLine(`className: "_${node.id}",`, context);
     }
+
     if (node.name === PCSourceTagNames.TEXT) {
       context = addLine(`text: ${JSON.stringify(node.value)},`, context);
     }
@@ -846,6 +864,20 @@ const translateStaticOverrides = (
     }
   }
   return context;
+};
+
+const getAllNodeOverrides = (nodeId: string, contentNode: PCNode) => {
+  const node = getNestedTreeNodeById(nodeId, contentNode) as PCNode;
+  return (getTreeNodesByName(
+    PCSourceTagNames.OVERRIDE,
+    contentNode
+  ) as PCOverride[]).filter(override => {
+    return (
+      last(override.targetIdPath) === nodeId ||
+      (override.targetIdPath.length === 0 &&
+        node.children.indexOf(override) !== -1)
+    );
+  });
 };
 
 const translateControllers = (
@@ -1190,10 +1222,8 @@ const translateStaticOverride = (
   if (override.variantId) {
     return context;
   }
+
   switch (override.propertyName) {
-    case PCOverridablePropertyName.STYLE: {
-      return addLine(`className: "_${override.id}",`, context);
-    }
     case PCOverridablePropertyName.TEXT: {
       return addLine(`text: ${JSON.stringify(override.value)},`, context);
     }
@@ -1212,6 +1242,32 @@ const translateStaticOverride = (
       break;
     }
   }
+
+  return context;
+};
+
+const translateStaticStyleOverride = (
+  nodeId: string,
+  overrides: PCOverride[],
+  context: TranslateContext,
+  includeNodeId: boolean = true
+) => {
+  const styleOverrides = overrides.filter(
+    override => override.propertyName === PCOverridablePropertyName.STYLE
+  );
+  if (!styleOverrides.length && !includeNodeId) {
+    return context;
+  }
+
+  let nodeIds = styleOverrides.map(override => override.id);
+  if (includeNodeId) {
+    nodeIds = [nodeId, ...nodeIds];
+  }
+
+  context = addLine(
+    `className: "${nodeIds.map(nodeId => "_" + nodeId).join(" ")}", `,
+    context
+  );
 
   return context;
 };

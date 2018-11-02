@@ -441,13 +441,21 @@ const patchInspectorTree = (
 ): [InspectorNode, KeyValue<string[]>] => {
   const newModule = newGraph[uri].content;
   const oldModule = oldGraph[uri].content;
-  const ots = diffTreeNode(oldModule, newModule);
+  let tmpModule = oldModule;
+  const ots = diffTreeNode(tmpModule, newModule);
 
   let newSourceMap = { ...sourceMap };
 
   for (const ot of ots) {
-    const targetNode = getTreeNodeFromPath(ot.nodePath, oldModule) as PCNode;
-    const patchedTarget = patchTreeNode([ot], targetNode);
+    const targetNode = getTreeNodeFromPath(ot.nodePath, tmpModule) as PCNode;
+
+    if (isUnreppedSourceNode(targetNode as PCNode)) {
+      continue;
+    }
+
+    tmpModule = patchTreeNode([ot], tmpModule);
+    const patchedTarget = getTreeNodeFromPath(ot.nodePath, tmpModule) as PCNode;
+
     const assocId =
       targetNode.name === PCSourceTagNames.PLUG
         ? targetNode.slotId

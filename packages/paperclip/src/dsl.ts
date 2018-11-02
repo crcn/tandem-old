@@ -1437,6 +1437,35 @@ export const getOverrideMap = memoize((node: PCNode, includeSelf?: boolean) => {
   return map;
 });
 
+export const mergeVariantOverrides = (variantMap: PCComputedOverrideMap) => {
+  let map: PCComputedOverrideVariantMap = {};
+  for (const variantId in variantMap) {
+    map = mergeVariantOverrides2(variantMap[variantId], map);
+  }
+
+  return map;
+};
+
+const mergeVariantOverrides2 = (
+  oldMap: PCComputedOverrideVariantMap,
+  existingMap: PCComputedOverrideVariantMap
+) => {
+  let newMap: PCComputedOverrideVariantMap = { ...existingMap };
+  for (const key in oldMap) {
+    newMap[key] = {
+      overrides: existingMap[key]
+        ? [...existingMap[key].overrides, ...oldMap[key].overrides]
+        : oldMap[key].overrides,
+      children: mergeVariantOverrides2(
+        oldMap[key].children,
+        (existingMap[key] || EMPTY_OBJECT).children || EMPTY_OBJECT
+      )
+    };
+  }
+
+  return newMap;
+};
+
 export const flattenPCOverrideMap = memoize(
   (
     map: PCComputedOverrideVariantMap,
