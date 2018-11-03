@@ -1,6 +1,4 @@
 import * as React from "react";
-import { SyntheticDocument, DependencyGraph } from "paperclip";
-import { Dispatch } from "redux";
 import { InspectorNode } from "paperclip";
 import { BaseOpenModuleProps } from "./open-module.pc";
 import { NodeLayer } from "./layer.pc";

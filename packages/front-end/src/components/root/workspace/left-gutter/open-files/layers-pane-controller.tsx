@@ -74,7 +74,6 @@ export default (Base: React.ComponentClass<BaseLayersPaneProps>) =>
             );
 
             if (!sourceNode) {
-              console.log("NO SOURCE NODE", inspectorNode);
               return null;
             }
             const dependency = getPCNodeDependency(sourceNode.id, graph);
@@ -85,7 +84,7 @@ export default (Base: React.ComponentClass<BaseLayersPaneProps>) =>
             );
             return (
               <LayersPaneContext.Provider
-                key={sourceNode.id}
+                key={inspectorNode.id}
                 value={generateLayersPaneContext(
                   graph,
                   document,

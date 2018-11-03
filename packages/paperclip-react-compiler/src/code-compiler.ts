@@ -678,7 +678,6 @@ const translateUsedComponentInstance = (
     context,
     true
   );
-  // context = addLine(`className: "_${instance.id}",`, context);
   context = addCloseTag(`}, ${overrideProp}));\n\n`, context);
   return context;
 };
@@ -847,7 +846,11 @@ const translateStaticOverrides = (
 
     // class name provided in override
     if (node.name !== PCSourceTagNames.COMPONENT_INSTANCE) {
-      context = addLine(`className: "_${node.id}",`, context);
+      context = translateStaticStyleOverride(
+        node.id,
+        getAllNodeOverrides(node.id, component),
+        context
+      );
     }
 
     if (node.name === PCSourceTagNames.TEXT) {
