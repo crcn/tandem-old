@@ -1868,7 +1868,7 @@ export const canvasReducer = (state: RootState, action: Action) => {
     case TEXT_VALUE_CHANGED: {
       const { value } = action as TextValueChanged;
       state = persistRootState(state => {
-        return persistChangeSyntheticTextNodeValue(
+        state = persistChangeSyntheticTextNodeValue(
           value,
           getSyntheticInspectorNode(
             getSyntheticNodeById(
@@ -1884,6 +1884,8 @@ export const canvasReducer = (state: RootState, action: Action) => {
           ),
           state
         );
+
+        return state;
       }, state);
       return state;
     }

@@ -332,18 +332,21 @@ export const persistRootState = (
   persistPaperclipState: (state: RootState) => RootState,
   state: RootState
 ) => {
+  const now = Date.now();
   const oldGraph = state.prevGraph || state.graph;
-  state = keepActiveFileOpen(
-    updateRootState(persistPaperclipState(state), state)
-  );
+  state = updateRootState(persistPaperclipState(state), state);
+
+  state = keepActiveFileOpen(state);
 
   state = pruneStaleSyntheticNodes(state);
   const modifiedDeps = getModifiedDependencies(state.graph, oldGraph);
   state = addHistory(oldGraph, state.graph, state);
+
   state = modifiedDeps.reduce(
     (state, dep: Dependency<any>) => setOpenFileContent(dep, state),
     state
   );
+
   state = refreshModuleInspectorNodes(state);
   return state;
 };

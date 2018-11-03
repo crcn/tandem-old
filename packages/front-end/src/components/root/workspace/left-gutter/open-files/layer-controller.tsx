@@ -119,12 +119,6 @@ export default (Base: React.ComponentClass<BaseNodeLayerProps>) => {
             label = assocSourceNode.label;
           }
         }
-        console.log(
-          "COTEXT",
-          renameInspectorNodeId,
-          selectedInspectorNodeIds,
-          inspectorNode.id
-        );
         return {
           dispatch,
           editingLabel: renameInspectorNodeId === inspectorNode.id,
@@ -269,7 +263,6 @@ export default (Base: React.ComponentClass<BaseNodeLayerProps>) => {
             editingLabel,
             assocSourceNodeName
           } = this.props;
-          console.log(editingLabel);
           const {
             onLabelClick,
             onArrowButtonClick,

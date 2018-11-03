@@ -794,25 +794,34 @@
       }
     },
     {
+      "id": "a05d58b51253",
       "label": "Element",
       "is": "div",
+      "name": "element",
+      "attributes": {},
       "style": {
         "box-sizing": "border-box",
         "display": "block"
       },
-      "attributes": {},
-      "id": "d81a70ee1258",
-      "name": "component",
-      "children": [],
+      "children": [
+        {
+          "id": "5b5a32301254",
+          "name": "text",
+          "label": "Text",
+          "value": "Click to edit",
+          "style": {},
+          "children": [],
+          "metadata": {}
+        }
+      ],
       "metadata": {
         "bounds": {
-          "left": 788,
-          "top": 710,
-          "right": 888,
-          "bottom": 810
+          "left": 787.6914478519524,
+          "top": 689.1170985829041,
+          "right": 887.6914478519524,
+          "bottom": 789.1170985829041
         }
-      },
-      "variant": {}
+      }
     }
   ]
 }
