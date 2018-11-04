@@ -242,7 +242,8 @@ import {
   pruneOpenFiles,
   QuickSearchResultType,
   getGlobalFileUri,
-  setRootStateFileNodeExpanded
+  setRootStateFileNodeExpanded,
+  centerEditorCanvasOrLater
 } from "../state";
 import {
   PCSourceTagNames,
@@ -707,9 +708,6 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
         return state;
       }
 
-      const { width = 400, height = 300 } =
-        element.getBoundingClientRect() || {};
-
       state = updateEditorWindow(
         {
           container: element
@@ -738,7 +736,7 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
           );
         }
       } else {
-        return centerEditorCanvas(state, fileUri);
+        return centerEditorCanvasOrLater(state, fileUri);
       }
     }
 
@@ -1033,7 +1031,7 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
       return state;
     }
     case PC_DEPENDENCY_GRAPH_LOADED: {
-      state = centerEditorCanvas(state, state.activeEditorFilePath);
+      state = centerEditorCanvasOrLater(state, state.activeEditorFilePath);
       return state;
     }
   }
@@ -1838,7 +1836,6 @@ export const canvasReducer = (state: RootState, action: Action) => {
         );
       }
 
-      // happens for newly added files
       if (
         state.recenterUriAfterEvaluation &&
         getSyntheticDocumentByDependencyUri(
@@ -2685,13 +2682,7 @@ const shortcutReducer = (state: RootState, action: Action): RootState => {
         getSyntheticVisibleNodeDocument(item.id, state.documents),
         state.graph
       );
-      const frame = getSyntheticVisibleNodeFrame(item, state.frames);
-      const bounds = getSyntheticVisibleNodeComputedBounds(
-        item,
-        frame,
-        state.graph
-      );
-      state = centerEditorCanvas(state, uri, shiftBounds(bounds, frame.bounds));
+      state = centerEditorCanvasOrLater(state, uri);
       return state;
     }
 

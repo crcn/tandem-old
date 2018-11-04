@@ -81,7 +81,8 @@ import {
   expandInspectorNodeById,
   getInspectorContentNode,
   getInspectorSyntheticNode,
-  getInspectorNodeByAssocId
+  getInspectorNodeByAssocId,
+  getSyntheticDocumentByDependencyUri
 } from "paperclip";
 import {
   CanvasToolOverlayMouseMoved,
@@ -724,7 +725,7 @@ export const openFile = (
   if (!file) {
     state = addOpenFile(uri, temporary, state);
     file = getOpenFile(uri, state.openFiles);
-    state = centerEditorCanvas(state, uri);
+    state = centerEditorCanvasOrLater(state, uri);
   }
 
   if (!hasFileCacheItem(uri, state)) {
@@ -1024,13 +1025,7 @@ export const openSyntheticVisibleNodeOriginFile = (
 };
 
 export const centerCanvasToSelectedNodes = (state: RootState) => {
-  const selectedBounds = getSelectionBounds(
-    state.selectedInspectorNodes,
-    state.documents,
-    state.frames,
-    state.graph
-  );
-  state = centerEditorCanvas(state, state.activeEditorFilePath, selectedBounds);
+  state = centerEditorCanvasOrLater(state, state.activeEditorFilePath);
   return state;
 };
 
@@ -1143,6 +1138,23 @@ export const updateEditorWindow = (
 
 const INITIAL_ZOOM_PADDING = 50;
 
+export const centerEditorCanvasOrLater = (
+  state: RootState,
+  editorFileUri: string
+): RootState => {
+  const document = getSyntheticDocumentByDependencyUri(
+    editorFileUri,
+    state.documents,
+    state.graph
+  );
+  return document
+    ? centerEditorCanvas(state, editorFileUri)
+    : {
+        ...state,
+        recenterUriAfterEvaluation: editorFileUri
+      };
+};
+
 export const centerEditorCanvas = (
   state: RootState,
   editorFileUri: string,
@@ -1162,7 +1174,14 @@ export const centerEditorCanvas = (
       return state;
     }
 
-    innerBounds = getSyntheticWindowBounds(editorFileUri, state);
+    innerBounds = state.selectedInspectorNodes.length
+      ? getSelectionBounds(
+          state.selectedInspectorNodes,
+          state.documents,
+          state.frames,
+          state.graph
+        )
+      : getSyntheticWindowBounds(editorFileUri, state);
   }
 
   // no windows loaded
@@ -1508,12 +1527,6 @@ export const setSelectedInspectorNodes = (
   root: RootState,
   ...selection: InspectorNode[]
 ) => {
-  const nodes = uniq([
-    ...selection.map(node =>
-      getNestedTreeNodeById(node.id, root.sourceNodeInspector)
-    )
-  ]).filter(Boolean);
-
   root = expandedSelectedInspectorNode(root);
 
   root = updateRootState(
