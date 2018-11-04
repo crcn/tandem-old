@@ -25,7 +25,11 @@ import {
 } from "paperclip";
 import { dropdownMenuOptionFromValue } from "../../../../../../inputs/dropdown/controller";
 import { cssResetPropertyOptionClicked } from "../../../../../../../actions";
-import { containsNestedTreeNodeById, EMPTY_ARRAY } from "tandem-common";
+import {
+  getParentTreeNode,
+  containsNestedTreeNodeById,
+  EMPTY_ARRAY
+} from "tandem-common";
 
 export type Props = {
   selectedInspectorNodes: InspectorNode[];

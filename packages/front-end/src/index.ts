@@ -14,7 +14,7 @@ import {
   getPCNodeModule,
   PCComponent
 } from "paperclip";
-import { RootState } from "./state";
+import { RootState, EditorWindow } from "./state";
 import { appLoaded } from "./actions";
 import {
   FSSandboxOptions,
@@ -22,7 +22,14 @@ import {
   setReaderMimetype
 } from "fsbox";
 import { createRemotePCRuntime } from "paperclip";
-import { pmark, EMPTY_OBJECT, getParentTreeNode, memoize } from "tandem-common";
+import {
+  pmark,
+  EMPTY_OBJECT,
+  getParentTreeNode,
+  memoize,
+  reuser,
+  EMPTY_ARRAY
+} from "tandem-common";
 
 export type FrontEndOptions = FrontEndSagaOptions & FSSandboxOptions;
 export type SideEffectCreator = () => IterableIterator<FrontEndOptions>;
@@ -45,6 +52,8 @@ const onError = error => {
   console.error(error);
 };
 window.onerror = onError;
+
+const reuseUris = reuser(10, (uris: string[]) => uris.join(","));
 
 export const setup = <TState extends RootState>(
   createSideEffects: SideEffectCreator,
@@ -107,6 +116,13 @@ export const setup = <TState extends RootState>(
           createPaperclipSaga({
             createRuntime: () => {
               return createRemotePCRuntime(new PaperclipWorker());
+            },
+            getPriorityUris: (state: RootState) => {
+              if (!state.editorWindows.length) {
+                return EMPTY_ARRAY;
+              }
+
+              return reuseUris(state.openFiles.map(openFile => openFile.uri));
             },
             getRuntimeVariants: (state: RootState) => {
               if (!state.selectedVariant) {

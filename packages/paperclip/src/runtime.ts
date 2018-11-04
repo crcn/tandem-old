@@ -34,6 +34,7 @@ export interface PCRuntime extends EventEmitter {
 export type LocalRuntimeInfo = {
   graph: DependencyGraph;
   variants: KeyValue<KeyValue<boolean>>;
+  priorityUris: string[];
 };
 
 class LocalPCRuntime extends EventEmitter implements PCRuntime {
@@ -75,7 +76,7 @@ class LocalPCRuntime extends EventEmitter implements PCRuntime {
 
     // This is primarily here to prevent synchronous access
     // synthetic objects after dependency graph patching
-    setImmediate(() => {
+    setTimeout(() => {
       this._evaluating = false;
       this._evaluateNow();
     });
@@ -91,8 +92,11 @@ class LocalPCRuntime extends EventEmitter implements PCRuntime {
     const newDocumentMap: KeyValue<SyntheticDocument> = {};
     const documentMap = {};
     const deletedDocumentIds = [];
-
-    const newSyntheticDocuments = evaluateDependencyGraph(this._info);
+    const newSyntheticDocuments = evaluateDependencyGraph(
+      this._info.graph,
+      this._info.variants,
+      this._info.priorityUris
+    );
 
     for (const uri in newSyntheticDocuments) {
       const newSyntheticDocument = newSyntheticDocuments[uri];
@@ -114,12 +118,13 @@ class LocalPCRuntime extends EventEmitter implements PCRuntime {
     }
 
     for (const uri in this._syntheticDocuments) {
-      if (!documentMap[uri]) {
+      if (!this._info.graph[uri]) {
         deletedDocumentIds.push(uri);
+        delete this._syntheticDocuments[uri];
       }
     }
 
-    this._syntheticDocuments = documentMap;
+    Object.assign(this._syntheticDocuments, documentMap);
     marker.end();
 
     this.emit(
@@ -195,6 +200,7 @@ export class RemotePCRuntime extends EventEmitter implements PCRuntime {
         payload: {
           changes,
           variants: value.variants,
+          priorityUris: value.priorityUris,
           lastUpdatedAt: (this._lastUpdatedAt = timestamp)
         }
       });
@@ -295,7 +301,8 @@ export const hookRemotePCRuntime = async (
         {
           ...localInfo,
           variants: payload.variants,
-          graph: patchDependencyGraph(payload.changes, localInfo.graph)
+          graph: patchDependencyGraph(payload.changes, localInfo.graph),
+          priorityUris: payload.priorityUris
         },
         payload.lastUpdatedAt
       );

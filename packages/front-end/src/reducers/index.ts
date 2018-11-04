@@ -234,7 +234,6 @@ import {
   ConfirmType,
   openSyntheticVisibleNodeOriginFile,
   updateSourceInspectorNode,
-  pruneStaleSyntheticNodes,
   getInsertableSourceNodeScope,
   getInsertableSourceNodeFromSyntheticNode,
   getCanvasMouseTargetInspectorNode,
@@ -1121,13 +1120,6 @@ export const canvasReducer = (state: RootState, action: Action) => {
       }, state);
       return state;
     }
-    case RESIZER_MOUSE_DOWN: {
-      const { sourceEvent } = action as ResizerMouseDown;
-      if (sourceEvent.metaKey) {
-        // state = openSyntheticVisibleNodeOriginFile(state.selectedSyntheticNodeIds[0], state);
-      }
-      return state;
-    }
 
     case COMPONENT_PICKER_BACKGROUND_CLICK: {
       return setTool(null, state);
@@ -1845,9 +1837,6 @@ export const canvasReducer = (state: RootState, action: Action) => {
           queuedScopeSelect.scope
         );
       }
-
-      state = pruneStaleSyntheticNodes(state);
-      // console.log("RUNE", state.selectedSyntheticNodeIds);
 
       // happens for newly added files
       if (

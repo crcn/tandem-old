@@ -62,7 +62,7 @@ export const shallowEquals = (a, b) => {
 export const reuser = <TValue>(
   lruMax: number = DEFAULT_LRU_MAX,
   getKey: (value: TValue) => string,
-  equals: (a, b) => boolean
+  equals: (a: TValue, b: TValue) => boolean = shallowEquals
 ): ((value: TValue) => TValue) => {
   const cache = lru({ max: lruMax });
   return (value: TValue) => {

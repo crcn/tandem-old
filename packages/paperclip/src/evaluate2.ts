@@ -1,54 +1,42 @@
-import {
-  memoize,
-  reuser,
-  EMPTY_OBJECT,
-  KeyValue,
-  shallowEquals
-} from "tandem-common";
+import { memoize, reuser, EMPTY_OBJECT, KeyValue } from "tandem-common";
 import {
   PCModule,
   getComponentGraphRefMap,
-  PCVisibleNode,
-  PCComponent,
-  PCNode,
   PCSourceTagNames,
   getStyleVariableRefMap
 } from "./dsl";
 import {
   compileContentNodeAsVanilla,
-  VanillaPCRenderers,
-  VanillaPCRenderer
+  VanillaPCRenderers
 } from "./vanilla-compiler";
 import { DependencyGraph } from "./graph";
 import { createSytheticDocument, SyntheticDocument } from "./synthetic";
 
-const reuseNodeGraphMap = reuser(
-  500,
-  (value: KeyValue<any>) => Object.keys(value).join(","),
-  shallowEquals
+const reuseNodeGraphMap = reuser(500, (value: KeyValue<any>) =>
+  Object.keys(value).join(",")
 );
 
-export type EvalInfo = {
-  graph: DependencyGraph;
-  variants: KeyValue<KeyValue<boolean>>;
-};
-
-export const evaluateDependencyGraph = memoize(
-  ({ graph, variants }): KeyValue<SyntheticDocument> => {
-    const documents = {};
-    const renderers = compileDependencyGraph(graph);
-    for (const uri in graph) {
-      const { content: module } = graph[uri];
-      documents[uri] = evaluateModule(
-        module,
-        variants,
-        reuseNodeGraphMap(filterAssocRenderers(module, graph, renderers))
-      );
+export const evaluateDependencyGraph = (
+  graph: DependencyGraph,
+  variants: KeyValue<KeyValue<boolean>>,
+  uriWhitelist?: string[]
+): KeyValue<SyntheticDocument> => {
+  const documents = {};
+  const renderers = compileDependencyGraph(graph);
+  for (const uri in graph) {
+    if (uriWhitelist && uriWhitelist.indexOf(uri) === -1) {
+      continue;
     }
-
-    return documents;
+    const { content: module } = graph[uri];
+    documents[uri] = evaluateModule(
+      module,
+      variants,
+      reuseNodeGraphMap(filterAssocRenderers(module, graph, renderers))
+    );
   }
-);
+
+  return documents;
+};
 
 const evaluateModule = memoize(
   (
@@ -93,7 +81,7 @@ const filterAssocRenderers = (
   return assocRenderers;
 };
 
-const compileDependencyGraph = (graph: DependencyGraph) => {
+const compileDependencyGraph = memoize((graph: DependencyGraph) => {
   const renderers = {};
   for (const uri in graph) {
     const { content: module } = graph[uri];
@@ -106,6 +94,5 @@ const compileDependencyGraph = (graph: DependencyGraph) => {
       );
     }
   }
-
   return renderers;
-};
+});

@@ -31,28 +31,31 @@ import {
 } from "./synthetic";
 import { PCRuntime, LocalRuntimeInfo } from "./runtime";
 import { fsCacheBusy } from "fsbox";
-import { getPCNode } from "./dsl";
 
 export type PaperclipSagaOptions = {
   createRuntime(): PCRuntime;
+  getPriorityUris(state: PCEditorState): string[];
   getRuntimeVariants(state: PCEditorState): KeyValue<KeyValue<boolean>>;
 };
 
 const getRuntimeInfo = memoize(
   (
     graph: DependencyGraph,
-    variants: KeyValue<KeyValue<boolean>>
+    variants: KeyValue<KeyValue<boolean>>,
+    priorityUris: string[]
   ): LocalRuntimeInfo => {
     return {
       graph,
-      variants
+      variants,
+      priorityUris
     };
   }
 );
 
 export const createPaperclipSaga = ({
   createRuntime,
-  getRuntimeVariants
+  getRuntimeVariants,
+  getPriorityUris
 }: PaperclipSagaOptions) =>
   function* paperclipSaga() {
     yield fork(runtime);
@@ -87,7 +90,7 @@ export const createPaperclipSaga = ({
       let graph;
 
       while (1) {
-        const action = yield take();
+        yield take();
         const state: PCEditorState = yield select();
         if (fsCacheBusy(state.fileCache)) {
           continue;
@@ -96,7 +99,14 @@ export const createPaperclipSaga = ({
         if (graph !== state.graph) {
           graph = state.graph;
         }
-        rt.setInfo(getRuntimeInfo(state.graph, getRuntimeVariants(state)));
+
+        rt.setInfo(
+          getRuntimeInfo(
+            state.graph,
+            getRuntimeVariants(state),
+            getPriorityUris(state)
+          )
+        );
       }
     }
 

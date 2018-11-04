@@ -693,7 +693,7 @@ export const getInspectorSourceNode = (
   }
 };
 
-type InstanceVariantInfo = {
+export type InstanceVariantInfo = {
   enabled: boolean;
   variant: PCVariant;
 };
@@ -882,18 +882,30 @@ export const expandSyntheticInspectorNode = (
     return rootInspectorNode;
   }
 
-  rootInspectorNode = updateNestedNodeTrail(
-    getTreeNodePath(relatedInspectorNode.id, rootInspectorNode),
-    rootInspectorNode,
-    (node: InspectorNode) => {
-      return {
-        ...node,
-        expanded: true
-      };
-    }
+  rootInspectorNode = expandInspectorNodeById(
+    relatedInspectorNode.id,
+    rootInspectorNode
   );
 
   return updateAlts(rootInspectorNode);
+};
+
+export const expandInspectorNodeById = (
+  id: string,
+  rootInspectorNode: InspectorNode
+) => {
+  return updateAlts(
+    updateNestedNodeTrail(
+      getTreeNodePath(id, rootInspectorNode),
+      rootInspectorNode,
+      (node: InspectorNode) => {
+        return {
+          ...node,
+          expanded: true
+        };
+      }
+    )
+  );
 };
 
 export const getInheritedOverridesOverrides = (

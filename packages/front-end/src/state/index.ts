@@ -77,7 +77,8 @@ import {
   getInspectorContentNodeContainingChild,
   getInspectorNodeParentShadow,
   getInspectorSourceNode,
-  InspectorTreeNodeName
+  InspectorTreeNodeName,
+  expandInspectorNodeById
 } from "paperclip";
 import {
   CanvasToolOverlayMouseMoved,
@@ -275,12 +276,6 @@ export type RootState = {
   recenterUriAfterEvaluation?: string;
   openedMain?: boolean;
 
-  // TODO - should be actual instances for type safety
-  hoveringSyntheticNodeIds: string[];
-
-  // TODO - this should be actual node instances
-  selectedSyntheticNodeIds: string[];
-
   // seaprate from synthetic & AST since it represents both. May also have separate
   // tooling
   selectedInspectorNodeIds: string[];
@@ -332,13 +327,11 @@ export const persistRootState = (
   persistPaperclipState: (state: RootState) => RootState,
   state: RootState
 ) => {
-  const now = Date.now();
   const oldGraph = state.prevGraph || state.graph;
   state = updateRootState(persistPaperclipState(state), state);
 
   state = keepActiveFileOpen(state);
 
-  state = pruneStaleSyntheticNodes(state);
   const modifiedDeps = getModifiedDependencies(state.graph, oldGraph);
   state = addHistory(oldGraph, state.graph, state);
 
@@ -348,32 +341,6 @@ export const persistRootState = (
   );
 
   state = refreshModuleInspectorNodes(state);
-  return state;
-};
-
-export const pruneStaleSyntheticNodes = (state: RootState) => {
-  state = updateRootState(
-    {
-      selectedSyntheticNodeIds: state.selectedSyntheticNodeIds.filter(
-        id =>
-          getSyntheticNodeById(id, state.documents) &&
-          getSyntheticSourceNode(
-            getSyntheticNodeById(id, state.documents),
-            state.graph
-          )
-      ),
-      hoveringSyntheticNodeIds: state.hoveringSyntheticNodeIds.filter(
-        id =>
-          getSyntheticNodeById(id, state.documents) &&
-          getSyntheticSourceNode(
-            getSyntheticNodeById(id, state.documents),
-            state.graph
-          )
-      )
-    },
-    state
-  );
-
   return state;
 };
 
@@ -664,7 +631,7 @@ const moveDependencyRecordHistory = (
   // deselect synthetic nodes if their source is also deleted
   state = setSelectedSyntheticVisibleNodeIds(
     state,
-    ...state.selectedSyntheticNodeIds.filter(nodeId => {
+    ...state.selectedInspectorNodeIds.filter(nodeId => {
       const { sourceNodeId } = getSyntheticNodeById(nodeId, state.documents);
       return Boolean(getPCNode(sourceNodeId, state.graph));
     })
@@ -774,6 +741,9 @@ export const refreshModuleInspectorNodes = (state: RootState) => {
       sourceNodeInspectorMap,
       sourceNodeInspectorGraph: state.graph,
       selectedInspectorNodeIds: state.selectedInspectorNodeIds.filter(nodeId =>
+        Boolean(getNestedTreeNodeById(nodeId, sourceNodeInspector))
+      ),
+      hoveringInspectorNodeIds: state.hoveringInspectorNodeIds.filter(nodeId =>
         Boolean(getNestedTreeNodeById(nodeId, sourceNodeInspector))
       )
     },
@@ -899,8 +869,7 @@ export const openEditorFileUri = (
       ) as FSItem).uri === uri
         ? state.selectedFileNodeIds
         : EMPTY_ARRAY,
-    hoveringSyntheticNodeIds: EMPTY_ARRAY,
-    selectedSyntheticNodeIds: EMPTY_ARRAY,
+    selectedInspectorNodeIds: EMPTY_ARRAY,
     hoveringInspectorNodeIds: EMPTY_ARRAY,
     activeEditorFilePath: uri,
     editorWindows: editor
@@ -1006,8 +975,8 @@ export const setNextOpenFile = (state: RootState): RootState => {
   }
   state = {
     ...state,
-    hoveringSyntheticNodeIds: [],
-    selectedSyntheticNodeIds: []
+    hoveringInspectorNodeIds: EMPTY_ARRAY,
+    selectedInspectorNodeIds: EMPTY_ARRAY
   };
 
   if (state.openFiles.length) {
@@ -1054,7 +1023,7 @@ export const openSyntheticVisibleNodeOriginFile = (
 
 export const centerCanvasToSelectedNodes = (state: RootState) => {
   const selectedBounds = getSelectionBounds(
-    state.selectedSyntheticNodeIds,
+    state.selectedInspectorNodeIds,
     state.documents,
     state.frames,
     state.graph
@@ -1580,13 +1549,7 @@ export const setSelectedSyntheticVisibleNodeIds = (
       setRootStateSyntheticVisibleNodeExpanded(nodeId, true, state),
     root
   );
-  root = updateRootState(
-    {
-      selectedSyntheticNodeIds: nodeIds
-    },
-    root
-  );
-  root = expandSelectedSyntheticNode(root);
+  root = expandedSelectedInspectorNode(root);
 
   const assocInspectorNodes = selectionIds.map(nodeId => {
     const syntheticNode = getSyntheticNodeById(nodeId, root.documents);
@@ -1612,21 +1575,10 @@ export const setSelectedSyntheticVisibleNodeIds = (
   return root;
 };
 
-const expandSelectedSyntheticNode = (state: RootState) => {
-  return state.selectedSyntheticNodeIds.reduce((state, nodeId) => {
-    const syntheticNode = getSyntheticNodeById(nodeId, state.documents);
-    const document = getSyntheticVisibleNodeDocument(
-      syntheticNode.id,
-      state.documents
-    );
-
+const expandedSelectedInspectorNode = (state: RootState) => {
+  return state.selectedInspectorNodeIds.reduce((state, nodeId) => {
     state = updateSourceInspectorNode(state, sourceNodeInspector =>
-      expandSyntheticInspectorNode(
-        syntheticNode,
-        document,
-        sourceNodeInspector,
-        state.graph
-      )
+      expandInspectorNodeById(nodeId, sourceNodeInspector)
     );
 
     return state;
@@ -1670,8 +1622,6 @@ export const setHoveringSyntheticVisibleNodeIds = (
 
   return updateRootState(
     {
-      // may happen for async ops - especially on hover
-      hoveringSyntheticNodeIds,
       hoveringInspectorNodeIds: hoveringSyntheticNodeIds
         .map(nodeId => {
           const syntheticNode = getSyntheticInspectorNode(
@@ -1695,8 +1645,7 @@ export const setHoveringInspectorNodeIds = (
 ) => {
   return updateRootState(
     {
-      hoveringInspectorNodeIds,
-      hoveringSyntheticNodeIds: EMPTY_ARRAY
+      hoveringInspectorNodeIds
     },
     root
   );
