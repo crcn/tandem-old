@@ -2290,6 +2290,7 @@ const persistInsertNodeFromPoint = (
   const scope = getInsertableSourceNodeScope(
     insertableSourceNode,
     targetNode as SyntheticVisibleNode,
+    state.sourceNodeInspector,
     getSyntheticVisibleNodeDocument(targetNode.id, state.documents),
     state.graph
   );
@@ -2634,7 +2635,6 @@ const shortcutReducer = (state: RootState, action: Action): RootState => {
         path.dirname(stripProtocol(moduleUri)),
         filePath
       );
-      console.log(node);
 
       if (node.name === "img") {
         state = persistRootState(state => {

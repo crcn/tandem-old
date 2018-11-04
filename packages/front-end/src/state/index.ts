@@ -451,19 +451,30 @@ export const getInsertableSourceNodeScope = memoize(
   (
     insertableSourceNode: PCNode,
     relative: SyntheticVisibleNode,
+    rootInspectorNode: InspectorNode,
     document: SyntheticDocument,
     graph: DependencyGraph
-  ) => {
+  ): InspectorNode => {
     const containsSource = (current: SyntheticVisibleNode) => {
       const sourceNode = getSyntheticSourceNode(current, graph);
       return containsNestedTreeNodeById(insertableSourceNode.id, sourceNode);
     };
 
     if (containsSource(relative)) {
-      return relative;
+      return getSyntheticInspectorNode(
+        relative,
+        document,
+        rootInspectorNode,
+        graph
+      );
     }
 
-    return findTreeNodeParent(relative.id, document, containsSource);
+    return getSyntheticInspectorNode(
+      findTreeNodeParent(relative.id, document, containsSource),
+      document,
+      rootInspectorNode,
+      graph
+    );
   }
 );
 
