@@ -17,13 +17,16 @@ import {
   getPCVariants,
   getSyntheticSourceNode,
   getSyntheticContentNode,
-  isComponent
+  isComponent,
+  InspectorNode,
+  getInspectorContentNode,
+  getPCNode
 } from "paperclip";
 
 export type Props = {
   dispatch: Dispatch<any>;
-  syntheticDocument: SyntheticDocument;
-  selectedNodes: SyntheticVisibleNode[];
+  rootInspectorNode: InspectorNode;
+  selectedInspectorNodes: InspectorNode[];
   selectedVariant: PCVariant;
   graph: DependencyGraph;
 };
@@ -40,12 +43,12 @@ export default (Base: React.ComponentClass<BaseStyleSwitcherProps>) =>
       this.props.dispatch(editVariantNameButtonClicked());
     };
     onStyleChange = value => {
-      const contentNode = getSyntheticContentNode(
-        this.props.selectedNodes[0],
-        this.props.syntheticDocument
+      const contentNode = getInspectorContentNode(
+        this.props.selectedInspectorNodes[0],
+        this.props.rootInspectorNode
       );
-      const component = getSyntheticSourceNode(
-        contentNode,
+      const component = getPCNode(
+        contentNode.id,
         this.props.graph
       ) as PCComponent;
 
@@ -59,21 +62,21 @@ export default (Base: React.ComponentClass<BaseStyleSwitcherProps>) =>
         onStyleChange
       } = this;
       const {
-        selectedNodes,
-        syntheticDocument,
+        selectedInspectorNodes,
+        rootInspectorNode,
         graph,
         selectedVariant
       } = this.props;
 
-      if (!selectedNodes) {
+      if (!selectedInspectorNodes) {
         return null;
       }
 
-      const contentNode = getSyntheticContentNode(
-        selectedNodes[0],
-        syntheticDocument
+      const contentNode = getInspectorContentNode(
+        selectedInspectorNodes[0],
+        rootInspectorNode
       );
-      const contentSourceNode = getSyntheticSourceNode(contentNode, graph);
+      const contentSourceNode = getPCNode(contentNode.id, graph);
       if (!contentSourceNode || !isComponent(contentSourceNode)) {
         return null;
       }

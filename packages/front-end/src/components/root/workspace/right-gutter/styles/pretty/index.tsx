@@ -23,12 +23,10 @@ export type Props = {
   documentColors: string[];
   selectedVariant: PCVariant;
   dispatch: Dispatch<any>;
-  selectedNodes: SyntheticElement[];
   graph: DependencyGraph;
   computedStyleInfo: ComputedStyleInfo;
   rootInspectorNode: InspectorNode;
   selectedInspectorNodes: InspectorNode[];
-  syntheticDocument: SyntheticDocument;
   fontFamilies: FontFamily[];
   globalVariables: PCVariable[];
   projectOptions: ProjectOptions;
@@ -44,17 +42,12 @@ export default (Base: React.ComponentClass<BaseElementStylerProps>) =>
         globalVariables,
         fontFamilies,
         documentColors,
-        selectedNodes,
         projectOptions,
-        syntheticDocument,
         graph,
         selectedInspectorNodes,
         rootInspectorNode,
         ...rest
       } = this.props;
-      const selectedNode = (selectedNodes.length
-        ? getSyntheticSourceNode(selectedNodes[0], graph)
-        : null) as PCVisibleNode;
       return (
         <Base
           {...rest}
@@ -62,7 +55,6 @@ export default (Base: React.ComponentClass<BaseElementStylerProps>) =>
             computedStyleInfo,
             selectedInspectorNodes,
             rootInspectorNode,
-            syntheticDocument,
             dispatch,
             graph,
             selectedVariant
@@ -70,7 +62,7 @@ export default (Base: React.ComponentClass<BaseElementStylerProps>) =>
           inheritPaneProps={{
             projectOptions,
             dispatch,
-            selectedNodes,
+            selectedInspectorNodes,
             graph
           }}
           codePaneProps={{

@@ -42,9 +42,8 @@ export type CanvasOuterProps = {
   documents: SyntheticDocument[];
   sourceNodeInspector: InspectorNode;
   openFiles: OpenFile[];
-  hoveringInspectorNodeIds: string[];
-  selectedSyntheticNodeIds: string[];
-  hoveringSyntheticNodeIds: string[];
+  hoveringInspectorNodes: InspectorNode[];
+  selectedInspectorNodes: InspectorNode[];
   graph: DependencyGraph;
   activeFilePath: string;
   editorWindow: EditorWindow;
@@ -84,9 +83,8 @@ const BaseCanvasComponent = ({
   setCanvasContainer,
   onWheel,
   onDrop,
-  hoveringInspectorNodeIds,
-  selectedSyntheticNodeIds,
-  hoveringSyntheticNodeIds,
+  hoveringInspectorNodes,
+  selectedInspectorNodes,
   onMouseEvent,
   onDragOver,
   onMouseDoubleClick,
@@ -161,9 +159,8 @@ const BaseCanvasComponent = ({
                   activeEditorUri={activeFilePath}
                   openFiles={openFiles}
                   sourceNodeInspector={sourceNodeInspector}
-                  selectedSyntheticNodeIds={selectedSyntheticNodeIds}
-                  hoveringSyntheticNodeIds={hoveringSyntheticNodeIds}
-                  hoveringInspectorNodeIds={hoveringInspectorNodeIds}
+                  selectedInspectorNodes={selectedInspectorNodes}
+                  hoveringInspectorNodes={hoveringInspectorNodes}
                   documents={documents}
                   graph={graph}
                   frames={frames}

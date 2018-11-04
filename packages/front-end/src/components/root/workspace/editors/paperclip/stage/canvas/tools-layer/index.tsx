@@ -46,9 +46,8 @@ export type ToolsLayerComponentProps = {
   zoom: number;
   toolType: ToolType;
   activeEditorUri: string;
-  hoveringInspectorNodeIds: string[];
-  selectedSyntheticNodeIds: string[];
-  hoveringSyntheticNodeIds: string[];
+  hoveringInspectorNodes: InspectorNode[];
+  selectedInspectorNodes: InspectorNode[];
   sourceNodeInspector: InspectorNode;
   openFiles: OpenFile[];
   dispatch: Dispatch<any>;
@@ -63,9 +62,8 @@ export class ToolsLayerComponent extends React.PureComponent<
   render() {
     const {
       editorWindow,
-      hoveringInspectorNodeIds,
-      selectedSyntheticNodeIds,
-      hoveringSyntheticNodeIds,
+      hoveringInspectorNodes,
+      selectedInspectorNodes,
       sourceNodeInspector,
       activeEditorUri,
       openFiles,
@@ -78,9 +76,7 @@ export class ToolsLayerComponent extends React.PureComponent<
     } = this.props;
 
     const canvas = getOpenFile(editorWindow.activeFilePath, openFiles).canvas;
-    const insertInspectorNode = hoveringInspectorNodeIds.length
-      ? getNestedTreeNodeById(hoveringInspectorNodeIds[0], sourceNodeInspector)
-      : null;
+    const insertInspectorNode = hoveringInspectorNodes[0];
     const insertInspectorNodeBounds =
       insertInspectorNode &&
       calcInspectorNodeBounds(
@@ -114,8 +110,8 @@ export class ToolsLayerComponent extends React.PureComponent<
         <NodeOverlaysTool
           frames={frames}
           documents={documents}
-          hoveringSyntheticNodeIds={hoveringSyntheticNodeIds}
-          selectedSyntheticNodeIds={selectedSyntheticNodeIds}
+          hoveringInspectorNodes={hoveringInspectorNodes}
+          selectedInspectorNodes={selectedInspectorNodes}
           graph={graph}
           zoom={zoom}
           dispatch={dispatch}
@@ -128,7 +124,8 @@ export class ToolsLayerComponent extends React.PureComponent<
         />
         <SelectionCanvasTool
           canvas={canvas}
-          selectedSyntheticNodeIds={selectedSyntheticNodeIds}
+          rootInspectorNode={sourceNodeInspector}
+          selectedInspectorNodes={selectedInspectorNodes}
           documents={documents}
           frames={frames}
           graph={graph}

@@ -19,14 +19,20 @@ import {
 import { startDOMDrag } from "tandem-common";
 import { Dispatch } from "redux";
 import { Path } from "./path";
-import { Frame, SyntheticDocument, DependencyGraph } from "paperclip";
+import {
+  Frame,
+  SyntheticDocument,
+  DependencyGraph,
+  InspectorNode
+} from "paperclip";
 
 export type ResizerOuterProps = {
   frames: Frame[];
   documents: SyntheticDocument[];
   graph: DependencyGraph;
-  selectedSyntheticNodeIds: string[];
+  selectedInspectorNodes: InspectorNode[];
   canvas: Canvas;
+  rootInspectorNode: InspectorNode;
   editorWindow: EditorWindow;
   dispatch: Dispatch<any>;
   zoom: number;
@@ -52,14 +58,14 @@ export class Resizer extends React.PureComponent<ResizerOuterProps> {
       canvas,
       frames,
       documents,
-      selectedSyntheticNodeIds,
+      selectedInspectorNodes,
       graph
     } = this.props;
     dispatch(resizerMouseDown(event));
 
     const translate = canvas.translate;
     const bounds = getSelectionBounds(
-      selectedSyntheticNodeIds,
+      selectedInspectorNodes,
       documents,
       frames,
       graph
@@ -89,14 +95,15 @@ export class Resizer extends React.PureComponent<ResizerOuterProps> {
     const {
       dispatch,
       zoom,
-      selectedSyntheticNodeIds,
+      selectedInspectorNodes,
+      rootInspectorNode,
       graph,
       documents,
       frames
     } = this.props;
 
     const bounds = getSelectionBounds(
-      selectedSyntheticNodeIds,
+      selectedInspectorNodes,
       documents,
       frames,
       graph
@@ -116,7 +123,7 @@ export class Resizer extends React.PureComponent<ResizerOuterProps> {
 
     const points = [];
 
-    if (isSelectionMovable(selectedSyntheticNodeIds, documents, graph)) {
+    if (isSelectionMovable(selectedInspectorNodes, rootInspectorNode, graph)) {
       points.push(
         { left: 0, top: 0 },
         { left: 1, top: 0 },
@@ -126,7 +133,9 @@ export class Resizer extends React.PureComponent<ResizerOuterProps> {
       );
     }
 
-    if (isSelectionResizable(selectedSyntheticNodeIds, documents, graph)) {
+    if (
+      isSelectionResizable(selectedInspectorNodes, rootInspectorNode, graph)
+    ) {
       points.push(
         { left: 1, top: 0.5 },
         { left: 1, top: 1 },

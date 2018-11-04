@@ -19,9 +19,8 @@ import { InspectorNode } from "paperclip";
 
 export type StageOuterProps = {
   editorWindow: EditorWindow;
-  hoveringInspectorNodeIds: string[];
-  selectedSyntheticNodeIds: string[];
-  hoveringSyntheticNodeIds: string[];
+  hoveringInspectorNodes: InspectorNode[];
+  selectedInspectorNodes: InspectorNode[];
   dependency: Dependency<any>;
   dispatch: Dispatch<any>;
   graph: DependencyGraph;
@@ -43,9 +42,8 @@ export class StageComponent extends React.PureComponent<StageOuterProps> {
       dispatch,
       frames,
       sourceNodeInspector,
-      hoveringInspectorNodeIds,
-      selectedSyntheticNodeIds,
-      hoveringSyntheticNodeIds,
+      selectedInspectorNodes,
+      hoveringInspectorNodes,
       activeFilePath,
       graph,
       documents
@@ -58,9 +56,8 @@ export class StageComponent extends React.PureComponent<StageOuterProps> {
           toolType={toolType}
           openFiles={openFiles}
           sourceNodeInspector={sourceNodeInspector}
-          hoveringInspectorNodeIds={hoveringInspectorNodeIds}
-          selectedSyntheticNodeIds={selectedSyntheticNodeIds}
-          hoveringSyntheticNodeIds={hoveringSyntheticNodeIds}
+          hoveringInspectorNodes={hoveringInspectorNodes}
+          selectedInspectorNodes={selectedInspectorNodes}
           graph={graph}
           documents={documents}
           dependency={dependency}

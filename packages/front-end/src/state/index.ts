@@ -78,7 +78,10 @@ import {
   getInspectorNodeParentShadow,
   getInspectorSourceNode,
   InspectorTreeNodeName,
-  expandInspectorNodeById
+  expandInspectorNodeById,
+  getInspectorContentNode,
+  getInspectorSyntheticNode,
+  getInspectorNodeByAssocId
 } from "paperclip";
 import {
   CanvasToolOverlayMouseMoved,
@@ -142,8 +145,7 @@ export const REGISTERED_COMPONENT = "REGISTERED_COMPONENT";
 export const SNAPSHOT_GAP = 50;
 
 export enum SyntheticVisibleNodeMetadataKeys {
-  EDITING_LABEL = "editingLabel",
-  EXPANDED = "expanded"
+  EDITING_LABEL = "editingLabel"
 }
 
 export type RegisteredComponent = {
@@ -278,14 +280,16 @@ export type RootState = {
 
   // seaprate from synthetic & AST since it represents both. May also have separate
   // tooling
-  selectedInspectorNodeIds: string[];
-  hoveringInspectorNodeIds: string[];
+  selectedInspectorNodes: InspectorNode[];
+  hoveringInspectorNodes: InspectorNode[];
   fontFamilies?: FontFamily[];
   sourceNodeInspector: InspectorTreeBaseNode<any>;
   sourceNodeInspectorMap: KeyValue<string[]>;
 
   // used for syncing
   sourceNodeInspectorGraph?: DependencyGraph;
+
+  // TODO - should be ref
   selectedFileNodeIds: string[];
   selectedComponentVariantName?: string;
   ready?: boolean;
@@ -296,7 +300,7 @@ export type RootState = {
   selectedComponentId?: string;
   queuedScopeSelect?: {
     previousState: RootState;
-    scope: SyntheticVisibleNode | SyntheticDocument;
+    scope: InspectorNode;
   };
   queuedDndInfo?: CanvasDroppedItem;
 } & PCEditorState &
@@ -344,16 +348,22 @@ export const persistRootState = (
   return state;
 };
 
-const getUpdatedSyntheticVisibleNodes = (
+const getUpdatedInspectorNodes = (
   newState: RootState,
   oldState: RootState,
-  scope: SyntheticVisibleNode | SyntheticDocument
+  scope: InspectorNode
 ) => {
   const MAX_DEPTH = 0;
-  const oldScope = getSyntheticNodeById(scope.id, oldState.documents);
-  const newScope = getSyntheticNodeById(scope.id, newState.documents);
+  const oldScope: InspectorNode = getNestedTreeNodeById(
+    scope.id,
+    oldState.sourceNodeInspector
+  );
+  const newScope: InspectorNode = getNestedTreeNodeById(
+    scope.id,
+    newState.sourceNodeInspector
+  );
 
-  let newSyntheticVisibleNodes: SyntheticVisibleNode[] = [];
+  let newInspectorNodes: InspectorNode[] = [];
   let model = oldScope;
   diffTreeNode(oldScope, newScope).forEach(ot => {
     const target = getTreeNodeFromPath(ot.nodePath, model);
@@ -366,22 +376,22 @@ const getUpdatedSyntheticVisibleNodes = (
     // TODO - will need to check if new parent is not in an instance of a component.
     // Will also need to consider child overrides though.
     if (ot.type === TreeNodeOperationalTransformType.INSERT_CHILD) {
-      newSyntheticVisibleNodes.push(ot.child as SyntheticVisibleNode);
+      newInspectorNodes.push(ot.child as InspectorNode);
     } else if (
       ot.type === TreeNodeOperationalTransformType.SET_PROPERTY &&
       ot.name === "source"
     ) {
-      newSyntheticVisibleNodes.push(target);
+      newInspectorNodes.push(target);
     }
   });
 
-  return uniq(newSyntheticVisibleNodes);
+  return uniq(newInspectorNodes);
 };
 
 export const queueSelectInsertedSyntheticVisibleNodes = (
   oldState: RootState,
   newState: RootState,
-  scope: SyntheticVisibleNode | SyntheticDocument
+  scope: InspectorNode
 ) => {
   return updateRootState(
     {
@@ -397,13 +407,11 @@ export const queueSelectInsertedSyntheticVisibleNodes = (
 export const selectInsertedSyntheticVisibleNodes = (
   oldState: RootState,
   newState: RootState,
-  scope: SyntheticVisibleNode | SyntheticDocument
+  scope: InspectorNode
 ) => {
-  return setSelectedSyntheticVisibleNodeIds(
+  return setSelectedInspectorNodes(
     newState,
-    ...getUpdatedSyntheticVisibleNodes(newState, oldState, scope).map(
-      node => node.id
-    )
+    ...getUpdatedInspectorNodes(newState, oldState, scope)
   );
 };
 
@@ -629,11 +637,10 @@ const moveDependencyRecordHistory = (
   );
 
   // deselect synthetic nodes if their source is also deleted
-  state = setSelectedSyntheticVisibleNodeIds(
+  state = setSelectedInspectorNodes(
     state,
-    ...state.selectedInspectorNodeIds.filter(nodeId => {
-      const { sourceNodeId } = getSyntheticNodeById(nodeId, state.documents);
-      return Boolean(getPCNode(sourceNodeId, state.graph));
+    ...state.selectedInspectorNodes.filter(node => {
+      return Boolean(getPCNode(node.assocSourceNodeId, state.graph));
     })
   );
 
@@ -740,11 +747,11 @@ export const refreshModuleInspectorNodes = (state: RootState) => {
       sourceNodeInspector,
       sourceNodeInspectorMap,
       sourceNodeInspectorGraph: state.graph,
-      selectedInspectorNodeIds: state.selectedInspectorNodeIds.filter(nodeId =>
-        Boolean(getNestedTreeNodeById(nodeId, sourceNodeInspector))
+      selectedInspectorNodes: state.selectedInspectorNodes.filter(node =>
+        Boolean(getNestedTreeNodeById(node.id, sourceNodeInspector))
       ),
-      hoveringInspectorNodeIds: state.hoveringInspectorNodeIds.filter(nodeId =>
-        Boolean(getNestedTreeNodeById(nodeId, sourceNodeInspector))
+      hoveringInspectorNodes: state.hoveringInspectorNodes.filter(node =>
+        Boolean(getNestedTreeNodeById(node.id, sourceNodeInspector))
       )
     },
     state
@@ -869,8 +876,8 @@ export const openEditorFileUri = (
       ) as FSItem).uri === uri
         ? state.selectedFileNodeIds
         : EMPTY_ARRAY,
-    selectedInspectorNodeIds: EMPTY_ARRAY,
-    hoveringInspectorNodeIds: EMPTY_ARRAY,
+    selectedInspectorNodes: EMPTY_ARRAY,
+    hoveringInspectorNodes: EMPTY_ARRAY,
     activeEditorFilePath: uri,
     editorWindows: editor
       ? arraySplice(
@@ -975,8 +982,8 @@ export const setNextOpenFile = (state: RootState): RootState => {
   }
   state = {
     ...state,
-    hoveringInspectorNodeIds: EMPTY_ARRAY,
-    selectedInspectorNodeIds: EMPTY_ARRAY
+    hoveringInspectorNodes: EMPTY_ARRAY,
+    selectedInspectorNodes: EMPTY_ARRAY
   };
 
   if (state.openFiles.length) {
@@ -1007,23 +1014,18 @@ export const openSyntheticVisibleNodeOriginFile = (
   }
 
   const uri = getPCNodeDependency(sourceNode.id, state.graph).uri;
-  const instance = findInstanceOfPCNode(
-    sourceNode,
-    state.documents.filter(
-      document =>
-        getSyntheticDocumentDependencyUri(document, state.graph) === uri
-    ),
-    state.graph
-  );
   state = openFile(uri, false, false, state);
-  state = setSelectedSyntheticVisibleNodeIds(state, instance.id);
-  state = centerCanvasToSelectedNodes(state);
+  const instance = findNestedNode(state.sourceNodeInspector, child => {
+    return !child.instancePath && child.assocSourceNodeId === sourceNode.id;
+  });
+  state = setSelectedInspectorNodes(state, instance);
+  // state = centerCanvasToSelectedNodes(state);
   return state;
 };
 
 export const centerCanvasToSelectedNodes = (state: RootState) => {
   const selectedBounds = getSelectionBounds(
-    state.selectedInspectorNodeIds,
+    state.selectedInspectorNodes,
     state.documents,
     state.frames,
     state.graph
@@ -1075,43 +1077,6 @@ export const keepActiveFileOpen = (state: RootState): RootState => {
       temporary: false
     }))
   };
-};
-
-export const setRootStateSyntheticVisibleNodeExpanded = (
-  nodeId: string,
-  value: boolean,
-  state: RootState
-) => {
-  const node = getSyntheticNodeById(nodeId, state.documents);
-  const document = getSyntheticVisibleNodeDocument(node.id, state.documents);
-
-  state = updateSyntheticDocument(
-    setSyntheticVisibleNodeExpanded(node, value, document),
-    document,
-    state
-  );
-
-  return state;
-};
-
-const setSyntheticVisibleNodeExpanded = (
-  node: SyntheticVisibleNode,
-  value: boolean,
-  document: SyntheticDocument
-): SyntheticVisibleNode => {
-  const path = getTreeNodePath(node.id, document);
-  const updater = (node: SyntheticVisibleNode) => {
-    return {
-      ...node,
-      metadata: {
-        ...node.metadata,
-        [SyntheticVisibleNodeMetadataKeys.EXPANDED]: value
-      }
-    };
-  };
-  return (value
-    ? updateNestedNodeTrail(path, document, updater)
-    : updateNestedNode(node, document, updater)) as SyntheticVisibleNode;
 };
 
 export const setRootStateSyntheticVisibleNodeLabelEditing = (
@@ -1397,12 +1362,12 @@ export const getCanvasMouseTargetInspectorNode = (
 };
 
 const getSelectedInspectorNodeParentShadowId = (state: RootState) => {
-  const nodeId = state.selectedInspectorNodeIds[0];
-  if (!nodeId) {
+  const node = state.selectedInspectorNodes[0];
+  if (!node) {
     return null;
   }
   const inspectorNode = getNestedTreeNodeById(
-    nodeId,
+    node.id,
     state.sourceNodeInspector
   );
   const shadow =
@@ -1539,35 +1504,21 @@ export const getFrameFromPoint = (point: Point, state: RootState) => {
   }
 };
 
-export const setSelectedSyntheticVisibleNodeIds = (
+export const setSelectedInspectorNodes = (
   root: RootState,
-  ...selectionIds: string[]
+  ...selection: InspectorNode[]
 ) => {
-  const nodeIds = uniq([...selectionIds]).filter(Boolean);
-  root = nodeIds.reduce(
-    (state, nodeId) =>
-      setRootStateSyntheticVisibleNodeExpanded(nodeId, true, state),
-    root
-  );
-  root = expandedSelectedInspectorNode(root);
+  const nodes = uniq([
+    ...selection.map(node =>
+      getNestedTreeNodeById(node.id, root.sourceNodeInspector)
+    )
+  ]).filter(Boolean);
 
-  const assocInspectorNodes = selectionIds.map(nodeId => {
-    const syntheticNode = getSyntheticNodeById(nodeId, root.documents);
-    const document = getSyntheticVisibleNodeDocument(
-      syntheticNode.id,
-      root.documents
-    );
-    return getSyntheticInspectorNode(
-      syntheticNode,
-      document,
-      root.sourceNodeInspector,
-      root.graph
-    );
-  });
+  root = expandedSelectedInspectorNode(root);
 
   root = updateRootState(
     {
-      selectedInspectorNodeIds: assocInspectorNodes.map(node => node.id)
+      selectedInspectorNodes: selection
     },
     root
   );
@@ -1576,9 +1527,9 @@ export const setSelectedSyntheticVisibleNodeIds = (
 };
 
 const expandedSelectedInspectorNode = (state: RootState) => {
-  return state.selectedInspectorNodeIds.reduce((state, nodeId) => {
+  return state.selectedInspectorNodes.reduce((state, node) => {
     state = updateSourceInspectorNode(state, sourceNodeInspector =>
-      expandInspectorNodeById(nodeId, sourceNodeInspector)
+      expandInspectorNodeById(node.id, sourceNodeInspector)
     );
 
     return state;
@@ -1622,16 +1573,16 @@ export const setHoveringSyntheticVisibleNodeIds = (
 
   return updateRootState(
     {
-      hoveringInspectorNodeIds: hoveringSyntheticNodeIds
+      hoveringInspectorNodes: hoveringSyntheticNodeIds
         .map(nodeId => {
-          const syntheticNode = getSyntheticInspectorNode(
+          const inspectorNode = getSyntheticInspectorNode(
             getSyntheticNodeById(nodeId, root.documents),
             getSyntheticVisibleNodeDocument(nodeId, root.documents),
             root.sourceNodeInspector,
             root.graph
           );
 
-          return syntheticNode && syntheticNode.id;
+          return inspectorNode;
         })
         .filter(Boolean)
     },
@@ -1639,13 +1590,13 @@ export const setHoveringSyntheticVisibleNodeIds = (
   );
 };
 
-export const setHoveringInspectorNodeIds = (
+export const setHoveringInspectorNodes = (
   root: RootState,
-  hoveringInspectorNodeIds: string[]
+  hoveringInspectorNodes: InspectorNode[]
 ) => {
   return updateRootState(
     {
-      hoveringInspectorNodeIds
+      hoveringInspectorNodes
     },
     root
   );
@@ -1653,36 +1604,37 @@ export const setHoveringInspectorNodeIds = (
 
 export const getBoundedSelection = memoize(
   (
-    selectedSyntheticNodeIds: string[],
+    selectedInspectorNodes: InspectorNode[],
     documents: SyntheticDocument[],
     frames: Frame[],
     graph: DependencyGraph
-  ): string[] =>
-    selectedSyntheticNodeIds.filter(nodeId =>
-      getSyntheticVisibleNodeRelativeBounds(
-        getSyntheticNodeById(nodeId, documents),
-        frames,
-        graph
-      )
-    )
+  ): InspectorNode[] => {
+    return selectedInspectorNodes.filter(node => {
+      const syntheticNode = getInspectorSyntheticNode(node, documents);
+      return (
+        syntheticNode &&
+        getSyntheticVisibleNodeRelativeBounds(syntheticNode, frames, graph)
+      );
+    });
+  }
 );
 
 export const getSelectionBounds = memoize(
   (
-    selectedSyntheticNodeIds: string[],
+    selectedInspectorNodes: InspectorNode[],
     documents: SyntheticDocument[],
     frames: Frame[],
     graph: DependencyGraph
   ) =>
     mergeBounds(
       ...getBoundedSelection(
-        selectedSyntheticNodeIds,
+        selectedInspectorNodes,
         documents,
         frames,
         graph
-      ).map(nodeId =>
+      ).map(node =>
         getSyntheticVisibleNodeRelativeBounds(
-          getSyntheticNodeById(nodeId, documents),
+          getInspectorSyntheticNode(node, documents),
           frames,
           graph
         )
@@ -1692,27 +1644,24 @@ export const getSelectionBounds = memoize(
 
 export const isSelectionMovable = memoize(
   (
-    selectedSyntheticNodeIds: string[],
-    documents: SyntheticDocument[],
+    selectedInspectorNodes: InspectorNode[],
+    rootInspectorNode: InspectorNode,
     graph: DependencyGraph
   ) => {
-    return selectedSyntheticNodeIds.every(nodeId => {
-      const node = getSyntheticNodeById(nodeId, documents);
-      return isSyntheticContentNode(node, graph);
-      // return !isSyntheticVisibleNodeMovable(node);
+    return selectedInspectorNodes.every(node => {
+      return getInspectorContentNode(node, rootInspectorNode).id === node.id;
     });
   }
 );
 
 export const isSelectionResizable = memoize(
   (
-    selectedSyntheticNodeIds: string[],
-    documents: SyntheticDocument[],
+    selectedSyntheticNodes: InspectorNode[],
+    rootInspectorNode: InspectorNode,
     graph: DependencyGraph
   ) => {
-    return selectedSyntheticNodeIds.every(nodeId => {
-      const node = getSyntheticNodeById(nodeId, documents);
-      return isSyntheticContentNode(node, graph);
+    return selectedSyntheticNodes.every(node => {
+      return getInspectorContentNode(node, rootInspectorNode).id === node.id;
     });
   }
 );

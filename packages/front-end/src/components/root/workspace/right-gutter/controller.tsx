@@ -5,7 +5,9 @@ import {
   getSyntheticVisibleNodeDocument,
   getPCNodeDependency,
   getGlobalVariables,
-  getSyntheticNodeStyleColors
+  getSyntheticNodeStyleColors,
+  getInspectorSyntheticNode,
+  getSyntheticInspectorNode
 } from "paperclip";
 import {
   memoize,
@@ -68,8 +70,9 @@ export default (Base: React.ComponentClass<BaseRightGutterProps>) =>
 
       const globalVariables = getGlobalVariables(root.graph);
 
-      const hasSyntheticNodes = root.selectedSyntheticNodeIds.length;
-      const availableTabs = hasSyntheticNodes
+      const selectedInspectorNodes = root.selectedInspectorNodes;
+      const hasInspectorNodes = Boolean(selectedInspectorNodes.length);
+      const availableTabs = hasInspectorNodes
         ? TAB_NAMES
         : INSPECTOR_NODE_TAB_NAMES;
       const availableCurrentTab =
@@ -77,26 +80,24 @@ export default (Base: React.ComponentClass<BaseRightGutterProps>) =>
           ? currentTab
           : availableTabs[0];
 
-      const syntheticDocument = hasSyntheticNodes
+      const selectedSyntheticNodes = hasInspectorNodes
+        ? selectedInspectorNodes
+            .map(node => getInspectorSyntheticNode(node, root.documents))
+            .filter(Boolean)
+        : EMPTY_ARRAY;
+
+      const syntheticDocument = selectedSyntheticNodes.length
         ? getSyntheticVisibleNodeDocument(
-            root.selectedSyntheticNodeIds[0],
+            getInspectorSyntheticNode(
+              root.selectedInspectorNodes[0],
+              root.documents
+            ).id,
             root.documents
           )
         : null;
       const documentColors =
-        syntheticDocument && getSyntheticNodeStyleColors(syntheticDocument);
-
-      const selectedSyntheticNodes = hasSyntheticNodes
-        ? getSelectedSyntheticNodes(
-            root.selectedSyntheticNodeIds,
-            root.documents
-          )
-        : EMPTY_ARRAY;
-
-      const selectedInspectorNodes = getSelectedInspectorNodes(
-        root.selectedInspectorNodeIds,
-        root.sourceNodeInspector
-      );
+        (syntheticDocument && getSyntheticNodeStyleColors(syntheticDocument)) ||
+        EMPTY_ARRAY;
 
       const rootInspectorNode = root.sourceNodeInspector;
 
@@ -118,11 +119,11 @@ export default (Base: React.ComponentClass<BaseRightGutterProps>) =>
           variant={cx({
             stylesTab: availableCurrentTab === TAB_NAMES[0],
             propertiesTab: availableCurrentTab === TAB_NAMES[1],
-            unselectedNodes: selectedSyntheticNodes.length === 0
+            unselectedNodes: selectedInspectorNodes.length === 0
           })}
           variablesSectionProps={{
             dispatch,
-            show: selectedSyntheticNodes.length === 0,
+            show: selectedInspectorNodes.length === 0,
             globalFileUri,
             globalVariables,
             fontFamilies
@@ -132,9 +133,7 @@ export default (Base: React.ComponentClass<BaseRightGutterProps>) =>
             visible: availableCurrentTab === TAB_NAMES[0],
             documentColors,
             dispatch,
-            syntheticDocument,
             fontFamilies,
-            selectedNodes: selectedSyntheticNodes,
             selectedInspectorNodes,
             rootInspectorNode,
             globalVariables,

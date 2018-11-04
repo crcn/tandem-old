@@ -3,15 +3,13 @@ import { createRootInspectorNode } from "paperclip";
 
 init({
   mount: document.getElementById("application"),
-  hoveringSyntheticNodeIds: [],
   editorWindows: [],
   customChrome: false,
-  selectedSyntheticNodeIds: [],
-  hoveringInspectorNodeIds: [],
+  selectedInspectorNodes: [],
+  hoveringInspectorNodes: [],
   selectedFileNodeIds: [],
   sourceNodeInspector: createRootInspectorNode(),
   sourceNodeInspectorMap: {},
-  selectedInspectorNodeIds: [],
   history: {
     index: 0,
     items: []

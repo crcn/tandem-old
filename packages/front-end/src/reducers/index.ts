@@ -201,7 +201,7 @@ import {
   updateRootState,
   updateOpenFileCanvas,
   getCanvasMouseTargetNodeId,
-  setSelectedSyntheticVisibleNodeIds,
+  setSelectedInspectorNodes,
   getSelectionBounds,
   getBoundedSelection,
   ToolType,
@@ -214,7 +214,6 @@ import {
   updateOpenFile,
   deselectRootProjectFiles,
   setHoveringSyntheticVisibleNodeIds,
-  setRootStateSyntheticVisibleNodeExpanded,
   setSelectedFileNodeIds,
   undo,
   redo,
@@ -237,7 +236,7 @@ import {
   getInsertableSourceNodeScope,
   getInsertableSourceNodeFromSyntheticNode,
   getCanvasMouseTargetInspectorNode,
-  setHoveringInspectorNodeIds,
+  setHoveringInspectorNodes,
   refreshModuleInspectorNodes,
   teeHistory,
   pruneOpenFiles,
@@ -341,7 +340,8 @@ import {
   persistConvertSyntheticVisibleNodeStyleToMixin,
   getSyntheticSourceUri,
   inspectorNodeInInstanceOfComponent,
-  getSyntheticVisibleNodeComputedBounds
+  getSyntheticVisibleNodeComputedBounds,
+  getInspectorNodeByAssocId
 } from "paperclip";
 import {
   roundBounds,
@@ -718,19 +718,19 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
         state
       );
 
-      const selectedNodeId = state.selectedSyntheticNodeIds[0];
-      if (selectedNodeId) {
+      const selectedNode = state.selectedInspectorNodes[0];
+      if (selectedNode) {
         const document = getSyntheticDocumentByDependencyUri(
           fileUri,
           state.documents,
           state.graph
         );
-        if (getNestedTreeNodeById(selectedNodeId, document)) {
+        if (getNestedTreeNodeById(selectedNode.id, document)) {
           return centerEditorCanvas(
             state,
             fileUri,
             getSelectionBounds(
-              state.selectedSyntheticNodeIds,
+              state.selectedInspectorNodes,
               state.documents,
               state.frames,
               state.graph
@@ -1054,24 +1054,27 @@ export const canvasReducer = (state: RootState, action: Action) => {
 
       if (
         isSelectionMovable(
-          state.selectedSyntheticNodeIds,
-          state.documents,
+          state.selectedInspectorNodes,
+          state.sourceNodeInspector,
           state.graph
         )
       ) {
         const selectionBounds = getSelectionBounds(
-          state.selectedSyntheticNodeIds,
+          state.selectedInspectorNodes,
           state.documents,
           state.frames,
           state.graph
         );
-        const nodeId = state.selectedSyntheticNodeIds[0];
 
         let movedBounds = moveBounds(selectionBounds, newPoint);
 
-        for (const nodeId of state.selectedSyntheticNodeIds) {
+        for (const node of state.selectedInspectorNodes) {
+          const syntheticNode = getInspectorSyntheticNode(
+            node,
+            state.documents
+          );
           const itemBounds = getSyntheticVisibleNodeRelativeBounds(
-            getSyntheticNodeById(nodeId, state.documents),
+            syntheticNode,
             state.frames,
             state.graph
           );
@@ -1081,7 +1084,7 @@ export const canvasReducer = (state: RootState, action: Action) => {
 
           state = updateSyntheticVisibleNodePosition(
             newBounds,
-            getSyntheticNodeById(nodeId, state.documents),
+            syntheticNode,
             state
           );
         }
@@ -1095,8 +1098,8 @@ export const canvasReducer = (state: RootState, action: Action) => {
         {
           [PCVisibleNodeMetadataKey.BOUNDS]: newBounds
         },
-        getSyntheticNodeById(
-          state.selectedSyntheticNodeIds[0],
+        getInspectorSyntheticNode(
+          state.selectedInspectorNodes[0],
           state.documents
         ),
         state
@@ -1110,8 +1113,8 @@ export const canvasReducer = (state: RootState, action: Action) => {
           {
             [PCVisibleNodeMetadataKey.BOUNDS]: newBounds
           },
-          getSyntheticNodeById(
-            state.selectedSyntheticNodeIds[0],
+          getInspectorSyntheticNode(
+            state.selectedInspectorNodes[0],
             state.documents
           ),
           state
@@ -1145,11 +1148,9 @@ export const canvasReducer = (state: RootState, action: Action) => {
 
     // DEPRECATED
     case ADD_VARIANT_BUTTON_CLICKED: {
-      const node = getSyntheticNodeById(
-        state.selectedSyntheticNodeIds[0],
-        state.documents
-      );
-      const frame = getSyntheticVisibleNodeFrame(node, state.frames);
+      const node = state.selectedInspectorNodes[0];
+      const syntheticNode = getInspectorSyntheticNode(node, state.documents);
+      const frame = getSyntheticVisibleNodeFrame(syntheticNode, state.frames);
       const contentNode = getSyntheticNodeById(
         frame.syntheticContentNodeId,
         state.documents
@@ -1208,10 +1209,7 @@ export const canvasReducer = (state: RootState, action: Action) => {
 
     case COMPONENT_INSTANCE_VARIANT_TOGGLED: {
       const { variant } = action as VariantClicked;
-      const inspectorNode = getNestedTreeNodeById(
-        state.selectedInspectorNodeIds[0],
-        state.sourceNodeInspector
-      );
+      const inspectorNode = state.selectedInspectorNodes[0];
       state = persistRootState(
         state =>
           persistToggleInstanceVariant(
@@ -1227,8 +1225,8 @@ export const canvasReducer = (state: RootState, action: Action) => {
 
     case INSTANCE_VARIANT_RESET_CLICKED: {
       const { variant } = action as VariantClicked;
-      const element = getSyntheticNodeById(
-        state.selectedSyntheticNodeIds[0],
+      const element = getInspectorSyntheticNode(
+        state.selectedInspectorNodes[0],
         state.documents
       ) as SyntheticInstanceElement;
       state = persistRootState(
@@ -1247,15 +1245,15 @@ export const canvasReducer = (state: RootState, action: Action) => {
     case RESIZER_STOPPED_MOVING: {
       if (
         isSelectionMovable(
-          state.selectedSyntheticNodeIds,
-          state.documents,
+          state.selectedInspectorNodes,
+          state.sourceNodeInspector,
           state.graph
         )
       ) {
         state = persistRootState(state => {
-          return state.selectedSyntheticNodeIds.reduce((state, nodeId) => {
+          return state.selectedInspectorNodes.reduce((state, node) => {
             return persistSyntheticVisibleNodeBounds(
-              getSyntheticNodeById(nodeId, state.documents),
+              getInspectorSyntheticNode(node, state.documents),
               state
             );
           }, state);
@@ -1407,9 +1405,9 @@ export const canvasReducer = (state: RootState, action: Action) => {
             action as CanvasToolOverlayMouseMoved,
             getInsertFilter(state)
           );
-          state = setHoveringInspectorNodeIds(
+          state = setHoveringInspectorNodes(
             state,
-            targetInspectorNode ? [targetInspectorNode.id] : EMPTY_ARRAY
+            targetInspectorNode ? [targetInspectorNode] : EMPTY_ARRAY
           );
         } else {
           targetNodeId = getCanvasMouseTargetNodeId(
@@ -1436,7 +1434,7 @@ export const canvasReducer = (state: RootState, action: Action) => {
       );
 
       // remove selection so that hovering state is visible
-      state = setSelectedSyntheticVisibleNodeIds(state);
+      state = setSelectedInspectorNodes(state);
 
       // TODO - in the future, we'll probably want to be able to highlight hovered nodes as the user is moving an element around to indicate where
       // they can drop the element.
@@ -1505,8 +1503,7 @@ export const canvasReducer = (state: RootState, action: Action) => {
           }
           state = {
             ...state,
-            selectedInspectorNodeIds: [inspectorShadowNode.id],
-            selectedSyntheticNodeIds: EMPTY_ARRAY
+            selectedInspectorNodes: [inspectorShadowNode]
           };
 
           state = handleCanvasMouseClicked(
@@ -1515,8 +1512,8 @@ export const canvasReducer = (state: RootState, action: Action) => {
           );
 
           if (
-            state.selectedSyntheticNodeIds.length &&
-            state.selectedSyntheticNodeIds[0] !== syntheticNode.id
+            state.selectedInspectorNodes.length &&
+            state.selectedInspectorNodes[0].id !== inspectorNode.id
           ) {
             break;
           }
@@ -1584,8 +1581,8 @@ export const canvasReducer = (state: RootState, action: Action) => {
 
       // TODO - possibly use BoundsStruct instead of Bounds since there are cases where bounds prop doesn't exist
       const newBounds = getResizeActionBounds(action as ResizerPathMoved);
-      for (const nodeId of getBoundedSelection(
-        state.selectedSyntheticNodeIds,
+      for (const node of getBoundedSelection(
+        state.selectedInspectorNodes,
         state.documents,
         state.frames,
         state.graph
@@ -1593,10 +1590,10 @@ export const canvasReducer = (state: RootState, action: Action) => {
         state = updateSyntheticVisibleNodeBounds(
           getNewSyntheticVisibleNodeBounds(
             newBounds,
-            getSyntheticNodeById(nodeId, state.documents),
+            getInspectorSyntheticNode(node, state.documents),
             state
           ),
-          getSyntheticNodeById(nodeId, state.documents),
+          getInspectorSyntheticNode(node, state.documents),
           state
         );
       }
@@ -1618,10 +1615,10 @@ export const canvasReducer = (state: RootState, action: Action) => {
       );
 
       state = persistRootState(state => {
-        return state.selectedSyntheticNodeIds.reduce(
-          (state, nodeId) =>
+        return state.selectedInspectorNodes.reduce(
+          (state, node) =>
             persistSyntheticVisibleNodeBounds(
-              getSyntheticNodeById(nodeId, state.documents),
+              getInspectorSyntheticNode(node, state.documents),
               state
             ),
           state
@@ -1632,12 +1629,12 @@ export const canvasReducer = (state: RootState, action: Action) => {
     }
     case RAW_CSS_TEXT_CHANGED: {
       const { value: cssText } = action as RawCSSTextChanged;
-      state = persistRootState(browser => {
-        return state.selectedSyntheticNodeIds.reduce(
-          (state, nodeId) =>
+      state = persistRootState(state => {
+        return state.selectedInspectorNodes.reduce(
+          (state, node) =>
             persistRawCSSText(
               cssText,
-              getSyntheticNodeById(nodeId, state.documents),
+              getInspectorSyntheticNode(node, state.documents),
               state.selectedVariant,
               state
             ),
@@ -1669,12 +1666,12 @@ export const canvasReducer = (state: RootState, action: Action) => {
     case CSS_PROPERTY_CHANGED: {
       const { name, value } = action as CSSPropertyChanged;
       state = teeHistory(state);
-      return state.selectedSyntheticNodeIds.reduce(
-        (state, nodeId) =>
+      return state.selectedInspectorNodes.reduce(
+        (state, node) =>
           persistCSSProperty(
             name,
             value,
-            getSyntheticNodeById(nodeId, state.documents),
+            getInspectorSyntheticNode(node, state.documents),
             state.selectedVariant,
             state
           ),
@@ -1688,8 +1685,8 @@ export const canvasReducer = (state: RootState, action: Action) => {
         return persistCSSProperty(
           property,
           undefined,
-          getSyntheticNodeById(
-            state.selectedSyntheticNodeIds[0],
+          getInspectorSyntheticNode(
+            state.selectedInspectorNodes[0],
             state.documents
           ),
           state.selectedVariant,
@@ -1703,12 +1700,12 @@ export const canvasReducer = (state: RootState, action: Action) => {
     case CSS_PROPERTY_CHANGE_COMPLETED: {
       const { name, value } = action as CSSPropertyChanged;
       state = persistRootState(state => {
-        return state.selectedSyntheticNodeIds.reduce(
-          (state, nodeId) =>
+        return state.selectedInspectorNodes.reduce(
+          (state, node) =>
             persistCSSProperty(
               name,
               value,
-              getSyntheticNodeById(nodeId, state.documents),
+              getInspectorSyntheticNode(node, state.documents),
               state.selectedVariant,
               state
             ),
@@ -1720,12 +1717,15 @@ export const canvasReducer = (state: RootState, action: Action) => {
     case ATTRIBUTE_CHANGED: {
       const { name, value } = action as CSSPropertyChanged;
       state = persistRootState(() => {
-        return state.selectedSyntheticNodeIds.reduce(
-          (state, nodeId) =>
+        return state.selectedInspectorNodes.reduce(
+          (state, inspectorNode) =>
             persistAttribute(
               name,
               value,
-              getSyntheticNodeById(nodeId, state.documents) as SyntheticElement,
+              getInspectorSyntheticNode(
+                inspectorNode,
+                state.documents
+              ) as SyntheticElement,
               state
             ),
           state
@@ -1735,10 +1735,10 @@ export const canvasReducer = (state: RootState, action: Action) => {
     }
 
     case INHERIT_PANE_REMOVE_BUTTON_CLICK: {
-      const { selectedSyntheticNodeIds } = state;
+      const { selectedInspectorNodes } = state;
       const { componentId } = action as InheritPaneRemoveButtonClick;
-      const node = getSyntheticNodeById(
-        selectedSyntheticNodeIds[0],
+      const node = getInspectorSyntheticNode(
+        selectedInspectorNodes[0],
         state.documents
       );
       state = persistRootState(state => {
@@ -1753,9 +1753,9 @@ export const canvasReducer = (state: RootState, action: Action) => {
     }
 
     case INHERIT_PANE_ADD_BUTTON_CLICK: {
-      const { selectedSyntheticNodeIds } = state;
-      const node = getSyntheticNodeById(
-        selectedSyntheticNodeIds[0],
+      const { selectedInspectorNodes } = state;
+      const node = getInspectorSyntheticNode(
+        selectedInspectorNodes[0],
         state.documents
       );
       const sourceNode = getSyntheticSourceNode(
@@ -1787,9 +1787,9 @@ export const canvasReducer = (state: RootState, action: Action) => {
         oldComponentId,
         newComponentId
       } = action as InheritItemComponentTypeChangeComplete;
-      const { selectedSyntheticNodeIds } = state;
-      const node = getSyntheticNodeById(
-        selectedSyntheticNodeIds[0],
+      const { selectedInspectorNodes } = state;
+      const node = getInspectorSyntheticNode(
+        selectedInspectorNodes[0],
         state.documents
       );
       state = persistRootState(state => {
@@ -1859,18 +1859,7 @@ export const canvasReducer = (state: RootState, action: Action) => {
       state = persistRootState(state => {
         state = persistChangeSyntheticTextNodeValue(
           value,
-          getSyntheticInspectorNode(
-            getSyntheticNodeById(
-              state.selectedSyntheticNodeIds[0],
-              state.documents
-            ),
-            getSyntheticVisibleNodeDocument(
-              state.selectedSyntheticNodeIds[0],
-              state.documents
-            ),
-            state.sourceNodeInspector,
-            state.graph
-          ),
+          state.selectedInspectorNodes[0],
           state
         );
 
@@ -1948,8 +1937,8 @@ export const canvasReducer = (state: RootState, action: Action) => {
     case NEW_STYLE_VARIANT_CONFIRMED: {
       const { inputValue } = action as PromptConfirmed;
 
-      const node = getSyntheticNodeById(
-        state.selectedSyntheticNodeIds[0],
+      const node = getInspectorSyntheticNode(
+        state.selectedInspectorNodes[0],
         state.documents
       );
       const frame = getSyntheticVisibleNodeFrame(node, state.frames);
@@ -1990,8 +1979,8 @@ export const canvasReducer = (state: RootState, action: Action) => {
     case ELEMENT_TYPE_CHANGED: {
       const { value } = action as ElementTypeChanged;
       state = persistRootState(state => {
-        const selectedNode = getSyntheticNodeById(
-          state.selectedSyntheticNodeIds[0],
+        const selectedNode = getInspectorSyntheticNode(
+          state.selectedInspectorNodes[0],
           state.documents
         ) as SyntheticElement;
         const sourceNode = getSyntheticSourceNode(
@@ -2016,16 +2005,21 @@ export const canvasReducer = (state: RootState, action: Action) => {
       );
       return handleArtboardSelectionFromAction(
         state,
-        frame.syntheticContentNodeId
+        getSyntheticInspectorNode(
+          contentNode,
+          getSyntheticVisibleNodeDocument(contentNode.id, state.documents),
+          state.sourceNodeInspector,
+          state.graph
+        )
       );
     }
     case CANVAS_TOOL_WINDOW_BACKGROUND_CLICKED: {
-      return setSelectedSyntheticVisibleNodeIds(state);
+      return setSelectedInspectorNodes(state);
     }
     case COMPONENT_CONTROLLER_PICKED: {
       const { filePath } = action as ComponentControllerPicked;
-      const node = getSyntheticNodeById(
-        state.selectedSyntheticNodeIds[0],
+      const node = getInspectorSyntheticNode(
+        state.selectedInspectorNodes[0],
         state.documents
       );
       state = persistRootState(
@@ -2036,8 +2030,8 @@ export const canvasReducer = (state: RootState, action: Action) => {
     }
     case OPEN_CONTROLLER_BUTTON_CLICKED: {
       const { relativePath } = action as ComponentControllerItemClicked;
-      const node = getSyntheticNodeById(
-        state.selectedSyntheticNodeIds[0],
+      const node = getInspectorSyntheticNode(
+        state.selectedInspectorNodes[0],
         state.documents
       );
       const sourceNodeUri = getSyntheticSourceUri(node, state.graph);
@@ -2057,8 +2051,8 @@ export const canvasReducer = (state: RootState, action: Action) => {
     }
     case REMOVE_COMPONENT_CONTROLLER_BUTTON_CLICKED: {
       const { relativePath } = action as RemoveComponentControllerButtonClicked;
-      const node = getSyntheticNodeById(
-        state.selectedSyntheticNodeIds[0],
+      const node = getInspectorSyntheticNode(
+        state.selectedInspectorNodes[0],
         state.documents
       );
       state = persistRemoveComponentController(relativePath, node, state);
@@ -2164,11 +2158,17 @@ const handleCanvasMouseClicked = (
   }
 
   if (!targetNodeId) {
-    return setSelectedSyntheticVisibleNodeIds(state);
+    return setSelectedInspectorNodes(state);
   }
 
   if (!altKey) {
-    state = handleArtboardSelectionFromAction(state, targetNodeId);
+    const inspectorNode = getSyntheticInspectorNode(
+      getSyntheticNodeById(targetNodeId, state.documents),
+      getSyntheticVisibleNodeDocument(targetNodeId, state.documents),
+      state.sourceNodeInspector,
+      state.graph
+    );
+    state = handleArtboardSelectionFromAction(state, inspectorNode);
     state = updateEditorWindow(
       {
         secondarySelection: false
@@ -2394,7 +2394,7 @@ const getNewSyntheticVisibleNodeBounds = (
   state: RootState
 ) => {
   const currentBounds = getSelectionBounds(
-    state.selectedSyntheticNodeIds,
+    state.selectedInspectorNodes,
     state.documents,
     state.frames,
     state.graph
@@ -2599,8 +2599,8 @@ const shortcutReducer = (state: RootState, action: Action): RootState => {
 
     case IMAGE_SOURCE_INPUT_CHANGED: {
       const { value } = action as ImageSourceInputChanged;
-      const element = getSyntheticNodeById(
-        state.selectedSyntheticNodeIds[0],
+      const element = getInspectorSyntheticNode(
+        state.selectedInspectorNodes[0],
         state.documents
       ) as SyntheticElement;
       state = persistRootState(state => {
@@ -2617,8 +2617,8 @@ const shortcutReducer = (state: RootState, action: Action): RootState => {
 
     case IMAGE_PATH_PICKED: {
       const { filePath } = action as ImagePathPicked;
-      const node = getSyntheticNodeById(
-        state.selectedSyntheticNodeIds[0],
+      const node = getInspectorSyntheticNode(
+        state.selectedInspectorNodes[0],
         state.documents
       );
       const document = getSyntheticVisibleNodeDocument(
@@ -2656,7 +2656,7 @@ const shortcutReducer = (state: RootState, action: Action): RootState => {
       state = persistRootState(state => {
         return persistRemoveSyntheticVisibleNode(item, state);
       }, state);
-      state = setSelectedSyntheticVisibleNodeIds(state);
+      state = setSelectedInspectorNodes(state);
       return state;
     }
 
@@ -2730,13 +2730,13 @@ const shortcutReducer = (state: RootState, action: Action): RootState => {
 
     case SHORTCUT_CONVERT_TO_COMPONENT_KEY_DOWN: {
       // TODO - should be able to conver all selected nodes to components
-      if (state.selectedSyntheticNodeIds.length > 1) {
+      if (state.selectedInspectorNodes.length > 1) {
         return state;
       }
 
       state = convertSyntheticNodeToComponent(
-        getSyntheticNodeById(
-          state.selectedSyntheticNodeIds[0],
+        getInspectorSyntheticNode(
+          state.selectedInspectorNodes[0],
           state.documents
         ),
         state
@@ -2744,8 +2744,8 @@ const shortcutReducer = (state: RootState, action: Action): RootState => {
       return state;
     }
     case SHORTCUT_WRAP_IN_SLOT_KEY_DOWN: {
-      const selectedNode = getSyntheticNodeById(
-        state.selectedSyntheticNodeIds[0],
+      const selectedNode = getInspectorSyntheticNode(
+        state.selectedInspectorNodes[0],
         state.documents
       );
       state = wrapSyntheticNodeInSlot(selectedNode, state);
@@ -2758,23 +2758,17 @@ const shortcutReducer = (state: RootState, action: Action): RootState => {
       if (state.toolType != null) {
         return setTool(null, state);
       } else {
-        state = setSelectedSyntheticVisibleNodeIds(state);
+        state = setSelectedInspectorNodes(state);
         state = setSelectedFileNodeIds(state);
         return state;
       }
     }
     case SHORTCUT_DELETE_KEY_DOWN: {
-      if (
-        isInputSelected(state) ||
-        state.selectedInspectorNodeIds.length === 0
-      ) {
+      if (isInputSelected(state) || state.selectedInspectorNodes.length === 0) {
         return state;
       }
 
-      const firstNode = getNestedTreeNodeById(
-        state.selectedInspectorNodeIds[0],
-        state.sourceNodeInspector
-      );
+      const firstNode = state.selectedInspectorNodes[0];
 
       const sourceNode = getInspectorSourceNode(
         firstNode,
@@ -2797,9 +2791,9 @@ const shortcutReducer = (state: RootState, action: Action): RootState => {
       const index = parent.children.indexOf(firstNode);
 
       state = persistRootState(state => {
-        return state.selectedInspectorNodeIds.reduce((state, nodeId) => {
+        return state.selectedInspectorNodes.reduce((state, { id }) => {
           const inspectorNode = getNestedTreeNodeById(
-            nodeId,
+            id,
             state.sourceNodeInspector
           );
           if (inspectorNodeInShadow(inspectorNode, state.sourceNodeInspector)) {
@@ -2854,23 +2848,16 @@ const shortcutReducer = (state: RootState, action: Action): RootState => {
           : null;
 
       if (nextSelectedNodeId) {
-        const nextInspectorNode = getNestedTreeNodeById(
+        const nextInspectorNode: InspectorNode = getNestedTreeNodeById(
           nextSelectedNodeId,
           state.sourceNodeInspector
         );
-        const assocSyntheticNode = getInspectorSyntheticNode(
-          nextInspectorNode,
-          state.documents
-        );
-        if (assocSyntheticNode) {
-          state = setSelectedSyntheticVisibleNodeIds(
-            state,
-            assocSyntheticNode.id
-          );
+        if (nextInspectorNode) {
+          state = setSelectedInspectorNodes(state, nextInspectorNode);
         } else {
           // does not exist as rep
           state = updateRootState(
-            { selectedInspectorNodeIds: [nextInspectorNode.id] },
+            { selectedInspectorNodes: EMPTY_ARRAY },
             state
           );
         }
@@ -2878,8 +2865,7 @@ const shortcutReducer = (state: RootState, action: Action): RootState => {
         // does not exist as rep
         state = updateRootState(
           {
-            selectedInspectorNodeIds: EMPTY_ARRAY,
-            selectedSyntheticNodeIds: EMPTY_ARRAY
+            selectedInspectorNodes: EMPTY_ARRAY
           },
           state
         );
@@ -2897,12 +2883,11 @@ const clipboardReducer = (state: RootState, action: Action) => {
       const oldState = state;
 
       let offset: TreeMoveOffset = TreeMoveOffset.BEFORE;
-      let targetNode: SyntheticVisibleNode | SyntheticDocument;
-      let scopeNode: SyntheticVisibleNode | SyntheticDocument;
+      let targetNode: InspectorNode;
+      let scopeNode: InspectorNode;
 
-      if (state.selectedSyntheticNodeIds.length) {
-        const nodeId = state.selectedSyntheticNodeIds[0];
-        scopeNode = targetNode = getSyntheticNodeById(nodeId, state.documents);
+      if (state.selectedInspectorNodes.length) {
+        scopeNode = targetNode = state.selectedInspectorNodes[0];
         scopeNode = getParentTreeNode(
           scopeNode.id,
           getSyntheticVisibleNodeDocument(scopeNode.id, state.documents)
@@ -2912,10 +2897,10 @@ const clipboardReducer = (state: RootState, action: Action) => {
         isPaperclipUri(state.activeEditorFilePath)
       ) {
         offset = TreeMoveOffset.PREPEND;
-        scopeNode = targetNode = getSyntheticDocumentByDependencyUri(
-          state.activeEditorFilePath,
-          state.documents,
-          state.graph
+        const module = state.graph[state.activeEditorFilePath].content;
+        scopeNode = targetNode = getInspectorNodeByAssocId(
+          module.id,
+          state.sourceNodeInspector
         );
       }
 
@@ -2945,10 +2930,9 @@ const handleArtboardSelectionFromAction = <
   T extends { sourceEvent: React.MouseEvent<any> }
 >(
   state: RootState,
-  nodeId: string
+  node: InspectorNode
 ) => {
-  state = setRootStateSyntheticVisibleNodeExpanded(nodeId, true, state);
-  state = setSelectedSyntheticVisibleNodeIds(state, nodeId);
+  state = setSelectedInspectorNodes(state, node);
   return state;
 };
 
@@ -3016,15 +3000,14 @@ const convertSyntheticStyleToMixin = (
     state
   );
 
-  state = setSelectedSyntheticVisibleNodeIds(state);
+  state = setSelectedInspectorNodes(state);
 
   state = queueSelectInsertedSyntheticVisibleNodes(
     oldState,
     state,
-    getSyntheticDocumentByDependencyUri(
-      state.activeEditorFilePath,
-      state.documents,
-      state.graph
+    getInspectorNodeByAssocId(
+      state.graph[state.activeEditorFilePath].content,
+      state.sourceNodeInspector
     )
   );
 
@@ -3046,15 +3029,14 @@ const convertSyntheticNodeToComponent = (
     state
   );
 
-  state = setSelectedSyntheticVisibleNodeIds(state);
+  state = setSelectedInspectorNodes(state);
 
   state = queueSelectInsertedSyntheticVisibleNodes(
     oldState,
     state,
-    getSyntheticDocumentByDependencyUri(
-      state.activeEditorFilePath,
-      state.documents,
-      state.graph
+    getInspectorNodeByAssocId(
+      state.graph[state.activeEditorFilePath].content,
+      state.sourceNodeInspector
     )
   );
   return state;
@@ -3116,15 +3098,10 @@ const selectInspectorNode = (node: InspectorNode, state: RootState) => {
 
   state = updateRootState(
     {
-      selectedInspectorNodeIds:
+      selectedInspectorNodes:
         assocSyntheticNode &&
         assocSyntheticNode.name !== SYNTHETIC_DOCUMENT_NODE_NAME
-          ? [node.id]
-          : EMPTY_ARRAY,
-      selectedSyntheticNodeIds:
-        assocSyntheticNode &&
-        assocSyntheticNode.name !== SYNTHETIC_DOCUMENT_NODE_NAME
-          ? [assocSyntheticNode.id]
+          ? [node]
           : EMPTY_ARRAY
     },
     state

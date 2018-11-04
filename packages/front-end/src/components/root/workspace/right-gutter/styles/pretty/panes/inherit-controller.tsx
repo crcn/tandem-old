@@ -14,7 +14,8 @@ import {
   PCComponent,
   PCStyleMixin,
   isElementLikePCNode,
-  getNativeComponentName
+  getNativeComponentName,
+  InspectorNode
 } from "paperclip";
 import {
   inheritPaneAddButtonClick,
@@ -25,7 +26,7 @@ import { ProjectOptions } from "../../../../../../../state";
 
 export type Props = {
   dispatch: Dispatch<any>;
-  selectedNodes: SyntheticElement[];
+  selectedInspectorNodes: InspectorNode[];
   graph: DependencyGraph;
   projectOptions: ProjectOptions;
 };
@@ -61,9 +62,14 @@ export default (Base: React.ComponentClass<BaseInheritProps>) => {
         onInheritItemClick
       } = this;
       const { selectedStyleMixinId } = this.state;
-      const { selectedNodes, dispatch, graph, projectOptions } = this.props;
-      const node = selectedNodes[0];
-      const sourceNode = getSyntheticSourceNode(node, graph) as
+      const {
+        selectedInspectorNodes,
+        dispatch,
+        graph,
+        projectOptions
+      } = this.props;
+      const node = selectedInspectorNodes[0];
+      const sourceNode = getPCNode(node.assocSourceNodeId, graph) as
         | PCVisibleNode
         | PCComponent
         | PCStyleMixin;

@@ -14,19 +14,21 @@ import {
   getSyntheticNodeById,
   SyntheticDocument,
   Frame,
-  DependencyGraph
+  DependencyGraph,
+  InspectorNode
 } from "paperclip";
 import { getNestedTreeNodeById } from "tandem-common";
 
 export type SelectionOuterProps = {
   canvas: Canvas;
   dispatch: Dispatch<any>;
+  rootInspectorNode: InspectorNode;
   zoom: number;
   document: SyntheticDocument;
   frames: Frame[];
   documents: SyntheticDocument[];
   graph: DependencyGraph;
-  selectedSyntheticNodeIds: string[];
+  selectedInspectorNodes: InspectorNode[];
   editorWindow: EditorWindow;
 };
 
@@ -37,20 +39,20 @@ export type SelectionInnerProps = {
 
 const SelectionBounds = ({
   zoom,
-  selectedSyntheticNodeIds,
+  selectedInspectorNodes,
   graph,
   frames,
   documents
 }: {
   document: SyntheticDocument;
-  selectedSyntheticNodeIds: string[];
+  selectedInspectorNodes: InspectorNode[];
   graph: DependencyGraph;
   frames: Frame[];
   documents: SyntheticDocument[];
   zoom: number;
 }) => {
   const entireBounds = getSelectionBounds(
-    selectedSyntheticNodeIds,
+    selectedInspectorNodes,
     documents,
     frames,
     graph
@@ -76,13 +78,13 @@ export class SelectionCanvasTool extends React.PureComponent<
   onDoubleClick = (event: React.MouseEvent<any>) => {
     const {
       dispatch,
-      selectedSyntheticNodeIds,
+      selectedInspectorNodes,
       documents,
       frames,
       graph
     } = this.props;
     const selection = getBoundedSelection(
-      selectedSyntheticNodeIds,
+      selectedInspectorNodes,
       documents,
       frames,
       graph
@@ -95,32 +97,31 @@ export class SelectionCanvasTool extends React.PureComponent<
     const {
       canvas,
       editorWindow,
-      selectedSyntheticNodeIds,
+      selectedInspectorNodes,
       documents,
       frames,
       graph,
+      rootInspectorNode,
       dispatch,
       document,
       zoom
     } = this.props;
     const { onDoubleClick } = this;
     const selection = getBoundedSelection(
-      selectedSyntheticNodeIds,
+      selectedInspectorNodes,
       documents,
       frames,
       graph
     );
+
     if (!selection.length || editorWindow.secondarySelection) return null;
-    if (!getNestedTreeNodeById(selectedSyntheticNodeIds[0], document)) {
-      return null;
-    }
 
     return (
       <div className="m-stage-selection-tool" onDoubleClick={onDoubleClick}>
         <SelectionBounds
           frames={frames}
           documents={documents}
-          selectedSyntheticNodeIds={selectedSyntheticNodeIds}
+          selectedInspectorNodes={selectedInspectorNodes}
           graph={graph}
           zoom={zoom}
           document={document}
@@ -129,7 +130,8 @@ export class SelectionCanvasTool extends React.PureComponent<
           frames={frames}
           documents={documents}
           graph={graph}
-          selectedSyntheticNodeIds={selectedSyntheticNodeIds}
+          rootInspectorNode={rootInspectorNode}
+          selectedInspectorNodes={selectedInspectorNodes}
           editorWindow={editorWindow}
           canvas={canvas}
           dispatch={dispatch}

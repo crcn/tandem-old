@@ -11,6 +11,7 @@ import {
   TreeNode
 } from "tandem-common";
 import { PCNode } from "./dsl";
+import { InspectorNode } from "./inspector";
 
 export enum TreeNodeOperationalTransformType {
   SET_PROPERTY,
@@ -29,7 +30,7 @@ export type BaseTreeNodeOperationalTransform<
 export type InsertChildNodeOperationalTransform = {
   nodePath: number[];
   index: number;
-  child: SyntheticVisibleNode | PCNode;
+  child: SyntheticVisibleNode | PCNode | InspectorNode;
 } & BaseTreeNodeOperationalTransform<
   TreeNodeOperationalTransformType.INSERT_CHILD
 >;
@@ -65,7 +66,7 @@ export type TreeNodeOperationalTransform =
 
 const createInsertChildNodeOperationalTransform = (
   nodePath: number[],
-  child: SyntheticVisibleNode | PCNode,
+  child: SyntheticVisibleNode | PCNode | InspectorNode,
   index: number
 ): InsertChildNodeOperationalTransform => ({
   type: TreeNodeOperationalTransformType.INSERT_CHILD,

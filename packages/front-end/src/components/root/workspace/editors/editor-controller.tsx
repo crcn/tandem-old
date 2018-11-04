@@ -3,16 +3,39 @@ import { EditorWindow, RootState, isImageMimetype } from "../../../../state";
 import { Dispatch } from "redux";
 import { StageComponent as PaperclipStageComponent } from "./paperclip/stage";
 import { ImageEditorWindowComponent } from "./image";
-import { PAPERCLIP_MIME_TYPE } from "paperclip";
+import {
+  PAPERCLIP_MIME_TYPE,
+  InspectorNode,
+  DependencyGraph,
+  getInspectorNodeByAssocId
+} from "paperclip";
 import { getFSItem } from "fsbox";
 import { BaseEditorProps } from "./editor.pc";
 import { TextEditorWindow } from "./text";
+import { memoize, getNestedTreeNodeById } from "tandem-common";
 
 export type Props = {
   editorWindow: EditorWindow;
   root: RootState;
   dispatch: Dispatch<any>;
 };
+
+const filterEditorInspectorNodes = memoize(
+  (
+    inspectorNodes: InspectorNode[],
+    rootInspectorNode: InspectorNode,
+    editor: EditorWindow,
+    graph: DependencyGraph
+  ) => {
+    const moduleInspectorNode = getInspectorNodeByAssocId(
+      graph[editor.activeFilePath].content.id,
+      rootInspectorNode
+    );
+    return inspectorNodes.filter(node =>
+      getNestedTreeNodeById(node.id, moduleInspectorNode)
+    );
+  }
+);
 
 export default (Base: React.ComponentClass<BaseEditorProps>) =>
   class EditorController extends React.PureComponent<Props> {
@@ -41,9 +64,18 @@ export default (Base: React.ComponentClass<BaseEditorProps>) =>
               documents={root.documents}
               graph={root.graph}
               frames={root.frames}
-              selectedSyntheticNodeIds={root.selectedSyntheticNodeIds}
-              hoveringInspectorNodeIds={root.hoveringInspectorNodeIds}
-              hoveringSyntheticNodeIds={root.hoveringSyntheticNodeIds}
+              selectedInspectorNodes={filterEditorInspectorNodes(
+                root.selectedInspectorNodes,
+                root.sourceNodeInspector,
+                editorWindow,
+                root.graph
+              )}
+              hoveringInspectorNodes={filterEditorInspectorNodes(
+                root.hoveringInspectorNodes,
+                root.sourceNodeInspector,
+                editorWindow,
+                root.graph
+              )}
               activeFilePath={root.activeEditorFilePath}
               toolType={root.toolType}
               dispatch={dispatch}

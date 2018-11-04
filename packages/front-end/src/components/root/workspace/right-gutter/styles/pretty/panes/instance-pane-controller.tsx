@@ -3,12 +3,9 @@ import { BaseInstancePaneProps } from "./instance.pc";
 import { Dispatch } from "redux";
 import * as cx from "classnames";
 import {
-  SyntheticDocument,
-  SyntheticNode,
   DependencyGraph,
   PCVariant,
   InspectorNode,
-  getSyntheticSourceNode,
   PCSourceTagNames,
   extendsComponent,
   getInspectorSourceNode,
@@ -34,7 +31,6 @@ import {
 export type Props = {
   selectedInspectorNodes: InspectorNode[];
   rootInspectorNode: InspectorNode;
-  syntheticDocument: SyntheticDocument;
   dispatch: Dispatch<any>;
   graph: DependencyGraph;
   selectedVariant: PCVariant;
@@ -49,7 +45,6 @@ export default (Base: React.ComponentClass<BaseInstancePaneProps>) =>
     render() {
       const { onResetStyle } = this;
       const {
-        syntheticDocument,
         selectedInspectorNodes,
         computedStyleInfo,
         rootInspectorNode,

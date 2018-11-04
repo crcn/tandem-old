@@ -15,8 +15,8 @@ import { LayersPaneContext, LayersPaneContextProps } from "./contexts";
 
 export type Props = {
   graph: DependencyGraph;
-  hoveringInspectorNodeIds: string[];
-  selectedInspectorNodeIds: string[];
+  hoveringInspectorNodes: InspectorNode[];
+  selectedInspectorNodes: InspectorNode[];
   sourceNodeInspector: InspectorNode;
   renameInspectorNodeId: string;
   documents: SyntheticDocument[];
@@ -28,8 +28,8 @@ const generateLayersPaneContext = memoize(
     graph: DependencyGraph,
     document: SyntheticDocument,
     documents: SyntheticDocument[],
-    selectedInspectorNodeIds: string[],
-    hoveringInspectorNodeIds: string[],
+    selectedInspectorNodes: InspectorNode[],
+    hoveringInspectorNodes: InspectorNode[],
     renameInspectorNodeId: string,
     rootInspectorNode: InspectorNode,
     dispatch: Dispatch
@@ -39,8 +39,8 @@ const generateLayersPaneContext = memoize(
     documents,
     rootInspectorNode,
     renameInspectorNodeId,
-    selectedInspectorNodeIds,
-    hoveringInspectorNodeIds,
+    selectedInspectorNodes,
+    hoveringInspectorNodes,
     dispatch
   })
 );
@@ -59,8 +59,8 @@ export default (Base: React.ComponentClass<BaseLayersPaneProps>) =>
         graph,
         documents,
         dispatch,
-        selectedInspectorNodeIds,
-        hoveringInspectorNodeIds,
+        selectedInspectorNodes,
+        hoveringInspectorNodes,
         renameInspectorNodeId,
         ...rest
       } = this.props;
@@ -89,8 +89,8 @@ export default (Base: React.ComponentClass<BaseLayersPaneProps>) =>
                   graph,
                   document,
                   documents,
-                  selectedInspectorNodeIds,
-                  hoveringInspectorNodeIds,
+                  selectedInspectorNodes,
+                  hoveringInspectorNodes,
                   renameInspectorNodeId,
                   sourceNodeInspector,
                   dispatch

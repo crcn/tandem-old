@@ -19,8 +19,6 @@ export type Props = {
   dispatch: Dispatch<any>;
   rootInspectorNode: InspectorNode;
   selectedInspectorNodes: InspectorNode[];
-  syntheticDocument: SyntheticDocument;
-  selectedNodes: SyntheticElement[];
   selectedVariant: PCVariant;
   fontFamilies: FontFamily[];
   globalVariables: PCVariable[];
@@ -34,8 +32,6 @@ export default (Base: React.ComponentClass<BaseStylesProps>) =>
         visible,
         globalVariables,
         dispatch,
-        syntheticDocument,
-        selectedNodes,
         selectedVariant,
         fontFamilies,
         graph,
@@ -45,7 +41,7 @@ export default (Base: React.ComponentClass<BaseStylesProps>) =>
         documentColors,
         ...rest
       } = this.props;
-      if (!selectedInspectorNodes.length || !selectedNodes.length || !visible) {
+      if (!selectedInspectorNodes.length || !visible) {
         return null;
       }
       const computedStyleInfo = computeStyleInfo(
@@ -58,8 +54,8 @@ export default (Base: React.ComponentClass<BaseStylesProps>) =>
         <Base
           variantsProps={{
             dispatch,
-            syntheticDocument,
-            selectedNodes,
+            rootInspectorNode,
+            selectedInspectorNodes,
             selectedVariant,
             graph
           }}
@@ -72,15 +68,13 @@ export default (Base: React.ComponentClass<BaseStylesProps>) =>
             computedStyleInfo,
             selectedInspectorNodes,
             rootInspectorNode,
-            syntheticDocument,
-            selectedNodes,
             graph,
             fontFamilies
           }}
           styleSwitcherProps={{
             dispatch,
-            syntheticDocument,
-            selectedNodes,
+            rootInspectorNode,
+            selectedInspectorNodes,
             graph,
             selectedVariant
           }}

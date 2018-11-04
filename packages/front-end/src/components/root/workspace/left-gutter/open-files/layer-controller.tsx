@@ -82,8 +82,8 @@ export default (Base: React.ComponentClass<BaseNodeLayerProps>) => {
         { inspectorNode }: Props,
         {
           graph,
-          selectedInspectorNodeIds,
-          hoveringInspectorNodeIds,
+          selectedInspectorNodes,
+          hoveringInspectorNodes,
           dispatch,
           renameInspectorNodeId,
           rootInspectorNode
@@ -122,8 +122,14 @@ export default (Base: React.ComponentClass<BaseNodeLayerProps>) => {
         return {
           dispatch,
           editingLabel: renameInspectorNodeId === inspectorNode.id,
-          isSelected: selectedInspectorNodeIds.indexOf(inspectorNode.id) !== -1,
-          isHovering: hoveringInspectorNodeIds.indexOf(inspectorNode.id) !== -1,
+          isSelected:
+            selectedInspectorNodes
+              .map(node => node.id)
+              .indexOf(inspectorNode.id) !== -1,
+          isHovering:
+            hoveringInspectorNodes
+              .map(node => node.id)
+              .indexOf(inspectorNode.id) !== -1,
           label,
           graph,
           inspectorNode,

@@ -497,7 +497,7 @@ const patchInspectorTree = (
 
           const index = patchedTarget.children
             .filter(child => !isUnreppedSourceNode(child))
-            .indexOf(child);
+            .indexOf(child as PCNode);
 
           const pcChild = child as PCNode;
           const instancePath = assocInspectorNode.instancePath;

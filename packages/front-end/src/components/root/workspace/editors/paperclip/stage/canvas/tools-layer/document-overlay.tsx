@@ -8,9 +8,17 @@ import {
   Frame,
   getFramesByDependencyUri,
   SyntheticDocument,
-  DependencyGraph
+  DependencyGraph,
+  InspectorNode,
+  getInspectorSyntheticNode
 } from "paperclip";
-import { Bounds, memoize, TreeNodeIdMap, StructReference } from "tandem-common";
+import {
+  Bounds,
+  memoize,
+  TreeNodeIdMap,
+  StructReference,
+  reuser
+} from "tandem-common";
 // import { Dispatcher, Bounds, wrapEventToDispatch, weakMemo, StructReference } from "aerial-common2";
 import { Dispatch } from "redux";
 import {
@@ -26,8 +34,8 @@ export type VisualToolsProps = {
   editorWindow: EditorWindow;
   zoom: number;
   document: SyntheticDocument;
-  hoveringSyntheticNodeIds: string[];
-  selectedSyntheticNodeIds: string[];
+  hoveringInspectorNodes: InspectorNode[];
+  selectedInspectorNodes: InspectorNode[];
   documents: SyntheticDocument[];
   frames: Frame[];
   graph: DependencyGraph;
@@ -184,21 +192,25 @@ class ArtboardOverlayTools extends React.PureComponent<
   }
 }
 
-const getHoveringSyntheticVisibleNodes = memoize(
-  (
-    hoveringSyntheticNodeIds: string[],
-    selectedSyntheticNodeIds: string[],
-    frame: Frame
-  ): string[] => {
-    const selectionRefIds = selectedSyntheticNodeIds;
-    return hoveringSyntheticNodeIds.filter(
-      nodeId =>
-        selectionRefIds.indexOf(nodeId) === -1 &&
-        ((frame.computed && frame.computed[nodeId]) ||
-          frame.syntheticContentNodeId === nodeId)
-    );
-  }
-);
+const reuseHoveringSyntheticNodeIds = reuser(10, (a: string[]) => a.join(","));
+
+const getHoveringSyntheticVisibleNodes = (
+  hoveringInspectorNodes: InspectorNode[],
+  selectedInspectorNodes: InspectorNode[],
+  documents: SyntheticDocument[],
+  frame: Frame
+): string[] => {
+  const selectionRefIds = selectedInspectorNodes;
+  return hoveringInspectorNodes
+    .filter(node => {
+      const syntheticNode = getInspectorSyntheticNode(node, documents);
+      return (
+        (syntheticNode && frame.computed && frame.computed[syntheticNode.id]) ||
+        frame.syntheticContentNodeId === node.id
+      );
+    })
+    .map(node => getInspectorSyntheticNode(node, documents).id);
+};
 
 export class NodeOverlaysTool extends React.PureComponent<VisualToolsProps> {
   render() {
@@ -208,8 +220,8 @@ export class NodeOverlaysTool extends React.PureComponent<VisualToolsProps> {
       dispatch,
       documents,
       graph,
-      hoveringSyntheticNodeIds,
-      selectedSyntheticNodeIds,
+      hoveringInspectorNodes,
+      selectedInspectorNodes,
       zoom
     } = this.props;
     const activeFrames = getFramesByDependencyUri(
@@ -227,8 +239,9 @@ export class NodeOverlaysTool extends React.PureComponent<VisualToolsProps> {
               key={frame.syntheticContentNodeId}
               frame={frame}
               hoveringSyntheticNodeIds={getHoveringSyntheticVisibleNodes(
-                hoveringSyntheticNodeIds,
-                selectedSyntheticNodeIds,
+                hoveringInspectorNodes,
+                selectedInspectorNodes,
+                documents,
                 frame
               )}
               dispatch={dispatch}

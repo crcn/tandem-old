@@ -8,7 +8,9 @@ import {
   DependencyGraph,
   getSyntheticSourceNode,
   isComponent,
-  PCVariant
+  PCVariant,
+  InspectorNode,
+  getInspectorContentNode
 } from "paperclip";
 import { Dispatch } from "redux";
 import { VariantOption } from "./option.pc";
@@ -20,8 +22,8 @@ import { BaseVariantsProps } from "./view.pc";
 
 export type Props = {
   dispatch: Dispatch<any>;
-  syntheticDocument: SyntheticDocument;
-  selectedNodes: SyntheticVisibleNode[];
+  rootInspectorNode: InspectorNode;
+  selectedInspectorNodes: InspectorNode[];
   selectedVariant: PCVariant;
   graph: DependencyGraph;
 };
@@ -43,17 +45,17 @@ export default (Base: React.ComponentClass<BaseVariantsProps>) =>
       const { onRemoveVariantButtonClick, onAddVariantButtonClick } = this;
       const {
         dispatch,
-        selectedNodes,
-        syntheticDocument,
+        selectedInspectorNodes,
+        rootInspectorNode,
         graph,
         selectedVariant
       } = this.props;
 
-      const contentNode = getSyntheticContentNode(
-        selectedNodes[0],
-        syntheticDocument
+      const contentNode = getInspectorContentNode(
+        selectedInspectorNodes[0],
+        rootInspectorNode
       );
-      const contentSourceNode = getSyntheticSourceNode(contentNode, graph);
+      const contentSourceNode = getPCNode(contentNode.assocSourceNodeId, graph);
       if (!contentSourceNode || !isComponent(contentSourceNode)) {
         return null;
       }

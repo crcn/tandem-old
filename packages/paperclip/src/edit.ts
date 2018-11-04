@@ -1008,11 +1008,11 @@ export const persistStyleMixinComponentId = <TState extends PCEditorState>(
 
 export const persistAppendPCClips = <TState extends PCEditorState>(
   clips: PCNodeClip[],
-  target: SyntheticVisibleNode | SyntheticDocument,
+  target: InspectorNode,
   offset: TreeMoveOffset,
   state: TState
 ): TState => {
-  const targetSourceNode = getSyntheticSourceNode(target, state.graph);
+  const targetSourceNode = getPCNode(target.assocSourceNodeId, state.graph);
   const targetDep = getPCNodeDependency(targetSourceNode.id, state.graph);
   const parentSourceNode: PCNode =
     offset === TreeMoveOffset.BEFORE || offset === TreeMoveOffset.AFTER

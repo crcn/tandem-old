@@ -5,7 +5,8 @@ import {
   getSyntheticNodeById,
   PCNodeClip,
   getPCNodeClip,
-  xmlToPCNode
+  xmlToPCNode,
+  getInspectorSyntheticNode
 } from "paperclip";
 import { syntheticNodesPasted } from "../actions";
 
@@ -36,8 +37,11 @@ function* handleCopy() {
       event.clipboardData.setData(
         "text/plain",
         JSON.stringify(
-          root.selectedSyntheticNodeIds.map(nodeId => {
-            const syntheticNode = getSyntheticNodeById(nodeId, root.documents);
+          root.selectedInspectorNodes.map(node => {
+            const syntheticNode = getInspectorSyntheticNode(
+              node,
+              root.documents
+            );
             return getPCNodeClip(syntheticNode, root.frames, root.graph);
           })
         )

@@ -51,14 +51,12 @@ setup<DesktopRootState>(
   rootSaga
 )({
   mount: document.getElementById("application"),
-  hoveringSyntheticNodeIds: [],
-  selectedSyntheticNodeIds: [],
-  hoveringInspectorNodeIds: [],
+  selectedInspectorNodes: [],
+  hoveringInspectorNodes: [],
   customChrome: Boolean(query.customChrome),
   selectedFileNodeIds: [],
   sourceNodeInspector: createRootInspectorNode(),
   sourceNodeInspectorMap: {},
-  selectedInspectorNodeIds: [],
   editorWindows: [],
   frames: [],
   documents: [],

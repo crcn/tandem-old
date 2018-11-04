@@ -7,8 +7,8 @@ export type Props = {
   show?: boolean;
   graph: DependencyGraph;
   activeEditorUri: string;
-  selectedInspectorNodeIds: string[];
-  hoveringInspectorNodeIds: string[];
+  selectedInspectorNodes: InspectorNode[];
+  hoveringInspectorNodes: InspectorNode[];
   selectedFileNodeIds: string[];
   sourceNodeInspector: InspectorNode;
   rootDirectory: Directory;
@@ -48,8 +48,8 @@ export default (Base: React.ComponentClass<BaseLeftGutterProps>) =>
       const {
         graph,
         activeEditorUri,
-        selectedInspectorNodeIds,
-        hoveringInspectorNodeIds,
+        selectedInspectorNodes,
+        hoveringInspectorNodes,
         selectedFileNodeIds,
         sourceNodeInspector,
         renameInspectorNodeId,
@@ -73,8 +73,8 @@ export default (Base: React.ComponentClass<BaseLeftGutterProps>) =>
           }}
           openModulesPaneProps={{
             graph,
-            selectedInspectorNodeIds,
-            hoveringInspectorNodeIds,
+            selectedInspectorNodes,
+            hoveringInspectorNodes,
             renameInspectorNodeId,
             sourceNodeInspector,
             dispatch,
