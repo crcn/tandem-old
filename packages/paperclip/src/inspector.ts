@@ -22,7 +22,8 @@ import {
   getPCVariants,
   PCBaseValueOverride,
   getPCNodeContentNode,
-  getInstanceShadow
+  getInstanceShadow,
+  getPCNodeDependency
 } from "./dsl";
 import { last } from "lodash";
 
@@ -374,11 +375,15 @@ export const refreshInspectorTree = (
   let newSourceMap: KeyValue<string[]> = {};
 
   // 1. remove source map info
-  for (const uri of moduleUris) {
-    const dep = oldGraph[uri];
+  for (const moduleInspectorNode of root.children) {
+    const dep = getPCNodeDependency(
+      (moduleInspectorNode as InspectorNode).assocSourceNodeId,
+      oldGraph
+    );
     if (dep && sourceMap[dep.content.id]) {
+      const uri = dep.uri;
       const module = dep.content;
-      if (moduleUris[uri] !== -1) {
+      if (moduleUris.indexOf(uri) !== -1) {
         for (const nestedChild of flattenTreeNode(module)) {
           newSourceMap[nestedChild.id] = sourceMap[nestedChild.id];
         }

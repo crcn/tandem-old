@@ -26,23 +26,21 @@ export type Props = {
 const generateLayersPaneContext = memoize(
   (
     graph: DependencyGraph,
-    document: SyntheticDocument,
-    documents: SyntheticDocument[],
     selectedInspectorNodes: InspectorNode[],
     hoveringInspectorNodes: InspectorNode[],
     renameInspectorNodeId: string,
     rootInspectorNode: InspectorNode,
     dispatch: Dispatch
-  ): LayersPaneContextProps => ({
-    graph,
-    document,
-    documents,
-    rootInspectorNode,
-    renameInspectorNodeId,
-    selectedInspectorNodes,
-    hoveringInspectorNodes,
-    dispatch
-  })
+  ): LayersPaneContextProps => {
+    return {
+      graph,
+      rootInspectorNode,
+      renameInspectorNodeId,
+      selectedInspectorNodes,
+      hoveringInspectorNodes,
+      dispatch
+    };
+  }
 );
 
 const CONTENT_STYLE = {
@@ -87,8 +85,6 @@ export default (Base: React.ComponentClass<BaseLayersPaneProps>) =>
                 key={inspectorNode.id}
                 value={generateLayersPaneContext(
                   graph,
-                  document,
-                  documents,
                   selectedInspectorNodes,
                   hoveringInspectorNodes,
                   renameInspectorNodeId,

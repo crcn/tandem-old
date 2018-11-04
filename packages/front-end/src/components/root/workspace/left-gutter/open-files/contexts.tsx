@@ -8,8 +8,6 @@ export type LayersPaneContextProps = {
   rootInspectorNode: InspectorNode;
   hoveringInspectorNodes: InspectorNode[];
   selectedInspectorNodes: InspectorNode[];
-  document: SyntheticDocument;
-  documents: SyntheticDocument[];
   renameInspectorNodeId: string;
   dispatch: Dispatch<any>;
 };
