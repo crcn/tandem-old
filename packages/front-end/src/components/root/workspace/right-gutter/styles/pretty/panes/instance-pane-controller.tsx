@@ -18,15 +18,20 @@ import {
   PCComponent,
   getPCNodeContentNode,
   getPCNodeModule,
-  ComputedStyleInfo
+  ComputedStyleInfo,
+  getInstanceVariantInfo
 } from "paperclip";
 import { dropdownMenuOptionFromValue } from "../../../../../../inputs/dropdown/controller";
-import { cssResetPropertyOptionClicked } from "../../../../../../../actions";
+import {
+  cssResetPropertyOptionClicked,
+  instanceVariantToggled
+} from "../../../../../../../actions";
 import {
   getParentTreeNode,
   containsNestedTreeNodeById,
   EMPTY_ARRAY
 } from "tandem-common";
+import { VariantOption } from "../../variants/option.pc";
 
 export type Props = {
   selectedInspectorNodes: InspectorNode[];
@@ -42,8 +47,11 @@ export default (Base: React.ComponentClass<BaseInstancePaneProps>) =>
     onResetStyle = (property: string) => {
       this.props.dispatch(cssResetPropertyOptionClicked(property));
     };
+    onVariantToggle = (variant: PCVariant) => {
+      this.props.dispatch(instanceVariantToggled(variant));
+    };
     render() {
-      const { onResetStyle } = this;
+      const { onResetStyle, onVariantToggle } = this;
       const {
         selectedInspectorNodes,
         computedStyleInfo,
@@ -120,6 +128,34 @@ export default (Base: React.ComponentClass<BaseInstancePaneProps>) =>
         })
       ];
 
+      if (
+        sourceNode.name !== PCSourceTagNames.COMPONENT_INSTANCE &&
+        (sourceNode.name !== PCSourceTagNames.COMPONENT ||
+          !extendsComponent(sourceNode))
+      ) {
+        return null;
+      }
+
+      const variantInfo = getInstanceVariantInfo(
+        selectedInspectorNode,
+        rootInspectorNode,
+        graph,
+        selectedVariant && selectedVariant.id
+      );
+
+      const options = variantInfo.map(({ variant, enabled }, i) => {
+        return (
+          <VariantOption
+            alt={Boolean(i % 2)}
+            enabled={enabled}
+            key={variant.id}
+            item={variant}
+            dispatch={dispatch}
+            onToggle={onVariantToggle}
+          />
+        );
+      });
+
       return (
         <Base
           {...rest}
@@ -130,14 +166,7 @@ export default (Base: React.ComponentClass<BaseInstancePaneProps>) =>
             options: overrideKeys.map(dropdownMenuOptionFromValue),
             onChangeComplete: onResetStyle
           }}
-          variantInputProps={{
-            sourceNode,
-            selectedVariant,
-            selectedInspectorNode,
-            rootInspectorNode,
-            dispatch,
-            graph
-          }}
+          content={options}
         />
       );
     }

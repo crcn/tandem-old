@@ -192,10 +192,16 @@ export const createShortcutSaga = ({
       item
     }: PCLayerRightClicked) {
       const state: RootState = yield select();
+      const node = getInspectorSyntheticNode(item, state.documents);
+
+      // maybe shadow
+      if (!node) {
+        return;
+      }
 
       yield call(
         openSyntheticNodeContextMenu,
-        getInspectorSyntheticNode(item, state.documents),
+        node,
         {
           left: event.pageX,
           top: event.pageY

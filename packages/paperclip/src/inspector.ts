@@ -178,7 +178,9 @@ export const evaluateModuleInspector = (
   [inspectorChildren, sourceMap] = evaluateInspectorNodeChildren(
     module,
     "",
-    graph
+    graph,
+    false,
+    sourceMap
   );
 
   let inspectorNode = createInspectorSourceRep(
@@ -197,6 +199,7 @@ const addSourceMap = (
   inspectorNode: InspectorNode,
   map: KeyValue<string[]>
 ) => {
+  map = { ...map };
   if (!map[inspectorNode.assocSourceNodeId]) {
     map[inspectorNode.assocSourceNodeId] = [];
   }

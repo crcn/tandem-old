@@ -1538,14 +1538,13 @@ export const setSelectedInspectorNodes = (
   root: RootState,
   ...selection: InspectorNode[]
 ) => {
-  root = expandedSelectedInspectorNode(root);
-
   root = updateRootState(
     {
       selectedInspectorNodes: selection
     },
     root
   );
+  root = expandedSelectedInspectorNode(root);
 
   return root;
 };
@@ -1555,7 +1554,6 @@ const expandedSelectedInspectorNode = (state: RootState) => {
     state = updateSourceInspectorNode(state, sourceNodeInspector =>
       expandInspectorNodeById(node.id, sourceNodeInspector)
     );
-
     return state;
   }, state);
 };

@@ -8,11 +8,8 @@
       "label": "Typograph",
       "is": "b6c162d113",
       "style": {
-        "font-family": "Helvetica",
         "display": "flex",
-        "flex-direction": "column",
-        "font-size": "10px",
-        "color": "grey"
+        "flex-direction": "column"
       },
       "attributes": {},
       "id": "73b39db4362",
@@ -697,11 +694,14 @@
                       "name": "text",
                       "label": "Text",
                       "value": "Typography",
-                      "style": {
-                        "font-weight": "400"
-                      },
+                      "style": {},
                       "children": [],
-                      "metadata": {}
+                      "metadata": {},
+                      "styleMixins": {
+                        "dc3b39eb1627": {
+                          "priority": 0
+                        }
+                      }
                     },
                     {
                       "id": "b117fdbf558567",
@@ -741,57 +741,6 @@
         "./typography-controller.tsx"
       ],
       "variant": {}
-    },
-    {
-      "id": "d81a70ee1241",
-      "label": "Element",
-      "is": "div",
-      "name": "element",
-      "attributes": {},
-      "style": {
-        "box-sizing": "border-box",
-        "display": "block"
-      },
-      "children": [
-        {
-          "id": "d81a70ee1243",
-          "is": "b6c162d113",
-          "label": "Pane",
-          "name": "component-instance",
-          "attributes": {},
-          "style": {},
-          "children": [
-            {
-              "id": "d81a70ee1255",
-              "variantId": null,
-              "propertyName": "text",
-              "targetIdPath": [
-                "b6c162d1281"
-              ],
-              "value": "Typography",
-              "name": "override",
-              "children": []
-            }
-          ],
-          "metadata": {
-            "bounds": {
-              "left": 321,
-              "top": 189,
-              "right": 525,
-              "bottom": 287.3571410945104
-            }
-          },
-          "variant": {}
-        }
-      ],
-      "metadata": {
-        "bounds": {
-          "left": 393,
-          "top": 695,
-          "right": 719,
-          "bottom": 985
-        }
-      }
     }
   ]
 }

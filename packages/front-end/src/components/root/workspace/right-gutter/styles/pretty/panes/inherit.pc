@@ -232,7 +232,11 @@
                   "style": {},
                   "children": [],
                   "metadata": {},
-                  "styleMixins": {}
+                  "styleMixins": {
+                    "dc3b39eb1627": {
+                      "priority": 0
+                    }
+                  }
                 },
                 {
                   "id": "a4d4c3d71",

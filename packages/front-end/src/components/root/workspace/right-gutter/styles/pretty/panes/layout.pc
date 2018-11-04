@@ -56,9 +56,21 @@
                   "name": "text",
                   "label": "Text",
                   "value": "layout",
-                  "style": {},
+                  "style": {
+                    "font-family": "unset",
+                    "font-size": "unset",
+                    "color": "unset"
+                  },
                   "children": [],
-                  "metadata": {}
+                  "metadata": {},
+                  "styleMixins": {
+                    "dc3b39eb1275": {
+                      "priority": 0
+                    },
+                    "8d8f489922252": {
+                      "priority": 1
+                    }
+                  }
                 },
                 {
                   "id": "b117fdbf315949",
@@ -1518,6 +1530,32 @@
         "./layout-controller.tsx"
       ],
       "variant": {}
+    },
+    {
+      "id": "8d8f489922252",
+      "name": "style-mixin",
+      "label": "Text text style",
+      "style": {
+        "font-size": "10px",
+        "font-weight": "600",
+        "color": "var(--30f4693267675)"
+      },
+      "styleMixins": {
+        "dc3b39eb1275": {
+          "priority": 0
+        }
+      },
+      "value": "layout",
+      "targetType": "text",
+      "children": [],
+      "metadata": {
+        "bounds": {
+          "left": -28,
+          "top": 428,
+          "right": 13.8125,
+          "bottom": 442
+        }
+      }
     }
   ]
 }

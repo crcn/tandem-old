@@ -38,7 +38,9 @@
           "children": [
             {
               "id": "6f30576e9",
-              "variant": {},
+              "variant": {
+                "246c305d8": false
+              },
               "is": "6f30576e8",
               "name": "component-instance",
               "attributes": {},
@@ -86,11 +88,14 @@
                   "name": "text",
                   "label": "label",
                   "value": "Variant",
-                  "style": {
-                    "margin-right": "8px"
-                  },
+                  "style": {},
                   "children": [],
-                  "metadata": {}
+                  "metadata": {},
+                  "styleMixins": {
+                    "dc3b39eb1275": {
+                      "priority": 0
+                    }
+                  }
                 }
               ],
               "metadata": {}
@@ -138,13 +143,14 @@
           "name": "variant",
           "isDefault": false,
           "children": [],
-          "metadata": {}
+          "metadata": {},
+          "label": "on"
         },
         {
           "id": "cc845f081098",
           "name": "variant",
           "label": "alt",
-          "isDefault": true,
+          "isDefault": false,
           "children": [],
           "metadata": {}
         },
@@ -154,7 +160,33 @@
           "propertyName": "style",
           "targetIdPath": [],
           "value": {
-            "background": "var(--f63574de434)"
+            "background": "var(--bc891e755312)"
+          },
+          "name": "override",
+          "children": []
+        },
+        {
+          "id": "24793dfa522",
+          "variantId": "cc845f08779",
+          "propertyName": "variant",
+          "targetIdPath": [
+            "6f30576e9"
+          ],
+          "value": {
+            "246c305d8": true
+          },
+          "name": "override",
+          "children": []
+        },
+        {
+          "id": "147a2c92522",
+          "variantId": "cc845f081098",
+          "propertyName": "variant",
+          "targetIdPath": [
+            "6f30576e9"
+          ],
+          "value": {
+            "246c305d8": false
           },
           "name": "override",
           "children": []

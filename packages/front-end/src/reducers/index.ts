@@ -2347,6 +2347,14 @@ const getDragFilter = (item: any, state: RootState) => {
       );
     };
   } else if (isInspectorNode(item)) {
+    const oldFilter = filter;
+    filter = (node: SyntheticVisibleNode) => {
+      return (
+        oldFilter(node) &&
+        getSyntheticNodeSourceDependency(node, state.graph).uri ===
+          state.activeEditorFilePath
+      );
+    };
     const sourceNode = getPCNode(item.assocSourceNodeId, state.graph);
     if (sourceNode.name === PCSourceTagNames.COMPONENT) {
       return () => false;
@@ -2739,6 +2747,7 @@ const shortcutReducer = (state: RootState, action: Action): RootState => {
         state.selectedInspectorNodes[0],
         state.documents
       );
+      console.loog(selectedNode);
       state = wrapSyntheticNodeInSlot(selectedNode, state);
       return state;
     }
@@ -2883,7 +2892,7 @@ const clipboardReducer = (state: RootState, action: Action) => {
         scopeNode = targetNode = state.selectedInspectorNodes[0];
         scopeNode = getParentTreeNode(
           scopeNode.id,
-          getSyntheticVisibleNodeDocument(scopeNode.id, state.documents)
+          getParentTreeNode(scopeNode.id, state.sourceNodeInspector)
         );
       } else if (
         state.activeEditorFilePath &&
@@ -2999,7 +3008,7 @@ const convertSyntheticStyleToMixin = (
     oldState,
     state,
     getInspectorNodeByAssocId(
-      state.graph[state.activeEditorFilePath].content,
+      state.graph[state.activeEditorFilePath].content.id,
       state.sourceNodeInspector
     )
   );
@@ -3028,7 +3037,7 @@ const convertSyntheticNodeToComponent = (
     oldState,
     state,
     getInspectorNodeByAssocId(
-      state.graph[state.activeEditorFilePath].content,
+      state.graph[state.activeEditorFilePath].content.id,
       state.sourceNodeInspector
     )
   );

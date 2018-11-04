@@ -48,7 +48,7 @@ export default (Base: React.ComponentClass<BaseStyleSwitcherProps>) =>
         this.props.rootInspectorNode
       );
       const component = getPCNode(
-        contentNode.id,
+        contentNode.assocSourceNodeId,
         this.props.graph
       ) as PCComponent;
 
@@ -76,7 +76,7 @@ export default (Base: React.ComponentClass<BaseStyleSwitcherProps>) =>
         selectedInspectorNodes[0],
         rootInspectorNode
       );
-      const contentSourceNode = getPCNode(contentNode.id, graph);
+      const contentSourceNode = getPCNode(contentNode.assocSourceNodeId, graph);
       if (!contentSourceNode || !isComponent(contentSourceNode)) {
         return null;
       }

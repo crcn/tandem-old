@@ -57,7 +57,11 @@ function* apiSaga() {
       } = yield take(chan);
       const menuChan = eventChannel(emit => {
         const menu = generateMenu(options, emit);
-        menu.popup({ window: event.sender, x: point.left, y: point.top });
+        menu.popup({
+          window: event.sender,
+          x: Math.round(point.left),
+          y: Math.round(point.top)
+        });
 
         // come after click
         menu.once("menu-will-close", () => setTimeout(emit, 10, "CLOSED"));
