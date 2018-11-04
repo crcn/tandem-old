@@ -2779,7 +2779,9 @@ const shortcutReducer = (state: RootState, action: Action): RootState => {
         firstNode.id,
         state.sourceNodeInspector
       );
-      const index = parent.children.indexOf(firstNode);
+      const index = parent.children.findIndex(
+        child => child.id === firstNode.id
+      );
 
       state = persistRootState(state => {
         return state.selectedInspectorNodes.reduce((state, { id }) => {
@@ -2832,7 +2834,7 @@ const shortcutReducer = (state: RootState, action: Action): RootState => {
       );
 
       const nextSelectedNodeId = nextChildren.length
-        ? nextChildren[Math.min(index, nextChildren.length - 1)].id
+        ? nextChildren[clamp(index, 0, nextChildren.length - 1)].id
         : getParentTreeNode(parent.id, state.sourceNodeInspector).name !==
           InspectorTreeNodeName.ROOT
           ? parent.id
