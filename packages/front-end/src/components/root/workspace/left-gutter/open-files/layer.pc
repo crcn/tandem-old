@@ -584,7 +584,7 @@
           "id": "d3bf183b26",
           "name": "variant",
           "label": "shadow",
-          "isDefault": false,
+          "isDefault": true,
           "children": [],
           "metadata": {}
         },
@@ -698,7 +698,7 @@
           "id": "a6fd808313",
           "name": "variant",
           "label": "selected",
-          "isDefault": true,
+          "isDefault": false,
           "children": [],
           "metadata": {}
         },
@@ -1038,6 +1038,19 @@
           ],
           "value": {
             "color": "rgba(255, 255, 255, 1)"
+          },
+          "name": "override",
+          "children": []
+        },
+        {
+          "id": "a9bf67161751",
+          "variantId": "a6fd80839",
+          "propertyName": "style",
+          "targetIdPath": [
+            "d3bf183b19"
+          ],
+          "value": {
+            "opacity": 0
           },
           "name": "override",
           "children": []

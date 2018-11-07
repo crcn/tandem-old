@@ -648,14 +648,6 @@ const moveDependencyRecordHistory = (
     state
   );
 
-  // deselect synthetic nodes if their source is also deleted
-  state = setSelectedInspectorNodes(
-    state,
-    ...state.selectedInspectorNodes.filter(node => {
-      return Boolean(getPCNode(node.assocSourceNodeId, state.graph));
-    })
-  );
-
   return state;
 };
 

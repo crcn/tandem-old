@@ -56,19 +56,12 @@
                   "name": "text",
                   "label": "Text",
                   "value": "layout",
-                  "style": {
-                    "font-family": "unset",
-                    "font-size": "unset",
-                    "color": "unset"
-                  },
+                  "style": {},
                   "children": [],
                   "metadata": {},
                   "styleMixins": {
-                    "dc3b39eb1275": {
-                      "priority": 0
-                    },
-                    "8d8f489922252": {
-                      "priority": 1
+                    "dc3b39eb1627": {
+                      "priority": 2
                     }
                   }
                 },
@@ -1532,28 +1525,863 @@
       "variant": {}
     },
     {
-      "id": "8d8f489922252",
-      "name": "style-mixin",
-      "label": "Text text style",
+      "id": "4c8367f41676",
+      "label": "Element",
+      "is": "div",
+      "name": "element",
+      "attributes": {},
       "style": {
-        "font-size": "10px",
-        "font-weight": "600",
-        "color": "var(--30f4693267675)"
+        "box-sizing": "border-box",
+        "display": "block"
       },
-      "styleMixins": {
-        "dc3b39eb1275": {
-          "priority": 0
+      "children": [
+        {
+          "id": "4c8367f41678",
+          "is": "b6c162d113",
+          "label": "Pane",
+          "name": "component-instance",
+          "attributes": {},
+          "style": {},
+          "children": [
+            {
+              "id": "4c8367f41690",
+              "variantId": null,
+              "propertyName": "text",
+              "targetIdPath": [
+                "b6c162d1281"
+              ],
+              "value": "Layout",
+              "name": "override",
+              "children": []
+            },
+            {
+              "slotId": "d6261ad52883",
+              "id": "4c8367f41692",
+              "children": [
+                {
+                  "id": "5d1bb35d1699",
+                  "is": "488ffe1f6704",
+                  "label": "css input row",
+                  "name": "component-instance",
+                  "attributes": {},
+                  "style": {},
+                  "children": [
+                    {
+                      "id": "5d1bb35d1700",
+                      "variantId": null,
+                      "propertyName": "text",
+                      "targetIdPath": [
+                        "9798784b2220"
+                      ],
+                      "value": "Display",
+                      "name": "override",
+                      "children": []
+                    },
+                    {
+                      "slotId": "4c8367f41704",
+                      "id": "5d1bb35d1701",
+                      "children": [
+                        {
+                          "id": "5d1bb35d1702",
+                          "is": "d2bdce074664",
+                          "label": "CSS Dropdown Input",
+                          "name": "component-instance",
+                          "attributes": {},
+                          "style": {},
+                          "children": [
+                            {
+                              "id": "5d1bb35d1703",
+                              "variantId": null,
+                              "propertyName": "text",
+                              "targetIdPath": [
+                                "67e386c7935"
+                              ],
+                              "value": "Flex",
+                              "name": "override",
+                              "children": []
+                            }
+                          ],
+                          "metadata": {
+                            "bounds": {
+                              "left": 779,
+                              "top": 247,
+                              "right": 980,
+                              "bottom": 334.77512727534497
+                            }
+                          },
+                          "variant": {}
+                        }
+                      ],
+                      "metadata": {},
+                      "name": "plug"
+                    }
+                  ],
+                  "metadata": {
+                    "bounds": {
+                      "left": 422,
+                      "top": 214,
+                      "right": 629,
+                      "bottom": 314
+                    }
+                  },
+                  "variant": {}
+                },
+                {
+                  "id": "5d1bb35d2038",
+                  "label": "flex options",
+                  "is": "div",
+                  "name": "element",
+                  "attributes": {},
+                  "style": {
+                    "box-sizing": "border-box",
+                    "display": "block",
+                    "padding-left": "16px"
+                  },
+                  "children": [
+                    {
+                      "id": "5d1bb35d2039",
+                      "is": "488ffe1f6704",
+                      "label": "css input row",
+                      "name": "component-instance",
+                      "attributes": {},
+                      "style": {},
+                      "children": [
+                        {
+                          "id": "5d1bb35d2040",
+                          "variantId": null,
+                          "propertyName": "text",
+                          "targetIdPath": [
+                            "9798784b2220"
+                          ],
+                          "value": "Direction",
+                          "name": "override",
+                          "children": []
+                        },
+                        {
+                          "slotId": "4c8367f41704",
+                          "id": "5d1bb35d2041",
+                          "children": [
+                            {
+                              "id": "5d1bb35d2042",
+                              "is": "50e32bec2591",
+                              "label": "Dropdown",
+                              "name": "component-instance",
+                              "attributes": {},
+                              "style": {},
+                              "children": [
+                                {
+                                  "id": "5d1bb35d2043",
+                                  "variantId": null,
+                                  "propertyName": "text",
+                                  "targetIdPath": [
+                                    "67e386c7935"
+                                  ],
+                                  "value": "Row",
+                                  "name": "override",
+                                  "children": []
+                                }
+                              ],
+                              "metadata": {
+                                "bounds": {
+                                  "left": 133,
+                                  "top": 279,
+                                  "right": 334,
+                                  "bottom": 521.2360321797468
+                                }
+                              },
+                              "variant": {}
+                            }
+                          ],
+                          "metadata": {},
+                          "name": "plug"
+                        }
+                      ],
+                      "metadata": {
+                        "bounds": {
+                          "left": 422,
+                          "top": 214,
+                          "right": 732,
+                          "bottom": 314
+                        }
+                      },
+                      "variant": {}
+                    },
+                    {
+                      "id": "5d1bb35d2044",
+                      "is": "488ffe1f6704",
+                      "label": "css input row",
+                      "name": "component-instance",
+                      "attributes": {},
+                      "style": {},
+                      "children": [
+                        {
+                          "id": "5d1bb35d2045",
+                          "variantId": null,
+                          "propertyName": "text",
+                          "targetIdPath": [
+                            "9798784b2220"
+                          ],
+                          "value": "Wrap",
+                          "name": "override",
+                          "children": []
+                        },
+                        {
+                          "slotId": "4c8367f41704",
+                          "id": "5d1bb35d2046",
+                          "children": [
+                            {
+                              "id": "5d1bb35d2047",
+                              "is": "50e32bec2591",
+                              "label": "Dropdown",
+                              "name": "component-instance",
+                              "attributes": {},
+                              "style": {},
+                              "children": [
+                                {
+                                  "id": "5d1bb35d2048",
+                                  "variantId": null,
+                                  "propertyName": "text",
+                                  "targetIdPath": [
+                                    "67e386c7935"
+                                  ],
+                                  "value": "nowrap",
+                                  "name": "override",
+                                  "children": []
+                                }
+                              ],
+                              "metadata": {
+                                "bounds": {
+                                  "left": 133,
+                                  "top": 279,
+                                  "right": 334,
+                                  "bottom": 521.2360321797468
+                                }
+                              },
+                              "variant": {}
+                            }
+                          ],
+                          "metadata": {},
+                          "name": "plug"
+                        }
+                      ],
+                      "metadata": {
+                        "bounds": {
+                          "left": 422,
+                          "top": 214,
+                          "right": 732,
+                          "bottom": 314
+                        }
+                      },
+                      "variant": {}
+                    },
+                    {
+                      "id": "b0720c731852",
+                      "is": "488ffe1f6704",
+                      "label": "css input row",
+                      "name": "component-instance",
+                      "attributes": {},
+                      "style": {},
+                      "children": [
+                        {
+                          "slotId": "4c8367f41704",
+                          "id": "b0720c731854",
+                          "children": [
+                            {
+                              "id": "b0720c731855",
+                              "label": "Element",
+                              "is": "div",
+                              "name": "element",
+                              "attributes": {},
+                              "style": {
+                                "box-sizing": "border-box",
+                                "display": "flex"
+                              },
+                              "children": [
+                                {
+                                  "id": "b0720c731856",
+                                  "is": "a329dd6d16879",
+                                  "label": "CSS Measurement Input",
+                                  "name": "component-instance",
+                                  "attributes": {
+                                    "placeholder": "Basis"
+                                  },
+                                  "style": {
+                                    "margin-right": "16px"
+                                  },
+                                  "children": [],
+                                  "metadata": {
+                                    "bounds": {
+                                      "left": 783.484050288946,
+                                      "top": 164.5285555122662,
+                                      "right": 1015.484050288946,
+                                      "bottom": 193.56436427116807
+                                    }
+                                  },
+                                  "variant": {}
+                                },
+                                {
+                                  "id": "b0720c731857",
+                                  "is": "a329dd6d16879",
+                                  "label": "CSS Measurement Input",
+                                  "name": "component-instance",
+                                  "attributes": {
+                                    "placeholder": "Shrink"
+                                  },
+                                  "style": {
+                                    "margin-right": "16px"
+                                  },
+                                  "children": [],
+                                  "metadata": {
+                                    "bounds": {
+                                      "left": 783.484050288946,
+                                      "top": 164.5285555122662,
+                                      "right": 1015.484050288946,
+                                      "bottom": 193.56436427116807
+                                    }
+                                  },
+                                  "variant": {}
+                                },
+                                {
+                                  "id": "b0720c731858",
+                                  "is": "a329dd6d16879",
+                                  "label": "CSS Measurement Input",
+                                  "name": "component-instance",
+                                  "attributes": {
+                                    "placeholder": "Grow"
+                                  },
+                                  "style": {},
+                                  "children": [],
+                                  "metadata": {
+                                    "bounds": {
+                                      "left": 783.484050288946,
+                                      "top": 164.5285555122662,
+                                      "right": 1015.484050288946,
+                                      "bottom": 193.56436427116807
+                                    }
+                                  },
+                                  "variant": {}
+                                }
+                              ],
+                              "metadata": {}
+                            }
+                          ],
+                          "metadata": {},
+                          "name": "plug"
+                        },
+                        {
+                          "id": "e0c94111868",
+                          "variantId": null,
+                          "propertyName": "text",
+                          "targetIdPath": [
+                            "9798784b2220"
+                          ],
+                          "value": "Flex",
+                          "name": "override",
+                          "children": []
+                        }
+                      ],
+                      "metadata": {
+                        "bounds": {
+                          "left": 422,
+                          "top": 214,
+                          "right": 732,
+                          "bottom": 314
+                        }
+                      },
+                      "variant": {}
+                    }
+                  ],
+                  "metadata": {
+                    "bounds": {
+                      "left": 35.5,
+                      "top": 351,
+                      "right": 135.5,
+                      "bottom": 451
+                    }
+                  }
+                },
+                {
+                  "id": "4c8367f41691",
+                  "is": "488ffe1f6704",
+                  "label": "css input row",
+                  "name": "component-instance",
+                  "attributes": {},
+                  "style": {},
+                  "children": [
+                    {
+                      "id": "4c8367f41703",
+                      "variantId": null,
+                      "propertyName": "text",
+                      "targetIdPath": [
+                        "9798784b2220"
+                      ],
+                      "value": "Position",
+                      "name": "override",
+                      "children": []
+                    },
+                    {
+                      "slotId": "4c8367f41704",
+                      "id": "378f728c1555",
+                      "children": [
+                        {
+                          "id": "378f728c1554",
+                          "is": "d2bdce074664",
+                          "label": "CSS Dropdown Input",
+                          "name": "component-instance",
+                          "attributes": {},
+                          "style": {},
+                          "children": [
+                            {
+                              "id": "5d1bb35d1697",
+                              "variantId": null,
+                              "propertyName": "text",
+                              "targetIdPath": [
+                                "67e386c7935"
+                              ],
+                              "value": "Relative",
+                              "name": "override",
+                              "children": []
+                            }
+                          ],
+                          "metadata": {
+                            "bounds": {
+                              "left": 779,
+                              "top": 247,
+                              "right": 980,
+                              "bottom": 334.77512727534497
+                            }
+                          },
+                          "variant": {}
+                        }
+                      ],
+                      "metadata": {},
+                      "name": "plug"
+                    }
+                  ],
+                  "metadata": {
+                    "bounds": {
+                      "left": 422,
+                      "top": 214,
+                      "right": 629,
+                      "bottom": 314
+                    }
+                  },
+                  "variant": {}
+                },
+                {
+                  "id": "f6e49841529",
+                  "label": "position options",
+                  "is": "div",
+                  "name": "element",
+                  "attributes": {},
+                  "style": {
+                    "box-sizing": "border-box",
+                    "display": "block",
+                    "padding-left": "16px"
+                  },
+                  "children": [
+                    {
+                      "id": "5d1bb35d2754",
+                      "is": "488ffe1f6704",
+                      "label": "css input row",
+                      "name": "component-instance",
+                      "attributes": {},
+                      "style": {},
+                      "children": [
+                        {
+                          "id": "5d1bb35d2755",
+                          "variantId": null,
+                          "propertyName": "text",
+                          "targetIdPath": [
+                            "9798784b2220"
+                          ],
+                          "value": "Width",
+                          "name": "override",
+                          "children": []
+                        },
+                        {
+                          "slotId": "4c8367f41704",
+                          "id": "5d1bb35d2756",
+                          "children": [
+                            {
+                              "id": "5d1bb35d2757",
+                              "label": "Element",
+                              "is": "div",
+                              "name": "element",
+                              "attributes": {},
+                              "style": {
+                                "box-sizing": "border-box",
+                                "display": "flex"
+                              },
+                              "children": [
+                                {
+                                  "id": "5d1bb35d2758",
+                                  "is": "a329dd6d16879",
+                                  "label": "CSS Measurement Input",
+                                  "name": "component-instance",
+                                  "attributes": {
+                                    "placeholder": "0px"
+                                  },
+                                  "style": {
+                                    "margin-right": "16px"
+                                  },
+                                  "children": [],
+                                  "metadata": {
+                                    "bounds": {
+                                      "left": 783.484050288946,
+                                      "top": 164.5285555122662,
+                                      "right": 1015.484050288946,
+                                      "bottom": 193.56436427116807
+                                    }
+                                  },
+                                  "variant": {}
+                                },
+                                {
+                                  "id": "5d1bb35d2759",
+                                  "is": "a329dd6d16879",
+                                  "label": "CSS Measurement Input",
+                                  "name": "component-instance",
+                                  "attributes": {
+                                    "placeholder": "Min"
+                                  },
+                                  "style": {
+                                    "margin-right": "16px"
+                                  },
+                                  "children": [],
+                                  "metadata": {
+                                    "bounds": {
+                                      "left": 783.484050288946,
+                                      "top": 164.5285555122662,
+                                      "right": 1015.484050288946,
+                                      "bottom": 193.56436427116807
+                                    }
+                                  },
+                                  "variant": {}
+                                },
+                                {
+                                  "id": "5d1bb35d2760",
+                                  "is": "a329dd6d16879",
+                                  "label": "CSS Measurement Input",
+                                  "name": "component-instance",
+                                  "attributes": {
+                                    "placeholder": "Max"
+                                  },
+                                  "style": {},
+                                  "children": [],
+                                  "metadata": {
+                                    "bounds": {
+                                      "left": 783.484050288946,
+                                      "top": 164.5285555122662,
+                                      "right": 1015.484050288946,
+                                      "bottom": 193.56436427116807
+                                    }
+                                  },
+                                  "variant": {}
+                                }
+                              ],
+                              "metadata": {}
+                            }
+                          ],
+                          "metadata": {},
+                          "name": "plug"
+                        }
+                      ],
+                      "metadata": {
+                        "bounds": {
+                          "left": 422,
+                          "top": 214,
+                          "right": 732,
+                          "bottom": 314
+                        }
+                      },
+                      "variant": {}
+                    },
+                    {
+                      "id": "5d1bb35d2783",
+                      "is": "488ffe1f6704",
+                      "label": "css input row",
+                      "name": "component-instance",
+                      "attributes": {},
+                      "style": {},
+                      "children": [
+                        {
+                          "slotId": "4c8367f41704",
+                          "id": "5d1bb35d2784",
+                          "children": [
+                            {
+                              "id": "5d1bb35d2785",
+                              "label": "Element",
+                              "is": "div",
+                              "name": "element",
+                              "attributes": {},
+                              "style": {
+                                "box-sizing": "border-box",
+                                "display": "flex"
+                              },
+                              "children": [
+                                {
+                                  "id": "5d1bb35d2786",
+                                  "is": "a329dd6d16879",
+                                  "label": "CSS Measurement Input",
+                                  "name": "component-instance",
+                                  "attributes": {
+                                    "placeholder": "0px"
+                                  },
+                                  "style": {
+                                    "margin-right": "16px"
+                                  },
+                                  "children": [],
+                                  "metadata": {
+                                    "bounds": {
+                                      "left": 783.484050288946,
+                                      "top": 164.5285555122662,
+                                      "right": 1015.484050288946,
+                                      "bottom": 193.56436427116807
+                                    }
+                                  },
+                                  "variant": {}
+                                },
+                                {
+                                  "id": "5d1bb35d2787",
+                                  "is": "a329dd6d16879",
+                                  "label": "CSS Measurement Input",
+                                  "name": "component-instance",
+                                  "attributes": {
+                                    "placeholder": "Min"
+                                  },
+                                  "style": {
+                                    "margin-right": "16px"
+                                  },
+                                  "children": [],
+                                  "metadata": {
+                                    "bounds": {
+                                      "left": 783.484050288946,
+                                      "top": 164.5285555122662,
+                                      "right": 1015.484050288946,
+                                      "bottom": 193.56436427116807
+                                    }
+                                  },
+                                  "variant": {}
+                                },
+                                {
+                                  "id": "5d1bb35d2788",
+                                  "is": "a329dd6d16879",
+                                  "label": "CSS Measurement Input",
+                                  "name": "component-instance",
+                                  "attributes": {
+                                    "placeholder": "Max"
+                                  },
+                                  "style": {},
+                                  "children": [],
+                                  "metadata": {
+                                    "bounds": {
+                                      "left": 783.484050288946,
+                                      "top": 164.5285555122662,
+                                      "right": 1015.484050288946,
+                                      "bottom": 193.56436427116807
+                                    }
+                                  },
+                                  "variant": {}
+                                }
+                              ],
+                              "metadata": {}
+                            }
+                          ],
+                          "metadata": {},
+                          "name": "plug"
+                        },
+                        {
+                          "id": "5d1bb35d2789",
+                          "variantId": null,
+                          "propertyName": "text",
+                          "targetIdPath": [
+                            "9798784b2220"
+                          ],
+                          "value": "Height",
+                          "name": "override",
+                          "children": []
+                        }
+                      ],
+                      "metadata": {
+                        "bounds": {
+                          "left": 422,
+                          "top": 214,
+                          "right": 732,
+                          "bottom": 314
+                        }
+                      },
+                      "variant": {}
+                    },
+                    {
+                      "id": "aabf54121868",
+                      "is": "488ffe1f6704",
+                      "label": "css input row",
+                      "name": "component-instance",
+                      "attributes": {},
+                      "style": {},
+                      "children": [
+                        {
+                          "slotId": "4c8367f41704",
+                          "id": "aabf54121870",
+                          "children": [
+                            {
+                              "id": "5d1bb35d2723",
+                              "label": "Element",
+                              "is": "div",
+                              "name": "element",
+                              "attributes": {},
+                              "style": {
+                                "box-sizing": "border-box",
+                                "display": "flex"
+                              },
+                              "children": [
+                                {
+                                  "id": "5d1bb35d2746",
+                                  "is": "a329dd6d16879",
+                                  "label": "CSS Measurement Input",
+                                  "name": "component-instance",
+                                  "attributes": {
+                                    "placeholder": "Left"
+                                  },
+                                  "style": {
+                                    "margin-right": "16px"
+                                  },
+                                  "children": [],
+                                  "metadata": {
+                                    "bounds": {
+                                      "left": 783.484050288946,
+                                      "top": 164.5285555122662,
+                                      "right": 1015.484050288946,
+                                      "bottom": 193.56436427116807
+                                    }
+                                  },
+                                  "variant": {}
+                                },
+                                {
+                                  "id": "b0720c731844",
+                                  "is": "a329dd6d16879",
+                                  "label": "CSS Measurement Input",
+                                  "name": "component-instance",
+                                  "attributes": {
+                                    "placeholder": "Top"
+                                  },
+                                  "style": {
+                                    "margin-right": "16px"
+                                  },
+                                  "children": [],
+                                  "metadata": {
+                                    "bounds": {
+                                      "left": 783.484050288946,
+                                      "top": 164.5285555122662,
+                                      "right": 1015.484050288946,
+                                      "bottom": 193.56436427116807
+                                    }
+                                  },
+                                  "variant": {}
+                                },
+                                {
+                                  "id": "b0720c731848",
+                                  "is": "a329dd6d16879",
+                                  "label": "CSS Measurement Input",
+                                  "name": "component-instance",
+                                  "attributes": {
+                                    "placeholder": "Right"
+                                  },
+                                  "style": {
+                                    "margin-right": "16px"
+                                  },
+                                  "children": [],
+                                  "metadata": {
+                                    "bounds": {
+                                      "left": 783.484050288946,
+                                      "top": 164.5285555122662,
+                                      "right": 1015.484050288946,
+                                      "bottom": 193.56436427116807
+                                    }
+                                  },
+                                  "variant": {}
+                                },
+                                {
+                                  "id": "5d1bb35d2724",
+                                  "is": "a329dd6d16879",
+                                  "label": "CSS Measurement Input",
+                                  "name": "component-instance",
+                                  "attributes": {
+                                    "placeholder": "Bottom"
+                                  },
+                                  "style": {},
+                                  "children": [],
+                                  "metadata": {
+                                    "bounds": {
+                                      "left": 783.484050288946,
+                                      "top": 164.5285555122662,
+                                      "right": 1015.484050288946,
+                                      "bottom": 193.56436427116807
+                                    }
+                                  },
+                                  "variant": {}
+                                }
+                              ],
+                              "metadata": {}
+                            }
+                          ],
+                          "metadata": {},
+                          "name": "plug"
+                        },
+                        {
+                          "id": "5d1bb35d2782",
+                          "variantId": null,
+                          "propertyName": "text",
+                          "targetIdPath": [
+                            "9798784b2220"
+                          ],
+                          "value": "Position",
+                          "name": "override",
+                          "children": []
+                        }
+                      ],
+                      "metadata": {
+                        "bounds": {
+                          "left": 422,
+                          "top": 214,
+                          "right": 732,
+                          "bottom": 314
+                        }
+                      },
+                      "variant": {}
+                    }
+                  ],
+                  "metadata": {
+                    "bounds": {
+                      "left": 35.5,
+                      "top": 351,
+                      "right": 135.5,
+                      "bottom": 451
+                    }
+                  }
+                }
+              ],
+              "metadata": {},
+              "name": "plug"
+            }
+          ],
+          "metadata": {
+            "bounds": {
+              "left": 321,
+              "top": 189,
+              "right": 525,
+              "bottom": 287.3571410945104
+            }
+          },
+          "variant": {}
         }
-      },
-      "value": "layout",
-      "targetType": "text",
-      "children": [],
+      ],
       "metadata": {
         "bounds": {
-          "left": -28,
-          "top": 428,
-          "right": 13.8125,
-          "bottom": 442
+          "left": -18,
+          "top": 432,
+          "right": 329,
+          "bottom": 942
         }
       }
     }

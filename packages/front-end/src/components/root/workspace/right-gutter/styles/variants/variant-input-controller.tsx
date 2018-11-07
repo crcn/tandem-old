@@ -1,37 +1,16 @@
 import * as React from "react";
 import {
-  SyntheticDocument,
-  getOverrides,
-  SyntheticNode,
-  PCOverride,
   DependencyGraph,
-  getSyntheticSourceNode,
-  isPCComponentInstance,
-  getPCNode,
-  getPCVariants,
-  PCComponent,
-  getInspectorSourceNode,
-  PCComponentInstanceElement,
-  isSyntheticInstanceElement,
-  SyntheticElement,
   PCVariant,
-  SyntheticInstanceElement,
   InspectorNode,
   getInstanceVariantInfo,
-  getInheritedAndSelfOverrides,
-  PCOverridablePropertyName,
   PCSourceTagNames,
   extendsComponent,
   PCNode
 } from "paperclip";
-import { memoize, KeyValue } from "tandem-common";
 import { Dispatch } from "redux";
 import { VariantOption } from "./option.pc";
-import { noop, last } from "lodash";
-import {
-  instanceVariantToggled,
-  instanceVariantResetClicked
-} from "../../../../../../actions";
+import { instanceVariantToggled } from "../../../../../../actions";
 import { BaseComponentInstanceVariantProps } from "./variant-input.pc";
 
 export type Props = {

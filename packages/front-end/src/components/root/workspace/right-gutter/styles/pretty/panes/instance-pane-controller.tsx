@@ -70,7 +70,7 @@ export default (Base: React.ComponentClass<BaseInstancePaneProps>) =>
         selectedInspectorNode,
         rootInspectorNode,
         graph
-      ) as PCVisibleNode | PCComponent;
+      ) as PCVisibleNode | PCComponent | null;
 
       const contentNode = getPCNodeContentNode(
         sourceNode.id,

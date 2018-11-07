@@ -149,6 +149,30 @@
           "bottom": -171.5
         }
       }
+    },
+    {
+      "id": "9798784b2419",
+      "name": "style-mixin",
+      "label": "Base font + nobreak",
+      "style": {
+        "white-space": "nowrap"
+      },
+      "styleMixins": {
+        "dc3b39eb1275": {
+          "priority": 0
+        }
+      },
+      "value": "Base font + nobreak",
+      "targetType": "text",
+      "children": [],
+      "metadata": {
+        "bounds": {
+          "left": 565,
+          "top": -136,
+          "right": 665,
+          "bottom": -107
+        }
+      }
     }
   ],
   "metadata": {}

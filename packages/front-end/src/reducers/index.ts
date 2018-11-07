@@ -2747,7 +2747,6 @@ const shortcutReducer = (state: RootState, action: Action): RootState => {
         state.selectedInspectorNodes[0],
         state.documents
       );
-      console.loog(selectedNode);
       state = wrapSyntheticNodeInSlot(selectedNode, state);
       return state;
     }
@@ -3096,15 +3095,9 @@ const selectInspectorNode = (node: InspectorNode, state: RootState) => {
     return expandInspectorNode(node, sourceNodeInspector);
   });
 
-  const assocSyntheticNode = getInspectorSyntheticNode(node, state.documents);
-
   state = updateRootState(
     {
-      selectedInspectorNodes:
-        assocSyntheticNode &&
-        assocSyntheticNode.name !== SYNTHETIC_DOCUMENT_NODE_NAME
-          ? [node]
-          : EMPTY_ARRAY
+      selectedInspectorNodes: [node]
     },
     state
   );

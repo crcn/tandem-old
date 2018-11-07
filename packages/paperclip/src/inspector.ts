@@ -468,7 +468,7 @@ const patchInspectorTree = (
       targetNode.name === PCSourceTagNames.PLUG
         ? targetNode.slotId
         : targetNode.id;
-    const assocInspectorNodeIds = sourceMap[assocId];
+    const assocInspectorNodeIds = sourceMap[assocId] || EMPTY_ARRAY;
     for (const assocInspectorNodeId of assocInspectorNodeIds) {
       let assocInspectorNode = getNestedTreeNodeById(
         assocInspectorNodeId,
@@ -538,7 +538,8 @@ const patchInspectorTree = (
               rootInspectorNode
             );
 
-            if (assocInspectorNode.name !== InspectorTreeNodeName.SOURCE_REP) {
+            // if in a shadow, then create a new plug as well in the instance
+            if (shadow) {
               let shadowParent = getParentTreeNode(
                 shadow.id,
                 rootInspectorNode
@@ -627,19 +628,45 @@ const patchInspectorTree = (
           break;
         }
         case TreeNodeOperationalTransformType.MOVE_CHILD: {
-          const { oldIndex, newIndex } = ot;
-          const child = assocInspectorNode.children[oldIndex];
-          assocInspectorNode = removeNestedTreeNode(child, assocInspectorNode);
-          assocInspectorNode = insertChildNode(
-            child,
-            newIndex,
-            assocInspectorNode
-          );
-          rootInspectorNode = replaceNestedNode(
-            assocInspectorNode,
-            assocInspectorNode.id,
-            rootInspectorNode
-          );
+          if (
+            targetNode.name !== PCSourceTagNames.PLUG ||
+            assocInspectorNode.name === InspectorTreeNodeName.CONTENT
+          ) {
+            const { oldIndex, newIndex } = ot;
+            const schild = targetNode.children[oldIndex];
+            const nchild = targetNode.children[newIndex];
+            const fixedChild = assocInspectorNode.children.find(
+              child => child.assocSourceNodeId === schild.id
+            );
+
+            // Ick. Plugs assocSourceNodeId's point to slots, so there's no good way
+            // to match source node plugs with inspector node plugins except to check surounding
+            // children. Better fix would be to make assocNodeId _optional_, then add a separate sourceSlotId prop.
+            if (!fixedChild) {
+              break;
+            }
+
+            const fixedNewIndex = nchild
+              ? assocInspectorNode.children.findIndex(
+                  child => child.assocSourceNodeId === nchild.id
+                )
+              : assocInspectorNode.children.length;
+
+            assocInspectorNode = removeNestedTreeNode(
+              fixedChild,
+              assocInspectorNode
+            );
+            assocInspectorNode = insertChildNode(
+              fixedChild,
+              fixedNewIndex,
+              assocInspectorNode
+            );
+            rootInspectorNode = replaceNestedNode(
+              assocInspectorNode,
+              assocInspectorNode.id,
+              rootInspectorNode
+            );
+          }
           break;
         }
         case TreeNodeOperationalTransformType.REMOVE_CHILD: {
@@ -648,8 +675,8 @@ const patchInspectorTree = (
             assocInspectorNode.name === InspectorTreeNodeName.CONTENT
           ) {
             const { index } = ot;
-
             const child = targetNode.children[index];
+
             if (isUnreppedSourceNode(child)) {
               break;
             }
@@ -660,17 +687,45 @@ const patchInspectorTree = (
 
             const childInspectorNode =
               assocInspectorNode.children[inspectorIndex];
-            const pcChild = targetNode.children[inspectorIndex];
+
+            const pcChild = targetNode.children[index];
+
             rootInspectorNode = removeNestedTreeNode(
               childInspectorNode,
               rootInspectorNode
             );
+
             newSourceMap = flattenTreeNode(pcChild).reduce((map, node) => {
               return {
                 ...map,
                 [node.id]: undefined
               };
             }, newSourceMap);
+
+            // if content is removed & slot still exists, re-add slot
+            if (childInspectorNode.name === InspectorTreeNodeName.CONTENT) {
+              const slot = getPCNode(
+                childInspectorNode.assocSourceNodeId,
+                newGraph
+              ) as PCSlot;
+              if (slot) {
+                const content = createInstanceContent(
+                  slot,
+                  childInspectorNode.instancePath
+                );
+                assocInspectorNode = insertChildNode(
+                  content,
+                  inspectorIndex,
+                  assocInspectorNode
+                );
+                rootInspectorNode = replaceNestedNode(
+                  assocInspectorNode,
+                  assocInspectorNode.id,
+                  rootInspectorNode
+                );
+                newSourceMap = addSourceMap(assocInspectorNode, newSourceMap);
+              }
+            }
           }
           break;
         }
@@ -688,7 +743,7 @@ export const getInspectorSourceNode = (
   node: InspectorNode,
   ancestor: InspectorNode,
   graph: DependencyGraph
-): PCNode => {
+): PCNode | null => {
   const nodeSource = getPCNode(node.assocSourceNodeId, graph);
   if (node.name === InspectorTreeNodeName.CONTENT) {
     const parent = getParentTreeNode(node.id, ancestor);

@@ -162,6 +162,122 @@
       "controllers": [
         "./labeled-input-controller.tsx"
       ]
+    },
+    {
+      "label": "css input row",
+      "is": "div",
+      "style": {
+        "box-sizing": "border-box",
+        "display": "flex",
+        "align-items": "center",
+        "width": "100%",
+        "padding-top": "8px",
+        "padding-bottom": "8px"
+      },
+      "attributes": {},
+      "id": "488ffe1f6704",
+      "name": "component",
+      "children": [
+        {
+          "id": "9798784b2225",
+          "label": "left",
+          "is": "div",
+          "name": "element",
+          "attributes": {},
+          "style": {
+            "box-sizing": "border-box",
+            "display": "block",
+            "padding-right": "8px",
+            "width": "100px"
+          },
+          "children": [
+            {
+              "id": "9798784b2222",
+              "children": [
+                {
+                  "id": "9798784b2220",
+                  "name": "text",
+                  "label": "Text",
+                  "value": "css-property",
+                  "style": {},
+                  "children": [],
+                  "metadata": {},
+                  "styleMixins": {
+                    "9798784b2419": {
+                      "priority": 0
+                    }
+                  }
+                }
+              ],
+              "metadata": {},
+              "name": "slot",
+              "label": "label"
+            }
+          ],
+          "metadata": {}
+        },
+        {
+          "id": "9798784b2229",
+          "label": "right",
+          "is": "div",
+          "name": "element",
+          "attributes": {},
+          "style": {
+            "box-sizing": "border-box",
+            "display": "block",
+            "width": "100%"
+          },
+          "children": [
+            {
+              "id": "4c8367f41704",
+              "children": [
+                {
+                  "id": "9798784b2421",
+                  "is": "7149f8199122",
+                  "label": "Text Input",
+                  "name": "component-instance",
+                  "attributes": {},
+                  "style": {},
+                  "children": [],
+                  "metadata": {
+                    "bounds": {
+                      "left": 384,
+                      "top": 298,
+                      "right": 484,
+                      "bottom": 327.0358087589019
+                    }
+                  },
+                  "variant": {}
+                }
+              ],
+              "metadata": {},
+              "name": "slot",
+              "label": "input"
+            }
+          ],
+          "metadata": {}
+        },
+        {
+          "id": "378f728c1789",
+          "variantId": "378f728c1788",
+          "propertyName": "style",
+          "targetIdPath": [],
+          "value": {
+            "padding-left": "12px"
+          },
+          "name": "override",
+          "children": []
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": 422,
+          "top": 214,
+          "right": 732,
+          "bottom": 314
+        }
+      },
+      "variant": {}
     }
   ],
   "metadata": {}
