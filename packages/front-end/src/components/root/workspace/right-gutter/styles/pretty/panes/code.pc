@@ -58,6 +58,38 @@
           ],
           "metadata": {},
           "name": "plug"
+        },
+        {
+          "id": "144aa5a18203",
+          "propertyName": "style",
+          "targetIdPath": [
+            "b6c162d1281"
+          ],
+          "value": {},
+          "name": "override",
+          "children": []
+        },
+        {
+          "slotId": "d6261ad53069",
+          "id": "144aa5a18205",
+          "children": [
+            {
+              "id": "144aa5a18204",
+              "name": "text",
+              "label": "Text",
+              "value": "Custom CSS",
+              "style": {},
+              "children": [],
+              "metadata": {},
+              "styleMixins": {
+                "dc3b39eb1627": {
+                  "priority": 0
+                }
+              }
+            }
+          ],
+          "metadata": {},
+          "name": "plug"
         }
       ],
       "metadata": {

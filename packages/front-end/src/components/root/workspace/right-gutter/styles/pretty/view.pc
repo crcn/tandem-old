@@ -281,7 +281,12 @@
           "style": {},
           "children": [],
           "metadata": {},
-          "label": "Spacing Pane"
+          "label": "Spacing Pane",
+          "styleMixins": {
+            "144aa5a15834": {
+              "priority": 0
+            }
+          }
         },
         {
           "id": "cdcf193c20",
@@ -354,6 +359,22 @@
         "./index.tsx"
       ],
       "variant": {}
+    },
+    {
+      "id": "144aa5a15834",
+      "label": "Spacing Pane style",
+      "name": "style-mixin",
+      "style": {},
+      "targetType": "element",
+      "children": [],
+      "metadata": {
+        "bounds": {
+          "left": 586.9970896317676,
+          "top": 112,
+          "right": 835.9970896317676,
+          "bottom": 331
+        }
+      }
     }
   ]
 }

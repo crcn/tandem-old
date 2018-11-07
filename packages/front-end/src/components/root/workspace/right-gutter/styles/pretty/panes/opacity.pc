@@ -8,11 +8,8 @@
       "label": "Opacity Pane",
       "is": "b6c162d113",
       "style": {
-        "font-family": "Helvetica",
         "display": "flex",
-        "flex-direction": "column",
-        "font-size": "10px",
-        "color": "grey"
+        "flex-direction": "column"
       },
       "attributes": {},
       "id": "ab9eb3a110017",

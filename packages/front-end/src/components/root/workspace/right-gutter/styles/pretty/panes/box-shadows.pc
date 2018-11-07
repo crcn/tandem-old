@@ -402,7 +402,12 @@
                       }
                     }
                   ],
-                  "metadata": {}
+                  "metadata": {},
+                  "styleMixins": {
+                    "dc3b39eb1627": {
+                      "priority": 0
+                    }
+                  }
                 },
                 {
                   "id": "3fb9d47e46",

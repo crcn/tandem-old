@@ -8,11 +8,8 @@
       "label": "Box Model",
       "is": "b6c162d113",
       "style": {
-        "font-family": "Helvetica",
         "display": "flex",
-        "flex-direction": "column",
-        "font-size": "10px",
-        "color": "grey"
+        "flex-direction": "column"
       },
       "attributes": {},
       "id": "bcda9fb597291",
@@ -139,7 +136,7 @@
                     "flex-shrink": "0",
                     "text-align": "right",
                     "width": "44px",
-                    "font-size": "unset"
+                    "font-size": "10px"
                   },
                   "children": [],
                   "metadata": {},
@@ -533,7 +530,8 @@
                     "user-select": "none",
                     "width": "44px",
                     "flex-shrink": "0",
-                    "text-align": "right"
+                    "text-align": "right",
+                    "font-size": "10px"
                   },
                   "children": [],
                   "metadata": {},

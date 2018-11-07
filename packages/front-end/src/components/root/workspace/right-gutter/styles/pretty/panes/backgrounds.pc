@@ -115,11 +115,8 @@
       "label": "Backgrounds",
       "is": "b6c162d113",
       "style": {
-        "font-family": "Helvetica",
         "display": "flex",
-        "flex-direction": "column",
-        "font-size": "10px",
-        "color": "grey"
+        "flex-direction": "column"
       },
       "attributes": {},
       "id": "bcda9fb596963",
@@ -316,7 +313,12 @@
                   "value": "backgrounds",
                   "style": {},
                   "children": [],
-                  "metadata": {}
+                  "metadata": {},
+                  "styleMixins": {
+                    "dc3b39eb1627": {
+                      "priority": 0
+                    }
+                  }
                 },
                 {
                   "id": "8e601d2b320801",
