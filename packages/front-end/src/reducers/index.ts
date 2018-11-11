@@ -400,6 +400,7 @@ import {
   inspectorNodeInShadow,
   getSyntheticInspectorNode
 } from "paperclip";
+import { IframeHTMLAttributes } from "react";
 
 const ZOOM_SENSITIVITY = process.platform === "win32" ? 2500 : 250;
 const MIN_ZOOM = 0.02;
@@ -2561,11 +2562,18 @@ const getResizeActionBounds = (action: ResizerPathMoved | ResizerMoved) => {
   return newBounds;
 };
 
-const isInputSelected = (state: RootState) => {
+const isInputSelected = (state: RootState, doc: Document = document) => {
   // ick -- this needs to be moved into a saga
+
+  if (doc.activeElement.tagName === "IFRAME") {
+    return isInputSelected(
+      state,
+      (doc.activeElement as HTMLIFrameElement).contentDocument
+    );
+  }
   return (
-    document.activeElement &&
-    /textarea|input|button/i.test(document.activeElement.tagName)
+    doc.activeElement &&
+    /textarea|input|button/i.test(doc.activeElement.tagName)
   );
 };
 
