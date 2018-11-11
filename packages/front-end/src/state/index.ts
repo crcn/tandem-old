@@ -256,6 +256,11 @@ export type QuickSearch = {
   matches: QuickSearchResult[];
 };
 
+export enum EditMode {
+  PRIMARY,
+  SECONDARY
+}
+
 export type RootState = {
   editorWindows: EditorWindow[];
   mount: Element;
@@ -263,6 +268,7 @@ export type RootState = {
   toolType?: ToolType;
   activeEditorFilePath?: string;
   quickSearch?: QuickSearch;
+  editMode: EditMode;
 
   // defined by context menu
   editingBasenameUri?: string;

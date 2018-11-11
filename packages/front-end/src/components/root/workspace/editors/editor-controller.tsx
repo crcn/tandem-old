@@ -59,6 +59,7 @@ export default (Base: React.ComponentClass<BaseEditorProps>) =>
         if (fileCacheItem.mimeType === PAPERCLIP_MIME_TYPE) {
           stage = (
             <PaperclipStageComponent
+              editMode={root.editMode}
               sourceNodeInspector={root.sourceNodeInspector}
               openFiles={root.openFiles}
               documents={root.documents}

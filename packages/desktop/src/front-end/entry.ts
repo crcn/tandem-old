@@ -11,7 +11,8 @@ import {
   RootState,
   FontFamily,
   createRootInspectorNode,
-  ContextMenuItem
+  ContextMenuItem,
+  EditMode
 } from "tandem-front-end";
 import {
   stripProtocol,
@@ -53,6 +54,7 @@ setup<DesktopRootState>(
   mount: document.getElementById("application"),
   selectedInspectorNodes: [],
   hoveringInspectorNodes: [],
+  editMode: EditMode.PRIMARY,
   customChrome: Boolean(query.customChrome),
   selectedFileNodeIds: [],
   sourceNodeInspector: createRootInspectorNode(),

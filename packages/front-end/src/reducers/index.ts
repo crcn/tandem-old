@@ -182,7 +182,9 @@ import {
   SYNTHETIC_NODE_CONTEXT_MENU_RENAME_CLICKED,
   PC_LAYER_DOUBLE_CLICKED,
   PCLayerRightClicked,
-  SYNTHETIC_NODE_CONTEXT_MENU_SHOW_IN_CANVAS_CLICKED
+  SYNTHETIC_NODE_CONTEXT_MENU_SHOW_IN_CANVAS_CLICKED,
+  CANVAS_TEXT_EDIT_CHANGE_COMPLETE,
+  CanvasTextEditChangeComplete
 } from "../actions";
 import {
   queueOpenFile,
@@ -243,7 +245,8 @@ import {
   QuickSearchResultType,
   getGlobalFileUri,
   setRootStateFileNodeExpanded,
-  centerEditorCanvasOrLater
+  centerEditorCanvasOrLater,
+  EditMode
 } from "../state";
 import {
   PCSourceTagNames,
@@ -1518,6 +1521,8 @@ export const canvasReducer = (state: RootState, action: Action) => {
 
           currentInstance = inspectorShadowNode;
         }
+      } else if (sourceNode.name === PCSourceTagNames.TEXT) {
+        state = { ...state, editMode: EditMode.SECONDARY };
       }
 
       return state;
@@ -1664,6 +1669,7 @@ export const canvasReducer = (state: RootState, action: Action) => {
     case CSS_PROPERTY_CHANGED: {
       const { name, value } = action as CSSPropertyChanged;
       state = teeHistory(state);
+      state = { ...state, editMode: EditMode.PRIMARY };
       return state.selectedInspectorNodes.reduce(
         (state, node) =>
           persistCSSProperty(
@@ -1851,8 +1857,11 @@ export const canvasReducer = (state: RootState, action: Action) => {
       return updateRootState({ queuedScopeSelect: null }, state);
     }
 
+    case CANVAS_TEXT_EDIT_CHANGE_COMPLETE:
     case TEXT_VALUE_CHANGED: {
-      const { value } = action as TextValueChanged;
+      const { value } = action as
+        | TextValueChanged
+        | CanvasTextEditChangeComplete;
       state = persistRootState(state => {
         state = persistChangeSyntheticTextNodeValue(
           value,
@@ -1862,6 +1871,7 @@ export const canvasReducer = (state: RootState, action: Action) => {
 
         return state;
       }, state);
+      state = { ...state, editMode: EditMode.PRIMARY };
       return state;
     }
 
@@ -2095,12 +2105,19 @@ export const canvasReducer = (state: RootState, action: Action) => {
         }
 
         case ToolType.TEXT: {
-          return persistInsertNodeFromPoint(
-            createPCTextNode("Click to edit", "Text"),
+          state = persistInsertNodeFromPoint(
+            createPCTextNode("Double click to edit", "Text"),
             fileUri,
             point,
             state
           );
+
+          state = {
+            ...state,
+            editMode: EditMode.SECONDARY
+          };
+
+          return state;
         }
       }
     }
@@ -2113,6 +2130,7 @@ const isJavaScriptFile = (file: string) => /(ts|js)x?$/.test(file);
 
 const INSERT_ARTBOARD_WIDTH = 100;
 const INSERT_ARTBOARD_HEIGHT = 100;
+const INSERT_TEXT_ARTBOARD_HEIGHT = 30;
 
 const handleCanvasMouseClicked = (
   state: RootState,
@@ -2222,6 +2240,13 @@ const persistInsertNodeFromPoint = (
       bottom: INSERT_ARTBOARD_HEIGHT,
       ...(newNode.metadata[PCVisibleNodeMetadataKey.BOUNDS] || {})
     };
+
+    if (newNode.name === PCSourceTagNames.TEXT) {
+      bounds = {
+        ...bounds,
+        bottom: INSERT_TEXT_ARTBOARD_HEIGHT
+      };
+    }
 
     bounds = moveBounds(bounds, newPoint);
 

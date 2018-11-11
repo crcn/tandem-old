@@ -8,7 +8,8 @@ import {
   REGISTERED_COMPONENT,
   RegisteredComponent,
   getOpenFile,
-  OpenFile
+  OpenFile,
+  EditMode
 } from "../../../../../../../state";
 import {
   Dependency,
@@ -49,6 +50,7 @@ export type CanvasOuterProps = {
   editorWindow: EditorWindow;
   dependency: Dependency<any>;
   dispatch: Dispatch<any>;
+  editMode: EditMode;
 };
 
 export type CanvasInnerProps = {
@@ -77,6 +79,7 @@ const BaseCanvasComponent = ({
   dependency,
   openFiles,
   toolType,
+  editMode,
   setCanvasOuter,
   editorWindow,
   activeFilePath,
@@ -156,6 +159,7 @@ const BaseCanvasComponent = ({
                 />
                 <ToolsLayerComponent
                   toolType={toolType}
+                  editMode={editMode}
                   activeEditorUri={activeFilePath}
                   openFiles={openFiles}
                   sourceNodeInspector={sourceNodeInspector}

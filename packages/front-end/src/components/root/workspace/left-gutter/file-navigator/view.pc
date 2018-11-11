@@ -48,7 +48,12 @@
                       "value": "files",
                       "style": {},
                       "children": [],
-                      "metadata": {}
+                      "metadata": {},
+                      "styleMixins": {
+                        "dc3b39eb1627": {
+                          "priority": 0
+                        }
+                      }
                     },
                     {
                       "id": "5a14767c291816",

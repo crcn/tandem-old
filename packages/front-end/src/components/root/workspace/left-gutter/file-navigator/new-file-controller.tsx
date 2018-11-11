@@ -47,7 +47,11 @@ export default (Base: React.ComponentClass<BaseNewFileInputProps>) =>
       const { onBlur, onKeyDown } = this;
       return (
         <FocusComponent>
-          <Base {...rest} labelInputProps={{ onBlur, onKeyDown: onKeyDown }} />
+          <Base
+            {...rest}
+            variant="editingLabel"
+            labelInputProps={{ onBlur, onKeyDown: onKeyDown }}
+          />
         </FocusComponent>
       );
     }

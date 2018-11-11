@@ -251,6 +251,9 @@ export const IMAGE_PATH_PICKED = "IMAGE_PATH_PICKED";
 export const CSS_INHERITED_FROM_LABEL_CLICKED =
   "CSS_INHERITED_FROM_LABEL_CLICKED";
 
+export const CANVAS_TEXT_EDIT_CHANGE_COMPLETE =
+  "CANVAS_TEXT_EDIT_CHANGE_COMPLETE";
+
 export type WrappedEvent<T> = {
   sourceEvent: T;
 } & Action;
@@ -343,6 +346,10 @@ export type NewFileAdded = {
 
 export type CanvasToolOverlayMousePanEnd = {
   documentId: string;
+} & Action;
+
+export type CanvasTextEditChangeComplete = {
+  value: string;
 } & Action;
 
 export type CanvasToolOverlayClicked = {
@@ -753,6 +760,13 @@ export const imageBrowseButtonClicked = publicActionCreator(
     type: IMAGE_BROWSE_BUTTON_CLICKED
   })
 );
+
+export const canvasTextEditChangeComplete = (
+  value: string
+): CanvasTextEditChangeComplete => ({
+  value,
+  type: CANVAS_TEXT_EDIT_CHANGE_COMPLETE
+});
 
 export const cssInheritedFromLabelClicked = (
   inheritedFromNode: InspectorNode

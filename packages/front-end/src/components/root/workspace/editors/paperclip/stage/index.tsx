@@ -13,7 +13,8 @@ import {
   RootState,
   EditorWindow,
   OpenFile,
-  ToolType
+  ToolType,
+  EditMode
 } from "../../../../../../state";
 import { InspectorNode } from "paperclip";
 
@@ -30,6 +31,7 @@ export type StageOuterProps = {
   openFiles: OpenFile[];
   toolType: ToolType;
   sourceNodeInspector: InspectorNode;
+  editMode: EditMode;
 };
 
 export class StageComponent extends React.PureComponent<StageOuterProps> {
@@ -41,6 +43,7 @@ export class StageComponent extends React.PureComponent<StageOuterProps> {
       dependency,
       dispatch,
       frames,
+      editMode,
       sourceNodeInspector,
       selectedInspectorNodes,
       hoveringInspectorNodes,
@@ -53,6 +56,7 @@ export class StageComponent extends React.PureComponent<StageOuterProps> {
         <CanvasComponent
           activeFilePath={activeFilePath}
           frames={frames}
+          editMode={editMode}
           toolType={toolType}
           openFiles={openFiles}
           sourceNodeInspector={sourceNodeInspector}

@@ -10,7 +10,9 @@ import {
   EditorWindow,
   getOpenFile,
   OpenFile,
-  ToolType
+  ToolType,
+  EditMode,
+  setSelectedInspectorNodes
 } from "../../../../../../../../state";
 import { NodeOverlaysTool } from "./document-overlay";
 import { SelectionCanvasTool } from "./selection";
@@ -40,9 +42,11 @@ import {
   InspectorTreeNodeName,
   getInspectorNodeOwnerInstance
 } from "paperclip";
+import { EditText } from "./edit-text.pc";
 
 export type ToolsLayerComponentProps = {
   editorWindow: EditorWindow;
+  editMode: EditMode;
   zoom: number;
   toolType: ToolType;
   activeEditorUri: string;
@@ -69,6 +73,7 @@ export class ToolsLayerComponent extends React.PureComponent<
       openFiles,
       zoom,
       dispatch,
+      editMode,
       graph,
       documents,
       toolType,
@@ -138,6 +143,16 @@ export class ToolsLayerComponent extends React.PureComponent<
           )}
           editorWindow={editorWindow}
         />
+        {editMode === EditMode.SECONDARY && selectedInspectorNodes.length ? (
+          <EditText
+            dispatch={dispatch}
+            frames={frames}
+            documents={documents}
+            graph={graph}
+            rootInspectorNode={sourceNodeInspector}
+            selectedInspectorNode={selectedInspectorNodes[0]}
+          />
+        ) : null}
       </div>
     );
   }
