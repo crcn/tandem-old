@@ -76,7 +76,5 @@ describe(__filename + "#", () => {
   it("can represent a component");
   it("can represent a component instance");
 
-  it("can patch in a new slot for components & instances", () => {
-    let;
-  });
+  it("can patch in a new slot for components & instances", () => {});
 });

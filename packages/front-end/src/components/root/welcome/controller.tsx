@@ -3,59 +3,93 @@ import {
   openProjectButtonClicked,
   createProjectButtonClicked
 } from "../../../actions";
-import { BaseWelcomeProps } from "./view.pc";
+import { BaseWelcomeProps, ProjectPill } from "./view.pc";
 import { Dispatch } from "redux";
-import { cx } from "classnames";
+import {
+  StartKitOptions,
+  templates,
+  hasOptionForm,
+  createProjectFiles
+} from "../../../starter-kits";
+import { ProjectTemplate } from "../../../state";
 
 export type Props = {
   dispatch: Dispatch<any>;
 };
 
+enum Page {
+  START = "start",
+  CREATE_PROJECT = "createProject",
+  NEW_PROJECT_OPTIONS = "newProjectOptions"
+}
+
 type State = {
-  createProject: boolean;
+  page: Page;
+  selectedTemplate?: ProjectTemplate;
 };
 
 export default (Base: React.ComponentClass<BaseWelcomeProps>) =>
   class WelcomeController extends React.PureComponent<Props, State> {
     state = {
-      createProject: false
+      page: Page.START,
+      selectedTemplate: null
     };
 
     onOpenProjectButtonClick = () => {
       this.props.dispatch(openProjectButtonClicked());
     };
     onCreateProjectButtonClick = () => {
-      this.props.dispatch(createProjectButtonClicked());
-      // this.setState({ createProject: true });
+      this.setState({ page: Page.CREATE_PROJECT });
     };
 
-    onCreateBlankProjectButtonClick = () => {
-      // this.props.dispatch()
+    onPillClick = (selectedTemplate: ProjectTemplate) => {
+      this.props.dispatch(
+        createProjectButtonClicked(createProjectFiles(selectedTemplate.id, {}))
+      );
+
+      // todo later on
+      // if (hasOptionForm(selectedTemplate.id)) {
+      //   this.setState({ page: Page.NEW_PROJECT_OPTIONS, selectedTemplate });
+      // } else {
+      //   console.log("FINISH");
+      // }
     };
 
-    onCreateReactProjectButtonClick = () => {};
+    onOptionsChange = (options: Object) => {
+      console.log("OPTIONS");
+    };
 
     render() {
       const {
         onOpenProjectButtonClick,
         onCreateProjectButtonClick,
-        onCreateReactProjectButtonClick,
-        onCreateBlankProjectButtonClick
+        onPillClick,
+        onOptionsChange
       } = this;
-      const { createProject } = this.state;
+      const { page, selectedTemplate } = this.state;
+      const options = templates.map(template => {
+        return (
+          <ProjectPill
+            onClick={() => onPillClick(template)}
+            labelProps={{ text: template.label }}
+            icon={template.icon && <img src={template.icon} />}
+          />
+        );
+      });
       return (
         <Base
-          variant={cx({
-            createProject
-          })}
+          variant={page}
           openProjectButtonProps={{ onClick: onOpenProjectButtonClick }}
           createProjectButtonProps={{ onClick: onCreateProjectButtonClick }}
-          createReactProjectButtonProps={{
-            onClick: onCreateReactProjectButtonClick
-          }}
-          createBlankProjectButtonProps={{
-            onClick: onCreateBlankProjectButtonClick
-          }}
+          options={options}
+          newProjectOptions={
+            page === Page.NEW_PROJECT_OPTIONS ? (
+              <StartKitOptions
+                template={selectedTemplate}
+                onChangeComplete={onOptionsChange}
+              />
+            ) : null
+          }
         />
       );
     }

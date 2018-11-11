@@ -77,9 +77,19 @@
                   "name": "component-instance",
                   "attributes": {},
                   "style": {},
-                  "children": [],
+                  "children": [
+                    {
+                      "id": "80b0b6e7408",
+                      "variantId": null,
+                      "propertyName": "attributes",
+                      "targetIdPath": [],
+                      "value": {},
+                      "name": "override",
+                      "children": []
+                    }
+                  ],
                   "metadata": {},
-                  "label": "text",
+                  "label": "project name input",
                   "bind": {
                     "properties": [
                       {

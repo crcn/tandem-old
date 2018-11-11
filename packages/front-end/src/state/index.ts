@@ -261,6 +261,14 @@ export enum EditMode {
   SECONDARY
 }
 
+export type ProjectTemplate = {
+  id: string;
+  icon: string;
+  label: string;
+};
+
+export type ProjectFileCreator = (options: Object) => KeyValue<string>;
+
 export type RootState = {
   editorWindows: EditorWindow[];
   mount: Element;

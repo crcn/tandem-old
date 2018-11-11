@@ -43,7 +43,10 @@ import { shortcutsSaga } from "./menu";
 import * as fs from "fs";
 import * as fsa from "fs-extra";
 import * as path from "path";
-import { ConfirmCloseWindow } from "tandem-front-end";
+import {
+  ConfirmCloseWindow,
+  CreateProjectButtonClicked
+} from "tandem-front-end";
 import { eventChannel } from "redux-saga";
 
 const DEFAULT_TD_PROJECT: TDProject = {
@@ -53,26 +56,24 @@ const DEFAULT_TD_PROJECT: TDProject = {
   mainFilePath: "./src/main.pc"
 };
 
-const DEFAULT_TD_PROJECT_FILES = {
-  "./src/main.pc": () => {
-    return JSON.stringify(
-      createPCModule([
-        createPCComponent(
-          "Application",
-          null,
-          null,
-          null,
-          [createPCTextNode("App content")],
-          {
-            [PCVisibleNodeMetadataKey.BOUNDS]: createBounds(0, 600, 0, 400)
-          }
-        )
-      ]),
-      null,
-      2
-    );
-  }
-};
+const createDefaultTDProjectFiles = () => ({
+  "./src/main.pc": JSON.stringify(
+    createPCModule([
+      createPCComponent(
+        "Application",
+        null,
+        null,
+        null,
+        [createPCTextNode("App content")],
+        {
+          [PCVisibleNodeMetadataKey.BOUNDS]: createBounds(0, 600, 0, 400)
+        }
+      )
+    ]),
+    null,
+    2
+  )
+});
 
 const DEFAULT_TD_PROJECT_NAME = "app.tdproject";
 
@@ -226,10 +227,11 @@ function* handleOpenProject() {
 
 function* handleCreateProject() {
   while (1) {
-    yield take([
+    const { files: projectFiles }: CreateProjectButtonClicked = yield take([
       "CREATE_PROJECT_BUTTON_CLICKED",
       NEW_PROJECT_MENU_ITEM_CLICKED
     ]);
+
     const [directory] = dialog.showOpenDialog({
       title: "Choose project directory",
       properties: ["openDirectory"]
@@ -247,16 +249,16 @@ function* handleCreateProject() {
         "utf8"
       );
 
-      for (const relativePath in DEFAULT_TD_PROJECT_FILES) {
+      const files = projectFiles ? projectFiles : createDefaultTDProjectFiles();
+
+      console.log("TEMPLATE", projectFiles, files);
+
+      for (const relativePath in files) {
         const fullPath = path.join(directory, relativePath);
         try {
           fsa.mkdirpSync(path.dirname(fullPath));
         } catch (e) {}
-        fs.writeFileSync(
-          fullPath,
-          DEFAULT_TD_PROJECT_FILES[relativePath](),
-          "utf8"
-        );
+        fs.writeFileSync(fullPath, files[relativePath], "utf8");
       }
     }
     yield put(tdProjectFilePicked(filePath));

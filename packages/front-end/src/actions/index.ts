@@ -33,7 +33,8 @@ import {
   ProjectConfig,
   ProjectInfo,
   BaseQuickSearchResult,
-  QuickSearchResult
+  QuickSearchResult,
+  ProjectTemplate
 } from "../state";
 import { InspectorNode } from "paperclip";
 
@@ -558,6 +559,10 @@ export type SelectorDoubleClicked = {
 
 export type ShortcutKeyDown = {};
 
+export type CreateProjectButtonClicked = {
+  files: Object;
+} & Action;
+
 export type QuickSearchItemClicked = {
   item: QuickSearchResult;
 } & Action;
@@ -997,9 +1002,12 @@ export const openProjectButtonClicked = publicActionCreator(() => ({
   type: OPEN_PROJECT_BUTTON_CLICKED
 }));
 
-export const createProjectButtonClicked = publicActionCreator(() => ({
-  type: CREATE_PROJECT_BUTTON_CLICKED
-}));
+export const createProjectButtonClicked = publicActionCreator(
+  (files: Object): CreateProjectButtonClicked => ({
+    type: CREATE_PROJECT_BUTTON_CLICKED,
+    files
+  })
+);
 
 export const inheritPaneAddButtonClick = (): Action => ({
   type: INHERIT_PANE_ADD_BUTTON_CLICK
