@@ -1,8 +1,7 @@
 IMMEDIATE:
 
-- [ ] user guide
-- [ ] sketch file converter
-  - [ ] global colors
-  - [ ] use DIV for everything
-  - [ ] symbols to components
-  - [ ] ability to limit to style mixins
+- [ ] text editor (canvas)
+- [ ] project starter
+- [ ] gradient color
+- [ ] actual website
+- [ ] change spacing UI to use button bar

@@ -379,6 +379,18 @@
               ],
               "metadata": {},
               "name": "plug"
+            },
+            {
+              "id": "af9e87101229",
+              "propertyName": "style",
+              "targetIdPath": [
+                "b6c162d1281"
+              ],
+              "value": {
+                "font-weight": "unset\nuser-select"
+              },
+              "name": "override",
+              "children": []
             }
           ],
           "metadata": {

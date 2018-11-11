@@ -72,6 +72,11 @@ export default (Base: React.ComponentClass<BaseInstancePaneProps>) =>
         graph
       ) as PCVisibleNode | PCComponent | null;
 
+      // may not exist for things like plugs
+      if (!sourceNode) {
+        return null;
+      }
+
       const contentNode = getPCNodeContentNode(
         sourceNode.id,
         getPCNodeModule(sourceNode.id, graph)
@@ -123,7 +128,9 @@ export default (Base: React.ComponentClass<BaseInstancePaneProps>) =>
           // if variant is selected, then override must be present
           return (
             inCurrentInstance ||
-            (!selectedVariant && Boolean(instanceSourceNode.style[key]))
+            (!selectedVariant &&
+              instanceSourceNode.style &&
+              Boolean(instanceSourceNode.style[key]))
           );
         })
       ];

@@ -1,62 +1,82 @@
-// import {
-//   createRootInspector,
-//   refreshInspector,
-//   addModuleInspector
-// } from "../inspector";
-// import { expect } from "chai";
-// import { createPCModule, PCModule, createPCDependency } from "../dsl";
-// import { cloneTreeNode } from "tandem-common";
-// import { PCEditorState } from "../edit";
+import {
+  createPCElement,
+  PCNode,
+  createPCDependency,
+  createPCModule,
+  PCVisibleNode,
+  PCSourceTagNames
+} from "../dsl";
+import { expect } from "chai";
+import {
+  refreshInspectorTree,
+  createRootInspectorNode,
+  expandInspectorNode
+} from "../inspector";
+import { DependencyGraph } from "../graph";
+import { TreeNode } from "tandem-common";
 
-// describe(__filename + "#", () => {
-//   it("can add a module to the inspector tree", () => {
-//     const cleanIds = nodeIdCleaner();
-//     let root = createRootInspector();
-//     const module = cleanIds(createPCModule());
-//     const state = createEditorState(module);
+describe(__filename + "#", () => {
+  const A_DEP_URI = "a.pc";
 
-//     root = cleanIds(addModuleInspector(module, root, state.graph));
+  const zeroIds = (node: TreeNode<any>) => {
+    let _i = 0;
+    const map = (node: TreeNode<any>) => ({
+      ...node,
+      id: `${_i++}`,
+      children: node.children.map(map)
+    });
 
-//     expect(clone(root)).to.eql({
-//       id: "000000001",
-//       name: "root",
-//       children: [
-//         {
-//           id: "000000002",
-//           sourceNodeId: "000000000",
-//           name: "source-rep",
-//           children: []
-//         }
-//       ]
-//     });
-//   });
+    return map(node);
+  };
 
-//   const createEditorState = (module: PCModule) => {
-//     createPCDependency;
-//     const graph = {
-//       "0": createPCDependency("0", module)
-//     };
-//     let state: PCEditorState = {
-//       graph,
-//       documents: [],
-//       frames: [],
-//       fileCache: {}
-//     };
+  const wrapPcNodeInGraph = (node: PCVisibleNode): DependencyGraph => ({
+    [A_DEP_URI]: createPCDependency(A_DEP_URI, zeroIds(createPCModule([node])))
+  });
 
-//     return state;
-//   };
+  it("can represent an element", () => {
+    const pcNode = createPCElement("div");
+    console.log(wrapPcNodeInGraph(pcNode));
+    const [inspectorNode] = refreshInspectorTree(
+      createRootInspectorNode(),
+      wrapPcNodeInGraph(pcNode),
+      [A_DEP_URI]
+    );
+    expect(inspectorNode.children.length).to.eql(1);
+    expect(zeroIds(inspectorNode)).to.eql({
+      id: "0",
+      name: "root",
+      children: [
+        {
+          id: "1",
+          name: "source-rep",
+          children: [
+            {
+              id: "2",
+              name: "source-rep",
+              children: [],
+              instancePath: "",
+              expanded: false,
+              assocSourceNodeId: "1",
+              alt: true
+            }
+          ],
+          instancePath: "",
+          expanded: true,
+          assocSourceNodeId: "0",
+          alt: false
+        }
+      ],
+      expanded: true,
+      instancePath: null,
+      assocSourceNodeId: null,
+      alt: true
+    });
+  });
+  it("can represent a text node");
+  it("can represent a component");
+  it("can represent a component instance");
 
-//   const nodeIdCleaner = (i = 0) => {
-//     let alreadyReset: any = {};
-//     return node => {
-//       return cloneTreeNode(node, child => {
-//         if (alreadyReset[child.id]) return child.id;
-//         const newId = String("00000000" + i++);
-//         alreadyReset[newId] = 1;
-//         return newId;
-//       });
-//     };
-//   };
-
-//   const clone = v => JSON.parse(JSON.stringify(v));
-// });
+  it("can patch in a new slot for components & instances", () => {
+    let;
+  });
+});

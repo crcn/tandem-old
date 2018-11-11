@@ -361,20 +361,118 @@
       "variant": {}
     },
     {
-      "id": "144aa5a15834",
-      "label": "Spacing Pane style",
-      "name": "style-mixin",
-      "style": {},
-      "targetType": "element",
-      "children": [],
+      "label": "Element Styler 2",
+      "is": "div",
+      "style": {
+        "box-sizing": "border-box",
+        "display": "block"
+      },
+      "attributes": {},
+      "id": "226e15df6437",
+      "name": "component",
+      "children": [
+        {
+          "id": "226e15df6441",
+          "is": "f657bb0949423",
+          "label": "Instance Pane",
+          "name": "component-instance",
+          "attributes": {},
+          "style": {},
+          "children": [],
+          "metadata": {
+            "bounds": {
+              "left": 472,
+              "top": 311,
+              "right": 875,
+              "bottom": 670
+            }
+          },
+          "variant": {}
+        },
+        {
+          "id": "226e15df6612",
+          "variant": {},
+          "is": "9e4a45489771",
+          "name": "component-instance",
+          "attributes": {},
+          "style": {},
+          "children": [
+            {
+              "id": "226e15df6613",
+              "propertyName": "style",
+              "targetIdPath": [
+                "b6c162d140"
+              ],
+              "value": {},
+              "name": "override",
+              "children": []
+            },
+            {
+              "id": "226e15df6614",
+              "variantId": null,
+              "propertyName": "style",
+              "targetIdPath": [
+                "b6c162d140"
+              ],
+              "value": {},
+              "name": "override",
+              "children": []
+            },
+            {
+              "id": "226e15df6615",
+              "variantId": null,
+              "propertyName": "text",
+              "targetIdPath": [
+                "308dd31378"
+              ],
+              "value": "mixins",
+              "name": "override",
+              "children": []
+            }
+          ],
+          "metadata": {},
+          "label": "Inherit Pane"
+        }
+      ],
       "metadata": {
         "bounds": {
-          "left": 586.9970896317676,
-          "top": 112,
-          "right": 835.9970896317676,
-          "bottom": 331
+          "left": 621,
+          "top": 101,
+          "right": 1047,
+          "bottom": 830
         }
-      }
+      },
+      "variant": {}
+    },
+    {
+      "id": "226e15df6880",
+      "is": "b6c162d113",
+      "label": "Pane",
+      "name": "component-instance",
+      "attributes": {},
+      "style": {},
+      "children": [
+        {
+          "id": "226e15df6892",
+          "variantId": null,
+          "propertyName": "text",
+          "targetIdPath": [
+            "b6c162d1281"
+          ],
+          "value": "Properties",
+          "name": "override",
+          "children": []
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": 1170,
+          "top": 117,
+          "right": 1518,
+          "bottom": 397
+        }
+      },
+      "variant": {}
     }
   ]
 }

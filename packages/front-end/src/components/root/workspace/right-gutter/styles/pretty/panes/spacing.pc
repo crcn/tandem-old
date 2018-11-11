@@ -906,7 +906,7 @@
       ],
       "metadata": {
         "bounds": {
-          "left": 470,
+          "left": 524,
           "top": 242,
           "right": 870,
           "bottom": 542

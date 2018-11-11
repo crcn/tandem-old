@@ -46,21 +46,10 @@
                   "value": "pane",
                   "style": {
                     "text-transform": "uppercase",
-                    "font-weight": "unset",
                     "user-select": "none",
                     "pointer": "default"
                   },
-                  "children": [
-                    {
-                      "id": "cb63bb744322",
-                      "name": "text",
-                      "label": "Text",
-                      "value": "Click to edit",
-                      "style": {},
-                      "children": [],
-                      "metadata": {}
-                    }
-                  ],
+                  "children": [],
                   "label": "text",
                   "metadata": {},
                   "styleMixins": {

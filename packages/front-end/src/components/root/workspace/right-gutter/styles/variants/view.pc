@@ -473,7 +473,6 @@
                   "style": {
                     "box-sizing": "border-box",
                     "display": "flex",
-                    "padding-bottom": "4px",
                     "align-items": "center",
                     "justify-content": "space-between"
                   },
@@ -483,7 +482,10 @@
                       "name": "text",
                       "label": "Text",
                       "value": "Style",
-                      "style": {},
+                      "style": {
+                        "color": "var(--30f4693267675)",
+                        "margin-bottom": "0px"
+                      },
                       "children": [],
                       "metadata": {},
                       "styleMixins": {
@@ -638,18 +640,6 @@
                 "d31aa23826983"
               ],
               "value": {},
-              "name": "override",
-              "children": []
-            },
-            {
-              "id": "47dc8450130914",
-              "propertyName": "style",
-              "targetIdPath": [
-                "d31aa23823126"
-              ],
-              "value": {
-                "opacity": "0.385"
-              },
               "name": "override",
               "children": []
             }

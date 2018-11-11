@@ -406,6 +406,16 @@
               "value": {},
               "name": "override",
               "children": []
+            },
+            {
+              "id": "89ccdc132192",
+              "propertyName": "style",
+              "targetIdPath": [
+                "b6c162d1281"
+              ],
+              "value": {},
+              "name": "override",
+              "children": []
             }
           ],
           "metadata": {
@@ -878,7 +888,12 @@
                       "value": "Controllers\n",
                       "style": {},
                       "children": [],
-                      "metadata": {}
+                      "metadata": {},
+                      "styleMixins": {
+                        "dc3b39eb1627": {
+                          "priority": 0
+                        }
+                      }
                     },
                     {
                       "id": "60ea77f718",

@@ -346,45 +346,6 @@
       "controllers": [
         "./instance-pane-controller.tsx"
       ]
-    },
-    {
-      "label": "Element",
-      "is": "div",
-      "style": {
-        "box-sizing": "border-box",
-        "display": "block"
-      },
-      "attributes": {},
-      "id": "3ee062e5810",
-      "name": "component",
-      "children": [
-        {
-          "id": "3ee062e5813",
-          "children": [
-            {
-              "id": "3ee062e5809",
-              "name": "text",
-              "label": "Text",
-              "value": "Click to edit",
-              "style": {},
-              "children": [],
-              "metadata": {}
-            }
-          ],
-          "metadata": {},
-          "name": "slot",
-          "label": "Slot"
-        }
-      ],
-      "metadata": {
-        "bounds": {
-          "left": 1093.6112140871178,
-          "top": 382.9687982700031,
-          "right": 1193.6112140871178,
-          "bottom": 482.9687982700031
-        }
-      },
-      "variant": {}
     }
   ]
 }

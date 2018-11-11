@@ -333,15 +333,18 @@
                       "label": "Text",
                       "value": "Global Properties\n",
                       "style": {
-                        "font-family": "Helvetica",
-                        "color": "grey",
-                        "font-size": "0.8em",
                         "display": "inline-block",
                         "margin-left": "2px",
-                        "opacity": "0.4"
+                        "opacity": "1",
+                        "margin-bottom": "0px"
                       },
                       "children": [],
-                      "metadata": {}
+                      "metadata": {},
+                      "styleMixins": {
+                        "33b5126b196": {
+                          "priority": 0
+                        }
+                      }
                     },
                     {
                       "id": "f300c6aa60619",
@@ -576,8 +579,7 @@
                   "id": "3a6461fb976229",
                   "variantId": "3a6461fb961320",
                   "propertyName": "style",
-                  "targetIdPath": [
-                  ],
+                  "targetIdPath": [],
                   "value": {
                     "display": "block",
                     "width": "100%"
@@ -732,8 +734,7 @@
                   "id": "4b46931a1712769",
                   "variantId": "4b46931a1525369",
                   "propertyName": "style",
-                  "targetIdPath": [
-                  ],
+                  "targetIdPath": [],
                   "value": {
                     "display": "none"
                   },
@@ -744,8 +745,7 @@
                   "id": "3a6461fb1006046",
                   "variantId": "3a6461fb961320",
                   "propertyName": "style",
-                  "targetIdPath": [
-                  ],
+                  "targetIdPath": [],
                   "value": {
                     "display": "none"
                   },

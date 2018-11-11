@@ -372,7 +372,7 @@ export const refreshInspectorTree = (
   root: InspectorTreeBaseNode<any>,
   newGraph: DependencyGraph,
   moduleUris: string[],
-  sourceMap: KeyValue<string[]>,
+  sourceMap: KeyValue<string[]> = EMPTY_OBJECT,
   oldGraph: DependencyGraph = EMPTY_OBJECT
 ): [InspectorNode, KeyValue<string[]>] => {
   let newSourceMap: KeyValue<string[]> = {};
