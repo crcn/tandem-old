@@ -25,7 +25,8 @@ export default (Base: React.ComponentClass<BaseWelcomeProps>) =>
       this.props.dispatch(openProjectButtonClicked());
     };
     onCreateProjectButtonClick = () => {
-      this.setState({ createProject: true });
+      this.props.dispatch(createProjectButtonClicked());
+      // this.setState({ createProject: true });
     };
 
     onCreateBlankProjectButtonClick = () => {
