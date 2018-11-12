@@ -243,15 +243,16 @@ function* handleCreateProject() {
     const filePath = path.join(directory, DEFAULT_TD_PROJECT_NAME);
 
     if (!fs.existsSync(filePath)) {
-      fs.writeFileSync(
-        filePath,
-        JSON.stringify(DEFAULT_TD_PROJECT, null, 2),
-        "utf8"
-      );
+      let parFiles = projectFiles
+        ? projectFiles
+        : createDefaultTDProjectFiles();
 
-      const files = projectFiles ? projectFiles : createDefaultTDProjectFiles();
-
-      console.log("TEMPLATE", projectFiles, files);
+      const files = parFiles["app.tdproject"]
+        ? parFiles
+        : {
+            ...parFiles,
+            "app.tdproject": JSON.stringify(DEFAULT_TD_PROJECT, null, 2)
+          };
 
       for (const relativePath in files) {
         const fullPath = path.join(directory, relativePath);

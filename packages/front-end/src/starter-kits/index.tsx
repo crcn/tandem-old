@@ -4,14 +4,20 @@ import {
   createFiles as createReactFiles,
   OptionsForm as ReactOptionsForm
 } from "./react";
+import {
+  template as blankTemplate,
+  createFiles as createBlankFiles
+} from "./blank";
 import { ProjectTemplate } from "../state";
 
 const templatesById = {
+  [blankTemplate.id]: blankTemplate,
   [reactTemplate.id]: reactTemplate
 };
 
 const fileCreatorsById = {
-  [reactTemplate.id]: createReactFiles
+  [reactTemplate.id]: createReactFiles,
+  [blankTemplate.id]: createBlankFiles
 };
 
 const optionsFormComponentsById = {

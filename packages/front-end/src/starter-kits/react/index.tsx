@@ -41,7 +41,7 @@ export const createFiles: ProjectFileCreator = ({
 
   mainComponent = {
     ...mainComponent,
-    controllers: ["./main.tsx"]
+    controllers: ["./controller.tsx"]
   };
 
   return {
@@ -53,8 +53,10 @@ export const createFiles: ProjectFileCreator = ({
         main: "index.js",
         scripts: {
           test: 'echo "Error: no test specified" && exit 1',
-          build: "webpack",
-          design: "tandem app.tdproject"
+          build:
+            "paperclip-react-compiler src/**/*.pc --definition --write; webpack",
+          "build-watch":
+            "concurrently 'paperclip-react-compiler \"src/**/*.pc\" --definition --write --watch' 'webpack --watch'"
         },
         repository: {
           type: "git",
@@ -68,13 +70,16 @@ export const createFiles: ProjectFileCreator = ({
         homepage:
           "https://github.com/tandemcode/tandem-react-starter-kit#readme",
         devDependencies: {
+          concurrently: "^4.0.1",
           "html-webpack-plugin": "^3.2.0",
           "paperclip-react-loader": "^10.0.10",
-          "tandem-cli": "10.0.21",
+          "@types/react": "^16.7.3",
+          "@types/react-dom": "^16.0.9",
           "ts-loader": "^4.4.2",
           typescript: "^2.9.2",
           webpack: "^4.15.1",
-          "webpack-cli": "^3.0.8"
+          "webpack-cli": "^3.0.8",
+          "paperclip-react-compiler": "^10.0.36"
         },
         dependencies: {
           react: "^16.4.1",
@@ -84,19 +89,67 @@ export const createFiles: ProjectFileCreator = ({
       null,
       2
     ),
-    "./src/main.pc": JSON.stringify(createPCModule([mainComponent]), null, 2),
-    "./src/main.tsx":
+    "app.tdproject": JSON.stringify({
+      scripts: {},
+      rootDir: ".",
+      exclude: ["node_modules"],
+      mainFilePath: "./src/components/main/view.pc"
+    }),
+    "tsconfig.json": JSON.stringify(
+      {
+        compileOnSave: true,
+        compilerOptions: {
+          target: "es5",
+          sourceMap: true,
+          lib: ["es2015.promise", "dom", "es5", "esnext"],
+          module: "commonjs",
+          outDir: "lib",
+          jsx: "react",
+          baseUrl: "src",
+          experimentalDecorators: true
+        },
+        exclude: ["node_modules", "*-test", "lib", "index.d.ts"],
+        filesGlob: ["./src/**/*.ts"],
+        rootDirs: ["node_modules"]
+      },
+      null,
+      2
+    ),
+    ".gitignore": `
+node_modules
+.DS_Store
+npm-*
+lib
+*.d.ts
+`,
+    "./src/entry.ts": `
+import * as ReactDOM from "react-dom";
+import * as React from "react";
+import { Application } from "./components/main/view.pc";
+
+const mount = document.createElement("div");
+document.body.appendChild(mount);
+
+ReactDOM.render(React.createElement(Application), mount);
+`,
+    "./src/components/main/view.pc": JSON.stringify(
+      createPCModule([mainComponent]),
+      null,
+      2
+    ),
+    "./src/components/main/controller.tsx":
       `` +
       `import * as React from "react";
-import {BaseApplicationProps} from "./main.pc"
+import {BaseApplicationProps} from "./view.pc"
 
 export type Props = {
 
-};
+} & BaseApplicationProps;
 
-export const (Base: React.ComponentClass<BaseApplicationProps>) class ApplicationController extends React.PureComponent<Props> {
+export default (Base: React.ComponentClass<BaseApplicationProps>) => class ApplicationController extends React.PureComponent<Props> {
   render() {
-    return <Base />;
+    const {...rest} = this.props;
+    return <Base {...rest} />;
   }
 }
 
