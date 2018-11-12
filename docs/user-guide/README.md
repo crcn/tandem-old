@@ -216,7 +216,7 @@ Video wiring up todo app: https://www.youtube.com/watch?v=jI8bZabDrxg&feature=yo
 At this point you're ready to add code to the todo app (yay!). This section assumes that you
 have some knowledge of Terminal, Webpack, React, and TypeScript. Source code for this section is [here](https://github.com/tandemcode/examples/tree/master/user-guide-exercises/3%20adding%20custom%20code).
 
-#### Setting up with Webpack, React, and TypeScript
+#### Setting up React, Webpack, and TypeScript.
 
 > React boilerplate code used in this section can be downloaded here: https://github.com/tandemcode/react-app-boilerplate
 
