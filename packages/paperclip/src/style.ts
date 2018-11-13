@@ -69,7 +69,7 @@ export const computeStyleInfo = memoize(
     let style = {};
     const styleOverridesMap: KeyValue<PCStyleOverride[]> = {};
 
-    const sourceNode = getPCNode(inspectorNode.assocSourceNodeId, graph) as
+    const sourceNode = getPCNode(inspectorNode.sourceNodeId, graph) as
       | PCVisibleNode
       | PCComponent;
     let current: PCNode = sourceNode;
@@ -130,7 +130,7 @@ export const computeStyleInfo = memoize(
       while (parent) {
         if (parent.name === InspectorTreeNodeName.SOURCE_REP) {
           const parentSource = getPCNode(
-            parent.assocSourceNodeId,
+            parent.sourceNodeId,
             graph
           ) as PCVisibleNode;
           if (isElementLikePCNode(parentSource)) {

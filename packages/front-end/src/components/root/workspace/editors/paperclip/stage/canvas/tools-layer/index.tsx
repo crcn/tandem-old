@@ -188,7 +188,7 @@ const calcInspectorNodeBounds = memoize(
       assocInspectorNode = findNestedNode(
         instance,
         (child: InspectorNode) =>
-          child.assocSourceNodeId === inspectorNode.assocSourceNodeId &&
+          child.sourceNodeId === inspectorNode.sourceNodeId &&
           child.name === InspectorTreeNodeName.SOURCE_REP
       );
     } else {

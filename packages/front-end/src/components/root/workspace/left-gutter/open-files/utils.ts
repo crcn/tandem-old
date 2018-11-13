@@ -8,7 +8,7 @@ import { DependencyGraph, getPCNode, PCSourceTagNames } from "paperclip";
 // ) => {
 //   return (
 //     contentNode ||
-//     (getPCNode(inspectorNode.assocSourceNodeId, graph).name !==
+//     (getPCNode(inspectorNode.sourceNodeId, graph).name !==
 //     PCSourceTagNames.MODULE
 //       ? inspectorNode
 //       : null)

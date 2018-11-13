@@ -69,7 +69,7 @@ export default (Base: React.ComponentClass<BaseInheritProps>) => {
         projectOptions
       } = this.props;
       const node = selectedInspectorNodes[0];
-      const sourceNode = getPCNode(node.assocSourceNodeId, graph) as
+      const sourceNode = getPCNode(node.sourceNodeId, graph) as
         | PCVisibleNode
         | PCComponent
         | PCStyleMixin;

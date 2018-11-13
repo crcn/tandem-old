@@ -66,10 +66,7 @@ export default (Base: React.ComponentClass<BaseLayersPaneProps>) =>
       const content = (
         <div style={CONTENT_STYLE}>
           {sourceNodeInspector.children.map((inspectorNode, i) => {
-            const sourceNode = getPCNode(
-              inspectorNode.assocSourceNodeId,
-              graph
-            );
+            const sourceNode = getPCNode(inspectorNode.sourceNodeId, graph);
 
             if (!sourceNode) {
               return null;

@@ -47,7 +47,7 @@ export default (Base: React.ComponentClass<BasePropertiesProps>) =>
 
       const selectedNode = selectedInspectorNodes[0];
 
-      const sourceNode = getPCNode(selectedNode.assocSourceNodeId, graph);
+      const sourceNode = getPCNode(selectedNode.sourceNodeId, graph);
 
       return (
         <Base

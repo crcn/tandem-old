@@ -910,12 +910,12 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
           state.graph
         ) as PCComponentInstanceElement;
         let contentNode = getInstanceSlotContent(
-          target.assocSourceNodeId,
+          target.sourceNodeId,
           parentSourceNode
         );
         if (!contentNode) {
           state = persistInsertNode(
-            createPCPlug(target.assocSourceNodeId),
+            createPCPlug(target.sourceNodeId),
             parentSourceNode,
             TreeMoveOffset.APPEND,
             state
@@ -926,7 +926,7 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
             state.graph
           ) as PCComponentInstanceElement;
           contentNode = getInstanceSlotContent(
-            target.assocSourceNodeId,
+            target.sourceNodeId,
             parentSourceNode
           );
         }
@@ -2381,7 +2381,7 @@ const getDragFilter = (item: any, state: RootState) => {
           state.activeEditorFilePath
       );
     };
-    const sourceNode = getPCNode(item.assocSourceNodeId, state.graph);
+    const sourceNode = getPCNode(item.sourceNodeId, state.graph);
     if (sourceNode.name === PCSourceTagNames.COMPONENT) {
       return () => false;
     }
@@ -2871,7 +2871,7 @@ const shortcutReducer = (state: RootState, action: Action): RootState => {
       ) as InspectorNode;
 
       const nextChildren = parent.children.filter(
-        child => child.assocSourceNodeId !== sourceNode.id
+        child => child.sourceNodeId !== sourceNode.id
       );
 
       const nextSelectedNodeId = nextChildren.length

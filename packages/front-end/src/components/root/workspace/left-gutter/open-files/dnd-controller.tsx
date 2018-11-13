@@ -68,16 +68,16 @@ export const withNodeDropTarget = (offset: TreeMoveOffset) =>
           monitor
         ) => {
           const contentSourceNode =
-            contentNode && getPCNode(contentNode.assocSourceNodeId, graph);
+            contentNode && getPCNode(contentNode.sourceNodeId, graph);
           const draggingInspectorNode = monitor.getItem() as InspectorNode;
           const draggedSourceNode = getPCNode(
-            draggingInspectorNode.assocSourceNodeId,
+            draggingInspectorNode.sourceNodeId,
             graph
           );
-          const sourceNode = getPCNode(inspectorNode.assocSourceNodeId, graph);
+          const sourceNode = getPCNode(inspectorNode.sourceNodeId, graph);
           const parentSourceNode: PCNode = getParentTreeNode(
             sourceNode.id,
-            getPCNodeModule(inspectorNode.assocSourceNodeId, graph)
+            getPCNodeModule(inspectorNode.sourceNodeId, graph)
           );
 
           if (draggedSourceNode.name === PCSourceTagNames.COMPONENT) {

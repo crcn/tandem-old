@@ -149,7 +149,7 @@ export default (Base: React.ComponentClass<BaseRightGutterProps>) =>
             sourceNodeUri:
               selectedInspectorNodes[0] &&
               getPCNodeDependency(
-                selectedInspectorNodes[0].assocSourceNodeId,
+                selectedInspectorNodes[0].sourceNodeId,
                 root.graph
               ).uri,
             dispatch,

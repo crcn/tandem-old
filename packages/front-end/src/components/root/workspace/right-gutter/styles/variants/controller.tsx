@@ -55,7 +55,7 @@ export default (Base: React.ComponentClass<BaseVariantsProps>) =>
         selectedInspectorNodes[0],
         rootInspectorNode
       );
-      const contentSourceNode = getPCNode(contentNode.assocSourceNodeId, graph);
+      const contentSourceNode = getPCNode(contentNode.sourceNodeId, graph);
       if (!contentSourceNode || !isComponent(contentSourceNode)) {
         return null;
       }

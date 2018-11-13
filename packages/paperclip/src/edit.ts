@@ -893,7 +893,7 @@ export const persistToggleInstanceVariant = <TState extends PCEditorState>(
     })
   )(
     instance.instancePath,
-    instance.assocSourceNodeId,
+    instance.sourceNodeId,
     state.sourceNodeInspector,
     state.graph
   );
@@ -1012,7 +1012,7 @@ export const persistAppendPCClips = <TState extends PCEditorState>(
   offset: TreeMoveOffset,
   state: TState
 ): TState => {
-  const targetSourceNode = getPCNode(target.assocSourceNodeId, state.graph);
+  const targetSourceNode = getPCNode(target.sourceNodeId, state.graph);
   const targetDep = getPCNodeDependency(targetSourceNode.id, state.graph);
   const parentSourceNode: PCNode =
     offset === TreeMoveOffset.BEFORE || offset === TreeMoveOffset.AFTER
@@ -1119,7 +1119,7 @@ export const persistChangeSyntheticTextNodeValue = <
     })
   )(
     node.instancePath,
-    node.assocSourceNodeId,
+    node.sourceNodeId,
     state.sourceNodeInspector,
     state.graph
   );

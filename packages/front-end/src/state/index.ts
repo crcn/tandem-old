@@ -1034,7 +1034,7 @@ export const openSyntheticVisibleNodeOriginFile = (
   const uri = getPCNodeDependency(sourceNode.id, state.graph).uri;
   state = openFile(uri, false, false, state);
   const instance = findNestedNode(state.sourceNodeInspector, child => {
-    return !child.instancePath && child.assocSourceNodeId === sourceNode.id;
+    return !child.instancePath && child.sourceNodeId === sourceNode.id;
   });
   state = setSelectedInspectorNodes(state, instance);
   // state = centerCanvasToSelectedNodes(state);

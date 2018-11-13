@@ -89,10 +89,7 @@ export default (Base: React.ComponentClass<BaseNodeLayerProps>) => {
           rootInspectorNode
         }: LayersPaneContextProps
       ) => {
-        const assocSourceNode = getPCNode(
-          inspectorNode.assocSourceNodeId,
-          graph
-        );
+        const assocSourceNode = getPCNode(inspectorNode.sourceNodeId, graph);
 
         let label = (assocSourceNode as PCVisibleNode).label;
 
@@ -101,7 +98,7 @@ export default (Base: React.ComponentClass<BaseNodeLayerProps>) => {
         if (!label) {
           if (assocSourceNode.name === PCSourceTagNames.MODULE) {
             const dependency = getPCNodeDependency(
-              inspectorNode.assocSourceNodeId,
+              inspectorNode.sourceNodeId,
               graph
             );
             label = path.basename(dependency.uri);
@@ -150,13 +147,13 @@ export default (Base: React.ComponentClass<BaseNodeLayerProps>) => {
           return inspectorNode;
         },
         canDrag({ inspectorNode, graph }: any) {
-          const sourceNode = getPCNode(inspectorNode.assocSourceNodeId, graph);
+          const sourceNode = getPCNode(inspectorNode.sourceNodeId, graph);
           const module = getPCNodeModule(
-            inspectorNode.assocSourceNodeId,
+            inspectorNode.sourceNodeId,
             graph
           ) as PCModule;
           const contentSourceNode = getPCNodeContentNode(
-            inspectorNode.assocSourceNodeId,
+            inspectorNode.sourceNodeId,
             module
           );
           const canDrag =
