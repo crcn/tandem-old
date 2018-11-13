@@ -49,7 +49,7 @@ export default (Base: React.ComponentClass<BaseEditorProps>) =>
         window && root.graph && root.graph[editorWindow.activeFilePath];
       const fileCacheItem = getFSItem(editorWindow.activeFilePath, root);
 
-      if (!fileCacheItem.content) {
+      if (!fileCacheItem || !fileCacheItem.content || !dependency) {
         return null;
       }
 
