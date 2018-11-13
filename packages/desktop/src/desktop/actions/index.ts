@@ -71,10 +71,3 @@ export const previewServerStarted = (port: number): PreviewServerStarted => ({
   type: PREVIEW_SERVER_STARTED,
   port
 });
-
-// export const projectDirectoryLoaded = publicActionCreator(
-//   (directory: Directory) => ({
-//     directory,
-//     type: "PROJECT_DIRECTORY_LOADED"
-//   })
-// );

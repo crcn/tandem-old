@@ -247,6 +247,18 @@ function* watchProjectDirectory() {
     });
     while (1) {
       const action: FileChanged = yield take(chan);
+      const { projectDirectory }: RootState = yield select();
+      const dirUri = path.dirname(action.uri);
+
+      const assocDir = getFileFromUri(dirUri, projectDirectory) as Directory;
+
+      // if dir does not exist, then is not expanded. chokidar has an issue
+      // where it recursively adds directories, so _not_ doing this can clobber
+      // the entire process if something like node_modules is present.
+      // Can probably be fixed another way, but this works for now.
+      if (!assocDir || !assocDir.expanded) {
+        continue;
+      }
       yield put(action);
     }
   });
@@ -255,9 +267,11 @@ function* watchProjectDirectory() {
     while (1) {
       yield take(PROJECT_DIRECTORY_DIR_LOADED);
       const { projectDirectory }: RootState = yield select();
-      const expandedFilePaths = flattenTreeNode(projectDirectory).map(item =>
-        stripProtocol(item.uri)
-      );
+      const expandedFilePaths = flattenTreeNode(projectDirectory)
+        .map(item => stripProtocol(item.uri))
+        .filter(uri => {
+          return watching.indexOf(uri) === -1;
+        });
       watching.push(...expandedFilePaths);
       watcher.add(expandedFilePaths);
     }

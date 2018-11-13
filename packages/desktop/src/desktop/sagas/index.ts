@@ -8,7 +8,6 @@ import {
   TD_PROJECT_LOADED,
   previewServerStarted,
   OPEN_PROJECT_MENU_ITEM_CLICKED,
-  // projectDirectoryLoaded,
   tdProjectFilePicked,
   TD_PROJECT_FILE_PICKED,
   componentControllerPicked,
@@ -30,15 +29,7 @@ import {
   createPCTextNode
 } from "paperclip";
 import { DesktopState, TDProject } from "../state";
-import {
-  isPublicAction,
-  convertFlatFilesToNested,
-  createDirectory,
-  addProtocol,
-  FILE_PROTOCOL,
-  EMPTY_ARRAY,
-  createBounds
-} from "tandem-common";
+import { isPublicAction, createBounds } from "tandem-common";
 import { shortcutsSaga } from "./menu";
 import * as fs from "fs";
 import * as fsa from "fs-extra";

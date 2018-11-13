@@ -1,14 +1,8 @@
 import { fork, put, call, take, select, takeEvery } from "redux-saga/effects";
 import * as path from "path";
 import {
-  projectDirectoryLoaded,
-  PROJECT_DIRECTORY_LOADED,
   FILE_NAVIGATOR_ITEM_CLICKED,
-  fileNavigatorItemClicked,
   FileNavigatorItemClicked,
-  OpenFilesItemClick,
-  OPEN_FILE_ITEM_CLICKED,
-  SHORTCUT_SAVE_KEY_DOWN,
   TD_PROJECT_LOADED,
   savedFile,
   projectInfoLoaded,
@@ -20,15 +14,8 @@ import {
   FileItemContextMenuAction
 } from "../actions";
 import {
-  File,
-  Directory,
-  getFilesWithExtension,
-  getFilePath,
   addProtocol,
   FILE_PROTOCOL,
-  getTreeNodePath,
-  getTreeNodeFromPath,
-  getFilePathFromNodePath,
   FSItem,
   FSItemTagNames,
   getFileFromUri,
