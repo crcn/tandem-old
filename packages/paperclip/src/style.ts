@@ -1,4 +1,9 @@
-import { memoize, KeyValue, getParentTreeNode } from "tandem-common";
+import {
+  memoize,
+  KeyValue,
+  getParentTreeNode,
+  EMPTY_OBJECT
+} from "tandem-common";
 import { defaults, pick } from "lodash";
 import {
   InspectorNode,
@@ -65,13 +70,14 @@ export const computeStyleInfo = memoize(
     variant: PCVariant,
     graph: DependencyGraph,
     options: ComputeStyleOptions = DEFAULT_COMPUTE_STYLE_OPTIONS
-  ): ComputedStyleInfo => {
+  ): ComputedStyleInfo | null => {
     let style = {};
     const styleOverridesMap: KeyValue<PCStyleOverride[]> = {};
 
     const sourceNode = getPCNode(inspectorNode.sourceNodeId, graph) as
       | PCVisibleNode
       | PCComponent;
+
     let current: PCNode = sourceNode;
 
     if (options.parentStyles !== false) {

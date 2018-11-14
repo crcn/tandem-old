@@ -7,7 +7,8 @@ import {
   getGlobalVariables,
   getSyntheticNodeStyleColors,
   getInspectorSyntheticNode,
-  getSyntheticInspectorNode
+  InspectorTreeNodeName,
+  InspectorContent
 } from "paperclip";
 import {
   memoize,
@@ -21,20 +22,6 @@ import { InspectorNode } from "paperclip";
 import { BaseRightGutterProps } from "./view.pc";
 import { RootState, getGlobalFileUri } from "../../../../state";
 import { Dispatch } from "redux";
-
-const getSelectedSyntheticNodes = memoize(
-  (nodeIds: string[], documents: SyntheticDocument[]) => {
-    return nodeIds.map(id => getSyntheticNodeById(id, documents));
-  }
-);
-
-const getSelectedInspectorNodes = memoize(
-  (nodeIds: string[], sourceInspector: InspectorNode): InspectorNode[] => {
-    return nodeIds
-      .map(id => getNestedTreeNodeById(id, sourceInspector))
-      .filter(Boolean);
-  }
-);
 
 const TAB_NAMES = ["styles", "properties"];
 const INSPECTOR_NODE_TAB_NAMES = ["properties"];
@@ -149,7 +136,10 @@ export default (Base: React.ComponentClass<BaseRightGutterProps>) =>
             sourceNodeUri:
               selectedInspectorNodes[0] &&
               getPCNodeDependency(
-                selectedInspectorNodes[0].sourceNodeId,
+                selectedInspectorNodes[0].name === InspectorTreeNodeName.CONTENT
+                  ? (selectedInspectorNodes[0] as InspectorContent)
+                      .sourceSlotNodeId
+                  : selectedInspectorNodes[0].sourceNodeId,
                 root.graph
               ).uri,
             dispatch,

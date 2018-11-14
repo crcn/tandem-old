@@ -2,8 +2,7 @@ import * as React from "react";
 import { BaseStylesProps } from "./view.pc";
 import { Dispatch } from "redux";
 import {
-  SyntheticDocument,
-  SyntheticElement,
+  getPCNode,
   PCVariant,
   DependencyGraph,
   InspectorNode,
@@ -42,6 +41,10 @@ export default (Base: React.ComponentClass<BaseStylesProps>) =>
         ...rest
       } = this.props;
       if (!selectedInspectorNodes.length || !visible) {
+        return null;
+      }
+
+      if (!getPCNode(selectedInspectorNodes[0].sourceNodeId, graph)) {
         return null;
       }
       const computedStyleInfo = computeStyleInfo(

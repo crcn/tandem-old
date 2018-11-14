@@ -89,9 +89,14 @@ export default (Base: React.ComponentClass<BaseNodeLayerProps>) => {
           rootInspectorNode
         }: LayersPaneContextProps
       ) => {
-        const assocSourceNode = getPCNode(inspectorNode.sourceNodeId, graph);
+        const assocSourceNode = getPCNode(
+          inspectorNode.name === InspectorTreeNodeName.CONTENT
+            ? inspectorNode.sourceSlotNodeId
+            : inspectorNode.sourceNodeId,
+          graph
+        );
 
-        let label = (assocSourceNode as PCVisibleNode).label;
+        let label = assocSourceNode && (assocSourceNode as PCVisibleNode).label;
 
         // note that "Layer" is used as a default label here
         // to show layers that have an undefined label (which shouldn't exist)
