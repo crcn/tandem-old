@@ -24,6 +24,7 @@ import { DependencyGraph } from "./graph";
 import { TreeNodeOperationalTransform } from "./ot";
 import { PCEditorState, Frame, getSyntheticDocumentFrames } from "./edit";
 import {
+  SyntheticNode,
   getSyntheticNodeById,
   SyntheticDocument,
   SyntheticVisibleNode,
@@ -181,7 +182,7 @@ export const createPaperclipSaga = ({
                     getNestedTreeNodeById(
                       newFrame.syntheticContentNodeId,
                       oldDocument
-                    ),
+                    ) as SyntheticNode,
                     frameOts
                   );
                 }

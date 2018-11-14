@@ -255,7 +255,7 @@ export const getSyntheticContentNode = memoize(
     return document.children.find(
       contentNode =>
         contentNode.id === node.id ||
-        getNestedTreeNodeById(node.id, contentNode)
+        containsNestedTreeNodeById(node.id, contentNode)
     );
   }
 );
@@ -273,7 +273,7 @@ export const getSyntheticVisibleNodeDocument = memoize(
     syntheticDocuments: SyntheticDocument[]
   ): SyntheticDocument => {
     return syntheticDocuments.find(document => {
-      return getNestedTreeNodeById(syntheticNodeId, document);
+      return containsNestedTreeNodeById(syntheticNodeId, document);
     });
   }
 );
@@ -297,7 +297,10 @@ export const getSyntheticNodeById = memoize(
     if (!document) {
       return null;
     }
-    return getNestedTreeNodeById(syntheticNodeId, document);
+    return getNestedTreeNodeById(
+      syntheticNodeId,
+      document
+    ) as SyntheticVisibleNode;
   }
 );
 

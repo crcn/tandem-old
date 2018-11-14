@@ -1024,7 +1024,7 @@ export const getPCNodeModule = (
 
 export const getPCNodeContentNode = (nodeId: string, module: PCModule) => {
   return module.children.find(contentNode =>
-    getNestedTreeNodeById(nodeId, contentNode)
+    Boolean(getNestedTreeNodeById(nodeId, contentNode))
   );
 };
 
