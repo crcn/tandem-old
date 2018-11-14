@@ -8,7 +8,9 @@ import {
   createPCComponent,
   createPCTextNode,
   PCModule,
-  createPCSlot
+  createPCSlot,
+  createPCComponentInstance,
+  createPCPlug
 } from "../dsl";
 import { expect } from "chai";
 import {
@@ -18,7 +20,7 @@ import {
   InspectorNode
 } from "../inspector";
 import { DependencyGraph } from "../graph";
-import { TreeNode } from "tandem-common";
+import { TreeNode, replaceNestedNode, removeNestedTreeNode, insertChildNode, appendChildNode } from "tandem-common";
 import { patchTreeNode, diffTreeNode } from "../ot";
 
 describe(__filename + "#", () => {
@@ -44,7 +46,7 @@ describe(__filename + "#", () => {
   const case2 = () => [
     "can replace a child node",
     createPCModule([createPCElement("div")]),
-    createPCModule([createPCTextNode("text nodehere")])
+    createPCModule([createPCTextNode("text node here")])
   ];
 
   const case3 = () => {
@@ -56,25 +58,144 @@ describe(__filename + "#", () => {
   };
 
   const case4 = () => {
+
+    const slotChild = createPCTextNode("a b");
+
+    const slot = createPCSlot([slotChild]);
+
+    const component = createPCComponent(null, "div", {}, {}, [
+      slot
+    ]);
+
+    const module = createPCModule([
+      component
+    ]);
+
+    let module2 = module;
+
+    module2 = replaceNestedNode(createPCElement("div"), slotChild.id, module2);
+
+
+
     return [
       "Can update the default children of a slot",
-      createPCModule([
-        createPCComponent(null, "div", {}, {}, [
-          createPCSlot([createPCTextNode("a b")])
-        ])
-      ]),
-      createPCModule([
-        createPCComponent(null, "div", {}, {}, [
-          createPCSlot([createPCTextNode("c d")])
-        ])
-      ])
+      module,
+      module2
     ];
   };
 
-  [case1(), case2(), case3(), case4()].forEach(([label, a, b]) => {
+  const case5 = () => {
+
+    const slotChild = createPCTextNode("a b");
+
+    const slot = createPCSlot([slotChild]);
+
+    const component = createPCComponent(null, "div", {}, {}, [
+      slot
+    ]);
+    const instance = createPCComponentInstance(component.id);
+    const instance2 = createPCComponentInstance(component.id);
+
+    const module = createPCModule([
+      component,
+      instance,
+      instance2
+    ]);
+
+    let module2 = module;
+
+    module2 = replaceNestedNode(createPCElement("div"), slotChild.id, module2);
+
+    return [
+      "Updates slot children of component instance",
+      module,
+      module2
+    ];
+  };
+
+  const case6 = () => {
+
+    const element1 = createPCElement("div");
+    const element2 = createPCElement("span");
+
+    const module = createPCModule([
+      element1,
+      element2
+    ]);
+
+    let module2 = module;
+
+    module2 = removeNestedTreeNode(element2, module2);
+    module2 = insertChildNode(element2, 0, module2);
+
+    return [
+      "Can move elements around",
+      module,
+      module2
+    ]
+  }
+
+  const case7 = () => {
+
+    const slot = createPCSlot([
+      createPCTextNode("abcd")
+    ]);
+
+    const component = createPCComponent(null, "div", null, null, [
+      slot
+    ]);
+
+    let instance = createPCComponentInstance(component.id, null);
+
+    const module = createPCModule([
+      component,
+      instance
+    ]);
+
+    let module2 = module;
+
+
+    instance = appendChildNode(createPCPlug(slot.id, [
+      createPCElement("span")
+    ]), instance);
+
+    module2 = replaceNestedNode(instance, instance.id, module2);
+
+
+    return [
+      "Can insert a new plug",
+      module,
+      module2
+    ]
+  };
+
+  const case8 = () => {
+    const slot = createPCSlot();
+
+    const component = createPCComponent(null, "div", null, null, [
+      slot
+    ]);
+    let plug = createPCPlug(slot.id);
+    const instance = createPCComponentInstance(component.id, null, null, [
+      plug
+    ]);
+
+    const module = createPCModule([
+      component,
+      instance
+    ]);
+    let module2 = module;
+    plug = insertChildNode(createPCTextNode("abc"), 0, plug);
+    module2 = replaceNestedNode(plug, plug.id, module2);
+    return [
+      "Can insert a child into a plug",
+      module,
+      module2
+    ]
+  };
+
+  [case1(), case2(), case3(), case4(), case5(), case6(), case7(), case8()].forEach(([label, a, b]) => {
     it(label as string, () => {
-      a = zeroIds(a as PCModule);
-      b = zeroIds(b as PCModule);
 
       const graph = {
         a: createPCDependency("a", a as PCModule)
@@ -89,6 +210,7 @@ describe(__filename + "#", () => {
         ["a"],
         sourceMap
       );
+
       const newGraph = {
         a: {
           ...graph.a,
@@ -108,15 +230,12 @@ describe(__filename + "#", () => {
       );
 
       let newRootInspector: InspectorNode = createRootInspectorNode();
-      let newSourceMap;
-      [newRootInspector, newSourceMap] = refreshInspectorTree(
+      [newRootInspector] = refreshInspectorTree(
         newRootInspector,
         newGraph,
         ["a"]
       );
-
       expect(zeroIds(rootInspector)).to.eql(zeroIds(newRootInspector));
-      // expect(sourceMap).to.eql(newSourceMap);
     });
   });
 });

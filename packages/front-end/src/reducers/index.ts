@@ -345,7 +345,7 @@ import {
   getSyntheticSourceUri,
   inspectorNodeInInstanceOfComponent,
   getSyntheticVisibleNodeComputedBounds,
-  getInspectorNodeByAssocId
+  getInspectorNodeBySourceNodeId
 } from "paperclip";
 import {
   roundBounds,
@@ -2932,7 +2932,7 @@ const clipboardReducer = (state: RootState, action: Action) => {
       ) {
         offset = TreeMoveOffset.PREPEND;
         const module = state.graph[state.activeEditorFilePath].content;
-        scopeNode = targetNode = getInspectorNodeByAssocId(
+        scopeNode = targetNode = getInspectorNodeBySourceNodeId(
           module.id,
           state.sourceNodeInspector
         );
@@ -3039,7 +3039,7 @@ const convertSyntheticStyleToMixin = (
   state = queueSelectInsertedSyntheticVisibleNodes(
     oldState,
     state,
-    getInspectorNodeByAssocId(
+    getInspectorNodeBySourceNodeId(
       state.graph[state.activeEditorFilePath].content.id,
       state.sourceNodeInspector
     )
@@ -3068,7 +3068,7 @@ const convertSyntheticNodeToComponent = (
   state = queueSelectInsertedSyntheticVisibleNodes(
     oldState,
     state,
-    getInspectorNodeByAssocId(
+    getInspectorNodeBySourceNodeId(
       state.graph[state.activeEditorFilePath].content.id,
       state.sourceNodeInspector
     )

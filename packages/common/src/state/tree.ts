@@ -135,13 +135,13 @@ export const getTreeNodeIdMap = memoize(
 );
 
 export const flattenTreeNode = memoize(
-  <TTree extends TreeNode<any>>(current: TTree): TTree[] =>
-    current.children.reduce(
-      (flattened, child) => {
-        return [...flattened, ...flattenTreeNode(child)];
-      },
-      [current]
-    ) as TTree[]
+  <TTree extends TreeNode<any>>(current: TTree): TTree[] => Object.values(getTreeNodeIdMap(current)) as TTree[]
+    // current.children.reduce(
+    //   (flattened, child) => {
+    //     return [...flattened, ...flattenTreeNode(child)];
+    //   },
+    //   [current]
+    // ) as TTree[]
 );
 
 export const getTreeNodePath = memoize(
@@ -220,22 +220,15 @@ export const getTreeNodeFromPath = memoize(
   }
 );
 
-export const getNestedTreeNodeById = memoize(
-  <TNode extends TreeNode<any>>(id: string, root: TNode): TNode => {
-    return getTreeNodeIdMap(root)[id] as TNode;
-  }
-);
+export const getNestedTreeNodeById = <TNode extends TreeNode<any>>(id: string, root: TNode): TNode => {
+  return getTreeNodeIdMap(root)[id] as TNode;
+};
 
-export const containsNestedTreeNodeById = memoize(
-  <TNode extends TreeNode<any>>(id: string, root: TNode) => {
-    return Boolean(getTreeNodeIdMap(root)[id]);
-  }
-);
+export const containsNestedTreeNodeById = <TNode extends TreeNode<any>>(id: string, root: TNode) => {
+  return Boolean(getTreeNodeIdMap(root)[id]);
+};
 
-export const getTreeNodeHeight = memoize(
-  <TNode extends TreeNode<any>>(id: string, root: TNode) =>
-    getTreeNodePath(id, root).length
-);
+export const getTreeNodeHeight = <TNode extends TreeNode<any>>(id: string, root: TNode) => getTreeNodePath(id, root).length;
 
 export const generateTreeChecksum = memoize((root: TreeNode<any>) =>
   crc32(JSON.stringify(root))

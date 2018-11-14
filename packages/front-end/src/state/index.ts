@@ -81,7 +81,7 @@ import {
   expandInspectorNodeById,
   getInspectorContentNode,
   getInspectorSyntheticNode,
-  getInspectorNodeByAssocId,
+  getInspectorNodeBySourceNodeId,
   getSyntheticDocumentByDependencyUri
 } from "paperclip";
 import {

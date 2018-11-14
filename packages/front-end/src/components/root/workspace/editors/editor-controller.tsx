@@ -7,7 +7,7 @@ import {
   PAPERCLIP_MIME_TYPE,
   InspectorNode,
   DependencyGraph,
-  getInspectorNodeByAssocId
+  getInspectorNodeBySourceNodeId
 } from "paperclip";
 import { getFSItem } from "fsbox";
 import { BaseEditorProps } from "./editor.pc";
@@ -27,7 +27,7 @@ const filterEditorInspectorNodes = memoize(
     editor: EditorWindow,
     graph: DependencyGraph
   ) => {
-    const moduleInspectorNode = getInspectorNodeByAssocId(
+    const moduleInspectorNode = getInspectorNodeBySourceNodeId(
       graph[editor.activeFilePath].content.id,
       rootInspectorNode
     );

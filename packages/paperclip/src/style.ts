@@ -3,7 +3,7 @@ import { defaults, pick } from "lodash";
 import {
   InspectorNode,
   getInspectorNodeOverrides,
-  getInspectorNodeByAssocId,
+  getInspectorNodeBySourceNodeId,
   InspectorTreeNodeName
 } from "./inspector";
 import {
