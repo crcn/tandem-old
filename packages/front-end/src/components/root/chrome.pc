@@ -39,7 +39,7 @@
             "padding-top": "8px",
             "padding-bottom": "8px",
             "font-size": "12px",
-            "border-bottom": "1px solid rgba(1, 0, 0, 0.04)",
+            "border-bottom": "1px solid var(--d8f6340b1442)",
             "align-items": "center",
             "position": "relative",
             "-webkit-app-region": "drag"

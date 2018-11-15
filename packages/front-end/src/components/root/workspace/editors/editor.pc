@@ -12,7 +12,8 @@
         "display": "flex",
         "flex-direction": "column",
         "width": "100%",
-        "height": "100%"
+        "height": "100%",
+        "border-bottom": "1px solid var(--d8f6340b1442)"
       },
       "attributes": {},
       "id": "483373f987277",
