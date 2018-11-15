@@ -18,6 +18,7 @@ export type Props = {
   editorWindow: EditorWindow;
   dispatch: Dispatch<any>;
   selectedTool: ToolType;
+  active: boolean;
 };
 
 export default (Base: React.ComponentClass<BaseToolbarProps>) =>
@@ -47,7 +48,7 @@ export default (Base: React.ComponentClass<BaseToolbarProps>) =>
     };
 
     render() {
-      const { editorWindow, selectedTool } = this.props;
+      const { editorWindow, selectedTool, active } = this.props;
       const {
         onTabCloseButtonClick,
         onTabClick,
@@ -80,6 +81,9 @@ export default (Base: React.ComponentClass<BaseToolbarProps>) =>
       return (
         <Base
           className="m-toolbar"
+          variant={cx({
+            active
+          })}
           pointerProps={{
             onClick: onPointerClick,
             variant: cx({

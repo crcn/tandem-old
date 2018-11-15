@@ -112,7 +112,8 @@ export default (Base: React.ComponentClass<BaseEditorProps>) =>
           toolbarProps={{
             dispatch,
             editorWindow,
-            selectedTool
+            selectedTool,
+            active: root.activeEditorFilePath === editorWindow.activeFilePath
           }}
           contentProps={{ children: stage }}
         />

@@ -29,7 +29,8 @@
             "display": "flex",
             "align-items": "center",
             "padding": "8px 16px",
-            "color": "var(--24ce1e4d482)"
+            "color": "var(--24ce1e4d482)",
+            "opacity": 0
           },
           "children": [
             {
@@ -254,6 +255,27 @@
           ],
           "metadata": {},
           "label": "tabs"
+        },
+        {
+          "id": "e0030d447938",
+          "name": "variant",
+          "label": "active",
+          "isDefault": false,
+          "children": [],
+          "metadata": {}
+        },
+        {
+          "id": "e0030d447939",
+          "variantId": "e0030d447938",
+          "propertyName": "style",
+          "targetIdPath": [
+            "fde5849e307480"
+          ],
+          "value": {
+            "opacity": 1
+          },
+          "name": "override",
+          "children": []
         }
       ],
       "metadata": {
