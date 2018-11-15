@@ -115,6 +115,10 @@ const setStyleConstraintsIfRoot = (
 };
 
 const setAttribute = (target: HTMLElement, name: string, value: string) => {
+  if (name === "style") {
+    console.warn(`"style" attribute present in attributes.`);
+    return;
+  }
   if (name.indexOf(":") !== -1) {
     const [xmlns, key] = name.split(":");
     target.setAttributeNS(xmlns, key, value);
@@ -289,7 +293,8 @@ export const patchDOM = (
           child as SyntheticVisibleNode,
           root.ownerDocument,
           newMap,
-          false
+          false,
+          target.namespaceURI
         );
         removeClickableStyle(target, syntheticTarget);
         insertChild(target, nativeChild, index);
