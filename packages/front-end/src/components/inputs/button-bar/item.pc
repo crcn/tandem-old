@@ -9,14 +9,17 @@
       "is": "div",
       "style": {
         "background": "var(--f63574de434)",
-        "padding": "4px 8px",
         "box-sizing": "border-box",
         "width": "100%",
         "text-align": "center",
         "position": "relative",
-        "height": "26px",
+        "height": "24px",
         "border-right": "1px solid rgba(200, 200, 200, 1)",
-        "color": "rgba(123, 123, 123, 1)"
+        "color": "rgba(123, 123, 123, 1)",
+        "padding-left": "6px",
+        "padding-top": "6px",
+        "padding-right": "6px",
+        "padding-bottom": "6px"
       },
       "attributes": {},
       "id": "6489655782851",
