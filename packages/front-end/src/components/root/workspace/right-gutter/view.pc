@@ -321,7 +321,6 @@
               "name": "component-instance",
               "attributes": {},
               "style": {
-                "font-family": "Helvetica",
                 "text-transform": "uppercase",
                 "text-align": "center",
                 "width": "100%",

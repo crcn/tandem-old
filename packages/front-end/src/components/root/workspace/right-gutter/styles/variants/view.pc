@@ -10,8 +10,7 @@
       "is": "1d51efba14",
       "name": "component-instance",
       "attributes": {},
-      "style": {
-      },
+      "style": {},
       "children": [],
       "metadata": {
         "bounds": {
@@ -441,7 +440,7 @@
         "padding-left": "12px",
         "padding-top": "8px",
         "padding-right": "12px",
-        "padding-bottom": "8pxc",
+        "padding-bottom": "6px",
         "font-size": "11px",
         "border-bottom": "1px solid rgba(0,0,0,0.05)"
       },
@@ -485,7 +484,7 @@
                       "children": [],
                       "metadata": {},
                       "styleMixins": {
-                        "dc3b39eb1627": {
+                        "33b5126b196": {
                           "priority": 0
                         }
                       }
@@ -639,7 +638,8 @@
                 "38fc2a4724622"
               ],
               "value": {
-                "margin-bottom": "6px"
+                "margin-bottom": "unset",
+                "padding-bottom": "4px"
               },
               "name": "override",
               "children": []
