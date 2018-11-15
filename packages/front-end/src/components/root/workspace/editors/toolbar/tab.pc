@@ -11,7 +11,7 @@
         "box-sizing": "border-box",
         "padding": "8px 16px",
         "align-items": "center",
-        "background": "var(--d8f6340b1442)",
+        "background": "var(--51588fd610365)",
         "color": "rgba(112, 112, 112, 1)",
         "cursor": "pointer",
         "padding-left": "20px",

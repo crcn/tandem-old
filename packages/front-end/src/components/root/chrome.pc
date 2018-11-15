@@ -13,7 +13,7 @@
         "font-family": "Avenir Next",
         "font-size": "12px",
         "color": "rgba(123, 123, 123, 1)",
-        "background": "rgba(230, 230, 230, 1)",
+        "background": "var(--51588fd610365)",
         "border-bottom-left-radius": "4px",
         "border-top-left-radius": "4px",
         "border-top-right-radius": "4px",

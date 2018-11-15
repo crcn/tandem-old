@@ -93,6 +93,15 @@
       "type": "color",
       "children": [],
       "metadata": {}
+    },
+    {
+      "id": "51588fd610365",
+      "name": "variable",
+      "value": "rgba(240, 239, 239, 1)",
+      "label": "grey 6",
+      "type": "color",
+      "children": [],
+      "metadata": {}
     }
   ]
 }

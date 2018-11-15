@@ -9,7 +9,7 @@
       "is": "div",
       "style": {
         "display": "flex",
-        "background": "var(--d8f6340b1442)",
+        "background": "var(--51588fd610365)",
         "position": "relative",
         "flex-grow": "0",
         "height": "38px"

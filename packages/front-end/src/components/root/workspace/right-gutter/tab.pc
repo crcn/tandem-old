@@ -13,7 +13,7 @@
         "width": "100%",
         "padding": "8px",
         "cursor": "pointer",
-        "background": "rgba(230, 230, 230, 1)",
+        "background": "var(--51588fd610365)",
         "padding-top": "10px",
         "padding-bottom": "10px",
         "user-select": "none",
