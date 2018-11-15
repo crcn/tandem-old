@@ -37,8 +37,6 @@
                   "style": {
                     "margin-bottom": "unset",
                     "margin-left": "2px",
-                    "color": "var(--30f4693267675)",
-                    "font-size": "12px",
                     "letter-spacing": "0.05em"
                   },
                   "children": [],

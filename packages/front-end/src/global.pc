@@ -68,15 +68,6 @@
       "metadata": {}
     },
     {
-      "id": "865e64e61518",
-      "name": "variable",
-      "value": "rgba(55, 37, 220, 1)",
-      "label": "bib",
-      "type": "color",
-      "children": [],
-      "metadata": {}
-    },
-    {
       "id": "32ef79b7820935",
       "name": "variable",
       "value": "rgba(1, 0, 0, 0.16)",

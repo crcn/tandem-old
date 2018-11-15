@@ -26,7 +26,7 @@
             "padding-bottom": "6px",
             "box-sizing": "border-box",
             "text-transform": "uppercase",
-            "color": "rgba(184, 184, 184, 1)",
+            "color": "var(--24ce1e4d482)",
             "font-size": "0.9em",
             "font-weight": "500",
             "display": "no",
