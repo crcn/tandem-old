@@ -83,16 +83,16 @@
                               "children": [
                                 {
                                   "id": "5a14767c291817",
-                                  "is": "a6fd80837",
+                                  "is": "f27782548182",
                                   "name": "component-instance",
                                   "attributes": {},
                                   "style": {
                                     "display": "inline-block",
-                                    "height": "1em",
+                                    "height": "9px",
                                     "position": "relative",
                                     "top": "-1px",
-                                    "margin-right": "4px",
-                                    "cursor": "pointer"
+                                    "cursor": "pointer",
+                                    "left": "3px"
                                   },
                                   "children": [],
                                   "metadata": {
@@ -133,28 +133,6 @@
                           },
                           "variant": {},
                           "label": "add file dropdown"
-                        },
-                        {
-                          "id": "5a14767c291818",
-                          "is": "5a14767c667",
-                          "name": "component-instance",
-                          "attributes": {},
-                          "style": {
-                            "display": "inline-block",
-                            "height": "1em",
-                            "cursor": "pointer"
-                          },
-                          "children": [],
-                          "metadata": {
-                            "bounds": {
-                              "left": 965.3440611734875,
-                              "top": -5.436884906779113,
-                              "right": 1365.3440611734875,
-                              "bottom": 294.56311509322086
-                            }
-                          },
-                          "variant": {},
-                          "label": "add folder button"
                         }
                       ],
                       "metadata": {}

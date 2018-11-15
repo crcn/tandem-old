@@ -69,11 +69,15 @@ type State = {
 
 const ADD_FILE_OPTIONS: DropdownMenuOption[] = [
   {
-    label: "blank file",
+    label: "Directory",
+    value: AddFileType.DIRECTORY
+  },
+  {
+    label: "Blank file",
     value: AddFileType.BLANK
   },
   {
-    label: "component file",
+    label: "Component file",
     value: AddFileType.COMPONENT
   }
 ];
@@ -159,7 +163,6 @@ export default (Base: React.ComponentClass<BaseFileNavigatorProps>) =>
         return <Base content={EMPTY_ARRAY} />;
       }
       const {
-        onAddFolderButtonClick,
         onNewFileChangeComplete,
         onFileDropdownComplete,
         onNewFileInputChange,
@@ -202,7 +205,6 @@ export default (Base: React.ComponentClass<BaseFileNavigatorProps>) =>
               onChangeComplete: onFileDropdownComplete,
               options: ADD_FILE_OPTIONS
             }}
-            addFolderButtonProps={{ onClick: onAddFolderButtonClick }}
           />
         </FileNavigatorContext.Provider>
       );
