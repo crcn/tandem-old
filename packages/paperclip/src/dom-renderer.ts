@@ -68,8 +68,7 @@ export const waitForDOMReady = (map: SyntheticNativeNodeMap) => {
 };
 
 export const computeDisplayInfo = (
-  map: SyntheticNativeNodeMap,
-  document: Document = window.document
+  map: SyntheticNativeNodeMap
 ): ComputedDisplayInfo => {
   const computed: ComputedDisplayInfo = {};
 
@@ -236,7 +235,7 @@ export const patchDOM = (
       newSyntheticTree
     );
     const isContentNode = transform.nodePath.length === 0;
-    const target = map[oldSyntheticTarget.id] as HTMLElement;
+    const target = newMap[oldSyntheticTarget.id] as HTMLElement;
     newSyntheticTree = patchTreeNode([transform], newSyntheticTree);
     const syntheticTarget = getTreeNodeFromPath(
       transform.nodePath,
@@ -266,12 +265,21 @@ export const patchDOM = (
           if (newMap === map) {
             newMap = { ...map };
           }
+          const xmlnsTransform = transforms.find(
+            transform =>
+              transform.type ===
+                TreeNodeOperationalTransformType.SET_PROPERTY &&
+              transform.name === "attributes" &&
+              transform.value.xmlns
+          ) as SetNodePropertyOperationalTransform;
           const newTarget = createNativeNode(
             getTreeNodeFromPath(transform.nodePath, newSyntheticTree),
             root.ownerDocument,
             newMap,
-            isContentNode
+            isContentNode,
+            xmlnsTransform && xmlnsTransform.value.xmlns
           );
+
           parent.insertBefore(newTarget, target);
           parent.removeChild(target);
         } else if (syntheticTarget.name === "text" && name === "value") {
