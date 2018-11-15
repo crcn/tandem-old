@@ -35,22 +35,54 @@
             {
               "id": "ab406a6b770936",
               "variant": {},
-              "is": "bc641d4124463",
+              "is": "3ee7fcc51260",
               "name": "component-instance",
               "attributes": {},
               "style": {
-                "height": "16px",
+                "height": "14px",
                 "margin-right": "16px",
-                "cursor": "pointer"
+                "cursor": "pointer",
+                "position": "relative",
+                "top": "-1px"
               },
-              "children": [],
+              "children": [
+                {
+                  "slotId": "3ee7fcc51267",
+                  "id": "829de032650",
+                  "children": [
+                    {
+                      "id": "829de032649",
+                      "is": "bc641d4124463",
+                      "label": "Pointer Icon",
+                      "name": "component-instance",
+                      "attributes": {},
+                      "style": {
+                        "display": "block",
+                        "height": "16px"
+                      },
+                      "children": [],
+                      "metadata": {
+                        "bounds": {
+                          "left": 79,
+                          "top": 405,
+                          "right": 479,
+                          "bottom": 705
+                        }
+                      },
+                      "variant": {}
+                    }
+                  ],
+                  "metadata": {},
+                  "name": "plug"
+                }
+              ],
               "metadata": {},
               "label": "pointer"
             },
             {
               "id": "ab406a6b770937",
               "variant": {},
-              "is": "bc641d4113153",
+              "is": "3ee7fcc51260",
               "name": "component-instance",
               "attributes": {},
               "style": {
@@ -60,14 +92,48 @@
                 "margin-right": "16px",
                 "cursor": "pointer"
               },
-              "children": [],
+              "children": [
+                {
+                  "slotId": "3ee7fcc51267",
+                  "id": "829de032640",
+                  "children": [
+                    {
+                      "id": "829de032639",
+                      "is": "bc641d4113153",
+                      "label": "Text Icon",
+                      "name": "component-instance",
+                      "attributes": {},
+                      "style": {
+                        "display": "block",
+                        "height": "25px",
+                        "position": "relative",
+                        "top": "1px"
+                      },
+                      "children": [],
+                      "metadata": {
+                        "bounds": {
+                          "left": 1245,
+                          "top": 1121,
+                          "right": 1645,
+                          "bottom": 1421
+                        }
+                      },
+                      "variant": {}
+                    }
+                  ],
+                  "metadata": {},
+                  "name": "plug"
+                }
+              ],
               "metadata": {},
               "label": "text"
             },
             {
               "id": "ab406a6b770938",
-              "variant": {},
-              "is": "bc641d4118808",
+              "variant": {
+                "3ee7fcc51273": false
+              },
+              "is": "3ee7fcc51260",
               "name": "component-instance",
               "attributes": {},
               "style": {
@@ -75,14 +141,46 @@
                 "margin-right": "16px",
                 "cursor": "pointer"
               },
-              "children": [],
+              "children": [
+                {
+                  "slotId": "3ee7fcc51267",
+                  "id": "8f5b3ebe598",
+                  "children": [
+                    {
+                      "id": "8f5b3ebe597",
+                      "is": "bc641d4118808",
+                      "label": "Rectangle Icon",
+                      "name": "component-instance",
+                      "attributes": {},
+                      "style": {
+                        "display": "block",
+                        "position": "relative",
+                        "top": "1px",
+                        "height": "16px"
+                      },
+                      "children": [],
+                      "metadata": {
+                        "bounds": {
+                          "left": -1170,
+                          "top": 200,
+                          "right": -770,
+                          "bottom": 500
+                        }
+                      },
+                      "variant": {}
+                    }
+                  ],
+                  "metadata": {},
+                  "name": "plug"
+                }
+              ],
               "metadata": {},
               "label": "element"
             },
             {
               "id": "ab406a6b770939",
               "variant": {},
-              "is": "bc641d484882",
+              "is": "3ee7fcc51260",
               "name": "component-instance",
               "attributes": {},
               "style": {
@@ -91,7 +189,36 @@
                 "top": "1px",
                 "cursor": "pointer"
               },
-              "children": [],
+              "children": [
+                {
+                  "slotId": "3ee7fcc51267",
+                  "id": "637b73df614",
+                  "children": [
+                    {
+                      "id": "637b73df613",
+                      "is": "bc641d484882",
+                      "label": "Puzzle Icon",
+                      "name": "component-instance",
+                      "attributes": {},
+                      "style": {
+                        "height": "23px"
+                      },
+                      "children": [],
+                      "metadata": {
+                        "bounds": {
+                          "left": -1257,
+                          "top": 828,
+                          "right": -857,
+                          "bottom": 1128
+                        }
+                      },
+                      "variant": {}
+                    }
+                  ],
+                  "metadata": {},
+                  "name": "plug"
+                }
+              ],
               "metadata": {},
               "label": "component"
             }
@@ -464,6 +591,105 @@
           "bottom": 1720.8733593566596
         }
       }
+    },
+    {
+      "label": "toolbar button",
+      "is": "div",
+      "style": {
+        "box-sizing": "border-box",
+        "display": "block"
+      },
+      "attributes": {},
+      "id": "3ee7fcc51260",
+      "name": "component",
+      "children": [
+        {
+          "id": "3ee7fcc51267",
+          "children": [
+            {
+              "id": "3ee7fcc51262",
+              "is": "bc641d4124463",
+              "label": "Pointer Icon",
+              "name": "component-instance",
+              "attributes": {},
+              "style": {
+                "display": "block",
+                "width": "16px"
+              },
+              "children": [
+                {
+                  "id": "3ee7fcc51275",
+                  "variantId": "3ee7fcc51273",
+                  "propertyName": "style",
+                  "targetIdPath": [
+                    "289d8e3439"
+                  ],
+                  "value": {
+                    "font-size": "1em"
+                  },
+                  "name": "override",
+                  "children": []
+                }
+              ],
+              "metadata": {
+                "bounds": {
+                  "left": 79,
+                  "top": 405,
+                  "right": 479,
+                  "bottom": 705
+                }
+              },
+              "variant": {}
+            }
+          ],
+          "metadata": {},
+          "name": "slot",
+          "label": "icon"
+        },
+        {
+          "id": "3ee7fcc51273",
+          "name": "variant",
+          "label": "selected",
+          "isDefault": true,
+          "children": [],
+          "metadata": {}
+        },
+        {
+          "id": "3ee7fcc51274",
+          "variantId": "3ee7fcc51273",
+          "propertyName": "style",
+          "targetIdPath": [],
+          "value": {
+            "color": "var(--24ce1e4d13456)"
+          },
+          "name": "override",
+          "children": []
+        },
+        {
+          "id": "3ee7fcc51276",
+          "variantId": "3ee7fcc51273",
+          "propertyName": "style",
+          "targetIdPath": [
+            "3ee7fcc51262"
+          ],
+          "value": {
+            "font-size": "unset",
+            "display": "block",
+            "height": "1em"
+          },
+          "name": "override",
+          "children": []
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": 467.9807963700574,
+          "top": 168.3026176026374,
+          "right": 567.9807963700574,
+          "bottom": 268.3026176026374
+        }
+      },
+      "variant": {}
     }
   ]
 }

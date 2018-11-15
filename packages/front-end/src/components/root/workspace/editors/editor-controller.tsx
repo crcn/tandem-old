@@ -53,6 +53,8 @@ export default (Base: React.ComponentClass<BaseEditorProps>) =>
         return null;
       }
 
+      const selectedTool = root.toolType;
+
       let stage = null;
 
       if (fileCacheItem.content) {
@@ -78,7 +80,7 @@ export default (Base: React.ComponentClass<BaseEditorProps>) =>
                 root.graph
               )}
               activeFilePath={root.activeEditorFilePath}
-              toolType={root.toolType}
+              toolType={selectedTool}
               dispatch={dispatch}
               dependency={dependency}
               editorWindow={editorWindow}
@@ -105,7 +107,8 @@ export default (Base: React.ComponentClass<BaseEditorProps>) =>
         <Base
           toolbarProps={{
             dispatch,
-            editorWindow
+            editorWindow,
+            selectedTool
           }}
           contentProps={{ children: stage }}
         />

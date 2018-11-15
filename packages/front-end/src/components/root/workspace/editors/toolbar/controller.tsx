@@ -17,6 +17,7 @@ import { EditorTab } from "./tab.pc";
 export type Props = {
   editorWindow: EditorWindow;
   dispatch: Dispatch<any>;
+  selectedTool: ToolType;
 };
 
 export default (Base: React.ComponentClass<BaseToolbarProps>) =>
@@ -46,7 +47,7 @@ export default (Base: React.ComponentClass<BaseToolbarProps>) =>
     };
 
     render() {
-      const { editorWindow } = this.props;
+      const { editorWindow, selectedTool } = this.props;
       const {
         onTabCloseButtonClick,
         onTabClick,
@@ -80,16 +81,29 @@ export default (Base: React.ComponentClass<BaseToolbarProps>) =>
         <Base
           className="m-toolbar"
           pointerProps={{
-            onClick: onPointerClick
+            onClick: onPointerClick,
+            variant: cx({
+              selected:
+                selectedTool === ToolType.POINTER || selectedTool == null
+            })
           }}
           textProps={{
-            onClick: onTextClick
+            onClick: onTextClick,
+            variant: cx({
+              selected: selectedTool === ToolType.TEXT
+            })
           }}
           componentProps={{
-            onClick: onComponentClick
+            onClick: onComponentClick,
+            variant: cx({
+              selected: selectedTool === ToolType.COMPONENT
+            })
           }}
           elementProps={{
-            onClick: onElementClick
+            onClick: onElementClick,
+            variant: cx({
+              selected: selectedTool === ToolType.ELEMENT
+            })
           }}
           tabsProps={{
             children: tabs
