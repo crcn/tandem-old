@@ -266,7 +266,7 @@ import {
   persistInsertNode,
   persistChangeLabel,
   persistSyntheticVisibleNodeBounds,
-  persistRemoveSyntheticVisibleNode,
+  persistRemoveInspectorNode,
   getSyntheticNodeSourceDependency,
   persistConvertNodeToComponent,
   persistMoveSyntheticVisibleNode,
@@ -302,7 +302,7 @@ import {
   persistToggleInstanceVariant,
   persistRemoveVariantOverride,
   getPCVariants,
-  canRemoveSyntheticVisibleNode,
+  canremoveInspectorNode,
   persistStyleMixin,
   persistStyleMixinComponentId,
   isPaperclipUri,
@@ -324,8 +324,7 @@ import {
   DependencyGraph,
   canRemovePCNode,
   isVisibleNode,
-  persistSyntheticVisibleNodeStyle,
-  removeSyntheticVisibleNode,
+  persistInspectorNodeStyle,
   isSyntheticContentNode,
   getSyntheticDocumentDependencyUri,
   getAllParentComponentInstance,
@@ -341,7 +340,7 @@ import {
   getInspectorInstanceShadow,
   updateAlts,
   getDerrivedPCLabel,
-  persistConvertSyntheticVisibleNodeStyleToMixin,
+  persistConvertInspectorNodeStyleToMixin,
   getSyntheticSourceUri,
   inspectorNodeInInstanceOfComponent,
   getSyntheticVisibleNodeComputedBounds,
@@ -1636,12 +1635,7 @@ export const canvasReducer = (state: RootState, action: Action) => {
       state = persistRootState(state => {
         return state.selectedInspectorNodes.reduce(
           (state, node) =>
-            persistRawCSSText(
-              cssText,
-              getInspectorSyntheticNode(node, state.documents),
-              state.selectedVariant,
-              state
-            ),
+            persistRawCSSText(cssText, node, state.selectedVariant, state),
           state
         );
       }, state);
@@ -1673,13 +1667,7 @@ export const canvasReducer = (state: RootState, action: Action) => {
       state = { ...state, editMode: EditMode.PRIMARY };
       return state.selectedInspectorNodes.reduce(
         (state, node) =>
-          persistCSSProperty(
-            name,
-            value,
-            getInspectorSyntheticNode(node, state.documents),
-            state.selectedVariant,
-            state
-          ),
+          persistCSSProperty(name, value, node, state.selectedVariant, state),
         state
       );
     }
@@ -1690,10 +1678,7 @@ export const canvasReducer = (state: RootState, action: Action) => {
         return persistCSSProperty(
           property,
           undefined,
-          getInspectorSyntheticNode(
-            state.selectedInspectorNodes[0],
-            state.documents
-          ),
+          state.selectedInspectorNodes[0],
           state.selectedVariant,
           state,
           false
@@ -1707,13 +1692,7 @@ export const canvasReducer = (state: RootState, action: Action) => {
       state = persistRootState(state => {
         return state.selectedInspectorNodes.reduce(
           (state, node) =>
-            persistCSSProperty(
-              name,
-              value,
-              getInspectorSyntheticNode(node, state.documents),
-              state.selectedVariant,
-              state
-            ),
+            persistCSSProperty(name, value, node, state.selectedVariant, state),
           state
         );
       }, state);
@@ -2692,7 +2671,15 @@ const shortcutReducer = (state: RootState, action: Action): RootState => {
     case SYNTHETIC_NODE_CONTEXT_MENU_REMOVE_CLICKED: {
       const { item } = action as SyntheticNodeContextMenuAction;
       state = persistRootState(state => {
-        return persistRemoveSyntheticVisibleNode(item, state);
+        return persistRemoveInspectorNode(
+          getSyntheticInspectorNode(
+            item,
+            getSyntheticVisibleNodeDocument(item.id, state.documents),
+            state.sourceNodeInspector,
+            state.graph
+          ),
+          state
+        );
       }, state);
       state = setSelectedInspectorNodes(state);
       return state;
@@ -2841,24 +2828,12 @@ const shortcutReducer = (state: RootState, action: Action): RootState => {
             if (!isVisibleNode(sourceNode)) {
               return state;
             }
-            const syntheticNode = getInspectorSyntheticNode(
-              inspectorNode,
-              state.documents
-            );
-            return persistSyntheticVisibleNodeStyle(
+            return persistInspectorNodeStyle(
               { display: "none" },
-              syntheticNode,
+              inspectorNode,
               null,
               state
             );
-          }
-          const assocSyntheticNode = getInspectorSyntheticNode(
-            inspectorNode,
-            state.documents
-          );
-
-          if (assocSyntheticNode) {
-            state = removeSyntheticVisibleNode(assocSyntheticNode, state);
           }
 
           return persistRemovePCNode(sourceNode, state);
@@ -3025,7 +3000,7 @@ const convertSyntheticStyleToMixin = (
 
   state = persistRootState(
     state =>
-      persistConvertSyntheticVisibleNodeStyleToMixin(
+      persistConvertInspectorNodeStyleToMixin(
         node,
         state.selectedVariant,
         state,

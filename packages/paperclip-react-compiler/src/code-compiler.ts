@@ -11,7 +11,6 @@ import {
   PCSourceTagNames,
   PCNode,
   extendsComponent,
-  getVisibleChildren,
   PCStyleOverride,
   isVisibleNode,
   getOverrides,
@@ -212,6 +211,31 @@ const translateComponentStyles = (
   component: ContentNode,
   context: TranslateContext
 ) => {
+  // basic styles
+  context = addOpenTag(
+    `if (typeof document !== "undefined" && !_${component.id}._basicStyle) {\n`,
+    context
+  );
+  const styleVarName = getInternalVarName(component) + "Style";
+
+  context = addLine(
+    `var ${styleVarName} = _${
+      component.id
+    }._basicStyle = document.createElement("style");`,
+    context
+  );
+  context = addLine(`${styleVarName}.type = "text/css";`, context);
+  context = addOpenTag(
+    `${styleVarName}.appendChild(document.createTextNode("" +\n`,
+    context
+  );
+  context = translateComponentStyleInner(component, context);
+  context = addCloseTag(`"")); \n\n`, context);
+  context = addLine(`document.head.appendChild(${styleVarName});`, context);
+  context = addCloseTag(`}\n`, context);
+
+  // variant styles
+
   context = addLine(
     `const styleVariantKey = (overrides.variantPrefixSelectors ? JSON.stringify(overrides.variantPrefixSelectors) : "${
       component.id
@@ -224,22 +248,25 @@ const translateComponentStyles = (
     }[styleVariantKey]) {\n`,
     context
   );
-  const styleVarName = getInternalVarName(component) + "Style";
+  const variantStyleVarName = getInternalVarName(component) + "VariantStyle";
 
   context = addLine(
-    `var ${styleVarName} = _${
+    `var ${variantStyleVarName} = _${
       component.id
     }[styleVariantKey] = document.createElement("style");`,
     context
   );
-  context = addLine(`${styleVarName}.type = "text/css";`, context);
+  context = addLine(`${variantStyleVarName}.type = "text/css";`, context);
   context = addOpenTag(
-    `${styleVarName}.appendChild(document.createTextNode("" +\n`,
+    `${variantStyleVarName}.appendChild(document.createTextNode("" +\n`,
     context
   );
-  context = translateComponentStyleInner(component, context);
+  context = translateStyleOverrides(component, context);
   context = addCloseTag(`"")); \n\n`, context);
-  context = addLine(`document.head.appendChild(${styleVarName});`, context);
+  context = addLine(
+    `document.head.appendChild(${variantStyleVarName});`,
+    context
+  );
   context = addCloseTag(`}\n`, context);
   return context;
 };
@@ -267,7 +294,6 @@ const translateComponentStyleInner = (
       return context;
     }, context);
 
-  context = translateStyleOverrides(component, context);
   return context;
 };
 
@@ -411,7 +437,7 @@ const translateStyleVariantOverrides = (
         override.variantId
       }"] && overrides.variantPrefixSelectors["${
         override.variantId
-      }"].map(prefix => prefix + " ${selector}").join(", ") + ", " || "") + "._${
+      }"].map(prefix => prefix + "${selector}").join(", ") + ", " || "") + "._${
         override.variantId
       } ${selector}, ._${override.variantId}${selector}`;
     }
@@ -684,10 +710,21 @@ const translateUsedComponentInstance = (
 
 const translateVariantSelectors = (
   instance: PCComponentInstanceElement | PCComponent,
-  map: PCComputedOverrideMap,
-  context: TranslateContext
+  map: PCComputedOverrideMap
 ) => {
   const variantSelectors = {};
+
+  for (const variantId in instance.variant) {
+    if (!instance.variant[variantId]) {
+      continue;
+    }
+    if (!variantSelectors[variantId]) {
+      variantSelectors[variantId] = [];
+    }
+
+    // tee-up for combo classes
+    variantSelectors[variantId].push(`._${instance.id}`);
+  }
 
   for (const key in map) {
     const instanceMap = map[key][instance.id] || EMPTY_OBJECT;
@@ -714,7 +751,9 @@ const translateVariantSelectors = (
         }
 
         // tee-up for combo classes
-        variantSelectors[variantId].push(`._${newKey} ${instancePathSelector}`);
+        variantSelectors[variantId].push(
+          `._${newKey} ${instancePathSelector} `
+        );
       }
     }
   }
@@ -771,11 +810,7 @@ const translateUsedComponentOverrides = (
   );
 
   // const variantOverrideMap = getInstanceVariantOverrideMap(instance, overrideMap, context);
-  const variantSelectors = translateVariantSelectors(
-    instance,
-    overrideMap,
-    context
-  );
+  const variantSelectors = translateVariantSelectors(instance, overrideMap);
 
   if (Object.keys(variantSelectors).length) {
     context = addLine(

@@ -91,8 +91,10 @@
               "variant": {
                 "fc243cf081": false,
                 "d3bf183b25": false,
-                "a6fd80839": true,
-                "5a14767c27719": true
+                "a6fd80839": false,
+                "5a14767c27719": true,
+                "641be3123486": true,
+                "996b328a1363": true
               }
             },
             {

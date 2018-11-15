@@ -373,7 +373,7 @@ export default (Base: React.ComponentClass<BaseNodeLayerProps>) => {
                     variant={cx({
                       editingLabel: editingLabel,
                       header: isFile,
-                      file: isFile,
+                      pcLayer: isFile,
                       component:
                         isSourceRep &&
                         assocSourceNodeName === PCSourceTagNames.COMPONENT,

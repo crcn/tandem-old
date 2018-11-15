@@ -401,7 +401,9 @@
               "bottom": 287.3571410945104
             }
           },
-          "variant": {}
+          "variant": {
+            "b6e7db9d12817": true
+          }
         }
       ],
       "metadata": {

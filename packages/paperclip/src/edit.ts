@@ -98,7 +98,9 @@ import {
   getInspectorSourceNode,
   inspectorNodeInShadow,
   getSyntheticInspectorNode,
-  getInstanceVariantInfo
+  getInstanceVariantInfo,
+  getInspectorContentNode,
+  getInspectorSyntheticNode
 } from "./inspector";
 import {
   getInspectorContentNodeContainingChild,
@@ -348,20 +350,24 @@ export const updateSyntheticDocument = <TState extends PCEditorState>(
   });
 };
 
-export const removeSyntheticVisibleNode = <TState extends PCEditorState>(
-  node: SyntheticVisibleNode,
+export const removeInspectorNode = <TState extends PCEditorState>(
+  node: InspectorNode,
   state: TState
 ) => {
   const document = getSyntheticVisibleNodeDocument(node.id, state.documents);
-  if (isSyntheticContentNode(node, state.graph)) {
-    state = removeFrame(getFrameByContentNodeId(node.id, state.frames), state);
+  const syntheticNode = getInspectorSyntheticNode(node, state.documents);
+  if (!syntheticNode) {
+    return null;
+  }
+  console.log("DD");
+  if (getInspectorContentNode(node, state.sourceNodeInspector) === node) {
+    state = removeFrame(
+      getFrameByContentNodeId(syntheticNode.id, state.frames),
+      state
+    );
   }
 
-  return updateSyntheticDocument(
-    removeNestedTreeNode(node, document),
-    document,
-    state
-  );
+  return updateSyntheticDocument(syntheticNode, document, state);
 };
 
 export const replaceSyntheticVisibleNode = <TState extends PCEditorState>(
@@ -605,7 +611,7 @@ export const persistConvertNodeToComponent = <TState extends PCEditorState>(
   return state;
 };
 
-export const persistConvertSyntheticVisibleNodeStyleToMixin = <
+export const persistConvertInspectorNodeStyleToMixin = <
   TState extends PCEditorState
 >(
   node: SyntheticVisibleNode,
@@ -615,13 +621,14 @@ export const persistConvertSyntheticVisibleNodeStyleToMixin = <
 ) => {
   const sourceNode = getSyntheticSourceNode(node, state.graph) as PCVisibleNode;
   const document = getSyntheticVisibleNodeDocument(node.id, state.documents);
+  const inspectorNode = getSyntheticInspectorNode(
+    node,
+    document,
+    state.sourceNodeInspector,
+    state.graph
+  );
   const computedStyle = computeStyleInfo(
-    getSyntheticInspectorNode(
-      node,
-      document,
-      state.sourceNodeInspector,
-      state.graph
-    ),
+    inspectorNode,
     state.sourceNodeInspector,
     variant,
     state.graph,
@@ -663,7 +670,7 @@ export const persistConvertSyntheticVisibleNodeStyleToMixin = <
 
   // remove styles from synthetic node since they've been moved to a mixin
   for (const key in style) {
-    state = persistCSSProperty(key, undefined, node, variant, state);
+    state = persistCSSProperty(key, undefined, inspectorNode, variant, state);
   }
 
   state = persistStyleMixin(
@@ -1558,13 +1565,13 @@ const addBoundsMetadata = (
 
 export const persistRawCSSText = <TState extends PCEditorState>(
   text: string,
-  node: SyntheticVisibleNode,
+  node: InspectorNode,
   variant: PCVariant,
   state: TState
 ) => {
   const newStyle = parseStyle(text || "");
 
-  return persistSyntheticVisibleNodeStyle(newStyle, node, variant, state);
+  return persistInspectorNodeStyle(newStyle, node, variant, state);
 };
 
 const omitNull = (object: KeyValue<any>) => {
@@ -1576,7 +1583,7 @@ const omitNull = (object: KeyValue<any>) => {
 export const persistCSSProperty = <TState extends PCEditorState>(
   name: string,
   value: string,
-  node: SyntheticVisibleNode,
+  inspectorNode: InspectorNode,
   variant: PCVariant,
   state: TState,
   allowUnset?: boolean
@@ -1585,14 +1592,16 @@ export const persistCSSProperty = <TState extends PCEditorState>(
     value = undefined;
   }
 
+  const computedStyle = computeStyleInfo(
+    inspectorNode,
+    state.sourceNodeInspector,
+    variant,
+    state.graph
+  );
+
   if (value == null) {
     const overridingStyles = computeStyleInfo(
-      getSyntheticInspectorNode(
-        node,
-        getSyntheticVisibleNodeDocument(node.id, state.documents),
-        state.sourceNodeInspector,
-        state.graph
-      ),
+      inspectorNode,
       state.sourceNodeInspector,
       variant,
       state.graph,
@@ -1616,7 +1625,7 @@ export const persistCSSProperty = <TState extends PCEditorState>(
       // note that we're omitting null since that kind of value may accidentally override parent props which
       // doesn't transpile to actually overrides styles.
       return overrideKeyValue(
-        node.style,
+        computedStyle,
         prevStyle,
         omitNull({
           ...prevStyle,
@@ -1634,8 +1643,8 @@ export const persistCSSProperty = <TState extends PCEditorState>(
       } as PCVisibleNode;
     }
   )(
-    node.instancePath,
-    node.sourceNodeId,
+    inspectorNode.instancePath,
+    inspectorNode.sourceNodeId,
     state.sourceNodeInspector,
     state.graph
   );
@@ -1676,20 +1685,14 @@ export const persistAttribute = <TState extends PCEditorState>(
   return replaceDependencyGraphPCNode(updatedNode, updatedNode, state);
 };
 
-export const persistSyntheticVisibleNodeStyle = <TState extends PCEditorState>(
+export const persistInspectorNodeStyle = <TState extends PCEditorState>(
   newStyle: any,
-  node: SyntheticVisibleNode,
+  node: InspectorNode,
   variant: PCVariant,
   state: TState
 ) => {
-  const document = getSyntheticVisibleNodeDocument(node.id, state.documents);
   const existingStyle = computeStyleInfo(
-    getSyntheticInspectorNode(
-      node,
-      document,
-      state.sourceNodeInspector,
-      state.graph
-    ),
+    node,
     state.sourceNodeInspector,
     variant,
     state.graph
@@ -1712,7 +1715,7 @@ export const persistSyntheticVisibleNodeStyle = <TState extends PCEditorState>(
   return state;
 };
 
-export const canRemoveSyntheticVisibleNode = <TState extends PCEditorState>(
+export const canremoveInspectorNode = <TState extends PCEditorState>(
   node: SyntheticVisibleNode,
   state: TState
 ) => {
@@ -1750,30 +1753,24 @@ export const canRemovePCNode = <TState extends PCEditorState>(
   return instancesOfComponent.length === 0;
 };
 
-export const persistRemoveSyntheticVisibleNode = <TState extends PCEditorState>(
-  node: SyntheticVisibleNode,
+export const persistRemoveInspectorNode = <TState extends PCEditorState>(
+  node: InspectorNode,
   state: TState
 ) => {
   // if the node is immutable, then it is part of an instance, so override the
   // style instead
+  inspectorNodeInShadow;
 
   if (
-    isSyntheticNodeImmutable(
+    inspectorNodeInShadow(
       node,
-      getSyntheticVisibleNodeDocument(node.id, state.documents),
-      state.graph
+      getInspectorContentNode(node, state.sourceNodeInspector)
     )
   ) {
-    return persistSyntheticVisibleNodeStyle(
-      { display: "none" },
-      node,
-      null,
-      state
-    );
+    return persistInspectorNodeStyle({ display: "none" }, node, null, state);
   }
 
-  state = removeSyntheticVisibleNode(node, state);
-  return persistRemovePCNode(getSyntheticSourceNode(node, state.graph), state);
+  return persistRemovePCNode(getPCNode(node.sourceNodeId, state.graph), state);
 };
 
 export const persistRemovePCNode = <TState extends PCEditorState>(
