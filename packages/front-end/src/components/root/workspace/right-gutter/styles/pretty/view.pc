@@ -202,28 +202,6 @@
           "children": []
         },
         {
-          "id": "bcda9fb5100610",
-          "variant": {},
-          "is": "bcda9fb596963",
-          "name": "component-instance",
-          "attributes": {},
-          "style": {},
-          "children": [
-            {
-              "id": "8e601d2b29819",
-              "propertyName": "style",
-              "targetIdPath": [
-                "8e601d2b25755"
-              ],
-              "value": {},
-              "name": "override",
-              "children": []
-            }
-          ],
-          "metadata": {},
-          "label": "Backgrounds Pane"
-        },
-        {
           "id": "af2a67c2930",
           "variant": {},
           "is": "52309d3e125631",
@@ -283,6 +261,28 @@
               "priority": 0
             }
           }
+        },
+        {
+          "id": "bcda9fb5100610",
+          "variant": {},
+          "is": "bcda9fb596963",
+          "name": "component-instance",
+          "attributes": {},
+          "style": {},
+          "children": [
+            {
+              "id": "8e601d2b29819",
+              "propertyName": "style",
+              "targetIdPath": [
+                "8e601d2b25755"
+              ],
+              "value": {},
+              "name": "override",
+              "children": []
+            }
+          ],
+          "metadata": {},
+          "label": "Backgrounds Pane"
         },
         {
           "id": "cdcf193c20",
@@ -466,6 +466,36 @@
           "top": 117,
           "right": 1518,
           "bottom": 397
+        }
+      },
+      "variant": {}
+    },
+    {
+      "id": "9b2e6dec15285",
+      "is": "97a34b151010442",
+      "label": "Comment",
+      "name": "component-instance",
+      "attributes": {},
+      "style": {},
+      "children": [
+        {
+          "id": "9b2e6dec15293",
+          "variantId": null,
+          "propertyName": "text",
+          "targetIdPath": [
+            "97a34b151010441"
+          ],
+          "value": "additive sections here (anything with + button)",
+          "name": "override",
+          "children": []
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": 646,
+          "top": 1518,
+          "right": 864,
+          "bottom": 1719
         }
       },
       "variant": {}

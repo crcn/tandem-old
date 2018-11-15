@@ -10,8 +10,9 @@
       "style": {
         "display": "flex",
         "align-items": "center",
-        "margin-bottom": "8px",
-        "width": "100%"
+        "width": "100%",
+        "padding-top": "6px",
+        "padding-bottom": "6px"
       },
       "attributes": {},
       "id": "bcda9fb5211066",
@@ -372,6 +373,30 @@
           ],
           "metadata": {},
           "name": "plug"
+        },
+        {
+          "id": "146bf76632442",
+          "propertyName": "style",
+          "targetIdPath": [
+            "b6c162d140"
+          ],
+          "value": {
+            "padding-top": "0px"
+          },
+          "name": "override",
+          "children": []
+        },
+        {
+          "id": "146bf76632443",
+          "propertyName": "style",
+          "targetIdPath": [
+            "b6c162d132"
+          ],
+          "value": {
+            "padding-bottom": "6px"
+          },
+          "name": "override",
+          "children": []
         }
       ],
       "metadata": {
@@ -385,7 +410,9 @@
       "controllers": [
         "./backgrounds-controller.tsx"
       ],
-      "variant": {}
+      "variant": {
+        "b6e7db9d12817": true
+      }
     },
     {
       "label": "Background Image Input",

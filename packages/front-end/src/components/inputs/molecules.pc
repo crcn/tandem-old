@@ -22,7 +22,7 @@
           "name": "element",
           "attributes": {},
           "style": {
-            "margin-bottom": "4px"
+            "margin-bottom": "2px"
           },
           "children": [
             {
@@ -61,7 +61,7 @@
           "name": "element",
           "attributes": {},
           "style": {
-            "margin-bottom": "8px"
+            "margin-bottom": "6px"
           },
           "children": [
             {

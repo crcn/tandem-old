@@ -8,13 +8,14 @@
       "label": "Left Gutter",
       "is": "div",
       "style": {
-        "border-right": "1px solid rgba(230, 230, 230, 1)",
+        "border-right": "1px solid var(--d8f6340b1442)",
         "flex-direction": "column",
         "height": "100%",
         "align-items": "stretch",
         "justify-content": "flex-start",
         "position": "relative",
-        "display": "flex"
+        "display": "flex",
+        "background": "var(--bc891e755312)"
       },
       "attributes": {},
       "id": "317401b1484197",
@@ -29,7 +30,6 @@
           "style": {
             "display": "flex",
             "flex-direction": "column",
-            "border-bottom": "1px solid rgba(0,0,0,0.05)",
             "font-size": "11px",
             "min-height": "200px",
             "overflow": "scroll",

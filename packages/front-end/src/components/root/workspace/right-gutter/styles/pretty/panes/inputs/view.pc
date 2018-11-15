@@ -31,7 +31,31 @@
       "attributes": {},
       "id": "d2bdce074664",
       "name": "component",
-      "children": [],
+      "children": [
+        {
+          "id": "148624df10078",
+          "propertyName": "style",
+          "targetIdPath": [
+            "8b8bbe2c232831"
+          ],
+          "value": {
+            "border": "1px solid rgba(230, 230, 230, 1)"
+          },
+          "name": "override",
+          "children": []
+        },
+        {
+          "id": "148624df10079",
+          "variantId": null,
+          "propertyName": "text",
+          "targetIdPath": [
+            "67e386c7935"
+          ],
+          "value": "Label",
+          "name": "override",
+          "children": []
+        }
+      ],
       "metadata": {
         "bounds": {
           "left": 779,

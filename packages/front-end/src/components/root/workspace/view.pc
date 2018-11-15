@@ -23,7 +23,6 @@
           "name": "component-instance",
           "attributes": {},
           "style": {
-            "background": "rgba(255, 255, 255, 1)",
             "width": "250px",
             "flex-shrink": "0"
           },
@@ -125,7 +124,8 @@
           "id": "33b1b6b171359",
           "variant": {
             "2842a72d17": false,
-            "1a11459311": true
+            "1a11459311": true,
+            "5f14f7812": false
           },
           "is": "8b8bbe2c724435",
           "name": "component-instance",
@@ -133,8 +133,7 @@
           "style": {
             "width": "250px",
             "flex-shrink": "0",
-            "flex-direction": "column",
-            "background": "rgba(255, 255, 255, 1)"
+            "flex-direction": "column"
           },
           "children": [
             {

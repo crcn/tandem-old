@@ -183,7 +183,7 @@ const stringifyBoxShadowInfo = (value: BoxShadowInfo[]) =>
 const parseBoxShadows = memoize(
   (value: string = ""): BoxShadowInfo[] => {
     return (
-      value.match(/(inset\s+)?((-?\d+\w*)\s*)*((rgba|hsl)\(.*?\)|#[\d\w]+)/g) ||
+      value.match(/(inset\s+)?((-?\d*\w*)\s+)*(\w+\(.*?\)|#[\d\w]+)/g) ||
       EMPTY_ARRAY
     )
       .map(shadow => {

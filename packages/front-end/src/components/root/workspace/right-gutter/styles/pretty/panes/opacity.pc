@@ -143,7 +143,9 @@
       "controllers": [
         "./opacity-controller.tsx"
       ],
-      "variant": {}
+      "variant": {
+        "b6e7db9d12817": true
+      }
     }
   ]
 }

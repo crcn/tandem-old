@@ -10,7 +10,11 @@
       "style": {
         "display": "flex",
         "align-content": "center",
-        "border-radius": "10px"
+        "border": "1px solid var(--d8f6340b1442)",
+        "border-bottom-left-radius": "2px",
+        "border-top-left-radius": "2px",
+        "border-top-right-radius": "2px",
+        "border-bottom-right-radius": "2px"
       },
       "attributes": {},
       "id": "6489655782833",
@@ -27,7 +31,6 @@
               "name": "component-instance",
               "attributes": {},
               "style": {
-                "background": "rgba(0,0,0,0.05)",
                 "padding": "4px 8px",
                 "box-sizing": "border-box",
                 "width": "100%",
@@ -171,7 +174,6 @@
               "name": "component-instance",
               "attributes": {},
               "style": {
-                "background": "rgba(0,0,0,0.05)",
                 "padding": "4px 8px",
                 "box-sizing": "border-box",
                 "width": "100%",

@@ -482,6 +482,16 @@
                               "value": {},
                               "name": "override",
                               "children": []
+                            },
+                            {
+                              "id": "336aa7e36598",
+                              "propertyName": "style",
+                              "targetIdPath": [
+                                "6489655797375"
+                              ],
+                              "value": {},
+                              "name": "override",
+                              "children": []
                             }
                           ],
                           "metadata": {
@@ -740,7 +750,9 @@
       "controllers": [
         "./typography-controller.tsx"
       ],
-      "variant": {}
+      "variant": {
+        "b6e7db9d12817": true
+      }
     }
   ]
 }

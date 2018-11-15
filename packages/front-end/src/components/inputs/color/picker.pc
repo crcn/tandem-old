@@ -16,7 +16,8 @@
         "flex-direction": "column",
         "position": "relative",
         "width": "300px",
-        "opacity": 1
+        "opacity": 1,
+        "text-align": "left"
       },
       "attributes": {},
       "id": "67e386c762",
@@ -195,10 +196,10 @@
       ],
       "metadata": {
         "bounds": {
-          "left": -581,
-          "top": 678,
-          "right": -150.77594754084498,
-          "bottom": 1034.984364557568
+          "left": -528,
+          "top": 367,
+          "right": -97.77594754084498,
+          "bottom": 723.9843645575679
         },
         "mode": "preview"
       },

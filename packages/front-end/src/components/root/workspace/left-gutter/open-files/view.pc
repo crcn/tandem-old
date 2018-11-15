@@ -10,7 +10,6 @@
       "style": {
         "display": "flex",
         "flex-direction": "column",
-        "border-bottom": "1px solid rgba(0,0,0,0.05)",
         "min-height": "200px",
         "overflow": "scroll",
         "height": "100%",
@@ -417,7 +416,9 @@
       "controllers": [
         "./layers-pane-controller.tsx"
       ],
-      "variant": {},
+      "variant": {
+        "b6e7db9d12815": true
+      },
       "styleMixins": {
         "dc3b39eb1275": {
           "priority": 0

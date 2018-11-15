@@ -9,8 +9,7 @@
       "is": "b6c162d113",
       "style": {
         "display": "flex",
-        "flex-direction": "column",
-        "border-bottom": "1px solid rgba(250, 250, 250, 1)"
+        "flex-direction": "column"
       },
       "attributes": {},
       "id": "52309d3e125631",
@@ -152,7 +151,7 @@
                           "attributes": {},
                           "style": {
                             "height": "10px",
-                            "opacity": "0.4"
+                            "opacity": 1
                           },
                           "children": [],
                           "metadata": {}
@@ -250,7 +249,7 @@
                           "attributes": {},
                           "style": {
                             "height": "10px",
-                            "opacity": "0.4"
+                            "opacity": 1
                           },
                           "children": [],
                           "metadata": {
@@ -355,7 +354,7 @@
                           "attributes": {},
                           "style": {
                             "height": "10px",
-                            "opacity": "0.4"
+                            "opacity": 1
                           },
                           "children": [],
                           "metadata": {}
@@ -452,7 +451,7 @@
                           "attributes": {},
                           "style": {
                             "height": "10px",
-                            "opacity": "0.4"
+                            "opacity": 1
                           },
                           "children": [],
                           "metadata": {}
@@ -662,6 +661,16 @@
                   },
                   "name": "override",
                   "children": []
+                },
+                {
+                  "id": "d30e74e932545",
+                  "propertyName": "style",
+                  "targetIdPath": [
+                    "7be2457119"
+                  ],
+                  "value": {},
+                  "name": "override",
+                  "children": []
                 }
               ],
               "metadata": {
@@ -728,7 +737,9 @@
       "controllers": [
         "./borders-controller.tsx"
       ],
-      "variant": {}
+      "variant": {
+        "b6e7db9d12817": true
+      }
     },
     {
       "label": "border style",
@@ -936,8 +947,7 @@
               "attributes": {},
               "style": {
                 "display": "inline-flex",
-                "align-content": "center",
-                "border-radius": "10px"
+                "align-content": "center"
               },
               "children": [
                 {

@@ -115,6 +115,20 @@
           },
           "name": "override",
           "children": []
+        },
+        {
+          "id": "336aa7e36597",
+          "propertyName": "style",
+          "targetIdPath": [
+            "45055e8e10",
+            "45055e8e8",
+            "73b39db4401",
+            "647e59ac10951",
+            "6489655797375"
+          ],
+          "value": {},
+          "name": "override",
+          "children": []
         }
       ],
       "metadata": {
@@ -138,8 +152,9 @@
         "flex-shrink": "0",
         "display": "flex",
         "flex-direction": "column",
-        "border-left": "1px solid rgba(230, 230, 230, 1)",
-        "z-index": "3"
+        "border-left": "1px solid var(--d8f6340b1442)",
+        "z-index": "3",
+        "background": "var(--bc891e755312)"
       },
       "attributes": {},
       "id": "8b8bbe2c724435",

@@ -181,7 +181,9 @@
     {
       "label": "element properties",
       "is": "div",
-      "style": {},
+      "style": {
+        "background": "var(--bc891e755312)"
+      },
       "attributes": {},
       "id": "9208d19533717",
       "name": "component",
@@ -445,7 +447,9 @@
     {
       "label": "Properties",
       "is": "div",
-      "style": {},
+      "style": {
+        "background": "var(--bc891e755312)"
+      },
       "attributes": {},
       "id": "9208d19593983",
       "name": "component",
