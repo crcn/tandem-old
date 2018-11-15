@@ -27,12 +27,10 @@
       "label": "Variants",
       "is": "b6c162d113",
       "style": {
-        "font-family": "Helvetica",
         "display": "flex",
         "flex-direction": "column",
         "border-bottom": "none",
-        "font-size": "10px",
-        "color": "grey"
+        "font-size": "10px"
       },
       "attributes": {},
       "id": "6a863e8620",
@@ -555,27 +553,16 @@
                         },
                         {
                           "id": "d31aa238235462",
-                          "is": "8e601d2b23050",
+                          "is": "f27782548182",
                           "name": "component-instance",
                           "attributes": {},
                           "style": {
                             "display": "inline-block",
-                            "height": "1em",
+                            "height": "9px",
                             "position": "relative",
-                            "top": "2px"
+                            "top": "-1px"
                           },
-                          "children": [
-                            {
-                              "id": "d31aa238250959",
-                              "propertyName": "style",
-                              "targetIdPath": [
-                                "289d8e3428"
-                              ],
-                              "value": {},
-                              "name": "override",
-                              "children": []
-                            }
-                          ],
+                          "children": [],
                           "metadata": {
                             "bounds": {
                               "left": 145,
@@ -584,7 +571,8 @@
                               "bottom": 1803
                             }
                           },
-                          "label": "add style button"
+                          "label": "add style button",
+                          "variant": {}
                         }
                       ],
                       "metadata": {}

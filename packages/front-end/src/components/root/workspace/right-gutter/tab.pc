@@ -8,8 +8,6 @@
       "label": "Right Gutter Tab",
       "is": "div",
       "style": {
-        "font-family": "Helvetica",
-        "color": "rgba(123, 123, 123, 1)",
         "text-transform": "uppercase",
         "text-align": "center",
         "width": "100%",

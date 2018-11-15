@@ -17,8 +17,7 @@
         "display": "block",
         "width": "100%",
         "padding-left": "16px",
-        "padding-right": "16px",
-        "font-family": "Helvetica"
+        "padding-right": "16px"
       },
       "attributes": {},
       "id": "c389e38219",
@@ -33,7 +32,6 @@
               "label": "Text",
               "value": "Cell\n",
               "style": {
-                "font-family": "Helvetica",
                 "padding-left": "8",
                 "padding-top": "6",
                 "padding-right": "8",
@@ -43,7 +41,12 @@
                 "text-align": "left"
               },
               "children": [],
-              "metadata": {}
+              "metadata": {},
+              "styleMixins": {
+                "dc3b39eb1275": {
+                  "priority": 0
+                }
+              }
             }
           ],
           "metadata": {},
@@ -124,7 +127,8 @@
               "style": {
                 "flex-grow": "1",
                 "flex-shrink": "1",
-                "display": "block"
+                "display": "block",
+                "font-family": "unset"
               },
               "children": [],
               "metadata": {
@@ -133,6 +137,11 @@
                   "top": 877,
                   "right": -211,
                   "bottom": 977
+                }
+              },
+              "styleMixins": {
+                "1542269649351": {
+                  "priority": 0
                 }
               }
             },

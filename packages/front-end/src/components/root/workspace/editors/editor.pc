@@ -283,7 +283,6 @@
         "display": "block",
         "width": "100%",
         "height": "100%",
-        "font-family": "Helvetica",
         "padding-left": "10px",
         "padding-top": "10px",
         "padding-right": "10px",
@@ -311,7 +310,12 @@
           "bottom": 2499
         }
       },
-      "variant": {}
+      "variant": {},
+      "styleMixins": {
+        "dc3b39eb1275": {
+          "priority": 0
+        }
+      }
     }
   ]
 }

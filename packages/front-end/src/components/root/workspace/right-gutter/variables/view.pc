@@ -127,18 +127,6 @@
                                   "children": []
                                 },
                                 {
-                                  "id": "3a6461fb567480",
-                                  "variantId": null,
-                                  "propertyName": "text",
-                                  "targetIdPath": [
-                                    "4b46931a1610861",
-                                    "67e386c7935"
-                                  ],
-                                  "value": "Helvetica",
-                                  "name": "override",
-                                  "children": []
-                                },
-                                {
                                   "id": "55a06cf6119686",
                                   "propertyName": "style",
                                   "targetIdPath": [
@@ -517,46 +505,6 @@
               },
               "variant": {},
               "label": "Name input"
-            }
-          ],
-          "metadata": {},
-          "name": "plug"
-        },
-        {
-          "slotId": "4b46931a415082",
-          "id": "4b46931a1496880",
-          "children": [
-            {
-              "id": "4b46931a1496879",
-              "is": "50e32bec2591",
-              "name": "component-instance",
-              "attributes": {},
-              "style": {},
-              "children": [
-                {
-                  "id": "4b46931a1990133",
-                  "propertyName": "style",
-                  "targetIdPath": [
-                    "8b8bbe2c232831"
-                  ],
-                  "value": {
-                    "border": "1px  rgba(0, 0, 0, 0.04)",
-                    "background": "rgba(255, 255, 255, 0)"
-                  },
-                  "name": "override",
-                  "children": []
-                }
-              ],
-              "metadata": {
-                "bounds": {
-                  "left": 133,
-                  "top": 279,
-                  "right": 334,
-                  "bottom": 521.2360321797468
-                }
-              },
-              "variant": {},
-              "label": "type input"
             }
           ],
           "metadata": {},
@@ -1146,8 +1094,7 @@
                 "7973c9598612"
               ],
               "value": {
-                "display": "block",
-                "font-family": "Helvetica"
+                "display": "block"
               },
               "name": "override",
               "children": []

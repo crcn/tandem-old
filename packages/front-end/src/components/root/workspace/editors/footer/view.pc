@@ -9,7 +9,6 @@
       "is": "div",
       "style": {
         "box-sizing": "border-box",
-        "font-family": "Helvetica",
         "padding": "8px 16px"
       },
       "attributes": {},
@@ -23,7 +22,8 @@
           "name": "element",
           "attributes": {},
           "style": {
-            "box-sizing": "border-box"
+            "box-sizing": "border-box",
+            "font-family": "unset"
           },
           "children": [
             {
@@ -35,7 +35,12 @@
                 "margin-right": "4px"
               },
               "children": [],
-              "metadata": {}
+              "metadata": {},
+              "styleMixins": {
+                "dc3b39eb1275": {
+                  "priority": 0
+                }
+              }
             },
             {
               "id": "174f96bb261724",
@@ -44,7 +49,12 @@
               "value": "100%",
               "style": {},
               "children": [],
-              "metadata": {}
+              "metadata": {},
+              "styleMixins": {
+                "dc3b39eb1275": {
+                  "priority": 0
+                }
+              }
             }
           ],
           "metadata": {}

@@ -298,8 +298,10 @@
                       "attributes": {},
                       "style": {
                         "display": "block",
-                        "height": "12px",
-                        "cursor": "pointer"
+                        "height": "9px",
+                        "cursor": "pointer",
+                        "position": "relative",
+                        "top": "-1px"
                       },
                       "children": [],
                       "metadata": {

@@ -73,8 +73,7 @@
       "style": {
         "display": "flex",
         "flex-direction": "column",
-        "font-size": "10px",
-        "color": "grey"
+        "font-size": "10px"
       },
       "attributes": {},
       "id": "bcda9fb597619",

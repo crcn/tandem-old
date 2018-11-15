@@ -27,12 +27,10 @@
           "name": "component-instance",
           "attributes": {},
           "style": {
-            "font-family": "Helvetica",
             "display": "flex",
             "flex-direction": "column",
             "border-bottom": "1px solid rgba(0,0,0,0.05)",
             "font-size": "11px",
-            "color": "grey",
             "min-height": "200px",
             "overflow": "scroll",
             "height": "auto",

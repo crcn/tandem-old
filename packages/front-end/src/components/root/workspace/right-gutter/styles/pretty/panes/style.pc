@@ -307,16 +307,18 @@
                               "label": "Text",
                               "value": "Inherit",
                               "style": {
-                                "font-family": "Helvetica",
-                                "color": "grey",
-                                "font-size": "0.8em",
                                 "margin-bottom": "4px",
                                 "display": "inline-block",
                                 "margin-left": "2px",
                                 "opacity": "0.4"
                               },
                               "children": [],
-                              "metadata": {}
+                              "metadata": {},
+                              "styleMixins": {
+                                "dc3b39eb1275": {
+                                  "priority": 0
+                                }
+                              }
                             },
                             {
                               "id": "a06d2e8158070",
@@ -327,8 +329,7 @@
                                 "display": "block",
                                 "height": "1em",
                                 "position": "relative",
-                                "top": "-1px",
-                                "color": "grey"
+                                "top": "-1px"
                               },
                               "children": [],
                               "metadata": {

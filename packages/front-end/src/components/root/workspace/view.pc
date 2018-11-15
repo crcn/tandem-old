@@ -317,8 +317,7 @@
       "is": "div",
       "style": {
         "box-sizing": "border-box",
-        "padding": "10px",
-        "font-family": "Helvetica"
+        "padding": "10px"
       },
       "attributes": {},
       "id": "1ecbd3329725",

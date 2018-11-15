@@ -8,12 +8,9 @@
       "label": "Layers Pane",
       "is": "b6c162d113",
       "style": {
-        "font-family": "Helvetica",
         "display": "flex",
         "flex-direction": "column",
         "border-bottom": "1px solid rgba(0,0,0,0.05)",
-        "font-size": "11px",
-        "color": "grey",
         "min-height": "200px",
         "overflow": "scroll",
         "height": "100%",
@@ -78,8 +75,6 @@
                 "box-sizing": "border-box",
                 "flex-direction": "column",
                 "font-size": "11px",
-                "color": "grey",
-                "font-family": "Helvetica",
                 "display": "inline-block",
                 "min-width": "100%"
               },
@@ -247,8 +242,6 @@
                 "box-sizing": "border-box",
                 "flex-direction": "column",
                 "font-size": "11px",
-                "color": "grey",
-                "font-family": "Helvetica",
                 "display": "inline-block"
               },
               "children": [
@@ -424,7 +417,12 @@
       "controllers": [
         "./layers-pane-controller.tsx"
       ],
-      "variant": {}
+      "variant": {},
+      "styleMixins": {
+        "dc3b39eb1275": {
+          "priority": 0
+        }
+      }
     }
   ]
 }

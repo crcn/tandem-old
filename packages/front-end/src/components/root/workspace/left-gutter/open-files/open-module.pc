@@ -10,9 +10,6 @@
       "style": {
         "box-sizing": "border-box",
         "flex-direction": "column",
-        "font-size": "11px",
-        "color": "grey",
-        "font-family": "Helvetica",
         "display": "inline-block",
         "min-width": "100%"
       },
@@ -490,7 +487,12 @@
       "controllers": [
         "./open-module-controller.tsx"
       ],
-      "variant": {}
+      "variant": {},
+      "styleMixins": {
+        "dc3b39eb1275": {
+          "priority": 0
+        }
+      }
     }
   ]
 }

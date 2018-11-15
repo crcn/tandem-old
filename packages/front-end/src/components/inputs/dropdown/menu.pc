@@ -9,8 +9,6 @@
       "is": "div",
       "style": {
         "padding": "4px",
-        "font-family": "Helvetica",
-        "color": "grey",
         "border-bottom": "1px  rgba(0,0,0,0.05)",
         "user-select": "none",
         "cursor": "default",
@@ -74,12 +72,17 @@
       "metadata": {
         "bounds": {
           "left": 395,
-          "top": 347,
+          "top": 346,
           "right": 596,
-          "bottom": 381
+          "bottom": 380
         }
       },
-      "variant": {}
+      "variant": {},
+      "styleMixins": {
+        "dc3b39eb1275": {
+          "priority": 0
+        }
+      }
     }
   ]
 }

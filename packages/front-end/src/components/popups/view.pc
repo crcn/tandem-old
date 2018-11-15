@@ -9,7 +9,9 @@
       "is": "67d74e287",
       "name": "component-instance",
       "attributes": {},
-      "style": {},
+      "style": {
+        "font-family": "unset"
+      },
       "children": [],
       "metadata": {
         "bounds": {
@@ -19,7 +21,12 @@
           "bottom": 469
         }
       },
-      "variant": {}
+      "variant": {},
+      "styleMixins": {
+        "1542269688891": {
+          "priority": 0
+        }
+      }
     },
     {
       "label": "Banner",
@@ -29,8 +36,7 @@
         "padding-left": "8px",
         "padding-top": "8px",
         "padding-right": "8px",
-        "padding-bottom": "8px",
-        "font-family": "Helvetica"
+        "padding-bottom": "8px"
       },
       "attributes": {},
       "id": "67d74e287",
@@ -64,12 +70,17 @@
       "metadata": {
         "bounds": {
           "left": 24,
-          "top": 196,
+          "top": 195,
           "right": 419.62566591881614,
-          "bottom": 296
+          "bottom": 295
         }
       },
-      "variant": {}
+      "variant": {},
+      "styleMixins": {
+        "dc3b39eb1275": {
+          "priority": 0
+        }
+      }
     }
   ]
 }

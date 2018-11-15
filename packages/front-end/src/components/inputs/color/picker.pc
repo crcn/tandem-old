@@ -15,7 +15,6 @@
         "display": "inline-block",
         "flex-direction": "column",
         "font-family": "var(--22702c5f1086)",
-        "color": "grey",
         "position": "relative",
         "width": "300px"
       },
@@ -140,7 +139,6 @@
                 "margin-top": "10px",
                 "display": "flex",
                 "align-items": "center",
-                "font-family": "Helvetica",
                 "width": "100%"
               },
               "children": [],
@@ -605,8 +603,6 @@
             "border": "1px solid rgba(200, 200, 200, 1)",
             "display": "inline-block",
             "flex-direction": "column",
-            "font-family": "Helvetica",
-            "color": "grey",
             "position": "relative",
             "width": "300px",
             "top": "100px",

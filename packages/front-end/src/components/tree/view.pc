@@ -48,7 +48,6 @@
       "label": "Node",
       "is": "div",
       "style": {
-        "font-family": "Helvetica",
         "position": "relative"
       },
       "attributes": {},
@@ -79,7 +78,6 @@
           "name": "component-instance",
           "attributes": {},
           "style": {
-            "font-family": "Helvetica",
             "padding": "4px 8px",
             "width": "100%",
             "box-sizing": "border-box",
@@ -130,7 +128,6 @@
       "label": "Node Label",
       "is": "div",
       "style": {
-        "font-family": "Helvetica",
         "padding": "4px 8px"
       },
       "attributes": {},

@@ -10,7 +10,6 @@
       "style": {
         "display": "flex",
         "align-items": "center",
-        "font-family": "Helvetica",
         "margin-bottom": "8px",
         "width": "100%"
       },

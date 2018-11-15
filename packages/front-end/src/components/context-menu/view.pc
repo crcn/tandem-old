@@ -31,7 +31,12 @@
           "attributes": {},
           "style": {},
           "children": [],
-          "metadata": {}
+          "metadata": {},
+          "styleMixins": {
+            "1542269404878": {
+              "priority": 0
+            }
+          }
         },
         {
           "id": "8c064721502470",
@@ -133,8 +138,7 @@
             "position": "absolute",
             "left": "50%",
             "top": "50%",
-            "transform": "translate(-50%, -50%)",
-            "font-family": "Helvetica"
+            "transform": "translate(-50%, -50%)"
           },
           "children": [],
           "metadata": {
@@ -160,7 +164,6 @@
       "label": "Context Menu item",
       "is": "div",
       "style": {
-        "font-family": "Helvetica",
         "padding": "8px",
         "text-align": "left"
       },
@@ -175,7 +178,12 @@
           "value": "Menu Item",
           "style": {},
           "children": [],
-          "metadata": {}
+          "metadata": {},
+          "styleMixins": {
+            "dc3b39eb1275": {
+              "priority": 0
+            }
+          }
         },
         {
           "id": "e549f686984",

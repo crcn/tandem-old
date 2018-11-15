@@ -9,7 +9,6 @@
       "is": "div",
       "style": {
         "box-sizing": "border-box",
-        "font-family": "Helvetica",
         "border-bottom": "1px none rgba(0,0,0,0.05)",
         "font-size": "12px",
         "outline": "none"

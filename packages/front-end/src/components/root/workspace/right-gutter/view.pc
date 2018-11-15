@@ -164,8 +164,6 @@
               "name": "component-instance",
               "attributes": {},
               "style": {
-                "font-family": "Helvetica",
-                "color": "grey",
                 "text-transform": "uppercase",
                 "text-align": "center",
                 "width": "100%",
@@ -325,7 +323,6 @@
               "attributes": {},
               "style": {
                 "font-family": "Helvetica",
-                "color": "grey",
                 "text-transform": "uppercase",
                 "text-align": "center",
                 "width": "100%",

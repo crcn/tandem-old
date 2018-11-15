@@ -30,7 +30,6 @@
                 "background": "rgba(0,0,0,0.05)",
                 "padding": "4px 8px",
                 "box-sizing": "border-box",
-                "font-family": "Helvetica",
                 "width": "100%",
                 "text-align": "center",
                 "position": "relative",
@@ -84,7 +83,6 @@
               "style": {
                 "padding": "4px 8px",
                 "box-sizing": "border-box",
-                "font-family": "Helvetica",
                 "width": "100%",
                 "text-align": "center",
                 "position": "relative",
@@ -166,7 +164,9 @@
             },
             {
               "id": "6489655797375",
-              "variant": {},
+              "variant": {
+                "15d6c81f3": true
+              },
               "is": "6489655782851",
               "name": "component-instance",
               "attributes": {},
@@ -174,7 +174,6 @@
                 "background": "rgba(0,0,0,0.05)",
                 "padding": "4px 8px",
                 "box-sizing": "border-box",
-                "font-family": "Helvetica",
                 "width": "100%",
                 "border-top-right-radius": "2px",
                 "border-bottom-right-radius": "2px"

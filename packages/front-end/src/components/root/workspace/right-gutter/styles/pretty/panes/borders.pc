@@ -736,11 +736,9 @@
       "style": {
         "box-sizing": "border-box",
         "display": "flex",
-        "font-family": "Helvetica",
         "padding-top": "8px",
         "padding-bottom": "8px",
-        "align-items": "center",
-        "color": "rgba(143, 143, 143, 1)"
+        "align-items": "center"
       },
       "attributes": {},
       "id": "7be245712",
