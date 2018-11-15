@@ -45,11 +45,9 @@ export default (Base: React.ComponentClass<BaseEditorProps>) =>
       if (!editorWindow) {
         return null;
       }
-      const dependency =
-        window && root.graph && root.graph[editorWindow.activeFilePath];
       const fileCacheItem = getFSItem(editorWindow.activeFilePath, root);
 
-      if (!fileCacheItem || !fileCacheItem.content || !dependency) {
+      if (!fileCacheItem || !fileCacheItem.content) {
         return null;
       }
 
@@ -59,6 +57,12 @@ export default (Base: React.ComponentClass<BaseEditorProps>) =>
 
       if (fileCacheItem.content) {
         if (fileCacheItem.mimeType === PAPERCLIP_MIME_TYPE) {
+          const dependency =
+            window && root.graph && root.graph[editorWindow.activeFilePath];
+
+          if (!dependency) {
+            return null;
+          }
           stage = (
             <PaperclipStageComponent
               editMode={root.editMode}
