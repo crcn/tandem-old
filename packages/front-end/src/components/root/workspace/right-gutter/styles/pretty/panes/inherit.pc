@@ -293,7 +293,7 @@
                     },
                     {
                       "id": "a4d4c3d72",
-                      "is": "8e601d2b23050",
+                      "is": "f27782548182",
                       "name": "component-instance",
                       "attributes": {},
                       "style": {
@@ -310,7 +310,8 @@
                           "bottom": 543.5418810730639
                         }
                       },
-                      "label": "Add button"
+                      "label": "Add button",
+                      "variant": {}
                     }
                   ],
                   "metadata": {}

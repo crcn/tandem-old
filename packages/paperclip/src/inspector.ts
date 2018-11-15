@@ -233,7 +233,7 @@ const removeSourceMap = (
     }
 
     for (const child of node.children) {
-      walk(child);
+      walk(child as InspectorNode);
     }
   };
 
@@ -360,8 +360,9 @@ export const refreshInspectorTree = (
   sourceMap: KeyValue<string[]> = EMPTY_OBJECT,
   oldGraph: DependencyGraph = EMPTY_OBJECT
 ): [InspectorNode, KeyValue<string[]>] => {
-  let newSourceMap: KeyValue<string[]> = {};
-  const now = Date.now();
+  let newSourceMap: KeyValue<string[]> = JSON.parse(JSON.stringify(sourceMap));
+
+  let moduleChildren: InspectorNode[] = [];
 
   // 1. remove source map info
   for (const moduleInspectorNode of root.children) {
@@ -369,23 +370,21 @@ export const refreshInspectorTree = (
       (moduleInspectorNode as InspectorNode).sourceNodeId,
       oldGraph
     );
-    if (dep && sourceMap[dep.content.id]) {
-      const uri = dep.uri;
-      const module = dep.content;
-      if (moduleUris.indexOf(uri) !== -1) {
-        for (const nestedChild of flattenTreeNode(module)) {
-          newSourceMap[nestedChild.id] = sourceMap[nestedChild.id];
-        }
-      } else {
-        root = {
-          ...root,
-          children: root.children.filter(
-            child => child.sourceNodeId !== module.id
-          )
-        };
-      }
+    if (
+      dep &&
+      sourceMap[dep.content.id] &&
+      moduleUris.indexOf(dep.uri) !== -1
+    ) {
+      moduleChildren.push(moduleInspectorNode as InspectorNode);
+    } else {
+      removeSourceMap(moduleInspectorNode as InspectorNode, newSourceMap);
     }
   }
+
+  root = {
+    ...root,
+    children: moduleChildren
+  };
 
   // 2. patch trees based on moduleUris
   for (const uri of moduleUris) {
@@ -438,7 +437,7 @@ const patchInspectorTree2 = (
   let tmpModule = oldModule;
   const ots = diffTreeNode(tmpModule, newModule);
 
-  let newSourceMap = JSON.parse(JSON.stringify(sourceMap));
+  let newSourceMap = sourceMap;
 
   for (const ot of ots) {
     const targetNode = getTreeNodeFromPath(ot.nodePath, tmpModule) as PCNode;
@@ -587,7 +586,7 @@ const patchInspectorTree2 = (
           ) {
             for (const child of newInspectorNode.children) {
               newInspectorNode = removeNestedTreeNode(child, newInspectorNode);
-              removeSourceMap(child, newSourceMap);
+              removeSourceMap(child as InspectorNode, newSourceMap);
             }
             const newChildren = evaluateInspectorNodeChildren(
               patchedTarget,

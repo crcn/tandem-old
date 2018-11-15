@@ -3514,6 +3514,94 @@
         }
       },
       "variant": {}
+    },
+    {
+      "label": "Add icon",
+      "is": "svg",
+      "style": {
+        "display": "block",
+        "height": "1em"
+      },
+      "attributes": {
+        "xmlns": "http://www.w3.org/2000/svg",
+        "xmlns:xlink": "http://www.w3.org/1999/xlink",
+        "xml:space": "preserve",
+        "version": "1.1",
+        "style": "shape-rendering:geometricPrecision;text-rendering:geometricPrecision;image-rendering:optimizeQuality;",
+        "viewBox": "0 0 847 847",
+        "x": "0px",
+        "y": "0px",
+        "fill-rule": "evenodd",
+        "clip-rule": "evenodd"
+      },
+      "id": "f27782548182",
+      "name": "component",
+      "children": [
+        {
+          "id": "f27782548177",
+          "is": "defs",
+          "name": "element",
+          "attributes": {},
+          "style": {},
+          "children": [
+            {
+              "id": "f27782548178",
+              "is": "style",
+              "name": "element",
+              "attributes": {
+                "type": "text/css"
+              },
+              "style": {},
+              "children": [
+                {
+                  "id": "f27782548179",
+                  "name": "text",
+                  "label": "\n   \n    .fil0 {fill:black}\n   \n  ",
+                  "value": "\n   \n    .fil0 {fill:black}\n   \n  ",
+                  "style": {},
+                  "children": [],
+                  "metadata": {}
+                }
+              ],
+              "metadata": {}
+            }
+          ],
+          "metadata": {}
+        },
+        {
+          "id": "f27782548180",
+          "is": "g",
+          "name": "element",
+          "attributes": {},
+          "style": {},
+          "children": [
+            {
+              "id": "f27782548181",
+              "is": "polygon",
+              "name": "element",
+              "attributes": {
+                "class": "fil0",
+                "points": "317,18 530,18 530,317 829,317 829,530 530,530 530,829 317,829 317,530 18,530 18,317 317,317 "
+              },
+              "style": {
+                "background": "currentColor"
+              },
+              "children": [],
+              "metadata": {}
+            }
+          ],
+          "metadata": {}
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": -720,
+          "top": 2434,
+          "right": -320,
+          "bottom": 2734
+        }
+      },
+      "variant": {}
     }
   ]
 }

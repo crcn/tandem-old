@@ -67,7 +67,10 @@ export default (Base: React.ComponentClass<BaseDropdownProps>) => {
       }
     };
     onFilterChange = value => {
-      this.setState({ ...this.state, filter: value });
+      this.setState({
+        ...this.state,
+        filter: value ? String(value).toLowerCase() : null
+      });
     };
     componentWillUpdate(props) {
       if (this.props.value !== props.value && this.state.filter) {
