@@ -12,12 +12,12 @@
         "text-align": "center",
         "width": "100%",
         "padding": "8px",
-        "font-size": "9px",
         "cursor": "pointer",
         "background": "rgba(230, 230, 230, 1)",
-        "padding-top": "13px",
-        "padding-bottom": "13px",
-        "user-select": "none"
+        "padding-top": "11px",
+        "padding-bottom": "11px",
+        "user-select": "none",
+        "font-weight": "600"
       },
       "attributes": {},
       "id": "5d7d4069129476",
@@ -26,13 +26,18 @@
         {
           "id": "5d7d4069129475",
           "name": "text",
-          "label": "Text",
+          "label": "label",
           "value": "tab",
           "style": {
-            "font-size": "0.9em"
+            "font-size": "10px"
           },
           "children": [],
-          "metadata": {}
+          "metadata": {},
+          "styleMixins": {
+            "dc3b39eb1627": {
+              "priority": 0
+            }
+          }
         },
         {
           "id": "66d16f05",

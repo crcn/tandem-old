@@ -186,7 +186,7 @@
                 "padding-left": "0px",
                 "padding-top": "0px",
                 "padding-right": "0px",
-                "padding-bottom": "8px"
+                "padding-bottom": "6px"
               },
               "name": "override",
               "children": []

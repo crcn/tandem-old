@@ -10,7 +10,6 @@
       "name": "component-instance",
       "attributes": {},
       "style": {
-        "font-family": "var(--22702c5f1086)"
       },
       "children": [
         {

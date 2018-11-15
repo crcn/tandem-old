@@ -94,9 +94,8 @@ export default (Base: React.ComponentClass<BaseRightGutterProps>) =>
             key={tabName}
             variant={cx({ selected: availableCurrentTab === tabName })}
             onClick={() => setTab(tabName)}
-          >
-            {tabName}
-          </RightGutterTab>
+            labelProps={{ text: tabName }}
+          />
         );
       });
 

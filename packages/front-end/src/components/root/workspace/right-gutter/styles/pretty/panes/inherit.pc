@@ -33,7 +33,7 @@
             "color": "var(--24ce1e4d482)",
             "padding-left": "0px",
             "padding-right": "0px",
-            "padding-bottom": "8px"
+            "padding-bottom": "6px"
           },
           "name": "override",
           "children": []
@@ -94,7 +94,10 @@
                   "is": "9e4a454812260",
                   "name": "component-instance",
                   "attributes": {},
-                  "style": {},
+                  "style": {
+                    "margin-bottom": "unset",
+                    "padding-top": "4px"
+                  },
                   "children": [
                     {
                       "id": "9e4a454848426",
@@ -172,7 +175,9 @@
                   "is": "9e4a454812260",
                   "name": "component-instance",
                   "attributes": {},
-                  "style": {},
+                  "style": {
+                    "margin-bottom": "unset"
+                  },
                   "children": [
                     {
                       "id": "c7da0a1d128168",
@@ -344,13 +349,23 @@
           },
           "name": "override",
           "children": []
+        },
+        {
+          "id": "a5dbdc2c1635",
+          "propertyName": "style",
+          "targetIdPath": [
+            "b6c162d132"
+          ],
+          "value": {},
+          "name": "override",
+          "children": []
         }
       ],
       "metadata": {
         "bounds": {
-          "left": 545,
+          "left": 544,
           "top": 260,
-          "right": 945,
+          "right": 944,
           "bottom": 560
         }
       },

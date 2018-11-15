@@ -109,7 +109,6 @@
         "user-select": "none",
         "align-items": "center",
         "justify-content": "space-between",
-        "font-family": "var(--22702c5f1086)",
         "position": "relative",
         "font-size": "12px",
         "color": "var(--24ce1e4d482)"
@@ -689,7 +688,6 @@
           "propertyName": "style",
           "targetIdPath": [],
           "value": {
-            "font-family": "var(--22702c5f1086)"
           },
           "name": "override",
           "children": []

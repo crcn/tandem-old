@@ -14,9 +14,9 @@
         "border": "1px solid var(--d8f6340b1442)",
         "display": "inline-block",
         "flex-direction": "column",
-        "font-family": "var(--22702c5f1086)",
         "position": "relative",
-        "width": "300px"
+        "width": "300px",
+        "opacity": 1
       },
       "attributes": {},
       "id": "67e386c762",
@@ -587,7 +587,8 @@
       "name": "element",
       "attributes": {},
       "style": {
-        "background": "var(--24ce1e4d482)"
+        "background": "var(--24ce1e4d482)",
+        "opacity": 1
       },
       "children": [
         {

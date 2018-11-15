@@ -902,6 +902,16 @@
           ],
           "metadata": {},
           "name": "plug"
+        },
+        {
+          "id": "3987242b3860",
+          "propertyName": "style",
+          "targetIdPath": [
+            "b6c162d140"
+          ],
+          "value": {},
+          "name": "override",
+          "children": []
         }
       ],
       "metadata": {

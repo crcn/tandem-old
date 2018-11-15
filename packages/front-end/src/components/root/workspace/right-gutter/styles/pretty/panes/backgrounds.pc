@@ -331,7 +331,7 @@
                     "top": "0",
                     "display": "flex",
                     "align-items": "center",
-                    "opacity": "0.6"
+                    "opacity": 1
                   },
                   "children": [
                     {
@@ -347,15 +347,21 @@
                       "metadata": {}
                     },
                     {
-                      "id": "8e601d2b475165",
-                      "name": "text",
-                      "label": "Plus Button",
-                      "value": "+",
+                      "id": "9ed1dc149869",
+                      "label": "plus button",
+                      "is": "f27782548182",
+                      "name": "component-instance",
+                      "attributes": {},
                       "style": {
-                        "cursor": "pointer"
+                        "box-sizing": "border-box",
+                        "display": "block",
+                        "height": "9px",
+                        "position": "relative",
+                        "top": "-1px"
                       },
                       "children": [],
-                      "metadata": {}
+                      "metadata": {},
+                      "variant": {}
                     }
                   ],
                   "metadata": {}

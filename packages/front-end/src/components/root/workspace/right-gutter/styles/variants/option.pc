@@ -9,12 +9,10 @@
       "is": "div",
       "style": {
         "box-sizing": "border-box",
-        "font-family": "var(--22702c5f1086)",
-        "font-size": "10px",
         "padding-left": "12px",
-        "padding-top": "3px",
+        "padding-top": "6px",
         "padding-right": "8px",
-        "padding-bottom": "3px"
+        "padding-bottom": "6px"
       },
       "attributes": {},
       "id": "1d51efba14",
@@ -29,11 +27,7 @@
           "style": {
             "box-sizing": "border-box",
             "display": "flex",
-            "align-items": "center",
-            "margin-left": "4px",
-            "margin-top": "4px",
-            "margin-right": "4px",
-            "margin-bottom": "4px"
+            "align-items": "center"
           },
           "children": [
             {
@@ -150,7 +144,7 @@
           "id": "cc845f081098",
           "name": "variant",
           "label": "alt",
-          "isDefault": false,
+          "isDefault": true,
           "children": [],
           "metadata": {}
         },
@@ -159,9 +153,7 @@
           "variantId": "cc845f081098",
           "propertyName": "style",
           "targetIdPath": [],
-          "value": {
-            "background": "var(--bc891e755312)"
-          },
+          "value": {},
           "name": "override",
           "children": []
         },

@@ -10,11 +10,10 @@
       "style": {
         "display": "flex",
         "align-items": "center",
-        "margin-bottom": "8px",
-        "padding-left": "16px",
-        "padding-top": "4px",
-        "padding-right": "16px",
-        "padding-bottom": "4px"
+        "padding-left": "12px",
+        "padding-top": "6px",
+        "padding-right": "12px",
+        "padding-bottom": "6px"
       },
       "attributes": {},
       "id": "9e4a454812260",
@@ -27,16 +26,13 @@
           "name": "element",
           "attributes": {},
           "style": {
-            "width": "22px",
             "height": "22px",
-            "border": "1px solid var(--d8f6340b1442)",
+            "border": "1px none",
             "border-radius": "2px",
             "margin-right": "8px",
-            "padding-left": "4px",
-            "padding-top": "4px",
-            "padding-right": "4px",
-            "padding-bottom": "4px",
-            "box-sizing": "border-box"
+            "box-sizing": "border-box",
+            "display": "flex",
+            "align-items": "center"
           },
           "children": [
             {
@@ -45,7 +41,10 @@
               "label": "Color Palette Icon",
               "name": "component-instance",
               "attributes": {},
-              "style": {},
+              "style": {
+                "display": "block",
+                "height": "10px"
+              },
               "children": [
                 {
                   "id": "899e765b915",
@@ -193,7 +192,7 @@
           "id": "c7da0a1d90996",
           "name": "variant",
           "label": "alt",
-          "isDefault": false,
+          "isDefault": true,
           "children": [],
           "metadata": {}
         },
@@ -202,9 +201,7 @@
           "variantId": "c7da0a1d90996",
           "propertyName": "style",
           "targetIdPath": [],
-          "value": {
-            "background": "var(--bc891e755312)"
-          },
+          "value": {},
           "name": "override",
           "children": []
         },

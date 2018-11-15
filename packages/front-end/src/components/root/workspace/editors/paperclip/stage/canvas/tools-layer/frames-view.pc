@@ -42,7 +42,6 @@
             "top": "-4px",
             "position": "absolute",
             "width": "100%",
-            "font-family": "var(--22702c5f1086)",
             "color": "var(--24ce1e4d482)",
             "cursor": "default",
             "display": "flex",

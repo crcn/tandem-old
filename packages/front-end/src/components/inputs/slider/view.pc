@@ -9,7 +9,8 @@
       "is": "div",
       "style": {
         "height": "11px",
-        "position": "relative"
+        "position": "relative",
+        "box-sizing": "border-box"
       },
       "attributes": {},
       "id": "956880c910105",
@@ -22,12 +23,13 @@
           "name": "element",
           "attributes": {},
           "style": {
-            "width": "100%",
+            "width": "calc(100% - 8px)",
             "height": "4px",
             "background": "var(--d8f6340b1442)",
             "position": "absolute",
             "transform": "translateY(-50%)",
-            "top": "50%"
+            "top": "50%",
+            "margin-left": "4px"
           },
           "children": [],
           "metadata": {}

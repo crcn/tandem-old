@@ -13,7 +13,6 @@
         "height": "100px",
         "display": "inline-block",
         "padding": "8px",
-        "font-family": "var(--22702c5f1086)",
         "color": "var(--24ce1e4d482)"
       },
       "attributes": {},

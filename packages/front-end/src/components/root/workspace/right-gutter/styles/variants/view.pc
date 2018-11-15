@@ -11,7 +11,6 @@
       "name": "component-instance",
       "attributes": {},
       "style": {
-        "font-family": "var(--22702c5f1086)"
       },
       "children": [],
       "metadata": {
@@ -438,7 +437,6 @@
       "is": "div",
       "style": {
         "box-sizing": "border-box",
-        "font-family": "var(--22702c5f1086)",
         "display": "block",
         "padding-left": "12px",
         "padding-top": "8px",
@@ -479,7 +477,7 @@
                       "id": "d31aa23826983",
                       "name": "text",
                       "label": "Text",
-                      "value": "Style",
+                      "value": "Variant",
                       "style": {
                         "color": "var(--30f4693267675)",
                         "margin-bottom": "0px"
@@ -487,7 +485,7 @@
                       "children": [],
                       "metadata": {},
                       "styleMixins": {
-                        "33b5126b196": {
+                        "dc3b39eb1627": {
                           "priority": 0
                         }
                       }
@@ -515,7 +513,8 @@
                             "height": "2px",
                             "margin-right": "4px",
                             "position": "relative",
-                            "top": "1px"
+                            "top": "1px",
+                            "color": "var(--30f4693267675)"
                           },
                           "children": [],
                           "metadata": {
@@ -537,7 +536,8 @@
                             "display": "inline-block",
                             "height": "0.8em",
                             "margin-right": "4px",
-                            "margin-left": "2px"
+                            "margin-left": "2px",
+                            "color": "var(--30f4693267675)"
                           },
                           "children": [],
                           "metadata": {
@@ -560,7 +560,8 @@
                             "display": "inline-block",
                             "height": "9px",
                             "position": "relative",
-                            "top": "-1px"
+                            "top": "-1px",
+                            "color": "var(--30f4693267675)"
                           },
                           "children": [],
                           "metadata": {
@@ -628,6 +629,18 @@
                 "d31aa23826983"
               ],
               "value": {},
+              "name": "override",
+              "children": []
+            },
+            {
+              "id": "95e417dd6867",
+              "propertyName": "style",
+              "targetIdPath": [
+                "38fc2a4724622"
+              ],
+              "value": {
+                "margin-bottom": "6px"
+              },
               "name": "override",
               "children": []
             }

@@ -24,19 +24,7 @@
           "name": "component-instance",
           "attributes": {},
           "style": {},
-          "children": [
-            {
-              "id": "4a49eea98252",
-              "variantId": null,
-              "propertyName": "text",
-              "targetIdPath": [
-                "d31aa23826983"
-              ],
-              "value": "Style",
-              "name": "override",
-              "children": []
-            }
-          ],
+          "children": [],
           "metadata": {
             "bounds": {
               "left": 783,

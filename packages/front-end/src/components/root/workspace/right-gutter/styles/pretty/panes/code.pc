@@ -49,11 +49,17 @@
                 "height": "150px",
                 "border": "1px solid rgba(0,0,0,0.1)",
                 "border-radius": "2px",
-                "box-sizing": "border-box"
+                "box-sizing": "border-box",
+                "resize": "none"
               },
               "children": [],
               "metadata": {},
-              "label": "textarea"
+              "label": "textarea",
+              "styleMixins": {
+                "dc3b39eb1275": {
+                  "priority": 0
+                }
+              }
             }
           ],
           "metadata": {},

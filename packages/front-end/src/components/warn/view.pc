@@ -24,7 +24,6 @@
           "attributes": {},
           "style": {
             "box-sizing": "border-box",
-            "font-family": "var(--22702c5f1086)",
             "display": "block",
             "color": "rgba(164, 145, 21, 1)",
             "background": "rgba(238, 220, 82, 1)",

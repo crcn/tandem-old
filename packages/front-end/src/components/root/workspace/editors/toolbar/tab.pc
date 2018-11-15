@@ -9,7 +9,6 @@
       "is": "div",
       "style": {
         "box-sizing": "border-box",
-        "font-family": "var(--22702c5f1086)",
         "padding": "8px 16px",
         "align-items": "center",
         "background": "var(--d8f6340b1442)",
@@ -61,7 +60,6 @@
           "propertyName": "style",
           "targetIdPath": [],
           "value": {
-            "font-family": "var(--22702c5f1086)",
             "background": "var(--bc891e755312)",
             "user-select": "none"
           },

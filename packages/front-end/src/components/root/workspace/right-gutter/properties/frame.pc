@@ -151,7 +151,7 @@
                           "targetIdPath": [
                             "7149f8192506"
                           ],
-                          "value": "X",
+                          "value": "x",
                           "name": "override",
                           "children": []
                         },
@@ -206,7 +206,7 @@
                           "targetIdPath": [
                             "7149f8192506"
                           ],
-                          "value": "Y",
+                          "value": "y",
                           "name": "override",
                           "children": []
                         },
