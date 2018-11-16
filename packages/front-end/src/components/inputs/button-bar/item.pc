@@ -14,7 +14,7 @@
         "text-align": "center",
         "position": "relative",
         "height": "24px",
-        "border-right": "1px solid rgba(200, 200, 200, 1)",
+        "border-right": "1px solid var(--d8f6340b1442)",
         "color": "rgba(123, 123, 123, 1)",
         "padding-left": "6px",
         "padding-top": "6px",
@@ -61,7 +61,9 @@
           "propertyName": "style",
           "targetIdPath": [],
           "value": {
-            "border-right": "none"
+            "border-right": "none",
+            "border-top-right-radius": "1px",
+            "border-bottom-right-radius": "1px"
           },
           "name": "override",
           "children": []
@@ -82,6 +84,27 @@
           "value": {
             "background": "#00B5FF",
             "color": "rgba(255, 255, 255, 1)"
+          },
+          "name": "override",
+          "children": []
+        },
+        {
+          "id": "af62926b2035",
+          "name": "variant",
+          "label": "first",
+          "isDefault": true,
+          "children": [],
+          "metadata": {}
+        },
+        {
+          "id": "af62926b2036",
+          "variantId": "af62926b2035",
+          "propertyName": "style",
+          "targetIdPath": [],
+          "value": {
+            "text-align": "center",
+            "border-bottom-left-radius": "1px",
+            "border-top-left-radius": "1px"
           },
           "name": "override",
           "children": []

@@ -74,10 +74,16 @@ export const withNodeDropTarget = (offset: TreeMoveOffset) =>
             draggingInspectorNode.sourceNodeId,
             graph
           );
-          const sourceNode = getPCNode(inspectorNode.sourceNodeId, graph);
+
+          const assocSourceNodeId =
+            inspectorNode.name === InspectorTreeNodeName.CONTENT
+              ? inspectorNode.sourceSlotNodeId
+              : inspectorNode.sourceNodeId;
+
+          const sourceNode = getPCNode(assocSourceNodeId, graph);
           const parentSourceNode: PCNode = getParentTreeNode(
             sourceNode.id,
-            getPCNodeModule(inspectorNode.sourceNodeId, graph)
+            getPCNodeModule(assocSourceNodeId, graph)
           );
 
           if (draggedSourceNode.name === PCSourceTagNames.COMPONENT) {

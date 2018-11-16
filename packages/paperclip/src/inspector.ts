@@ -470,6 +470,7 @@ const patchInspectorTree2 = (
           );
           let reppedIndex = reppedChildren.indexOf(pcChild);
 
+          // maybe an unrepped node, so ignore
           if (reppedIndex === -1) {
             break;
           }
@@ -490,6 +491,7 @@ const patchInspectorTree2 = (
                 child.name === InspectorTreeNodeName.CONTENT &&
                 child.sourceSlotNodeId === pcChild.slotId
             );
+
             newInspectorNode = removeNestedTreeNode(
               existingInspectorPlug,
               newInspectorNode
@@ -527,21 +529,36 @@ const patchInspectorTree2 = (
         case TreeNodeOperationalTransformType.REMOVE_CHILD: {
           const { index } = ot;
           const pcChild = targetNode.children[index] as PCNode;
-          const reppedChildren = targetNode.children.filter(
-            child => !isUnreppedSourceNode(child)
-          );
-          const reppedIndex = reppedChildren.indexOf(pcChild);
+          const inspectorChild = newInspectorNode.children.find(child => {
+            return child.sourceNodeId === pcChild.id;
+          });
 
-          if (reppedIndex === -1) {
+          if (!inspectorChild) {
             break;
           }
 
-          const inspectorChild = newInspectorNode.children[reppedIndex];
+          const inspectorChildIndex = newInspectorNode.children.indexOf(
+            inspectorChild
+          );
+
           newInspectorNode = removeNestedTreeNode(
             inspectorChild,
             newInspectorNode
           );
           removeSourceMap(inspectorChild, newSourceMap);
+
+          if (inspectorChild.name === InspectorTreeNodeName.CONTENT) {
+            const placeholderInspectorNode = createInstanceContent(
+              (inspectorChild as InspectorContent).sourceSlotNodeId,
+              newInspectorNode.instancePath
+            );
+            newInspectorNode = insertChildNode(
+              placeholderInspectorNode,
+              inspectorChildIndex,
+              newInspectorNode
+            );
+            addSourceMap(placeholderInspectorNode, newSourceMap);
+          }
 
           break;
         }
@@ -550,26 +567,28 @@ const patchInspectorTree2 = (
           const pcChild = targetNode.children[oldIndex] as PCNode;
           const beforeChild = targetNode.children[newIndex] as PCNode;
 
-          const reppedChildren = targetNode.children.filter(
-            child => !isUnreppedSourceNode(child)
-          );
-          const reppedIndex = reppedChildren.indexOf(pcChild);
-          const reppedBeforeIndex = beforeChild
-            ? reppedChildren.indexOf(beforeChild)
-            : reppedChildren.length;
+          const inspectorChild = newInspectorNode.children.find(child => {
+            return child.sourceNodeId === pcChild.id;
+          });
 
-          if (reppedIndex === -1) {
+          const beforeInspectorChildIndex = beforeChild
+            ? newInspectorNode.children.findIndex(child => {
+                return child.sourceNodeId === beforeChild.id;
+              })
+            : newInspectorNode.children.length;
+
+          if (!inspectorChild || beforeInspectorChildIndex === -1) {
             break;
           }
 
-          const inspectorChild = newInspectorNode.children[reppedIndex];
           newInspectorNode = removeNestedTreeNode(
             inspectorChild,
             newInspectorNode
           );
+
           newInspectorNode = insertChildNode(
             inspectorChild,
-            reppedBeforeIndex,
+            beforeInspectorChildIndex,
             newInspectorNode
           );
 

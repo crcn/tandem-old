@@ -909,12 +909,12 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
           state.graph
         ) as PCComponentInstanceElement;
         let contentNode = getInstanceSlotContent(
-          target.sourceNodeId,
+          target.sourceSlotNodeId,
           parentSourceNode
         );
         if (!contentNode) {
           state = persistInsertNode(
-            createPCPlug(target.sourceNodeId),
+            createPCPlug(target.sourceSlotNodeId),
             parentSourceNode,
             TreeMoveOffset.APPEND,
             state
@@ -925,7 +925,7 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
             state.graph
           ) as PCComponentInstanceElement;
           contentNode = getInstanceSlotContent(
-            target.sourceNodeId,
+            target.sourceSlotNodeId,
             parentSourceNode
           );
         }

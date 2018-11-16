@@ -88,8 +88,7 @@
                 "box-sizing": "border-box",
                 "width": "100%",
                 "text-align": "center",
-                "position": "relative",
-                "border-right": "1px solid rgba(200, 200, 200, 1)"
+                "position": "relative"
               },
               "children": [
                 {
