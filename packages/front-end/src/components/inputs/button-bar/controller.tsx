@@ -26,7 +26,8 @@ export default (Base: React.ComponentClass<BaseButtonBarProps>) =>
             children={item.icon}
             variant={cx({
               selected: item.value === value,
-              last: i === options.length - 1
+              last: i === options.length - 1,
+              first: i === 0
             })}
             onClick={onChange && (() => onChange(item.value))}
           />

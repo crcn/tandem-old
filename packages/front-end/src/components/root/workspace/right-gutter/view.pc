@@ -152,7 +152,7 @@
         "flex-shrink": "0",
         "display": "flex",
         "flex-direction": "column",
-        "border-left": "1px solid var(--d8f6340b1442)",
+        "border-left": "1px solid var(--51588fd610365)",
         "z-index": "3",
         "background": "var(--bc891e755312)"
       },

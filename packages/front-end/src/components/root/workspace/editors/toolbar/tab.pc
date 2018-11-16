@@ -61,7 +61,7 @@
           "propertyName": "style",
           "targetIdPath": [],
           "value": {
-            "background": "var(--bc891e755312)",
+            "background": "var(--1934368810788)",
             "user-select": "none"
           },
           "name": "override",

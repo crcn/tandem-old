@@ -8,7 +8,7 @@
       "label": "Left Gutter",
       "is": "div",
       "style": {
-        "border-right": "1px solid var(--d8f6340b1442)",
+        "border-right": "1px solid var(--51588fd610365)",
         "flex-direction": "column",
         "height": "100%",
         "align-items": "stretch",

@@ -73,6 +73,10 @@ export default (Base: React.ComponentClass<BaseBorderStyleProps>) =>
         onThicknessChangeComplete
       } = this;
 
+      if (!documentColors) {
+        return null;
+      }
+
       const { style, color, thickness } = parseBorder(value);
       return (
         <Base
@@ -102,11 +106,11 @@ export default (Base: React.ComponentClass<BaseBorderStyleProps>) =>
 
 const parseBorder = memoize(
   (value = "") => ({
-    style: (value.match(
+    style: (String(value).match(
       /(none|hidden|dotted|dashed|solid|double|groove|ridge|inset|outset|initial|inherit)/
     ) || EMPTY_ARRAY)[1],
-    color: (value.match(/(#\w+|rgba?\(.*?\))/) || EMPTY_ARRAY)[1],
-    thickness: (value.match(/(\d+px)/) || EMPTY_ARRAY)[1]
+    color: (String(value).match(/(#\w+|\w+\(.*?\))/) || EMPTY_ARRAY)[1],
+    thickness: (String(value).match(/(\d+px)/) || EMPTY_ARRAY)[1]
   }),
   100
 );

@@ -13,7 +13,7 @@
         "flex-direction": "column",
         "width": "100%",
         "height": "100%",
-        "border-bottom": "1px solid var(--d8f6340b1442)"
+        "border-bottom": "2px solid var(--51588fd610365)"
       },
       "attributes": {},
       "id": "483373f987277",
@@ -111,7 +111,7 @@
           "attributes": {},
           "style": {
             "box-sizing": "border-box",
-            "background": "var(--bc891e755312)",
+            "background": "var(--1934368810788)",
             "width": "100%",
             "height": "100%"
           },

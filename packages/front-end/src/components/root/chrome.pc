@@ -39,7 +39,7 @@
             "padding-top": "8px",
             "padding-bottom": "8px",
             "font-size": "12px",
-            "border-bottom": "1px solid var(--d8f6340b1442)",
+            "border-bottom": "1px solid rgba(209, 209, 209, 1)",
             "align-items": "center",
             "position": "relative",
             "-webkit-app-region": "drag"
@@ -324,10 +324,10 @@
       ],
       "metadata": {
         "bounds": {
-          "left": 1265,
-          "top": 1903,
-          "right": 3251.2998338659963,
-          "bottom": 2944.8391994102403
+          "left": 1284,
+          "top": 1654,
+          "right": 3270.2998338659963,
+          "bottom": 2695.8391994102403
         }
       },
       "variant": {},

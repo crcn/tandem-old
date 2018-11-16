@@ -97,8 +97,17 @@
     {
       "id": "51588fd610365",
       "name": "variable",
-      "value": "rgba(240, 239, 239, 1)",
+      "value": "rgba(225, 225, 225, 1)",
       "label": "grey 6",
+      "type": "color",
+      "children": [],
+      "metadata": {}
+    },
+    {
+      "id": "1934368810788",
+      "name": "variable",
+      "value": "rgba(240, 240, 240, 1)",
+      "label": "grey 7",
       "type": "color",
       "children": [],
       "metadata": {}
