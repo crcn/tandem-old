@@ -303,7 +303,9 @@
               "name": "element",
               "attributes": {},
               "style": {
-                "position": "relative"
+                "position": "relative",
+                "display": "flex",
+                "align-items": "center"
               },
               "children": [
                 {
@@ -358,7 +360,7 @@
                         "display": "block",
                         "height": "9px",
                         "position": "relative",
-                        "top": "-1px"
+                        "top": "2px"
                       },
                       "children": [],
                       "metadata": {},
@@ -403,7 +405,7 @@
         "bounds": {
           "left": 568,
           "top": 394,
-          "right": 968,
+          "right": 712,
           "bottom": 694
         }
       },
