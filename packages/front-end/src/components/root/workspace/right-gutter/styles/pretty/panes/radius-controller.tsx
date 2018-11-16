@@ -12,7 +12,6 @@ export type Props = {
 export default (Base: React.ComponentClass<BaseRadiusInputProps>) =>
   class RadiusInputController extends React.PureComponent<Props> {
     onPrimaryChange = (value: string) => {
-      console.log(value);
       this.props.onPropertyChange("border-top-left-radius", value);
       this.props.onPropertyChange("border-top-right-radius", value);
       this.props.onPropertyChange("border-bottom-left-radius", value);

@@ -227,7 +227,7 @@
         {
           "id": "bcda9fb5100963",
           "variant": {},
-          "is": "bcda9fb597291",
+          "is": "cbddcb698077",
           "name": "component-instance",
           "attributes": {},
           "style": {},
