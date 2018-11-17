@@ -33,13 +33,27 @@ export type Props = {
 
 type State = {
   selectedStyleMixinId: string;
+  selectedInspectorNodes: InspectorNode[];
 };
 
 export default (Base: React.ComponentClass<BaseInheritProps>) => {
   return class InheritController extends React.PureComponent<Props, State> {
-    constructor(props) {
+    constructor(props: Props) {
       super(props);
-      this.state = { selectedStyleMixinId: null };
+      this.state = {
+        selectedStyleMixinId: null,
+        selectedInspectorNodes: props.selectedInspectorNodes
+      };
+    }
+    static getDerivedStateFromProps(props: Props, state: State) {
+      if (props.selectedInspectorNodes !== state.selectedInspectorNodes) {
+        return {
+          selectedStyleMixinId: null,
+          selectedInspectorNodes: props.selectedInspectorNodes
+        };
+      }
+
+      return null;
     }
     onAddButtonClick = () => {
       this.props.dispatch(inheritPaneAddButtonClick());
@@ -48,6 +62,7 @@ export default (Base: React.ComponentClass<BaseInheritProps>) => {
       this.props.dispatch(
         inheritPaneRemoveButtonClick(this.state.selectedStyleMixinId)
       );
+      this.setState({ selectedStyleMixinId: null });
     };
     onInheritItemClick = (styleMixinId: string) => {
       this.setState({
@@ -61,13 +76,8 @@ export default (Base: React.ComponentClass<BaseInheritProps>) => {
         onRemoveButtonClick,
         onInheritItemClick
       } = this;
-      const { selectedStyleMixinId } = this.state;
-      const {
-        selectedInspectorNodes,
-        dispatch,
-        graph,
-        projectOptions
-      } = this.props;
+      const { selectedStyleMixinId, selectedInspectorNodes } = this.state;
+      const { dispatch, graph, projectOptions } = this.props;
       const node = selectedInspectorNodes[0];
       const sourceNode = getPCNode(node.sourceNodeId, graph) as
         | PCVisibleNode

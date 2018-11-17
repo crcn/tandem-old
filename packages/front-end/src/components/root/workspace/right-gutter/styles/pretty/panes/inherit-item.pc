@@ -147,6 +147,31 @@
               },
               "name": "override",
               "children": []
+            },
+            {
+              "id": "ac2d4f9a1740",
+              "variantId": null,
+              "propertyName": "text",
+              "targetIdPath": [
+                "67e386c7935"
+              ],
+              "value": "Label",
+              "name": "override",
+              "children": []
+            },
+            {
+              "id": "ac2d4f9a1741",
+              "variantId": "308dd31382",
+              "propertyName": "style",
+              "targetIdPath": [
+                "67e386c7935"
+              ],
+              "value": {
+                "font-family": "Avenir Next\nfont-size",
+                "color": "rgba(255, 255, 255, 1)"
+              },
+              "name": "override",
+              "children": []
             }
           ],
           "metadata": {
@@ -173,7 +198,8 @@
           "propertyName": "style",
           "targetIdPath": [],
           "value": {
-            "background": "var(--32c1eebd7630)"
+            "background": "var(--24ce1e4d13456)",
+            "color": "rgba(255, 255, 255, 1)"
           },
           "name": "override",
           "children": []
@@ -193,7 +219,7 @@
           "id": "c7da0a1d90996",
           "name": "variant",
           "label": "alt",
-          "isDefault": true,
+          "isDefault": false,
           "children": [],
           "metadata": {}
         },
@@ -227,6 +253,32 @@
             "9e4a454812258"
           ],
           "value": {},
+          "name": "override",
+          "children": []
+        },
+        {
+          "id": "ac2d4f9a1739",
+          "variantId": "308dd31382",
+          "propertyName": "style",
+          "targetIdPath": [
+            "14f530171"
+          ],
+          "value": {
+            "color": "var(--f63574de434)"
+          },
+          "name": "override",
+          "children": []
+        },
+        {
+          "id": "ac2d4f9a1742",
+          "variantId": "308dd31382",
+          "propertyName": "style",
+          "targetIdPath": [
+            "899e765b754"
+          ],
+          "value": {
+            "color": "rgba(255, 255, 255, 1)"
+          },
           "name": "override",
           "children": []
         }

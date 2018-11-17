@@ -1518,6 +1518,31 @@
       "controllers": [
         "./inline-labeled-input-controller.tsx"
       ]
+    },
+    {
+      "id": "d30286e82612",
+      "label": "Element",
+      "is": "div",
+      "name": "element",
+      "attributes": {},
+      "style": {
+        "box-sizing": "border-box",
+        "display": "block"
+      },
+      "children": [],
+      "metadata": {
+        "bounds": {
+          "left": 1444.0574441388642,
+          "top": 79.8817190694042,
+          "right": 1544.0574441388642,
+          "bottom": 179.8817190694042
+        }
+      },
+      "styleMixins": {
+        "1542458518339": {
+          "priority": 0
+        }
+      }
     }
   ],
   "metadata": {}
