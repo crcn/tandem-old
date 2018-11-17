@@ -44,7 +44,11 @@ export default (Base: React.ComponentClass<BaseSpacingPaneProps>) =>
             right: computedStyleInfo.style["margin-right"],
             bottom: computedStyleInfo.style["margin-bottom"],
             onSideChange: sideChangeCallback(dispatch, "margin"),
-            onSideChangeComplete: sideChangeCompleteCallback(dispatch, "margin")
+            onSideChangeComplete: sideChangeCompleteCallback(
+              dispatch,
+              "margin"
+            ),
+            selectedId: computedStyleInfo.sourceNode.id
           }}
           paddingInputProps={{
             left: computedStyleInfo.style["padding-left"],
@@ -52,6 +56,7 @@ export default (Base: React.ComponentClass<BaseSpacingPaneProps>) =>
             right: computedStyleInfo.style["padding-right"],
             bottom: computedStyleInfo.style["padding-bottom"],
             onSideChange: sideChangeCallback(dispatch, "padding"),
+            selectedId: computedStyleInfo.sourceNode.id,
             onSideChangeComplete: sideChangeCompleteCallback(
               dispatch,
               "padding"

@@ -1128,6 +1128,52 @@
         }
       },
       "variant": {}
+    },
+    {
+      "id": "e20191643",
+      "label": "Element",
+      "is": "div",
+      "name": "element",
+      "attributes": {},
+      "style": {
+        "box-sizing": "border-box",
+        "display": "block",
+        "border-top-left-radius": "10px",
+        "border-top-right-radius": "10px",
+        "border-bottom-left-radius": "10px",
+        "border-bottom-right-radius": "10px"
+      },
+      "children": [],
+      "metadata": {
+        "bounds": {
+          "left": -75.94445914956573,
+          "top": -67.00529760725841,
+          "right": 24.05554085043427,
+          "bottom": 32.99470239274159
+        }
+      }
+    },
+    {
+      "id": "e20191645",
+      "label": "Element",
+      "is": "div",
+      "name": "element",
+      "attributes": {},
+      "style": {
+        "box-sizing": "border-box",
+        "display": "block",
+        "border-top-left-radius": "10px",
+        "border-top": "10px"
+      },
+      "children": [],
+      "metadata": {
+        "bounds": {
+          "left": 62.9463980471925,
+          "top": -87.9640367975779,
+          "right": 162.9463980471925,
+          "bottom": 12.035963202422096
+        }
+      }
     }
   ]
 }

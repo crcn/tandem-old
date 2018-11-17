@@ -42,6 +42,7 @@ export default (Base: React.ComponentClass<BaseRadiusInputProps>) =>
         <Base
           {...rest}
           connected={connected}
+          selectedId={computedStyleInfo.sourceNode.id}
           primaryInputProps={{
             value: connected
               ? computedStyleInfo.style["border-top-left-radius"]
@@ -56,7 +57,7 @@ export default (Base: React.ComponentClass<BaseRadiusInputProps>) =>
               onPropertyChange
             ),
             onChangeComplete: propertyChangeCallback(
-              "border-top",
+              "border-top-left-radius",
               onPropertyChangeComplete
             )
           }}
@@ -67,7 +68,7 @@ export default (Base: React.ComponentClass<BaseRadiusInputProps>) =>
               onPropertyChange
             ),
             onChangeComplete: propertyChangeCallback(
-              "border-bottom",
+              "border-top-right-radius",
               onPropertyChangeComplete
             )
           }}
@@ -78,7 +79,7 @@ export default (Base: React.ComponentClass<BaseRadiusInputProps>) =>
               onPropertyChange
             ),
             onChangeComplete: propertyChangeCallback(
-              "border-left",
+              "border-bottom-left-radius",
               onPropertyChangeComplete
             )
           }}
@@ -89,7 +90,7 @@ export default (Base: React.ComponentClass<BaseRadiusInputProps>) =>
               onPropertyChange
             ),
             onChangeComplete: propertyChangeCallback(
-              "border-right",
+              "border-bottom-right-radius",
               onPropertyChangeComplete
             )
           }}

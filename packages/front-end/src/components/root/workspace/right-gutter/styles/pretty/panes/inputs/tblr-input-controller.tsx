@@ -9,6 +9,7 @@ import {
 
 export type Props = {
   connected?: boolean;
+  selectedId: string;
 };
 
 const TOGGLE_OPTIONS: ButtonBarOption[] = [
@@ -24,18 +25,21 @@ const TOGGLE_OPTIONS: ButtonBarOption[] = [
 
 type State = {
   connected: boolean;
+  selectedId: string;
 };
 
 export default (Base: React.ComponentClass<BaseTblrInputProps>) =>
   class TBLRController extends React.PureComponent<Props, State> {
     state = {
-      connected: this.props.connected
+      connected: this.props.connected,
+      selectedId: this.props.selectedId
     };
     static getDerivedStateFromProps(props: Props, state: State) {
-      if (props.connected !== state.connected) {
+      if (props.selectedId !== state.selectedId) {
         return {
           ...state,
-          connected: state.connected
+          connected: props.connected,
+          selectedId: props.selectedId
         };
       }
       return null;

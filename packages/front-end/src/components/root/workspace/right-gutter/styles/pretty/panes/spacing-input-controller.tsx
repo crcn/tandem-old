@@ -9,6 +9,7 @@ export enum Side {
   BOTTOM = "bottom"
 }
 export type Props = {
+  selectedId: string;
   left: string;
   right: string;
   top: string;
@@ -36,6 +37,7 @@ export default (Base: React.ComponentClass<BaseSpacingInputProps>) =>
       const { onPrimaryChange, onPrimaryChangeComplete } = this;
       const {
         onSideChange,
+        selectedId,
         onSideChangeComplete,
         left,
         top,
@@ -48,6 +50,7 @@ export default (Base: React.ComponentClass<BaseSpacingInputProps>) =>
         <Base
           {...rest}
           connected={connected}
+          selectedId={selectedId}
           primaryInputProps={{
             value: connected ? left : null,
             onChange: onPrimaryChange,
