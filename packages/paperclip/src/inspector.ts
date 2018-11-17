@@ -65,7 +65,10 @@ import {
   getNestedTreeNodeById,
   replaceNestedNode,
   insertChildNode,
-  removeNestedTreeNode
+  removeNestedTreeNode,
+  findNestedNode,
+  filterNestedNodes,
+  getTreeNodesByName
 } from "tandem-common";
 import { PCEditorState } from "./edit";
 // import { SyntheticNode, PCNode, PCModule, PCComponent, DependencyGraph, PCComponentInstanceElement, PCSourceTagNames, PCOverride, PCChildrenOverride } from "paperclip";
@@ -457,10 +460,13 @@ const patchInspectorTree2 = (
         rootInspectorNode
       );
       let newInspectorNode = targetInspectorNode;
-      const shadow = getInspectorNodeParentShadow(
-        targetInspectorNode,
-        rootInspectorNode
-      );
+      const shadow =
+        targetInspectorNode.name === InspectorTreeNodeName.SHADOW
+          ? targetInspectorNode
+          : getInspectorNodeParentShadow(
+              targetInspectorNode,
+              rootInspectorNode
+            );
       switch (ot.type) {
         case TreeNodeOperationalTransformType.INSERT_CHILD: {
           const { child } = ot;
@@ -523,6 +529,46 @@ const patchInspectorTree2 = (
             newInspectorNode
           );
           addSourceMap(newInspectorChild, newSourceMap);
+
+          // if the child is a slot, then add virtual content nodes ONLY for
+          // instances
+          if (pcChild.name === PCSourceTagNames.SLOT && shadow) {
+            // component is _always_ a contentNode
+            const component = getPCNodeContentNode(
+              pcChild.id,
+              getPCNodeModule(pcChild.id, newGraph)
+            );
+
+            const componentSlots = getTreeNodesByName(
+              PCSourceTagNames.SLOT,
+              component
+            );
+            const insertIndex = componentSlots.findIndex(
+              child => child.id === pcChild.id
+            );
+
+            const instanceInspectorNode = getParentTreeNode(
+              shadow.id,
+              rootInspectorNode
+            );
+
+            const virtualPlug = createInstanceContent(
+              pcChild.id,
+              instanceInspectorNode.instancePath
+            );
+
+            // insert index + 1 to bypass shadow
+            const newInspectorNode = insertChildNode(
+              virtualPlug,
+              insertIndex + 1,
+              instanceInspectorNode
+            );
+            rootInspectorNode = replaceNestedNode(
+              newInspectorNode,
+              newInspectorNode.id,
+              rootInspectorNode
+            );
+          }
 
           break;
         }

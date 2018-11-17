@@ -1411,7 +1411,20 @@
               "style": {
                 "margin-right": "6px"
               },
-              "children": [],
+              "children": [
+                {
+                  "id": "3cd026343876",
+                  "propertyName": "style",
+                  "targetIdPath": [
+                    "af62926b2317"
+                  ],
+                  "value": {
+                    "display": "none"
+                  },
+                  "name": "override",
+                  "children": []
+                }
+              ],
               "metadata": {
                 "bounds": {
                   "left": 1081,
@@ -1436,7 +1449,7 @@
         }
       },
       "variant": {
-        "af62926b2038": true
+        "af62926b2038": false
       },
       "controllers": [
         "./spacing-input-controller.tsx"

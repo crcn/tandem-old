@@ -2,12 +2,19 @@ import * as React from "react";
 import { ComputedStyleInfo } from "paperclip";
 import { BaseRadiusInputProps } from "./borders.pc";
 import { memoize } from "tandem-common";
+import {
+  CornersIcon,
+  RoundSquareIcon
+} from "../../../../../../../icons/view.pc";
 
 export type Props = {
   onPropertyChange: any;
   onPropertyChangeComplete: any;
   computedStyleInfo: ComputedStyleInfo;
 };
+
+const CONNECTED_ICON = <RoundSquareIcon style={{ height: "1em" }} />;
+const DISCONNECTED_ICON = <CornersIcon style={{ height: "1em" }} />;
 
 export default (Base: React.ComponentClass<BaseRadiusInputProps>) =>
   class RadiusInputController extends React.PureComponent<Props> {
@@ -43,6 +50,8 @@ export default (Base: React.ComponentClass<BaseRadiusInputProps>) =>
           {...rest}
           connected={connected}
           selectedId={computedStyleInfo.sourceNode.id}
+          connectedIcon={CONNECTED_ICON}
+          disconnectedIcon={DISCONNECTED_ICON}
           primaryInputProps={{
             value: connected
               ? computedStyleInfo.style["border-top-left-radius"]

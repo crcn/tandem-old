@@ -3602,6 +3602,276 @@
         }
       },
       "variant": {}
+    },
+    {
+      "label": "corners icon",
+      "is": "svg",
+      "style": {},
+      "attributes": {
+        "xmlns": "http://www.w3.org/2000/svg",
+        "xmlns:xlink": "http://www.w3.org/1999/xlink",
+        "version": "1.1",
+        "x": "0px",
+        "y": "0px",
+        "viewBox": "0 0 100 100",
+        "enable-background": "new 0 0 100 100",
+        "xml:space": "preserve"
+      },
+      "id": "d330cc11286",
+      "name": "component",
+      "children": [
+        {
+          "id": "d330cc11281",
+          "is": "g",
+          "name": "element",
+          "attributes": {},
+          "style": {},
+          "children": [
+            {
+              "id": "d330cc11282",
+              "is": "path",
+              "name": "element",
+              "attributes": {
+                "d": "M74.554,11.415h-14.03c-2.324,0-4.21,1.884-4.21,4.209s1.886,4.209,4.21,4.209h14.03c3.1,0,5.612,2.513,5.612,5.612v14.031   c0,2.325,1.886,4.209,4.21,4.209c2.323,0,4.209-1.884,4.209-4.209V25.446C88.585,17.698,82.304,11.415,74.554,11.415z"
+              },
+              "style": {
+                "background": "currentColor"
+              },
+              "children": [],
+              "metadata": {}
+            },
+            {
+              "id": "d330cc11283",
+              "is": "path",
+              "name": "element",
+              "attributes": {
+                "d": "M39.477,11.415H25.446c-7.75,0-14.031,6.283-14.031,14.031v14.031c0,2.325,1.884,4.209,4.209,4.209   s4.209-1.884,4.209-4.209V25.446c0-3.1,2.513-5.612,5.612-5.612h14.031c2.325,0,4.209-1.884,4.209-4.209   S41.802,11.415,39.477,11.415z"
+              },
+              "style": {
+                "background": "currentColor"
+              },
+              "children": [],
+              "metadata": {}
+            },
+            {
+              "id": "d330cc11284",
+              "is": "path",
+              "name": "element",
+              "attributes": {
+                "d": "M84.376,56.313c-2.324,0-4.21,1.885-4.21,4.21v14.03c0,3.1-2.513,5.612-5.612,5.612h-14.03c-2.324,0-4.21,1.884-4.21,4.21   c0,2.325,1.886,4.209,4.21,4.209h14.03c7.75,0,14.031-6.284,14.031-14.031v-14.03C88.585,58.198,86.699,56.313,84.376,56.313z"
+              },
+              "style": {
+                "background": "currentColor"
+              },
+              "children": [],
+              "metadata": {}
+            },
+            {
+              "id": "d330cc11285",
+              "is": "path",
+              "name": "element",
+              "attributes": {
+                "d": "M39.477,80.166H25.446c-3.1,0-5.612-2.513-5.612-5.612v-14.03c0-2.325-1.884-4.21-4.209-4.21s-4.209,1.885-4.209,4.21   v14.03c0,7.747,6.282,14.031,14.031,14.031h14.031c2.325,0,4.209-1.884,4.209-4.209C43.686,82.05,41.802,80.166,39.477,80.166z"
+              },
+              "style": {
+                "background": "currentColor"
+              },
+              "children": [],
+              "metadata": {}
+            }
+          ],
+          "metadata": {}
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": -3466,
+          "top": 733,
+          "right": -3066,
+          "bottom": 1033
+        }
+      },
+      "variant": {}
+    },
+    {
+      "label": "round square icon",
+      "is": "svg",
+      "style": {},
+      "attributes": {
+        "xmlns": "http://www.w3.org/2000/svg",
+        "xmlns:xlink": "http://www.w3.org/1999/xlink",
+        "version": "1.1",
+        "viewBox": "0 0 24 24",
+        "x": "0px",
+        "y": "0px"
+      },
+      "id": "ba6ac0ff8745",
+      "name": "component",
+      "children": [
+        {
+          "id": "ba6ac0ff8744",
+          "is": "path",
+          "name": "element",
+          "attributes": {
+            "d": "M17 21h-10c-2.209 0-4-1.791-4-4v-10c0-2.209 1.791-4 4-4h10c2.209 0 4 1.791 4 4v10c0 2.209-1.791 4-4 4zM19 7c0-1.105-0.895-2-2-2h-10c-1.105 0-2 0.895-2 2v10c0 1.105 0.895 2 2 2h10c1.105 0 2-0.895 2-2v-10z"
+          },
+          "style": {
+            "background": "currentColor"
+          },
+          "children": [],
+          "metadata": {}
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": 202,
+          "top": 83,
+          "right": 602,
+          "bottom": 383
+        }
+      },
+      "variant": {}
+    },
+    {
+      "label": "Borders icon 2",
+      "is": "svg",
+      "style": {},
+      "attributes": {
+        "width": "90px",
+        "height": "90px",
+        "viewBox": "0 0 90 90",
+        "version": "1.1",
+        "xmlns": "http://www.w3.org/2000/svg",
+        "xmlns:xlink": "http://www.w3.org/1999/xlink"
+      },
+      "id": "430b36f22788",
+      "name": "component",
+      "children": [
+        {
+          "id": "430b36f22778",
+          "is": "title",
+          "name": "element",
+          "attributes": {},
+          "style": {},
+          "children": [
+            {
+              "id": "430b36f22779",
+              "name": "text",
+              "label": "individual-border",
+              "value": "individual-border",
+              "style": {},
+              "children": [],
+              "metadata": {}
+            }
+          ],
+          "metadata": {}
+        },
+        {
+          "id": "430b36f22780",
+          "is": "desc",
+          "name": "element",
+          "attributes": {},
+          "style": {},
+          "children": [
+            {
+              "id": "430b36f22781",
+              "name": "text",
+              "label": "Created with Sketch.",
+              "value": "Created with Sketch.",
+              "style": {},
+              "children": [],
+              "metadata": {}
+            }
+          ],
+          "metadata": {}
+        },
+        {
+          "id": "430b36f22782",
+          "is": "g",
+          "name": "element",
+          "attributes": {
+            "id": "icons",
+            "stroke": "none",
+            "stroke-width": "1",
+            "fill": "none",
+            "fill-rule": "evenodd"
+          },
+          "style": {},
+          "children": [
+            {
+              "id": "430b36f22783",
+              "is": "g",
+              "name": "element",
+              "attributes": {
+                "id": "individual-border",
+                "fill": "#000000"
+              },
+              "style": {},
+              "children": [
+                {
+                  "id": "430b36f22784",
+                  "is": "polygon",
+                  "name": "element",
+                  "attributes": {
+                    "id": "Path",
+                    "points": "16.047619 80 73.952381 80 83 90 7 90"
+                  },
+                  "style": {},
+                  "children": [],
+                  "metadata": {}
+                },
+                {
+                  "id": "430b36f22785",
+                  "is": "polygon",
+                  "name": "element",
+                  "attributes": {
+                    "id": "Path",
+                    "points": "10 16.047619 10 73.952381 0 83 0 7"
+                  },
+                  "style": {},
+                  "children": [],
+                  "metadata": {}
+                },
+                {
+                  "id": "430b36f22786",
+                  "is": "polygon",
+                  "name": "element",
+                  "attributes": {
+                    "id": "Path",
+                    "points": "73.952381 10 16.047619 10 7 0 83 0"
+                  },
+                  "style": {},
+                  "children": [],
+                  "metadata": {}
+                },
+                {
+                  "id": "430b36f22787",
+                  "is": "polygon",
+                  "name": "element",
+                  "attributes": {
+                    "id": "Path",
+                    "points": "80 73.952381 80 16.047619 90 7 90 83"
+                  },
+                  "style": {},
+                  "children": [],
+                  "metadata": {}
+                }
+              ],
+              "metadata": {}
+            }
+          ],
+          "metadata": {}
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": -4060,
+          "top": 292,
+          "right": -3660,
+          "bottom": 592
+        }
+      },
+      "variant": {}
     }
   ]
 }

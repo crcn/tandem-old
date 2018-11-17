@@ -6,22 +6,14 @@ import {
   EmptySquareIcon,
   BordersIcon
 } from "../../../../../../../../icons/view.pc";
+import { memoize } from "tandem-common";
 
 export type Props = {
   connected?: boolean;
   selectedId: string;
+  connectedIcon?: any;
+  disconnectedIcon?: any;
 };
-
-const TOGGLE_OPTIONS: ButtonBarOption[] = [
-  {
-    icon: <EmptySquareIcon style={{ height: "100%" }} />,
-    value: true
-  },
-  {
-    icon: <BordersIcon style={{ height: "100%" }} />,
-    value: false
-  }
-];
 
 type State = {
   connected: boolean;
@@ -50,7 +42,7 @@ export default (Base: React.ComponentClass<BaseTblrInputProps>) =>
     render() {
       const { onToggleOptionChange } = this;
       const { connected } = this.state;
-      const { ...rest } = this.props;
+      const { connectedIcon, disconnectedIcon, ...rest } = this.props;
       return (
         <Base
           {...rest}
@@ -60,10 +52,23 @@ export default (Base: React.ComponentClass<BaseTblrInputProps>) =>
           })}
           togglerProps={{
             value: connected,
-            options: TOGGLE_OPTIONS,
+            options: getButtonBarOptions(connectedIcon, disconnectedIcon),
             onChange: onToggleOptionChange
           }}
         />
       );
     }
   };
+
+const getButtonBarOptions = memoize(
+  (connectedIcon: any, disconnectedIcon: any): ButtonBarOption[] => [
+    {
+      icon: connectedIcon || <EmptySquareIcon style={{ height: "100%" }} />,
+      value: true
+    },
+    {
+      icon: disconnectedIcon || <BordersIcon style={{ height: "100%" }} />,
+      value: false
+    }
+  ]
+);

@@ -199,7 +199,26 @@ describe(__filename + "#", () => {
     return ["Can change an element into an instance", module, module2];
   };
 
+  const case11 = () => {
+    let component = createPCComponent(null, "div", null, null, []);
+
+    const instance = createPCComponentInstance(component.id);
+
+    const module = createPCModule([component, instance]);
+
+    let module2 = module;
+
+    component = appendChildNode(
+      createPCSlot([createPCTextNode("ABC")]),
+      component
+    );
+    module2 = replaceNestedNode(component, component.id, module2);
+
+    return ["Creating a new slot creates a new virtual plug", module, module2];
+  };
+
   [
+    case11(),
     case1(),
     case2(),
     case3(),
@@ -248,6 +267,7 @@ describe(__filename + "#", () => {
       [newRootInspector] = refreshInspectorTree(newRootInspector, newGraph, [
         "a"
       ]);
+
       expect(zeroIds(rootInspector)).to.eql(zeroIds(newRootInspector));
     });
   });
