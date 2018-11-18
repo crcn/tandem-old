@@ -131,9 +131,9 @@
       "metadata": {}
     },
     {
-      "id": "6c81f23f21",
+      "id": "88d9afe1664",
       "name": "media-query",
-      "label": "Mobile2",
+      "label": "Mobile",
       "maxWidth": "1000",
       "children": [],
       "metadata": {}

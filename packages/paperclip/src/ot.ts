@@ -129,9 +129,7 @@ export const diffTreeNode = memoize(
   }
 );
 
-const IGNORE_DIFF_KEYS = {
-  metadata: true
-};
+const IGNORE_DIFF_KEYS = {};
 
 const PROHIBITED_DIFF_KEYS = {
   children: true,

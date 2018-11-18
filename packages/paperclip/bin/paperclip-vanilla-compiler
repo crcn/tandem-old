@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-const {translateModuleToVanilla, openPCConfig, loadFSDependencyGraphSync, getComponentGraphRefMap, getStyleVariableRefMap} = require('..');
+const {translateModuleToVanilla, openPCConfig, loadFSDependencyGraphSync, getComponentGraphRefMap, getStyleVariableRefMap, getMediaQueryRefMap} = require('..');
 const {addProtocol, FILE_PROTOCOL} = require('tandem-common');
 const migrate = require("paperclip-migrator");
 const fs = require('fs');
@@ -12,4 +12,4 @@ const { config, directory } = openPCConfig(path.dirname(absPath));
 const graph = loadFSDependencyGraphSync(config, directory, migrate);
 const entry = graph[absUri];
 
-console.log(translateModuleToVanilla(entry.content, getComponentGraphRefMap(entry.content, graph), getStyleVariableRefMap(entry.content, graph), absUri));
+console.log(translateModuleToVanilla(entry.content, getComponentGraphRefMap(entry.content, graph), getStyleVariableRefMap(entry.content, graph), getMediaQueryRefMap(entry.content, graph), absUri));

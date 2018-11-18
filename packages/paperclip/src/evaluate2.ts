@@ -1,13 +1,18 @@
-import { memoize, reuser, EMPTY_OBJECT, KeyValue } from "tandem-common";
+import { memoize, reuser, EMPTY_OBJECT, KeyValue, Bounds } from "tandem-common";
 import {
   PCModule,
   getComponentGraphRefMap,
   PCSourceTagNames,
-  getStyleVariableRefMap
+  getStyleVariableRefMap,
+  PCVisibleNode,
+  PCComponent,
+  PCVisibleNodeMetadataKey,
+  getMediaQueryRefMap
 } from "./dsl";
 import {
   compileContentNodeAsVanilla,
-  VanillaPCRenderers
+  VanillaPCRenderers,
+  WindowInfo
 } from "./vanilla-compiler";
 import { DependencyGraph } from "./graph";
 import { createSytheticDocument, SyntheticDocument } from "./synthetic";
@@ -60,6 +65,7 @@ const evaluateModule = memoize(
             EMPTY_OBJECT,
             variants[child.id] || EMPTY_OBJECT,
             EMPTY_OBJECT,
+            getWindowInfo(child as PCVisibleNode),
             usedRenderers,
             true
           );
@@ -67,6 +73,14 @@ const evaluateModule = memoize(
     );
   }
 );
+
+const getWindowInfo = (contentNode: PCVisibleNode): WindowInfo => {
+  const bounds: Bounds = contentNode.metadata[PCVisibleNodeMetadataKey.BOUNDS];
+  return {
+    width: Math.round(bounds.right - bounds.left),
+    height: Math.round(bounds.bottom - bounds.top)
+  };
+};
 
 const filterAssocRenderers = (
   module: PCModule,
@@ -94,6 +108,7 @@ const compileDependencyGraph = memoize((graph: DependencyGraph) => {
         contentNode,
         reuseNodeGraphMap(getComponentGraphRefMap(contentNode, graph)),
         reuseNodeGraphMap(getStyleVariableRefMap(contentNode, graph)),
+        reuseNodeGraphMap(getMediaQueryRefMap(contentNode, graph)),
         uri
       );
     }

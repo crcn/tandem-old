@@ -29,13 +29,24 @@ import {
   computeStyleWithVars,
   PCOverride,
   PCVariable,
-  PCStyleMixin
+  PCStyleMixin,
+  PCVariantTrigger,
+  PCVariantTriggerSourceType,
+  getPCNode,
+  PCVariantTriggerMediaQuerySource,
+  PCMediaQuery
 } from "./dsl";
 import * as path from "path";
 import { uniq } from "lodash";
 import { SyntheticElement } from "./synthetic";
 
 export type VanillaPCRenderers = KeyValue<VanillaPCRenderer>;
+
+export type WindowInfo = {
+  width: number;
+  height: number;
+};
+
 export type VanillaPCRenderer = (
   instanceSourceNodeId: string,
   instancePath: string,
@@ -43,6 +54,7 @@ export type VanillaPCRenderer = (
   style: any,
   variant: any,
   overrides: any,
+  windowInfo: WindowInfo,
   components: VanillaPCRenderers,
   isRoot?: boolean
 ) => SyntheticElement;
@@ -64,12 +76,14 @@ export const compileContentNodeAsVanilla = memoize(
     node: PCComponent | PCVisibleNode,
     refMap: KeyValue<PCComponent>,
     varMap: KeyValue<PCVariable>,
+    mediaQueryMap: KeyValue<PCMediaQuery>,
     sourceUri: string
   ) => {
     return new Function(
       `generateUID`,
       `merge`,
-      `return ` + translateContentNode(node, refMap, varMap, sourceUri)
+      `return ` +
+        translateContentNode(node, refMap, varMap, mediaQueryMap, sourceUri)
     )(generateUID, merge);
   }
 );
@@ -79,6 +93,7 @@ export const translateModuleToVanilla = memoize(
     module: PCModule,
     componentRefMap: KeyValue<PCComponent>,
     varMap: KeyValue<PCVariable>,
+    mediaQueryMap: KeyValue<PCMediaQuery>,
     sourceUri: string
   ) => {
     return module.children
@@ -93,6 +108,7 @@ export const translateModuleToVanilla = memoize(
             child,
             componentRefMap,
             varMap,
+            mediaQueryMap,
             sourceUri
           )}`
       )
@@ -105,6 +121,7 @@ const translateContentNode = memoize(
     node: PCComponent | PCVisibleNode | PCStyleMixin,
     componentRefMap: KeyValue<PCComponent>,
     varMap: KeyValue<PCVariable>,
+    mediaQueryMap: KeyValue<PCMediaQuery>,
     sourceUri: string
   ) => {
     let buffer = `(function() {`;
@@ -120,8 +137,8 @@ const translateContentNode = memoize(
     buffer += translateStaticOverrides(node as PCComponent, varMap, sourceUri);
     buffer += translateStaticVariants(node, varMap, sourceUri);
 
-    buffer += `return function(instanceSourceNodeId, instancePath, attributes, style, variant, overrides, components, isRoot) {
-      ${translateVariants(node)}
+    buffer += `return function(instanceSourceNodeId, instancePath, attributes, style, variant, overrides, windowInfo, components, isRoot) {
+      ${translateVariants(node, mediaQueryMap)}
       var childInstancePath = instancePath == null ? "" : (instancePath ? instancePath + "." : "") + instanceSourceNodeId;
 
       // tiny optimization
@@ -159,7 +176,7 @@ const translateVisibleNode = memoize(
           isContentNode
         )}, ${translateDynamicVariant(node)}, ${translateDynamicOverrides(
           node as PCComponent
-        )}, components, ${isContentNode ? "isRoot" : "false"})`;
+        )}, windowInfo, components, ${isContentNode ? "isRoot" : "false"})`;
       }
 
       return `{
@@ -221,7 +238,8 @@ const translateVisibleNode = memoize(
   }
 );
 const translateVariants = (
-  contentNode: PCVisibleNode | PCComponent | PCStyleMixin
+  contentNode: PCVisibleNode | PCComponent | PCStyleMixin,
+  mediaQueryMap: KeyValue<PCMediaQuery>
 ) => {
   const variants = (getTreeNodesByName(
     PCSourceTagNames.VARIANT,
@@ -230,10 +248,32 @@ const translateVariants = (
     .concat()
     .reverse();
 
+  const mediaTriggers = (getTreeNodesByName(
+    PCSourceTagNames.VARIANT_TRIGGER,
+    contentNode
+  ) as PCVariantTrigger[]).filter(
+    trigger =>
+      trigger.source &&
+      trigger.source.type === PCVariantTriggerSourceType.MEDIA_QUERY
+  );
+
   let buffer = ``;
 
   for (const variant of variants) {
-    buffer += `if (variant["${variant.id}"]) {`;
+    const variantTriggers = mediaTriggers.filter(
+      trigger => trigger.targetVariantId === variant.id
+    );
+    const mediaQueries = variantTriggers
+      .map(
+        trigger =>
+          mediaQueryMap[
+            (trigger.source as PCVariantTriggerMediaQuerySource).mediaQueryId
+          ]
+      )
+      .filter(Boolean);
+    buffer += `if (variant["${variant.id}"] ${
+      mediaQueries.length ? "|| " + translateMediaCondition(mediaQueries) : ""
+    }) {`;
     buffer += `overrides = merge(_${contentNode.id}Variants._${
       variant.id
     }, overrides); `;
@@ -242,6 +282,25 @@ const translateVariants = (
   }
 
   return buffer;
+};
+
+const translateMediaCondition = (queries: PCMediaQuery[]) => {
+  const conditions: string[] = [];
+
+  for (const media of queries) {
+    let buffer = [];
+    if (media.minWidth) {
+      buffer.push(`windowInfo.width >= ${media.minWidth}`);
+    }
+
+    if (media.maxWidth) {
+      buffer.push(`windowInfo.width <= ${media.maxWidth}`);
+    }
+
+    conditions.push(`(${buffer.join(" && ")})`);
+  }
+
+  return "(" + conditions.join(" || ") + ")";
 };
 
 const translateElementChild = memoize((node: PCBaseElementChild) => {

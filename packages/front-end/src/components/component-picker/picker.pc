@@ -314,10 +314,10 @@
       "children": [],
       "metadata": {
         "bounds": {
-          "left": 309,
-          "top": 415,
-          "right": 409,
-          "bottom": 515
+          "left": 313,
+          "top": 410,
+          "right": 413,
+          "bottom": 510
         }
       },
       "variant": {}

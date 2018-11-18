@@ -1391,9 +1391,40 @@ export const getStyleVariableRefMap = memoize(
     >
 );
 
+export const getMediaQueryRefMap = memoize(
+  (node: PCNode, graph: DependencyGraph) =>
+    nodeAryToRefMap(getMediaQueryGraphRefs(node, graph)) as KeyValue<PCVariable>
+);
+
 export const getVariableRefMap = memoize(
   (graph: DependencyGraph) =>
     nodeAryToRefMap(getGlobalVariables(graph)) as KeyValue<PCVariable>
+);
+
+export const getMediaQueryGraphRefs = memoize(
+  (node: PCNode, graph: DependencyGraph): PCMediaQuery[] => {
+    const allRefs: PCMediaQuery[] = [];
+    const triggers = getTreeNodesByName(
+      PCSourceTagNames.VARIANT_TRIGGER,
+      node
+    ) as PCVariantTrigger[];
+
+    return uniq(
+      triggers
+        .filter(trigger => {
+          return (
+            trigger.source &&
+            trigger.source.type === PCVariantTriggerSourceType.MEDIA_QUERY
+          );
+        })
+        .map(trigger => {
+          return getPCNode(
+            (trigger.source as PCVariantTriggerMediaQuerySource).mediaQueryId,
+            graph
+          ) as PCMediaQuery;
+        })
+    );
+  }
 );
 
 export const getStyleVariableGraphRefs = memoize(

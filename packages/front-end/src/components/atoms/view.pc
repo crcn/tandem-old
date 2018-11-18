@@ -161,7 +161,8 @@
       "name": "style-mixin",
       "label": "Base font + nobreak",
       "style": {
-        "white-space": "nowrap"
+        "white-space": "nowrap",
+        "font-family": "Avenir Next"
       },
       "styleMixins": {
         "dc3b39eb1275": {
