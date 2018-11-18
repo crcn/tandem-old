@@ -32,7 +32,7 @@ export default compose(
   withHandlers(() => {
     let _canvas: HTMLCanvasElement;
     return {
-      onCanvas: ({ setCanvas, draw }: InnerProps) => (
+      onCanvas: ({ setCanvas, draw = noop }: InnerProps) => (
         canvas: HTMLCanvasElement
       ) => {
         setCanvas((_canvas = canvas));
@@ -100,7 +100,7 @@ export default compose(
       canvas,
       value
     }: InnerProps) {
-      if (canvas && this.props.draw !== draw) {
+      if (canvas && this.props.draw !== draw && this.props.draw) {
         setImmediate(() => {
           const {
             width,

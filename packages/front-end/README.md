@@ -2,5 +2,5 @@ BUGS:
 
 IMMEDIATE:
 
-- [ ] filters
 - [ ] gradient inputs
+- [ ] filters

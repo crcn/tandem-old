@@ -703,7 +703,7 @@
                       "id": "b117fdbf558566",
                       "name": "text",
                       "label": "Text",
-                      "value": "Typography",
+                      "value": "Text",
                       "style": {},
                       "children": [],
                       "metadata": {},
