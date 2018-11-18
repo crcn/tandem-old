@@ -369,7 +369,7 @@
                           "targetIdPath": [
                             "7149f8192506"
                           ],
-                          "value": "Justify content",
+                          "value": "Justify Content",
                           "name": "override",
                           "children": []
                         },
@@ -1495,6 +1495,81 @@
                 }
               },
               "label": "size controls"
+            },
+            {
+              "id": "3693ea499167",
+              "variant": {},
+              "is": "7149f8192509",
+              "name": "component-instance",
+              "attributes": {},
+              "style": {
+                "display": "block"
+              },
+              "children": [
+                {
+                  "id": "3693ea499168",
+                  "propertyName": "text",
+                  "targetIdPath": [
+                    "7149f8192506"
+                  ],
+                  "value": "White Space",
+                  "name": "override",
+                  "children": []
+                },
+                {
+                  "id": "3693ea499169",
+                  "propertyName": "style",
+                  "targetIdPath": [
+                    "7149f8192506"
+                  ],
+                  "value": {},
+                  "name": "override",
+                  "children": []
+                },
+                {
+                  "slotId": "e73029b416045",
+                  "id": "3693ea499170",
+                  "children": [
+                    {
+                      "id": "3693ea499171",
+                      "variant": {},
+                      "is": "d2bdce074664",
+                      "name": "component-instance",
+                      "attributes": {},
+                      "style": {
+                        "display": "block",
+                        "width": "100%"
+                      },
+                      "children": [
+                        {
+                          "id": "3693ea499172",
+                          "variantId": null,
+                          "propertyName": "text",
+                          "targetIdPath": [
+                            "67e386c7935"
+                          ],
+                          "value": "nowrap",
+                          "name": "override",
+                          "children": []
+                        }
+                      ],
+                      "metadata": {
+                        "bounds": {
+                          "left": 18,
+                          "top": 339,
+                          "right": 218.8212880775559,
+                          "bottom": 439
+                        }
+                      },
+                      "label": "white space input"
+                    }
+                  ],
+                  "metadata": {},
+                  "name": "plug"
+                }
+              ],
+              "metadata": {},
+              "label": "white space"
             }
           ],
           "metadata": {},

@@ -51,6 +51,16 @@ export const POSITION_MENU_OPTIONS: DropdownMenuOption[] = [
   "fixed"
 ].map(dropdownMenuOptionFromValue);
 
+export const WHITESPACE_MENU_OPTIONS: DropdownMenuOption[] = [
+  undefined,
+  "normal",
+  "nowrap",
+  "pre",
+  "pre-wrap",
+  "pre-line",
+  "inherit"
+].map(dropdownMenuOptionFromValue);
+
 const FLEX_WRAP_OPTIONS: DropdownMenuOption[] = [
   undefined,
   "nowrap",
@@ -201,6 +211,14 @@ export default (Base: React.ComponentClass<BaseLayoutProps>) =>
             options: POSITION_MENU_OPTIONS,
             onChangeComplete: propertyChangeCallback(
               "position",
+              onPropertyChangeComplete
+            )
+          }}
+          whiteSpaceInputProps={{
+            value: computedStyleInfo.style["white-space"],
+            options: WHITESPACE_MENU_OPTIONS,
+            onChangeComplete: propertyChangeCallback(
+              "white-space",
               onPropertyChangeComplete
             )
           }}
