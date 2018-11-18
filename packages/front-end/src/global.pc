@@ -47,7 +47,7 @@
       "type": "color",
       "children": [],
       "metadata": {},
-      "value": "rgba(113, 188, 253, 1)"
+      "value": "rgba(0, 181, 255, 1)"
     },
     {
       "id": "24ce1e4d22305",
@@ -79,7 +79,7 @@
     {
       "id": "32c1eebd7630",
       "name": "variable",
-      "value": "rgba(113, 188, 253, 0.15)",
+      "value": "rgba(0, 181, 255, 0.1)",
       "label": "blue 3",
       "type": "color",
       "children": [],
@@ -108,15 +108,6 @@
       "name": "variable",
       "value": "rgba(240, 240, 240, 1)",
       "label": "grey 7",
-      "type": "color",
-      "children": [],
-      "metadata": {}
-    },
-    {
-      "id": "32237e6824912",
-      "name": "variable",
-      "value": "rgba(226, 246, 255, 1)",
-      "label": "blue 3",
       "type": "color",
       "children": [],
       "metadata": {}

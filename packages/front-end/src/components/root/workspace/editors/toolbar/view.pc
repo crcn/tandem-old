@@ -260,7 +260,7 @@
           "id": "e0030d447938",
           "name": "variant",
           "label": "active",
-          "isDefault": false,
+          "isDefault": true,
           "children": [],
           "metadata": {}
         },
@@ -697,7 +697,8 @@
           "value": {
             "font-size": "unset",
             "display": "block",
-            "height": "1em"
+            "height": "1em",
+            "color": "var(--24ce1e4d13456)"
           },
           "name": "override",
           "children": []

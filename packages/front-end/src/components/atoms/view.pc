@@ -50,10 +50,10 @@
       "children": [],
       "metadata": {
         "bounds": {
-          "left": 578,
-          "top": 33,
-          "right": 667,
-          "bottom": 58
+          "left": 584,
+          "top": -40,
+          "right": 673,
+          "bottom": -15
         }
       }
     },
