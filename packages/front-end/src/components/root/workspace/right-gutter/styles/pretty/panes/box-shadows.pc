@@ -32,7 +32,9 @@
           "bottom": 789
         }
       },
-      "variant": {}
+      "variant": {
+        "a9acb8771": true
+      }
     },
     {
       "label": "Inner Shadows",
@@ -65,7 +67,9 @@
       "controllers": [
         "./box-shadows-inner-controller.tsx"
       ],
-      "variant": {}
+      "variant": {
+        "a9acb8771": true
+      }
     },
     {
       "label": "Box Shadows",

@@ -142,7 +142,8 @@
               "label": "label",
               "value": "label",
               "style": {
-                "margin-bottom": "unset"
+                "margin-bottom": "0px",
+                "margin-left": "2px"
               },
               "children": [],
               "metadata": {},

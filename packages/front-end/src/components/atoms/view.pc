@@ -10,11 +10,9 @@
       "style": {
         "color": "rgba(136, 136, 136, 1)",
         "font-size": "9px",
-        "margin-bottom": "4px",
         "display": "inline-block",
         "opacity": "1",
         "pointer": "default",
-        "margin-left": "2px",
         "user-select": "none",
         "font-weight": "500",
         "cursor": "default"

@@ -761,10 +761,10 @@
           "attributes": {},
           "style": {
             "display": "block",
-            "width": "22px",
+            "width": "26px",
             "flex-shrink": "0",
             "margin-right": "6px",
-            "height": "22px"
+            "height": "26px"
           },
           "children": [
             {
@@ -801,7 +801,7 @@
               ],
               "value": {
                 "display": "block",
-                "height": "22px"
+                "height": "26px"
               },
               "name": "override",
               "children": []
@@ -888,8 +888,8 @@
               "attributes": {},
               "style": {
                 "display": "block",
-                "height": "22px",
-                "margin-right": "6px"
+                "height": "12px",
+                "margin-right": "0px"
               },
               "children": [],
               "metadata": {
@@ -2380,7 +2380,7 @@
           "value": {
             "flex-direction": "column",
             "padding-left": "unset",
-            "margin-right": "21px"
+            "margin-right": "37px"
           },
           "name": "override",
           "children": []
@@ -2406,6 +2406,31 @@
                   ],
                   "value": {
                     "color": "var(--24ce1e4d482)"
+                  },
+                  "name": "override",
+                  "children": []
+                },
+                {
+                  "id": "34f68f2618517",
+                  "propertyName": "style",
+                  "targetIdPath": [
+                    "8bf103e229",
+                    "8bf103e217"
+                  ],
+                  "value": {
+                    "color": "var(--d8f6340b1442)"
+                  },
+                  "name": "override",
+                  "children": []
+                },
+                {
+                  "id": "34f68f2618518",
+                  "propertyName": "style",
+                  "targetIdPath": [
+                    "8bf103e229"
+                  ],
+                  "value": {
+                    "color": "var(--d8f6340b1442)"
                   },
                   "name": "override",
                   "children": []
@@ -2449,6 +2474,18 @@
                   },
                   "name": "override",
                   "children": []
+                },
+                {
+                  "id": "34f68f2618519",
+                  "propertyName": "style",
+                  "targetIdPath": [
+                    "8bf103e229"
+                  ],
+                  "value": {
+                    "color": "var(--d8f6340b1442)"
+                  },
+                  "name": "override",
+                  "children": []
                 }
               ],
               "metadata": {
@@ -2486,6 +2523,18 @@
                   ],
                   "value": {
                     "color": "rgba(123, 123, 123, 1)"
+                  },
+                  "name": "override",
+                  "children": []
+                },
+                {
+                  "id": "34f68f2618520",
+                  "propertyName": "style",
+                  "targetIdPath": [
+                    "8bf103e229"
+                  ],
+                  "value": {
+                    "color": "var(--d8f6340b1442)"
                   },
                   "name": "override",
                   "children": []
@@ -2529,6 +2578,18 @@
                   "value": {
                     "opacity": 1,
                     "color": "rgba(123, 123, 123, 1)"
+                  },
+                  "name": "override",
+                  "children": []
+                },
+                {
+                  "id": "34f68f2618521",
+                  "propertyName": "style",
+                  "targetIdPath": [
+                    "8bf103e229"
+                  ],
+                  "value": {
+                    "color": "var(--d8f6340b1442)"
                   },
                   "name": "override",
                   "children": []

@@ -35,9 +35,9 @@
                   "label": "Text",
                   "value": "Label",
                   "style": {
-                    "margin-bottom": "unset",
                     "margin-left": "2px",
-                    "letter-spacing": "0.05em"
+                    "letter-spacing": "0.05em",
+                    "margin-bottom": "0px"
                   },
                   "children": [],
                   "metadata": {},

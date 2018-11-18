@@ -1449,7 +1449,8 @@
         }
       },
       "variant": {
-        "af62926b2038": false
+        "af62926b2038": false,
+        "af62926b2037": true
       },
       "controllers": [
         "./spacing-input-controller.tsx"
