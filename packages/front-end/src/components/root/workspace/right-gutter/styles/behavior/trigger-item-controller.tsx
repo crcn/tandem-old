@@ -68,7 +68,7 @@ export default (Base: React.ComponentClass<BaseTriggerItemProps>) =>
       return (
         <Base
           {...rest}
-          onClick={onClick}
+          backgroundProps={{ onClick }}
           variant={cx({ selected })}
           sourceInputProps={{
             value: valueOption && valueOption.value,

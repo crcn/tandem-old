@@ -390,6 +390,17 @@
           "value": {},
           "name": "override",
           "children": []
+        },
+        {
+          "id": "28d601d41705",
+          "name": "variant-trigger",
+          "targetVariantId": null,
+          "source": {
+            "type": 1,
+            "state": "hover"
+          },
+          "children": [],
+          "metadata": {}
         }
       ],
       "metadata": {
@@ -417,12 +428,31 @@
         "padding-top": "6px",
         "padding-right": "12px",
         "padding-bottom": "6px",
-        "padding-left": "12px"
+        "padding-left": "12px",
+        "position": "relative"
       },
       "attributes": {},
       "id": "26f623457441",
       "name": "component",
       "children": [
+        {
+          "id": "28d601d41706",
+          "label": "background",
+          "is": "div",
+          "name": "element",
+          "attributes": {},
+          "style": {
+            "box-sizing": "border-box",
+            "display": "block",
+            "background": "transparent",
+            "width": "100%",
+            "height": "100%",
+            "position": "absolute",
+            "left": "0px"
+          },
+          "children": [],
+          "metadata": {}
+        },
         {
           "id": "36c603e97695",
           "is": "50e32bec2591",
