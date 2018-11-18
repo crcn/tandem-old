@@ -30,6 +30,8 @@ import {
   isPCComponentInstance,
   computeStyleValue,
   isPCComponentOrInstance,
+  getVariantTriggers,
+  PCVariantTriggerSourceType,
   getPCNodeModule,
   getPCVariants
 } from "paperclip";
@@ -81,6 +83,7 @@ import {
 import { EMPTY_ARRAY } from "tandem-common";
 import { getTreeNodesByName } from "tandem-common";
 import { getPCNodeContentNode } from "paperclip";
+import { PCVariant } from "paperclip/src";
 export const compilePaperclipModuleToReact = (
   entry: PCDependency,
   graph: DependencyGraph
@@ -417,11 +420,12 @@ const translateStyleVariantOverrides = (
 
     // override id is added as className to target element when imported. Necessary
     // to ensure that edge-cases like portals still maintain override values.
-    let selector = `._${
+    let targetSelector = `._${
       override.targetIdPath.length === 0 && instance.id === component.id
         ? instance.id
         : override.id
     }`;
+    let selector = targetSelector;
 
     // If an instance, then is a child of component and we should include in the scope
     // of the style override to ensure that we don't override other instances.
@@ -437,9 +441,39 @@ const translateStyleVariantOverrides = (
         override.variantId
       }"] && overrides.variantPrefixSelectors["${
         override.variantId
-      }"].map(prefix => prefix + "${selector}").join(", ") + ", " || "") + "._${
+      }"].map(prefix => prefix + "${targetSelector}").join(", ") + ", " || "") + "._${
         override.variantId
-      } ${selector}, ._${override.variantId}${selector}`;
+      } ${targetSelector}, ._${override.variantId}${targetSelector}`;
+
+      const variant = getPCNode(override.variantId, context.graph) as PCVariant;
+
+      const variantTriggers = getVariantTriggers(
+        variant,
+        component as PCComponent
+      );
+      const variantTriggerSelectors = variantTriggers
+        .map(trigger => {
+          if (!trigger.source) {
+            return null;
+          }
+          if (trigger.source.type === PCVariantTriggerSourceType.STATE) {
+            return `._${component.id}:${
+              trigger.source.state
+            } ${targetSelector}`;
+          } else if (
+            trigger.source.type === PCVariantTriggerSourceType.MEDIA_QUIERY
+          ) {
+            console.error(
+              `Media queries not supported yet for variant triggers.`
+            );
+            return null;
+          }
+        })
+        .filter(Boolean);
+
+      if (variantTriggerSelectors.length) {
+        selector += ", " + variantTriggerSelectors.join(", ");
+      }
     }
 
     context = addOpenTag(`"${selector} {" + \n`, context);

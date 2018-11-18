@@ -429,6 +429,7 @@ export const refreshInspectorTree = (
 const isUnreppedSourceNode = (node: PCNode) =>
   node.name === PCSourceTagNames.VARIABLE ||
   node.name === PCSourceTagNames.VARIANT_TRIGGER ||
+  node.name === PCSourceTagNames.MEDIA_QUERY ||
   node.name === PCSourceTagNames.OVERRIDE ||
   node.name === PCSourceTagNames.VARIANT;
 

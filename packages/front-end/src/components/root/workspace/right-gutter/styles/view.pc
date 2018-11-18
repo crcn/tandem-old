@@ -289,7 +289,7 @@
           "id": "4e40c2b98540",
           "name": "variant",
           "label": "triggers tab",
-          "isDefault": true,
+          "isDefault": false,
           "children": [],
           "metadata": {}
         },
@@ -415,7 +415,7 @@
           "id": "ed9bceb07742",
           "name": "variant",
           "label": "show properties tab",
-          "isDefault": false,
+          "isDefault": true,
           "children": [],
           "metadata": {}
         },

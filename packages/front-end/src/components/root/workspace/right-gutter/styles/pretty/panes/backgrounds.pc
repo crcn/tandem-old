@@ -360,7 +360,8 @@
                         "display": "block",
                         "height": "9px",
                         "position": "relative",
-                        "top": "2px"
+                        "top": "2px",
+                        "cursor": "pointer"
                       },
                       "children": [],
                       "metadata": {},

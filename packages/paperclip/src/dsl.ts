@@ -46,6 +46,7 @@ export enum PCSourceTagNames {
 
   // Slots are sections of components where text & elements can be inserted into
   SLOT = "slot",
+  MEDIA_QUERY = "media-query",
 
   // Plugs provide content for slots
   PLUG = "plug",
@@ -319,7 +320,9 @@ export type PCDependency = Dependency<PCModule>;
 
 export type PCModule = {
   version: string;
-  children: Array<PCComponent | PCVisibleNode | PCVariable | PCStyleMixin>;
+  children: Array<
+    PCComponent | PCVisibleNode | PCVariable | PCStyleMixin | PCMediaQuery
+  >;
 } & PCBaseSourceNode<PCSourceTagNames.MODULE>;
 
 export type PCComponentChild = PCVisibleNode | PCVariant | PCOverride | PCSlot;
@@ -377,6 +380,13 @@ export type PCSlot = {
   // export name
   label?: string;
 } & PCBaseSourceNode<PCSourceTagNames.SLOT>;
+
+// TODO - may need to tack more info on here
+export type PCMediaQuery = {
+  minWidth?: number;
+  maxWidth?: number;
+  label?: string;
+} & PCBaseSourceNode<PCSourceTagNames.MEDIA_QUERY>;
 
 export enum PCVariableType {
   UNIT = "unit",
@@ -507,7 +517,8 @@ export type PCNode =
   | PCVariable
   | PCElementStyleMixin
   | PCTextStyleMixin
-  | PCVariantTrigger;
+  | PCVariantTrigger
+  | PCMediaQuery;
 
 export type PCComputedOverrideMap = {
   [COMPUTED_OVERRIDE_DEFAULT_KEY]: PCComputedOverrideVariantMap;
@@ -527,7 +538,7 @@ export type PCComputedNoverOverrideMap = {
 };
 
 export enum PCVariantTriggerSourceType {
-  MEDIA_QUIRY,
+  MEDIA_QUIERY,
   STATE
 }
 
@@ -561,7 +572,7 @@ export type PCBaseVariantTriggerSource<
 
 export type PCVariantTriggerMediaQuerySource = {
   mediaQueryId: string;
-} & PCBaseVariantTriggerSource<PCVariantTriggerSourceType.MEDIA_QUIRY>;
+} & PCBaseVariantTriggerSource<PCVariantTriggerSourceType.MEDIA_QUIERY>;
 
 export type PCVariantTriggerStateSource = {
   state: PCElementState;
@@ -666,6 +677,20 @@ export const createPCVariant = (
   name: PCSourceTagNames.VARIANT,
   label,
   isDefault,
+  children: EMPTY_ARRAY,
+  metadata: EMPTY_OBJECT
+});
+
+export const createPCMediaQuery = (
+  label?: string,
+  minWidth?: number,
+  maxWidth?: number
+): PCMediaQuery => ({
+  id: generateUID(),
+  name: PCSourceTagNames.MEDIA_QUERY,
+  label,
+  minWidth,
+  maxWidth,
   children: EMPTY_ARRAY,
   metadata: EMPTY_OBJECT
 });
@@ -970,6 +995,22 @@ export const getGlobalVariables = memoize(
   }
 );
 
+export const getGlobalMediaQueries = memoize(
+  (graph: DependencyGraph): PCMediaQuery[] => {
+    return Object.values(graph).reduce(
+      (variables, dependency: PCDependency) => {
+        return [
+          ...variables,
+          ...dependency.content.children.filter(
+            child => child.name === PCSourceTagNames.MEDIA_QUERY
+          )
+        ];
+      },
+      EMPTY_ARRAY
+    );
+  }
+);
+
 export const filterVariablesByType = memoize(
   (variables: PCVariable[], type: PCVariableType) => {
     return variables.filter(variable => variable.type === type);
@@ -999,6 +1040,15 @@ export const getComponentVariantTriggers = (component: PCComponent) => {
     PCSourceTagNames.VARIANT_TRIGGER,
     component
   ) as PCVariantTrigger[];
+};
+
+export const getVariantTriggers = (
+  variant: PCVariant,
+  component: PCComponent
+) => {
+  return getComponentVariantTriggers(component).filter(
+    trigger => trigger.targetVariantId === variant.id
+  );
 };
 
 export const getInstanceSlotContent = memoize(

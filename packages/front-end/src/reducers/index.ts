@@ -189,7 +189,10 @@ import {
   VARIANT_TRIGGER_TARGET_CHANGED,
   VariantTriggerSourceChanged,
   VariantTriggerTargetChanged,
-  REMOVE_VARIANT_TRIGGER_CLICKED
+  REMOVE_VARIANT_TRIGGER_CLICKED,
+  ADD_MEDIA_QUERY_BUTTON_CLICKED,
+  MEDIA_QUERY_CHANGED,
+  MediaQueryChanged
 } from "../actions";
 import {
   queueOpenFile,
@@ -343,6 +346,7 @@ import {
   PCElement,
   getInspectorInstanceShadowContentNode,
   getInspectorInstanceShadow,
+  persistAddMediaQuery,
   updateAlts,
   persistReplacePCNode,
   getDerrivedPCLabel,
@@ -1164,6 +1168,39 @@ export const canvasReducer = (state: RootState, action: Action) => {
       }, state);
       return state;
     }
+    case MEDIA_QUERY_CHANGED: {
+      const { target, properties } = action as MediaQueryChanged;
+      state = persistRootState(state => {
+        const newTarget = {
+          ...target,
+          ...properties
+        };
+
+        if (!newTarget.label) {
+          state = persistRemovePCNode(target, state);
+        } else {
+          state = persistReplacePCNode(newTarget, target, state);
+        }
+        return state;
+      }, state);
+      return state;
+    }
+    case ADD_MEDIA_QUERY_BUTTON_CLICKED: {
+      const globalFileUri = getGlobalFileUri(state.projectInfo);
+      const globalDependency = state.graph[globalFileUri];
+      state = persistRootState(state => {
+        state = persistAddMediaQuery(
+          null,
+          null,
+          null,
+          globalDependency.content,
+          state
+        );
+        return state;
+      }, state);
+      return state;
+    }
+
     case REMOVE_VARIANT_TRIGGER_CLICKED: {
       const { trigger } = action as RemoveVariantTriggerClicked;
       state = persistRootState(state => {

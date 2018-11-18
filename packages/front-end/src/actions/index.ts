@@ -25,7 +25,7 @@ import {
   PCVariant,
   PCVariantTriggerSource,
   PCVariableType,
-  PCOverride
+  PCMediaQuery
 } from "paperclip";
 import { RegisteredComponent } from "..";
 import {
@@ -264,6 +264,10 @@ export const REMOVE_VARIANT_TRIGGER_CLICKED = "REMOVE_VARIANT_TRIGGER_CLICKED";
 
 export const VARIANT_TRIGGER_SOURCE_CHANGED = "VARIANT_TRIGGER_SOURCE_CHANGED";
 export const VARIANT_TRIGGER_TARGET_CHANGED = "VARIANT_TRIGGER_TARGET_CHANGED";
+export const ADD_MEDIA_QUERY_BUTTON_CLICKED = "ADD_MEDIA_QUERY_BUTTON_CLICKED";
+export const REMOVE_MEDIA_QUERY_BUTTON_CLICK =
+  "REMOVE_MEDIA_QUERY_BUTTON_CLICK";
+export const MEDIA_QUERY_CHANGED = "MEDIA_QUERY_CHANGED";
 
 export type WrappedEvent<T> = {
   sourceEvent: T;
@@ -568,6 +572,11 @@ export type ResizerMouseDown = {} & WrappedEvent<React.MouseEvent<any>>;
 
 export type ResizerPathStoppedMoving = {} & ResizerPathMoved;
 
+export type MediaQueryChanged = {
+  target: PCMediaQuery;
+  properties: Partial<PCMediaQuery>;
+} & Action;
+
 export type FrameModeChangeComplete = {
   frame: Frame;
   mode: FrameMode;
@@ -758,6 +767,15 @@ export const fileItemContextMenuCopyPathClicked = publicActionCreator(
   })
 );
 
+export const mediaQueryChanged = (
+  target: PCMediaQuery,
+  properties: Partial<PCMediaQuery>
+): MediaQueryChanged => ({
+  type: MEDIA_QUERY_CHANGED,
+  target,
+  properties
+});
+
 export const fileItemContextMenuRenameClicked = publicActionCreator(
   (item: FSItem): FileItemContextMenuAction => ({
     item,
@@ -771,6 +789,10 @@ export const fileItemContextMenuOpenClicked = publicActionCreator(
     type: FILE_ITEM_CONTEXT_MENU_OPEN_CLICKED
   })
 );
+
+export const addMediaQueryButtonClick = (): Action => ({
+  type: ADD_MEDIA_QUERY_BUTTON_CLICKED
+});
 
 export const fileItemContextMenuOpenInFinderClicked = publicActionCreator(
   (item: FSItem): FileItemContextMenuAction => ({

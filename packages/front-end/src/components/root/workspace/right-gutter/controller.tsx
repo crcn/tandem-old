@@ -8,7 +8,8 @@ import {
   getSyntheticNodeStyleColors,
   getInspectorSyntheticNode,
   InspectorTreeNodeName,
-  InspectorContent
+  InspectorContent,
+  getGlobalMediaQueries
 } from "paperclip";
 import { EMPTY_ARRAY, EMPTY_OBJECT } from "tandem-common";
 import { RightGutterTab } from "./tab.pc";
@@ -50,6 +51,7 @@ export default (Base: React.ComponentClass<BaseRightGutterProps>) =>
         EMPTY_OBJECT;
 
       const globalVariables = getGlobalVariables(root.graph);
+      const globalMediaQueries = getGlobalMediaQueries(root.graph);
 
       const selectedInspectorNodes = root.selectedInspectorNodes;
       const hasInspectorNodes = Boolean(selectedInspectorNodes.length);
@@ -99,14 +101,15 @@ export default (Base: React.ComponentClass<BaseRightGutterProps>) =>
           variant={cx({
             stylesTab: availableCurrentTab === TAB_NAMES[0],
             propertiesTab: availableCurrentTab === TAB_NAMES[1],
+            globalsTab: selectedInspectorNodes.length === 0,
             unselectedNodes: selectedInspectorNodes.length === 0
           })}
-          variablesSectionProps={{
+          globalPropertiesProps={{
             dispatch,
-            show: selectedInspectorNodes.length === 0,
             globalFileUri,
             globalVariables,
-            fontFamilies
+            fontFamilies,
+            globalMediaQueries
           }}
           stylesProps={{
             projectOptions,

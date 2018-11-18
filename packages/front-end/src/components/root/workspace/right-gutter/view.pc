@@ -35,7 +35,7 @@
       "variant": {
         "1a11459311": false,
         "2842a72d17": false,
-        "3a6461fb1987864": false,
+        "3a6461fb1987864": true,
         "2c202ccf114501": true
       },
       "label": "Variables Preview"
@@ -595,6 +595,26 @@
               "label": "Properties"
             },
             {
+              "id": "9a387b6146090",
+              "is": "9a387b6144810",
+              "label": "Global Properties",
+              "name": "component-instance",
+              "attributes": {},
+              "style": {
+                "display": "none"
+              },
+              "children": [],
+              "metadata": {
+                "bounds": {
+                  "left": 967.717427010752,
+                  "top": 456.07355179898303,
+                  "right": 1067.717427010752,
+                  "bottom": 556.0735517989831
+                }
+              },
+              "variant": {}
+            },
+            {
               "id": "5f14f7815",
               "is": "6b6efac4",
               "name": "component-instance",
@@ -624,33 +644,6 @@
                 }
               },
               "label": "Code Tab"
-            },
-            {
-              "id": "3a6461fb1889703",
-              "is": "3a6461fb1889702",
-              "name": "component-instance",
-              "attributes": {},
-              "style": {
-                "display": "none"
-              },
-              "children": [
-                {
-                  "id": "3a6461fb2007497",
-                  "variantId": "3a6461fb1987864",
-                  "propertyName": "style",
-                  "targetIdPath": [
-                    "3a6461fb1889703"
-                  ],
-                  "value": {
-                    "display": "block"
-                  },
-                  "name": "override",
-                  "children": []
-                }
-              ],
-              "metadata": {},
-              "variant": {},
-              "label": "variables section"
             }
           ],
           "metadata": {
@@ -682,7 +675,7 @@
           "id": "1a11459311",
           "name": "variant",
           "label": "styles tab",
-          "isDefault": true,
+          "isDefault": false,
           "children": [],
           "metadata": {}
         },
@@ -710,7 +703,7 @@
         {
           "id": "3a6461fb1987864",
           "name": "variant",
-          "label": "variables tab",
+          "label": "globals tab",
           "isDefault": false,
           "children": [],
           "metadata": {}
@@ -758,6 +751,19 @@
           ],
           "value": {
             "display": "flex"
+          },
+          "name": "override",
+          "children": []
+        },
+        {
+          "id": "9a387b6152491",
+          "variantId": "3a6461fb1987864",
+          "propertyName": "style",
+          "targetIdPath": [
+            "9a387b6146090"
+          ],
+          "value": {
+            "display": "block"
           },
           "name": "override",
           "children": []
@@ -883,6 +889,77 @@
         }
       },
       "variant": {}
+    },
+    {
+      "label": "Global Properties",
+      "is": "div",
+      "style": {
+        "box-sizing": "border-box",
+        "display": "block",
+        "background": "var(--bc891e755312)"
+      },
+      "attributes": {},
+      "id": "9a387b6144810",
+      "name": "component",
+      "children": [
+        {
+          "id": "3a6461fb1889703",
+          "is": "3a6461fb1889702",
+          "name": "component-instance",
+          "attributes": {},
+          "style": {
+            "display": "block"
+          },
+          "children": [
+            {
+              "id": "3a6461fb2007497",
+              "variantId": "3a6461fb1987864",
+              "propertyName": "style",
+              "targetIdPath": [
+                "3a6461fb1889703"
+              ],
+              "value": {
+                "display": "block"
+              },
+              "name": "override",
+              "children": []
+            }
+          ],
+          "metadata": {},
+          "variant": {},
+          "label": "variables section"
+        },
+        {
+          "id": "66811b5c36297",
+          "is": "66811b5c421",
+          "label": "Media Queries Pane",
+          "name": "component-instance",
+          "attributes": {},
+          "style": {},
+          "children": [],
+          "metadata": {
+            "bounds": {
+              "left": 303,
+              "top": 209,
+              "right": 403,
+              "bottom": 309
+            }
+          },
+          "variant": {}
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": 752,
+          "top": 402,
+          "right": 1206,
+          "bottom": 1132
+        }
+      },
+      "variant": {},
+      "controllers": [
+        "./global-properties-controller.tsx"
+      ]
     }
   ]
 }
