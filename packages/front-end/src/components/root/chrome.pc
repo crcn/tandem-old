@@ -242,14 +242,15 @@
             "width": "6px",
             "height": "6px",
             "display": "inline-block",
-            "background": "var(--32ef79b7820935)",
+            "background": "var(--24ce1e4d13456)",
             "border-bottom-left-radius": "99px",
             "border-top-left-radius": "99px",
             "border-top-right-radius": "99px",
             "border-bottom-right-radius": "99px",
             "margin-left": "8px",
             "position": "relative",
-            "top": "1px"
+            "top": "1px",
+            "color": "var(--24ce1e4d13456)"
           },
           "name": "override",
           "children": []
