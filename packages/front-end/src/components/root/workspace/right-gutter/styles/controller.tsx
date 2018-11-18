@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as cx from "classnames";
 import { BaseStylesProps } from "./view.pc";
 import { Dispatch } from "redux";
 import {
@@ -7,7 +8,9 @@ import {
   DependencyGraph,
   InspectorNode,
   PCVariable,
-  computeStyleInfo
+  computeStyleInfo,
+  getInspectorContentNode,
+  isComponent
 } from "paperclip";
 import { FontFamily, ProjectOptions } from "../../../../../state";
 
@@ -24,8 +27,30 @@ export type Props = {
   graph: DependencyGraph;
 } & BaseStylesProps;
 
+enum Tab {
+  PROPERTIES,
+  TRIGGERS
+}
+
+export type State = {
+  tab: Tab;
+};
+
 export default (Base: React.ComponentClass<BaseStylesProps>) =>
-  class RightGutterController extends React.PureComponent<Props> {
+  class RightGutterController extends React.PureComponent<Props, State> {
+    state = {
+      tab: Tab.PROPERTIES
+    };
+    onTriggersTabClick = () => {
+      this.setState({
+        tab: Tab.TRIGGERS
+      });
+    };
+    onPropertiesTabClick = () => {
+      this.setState({
+        tab: Tab.PROPERTIES
+      });
+    };
     render() {
       const {
         visible,
@@ -40,6 +65,8 @@ export default (Base: React.ComponentClass<BaseStylesProps>) =>
         documentColors,
         ...rest
       } = this.props;
+      const { onTriggersTabClick, onPropertiesTabClick } = this;
+      const { tab } = this.state;
       if (!selectedInspectorNodes.length || !visible) {
         return null;
       }
@@ -53,16 +80,30 @@ export default (Base: React.ComponentClass<BaseStylesProps>) =>
         selectedVariant,
         graph
       );
+
+      const contentNode = getInspectorContentNode(
+        selectedInspectorNodes[0],
+        rootInspectorNode
+      );
+      const contentSourceNode = getPCNode(contentNode.sourceNodeId, graph);
+
       return (
         <Base
-          variantsProps={{
-            dispatch,
-            rootInspectorNode,
-            selectedInspectorNodes,
-            selectedVariant,
-            graph
+          {...rest}
+          variant={cx({
+            propertiesTab: tab === Tab.PROPERTIES,
+            triggersTab: tab === Tab.TRIGGERS,
+            showPropertiesTab: Boolean(
+              contentSourceNode && isComponent(contentSourceNode)
+            )
+          })}
+          propertiesTabButonProps={{
+            onClick: onPropertiesTabClick
           }}
-          prettyProps={{
+          triggersTabButtonProps={{
+            onClick: onTriggersTabClick
+          }}
+          propertiesProps={{
             projectOptions,
             globalVariables,
             selectedVariant,
@@ -81,7 +122,6 @@ export default (Base: React.ComponentClass<BaseStylesProps>) =>
             graph,
             selectedVariant
           }}
-          {...rest}
         />
       );
     }

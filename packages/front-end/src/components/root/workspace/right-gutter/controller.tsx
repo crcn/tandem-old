@@ -10,20 +10,14 @@ import {
   InspectorTreeNodeName,
   InspectorContent
 } from "paperclip";
-import {
-  memoize,
-  EMPTY_ARRAY,
-  getNestedTreeNodeById,
-  EMPTY_OBJECT
-} from "tandem-common";
+import { EMPTY_ARRAY, EMPTY_OBJECT } from "tandem-common";
 import { RightGutterTab } from "./tab.pc";
 import * as cx from "classnames";
-import { InspectorNode } from "paperclip";
 import { BaseRightGutterProps } from "./view.pc";
 import { RootState, getGlobalFileUri } from "../../../../state";
 import { Dispatch } from "redux";
 
-const TAB_NAMES = ["styles", "properties"];
+const TAB_NAMES = ["style", "properties"];
 const INSPECTOR_NODE_TAB_NAMES = ["properties"];
 
 export type Props = {

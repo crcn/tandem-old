@@ -1,15 +1,11 @@
 import * as React from "react";
 import {
   SyntheticNode,
-  SyntheticElement,
   DependencyGraph,
   InspectorNode,
-  SyntheticDocument,
   PCVariant,
   PCVariable,
-  ComputedStyleInfo,
-  getSyntheticSourceNode,
-  PCVisibleNode
+  ComputedStyleInfo
 } from "paperclip";
 import { BaseElementStylerProps } from "./view.pc";
 import { Dispatch } from "redux";

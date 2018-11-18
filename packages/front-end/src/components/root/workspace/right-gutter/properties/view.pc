@@ -869,7 +869,7 @@
               ],
               "value": {
                 "padding": "0px",
-                "padding-bottom": "8px"
+                "padding-bottom": "6px"
               },
               "name": "override",
               "children": []

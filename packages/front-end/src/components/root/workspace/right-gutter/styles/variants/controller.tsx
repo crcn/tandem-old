@@ -18,7 +18,6 @@ import {
   addVariantButtonClicked,
   removeVariantButtonClicked
 } from "../../../../../../actions";
-import { BaseVariantsProps } from "./view.pc";
 
 export type Props = {
   dispatch: Dispatch<any>;
@@ -33,7 +32,7 @@ export type InnerProps = {
   onRemoveVariantButtonClick: any;
 } & Props;
 
-export default (Base: React.ComponentClass<BaseVariantsProps>) =>
+export default (Base: React.ComponentClass<any>) =>
   class VariantsController extends React.PureComponent<Props> {
     onAddVariantButtonClick = () => {
       this.props.dispatch(addVariantButtonClicked());
