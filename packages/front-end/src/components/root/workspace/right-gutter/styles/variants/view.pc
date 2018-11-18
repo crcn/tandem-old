@@ -14,9 +14,7 @@
         "padding-top": "8px",
         "padding-right": "12px",
         "padding-bottom": "6px",
-        "font-size": "11px",
-        "border-bottom": "1px solid var(--d8f6340b1442)",
-        "box-shadow": "inset  1px 0px 0px 0px var(--f63574de434), inset  0px -1px 0px 0px var(--f63574de434)"
+        "font-size": "11px"
       },
       "attributes": {},
       "id": "2ea220e26239",

@@ -19,7 +19,6 @@ import {
 } from "../../../../inputs/dropdown/controller";
 import { BaseElementPropertiesProps } from "./view.pc";
 import { Dispatch } from "redux";
-import { InputProperties } from "./input.pc";
 import { memoize } from "tandem-common";
 
 const TYPE_MENU_OPTIONS: DropdownMenuOption[] = [

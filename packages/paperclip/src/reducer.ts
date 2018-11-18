@@ -76,14 +76,14 @@ export const paperclipReducer = <
     case FILE_CHANGED: {
       const { uri, eventType } = action as any;
       if (isPaperclipUri(uri)) {
-        if (eventType === FileChangedEventType.ADD) {
+        if (eventType === FileChangedEventType.UNLINK) {
           const newGraph = { ...state.graph };
           delete newGraph[uri];
           state = {
             ...(state as any),
             graph: newGraph
           };
-        } else if (eventType === FileChangedEventType.UNLINK) {
+        } else if (eventType === FileChangedEventType.ADD) {
           state = queueOpenFile(uri, state);
         }
       }
@@ -102,7 +102,9 @@ export const paperclipReducer = <
         state.graph
       );
 
-      return pruneDependencyGraph({ ...(state as any), graph });
+      state = pruneDependencyGraph({ ...(state as any), graph });
+
+      return state;
     }
   }
   return state;

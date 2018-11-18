@@ -134,7 +134,7 @@ export default (Base: React.ComponentClass<BaseFileNavigatorProps>) =>
         this.props.activeEditorUri &&
         getFileFromUri(this.props.activeEditorUri, this.props.rootDirectory);
 
-      const targetFileNode = activeFileNode || selectedFileNode;
+      const targetFileNode = selectedFileNode || activeFileNode;
 
       const dirFile = targetFileNode
         ? targetFileNode.name === FSItemTagNames.DIRECTORY

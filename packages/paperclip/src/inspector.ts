@@ -226,16 +226,19 @@ const removeSourceMap = (
   inspectorNode: InspectorNode,
   map: KeyValue<string[]>
 ) => {
-  const walk = (node: InspectorNode) => {
-    if (!node.sourceNodeId) {
+  const walk = (current: InspectorNode) => {
+    if (!current.sourceNodeId) {
       return;
     }
-    const index = map[node.sourceNodeId].indexOf(inspectorNode.id);
+    const index = map[current.sourceNodeId].indexOf(current.id);
     if (index !== -1) {
-      map[inspectorNode.sourceNodeId].splice(index, 1);
+      map[current.sourceNodeId].splice(index, 1);
+      if (map[current.sourceNodeId].length === 0) {
+        map[current.sourceNodeId] = undefined;
+      }
     }
 
-    for (const child of node.children) {
+    for (const child of current.children) {
       walk(child as InspectorNode);
     }
   };
@@ -375,7 +378,7 @@ export const refreshInspectorTree = (
     );
     if (
       dep &&
-      sourceMap[dep.content.id] &&
+      newSourceMap[dep.content.id] &&
       moduleUris.indexOf(dep.uri) !== -1
     ) {
       moduleChildren.push(moduleInspectorNode as InspectorNode);

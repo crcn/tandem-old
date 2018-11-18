@@ -397,7 +397,6 @@ import {
   inspectorNodeInShadow,
   getSyntheticInspectorNode
 } from "paperclip";
-import { IframeHTMLAttributes } from "react";
 
 const ZOOM_SENSITIVITY = process.platform === "win32" ? 2500 : 250;
 const MIN_ZOOM = 0.02;
@@ -524,6 +523,9 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
             },
             state
           );
+
+          // refresh in case of PC file opened
+          state = refreshModuleInspectorNodes(state);
         }
       } else if (
         eventType === FileChangedEventType.UNLINK ||
@@ -561,7 +563,6 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
           state
         );
 
-        state = refreshModuleInspectorNodes(state);
         state = pruneOpenFiles(state);
       }
 
