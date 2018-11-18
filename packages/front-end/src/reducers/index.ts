@@ -151,12 +151,11 @@ import {
   FRAME_BOUNDS_CHANGED,
   FrameBoundsChanged,
   ACTIVE_EDITOR_URI_DIRS_LOADED,
-  FILE_ITEM_RIGHT_CLICKED,
-  FileItemRightClicked,
   FILE_ITEM_CONTEXT_MENU_RENAME_CLICKED,
   FileItemContextMenuAction,
   FILE_NAVIGATOR_ITEM_BLURRED,
   SYNTHETIC_NODE_CONTEXT_MENU_CONVERT_TO_COMPONENT_CLICKED,
+  SYNTHETIC_NODE_CONTEXT_MENU_WRAP_IN_ELEMENT_CLICKED,
   SyntheticNodeContextMenuAction,
   SYNTHETIC_NODE_CONTEXT_MENU_WRAP_IN_SLOT_CLICKED,
   SYNTHETIC_NODE_CONTEXT_MENU_SELECT_PARENT_CLICKED,
@@ -165,7 +164,6 @@ import {
   CSS_RESET_PROPERTY_OPTION_CLICKED,
   ResetPropertyOptionClicked,
   EXPORT_NAME_CHANGED,
-  ExportNameChanged,
   SYNTHETIC_NODE_CONTEXT_MENU_CONVERT_TO_STYLE_MIXIN_CLICKED,
   QUICK_SEARCH_RESULT_ITEM_SPLIT_BUTTON_CLICKED,
   QuickSearchResultItemSplitButtonClicked,
@@ -339,6 +337,7 @@ import {
   getInspectorInstanceShadowContentNode,
   getInspectorInstanceShadow,
   updateAlts,
+  persistReplacePCNode,
   getDerrivedPCLabel,
   persistConvertInspectorNodeStyleToMixin,
   getSyntheticSourceUri,
@@ -380,12 +379,11 @@ import {
   getNestedTreeNodeById,
   EMPTY_ARRAY,
   mergeFSItems,
-  convertFlatFilesToNested2,
   stripProtocol,
   addProtocol,
+  arraySplice,
   FILE_PROTOCOL,
-  updateFSItemAlts,
-  replaceNestedNode
+  updateFSItemAlts
 } from "tandem-common";
 import { clamp, last } from "lodash";
 import {
@@ -2732,6 +2730,35 @@ const shortcutReducer = (state: RootState, action: Action): RootState => {
     case SYNTHETIC_NODE_CONTEXT_MENU_CONVERT_TO_COMPONENT_CLICKED: {
       const { item } = action as SyntheticNodeContextMenuAction;
       state = convertSyntheticNodeToComponent(item, state);
+      return state;
+    }
+
+    case SYNTHETIC_NODE_CONTEXT_MENU_WRAP_IN_ELEMENT_CLICKED: {
+      const { item } = action as SyntheticNodeContextMenuAction;
+      state = persistRootState(state => {
+        const document = getSyntheticVisibleNodeDocument(
+          item.id,
+          state.documents
+        );
+        const inspectorNode = getSyntheticInspectorNode(
+          item,
+          document,
+          state.sourceNodeInspector,
+          state.graph
+        );
+        const sourceNode = getInspectorSourceNode(
+          inspectorNode,
+          state.sourceNodeInspector,
+          state.graph
+        ) as PCVisibleNode;
+        state = persistReplacePCNode(
+          createPCElement("div", null, null, [sourceNode], "Element"),
+          sourceNode,
+          state
+        );
+
+        return state;
+      }, state);
       return state;
     }
 

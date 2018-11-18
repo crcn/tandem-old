@@ -923,6 +923,14 @@ export const persistRemoveVariantOverride = <TState extends PCEditorState>(
   return replaceDependencyGraphPCNode(null, override, state);
 };
 
+export const persistReplacePCNode = <TState extends PCEditorState>(
+  newChild: PCNode,
+  oldChild: PCNode,
+  state: TState
+) => {
+  return replaceDependencyGraphPCNode(newChild, oldChild, state);
+};
+
 export const persistStyleMixin = <TState extends PCEditorState>(
   styleMixins: StyleMixins,
   node: SyntheticVisibleNode,

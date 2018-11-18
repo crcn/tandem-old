@@ -10,12 +10,8 @@ import {
 import { eventChannel } from "redux-saga";
 import { mapKeys } from "lodash";
 import {
-  shortcutKeyDown,
-  SHORTCUT_DELETE_KEY_DOWN,
-  SHORTCUT_ESCAPE_KEY_DOWN,
   FILE_ITEM_RIGHT_CLICKED,
   FileItemRightClicked,
-  fileItemContextMenuOpenInFinderClicked,
   fileItemContextMenuDeleteClicked,
   fileItemContextMenuCopyPathClicked,
   fileItemContextMenuOpenClicked,
@@ -27,6 +23,7 @@ import {
   syntheticNodeContextMenuSelectParentClicked,
   syntheticNodeContextMenuSelectSourceNodeClicked,
   syntheticNodeContextMenuConvertToComponentClicked,
+  syntheticNodeContextMenuWrapInElementClicked,
   syntheticNodeContextMenuConvertToStyleMixinClicked,
   syntheticNodeContextMenuRemoveClicked,
   EDITOR_TAB_RIGHT_CLICKED,
@@ -56,8 +53,7 @@ import {
   getPCNodeModule,
   SyntheticNode,
   getInspectorSyntheticNode,
-  isTextLikePCNode,
-  isElementLikePCNode,
+  inspectorNodeInShadow,
   hasTextStyles
 } from "paperclip";
 
@@ -260,7 +256,8 @@ export const createShortcutSaga = ({
                   label: "Remove",
                   action: syntheticNodeContextMenuRemoveClicked(syntheticNode)
                 },
-                sourceNode.name !== PCSourceTagNames.COMPONENT
+                sourceNode.name !== PCSourceTagNames.COMPONENT &&
+                !inspectorNodeInShadow(inspectorNode, state.sourceNodeInspector)
                   ? {
                       type: ContextMenuOptionType.ITEM,
                       label: "Convert to Component",
@@ -269,8 +266,20 @@ export const createShortcutSaga = ({
                       )
                     }
                   : null,
+
+                sourceNode.name !== PCSourceTagNames.COMPONENT &&
+                !inspectorNodeInShadow(inspectorNode, state.sourceNodeInspector)
+                  ? {
+                      type: ContextMenuOptionType.ITEM,
+                      label: "Wrap in Element",
+                      action: syntheticNodeContextMenuWrapInElementClicked(
+                        syntheticNode
+                      )
+                    }
+                  : null,
                 contentNode.name === PCSourceTagNames.COMPONENT &&
-                contentNode.id !== sourceNode.id
+                contentNode.id !== sourceNode.id &&
+                !inspectorNodeInShadow(inspectorNode, state.sourceNodeInspector)
                   ? {
                       type: ContextMenuOptionType.ITEM,
                       label: "Wrap in Slot",
