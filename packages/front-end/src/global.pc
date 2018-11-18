@@ -111,6 +111,15 @@
       "type": "color",
       "children": [],
       "metadata": {}
+    },
+    {
+      "id": "32237e6824912",
+      "name": "variable",
+      "value": "rgba(226, 246, 255, 1)",
+      "label": "blue 3",
+      "type": "color",
+      "children": [],
+      "metadata": {}
     }
   ]
 }

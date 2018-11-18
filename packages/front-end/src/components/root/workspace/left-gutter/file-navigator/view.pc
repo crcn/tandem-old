@@ -666,7 +666,7 @@
           "id": "f8ce55d76837",
           "name": "variant",
           "label": "blur",
-          "isDefault": true,
+          "isDefault": false,
           "children": [],
           "metadata": {}
         },

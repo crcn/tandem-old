@@ -362,7 +362,11 @@ const translateStaticVariants = (
 
   for (const variant of variants) {
     buffer += `_${variant.id}: {`;
-    for (const node of variantNodes) {
+
+    // we want to start with the _last_ items first, then work our way to the front
+    // so that we have proper order of operations
+    for (let i = variantNodes.length; i--; ) {
+      const node = variantNodes[i];
       const overrideMap = getOverrideMap(
         node,
         node.name === PCSourceTagNames.COMPONENT_INSTANCE ||

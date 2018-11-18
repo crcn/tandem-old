@@ -54,6 +54,20 @@
                     "ec3f9b216703"
                   ],
                   "value": {
+                    "background": "currentColor"
+                  },
+                  "name": "override",
+                  "children": []
+                },
+                {
+                  "id": "32237e6824916",
+                  "variantId": "308dd31382",
+                  "propertyName": "style",
+                  "targetIdPath": [
+                    "ec3f9b216703"
+                  ],
+                  "value": {
+                    "color": "rgba(231, 19, 19, 1)",
                     "background": "var(--32ef79b7820935)"
                   },
                   "name": "override",
@@ -167,7 +181,6 @@
                 "67e386c7935"
               ],
               "value": {
-                "font-family": "Avenir Next\nfont-size",
                 "color": "rgba(255, 255, 255, 1)"
               },
               "name": "override",
@@ -277,7 +290,7 @@
             "899e765b754"
           ],
           "value": {
-            "color": "rgba(255, 255, 255, 1)"
+            "color": "rgba(199, 20, 20, 1)"
           },
           "name": "override",
           "children": []
@@ -294,6 +307,126 @@
       "controllers": [
         "./inherit-item-controller.tsx"
       ],
+      "variant": {}
+    },
+    {
+      "label": "aaaaaa",
+      "is": "div",
+      "style": {
+        "box-sizing": "border-box",
+        "display": "block"
+      },
+      "attributes": {},
+      "id": "e3ab5eb11209",
+      "name": "component",
+      "children": [
+        {
+          "id": "e3ab5eb11207",
+          "label": "Element",
+          "is": "div",
+          "name": "element",
+          "attributes": {},
+          "style": {
+            "box-sizing": "border-box",
+            "display": "block"
+          },
+          "children": [
+            {
+              "id": "e3ab5eb11208",
+              "name": "text",
+              "label": "Text",
+              "value": "something",
+              "style": {},
+              "children": [],
+              "metadata": {}
+            }
+          ],
+          "metadata": {}
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": 858.6579813080135,
+          "top": -38.896739255378705,
+          "right": 958.6579813080135,
+          "bottom": 61.103260744621295
+        }
+      },
+      "variant": {}
+    },
+    {
+      "label": "bbbbbbbbbbb",
+      "is": "div",
+      "style": {
+        "box-sizing": "border-box",
+        "display": "block"
+      },
+      "attributes": {},
+      "id": "e3ab5eb11225",
+      "name": "component",
+      "children": [
+        {
+          "id": "e3ab5eb11224",
+          "is": "e3ab5eb11209",
+          "label": "aaaaaa",
+          "name": "component-instance",
+          "attributes": {},
+          "style": {},
+          "children": [
+            {
+              "id": "e3ab5eb11233",
+              "variantId": "e3ab5eb11231",
+              "propertyName": "style",
+              "targetIdPath": [
+                "e3ab5eb11208"
+              ],
+              "value": {
+                "color": "rgba(0, 255, 106, 1)"
+              },
+              "name": "override",
+              "children": []
+            }
+          ],
+          "metadata": {
+            "bounds": {
+              "left": 868.6579813080135,
+              "top": -28.896739255378705,
+              "right": 968.6579813080135,
+              "bottom": 71.1032607446213
+            }
+          },
+          "variant": {}
+        },
+        {
+          "id": "e3ab5eb11231",
+          "name": "variant",
+          "label": "bbb",
+          "isDefault": true,
+          "children": [],
+          "metadata": {}
+        },
+        {
+          "id": "e3ab5eb11232",
+          "variantId": "e3ab5eb11231",
+          "propertyName": "style",
+          "targetIdPath": [
+            "e3ab5eb11224"
+          ],
+          "value": {
+            "color": "rgba(255, 43, 43, 1)"
+          },
+          "name": "override",
+          "children": []
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": 1061.4246569004042,
+          "top": -61.426369876755444,
+          "right": 1161.4246569004042,
+          "bottom": 38.573630123244556
+        }
+      },
       "variant": {}
     }
   ]

@@ -384,7 +384,7 @@ const resetElementStyle = (
   synthetic: SyntheticVisibleNode
 ) => {
   if (target.namespaceURI === SVG_XMLNS) {
-    // TODO - reset SVG info
+    target.setAttribute("style", "");
   } else {
     removeClickableStyle(target, synthetic);
     target.setAttribute("style", "");

@@ -279,25 +279,35 @@
                   "id": "cdcf193c25",
                   "name": "text",
                   "label": "x",
-                  "value": "X",
+                  "value": "x",
                   "style": {
                     "display": "block",
                     "width": "100%"
                   },
                   "children": [],
-                  "metadata": {}
+                  "metadata": {},
+                  "styleMixins": {
+                    "33b5126b196": {
+                      "priority": 0
+                    }
+                  }
                 },
                 {
                   "id": "cdcf193c23",
                   "name": "text",
                   "label": "y",
-                  "value": "Y",
+                  "value": "y",
                   "style": {
                     "display": "block",
                     "width": "100%"
                   },
                   "children": [],
-                  "metadata": {}
+                  "metadata": {},
+                  "styleMixins": {
+                    "33b5126b196": {
+                      "priority": 0
+                    }
+                  }
                 },
                 {
                   "id": "328486381",
@@ -309,7 +319,12 @@
                     "width": "100%"
                   },
                   "children": [],
-                  "metadata": {}
+                  "metadata": {},
+                  "styleMixins": {
+                    "33b5126b196": {
+                      "priority": 0
+                    }
+                  }
                 },
                 {
                   "id": "328486382",
@@ -321,7 +336,12 @@
                     "width": "100%"
                   },
                   "children": [],
-                  "metadata": {}
+                  "metadata": {},
+                  "styleMixins": {
+                    "33b5126b196": {
+                      "priority": 0
+                    }
+                  }
                 }
               ],
               "metadata": {}
