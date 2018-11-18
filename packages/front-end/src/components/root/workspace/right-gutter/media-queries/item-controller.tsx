@@ -17,14 +17,14 @@ export default (Base: React.ComponentClass<BaseMediaQueryItemProps>) =>
     onMinWidthChange = (value: string) => {
       this.props.dispatch(
         mediaQueryChanged(this.props.mediaQuery, {
-          minWidth: value && Number(value)
+          minWidth: value
         })
       );
     };
     onMaxWidthChange = (value: string) => {
       this.props.dispatch(
         mediaQueryChanged(this.props.mediaQuery, {
-          maxWidth: value && Number(value)
+          maxWidth: value
         })
       );
     };

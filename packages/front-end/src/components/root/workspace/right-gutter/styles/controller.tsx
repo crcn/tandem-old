@@ -10,6 +10,7 @@ import {
   InspectorNode,
   PCVariable,
   computeStyleInfo,
+  PCMediaQuery,
   getComponentVariantTriggers,
   getInspectorContentNode,
   isComponent,
@@ -28,6 +29,7 @@ export type Props = {
   selectedVariant: PCVariant;
   fontFamilies: FontFamily[];
   globalVariables: PCVariable[];
+  globalMediaQueries: PCMediaQuery[];
   graph: DependencyGraph;
 } & BaseStylesProps;
 
@@ -64,6 +66,7 @@ export default (Base: React.ComponentClass<BaseStylesProps>) =>
         fontFamilies,
         graph,
         projectOptions,
+        globalMediaQueries,
         selectedInspectorNodes,
         rootInspectorNode,
         documentColors,
@@ -112,7 +115,8 @@ export default (Base: React.ComponentClass<BaseStylesProps>) =>
           behaviorProps={{
             dispatch,
             variants,
-            variantTriggers
+            variantTriggers,
+            globalMediaQueries
           }}
           propertiesTabButonProps={{
             onClick: onPropertiesTabClick

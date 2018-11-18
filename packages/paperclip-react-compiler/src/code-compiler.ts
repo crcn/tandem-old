@@ -31,7 +31,9 @@ import {
   computeStyleValue,
   isPCComponentOrInstance,
   getVariantTriggers,
+  PCMediaQuery,
   PCVariantTriggerSourceType,
+  PCVariantTriggerMediaQuerySource,
   getPCNodeModule,
   getPCVariants
 } from "paperclip";
@@ -83,7 +85,7 @@ import {
 import { EMPTY_ARRAY } from "tandem-common";
 import { getTreeNodesByName } from "tandem-common";
 import { getPCNodeContentNode } from "paperclip";
-import { PCVariant } from "paperclip/src";
+import { PCVariant, PCVariantTrigger } from "paperclip/src";
 export const compilePaperclipModuleToReact = (
   entry: PCDependency,
   graph: DependencyGraph
@@ -426,6 +428,7 @@ const translateStyleVariantOverrides = (
         : override.id
     }`;
     let selector = targetSelector;
+    let baseSelector = selector;
 
     // If an instance, then is a child of component and we should include in the scope
     // of the style override to ensure that we don't override other instances.
@@ -436,12 +439,15 @@ const translateStyleVariantOverrides = (
     // if variant is defined, then it will be defined at the component level. Note that
     // we'll need to include combo variants here at some point. Also note that component ID isn't necessary
     // here since variant IDS are specific to components.
+    let mediaTriggers: PCVariantTrigger[] = [];
     if (override.variantId) {
-      selector = `" + (overrides.variantPrefixSelectors && overrides.variantPrefixSelectors["${
+      baseSelector = `" + (overrides.variantPrefixSelectors && overrides.variantPrefixSelectors["${
         override.variantId
       }"] && overrides.variantPrefixSelectors["${
         override.variantId
-      }"].map(prefix => prefix + "${targetSelector}").join(", ") + ", " || "") + "._${
+      }"].map(prefix => prefix + "${targetSelector}").join(", ") + ", " || "") + " `;
+
+      selector = `${baseSelector} ._${
         override.variantId
       } ${targetSelector}, ._${override.variantId}${targetSelector}`;
 
@@ -451,6 +457,13 @@ const translateStyleVariantOverrides = (
         variant,
         component as PCComponent
       );
+
+      mediaTriggers = variantTriggers.filter(
+        trigger =>
+          trigger.source &&
+          trigger.source.type === PCVariantTriggerSourceType.MEDIA_QUERY
+      );
+
       const variantTriggerSelectors = variantTriggers
         .map(trigger => {
           if (!trigger.source) {
@@ -460,13 +473,6 @@ const translateStyleVariantOverrides = (
             return `._${component.id}:${
               trigger.source.state
             } ${targetSelector}`;
-          } else if (
-            trigger.source.type === PCVariantTriggerSourceType.MEDIA_QUIERY
-          ) {
-            console.error(
-              `Media queries not supported yet for variant triggers.`
-            );
-            return null;
           }
         })
         .filter(Boolean);
@@ -483,8 +489,54 @@ const translateStyleVariantOverrides = (
       context
     );
     context = addCloseTag(`"}" + \n`, context);
+
+    if (mediaTriggers.length) {
+      let mediaText = "@media all";
+
+      mediaText += mediaTriggers
+        .map(trigger => {
+          let buffer = "";
+          const source = trigger.source as PCVariantTriggerMediaQuerySource;
+          const mediaQuery = getPCNode(
+            source.mediaQueryId,
+            context.graph
+          ) as PCMediaQuery;
+          if (!mediaQuery) {
+            return null;
+          }
+          if (mediaQuery.minWidth) {
+            buffer += ` and (min-width: ${px(mediaQuery.minWidth)})`;
+          }
+          if (mediaQuery.maxWidth) {
+            buffer += ` and (max-width: ${px(mediaQuery.maxWidth)})`;
+          }
+
+          return buffer;
+        })
+        .filter(Boolean)
+        .join(", ");
+      context = addOpenTag(`"${mediaText} {" + \n`, context);
+      context = addOpenTag(
+        `"${baseSelector} ${targetSelector} {" + \n`,
+        context
+      );
+      context = translateStyle(
+        getPCNode(last(override.targetIdPath), context.graph) as ContentNode,
+        override.value,
+        context
+      );
+      context = addCloseTag(`"}" + \n`, context);
+      context = addCloseTag(`"}" + \n`, context);
+    }
   }
   return context;
+};
+
+const px = (value: any) => {
+  if (!isNaN(Number(value))) {
+    return `${value}px`;
+  }
+  return value;
 };
 
 const translateStyleValue = (

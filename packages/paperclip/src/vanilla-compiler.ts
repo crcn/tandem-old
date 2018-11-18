@@ -82,7 +82,11 @@ export const translateModuleToVanilla = memoize(
     sourceUri: string
   ) => {
     return module.children
-      .filter(child => child.name !== PCSourceTagNames.VARIABLE)
+      .filter(
+        child =>
+          child.name !== PCSourceTagNames.VARIABLE &&
+          child.name !== PCSourceTagNames.MEDIA_QUERY
+      )
       .map(
         (child: PCComponent | PCVisibleNode | PCStyleMixin) =>
           `exports._${child.id} = ${translateContentNode(

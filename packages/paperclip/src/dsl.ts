@@ -383,8 +383,8 @@ export type PCSlot = {
 
 // TODO - may need to tack more info on here
 export type PCMediaQuery = {
-  minWidth?: number;
-  maxWidth?: number;
+  minWidth?: string;
+  maxWidth?: string;
   label?: string;
 } & PCBaseSourceNode<PCSourceTagNames.MEDIA_QUERY>;
 
@@ -538,7 +538,7 @@ export type PCComputedNoverOverrideMap = {
 };
 
 export enum PCVariantTriggerSourceType {
-  MEDIA_QUIERY,
+  MEDIA_QUERY,
   STATE
 }
 
@@ -572,7 +572,7 @@ export type PCBaseVariantTriggerSource<
 
 export type PCVariantTriggerMediaQuerySource = {
   mediaQueryId: string;
-} & PCBaseVariantTriggerSource<PCVariantTriggerSourceType.MEDIA_QUIERY>;
+} & PCBaseVariantTriggerSource<PCVariantTriggerSourceType.MEDIA_QUERY>;
 
 export type PCVariantTriggerStateSource = {
   state: PCElementState;
@@ -683,8 +683,8 @@ export const createPCVariant = (
 
 export const createPCMediaQuery = (
   label?: string,
-  minWidth?: number,
-  maxWidth?: number
+  minWidth?: string,
+  maxWidth?: string
 ): PCMediaQuery => ({
   id: generateUID(),
   name: PCSourceTagNames.MEDIA_QUERY,

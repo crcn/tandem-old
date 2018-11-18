@@ -1354,8 +1354,8 @@ export const persistAddVariable = <TState extends PCEditorState>(
 
 export const persistAddMediaQuery = <TState extends PCEditorState>(
   label: string,
-  minWidth: number,
-  maxWidth: number,
+  minWidth: string,
+  maxWidth: string,
   module: PCModule,
   state: TState
 ) => {

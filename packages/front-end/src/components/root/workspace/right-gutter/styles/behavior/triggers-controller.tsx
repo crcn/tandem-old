@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Dispatch } from "redux";
 import * as cx from "classnames";
-import { PCVariantTrigger, PCVariant } from "paperclip";
+import { PCVariantTrigger, PCVariant, PCMediaQuery } from "paperclip";
 import { BaseTriggersPaneProps, TriggerItem } from "./triggers.pc";
 import {
   addVariantTriggerButtonClicked,
@@ -11,6 +11,7 @@ export type Props = {
   dispatch: Dispatch<any>;
   variantTriggers: PCVariantTrigger[];
   variants: PCVariant[];
+  globalMediaQueries: PCMediaQuery[];
 };
 type State = {
   selectedVariantTrigger: PCVariantTrigger;
@@ -63,12 +64,19 @@ export default (Base: React.ComponentClass<BaseTriggersPaneProps>) =>
     render() {
       const { onAddTriggerClick, onRemoveTriggerClick, onTriggerClick } = this;
       const { selectedVariantTrigger } = this.state;
-      const { variantTriggers, variants, dispatch, ...rest } = this.props;
+      const {
+        variantTriggers,
+        variants,
+        globalMediaQueries,
+        dispatch,
+        ...rest
+      } = this.props;
       const items = variantTriggers.map(trigger => (
         <TriggerItem
           selected={
             selectedVariantTrigger && selectedVariantTrigger.id === trigger.id
           }
+          globalMediaQueries={globalMediaQueries}
           onClick={() => onTriggerClick(trigger)}
           dispatch={dispatch}
           trigger={trigger}

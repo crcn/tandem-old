@@ -133,9 +133,8 @@
     {
       "id": "6c81f23f21",
       "name": "media-query",
-      "label": "Mobile",
-      "minWidth": 0,
-      "maxWidth": 100,
+      "label": "Mobile2",
+      "maxWidth": "1000",
       "children": [],
       "metadata": {}
     }

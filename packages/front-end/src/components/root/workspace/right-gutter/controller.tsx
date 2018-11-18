@@ -120,6 +120,7 @@ export default (Base: React.ComponentClass<BaseRightGutterProps>) =>
             selectedInspectorNodes,
             rootInspectorNode,
             globalVariables,
+            globalMediaQueries,
             selectedVariant: root.selectedVariant,
             graph: root.graph
           }}

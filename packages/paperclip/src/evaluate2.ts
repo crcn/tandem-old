@@ -47,7 +47,11 @@ const evaluateModule = memoize(
     return createSytheticDocument(
       module.id,
       module.children
-        .filter(child => child.name !== PCSourceTagNames.VARIABLE)
+        .filter(
+          child =>
+            child.name !== PCSourceTagNames.VARIABLE &&
+            child.name !== PCSourceTagNames.MEDIA_QUERY
+        )
         .map(child => {
           return usedRenderers[`_${child.id}`](
             child.id,
