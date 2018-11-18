@@ -280,7 +280,7 @@
           "label": "Outer Shadows Pane"
         },
         {
-          "id": "cdcf193c21",
+          "id": "a71e3cd56949",
           "is": "cdcf193c18",
           "name": "component-instance",
           "attributes": {},
@@ -295,6 +295,26 @@
             }
           },
           "label": "Inner Shadows Pane"
+        },
+        {
+          "id": "cdcf193c21",
+          "is": "bcda9fb597947",
+          "name": "component-instance",
+          "attributes": {},
+          "style": {
+            "display": "none"
+          },
+          "children": [],
+          "metadata": {
+            "bounds": {
+              "left": 744.8839671501759,
+              "top": 1686.0052298662222,
+              "right": 1144.883967150176,
+              "bottom": 1986.0052298662222
+            }
+          },
+          "label": "Inner Shadows Pane",
+          "variant": {}
         },
         {
           "id": "bcda9fb5101747",
