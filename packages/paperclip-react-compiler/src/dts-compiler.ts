@@ -155,7 +155,7 @@ const translateComponent = (
   const variantNames = getPCVariants(component)
     .map(variant => variant.label && makeSafeVarName(camelCase(variant.label)))
     .filter(Boolean);
-  const slotNames = getComponentSlots(component, context.graph)
+  const slotNames = getComponentSlots(component)
     .map(slot => slot.label && makeSafeVarName(camelCase(slot.label)))
     .filter(Boolean);
 

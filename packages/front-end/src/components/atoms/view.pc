@@ -94,7 +94,11 @@
         "border-top-left-radius": "2px",
         "border-top-right-radius": "2px",
         "border-bottom-right-radius": "2px",
-        "border": "1px solid rgba(230, 230, 230, 1)"
+        "border-left": "1px none rgba(1, 0, 1, 0)",
+        "border-top": "1px none rgba(1, 0, 1, 0)",
+        "border-right": "1px none rgba(1, 0, 1, 0)",
+        "border-bottom": "1px none rgba(1, 0, 1, 0)",
+        "box-shadow": "0px 0px 0px 1px var(--dd86347b1545)"
       },
       "targetType": "element",
       "children": [],

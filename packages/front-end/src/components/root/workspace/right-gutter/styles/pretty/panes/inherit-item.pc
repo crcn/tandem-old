@@ -91,7 +91,9 @@
           "is": "50e32bec2591",
           "name": "component-instance",
           "attributes": {},
-          "style": {},
+          "style": {
+            "box-shadow": "unset"
+          },
           "children": [
             {
               "id": "14f530172",
@@ -103,7 +105,8 @@
               "value": {
                 "padding": "0px",
                 "border": "none",
-                "background": "transparent"
+                "background": "transparent",
+                "box-shadow": " 0px 0px 0px 0px var(--dd86347b1545)"
               },
               "name": "override",
               "children": []

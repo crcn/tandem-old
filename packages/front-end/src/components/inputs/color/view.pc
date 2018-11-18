@@ -52,7 +52,7 @@
                     "box-sizing": "border-box",
                     "background": "red",
                     "width": "100%",
-                    "height": "26px",
+                    "height": "24px",
                     "cursor": "pointer",
                     "display": "block"
                   },

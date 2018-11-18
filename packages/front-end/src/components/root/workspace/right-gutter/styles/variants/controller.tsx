@@ -34,12 +34,8 @@ export type InnerProps = {
 
 export default (Base: React.ComponentClass<any>) =>
   class VariantsController extends React.PureComponent<Props> {
-    onAddVariantButtonClick = () => {
-      this.props.dispatch(addVariantButtonClicked());
-    };
-    onRemoveVariantButtonClick = () => {
-      this.props.dispatch(removeVariantButtonClicked());
-    };
+    onAddVariantButtonClick = () => {};
+    onRemoveVariantButtonClick = () => {};
     render() {
       const { onRemoveVariantButtonClick, onAddVariantButtonClick } = this;
       const {

@@ -88,9 +88,9 @@
                         "user-select": "none",
                         "background": "rgba(255, 255, 255, 1)",
                         "cursor": "default",
-                        "padding-left": "8px",
+                        "padding-left": "6px",
                         "padding-top": "4px",
-                        "padding-right": "8px",
+                        "padding-right": "6px",
                         "padding-bottom": "4px"
                       },
                       "children": [
@@ -170,8 +170,7 @@
                             "opacity": "0.4",
                             "top": "1px"
                           },
-                          "children": [
-                          ],
+                          "children": [],
                           "metadata": {}
                         }
                       ],

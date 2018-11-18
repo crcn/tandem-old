@@ -18,10 +18,12 @@ import {
   SyntheticNativeNodeMap,
   SyntheticVisibleNode,
   PCNodeClip,
+  PCVariantTrigger,
   PCVariable,
   Frame,
   PCComponent,
   PCVariant,
+  PCVariantTriggerSource,
   PCVariableType,
   PCOverride
 } from "paperclip";
@@ -257,6 +259,12 @@ export const CSS_INHERITED_FROM_LABEL_CLICKED =
 export const CANVAS_TEXT_EDIT_CHANGE_COMPLETE =
   "CANVAS_TEXT_EDIT_CHANGE_COMPLETE";
 
+export const ADD_VARIANT_TRIGGER_CLICKED = "ADD_VARIANT_TRIGGER_CLICKED";
+export const REMOVE_VARIANT_TRIGGER_CLICKED = "REMOVE_VARIANT_TRIGGER_CLICKED";
+
+export const VARIANT_TRIGGER_SOURCE_CHANGED = "VARIANT_TRIGGER_SOURCE_CHANGED";
+export const VARIANT_TRIGGER_TARGET_CHANGED = "VARIANT_TRIGGER_TARGET_CHANGED";
+
 export type WrappedEvent<T> = {
   sourceEvent: T;
 } & Action;
@@ -362,6 +370,16 @@ export type CanvasToolOverlayClicked = {
 export type CanvasToolOverlayMouseMoved = {} & WrappedEvent<
   React.MouseEvent<any>
 >;
+
+export type VariantTriggerSourceChanged = {
+  trigger: PCVariantTrigger;
+  value: PCVariantTriggerSource;
+} & Action;
+
+export type VariantTriggerTargetChanged = {
+  trigger: PCVariantTrigger;
+  value: PCVariant;
+} & Action;
 
 export type ElementVariantToggled = {
   node: SyntheticVisibleNode;
@@ -644,6 +662,12 @@ export type CanvasDroppedItem = {
 
 export type VariantClicked = {
   variant: PCVariant;
+} & Action;
+
+export type AddVariantTriggerClicked = {} & Action;
+
+export type RemoveVariantTriggerClicked = {
+  trigger: PCVariantTrigger;
 } & Action;
 
 export type VariantDefaultSwitchClicked = {
@@ -1047,6 +1071,35 @@ export const componentPickerBackgroundClick = (): Action => ({
 
 export const addVariantButtonClicked = (): Action => ({
   type: ADD_VARIANT_BUTTON_CLICKED
+});
+
+export const addVariantTriggerButtonClicked = (): Action => ({
+  type: ADD_VARIANT_TRIGGER_CLICKED
+});
+
+export const variantTriggerSourceChanged = (
+  trigger: PCVariantTrigger,
+  value: PCVariantTriggerSource
+): VariantTriggerSourceChanged => ({
+  type: VARIANT_TRIGGER_SOURCE_CHANGED,
+  value,
+  trigger
+});
+
+export const variantTriggerTargetChanged = (
+  trigger: PCVariantTrigger,
+  value: PCVariant
+): VariantTriggerTargetChanged => ({
+  type: VARIANT_TRIGGER_TARGET_CHANGED,
+  value,
+  trigger
+});
+
+export const removeVariantTriggerButtonClicked = (
+  trigger: PCVariantTrigger
+): RemoveVariantTriggerClicked => ({
+  trigger,
+  type: REMOVE_VARIANT_TRIGGER_CLICKED
 });
 
 export const fileItemRightClicked = (

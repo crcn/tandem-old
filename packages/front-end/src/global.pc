@@ -120,6 +120,15 @@
       "type": "color",
       "children": [],
       "metadata": {}
+    },
+    {
+      "id": "dd86347b1545",
+      "name": "variable",
+      "value": "rgba(1, 0, 0, 0.09)",
+      "label": "black transparent 2",
+      "type": "color",
+      "children": [],
+      "metadata": {}
     }
   ]
 }

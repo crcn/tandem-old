@@ -288,7 +288,7 @@ const evaluateInspectorNodeChildren = (
 
     let plugs: InspectorNode[];
 
-    plugs = getComponentSlots(component, graph).reduce(
+    plugs = getComponentSlots(component).reduce(
       (plugs: InspectorNode[], slot): InspectorNode[] => {
         const plug = getSlotPlug(parent as PCComponent, slot);
 
@@ -428,6 +428,7 @@ export const refreshInspectorTree = (
 
 const isUnreppedSourceNode = (node: PCNode) =>
   node.name === PCSourceTagNames.VARIABLE ||
+  node.name === PCSourceTagNames.VARIANT_TRIGGER ||
   node.name === PCSourceTagNames.OVERRIDE ||
   node.name === PCSourceTagNames.VARIANT;
 

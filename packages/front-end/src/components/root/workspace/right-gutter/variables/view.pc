@@ -495,7 +495,8 @@
               "style": {
                 "border": "0px solid rgba(0, 0, 0, 0.04)",
                 "box-sizing": "border-box",
-                "background": "rgba(200, 200, 200, 0)"
+                "background": "rgba(200, 200, 200, 0)",
+                "box-shadow": "unset"
               },
               "children": [],
               "metadata": {
@@ -523,7 +524,8 @@
               "name": "component-instance",
               "attributes": {},
               "style": {
-                "display": "none"
+                "display": "none",
+                "box-shadow": "unset"
               },
               "children": [
                 {
@@ -548,12 +550,14 @@
                   "value": {
                     "display": "block",
                     "width": "100%",
-                    "height": "22px",
+                    "height": "24px",
                     "border-bottom-left-radius": "0px",
                     "border-top-left-radius": "0px",
                     "border-top-right-radius": "0px",
                     "border-bottom-right-radius": "0px",
-                    "box-sizing": "border-box"
+                    "box-sizing": "border-box",
+                    "box-shadow": "0px 0px 0px 0px var(--dd86347b1545)",
+                    "border-radius": "0px"
                   },
                   "name": "override",
                   "children": []
@@ -628,7 +632,8 @@
               "name": "component-instance",
               "attributes": {},
               "style": {
-                "display": "none"
+                "display": "none",
+                "box-shadow": "unset"
               },
               "children": [
                 {
@@ -677,8 +682,9 @@
               "style": {
                 "border": "0px solid rgba(0, 0, 0, 0.04)",
                 "display": "block",
-                "opacity": 1,
-                "background": "rgba(200, 200, 200, 0)"
+                "opacity": "1",
+                "background": "rgba(200, 200, 200, 0)",
+                "box-shadow": "unset"
               },
               "children": [
                 {
@@ -806,6 +812,17 @@
             "padding-right": "0px",
             "padding-bottom": "0px"
           },
+          "name": "override",
+          "children": []
+        },
+        {
+          "id": "5ce6558d12835",
+          "variantId": "4b46931a1525369",
+          "propertyName": "style",
+          "targetIdPath": [
+            "4b46931a1610861"
+          ],
+          "value": {},
           "name": "override",
           "children": []
         }

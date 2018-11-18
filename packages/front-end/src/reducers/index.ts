@@ -101,6 +101,7 @@ import {
   VariantLabelChanged,
   VARIANT_LABEL_CHANGED,
   REMOVE_VARIANT_BUTTON_CLICKED,
+  RemoveVariantTriggerClicked,
   COMPONENT_INSTANCE_VARIANT_TOGGLED,
   INSTANCE_VARIANT_RESET_CLICKED,
   SHORTCUT_TOGGLE_SIDEBAR,
@@ -182,7 +183,13 @@ import {
   PCLayerRightClicked,
   SYNTHETIC_NODE_CONTEXT_MENU_SHOW_IN_CANVAS_CLICKED,
   CANVAS_TEXT_EDIT_CHANGE_COMPLETE,
-  CanvasTextEditChangeComplete
+  CanvasTextEditChangeComplete,
+  ADD_VARIANT_TRIGGER_CLICKED,
+  VARIANT_TRIGGER_SOURCE_CHANGED,
+  VARIANT_TRIGGER_TARGET_CHANGED,
+  VariantTriggerSourceChanged,
+  VariantTriggerTargetChanged,
+  REMOVE_VARIANT_TRIGGER_CLICKED
 } from "../actions";
 import {
   queueOpenFile,
@@ -341,9 +348,10 @@ import {
   getDerrivedPCLabel,
   persistConvertInspectorNodeStyleToMixin,
   getSyntheticSourceUri,
+  persistUpdateVariantTrigger,
   inspectorNodeInInstanceOfComponent,
-  getSyntheticVisibleNodeComputedBounds,
-  getInspectorNodeBySourceNodeId
+  getInspectorNodeBySourceNodeId,
+  persistAddVariantTrigger
 } from "paperclip";
 import {
   roundBounds,
@@ -1146,41 +1154,52 @@ export const canvasReducer = (state: RootState, action: Action) => {
       return state;
     }
 
-    // DEPRECATED
-    case ADD_VARIANT_BUTTON_CLICKED: {
-      const node = state.selectedInspectorNodes[0];
-      const syntheticNode = getInspectorSyntheticNode(node, state.documents);
-      const frame = getSyntheticVisibleNodeFrame(syntheticNode, state.frames);
-      const contentNode = getSyntheticNodeById(
-        frame.syntheticContentNodeId,
-        state.documents
-      );
-      state = persistRootState(
-        state => persistAddVariant(null, contentNode, state),
-        state
-      );
-      state = updateRootState(
-        {
-          selectedVariant: last(
-            getPCVariants(getSyntheticSourceNode(
-              contentNode,
-              state.graph
-            ) as PCVisibleNode)
-          )
-        },
-        state
-      );
+    case ADD_VARIANT_TRIGGER_CLICKED: {
+      state = persistRootState(state => {
+        state = persistAddVariantTrigger(
+          state.selectedInspectorNodes[0],
+          state
+        );
+        return state;
+      }, state);
+      return state;
+    }
+    case REMOVE_VARIANT_TRIGGER_CLICKED: {
+      const { trigger } = action as RemoveVariantTriggerClicked;
+      state = persistRootState(state => {
+        state = persistRemovePCNode(trigger, state);
+        return state;
+      }, state);
       return state;
     }
 
-    // DEPRECATED
-    case REMOVE_VARIANT_BUTTON_CLICKED: {
-      const variant = state.selectedVariant;
-      state = persistRootState(
-        state => persistRemoveVariant(variant, state),
-        state
-      );
-      state = updateRootState({ selectedVariant: null }, state);
+    case VARIANT_TRIGGER_SOURCE_CHANGED: {
+      const { trigger, value } = action as VariantTriggerSourceChanged;
+      state = persistRootState(state => {
+        state = persistUpdateVariantTrigger(
+          {
+            source: value
+          },
+          trigger,
+          state
+        );
+        return state;
+      }, state);
+      return state;
+    }
+
+    case VARIANT_TRIGGER_TARGET_CHANGED: {
+      const { trigger, value } = action as VariantTriggerTargetChanged;
+      state = persistRootState(state => {
+        state = persistUpdateVariantTrigger(
+          {
+            targetVariantId: value.id
+          },
+          trigger,
+          state
+        );
+        return state;
+      }, state);
       return state;
     }
 

@@ -67,7 +67,9 @@ import {
   createPCTextStyleMixin,
   createPCElementStyleMixin,
   PCStyleMixin,
-  isElementLikePCNode
+  isElementLikePCNode,
+  PCVariantTrigger,
+  createPCVariantTrigger
 } from "./dsl";
 import {
   SyntheticVisibleNode,
@@ -359,7 +361,6 @@ export const removeInspectorNode = <TState extends PCEditorState>(
   if (!syntheticNode) {
     return null;
   }
-  console.log("DD");
   if (getInspectorContentNode(node, state.sourceNodeInspector) === node) {
     state = removeFrame(
       getFrameByContentNodeId(syntheticNode.id, state.frames),
@@ -908,6 +909,40 @@ export const persistToggleInstanceVariant = <TState extends PCEditorState>(
   state = replaceDependencyGraphPCNode(node, node, state);
   return state;
 };
+
+export const persistAddVariantTrigger = <TState extends PCEditorState>(
+  component: InspectorNode,
+  state: TState
+): TState => {
+  const sourceNode = getInspectorSourceNode(
+    component,
+    state.sourceNodeInspector,
+    state.graph
+  );
+  state = replaceDependencyGraphPCNode(
+    appendChildNode(createPCVariantTrigger(null, null), sourceNode),
+    sourceNode,
+    state
+  );
+  return state;
+};
+
+export const persistUpdateVariantTrigger = <TState extends PCEditorState>(
+  properties: Partial<PCVariantTrigger>,
+  trigger: PCVariantTrigger,
+  state: TState
+): TState => {
+  state = replaceDependencyGraphPCNode(
+    {
+      ...trigger,
+      ...properties
+    },
+    trigger,
+    state
+  );
+  return state;
+};
+
 export const persistRemoveVariantOverride = <TState extends PCEditorState>(
   instance: SyntheticInstanceElement,
   targetVariantId: string,

@@ -6,12 +6,16 @@ import {
   getPCNode,
   PCVariant,
   DependencyGraph,
+  PCSourceTagNames,
   InspectorNode,
   PCVariable,
   computeStyleInfo,
+  getComponentVariantTriggers,
   getInspectorContentNode,
-  isComponent
+  isComponent,
+  getComponentVariants
 } from "paperclip";
+import { EMPTY_ARRAY } from "tandem-common";
 import { FontFamily, ProjectOptions } from "../../../../../state";
 
 export type Props = {
@@ -86,6 +90,14 @@ export default (Base: React.ComponentClass<BaseStylesProps>) =>
         rootInspectorNode
       );
       const contentSourceNode = getPCNode(contentNode.sourceNodeId, graph);
+      const variantTriggers =
+        contentSourceNode.name === PCSourceTagNames.COMPONENT
+          ? getComponentVariantTriggers(contentSourceNode)
+          : EMPTY_ARRAY;
+      const variants =
+        contentSourceNode.name === PCSourceTagNames.COMPONENT
+          ? getComponentVariants(contentSourceNode)
+          : EMPTY_ARRAY;
 
       return (
         <Base
@@ -97,6 +109,11 @@ export default (Base: React.ComponentClass<BaseStylesProps>) =>
               contentSourceNode && isComponent(contentSourceNode)
             )
           })}
+          behaviorProps={{
+            dispatch,
+            variants,
+            variantTriggers
+          }}
           propertiesTabButonProps={{
             onClick: onPropertiesTabClick
           }}

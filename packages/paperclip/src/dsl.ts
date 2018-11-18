@@ -42,6 +42,7 @@ export enum PCSourceTagNames {
   ELEMENT = "element",
   COMPONENT_INSTANCE = "component-instance",
   VARIANT = "variant",
+  VARIANT_TRIGGER = "variant-trigger",
 
   // Slots are sections of components where text & elements can be inserted into
   SLOT = "slot",
@@ -361,6 +362,11 @@ export type PCVariant = {
   isDefault?: boolean;
 } & PCBaseSourceNode<PCSourceTagNames.VARIANT>;
 
+export type PCVariantTrigger = {
+  source: PCVariantTriggerSource | null;
+  targetVariantId: string | null;
+} & PCBaseSourceNode<PCSourceTagNames.VARIANT_TRIGGER>;
+
 export type PCBaseOverride<TPropertyName extends PCOverridablePropertyName> = {
   propertyName: TPropertyName;
   targetIdPath: string[];
@@ -500,7 +506,8 @@ export type PCNode =
   | PCPlug
   | PCVariable
   | PCElementStyleMixin
-  | PCTextStyleMixin;
+  | PCTextStyleMixin
+  | PCVariantTrigger;
 
 export type PCComputedOverrideMap = {
   [COMPUTED_OVERRIDE_DEFAULT_KEY]: PCComputedOverrideVariantMap;
@@ -518,6 +525,51 @@ export type PCComputedNoverOverrideMap = {
   overrides: PCOverride[];
   children: PCComputedOverrideVariantMap;
 };
+
+export enum PCVariantTriggerSourceType {
+  MEDIA_QUIRY,
+  STATE
+}
+
+// https://www.w3schools.com/css/css_pseudo_classes.asp
+export enum PCElementState {
+  // a
+  ACTIVE = "active",
+
+  // input
+  CHECKED = "checked",
+  DISABLED = "disabled",
+  OPTIONAL = "optional",
+  REQUIRED = "required",
+  VALID = "valid",
+
+  // p
+  EMPTY = "empty",
+
+  ENABLED = "enabled",
+  FOCUS = "focus",
+  HOVER = "hover",
+  LINK = "link",
+  VISITED = "visited"
+}
+
+export type PCBaseVariantTriggerSource<
+  TType extends PCVariantTriggerSourceType
+> = {
+  type: TType;
+};
+
+export type PCVariantTriggerMediaQuerySource = {
+  mediaQueryId: string;
+} & PCBaseVariantTriggerSource<PCVariantTriggerSourceType.MEDIA_QUIRY>;
+
+export type PCVariantTriggerStateSource = {
+  state: PCElementState;
+} & PCBaseVariantTriggerSource<PCVariantTriggerSourceType.STATE>;
+
+export type PCVariantTriggerSource =
+  | PCVariantTriggerMediaQuerySource
+  | PCVariantTriggerStateSource;
 
 /*------------------------------------------
  * FACTORIES
@@ -614,6 +666,18 @@ export const createPCVariant = (
   name: PCSourceTagNames.VARIANT,
   label,
   isDefault,
+  children: EMPTY_ARRAY,
+  metadata: EMPTY_OBJECT
+});
+
+export const createPCVariantTrigger = (
+  source: PCVariantTriggerSource,
+  targetVariantId: string
+): PCVariantTrigger => ({
+  id: generateUID(),
+  name: PCSourceTagNames.VARIANT_TRIGGER,
+  targetVariantId,
+  source,
   children: EMPTY_ARRAY,
   metadata: EMPTY_OBJECT
 });
@@ -920,15 +984,22 @@ export const getInstanceSlots = memoize(
     if (!extendsComponent(node)) {
       return [];
     }
-    return getComponentSlots(getPCNode(node.is, graph) as PCComponent, graph);
+    return getComponentSlots(getPCNode(node.is, graph) as PCComponent);
   }
 );
 
 export const getComponentSlots = memoize(
-  (component: PCComponent, graph: DependencyGraph): PCSlot[] => {
+  (component: PCComponent): PCSlot[] => {
     return flattenTreeNode(component).filter(isSlot);
   }
 );
+
+export const getComponentVariantTriggers = (component: PCComponent) => {
+  return getTreeNodesByName(
+    PCSourceTagNames.VARIANT_TRIGGER,
+    component
+  ) as PCVariantTrigger[];
+};
 
 export const getInstanceSlotContent = memoize(
   (slotId: string, node: PCComponentInstanceElement | PCComponent) => {

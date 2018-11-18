@@ -409,7 +409,9 @@
               "targetIdPath": [
                 "b6c162d140"
               ],
-              "value": {},
+              "value": {
+                "padding-top": "12px"
+              },
               "name": "override",
               "children": []
             },
@@ -420,6 +422,18 @@
                 "b6c162d1281"
               ],
               "value": {},
+              "name": "override",
+              "children": []
+            },
+            {
+              "id": "73ef30772146",
+              "propertyName": "style",
+              "targetIdPath": [
+                "b6c162d132"
+              ],
+              "value": {
+                "display": "none"
+              },
               "name": "override",
               "children": []
             }

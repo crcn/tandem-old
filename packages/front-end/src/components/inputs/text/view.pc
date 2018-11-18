@@ -10,10 +10,10 @@
       "style": {
         "width": "100%",
         "box-sizing": "border-box",
-        "padding-left": "4px",
+        "padding-left": "6px",
+        "padding-bottom": "4px",
         "padding-top": "4px",
-        "padding-right": "4px",
-        "padding-bottom": "4px"
+        "padding-right": "6px"
       },
       "attributes": {},
       "id": "7149f8199122",
@@ -354,40 +354,6 @@
       "controllers": [
         "./auto-complete-controller.tsx"
       ]
-    },
-    {
-      "id": "4d4c30f6366",
-      "label": "Element",
-      "is": "div",
-      "name": "element",
-      "attributes": {},
-      "style": {
-        "box-sizing": "border-box",
-        "display": "block"
-      },
-      "children": [
-        {
-          "id": "4d4c30f6437",
-          "name": "text",
-          "label": "Text",
-          "value": "Click to edit",
-          "style": {
-            "display": "block",
-            "position": "relative",
-            "left": "100"
-          },
-          "children": [],
-          "metadata": {}
-        }
-      ],
-      "metadata": {
-        "bounds": {
-          "left": 495,
-          "top": 169,
-          "right": 804,
-          "bottom": 269
-        }
-      }
     }
   ]
 }

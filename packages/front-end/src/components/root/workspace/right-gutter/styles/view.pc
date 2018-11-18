@@ -205,7 +205,7 @@
             {
               "id": "4e40c2b98547",
               "is": "4e40c2b98546",
-              "label": "triggers",
+              "label": "behavior",
               "name": "component-instance",
               "attributes": {},
               "style": {
