@@ -11,7 +11,7 @@
 
 Tandem is a visual editor for building web components. It can cover _most_ of your HTML & CSS development, and is designed to be compatible with most web-based languages, and frameworks. It currently works with React.
 
-![Split view](./assets/screenshots/split-view-figma-import.png)
+![Split view](./assets/screenshots/v-10.1.1.png)
 
 Tandem is created with scalability & maintainability in mind first, and as a litmus test, Tandem is being used to build itself.
 
