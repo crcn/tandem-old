@@ -36,7 +36,7 @@ import { eventChannel } from "redux-saga";
 
 const query = Url.parse(String(location), true).query;
 
-setup<DesktopRootState>(
+const init = setup<DesktopRootState>(
   function*() {
     return {
       readFile,
@@ -50,7 +50,10 @@ setup<DesktopRootState>(
   },
   rootReducer,
   rootSaga
-)({
+);
+
+// give some time so that the loader shows up.
+setTimeout(init, 500, {
   mount: document.getElementById("application"),
   selectedInspectorNodes: [],
   hoveringInspectorNodes: [],

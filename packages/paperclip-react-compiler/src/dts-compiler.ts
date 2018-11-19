@@ -30,7 +30,7 @@ import {
   makeSafeVarName
 } from "./utils";
 import { EMPTY_ARRAY, filterNestedNodes, stripProtocol } from "tandem-common";
-import { camelCase } from "lodash";
+import { camelCase, uniq } from "lodash";
 import { PCSlot } from "paperclip";
 
 export const translatePaperclipModuleToReactTSDefinition = (
@@ -155,9 +155,11 @@ const translateComponent = (
   const variantNames = getPCVariants(component)
     .map(variant => variant.label && makeSafeVarName(camelCase(variant.label)))
     .filter(Boolean);
-  const slotNames = getComponentSlots(component)
-    .map(slot => slot.label && makeSafeVarName(camelCase(slot.label)))
-    .filter(Boolean);
+  const slotNames = uniq(
+    getComponentSlots(component)
+      .map(slot => slot.label && makeSafeVarName(camelCase(slot.label)))
+      .filter(Boolean)
+  );
 
   if (variantNames.length) {
     context = addLine(`variant?: string;`, context);

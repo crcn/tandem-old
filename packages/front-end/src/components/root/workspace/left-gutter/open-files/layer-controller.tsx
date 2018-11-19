@@ -26,10 +26,7 @@ import {
   pcLayerRightClicked,
   pcLayerDoubleClicked
 } from "../../../../../actions";
-import {
-  containsNestedTreeNodeById,
-  TreeMoveOffset
-} from "../../../../../../node_modules/tandem-common";
+import { containsNestedTreeNodeById, TreeMoveOffset } from "tandem-common";
 import { BaseNodeLayerProps } from "./layer.pc";
 import { withLayersPaneContext, LayersPaneContextProps } from "./contexts";
 import { getInspectorContentNodeContainingChild } from "paperclip";
