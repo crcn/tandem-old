@@ -871,7 +871,7 @@ export const extendsComponent = (element: PCNode) =>
   element.is.length > 6 &&
   /\d/.test(element.is);
 
-export const isTextLikePCNode = (node: PCNode) =>
+export const isTextLikePCNode = (node: PCNode): node is PCTextLikeNode =>
   node.name === PCSourceTagNames.TEXT ||
   (node.name === PCSourceTagNames.STYLE_MIXIN &&
     node.targetType === PCSourceTagNames.TEXT);

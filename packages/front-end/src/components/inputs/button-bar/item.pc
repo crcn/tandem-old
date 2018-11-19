@@ -51,7 +51,7 @@
           "id": "15d6c81f3",
           "name": "variant",
           "label": "last",
-          "isDefault": true,
+          "isDefault": false,
           "children": [],
           "metadata": {}
         },
@@ -62,8 +62,8 @@
           "targetIdPath": [],
           "value": {
             "border-right": "none",
-            "border-top-right-radius": "1px",
-            "border-bottom-right-radius": "1px"
+            "border-top-right-radius": "2px",
+            "border-bottom-right-radius": "2px"
           },
           "name": "override",
           "children": []
@@ -103,8 +103,8 @@
           "targetIdPath": [],
           "value": {
             "text-align": "center",
-            "border-bottom-left-radius": "1px",
-            "border-top-left-radius": "1px"
+            "border-bottom-left-radius": "2px",
+            "border-top-left-radius": "2px"
           },
           "name": "override",
           "children": []

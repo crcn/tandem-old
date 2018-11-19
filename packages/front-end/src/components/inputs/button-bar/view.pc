@@ -10,7 +10,6 @@
       "style": {
         "display": "flex",
         "align-content": "center",
-        "border": "1px solid var(--d8f6340b1442)",
         "border-bottom-left-radius": "2px",
         "border-top-left-radius": "2px",
         "border-top-right-radius": "2px",
@@ -222,7 +221,12 @@
       "controllers": [
         "./controller.tsx"
       ],
-      "variant": {}
+      "variant": {},
+      "styleMixins": {
+        "c29da5f4213993": {
+          "priority": 0
+        }
+      }
     }
   ]
 }

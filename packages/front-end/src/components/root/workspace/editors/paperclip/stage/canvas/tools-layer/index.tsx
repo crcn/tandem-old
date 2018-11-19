@@ -23,11 +23,7 @@ import {
   SyntheticDocument,
   DependencyGraph,
   getSyntheticVisibleNodeRelativeBounds,
-  Frame,
-  getSyntheticVisibleNodeDocument,
-  getSyntheticDocumentDependencyUri,
-  getSyntheticInstancePath,
-  getAllParentComponentInstance
+  Frame
 } from "paperclip";
 import {
   getNestedTreeNodeById,

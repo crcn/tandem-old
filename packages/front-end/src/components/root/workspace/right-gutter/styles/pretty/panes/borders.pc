@@ -761,10 +761,10 @@
           "attributes": {},
           "style": {
             "display": "block",
-            "width": "26px",
+            "width": "24px",
             "flex-shrink": "0",
             "margin-right": "6px",
-            "height": "26px"
+            "height": "24px"
           },
           "children": [
             {
@@ -801,7 +801,7 @@
               ],
               "value": {
                 "display": "block",
-                "height": "26px"
+                "height": "24px"
               },
               "name": "override",
               "children": []
@@ -1743,7 +1743,7 @@
           ],
           "value": {
             "padding-left": "unset",
-            "margin-right": "55px"
+            "margin-right": "unset"
           },
           "name": "override",
           "children": []
@@ -2000,7 +2000,7 @@
             {
               "id": "98224988161",
               "is": "af62926b2310",
-              "label": "bottom left input",
+              "label": "bottom right input",
               "name": "component-instance",
               "attributes": {},
               "style": {
@@ -2072,7 +2072,7 @@
             {
               "id": "98224988195",
               "is": "af62926b2310",
-              "label": "bottom right input",
+              "label": "bottom left input",
               "name": "component-instance",
               "attributes": {},
               "style": {},

@@ -82,6 +82,10 @@ export default (Base: React.ComponentClass<BaseInstancePaneProps>) =>
         getPCNodeModule(sourceNode.id, graph)
       );
 
+      if (!contentNode) {
+        return null;
+      }
+
       if (
         sourceNode.name !== PCSourceTagNames.COMPONENT_INSTANCE &&
         (sourceNode.name !== PCSourceTagNames.COMPONENT ||

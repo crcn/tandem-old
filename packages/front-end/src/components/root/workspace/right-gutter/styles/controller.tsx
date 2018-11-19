@@ -11,6 +11,7 @@ import {
   PCVariable,
   computeStyleInfo,
   PCMediaQuery,
+  isVisibleNode,
   getComponentVariantTriggers,
   getInspectorContentNode,
   isComponent,
@@ -78,9 +79,15 @@ export default (Base: React.ComponentClass<BaseStylesProps>) =>
         return null;
       }
 
-      if (!getPCNode(selectedInspectorNodes[0].sourceNodeId, graph)) {
+      const sourceNode = getPCNode(
+        selectedInspectorNodes[0].sourceNodeId,
+        graph
+      );
+
+      if (!sourceNode || sourceNode.name === PCSourceTagNames.MODULE) {
         return null;
       }
+
       const computedStyleInfo = computeStyleInfo(
         selectedInspectorNodes[0],
         rootInspectorNode,
@@ -92,6 +99,7 @@ export default (Base: React.ComponentClass<BaseStylesProps>) =>
         selectedInspectorNodes[0],
         rootInspectorNode
       );
+
       const contentSourceNode = getPCNode(contentNode.sourceNodeId, graph);
       const variantTriggers =
         contentSourceNode.name === PCSourceTagNames.COMPONENT

@@ -7,6 +7,8 @@ import {
   PCSourceTagNames,
   getInspectorSyntheticNode,
   SyntheticDocument,
+  PCTextLikeNode,
+  isTextLikePCNode,
   getSyntheticVisibleNodeRelativeBounds,
   Frame
 } from "paperclip";
@@ -43,9 +45,9 @@ export default (Base: React.ComponentClass<BaseEditTextProps>) =>
         selectedInspectorNode,
         rootInspectorNode,
         graph
-      );
+      ) as PCTextLikeNode;
 
-      if (!sourceNode || sourceNode.name !== PCSourceTagNames.TEXT) {
+      if (!sourceNode || !isTextLikePCNode(sourceNode)) {
         return null;
       }
       const syntheticNode = getInspectorSyntheticNode(

@@ -335,10 +335,7 @@ import {
   persistInspectorNodeStyle,
   isSyntheticContentNode,
   getSyntheticDocumentDependencyUri,
-  getAllParentComponentInstance,
   PCComponent,
-  extendsComponent,
-  getGlobalVariables,
   persistAddVariable,
   PCVariableType,
   createRootInspectorNode,
@@ -347,7 +344,7 @@ import {
   getInspectorInstanceShadowContentNode,
   getInspectorInstanceShadow,
   persistAddMediaQuery,
-  updateAlts,
+  isTextLikePCNode,
   persistReplacePCNode,
   getDerrivedPCLabel,
   persistConvertInspectorNodeStyleToMixin,
@@ -1576,7 +1573,7 @@ export const canvasReducer = (state: RootState, action: Action) => {
 
           currentInstance = inspectorShadowNode;
         }
-      } else if (sourceNode.name === PCSourceTagNames.TEXT) {
+      } else if (isTextLikePCNode(sourceNode)) {
         state = { ...state, editMode: EditMode.SECONDARY };
       }
 
