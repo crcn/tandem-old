@@ -1,15 +1,13 @@
 import * as React from "react";
 import { compose, pure, withState } from "recompose";
 import { portal } from "../portal/controller";
-import { Bounds, mergeBounds, getBoundsSize } from "tandem-common";
+import { Bounds, mergeBounds, getBoundsSize, Point } from "tandem-common";
 import { BaseContentProps } from "./view.pc";
 
-const calcPortalStyle = (anchorRect: Bounds, portalRect: Bounds) => {
+const calcPortalPosition = (anchorRect: Bounds, portalRect: Bounds) => {
   const portalSize = getBoundsSize(portalRect);
   const anchorSize = getBoundsSize(anchorRect);
   return {
-    position: "absolute",
-    zIndex: 1024,
     left: Math.min(anchorRect.left, window.innerWidth - portalSize.width),
     top: Math.min(
       anchorRect.top + anchorSize.height,
@@ -26,6 +24,7 @@ export type Props = {
   onShouldClose: any;
   anchorRect: Bounds;
   children?: any;
+  updateContentPosition?: (position: Point, rect: Bounds) => Point;
 } & BaseContentProps;
 
 export default compose<any, Props>(
@@ -96,7 +95,11 @@ export default compose<any, Props>(
   pure,
   withState(`style`, `setStyle`, null),
   portal({
-    didMount: ({ anchorRect, setStyle }) => portalMount => {
+    didMount: ({
+      anchorRect,
+      setStyle,
+      updateContentPosition
+    }) => portalMount => {
       if (
         !portalMount ||
         !portalMount.children[0] ||
@@ -104,11 +107,19 @@ export default compose<any, Props>(
       ) {
         return;
       }
-      const newStyle = calcPortalStyle(
-        anchorRect,
-        calcInnerBounds(portalMount.children[0].children[0]
-          .children[0] as HTMLElement)
-      );
+      const popoverRect = calcInnerBounds(portalMount.children[0].children[0]
+        .children[0] as HTMLElement);
+
+      let position = calcPortalPosition(anchorRect, popoverRect);
+
+      if (updateContentPosition) {
+        position = updateContentPosition(position, popoverRect);
+      }
+      const newStyle = {
+        position: "absolute",
+        zIndex: 1024,
+        ...position
+      };
       setStyle(newStyle);
     }
   })

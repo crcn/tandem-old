@@ -195,7 +195,9 @@ import {
   QUERY_LABEL_CHANGED,
   QUERY_CONDITION_CHANGED,
   QueryConditionChanged,
-  QueryLabelChanged
+  QueryLabelChanged,
+  QUERY_TYPE_CHANGED,
+  QueryTypeChanged
 } from "../actions";
 import {
   queueOpenFile,
@@ -1203,6 +1205,22 @@ export const canvasReducer = (state: RootState, action: Action) => {
             state
           );
         }
+        return state;
+      }, state);
+      return state;
+    }
+    case QUERY_TYPE_CHANGED: {
+      const { target, newType } = action as QueryTypeChanged;
+      state = persistRootState(state => {
+        state = persistReplacePCNode(
+          {
+            ...target,
+            type: newType,
+            condition: null
+          },
+          target,
+          state
+        );
         return state;
       }, state);
       return state;

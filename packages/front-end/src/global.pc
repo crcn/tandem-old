@@ -131,10 +131,11 @@
       "metadata": {}
     },
     {
-      "id": "2629689021",
+      "id": "23496ace22",
       "name": "query",
-      "label": "test",
-      "condition": {},
+      "type": 1,
+      "label": "aqu",
+      "condition": null,
       "children": [],
       "metadata": {}
     }

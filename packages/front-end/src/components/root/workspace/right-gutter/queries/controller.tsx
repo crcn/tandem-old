@@ -2,24 +2,12 @@ import * as React from "react";
 import { Dispatch } from "redux";
 import { PCQuery, PCQueryType } from "paperclip";
 import { BaseQueriesPaneProps, QueryItem } from "./view.pc";
-import * as cx from "classnames";
 import { addQueryButtonClick } from "../../../../../actions";
-import { DropdownMenuOption } from "../../../../inputs/dropdown/controller";
+import { QUERY_DROPDOWN_OPTIONS } from "./utils";
 export type Props = {
   dispatch: Dispatch<any>;
   globalQueries: PCQuery[];
 };
-
-const QUERY_DROPDOWN_OPTIONS: DropdownMenuOption[] = [
-  {
-    label: "Screen size",
-    value: PCQueryType.MEDIA
-  },
-  {
-    label: "Variable change",
-    value: PCQueryType.VARIABLE
-  }
-];
 
 export default (Base: React.ComponentClass<BaseQueriesPaneProps>) =>
   class MediaQueriesController extends React.PureComponent<Props> {

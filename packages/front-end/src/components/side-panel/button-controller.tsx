@@ -1,10 +1,10 @@
 import * as React from "react";
 import { BaseSidePanelButtonProps, SidePanel } from "./view.pc";
-import { Bounds } from "tandem-common";
+import { Bounds, moveBounds, Point } from "tandem-common";
 import * as cx from "classnames";
 
 export type Props = {
-  innerContent?: any;
+  content?: any;
   left?: boolean;
   right?: boolean;
 };
@@ -12,6 +12,8 @@ export type Props = {
 type State = {
   open: boolean;
 };
+
+const SIDEBAR_WIDTH = 250;
 
 export default (Base: React.ComponentClass<BaseSidePanelButtonProps>) =>
   class SidePanelButtonController extends React.PureComponent<Props, State> {
@@ -27,13 +29,32 @@ export default (Base: React.ComponentClass<BaseSidePanelButtonProps>) =>
         open: !this.state.open
       });
     };
-    getAnchorRect = (rect: Bounds) => {
-      return rect;
+    updatePopoverPosition = (point: Point, popoverRect: Bounds) => {
+      if (this.props.left) {
+        // TODO - this needs to be pulled from state
+        point = {
+          left: SIDEBAR_WIDTH,
+          top: point.top
+        };
+      } else if (this.props.right) {
+        point = {
+          left:
+            window.innerWidth -
+            (SIDEBAR_WIDTH + (popoverRect.right - popoverRect.left)),
+          top: point.top
+        };
+      }
+
+      return point;
     };
     onCloseButtonClick = () => {
       this.close();
     };
-
+    onKeyDown = (event: React.KeyboardEvent<any>) => {
+      if (event.key === "Enter") {
+        this.close();
+      }
+    };
     close = () => {
       this.setState({
         ...this.state,
@@ -42,12 +63,13 @@ export default (Base: React.ComponentClass<BaseSidePanelButtonProps>) =>
     };
     render() {
       const {
+        onKeyDown,
         onButtonClick,
         onCloseButtonClick,
         onShouldClose,
-        getAnchorRect
+        updatePopoverPosition
       } = this;
-      const { innerContent, left, right, ...rest } = this.props;
+      const { content, left, right, ...rest } = this.props;
       const { open } = this.state;
 
       return (
@@ -59,7 +81,7 @@ export default (Base: React.ComponentClass<BaseSidePanelButtonProps>) =>
           popoverProps={{
             open: open,
             onShouldClose: onShouldClose,
-            getAnchorRect: getAnchorRect
+            updateContentPosition: updatePopoverPosition
           }}
           content={
             <SidePanel
@@ -67,7 +89,7 @@ export default (Base: React.ComponentClass<BaseSidePanelButtonProps>) =>
                 left,
                 right
               })}
-              content={innerContent}
+              content={<div onKeyDown={onKeyDown}>{content}</div>}
               closeButtonProps={{
                 onClick: onCloseButtonClick
               }}

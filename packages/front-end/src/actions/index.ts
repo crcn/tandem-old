@@ -273,6 +273,7 @@ export const REMOVE_MEDIA_QUERY_BUTTON_CLICK =
   "REMOVE_MEDIA_QUERY_BUTTON_CLICK";
 export const QUERY_LABEL_CHANGED = "QUERY_LABEL_CHANGED";
 export const QUERY_CONDITION_CHANGED = "QUERY_CONDITION_CHANGED";
+export const QUERY_TYPE_CHANGED = "QUERY_TYPE_CHANGED";
 
 export type WrappedEvent<T> = {
   sourceEvent: T;
@@ -591,6 +592,11 @@ export type QueryLabelChanged = {
   label?: string;
 } & Action;
 
+export type QueryTypeChanged = {
+  target: PCQuery;
+  newType: PCQueryType;
+} & Action;
+
 export type FrameModeChangeComplete = {
   frame: Frame;
   mode: FrameMode;
@@ -797,6 +803,15 @@ export const queryLabelChanged = (
   type: QUERY_LABEL_CHANGED,
   target,
   label
+});
+
+export const queryTypeChanged = (
+  target: PCQuery,
+  newType: PCQueryType
+): QueryTypeChanged => ({
+  type: QUERY_TYPE_CHANGED,
+  target,
+  newType
 });
 
 export const fileItemContextMenuRenameClicked = publicActionCreator(

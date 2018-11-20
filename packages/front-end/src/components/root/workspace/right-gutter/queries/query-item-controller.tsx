@@ -17,20 +17,13 @@ export default (Base: React.ComponentClass<BaseQueryItemProps>) =>
     };
     render() {
       const { onLabelChange } = this;
-      const { query, ...rest } = this.props;
+      const { query, dispatch, ...rest } = this.props;
       return (
         <Base
           {...rest}
           editButtonProps={{
             right: true,
-            innerContent: (
-              <QueryOptions
-                variant={cx({
-                  media: query.type === PCQueryType.MEDIA,
-                  variable: query.type === PCQueryType.VARIABLE
-                })}
-              />
-            )
+            content: <QueryOptions dispatch={dispatch} query={query} />
           }}
           labelInputProps={{
             value: query.label,
