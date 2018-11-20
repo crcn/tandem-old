@@ -29,7 +29,8 @@
           "label": "label",
           "value": "tab",
           "style": {
-            "font-size": "10px"
+            "font-size": "10px",
+            "cursor": "pointer"
           },
           "children": [],
           "metadata": {},

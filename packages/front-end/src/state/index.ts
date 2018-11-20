@@ -1032,7 +1032,17 @@ export const openSyntheticVisibleNodeOriginFile = (
   }
 
   const uri = getPCNodeDependency(sourceNode.id, state.graph).uri;
-  state = openFile(uri, false, false, state);
+  const editors = state.editorWindows;
+  const activeEditor = getActiveEditorWindow(state);
+  const existingEditor = getEditorWindowWithFileUri(uri, state);
+
+  // if existing editor, then don't open in second tab
+  state = openFile(
+    uri,
+    false,
+    activeEditor === editors[1] && !existingEditor,
+    state
+  );
   const instance = findNestedNode(state.sourceNodeInspector, child => {
     return !child.instancePath && child.sourceNodeId === sourceNode.id;
   });

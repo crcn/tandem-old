@@ -11,7 +11,16 @@
       "name": "component-instance",
       "attributes": {},
       "style": {},
-      "children": [],
+      "children": [
+        {
+          "id": "d4d9389d1339",
+          "name": "variant-trigger",
+          "targetVariantId": null,
+          "source": null,
+          "children": [],
+          "metadata": {}
+        }
+      ],
       "metadata": {
         "bounds": {
           "left": 397,
@@ -71,7 +80,8 @@
                     "display": "inline-block",
                     "position": "relative",
                     "height": "18",
-                    "vertical-align": "center"
+                    "vertical-align": "center",
+                    "color": "var(--24ce1e4d482)"
                   },
                   "children": [],
                   "metadata": {},
@@ -114,7 +124,8 @@
                   "value": "super/nested/directory/path/that/will/wa/a/b/c/d/e/f/g/h/i/g/h/i/j/k/l/",
                   "style": {
                     "display": "inline-block",
-                    "width": "100%"
+                    "width": "100%",
+                    "color": "var(--24ce1e4d482)"
                   },
                   "children": [],
                   "metadata": {},
@@ -158,7 +169,8 @@
             "height": "0.8em",
             "flex-grow": "0",
             "flex-shrink": "0",
-            "width": "17px"
+            "width": "17px",
+            "color": "var(--24ce1e4d482)"
           },
           "children": [],
           "metadata": {

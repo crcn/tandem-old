@@ -439,9 +439,7 @@
           "targetIdPath": [
             "4e40c2b98510"
           ],
-          "value": {
-            "display": "flex"
-          },
+          "value": {},
           "name": "override",
           "children": []
         },
@@ -452,9 +450,7 @@
           "targetIdPath": [
             "4e40c2b98510"
           ],
-          "value": {
-            "display": "flex"
-          },
+          "value": {},
           "name": "override",
           "children": []
         },

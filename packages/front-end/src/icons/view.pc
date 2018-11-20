@@ -4318,7 +4318,9 @@
                     "width": "1",
                     "height": "3"
                   },
-                  "style": {},
+                  "style": {
+                    "background": "currentColor"
+                  },
                   "children": [],
                   "metadata": {}
                 },
@@ -4333,7 +4335,9 @@
                     "width": "1",
                     "height": "3"
                   },
-                  "style": {},
+                  "style": {
+                    "background": "currentColor"
+                  },
                   "children": [],
                   "metadata": {}
                 },
@@ -4348,7 +4352,9 @@
                     "width": "1",
                     "height": "3"
                   },
-                  "style": {},
+                  "style": {
+                    "background": "currentColor"
+                  },
                   "children": [],
                   "metadata": {}
                 },
@@ -4363,7 +4369,9 @@
                     "width": "1",
                     "height": "3"
                   },
-                  "style": {},
+                  "style": {
+                    "background": "currentColor"
+                  },
                   "children": [],
                   "metadata": {}
                 },
@@ -4378,7 +4386,9 @@
                     "width": "1",
                     "height": "3"
                   },
-                  "style": {},
+                  "style": {
+                    "background": "currentColor"
+                  },
                   "children": [],
                   "metadata": {}
                 },
@@ -4393,7 +4403,9 @@
                     "width": "1",
                     "height": "3"
                   },
-                  "style": {},
+                  "style": {
+                    "background": "currentColor"
+                  },
                   "children": [],
                   "metadata": {}
                 },
@@ -4405,7 +4417,9 @@
                     "id": "Path",
                     "points": "0.8 2 8 2 8 1 0 1 0 22 8 22 8 21 0.8 21"
                   },
-                  "style": {},
+                  "style": {
+                    "background": "currentColor"
+                  },
                   "children": [],
                   "metadata": {}
                 },
@@ -4420,7 +4434,9 @@
                     "width": "6",
                     "height": "17"
                   },
-                  "style": {},
+                  "style": {
+                    "background": "currentColor"
+                  },
                   "children": [],
                   "metadata": {}
                 },
@@ -4432,7 +4448,9 @@
                     "id": "Path",
                     "points": "20.2 21 13 21 13 22 21 22 21 1 13 1 13 2 20.2 2"
                   },
-                  "style": {},
+                  "style": {
+                    "background": "currentColor"
+                  },
                   "children": [],
                   "metadata": {}
                 },
@@ -4447,7 +4465,9 @@
                     "width": "6",
                     "height": "17"
                   },
-                  "style": {},
+                  "style": {
+                    "background": "currentColor"
+                  },
                   "children": [],
                   "metadata": {}
                 }
