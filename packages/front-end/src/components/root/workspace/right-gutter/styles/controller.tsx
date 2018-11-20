@@ -119,7 +119,7 @@ export default (Base: React.ComponentClass<BaseStylesProps>) =>
           {...rest}
           variant={cx({
             propertiesTab: tab === Tab.PROPERTIES || !showPropertiesTab,
-            triggersTab: tab === Tab.TRIGGERS,
+            triggersTab: tab === Tab.TRIGGERS && showPropertiesTab,
             showPropertiesTab
           })}
           behaviorProps={{
