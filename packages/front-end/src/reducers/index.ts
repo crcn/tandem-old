@@ -2028,12 +2028,10 @@ export const canvasReducer = (state: RootState, action: Action) => {
     case ELEMENT_TYPE_CHANGED: {
       const { value } = action as ElementTypeChanged;
       state = persistRootState(state => {
-        const selectedNode = getInspectorSyntheticNode(
-          state.selectedInspectorNodes[0],
-          state.documents
-        ) as SyntheticElement;
-        const sourceNode = getSyntheticSourceNode(
+        const selectedNode = state.selectedInspectorNodes[0];
+        const sourceNode = getInspectorSourceNode(
           selectedNode,
+          state.sourceNodeInspector,
           state.graph
         ) as PCElement;
         return persistChangeElementType(value, sourceNode, state);

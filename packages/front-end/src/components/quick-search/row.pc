@@ -5,6 +5,26 @@
   "name": "module",
   "children": [
     {
+      "id": "711f2f581696",
+      "is": "808486bb13",
+      "label": "Search Result",
+      "name": "component-instance",
+      "attributes": {},
+      "style": {},
+      "children": [],
+      "metadata": {
+        "bounds": {
+          "left": 397,
+          "top": 371,
+          "right": 665.470266729453,
+          "bottom": 438
+        }
+      },
+      "variant": {
+        "646b96f948608": true
+      }
+    },
+    {
       "id": "808486bb13",
       "name": "component",
       "is": "div",
@@ -129,7 +149,7 @@
         },
         {
           "id": "646b96f933019",
-          "is": "646b96f9823",
+          "is": "711f2f581678",
           "label": "split tab button",
           "name": "component-instance",
           "attributes": {},
@@ -140,32 +160,7 @@
             "flex-shrink": "0",
             "width": "17px"
           },
-          "children": [
-            {
-              "id": "646b96f936380",
-              "propertyName": "style",
-              "targetIdPath": [
-                "646b96f9821"
-              ],
-              "value": {
-                "background": "rgba(200, 200, 200, 1)"
-              },
-              "name": "override",
-              "children": []
-            },
-            {
-              "id": "646b96f937725",
-              "propertyName": "style",
-              "targetIdPath": [
-                "646b96f9822"
-              ],
-              "value": {
-                "background": "rgba(200, 200, 200, 1)"
-              },
-              "name": "override",
-              "children": []
-            }
-          ],
+          "children": [],
           "metadata": {
             "bounds": {
               "left": 439,

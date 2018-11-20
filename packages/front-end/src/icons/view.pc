@@ -4229,6 +4229,244 @@
         }
       },
       "variant": {}
+    },
+    {
+      "label": "Split Icon 2",
+      "is": "svg",
+      "style": {},
+      "attributes": {
+        "width": "23px",
+        "height": "21px",
+        "viewBox": "0 0 23 21",
+        "version": "1.1",
+        "xmlns": "http://www.w3.org/2000/svg",
+        "xmlns:xlink": "http://www.w3.org/1999/xlink"
+      },
+      "id": "711f2f581678",
+      "name": "component",
+      "children": [
+        {
+          "id": "711f2f581662",
+          "is": "title",
+          "name": "element",
+          "attributes": {},
+          "style": {},
+          "children": [
+            {
+              "id": "711f2f581663",
+              "name": "text",
+              "label": "split-2",
+              "value": "split-2",
+              "style": {},
+              "children": [],
+              "metadata": {}
+            }
+          ],
+          "metadata": {}
+        },
+        {
+          "id": "711f2f581664",
+          "is": "desc",
+          "name": "element",
+          "attributes": {},
+          "style": {},
+          "children": [
+            {
+              "id": "711f2f581665",
+              "name": "text",
+              "label": "Created with Sketch.",
+              "value": "Created with Sketch.",
+              "style": {},
+              "children": [],
+              "metadata": {}
+            }
+          ],
+          "metadata": {}
+        },
+        {
+          "id": "711f2f581666",
+          "is": "g",
+          "name": "element",
+          "attributes": {
+            "id": "icons",
+            "stroke": "none",
+            "stroke-width": "1",
+            "fill": "none",
+            "fill-rule": "evenodd"
+          },
+          "style": {},
+          "children": [
+            {
+              "id": "711f2f581667",
+              "is": "g",
+              "name": "element",
+              "attributes": {
+                "id": "split-2",
+                "transform": "translate(11.500000, 10.500000) rotate(-270.000000) translate(-11.500000, -10.500000) translate(1.000000, -1.000000)",
+                "fill": "#000000"
+              },
+              "style": {},
+              "children": [
+                {
+                  "id": "711f2f581668",
+                  "is": "rect",
+                  "name": "element",
+                  "attributes": {
+                    "id": "Rectangle",
+                    "x": "10",
+                    "y": "0",
+                    "width": "1",
+                    "height": "3"
+                  },
+                  "style": {},
+                  "children": [],
+                  "metadata": {}
+                },
+                {
+                  "id": "711f2f581669",
+                  "is": "rect",
+                  "name": "element",
+                  "attributes": {
+                    "id": "Rectangle",
+                    "x": "10",
+                    "y": "4",
+                    "width": "1",
+                    "height": "3"
+                  },
+                  "style": {},
+                  "children": [],
+                  "metadata": {}
+                },
+                {
+                  "id": "711f2f581670",
+                  "is": "rect",
+                  "name": "element",
+                  "attributes": {
+                    "id": "Rectangle",
+                    "x": "10",
+                    "y": "8",
+                    "width": "1",
+                    "height": "3"
+                  },
+                  "style": {},
+                  "children": [],
+                  "metadata": {}
+                },
+                {
+                  "id": "711f2f581671",
+                  "is": "rect",
+                  "name": "element",
+                  "attributes": {
+                    "id": "Rectangle",
+                    "x": "10",
+                    "y": "12",
+                    "width": "1",
+                    "height": "3"
+                  },
+                  "style": {},
+                  "children": [],
+                  "metadata": {}
+                },
+                {
+                  "id": "711f2f581672",
+                  "is": "rect",
+                  "name": "element",
+                  "attributes": {
+                    "id": "Rectangle",
+                    "x": "10",
+                    "y": "16",
+                    "width": "1",
+                    "height": "3"
+                  },
+                  "style": {},
+                  "children": [],
+                  "metadata": {}
+                },
+                {
+                  "id": "711f2f581673",
+                  "is": "rect",
+                  "name": "element",
+                  "attributes": {
+                    "id": "Rectangle",
+                    "x": "10",
+                    "y": "20",
+                    "width": "1",
+                    "height": "3"
+                  },
+                  "style": {},
+                  "children": [],
+                  "metadata": {}
+                },
+                {
+                  "id": "711f2f581674",
+                  "is": "polygon",
+                  "name": "element",
+                  "attributes": {
+                    "id": "Path",
+                    "points": "0.8 2 8 2 8 1 0 1 0 22 8 22 8 21 0.8 21"
+                  },
+                  "style": {},
+                  "children": [],
+                  "metadata": {}
+                },
+                {
+                  "id": "711f2f581675",
+                  "is": "rect",
+                  "name": "element",
+                  "attributes": {
+                    "id": "Rectangle",
+                    "x": "2",
+                    "y": "3",
+                    "width": "6",
+                    "height": "17"
+                  },
+                  "style": {},
+                  "children": [],
+                  "metadata": {}
+                },
+                {
+                  "id": "711f2f581676",
+                  "is": "polygon",
+                  "name": "element",
+                  "attributes": {
+                    "id": "Path",
+                    "points": "20.2 21 13 21 13 22 21 22 21 1 13 1 13 2 20.2 2"
+                  },
+                  "style": {},
+                  "children": [],
+                  "metadata": {}
+                },
+                {
+                  "id": "711f2f581677",
+                  "is": "rect",
+                  "name": "element",
+                  "attributes": {
+                    "id": "Rectangle",
+                    "x": "13",
+                    "y": "3",
+                    "width": "6",
+                    "height": "17"
+                  },
+                  "style": {},
+                  "children": [],
+                  "metadata": {}
+                }
+              ],
+              "metadata": {}
+            }
+          ],
+          "metadata": {}
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": -4315,
+          "top": 1113,
+          "right": -3915,
+          "bottom": 1413
+        }
+      },
+      "variant": {}
     }
   ]
 }
