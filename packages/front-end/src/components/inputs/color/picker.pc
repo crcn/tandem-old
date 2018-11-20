@@ -436,7 +436,6 @@
             "width": "100%",
             "padding": "4px 8px",
             "border-radius": "2px",
-            "border": "1px solid rgba(0,0,0,0.08)",
             "box-sizing": "border-box",
             "margin-right": "8px",
             "flex": "1"
@@ -455,7 +454,6 @@
             "width": "100%",
             "padding": "4px 8px",
             "border-radius": "2px",
-            "border": "1px solid rgba(0,0,0,0.08)",
             "box-sizing": "border-box",
             "margin-right": "8px",
             "flex": "1"
@@ -474,7 +472,6 @@
             "width": "100%",
             "padding": "4px 8px",
             "border-radius": "2px",
-            "border": "1px solid rgba(0,0,0,0.08)",
             "box-sizing": "border-box",
             "margin-right": "8px",
             "flex": "1"
@@ -493,7 +490,6 @@
             "width": "100%",
             "padding": "4px 8px",
             "border-radius": "2px",
-            "border": "1px solid rgba(0,0,0,0.08)",
             "box-sizing": "border-box",
             "flex": "1"
           },
@@ -554,7 +550,6 @@
             "width": "100%",
             "padding": "4px 8px",
             "border-radius": "2px",
-            "border": "1px solid rgba(0,0,0,0.08)",
             "box-sizing": "border-box",
             "margin-right": "8px",
             "flex": "1"
@@ -580,7 +575,6 @@
             "width": "100%",
             "padding": "4px 8px",
             "border-radius": "2px",
-            "border": "1px solid rgba(0,0,0,0.08)",
             "box-sizing": "border-box",
             "margin-right": "8px",
             "flex": "1"
@@ -599,7 +593,6 @@
             "width": "100%",
             "padding": "4px 8px",
             "border-radius": "2px",
-            "border": "1px solid rgba(0,0,0,0.08)",
             "box-sizing": "border-box",
             "flex": "1",
             "margin-right": "8px"
@@ -618,7 +611,6 @@
             "width": "100%",
             "padding": "4px 8px",
             "border-radius": "2px",
-            "border": "1px solid rgba(0,0,0,0.08)",
             "box-sizing": "border-box",
             "flex": "1"
           },
@@ -683,7 +675,6 @@
             "width": "100%",
             "padding": "4px 8px",
             "border-radius": "2px",
-            "border": "1px solid rgba(0,0,0,0.08)",
             "box-sizing": "border-box",
             "margin-right": "8px",
             "flex": "1"
