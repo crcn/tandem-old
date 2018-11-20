@@ -1,6 +1,6 @@
 {
   "id": "317401b1465283",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "metadata": {},
   "name": "module",
   "children": [
@@ -117,7 +117,8 @@
                                 "806ffd0684"
                               ],
                               "value": {
-                                "width": "100px"
+                                "width": "140px",
+                                "box-shadow": "0px 2px 2px 1px rgba(0, 0, 0, 0.19)"
                               },
                               "name": "override",
                               "children": []

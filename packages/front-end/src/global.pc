@@ -129,6 +129,14 @@
       "type": "color",
       "children": [],
       "metadata": {}
+    },
+    {
+      "id": "2629689021",
+      "name": "query",
+      "label": "test",
+      "condition": {},
+      "children": [],
+      "metadata": {}
     }
   ]
 }

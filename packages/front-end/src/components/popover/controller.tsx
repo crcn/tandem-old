@@ -7,6 +7,7 @@ export type Props = {
   open: boolean;
   anchorRect?: Bounds;
   onShouldClose: any;
+  getAnchorRect?: (bounds: Bounds) => Bounds;
 } & BasePopoverProps;
 
 type PopoverState = {
@@ -26,7 +27,10 @@ export default (Base: React.ComponentClass<BasePopoverProps>) => {
         const anchor: HTMLDivElement = ReactDOM.findDOMNode(
           this as any
         ) as HTMLDivElement;
-        const rect = getRealElementBounds(anchor);
+        let rect = getRealElementBounds(anchor);
+        if (this.props.getAnchorRect) {
+          rect = this.props.getAnchorRect(rect);
+        }
         this.setState({ anchorRect: rect });
       } else if (!open) {
         this.setState({ anchorRect: null });

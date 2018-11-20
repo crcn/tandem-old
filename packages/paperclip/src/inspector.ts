@@ -696,6 +696,9 @@ export const getInspectorNodeSyntheticDocument = (
   documents: SyntheticDocument[]
 ) => {
   const sourceNode = getInspectorSourceNode(node, ancestor, graph);
+  if (!sourceNode) {
+    return null;
+  }
   const dependency = getPCNodeDependency(sourceNode.id, graph);
   return getSyntheticDocumentByDependencyUri(dependency.uri, documents, graph);
 };

@@ -1,6 +1,6 @@
 {
   "id": "ab406a6b793607",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "metadata": {},
   "name": "module",
   "children": [
@@ -430,6 +430,17 @@
                 "f0d3191523498"
               ],
               "value": {},
+              "name": "override",
+              "children": []
+            },
+            {
+              "id": "5673c5c21315",
+              "variantId": null,
+              "propertyName": "text",
+              "targetIdPath": [
+                "f0d3191523498"
+              ],
+              "value": "×",
               "name": "override",
               "children": []
             }

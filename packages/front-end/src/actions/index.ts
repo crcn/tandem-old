@@ -26,7 +26,10 @@ import {
   PCVariantTriggerSource,
   PCVariableType,
   PCMediaQuery,
-  PCQueryType
+  PCQueryType,
+  PCMediaQueryCondition,
+  PCQuery,
+  PCVariableQueryCondition
 } from "paperclip";
 import { RegisteredComponent } from "..";
 import {
@@ -268,7 +271,8 @@ export const VARIANT_TRIGGER_TARGET_CHANGED = "VARIANT_TRIGGER_TARGET_CHANGED";
 export const ADD_QUERY_BUTTON_CLICKED = "ADD_QUERY_BUTTON_CLICKED";
 export const REMOVE_MEDIA_QUERY_BUTTON_CLICK =
   "REMOVE_MEDIA_QUERY_BUTTON_CLICK";
-export const MEDIA_QUERY_CHANGED = "MEDIA_QUERY_CHANGED";
+export const QUERY_LABEL_CHANGED = "QUERY_LABEL_CHANGED";
+export const QUERY_CONDITION_CHANGED = "QUERY_CONDITION_CHANGED";
 
 export type WrappedEvent<T> = {
   sourceEvent: T;
@@ -577,9 +581,14 @@ export type ResizerMouseDown = {} & WrappedEvent<React.MouseEvent<any>>;
 
 export type ResizerPathStoppedMoving = {} & ResizerPathMoved;
 
-export type MediaQueryChanged = {
-  target: PCMediaQuery;
-  properties: Partial<PCMediaQuery>;
+export type QueryConditionChanged = {
+  target: PCQuery;
+  condition: Partial<any>;
+} & Action;
+
+export type QueryLabelChanged = {
+  target: PCQuery;
+  label?: string;
 } & Action;
 
 export type FrameModeChangeComplete = {
@@ -772,13 +781,22 @@ export const fileItemContextMenuCopyPathClicked = publicActionCreator(
   })
 );
 
-export const mediaQueryChanged = (
-  target: PCMediaQuery,
-  properties: Partial<PCMediaQuery>
-): MediaQueryChanged => ({
-  type: MEDIA_QUERY_CHANGED,
+export const queryConditionChanged = (
+  target: PCQuery,
+  condition: Partial<any>
+): QueryConditionChanged => ({
+  type: QUERY_CONDITION_CHANGED,
   target,
-  properties
+  condition
+});
+
+export const queryLabelChanged = (
+  target: PCQuery,
+  label?: string
+): QueryLabelChanged => ({
+  type: QUERY_LABEL_CHANGED,
+  target,
+  label
 });
 
 export const fileItemContextMenuRenameClicked = publicActionCreator(

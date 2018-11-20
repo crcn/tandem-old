@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Dispatch } from "redux";
 import { PCQuery, PCQueryType } from "paperclip";
-import { BaseQueriesPaneProps, MediaQueryItem } from "./view.pc";
+import { BaseQueriesPaneProps, QueryItem } from "./view.pc";
 import * as cx from "classnames";
 import { addQueryButtonClick } from "../../../../../actions";
 import { DropdownMenuOption } from "../../../../inputs/dropdown/controller";
@@ -23,25 +23,18 @@ const QUERY_DROPDOWN_OPTIONS: DropdownMenuOption[] = [
 
 export default (Base: React.ComponentClass<BaseQueriesPaneProps>) =>
   class MediaQueriesController extends React.PureComponent<Props> {
-    onAddQueryDropdownSelect = (value: DropdownMenuOption) => {
-      this.props.dispatch(addQueryButtonClick(value.value));
+    onAddQueryDropdownSelect = (value: PCQueryType) => {
+      this.props.dispatch(addQueryButtonClick(value));
     };
     render() {
       const { onAddQueryDropdownSelect } = this;
       const { globalQueries, dispatch, ...rest } = this.props;
-      const items = globalQueries.map(mediaQuery => {
-        return (
-          <MediaQueryItem
-            dispatch={dispatch}
-            key={mediaQuery.id}
-            mediaQuery={mediaQuery}
-          />
-        );
+      const items = globalQueries.map(query => {
+        return <QueryItem dispatch={dispatch} key={query.id} query={query} />;
       });
       return (
         <Base
           {...rest}
-          variant={cx({ hasItems: items.length > 0 })}
           addQueryDropdownProps={{
             options: QUERY_DROPDOWN_OPTIONS,
             onChangeComplete: onAddQueryDropdownSelect

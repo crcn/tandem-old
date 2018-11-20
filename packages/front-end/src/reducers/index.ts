@@ -192,8 +192,10 @@ import {
   REMOVE_VARIANT_TRIGGER_CLICKED,
   ADD_QUERY_BUTTON_CLICKED,
   AddQueryButtonClicked,
-  MEDIA_QUERY_CHANGED,
-  MediaQueryChanged
+  QUERY_LABEL_CHANGED,
+  QUERY_CONDITION_CHANGED,
+  QueryConditionChanged,
+  QueryLabelChanged
 } from "../actions";
 import {
   queueOpenFile,
@@ -1167,18 +1169,39 @@ export const canvasReducer = (state: RootState, action: Action) => {
       }, state);
       return state;
     }
-    case MEDIA_QUERY_CHANGED: {
-      const { target, properties } = action as MediaQueryChanged;
+    case QUERY_CONDITION_CHANGED: {
+      const { target, condition } = action as QueryConditionChanged;
       state = persistRootState(state => {
-        const newTarget = {
-          ...target,
-          ...properties
-        };
+        state = persistReplacePCNode(
+          {
+            ...target,
+            condition: condition && {
+              ...(target.condition || EMPTY_OBJECT),
+              ...condition
+            }
+          },
+          target,
+          state
+        );
+        return state;
+      }, state);
+      return state;
+    }
 
-        if (!newTarget.label) {
+    case QUERY_LABEL_CHANGED: {
+      const { target, label } = action as QueryLabelChanged;
+      state = persistRootState(state => {
+        if (!label) {
           state = persistRemovePCNode(target, state);
         } else {
-          state = persistReplacePCNode(newTarget, target, state);
+          state = persistReplacePCNode(
+            {
+              ...target,
+              label
+            },
+            target,
+            state
+          );
         }
         return state;
       }, state);
