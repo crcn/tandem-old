@@ -10,7 +10,8 @@ import {
   PCTextLikeNode,
   isTextLikePCNode,
   getSyntheticVisibleNodeRelativeBounds,
-  Frame
+  Frame,
+  SyntheticTextNode
 } from "paperclip";
 import { Dispatch } from "redux";
 import { FocusComponent } from "../../../../../../../focus";
@@ -19,6 +20,7 @@ import { canvasTextEditChangeComplete } from "../../../../../../../../actions";
 export type Props = {
   rootInspectorNode: InspectorNode;
   selectedInspectorNode: InspectorNode;
+  selectedSyntheticNode: SyntheticTextNode;
   graph: DependencyGraph;
   frames: Frame[];
   documents: SyntheticDocument[];
@@ -33,6 +35,7 @@ export default (Base: React.ComponentClass<BaseEditTextProps>) =>
     render() {
       const {
         selectedInspectorNode,
+        selectedSyntheticNode,
         frames,
         rootInspectorNode,
         graph,
@@ -72,7 +75,7 @@ export default (Base: React.ComponentClass<BaseEditTextProps>) =>
           <Base
             {...rest}
             style={style}
-            value={sourceNode.value}
+            value={selectedSyntheticNode.value}
             onChangeComplete={onChangeComplete}
           />
         </FocusComponent>

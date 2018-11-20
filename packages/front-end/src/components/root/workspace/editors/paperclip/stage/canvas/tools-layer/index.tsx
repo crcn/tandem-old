@@ -22,6 +22,7 @@ import {
   getSyntheticDocumentByDependencyUri,
   SyntheticDocument,
   DependencyGraph,
+  SyntheticTextNode,
   getSyntheticVisibleNodeRelativeBounds,
   Frame
 } from "paperclip";
@@ -87,6 +88,9 @@ export class ToolsLayerComponent extends React.PureComponent<
         frames,
         graph
       );
+    const selectedSyntheticNode =
+      selectedInspectorNodes[0] &&
+      getInspectorSyntheticNode(selectedInspectorNodes[0], documents);
     return (
       <div className="m-tools-layer">
         <InsertLayer
@@ -147,6 +151,7 @@ export class ToolsLayerComponent extends React.PureComponent<
             graph={graph}
             rootInspectorNode={sourceNodeInspector}
             selectedInspectorNode={selectedInspectorNodes[0]}
+            selectedSyntheticNode={selectedSyntheticNode as SyntheticTextNode}
           />
         ) : null}
       </div>
