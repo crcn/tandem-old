@@ -29,7 +29,11 @@ export default (Base: React.ComponentClass<BaseOpacityPaneProps>) =>
           sliderInputProps={{
             min: 0,
             max: 1,
-            value: Number(computedStyleInfo.style.opacity || 1),
+            value: Number(
+              computedStyleInfo.style.opacity == null
+                ? 1
+                : computedStyleInfo.style.opacity
+            ),
             onChange,
             onChangeComplete
           }}
