@@ -1239,16 +1239,7 @@
       "attributes": {},
       "id": "d3d13011662",
       "name": "component",
-      "children": [
-        {
-          "id": "d3d13011664",
-          "name": "variant",
-          "label": "abcd",
-          "isDefault": true,
-          "children": [],
-          "metadata": {}
-        }
-      ],
+      "children": [],
       "metadata": {
         "bounds": {
           "left": 101.33482514042487,

@@ -35,6 +35,26 @@
       "variant": {}
     },
     {
+      "id": "f89d0ee73352",
+      "is": "50e32bec2591",
+      "label": "Filtering",
+      "name": "component-instance",
+      "attributes": {},
+      "style": {},
+      "children": [],
+      "metadata": {
+        "bounds": {
+          "left": 132,
+          "top": 580,
+          "right": 333,
+          "bottom": 822.2360321797469
+        }
+      },
+      "variant": {
+        "69c680a12": true
+      }
+    },
+    {
       "label": "Dropdown",
       "is": "div",
       "style": {
@@ -111,7 +131,8 @@
                             "padding-top": "0px",
                             "padding-right": "0px",
                             "padding-bottom": "0px",
-                            "padding-left": "0px"
+                            "padding-left": "0px",
+                            "box-shadow": "unset"
                           },
                           "children": [
                             {

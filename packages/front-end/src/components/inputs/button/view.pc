@@ -31,9 +31,16 @@
           "name": "text",
           "label": "Text",
           "value": "Label",
-          "style": {},
+          "style": {
+            "font-weight": "500"
+          },
           "children": [],
-          "metadata": {}
+          "metadata": {},
+          "styleMixins": {
+            "dc3b39eb1275": {
+              "priority": 0
+            }
+          }
         },
         {
           "id": "38b32d581121",

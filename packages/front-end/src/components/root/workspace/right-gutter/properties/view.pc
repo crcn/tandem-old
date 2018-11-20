@@ -933,7 +933,7 @@
                       "children": [
                         {
                           "id": "60ea77f717",
-                          "is": "38fc2a476190",
+                          "is": "d30286e83385",
                           "name": "component-instance",
                           "attributes": {},
                           "style": {
@@ -954,7 +954,8 @@
                               "bottom": 658
                             }
                           },
-                          "label": "remove controller button"
+                          "label": "remove controller button",
+                          "variant": {}
                         },
                         {
                           "id": "60ea77f716",
@@ -1051,6 +1052,10 @@
                           "right": 806.8410219413829,
                           "bottom": 399
                         }
+                      },
+                      "variant": {
+                        "60ea77f75": true,
+                        "babf9bd56": true
                       }
                     },
                     {
@@ -1107,6 +1112,9 @@
                           "right": 806.8410219413829,
                           "bottom": 399
                         }
+                      },
+                      "variant": {
+                        "babf9bd56": true
                       }
                     }
                   ],
@@ -1144,7 +1152,9 @@
             "60ea77f717"
           ],
           "value": {
-            "display": "block"
+            "display": "block",
+            "height": "10px",
+            "margin-right": "10px"
           },
           "name": "override",
           "children": []
