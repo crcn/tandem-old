@@ -309,98 +309,6 @@
       ]
     },
     {
-      "label": "media query item",
-      "is": "div",
-      "style": {
-        "box-sizing": "border-box",
-        "display": "flex",
-        "margin-right": "12px",
-        "margin-left": "12px",
-        "margin-bottom": "6px"
-      },
-      "attributes": {},
-      "id": "7d27fc31128",
-      "name": "component",
-      "children": [
-        {
-          "id": "7d27fc31143",
-          "is": "7149f8199122",
-          "label": "name input",
-          "name": "component-instance",
-          "attributes": {
-            "placeholder": "Name"
-          },
-          "style": {
-            "margin-right": "6px"
-          },
-          "children": [],
-          "metadata": {
-            "bounds": {
-              "left": 384,
-              "top": 298,
-              "right": 484,
-              "bottom": 327.0358087589019
-            }
-          },
-          "variant": {}
-        },
-        {
-          "id": "7d27fc31138",
-          "is": "7149f8199122",
-          "label": "min width input",
-          "name": "component-instance",
-          "attributes": {
-            "placeholder": "0px"
-          },
-          "style": {
-            "margin-right": "6px"
-          },
-          "children": [],
-          "metadata": {
-            "bounds": {
-              "left": 384,
-              "top": 298,
-              "right": 484,
-              "bottom": 327.0358087589019
-            }
-          },
-          "variant": {}
-        },
-        {
-          "id": "7d27fc31133",
-          "is": "7149f8199122",
-          "label": "max width input",
-          "name": "component-instance",
-          "attributes": {
-            "placeholder": "0px"
-          },
-          "style": {},
-          "children": [],
-          "metadata": {
-            "bounds": {
-              "left": 384,
-              "top": 298,
-              "right": 484,
-              "bottom": 327.0358087589019
-            }
-          },
-          "variant": {}
-        }
-      ],
-      "metadata": {
-        "bounds": {
-          "left": 740,
-          "top": 147,
-          "right": 1152,
-          "bottom": 197
-        }
-      },
-      "variant": {},
-      "controllers": [
-        "./item-controller.tsx"
-      ]
-    },
-    {
       "label": "Query item",
       "is": "div",
       "style": {
@@ -441,7 +349,7 @@
                   "attributes": {},
                   "style": {
                     "display": "block",
-                    "height": "18px"
+                    "height": "14px"
                   },
                   "children": [],
                   "metadata": {
