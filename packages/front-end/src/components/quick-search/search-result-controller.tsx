@@ -14,23 +14,10 @@ export type Props = {
   dispatch: Dispatch<any>;
 };
 
-type State = {
-  hovering: boolean;
-};
-
 export default (Base: React.ComponentClass<BaseSearchResultProps>) =>
-  class SearchResultController extends React.PureComponent<Props, State> {
-    state = {
-      hovering: false
-    };
+  class SearchResultController extends React.PureComponent<Props> {
     onClick = () => {
       this.props.dispatch(quickSearchItemClicked(this.props.item));
-    };
-    onMouseEnter = () => {
-      this.setState({ hovering: true });
-    };
-    onMouseLeave = () => {
-      this.setState({ hovering: false });
     };
     onSplitButtonClick = () => {
       this.props.dispatch(
@@ -39,20 +26,14 @@ export default (Base: React.ComponentClass<BaseSearchResultProps>) =>
     };
     render() {
       const { item, ...rest } = this.props;
-      const { onClick, onMouseEnter, onMouseLeave, onSplitButtonClick } = this;
-      const { hovering } = this.state;
+      const { onClick, onSplitButtonClick } = this;
 
       return (
         <Base
           {...rest}
-          variant={cx({
-            hovering
-          })}
           splitTabButtonProps={{
             onClick: onSplitButtonClick
           }}
-          onMouseEnter={onMouseEnter}
-          onMouseLeave={onMouseLeave}
           onClick={onClick}
           labelProps={{ text: item.label }}
           descriptionProps={{ text: item.description }}

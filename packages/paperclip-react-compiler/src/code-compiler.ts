@@ -26,18 +26,29 @@ import {
   PCOverride,
   PCOverridablePropertyName,
   PCComputedNoverOverrideMap,
-  PCLabelOverride,
   isPCComponentInstance,
   computeStyleValue,
   isPCComponentOrInstance,
   getVariantTriggers,
   PCMediaQuery,
+  StyleMixins,
+  isSlot,
+  PCSlot,
+  PCStyleMixin,
+  PCComputedOverrideMap,
+  mergeVariantOverrides,
+  getPCNodeContentNode,
+  PCVariant,
+  PCVariantTrigger,
+  PCPlug,
+  PCBaseElementChild,
+  getVariableRefMap,
   PCVariantTriggerSourceType,
   PCVariantTriggerMediaQuerySource,
   getPCNodeModule,
   getPCVariants
 } from "paperclip";
-import { camelCase, uniq, kebabCase, last, negate } from "lodash";
+import { camelCase, uniq, last, negate } from "lodash";
 import {
   flattenTreeNode,
   EMPTY_OBJECT,
@@ -45,8 +56,9 @@ import {
   stripProtocol,
   filterNestedNodes,
   memoize,
-  getParentTreeNode,
-  reduceTree
+  EMPTY_ARRAY,
+  getTreeNodesByName,
+  getParentTreeNode
 } from "tandem-common";
 import * as path from "path";
 import {
@@ -66,26 +78,6 @@ import {
   addScopedLayerLabel,
   makeSafeVarName
 } from "./utils";
-import {
-  StyleMixins,
-  isSlot,
-  PCSlot,
-  PCPlug,
-  PCBaseElementChild,
-  getVariableRefMap
-} from "paperclip";
-import { PCStyleMixin } from "paperclip";
-import {
-  PCComputedOverrideMap,
-  getPCParentComponentInstances,
-  getAllParentComponentInstance,
-  filterNestedOverrides,
-  mergeVariantOverrides
-} from "paperclip";
-import { EMPTY_ARRAY } from "tandem-common";
-import { getTreeNodesByName } from "tandem-common";
-import { getPCNodeContentNode } from "paperclip";
-import { PCVariant, PCVariantTrigger } from "paperclip/src";
 export const compilePaperclipModuleToReact = (
   entry: PCDependency,
   graph: DependencyGraph
@@ -453,10 +445,9 @@ const translateStyleVariantOverrides = (
 
       const variant = getPCNode(override.variantId, context.graph) as PCVariant;
 
-      const variantTriggers = getVariantTriggers(
-        variant,
-        component as PCComponent
-      );
+      const variantTriggers =
+        (variant && getVariantTriggers(variant, component as PCComponent)) ||
+        EMPTY_ARRAY;
 
       mediaTriggers = variantTriggers.filter(
         trigger =>

@@ -151,6 +151,17 @@
           },
           "name": "override",
           "children": []
+        },
+        {
+          "id": "7dbd84041472",
+          "name": "variant-trigger",
+          "targetVariantId": "babf9bd56",
+          "source": {
+            "type": 1,
+            "state": "hover"
+          },
+          "children": [],
+          "metadata": {}
         }
       ],
       "metadata": {

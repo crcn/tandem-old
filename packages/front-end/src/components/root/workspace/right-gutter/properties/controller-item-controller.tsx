@@ -11,24 +11,8 @@ export type Props = {
   relativePath: string;
 };
 
-type InnerProps = {
-  onClick: any;
-  onOpenClick: any;
-} & Props;
-
-type State = {
-  hovering: boolean;
-};
-
 export default (Base: React.ComponentClass<BaseControllerItemProps>) => {
-  return class ControllerItemController extends React.PureComponent<
-    Props,
-    State
-  > {
-    constructor(props) {
-      super(props);
-      this.state = { hovering: false };
-    }
+  return class ControllerItemController extends React.PureComponent<Props> {
     onClick = () => {
       this.props.onClick(this.props.relativePath);
     };
@@ -37,24 +21,15 @@ export default (Base: React.ComponentClass<BaseControllerItemProps>) => {
       const { dispatch, relativePath } = this.props;
       dispatch(openControllerButtonClicked(relativePath));
     };
-    onMouseOver = () => {
-      this.setState({ hovering: true });
-    };
-    onMouseLeave = () => {
-      this.setState({ hovering: false });
-    };
     render() {
-      const { onOpenClick, onMouseOver, onMouseLeave, onClick } = this;
+      const { onOpenClick, onClick } = this;
       const { relativePath, selected } = this.props;
-      const { hovering } = this.state;
       return (
         <Base
           onClick={onClick}
-          onMouseOver={onMouseOver}
-          onMouseLeave={onMouseLeave}
           openButtonProps={{ onClick: onOpenClick }}
           labelProps={{ text: relativePath }}
-          variant={cx({ selected, hovering })}
+          variant={cx({ selected })}
         />
       );
     }

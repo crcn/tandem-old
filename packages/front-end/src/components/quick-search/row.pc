@@ -203,6 +203,17 @@
           },
           "name": "override",
           "children": []
+        },
+        {
+          "id": "f32ac6af39966",
+          "name": "variant-trigger",
+          "targetVariantId": "646b96f948608",
+          "source": {
+            "type": 1,
+            "state": "hover"
+          },
+          "children": [],
+          "metadata": {}
         }
       ],
       "metadata": {
