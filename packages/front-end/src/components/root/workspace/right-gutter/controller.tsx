@@ -1,15 +1,14 @@
 import * as React from "react";
 import {
-  getSyntheticNodeById,
-  SyntheticDocument,
-  getSyntheticVisibleNodeDocument,
   getPCNodeDependency,
   getGlobalVariables,
   getSyntheticNodeStyleColors,
   getInspectorSyntheticNode,
   InspectorTreeNodeName,
+  getSyntheticDocumentByDependencyUri,
   InspectorContent,
-  getGlobalMediaQueries
+  getGlobalMediaQueries,
+  getInspectorNodeSyntheticDocument
 } from "paperclip";
 import { EMPTY_ARRAY, EMPTY_OBJECT } from "tandem-common";
 import { RightGutterTab } from "./tab.pc";
@@ -45,13 +44,19 @@ export default (Base: React.ComponentClass<BaseRightGutterProps>) =>
       const { currentTab } = this.state;
       const { setTab } = this;
 
-      const { fontFamilies, projectInfo } = root;
+      const {
+        fontFamilies,
+        projectInfo,
+        graph,
+        sourceNodeInspector: rootInspectorNode,
+        documents
+      } = root;
       const projectOptions =
         (projectInfo && projectInfo.config && projectInfo.config.options) ||
         EMPTY_OBJECT;
 
-      const globalVariables = getGlobalVariables(root.graph);
-      const globalMediaQueries = getGlobalMediaQueries(root.graph);
+      const globalVariables = getGlobalVariables(graph);
+      const globalMediaQueries = getGlobalMediaQueries(graph);
 
       const selectedInspectorNodes = root.selectedInspectorNodes;
       const hasInspectorNodes = Boolean(selectedInspectorNodes.length);
@@ -65,24 +70,23 @@ export default (Base: React.ComponentClass<BaseRightGutterProps>) =>
 
       const selectedSyntheticNodes = hasInspectorNodes
         ? selectedInspectorNodes
-            .map(node => getInspectorSyntheticNode(node, root.documents))
+            .map(node => getInspectorSyntheticNode(node, documents))
             .filter(Boolean)
         : EMPTY_ARRAY;
 
-      const syntheticDocument = selectedSyntheticNodes.length
-        ? getSyntheticVisibleNodeDocument(
-            getInspectorSyntheticNode(
-              root.selectedInspectorNodes[0],
-              root.documents
-            ).id,
-            root.documents
+      getSyntheticDocumentByDependencyUri;
+
+      const syntheticDocument = selectedInspectorNodes.length
+        ? getInspectorNodeSyntheticDocument(
+            selectedInspectorNodes[0],
+            rootInspectorNode,
+            graph,
+            documents
           )
         : null;
       const documentColors =
         (syntheticDocument && getSyntheticNodeStyleColors(syntheticDocument)) ||
         EMPTY_ARRAY;
-
-      const rootInspectorNode = root.sourceNodeInspector;
 
       const tabs = availableTabs.map((tabName, i) => {
         return (
@@ -122,7 +126,7 @@ export default (Base: React.ComponentClass<BaseRightGutterProps>) =>
             globalVariables,
             globalMediaQueries,
             selectedVariant: root.selectedVariant,
-            graph: root.graph
+            graph: graph
           }}
           tabsProps={{
             children: tabs
@@ -137,10 +141,10 @@ export default (Base: React.ComponentClass<BaseRightGutterProps>) =>
                   ? (selectedInspectorNodes[0] as InspectorContent)
                       .sourceSlotNodeId
                   : selectedInspectorNodes[0].sourceNodeId,
-                root.graph
+                graph
               ).uri,
             dispatch,
-            graph: root.graph,
+            graph: graph,
             selectedNodes: selectedSyntheticNodes,
             selectedInspectorNodes
           }}

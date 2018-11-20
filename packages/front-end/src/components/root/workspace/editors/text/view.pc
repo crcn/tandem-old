@@ -79,7 +79,8 @@
                       ],
                       "value": {
                         "font-size": "10px",
-                        "color": "rgba(88, 185, 255, 1)"
+                        "color": "rgba(88, 185, 255, 1)",
+                        "font-weight": "600"
                       },
                       "name": "override",
                       "children": []

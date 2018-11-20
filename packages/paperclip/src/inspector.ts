@@ -35,7 +35,8 @@ import {
   SyntheticDocument,
   getSyntheticInstancePath,
   SyntheticVisibleNode,
-  getSyntheticSourceNode
+  getSyntheticSourceNode,
+  getSyntheticDocumentByDependencyUri
 } from "./synthetic";
 
 import {
@@ -686,6 +687,17 @@ const patchInspectorTree2 = (
   }
 
   return [rootInspectorNode, newSourceMap];
+};
+
+export const getInspectorNodeSyntheticDocument = (
+  node: InspectorNode,
+  ancestor: InspectorNode,
+  graph: DependencyGraph,
+  documents: SyntheticDocument[]
+) => {
+  const sourceNode = getInspectorSourceNode(node, ancestor, graph);
+  const dependency = getPCNodeDependency(sourceNode.id, graph);
+  return getSyntheticDocumentByDependencyUri(dependency.uri, documents, graph);
 };
 
 export const getInspectorSourceNode = (
