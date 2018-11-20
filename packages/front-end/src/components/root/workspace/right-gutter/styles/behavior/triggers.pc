@@ -157,6 +157,42 @@
                       "variant": {}
                     },
                     {
+                      "id": "82a5e55b4629",
+                      "is": "26f623457441",
+                      "label": "item",
+                      "name": "component-instance",
+                      "attributes": {},
+                      "style": {},
+                      "children": [
+                        {
+                          "id": "82a5e55b4630",
+                          "variantId": null,
+                          "propertyName": "text",
+                          "targetIdPath": [
+                            "36c603e97913",
+                            "67e386c7935"
+                          ],
+                          "value": "focusing",
+                          "name": "override",
+                          "children": []
+                        },
+                        {
+                          "id": "82a5e55b4631",
+                          "variantId": null,
+                          "propertyName": "text",
+                          "targetIdPath": [
+                            "36c603e97695",
+                            "67e386c7935"
+                          ],
+                          "value": "active",
+                          "name": "override",
+                          "children": []
+                        }
+                      ],
+                      "metadata": {},
+                      "variant": {}
+                    },
+                    {
                       "id": "8f20d2148427",
                       "is": "26f623457441",
                       "label": "item",
@@ -184,7 +220,7 @@
                             "36c603e97695",
                             "67e386c7935"
                           ],
-                          "value": "active",
+                          "value": "variable",
                           "name": "override",
                           "children": []
                         }
@@ -408,7 +444,7 @@
           "left": 96,
           "top": 109,
           "right": 284,
-          "bottom": 230
+          "bottom": 312
         }
       },
       "variant": {
