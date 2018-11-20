@@ -7,7 +7,7 @@ import {
 } from "../../actions";
 import { File, memoize } from "tandem-common";
 import { BaseSearchResultProps } from "./row.pc";
-import { BaseQuickSearchResult, QuickSearchResult } from "state";
+import { BaseQuickSearchResult, QuickSearchResult } from "../../state";
 
 export type Props = {
   item: QuickSearchResult;

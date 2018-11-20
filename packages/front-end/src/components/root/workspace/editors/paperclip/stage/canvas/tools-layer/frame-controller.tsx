@@ -1,4 +1,3 @@
-import "./frame-controller.scss";
 import * as React from "react";
 import * as cx from "classnames";
 import { Dispatch } from "redux";
@@ -95,8 +94,7 @@ export default (Base: React.ComponentClass<BaseFrameProps>) =>
           variant={cx({ hasController })}
           style={style}
           topBarProps={{
-            style: titleStyle as any,
-            className: "top-bar"
+            style: titleStyle as any
           }}
           titleProps={{
             text:

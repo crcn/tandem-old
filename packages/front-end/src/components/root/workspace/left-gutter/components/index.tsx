@@ -1,4 +1,3 @@
-import "./index.scss";
 import * as React from "react";
 import { Dispatch } from "redux";
 import { PaneComponent } from "../../../../pane";

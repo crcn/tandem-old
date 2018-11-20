@@ -1,5 +1,3 @@
-import "./index.scss";
-
 import * as React from "react";
 import * as path from "path";
 import * as cx from "classnames";
@@ -62,10 +60,8 @@ export default (Base: React.ComponentClass<BaseToolbarProps>) =>
       const tabs = editorWindow.tabUris.map(uri => {
         return (
           <EditorTab
-            className="tab"
             variant={cx({ selected: editorWindow.activeFilePath === uri })}
             xButtonProps={{
-              className: "x-button",
               onClick: event => onTabCloseButtonClick(uri, event)
             }}
             labelProps={{

@@ -32,7 +32,12 @@
           "value": "tab",
           "style": {},
           "children": [],
-          "metadata": {}
+          "metadata": {},
+          "styleMixins": {
+            "dc3b39eb1275": {
+              "priority": 0
+            }
+          }
         },
         {
           "id": "f0d3191523498",
@@ -44,14 +49,31 @@
             "visibility": "hidden",
             "cursor": "pointer"
           },
-          "children": [],
-          "metadata": {}
+          "children": [
+            {
+              "id": "e24f65cc1559",
+              "name": "variant-trigger",
+              "targetVariantId": "e24f65cc1557",
+              "source": {
+                "type": 1,
+                "state": "hover"
+              },
+              "children": [],
+              "metadata": {}
+            }
+          ],
+          "metadata": {},
+          "styleMixins": {
+            "dc3b39eb1275": {
+              "priority": 0
+            }
+          }
         },
         {
           "id": "f4e04d3116",
           "name": "variant",
           "label": "selected",
-          "isDefault": true,
+          "isDefault": false,
           "children": [],
           "metadata": {}
         },
@@ -63,6 +85,30 @@
           "value": {
             "background": "var(--1934368810788)",
             "user-select": "none"
+          },
+          "name": "override",
+          "children": []
+        },
+        {
+          "id": "e24f65cc1557",
+          "name": "variant",
+          "label": "hovering",
+          "isDefault": true,
+          "children": [],
+          "metadata": {}
+        },
+        {
+          "id": "e24f65cc1558",
+          "variantId": "e24f65cc1557",
+          "propertyName": "style",
+          "targetIdPath": [
+            "f0d3191523498"
+          ],
+          "value": {
+            "visibility": "visible",
+            "font-size": "12px",
+            "position": "relative",
+            "top": "1px"
           },
           "name": "override",
           "children": []

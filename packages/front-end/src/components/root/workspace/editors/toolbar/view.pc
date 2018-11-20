@@ -405,7 +405,9 @@
         },
         {
           "id": "fde5849e455558",
-          "variant": {},
+          "variant": {
+            "e24f65cc1557": true
+          },
           "is": "fde5849e96847",
           "name": "component-instance",
           "attributes": {},
@@ -427,9 +429,7 @@
               "targetIdPath": [
                 "f0d3191523498"
               ],
-              "value": {
-                "visibility": "visible"
-              },
+              "value": {},
               "name": "override",
               "children": []
             }
