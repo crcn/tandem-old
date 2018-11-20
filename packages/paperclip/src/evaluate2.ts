@@ -55,7 +55,7 @@ const evaluateModule = memoize(
         .filter(
           child =>
             child.name !== PCSourceTagNames.VARIABLE &&
-            child.name !== PCSourceTagNames.MEDIA_QUERY
+            child.name !== PCSourceTagNames.QUERY
         )
         .map(child => {
           return usedRenderers[`_${child.id}`](

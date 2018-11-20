@@ -1,6 +1,6 @@
 {
   "id": "76b155a08696099",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "metadata": {},
   "name": "module",
   "children": [
@@ -127,14 +127,6 @@
       "value": "rgba(1, 0, 0, 0.09)",
       "label": "black transparent 2",
       "type": "color",
-      "children": [],
-      "metadata": {}
-    },
-    {
-      "id": "88d9afe1664",
-      "name": "media-query",
-      "label": "Mobile",
-      "maxWidth": "1000",
       "children": [],
       "metadata": {}
     }

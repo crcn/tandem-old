@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as cx from "classnames";
 import { Dispatch } from "redux";
-import { PCVariable, PCMediaQuery } from "paperclip";
+import { PCVariable, PCQuery } from "paperclip";
 import { FontFamily } from "../../../../state";
 import { BaseGlobalPropertiesProps } from "./view.pc";
 
@@ -11,7 +11,7 @@ export type Props = {
   globalFileUri: string;
   globalVariables: PCVariable[];
   fontFamilies: FontFamily[];
-  globalMediaQueries: PCMediaQuery[];
+  globalQueries: PCQuery[];
 };
 
 export default (Base: React.ComponentClass<BaseGlobalPropertiesProps>) =>
@@ -20,7 +20,7 @@ export default (Base: React.ComponentClass<BaseGlobalPropertiesProps>) =>
       const {
         dispatch,
         globalFileUri,
-        globalMediaQueries,
+        globalQueries,
         globalVariables,
         fontFamilies,
         ...rest
@@ -35,9 +35,9 @@ export default (Base: React.ComponentClass<BaseGlobalPropertiesProps>) =>
             globalVariables,
             fontFamilies
           }}
-          mediaQueriesPaneProps={{
+          queriesPaneProps={{
             dispatch,
-            globalMediaQueries
+            globalQueries
           }}
         />
       );

@@ -44,6 +44,7 @@ import {
   PCBaseElementChild,
   getVariableRefMap,
   PCVariantTriggerSourceType,
+  PCQuery,
   PCVariantTriggerMediaQuerySource,
   getPCNodeModule,
   getPCVariants
@@ -78,6 +79,7 @@ import {
   addScopedLayerLabel,
   makeSafeVarName
 } from "./utils";
+import { PCQueryType } from "paperclip";
 export const compilePaperclipModuleToReact = (
   entry: PCDependency,
   graph: DependencyGraph
@@ -432,6 +434,9 @@ const translateStyleVariantOverrides = (
     // we'll need to include combo variants here at some point. Also note that component ID isn't necessary
     // here since variant IDS are specific to components.
     let mediaTriggers: PCVariantTrigger[] = [];
+
+    // TODO
+    let variableTriggers: PCVariantTrigger[] = [];
     if (override.variantId) {
       baseSelector = `" + (overrides.variantPrefixSelectors && overrides.variantPrefixSelectors["${
         override.variantId
@@ -449,11 +454,19 @@ const translateStyleVariantOverrides = (
         (variant && getVariantTriggers(variant, component as PCComponent)) ||
         EMPTY_ARRAY;
 
-      mediaTriggers = variantTriggers.filter(
+      const queryTriggers = variantTriggers.filter(
         trigger =>
           trigger.source &&
-          trigger.source.type === PCVariantTriggerSourceType.MEDIA_QUERY
+          trigger.source.type === PCVariantTriggerSourceType.QUERY
       );
+
+      mediaTriggers = queryTriggers.filter(trigger => {
+        const query = getPCNode(
+          (trigger.source as PCVariantTriggerMediaQuerySource).mediaQueryId,
+          context.graph
+        ) as PCQuery;
+        return query && query.type === PCQueryType.MEDIA;
+      });
 
       const variantTriggerSelectors = variantTriggers
         .map(trigger => {
@@ -495,11 +508,11 @@ const translateStyleVariantOverrides = (
           if (!mediaQuery) {
             return null;
           }
-          if (mediaQuery.minWidth) {
-            buffer += ` and (min-width: ${px(mediaQuery.minWidth)})`;
+          if (mediaQuery.condition && mediaQuery.condition.minWidth) {
+            buffer += ` and (min-width: ${px(mediaQuery.condition.minWidth)})`;
           }
-          if (mediaQuery.maxWidth) {
-            buffer += ` and (max-width: ${px(mediaQuery.maxWidth)})`;
+          if (mediaQuery.condition && mediaQuery.condition.maxWidth) {
+            buffer += ` and (max-width: ${px(mediaQuery.condition.maxWidth)})`;
           }
 
           return buffer;

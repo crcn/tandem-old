@@ -54,17 +54,15 @@ import {
   isPCComponentInstance,
   StyleMixins,
   PCVariable,
-  PCBaseVisibleNode,
   createPCSlot,
   getPCNodeContentNode,
   PCModule,
   createPCVariable,
   PCVariableType,
   isVoidTagName,
-  PCSlot,
   getDerrivedPCLabel,
-  PCTextStyleMixin,
-  createPCMediaQuery,
+  PCQueryType,
+  createPCQuery,
   createPCTextStyleMixin,
   createPCElementStyleMixin,
   PCStyleMixin,
@@ -1352,16 +1350,16 @@ export const persistAddVariable = <TState extends PCEditorState>(
   );
 };
 
-export const persistAddMediaQuery = <TState extends PCEditorState>(
+export const persistAddQuery = <TState extends PCEditorState>(
+  type: PCQueryType,
+  condition: any,
   label: string,
-  minWidth: string,
-  maxWidth: string,
   module: PCModule,
   state: TState
 ) => {
   return updateDependencyGraph(
     replacePCNode(
-      appendChildNode(createPCMediaQuery(label, minWidth, maxWidth), module),
+      appendChildNode(createPCQuery(type, label, condition), module),
       module,
       state.graph
     ),

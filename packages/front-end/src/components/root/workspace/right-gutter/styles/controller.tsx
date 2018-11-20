@@ -10,7 +10,7 @@ import {
   InspectorNode,
   PCVariable,
   computeStyleInfo,
-  PCMediaQuery,
+  PCQuery,
   isVisibleNode,
   getComponentVariantTriggers,
   getInspectorContentNode,
@@ -30,7 +30,7 @@ export type Props = {
   selectedVariant: PCVariant;
   fontFamilies: FontFamily[];
   globalVariables: PCVariable[];
-  globalMediaQueries: PCMediaQuery[];
+  globalQueries: PCQuery[];
   graph: DependencyGraph;
 } & BaseStylesProps;
 
@@ -67,7 +67,7 @@ export default (Base: React.ComponentClass<BaseStylesProps>) =>
         fontFamilies,
         graph,
         projectOptions,
-        globalMediaQueries,
+        globalQueries,
         selectedInspectorNodes,
         rootInspectorNode,
         documentColors,
@@ -110,21 +110,23 @@ export default (Base: React.ComponentClass<BaseStylesProps>) =>
           ? getComponentVariants(contentSourceNode)
           : EMPTY_ARRAY;
 
+      const showPropertiesTab = Boolean(
+        contentSourceNode && isComponent(contentSourceNode)
+      );
+
       return (
         <Base
           {...rest}
           variant={cx({
-            propertiesTab: tab === Tab.PROPERTIES,
+            propertiesTab: tab === Tab.PROPERTIES || !showPropertiesTab,
             triggersTab: tab === Tab.TRIGGERS,
-            showPropertiesTab: Boolean(
-              contentSourceNode && isComponent(contentSourceNode)
-            )
+            showPropertiesTab
           })}
           behaviorProps={{
             dispatch,
             variants,
             variantTriggers,
-            globalMediaQueries
+            globalQueries
           }}
           propertiesTabButonProps={{
             onClick: onPropertiesTabClick

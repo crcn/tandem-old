@@ -1,12 +1,7 @@
 import * as React from "react";
-import {
-  flattenTreeNode,
-  File,
-  isFile,
-  memoize,
-  EMPTY_ARRAY
-} from "tandem-common";
-import { RootState, QuickSearch } from "../../state";
+import * as cx from "classnames";
+import { EMPTY_ARRAY } from "tandem-common";
+import { QuickSearch } from "../../state";
 import { Dispatch } from "redux";
 import { BaseQuickSearchProps } from "./view.pc";
 import { SearchResult } from "./row.pc";
@@ -46,6 +41,9 @@ export default (Base: React.ComponentClass<BaseQuickSearchProps>) =>
           searchResultsProps={{
             children: results
           }}
+          variant={cx({
+            noItems: results.length === 0
+          })}
           quickSearchInputProps={{
             defaultValue: filter,
             onChange: onInputChange,

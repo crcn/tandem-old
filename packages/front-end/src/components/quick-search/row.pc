@@ -1,6 +1,6 @@
 {
   "id": "28fcdf040",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "metadata": {},
   "name": "module",
   "children": [
@@ -10,7 +10,12 @@
       "label": "Search Result",
       "name": "component-instance",
       "attributes": {},
-      "style": {},
+      "style": {
+        "padding-top": "6px",
+        "padding-right": "12px",
+        "padding-bottom": "6px",
+        "padding-left": "12px"
+      },
       "children": [
         {
           "id": "d4d9389d1339",
@@ -45,12 +50,12 @@
         "cursor": "pointer",
         "vertical-align": "center",
         "display": "flex",
-        "padding-left": "8px",
-        "padding-top": "4px",
-        "padding-right": "8px",
+        "padding-top": "6px",
+        "padding-right": "12px",
         "padding-bottom": "4px",
         "align-items": "center",
-        "position": "relative"
+        "position": "relative",
+        "padding-left": "12px"
       },
       "attributes": {},
       "label": "Search Result",

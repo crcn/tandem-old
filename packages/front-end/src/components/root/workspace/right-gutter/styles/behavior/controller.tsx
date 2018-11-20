@@ -1,20 +1,20 @@
 import * as React from "react";
 import { Dispatch } from "redux";
 import { BaseStyleBehaviorTabProps } from "./view.pc";
-import { PCVariantTrigger, PCVariant, PCMediaQuery } from "paperclip";
+import { PCVariantTrigger, PCVariant, PCQuery } from "paperclip";
 
 export type Props = {
   dispatch: Dispatch<any>;
   variantTriggers: PCVariantTrigger[];
   variants: PCVariant[];
-  globalMediaQueries: PCMediaQuery[];
+  globalQueries: PCQuery[];
 };
 
 export default (Base: React.ComponentClass<BaseStyleBehaviorTabProps>) =>
   class StyleBehaviorController extends React.PureComponent<Props> {
     render() {
       const {
-        globalMediaQueries,
+        globalQueries,
         dispatch,
         variantTriggers,
         variants,
@@ -25,7 +25,7 @@ export default (Base: React.ComponentClass<BaseStyleBehaviorTabProps>) =>
           {...rest}
           triggersPaneProps={{
             variantTriggers,
-            globalMediaQueries,
+            globalQueries,
             variants,
             dispatch
           }}

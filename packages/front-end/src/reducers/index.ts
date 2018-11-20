@@ -190,7 +190,8 @@ import {
   VariantTriggerSourceChanged,
   VariantTriggerTargetChanged,
   REMOVE_VARIANT_TRIGGER_CLICKED,
-  ADD_MEDIA_QUERY_BUTTON_CLICKED,
+  ADD_QUERY_BUTTON_CLICKED,
+  AddQueryButtonClicked,
   MEDIA_QUERY_CHANGED,
   MediaQueryChanged
 } from "../actions";
@@ -343,8 +344,9 @@ import {
   PCElement,
   getInspectorInstanceShadowContentNode,
   getInspectorInstanceShadow,
-  persistAddMediaQuery,
+  persistAddQuery,
   isTextLikePCNode,
+  PCQueryType,
   persistReplacePCNode,
   getDerrivedPCLabel,
   persistConvertInspectorNodeStyleToMixin,
@@ -1182,13 +1184,14 @@ export const canvasReducer = (state: RootState, action: Action) => {
       }, state);
       return state;
     }
-    case ADD_MEDIA_QUERY_BUTTON_CLICKED: {
+    case ADD_QUERY_BUTTON_CLICKED: {
+      const { queryType } = action as AddQueryButtonClicked;
       const globalFileUri = getGlobalFileUri(state.projectInfo);
       const globalDependency = state.graph[globalFileUri];
       state = persistRootState(state => {
-        state = persistAddMediaQuery(
-          null,
-          null,
+        state = persistAddQuery(
+          queryType,
+          EMPTY_OBJECT,
           null,
           globalDependency.content,
           state

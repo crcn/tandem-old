@@ -20,6 +20,8 @@ import {
   PCComponentInstanceElement,
   PCBaseElement,
   PCComponent,
+  PCQuery,
+  PCQueryType,
   PCVisibleNode,
   PCSourceTagNames,
   extendsComponent,
@@ -76,14 +78,14 @@ export const compileContentNodeAsVanilla = memoize(
     node: PCComponent | PCVisibleNode,
     refMap: KeyValue<PCComponent>,
     varMap: KeyValue<PCVariable>,
-    mediaQueryMap: KeyValue<PCMediaQuery>,
+    queryMap: KeyValue<PCQuery>,
     sourceUri: string
   ) => {
     return new Function(
       `generateUID`,
       `merge`,
       `return ` +
-        translateContentNode(node, refMap, varMap, mediaQueryMap, sourceUri)
+        translateContentNode(node, refMap, varMap, queryMap, sourceUri)
     )(generateUID, merge);
   }
 );
@@ -93,14 +95,14 @@ export const translateModuleToVanilla = memoize(
     module: PCModule,
     componentRefMap: KeyValue<PCComponent>,
     varMap: KeyValue<PCVariable>,
-    mediaQueryMap: KeyValue<PCMediaQuery>,
+    queryMap: KeyValue<PCQuery>,
     sourceUri: string
   ) => {
     return module.children
       .filter(
         child =>
           child.name !== PCSourceTagNames.VARIABLE &&
-          child.name !== PCSourceTagNames.MEDIA_QUERY
+          child.name !== PCSourceTagNames.QUERY
       )
       .map(
         (child: PCComponent | PCVisibleNode | PCStyleMixin) =>
@@ -108,7 +110,7 @@ export const translateModuleToVanilla = memoize(
             child,
             componentRefMap,
             varMap,
-            mediaQueryMap,
+            queryMap,
             sourceUri
           )}`
       )
@@ -121,7 +123,7 @@ const translateContentNode = memoize(
     node: PCComponent | PCVisibleNode | PCStyleMixin,
     componentRefMap: KeyValue<PCComponent>,
     varMap: KeyValue<PCVariable>,
-    mediaQueryMap: KeyValue<PCMediaQuery>,
+    queryMap: KeyValue<PCQuery>,
     sourceUri: string
   ) => {
     let buffer = `(function() {`;
@@ -138,7 +140,7 @@ const translateContentNode = memoize(
     buffer += translateStaticVariants(node, varMap, sourceUri);
 
     buffer += `return function(instanceSourceNodeId, instancePath, attributes, style, variant, overrides, windowInfo, components, isRoot) {
-      ${translateVariants(node, mediaQueryMap)}
+      ${translateVariants(node, queryMap)}
       var childInstancePath = instancePath == null ? "" : (instancePath ? instancePath + "." : "") + instanceSourceNodeId;
 
       // tiny optimization
@@ -239,7 +241,7 @@ const translateVisibleNode = memoize(
 );
 const translateVariants = (
   contentNode: PCVisibleNode | PCComponent | PCStyleMixin,
-  mediaQueryMap: KeyValue<PCMediaQuery>
+  queryMap: KeyValue<PCQuery>
 ) => {
   const variants = (getTreeNodesByName(
     PCSourceTagNames.VARIANT,
@@ -253,8 +255,7 @@ const translateVariants = (
     contentNode
   ) as PCVariantTrigger[]).filter(
     trigger =>
-      trigger.source &&
-      trigger.source.type === PCVariantTriggerSourceType.MEDIA_QUERY
+      trigger.source && trigger.source.type === PCVariantTriggerSourceType.QUERY
   );
 
   let buffer = ``;
@@ -263,14 +264,20 @@ const translateVariants = (
     const variantTriggers = mediaTriggers.filter(
       trigger => trigger.targetVariantId === variant.id
     );
-    const mediaQueries = variantTriggers
-      .map(
-        trigger =>
-          mediaQueryMap[
+    const queries = variantTriggers
+      .map(trigger => {
+        const query =
+          queryMap[
             (trigger.source as PCVariantTriggerMediaQuerySource).mediaQueryId
-          ]
-      )
+          ];
+        return query;
+      })
       .filter(Boolean);
+
+    const mediaQueries = queries.filter(
+      query => query.type === PCQueryType.MEDIA
+    ) as PCMediaQuery[];
+
     buffer += `if (variant["${variant.id}"] ${
       mediaQueries.length ? "|| " + translateMediaCondition(mediaQueries) : ""
     }) {`;
@@ -289,12 +296,14 @@ const translateMediaCondition = (queries: PCMediaQuery[]) => {
 
   for (const media of queries) {
     let buffer = [];
-    if (media.minWidth) {
-      buffer.push(`windowInfo.width >= ${media.minWidth}`);
-    }
+    if (media.condition) {
+      if (media.condition.minWidth) {
+        buffer.push(`windowInfo.width >= ${media.condition.minWidth}`);
+      }
 
-    if (media.maxWidth) {
-      buffer.push(`windowInfo.width <= ${media.maxWidth}`);
+      if (media.condition.maxWidth) {
+        buffer.push(`windowInfo.width <= ${media.condition.maxWidth}`);
+      }
     }
 
     conditions.push(`(${buffer.join(" && ")})`);

@@ -56,7 +56,7 @@ export default (Base: React.ComponentClass<BaseRightGutterProps>) =>
         EMPTY_OBJECT;
 
       const globalVariables = getGlobalVariables(graph);
-      const globalMediaQueries = getGlobalMediaQueries(graph);
+      const globalQueries = getGlobalMediaQueries(graph);
 
       const selectedInspectorNodes = root.selectedInspectorNodes;
       const hasInspectorNodes = Boolean(selectedInspectorNodes.length);
@@ -113,7 +113,7 @@ export default (Base: React.ComponentClass<BaseRightGutterProps>) =>
             globalFileUri,
             globalVariables,
             fontFamilies,
-            globalMediaQueries
+            globalQueries
           }}
           stylesProps={{
             projectOptions,
@@ -124,7 +124,7 @@ export default (Base: React.ComponentClass<BaseRightGutterProps>) =>
             selectedInspectorNodes,
             rootInspectorNode,
             globalVariables,
-            globalMediaQueries,
+            globalQueries,
             selectedVariant: root.selectedVariant,
             graph: graph
           }}

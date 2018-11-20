@@ -20,7 +20,7 @@ import { Dependency, DependencyGraph, updateGraphDependency } from "./graph";
 import { getInspectorNodeOverrides } from "./inspector";
 import { computeStyleInfo } from "./style";
 
-export const PAPERCLIP_MODULE_VERSION = "0.0.5";
+export const PAPERCLIP_MODULE_VERSION = "0.0.6";
 
 /*------------------------------------------
  * CONSTANTS
@@ -46,7 +46,7 @@ export enum PCSourceTagNames {
 
   // Slots are sections of components where text & elements can be inserted into
   SLOT = "slot",
-  MEDIA_QUERY = "media-query",
+  QUERY = "query",
 
   // Plugs provide content for slots
   PLUG = "plug",
@@ -381,12 +381,33 @@ export type PCSlot = {
   label?: string;
 } & PCBaseSourceNode<PCSourceTagNames.SLOT>;
 
-// TODO - may need to tack more info on here
-export type PCMediaQuery = {
-  minWidth?: string;
-  maxWidth?: string;
+export enum PCQueryType {
+  MEDIA,
+  VARIABLE
+}
+
+export type PCBaseQuery<TType extends PCQueryType, TCondition> = {
   label?: string;
-} & PCBaseSourceNode<PCSourceTagNames.MEDIA_QUERY>;
+  type: TType;
+  condition?: TCondition;
+} & PCBaseSourceNode<PCSourceTagNames.QUERY>;
+
+export type PCMediaQueryCondition = {
+  minWidth?: number;
+  maxWidth?: number;
+};
+
+// TODO - may need to tack more info on here
+export type PCMediaQuery = {} & PCBaseQuery<PCQueryType, PCMediaQueryCondition>;
+
+export type PCVariableQueryCondition = {};
+
+export type PCVariableQuery = {} & PCBaseQuery<
+  PCQueryType,
+  PCVariableQueryCondition
+>;
+
+export type PCQuery = PCMediaQuery | PCVariableQuery;
 
 export enum PCVariableType {
   UNIT = "unit",
@@ -538,7 +559,7 @@ export type PCComputedNoverOverrideMap = {
 };
 
 export enum PCVariantTriggerSourceType {
-  MEDIA_QUERY,
+  QUERY,
   STATE
 }
 
@@ -572,7 +593,7 @@ export type PCBaseVariantTriggerSource<
 
 export type PCVariantTriggerMediaQuerySource = {
   mediaQueryId: string;
-} & PCBaseVariantTriggerSource<PCVariantTriggerSourceType.MEDIA_QUERY>;
+} & PCBaseVariantTriggerSource<PCVariantTriggerSourceType.QUERY>;
 
 export type PCVariantTriggerStateSource = {
   state: PCElementState;
@@ -681,16 +702,16 @@ export const createPCVariant = (
   metadata: EMPTY_OBJECT
 });
 
-export const createPCMediaQuery = (
+export const createPCQuery = (
+  type: PCQueryType,
   label?: string,
-  minWidth?: string,
-  maxWidth?: string
-): PCMediaQuery => ({
+  condition?: any
+): PCQuery => ({
   id: generateUID(),
-  name: PCSourceTagNames.MEDIA_QUERY,
+  name: PCSourceTagNames.QUERY,
+  type,
   label,
-  minWidth,
-  maxWidth,
+  condition,
   children: EMPTY_ARRAY,
   metadata: EMPTY_OBJECT
 });
@@ -1002,7 +1023,7 @@ export const getGlobalMediaQueries = memoize(
         return [
           ...variables,
           ...dependency.content.children.filter(
-            child => child.name === PCSourceTagNames.MEDIA_QUERY
+            child => child.name === PCSourceTagNames.QUERY
           )
         ];
       },
@@ -1414,7 +1435,7 @@ export const getMediaQueryGraphRefs = memoize(
         .filter(trigger => {
           return (
             trigger.source &&
-            trigger.source.type === PCVariantTriggerSourceType.MEDIA_QUERY
+            trigger.source.type === PCVariantTriggerSourceType.QUERY
           );
         })
         .map(trigger => {

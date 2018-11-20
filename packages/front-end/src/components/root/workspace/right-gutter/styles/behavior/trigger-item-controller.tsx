@@ -7,7 +7,7 @@ import {
   PCVariantTriggerSourceType,
   PCVariantTriggerStateSource,
   PCVariantTriggerSource,
-  PCMediaQuery,
+  PCQuery,
   PCVariantTriggerMediaQuerySource
 } from "paperclip";
 import { isEqual } from "lodash";
@@ -23,7 +23,7 @@ export type Props = {
   selected: boolean;
   trigger: PCVariantTrigger;
   variants: PCVariant[];
-  globalMediaQueries: PCMediaQuery[];
+  globalQueries: PCQuery[];
   dispatch: Dispatch<any>;
   onClick: any;
 };
@@ -67,10 +67,10 @@ export default (Base: React.ComponentClass<BaseTriggerItemProps>) =>
         selected,
         variants,
         trigger,
-        globalMediaQueries,
+        globalQueries,
         ...rest
       } = this.props;
-      const options = getSourceOptions(globalMediaQueries);
+      const options = getSourceOptions(globalQueries);
       const valueOption = options.find(option =>
         isEqual(option.value, trigger.source)
       );
@@ -98,14 +98,14 @@ export default (Base: React.ComponentClass<BaseTriggerItemProps>) =>
   };
 
 export const getSourceOptions = memoize(
-  (mediaQueries: PCMediaQuery[]): DropdownMenuOption[] => {
+  (queries: PCQuery[]): DropdownMenuOption[] => {
     return [
       NO_OPTION,
       ...BASE_SOURCE_OPTIONS,
-      ...mediaQueries.map(mediaQuery => ({
+      ...queries.map(mediaQuery => ({
         label: mediaQuery.label,
         value: {
-          type: PCVariantTriggerSourceType.MEDIA_QUERY,
+          type: PCVariantTriggerSourceType.QUERY,
           mediaQueryId: mediaQuery.id
         } as PCVariantTriggerMediaQuerySource
       }))

@@ -1,7 +1,8 @@
 {
   "id": "9672de3b355557",
+  "version": "0.0.6",
+  "metadata": {},
   "name": "module",
-  "version": "0.0.5",
   "children": [
     {
       "label": "CSS Measurement Input",
@@ -1352,7 +1353,7 @@
           ],
           "value": {
             "background": "var(--bc891e755312)",
-            "opacity": 0.356,
+            "opacity": 0.662,
             "display": "block"
           },
           "name": "override",
@@ -1530,6 +1531,5 @@
         "./inline-labeled-input-controller.tsx"
       ]
     }
-  ],
-  "metadata": {}
+  ]
 }

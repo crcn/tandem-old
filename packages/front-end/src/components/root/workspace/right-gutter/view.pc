@@ -932,7 +932,7 @@
         {
           "id": "66811b5c36297",
           "is": "66811b5c421",
-          "label": "Media Queries Pane",
+          "label": "queries pane",
           "name": "component-instance",
           "attributes": {},
           "style": {},

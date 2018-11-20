@@ -25,7 +25,8 @@ import {
   PCVariant,
   PCVariantTriggerSource,
   PCVariableType,
-  PCMediaQuery
+  PCMediaQuery,
+  PCQueryType
 } from "paperclip";
 import { RegisteredComponent } from "..";
 import {
@@ -264,7 +265,7 @@ export const REMOVE_VARIANT_TRIGGER_CLICKED = "REMOVE_VARIANT_TRIGGER_CLICKED";
 
 export const VARIANT_TRIGGER_SOURCE_CHANGED = "VARIANT_TRIGGER_SOURCE_CHANGED";
 export const VARIANT_TRIGGER_TARGET_CHANGED = "VARIANT_TRIGGER_TARGET_CHANGED";
-export const ADD_MEDIA_QUERY_BUTTON_CLICKED = "ADD_MEDIA_QUERY_BUTTON_CLICKED";
+export const ADD_QUERY_BUTTON_CLICKED = "ADD_QUERY_BUTTON_CLICKED";
 export const REMOVE_MEDIA_QUERY_BUTTON_CLICK =
   "REMOVE_MEDIA_QUERY_BUTTON_CLICK";
 export const MEDIA_QUERY_CHANGED = "MEDIA_QUERY_CHANGED";
@@ -568,6 +569,10 @@ export type ResizerMoved = {
   point: Point;
 } & Action;
 
+export type AddQueryButtonClicked = {
+  queryType: PCQueryType;
+} & Action;
+
 export type ResizerMouseDown = {} & WrappedEvent<React.MouseEvent<any>>;
 
 export type ResizerPathStoppedMoving = {} & ResizerPathMoved;
@@ -790,8 +795,11 @@ export const fileItemContextMenuOpenClicked = publicActionCreator(
   })
 );
 
-export const addMediaQueryButtonClick = (): Action => ({
-  type: ADD_MEDIA_QUERY_BUTTON_CLICKED
+export const addQueryButtonClick = (
+  queryType: PCQueryType
+): AddQueryButtonClicked => ({
+  type: ADD_QUERY_BUTTON_CLICKED,
+  queryType
 });
 
 export const fileItemContextMenuOpenInFinderClicked = publicActionCreator(

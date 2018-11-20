@@ -17,14 +17,14 @@ export default (Base: React.ComponentClass<BaseMediaQueryItemProps>) =>
     onMinWidthChange = (value: string) => {
       this.props.dispatch(
         mediaQueryChanged(this.props.mediaQuery, {
-          minWidth: value
+          // minWidth: value
         })
       );
     };
     onMaxWidthChange = (value: string) => {
       this.props.dispatch(
         mediaQueryChanged(this.props.mediaQuery, {
-          maxWidth: value
+          // maxWidth: value
         })
       );
     };
@@ -40,11 +40,11 @@ export default (Base: React.ComponentClass<BaseMediaQueryItemProps>) =>
             focus: mediaQuery.label == null
           }}
           minWidthInputProps={{
-            value: mediaQuery.minWidth,
+            // value: mediaQuery.minWidth,
             onChangeComplete: onMinWidthChange
           }}
           maxWidthInputProps={{
-            value: mediaQuery.maxWidth,
+            // value: mediaQuery.maxWidth,
             onChangeComplete: onMaxWidthChange
           }}
         />
