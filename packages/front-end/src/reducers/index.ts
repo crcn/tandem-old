@@ -1207,6 +1207,16 @@ export const canvasReducer = (state: RootState, action: Action) => {
       return state;
     }
 
+    case REMOVE_VARIANT_BUTTON_CLICKED: {
+      const variant = state.selectedVariant;
+      state = persistRootState(
+        state => persistRemoveVariant(variant, state),
+        state
+      );
+      state = updateRootState({ selectedVariant: null }, state);
+      return state;
+    }
+
     case VARIANT_TRIGGER_SOURCE_CHANGED: {
       const { trigger, value } = action as VariantTriggerSourceChanged;
       state = persistRootState(state => {

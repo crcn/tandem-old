@@ -1228,6 +1228,36 @@
         }
       },
       "variant": {}
+    },
+    {
+      "label": "Element",
+      "is": "div",
+      "style": {
+        "box-sizing": "border-box",
+        "display": "block"
+      },
+      "attributes": {},
+      "id": "d3d13011662",
+      "name": "component",
+      "children": [
+        {
+          "id": "d3d13011664",
+          "name": "variant",
+          "label": "abcd",
+          "isDefault": true,
+          "children": [],
+          "metadata": {}
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": 101.33482514042487,
+          "top": 249.34499043527575,
+          "right": 201.33482514042487,
+          "bottom": 349.34499043527575
+        }
+      },
+      "variant": {}
     }
   ]
 }
