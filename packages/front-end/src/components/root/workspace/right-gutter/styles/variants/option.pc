@@ -23,7 +23,7 @@
       "variant": {
         "a0474dc08215": true,
         "4f6549161307": false,
-        "7219652c1307": false,
+        "7219652c1307": true,
         "a0474dc08464": false
       }
     },
@@ -268,7 +268,7 @@
           "id": "a0474dc08464",
           "name": "variant",
           "label": "has trigger",
-          "isDefault": false,
+          "isDefault": true,
           "children": [],
           "metadata": {}
         },
@@ -281,8 +281,8 @@
           ],
           "value": {
             "display": "block",
-            "height": "9px",
-            "color": "var(--30f4693267675)"
+            "height": "12px",
+            "color": "var(--32ef79b7820935)"
           },
           "name": "override",
           "children": []
@@ -325,7 +325,7 @@
           "id": "7219652c1307",
           "name": "variant",
           "label": "triggered",
-          "isDefault": true,
+          "isDefault": false,
           "children": [],
           "metadata": {}
         },
@@ -338,7 +338,7 @@
           ],
           "value": {
             "display": "block",
-            "height": "9px",
+            "height": "12px",
             "color": "var(--24ce1e4d13456)"
           },
           "name": "override",
