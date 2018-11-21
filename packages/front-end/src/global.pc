@@ -131,36 +131,25 @@
       "metadata": {}
     },
     {
-      "id": "a02b133a681",
+      "id": "a02b133a705",
       "name": "variable",
-      "value": "light",
-      "label": "Theme",
+      "value": "dark",
+      "label": "theme",
       "type": "text",
       "children": [],
       "metadata": {}
     },
     {
-      "id": "a02b133a682",
+      "id": "a02b133a706",
       "name": "query",
       "type": 1,
-      "label": "Dark theme",
+      "label": "Dark Theme",
       "condition": {
         "equals": "dark"
       },
       "children": [],
       "metadata": {},
-      "sourceVariableId": "a02b133a681"
-    },
-    {
-      "id": "a02b133a685",
-      "name": "query",
-      "type": 0,
-      "label": "Mobile",
-      "condition": {
-        "maxWidth": 500
-      },
-      "children": [],
-      "metadata": {}
+      "sourceVariableId": "a02b133a705"
     }
   ]
 }

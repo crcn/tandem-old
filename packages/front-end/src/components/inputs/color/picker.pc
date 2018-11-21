@@ -1228,6 +1228,89 @@
         }
       },
       "variant": {}
+    },
+    {
+      "label": "Element",
+      "is": "div",
+      "style": {
+        "box-sizing": "border-box",
+        "display": "block",
+        "padding-left": "12px",
+        "padding-top": "12px",
+        "padding-right": "12px",
+        "padding-bottom": "12px"
+      },
+      "attributes": {},
+      "id": "a02b133a695",
+      "name": "component",
+      "children": [
+        {
+          "id": "a02b133a694",
+          "name": "text",
+          "label": "Text",
+          "value": "something",
+          "style": {},
+          "children": [],
+          "metadata": {},
+          "styleMixins": {
+            "dc3b39eb1275": {
+              "priority": 0
+            }
+          }
+        },
+        {
+          "id": "a02b133a698",
+          "name": "variant",
+          "label": "dark",
+          "isDefault": false,
+          "children": [],
+          "metadata": {}
+        },
+        {
+          "id": "a02b133a699",
+          "variantId": "a02b133a698",
+          "propertyName": "style",
+          "targetIdPath": [],
+          "value": {
+            "background": "rgba(63, 63, 63, 1)"
+          },
+          "name": "override",
+          "children": []
+        },
+        {
+          "id": "a02b133a700",
+          "variantId": "a02b133a698",
+          "propertyName": "style",
+          "targetIdPath": [
+            "a02b133a694"
+          ],
+          "value": {
+            "color": "rgba(255, 255, 255, 1)"
+          },
+          "name": "override",
+          "children": []
+        },
+        {
+          "id": "a02b133a707",
+          "name": "variant-trigger",
+          "targetVariantId": "a02b133a698",
+          "source": {
+            "type": 0,
+            "queryId": "a02b133a706"
+          },
+          "children": [],
+          "metadata": {}
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": -335.5579951918446,
+          "top": -293.84319020039703,
+          "right": -235.5579951918446,
+          "bottom": -193.84319020039703
+        }
+      },
+      "variant": {}
     }
   ]
 }

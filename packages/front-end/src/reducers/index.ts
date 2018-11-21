@@ -1220,7 +1220,7 @@ export const canvasReducer = (state: RootState, action: Action) => {
             ...target,
             type: newType,
             condition: null
-          },
+          } as any,
           target,
           state
         );
