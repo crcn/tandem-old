@@ -150,6 +150,17 @@
       "children": [],
       "metadata": {},
       "sourceVariableId": "a02b133a705"
+    },
+    {
+      "id": "b25b32a6666",
+      "name": "query",
+      "type": 0,
+      "label": "Mobile",
+      "condition": {
+        "maxWidth": null
+      },
+      "children": [],
+      "metadata": {}
     }
   ]
 }

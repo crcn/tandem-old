@@ -1230,6 +1230,24 @@
       "variant": {}
     },
     {
+      "id": "3dc56772663",
+      "is": "a02b133a695",
+      "label": "Element",
+      "name": "component-instance",
+      "attributes": {},
+      "style": {},
+      "children": [],
+      "metadata": {
+        "bounds": {
+          "left": -191,
+          "top": -299,
+          "right": -91,
+          "bottom": -199
+        }
+      },
+      "variant": {}
+    },
+    {
       "label": "Element",
       "is": "div",
       "style": {
@@ -1249,7 +1267,9 @@
           "name": "text",
           "label": "Text",
           "value": "something",
-          "style": {},
+          "style": {
+            "font-size": "32px"
+          },
           "children": [],
           "metadata": {},
           "styleMixins": {
@@ -1300,14 +1320,46 @@
           },
           "children": [],
           "metadata": {}
+        },
+        {
+          "id": "b25b32a6668",
+          "name": "variant-trigger",
+          "targetVariantId": "b25b32a6669",
+          "source": {
+            "type": 0,
+            "queryId": "b25b32a6666"
+          },
+          "children": [],
+          "metadata": {}
+        },
+        {
+          "id": "b25b32a6669",
+          "name": "variant",
+          "label": "Mobile",
+          "isDefault": true,
+          "children": [],
+          "metadata": {}
+        },
+        {
+          "id": "b25b32a6670",
+          "variantId": "b25b32a6669",
+          "propertyName": "style",
+          "targetIdPath": [
+            "a02b133a694"
+          ],
+          "value": {
+            "font-size": "12px"
+          },
+          "name": "override",
+          "children": []
         }
       ],
       "metadata": {
         "bounds": {
-          "left": -335.5579951918446,
-          "top": -293.84319020039703,
-          "right": -235.5579951918446,
-          "bottom": -193.84319020039703
+          "left": -336,
+          "top": -294,
+          "right": -236,
+          "bottom": -194
         }
       },
       "variant": {}

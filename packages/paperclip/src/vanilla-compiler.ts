@@ -276,7 +276,7 @@ const translateVariants = (
       .filter(Boolean);
 
     const mediaQueries = queries.filter(
-      query => query.type === PCQueryType.MEDIA
+      query => query.type === PCQueryType.MEDIA && query.condition
     ) as PCMediaQuery[];
 
     const variableQueries = queries.filter(
@@ -285,18 +285,22 @@ const translateVariants = (
 
     const useVariant = variableQueriesPassed(variableQueries, varMap);
 
-    if (!useVariant) {
+    if (useVariant) {
+      buffer += `if (instancePath != null) {`;
+    } else {
       buffer += `if (variant["${variant.id}"] ${
-        mediaQueries.length ? "|| " + translateMediaCondition(mediaQueries) : ""
+        mediaQueries.length
+          ? "|| (instancePath != null && " +
+            translateMediaCondition(mediaQueries) +
+            ")"
+          : ""
       }) {`;
     }
     buffer += `overrides = merge(_${contentNode.id}Variants._${
       variant.id
     }, overrides); `;
 
-    if (!useVariant) {
-      buffer += `}\n`;
-    }
+    buffer += `}\n`;
   }
 
   return buffer;
@@ -309,12 +313,16 @@ const translateMediaCondition = (queries: PCMediaQuery[]) => {
     let buffer = [];
     if (media.condition) {
       if (media.condition.minWidth) {
-        buffer.push(`windowInfo.width >= ${media.condition.minWidth}`);
+        buffer.push(`windowInfo.width >= ${Number(media.condition.minWidth)}`);
       }
 
       if (media.condition.maxWidth) {
-        buffer.push(`windowInfo.width <= ${media.condition.maxWidth}`);
+        buffer.push(`windowInfo.width <= ${Number(media.condition.maxWidth)}`);
       }
+    }
+
+    if (!buffer.length) {
+      buffer.push("true");
     }
 
     conditions.push(`(${buffer.join(" && ")})`);
