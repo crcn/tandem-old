@@ -723,6 +723,7 @@ export const getInspectorSourceNode = (
 export type InstanceVariantInfo = {
   enabled: boolean;
   variant: PCVariant;
+  component: PCComponent;
 };
 
 export const getInstanceVariantInfo = memoize(
@@ -770,6 +771,7 @@ export const getInstanceVariantInfo = memoize(
 
     return variants.map(variant => ({
       variant,
+      component,
       enabled: enabled[variant.id]
     }));
   }

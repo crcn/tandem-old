@@ -1,9 +1,32 @@
 {
   "id": "6a863e8637",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "metadata": {},
   "name": "module",
   "children": [
+    {
+      "id": "a0474dc08233",
+      "is": "1d51efba14",
+      "label": "Variant option",
+      "name": "component-instance",
+      "attributes": {},
+      "style": {},
+      "children": [],
+      "metadata": {
+        "bounds": {
+          "left": 412,
+          "top": 320,
+          "right": 732,
+          "bottom": 346.11895175049244
+        }
+      },
+      "variant": {
+        "a0474dc08215": true,
+        "4f6549161307": false,
+        "7219652c1307": false,
+        "a0474dc08464": false
+      }
+    },
     {
       "label": "Variant option",
       "is": "div",
@@ -73,26 +96,57 @@
               "style": {
                 "box-sizing": "border-box",
                 "border-radius": "2px",
-                "display": "block",
-                "flex-grow": "1"
+                "display": "flex",
+                "flex-grow": "1",
+                "justify-content": "space-between",
+                "align-items": "center"
               },
               "children": [
                 {
-                  "id": "1d51efba20",
-                  "name": "text",
-                  "label": "label",
-                  "value": "Variant",
-                  "style": {},
-                  "children": [],
-                  "metadata": {},
-                  "styleMixins": {
-                    "dc3b39eb1275": {
-                      "priority": 0
+                  "id": "1893abe61325",
+                  "children": [
+                    {
+                      "id": "1d51efba20",
+                      "name": "text",
+                      "label": "label",
+                      "value": "Variant",
+                      "style": {},
+                      "children": [],
+                      "metadata": {},
+                      "styleMixins": {
+                        "dc3b39eb1275": {
+                          "priority": 0
+                        }
+                      }
                     }
-                  }
+                  ],
+                  "metadata": {},
+                  "name": "slot",
+                  "label": "input"
                 }
               ],
               "metadata": {}
+            },
+            {
+              "id": "a0474dc08216",
+              "is": "98d3a3ab395",
+              "label": "Bolt icon",
+              "name": "component-instance",
+              "attributes": {},
+              "style": {
+                "display": "none",
+                "color": "var(--24ce1e4d13456)"
+              },
+              "children": [],
+              "metadata": {
+                "bounds": {
+                  "left": 1357,
+                  "top": -156,
+                  "right": 1757,
+                  "bottom": 144
+                }
+              },
+              "variant": {}
             },
             {
               "id": "57bf93b03",
@@ -144,7 +198,7 @@
           "id": "cc845f081098",
           "name": "variant",
           "label": "alt",
-          "isDefault": true,
+          "isDefault": false,
           "children": [],
           "metadata": {}
         },
@@ -179,6 +233,113 @@
           ],
           "value": {
             "246c305d8": false
+          },
+          "name": "override",
+          "children": []
+        },
+        {
+          "id": "a0474dc08232",
+          "variantId": "a0474dc08215",
+          "propertyName": "style",
+          "targetIdPath": [
+            "a0474dc08216"
+          ],
+          "value": {
+            "display": "block",
+            "height": "9px"
+          },
+          "name": "override",
+          "children": []
+        },
+        {
+          "id": "a0474dc08255",
+          "variantId": "a0474dc08215",
+          "propertyName": "variant",
+          "targetIdPath": [
+            "6f30576e9"
+          ],
+          "value": {
+            "246c305d8": false
+          },
+          "name": "override",
+          "children": []
+        },
+        {
+          "id": "a0474dc08464",
+          "name": "variant",
+          "label": "has trigger",
+          "isDefault": false,
+          "children": [],
+          "metadata": {}
+        },
+        {
+          "id": "a0474dc08465",
+          "variantId": "a0474dc08464",
+          "propertyName": "style",
+          "targetIdPath": [
+            "a0474dc08216"
+          ],
+          "value": {
+            "display": "block",
+            "height": "9px",
+            "color": "var(--30f4693267675)"
+          },
+          "name": "override",
+          "children": []
+        },
+        {
+          "id": "64db157d1307",
+          "variantId": "a0474dc08215",
+          "propertyName": "style",
+          "targetIdPath": [
+            "6f30576e9"
+          ],
+          "value": {
+            "opacity": 1
+          },
+          "name": "override",
+          "children": []
+        },
+        {
+          "id": "4f6549161307",
+          "name": "variant",
+          "label": "on",
+          "isDefault": false,
+          "children": [],
+          "metadata": {}
+        },
+        {
+          "id": "4f6549161308",
+          "variantId": "4f6549161307",
+          "propertyName": "style",
+          "targetIdPath": [
+            "6f30576e9"
+          ],
+          "value": {
+            "opacity": 1
+          },
+          "name": "override",
+          "children": []
+        },
+        {
+          "id": "7219652c1307",
+          "name": "variant",
+          "label": "triggered",
+          "isDefault": true,
+          "children": [],
+          "metadata": {}
+        },
+        {
+          "id": "7219652c1308",
+          "variantId": "7219652c1307",
+          "propertyName": "style",
+          "targetIdPath": [
+            "a0474dc08216"
+          ],
+          "value": {
+            "display": "block",
+            "height": "9px",
+            "color": "var(--24ce1e4d13456)"
           },
           "name": "override",
           "children": []

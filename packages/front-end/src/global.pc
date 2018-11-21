@@ -133,7 +133,7 @@
     {
       "id": "a02b133a705",
       "name": "variable",
-      "value": "dark",
+      "value": "light",
       "label": "theme",
       "type": "text",
       "children": [],
@@ -157,7 +157,7 @@
       "type": 0,
       "label": "Mobile",
       "condition": {
-        "maxWidth": null
+        "maxWidth": 500
       },
       "children": [],
       "metadata": {}

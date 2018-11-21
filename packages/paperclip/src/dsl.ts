@@ -5,6 +5,7 @@ import {
   TreeNode,
   filterNestedNodes,
   findNestedNode,
+  Bounds,
   generateUID,
   KeyValue,
   getNestedTreeNodeById,
@@ -15,10 +16,8 @@ import {
   flattenTreeNode,
   getTreeNodesByName
 } from "tandem-common";
-import { uniq, isEqual, pick } from "lodash";
+import { uniq, isEqual } from "lodash";
 import { Dependency, DependencyGraph, updateGraphDependency } from "./graph";
-import { getInspectorNodeOverrides } from "./inspector";
-import { computeStyleInfo } from "./style";
 
 export const PAPERCLIP_MODULE_VERSION = "0.0.6";
 
@@ -1279,6 +1278,79 @@ export const getSortedStyleMixinIds = memoize(
           ? -1
           : 1;
       });
+  }
+);
+
+export const isVariantTriggered = memoize(
+  (
+    instance: PCComponentInstanceElement | PCComponent,
+    variant: PCVariant,
+    graph: DependencyGraph
+  ) => {
+    const instanceModule = getPCNodeModule(instance.id, graph);
+    const instanceContentNode = getPCNodeContentNode(
+      instance.id,
+      instanceModule
+    );
+    const instanceContentNodeBounds = instanceContentNode.metadata[
+      PCVisibleNodeMetadataKey.BOUNDS
+    ] as Bounds;
+
+    const instanceContentNodeSize = {
+      width: instanceContentNodeBounds.right - instanceContentNodeBounds.left,
+      height: instanceContentNodeBounds.bottom - instanceContentNodeBounds.top
+    };
+
+    const variantModule = getPCNodeModule(variant.id, graph);
+    const variantComponent = getPCNodeContentNode(
+      variant.id,
+      variantModule
+    ) as PCComponent;
+    const variantTriggers = getVariantTriggers(variant, variantComponent);
+
+    return variantTriggers.some(trigger => {
+      if (!trigger.source) {
+        return false;
+      }
+
+      if (trigger.source.type !== PCVariantTriggerSourceType.QUERY) {
+        return false;
+      }
+
+      const query = getPCNode(trigger.source.queryId, graph) as PCQuery;
+      if (!query || !query.condition) {
+        return false;
+      }
+      if (query.type === PCQueryType.MEDIA) {
+        const { minWidth, maxWidth } = query.condition;
+        if (minWidth != null && instanceContentNodeSize.width < minWidth) {
+          return false;
+        }
+        if (maxWidth != null && instanceContentNodeSize.width > maxWidth) {
+          return false;
+        }
+      }
+
+      if (query.type === PCQueryType.VARIABLE) {
+        const variable = getPCNode(query.sourceVariableId, graph) as PCVariable;
+
+        if (!variable) {
+          return false;
+        }
+
+        const { equals, notEquals } = query.condition;
+
+        if (equals != null && String(variable.value) !== String(equals)) {
+          return false;
+        }
+
+        if (notEquals != null && String(variable.value) === String(notEquals)) {
+          return false;
+        }
+      }
+
+      return true;
+    });
   }
 );
 

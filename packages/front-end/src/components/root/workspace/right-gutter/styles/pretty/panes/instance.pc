@@ -1,6 +1,6 @@
 {
   "id": "f657bb0940848",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "metadata": {},
   "name": "module",
   "children": [
@@ -69,7 +69,8 @@
                         }
                       },
                       "variant": {
-                        "cc845f081098": false
+                        "cc845f081098": false,
+                        "a0474dc08215": true
                       }
                     },
                     {

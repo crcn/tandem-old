@@ -1,23 +1,18 @@
 import * as React from "react";
 import {
-  SyntheticDocument,
-  SyntheticVisibleNode,
   getPCVariants,
-  getSyntheticContentNode,
   getPCNode,
   DependencyGraph,
-  getSyntheticSourceNode,
   isComponent,
+  getVariantTriggers,
   PCVariant,
+  PCComponent,
   InspectorNode,
   getInspectorContentNode
 } from "paperclip";
 import { Dispatch } from "redux";
 import { VariantOption } from "./option.pc";
-import {
-  addVariantButtonClicked,
-  removeVariantButtonClicked
-} from "../../../../../../actions";
+import { EMPTY_ARRAY } from "tandem-common";
 
 export type Props = {
   dispatch: Dispatch<any>;
@@ -55,13 +50,7 @@ export default (Base: React.ComponentClass<any>) =>
         return null;
       }
 
-      const variants = getPCVariants(contentSourceNode);
-
-      const variantOptions = variants.map(variant => {
-        return (
-          <VariantOption key={variant.id} dispatch={dispatch} item={variant} />
-        );
-      });
+      const variantOptions = EMPTY_ARRAY;
 
       return (
         <Base

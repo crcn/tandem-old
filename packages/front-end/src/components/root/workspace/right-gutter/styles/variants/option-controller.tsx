@@ -1,5 +1,13 @@
 import * as React from "react";
-import { PCVariant } from "paperclip";
+import {
+  PCVariant,
+  DependencyGraph,
+  PCComponentInstanceElement,
+  PCComponent,
+  isVariantTriggered,
+  getVariantTriggers,
+  getPCNode
+} from "paperclip";
 import { Dispatch } from "redux";
 import * as cx from "classnames";
 import {
@@ -11,7 +19,10 @@ import { BaseVariantOptionProps } from "./option.pc";
 const { TextInput } = require("../../../../../inputs/text/view.pc");
 
 export type Props = {
+  instance: PCComponentInstanceElement | PCComponent;
+  component: PCComponent;
   item: PCVariant;
+  graph: DependencyGraph;
   alt?: boolean;
   enabled?: boolean;
   dispatch: Dispatch<any>;
@@ -56,14 +67,26 @@ export default (Base: React.ComponentClass<BaseVariantOptionProps>) =>
     render() {
       const { onSwitchChange, onInputClick, onLabelChange } = this;
       const { editingLabel } = this.state;
-      const { item, onReset, alt, enabled, ...rest } = this.props;
+      const {
+        item,
+        graph,
+        onReset,
+        component,
+        instance,
+        alt,
+        enabled,
+        ...rest
+      } = this.props;
       if (!item) {
         return null;
       }
+      const triggered = isVariantTriggered(instance, item, graph);
+      const hasTrigger =
+        Boolean(getVariantTriggers(item, component).length) && !triggered;
       return (
         <Base
           {...rest}
-          variant={cx({ alt })}
+          variant={cx({ alt, triggered, hasTrigger })}
           switchProps={{
             value: enabled,
             onChangeComplete: onSwitchChange
@@ -74,9 +97,8 @@ export default (Base: React.ComponentClass<BaseVariantOptionProps>) =>
               display: onReset ? "block" : "none"
             }
           }}
-          inputProps={{
-            onClick: onInputClick,
-            children: editingLabel ? (
+          input={
+            editingLabel ? (
               <FocusComponent>
                 {
                   <TextInput
@@ -88,6 +110,9 @@ export default (Base: React.ComponentClass<BaseVariantOptionProps>) =>
             ) : (
               item.label || "Click to edit"
             )
+          }
+          inputProps={{
+            onClick: onInputClick
           }}
         />
       );

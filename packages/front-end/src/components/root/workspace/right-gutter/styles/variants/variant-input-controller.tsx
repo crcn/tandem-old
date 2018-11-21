@@ -12,6 +12,7 @@ import { Dispatch } from "redux";
 import { VariantOption } from "./option.pc";
 import { instanceVariantToggled } from "../../../../../../actions";
 import { BaseComponentInstanceVariantProps } from "./variant-input.pc";
+import { EMPTY_ARRAY } from "tandem-common";
 
 export type Props = {
   sourceNode: PCNode;
@@ -59,18 +60,9 @@ export default (
         return null;
       }
 
-      const options = variantInfo.map(({ variant, enabled }, i) => {
-        return (
-          <VariantOption
-            alt={Boolean(i % 2)}
-            enabled={enabled}
-            key={variant.id}
-            item={variant}
-            dispatch={dispatch}
-            onToggle={onVariantToggle}
-          />
-        );
-      });
+      console.log("OP");
+
+      const options = EMPTY_ARRAY;
 
       return <Base options={options} />;
     }

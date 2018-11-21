@@ -18,6 +18,7 @@ import {
   PCComponent,
   getPCNodeContentNode,
   getPCNodeModule,
+  PCComponentInstanceElement,
   ComputedStyleInfo,
   getInstanceVariantInfo
 } from "paperclip";
@@ -154,7 +155,7 @@ export default (Base: React.ComponentClass<BaseInstancePaneProps>) =>
         selectedVariant && selectedVariant.id
       );
 
-      const options = variantInfo.map(({ variant, enabled }, i) => {
+      const options = variantInfo.map(({ variant, component, enabled }, i) => {
         return (
           <VariantOption
             alt={Boolean(i % 2)}
@@ -163,6 +164,9 @@ export default (Base: React.ComponentClass<BaseInstancePaneProps>) =>
             item={variant}
             dispatch={dispatch}
             onToggle={onVariantToggle}
+            graph={graph}
+            component={component}
+            instance={instanceSourceNode as PCComponent}
           />
         );
       });
