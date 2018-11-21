@@ -42,10 +42,11 @@ import {
   PCVariantTrigger,
   PCPlug,
   PCBaseElementChild,
-  getVariableRefMap,
+  getAllVariableRefMap,
   PCVariantTriggerSourceType,
   PCQuery,
-  PCVariantTriggerMediaQuerySource,
+  variableQueryPassed,
+  PCVariantTriggerQuerySource,
   getPCNodeModule,
   getPCVariants
 } from "paperclip";
@@ -80,6 +81,7 @@ import {
   makeSafeVarName
 } from "./utils";
 import { PCQueryType } from "paperclip";
+import { PCVariable } from "paperclip/src";
 export const compilePaperclipModuleToReact = (
   entry: PCDependency,
   graph: DependencyGraph
@@ -434,20 +436,8 @@ const translateStyleVariantOverrides = (
     // we'll need to include combo variants here at some point. Also note that component ID isn't necessary
     // here since variant IDS are specific to components.
     let mediaTriggers: PCVariantTrigger[] = [];
-
-    // TODO
-    let variableTriggers: PCVariantTrigger[] = [];
+    let variableTriggerPassed: boolean;
     if (override.variantId) {
-      baseSelector = `" + (overrides.variantPrefixSelectors && overrides.variantPrefixSelectors["${
-        override.variantId
-      }"] && overrides.variantPrefixSelectors["${
-        override.variantId
-      }"].map(prefix => prefix + "${targetSelector}").join(", ") + ", " || "") + " `;
-
-      selector = `${baseSelector} ._${
-        override.variantId
-      } ${targetSelector}, ._${override.variantId}${targetSelector}`;
-
       const variant = getPCNode(override.variantId, context.graph) as PCVariant;
 
       const variantTriggers =
@@ -460,9 +450,38 @@ const translateStyleVariantOverrides = (
           trigger.source.type === PCVariantTriggerSourceType.QUERY
       );
 
+      variableTriggerPassed = queryTriggers.some(trigger => {
+        const query = getPCNode(
+          (trigger.source as PCVariantTriggerQuerySource).queryId,
+          context.graph
+        ) as PCQuery;
+        if (query && query.type == PCQueryType.VARIABLE) {
+          return variableQueryPassed(
+            query,
+            getAllVariableRefMap(context.graph)
+          );
+        }
+
+        return false;
+      });
+
+      if (variableTriggerPassed) {
+        selector = `${targetSelector}`;
+      } else {
+        baseSelector = `" + (overrides.variantPrefixSelectors && overrides.variantPrefixSelectors["${
+          override.variantId
+        }"] && overrides.variantPrefixSelectors["${
+          override.variantId
+        }"].map(prefix => prefix + "${targetSelector}").join(", ") + ", " || "") + " `;
+
+        selector = `${baseSelector} ._${
+          override.variantId
+        } ${targetSelector}, ._${override.variantId}${targetSelector}`;
+      }
+
       mediaTriggers = queryTriggers.filter(trigger => {
         const query = getPCNode(
-          (trigger.source as PCVariantTriggerMediaQuerySource).mediaQueryId,
+          (trigger.source as PCVariantTriggerQuerySource).queryId,
           context.graph
         ) as PCQuery;
         return query && query.type === PCQueryType.MEDIA;
@@ -494,15 +513,15 @@ const translateStyleVariantOverrides = (
     );
     context = addCloseTag(`"}" + \n`, context);
 
-    if (mediaTriggers.length) {
+    if (mediaTriggers.length && !variableTriggerPassed) {
       let mediaText = "@media all";
 
       mediaText += mediaTriggers
         .map(trigger => {
           let buffer = "";
-          const source = trigger.source as PCVariantTriggerMediaQuerySource;
+          const source = trigger.source as PCVariantTriggerQuerySource;
           const mediaQuery = getPCNode(
-            source.mediaQueryId,
+            source.queryId,
             context.graph
           ) as PCMediaQuery;
           if (!mediaQuery) {
@@ -548,7 +567,7 @@ const translateStyleValue = (
   value: any,
   { graph }: TranslateContext
 ) => {
-  value = computeStyleValue(value, getVariableRefMap(graph));
+  value = computeStyleValue(value, getAllVariableRefMap(graph));
   if (typeof value === "number" && key !== "opacity") {
     return value + "px";
   }

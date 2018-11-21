@@ -1,13 +1,13 @@
 import * as React from "react";
 import { Dispatch } from "redux";
 import { PCMediaQuery } from "paperclip";
-import { BaseMediaQueryItemProps } from "./view.pc";
+// import { BaseMediaQueryItemProps } from "./view.pc";
 import { queryConditionChanged } from "../../../../../actions";
 export type Props = {
   mediaQuery: PCMediaQuery;
   dispatch: Dispatch<any>;
 };
-export default (Base: React.ComponentClass<BaseMediaQueryItemProps>) =>
+export default (Base: React.ComponentClass<any>) =>
   class MediaQueryItemController extends React.PureComponent<Props> {
     onLabelWidthChange = (value: string) => {
       this.props.dispatch(

@@ -1,13 +1,14 @@
 import * as React from "react";
 import * as cx from "classnames";
 import { Dispatch } from "redux";
-import { PCQuery, PCQueryType } from "paperclip";
+import { PCQuery, PCQueryType, PCVariable } from "paperclip";
 import { BaseQueryItemProps, QueryOptions } from "./view.pc";
 import { queryLabelChanged } from "../../../../../actions";
 
 export type Props = {
   query: PCQuery;
   dispatch: Dispatch<any>;
+  globalVariables: PCVariable[];
 };
 
 export default (Base: React.ComponentClass<BaseQueryItemProps>) =>
@@ -17,13 +18,19 @@ export default (Base: React.ComponentClass<BaseQueryItemProps>) =>
     };
     render() {
       const { onLabelChange } = this;
-      const { query, dispatch, ...rest } = this.props;
+      const { query, dispatch, globalVariables, ...rest } = this.props;
       return (
         <Base
           {...rest}
           editButtonProps={{
             right: true,
-            content: <QueryOptions dispatch={dispatch} query={query} />
+            content: (
+              <QueryOptions
+                dispatch={dispatch}
+                query={query}
+                globalVariables={globalVariables}
+              />
+            )
           }}
           labelInputProps={{
             value: query.label,

@@ -13,9 +13,9 @@ export type Props = {
 };
 
 const TYPE_OPTIONS = [
-  // PCVariableType.UNIT,
   // PCVariableType.NUMBER,
-  PCVariableType.COLOR
+  PCVariableType.COLOR,
+  PCVariableType.TEXT
   // PCVariableType.FONT
 
   // TODO

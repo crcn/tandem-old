@@ -1,12 +1,13 @@
 import * as React from "react";
 import { Dispatch } from "redux";
-import { PCQuery, PCQueryType } from "paperclip";
+import { PCQuery, PCQueryType, PCVariable } from "paperclip";
 import { BaseQueriesPaneProps, QueryItem } from "./view.pc";
 import { addQueryButtonClick } from "../../../../../actions";
 import { QUERY_DROPDOWN_OPTIONS } from "./utils";
 export type Props = {
   dispatch: Dispatch<any>;
   globalQueries: PCQuery[];
+  globalVariables: PCVariable[];
 };
 
 export default (Base: React.ComponentClass<BaseQueriesPaneProps>) =>
@@ -16,9 +17,16 @@ export default (Base: React.ComponentClass<BaseQueriesPaneProps>) =>
     };
     render() {
       const { onAddQueryDropdownSelect } = this;
-      const { globalQueries, dispatch, ...rest } = this.props;
+      const { globalQueries, globalVariables, dispatch, ...rest } = this.props;
       const items = globalQueries.map(query => {
-        return <QueryItem dispatch={dispatch} key={query.id} query={query} />;
+        return (
+          <QueryItem
+            dispatch={dispatch}
+            key={query.id}
+            query={query}
+            globalVariables={globalVariables}
+          />
+        );
       });
       return (
         <Base

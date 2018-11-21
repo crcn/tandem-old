@@ -8,7 +8,7 @@ import {
   PCVariantTriggerStateSource,
   PCVariantTriggerSource,
   PCQuery,
-  PCVariantTriggerMediaQuerySource
+  PCVariantTriggerQuerySource
 } from "paperclip";
 import { isEqual } from "lodash";
 import * as cx from "classnames";
@@ -106,8 +106,8 @@ export const getSourceOptions = memoize(
         label: mediaQuery.label,
         value: {
           type: PCVariantTriggerSourceType.QUERY,
-          mediaQueryId: mediaQuery.id
-        } as PCVariantTriggerMediaQuerySource
+          queryId: mediaQuery.id
+        } as PCVariantTriggerQuerySource
       }))
     ];
   }

@@ -37,6 +37,7 @@ export default (Base: React.ComponentClass<BaseGlobalPropertiesProps>) =>
           }}
           queriesPaneProps={{
             dispatch,
+            globalVariables,
             globalQueries
           }}
         />

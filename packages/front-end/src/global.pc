@@ -134,10 +134,34 @@
       "id": "23496ace22",
       "name": "query",
       "type": 1,
-      "label": "aqu",
-      "condition": null,
+      "label": "Dark theme",
+      "condition": {
+        "equals": "dark"
+      },
+      "children": [],
+      "metadata": {},
+      "sourceVariableId": "245c88d621"
+    },
+    {
+      "id": "245c88d621",
+      "name": "variable",
+      "value": "light",
+      "label": "theme",
+      "type": "text",
       "children": [],
       "metadata": {}
+    },
+    {
+      "id": "a02b133a667",
+      "name": "query",
+      "type": 1,
+      "label": "Light theme",
+      "condition": {
+        "equals": "light"
+      },
+      "children": [],
+      "metadata": {},
+      "sourceVariableId": "245c88d621"
     }
   ]
 }

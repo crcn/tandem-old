@@ -398,19 +398,25 @@ export type PCMediaQueryCondition = {
 };
 
 // TODO - may need to tack more info on here
-export type PCMediaQuery = {} & PCBaseQuery<PCQueryType, PCMediaQueryCondition>;
-
-export type PCVariableQueryCondition = {};
-
-export type PCVariableQuery = {} & PCBaseQuery<
-  PCQueryType,
-  PCVariableQueryCondition
+export type PCMediaQuery = {} & PCBaseQuery<
+  PCQueryType.MEDIA,
+  PCMediaQueryCondition
 >;
+
+export type PCVariableQueryCondition = {
+  equals: string;
+  notEquals: string;
+};
+
+export type PCVariableQuery = {
+  sourceVariableId?: string;
+} & PCBaseQuery<PCQueryType.VARIABLE, PCVariableQueryCondition>;
 
 export type PCQuery = PCMediaQuery | PCVariableQuery;
 
 export enum PCVariableType {
   UNIT = "unit",
+  TEXT = "text",
   NUMBER = "number",
   COLOR = "color",
   FONT = "font"
@@ -539,7 +545,7 @@ export type PCNode =
   | PCElementStyleMixin
   | PCTextStyleMixin
   | PCVariantTrigger
-  | PCMediaQuery;
+  | PCQuery;
 
 export type PCComputedOverrideMap = {
   [COMPUTED_OVERRIDE_DEFAULT_KEY]: PCComputedOverrideVariantMap;
@@ -591,8 +597,8 @@ export type PCBaseVariantTriggerSource<
   type: TType;
 };
 
-export type PCVariantTriggerMediaQuerySource = {
-  mediaQueryId: string;
+export type PCVariantTriggerQuerySource = {
+  queryId: string;
 } & PCBaseVariantTriggerSource<PCVariantTriggerSourceType.QUERY>;
 
 export type PCVariantTriggerStateSource = {
@@ -600,7 +606,7 @@ export type PCVariantTriggerStateSource = {
 } & PCBaseVariantTriggerSource<PCVariantTriggerSourceType.STATE>;
 
 export type PCVariantTriggerSource =
-  | PCVariantTriggerMediaQuerySource
+  | PCVariantTriggerQuerySource
   | PCVariantTriggerStateSource;
 
 /*------------------------------------------
@@ -706,15 +712,16 @@ export const createPCQuery = (
   type: PCQueryType,
   label?: string,
   condition?: any
-): PCQuery => ({
-  id: generateUID(),
-  name: PCSourceTagNames.QUERY,
-  type,
-  label,
-  condition,
-  children: EMPTY_ARRAY,
-  metadata: EMPTY_OBJECT
-});
+): PCQuery =>
+  ({
+    id: generateUID(),
+    name: PCSourceTagNames.QUERY,
+    type,
+    label,
+    condition,
+    children: EMPTY_ARRAY,
+    metadata: EMPTY_OBJECT
+  } as any);
 
 export const createPCVariantTrigger = (
   source: PCVariantTriggerSource,
@@ -1275,6 +1282,24 @@ export const getSortedStyleMixinIds = memoize(
   }
 );
 
+export const variableQueryPassed = (
+  query: PCVariableQuery,
+  varMap: KeyValue<PCVariable>
+) => {
+  const variable = varMap[query.sourceVariableId];
+  if (!variable || !query.condition) return false;
+
+  if (query.condition.equals) {
+    return String(variable.value) === query.condition.equals;
+  }
+
+  if (query.condition.notEquals) {
+    return String(variable.value) !== query.condition.notEquals;
+  }
+
+  return false;
+};
+
 export const computePCNodeStyle = memoize(
   (
     node: PCVisibleNode | PCComponent | PCStyleMixin,
@@ -1405,26 +1430,23 @@ export const getComponentGraphRefMap = memoize(
     nodeAryToRefMap(getComponentGraphRefs(node, graph)) as KeyValue<PCComponent>
 );
 
-export const getStyleVariableRefMap = memoize(
-  (node: PCNode, graph: DependencyGraph) =>
-    nodeAryToRefMap(getStyleVariableGraphRefs(node, graph)) as KeyValue<
-      PCVariable
-    >
-);
-
-export const getMediaQueryRefMap = memoize(
-  (node: PCNode, graph: DependencyGraph) =>
-    nodeAryToRefMap(getMediaQueryGraphRefs(node, graph)) as KeyValue<PCVariable>
-);
-
 export const getVariableRefMap = memoize(
+  (node: PCNode, graph: DependencyGraph) =>
+    nodeAryToRefMap(getVariableGraphRefs(node, graph)) as KeyValue<PCVariable>
+);
+
+export const getQueryRefMap = memoize(
+  (node: PCNode, graph: DependencyGraph) =>
+    nodeAryToRefMap(getQueryGraphRefs(node, graph)) as KeyValue<PCMediaQuery>
+);
+
+export const getAllVariableRefMap = memoize(
   (graph: DependencyGraph) =>
     nodeAryToRefMap(getGlobalVariables(graph)) as KeyValue<PCVariable>
 );
 
-export const getMediaQueryGraphRefs = memoize(
+export const getQueryGraphRefs = memoize(
   (node: PCNode, graph: DependencyGraph): PCMediaQuery[] => {
-    const allRefs: PCMediaQuery[] = [];
     const triggers = getTreeNodesByName(
       PCSourceTagNames.VARIANT_TRIGGER,
       node
@@ -1440,17 +1462,31 @@ export const getMediaQueryGraphRefs = memoize(
         })
         .map(trigger => {
           return getPCNode(
-            (trigger.source as PCVariantTriggerMediaQuerySource).mediaQueryId,
+            (trigger.source as PCVariantTriggerQuerySource).queryId,
             graph
-          ) as PCMediaQuery;
+          ) as PCQuery;
         })
     );
   }
 );
 
-export const getStyleVariableGraphRefs = memoize(
+export const getVariableGraphRefs = memoize(
   (node: PCNode, graph: DependencyGraph) => {
     const allRefs: PCVariable[] = [];
+
+    if (
+      node.name === PCSourceTagNames.VARIANT_TRIGGER &&
+      node.source &&
+      node.source.type === PCVariantTriggerSourceType.QUERY
+    ) {
+      const query = getPCNode(node.source.queryId, graph) as PCQuery;
+      if (query.type === PCQueryType.VARIABLE) {
+        const ref = getPCNode(query.sourceVariableId, graph) as PCVariable;
+        if (ref) {
+          allRefs.push(ref);
+        }
+      }
+    }
 
     const refIds =
       isVisibleNode(node) || node.name === PCSourceTagNames.COMPONENT
@@ -1476,13 +1512,13 @@ export const getStyleVariableGraphRefs = memoize(
         if (!styleMixin) {
           continue;
         }
-        allRefs.push(...getStyleVariableGraphRefs(styleMixin, graph));
+        allRefs.push(...getVariableGraphRefs(styleMixin, graph));
       }
     }
 
     for (let i = 0, { length } = node.children; i < length; i++) {
       const child = node.children[i];
-      allRefs.push(...getStyleVariableGraphRefs(child, graph));
+      allRefs.push(...getVariableGraphRefs(child, graph));
     }
     return uniq(allRefs);
   }

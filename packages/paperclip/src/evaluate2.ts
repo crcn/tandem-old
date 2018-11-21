@@ -3,11 +3,11 @@ import {
   PCModule,
   getComponentGraphRefMap,
   PCSourceTagNames,
-  getStyleVariableRefMap,
+  getVariableRefMap,
   PCVisibleNode,
   PCComponent,
   PCVisibleNodeMetadataKey,
-  getMediaQueryRefMap
+  getQueryRefMap
 } from "./dsl";
 import {
   compileContentNodeAsVanilla,
@@ -107,8 +107,8 @@ const compileDependencyGraph = memoize((graph: DependencyGraph) => {
       renderers[`_${contentNode.id}`] = compileContentNodeAsVanilla(
         contentNode,
         reuseNodeGraphMap(getComponentGraphRefMap(contentNode, graph)),
-        reuseNodeGraphMap(getStyleVariableRefMap(contentNode, graph)),
-        reuseNodeGraphMap(getMediaQueryRefMap(contentNode, graph)),
+        reuseNodeGraphMap(getVariableRefMap(contentNode, graph)),
+        reuseNodeGraphMap(getQueryRefMap(contentNode, graph)),
         uri
       );
     }

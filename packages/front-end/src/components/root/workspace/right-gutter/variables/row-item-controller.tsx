@@ -46,7 +46,8 @@ export default (Base: React.ComponentClass<BaseVariableRowItemProps>) =>
       const color = variable.type === PCVariableType.COLOR;
       const unlimited =
         variable.type === PCVariableType.NUMBER ||
-        variable.type === PCVariableType.UNIT;
+        variable.type === PCVariableType.UNIT ||
+        variable.type === PCVariableType.TEXT;
 
       let limitedOptions: DropdownMenuOption[] = EMPTY_ARRAY;
 

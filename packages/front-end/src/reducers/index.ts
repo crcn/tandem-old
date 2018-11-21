@@ -197,6 +197,8 @@ import {
   QueryConditionChanged,
   QueryLabelChanged,
   QUERY_TYPE_CHANGED,
+  VARIABLE_QUERY_SOURCE_VARIABLE_CHANGE,
+  VariableQuerySourceVariableChange,
   QueryTypeChanged
 } from "../actions";
 import {
@@ -358,7 +360,8 @@ import {
   persistUpdateVariantTrigger,
   inspectorNodeInInstanceOfComponent,
   getInspectorNodeBySourceNodeId,
-  persistAddVariantTrigger
+  persistAddVariantTrigger,
+  PCVariableQuery
 } from "paperclip";
 import {
   roundBounds,
@@ -1219,6 +1222,21 @@ export const canvasReducer = (state: RootState, action: Action) => {
             condition: null
           },
           target,
+          state
+        );
+        return state;
+      }, state);
+      return state;
+    }
+    case VARIABLE_QUERY_SOURCE_VARIABLE_CHANGE: {
+      const { variable, query } = action as VariableQuerySourceVariableChange;
+      state = persistRootState(state => {
+        state = persistReplacePCNode(
+          {
+            ...(query as any),
+            sourceVariableId: variable.id
+          } as PCVariableQuery,
+          query,
           state
         );
         return state;

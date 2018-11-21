@@ -2,13 +2,20 @@ import * as React from "react";
 import { Dispatch } from "redux";
 import * as cx from "classnames";
 import { BaseQueryOptionsProps } from "./view.pc";
-import { PCQueryType, PCQuery } from "paperclip";
+import {
+  PCQueryType,
+  PCQuery,
+  PCVariableQuery,
+  PCVariable,
+  PCMediaQuery
+} from "paperclip";
 import { QUERY_DROPDOWN_OPTIONS } from "./utils";
 import { queryTypeChanged } from "../../../../../actions";
 
 export type Props = {
   query: PCQuery;
   dispatch: Dispatch<any>;
+  globalVariables: PCVariable[];
 };
 
 export default (Base: React.ComponentClass<BaseQueryOptionsProps>) =>
@@ -18,7 +25,7 @@ export default (Base: React.ComponentClass<BaseQueryOptionsProps>) =>
     };
     render() {
       const { onTypeChange } = this;
-      const { query, ...rest } = this.props;
+      const { query, dispatch, globalVariables, ...rest } = this.props;
       return (
         <Base
           {...rest}
@@ -30,6 +37,15 @@ export default (Base: React.ComponentClass<BaseQueryOptionsProps>) =>
             value: query.type,
             onChangeComplete: onTypeChange,
             options: QUERY_DROPDOWN_OPTIONS
+          }}
+          mediaQueryOptionsProps={{
+            query: query as PCMediaQuery,
+            dispatch
+          }}
+          variableQueryOptionsProps={{
+            query: query as PCVariableQuery,
+            globalVariables,
+            dispatch
           }}
         />
       );

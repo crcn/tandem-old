@@ -30,17 +30,19 @@ import {
   PCVariant,
   computeStyleWithVars,
   PCOverride,
+  variableQueryPassed,
   PCVariable,
   PCStyleMixin,
   PCVariantTrigger,
   PCVariantTriggerSourceType,
-  getPCNode,
-  PCVariantTriggerMediaQuerySource,
-  PCMediaQuery
+  PCVariantTriggerQuerySource,
+  PCMediaQuery,
+  PCVariableQuery
 } from "./dsl";
 import * as path from "path";
 import { uniq } from "lodash";
 import { SyntheticElement } from "./synthetic";
+import { DependencyGraph } from "./graph";
 
 export type VanillaPCRenderers = KeyValue<VanillaPCRenderer>;
 
@@ -140,7 +142,7 @@ const translateContentNode = memoize(
     buffer += translateStaticVariants(node, varMap, sourceUri);
 
     buffer += `return function(instanceSourceNodeId, instancePath, attributes, style, variant, overrides, windowInfo, components, isRoot) {
-      ${translateVariants(node, queryMap)}
+      ${translateVariants(node, queryMap, varMap)}
       var childInstancePath = instancePath == null ? "" : (instancePath ? instancePath + "." : "") + instanceSourceNodeId;
 
       // tiny optimization
@@ -241,7 +243,8 @@ const translateVisibleNode = memoize(
 );
 const translateVariants = (
   contentNode: PCVisibleNode | PCComponent | PCStyleMixin,
-  queryMap: KeyValue<PCQuery>
+  queryMap: KeyValue<PCQuery>,
+  varMap: KeyValue<PCVariable>
 ) => {
   const variants = (getTreeNodesByName(
     PCSourceTagNames.VARIANT,
@@ -267,9 +270,7 @@ const translateVariants = (
     const queries = variantTriggers
       .map(trigger => {
         const query =
-          queryMap[
-            (trigger.source as PCVariantTriggerMediaQuerySource).mediaQueryId
-          ];
+          queryMap[(trigger.source as PCVariantTriggerQuerySource).queryId];
         return query;
       })
       .filter(Boolean);
@@ -278,14 +279,24 @@ const translateVariants = (
       query => query.type === PCQueryType.MEDIA
     ) as PCMediaQuery[];
 
-    buffer += `if (variant["${variant.id}"] ${
-      mediaQueries.length ? "|| " + translateMediaCondition(mediaQueries) : ""
-    }) {`;
+    const variableQueries = queries.filter(
+      query => query.type === PCQueryType.VARIABLE
+    ) as PCVariableQuery[];
+
+    const useVariant = variableQueriesPassed(variableQueries, varMap);
+
+    if (!useVariant) {
+      buffer += `if (variant["${variant.id}"] ${
+        mediaQueries.length ? "|| " + translateMediaCondition(mediaQueries) : ""
+      }) {`;
+    }
     buffer += `overrides = merge(_${contentNode.id}Variants._${
       variant.id
     }, overrides); `;
 
-    buffer += `}\n`;
+    if (!useVariant) {
+      buffer += `}\n`;
+    }
   }
 
   return buffer;
@@ -310,6 +321,15 @@ const translateMediaCondition = (queries: PCMediaQuery[]) => {
   }
 
   return "(" + conditions.join(" || ") + ")";
+};
+
+const variableQueriesPassed = (
+  queries: PCVariableQuery[],
+  varMap: KeyValue<PCVariable>
+) => {
+  return queries.some(query => {
+    return variableQueryPassed(query, varMap);
+  });
 };
 
 const translateElementChild = memoize((node: PCBaseElementChild) => {

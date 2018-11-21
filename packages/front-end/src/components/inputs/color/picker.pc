@@ -1239,7 +1239,82 @@
       "attributes": {},
       "id": "d3d13011662",
       "name": "component",
-      "children": [],
+      "children": [
+        {
+          "id": "fe85f3f3662",
+          "name": "variant-trigger",
+          "targetVariantId": "fe85f3f3663",
+          "source": {
+            "type": 0,
+            "queryId": "23496ace22"
+          },
+          "children": [],
+          "metadata": {}
+        },
+        {
+          "id": "fe85f3f3663",
+          "name": "variant",
+          "label": "dark",
+          "isDefault": false,
+          "children": [],
+          "metadata": {}
+        },
+        {
+          "id": "a02b133a662",
+          "name": "text",
+          "label": "Text",
+          "value": "something",
+          "style": {},
+          "children": [
+            {
+              "id": "a02b133a671",
+              "name": "variant-trigger",
+              "targetVariantId": "a02b133a665",
+              "source": {
+                "type": 0,
+                "queryId": "a02b133a667"
+              },
+              "children": [],
+              "metadata": {}
+            }
+          ],
+          "metadata": {}
+        },
+        {
+          "id": "a02b133a664",
+          "variantId": "fe85f3f3663",
+          "propertyName": "style",
+          "targetIdPath": [
+            "a02b133a662"
+          ],
+          "value": {
+            "color": "rgba(255, 0, 0, 1)"
+          },
+          "name": "override",
+          "children": []
+        },
+        {
+          "id": "a02b133a665",
+          "name": "variant",
+          "label": "light",
+          "isDefault": false,
+          "children": [],
+          "metadata": {}
+        },
+        {
+          "id": "a02b133a666",
+          "variantId": "a02b133a665",
+          "propertyName": "style",
+          "targetIdPath": [
+            "a02b133a662"
+          ],
+          "value": {
+            "color": "rgba(0, 42, 255, 1)"
+          },
+          "name": "override",
+          "children": []
+        }
+      ],
       "metadata": {
         "bounds": {
           "left": 101.33482514042487,

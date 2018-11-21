@@ -274,6 +274,8 @@ export const REMOVE_MEDIA_QUERY_BUTTON_CLICK =
 export const QUERY_LABEL_CHANGED = "QUERY_LABEL_CHANGED";
 export const QUERY_CONDITION_CHANGED = "QUERY_CONDITION_CHANGED";
 export const QUERY_TYPE_CHANGED = "QUERY_TYPE_CHANGED";
+export const VARIABLE_QUERY_SOURCE_VARIABLE_CHANGE =
+  "VARIABLE_QUERY_SOURCE_VARIABLE_CHANGE";
 
 export type WrappedEvent<T> = {
   sourceEvent: T;
@@ -678,6 +680,11 @@ export type ExportNameChanged = {
   value: string;
 } & Action;
 
+export type VariableQuerySourceVariableChange = {
+  query: PCQuery;
+  variable: PCVariable;
+} & Action;
+
 export type EditorTabClicked = {
   event: React.MouseEvent<any>;
   uri: string;
@@ -786,6 +793,15 @@ export const fileItemContextMenuCopyPathClicked = publicActionCreator(
     type: FILE_ITEM_CONTEXT_MENU_COPY_PATH_CLICKED
   })
 );
+
+export const variableQuerySourceVariableChange = (
+  query: PCQuery,
+  variable: PCVariable
+): VariableQuerySourceVariableChange => ({
+  type: VARIABLE_QUERY_SOURCE_VARIABLE_CHANGE,
+  query,
+  variable
+});
 
 export const queryConditionChanged = (
   target: PCQuery,
