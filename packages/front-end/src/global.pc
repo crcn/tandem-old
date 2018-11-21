@@ -131,7 +131,16 @@
       "metadata": {}
     },
     {
-      "id": "23496ace22",
+      "id": "a02b133a681",
+      "name": "variable",
+      "value": "light",
+      "label": "Theme",
+      "type": "text",
+      "children": [],
+      "metadata": {}
+    },
+    {
+      "id": "a02b133a682",
       "name": "query",
       "type": 1,
       "label": "Dark theme",
@@ -140,28 +149,18 @@
       },
       "children": [],
       "metadata": {},
-      "sourceVariableId": "245c88d621"
+      "sourceVariableId": "a02b133a681"
     },
     {
-      "id": "245c88d621",
-      "name": "variable",
-      "value": "light",
-      "label": "theme",
-      "type": "text",
-      "children": [],
-      "metadata": {}
-    },
-    {
-      "id": "a02b133a667",
+      "id": "a02b133a685",
       "name": "query",
-      "type": 1,
-      "label": "Light theme",
+      "type": 0,
+      "label": "Mobile",
       "condition": {
-        "equals": "light"
+        "maxWidth": 500
       },
       "children": [],
-      "metadata": {},
-      "sourceVariableId": "245c88d621"
+      "metadata": {}
     }
   ]
 }
