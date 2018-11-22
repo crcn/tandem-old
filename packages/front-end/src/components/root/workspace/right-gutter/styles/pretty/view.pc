@@ -1,6 +1,6 @@
 {
   "id": "4b11d4db0",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "metadata": {},
   "name": "module",
   "children": [
@@ -343,9 +343,9 @@
       ],
       "metadata": {
         "bounds": {
-          "left": 327.9970896317676,
+          "left": 328,
           "top": 112,
-          "right": 576.9970896317676,
+          "right": 577,
           "bottom": 2951.4628500606377
         }
       },
