@@ -23,7 +23,7 @@ for (const relPath of filePaths) {
     console.error(e);
   }
 }
-  
+
 if (watch) {
   chokidar.watch(_[0]).on(`all`, (eventType, path) => {
     if (eventType === `change`) {
@@ -49,7 +49,7 @@ function translateFile(relPath) {
       content = translatePaperclipModuleToReactTSDefinition(entry, graph);
       contentFilePath = absPath.replace(/\.pc$/, ".pc.d.ts");
     } else {
-      content = translatePaperclipModuleToReact(entry, graph);
+      content = translatePaperclipModuleToReact(entry, graph).buffer;
       contentFilePath = absPath.replace(/\.pc$/, ".js");
     }
   if (outAbsPath) {

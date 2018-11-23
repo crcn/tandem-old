@@ -6,6 +6,7 @@ TODO:
 - [ ] Possibly connect to "build" button in UI
 - [ ] variable triggers for setting state
 - [ ] controller code
+- [ ] move file assets toassets directory
 
 Config example:
 

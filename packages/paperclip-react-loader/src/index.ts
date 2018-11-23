@@ -21,7 +21,7 @@ module.exports = function(source) {
   );
   const entry = graph["file://" + uri];
 
-  let content = translatePaperclipModuleToReact(entry, graph);
+  let content = translatePaperclipModuleToReact(entry, graph).buffer;
   const refMap = getComponentGraphRefMap(entry.content, graph);
   const depUriMap = {};
   for (const refId in refMap) {

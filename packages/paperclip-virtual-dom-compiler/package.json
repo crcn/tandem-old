@@ -1,0 +1,20 @@
+{
+  "name": "paperclip-virtual-dom-compiler",
+  "version": "1.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc",
+    "build-watch": "tsc --watch"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@types/node": "^10.12.10",
+    "lodash": "^4.17.11",
+    "paperclip": "^10.1.5",
+    "tandem-common": "^10.1.5",
+    "typescript": "^3.1.6"
+  }
+}
