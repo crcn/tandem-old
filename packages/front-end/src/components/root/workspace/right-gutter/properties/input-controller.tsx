@@ -13,6 +13,7 @@ import { BaseInputPropertiesProps } from "./input.pc";
 import { dropdownMenuOptionFromValue } from "../../../../inputs/dropdown/controller";
 
 export type Props = {
+  baseName: string;
   dispatch: Dispatch<any>;
   sourceNode: PCComponent | PCElement | PCComponentInstanceElement;
   graph: DependencyGraph;
@@ -47,9 +48,8 @@ export default (Base: React.ComponentClass<BaseInputPropertiesProps>) =>
       this.props.dispatch(attributeChanged("type", value));
     };
     render() {
-      const { sourceNode, graph } = this.props;
-      const nativeName = getNativeComponentName(sourceNode, graph);
-      if (nativeName !== "input") {
+      const { baseName, sourceNode, graph } = this.props;
+      if (baseName !== "input") {
         return null;
       }
       const { onPlaceholderChange, onInputTypeChange } = this;

@@ -13,6 +13,7 @@ import {
 } from "../../../../../actions";
 
 export type Props = {
+  baseName: string;
   sourceNode: PCElement | PCComponentInstanceElement | PCComponent;
   dispatch: Dispatch<any>;
   graph: DependencyGraph;
@@ -27,10 +28,10 @@ export default (Base: React.ComponentClass<BaseImgPropertiesProps>) =>
       this.props.dispatch(imageBrowseButtonClicked());
     };
     render() {
-      const { sourceNode, ...rest } = this.props;
+      const { baseName, sourceNode, ...rest } = this.props;
       const { onUploadButtonClick, onPathChangeComplete } = this;
 
-      if (sourceNode.is !== "img") {
+      if (baseName !== "img") {
         return null;
       }
 

@@ -19,6 +19,7 @@ import { KeyValue } from "tandem-common";
 import * as crypto from "crypto";
 
 export type TranslatePageConfig = {
+  title: string;
   fileName: string;
   component: {
     name?: string;
@@ -142,6 +143,28 @@ const translatePage = (
         name: "head",
         attributes: {},
         children: [
+          {
+            id: "title",
+            name: "title",
+            children: [page.title]
+          },
+          {
+            id: "meta-utf8",
+            name: "meta",
+            attributes: {
+              charset: "utf-8"
+            },
+            children: []
+          },
+          {
+            id: "meta-viewport",
+            name: "meta",
+            attributes: {
+              name: "viewport",
+              content: "width=device-width, initial-scale=1.0"
+            },
+            children: []
+          },
           {
             id: "main-style",
             name: "style",

@@ -172,6 +172,7 @@ export default (Base: React.ComponentClass<BaseElementPropertiesProps>) => {
         return null;
       }
       const components = getAllPCComponents(graph);
+      const baseName = getNativeComponentName(sourceNode, graph);
 
       return (
         <Base
@@ -184,16 +185,19 @@ export default (Base: React.ComponentClass<BaseElementPropertiesProps>) => {
           }}
           aPropertiesProps={{
             dispatch,
+            baseName,
             sourceNode
           }}
           imgTagPropertiesProps={{
             dispatch,
             graph,
+            baseName,
             sourceNode
           }}
           inputTagPropertiesProps={{
             dispatch,
             graph,
+            baseName,
             sourceNode
           }}
         />

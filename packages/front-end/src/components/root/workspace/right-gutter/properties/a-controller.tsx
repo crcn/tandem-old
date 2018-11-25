@@ -10,6 +10,7 @@ import {
 import { attributeChanged } from "../../../../../actions";
 
 export type Props = {
+  baseName: string;
   dispatch: Dispatch<any>;
   sourceNode: PCElement | PCComponent | PCComponentInstanceElement;
 };
@@ -20,9 +21,9 @@ export default (Base: React.ComponentClass<BaseAPropertiesProps>) =>
       this.props.dispatch(attributeChanged("href", value));
     };
     render() {
-      const { sourceNode, ...rest } = this.props;
+      const { baseName, sourceNode, ...rest } = this.props;
       const { onHrefChangeComplete } = this;
-      if (sourceNode.is !== "a") {
+      if (baseName !== "a") {
         return null;
       }
 

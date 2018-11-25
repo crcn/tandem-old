@@ -69,7 +69,6 @@ const addDependencyToBundle = (
       resolvedImports[relativePath] = fullPath;
       bundle = addDependencyToBundle(fullPath, bundle, graph);
     }
-    console.log(content);
 
     const module = new Function(
       `require`,
