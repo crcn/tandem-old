@@ -32,7 +32,7 @@ In this section we'll build a simple todo app.
 
 You'll need to have basic knowledge of HTML & CSS in order to get started, and a little coding experience doesn't hurt either if you're looking to add behavior to your UIs. Don't worry about needing to know how to code _before_ using Tandem though.
 
-Assuming that you have some HTML & CSS chops, you can go ahead and download the current _preview_ version of Tandem here: https://www.dropbox.com/s/dfa6i75o3105rtl/tandem-10.1.1-osx-x64.zip.zip?dl=0.
+Assuming that you have some HTML & CSS chops, you can go ahead and download the current _preview_ version of Tandem here: https://www.dropbox.com/s/8k8uqxk9z37dkyr/tandem-10.1.7-osx-x64.zip?dl=0.
 
 We'll be using [NodeJS](https://nodejs.org/) (v8.0.0+) and yarn in this tutorial, so be sure to have those installed too.
 
