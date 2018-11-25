@@ -1,6 +1,6 @@
 {
   "name": "tandem-front-end",
-  "version": "10.1.6",
+  "version": "10.1.7",
   "description": "Visual editor for web components",
   "main": "index.js",
   "scripts": {
