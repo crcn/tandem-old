@@ -142,6 +142,7 @@ export const createPaperclipVirtualDOMtranslator = (
 
       context = addToNativePropsFunction(context);
       context = addMergeFunction(context);
+      context = addStylesToDocumentFunction(context);
 
       context = addLine("\nvar _EMPTY_OBJECT = {}", context);
       context = addLine("\nvar EMPTY_ARRAY = []", context);
@@ -213,33 +214,61 @@ export const createPaperclipVirtualDOMtranslator = (
     return context;
   };
 
+  const addStylesToDocumentFunction = (context: TranslateContext) => {
+    context = addOpenTag(
+      `\nfunction stringifyStyleRulesInner(key, value) {\n`,
+      context
+    );
+    context = addLine(
+      `if (typeof value === "string") return key + ":" + value + ";\\n"`,
+      context
+    );
+    context = addLine(
+      `return key + "{\\n" + stringifyStyleRules(value) + "}\\n"`,
+      context
+    );
+    context = addCloseTag(`}\n`, context);
+
+    context = addOpenTag(
+      `\nfunction stringifyStyleRules(styleRules) {\n`,
+      context
+    );
+    context = addLine(`var buffer = [];`, context);
+    context = addOpenTag(`for (const key in styleRules) {\n`, context);
+    context = addLine(
+      `buffer.push(stringifyStyleRulesInner(key, styleRules[key]));`,
+      context
+    );
+    context = addCloseTag(`}\n`, context);
+    context = addLine(`return buffer.join("");`, context);
+    context = addCloseTag(`}\n`, context);
+
+    context = addOpenTag(
+      `\nfunction addStylesToDocument(styleRules) {\n`,
+      context
+    );
+    context = addLine(`if (typeof document === "undefined") return;`, context);
+    context = addLine(
+      `var cssText = stringifyStyleRules(styleRules);`,
+      context
+    );
+    context = addLine(`var style = document.createElement("style");`, context);
+    context = addLine(`style.type = "text/css";`, context);
+    context = addLine(`style.textContent = cssText;`, context);
+    context = addLine(`document.head.appendChild(style);`, context);
+
+    context = addCloseTag(`}\n`, context);
+    return context;
+  };
+
   const translateComponentStyles = (
     component: ContentNode,
     context: TranslateContext
   ) => {
     // basic styles
-    context = addOpenTag(
-      `if (typeof document !== "undefined" && !_${
-        component.id
-      }._basicStyle) {\n`,
-      context
-    );
-    const styleVarName = getInternalVarName(component) + "Style";
+    context = addOpenTag(`if (!_${component.id}._basicStyle) {\n`, context);
 
-    context = addLine(
-      `var ${styleVarName} = _${
-        component.id
-      }._basicStyle = document.createElement("style");`,
-      context
-    );
-    context = addLine(`${styleVarName}.type = "text/css";`, context);
-    context = addOpenTag(
-      `${styleVarName}.appendChild(document.createTextNode("" +\n`,
-      context
-    );
     context = translateComponentStyleInner(component, context);
-    context = addCloseTag(`"")); \n\n`, context);
-    context = addLine(`document.head.appendChild(${styleVarName});`, context);
     context = addCloseTag(`}\n`, context);
 
     // variant styles
@@ -251,30 +280,10 @@ export const createPaperclipVirtualDOMtranslator = (
       context
     );
     context = addOpenTag(
-      `if (typeof document !== "undefined" && !_${
-        component.id
-      }[styleVariantKey]) {\n`,
-      context
-    );
-    const variantStyleVarName = getInternalVarName(component) + "VariantStyle";
-
-    context = addLine(
-      `var ${variantStyleVarName} = _${
-        component.id
-      }[styleVariantKey] = document.createElement("style");`,
-      context
-    );
-    context = addLine(`${variantStyleVarName}.type = "text/css";`, context);
-    context = addOpenTag(
-      `${variantStyleVarName}.appendChild(document.createTextNode("" +\n`,
+      `if (!_${component.id}[styleVariantKey]) {\n`,
       context
     );
     context = translateStyleOverrides(component, context);
-    context = addCloseTag(`"")); \n\n`, context);
-    context = addLine(
-      `document.head.appendChild(${variantStyleVarName});`,
-      context
-    );
     context = addCloseTag(`}\n`, context);
     return context;
   };
@@ -292,13 +301,13 @@ export const createPaperclipVirtualDOMtranslator = (
         if (!hasStyle(node)) {
           return context;
         }
-        context = addOpenTag(`"._${node.id} {" + \n`, context);
+        context = addOpenTag(`styleRules["._${node.id}"] = {\n`, context);
         context = translateStyle(
           node,
           { ...getInheritedStyle(node.styleMixins, context), ...node.style },
           context
         );
-        context = addCloseTag(`"}" + \n`, context);
+        context = addCloseTag(`};\n\n`, context);
         return context;
       }, context);
 
@@ -365,24 +374,24 @@ export const createPaperclipVirtualDOMtranslator = (
       // TODO - add vendor prefix stuff here
       for (const key in style) {
         const propName = key;
-        context = addLineItem(
-          `" ${SVG_STYLE_PROP_MAP[propName] || propName}: ${stringifyValue(
+        context = addLine(
+          `"${SVG_STYLE_PROP_MAP[propName] || propName}": "${stringifyValue(
             translateStyleValue(key, style[key], context).replace(
               /[\n\r]/g,
               " "
             )
-          )};" + \n`,
+          )}",`,
           context
         );
       }
     } else {
       // TODO - add vendor prefix stuff here
       for (const key in style) {
-        context = addLineItem(
-          `" ${key}: ${translateStyleValue(key, style[key], context).replace(
+        context = addLine(
+          `"${key}": "${translateStyleValue(key, style[key], context).replace(
             /[\n\r]/g,
             " "
-          )};" + \n`,
+          )}",`,
           context
         );
       }
@@ -518,13 +527,13 @@ export const createPaperclipVirtualDOMtranslator = (
         }
       }
 
-      context = addOpenTag(`"${selector} {" + \n`, context);
+      context = addOpenTag(`styleRules["${selector}"] = {\n`, context);
       context = translateStyle(
         getPCNode(last(override.targetIdPath), context.graph) as ContentNode,
         override.value,
         context
       );
-      context = addCloseTag(`"}" + \n`, context);
+      context = addCloseTag(`};\n\n`, context);
 
       if (mediaTriggers.length && !variableTriggerPassed) {
         let mediaText = "@media all";
@@ -555,9 +564,10 @@ export const createPaperclipVirtualDOMtranslator = (
           })
           .filter(Boolean)
           .join(", ");
-        context = addOpenTag(`"${mediaText} {" + \n`, context);
+        context = addOpenTag(`mergeProps(styleRules, {\n`, context);
+        context = addOpenTag(`["${mediaText}"]: {\n`, context);
         context = addOpenTag(
-          `"${baseSelector} ${targetSelector} {" + \n`,
+          `["${baseSelector} ${targetSelector}"]: {\n`,
           context
         );
         context = translateStyle(
@@ -565,8 +575,9 @@ export const createPaperclipVirtualDOMtranslator = (
           override.value,
           context
         );
-        context = addCloseTag(`"}" + \n`, context);
-        context = addCloseTag(`"}" + \n`, context);
+        context = addCloseTag(`}\n`, context);
+        context = addCloseTag(`}\n`, context);
+        context = addCloseTag(`});\n\n`, context);
       }
     }
     return context;
@@ -617,6 +628,8 @@ export const createPaperclipVirtualDOMtranslator = (
       `\nfunction ${internalVarName}(overrides) {\n`,
       context
     );
+
+    context = addLine(`var styleRules = {};`, context);
 
     context = translatedUsedComponentInstances(contentNode, context);
     context = translateStaticOverrides(contentNode, context);
@@ -734,7 +747,10 @@ export const createPaperclipVirtualDOMtranslator = (
       context = translateControllers(baseRenderName, contentNode, context);
     }
 
-    context = addLine(`return ${baseRenderName};`, context);
+    context = addLine(
+      `return { renderer: ${baseRenderName}, styleRules: styleRules };`,
+      context
+    );
 
     context = addCloseTag(`};\n`, context);
 
@@ -744,7 +760,15 @@ export const createPaperclipVirtualDOMtranslator = (
       context
     );
     context = addLine(
-      `exports.${publicRenderName} = ${internalVarName}({});`,
+      `var ${publicRenderName}Imp = ${internalVarName}({});`,
+      context
+    );
+    context = addLine(
+      `exports.${publicRenderName} = ${publicRenderName}Imp.renderer;`,
+      context
+    );
+    context = addLine(
+      `addStylesToDocument(${publicRenderName}Imp.styleRules);`,
       context
     );
     return context;
@@ -827,7 +851,7 @@ export const createPaperclipVirtualDOMtranslator = (
     }`;
 
     context = addOpenTag(
-      `var _${instance.id}Component = ${
+      `var _${instance.id}ComponentImp = ${
         !getNestedTreeNodeById(instance.is, context.entry.content)
           ? "_imports."
           : ""
@@ -843,7 +867,15 @@ export const createPaperclipVirtualDOMtranslator = (
       context,
       true
     );
-    context = addCloseTag(`}, ${overrideProp}));\n\n`, context);
+    context = addCloseTag(`}, ${overrideProp}));\n`, context);
+    context = addLine(
+      `var _${instance.id}Component = _${instance.id}ComponentImp.renderer;`,
+      context
+    );
+    context = addLine(
+      `mergeProps(styleRules, _${instance.id}ComponentImp.styleRules);\n`,
+      context
+    );
     return context;
   };
 

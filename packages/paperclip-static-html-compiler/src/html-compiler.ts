@@ -84,13 +84,7 @@ export const translatePaperclipModuleToHTMLRenderers = createPaperclipVirtualDOM
       context = addLine(`children: flatten(children || []),`, context);
       context = addCloseTag(`};\n`, context);
       context = addCloseTag(`}\n`, context);
-      context = inner({
-        ...context,
-        options: {
-          ...context.options,
-          includeCSS: false
-        }
-      });
+      context = inner(context);
       return context;
     },
     translateRenderer: (
@@ -132,7 +126,7 @@ export const stringifyVirtualNode = (
   let buffer = space + `<${node.name}`;
 
   for (const key in node.attributes) {
-    if (/^(children|key)$/.test(key)) {
+    if (/^(children|key|text)$/.test(key)) {
       continue;
     }
     buffer += ` ${key}="${node.attributes[key]}"`;

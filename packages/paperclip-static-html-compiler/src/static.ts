@@ -4,7 +4,6 @@ import * as path from "path";
 import {
   loadFSDependencyGraphSync,
   PCConfig,
-  getAllVariableRefMap,
   getGlobalVariables,
   getPCNode,
   PCVariable,
@@ -14,10 +13,7 @@ import {
   getPCNodeDependency
 } from "paperclip";
 import { identity } from "lodash";
-import {
-  translatePaperclipModuleToHTMLRenderers,
-  stringifyVirtualNode
-} from "./html-compiler";
+import { stringifyVirtualNode } from "./html-compiler";
 import { bundleDependencyGraph, evaluateBundle } from "./bundler";
 import { KeyValue } from "tandem-common";
 import * as crypto from "crypto";
@@ -38,6 +34,37 @@ export type TranslateHTMLConfig = {
   outputDirectory?: string;
   project: PCConfig;
   pages: TranslatePageConfig[];
+};
+
+type StyleRuleValue = string | StyleRules;
+type StyleRules = {
+  [identifier: string]: StyleRuleValue;
+};
+
+const stringifyStyleRuleValue = (
+  key: string,
+  value: StyleRuleValue,
+  space: string,
+  tab: string
+) => {
+  if (typeof value === "string") {
+    return `${space}${key}: ${value};\n`;
+  }
+  return `${space}${key}{\n${stringifyStyleRules(value, space + tab)}}\n`;
+};
+
+const stringifyStyleRules = (rules: StyleRules, space = "", tab = "  ") => {
+  const buffer = [];
+
+  const sortedKeys = Object.keys(rules).sort((a, b) => {
+    return a.indexOf("@media") !== -1 ? 1 : 0;
+  });
+
+  for (const selector of sortedKeys) {
+    buffer.push(stringifyStyleRuleValue(selector, rules[selector], space, tab));
+  }
+
+  return buffer.join("");
 };
 
 export const translatePaperclipModuleToStaticHTML = (
@@ -101,7 +128,9 @@ const translatePage = (
     );
   });
 
-  let vnode = evaluatedModule[`_${component.id}`]({})({});
+  let imp = evaluatedModule[`_${component.id}`]({});
+
+  let vnode = imp.renderer({});
 
   vnode = {
     id: "html",
@@ -112,7 +141,21 @@ const translatePage = (
         id: "head",
         name: "head",
         attributes: {},
-        children: []
+        children: [
+          {
+            id: "main-style",
+            name: "style",
+            attributes: {
+              type: "text/css"
+            },
+            children: [
+              `html, body {
+              margin: 0;
+              padding: 0;
+            }` + stringifyStyleRules(imp.styleRules)
+            ]
+          }
+        ]
       },
       {
         id: "body",
