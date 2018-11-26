@@ -96,7 +96,6 @@ import {
   InspectorTreeBaseNode,
   expandSyntheticInspectorNode,
   getSyntheticInspectorNode,
-  updateAlts,
   evaluateModuleInspector,
   InspectorNode,
   getInsertableInspectorNode
@@ -359,6 +358,7 @@ export const persistRootState = (
     state
   );
 
+  const now = Date.now();
   state = refreshModuleInspectorNodes(state);
   return state;
 };

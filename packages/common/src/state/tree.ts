@@ -135,13 +135,10 @@ export const getTreeNodeIdMap = memoize(
 );
 
 export const flattenTreeNode = memoize(
-  <TTree extends TreeNode<any>>(current: TTree): TTree[] => Object.values(getTreeNodeIdMap(current)) as TTree[]
-    // current.children.reduce(
-    //   (flattened, child) => {
-    //     return [...flattened, ...flattenTreeNode(child)];
-    //   },
-    //   [current]
-    // ) as TTree[]
+  <TTree extends TreeNode<any>>(current: TTree): TTree[] => {
+    const treeNodeMap = getTreeNodeIdMap(current);
+    return Object.values(treeNodeMap) as TTree[];
+  }
 );
 
 export const getTreeNodePath = memoize(
@@ -220,15 +217,24 @@ export const getTreeNodeFromPath = memoize(
   }
 );
 
-export const getNestedTreeNodeById = <TNode extends TreeNode<any>>(id: string, root: TNode): TNode => {
+export const getNestedTreeNodeById = <TNode extends TreeNode<any>>(
+  id: string,
+  root: TNode
+): TNode => {
   return getTreeNodeIdMap(root)[id] as TNode;
 };
 
-export const containsNestedTreeNodeById = <TNode extends TreeNode<any>>(id: string, root: TNode) => {
+export const containsNestedTreeNodeById = <TNode extends TreeNode<any>>(
+  id: string,
+  root: TNode
+) => {
   return Boolean(getTreeNodeIdMap(root)[id]);
 };
 
-export const getTreeNodeHeight = <TNode extends TreeNode<any>>(id: string, root: TNode) => getTreeNodePath(id, root).length;
+export const getTreeNodeHeight = <TNode extends TreeNode<any>>(
+  id: string,
+  root: TNode
+) => getTreeNodePath(id, root).length;
 
 export const generateTreeChecksum = memoize((root: TreeNode<any>) =>
   crc32(JSON.stringify(root))
@@ -387,10 +393,10 @@ export const cloneTreeNode = <TTree extends TreeNode<any>>(
   children: node.children.map(child => cloneTreeNode(child, generateID))
 });
 
-export const getParentTreeNode = memoize(
-  <TTree extends TreeNode<any>>(nodeId: string, root: TTree) =>
-    getChildParentMap(root)[nodeId] as TTree
-);
+export const getParentTreeNode = <TTree extends TreeNode<any>>(
+  nodeId: string,
+  root: TTree
+) => getChildParentMap(root)[nodeId] as TTree;
 
 export const addTreeNodeIds = <TTree extends TreeNode<any>>(
   node: TTree,

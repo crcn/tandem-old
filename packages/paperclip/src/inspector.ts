@@ -422,8 +422,6 @@ export const refreshInspectorTree = (
     }
   }
 
-  root = updateAlts(root);
-
   return [root, newSourceMap];
 };
 
@@ -444,6 +442,7 @@ const patchInspectorTree2 = (
   const newModule = newGraph[uri].content;
   const oldModule = oldGraph[uri].content;
   let tmpModule = oldModule;
+  const now = Date.now();
   const ots = diffTreeNode(tmpModule, newModule);
 
   let newSourceMap = sourceMap;
@@ -876,14 +875,12 @@ export const expandInspectorNode = (
     return root;
   }
 
-  return updateAlts(
-    updateNestedNode(node, root, node => {
-      return {
-        ...node,
-        expanded: true
-      };
-    })
-  );
+  return updateNestedNode(node, root, node => {
+    return {
+      ...node,
+      expanded: true
+    };
+  });
 };
 
 export const expandSyntheticInspectorNode = (
@@ -912,24 +909,22 @@ export const expandSyntheticInspectorNode = (
     rootInspectorNode
   );
 
-  return updateAlts(rootInspectorNode);
+  return rootInspectorNode;
 };
 
 export const expandInspectorNodeById = (
   id: string,
   rootInspectorNode: InspectorNode
 ) => {
-  return updateAlts(
-    updateNestedNodeTrail(
-      getTreeNodePath(id, rootInspectorNode),
-      rootInspectorNode,
-      (node: InspectorNode) => {
-        return {
-          ...node,
-          expanded: true
-        };
-      }
-    )
+  return updateNestedNodeTrail(
+    getTreeNodePath(id, rootInspectorNode),
+    rootInspectorNode,
+    (node: InspectorNode) => {
+      return {
+        ...node,
+        expanded: true
+      };
+    }
   );
 };
 
@@ -1122,40 +1117,7 @@ export const collapseInspectorNode = (
     };
   };
 
-  return updateAlts(updateNestedNode(node, root, collapse));
-};
-
-export const updateAlts = (root: InspectorNode) => {
-  const flattened = flattenTreeNode(root).filter(
-    node =>
-      getParentTreeNode(node.id, root) &&
-      getParentTreeNode(node.id, root).expanded
-  );
-
-  const map = (node: InspectorNode) => {
-    const alt = flattened.indexOf(node) % 2 !== 0;
-
-    let children = node.children;
-
-    if (node.alt !== alt) {
-    }
-
-    if (node.expanded) {
-      children = node.children.map(map);
-    }
-
-    if (node.alt !== alt || node.children !== children) {
-      return {
-        ...node,
-        alt,
-        children
-      };
-    }
-
-    return node;
-  };
-
-  return map(root);
+  return updateNestedNode(node, root, collapse);
 };
 
 /*
