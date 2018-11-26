@@ -1228,6 +1228,31 @@
         }
       },
       "variant": {}
+    },
+    {
+      "id": "b2a9e6ae661",
+      "label": "Element",
+      "is": "div",
+      "name": "element",
+      "attributes": {},
+      "style": {
+        "box-sizing": "border-box",
+        "display": "block"
+      },
+      "children": [],
+      "metadata": {
+        "bounds": {
+          "left": -169.5486597440076,
+          "top": -37.69127315362718,
+          "right": -69.54865974400761,
+          "bottom": 62.30872684637282
+        }
+      },
+      "styleMixins": {
+        "33b5126b196": {
+          "priority": 0
+        }
+      }
     }
   ]
 }

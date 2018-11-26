@@ -200,11 +200,14 @@ export const createPaperclipVirtualDOMtranslator = (
       context
     );
     context = addOpenTag(`for (var key in object) {\n`, context);
-    context = addOpenTag(`if (!keyFilter || keyFilter(key)) {\n`, context);
+    context = addOpenTag(
+      `if (!keyFilter || keyFilter(key, object)) {\n`,
+      context
+    );
     context = addLine(
       `target[key] = key === "${
         parts.classAttributeName
-      }" ? target[key] ?  object[key] + " " + target[key] : object[key]: mergeProps(target[key], object[key], keyFilter);`,
+      }" ? (target[key] ?  object[key] + " " + target[key] : object[key]) : mergeProps(target[key], object[key], keyFilter);`,
       context
     );
     context = addCloseTag(`}\n`, context);
@@ -301,13 +304,15 @@ export const createPaperclipVirtualDOMtranslator = (
         if (!hasStyle(node)) {
           return context;
         }
-        context = addOpenTag(`styleRules["._${node.id}"] = {\n`, context);
+        context = addOpenTag(`mergeProps(styleRules, {\n`, context);
+        context = addOpenTag(`"._${node.id}": {\n`, context);
         context = translateStyle(
           node,
           { ...getInheritedStyle(node.styleMixins, context), ...node.style },
           context
         );
-        context = addCloseTag(`};\n\n`, context);
+        context = addCloseTag(`}\n`, context);
+        context = addCloseTag(`});\n\n`, context);
         return context;
       }, context);
 
@@ -527,13 +532,15 @@ export const createPaperclipVirtualDOMtranslator = (
         }
       }
 
-      context = addOpenTag(`styleRules["${selector}"] = {\n`, context);
+      context = addOpenTag(`mergeProps(styleRules, {\n`, context);
+      context = addOpenTag(`["${selector}"]: {\n`, context);
       context = translateStyle(
         getPCNode(last(override.targetIdPath), context.graph) as ContentNode,
         override.value,
         context
       );
-      context = addCloseTag(`};\n\n`, context);
+      context = addCloseTag(`}\n`, context);
+      context = addCloseTag(`});\n\n`, context);
 
       if (mediaTriggers.length && !variableTriggerPassed) {
         let mediaText = "@media all";
