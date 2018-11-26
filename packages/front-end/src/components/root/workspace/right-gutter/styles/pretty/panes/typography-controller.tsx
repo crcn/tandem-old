@@ -58,7 +58,8 @@ const DECORATIONS: DropdownMenuOption[] = [
   undefined,
   "underline",
   "overline",
-  "line-through"
+  "line-through",
+  "none"
 ].map(dropdownMenuOptionFromValue);
 
 const ALIGNMENTS: ButtonBarOption[] = [
