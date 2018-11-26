@@ -274,6 +274,7 @@ export const REMOVE_MEDIA_QUERY_BUTTON_CLICK =
 export const QUERY_LABEL_CHANGED = "QUERY_LABEL_CHANGED";
 export const QUERY_CONDITION_CHANGED = "QUERY_CONDITION_CHANGED";
 export const QUERY_TYPE_CHANGED = "QUERY_TYPE_CHANGED";
+export const STYLE_TRIGGER_BUTTON_CLICKED = "STYLE_TRIGGER_BUTTON_CLICKED";
 export const VARIABLE_QUERY_SOURCE_VARIABLE_CHANGE =
   "VARIABLE_QUERY_SOURCE_VARIABLE_CHANGE";
 
@@ -819,6 +820,10 @@ export const queryLabelChanged = (
   type: QUERY_LABEL_CHANGED,
   target,
   label
+});
+
+export const styleTriggersButtonClicked = (): Action => ({
+  type: STYLE_TRIGGER_BUTTON_CLICKED
 });
 
 export const queryTypeChanged = (

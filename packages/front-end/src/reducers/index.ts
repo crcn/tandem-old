@@ -199,7 +199,8 @@ import {
   QUERY_TYPE_CHANGED,
   VARIABLE_QUERY_SOURCE_VARIABLE_CHANGE,
   VariableQuerySourceVariableChange,
-  QueryTypeChanged
+  QueryTypeChanged,
+  STYLE_TRIGGER_BUTTON_CLICKED
 } from "../actions";
 import {
   queueOpenFile,
@@ -1226,6 +1227,13 @@ export const canvasReducer = (state: RootState, action: Action) => {
         );
         return state;
       }, state);
+      return state;
+    }
+    case STYLE_TRIGGER_BUTTON_CLICKED: {
+      state = {
+        ...state,
+        selectedVariant: null
+      };
       return state;
     }
     case VARIABLE_QUERY_SOURCE_VARIABLE_CHANGE: {

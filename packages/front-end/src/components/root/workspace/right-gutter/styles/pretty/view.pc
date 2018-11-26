@@ -34,7 +34,9 @@
             }
           },
           "label": "instance pane",
-          "variant": {}
+          "variant": {
+            "4b2435eb14293": false
+          }
         },
         {
           "id": "9e4a45489816",
@@ -352,36 +354,6 @@
       "controllers": [
         "./index.tsx"
       ],
-      "variant": {}
-    },
-    {
-      "id": "226e15df6880",
-      "is": "b6c162d113",
-      "label": "Pane",
-      "name": "component-instance",
-      "attributes": {},
-      "style": {},
-      "children": [
-        {
-          "id": "226e15df6892",
-          "variantId": null,
-          "propertyName": "text",
-          "targetIdPath": [
-            "b6c162d1281"
-          ],
-          "value": "Properties",
-          "name": "override",
-          "children": []
-        }
-      ],
-      "metadata": {
-        "bounds": {
-          "left": 1170,
-          "top": 117,
-          "right": 1518,
-          "bottom": 397
-        }
-      },
       "variant": {}
     },
     {

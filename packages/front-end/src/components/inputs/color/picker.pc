@@ -1274,14 +1274,22 @@
           },
           "name": "override",
           "children": []
+        },
+        {
+          "id": "64f78ed11107",
+          "name": "variant-trigger",
+          "targetVariantId": null,
+          "source": null,
+          "children": [],
+          "metadata": {}
         }
       ],
       "metadata": {
         "bounds": {
-          "left": -169.5486597440076,
-          "top": -37.69127315362718,
-          "right": -69.54865974400761,
-          "bottom": 62.30872684637282
+          "left": -61,
+          "top": 60,
+          "right": 39,
+          "bottom": 160
         }
       },
       "variant": {}
