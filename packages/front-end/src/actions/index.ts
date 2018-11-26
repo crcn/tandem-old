@@ -275,6 +275,7 @@ export const QUERY_LABEL_CHANGED = "QUERY_LABEL_CHANGED";
 export const QUERY_CONDITION_CHANGED = "QUERY_CONDITION_CHANGED";
 export const QUERY_TYPE_CHANGED = "QUERY_TYPE_CHANGED";
 export const STYLE_TRIGGER_BUTTON_CLICKED = "STYLE_TRIGGER_BUTTON_CLICKED";
+export const RIGHT_GUTTER_TAB_CLICKED = "RIGHT_GUTTER_TAB_CLICKED";
 export const VARIABLE_QUERY_SOURCE_VARIABLE_CHANGE =
   "VARIABLE_QUERY_SOURCE_VARIABLE_CHANGE";
 
@@ -824,6 +825,10 @@ export const queryLabelChanged = (
 
 export const styleTriggersButtonClicked = (): Action => ({
   type: STYLE_TRIGGER_BUTTON_CLICKED
+});
+
+export const rightGutterTabClicked = (): Action => ({
+  type: RIGHT_GUTTER_TAB_CLICKED
 });
 
 export const queryTypeChanged = (
