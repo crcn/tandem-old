@@ -218,6 +218,14 @@ export const createPaperclipVirtualDOMtranslator = (
   };
 
   const addStylesToDocumentFunction = (context: TranslateContext) => {
+    context = addLine(
+      `// messy, but we need a way to skip selectors that have already been injected into the document`,
+      context
+    );
+    context = addLine(
+      `var stringifiedStyles = window.__stringifiedStyles || (window.__stringifiedStyles = {});`,
+      context
+    );
     context = addOpenTag(
       `\nfunction stringifyStyleRulesInner(key, value) {\n`,
       context
@@ -226,6 +234,11 @@ export const createPaperclipVirtualDOMtranslator = (
       `if (typeof value === "string") return key + ":" + value + ";\\n"`,
       context
     );
+    context = addLine(
+      `if (key.charAt(0) !== "@" && stringifiedStyles[key]) return ""`,
+      context
+    );
+    context = addLine(`stringifiedStyles[key] = true;`, context);
     context = addLine(
       `return key + "{\\n" + stringifyStyleRules(value) + "}\\n"`,
       context
@@ -269,10 +282,8 @@ export const createPaperclipVirtualDOMtranslator = (
     context: TranslateContext
   ) => {
     // basic styles
-    context = addOpenTag(`if (!_${component.id}._basicStyle) {\n`, context);
 
     context = translateComponentStyleInner(component, context);
-    context = addCloseTag(`}\n`, context);
 
     // variant styles
 
@@ -282,12 +293,7 @@ export const createPaperclipVirtualDOMtranslator = (
       }") + "Style";`,
       context
     );
-    context = addOpenTag(
-      `if (!_${component.id}[styleVariantKey]) {\n`,
-      context
-    );
     context = translateStyleOverrides(component, context);
-    context = addCloseTag(`}\n`, context);
     return context;
   };
 

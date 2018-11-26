@@ -1,7 +1,8 @@
 {
   "id": "53138fe9121",
+  "version": "0.0.6",
+  "metadata": {},
   "name": "module",
-  "version": "0.0.5",
   "children": [
     {
       "label": "Text Preview",
@@ -40,7 +41,9 @@
               "value": "You're viewing this file in read-only mode. ",
               "style": {
                 "color": "rgba(255, 255, 255, 1)",
-                "font-weight": "600"
+                "font-weight": "600",
+                "user-select": "none",
+                "cursor": "default"
               },
               "children": [],
               "metadata": {},
@@ -171,6 +174,5 @@
       },
       "variant": {}
     }
-  ],
-  "metadata": {}
+  ]
 }

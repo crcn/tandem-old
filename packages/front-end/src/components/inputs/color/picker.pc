@@ -1230,16 +1230,52 @@
       "variant": {}
     },
     {
-      "id": "b2a9e6ae661",
       "label": "Element",
       "is": "div",
-      "name": "element",
-      "attributes": {},
       "style": {
         "box-sizing": "border-box",
         "display": "block"
       },
-      "children": [],
+      "attributes": {},
+      "id": "51cd7f0d662",
+      "styleMixins": {
+        "33b5126b196": {
+          "priority": 0
+        }
+      },
+      "name": "component",
+      "children": [
+        {
+          "id": "51cd7f0d665",
+          "name": "text",
+          "label": "Text",
+          "value": "something",
+          "style": {},
+          "children": [],
+          "metadata": {}
+        },
+        {
+          "id": "51cd7f0d669",
+          "name": "variant",
+          "label": "Mobile",
+          "isDefault": false,
+          "children": [],
+          "metadata": {}
+        },
+        {
+          "id": "51cd7f0d670",
+          "variantId": "51cd7f0d669",
+          "propertyName": "style",
+          "targetIdPath": [
+            "51cd7f0d665"
+          ],
+          "value": {
+            "color": "rgba(255, 11, 11, 1)"
+          },
+          "name": "override",
+          "children": []
+        }
+      ],
       "metadata": {
         "bounds": {
           "left": -169.5486597440076,
@@ -1248,11 +1284,7 @@
           "bottom": 62.30872684637282
         }
       },
-      "styleMixins": {
-        "33b5126b196": {
-          "priority": 0
-        }
-      }
+      "variant": {}
     }
   ]
 }
