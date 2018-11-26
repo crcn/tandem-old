@@ -4,6 +4,7 @@ import { default as createSagaMiddleware } from "redux-saga";
 import { fork, call } from "redux-saga/effects";
 import { rootReducer } from "./reducers";
 import { createRootSaga, FrontEndSagaOptions } from "./sagas";
+import { init as initBugReporting } from "./bug-reporting";
 const PaperclipWorker = require("./paperclip.worker");
 
 import {
@@ -39,19 +40,8 @@ const SLOW_ACTION_INTERVAL = 10;
 // Dirty, but okay for now. Want to eventually display a prettyier message that reports diagnostics, but
 // that needs to happen _outside_ of the application's scope.
 
-let alerted = false;
-
-const onError = error => {
-  // prevent blasted errors
-  if (!alerted) {
-    alerted = true;
-    alert(
-      `An unknown error occured, please save changes and restart Tandem. Details:\n${error}`
-    );
-  }
-  console.error(error);
-};
-window.onerror = onError;
+const bugReporter = initBugReporting();
+window.onerror = bugReporter.triggerError;
 
 const reuseUris = reuser(10, (uris: string[]) => uris.join(","));
 
@@ -61,7 +51,9 @@ export const setup = <TState extends RootState>(
   saga?: () => IterableIterator<any>
 ) => {
   return (initialState: TState) => {
-    const sagaMiddleware = createSagaMiddleware({ onError });
+    const sagaMiddleware = createSagaMiddleware({
+      onError: bugReporter.triggerError
+    });
     const store = createStore(
       (state: TState, event: Action) => {
         const now = Date.now();

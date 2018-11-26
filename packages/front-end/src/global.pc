@@ -161,6 +161,15 @@
       },
       "children": [],
       "metadata": {}
+    },
+    {
+      "id": "4325aac312609",
+      "name": "variable",
+      "value": "rgba(255, 51, 51, 1)",
+      "label": "red 1",
+      "type": "color",
+      "children": [],
+      "metadata": {}
     }
   ]
 }

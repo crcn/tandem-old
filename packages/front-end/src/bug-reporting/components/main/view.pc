@@ -9,13 +9,13 @@
       "style": {
         "box-sizing": "border-box",
         "display": "block",
-        "background": "rgba(255, 255, 255, 1)",
+        "background": "rgba(255, 255, 255, 0.6)",
         "position": "fixed",
         "left": "0px",
         "top": "0px",
         "width": "100vw",
         "height": "100vh",
-        "opacity": 0.649
+        "z-index": "99999"
       },
       "attributes": {},
       "id": "900e27cd182",
@@ -47,7 +47,6 @@
                 "box-sizing": "border-box",
                 "display": "block",
                 "width": "400px",
-                "height": "400px",
                 "margin-right": "auto",
                 "margin-left": "auto",
                 "position": "relative",
@@ -57,12 +56,169 @@
                 "border-top-right-radius": "2px",
                 "border-bottom-left-radius": "2px",
                 "border-bottom-right-radius": "2px",
-                "border-left": "1px solid rgba(155, 83, 83, 1)",
-                "border-top": "1px solid rgba(155, 83, 83, 1)",
-                "border-right": "1px solid rgba(155, 83, 83, 1)",
-                "border-bottom": "1px solid rgba(155, 83, 83, 1)"
+                "border-left": "1px solid var(--24ce1e4d482)",
+                "border-top": "1px solid var(--24ce1e4d482)",
+                "border-right": "1px solid var(--24ce1e4d482)",
+                "border-bottom": "1px solid var(--24ce1e4d482)",
+                "padding-left": "12px",
+                "padding-top": "12px",
+                "padding-right": "12px",
+                "padding-bottom": "12px"
               },
-              "children": [],
+              "children": [
+                {
+                  "id": "4325aac312606",
+                  "name": "text",
+                  "label": "Title",
+                  "value": "Whoops, looks like an unexpected error occurred.",
+                  "style": {
+                    "font-weight": "600",
+                    "font-size": "18px",
+                    "color": "var(--24ce1e4d482)",
+                    "display": "block",
+                    "margin-bottom": "12px"
+                  },
+                  "children": [],
+                  "metadata": {},
+                  "styleMixins": {
+                    "dc3b39eb1275": {
+                      "priority": 0
+                    }
+                  }
+                },
+                {
+                  "id": "4325aac312614",
+                  "name": "text",
+                  "label": "Text",
+                  "value": "Please help us make Tandem better by describing what you did.",
+                  "style": {
+                    "color": "var(--24ce1e4d482)",
+                    "font-weight": "500",
+                    "margin-bottom": "12px",
+                    "display": "inline-block"
+                  },
+                  "children": [],
+                  "metadata": {},
+                  "styleMixins": {
+                    "dc3b39eb1275": {
+                      "priority": 0
+                    }
+                  }
+                },
+                {
+                  "id": "4325aac312640",
+                  "label": "form",
+                  "is": "form",
+                  "name": "element",
+                  "attributes": {},
+                  "style": {
+                    "box-sizing": "border-box",
+                    "display": "block",
+                    "margin-left": "0px",
+                    "margin-top": "0px",
+                    "margin-right": "0px",
+                    "margin-bottom": "0px"
+                  },
+                  "children": [
+                    {
+                      "id": "4325aac312611",
+                      "label": "Element",
+                      "is": "div",
+                      "name": "element",
+                      "attributes": {},
+                      "style": {
+                        "box-sizing": "border-box",
+                        "display": "block"
+                      },
+                      "children": [
+                        {
+                          "id": "4325aac312617",
+                          "is": "d65d17fd4015",
+                          "label": "description input",
+                          "name": "component-instance",
+                          "attributes": {},
+                          "style": {},
+                          "children": [],
+                          "metadata": {
+                            "bounds": {
+                              "left": 681,
+                              "top": 263.5,
+                              "right": 781,
+                              "bottom": 363.5
+                            }
+                          },
+                          "variant": {}
+                        }
+                      ],
+                      "metadata": {}
+                    },
+                    {
+                      "id": "4325aac312630",
+                      "label": "Element",
+                      "is": "div",
+                      "name": "element",
+                      "attributes": {},
+                      "style": {
+                        "box-sizing": "border-box",
+                        "display": "flex",
+                        "justify-content": "flex-end",
+                        "padding-top": "12px"
+                      },
+                      "children": [
+                        {
+                          "id": "4325aac312622",
+                          "is": "9f364d2139415",
+                          "label": "submit button",
+                          "name": "component-instance",
+                          "attributes": {},
+                          "style": {
+                            "background": "var(--24ce1e4d482)"
+                          },
+                          "children": [
+                            {
+                              "id": "4325aac312629",
+                              "variantId": null,
+                              "propertyName": "text",
+                              "targetIdPath": [
+                                "9f364d2139650"
+                              ],
+                              "value": "Submit",
+                              "name": "override",
+                              "children": []
+                            },
+                            {
+                              "id": "4325aac312639",
+                              "variantId": null,
+                              "propertyName": "style",
+                              "targetIdPath": [
+                                "9f364d2139650"
+                              ],
+                              "value": {
+                                "color": "var(--d8f6340b1442)"
+                              },
+                              "name": "override",
+                              "children": []
+                            }
+                          ],
+                          "metadata": {
+                            "bounds": {
+                              "left": 300,
+                              "top": 120,
+                              "right": 400,
+                              "bottom": 220
+                            }
+                          },
+                          "variant": {
+                            "38b32d581121": false
+                          }
+                        }
+                      ],
+                      "metadata": {}
+                    }
+                  ],
+                  "metadata": {}
+                }
+              ],
               "metadata": {}
             }
           ],
@@ -77,7 +233,10 @@
           "bottom": 840
         }
       },
-      "variant": {}
+      "variant": {},
+      "controllers": [
+        "./controller.tsx"
+      ]
     },
     {
       "id": "900e27cd237",
@@ -118,7 +277,7 @@
           "attributes": {},
           "style": {
             "opacity": 0.982,
-            "display": "none"
+            "display": "block"
           },
           "children": [],
           "metadata": {
