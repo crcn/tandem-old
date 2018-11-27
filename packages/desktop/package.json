@@ -30,7 +30,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@sentry/electron": "^0.14.0",
+    "@sentry/browser": "^4.4.0",
+    "@types/raven": "^2.5.1",
     "chokidar": "^2.0.4",
     "crc32": "^0.2.2",
     "font-manager": "^0.3.0",
@@ -41,6 +42,7 @@
     "mime-types": "^2.1.20",
     "paperclip": "^10.1.6",
     "paperclip-migrator": "^10.1.6",
+    "raven-js": "^3.27.0",
     "redux": "^4.0.0",
     "redux-saga": "^0.16.0",
     "tandem-common": "^10.1.5",

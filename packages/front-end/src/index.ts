@@ -43,11 +43,6 @@ const SLOW_ACTION_INTERVAL = 10;
 const bugReporter = initBugReporting();
 window.onerror = bugReporter.triggerError;
 
-console.log("RRR");
-setTimeout(() => {
-  throw new Error("OK");
-}, 3000);
-
 const reuseUris = reuser(10, (uris: string[]) => uris.join(","));
 
 export const setup = <TState extends RootState>(

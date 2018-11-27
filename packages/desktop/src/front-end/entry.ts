@@ -33,10 +33,12 @@ import {
   getPCNodeDependency
 } from "paperclip";
 import { eventChannel } from "redux-saga";
-const { init: initSentry } = require("@sentry/electron");
+import { init as initSentry } from "@sentry/browser";
+const pkg = require("../../package.json");
+
 initSentry({
   dsn: "https://a2621f1c757749a895ba5ad69be5ac76@sentry.io/1331704",
-  enableNative: false
+  release: pkg.version
 });
 
 const query = Url.parse(String(location), true).query;
