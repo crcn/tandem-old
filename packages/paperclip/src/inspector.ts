@@ -555,7 +555,7 @@ const patchInspectorTree2 = (
             const instanceInspectorNode = getParentTreeNode(
               shadow.id,
               rootInspectorNode
-            );
+            ) as InspectorNode;
 
             const virtualPlug = createInstanceContent(
               pcChild.id,
@@ -709,7 +709,7 @@ export const getInspectorSourceNode = (
 ): PCNode | null => {
   if (node.name === InspectorTreeNodeName.CONTENT) {
     const nodeSource = getPCNode(node.sourceSlotNodeId, graph);
-    const parent = getParentTreeNode(node.id, ancestor);
+    const parent = getParentTreeNode(node.id, ancestor) as InspectorNode;
     return getSlotPlug(
       getPCNode(parent.sourceNodeId, graph) as PCComponentInstanceElement,
       nodeSource as PCSlot
@@ -823,7 +823,7 @@ export const getTopMostInspectorInstance = (
     inspectorNodeInShadow(current, root) ||
     current.name === InspectorTreeNodeName.SHADOW
   ) {
-    current = getParentTreeNode(current.id, root);
+    current = getParentTreeNode(current.id, root) as InspectorNode;
   }
 
   return current;
@@ -938,7 +938,10 @@ export const getInheritedOverridesOverrides = (
   }
   const sourceNode = getPCNode(inspectorNode.sourceNodeId, graph);
   let overrides: PCOverride[] = getOverrides(sourceNode);
-  const parent = getParentTreeNode(inspectorNode.id, rootInspectorNode);
+  const parent = getParentTreeNode(
+    inspectorNode.id,
+    rootInspectorNode
+  ) as InspectorNode;
   if (parent && parent.sourceNodeId) {
     overrides = [
       ...overrides,

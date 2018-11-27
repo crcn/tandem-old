@@ -5,11 +5,6 @@ import { Main } from "./components/main/view.pc";
 export const init = () => {
   let triggered = false;
 
-  // API endpoint somewhere
-  const submitTicket = (error: Error, description: string) => {
-    console.log("SUBMIT", error, description);
-  };
-
   const triggerError = error => {
     console.error(error);
     if (triggered) {
@@ -20,14 +15,8 @@ export const init = () => {
 
     const div = document.createElement("div");
     document.body.appendChild(div);
-    ReactDOM.render(
-      React.createElement(Main, {
-        submitTicket: description => submitTicket(error, description)
-      }),
-      div
-    );
+    ReactDOM.render(React.createElement(Main, {}), div);
   };
-
   return {
     triggerError
   };

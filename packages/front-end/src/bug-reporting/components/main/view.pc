@@ -56,10 +56,10 @@
                 "border-top-right-radius": "2px",
                 "border-bottom-left-radius": "2px",
                 "border-bottom-right-radius": "2px",
-                "border-left": "1px solid var(--24ce1e4d482)",
-                "border-top": "1px solid var(--24ce1e4d482)",
-                "border-right": "1px solid var(--24ce1e4d482)",
-                "border-bottom": "1px solid var(--24ce1e4d482)",
+                "border-left": "1px solid var(--30f4693267675)",
+                "border-top": "1px solid var(--30f4693267675)",
+                "border-right": "1px solid var(--30f4693267675)",
+                "border-bottom": "1px solid var(--30f4693267675)",
                 "padding-left": "12px",
                 "padding-top": "12px",
                 "padding-right": "12px",
@@ -73,7 +73,7 @@
                   "value": "Whoops, looks like an unexpected error occurred.",
                   "style": {
                     "font-weight": "600",
-                    "font-size": "18px",
+                    "font-size": "14px",
                     "color": "var(--24ce1e4d482)",
                     "display": "block",
                     "margin-bottom": "12px"
@@ -90,12 +90,12 @@
                   "id": "4325aac312614",
                   "name": "text",
                   "label": "Text",
-                  "value": "Please help us make Tandem better by describing what you did.",
+                  "value": "If you're able to reproduce this issue, please help us make the app better by ",
                   "style": {
                     "color": "var(--24ce1e4d482)",
                     "font-weight": "500",
                     "margin-bottom": "12px",
-                    "display": "inline-block"
+                    "display": "inline"
                   },
                   "children": [],
                   "metadata": {},
@@ -106,114 +106,78 @@
                   }
                 },
                 {
-                  "id": "4325aac312640",
-                  "label": "form",
-                  "is": "form",
+                  "id": "2cb68e4e12627",
+                  "label": "link button",
+                  "is": "a",
+                  "name": "element",
+                  "attributes": {
+                    "href": "https://github.com/tandemcode/tandem/issues"
+                  },
+                  "style": {
+                    "box-sizing": "border-box",
+                    "display": "inline",
+                    "font-weight": "600",
+                    "color": "var(--24ce1e4d13456)"
+                  },
+                  "children": [
+                    {
+                      "id": "2cb68e4e12630",
+                      "name": "text",
+                      "label": "Text",
+                      "value": "filing a bug ticket on GitHub.",
+                      "style": {
+                        "color": "var(--24ce1e4d13456)",
+                        "text-decoration": "none"
+                      },
+                      "children": [],
+                      "metadata": {}
+                    }
+                  ],
+                  "metadata": {},
+                  "styleMixins": {
+                    "dc3b39eb1275": {
+                      "priority": 0
+                    }
+                  }
+                },
+                {
+                  "id": "2cb68e4e12635",
+                  "label": "Element",
+                  "is": "div",
                   "name": "element",
                   "attributes": {},
                   "style": {
                     "box-sizing": "border-box",
-                    "display": "block",
-                    "margin-left": "0px",
-                    "margin-top": "0px",
-                    "margin-right": "0px",
-                    "margin-bottom": "0px"
+                    "display": "flex",
+                    "margin-top": "12px",
+                    "justify-content": "flex-end"
                   },
                   "children": [
                     {
-                      "id": "4325aac312611",
-                      "label": "Element",
-                      "is": "div",
-                      "name": "element",
+                      "id": "2cb68e4e12641",
+                      "label": "restart button",
+                      "is": "9f364d2139415",
+                      "name": "component-instance",
                       "attributes": {},
                       "style": {
                         "box-sizing": "border-box",
-                        "display": "block"
+                        "display": "inline-block"
                       },
                       "children": [
                         {
-                          "id": "4325aac312617",
-                          "is": "d65d17fd4015",
-                          "label": "description input",
-                          "name": "component-instance",
-                          "attributes": {},
-                          "style": {},
-                          "children": [],
-                          "metadata": {
-                            "bounds": {
-                              "left": 681,
-                              "top": 263.5,
-                              "right": 781,
-                              "bottom": 363.5
-                            }
-                          },
-                          "variant": {}
-                        }
-                      ],
-                      "metadata": {}
-                    },
-                    {
-                      "id": "4325aac312630",
-                      "label": "Element",
-                      "is": "div",
-                      "name": "element",
-                      "attributes": {},
-                      "style": {
-                        "box-sizing": "border-box",
-                        "display": "flex",
-                        "justify-content": "flex-end",
-                        "padding-top": "12px"
-                      },
-                      "children": [
-                        {
-                          "id": "4325aac312622",
-                          "is": "9f364d2139415",
-                          "label": "submit button",
-                          "name": "component-instance",
-                          "attributes": {},
-                          "style": {
-                            "background": "var(--24ce1e4d482)"
-                          },
-                          "children": [
-                            {
-                              "id": "4325aac312629",
-                              "variantId": null,
-                              "propertyName": "text",
-                              "targetIdPath": [
-                                "9f364d2139650"
-                              ],
-                              "value": "Submit",
-                              "name": "override",
-                              "children": []
-                            },
-                            {
-                              "id": "4325aac312639",
-                              "variantId": null,
-                              "propertyName": "style",
-                              "targetIdPath": [
-                                "9f364d2139650"
-                              ],
-                              "value": {
-                                "color": "var(--d8f6340b1442)"
-                              },
-                              "name": "override",
-                              "children": []
-                            }
+                          "id": "2cb68e4e12648",
+                          "variantId": null,
+                          "propertyName": "text",
+                          "targetIdPath": [
+                            "9f364d2139650"
                           ],
-                          "metadata": {
-                            "bounds": {
-                              "left": 300,
-                              "top": 120,
-                              "right": 400,
-                              "bottom": 220
-                            }
-                          },
-                          "variant": {
-                            "38b32d581121": false
-                          }
+                          "value": "Restart app",
+                          "name": "override",
+                          "children": []
                         }
                       ],
-                      "metadata": {}
+                      "metadata": {},
+                      "variant": {}
                     }
                   ],
                   "metadata": {}

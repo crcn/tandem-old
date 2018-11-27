@@ -30,6 +30,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@sentry/electron": "^0.14.0",
     "chokidar": "^2.0.4",
     "crc32": "^0.2.2",
     "font-manager": "^0.3.0",

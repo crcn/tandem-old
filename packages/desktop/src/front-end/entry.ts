@@ -33,6 +33,11 @@ import {
   getPCNodeDependency
 } from "paperclip";
 import { eventChannel } from "redux-saga";
+const { init: initSentry } = require("@sentry/electron");
+initSentry({
+  dsn: "https://a2621f1c757749a895ba5ad69be5ac76@sentry.io/1331704",
+  enableNative: false
+});
 
 const query = Url.parse(String(location), true).query;
 
@@ -51,6 +56,19 @@ const init = setup<DesktopRootState>(
   rootReducer,
   rootSaga
 );
+
+document.body.addEventListener("click", event => {
+  if (
+    (event.target as HTMLElement).tagName === "A" ||
+    (event.target as HTMLElement).parentElement.tagName === "A"
+  ) {
+    event.preventDefault();
+    const href =
+      (event.target as HTMLAnchorElement).href ||
+      ((event.target as HTMLAnchorElement).parentElement as any).href;
+    exec(`open ${href}`);
+  }
+});
 
 // give some time so that the loader shows up.
 setTimeout(init, 500, {

@@ -396,7 +396,7 @@ export const cloneTreeNode = <TTree extends TreeNode<any>>(
 export const getParentTreeNode = <TTree extends TreeNode<any>>(
   nodeId: string,
   root: TTree
-) => getChildParentMap(root)[nodeId] as TTree;
+) => getChildParentMap(root)[nodeId] as any;
 
 export const addTreeNodeIds = <TTree extends TreeNode<any>>(
   node: TTree,
