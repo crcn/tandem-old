@@ -10,37 +10,30 @@ import {
   dropdownMenuOptionFromValue
 } from "../../../../../../inputs/dropdown/controller";
 import {
-  SyntheticVisibleNode,
-  isSyntheticVisibleNodeMovable,
-  isSyntheticVisibleNodeResizable,
-  SyntheticDocument,
-  isSyntheticElement,
   DependencyGraph,
   getPCNodeModule,
   isPCContentNode,
-  filterVariablesByType,
   computeStyleInfo,
-  PCNode,
   InspectorNode,
+  isTextLikePCNode,
   InspectorTreeNodeName,
   PCVariant,
-  PCVariable,
-  PCVariableType,
-  PCSourceTagNames,
-  isTextLikePCNode,
   ComputedStyleInfo
 } from "paperclip";
 import { Dispatch } from "redux";
-import { mapVariablesToCSSVarDropdownOptions } from "./utils";
+
+const BASE_DISPLAY_VALUES = ["block", "inline-block", "none", "inline"];
 
 export const DISPLAY_MENU_OPTIONS: DropdownMenuOption[] = [
   undefined,
-  "block",
-  "inline-block",
+  ...BASE_DISPLAY_VALUES,
   "flex",
-  "inline-flex",
-  "none",
-  "inline"
+  "inline-flex"
+].map(dropdownMenuOptionFromValue);
+
+export const TEXT_DISPLAY_MENU_OPTIONS: DropdownMenuOption[] = [
+  undefined,
+  ...BASE_DISPLAY_VALUES
 ].map(dropdownMenuOptionFromValue);
 
 export const POSITION_MENU_OPTIONS: DropdownMenuOption[] = [
@@ -200,7 +193,9 @@ export default (Base: React.ComponentClass<BaseLayoutProps>) =>
           {...rest}
           displayInputProps={{
             value: computedStyleInfo.style.display,
-            options: DISPLAY_MENU_OPTIONS,
+            options: isTextLikePCNode(sourceNode)
+              ? TEXT_DISPLAY_MENU_OPTIONS
+              : DISPLAY_MENU_OPTIONS,
             onChangeComplete: propertyChangeCallback(
               "display",
               onPropertyChangeComplete
