@@ -286,7 +286,7 @@ const translateVariants = (
     const useVariant = variableQueriesPassed(variableQueries, varMap);
 
     if (useVariant) {
-      buffer += `if (instancePath != null) {`;
+      buffer += `if (instancePath != null || variant["${variant.id}"]) {`;
     } else {
       buffer += `if (variant["${variant.id}"] ${
         mediaQueries.length
