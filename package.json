@@ -5,7 +5,7 @@
   "description": "Aerial is a virtual browser for visually creating web applications.",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/crcn/aerial.git"
+    "url": "git+https://github.com/crcn/tandem-preview.git"
   },
   "main": "index.js",
   "author": "",
