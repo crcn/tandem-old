@@ -223,7 +223,7 @@ export const createPaperclipVirtualDOMtranslator = (
       context
     );
     context = addLine(
-      `var stringifiedStyles = window.__stringifiedStyles || (window.__stringifiedStyles = {});`,
+      `var stringifiedStyles = typeof window !== "undefined" ? window.__stringifiedStyles || (window.__stringifiedStyles = {}) : {};`,
       context
     );
     context = addOpenTag(
