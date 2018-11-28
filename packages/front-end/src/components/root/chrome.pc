@@ -1,7 +1,8 @@
 {
   "id": "8d443eb52125392",
+  "version": "0.0.6",
+  "metadata": {},
   "name": "module",
-  "version": "0.0.5",
   "children": [
     {
       "label": "Chrome",
@@ -228,7 +229,7 @@
           "id": "9f8abd4b7720",
           "name": "variant",
           "label": "unsaved",
-          "isDefault": true,
+          "isDefault": false,
           "children": [],
           "metadata": {}
         },
@@ -266,6 +267,42 @@
           "value": {
             "display": "inline-flex",
             "align-items": "center"
+          },
+          "name": "override",
+          "children": []
+        },
+        {
+          "id": "2d4f742013506",
+          "name": "variant",
+          "label": "Minimal",
+          "isDefault": true,
+          "children": [],
+          "metadata": {}
+        },
+        {
+          "id": "2d4f742013507",
+          "variantId": "2d4f742013506",
+          "propertyName": "style",
+          "targetIdPath": [
+            "32ef79b725"
+          ],
+          "value": {
+            "border-bottom": "1px solid rgba(209, 209, 209, 0)",
+            "background": "var(--bc891e755312)"
+          },
+          "name": "override",
+          "children": []
+        },
+        {
+          "id": "2d4f742013508",
+          "variantId": "2d4f742013506",
+          "propertyName": "style",
+          "targetIdPath": [
+            "32ef79b7242"
+          ],
+          "value": {
+            "display": "inline-block",
+            "opacity": 0
           },
           "name": "override",
           "children": []
@@ -452,6 +489,5 @@
       },
       "variant": {}
     }
-  ],
-  "metadata": {}
+  ]
 }

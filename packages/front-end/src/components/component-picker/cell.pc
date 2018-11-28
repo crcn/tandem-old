@@ -1,6 +1,6 @@
 {
   "id": "a5bde25012342",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "metadata": {},
   "name": "module",
   "children": [
@@ -56,7 +56,12 @@
                   "value": "Component\n",
                   "style": {},
                   "children": [],
-                  "metadata": {}
+                  "metadata": {},
+                  "styleMixins": {
+                    "dc3b39eb1275": {
+                      "priority": 0
+                    }
+                  }
                 }
               ],
               "metadata": {}

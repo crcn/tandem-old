@@ -1,6 +1,6 @@
 {
   "id": "2b5298ab3",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "metadata": {},
   "name": "module",
   "children": [
@@ -231,7 +231,7 @@
           "id": "692f56f3265",
           "name": "variant",
           "label": "start",
-          "isDefault": false,
+          "isDefault": true,
           "children": [],
           "metadata": {}
         },
@@ -295,7 +295,7 @@
           "id": "ddeb65fe282",
           "name": "variant",
           "label": "new project options",
-          "isDefault": true,
+          "isDefault": false,
           "children": [],
           "metadata": {}
         },
@@ -368,10 +368,10 @@
       ],
       "metadata": {
         "bounds": {
-          "left": 173,
-          "top": 74,
-          "right": 542,
-          "bottom": 291
+          "left": 107,
+          "top": -17,
+          "right": 625,
+          "bottom": 351
         }
       },
       "controllers": [
@@ -498,10 +498,10 @@
       ],
       "metadata": {
         "bounds": {
-          "left": 685,
-          "top": 91,
-          "right": 785,
-          "bottom": 191
+          "left": 673,
+          "top": -12,
+          "right": 773,
+          "bottom": 88
         }
       },
       "variant": {}
