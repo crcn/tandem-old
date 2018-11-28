@@ -148,7 +148,6 @@ export const elevateTypographyToMixins = (
       (child as PCStyleMixin).targetType === PCSourceTagNames.TEXT
     ) {
       const styleMixin = child as PCTextStyleMixin;
-      console.log("ELEVATE");
       typographyMixinMap[JSON.stringify(styleMixin.style)] = styleMixin;
     }
   }

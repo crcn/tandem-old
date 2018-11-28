@@ -161,7 +161,7 @@
                   ],
                   "metadata": {},
                   "name": "slot",
-                  "label": "title"
+                  "label": "label"
                 },
                 {
                   "id": "9f8abd4b15261",

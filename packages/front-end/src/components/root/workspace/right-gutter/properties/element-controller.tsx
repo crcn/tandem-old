@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as cx from "classnames";
 import {
   PCSourceTagNames,
   SyntheticVisibleNode,
@@ -12,7 +13,7 @@ import {
   getNativeComponentName,
   PCTextNode
 } from "paperclip";
-import { elementTypeChanged } from "../../../../../actions";
+import { elementTypeChanged, attributeChanged } from "../../../../../actions";
 import {
   DropdownMenuOption,
   dropdownMenuOptionFromValue
@@ -156,11 +157,14 @@ export type Props = {
 
 export default (Base: React.ComponentClass<BaseElementPropertiesProps>) => {
   return class ElementController extends React.PureComponent<Props> {
+    onAttributeChangeComplete = (name: string, value: string) => {
+      this.props.dispatch(attributeChanged(name, value));
+    };
     onTypeChange = (value: any) => {
       this.props.dispatch(elementTypeChanged(value));
     };
     render() {
-      const { onTypeChange } = this;
+      const { onTypeChange, onAttributeChangeComplete } = this;
       const { dispatch, sourceNode, graph, ...rest } = this.props;
 
       if (
@@ -177,6 +181,16 @@ export default (Base: React.ComponentClass<BaseElementPropertiesProps>) => {
       return (
         <Base
           {...rest}
+          variant={cx({
+            allowTitle: true
+          })}
+          titleInputProps={{
+            value: sourceNode.attributes.title,
+            onChangeComplete: attributeChangeCallback(
+              "title",
+              onAttributeChangeComplete
+            )
+          }}
           elementTypeInputProps={{
             value: sourceNode.is,
             filterable: true,
@@ -205,3 +219,7 @@ export default (Base: React.ComponentClass<BaseElementPropertiesProps>) => {
     }
   };
 };
+
+const attributeChangeCallback = memoize((name: string, listener) => value =>
+  listener(name, value)
+);

@@ -38,7 +38,9 @@
               "variant": {},
               "is": "3ee7fcc51260",
               "name": "component-instance",
-              "attributes": {},
+              "attributes": {
+                "title": "pointer tool"
+              },
               "style": {
                 "height": "14px",
                 "margin-right": "16px",
@@ -85,7 +87,9 @@
               "variant": {},
               "is": "3ee7fcc51260",
               "name": "component-instance",
-              "attributes": {},
+              "attributes": {
+                "title": "insert text tool"
+              },
               "style": {
                 "height": "26px",
                 "top": "1px",
@@ -136,7 +140,9 @@
               },
               "is": "3ee7fcc51260",
               "name": "component-instance",
-              "attributes": {},
+              "attributes": {
+                "title": "insert element tool"
+              },
               "style": {
                 "height": "16px",
                 "margin-right": "16px",
@@ -183,7 +189,9 @@
               "variant": {},
               "is": "3ee7fcc51260",
               "name": "component-instance",
-              "attributes": {},
+              "attributes": {
+                "title": "insert component tool"
+              },
               "style": {
                 "height": "20px",
                 "position": "relative",

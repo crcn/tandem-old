@@ -60,8 +60,6 @@ export default (
         return null;
       }
 
-      console.log("OP");
-
       const options = EMPTY_ARRAY;
 
       return <Base options={options} />;

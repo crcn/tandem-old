@@ -53,7 +53,6 @@ const enhance = compose<
         tokens,
         event.nativeEvent
       );
-      console.log(pos);
     }
   })
 );

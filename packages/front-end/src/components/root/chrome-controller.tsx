@@ -65,7 +65,7 @@ export default (Base: React.ComponentClass<BaseChromeProps>) =>
       return (
         <Base
           {...rest}
-          title={title}
+          label={title}
           variant={cx({ unsaved })}
           headerProps={{
             onClick: onHeaderClick

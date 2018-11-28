@@ -1,6 +1,6 @@
 {
   "id": "e28a9f9410714",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "metadata": {},
   "name": "module",
   "children": [
@@ -367,6 +367,64 @@
                       "variant": {}
                     },
                     {
+                      "id": "bf75e0a81474",
+                      "is": "7149f8192509",
+                      "label": "Labeled Input",
+                      "name": "component-instance",
+                      "attributes": {},
+                      "style": {
+                        "display": "none"
+                      },
+                      "children": [
+                        {
+                          "id": "bf75e0a81497",
+                          "variantId": null,
+                          "propertyName": "text",
+                          "targetIdPath": [
+                            "7149f8192506"
+                          ],
+                          "value": "title",
+                          "name": "override",
+                          "children": []
+                        },
+                        {
+                          "slotId": "e73029b416045",
+                          "id": "bf75e0a81501",
+                          "children": [
+                            {
+                              "id": "bf75e0a81500",
+                              "is": "7149f8199122",
+                              "label": "title input",
+                              "name": "component-instance",
+                              "attributes": {},
+                              "style": {},
+                              "children": [],
+                              "metadata": {
+                                "bounds": {
+                                  "left": 384,
+                                  "top": 298,
+                                  "right": 484,
+                                  "bottom": 327.0358087589019
+                                }
+                              },
+                              "variant": {}
+                            }
+                          ],
+                          "metadata": {},
+                          "name": "plug"
+                        }
+                      ],
+                      "metadata": {
+                        "bounds": {
+                          "left": 486,
+                          "top": 306,
+                          "right": 586,
+                          "bottom": 353.5832678332798
+                        }
+                      },
+                      "variant": {}
+                    },
+                    {
                       "id": "45cb3afa43284",
                       "is": "45cb3afa42261",
                       "label": "a properties",
@@ -447,6 +505,27 @@
             }
           },
           "label": "Pane"
+        },
+        {
+          "id": "bf75e0a81498",
+          "name": "variant",
+          "label": "allow title",
+          "isDefault": true,
+          "children": [],
+          "metadata": {}
+        },
+        {
+          "id": "bf75e0a81499",
+          "variantId": "bf75e0a81498",
+          "propertyName": "style",
+          "targetIdPath": [
+            "bf75e0a81474"
+          ],
+          "value": {
+            "display": "block"
+          },
+          "name": "override",
+          "children": []
         }
       ],
       "metadata": {
@@ -1716,10 +1795,10 @@
       ],
       "metadata": {
         "bounds": {
-          "left": 1399,
-          "top": 142,
-          "right": 1674,
-          "bottom": 298
+          "left": 1442,
+          "top": 207,
+          "right": 1717,
+          "bottom": 363
         }
       },
       "variant": {},
