@@ -281,7 +281,7 @@ export type RootState = {
   editingBasenameUri?: string;
   confirm?: Confirm;
   prompt?: Prompt;
-  selectedDirectoryPath: string;
+  selectedDirectoryPath?: string;
   prevGraph?: DependencyGraph;
   showSidebar?: boolean;
   customChrome: boolean;

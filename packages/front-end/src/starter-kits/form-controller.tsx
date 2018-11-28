@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as cx from "classnames";
 import { BaseStarterKitFormOptionsProps } from "./form.pc";
 import { Dispatch } from "redux";
 import { ProjectTemplate } from "../state";
@@ -41,6 +42,9 @@ export default (Base: React.ComponentClass<BaseStarterKitFormOptionsProps>) =>
       return newState !== state ? newState : null;
     };
     onCreateButtonClick = () => {
+      if (!this.isValid()) {
+        return null;
+      }
       this.props.onChangeComplete({
         directory: this.state.directory
       });
@@ -51,6 +55,9 @@ export default (Base: React.ComponentClass<BaseStarterKitFormOptionsProps>) =>
     onDirectoryChange = directory => {
       this.setState({ ...this.state, directory });
     };
+    isValid = () => {
+      return this.state.directory != null;
+    };
     render() {
       const {
         onBrowserDirectoryClick,
@@ -59,7 +66,7 @@ export default (Base: React.ComponentClass<BaseStarterKitFormOptionsProps>) =>
       } = this;
       const { template, ...rest } = this.props;
       const { directory } = this.state;
-      console.log(directory);
+      const valid = this.isValid();
       return (
         <Base
           {...rest}
@@ -74,6 +81,9 @@ export default (Base: React.ComponentClass<BaseStarterKitFormOptionsProps>) =>
             onClick: onBrowserDirectoryClick
           }}
           createProjectButtonProps={{
+            variant: cx({
+              disabled: !valid
+            }),
             onClick: onCreateButtonClick
           }}
         />
