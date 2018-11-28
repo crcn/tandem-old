@@ -19,12 +19,6 @@ export type ReactProjectOptions = {
   packageName?: string;
 };
 
-export class OptionsForm extends React.PureComponent<{ onChangeComplete }> {
-  render() {
-    return <ReactStartKitOptionsForm />;
-  }
-}
-
 export const createFiles: ProjectFileCreator = ({
   packageName = "my-app-name"
 }: ReactProjectOptions) => {

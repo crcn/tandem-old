@@ -6,14 +6,15 @@ import {
 import { BaseWelcomeProps, ProjectPill } from "./view.pc";
 import { Dispatch } from "redux";
 import {
-  StartKitOptions,
+  StarterKitFormOptions,
   templates,
-  hasOptionForm,
   createProjectFiles
 } from "../../../starter-kits";
 import { ProjectTemplate } from "../../../state";
+import { Options as FormOptions } from "../../../starter-kits/form-controller";
 
 export type Props = {
+  selectedDirectory: string;
   dispatch: Dispatch<any>;
 };
 
@@ -43,20 +44,16 @@ export default (Base: React.ComponentClass<BaseWelcomeProps>) =>
     };
 
     onPillClick = (selectedTemplate: ProjectTemplate) => {
-      this.props.dispatch(
-        createProjectButtonClicked(createProjectFiles(selectedTemplate.id, {}))
-      );
-
-      // todo later on
-      // if (hasOptionForm(selectedTemplate.id)) {
-      //   this.setState({ page: Page.NEW_PROJECT_OPTIONS, selectedTemplate });
-      // } else {
-      //   console.log("FINISH");
-      // }
+      this.setState({ page: Page.NEW_PROJECT_OPTIONS, selectedTemplate });
     };
 
-    onOptionsChange = (options: Object) => {
-      console.log("OPTIONS");
+    onOptionsChange = (options: FormOptions) => {
+      this.props.dispatch(
+        createProjectButtonClicked(
+          options.directory,
+          createProjectFiles(this.state.selectedTemplate.id, options)
+        )
+      );
     };
 
     render() {
@@ -66,6 +63,7 @@ export default (Base: React.ComponentClass<BaseWelcomeProps>) =>
         onPillClick,
         onOptionsChange
       } = this;
+      const { dispatch, selectedDirectory } = this.props;
       const { page, selectedTemplate } = this.state;
       const options = templates.map(template => {
         return (
@@ -84,7 +82,9 @@ export default (Base: React.ComponentClass<BaseWelcomeProps>) =>
           options={options}
           newProjectOptions={
             page === Page.NEW_PROJECT_OPTIONS ? (
-              <StartKitOptions
+              <StarterKitFormOptions
+                selectedDirectory={selectedDirectory}
+                dispatch={dispatch}
                 template={selectedTemplate}
                 onChangeComplete={onOptionsChange}
               />

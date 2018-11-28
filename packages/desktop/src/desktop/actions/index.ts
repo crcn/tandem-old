@@ -10,6 +10,7 @@ export const OPEN_PROJECT_MENU_ITEM_CLICKED = "OPEN_PROJECT_MENU_ITEM_CLICKED";
 export const NEW_PROJECT_MENU_ITEM_CLICKED = "NEW_PROJECT_MENU_ITEM_CLICKED";
 export const TD_PROJECT_FILE_PICKED = "TD_PROJECT_FILE_PICKED";
 export const IMAGE_PATH_PICKED = "IMAGE_PATH_PICKED";
+export const DIRECTORY_PATH_PICKED = "DIRECTORY_PATH_PICKED";
 export const LOCAL_FILE_LOADED = "LOCAL_FILE_LOADED";
 
 export type AppReady = {} & Action;
@@ -38,6 +39,13 @@ export const imagePathPicked = publicActionCreator((filePath: string) => ({
   filePath,
   type: IMAGE_PATH_PICKED
 }));
+
+export const directoryPathPicked = publicActionCreator(
+  (directoryPath: string) => ({
+    directoryPath,
+    type: DIRECTORY_PATH_PICKED
+  })
+);
 
 export const appReady = (): AppReady => ({ type: APP_READY });
 export const tdProjectFilePicked = (filePath: string): TDProjectFilePicked => ({

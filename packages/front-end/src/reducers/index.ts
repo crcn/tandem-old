@@ -174,6 +174,8 @@ import {
   IMAGE_SOURCE_INPUT_CHANGED,
   ImageSourceInputChanged,
   IMAGE_PATH_PICKED,
+  DIRECTORY_PATH_PICKED,
+  DirectoryPathPicked,
   ImagePathPicked,
   CSS_INHERITED_FROM_LABEL_CLICKED,
   CSSInheritedFromLabelClicked,
@@ -2762,6 +2764,16 @@ const shortcutReducer = (state: RootState, action: Action): RootState => {
     case CSS_INHERITED_FROM_LABEL_CLICKED: {
       const { inheritedFromNode } = action as CSSInheritedFromLabelClicked;
       state = selectInspectorNode(inheritedFromNode, state);
+      return state;
+    }
+
+    case DIRECTORY_PATH_PICKED: {
+      const { directoryPath } = action as DirectoryPathPicked;
+      state = {
+        ...state,
+        selectedDirectoryPath: directoryPath
+      };
+
       return state;
     }
 

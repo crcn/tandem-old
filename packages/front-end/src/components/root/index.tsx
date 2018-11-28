@@ -22,7 +22,13 @@ export class RootComponent extends React.PureComponent<RootOuterProps> {
     let content;
 
     if (!root.projectInfo) {
-      content = <Welcome key="welcome" dispatch={dispatch} />;
+      content = (
+        <Welcome
+          key="welcome"
+          dispatch={dispatch}
+          selectedDirectory={root.selectedDirectoryPath}
+        />
+      );
     } else {
       content = (
         <div key="workspace-root" className="m-root">

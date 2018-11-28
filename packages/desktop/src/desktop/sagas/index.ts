@@ -14,7 +14,8 @@ import {
   NEW_PROJECT_MENU_ITEM_CLICKED,
   imagePathPicked,
   localFileOpened,
-  LOCAL_FILE_LOADED
+  LOCAL_FILE_LOADED,
+  directoryPathPicked
 } from "../actions";
 import { FRONT_END_ENTRY_FILE_PATH } from "../constants";
 import { ipcSaga, pid } from "./ipc";
@@ -75,6 +76,7 @@ export function* rootSaga() {
   yield fork(ipcSaga);
   // yield fork(handleLoadProject);
   yield fork(shortcutsSaga);
+  yield fork(handleBrowseDirectory);
   yield fork(previewServer);
   yield fork(handleOpenProject);
   yield fork(handleCreateProject);
@@ -218,18 +220,13 @@ function* handleOpenProject() {
 
 function* handleCreateProject() {
   while (1) {
-    const { files: projectFiles }: CreateProjectButtonClicked = yield take([
+    const {
+      directory,
+      files: projectFiles
+    }: CreateProjectButtonClicked = yield take([
       "CREATE_PROJECT_BUTTON_CLICKED",
       NEW_PROJECT_MENU_ITEM_CLICKED
     ]);
-
-    const [directory] = dialog.showOpenDialog({
-      title: "Choose project directory",
-      properties: ["openDirectory"]
-    }) || [undefined];
-    if (!directory) {
-      continue;
-    }
 
     const filePath = path.join(directory, DEFAULT_TD_PROJECT_NAME);
 
@@ -318,7 +315,7 @@ function* handleBrowseImage() {
     const [filePath] = dialog.showOpenDialog({
       filters: [
         {
-          name: "Tandem Project File",
+          name: "Image",
           extensions: ["png", "jpg", "jpeg", "gif", "apng", "svg", "bmp"]
         }
       ],
@@ -329,5 +326,19 @@ function* handleBrowseImage() {
     }
 
     yield put(imagePathPicked(filePath));
+  }
+}
+
+function* handleBrowseDirectory() {
+  while (1) {
+    yield take(["BROWSE_DIRECTORY_CLICKED"]);
+    const [directory] = dialog.showOpenDialog({
+      properties: ["openDirectory"]
+    }) || [undefined];
+    if (!directory) {
+      continue;
+    }
+
+    yield put(directoryPathPicked(directory));
   }
 }

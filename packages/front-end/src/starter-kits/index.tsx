@@ -1,14 +1,13 @@
-import * as React from "react";
 import {
   template as reactTemplate,
-  createFiles as createReactFiles,
-  OptionsForm as ReactOptionsForm
+  createFiles as createReactFiles
 } from "./react";
 import {
   template as blankTemplate,
   createFiles as createBlankFiles
 } from "./blank";
-import { ProjectTemplate } from "../state";
+import { StarterKitFormOptions } from "./form.pc";
+import { Props as StartKitOptionsProps } from "./form-controller";
 
 const templatesById = {
   [blankTemplate.id]: blankTemplate,
@@ -20,27 +19,9 @@ const fileCreatorsById = {
   [blankTemplate.id]: createBlankFiles
 };
 
-const optionsFormComponentsById = {
-  [reactTemplate.id]: ReactOptionsForm
-};
-
 export const templates = Object.values(templatesById);
 
-export type StartKitOptionsProps = {
-  template: ProjectTemplate;
-  onChangeComplete: any;
-};
-
-export const hasOptionForm = (id: string) => !!optionsFormComponentsById[id];
-
-export class StartKitOptions extends React.PureComponent<StartKitOptionsProps> {
-  render() {
-    return React.createElement(
-      optionsFormComponentsById[this.props.template.id],
-      this.props
-    );
-  }
-}
+export { StarterKitFormOptions, StartKitOptionsProps };
 
 export const createProjectFiles = (templateId: string, options: Object) =>
   fileCreatorsById[templateId](options);

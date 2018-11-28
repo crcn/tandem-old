@@ -1,6 +1,6 @@
 {
   "id": "9f364d2139376",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "metadata": {},
   "name": "module",
   "children": [
@@ -58,6 +58,26 @@
           "value": {
             "background": "rgba(227, 227, 227, 1)",
             "color": "var(--24ce1e4d482)"
+          },
+          "name": "override",
+          "children": []
+        },
+        {
+          "id": "c6acc7ee1385",
+          "name": "variant",
+          "label": "disabled",
+          "isDefault": true,
+          "children": [],
+          "metadata": {}
+        },
+        {
+          "id": "c6acc7ee1386",
+          "variantId": "c6acc7ee1385",
+          "propertyName": "style",
+          "targetIdPath": [],
+          "value": {
+            "cursor": "default",
+            "opacity": 0.253
           },
           "name": "override",
           "children": []

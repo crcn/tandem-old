@@ -255,8 +255,10 @@ export const CHROME_MAXIMIZE_BUTTON_CLICKED = "CHROME_MAXIMIZE_BUTTON_CLICKED";
 export const CSS_RESET_PROPERTY_OPTION_CLICKED =
   "CSS_RESET_PROPERTY_OPTION_CLICKED";
 export const IMAGE_BROWSE_BUTTON_CLICKED = "IMAGE_BROWSE_BUTTON_CLICKED";
+export const BROWSE_DIRECTORY_CLICKED = "BROWSE_DIRECTORY_CLICKED";
 export const IMAGE_SOURCE_INPUT_CHANGED = "IMAGE_SOURCE_INPUT_CHANGED";
 export const IMAGE_PATH_PICKED = "IMAGE_PATH_PICKED";
+export const DIRECTORY_PATH_PICKED = "DIRECTORY_PATH_PICKED";
 export const CSS_INHERITED_FROM_LABEL_CLICKED =
   "CSS_INHERITED_FROM_LABEL_CLICKED";
 
@@ -420,6 +422,10 @@ export type ProjectDirectoryDirLoaded = {
 
 export type ImagePathPicked = {
   filePath: string;
+} & Action;
+
+export type DirectoryPathPicked = {
+  directoryPath: string;
 } & Action;
 
 export type StyleVariantDropdownChanged = {
@@ -614,6 +620,7 @@ export type ShortcutKeyDown = {};
 
 export type CreateProjectButtonClicked = {
   files: Object;
+  directory: string;
 } & Action;
 
 export type QuickSearchItemClicked = {
@@ -888,6 +895,12 @@ export const imageBrowseButtonClicked = publicActionCreator(
   })
 );
 
+export const browseDirectoryClicked = publicActionCreator(
+  (): Action => ({
+    type: BROWSE_DIRECTORY_CLICKED
+  })
+);
+
 export const canvasTextEditChangeComplete = (
   value: string
 ): CanvasTextEditChangeComplete => ({
@@ -1125,7 +1138,8 @@ export const openProjectButtonClicked = publicActionCreator(() => ({
 }));
 
 export const createProjectButtonClicked = publicActionCreator(
-  (files: Object): CreateProjectButtonClicked => ({
+  (directory: string, files: Object): CreateProjectButtonClicked => ({
+    directory,
     type: CREATE_PROJECT_BUTTON_CLICKED,
     files
   })
