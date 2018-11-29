@@ -4,7 +4,7 @@ The ideas behind Tandem are continuing to evolve based on real-world usage, so t
 
 - To be interoperable with _most_ web-based languages.
 - To be interoperable with existing code.
-- To be a _safer_ alternative to writing code by hand, and to integrate with existing safety measures in the codebase (integrating with typed systems, automated testing).
+- To be a _safer_ alternative to writing code by hand, and to integrate with existing safety measures in the codebase (integrating with typed systems, automated testing, localized styles).
 - Provide _better_ tooling for authoring HTML, CSS, and other visual behavior _where it makes sense_.
 - To be interoperable with existing tools. Sketch, After Effects, and Figma for example are all purpose-built.
 - Flexibility around how code is written around Tandem UIs.
