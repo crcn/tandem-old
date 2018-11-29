@@ -12,7 +12,8 @@ import { createBounds } from "tandem-common";
 export const template: ProjectTemplate = {
   id: "react",
   icon: null,
-  label: "React"
+  label: "React",
+  description: "TypeScript + React + Webpack starter project."
 };
 
 export type ReactProjectOptions = {

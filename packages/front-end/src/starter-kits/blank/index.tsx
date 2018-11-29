@@ -11,7 +11,9 @@ import { createBounds } from "tandem-common";
 export const template: ProjectTemplate = {
   id: "blank",
   icon: null,
-  label: "Blank"
+  label: "Blank",
+  description:
+    "Blank project without libraries. Good if you want to setup the project on your own, or if you're looking to integrate Tandem into an existing application."
 };
 
 export type BlankProjectOptions = {};

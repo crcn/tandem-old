@@ -27,13 +27,15 @@ enum Page {
 type State = {
   page: Page;
   selectedTemplate?: ProjectTemplate;
+  hoveringTemplate?: ProjectTemplate;
 };
 
 export default (Base: React.ComponentClass<BaseWelcomeProps>) =>
   class WelcomeController extends React.PureComponent<Props, State> {
     state = {
       page: Page.START,
-      selectedTemplate: null
+      selectedTemplate: null,
+      hoveringTemplate: null
     };
 
     onOpenProjectButtonClick = () => {
@@ -45,6 +47,14 @@ export default (Base: React.ComponentClass<BaseWelcomeProps>) =>
 
     onPillClick = (selectedTemplate: ProjectTemplate) => {
       this.setState({ page: Page.NEW_PROJECT_OPTIONS, selectedTemplate });
+    };
+
+    onPillMouseOver = (hoveringTemplate: ProjectTemplate) => {
+      this.setState({ ...this.state, hoveringTemplate });
+    };
+
+    onPillMouseLeave = () => {
+      this.setState({ ...this.state, hoveringTemplate: null });
     };
 
     onOptionsChange = (options: FormOptions) => {
@@ -61,14 +71,18 @@ export default (Base: React.ComponentClass<BaseWelcomeProps>) =>
         onOpenProjectButtonClick,
         onCreateProjectButtonClick,
         onPillClick,
-        onOptionsChange
+        onOptionsChange,
+        onPillMouseLeave,
+        onPillMouseOver
       } = this;
       const { dispatch, selectedDirectory } = this.props;
-      const { page, selectedTemplate } = this.state;
+      const { page, selectedTemplate, hoveringTemplate } = this.state;
       const options = templates.map(template => {
         return (
           <ProjectPill
             onClick={() => onPillClick(template)}
+            onMouseOver={() => onPillMouseOver(template)}
+            onMouseLeave={() => onPillMouseLeave()}
             labelProps={{ text: template.label }}
             icon={template.icon && <img src={template.icon} />}
           />
@@ -80,6 +94,9 @@ export default (Base: React.ComponentClass<BaseWelcomeProps>) =>
           openProjectButtonProps={{ onClick: onOpenProjectButtonClick }}
           createProjectButtonProps={{ onClick: onCreateProjectButtonClick }}
           options={options}
+          projectDescriptionProps={{
+            text: (hoveringTemplate && hoveringTemplate.description) || " "
+          }}
           newProjectOptions={
             page === Page.NEW_PROJECT_OPTIONS ? (
               <StarterKitFormOptions
