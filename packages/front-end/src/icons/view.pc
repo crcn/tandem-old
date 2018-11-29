@@ -1,6 +1,6 @@
 {
   "id": "eb0fba972975",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "metadata": {},
   "name": "module",
   "children": [
@@ -4484,6 +4484,85 @@
           "top": 1113,
           "right": -3915,
           "bottom": 1413
+        }
+      },
+      "variant": {}
+    },
+    {
+      "label": "Image Icon",
+      "is": "svg",
+      "style": {},
+      "attributes": {
+        "xmlns:x": "http://ns.adobe.com/Extensibility/1.0/",
+        "xmlns:i": "http://ns.adobe.com/AdobeIllustrator/10.0/",
+        "xmlns:graph": "http://ns.adobe.com/Graphs/1.0/",
+        "xmlns": "http://www.w3.org/2000/svg",
+        "xmlns:xlink": "http://www.w3.org/1999/xlink",
+        "version": "1.1",
+        "x": "0px",
+        "y": "0px",
+        "viewBox": "0 0 100 100",
+        "style": "enable-background:new 0 0 100 100;",
+        "xml:space": "preserve"
+      },
+      "id": "b57b95b54351",
+      "name": "component",
+      "children": [
+        {
+          "id": "b57b95b54347",
+          "is": "switch",
+          "name": "element",
+          "attributes": {},
+          "style": {},
+          "children": [
+            {
+              "id": "b57b95b54348",
+              "is": "foreignObject",
+              "name": "element",
+              "attributes": {
+                "requiredExtensions": "http://ns.adobe.com/AdobeIllustrator/10.0/",
+                "x": "0",
+                "y": "0",
+                "width": "1",
+                "height": "1"
+              },
+              "style": {},
+              "children": [],
+              "metadata": {}
+            },
+            {
+              "id": "b57b95b54349",
+              "is": "g",
+              "name": "element",
+              "attributes": {
+                "i:extraneous": "self"
+              },
+              "style": {},
+              "children": [
+                {
+                  "id": "b57b95b54350",
+                  "is": "path",
+                  "name": "element",
+                  "attributes": {
+                    "d": "M78.3,11.6H21.7c-10.6,0-19.2,8.6-19.2,19.2v38.3c0,10.6,8.6,19.2,19.2,19.2h56.5c10.6,0,19.2-8.6,19.2-19.2V30.8    C97.5,20.2,88.9,11.6,78.3,11.6z M70.6,26c3.7,0,6.6,3,6.6,6.6c0,3.7-3,6.6-6.6,6.6c-3.7,0-6.6-3-6.6-6.6    C63.9,28.9,66.9,26,70.6,26z M77,71.6H22.8c-1.4,0-2.3-1.6-1.5-2.7l19-30.2c0.7-1.1,2.2-1.1,3-0.1l11.6,15.6    c0.6,0.9,1.9,1,2.7,0.2l4.8-4.6c0.8-0.8,2.1-0.6,2.7,0.2l13.4,18.8C79.3,70,78.4,71.6,77,71.6z"
+                  },
+                  "style": {},
+                  "children": [],
+                  "metadata": {}
+                }
+              ],
+              "metadata": {}
+            }
+          ],
+          "metadata": {}
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": 204,
+          "top": 410,
+          "right": 604,
+          "bottom": 710
         }
       },
       "variant": {}

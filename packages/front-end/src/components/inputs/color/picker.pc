@@ -9,7 +9,7 @@
       "is": "div",
       "style": {
         "box-sizing": "border-box",
-        "background": "var(--f63574de434)",
+        "background": "var(--bc891e755312)",
         "display": "inline-block",
         "flex-direction": "column",
         "position": "relative",
@@ -20,10 +20,10 @@
         "border-top-right-radius": "2px",
         "border-bottom-left-radius": "2px",
         "border-bottom-right-radius": "2px",
-        "border-left": "1px solid rgba(255, 255, 255, 1)",
-        "border-top": "1px solid rgba(255, 255, 255, 1)",
-        "border-right": "1px solid rgba(255, 255, 255, 1)",
-        "border-bottom": "1px solid rgba(255, 255, 255, 1)"
+        "border-left": "1px solid rgba(230, 230, 230, 1)",
+        "border-top": "1px solid rgba(230, 230, 230, 1)",
+        "border-right": "1px solid rgba(230, 230, 230, 1)",
+        "border-bottom": "1px solid rgba(230, 230, 230, 1)"
       },
       "attributes": {},
       "id": "67e386c762",
@@ -789,7 +789,7 @@
         "height": "100px",
         "width": "100%",
         "opacity": 0.991,
-        "background": "var(--bc891e755312)"
+        "background": "var(--f63574de434)"
       },
       "attributes": {},
       "id": "41979411419193",
@@ -844,7 +844,12 @@
       "controllers": [
         "./canvas-controller.tsx"
       ],
-      "variant": {}
+      "variant": {},
+      "styleMixins": {
+        "c29da5f4213993": {
+          "priority": 0
+        }
+      }
     },
     {
       "label": "Color Swatches",
@@ -1234,26 +1239,6 @@
         }
       },
       "variant": {}
-    },
-    {
-      "id": "565b4eae665",
-      "label": "Element",
-      "is": "div",
-      "name": "element",
-      "attributes": {},
-      "style": {
-        "box-sizing": "border-box",
-        "display": "block"
-      },
-      "children": [],
-      "metadata": {
-        "bounds": {
-          "left": 1125.9235247914035,
-          "top": 880.5287544044795,
-          "right": 1225.9235247914035,
-          "bottom": 980.5287544044795
-        }
-      }
     }
   ]
 }
