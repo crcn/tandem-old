@@ -23,7 +23,7 @@ export default (Base: React.ComponentClass<BaseBackgroundItemProps>) =>
       } = this.props;
       return (
         <Base
-          colorInputProps={{
+          backgroundInputProps={{
             swatchOptionGroups: getPrettyPaneColorSwatchOptionGroups(
               documentColors,
               globalVariables

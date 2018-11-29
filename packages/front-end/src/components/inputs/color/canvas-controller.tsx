@@ -43,7 +43,7 @@ export default compose(
               width,
               height
             } = canvas.parentElement.getBoundingClientRect();
-            draw(canvas, width, height);
+            draw(canvas, width || 100, height || 100);
           });
         }
       },

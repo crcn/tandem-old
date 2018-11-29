@@ -110,22 +110,25 @@ export default (Base: React.ComponentClass<BaseColorSwatchesProps>) =>
       const selectedGroup =
         optionGroups[Math.min(selectedGroupIndex, optionGroups.length - 1)];
 
-      const content = selectedGroup.options.map(({ color, value }, i) => {
-        return (
-          <ColorSwatchItem
-            key={i}
-            variant={cx({
-              selected: selectedValue === value
-            })}
-            onClick={() => onChange(value)}
-            pillProps={{
-              style: {
-                background: color
-              }
-            }}
-          />
-        );
-      });
+      const content = selectedGroup.options.map(
+        ({ color, value, label }, i) => {
+          return (
+            <ColorSwatchItem
+              key={i}
+              title={label}
+              variant={cx({
+                selected: selectedValue === value
+              })}
+              onClick={() => onChange(value)}
+              pillProps={{
+                style: {
+                  background: color
+                }
+              }}
+            />
+          );
+        }
+      );
 
       return (
         <Base

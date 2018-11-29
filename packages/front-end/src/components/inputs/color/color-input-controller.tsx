@@ -7,11 +7,19 @@ import {
   ColorSwatchGroup
 } from "./color-swatch-controller";
 
+export type ColorPickerProps = {
+  value: any;
+  onChange: any;
+  onChangeComplete: any;
+  swatchOptionGroups: ColorSwatchGroup[];
+};
+
 export type Props = {
   value: any;
   onChange: any;
   onChangeComplete: any;
   swatchOptionGroups: ColorSwatchGroup[];
+  renderColorPicker?: (props: ColorPickerProps) => any;
 } & BaseColorInputProps;
 
 export default (Base: React.ComponentClass<BaseColorInputProps>) =>
@@ -32,12 +40,20 @@ export default (Base: React.ComponentClass<BaseColorInputProps>) =>
         onChange,
         swatchOptionGroups,
         onChangeComplete,
+        renderColorPicker,
         ...rest
       } = this.props;
       const { onButtonClick, onShouldClose } = this;
 
       if (open) {
-        popdownChildren = (
+        popdownChildren = renderColorPicker ? (
+          renderColorPicker({
+            value: value || "#FF0000",
+            onChange,
+            onChangeComplete,
+            swatchOptionGroups
+          })
+        ) : (
           <ColorPicker
             value={value || "#FF0000"}
             onChange={onChange}

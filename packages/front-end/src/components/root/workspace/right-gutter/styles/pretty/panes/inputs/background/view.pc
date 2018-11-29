@@ -75,7 +75,8 @@
       "style": {
         "box-sizing": "border-box",
         "display": "block",
-        "background": "var(--bc891e755312)"
+        "background": "var(--bc891e755312)",
+        "width": "300px"
       },
       "attributes": {},
       "id": "feaf302b1678",
@@ -117,7 +118,7 @@
             {
               "id": "641b17c24865",
               "is": "641b17c24834",
-              "label": "linear gradient",
+              "label": "linear gradient button",
               "name": "component-instance",
               "attributes": {},
               "style": {},
@@ -162,7 +163,7 @@
             {
               "id": "641b17c24838",
               "is": "641b17c24834",
-              "label": "image toggle utton",
+              "label": "image toggle button",
               "name": "component-instance",
               "attributes": {},
               "style": {
@@ -298,7 +299,7 @@
           "id": "feaf302b1810",
           "name": "variant",
           "label": "linear gradient",
-          "isDefault": true,
+          "isDefault": false,
           "children": [],
           "metadata": {}
         },
@@ -379,7 +380,33 @@
           "style": {
             "display": "none"
           },
-          "children": [],
+          "children": [
+            {
+              "id": "29ad3ae04229",
+              "variantId": "feaf302b1810",
+              "propertyName": "style",
+              "targetIdPath": [
+                "feaf302b1817"
+              ],
+              "value": {
+                "background": "rgba(250, 250, 250, 0)"
+              },
+              "name": "override",
+              "children": []
+            },
+            {
+              "id": "29ad3ae04230",
+              "propertyName": "style",
+              "targetIdPath": [
+                "feaf302b1817"
+              ],
+              "value": {
+                "background": "transparent"
+              },
+              "name": "override",
+              "children": []
+            }
+          ],
           "metadata": {
             "bounds": {
               "left": 1112,
@@ -514,7 +541,15 @@
           "bottom": 663
         }
       },
-      "variant": {}
+      "variant": {},
+      "styleMixins": {
+        "c29da5f4213993": {
+          "priority": 0
+        }
+      },
+      "controllers": [
+        "./controller.tsx"
+      ]
     },
     {
       "label": "linear gradient picker",
@@ -624,7 +659,8 @@
             "border-top-left-radius": "0px",
             "border-top-right-radius": "0px",
             "border-bottom-left-radius": "0px",
-            "border-bottom-right-radius": "0px"
+            "border-bottom-right-radius": "0px",
+            "background": "transparent"
           },
           "children": [],
           "metadata": {
@@ -647,7 +683,10 @@
           "bottom": 859
         }
       },
-      "variant": {}
+      "variant": {},
+      "controllers": [
+        "./linear-gradient-controller.tsx"
+      ]
     },
     {
       "label": "color stop",
@@ -697,7 +736,8 @@
           "name": "component-instance",
           "attributes": {},
           "style": {
-            "width": "100%"
+            "width": "100%",
+            "background": "transparent"
           },
           "children": [],
           "metadata": {
@@ -720,7 +760,10 @@
           "bottom": 841
         }
       },
-      "variant": {}
+      "variant": {},
+      "controllers": [
+        "./solid-controller.tsx"
+      ]
     },
     {
       "label": "background image picker",
@@ -1014,7 +1057,10 @@
           "bottom": 1569
         }
       },
-      "variant": {}
+      "variant": {},
+      "controllers": [
+        "./image-controller.tsx"
+      ]
     },
     {
       "label": "background type button",

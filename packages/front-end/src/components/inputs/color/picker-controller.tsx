@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as cx from "classnames";
 import { pure, compose, lifecycle, withState, withHandlers } from "recompose";
-import { memoize } from "tandem-common";
+import { memoize, EMPTY_ARRAY } from "tandem-common";
 import { GrabberAxis } from "./canvas-controller";
 import { throttle, identity } from "lodash";
 import { BasePickerProps, BaseColorPickerProps } from "./picker.pc";
@@ -40,11 +40,15 @@ type InnerProps = {
 
 export default compose(
   pure,
-  withState(`hsla`, `setHSLA`, ({ value, swatchOptionGroups }: Props) => {
-    value = maybeConvertSwatchValueToColor(value, swatchOptionGroups);
-    const rgba = parseRGBA(value || "#FF0000");
-    return rgbaToHsla(rgba);
-  }),
+  withState(
+    `hsla`,
+    `setHSLA`,
+    ({ value = "#000", swatchOptionGroups = EMPTY_ARRAY }: Props) => {
+      value = maybeConvertSwatchValueToColor(value, swatchOptionGroups);
+      const rgba = parseRGBA(value);
+      return rgbaToHsla(rgba);
+    }
+  ),
   lifecycle({
     componentWillUpdate(props: InnerProps) {
       if (this.props.value !== props.value) {
@@ -118,7 +122,7 @@ export default compose(
     onHSLChangeComplete,
     onSpectrumChange,
     onSpectrumChangeComplete,
-    swatchOptionGroups,
+    swatchOptionGroups = EMPTY_ARRAY,
     onOpacityChange,
     onOpacityChangeComplete,
     ...rest
@@ -172,7 +176,11 @@ export default compose(
 const stringifyRgba = ([r, g, b, a]: RGBA) => `rgba(${r}, ${g}, ${b}, ${a})`;
 
 const hslDrawer = memoize(
-  (h: number) => (canvas: HTMLCanvasElement, width: number, height: number) => {
+  (h: number) => (
+    canvas: HTMLCanvasElement,
+    width: number = 100,
+    height: number = 100
+  ) => {
     const hv = h * 360;
     const ctx = canvas.getContext("2d");
     canvas.width = width;
@@ -260,8 +268,6 @@ const updateHSLA = (rgba: RGBA, [h, , , a]: HSLA) => {
   const [, s, l] = rgbaToHsla(rgba);
   return [h, s, l, a];
 };
-
-const calcGGBAHue = (rgba: RGBA) => rgbaToHsla(rgba)[0] * 360;
 
 const rgbaToHsla = ([r, g, b, a]: RGBA) => {
   (r /= 255), (g /= 255), (b /= 255);

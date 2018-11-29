@@ -20,38 +20,25 @@
         {
           "id": "53f5d4a2193979",
           "variant": {},
-          "is": "d227ff68826768",
+          "is": "5b0f4e2a2138",
           "name": "component-instance",
           "attributes": {},
           "style": {
             "position": "relative",
-            "height": "24px"
+            "height": "24px",
+            "width": "24px",
+            "margin-right": "12px"
           },
           "children": [
             {
-              "id": "53f5d4a2208184",
+              "id": "5b0f4e2a10566",
+              "variantId": null,
               "propertyName": "style",
               "targetIdPath": [
                 "d227ff68826765"
               ],
               "value": {
-                "padding": "unset",
-                "background": "#F60",
-                "width": "24px",
-                "height": "24px",
-                "margin-right": "6px"
-              },
-              "name": "override",
-              "children": []
-            },
-            {
-              "id": "5e1ad45c15837",
-              "propertyName": "style",
-              "targetIdPath": [
-                "ff4f91e03148"
-              ],
-              "value": {
-                "position": "relative"
+                "width": "24px"
               },
               "name": "override",
               "children": []
@@ -65,7 +52,7 @@
               "bottom": 922.114404083691
             }
           },
-          "label": "Color Input"
+          "label": "background input"
         },
         {
           "id": "bcda9fb5211064",

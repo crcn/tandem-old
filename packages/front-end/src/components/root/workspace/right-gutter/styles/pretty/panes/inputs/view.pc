@@ -1533,6 +1533,54 @@
       "controllers": [
         "./inline-labeled-input-controller.tsx"
       ]
+    },
+    {
+      "label": "Background input",
+      "is": "d227ff68826768",
+      "style": {},
+      "attributes": {},
+      "id": "5b0f4e2a2138",
+      "name": "component",
+      "children": [
+        {
+          "slotId": "6a8da795139",
+          "id": "5b0f4e2a2769",
+          "children": [
+            {
+              "id": "5b0f4e2a2284",
+              "is": "feaf302b1678",
+              "label": "Background picker",
+              "name": "component-instance",
+              "attributes": {},
+              "style": {},
+              "children": [],
+              "metadata": {
+                "bounds": {
+                  "left": 533.0355763746126,
+                  "top": 331.0532508850925,
+                  "right": 1010.0355763746126,
+                  "bottom": 832.0532508850924
+                }
+              },
+              "variant": {}
+            }
+          ],
+          "metadata": {},
+          "name": "plug"
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": 547.2986301369864,
+          "top": 426.2944129527409,
+          "right": 966.6467438812415,
+          "bottom": 755.0388698062293
+        }
+      },
+      "variant": {},
+      "controllers": [
+        "./background-input-controller.tsx"
+      ]
     }
   ]
 }
