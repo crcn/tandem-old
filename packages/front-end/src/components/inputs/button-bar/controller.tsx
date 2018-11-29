@@ -19,7 +19,7 @@ export default (Base: React.ComponentClass<BaseButtonBarProps>) =>
   class ButtonBarController extends React.PureComponent<Props> {
     render() {
       const { options, value, onChange } = this.props;
-      const children = (options || EMPTY_ARRAY).map((item, i) => {
+      const items = (options || EMPTY_ARRAY).map((item, i) => {
         return (
           <ButtonBarItemComponent
             key={i}
@@ -34,6 +34,6 @@ export default (Base: React.ComponentClass<BaseButtonBarProps>) =>
         );
       });
 
-      return <Base children={children} />;
+      return <Base items={items} />;
     }
   };

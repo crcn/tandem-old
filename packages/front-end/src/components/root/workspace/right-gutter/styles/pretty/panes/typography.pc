@@ -1,6 +1,6 @@
 {
   "id": "296b92da1",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "metadata": {},
   "name": "module",
   "children": [
@@ -129,7 +129,7 @@
                   "style": {
                     "width": "100%",
                     "flex": "1",
-                    "margin-right": "8px"
+                    "margin-right": "6px"
                   },
                   "children": [
                     {
@@ -281,7 +281,7 @@
                   "style": {
                     "width": "100%",
                     "flex": "1",
-                    "margin-right": "8px"
+                    "margin-right": "6px"
                   },
                   "children": [
                     {
@@ -414,8 +414,7 @@
                   "style": {
                     "width": "100%",
                     "flex": "1",
-                    "margin-right": "8px",
-                    "margin-bottom": "0px"
+                    "margin-right": "6px"
                   },
                   "children": [
                     {
@@ -439,7 +438,13 @@
                           "is": "6489655782833",
                           "name": "component-instance",
                           "attributes": {},
-                          "style": {},
+                          "style": {
+                            "padding-left": "1px",
+                            "padding-top": "1px",
+                            "padding-right": "1px",
+                            "padding-bottom": "1px",
+                            "box-sizing": "border-box"
+                          },
                           "children": [
                             {
                               "id": "8ca01b6e3",
@@ -533,7 +538,7 @@
                       "style": {
                         "width": "100%",
                         "flex": "1",
-                        "margin-right": "8px"
+                        "margin-right": "6px"
                       },
                       "children": [
                         {

@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as cx from "classnames";
 import {
   cssPropertyChangeCompleted,
   cssPropertyChanged
@@ -77,6 +78,9 @@ export default (Base: React.ComponentClass<BaseBackgroundsProps>) =>
       );
       return (
         <Base
+          variant={cx({
+            hasBackground: Boolean(children.length)
+          })}
           contentProps={{ children }}
           plusButtonProps={{ onClick: onPlusButtonClick }}
         />

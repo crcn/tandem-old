@@ -486,7 +486,10 @@
                           "label": "toggler",
                           "name": "component-instance",
                           "attributes": {},
-                          "style": {},
+                          "style": {
+                            "flex-shrink": "0",
+                            "width": "55px"
+                          },
                           "children": [
                             {
                               "slotId": "a282a90069",

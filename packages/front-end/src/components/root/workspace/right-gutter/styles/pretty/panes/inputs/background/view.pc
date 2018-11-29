@@ -1,0 +1,233 @@
+{
+  "id": "c77379ff161",
+  "name": "module",
+  "version": "0.0.6",
+  "children": [
+    {
+      "id": "feaf302b1385",
+      "is": "67e386c762",
+      "label": "Color Picker",
+      "name": "component-instance",
+      "attributes": {},
+      "style": {},
+      "children": [],
+      "metadata": {
+        "bounds": {
+          "left": 456,
+          "top": 7,
+          "right": 886,
+          "bottom": 550
+        },
+        "mode": "preview"
+      },
+      "variant": {}
+    },
+    {
+      "label": "Background picker",
+      "is": "div",
+      "style": {
+        "box-sizing": "border-box",
+        "display": "block"
+      },
+      "attributes": {},
+      "id": "feaf302b1678",
+      "name": "component",
+      "children": [
+        {
+          "id": "feaf302b1808",
+          "label": "tabs",
+          "is": "div",
+          "name": "element",
+          "attributes": {},
+          "style": {
+            "box-sizing": "border-box",
+            "display": "block"
+          },
+          "children": [],
+          "metadata": {}
+        },
+        {
+          "id": "feaf302b1680",
+          "is": "67e386c762",
+          "label": "Color Picker",
+          "name": "component-instance",
+          "attributes": {},
+          "style": {
+            "width": "100%",
+            "display": "none"
+          },
+          "children": [],
+          "metadata": {
+            "bounds": {
+              "left": -528,
+              "top": 367,
+              "right": -98,
+              "bottom": 910
+            },
+            "mode": "preview"
+          },
+          "variant": {}
+        },
+        {
+          "id": "feaf302b1806",
+          "name": "variant",
+          "label": "solid",
+          "isDefault": true,
+          "children": [],
+          "metadata": {}
+        },
+        {
+          "id": "feaf302b1807",
+          "variantId": "feaf302b1806",
+          "propertyName": "style",
+          "targetIdPath": [
+            "feaf302b1680"
+          ],
+          "value": {
+            "width": "100%",
+            "display": "block"
+          },
+          "name": "override",
+          "children": []
+        },
+        {
+          "id": "feaf302b1810",
+          "name": "variant",
+          "label": "linear gradient",
+          "isDefault": false,
+          "children": [],
+          "metadata": {}
+        },
+        {
+          "id": "feaf302b1811",
+          "name": "variant",
+          "label": "image",
+          "isDefault": false,
+          "children": [],
+          "metadata": {}
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": -204,
+          "top": 162,
+          "right": 273,
+          "bottom": 663
+        }
+      },
+      "variant": {}
+    },
+    {
+      "label": "linear gradient picker",
+      "is": "div",
+      "style": {
+        "box-sizing": "border-box",
+        "display": "block"
+      },
+      "attributes": {},
+      "id": "feaf302b1815",
+      "name": "component",
+      "children": [
+        {
+          "id": "feaf302b1943",
+          "label": "controls",
+          "is": "div",
+          "name": "element",
+          "attributes": {},
+          "style": {
+            "box-sizing": "border-box",
+            "display": "block",
+            "border-bottom": "1px solid var(--d8f6340b1442)",
+            "padding-left": "12px",
+            "padding-top": "12px",
+            "padding-right": "12px",
+            "padding-bottom": "12px"
+          },
+          "children": [
+            {
+              "id": "feaf302b1945",
+              "label": "slider",
+              "is": "div",
+              "name": "element",
+              "attributes": {},
+              "style": {
+                "box-sizing": "border-box",
+                "display": "block",
+                "width": "100%",
+                "height": "12px",
+                "background-image": "linear-gradient(to left, black, white)",
+                "border-top-left-radius": "0px",
+                "border-top-right-radius": "0px",
+                "border-bottom-left-radius": "0px",
+                "border-bottom-right-radius": "0px"
+              },
+              "children": [
+                {
+                  "id": "feaf302b1948",
+                  "label": "color stop",
+                  "is": "div",
+                  "name": "element",
+                  "attributes": {},
+                  "style": {
+                    "box-sizing": "border-box",
+                    "display": "block",
+                    "width": "12px",
+                    "height": "12px"
+                  },
+                  "children": [],
+                  "metadata": {}
+                }
+              ],
+              "metadata": {},
+              "styleMixins": {
+                "c29da5f4213993": {
+                  "priority": 0
+                }
+              }
+            }
+          ],
+          "metadata": {}
+        },
+        {
+          "id": "feaf302b1817",
+          "is": "67e386c762",
+          "label": "Color Picker",
+          "name": "component-instance",
+          "attributes": {},
+          "style": {
+            "width": "100%",
+            "border-left": "1px none var(--d8f6340b1442)",
+            "border-top": "1px none var(--d8f6340b1442)",
+            "border-right": "1px none var(--d8f6340b1442)",
+            "border-bottom": "1px none var(--d8f6340b1442)",
+            "border-top-left-radius": "0px",
+            "border-top-right-radius": "0px",
+            "border-bottom-left-radius": "0px",
+            "border-bottom-right-radius": "0px"
+          },
+          "children": [],
+          "metadata": {
+            "bounds": {
+              "left": -528,
+              "top": 367,
+              "right": -98,
+              "bottom": 910
+            },
+            "mode": "preview"
+          },
+          "variant": {}
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": 1112,
+          "top": 151,
+          "right": 1678,
+          "bottom": 859
+        }
+      },
+      "variant": {}
+    }
+  ],
+  "metadata": {}
+}

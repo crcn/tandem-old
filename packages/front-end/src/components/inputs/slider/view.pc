@@ -1,6 +1,6 @@
 {
   "id": "76b155a0891181",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "metadata": {},
   "name": "module",
   "children": [
@@ -29,7 +29,11 @@
             "position": "absolute",
             "transform": "translateY(-50%)",
             "top": "50%",
-            "margin-left": "4px"
+            "margin-left": "4px",
+            "border-top-left-radius": "2px",
+            "border-top-right-radius": "2px",
+            "border-bottom-left-radius": "2px",
+            "border-bottom-right-radius": "2px"
           },
           "children": [],
           "metadata": {}
