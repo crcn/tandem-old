@@ -740,29 +740,30 @@ export const getInstanceVariantInfo = memoize(
     const component = getPCNode(instance.is, graph) as PCComponent;
     const variants = getPCVariants(component);
 
-    const parentInstances = [
-      instance,
-      ...(node.instancePath
-        ? node.instancePath
-            .split(".")
-            .reverse()
-            .map(instanceId => {
-              return getPCNode(instanceId, graph) as PCComponentInstanceElement;
-            })
-        : [])
-    ];
+    const parentNodes = [
+      node,
+      ...getTreeNodeAncestors(node.id, root)
+    ] as InspectorNode[];
 
     const enabled: KeyValue<boolean> = {};
 
-    for (const parentInstance of parentInstances) {
-      const variant = parentInstance.variant;
-      const variantOverride = parentInstance.children.find(
+    for (const parentNode of parentNodes) {
+      const parentSourceNode = getPCNode(parentNode.sourceNodeId, graph);
+      if (!parentSourceNode) {
+        continue;
+      }
+      const variant =
+        parentSourceNode.name === PCSourceTagNames.COMPONENT ||
+        parentSourceNode.name === PCSourceTagNames.COMPONENT_INSTANCE
+          ? parentSourceNode.variant
+          : EMPTY_OBJECT;
+      const variantOverride = parentSourceNode.children.find(
         (child: PCNode) =>
           child.name === PCSourceTagNames.OVERRIDE &&
           child.propertyName === PCOverridablePropertyName.VARIANT &&
           (last(child.targetIdPath) === instance.id ||
             (child.targetIdPath.length === 0 &&
-              parentInstance.id === instance.id)) &&
+              parentSourceNode.id === instance.id)) &&
           child.variantId == selectedVariantId
       ) as PCBaseValueOverride<any, any>;
       Object.assign(enabled, variant, variantOverride && variantOverride.value);

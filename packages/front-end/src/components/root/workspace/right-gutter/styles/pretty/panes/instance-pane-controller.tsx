@@ -10,15 +10,12 @@ import {
   extendsComponent,
   getInspectorSourceNode,
   inspectorNodeInShadow,
-  getInspectorNodeParentShadow,
-  getInspectorInstanceShadowContentNode,
   getTopMostInspectorInstance,
   PCVisibleNode,
   PCOverride,
   PCComponent,
   getPCNodeContentNode,
   getPCNodeModule,
-  PCComponentInstanceElement,
   ComputedStyleInfo,
   getInstanceVariantInfo
 } from "paperclip";
