@@ -1188,6 +1188,20 @@
           },
           "name": "override",
           "children": []
+        },
+        {
+          "id": "4ad8e384673",
+          "variantId": "596b7f9f679",
+          "propertyName": "style",
+          "targetIdPath": [],
+          "value": {
+            "padding-top": "12px",
+            "padding-right": "12px",
+            "padding-bottom": "12px",
+            "padding-left": "12px"
+          },
+          "name": "override",
+          "children": []
         }
       ],
       "metadata": {
@@ -1285,8 +1299,12 @@
       "style": {
         "box-sizing": "border-box",
         "display": "block",
-        "background": "rgba(200, 200, 200, 1)",
-        "color": "rgba(198, 192, 35, 1)"
+        "background": "rgba(209, 133, 133, 1)",
+        "color": "rgba(209, 203, 26, 1)",
+        "border-left": "0px  rgba(217, 23, 23, 1)",
+        "border-top": "0px  rgba(217, 23, 23, 1)",
+        "border-right": "0px  rgba(217, 23, 23, 1)",
+        "border-bottom": "0px  rgba(217, 23, 23, 1)"
       },
       "children": [],
       "metadata": {

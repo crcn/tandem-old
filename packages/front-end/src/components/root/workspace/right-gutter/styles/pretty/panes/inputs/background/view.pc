@@ -91,9 +91,9 @@
           "style": {
             "box-sizing": "border-box",
             "padding-left": "12px",
-            "padding-top": "12px",
+            "padding-top": "6px",
             "padding-right": "12px",
-            "padding-bottom": "12px",
+            "padding-bottom": "6px",
             "border-bottom": "1px solid var(--d8f6340b1442)"
           },
           "children": [
@@ -307,7 +307,7 @@
           "id": "feaf302b1811",
           "name": "variant",
           "label": "image",
-          "isDefault": false,
+          "isDefault": true,
           "children": [],
           "metadata": {}
         },
@@ -484,10 +484,6 @@
             "feaf302b1808"
           ],
           "value": {
-            "padding-left": "12px",
-            "padding-top": "12px",
-            "padding-right": "12px",
-            "padding-bottom": "12px",
             "display": "flex"
           },
           "name": "override",
