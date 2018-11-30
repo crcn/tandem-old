@@ -76,7 +76,7 @@
         "box-sizing": "border-box",
         "display": "block",
         "background": "var(--bc891e755312)",
-        "width": "300px"
+        "width": "250px"
       },
       "attributes": {},
       "id": "feaf302b1678",
