@@ -119,7 +119,7 @@
               "id": "692f56f3337",
               "name": "text",
               "label": "Text",
-              "value": "Project type",
+              "value": "New project type",
               "style": {},
               "children": [],
               "metadata": {},
