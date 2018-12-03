@@ -54,7 +54,9 @@ import {
   SyntheticNode,
   getInspectorSyntheticNode,
   inspectorNodeInShadow,
-  hasTextStyles
+  extendsComponent,
+  hasTextStyles,
+  getInspectorContentNode
 } from "paperclip";
 
 export type ShortcutSagaOptions = {
@@ -232,6 +234,11 @@ export const createShortcutSaga = ({
         getPCNodeModule(sourceNode.id, state.graph)
       );
 
+      const inspectorContentNode = getInspectorContentNode(
+        inspectorNode,
+        state.sourceNodeInspector
+      );
+
       yield call(openContextMenu, point, [
         syntheticNodeIsInShadow(syntheticNode, syntheticDocument, state.graph)
           ? {
@@ -334,16 +341,19 @@ export const createShortcutSaga = ({
                   )
                 }
               : null,
+            inspectorNodeInShadow(inspectorNode, inspectorContentNode) ||
+            extendsComponent(sourceNode)
+              ? {
+                  type: ContextMenuOptionType.ITEM,
+                  label: "Select Source Layer",
+                  action: syntheticNodeContextMenuSelectSourceNodeClicked(
+                    syntheticNode
+                  )
+                }
+              : null,
             {
               type: ContextMenuOptionType.ITEM,
-              label: "Select Source Layer",
-              action: syntheticNodeContextMenuSelectSourceNodeClicked(
-                syntheticNode
-              )
-            },
-            {
-              type: ContextMenuOptionType.ITEM,
-              label: "Show in Canvas",
+              label: "Center in Canvas",
               action: syntheticNodeContextMenuShowInCanvasClicked(syntheticNode)
             }
           ].filter(Boolean) as ContextMenuItem[]
