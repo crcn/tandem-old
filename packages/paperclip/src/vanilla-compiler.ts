@@ -426,7 +426,7 @@ const translateStaticOverrides = (
   let buffer = ``;
 
   for (const instance of instances) {
-    const overrideMap = getOverrideMap(instance);
+    const overrideMap = getOverrideMap(instance, contentNode);
     buffer += `var _${instance.id}Overrides = { ${translateVariantOverrideMap(
       overrideMap.default,
       varMap,
@@ -469,6 +469,7 @@ const translateStaticVariants = (
       const node = variantNodes[i];
       const overrideMap = getOverrideMap(
         node,
+        contentNode,
         node.name === PCSourceTagNames.COMPONENT_INSTANCE ||
           node.name === PCSourceTagNames.COMPONENT
       );

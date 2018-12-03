@@ -934,10 +934,20 @@ export const createPaperclipVirtualDOMtranslator = (
             variantSelectors[variantId] = [];
           }
 
+          let postfix = instancePathSelector.join(" ");
+
+          if (
+            instancePathSelector.length !== 0 &&
+            !(
+              override.targetIdPath.length === 1 &&
+              override.targetIdPath[0] === instance.id
+            )
+          ) {
+            postfix += " ";
+          }
+
           // tee-up for combo classes
-          variantSelectors[variantId].push(
-            `._${newKey} ${instancePathSelector} `
-          );
+          variantSelectors[variantId].push(`._${newKey} ${postfix}`);
         }
       }
     }
@@ -987,7 +997,9 @@ export const createPaperclipVirtualDOMtranslator = (
     instance: PCComponentInstanceElement | PCComponent,
     context: TranslateContext
   ) => {
-    const overrideMap = getOverrideMap(instance);
+    const contentNode =
+      getPCNodeContentNode(instance.id, context.entry.content) || instance;
+    const overrideMap = getOverrideMap(instance, contentNode);
     context = translateUsedComponentOverrideMap(
       mergeVariantOverrides(overrideMap),
       context

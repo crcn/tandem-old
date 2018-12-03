@@ -9,7 +9,7 @@ import {
 } from "../../../../../../inputs/dropdown/controller";
 import { memoize } from "tandem-common";
 import { ComputedStyleInfo } from "paperclip";
-import { BaseBoxModelProps } from "./spacing.pc";
+// import { BaseBoxModelProps } from "./spacing.pc";
 import { Dispatch } from "redux";
 
 const BOX_SIZING_OPTIONS: DropdownMenuOption[] = [
@@ -23,7 +23,7 @@ export type Props = {
   computedStyleInfo: ComputedStyleInfo;
 };
 
-export default (Base: React.ComponentClass<BaseBoxModelProps>) =>
+export default (Base: React.ComponentClass<any>) =>
   class SpacingController extends React.PureComponent<Props> {
     onClick = () => {};
     onPropertyChange = (name, value) => {

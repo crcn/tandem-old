@@ -1662,61 +1662,69 @@ export const filterNestedOverrides = memoize(
   (node: PCNode): PCOverride[] => filterNestedNodes(node, isPCOverride)
 );
 
-export const getOverrideMap = memoize((node: PCNode, includeSelf?: boolean) => {
-  const map: PCComputedOverrideMap = {
-    default: {}
-  };
+export const getOverrideMap = memoize(
+  (node: PCNode, contentNode: PCNode, includeSelf?: boolean) => {
+    const map: PCComputedOverrideMap = {
+      default: {}
+    };
 
-  const overrides = getOverrides(node);
-  for (const override of overrides) {
-    if (override.variantId && !map[override.variantId]) {
-      map[override.variantId] = {};
-    }
+    const overrides = uniq([
+      ...getOverrides(node),
+      ...getOverrides(contentNode).filter(override => {
+        return override.targetIdPath.indexOf(node.id) !== -1;
+      })
+    ]);
 
-    let targetOverrides: any;
+    for (const override of overrides) {
+      if (override.variantId && !map[override.variantId]) {
+        map[override.variantId] = {};
+      }
 
-    if (
-      !(targetOverrides =
-        map[override.variantId || COMPUTED_OVERRIDE_DEFAULT_KEY])
-    ) {
-      targetOverrides = map[
-        override.variantId || COMPUTED_OVERRIDE_DEFAULT_KEY
-      ] = {};
-    }
+      let targetOverrides: any;
 
-    const targetIdPath = [...override.targetIdPath];
-    const targetId = targetIdPath.pop() || node.id;
-    if (
-      includeSelf &&
-      override.targetIdPath.length &&
-      !getNestedTreeNodeById(targetId, node)
-    ) {
-      targetIdPath.unshift(node.id);
-    }
+      if (
+        !(targetOverrides =
+          map[override.variantId || COMPUTED_OVERRIDE_DEFAULT_KEY])
+      ) {
+        targetOverrides = map[
+          override.variantId || COMPUTED_OVERRIDE_DEFAULT_KEY
+        ] = {};
+      }
 
-    for (const nodeId of targetIdPath) {
-      if (!targetOverrides[nodeId]) {
-        targetOverrides[nodeId] = {
+      const targetIdPath = [...override.targetIdPath];
+      const targetId = targetIdPath.pop() || node.id;
+      if (
+        includeSelf &&
+        override.targetIdPath.length &&
+        !getNestedTreeNodeById(targetId, node)
+      ) {
+        targetIdPath.unshift(node.id);
+      }
+
+      for (const nodeId of targetIdPath) {
+        if (!targetOverrides[nodeId]) {
+          targetOverrides[nodeId] = {
+            overrides: [],
+            children: {}
+          };
+        }
+
+        targetOverrides = targetOverrides[nodeId].children;
+      }
+
+      if (!targetOverrides[targetId]) {
+        targetOverrides[targetId] = {
           overrides: [],
           children: {}
         };
       }
 
-      targetOverrides = targetOverrides[nodeId].children;
+      targetOverrides[targetId].overrides.push(override);
     }
 
-    if (!targetOverrides[targetId]) {
-      targetOverrides[targetId] = {
-        overrides: [],
-        children: {}
-      };
-    }
-
-    targetOverrides[targetId].overrides.push(override);
+    return map;
   }
-
-  return map;
-});
+);
 
 export const mergeVariantOverrides = (variantMap: PCComputedOverrideMap) => {
   let map: PCComputedOverrideVariantMap = {};
