@@ -16,7 +16,8 @@
         "pointer": "default",
         "user-select": "none",
         "font-weight": "500",
-        "cursor": "default"
+        "cursor": "default",
+        "letter-spacing": "0.07em"
       },
       "value": "Label",
       "targetType": "text",
@@ -40,10 +41,11 @@
       "name": "style-mixin",
       "label": "Base font",
       "style": {
-        "font-family": "Avenir Next",
+        "font-family": "Helvetica Neue",
         "color": "rgba(136, 136, 136, 1)",
         "font-size": "12px",
-        "letter-spacing": "0.05em"
+        "letter-spacing": "0.05em",
+        "font-weight": "400"
       },
       "value": "Base font",
       "targetType": "text",
@@ -162,8 +164,7 @@
       "name": "style-mixin",
       "label": "Base font + nobreak",
       "style": {
-        "white-space": "nowrap",
-        "font-family": "Avenir Next"
+        "white-space": "nowrap"
       },
       "styleMixins": {
         "dc3b39eb1275": {

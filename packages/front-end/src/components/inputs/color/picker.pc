@@ -1289,32 +1289,6 @@
         }
       },
       "variant": {}
-    },
-    {
-      "id": "3eb3f138665",
-      "label": "Element",
-      "is": "div",
-      "name": "element",
-      "attributes": {},
-      "style": {
-        "box-sizing": "border-box",
-        "display": "block",
-        "background": "rgba(209, 133, 133, 1)",
-        "color": "rgba(209, 203, 26, 1)",
-        "border-left": "0px  rgba(217, 23, 23, 1)",
-        "border-top": "0px  rgba(217, 23, 23, 1)",
-        "border-right": "0px  rgba(217, 23, 23, 1)",
-        "border-bottom": "0px  rgba(217, 23, 23, 1)"
-      },
-      "children": [],
-      "metadata": {
-        "bounds": {
-          "left": 14.015247159436981,
-          "top": 204.1317646306982,
-          "right": 114.01524715943698,
-          "bottom": 304.13176463069817
-        }
-      }
     }
   ]
 }

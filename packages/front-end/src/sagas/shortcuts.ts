@@ -336,7 +336,7 @@ export const createShortcutSaga = ({
               : null,
             {
               type: ContextMenuOptionType.ITEM,
-              label: "Select Source Node",
+              label: "Select Source Layer",
               action: syntheticNodeContextMenuSelectSourceNodeClicked(
                 syntheticNode
               )
