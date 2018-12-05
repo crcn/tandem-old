@@ -22,6 +22,7 @@ import {
   createFSSandboxSaga,
   setReaderMimetype
 } from "fsbox";
+import { FrontEndContextOptions } from "./components/contexts";
 import { createRemotePCRuntime } from "paperclip";
 import {
   pmark,
@@ -32,7 +33,9 @@ import {
   EMPTY_ARRAY
 } from "tandem-common";
 
-export type FrontEndOptions = FrontEndSagaOptions & FSSandboxOptions;
+export type FrontEndOptions = FrontEndSagaOptions &
+  FSSandboxOptions &
+  FrontEndContextOptions;
 export type SideEffectCreator = () => IterableIterator<FrontEndOptions>;
 
 const SLOW_ACTION_INTERVAL = 10;
@@ -84,7 +87,8 @@ export const setup = <TState extends RootState>(
         loadProjectInfo,
         readDirectory,
         openContextMenu,
-        deleteFile
+        deleteFile,
+        openFile
       } = yield call(createSideEffects);
 
       readFile = setReaderMimetype(
@@ -98,7 +102,8 @@ export const setup = <TState extends RootState>(
           loadProjectInfo,
           readDirectory,
           openContextMenu,
-          deleteFile
+          deleteFile,
+          openFile
         })
       );
       if (saga) {

@@ -22,6 +22,7 @@ export type Props = {
 const INPUT_TYPE_OPTIONS = [
   "color",
   "date",
+  "file",
   "datetime-local",
   "email",
   "month",

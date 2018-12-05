@@ -17,7 +17,7 @@
         "user-select": "none",
         "font-weight": "500",
         "cursor": "default",
-        "letter-spacing": "0.07em"
+        "letter-spacing": "0.08em"
       },
       "value": "Label",
       "targetType": "text",

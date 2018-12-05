@@ -52,12 +52,18 @@ const init = setup<DesktopRootState>(
       loadProjectInfo,
       readDirectory,
       openContextMenu,
-      deleteFile
+      deleteFile,
+      openFile
     };
   },
   rootReducer,
   rootSaga
 );
+
+const openFile = () => {
+  console.log("OPEN FILE");
+  return null;
+};
 
 document.body.addEventListener("click", event => {
   if (

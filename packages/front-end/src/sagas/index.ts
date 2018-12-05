@@ -19,16 +19,18 @@ import {
   getPCNodeDependency,
   Frame
 } from "paperclip";
+import { FrontEndContextOptions } from "../components/contexts";
 
 export type FrontEndSagaOptions = {
   openPreview(frame: Frame, state: RootState);
 } & ProjectSagaOptions &
-  ShortcutSagaOptions;
+  ShortcutSagaOptions &
+  FrontEndContextOptions;
 
 export const createRootSaga = (options: FrontEndSagaOptions) => {
   return function* rootSaga() {
     yield fork(copyPasteSaga);
-    yield fork(reactSaga);
+    yield fork(reactSaga(options));
     yield fork(popupSaga);
     yield fork(createShortcutSaga(options));
     // yield fork(PaperclipStateSaga);

@@ -324,6 +324,27 @@
         }
       },
       "variant": {}
+    },
+    {
+      "id": "b6bd17ff298",
+      "label": "Element",
+      "is": "div",
+      "name": "element",
+      "attributes": {},
+      "style": {
+        "box-sizing": "border-box",
+        "display": "block",
+        "background": "rgba(200, 200, 200, 1)"
+      },
+      "children": [],
+      "metadata": {
+        "bounds": {
+          "left": 689.1897901917571,
+          "top": -39.237127613430275,
+          "right": 789.1897901917571,
+          "bottom": 60.762872386569725
+        }
+      }
     }
   ]
 }
