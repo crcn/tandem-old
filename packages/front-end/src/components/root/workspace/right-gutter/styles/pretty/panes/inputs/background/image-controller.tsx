@@ -10,8 +10,10 @@ export type Props = {
 };
 
 export default (Base: React.ComponentClass<BaseBackgroundImagePickerProps>) =>
-  class BackgroundGradientPickerController extends React.PureComponent<Props> {
+  class BackgroundImagePickerController extends React.PureComponent<Props> {
+    onFileUriChange = (fileUri: string) => {};
     render() {
+      const { onFileUriChange } = this;
       const {
         value,
         onChange,
@@ -19,6 +21,15 @@ export default (Base: React.ComponentClass<BaseBackgroundImagePickerProps>) =>
         swatchOptionGroups,
         ...rest
       } = this.props;
-      return <Base {...rest} />;
+
+      return (
+        <Base
+          {...rest}
+          fileUriPickerProps={{
+            value: null,
+            onChange: onFileUriChange
+          }}
+        />
+      );
     }
   };

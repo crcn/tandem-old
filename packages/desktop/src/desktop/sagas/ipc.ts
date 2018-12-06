@@ -3,6 +3,7 @@ import { eventChannel } from "redux-saga";
 import { ipcMain, MenuItemConstructorOptions, Menu } from "electron";
 import { DesktopState } from "../state";
 import { ContextMenuOption } from "tandem-front-end";
+import { dialog } from "electron";
 export const pid = Date.now() + "_" + Math.random();
 
 export function* ipcSaga() {
@@ -24,15 +25,6 @@ function* actionSaga() {
 }
 
 function* apiSaga() {
-  // yield fork(function* getState() {
-  //   const chan = takeIPCEvents("getServerState");
-  //   while (1) {
-  //     const { event } = yield take(chan);
-  //     const state = yield select();
-  //     event.sender.send("serverState", state);
-  //   }
-  // });
-
   yield fork(function* getProjectInfo() {
     const chan = takeIPCEvents("getProjectInfo");
     while (1) {
@@ -45,6 +37,29 @@ function* apiSaga() {
           path: state.tdProjectPath
         }
       );
+    }
+  });
+
+  yield fork(function* openDialog() {
+    const chan = takeIPCEvents("openDialog");
+    while (1) {
+      const {
+        event,
+        arg: { name, extensions }
+      } = yield take(chan);
+      const [filePath] = dialog.showOpenDialog({
+        filters: [
+          {
+            name,
+            extensions
+          }
+        ],
+        properties: ["openFile"]
+      }) || [undefined];
+
+      console.log(filePath);
+
+      event.sender.send("openDialogResult", filePath);
     }
   });
 

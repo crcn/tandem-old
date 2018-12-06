@@ -1,4 +1,5 @@
 import * as React from "react";
+import { CSSBackgroundType } from "./state";
 import * as cx from "classnames";
 import { BaseBackgroundPickerProps } from "./view.pc";
 import { ColorSwatchGroup } from "../../../../../../../../inputs/color/color-swatch-controller";
@@ -10,22 +11,16 @@ export type Props = {
   swatchOptionGroups: ColorSwatchGroup[];
 };
 
-enum BackgroundType {
-  SOLID,
-  LINEAR_GRADIENT,
-  IMAGE
-}
-
 type State = {
-  backgroundType: BackgroundType;
+  backgroundType: CSSBackgroundType;
 };
 
 export default (Base: React.ComponentClass<BaseBackgroundPickerProps>) =>
   class BackgroundPickerController extends React.PureComponent<Props, State> {
     state = {
-      backgroundType: BackgroundType.SOLID
+      backgroundType: CSSBackgroundType.SOLID
     };
-    onTypeClick = (backgroundType: BackgroundType) => {
+    onTypeClick = (backgroundType: CSSBackgroundType) => {
       this.setState({ backgroundType });
     };
     render() {
@@ -42,18 +37,19 @@ export default (Base: React.ComponentClass<BaseBackgroundPickerProps>) =>
         <Base
           {...rest}
           variant={cx({
-            solid: backgroundType === BackgroundType.SOLID,
-            linearGradient: backgroundType === BackgroundType.LINEAR_GRADIENT,
-            image: backgroundType === BackgroundType.IMAGE
+            solid: backgroundType === CSSBackgroundType.SOLID,
+            linearGradient:
+              backgroundType === CSSBackgroundType.LINEAR_GRADIENT,
+            image: backgroundType === CSSBackgroundType.IMAGE
           })}
           solidToggleButtonProps={{
-            onClick: () => onTypeClick(BackgroundType.SOLID)
+            onClick: () => onTypeClick(CSSBackgroundType.SOLID)
           }}
           linearGradientButtonProps={{
-            onClick: () => onTypeClick(BackgroundType.LINEAR_GRADIENT)
+            onClick: () => onTypeClick(CSSBackgroundType.LINEAR_GRADIENT)
           }}
           imageToggleButtonProps={{
-            onClick: () => onTypeClick(BackgroundType.IMAGE)
+            onClick: () => onTypeClick(CSSBackgroundType.IMAGE)
           }}
           solidColorPickerProps={{
             value,

@@ -34,6 +34,7 @@ import {
 } from "paperclip";
 import { eventChannel } from "redux-saga";
 import { init as initSentry } from "@sentry/browser";
+import { FileOpenerOptions } from "tandem-front-end/src/components/contexts";
 const pkg = require("../../package.json");
 
 initSentry({
@@ -60,9 +61,14 @@ const init = setup<DesktopRootState>(
   rootSaga
 );
 
-const openFile = () => {
-  console.log("OPEN FILE");
-  return null;
+const openFile = (options: FileOpenerOptions) => {
+  return new Promise<string>(resolve => {
+    ipcRenderer.once("openDialogResult", (event, filePath) => {
+      resolve(filePath);
+    });
+
+    ipcRenderer.send("openDialog", options);
+  });
 };
 
 document.body.addEventListener("click", event => {
