@@ -334,7 +334,7 @@
       "style": {
         "box-sizing": "border-box",
         "display": "block",
-        "background": "rgba(200, 200, 200, 1)"
+        "background-image": "linear-gradient(rgba(200, 200, 200, 1), rgba(200, 200, 200, 1))"
       },
       "children": [],
       "metadata": {

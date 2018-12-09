@@ -1,9 +1,10 @@
 import * as React from "react";
 import { BaseLinearGradientPickerProps } from "./view.pc";
+import { CSSLinearGradientBackground } from "./state";
 import { ColorSwatchGroup } from "../../../../../../../../inputs/color/color-swatch-controller";
 
 export type Props = {
-  value: string;
+  value: CSSLinearGradientBackground;
   onChange?: any;
   onChangeComplete?: any;
   swatchOptionGroups: ColorSwatchGroup[];
@@ -23,7 +24,7 @@ export default (Base: React.ComponentClass<BaseLinearGradientPickerProps>) =>
         <Base
           {...rest}
           colorPickerProps={{
-            value,
+            value: null,
             onChange,
             onChangeComplete,
             swatchOptionGroups

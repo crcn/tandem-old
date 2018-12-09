@@ -8,14 +8,14 @@ import {
 } from "./color-swatch-controller";
 
 export type ColorPickerProps = {
-  value: any;
+  value: string;
   onChange: any;
   onChangeComplete: any;
   swatchOptionGroups: ColorSwatchGroup[];
 };
 
 export type Props = {
-  value: any;
+  value: string;
   onChange: any;
   onChangeComplete: any;
   swatchOptionGroups: ColorSwatchGroup[];

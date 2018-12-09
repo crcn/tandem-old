@@ -2,9 +2,10 @@ import * as React from "react";
 import { BaseBackgroundItemProps } from "./backgrounds.pc";
 import { PCVariable } from "paperclip";
 import { getPrettyPaneColorSwatchOptionGroups } from "./utils";
+import { CSSBackground } from "./inputs/background/state";
 
 export type Props = {
-  value: string;
+  value: CSSBackground;
   onChange: any;
   documentColors: string[];
   globalVariables: PCVariable[];

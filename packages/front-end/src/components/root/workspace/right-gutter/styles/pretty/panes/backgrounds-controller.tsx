@@ -6,14 +6,9 @@ import {
 } from "../../../../../../../actions";
 import { arraySplice } from "tandem-common";
 import { Dispatch } from "redux";
-import {
-  SyntheticElement,
-  PCVariable,
-  PCSourceTagNames,
-  isTextLikePCNode,
-  ComputedStyleInfo
-} from "paperclip";
+import { PCVariable, isTextLikePCNode, ComputedStyleInfo } from "paperclip";
 import { BaseBackgroundsProps } from "./backgrounds.pc";
+import { computeCSSBackgrounds } from "./inputs/background/state";
 import { BackgroundItem } from "./backgrounds.pc";
 
 const DEFAULT_COLOR = "rgba(200, 200, 200, 1)";
@@ -28,26 +23,33 @@ export type Props = {
 export default (Base: React.ComponentClass<BaseBackgroundsProps>) =>
   class BackgroundsController extends React.PureComponent<Props> {
     onChange = (item, index) => {
-      const value = this.props.computedStyleInfo.style.background;
+      const value = this.props.computedStyleInfo.style["background-image"];
       this.props.dispatch(
-        cssPropertyChanged("background", replaceBackground(value, item, index))
+        cssPropertyChanged(
+          "background-image",
+          replaceBackground(value, item, index)
+        )
       );
     };
     onChangeComplete = (item, index) => {
-      const value = this.props.computedStyleInfo.style.background;
+      const value = this.props.computedStyleInfo.style["background-image"];
       this.props.dispatch(
         cssPropertyChangeCompleted(
-          "background",
+          "background-image",
           replaceBackground(value, item, index)
         )
       );
     };
     onPlusButtonClick = () => {
-      const value = this.props.computedStyleInfo.style.background;
+      const value = this.props.computedStyleInfo.style["background-image"];
       this.props.dispatch(
         cssPropertyChangeCompleted(
-          "background",
-          value ? value + "," + DEFAULT_COLOR : DEFAULT_COLOR
+          "background-image",
+          value
+            ? value +
+              "," +
+              `linear-gradient(${DEFAULT_COLOR}, ${DEFAULT_COLOR})`
+            : `linear-gradient(${DEFAULT_COLOR}, ${DEFAULT_COLOR})`
         )
       );
     };
@@ -62,20 +64,20 @@ export default (Base: React.ComponentClass<BaseBackgroundsProps>) =>
         return null;
       }
 
-      const children = splitBackgrounds(computedStyleInfo.style.background).map(
-        (background, i) => {
-          return (
-            <BackgroundItem
-              key={i}
-              value={background}
-              globalVariables={globalVariables}
-              onChange={value => onChange(value, i)}
-              onChangeComplete={value => onChangeComplete(value, i)}
-              documentColors={documentColors}
-            />
-          );
-        }
-      );
+      const backgrounds = computeCSSBackgrounds(computedStyleInfo);
+
+      const children = backgrounds.map((background, i) => {
+        return (
+          <BackgroundItem
+            key={i}
+            value={background}
+            globalVariables={globalVariables}
+            onChange={value => onChange(value, i)}
+            onChangeComplete={value => onChangeComplete(value, i)}
+            documentColors={documentColors}
+          />
+        );
+      });
       return (
         <Base
           variant={cx({
@@ -89,7 +91,7 @@ export default (Base: React.ComponentClass<BaseBackgroundsProps>) =>
   };
 
 const splitBackgrounds = value =>
-  (value || "").match(/(\w+\(.*?\)|[\w-]+|#[^,])/g) || [];
+  (value || "").match(/(\w+\(.*?\)|[\w-]+|#[^,]+)/g) || [];
 
 // TODO - validation here
 const replaceBackground = (oldValue, replacement, index) =>
