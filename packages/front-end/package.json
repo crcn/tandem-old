@@ -4,7 +4,7 @@
   "description": "Visual editor for web components",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"\"",
+    "test": "mocha ./lib/**/*-test.js",
     "build": "paperclip-react-compiler \"src/**/*.pc\" --definition --write; webpack",
     "build-watch": "concurrently 'paperclip-react-compiler \"src/**/*.pc\" --definition --write --watch' 'webpack --watch'",
     "start": "node lib/back-end/entry",
