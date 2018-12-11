@@ -8,6 +8,7 @@ import {
   StructReference,
   TreeNode,
   File,
+  KeyValue,
   TreeMoveOffset,
   FSItem,
   FSItemTagNames
@@ -211,9 +212,12 @@ export const PROJECT_DIRECTORY_DIR_LOADED = "PROJECT_DIRECTORY_DIR_LOADED";
 export const NEW_DIRECTORY_ENTERED = "NEW_DIRECTORY_ENTERED";
 export const RAW_CSS_TEXT_CHANGED = "RAW_CSS_TEXT_CHANGED";
 export const CSS_PROPERTY_CHANGED = "CSS_PROPERTY_CHANGED";
+export const CSS_PROPERTIES_CHANGED = "CSS_PROPERTIES_CHANGED";
 export const QUICK_SEARCH_RESULT_ITEM_SPLIT_BUTTON_CLICKED =
   "QUICK_SEARCH_RESULT_ITEM_SPLIT_BUTTON_CLICKED";
 export const CSS_PROPERTY_CHANGE_COMPLETED = "CSS_PROPERTY_CHANGE_COMPLETED";
+export const CSS_PROPERTIES_CHANGE_COMPLETED =
+  "CSS_PROPERTIES_CHANGE_COMPLETED";
 export const ATTRIBUTE_CHANGED = "ATTRIBUTE_CHANGED";
 export const SLOT_TOGGLE_CLICK = "SLOT_TOGGLE_CLICK";
 export const TEXT_VALUE_CHANGED = "TEXT_VALUE_CHANGED";
@@ -332,6 +336,10 @@ export type VariablePropertyChanged = {
 export type CSSPropertyChanged = {
   name: string;
   value: string;
+} & Action;
+
+export type CSSPropertiesChanged = {
+  properties: KeyValue<string>;
 } & Action;
 
 export type AttributeChanged = {
@@ -1482,6 +1490,13 @@ export const cssPropertyChanged = (
   type: CSS_PROPERTY_CHANGED
 });
 
+export const cssPropertiesChanged = (
+  properties: KeyValue<string>
+): CSSPropertiesChanged => ({
+  properties,
+  type: CSS_PROPERTIES_CHANGED
+});
+
 export const cssPropertyChangeCompleted = (
   name: string,
   value: string
@@ -1489,6 +1504,13 @@ export const cssPropertyChangeCompleted = (
   name,
   value,
   type: CSS_PROPERTY_CHANGE_COMPLETED
+});
+
+export const cssPropertiesChangeCompleted = (
+  properties: KeyValue<string>
+): CSSPropertiesChanged => ({
+  properties,
+  type: CSS_PROPERTIES_CHANGE_COMPLETED
 });
 
 export const attributeChanged = (

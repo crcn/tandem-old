@@ -203,7 +203,10 @@ import {
   VariableQuerySourceVariableChange,
   QueryTypeChanged,
   STYLE_TRIGGER_BUTTON_CLICKED,
-  RIGHT_GUTTER_TAB_CLICKED
+  RIGHT_GUTTER_TAB_CLICKED,
+  CSS_PROPERTIES_CHANGE_COMPLETED,
+  CSSPropertiesChanged,
+  CSS_PROPERTIES_CHANGED
 } from "../actions";
 import {
   queueOpenFile,
@@ -308,6 +311,7 @@ import {
   persistRemoveComponentController,
   PC_RUNTIME_EVALUATED,
   persistCSSProperty,
+  persistCSSProperties,
   persistAttribute,
   getPCNode,
   persistSyntheticNodeMetadata,
@@ -1804,6 +1808,26 @@ export const canvasReducer = (state: RootState, action: Action) => {
       return state.selectedInspectorNodes.reduce(
         (state, node) =>
           persistCSSProperty(name, value, node, state.selectedVariant, state),
+        state
+      );
+    }
+    case CSS_PROPERTIES_CHANGE_COMPLETED: {
+      const { properties } = action as CSSPropertiesChanged;
+      state = teeHistory(state);
+      state = { ...state, editMode: EditMode.PRIMARY };
+      return state.selectedInspectorNodes.reduce(
+        (state, node) =>
+          persistCSSProperties(properties, node, state.selectedVariant, state),
+        state
+      );
+    }
+    case CSS_PROPERTIES_CHANGED: {
+      const { properties } = action as CSSPropertiesChanged;
+      state = teeHistory(state);
+      state = { ...state, editMode: EditMode.PRIMARY };
+      return state.selectedInspectorNodes.reduce(
+        (state, node) =>
+          persistCSSProperties(properties, node, state.selectedVariant, state),
         state
       );
     }

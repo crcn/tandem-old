@@ -307,9 +307,9 @@
       "label": "Component",
       "is": "div",
       "style": {
-        "box-sizing": "border-box",
-        "display": "block",
-        "box-shadow": " 0px 0px 10px 0px rgba(0,0,0,1)"
+        "background-image": "url(\"file:///Users/crcn/Dropbox/Screenshots/Desktop.png\"), url(\"file:///Users/crcn/Dropbox/Screenshots/Captura de pantalla 2018-02-14 12.03.05.png\")",
+        "background-repeat": "repeat-x, repeat",
+        "background-size": "auto, auto"
       },
       "attributes": {},
       "id": "babf9bd54",
@@ -317,34 +317,13 @@
       "children": [],
       "metadata": {
         "bounds": {
-          "left": 313,
-          "top": 410,
-          "right": 413,
-          "bottom": 510
+          "left": -2551,
+          "top": 1779,
+          "right": 3055,
+          "bottom": 5821
         }
       },
       "variant": {}
-    },
-    {
-      "id": "b6bd17ff298",
-      "label": "Element",
-      "is": "div",
-      "name": "element",
-      "attributes": {},
-      "style": {
-        "box-sizing": "border-box",
-        "display": "block",
-        "background-image": "linear-gradient(rgba(200, 200, 200, 1), rgba(200, 200, 200, 1))"
-      },
-      "children": [],
-      "metadata": {
-        "bounds": {
-          "left": 689.1897901917571,
-          "top": -39.237127613430275,
-          "right": 789.1897901917571,
-          "bottom": 60.762872386569725
-        }
-      }
     }
   ]
 }

@@ -24,7 +24,7 @@ export default (Base: React.ComponentClass<BaseLinearGradientPickerProps>) =>
         <Base
           {...rest}
           colorPickerProps={{
-            value: null,
+            value: "rgba(0,0,0,0)",
             onChange,
             onChangeComplete,
             swatchOptionGroups

@@ -1,6 +1,6 @@
 import * as React from "react";
 import { BaseSolidColorPickerProps } from "./view.pc";
-import { CSSSolidBackground } from "./state";
+import { CSSSolidBackground, CSSBackgroundType } from "./state";
 import { ColorSwatchGroup } from "../../../../../../../../inputs/color/color-swatch-controller";
 
 export type Props = {
@@ -12,19 +12,26 @@ export type Props = {
 
 export default (Base: React.ComponentClass<BaseSolidColorPickerProps>) =>
   class BackgroundPickerController extends React.PureComponent<Props> {
+    onChange = (color: string) => {
+      this.props.onChange({
+        type: CSSBackgroundType.SOLID,
+        color
+      } as CSSSolidBackground);
+    };
+    onChangeComplete = (color: string) => {
+      this.props.onChangeComplete({
+        type: CSSBackgroundType.SOLID,
+        color
+      } as CSSSolidBackground);
+    };
     render() {
-      const {
-        value,
-        onChange,
-        onChangeComplete,
-        swatchOptionGroups,
-        ...rest
-      } = this.props;
+      const { onChange, onChangeComplete } = this;
+      const { value, swatchOptionGroups, ...rest } = this.props;
       return (
         <Base
           {...rest}
           colorPickerProps={{
-            value: value.color,
+            value: value.color || "rgba(0,0,0,1)",
             onChange,
             onChangeComplete,
             swatchOptionGroups

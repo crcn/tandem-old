@@ -9,7 +9,7 @@ export type Props = {
   onChange: any;
   documentColors: string[];
   globalVariables: PCVariable[];
-  onChangeComplete: (value: string) => any;
+  onChangeComplete: (value: CSSBackground) => any;
 };
 
 export default (Base: React.ComponentClass<BaseBackgroundItemProps>) =>
@@ -31,10 +31,6 @@ export default (Base: React.ComponentClass<BaseBackgroundItemProps>) =>
             ),
             value,
             onChange,
-            onChangeComplete
-          }}
-          textInputProps={{
-            value,
             onChangeComplete
           }}
         />

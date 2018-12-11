@@ -1,4 +1,4 @@
-import { EMPTY_ARRAY } from "tandem-common";
+import { EMPTY_ARRAY, KeyValue } from "tandem-common";
 import { ComputedStyleInfo } from "paperclip";
 
 // TODO - compute this information based on CSS properties
@@ -57,9 +57,27 @@ export const computeCSSBackgrounds = ({
     return EMPTY_ARRAY;
   }
 
-  const scanner = new Scanner(source);
-  const tokenizer = new Tokenizer(scanner);
-  return getBackgroundExpressions(tokenizer);
+  const backgrounds = parseCSSBackroundValue(source);
+  let newBackgrounds = [];
+  for (let i = 0, n = backgrounds.length; i < n; i++) {
+    let newBackground = backgrounds[i];
+    switch (newBackground.type) {
+      case CSSBackgroundType.IMAGE: {
+        newBackground = {
+          ...newBackground,
+          repeat: getCSSParamValue(style["background-repeat"], i) || "repeat",
+          size: getCSSParamValue(style["background-size"], i) || "auto"
+        };
+        break;
+      }
+    }
+    newBackgrounds.push(newBackground);
+  }
+  return newBackgrounds;
+};
+
+const getCSSParamValue = (value: string, index: number) => {
+  return value && value.split(/\s*,\s*/)[index];
 };
 
 export const parseCSSBackroundValue = (value: string) => {
@@ -71,7 +89,9 @@ export const parseCSSBackroundValue = (value: string) => {
 const getBackgroundExpressions = (tokenizer: Tokenizer): CSSBackground[] => {
   const backgrounds = [];
   while (!tokenizer.ended()) {
+    tokenizer.eatWhitespace();
     backgrounds.push(getBackgroundExpression(tokenizer));
+    tokenizer.next();
   }
 
   return backgrounds;
@@ -147,9 +167,13 @@ const getParams = (tokenizer: Tokenizer): string[] => {
 
     let value = curr.value;
 
-    if (!tokenizer.ended() && tokenizer.peek().type === TokenType.L_PAREN) {
-      tokenizer.next(); // eat (
-      value = `${value}(${getParams(tokenizer).join(", ")})`;
+    if (!tokenizer.ended()) {
+      if (curr.type === TokenType.APOS || curr.type === TokenType.QUOTE) {
+        value = getString(tokenizer);
+      } else if (tokenizer.peek().type === TokenType.L_PAREN) {
+        tokenizer.next(); // eat (
+        value = `${value}(${getParams(tokenizer).join(", ")})`;
+      }
     }
 
     buffer += value;
@@ -158,17 +182,92 @@ const getParams = (tokenizer: Tokenizer): string[] => {
   return params;
 };
 
+const getString = (tokenizer: Tokenizer): string => {
+  let buffer: string = "";
+  while (!tokenizer.ended()) {
+    const curr = tokenizer.next();
+    if (curr.type === TokenType.QUOTE || curr.type === TokenType.APOS) {
+      break;
+    }
+
+    buffer += curr.value;
+  }
+
+  return buffer;
+};
+
 export const stringifyCSSBackground = (background: CSSBackground) => {
   switch (background.type) {
     case CSSBackgroundType.IMAGE: {
-      return `url(${background.uri})`;
+      return `url("${background.uri}")`;
     }
     case CSSBackgroundType.LINEAR_GRADIENT: {
       return `linear-gradient()`;
     }
     case CSSBackgroundType.SOLID: {
-      return `${background.color}`;
+      return `linear-gradient(${background.color}, ${background.color})`;
     }
+  }
+};
+
+export const getCSSBackgroundsStyle = (backgrounds: CSSBackground[]) => {
+  let style: KeyValue<string> = {};
+  for (const background of backgrounds) {
+    switch (background.type) {
+      case CSSBackgroundType.IMAGE: {
+        style = addStyle(
+          style,
+          "background-image",
+          stringifyCSSBackground(background)
+        );
+        style = addStyle(
+          style,
+          "background-repeat",
+          background.repeat || "repeat"
+        );
+        style = addStyle(style, "background-size", background.size || "auto");
+        break;
+      }
+      case CSSBackgroundType.LINEAR_GRADIENT: {
+        style = addStyle(
+          style,
+          "background-image",
+          stringifyCSSBackground(background)
+        );
+        break;
+      }
+      case CSSBackgroundType.SOLID: {
+        style = addStyle(
+          style,
+          "background-image",
+          stringifyCSSBackground(background)
+        );
+        break;
+      }
+    }
+  }
+
+  return style;
+};
+
+const addStyle = (
+  style: KeyValue<string>,
+  key: string,
+  value: string
+): KeyValue<string> => {
+  if (!value) {
+    return style;
+  }
+  if (!style[key]) {
+    return {
+      ...style,
+      [key]: value
+    };
+  } else {
+    return {
+      ...style,
+      [key]: style[key] + ", " + value
+    };
   }
 };
 
@@ -179,7 +278,9 @@ enum TokenType {
   R_PAREN,
   COMMA,
   NUMBER,
-  CHAR
+  CHAR,
+  APOS,
+  QUOTE
 }
 
 type Token = {
@@ -207,6 +308,12 @@ class Tokenizer {
     return this._stack.shift();
   }
 
+  eatWhitespace() {
+    if (!this.ended() && this.peek(1).type === TokenType.WHITESPACE) {
+      this.next();
+    }
+  }
+
   peek(count: number = 1) {
     let diff = count - this._stack.length;
     while (diff > 0) {
@@ -226,6 +333,17 @@ class Tokenizer {
         value: c + this._scanner.scan(/^[\s\n\r\t]+/)
       };
     }
+
+    if (c === '"')
+      return {
+        type: TokenType.QUOTE,
+        value: c
+      };
+    if (c === "'")
+      return {
+        type: TokenType.APOS,
+        value: c
+      };
 
     if (c === "(")
       return {

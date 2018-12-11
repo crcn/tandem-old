@@ -857,7 +857,7 @@
                 {
                   "id": "641b17c24358",
                   "is": "50e32bec2591",
-                  "label": "Dropdown",
+                  "label": "repeat input",
                   "name": "component-instance",
                   "attributes": {},
                   "style": {},
@@ -925,7 +925,7 @@
                 {
                   "id": "641b17c23987",
                   "is": "50e32bec2591",
-                  "label": "Dropdown",
+                  "label": "position input",
                   "name": "component-instance",
                   "attributes": {},
                   "style": {},
@@ -985,6 +985,32 @@
               "value": "Size",
               "name": "override",
               "children": []
+            },
+            {
+              "slotId": "e73029b416045",
+              "id": "e4c425f24246",
+              "children": [
+                {
+                  "id": "e4c425f24245",
+                  "is": "7149f8199122",
+                  "label": "size input",
+                  "name": "component-instance",
+                  "attributes": {},
+                  "style": {},
+                  "children": [],
+                  "metadata": {
+                    "bounds": {
+                      "left": 384,
+                      "top": 298,
+                      "right": 484,
+                      "bottom": 327.0358087589019
+                    }
+                  },
+                  "variant": {}
+                }
+              ],
+              "metadata": {},
+              "name": "plug"
             }
           ],
           "metadata": {

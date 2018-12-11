@@ -3,12 +3,12 @@ import {
   CSSBackgroundType,
   CSSBackground,
   CSSSolidBackground,
-  CSSLinearGradientBackground
+  CSSLinearGradientBackground,
+  CSSImageBackground
 } from "./state";
 import * as cx from "classnames";
 import { BaseBackgroundPickerProps } from "./view.pc";
 import { ColorSwatchGroup } from "../../../../../../../../inputs/color/color-swatch-controller";
-import { ComputedStyleInfo } from "paperclip";
 
 export type Props = {
   value: CSSBackground;
@@ -71,6 +71,11 @@ export default (Base: React.ComponentClass<BaseBackgroundPickerProps>) =>
             onChange,
             onChangeComplete,
             swatchOptionGroups
+          }}
+          backgroundImagePickerProps={{
+            value: value as CSSImageBackground,
+            onChange,
+            onChangeComplete
           }}
         />
       );

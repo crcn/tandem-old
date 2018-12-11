@@ -49,4 +49,24 @@ describe(__filename + "#", () => {
     expect(image.type).to.eql(CSSBackgroundType.IMAGE);
     expect(image.uri).to.eql("abcd.png");
   });
+
+  it("can parse a simple background image with spaces", () => {
+    const images = parseCSSBackroundValue(
+      "url('a b c d.png')"
+    ) as CSSImageBackground[];
+    expect(images.length).to.eql(1);
+    const image = images[0];
+    expect(image.type).to.eql(CSSBackgroundType.IMAGE);
+    expect(image.uri).to.eql("a b c d.png");
+  });
+
+  it("can parse multiple background images", () => {
+    const images = parseCSSBackroundValue(
+      "linear-gradient(rgba(0, 0, 0, 1), rgba(0, 0, 0, 1)), linear-gradient(0deg, rgba(0, 0, 0, 1) 10%, rgba(0, 0, 0, 0.5) 11%)"
+    ) as CSSSolidBackground[];
+    expect(images.length).to.eql(2);
+    const image = images[0];
+    expect(image.type).to.eql(CSSBackgroundType.SOLID);
+    expect(image.color).to.eql("rgba(0, 0, 0, 1)");
+  });
 });

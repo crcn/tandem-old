@@ -1630,6 +1630,7 @@ export const persistRawCSSText = <TState extends PCEditorState>(
 ) => {
   const newStyle = parseStyle(text || "");
 
+  console.log("NEW STYLE", newStyle);
   return persistInspectorNodeStyle(newStyle, node, variant, state);
 };
 
@@ -1709,6 +1710,16 @@ export const persistCSSProperty = <TState extends PCEditorState>(
   );
 
   return replaceDependencyGraphPCNode(updatedNode, updatedNode, state);
+};
+
+export const persistCSSProperties = <TState extends PCEditorState>(
+  properties: KeyValue<string>,
+  inspectorNode: InspectorNode,
+  variant: PCVariant,
+  state: TState
+) => {
+  state = persistInspectorNodeStyle(properties, inspectorNode, variant, state);
+  return state;
 };
 
 export const persistAttribute = <TState extends PCEditorState>(
@@ -1842,9 +1853,9 @@ export const persistRemovePCNode = <TState extends PCEditorState>(
 const parseStyle = (source: string) => {
   const style = {};
   source.split(";").forEach(decl => {
-    const [key, value] = decl.split(":");
-    if (!key || !value) return;
-    style[key.trim()] = value.trim();
+    const [key, ...values] = decl.split(":");
+    if (!key || !values.length) return;
+    style[key.trim()] = values.join(":").trim();
   });
   return style;
 };

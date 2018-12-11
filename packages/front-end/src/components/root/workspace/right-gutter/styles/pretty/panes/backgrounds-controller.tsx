@@ -2,13 +2,19 @@ import * as React from "react";
 import * as cx from "classnames";
 import {
   cssPropertyChangeCompleted,
-  cssPropertyChanged
+  cssPropertyChanged,
+  cssPropertiesChanged,
+  cssPropertiesChangeCompleted
 } from "../../../../../../../actions";
 import { arraySplice } from "tandem-common";
 import { Dispatch } from "redux";
 import { PCVariable, isTextLikePCNode, ComputedStyleInfo } from "paperclip";
 import { BaseBackgroundsProps } from "./backgrounds.pc";
-import { computeCSSBackgrounds } from "./inputs/background/state";
+import {
+  computeCSSBackgrounds,
+  CSSBackground,
+  getCSSBackgroundsStyle
+} from "./inputs/background/state";
 import { BackgroundItem } from "./backgrounds.pc";
 
 const DEFAULT_COLOR = "rgba(200, 200, 200, 1)";
@@ -23,23 +29,24 @@ export type Props = {
 export default (Base: React.ComponentClass<BaseBackgroundsProps>) =>
   class BackgroundsController extends React.PureComponent<Props> {
     onChange = (item, index) => {
-      const value = this.props.computedStyleInfo.style["background-image"];
-      this.props.dispatch(
-        cssPropertyChanged(
-          "background-image",
-          replaceBackground(value, item, index)
-        )
-      );
+      const style = this._getChangedStyle(item, index);
+      this.props.dispatch(cssPropertiesChanged(style));
     };
     onChangeComplete = (item, index) => {
-      const value = this.props.computedStyleInfo.style["background-image"];
-      this.props.dispatch(
-        cssPropertyChangeCompleted(
-          "background-image",
-          replaceBackground(value, item, index)
-        )
-      );
+      const style = this._getChangedStyle(item, index);
+      this.props.dispatch(cssPropertiesChangeCompleted(style));
     };
+
+    private _getChangedStyle(item: CSSBackground, index: number) {
+      const backgrounds = arraySplice(
+        computeCSSBackgrounds(this.props.computedStyleInfo),
+        index,
+        1,
+        item
+      );
+      const backgroundStyle = getCSSBackgroundsStyle(backgrounds);
+      return backgroundStyle;
+    }
     onPlusButtonClick = () => {
       const value = this.props.computedStyleInfo.style["background-image"];
       this.props.dispatch(
@@ -64,7 +71,13 @@ export default (Base: React.ComponentClass<BaseBackgroundsProps>) =>
         return null;
       }
 
-      const backgrounds = computeCSSBackgrounds(computedStyleInfo);
+      let backgrounds: CSSBackground[] = [];
+
+      try {
+        backgrounds = computeCSSBackgrounds(computedStyleInfo);
+      } catch (e) {
+        console.warn(e);
+      }
 
       const children = backgrounds.map((background, i) => {
         return (

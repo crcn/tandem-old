@@ -72,7 +72,9 @@ export default (Base: React.ComponentClass<BaseColorInputProps>) =>
             style: {
               background:
                 maybeConvertSwatchValueToColor(value, swatchOptionGroups) ||
-                "transparent"
+                "transparent",
+              backgroundSize: "cover",
+              backgroundRepeat: "no-repeat"
             }
           }}
           popoverProps={{
