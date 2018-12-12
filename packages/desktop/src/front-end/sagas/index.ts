@@ -328,16 +328,20 @@ function* handleQuickSearch() {
 
     let results: QuickSearchUriResult[] = [];
 
-    walkPCRootDirectory(projectInfo.config, projectDir, filePath => {
-      if (pattern.test(filePath)) {
-        results.push({
-          uri: addProtocol(FILE_PROTOCOL, filePath),
-          label: path.basename(filePath),
-          description: path.dirname(filePath),
-          type: QuickSearchResultType.URI
-        });
+    walkPCRootDirectory(
+      projectInfo.config,
+      projectDir,
+      (filePath, isDirectory) => {
+        if (!isDirectory && pattern.test(filePath)) {
+          results.push({
+            uri: addProtocol(FILE_PROTOCOL, filePath),
+            label: path.basename(filePath),
+            description: path.dirname(filePath),
+            type: QuickSearchResultType.URI
+          });
+        }
       }
-    });
+    );
     yield put(quickSearchFilterResultLoaded(results.slice(0, 50)));
   });
 }
