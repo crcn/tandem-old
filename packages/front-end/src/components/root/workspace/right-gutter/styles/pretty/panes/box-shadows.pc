@@ -1,6 +1,6 @@
 {
   "id": "296b92da36265",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "metadata": {},
   "name": "module",
   "children": [
@@ -165,7 +165,10 @@
             "cdcf193c7"
           ],
           "value": {
-            "display": "flex"
+            "display": "flex",
+            "padding-right": "12px",
+            "padding-left": "48px",
+            "padding-top": "6px"
           },
           "name": "override",
           "children": []

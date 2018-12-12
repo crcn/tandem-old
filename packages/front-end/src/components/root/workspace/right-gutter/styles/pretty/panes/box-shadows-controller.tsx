@@ -103,6 +103,15 @@ export default (Base: React.ComponentClass<BaseBoxShadowsProps>) =>
       );
       setSelectedBoxShadowIndex(null);
     };
+    onItemRemove = index => {
+      const { dispatch, computedStyleInfo } = this.props;
+      const info = arraySplice(
+        parseBoxShadows(computedStyleInfo.style["box-shadow"]),
+        index,
+        1
+      );
+      dispatch(cssPropertyChanged("box-shadow", stringifyBoxShadowInfo(info)));
+    };
     onItemClick = index => {
       const { selectedBoxShadowIndex } = this.state;
       const { setSelectedBoxShadowIndex } = this;
@@ -123,6 +132,7 @@ export default (Base: React.ComponentClass<BaseBoxShadowsProps>) =>
       const {
         onChange,
         onItemClick,
+        onItemRemove,
         onChangeComplete,
         onAddButtonClick,
         onRemoveButtonClick
@@ -147,6 +157,7 @@ export default (Base: React.ComponentClass<BaseBoxShadowsProps>) =>
         .map((info, index) => {
           return info.inset === Boolean(inset) ? (
             <BoxShadowItem
+              onRemove={() => onItemRemove(index)}
               globalVariables={globalVariables}
               selected={index === selectedBoxShadowIndex}
               key={index}

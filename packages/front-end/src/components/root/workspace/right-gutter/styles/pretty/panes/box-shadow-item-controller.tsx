@@ -1,9 +1,7 @@
 import * as React from "react";
 import * as cx from "classnames";
 import { BaseBoxShadowItemProps } from "./box-shadow.pc";
-import { mapPCVariablesToColorSwatchOptions } from "../../state";
 import { PCVariable } from "paperclip";
-import { getColorSwatchOptionsFromValues } from "../../../../../../inputs/color/color-swatch-controller";
 import { getPrettyPaneColorSwatchOptionGroups } from "./utils";
 export type BoxShadowInfo = {
   inset: boolean;
@@ -15,6 +13,7 @@ export type BoxShadowInfo = {
 };
 
 export type Props = {
+  onRemove: any;
   selected: boolean;
   documentColors: string[];
   value: BoxShadowInfo;
@@ -76,6 +75,7 @@ export default (Base: React.ComponentClass<BaseBoxShadowItemProps>) =>
         onChangeComplete,
         onBackgroundClick,
         globalVariables,
+        onRemove,
         ...rest
       } = this.props;
       const {
@@ -94,6 +94,9 @@ export default (Base: React.ComponentClass<BaseBoxShadowItemProps>) =>
         <Base
           {...rest}
           variant={cx({ selected })}
+          removeButtonProps={{
+            onClick: onRemove
+          }}
           colorInputProps={{
             value: color,
             swatchOptionGroups: getPrettyPaneColorSwatchOptionGroups(
