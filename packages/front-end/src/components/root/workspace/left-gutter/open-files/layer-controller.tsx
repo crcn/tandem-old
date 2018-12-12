@@ -13,7 +13,9 @@ import {
   getPCNode,
   PCVisibleNode,
   getPCNodeDependency,
+  PCElementLikeNode,
   getPCNodeContentNode,
+  getNativeComponentName,
   PCModule,
   getPCNodeModule
 } from "paperclip";
@@ -50,6 +52,7 @@ type InnerProps = {
   isOver: boolean;
   canDrop: boolean;
   onLabelClick: () => any;
+  nativeTagName: string;
   connectDragSource?: any;
   connectDropTarget?: any;
   onLabelRightClick: () => any;
@@ -93,6 +96,11 @@ export default (Base: React.ComponentClass<BaseNodeLayerProps>) => {
           graph
         );
 
+        const nativeTagName = getNativeComponentName(
+          assocSourceNode as PCElementLikeNode,
+          graph
+        );
+
         let label = assocSourceNode && (assocSourceNode as PCVisibleNode).label;
 
         // note that "Layer" is used as a default label here
@@ -118,8 +126,10 @@ export default (Base: React.ComponentClass<BaseNodeLayerProps>) => {
             label = assocSourceNode.label;
           }
         }
+
         return {
           dispatch,
+          nativeTagName,
           editingLabel: renameInspectorNodeId === inspectorNode.id,
           isSelected:
             selectedInspectorNodes
@@ -250,7 +260,8 @@ export default (Base: React.ComponentClass<BaseNodeLayerProps>) => {
             this.props.connectDropTarget !== nextProps.connectDropTarget ||
             this.props.inShadow !== nextProps.inShadow ||
             this.props.assocSourceNodeName !== nextProps.assocSourceNodeName ||
-            this.props.editingLabel !== nextProps.editingLabel
+            this.props.editingLabel !== nextProps.editingLabel ||
+            this.props.nativeTagName !== nextProps.nativeTagName
           );
         }
         render() {
@@ -258,6 +269,7 @@ export default (Base: React.ComponentClass<BaseNodeLayerProps>) => {
             depth,
             isSelected,
             isHovering,
+            nativeTagName,
             isOver,
             canDrop,
             inspectorNode,
@@ -285,6 +297,7 @@ export default (Base: React.ComponentClass<BaseNodeLayerProps>) => {
               onLabelInputKeyDown={onLabelInputKeyDown}
               onLabelInputBlur={onLabelInputBlur}
               editingLabel={editingLabel}
+              nativeTagName={nativeTagName}
               depth={depth}
               isSelected={isSelected}
               isHovering={isHovering}
@@ -310,6 +323,7 @@ export default (Base: React.ComponentClass<BaseNodeLayerProps>) => {
       isOver,
       canDrop,
       inspectorNode,
+      nativeTagName,
       onArrowButtonClick,
       onLabelDoubleClick,
       onLabelRightClick,
@@ -357,7 +371,7 @@ export default (Base: React.ComponentClass<BaseNodeLayerProps>) => {
           <FocusComponent focus={editingLabel}>
             {connectDropTarget(
               connectDragSource(
-                <div>
+                <div title={nativeTagName}>
                   <Base
                     onClick={onLabelClick}
                     onDoubleClick={onLabelDoubleClick}

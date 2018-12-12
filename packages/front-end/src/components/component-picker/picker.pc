@@ -261,10 +261,10 @@
       ],
       "metadata": {
         "bounds": {
-          "left": 503,
-          "top": 395,
-          "right": 1434.5520794519923,
-          "bottom": 931.9620799668112
+          "left": 516,
+          "top": 579,
+          "right": 1447.5520794519925,
+          "bottom": 1115.962079966811
         }
       },
       "controllers": [
@@ -301,26 +301,6 @@
       "controllers": [
         "../focus/controller.tsx"
       ],
-      "variant": {}
-    },
-    {
-      "label": "Component",
-      "is": "div",
-      "style": {
-        "background-image": "linear-gradient(rgba(200, 200, 200, 1), rgba(200, 200, 200, 1))"
-      },
-      "attributes": {},
-      "id": "babf9bd54",
-      "name": "component",
-      "children": [],
-      "metadata": {
-        "bounds": {
-          "left": -2551,
-          "top": 1779,
-          "right": 3540,
-          "bottom": 6330
-        }
-      },
       "variant": {}
     }
   ]
