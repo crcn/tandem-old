@@ -44,7 +44,8 @@
             "align-items": "center",
             "position": "relative",
             "-webkit-app-region": "drag",
-            "background": "var(--51588fd610365)"
+            "background": "var(--51588fd610365)",
+            "padding-right": "12px"
           },
           "children": [
             {
@@ -178,6 +179,80 @@
                 }
               ],
               "metadata": {}
+            },
+            {
+              "id": "1fb4e79016876",
+              "label": "controls",
+              "is": "div",
+              "name": "element",
+              "attributes": {},
+              "style": {
+                "box-sizing": "border-box",
+                "display": "none",
+                "width": "auto",
+                "flex-grow": "0",
+                "flex-shrink": "0",
+                "position": "absolute",
+                "right": "8px"
+              },
+              "children": [
+                {
+                  "id": "1fb4e79017911",
+                  "is": "1fb4e79017899",
+                  "label": "Play Icon",
+                  "name": "component-instance",
+                  "attributes": {},
+                  "style": {
+                    "display": "none",
+                    "height": "12px"
+                  },
+                  "children": [
+                    {
+                      "id": "1fb4e79017928",
+                      "propertyName": "style",
+                      "targetIdPath": [
+                        "1fb4e79017897"
+                      ],
+                      "value": {
+                        "background": "currentColor"
+                      },
+                      "name": "override",
+                      "children": []
+                    }
+                  ],
+                  "metadata": {
+                    "bounds": {
+                      "left": 919.9806688326229,
+                      "top": 133.4037127577546,
+                      "right": 1319.980668832623,
+                      "bottom": 433.40371275775465
+                    }
+                  },
+                  "variant": {}
+                },
+                {
+                  "id": "1fb4e79017929",
+                  "is": "1fb4e79017906",
+                  "label": "Pause Icon",
+                  "name": "component-instance",
+                  "attributes": {},
+                  "style": {
+                    "display": "none",
+                    "height": "12px"
+                  },
+                  "children": [],
+                  "metadata": {
+                    "bounds": {
+                      "left": -138,
+                      "top": -1534,
+                      "right": 262,
+                      "bottom": -1234
+                    }
+                  },
+                  "variant": {}
+                }
+              ],
+              "metadata": {}
             }
           ],
           "metadata": {
@@ -275,7 +350,7 @@
           "id": "2d4f742013506",
           "name": "variant",
           "label": "Minimal",
-          "isDefault": true,
+          "isDefault": false,
           "children": [],
           "metadata": {}
         },
@@ -303,6 +378,61 @@
           "value": {
             "display": "inline-block",
             "opacity": 0
+          },
+          "name": "override",
+          "children": []
+        },
+        {
+          "id": "1fb4e79017945",
+          "name": "variant",
+          "label": "paused",
+          "isDefault": false,
+          "children": [],
+          "metadata": {}
+        },
+        {
+          "id": "1fb4e79017946",
+          "variantId": "1fb4e79017945",
+          "propertyName": "style",
+          "targetIdPath": [
+            "1fb4e79017911"
+          ],
+          "value": {
+            "display": "block"
+          },
+          "name": "override",
+          "children": []
+        },
+        {
+          "id": "1fb4e79017947",
+          "name": "variant",
+          "label": "playing",
+          "isDefault": false,
+          "children": [],
+          "metadata": {}
+        },
+        {
+          "id": "1fb4e79017948",
+          "variantId": "1fb4e79017947",
+          "propertyName": "style",
+          "targetIdPath": [
+            "1fb4e79017929"
+          ],
+          "value": {
+            "display": "block"
+          },
+          "name": "override",
+          "children": []
+        },
+        {
+          "id": "1fb4e79017949",
+          "variantId": "1fb4e79017947",
+          "propertyName": "style",
+          "targetIdPath": [
+            "1fb4e79016876"
+          ],
+          "value": {
+            "cursor": "pointer"
           },
           "name": "override",
           "children": []

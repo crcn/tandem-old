@@ -259,7 +259,7 @@
           "id": "692f56f3265",
           "name": "variant",
           "label": "start",
-          "isDefault": false,
+          "isDefault": true,
           "children": [],
           "metadata": {}
         },
@@ -280,7 +280,7 @@
           "id": "692f56f3267",
           "name": "variant",
           "label": "create project",
-          "isDefault": true,
+          "isDefault": false,
           "children": [],
           "metadata": {}
         },
@@ -566,6 +566,26 @@
         }
       },
       "variant": {}
+    },
+    {
+      "id": "1fb4e790526",
+      "label": "Element",
+      "is": "div",
+      "name": "element",
+      "attributes": {},
+      "style": {
+        "box-sizing": "border-box",
+        "display": "block"
+      },
+      "children": [],
+      "metadata": {
+        "bounds": {
+          "left": 108,
+          "top": 529,
+          "right": 805,
+          "bottom": 986
+        }
+      }
     }
   ]
 }

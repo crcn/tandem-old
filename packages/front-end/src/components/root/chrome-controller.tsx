@@ -54,6 +54,8 @@ export default (Base: React.ComponentClass<BaseChromeProps>) =>
         onMaximizeClick
       } = this;
 
+      const playing = false;
+
       let title: string = "";
 
       if (projectInfo) {
@@ -66,7 +68,11 @@ export default (Base: React.ComponentClass<BaseChromeProps>) =>
         <Base
           {...rest}
           label={title}
-          variant={cx({ unsaved })}
+          variant={cx({
+            unsaved,
+            playing: playing,
+            paused: !playing
+          })}
           headerProps={{
             onClick: onHeaderClick
           }}

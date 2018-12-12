@@ -4566,6 +4566,121 @@
         }
       },
       "variant": {}
+    },
+    {
+      "label": "Play Icon",
+      "is": "svg",
+      "style": {},
+      "attributes": {
+        "xmlns": "http://www.w3.org/2000/svg",
+        "xmlns:xlink": "http://www.w3.org/1999/xlink",
+        "version": "1.1",
+        "x": "0px",
+        "y": "0px",
+        "viewBox": "0 0 100 100",
+        "style": "enable-background:new 0 0 100 100;",
+        "xml:space": "preserve"
+      },
+      "id": "1fb4e79017899",
+      "name": "component",
+      "children": [
+        {
+          "id": "1fb4e79017897",
+          "is": "g",
+          "name": "element",
+          "attributes": {},
+          "style": {
+            "background": "currentColor"
+          },
+          "children": [
+            {
+              "id": "1fb4e79017898",
+              "is": "path",
+              "name": "element",
+              "attributes": {
+                "d": "M30.6,23.1c-4.4-2.5-7.9-0.5-7.9,4.6v13.2c0,5,0,13.3,0,18.3v13.2c0,5,3.6,7.1,7.9,4.6l11.4-6.6c4.4-2.5,11.5-6.6,15.9-9.2   l11.4-6.6c4.4-2.5,4.4-6.6,0-9.2l-11.4-6.6c-4.4-2.5-11.5-6.6-15.9-9.2L30.6,23.1z"
+              },
+              "style": {},
+              "children": [],
+              "metadata": {}
+            }
+          ],
+          "metadata": {}
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": -1384,
+          "top": -1350,
+          "right": -984,
+          "bottom": -1050
+        }
+      },
+      "variant": {}
+    },
+    {
+      "label": "Pause Icon",
+      "is": "svg",
+      "style": {},
+      "attributes": {
+        "xmlns": "http://www.w3.org/2000/svg",
+        "xmlns:xlink": "http://www.w3.org/1999/xlink",
+        "version": "1.1",
+        "x": "0px",
+        "y": "0px",
+        "viewBox": "0 0 100 100",
+        "enable-background": "new 0 0 100 100",
+        "xml:space": "preserve"
+      },
+      "id": "1fb4e79017906",
+      "name": "component",
+      "children": [
+        {
+          "id": "1fb4e79017903",
+          "is": "g",
+          "name": "element",
+          "attributes": {},
+          "style": {},
+          "children": [
+            {
+              "id": "1fb4e79017904",
+              "is": "path",
+              "name": "element",
+              "attributes": {
+                "d": "M41.523,19.54h-13.28c-2.371,0-4.291,1.92-4.291,4.291v52.338c0,2.371,1.92,4.291,4.291,4.291h13.28   c2.368,0,4.29-1.92,4.29-4.291V23.831C45.813,21.46,43.892,19.54,41.523,19.54z"
+              },
+              "style": {
+                "background": "currentColor"
+              },
+              "children": [],
+              "metadata": {}
+            },
+            {
+              "id": "1fb4e79017905",
+              "is": "path",
+              "name": "element",
+              "attributes": {
+                "d": "M71.759,19.54H58.478c-2.37,0-4.291,1.92-4.291,4.291v52.338c0,2.371,1.921,4.291,4.291,4.291h13.281   c2.369,0,4.289-1.92,4.289-4.291V23.831C76.048,21.46,74.128,19.54,71.759,19.54z"
+              },
+              "style": {
+                "background": "currentColor"
+              },
+              "children": [],
+              "metadata": {}
+            }
+          ],
+          "metadata": {}
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": -138,
+          "top": -1534,
+          "right": 262,
+          "bottom": -1234
+        }
+      },
+      "variant": {}
     }
   ]
 }
