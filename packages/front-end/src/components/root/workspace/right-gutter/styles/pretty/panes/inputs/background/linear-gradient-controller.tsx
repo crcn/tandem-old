@@ -1,6 +1,6 @@
 import * as React from "react";
-import { BaseLinearGradientPickerProps } from "./view.pc";
-import { CSSLinearGradientBackground } from "./state";
+import { BaseLinearGradientPickerProps, ColorStop } from "./view.pc";
+import { CSSLinearGradientBackground, stringifyCSSBackground } from "./state";
 import { ColorSwatchGroup } from "../../../../../../../../inputs/color/color-swatch-controller";
 
 export type Props = {
@@ -23,6 +23,12 @@ export default (Base: React.ComponentClass<BaseLinearGradientPickerProps>) =>
       return (
         <Base
           {...rest}
+          sliderProps={{
+            children: [],
+            style: {
+              backgroundImage: stringifyCSSBackground(value)
+            }
+          }}
           colorPickerProps={{
             value: "rgba(0,0,0,0)",
             onChange,

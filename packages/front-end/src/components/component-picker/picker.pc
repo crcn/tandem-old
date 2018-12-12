@@ -307,10 +307,7 @@
       "label": "Component",
       "is": "div",
       "style": {
-        "background-image": "url(\"file:///Users/crcn/Dropbox/Screenshots/Desktop.png\"),linear-gradient(rgba(200, 200, 200, 1), rgba(200, 200, 200, 1))",
-        "background-repeat": "no-repeat",
-        "background-size": "auto",
-        "background-position": "500px 0px"
+        "background-image": "linear-gradient(rgba(200, 200, 200, 1), rgba(200, 200, 200, 1))"
       },
       "attributes": {},
       "id": "babf9bd54",

@@ -122,7 +122,9 @@
               "label": "linear gradient button",
               "name": "component-instance",
               "attributes": {},
-              "style": {},
+              "style": {
+                "display": "none"
+              },
               "children": [
                 {
                   "id": "641b17c24917",
@@ -695,7 +697,8 @@
         "width": "12px",
         "height": "12px",
         "position": "absolute",
-        "box-shadow": "inset  0px 0px 0px 1px rgba(255, 255, 255, 1)"
+        "box-shadow": "inset  0px 0px 0px 1px rgba(255, 255, 255, 1)",
+        "cursor": "pointer"
       },
       "attributes": {},
       "id": "641b17c22220",
