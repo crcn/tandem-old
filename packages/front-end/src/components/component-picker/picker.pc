@@ -307,9 +307,10 @@
       "label": "Component",
       "is": "div",
       "style": {
-        "background-image": "url(\"file:///Users/crcn/Dropbox/Screenshots/Desktop.png\"), url(\"file:///Users/crcn/Dropbox/Screenshots/Captura de pantalla 2018-02-14 12.03.05.png\")",
-        "background-repeat": "repeat-x, repeat",
-        "background-size": "auto, auto"
+        "background-image": "url(\"file:///Users/crcn/Dropbox/Screenshots/Desktop.png\")",
+        "background-repeat": "no-repeat",
+        "background-size": "auto",
+        "background-position": "500px 0px"
       },
       "attributes": {},
       "id": "babf9bd54",
@@ -319,8 +320,8 @@
         "bounds": {
           "left": -2551,
           "top": 1779,
-          "right": 3055,
-          "bottom": 5821
+          "right": 3540,
+          "bottom": 6330
         }
       },
       "variant": {}

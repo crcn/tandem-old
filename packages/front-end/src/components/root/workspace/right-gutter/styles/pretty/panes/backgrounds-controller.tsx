@@ -60,9 +60,19 @@ export default (Base: React.ComponentClass<BaseBackgroundsProps>) =>
         )
       );
     };
+    onRemove = (index: number) => {
+      const backgrounds = arraySplice(
+        computeCSSBackgrounds(this.props.computedStyleInfo),
+        index,
+        1
+      );
+      const backgroundStyle = getCSSBackgroundsStyle(backgrounds);
+      this.props.dispatch(cssPropertiesChangeCompleted(backgroundStyle));
+      return backgroundStyle;
+    };
     render() {
       const { computedStyleInfo, documentColors, globalVariables } = this.props;
-      const { onChange, onChangeComplete, onPlusButtonClick } = this;
+      const { onChange, onChangeComplete, onPlusButtonClick, onRemove } = this;
 
       const { sourceNode } = computedStyleInfo;
 
@@ -84,6 +94,7 @@ export default (Base: React.ComponentClass<BaseBackgroundsProps>) =>
           <BackgroundItem
             key={i}
             value={background}
+            onRemove={() => onRemove(i)}
             globalVariables={globalVariables}
             onChange={value => onChange(value, i)}
             onChangeComplete={value => onChangeComplete(value, i)}

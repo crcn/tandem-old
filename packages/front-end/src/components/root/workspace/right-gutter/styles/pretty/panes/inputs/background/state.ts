@@ -41,6 +41,8 @@ export type CSSImageBackground = {
 
   // https://www.w3schools.com/csSref/css3_pr_background-size.asp
   size?: string;
+
+  position?: string;
 } & CSSBaseBackground<CSSBackgroundType.IMAGE>;
 
 export type CSSBackground =
@@ -66,7 +68,8 @@ export const computeCSSBackgrounds = ({
         newBackground = {
           ...newBackground,
           repeat: getCSSParamValue(style["background-repeat"], i) || "repeat",
-          size: getCSSParamValue(style["background-size"], i) || "auto"
+          size: getCSSParamValue(style["background-size"], i) || "auto",
+          position: getCSSParamValue(style["background-position"], i) || "0px"
         };
         break;
       }
@@ -226,6 +229,11 @@ export const getCSSBackgroundsStyle = (backgrounds: CSSBackground[]) => {
           background.repeat || "repeat"
         );
         style = addStyle(style, "background-size", background.size || "auto");
+        style = addStyle(
+          style,
+          "background-position",
+          background.position || "0px"
+        );
         break;
       }
       case CSSBackgroundType.LINEAR_GRADIENT: {

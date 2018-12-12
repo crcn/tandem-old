@@ -19,13 +19,27 @@ export type Props = {
 
 type State = {
   backgroundType: CSSBackgroundType;
+  _backgroundType?: CSSBackgroundType;
 };
 
 export default (Base: React.ComponentClass<BaseBackgroundPickerProps>) =>
   class BackgroundPickerController extends React.PureComponent<Props, State> {
     state = {
-      backgroundType: CSSBackgroundType.SOLID
+      backgroundType: this.props.value.type
     };
+    static getDerivedStateFromProps(nextProps: Props, prevState: State): State {
+      let newState = prevState;
+
+      if (nextProps.value.type !== prevState._backgroundType) {
+        newState = {
+          ...prevState,
+          backgroundType: nextProps.value.type,
+          _backgroundType: nextProps.value.type
+        };
+      }
+
+      return newState === prevState ? prevState : null;
+    }
     onTypeClick = (backgroundType: CSSBackgroundType) => {
       this.setState({ backgroundType });
     };
