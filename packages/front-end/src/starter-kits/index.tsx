@@ -10,12 +10,15 @@ import { StarterKitFormOptions } from "./form.pc";
 import { Props as StartKitOptionsProps } from "./form-controller";
 
 const templatesById = {
-  [blankTemplate.id]: blankTemplate,
-  [reactTemplate.id]: reactTemplate
+  [reactTemplate.id]: reactTemplate,
+  [blankTemplate.id]: blankTemplate
 };
 
 const fileCreatorsById = {
   [reactTemplate.id]: createReactFiles,
+
+  // Note that this MUST go last since it doesn't have any additional setup. I.e: requires
+  // a more technical user to handle.
   [blankTemplate.id]: createBlankFiles
 };
 
