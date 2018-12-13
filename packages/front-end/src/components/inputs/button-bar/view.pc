@@ -20,7 +20,7 @@
         "padding-right": "1px",
         "padding-bottom": "1px",
         "box-sizing": "border-box",
-        "height": "24px"
+        "height": "22px"
       },
       "attributes": {},
       "id": "6489655782833",
@@ -198,7 +198,8 @@
                 "box-sizing": "border-box",
                 "width": "100%",
                 "border-top-right-radius": "2px",
-                "border-bottom-right-radius": "2px"
+                "border-bottom-right-radius": "2px",
+                "height": "22px"
               },
               "children": [
                 {
@@ -242,10 +243,10 @@
             "display": "block",
             "pointer-events": "none",
             "width": "100%",
-            "height": "100%",
             "position": "absolute",
             "left": "0px",
-            "top": "0px"
+            "top": "0px",
+            "height": "100%"
           },
           "children": [],
           "metadata": {},

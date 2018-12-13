@@ -526,9 +526,13 @@ export const createPaperclipVirtualDOMtranslator = (
               return null;
             }
             if (trigger.source.type === PCVariantTriggerSourceType.STATE) {
-              return `._${component.id}:${
-                trigger.source.state
-              } ${targetSelector}`;
+              let prefix = `._${component.id}:${trigger.source.state}`;
+
+              if (targetSelector !== `._${component.id}`) {
+                return `${prefix} ${targetSelector}`;
+              }
+
+              return prefix;
             }
           })
           .filter(Boolean);

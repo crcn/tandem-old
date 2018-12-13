@@ -1,6 +1,6 @@
 {
   "id": "296b92da21786",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "metadata": {},
   "name": "module",
   "children": [
@@ -40,17 +40,22 @@
           "children": [
             {
               "id": "b408c1ca3960",
-              "variant": {},
+              "variant": {
+                "c475e80b836": false
+              },
               "is": "d65d17fd4015",
               "name": "component-instance",
               "attributes": {},
               "style": {
                 "width": "100%",
                 "height": "150px",
-                "border": "1px solid rgba(0,0,0,0.1)",
                 "border-radius": "2px",
                 "box-sizing": "border-box",
-                "resize": "none"
+                "resize": "none",
+                "border-left": "0px none",
+                "border-top": "0px none",
+                "border-right": "0px none",
+                "border-bottom": "0px none"
               },
               "children": [],
               "metadata": {},

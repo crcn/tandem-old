@@ -1,6 +1,6 @@
 {
   "id": "76b155a0907062",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "metadata": {},
   "name": "module",
   "children": [
@@ -18,7 +18,38 @@
       "attributes": {},
       "id": "7149f8199122",
       "name": "component",
-      "children": [],
+      "children": [
+        {
+          "id": "6507b7e31381",
+          "name": "variant",
+          "label": "focus",
+          "isDefault": true,
+          "children": [],
+          "metadata": {}
+        },
+        {
+          "id": "6507b7e31382",
+          "variantId": "6507b7e31381",
+          "propertyName": "style",
+          "targetIdPath": [],
+          "value": {
+            "box-shadow": "inset  0px 0px 0px 1px var(--24ce1e4d13456)"
+          },
+          "name": "override",
+          "children": []
+        },
+        {
+          "id": "6507b7e31383",
+          "name": "variant-trigger",
+          "targetVariantId": "6507b7e31381",
+          "source": {
+            "type": 1,
+            "state": "focus"
+          },
+          "children": [],
+          "metadata": {}
+        }
+      ],
       "metadata": {
         "bounds": {
           "left": 384,

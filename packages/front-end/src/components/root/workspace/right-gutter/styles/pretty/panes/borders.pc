@@ -1871,8 +1871,10 @@
                       "attributes": {},
                       "style": {
                         "display": "block",
+                        "color": "var(--d8f6340b1442)",
                         "height": "1em",
-                        "color": "var(--d8f6340b1442)"
+                        "position": "relative",
+                        "top": "2px"
                       },
                       "children": [
                         {
@@ -1948,7 +1950,9 @@
                       "style": {
                         "display": "block",
                         "height": "1em",
-                        "color": "var(--d8f6340b1442)"
+                        "color": "var(--d8f6340b1442)",
+                        "position": "relative",
+                        "top": "2px"
                       },
                       "children": [
                         {
@@ -2020,7 +2024,9 @@
                       "style": {
                         "display": "block",
                         "height": "1em",
-                        "color": "var(--d8f6340b1442)"
+                        "color": "var(--d8f6340b1442)",
+                        "position": "relative",
+                        "top": "2px"
                       },
                       "children": [
                         {
@@ -2090,7 +2096,9 @@
                       "style": {
                         "display": "block",
                         "height": "1em",
-                        "color": "var(--d8f6340b1442)"
+                        "color": "var(--d8f6340b1442)",
+                        "position": "relative",
+                        "top": "2px"
                       },
                       "children": [
                         {

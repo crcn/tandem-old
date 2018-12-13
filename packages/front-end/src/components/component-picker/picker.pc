@@ -855,15 +855,43 @@
     },
     {
       "id": "8667fc00491",
-      "label": "Element",
+      "label": "Preview",
       "is": "div",
       "name": "element",
       "attributes": {},
       "style": {
         "box-sizing": "border-box",
-        "display": "block"
+        "display": "block",
+        "border-left": "0px",
+        "border-top": "0px",
+        "border-right": "0px",
+        "border-bottom": "0px"
       },
       "children": [
+        {
+          "id": "f034045a533",
+          "is": "936f29271359",
+          "label": "Component Popdown Picker",
+          "name": "component-instance",
+          "attributes": {},
+          "style": {
+            "position": "absolute",
+            "left": "50%",
+            "top": "200px"
+          },
+          "children": [],
+          "metadata": {
+            "bounds": {
+              "left": 2818,
+              "top": 1210,
+              "right": 3623,
+              "bottom": 1759
+            }
+          },
+          "variant": {
+            "e42d628f657": false
+          }
+        },
         {
           "id": "8667fc00397",
           "is": "936f29271359",
@@ -892,8 +920,8 @@
         "bounds": {
           "left": 2455,
           "top": 1648,
-          "right": 3894,
-          "bottom": 2537
+          "right": 3007,
+          "bottom": 2216
         }
       }
     }

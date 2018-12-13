@@ -13,7 +13,7 @@
         "width": "100%",
         "text-align": "center",
         "position": "relative",
-        "height": "22px",
+        "height": "20px",
         "border-right": "1px solid var(--d8f6340b1442)",
         "color": "rgba(123, 123, 123, 1)",
         "padding-left": "6px",
