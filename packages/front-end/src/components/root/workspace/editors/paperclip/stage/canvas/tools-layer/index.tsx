@@ -43,6 +43,7 @@ import { EditText } from "./edit-text.pc";
 
 export type ToolsLayerComponentProps = {
   editorWindow: EditorWindow;
+  selectedComponentId: string;
   editMode: EditMode;
   zoom: number;
   toolType: ToolType;
@@ -68,6 +69,7 @@ export class ToolsLayerComponent extends React.PureComponent<
       sourceNodeInspector,
       activeEditorUri,
       openFiles,
+      selectedComponentId,
       zoom,
       dispatch,
       editMode,
@@ -94,6 +96,7 @@ export class ToolsLayerComponent extends React.PureComponent<
     return (
       <div className="m-tools-layer">
         <InsertLayer
+          selectedComponentId={selectedComponentId}
           activeEditorUri={activeEditorUri}
           canvas={canvas}
           zoom={zoom}

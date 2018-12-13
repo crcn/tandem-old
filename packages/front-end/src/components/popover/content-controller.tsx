@@ -4,11 +4,19 @@ import { portal } from "../portal/controller";
 import { Bounds, mergeBounds, getBoundsSize, Point } from "tandem-common";
 import { BaseContentProps } from "./view.pc";
 
-const calcPortalPosition = (anchorRect: Bounds, portalRect: Bounds) => {
+const calcPortalPosition = (
+  centered: boolean,
+  anchorRect: Bounds,
+  portalRect: Bounds
+) => {
   const portalSize = getBoundsSize(portalRect);
   const anchorSize = getBoundsSize(anchorRect);
   return {
-    left: Math.min(anchorRect.left, window.innerWidth - portalSize.width),
+    left: Math.min(
+      anchorRect.left +
+        (centered ? (anchorRect.right - anchorRect.left) / 2 : 0),
+      window.innerWidth - portalSize.width
+    ),
     top: Math.min(
       anchorRect.top + anchorSize.height,
       window.innerHeight - portalSize.height
@@ -22,6 +30,7 @@ let _popoverCount = 0;
 
 export type Props = {
   onShouldClose: any;
+  centered?: boolean;
   anchorRect: Bounds;
   children?: any;
   updateContentPosition?: (position: Point, rect: Bounds) => Point;
@@ -96,6 +105,7 @@ export default compose<any, Props>(
   withState(`style`, `setStyle`, null),
   portal({
     didMount: ({
+      centered,
       anchorRect,
       setStyle,
       updateContentPosition
@@ -110,7 +120,7 @@ export default compose<any, Props>(
       const popoverRect = calcInnerBounds(portalMount.children[0].children[0]
         .children[0] as HTMLElement);
 
-      let position = calcPortalPosition(anchorRect, popoverRect);
+      let position = calcPortalPosition(centered, anchorRect, popoverRect);
 
       if (updateContentPosition) {
         position = updateContentPosition(position, popoverRect);

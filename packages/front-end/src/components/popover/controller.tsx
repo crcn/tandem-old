@@ -5,6 +5,7 @@ import { BasePopoverProps } from "./view.pc";
 
 export type Props = {
   open: boolean;
+  centered?: boolean;
   anchorRect?: Bounds;
   onShouldClose: any;
   updateContentPosition?: (point: Point, popoverRect: Bounds) => Point;
@@ -35,6 +36,7 @@ export default (Base: React.ComponentClass<BasePopoverProps>) => {
     }
     render() {
       const {
+        centered,
         open,
         onShouldClose,
         updateContentPosition,
@@ -49,6 +51,7 @@ export default (Base: React.ComponentClass<BasePopoverProps>) => {
           contentProps: {
             updateContentPosition,
             onShouldClose,
+            centered,
             anchorRect,
             style: {
               display: "block",

@@ -9,6 +9,7 @@ import { InspectorNode } from "paperclip";
 type InsertLayerOuterProps = {
   toolType: ToolType;
   canvas: Canvas;
+  selectedComponentId: string;
   zoom;
   editorWindow: EditorWindow;
   dispatch: Dispatch<any>;
@@ -63,7 +64,8 @@ export class InsertLayer extends React.PureComponent<
       zoom,
       toolType,
       editorWindow,
-      activeEditorUri
+      activeEditorUri,
+      selectedComponentId
     } = this.props;
 
     if (editorWindow.activeFilePath !== activeEditorUri) {
@@ -79,8 +81,16 @@ export class InsertLayer extends React.PureComponent<
     }
     const translate = canvas.translate;
 
+    let cursor: string = "default";
+
+    if (toolType === ToolType.ELEMENT || toolType === ToolType.TEXT) {
+      cursor = "crosshair";
+    } else if (toolType === ToolType.COMPONENT && selectedComponentId) {
+      cursor = "crosshair";
+    }
+
     const outerStyle = {
-      cursor: CURSOR_MAP[toolType] || "default",
+      cursor,
       transform: `translate(${-translate.left /
         translate.zoom}px, ${-translate.top / translate.zoom}px) scale(${1 /
         translate.zoom}) translateZ(0)`,

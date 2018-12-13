@@ -2210,6 +2210,7 @@ export const canvasReducer = (state: RootState, action: Action) => {
       switch (toolType) {
         case ToolType.COMPONENT: {
           const componentId = state.selectedComponentId;
+          if (!componentId) return state;
           state = { ...state, selectedComponentId: null };
           const component = getPCNode(componentId, state.graph) as PCComponent;
 

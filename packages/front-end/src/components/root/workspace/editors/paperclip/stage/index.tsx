@@ -24,6 +24,7 @@ export type StageOuterProps = {
   selectedInspectorNodes: InspectorNode[];
   dependency: Dependency<any>;
   dispatch: Dispatch<any>;
+  selectedComponentId: string;
   graph: DependencyGraph;
   frames: Frame[];
   activeFilePath: string;
@@ -48,6 +49,7 @@ export class StageComponent extends React.PureComponent<StageOuterProps> {
       selectedInspectorNodes,
       hoveringInspectorNodes,
       activeFilePath,
+      selectedComponentId,
       graph,
       documents
     } = this.props;
@@ -55,6 +57,7 @@ export class StageComponent extends React.PureComponent<StageOuterProps> {
       <div className="m-stage">
         <CanvasComponent
           activeFilePath={activeFilePath}
+          selectedComponentId={selectedComponentId}
           frames={frames}
           editMode={editMode}
           toolType={toolType}

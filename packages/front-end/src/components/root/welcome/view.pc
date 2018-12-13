@@ -586,6 +586,304 @@
           "bottom": 986
         }
       }
+    },
+    {
+      "id": "4cc9edbe648",
+      "is": "97a34b151010442",
+      "label": "Comment",
+      "name": "component-instance",
+      "attributes": {},
+      "style": {},
+      "children": [
+        {
+          "id": "4cc9edbe656",
+          "variantId": null,
+          "propertyName": "text",
+          "targetIdPath": [
+            "97a34b151010441"
+          ],
+          "value": "TODO:",
+          "name": "override",
+          "children": []
+        },
+        {
+          "slotId": "88156175335",
+          "id": "4cc9edbe660",
+          "children": [
+            {
+              "id": "4cc9edbe659",
+              "label": "Element",
+              "is": "div",
+              "name": "element",
+              "attributes": {},
+              "style": {
+                "box-sizing": "border-box",
+                "display": "block"
+              },
+              "children": [
+                {
+                  "id": "4cc9edbe663",
+                  "name": "text",
+                  "label": "Text",
+                  "value": "TODO:",
+                  "style": {},
+                  "children": [],
+                  "metadata": {}
+                },
+                {
+                  "id": "4cc9edbe669",
+                  "name": "text",
+                  "label": "Text",
+                  "value": "- Welcome screen for new users",
+                  "style": {
+                    "display": "block"
+                  },
+                  "children": [],
+                  "metadata": {}
+                },
+                {
+                  "id": "4cc9edbe671",
+                  "name": "text",
+                  "label": "Text",
+                  "value": "- Welcome screen should have \"display on start up\"",
+                  "style": {
+                    "display": "block"
+                  },
+                  "children": [],
+                  "metadata": {}
+                }
+              ],
+              "metadata": {}
+            }
+          ],
+          "metadata": {},
+          "name": "plug"
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": 907.2698238048147,
+          "top": 114.61059531458318,
+          "right": 1290.4406529319922,
+          "bottom": 315.33193269028766
+        }
+      },
+      "variant": {}
+    },
+    {
+      "id": "4cc9edbe673",
+      "label": "Element",
+      "is": "div",
+      "name": "element",
+      "attributes": {},
+      "style": {
+        "box-sizing": "border-box",
+        "display": "flex",
+        "flex-direction": "row"
+      },
+      "children": [
+        {
+          "id": "4cc9edbe677",
+          "label": "Left",
+          "is": "div",
+          "name": "element",
+          "attributes": {},
+          "style": {
+            "box-sizing": "border-box",
+            "display": "block",
+            "height": "100%",
+            "width": "100%",
+            "border-right": "1px solid"
+          },
+          "children": [
+            {
+              "id": "4cc9edbe691",
+              "label": "Center",
+              "is": "div",
+              "name": "element",
+              "attributes": {},
+              "style": {
+                "box-sizing": "border-box",
+                "display": "block"
+              },
+              "children": [
+                {
+                  "id": "4cc9edbe693",
+                  "label": "Controls",
+                  "is": "div",
+                  "name": "element",
+                  "attributes": {},
+                  "style": {
+                    "box-sizing": "border-box",
+                    "display": "block"
+                  },
+                  "children": [],
+                  "metadata": {}
+                },
+                {
+                  "id": "4cc9edbe703",
+                  "name": "text",
+                  "label": "Text",
+                  "value": "Videos",
+                  "style": {},
+                  "children": [],
+                  "metadata": {}
+                },
+                {
+                  "id": "4cc9edbe701",
+                  "name": "text",
+                  "label": "Text",
+                  "value": "Documentation",
+                  "style": {},
+                  "children": [],
+                  "metadata": {}
+                },
+                {
+                  "id": "4cc9edbe699",
+                  "name": "text",
+                  "label": "Text",
+                  "value": "Updates",
+                  "style": {},
+                  "children": [],
+                  "metadata": {}
+                },
+                {
+                  "id": "4cc9edbe697",
+                  "name": "text",
+                  "label": "Text",
+                  "value": "Tutorial",
+                  "style": {},
+                  "children": [],
+                  "metadata": {}
+                }
+              ],
+              "metadata": {}
+            }
+          ],
+          "metadata": {}
+        },
+        {
+          "id": "4cc9edbe675",
+          "label": "Right",
+          "is": "div",
+          "name": "element",
+          "attributes": {},
+          "style": {
+            "box-sizing": "border-box",
+            "display": "flex",
+            "height": "100%",
+            "width": "200px",
+            "flex-direction": "column"
+          },
+          "children": [
+            {
+              "id": "4cc9edbe681",
+              "label": "Files",
+              "is": "div",
+              "name": "element",
+              "attributes": {},
+              "style": {
+                "box-sizing": "border-box",
+                "display": "block",
+                "height": "100%"
+              },
+              "children": [],
+              "metadata": {}
+            },
+            {
+              "id": "4cc9edbe679",
+              "label": "Footer",
+              "is": "div",
+              "name": "element",
+              "attributes": {},
+              "style": {
+                "box-sizing": "border-box",
+                "display": "flex"
+              },
+              "children": [
+                {
+                  "id": "4cc9edbe685",
+                  "label": "New file button",
+                  "is": "div",
+                  "name": "element",
+                  "attributes": {},
+                  "style": {
+                    "box-sizing": "border-box",
+                    "display": "block",
+                    "width": "100%",
+                    "text-align": "center",
+                    "padding-left": "12px",
+                    "padding-top": "6px",
+                    "padding-right": "12px",
+                    "padding-bottom": "6px"
+                  },
+                  "children": [
+                    {
+                      "id": "4cc9edbe689",
+                      "name": "text",
+                      "label": "Text",
+                      "value": "New...",
+                      "style": {},
+                      "children": [],
+                      "metadata": {},
+                      "styleMixins": {
+                        "dc3b39eb1275": {
+                          "priority": 0
+                        }
+                      }
+                    }
+                  ],
+                  "metadata": {}
+                },
+                {
+                  "id": "4cc9edbe683",
+                  "label": "open file button",
+                  "is": "div",
+                  "name": "element",
+                  "attributes": {},
+                  "style": {
+                    "box-sizing": "border-box",
+                    "display": "block",
+                    "width": "100%",
+                    "text-align": "center",
+                    "padding-left": "12px",
+                    "padding-top": "6px",
+                    "padding-right": "12px",
+                    "padding-bottom": "6px"
+                  },
+                  "children": [
+                    {
+                      "id": "4cc9edbe687",
+                      "name": "text",
+                      "label": "Text",
+                      "value": "Open",
+                      "style": {},
+                      "children": [],
+                      "metadata": {},
+                      "styleMixins": {
+                        "dc3b39eb1275": {
+                          "priority": 0
+                        }
+                      }
+                    }
+                  ],
+                  "metadata": {}
+                }
+              ],
+              "metadata": {}
+            }
+          ],
+          "metadata": {}
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": 1124,
+          "top": 675,
+          "right": 1834,
+          "bottom": 1100
+        }
+      }
     }
   ]
 }

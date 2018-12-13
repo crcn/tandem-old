@@ -116,6 +116,135 @@
         }
       },
       "variant": {}
+    },
+    {
+      "label": "Tooltip",
+      "is": "div",
+      "style": {
+        "box-sizing": "border-box",
+        "display": "flex",
+        "flex-direction": "column"
+      },
+      "attributes": {},
+      "id": "936f2927707",
+      "name": "component",
+      "children": [
+        {
+          "id": "936f2927704",
+          "label": "arrow container",
+          "is": "div",
+          "name": "element",
+          "attributes": {},
+          "style": {
+            "box-sizing": "border-box",
+            "display": "block",
+            "width": "100%",
+            "height": "12px",
+            "flex-shrink": "0"
+          },
+          "children": [
+            {
+              "id": "936f2927705",
+              "label": "arrow",
+              "is": "div",
+              "name": "element",
+              "attributes": {},
+              "style": {
+                "display": "block",
+                "border-top": "12px solid rgba(255, 0, 0, 0)",
+                "border-right": "12px solid rgba(255, 0, 0, 0)",
+                "border-bottom": "12px solid var(--bc891e755312)",
+                "border-left": "12px solid rgba(255, 0, 0, 0)",
+                "box-sizing": "border-box",
+                "left": "50%",
+                "position": "absolute",
+                "filter": "drop-shadow(0px -1px 0px var(--30f4693267675))",
+                "transform": "translate(-50%, calc(-50% + 1px))"
+              },
+              "children": [],
+              "metadata": {}
+            }
+          ],
+          "metadata": {}
+        },
+        {
+          "id": "936f2927706",
+          "label": "Card",
+          "is": "div",
+          "name": "element",
+          "attributes": {},
+          "style": {
+            "background-image": "linear-gradient(var(--bc891e755312), var(--bc891e755312))",
+            "display": "flex",
+            "width": "100%",
+            "height": "100%",
+            "border-left": "1px solid var(--30f4693267675)",
+            "border-top": "1px solid var(--30f4693267675)",
+            "border-right": "1px solid var(--30f4693267675)",
+            "border-bottom": "1px solid var(--30f4693267675)",
+            "box-sizing": "border-box",
+            "border-top-left-radius": "2px",
+            "border-top-right-radius": "2px",
+            "border-bottom-left-radius": "2px",
+            "border-bottom-right-radius": "2px"
+          },
+          "children": [
+            {
+              "id": "936f2927712",
+              "label": "Content Wrapper",
+              "is": "div",
+              "name": "element",
+              "attributes": {},
+              "style": {
+                "box-sizing": "border-box",
+                "display": "block",
+                "padding-left": "12px",
+                "padding-top": "12px",
+                "padding-right": "12px",
+                "padding-bottom": "12px",
+                "width": "100%",
+                "height": "100%",
+                "position": "relative"
+              },
+              "children": [
+                {
+                  "id": "936f2927716",
+                  "children": [
+                    {
+                      "id": "936f2927714",
+                      "name": "text",
+                      "label": "Text",
+                      "value": "Some content",
+                      "style": {},
+                      "children": [],
+                      "metadata": {},
+                      "styleMixins": {
+                        "dc3b39eb1275": {
+                          "priority": 0
+                        }
+                      }
+                    }
+                  ],
+                  "metadata": {},
+                  "name": "slot",
+                  "label": "content"
+                }
+              ],
+              "metadata": {}
+            }
+          ],
+          "metadata": {}
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": 58,
+          "top": 297,
+          "right": 393,
+          "bottom": 510
+        }
+      },
+      "variant": {}
     }
   ]
 }

@@ -17,19 +17,19 @@ export default (Base: React.ComponentClass<BaseModalProps>) =>
     render() {
       const { root, dispatch } = this.props;
       const { onBackgroundClick } = this;
-      if (root.toolType === ToolType.COMPONENT && !root.selectedComponentId) {
-        return (
-          <Base
-            backgroundProps={{
-              onClick: onBackgroundClick
-            }}
-            pickerProps={{
-              root,
-              dispatch
-            }}
-          />
-        );
-      }
+      // if (root.toolType === ToolType.COMPONENT && !root.selectedComponentId) {
+      //   return (
+      //     <Base
+      //       backgroundProps={{
+      //         onClick: onBackgroundClick
+      //       }}
+      //       pickerProps={{
+      //         root,
+      //         dispatch
+      //       }}
+      //     />
+      //   );
+      // }
       return null;
     }
   };

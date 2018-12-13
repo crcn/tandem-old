@@ -11,12 +11,15 @@ import { ToolType, EditorWindow } from "../../../../../state";
 import { Dispatch } from "redux";
 import { BaseToolbarProps } from "./view.pc";
 import { EditorTab } from "./tab.pc";
+import { DependencyGraph } from "paperclip";
 
 export type Props = {
   editorWindow: EditorWindow;
   dispatch: Dispatch<any>;
+  selectedComponentId: string;
   selectedTool: ToolType;
   active: boolean;
+  graph: DependencyGraph;
 };
 
 export default (Base: React.ComponentClass<BaseToolbarProps>) =>
@@ -45,13 +48,26 @@ export default (Base: React.ComponentClass<BaseToolbarProps>) =>
       this.props.dispatch(editorTabRightClicked(event, uri));
     };
 
+    onComponentPopdownClose = () => {
+      // HACK to change tool type
+      this.props.dispatch(toolbarToolClicked(ToolType.POINTER));
+    };
+
     render() {
-      const { editorWindow, selectedTool, active } = this.props;
+      const {
+        dispatch,
+        graph,
+        editorWindow,
+        selectedTool,
+        active,
+        selectedComponentId
+      } = this.props;
       const {
         onTabCloseButtonClick,
         onTabClick,
         onPointerClick,
         onTextClick,
+        onComponentPopdownClose,
         onComponentClick,
         onElementClick,
         onRightClickEditorTab
@@ -94,10 +110,19 @@ export default (Base: React.ComponentClass<BaseToolbarProps>) =>
             })
           }}
           componentProps={{
+            centered: true,
+            open: selectedTool === ToolType.COMPONENT && !selectedComponentId,
+            onShouldClose: onComponentPopdownClose
+          }}
+          componentIconProps={{
             onClick: onComponentClick,
             variant: cx({
               selected: selectedTool === ToolType.COMPONENT
             })
+          }}
+          componentPopdownPickerProps={{
+            graph,
+            dispatch
           }}
           elementProps={{
             onClick: onElementClick,

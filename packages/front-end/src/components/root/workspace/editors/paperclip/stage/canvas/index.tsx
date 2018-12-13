@@ -41,6 +41,7 @@ export type CanvasOuterProps = {
   frames: Frame[];
   toolType: ToolType;
   documents: SyntheticDocument[];
+  selectedComponentId: string;
   sourceNodeInspector: InspectorNode;
   openFiles: OpenFile[];
   hoveringInspectorNodes: InspectorNode[];
@@ -82,6 +83,7 @@ const BaseCanvasComponent = ({
   editMode,
   setCanvasOuter,
   editorWindow,
+  selectedComponentId,
   activeFilePath,
   setCanvasContainer,
   onWheel,
@@ -159,6 +161,7 @@ const BaseCanvasComponent = ({
                 />
                 <ToolsLayerComponent
                   toolType={toolType}
+                  selectedComponentId={selectedComponentId}
                   editMode={editMode}
                   activeEditorUri={activeFilePath}
                   openFiles={openFiles}

@@ -1629,8 +1629,6 @@ export const persistRawCSSText = <TState extends PCEditorState>(
   state: TState
 ) => {
   const newStyle = parseStyle(text || "");
-
-  console.log("NEW STYLE", newStyle);
   return persistInspectorNodeStyle(newStyle, node, variant, state);
 };
 

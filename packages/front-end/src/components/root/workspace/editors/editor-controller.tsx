@@ -50,8 +50,10 @@ export default (Base: React.ComponentClass<BaseEditorProps>) =>
       if (!fileCacheItem || !fileCacheItem.content) {
         return null;
       }
+      const graph = root.graph;
 
       const selectedTool = root.toolType;
+      const selectedComponentId = root.selectedComponentId;
 
       let stage = null;
 
@@ -66,6 +68,7 @@ export default (Base: React.ComponentClass<BaseEditorProps>) =>
           stage = (
             <PaperclipStageComponent
               editMode={root.editMode}
+              selectedComponentId={selectedComponentId}
               sourceNodeInspector={root.sourceNodeInspector}
               openFiles={root.openFiles}
               documents={root.documents}
@@ -110,10 +113,12 @@ export default (Base: React.ComponentClass<BaseEditorProps>) =>
       return (
         <Base
           toolbarProps={{
+            graph,
             dispatch,
             editorWindow,
             selectedTool,
-            active: root.activeEditorFilePath === editorWindow.activeFilePath
+            active: root.activeEditorFilePath === editorWindow.activeFilePath,
+            selectedComponentId
           }}
           contentProps={{ children: stage }}
         />

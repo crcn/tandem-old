@@ -185,40 +185,86 @@
               "label": "element"
             },
             {
-              "id": "ab406a6b770939",
-              "variant": {},
-              "is": "3ee7fcc51260",
+              "id": "936f29271285",
+              "is": "9b7b527f175442",
+              "label": "component",
               "name": "component-instance",
-              "attributes": {
-                "title": "insert component tool"
-              },
-              "style": {
-                "height": "20px",
-                "position": "relative",
-                "top": "1px",
-                "cursor": "pointer"
-              },
+              "attributes": {},
+              "style": {},
               "children": [
                 {
-                  "slotId": "3ee7fcc51267",
-                  "id": "637b73df614",
+                  "slotId": "c00d8561361",
+                  "id": "936f29271314",
                   "children": [
                     {
-                      "id": "637b73df613",
-                      "is": "bc641d484882",
-                      "label": "Puzzle Icon",
+                      "id": "ab406a6b770939",
+                      "variant": {},
+                      "is": "3ee7fcc51260",
+                      "name": "component-instance",
+                      "attributes": {
+                        "title": "insert component tool"
+                      },
+                      "style": {
+                        "height": "20px",
+                        "position": "relative",
+                        "top": "1px",
+                        "cursor": "pointer"
+                      },
+                      "children": [
+                        {
+                          "slotId": "3ee7fcc51267",
+                          "id": "637b73df614",
+                          "children": [
+                            {
+                              "id": "637b73df613",
+                              "is": "bc641d484882",
+                              "label": "Puzzle Icon",
+                              "name": "component-instance",
+                              "attributes": {},
+                              "style": {
+                                "height": "23px"
+                              },
+                              "children": [],
+                              "metadata": {
+                                "bounds": {
+                                  "left": -1257,
+                                  "top": 828,
+                                  "right": -857,
+                                  "bottom": 1128
+                                }
+                              },
+                              "variant": {}
+                            }
+                          ],
+                          "metadata": {},
+                          "name": "plug"
+                        }
+                      ],
+                      "metadata": {},
+                      "label": "component icon"
+                    }
+                  ],
+                  "metadata": {},
+                  "name": "plug"
+                },
+                {
+                  "slotId": "e6638364254",
+                  "id": "936f29271546",
+                  "children": [
+                    {
+                      "id": "936f29271452",
+                      "is": "936f29271359",
+                      "label": "Component Popdown Picker",
                       "name": "component-instance",
                       "attributes": {},
-                      "style": {
-                        "height": "23px"
-                      },
+                      "style": {},
                       "children": [],
                       "metadata": {
                         "bounds": {
-                          "left": -1257,
-                          "top": 828,
-                          "right": -857,
-                          "bottom": 1128
+                          "left": 853,
+                          "top": -363,
+                          "right": 1658,
+                          "bottom": 186
                         }
                       },
                       "variant": {}
@@ -228,8 +274,15 @@
                   "name": "plug"
                 }
               ],
-              "metadata": {},
-              "label": "component"
+              "metadata": {
+                "bounds": {
+                  "left": 227,
+                  "top": 361,
+                  "right": 327,
+                  "bottom": 461
+                }
+              },
+              "variant": {}
             }
           ],
           "metadata": {
