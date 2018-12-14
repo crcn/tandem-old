@@ -132,7 +132,8 @@
           "name": "component-instance",
           "attributes": {},
           "style": {
-            "display": "none"
+            "display": "flex",
+            "flex-shrink": "0"
           },
           "children": [],
           "metadata": {

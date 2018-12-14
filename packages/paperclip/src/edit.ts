@@ -1716,7 +1716,13 @@ export const persistCSSProperties = <TState extends PCEditorState>(
   variant: PCVariant,
   state: TState
 ) => {
-  state = persistInspectorNodeStyle(properties, inspectorNode, variant, state);
+  state = persistInspectorNodeStyle(
+    properties,
+    inspectorNode,
+    variant,
+    state,
+    false
+  );
   return state;
 };
 
@@ -1757,7 +1763,8 @@ export const persistInspectorNodeStyle = <TState extends PCEditorState>(
   newStyle: any,
   node: InspectorNode,
   variant: PCVariant,
-  state: TState
+  state: TState,
+  clear: boolean = true
 ) => {
   const existingStyle = computeStyleInfo(
     node,
@@ -1773,11 +1780,13 @@ export const persistInspectorNodeStyle = <TState extends PCEditorState>(
     state = persistCSSProperty(key, newStyle[key], node, variant, state);
   }
 
-  for (const key in existingStyle) {
-    if (newStyle[key]) {
-      continue;
+  if (clear) {
+    for (const key in existingStyle) {
+      if (newStyle[key]) {
+        continue;
+      }
+      state = persistCSSProperty(key, undefined, node, variant, state, false);
     }
-    state = persistCSSProperty(key, undefined, node, variant, state, false);
   }
 
   return state;

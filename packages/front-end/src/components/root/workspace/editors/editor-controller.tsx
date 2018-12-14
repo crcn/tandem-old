@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as cx from "classnames";
 import { EditorWindow, RootState, isImageMimetype } from "../../../../state";
 import { Dispatch } from "redux";
 import { StageComponent as PaperclipStageComponent } from "./paperclip/stage";
@@ -7,7 +8,8 @@ import {
   PAPERCLIP_MIME_TYPE,
   InspectorNode,
   DependencyGraph,
-  getInspectorNodeBySourceNodeId
+  getInspectorNodeBySourceNodeId,
+  getInspectorContentNode
 } from "paperclip";
 import { getFSItem } from "fsbox";
 import { BaseEditorProps } from "./editor.pc";
@@ -57,6 +59,13 @@ export default (Base: React.ComponentClass<BaseEditorProps>) =>
 
       let stage = null;
 
+      const selectedInspectorNodes = filterEditorInspectorNodes(
+        root.selectedInspectorNodes,
+        root.sourceNodeInspector,
+        editorWindow,
+        root.graph
+      );
+
       if (fileCacheItem.content) {
         if (fileCacheItem.mimeType === PAPERCLIP_MIME_TYPE) {
           const dependency =
@@ -74,12 +83,7 @@ export default (Base: React.ComponentClass<BaseEditorProps>) =>
               documents={root.documents}
               graph={root.graph}
               frames={root.frames}
-              selectedInspectorNodes={filterEditorInspectorNodes(
-                root.selectedInspectorNodes,
-                root.sourceNodeInspector,
-                editorWindow,
-                root.graph
-              )}
+              selectedInspectorNodes={selectedInspectorNodes}
               hoveringInspectorNodes={filterEditorInspectorNodes(
                 root.hoveringInspectorNodes,
                 root.sourceNodeInspector,
@@ -109,6 +113,7 @@ export default (Base: React.ComponentClass<BaseEditorProps>) =>
           );
         }
       }
+      const active = root.activeEditorFilePath === editorWindow.activeFilePath;
 
       return (
         <Base
@@ -117,10 +122,21 @@ export default (Base: React.ComponentClass<BaseEditorProps>) =>
             dispatch,
             editorWindow,
             selectedTool,
-            active: root.activeEditorFilePath === editorWindow.activeFilePath,
+            active,
             selectedComponentId
           }}
           contentProps={{ children: stage }}
+          editorFooterProps={{
+            dispatch,
+            graph,
+            rootInspectorNode:
+              selectedInspectorNodes.length &&
+              getInspectorContentNode(
+                selectedInspectorNodes[0],
+                root.sourceNodeInspector
+              ),
+            selectedInspectorNode: selectedInspectorNodes[0]
+          }}
         />
       );
     }
