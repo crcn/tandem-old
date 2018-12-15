@@ -284,6 +284,7 @@ export const STYLE_TRIGGER_BUTTON_CLICKED = "STYLE_TRIGGER_BUTTON_CLICKED";
 export const RIGHT_GUTTER_TAB_CLICKED = "RIGHT_GUTTER_TAB_CLICKED";
 export const VARIABLE_QUERY_SOURCE_VARIABLE_CHANGE =
   "VARIABLE_QUERY_SOURCE_VARIABLE_CHANGE";
+export const BREAD_CRUMB_CLICKED = "BREAD_CRUMB_CLICKED";
 
 export type WrappedEvent<T> = {
   sourceEvent: T;
@@ -482,6 +483,10 @@ export type InspectorLayerEvent = {
 export type InspectorLayerLabelChanged = {
   node: InspectorNode;
   label: string;
+} & WrappedEvent<React.KeyboardEvent<any>>;
+
+export type BreadCrumbClicked = {
+  node: InspectorNode;
 } & WrappedEvent<React.KeyboardEvent<any>>;
 
 export type CanvasMounted = {
@@ -840,6 +845,11 @@ export const queryLabelChanged = (
 
 export const styleTriggersButtonClicked = (): Action => ({
   type: STYLE_TRIGGER_BUTTON_CLICKED
+});
+
+export const breadCrumbClicked = (node: InspectorNode): BreadCrumbClicked => ({
+  type: BREAD_CRUMB_CLICKED,
+  node
 });
 
 export const rightGutterTabClicked = (): Action => ({

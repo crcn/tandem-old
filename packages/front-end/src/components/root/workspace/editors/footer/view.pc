@@ -189,13 +189,13 @@
               "style": {},
               "children": [
                 {
-                  "id": "7b7795221568",
+                  "id": "6666febc2243",
                   "variantId": null,
                   "propertyName": "text",
                   "targetIdPath": [
                     "5dee724310"
                   ],
-                  "value": "Component",
+                  "value": "bready",
                   "name": "override",
                   "children": []
                 }
@@ -405,7 +405,8 @@
               "label": "label",
               "value": "layer name",
               "style": {
-                "cursor": "pointer"
+                "cursor": "pointer",
+                "white-space": "nowrap"
               },
               "children": [],
               "metadata": {}
@@ -738,35 +739,16 @@
       ],
       "metadata": {
         "bounds": {
-          "left": 434,
-          "top": 2399,
-          "right": 800,
-          "bottom": 2499
+          "left": 440,
+          "top": 2365,
+          "right": 806,
+          "bottom": 2397
         }
       },
       "variant": {},
       "styleMixins": {
         "dc3b39eb1275": {
           "priority": 0
-        }
-      }
-    },
-    {
-      "id": "7b7795221531",
-      "label": "Element",
-      "is": "div",
-      "name": "element",
-      "attributes": {},
-      "style": {
-        "background-image": "linear-gradient(var(--24ce1e4d13456), var(--24ce1e4d13456))"
-      },
-      "children": [],
-      "metadata": {
-        "bounds": {
-          "left": 507.24049107127746,
-          "top": 2508.3642576165416,
-          "right": 607.2404910712775,
-          "bottom": 2608.3642576165416
         }
       }
     },

@@ -2,11 +2,18 @@ import * as React from "react";
 import * as cx from "classnames";
 import { Dispatch } from "redux";
 import { BaseBreadcrumbsProps, Breadcrumb } from "./view.pc";
+import { breadCrumbClicked } from "../../../../../actions";
 import {
   InspectorNode,
   DependencyGraph,
   PCVisibleNode,
-  getInspectorSourceNode
+  getPCNode,
+  getInspectorSourceNode,
+  PCSourceTagNames,
+  PCComponent,
+  PCSlot,
+  PCPlug,
+  InspectorTreeNodeName
 } from "paperclip";
 import { getTreeNodeAncestors, EMPTY_ARRAY } from "tandem-common";
 
@@ -18,32 +25,41 @@ export type Props = {
 } & BaseBreadcrumbsProps;
 
 type BreadcrumbProps = {
+  graph: DependencyGraph;
   dispatch: Dispatch<any>;
   inspectorNode: InspectorNode;
-  sourceNode: PCVisibleNode;
+  sourceNode: PCVisibleNode | PCComponent | PCSlot | PCPlug;
   selected: boolean;
 };
 
 class EnhancedBreadcrumb extends React.PureComponent<BreadcrumbProps> {
   onClick = () => {
-    // TODO - select node
+    this.props.dispatch(breadCrumbClicked(this.props.inspectorNode));
   };
   render() {
     const { onClick } = this;
-    const { inspectorNode, selected, sourceNode } = this.props;
+    const { inspectorNode, selected, sourceNode, graph } = this.props;
+    let label: string;
+    if (sourceNode.name === PCSourceTagNames.PLUG) {
+      label = (getPCNode(sourceNode.slotId, graph) as PCSlot).label;
+    } else {
+      label = sourceNode.label;
+    }
     return (
       <Breadcrumb
         onClick={onClick}
         variant={cx({
-          component: false,
-          slot: false,
-          plug: false,
-          text: false,
+          component:
+            sourceNode.name === PCSourceTagNames.COMPONENT &&
+            inspectorNode.name !== InspectorTreeNodeName.SHADOW,
+          slot: sourceNode.name === PCSourceTagNames.SLOT,
+          plug: sourceNode.name === PCSourceTagNames.PLUG,
+          text: sourceNode.name === PCSourceTagNames.TEXT,
           selected,
-          element: false,
-          shadow: false
+          element: sourceNode.name === PCSourceTagNames.ELEMENT,
+          shadow: inspectorNode.name === InspectorTreeNodeName.SHADOW
         })}
-        labelProps={{ text: sourceNode.label }}
+        labelProps={{ text: label }}
       />
     );
   }
@@ -61,11 +77,14 @@ export default (Base: React.ComponentClass<BaseBreadcrumbsProps>) =>
       } = this.props;
 
       const items = selectedInspectorNode
-        ? (
-            getTreeNodeAncestors(selectedInspectorNode.id, rootInspectorNode) ||
-            EMPTY_ARRAY
-          )
-            .concat(selectedInspectorNode)
+        ? [selectedInspectorNode]
+            .concat(
+              getTreeNodeAncestors(
+                selectedInspectorNode.id,
+                rootInspectorNode
+              ) || EMPTY_ARRAY
+            )
+            .reverse()
             .map(inspectorNode => {
               const sourceNode = getInspectorSourceNode(
                 inspectorNode as InspectorNode,
@@ -74,6 +93,7 @@ export default (Base: React.ComponentClass<BaseBreadcrumbsProps>) =>
               );
               return (
                 <EnhancedBreadcrumb
+                  graph={graph}
                   dispatch={dispatch}
                   key={inspectorNode.id}
                   selected={inspectorNode.id === selectedInspectorNode.id}

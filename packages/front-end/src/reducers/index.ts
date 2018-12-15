@@ -199,6 +199,8 @@ import {
   QueryConditionChanged,
   QueryLabelChanged,
   QUERY_TYPE_CHANGED,
+  BreadCrumbClicked,
+  BREAD_CRUMB_CLICKED,
   VARIABLE_QUERY_SOURCE_VARIABLE_CHANGE,
   VariableQuerySourceVariableChange,
   QueryTypeChanged,
@@ -2192,6 +2194,11 @@ export const canvasReducer = (state: RootState, action: Action) => {
         state
       );
 
+      return state;
+    }
+    case BREAD_CRUMB_CLICKED: {
+      const { node } = action as BreadCrumbClicked;
+      state = selectInspectorNode(node, state);
       return state;
     }
     case REMOVE_COMPONENT_CONTROLLER_BUTTON_CLICKED: {
