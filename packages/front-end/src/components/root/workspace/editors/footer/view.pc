@@ -27,7 +27,9 @@
             "box-sizing": "border-box",
             "font-family": "unset",
             "padding-right": "12px",
-            "padding-left": "12px"
+            "padding-left": "12px",
+            "display": "inline-block",
+            "width": "100px"
           },
           "children": [
             {
@@ -50,7 +52,7 @@
             {
               "id": "174f96bb261724",
               "name": "text",
-              "label": "Text",
+              "label": "zoom percentage",
               "value": "100%",
               "style": {},
               "children": [],
@@ -257,8 +259,8 @@
             "display": "flex",
             "height": "100%",
             "align-items": "center",
-            "padding-right": "12px",
-            "padding-left": "36px"
+            "padding-left": "36px",
+            "padding-right": "0px"
           },
           "children": [
             {

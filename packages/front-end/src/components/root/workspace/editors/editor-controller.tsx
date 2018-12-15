@@ -1,6 +1,11 @@
 import * as React from "react";
 import * as cx from "classnames";
-import { EditorWindow, RootState, isImageMimetype } from "../../../../state";
+import {
+  EditorWindow,
+  RootState,
+  isImageMimetype,
+  getOpenFile
+} from "../../../../state";
 import { Dispatch } from "redux";
 import { StageComponent as PaperclipStageComponent } from "./paperclip/stage";
 import { ImageEditorWindowComponent } from "./image";
@@ -74,6 +79,7 @@ export default (Base: React.ComponentClass<BaseEditorProps>) =>
           if (!dependency) {
             return null;
           }
+
           stage = (
             <PaperclipStageComponent
               editMode={root.editMode}
@@ -115,6 +121,10 @@ export default (Base: React.ComponentClass<BaseEditorProps>) =>
       }
       const active = root.activeEditorFilePath === editorWindow.activeFilePath;
 
+      const openFile = getOpenFile(editorWindow.activeFilePath, root.openFiles);
+
+      const canvas = openFile && openFile.canvas;
+
       return (
         <Base
           toolbarProps={{
@@ -128,6 +138,7 @@ export default (Base: React.ComponentClass<BaseEditorProps>) =>
           contentProps={{ children: stage }}
           editorFooterProps={{
             dispatch,
+            canvas,
             graph,
             rootInspectorNode:
               selectedInspectorNodes.length &&
