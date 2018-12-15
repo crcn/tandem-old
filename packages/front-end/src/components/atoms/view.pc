@@ -182,6 +182,26 @@
           "bottom": -107
         }
       }
+    },
+    {
+      "id": "fb4d37ca18486",
+      "label": "Default shadow style",
+      "name": "style-mixin",
+      "style": {
+        "box-sizing": "border-box",
+        "display": "block",
+        "filter": "drop-shadow(4px 4px 2px rgba(0,0,0,0.1))"
+      },
+      "targetType": "element",
+      "children": [],
+      "metadata": {
+        "bounds": {
+          "left": 1132,
+          "top": -312.25,
+          "right": 1232,
+          "bottom": -212.25
+        }
+      }
     }
   ]
 }

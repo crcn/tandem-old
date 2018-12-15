@@ -111,7 +111,10 @@ export default (Base: React.ComponentClass<BaseToolbarProps>) =>
           }}
           componentProps={{
             centered: true,
-            open: selectedTool === ToolType.COMPONENT && !selectedComponentId,
+            open:
+              selectedTool === ToolType.COMPONENT &&
+              !selectedComponentId &&
+              active,
             onShouldClose: onComponentPopdownClose
           }}
           componentIconProps={{

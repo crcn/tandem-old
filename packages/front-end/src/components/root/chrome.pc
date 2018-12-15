@@ -386,7 +386,7 @@
           "id": "1fb4e79017945",
           "name": "variant",
           "label": "paused",
-          "isDefault": false,
+          "isDefault": true,
           "children": [],
           "metadata": {}
         },
@@ -433,6 +433,20 @@
           ],
           "value": {
             "cursor": "pointer"
+          },
+          "name": "override",
+          "children": []
+        },
+        {
+          "id": "fb4d37ca17575",
+          "variantId": "1fb4e79017945",
+          "propertyName": "style",
+          "targetIdPath": [
+            "1fb4e79016876"
+          ],
+          "value": {
+            "display": "block",
+            "right": "12px"
           },
           "name": "override",
           "children": []
@@ -582,7 +596,10 @@
           "bottom": 1340.8391994102403
         }
       },
-      "variant": {},
+      "variant": {
+        "1fb4e79017947": false,
+        "1fb4e79017945": true
+      },
       "label": "Chrome Preview"
     },
     {
@@ -615,6 +632,24 @@
           "top": 133.49090256999708,
           "right": 237.47101981775978,
           "bottom": 233.49090256999708
+        }
+      },
+      "variant": {}
+    },
+    {
+      "id": "fb4d37ca17921",
+      "is": "936f29271179",
+      "label": "Component picker popdown item",
+      "name": "component-instance",
+      "attributes": {},
+      "style": {},
+      "children": [],
+      "metadata": {
+        "bounds": {
+          "left": 453.19920465416897,
+          "top": 128.89561795822186,
+          "right": 1232.199204654169,
+          "bottom": 178.89561795822192
         }
       },
       "variant": {}

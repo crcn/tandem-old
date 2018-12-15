@@ -1,6 +1,6 @@
 {
   "id": "76b155a0893154",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "metadata": {},
   "name": "module",
   "children": [
@@ -231,8 +231,7 @@
                     "border-top-left-radius": "2px",
                     "border-top-right-radius": "2px",
                     "border-bottom-right-radius": "2px",
-                    "border": "1px solid rgba(238, 238, 238, 1)",
-                    "box-shadow": " 0px 2px 2px 1px rgba(0, 0, 0, 0.19)"
+                    "border": "1px solid rgba(238, 238, 238, 1)"
                   },
                   "children": [
                     {
@@ -497,7 +496,11 @@
                       "bottom": 471.29600643511884
                     }
                   },
-                  "styleMixins": {}
+                  "styleMixins": {
+                    "fb4d37ca18486": {
+                      "priority": 0
+                    }
+                  }
                 }
               ],
               "metadata": {},

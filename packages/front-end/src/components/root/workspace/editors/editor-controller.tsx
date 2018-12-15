@@ -19,7 +19,7 @@ import {
 import { getFSItem } from "fsbox";
 import { BaseEditorProps } from "./editor.pc";
 import { TextEditorWindow } from "./text";
-import { memoize, getNestedTreeNodeById } from "tandem-common";
+import { memoize, getNestedTreeNodeById, EMPTY_ARRAY } from "tandem-common";
 
 export type Props = {
   editorWindow: EditorWindow;
@@ -34,8 +34,13 @@ const filterEditorInspectorNodes = memoize(
     editor: EditorWindow,
     graph: DependencyGraph
   ) => {
+    const dep = graph[editor.activeFilePath];
+
+    if (!dep) {
+      return EMPTY_ARRAY;
+    }
     const moduleInspectorNode = getInspectorNodeBySourceNodeId(
-      graph[editor.activeFilePath].content.id,
+      dep.content.id,
       rootInspectorNode
     );
     return inspectorNodes.filter(node =>
