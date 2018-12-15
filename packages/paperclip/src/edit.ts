@@ -153,7 +153,6 @@ export type PCEditorState = {
 export type ComputedDisplayInfo = {
   [identifier: string]: {
     bounds: Bounds;
-    style: CSSStyleDeclaration;
   };
 };
 

@@ -487,7 +487,7 @@ export type InspectorLayerLabelChanged = {
 
 export type BreadCrumbClicked = {
   node: InspectorNode;
-} & WrappedEvent<React.KeyboardEvent<any>>;
+} & Action;
 
 export type CanvasMounted = {
   element: HTMLDivElement;
