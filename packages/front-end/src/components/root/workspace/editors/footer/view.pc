@@ -11,7 +11,8 @@
         "background-image": "linear-gradient(var(--bc891e755312), var(--bc891e755312))",
         "display": "flex",
         "align-items": "center",
-        "border-top": "1px solid var(--d8f6340b1442)"
+        "border-top": "1px solid var(--d8f6340b1442)",
+        "flex-shrink": "0"
       },
       "attributes": {},
       "id": "174f96bb76034",

@@ -77,6 +77,7 @@ export const computeDisplayInfo = (
     const rect = (node as HTMLElement).getBoundingClientRect();
     if (node.nodeType === 1) {
       computed[id] = {
+        style: window.getComputedStyle(node as Element),
         bounds: {
           left: rect.left,
           top: rect.top,

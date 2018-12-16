@@ -139,15 +139,19 @@ const getComponentDropdownOptions = memoize(
   }
 );
 
-const getTypeMenuOptions = memoize((components: PCComponent[]) => {
-  return [
-    ...TYPE_MENU_OPTIONS,
-    ...getComponentDropdownOptions(components)
-  ].sort(
-    (a, b) =>
-      String(a.label).toLowerCase() < String(b.label).toLowerCase() ? -1 : 1
-  );
-});
+const getTypeMenuOptions = memoize(
+  (components: PCComponent[], targetSourceNode: PCNode) => {
+    return [
+      ...TYPE_MENU_OPTIONS,
+      ...getComponentDropdownOptions(components).filter(
+        component => component.value !== targetSourceNode.id
+      )
+    ].sort(
+      (a, b) =>
+        String(a.label).toLowerCase() < String(b.label).toLowerCase() ? -1 : 1
+    );
+  }
+);
 
 export type Props = {
   sourceNode: PCElement | PCComponent | PCComponentInstanceElement | PCTextNode;
@@ -194,7 +198,7 @@ export default (Base: React.ComponentClass<BaseElementPropertiesProps>) => {
           elementTypeInputProps={{
             value: sourceNode.is,
             filterable: true,
-            options: getTypeMenuOptions(components),
+            options: getTypeMenuOptions(components, sourceNode),
             onChange: onTypeChange
           }}
           aPropertiesProps={{

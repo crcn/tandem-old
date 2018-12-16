@@ -942,67 +942,46 @@
       }
     },
     {
-      "id": "1b5fa8b647",
-      "label": "Element",
+      "label": "Bloooob",
       "is": "div",
-      "name": "element",
-      "attributes": {},
       "style": {
         "box-sizing": "border-box",
-        "display": "block",
-        "background-image": "linear-gradient(rgba(200, 200, 200, 1), rgba(200, 200, 200, 1))"
+        "display": "block"
       },
+      "attributes": {},
+      "id": "fe72344f652",
+      "name": "component",
       "children": [],
       "metadata": {
         "bounds": {
-          "left": 1511.4742857142858,
-          "top": 1799.3942857142858,
-          "right": 1611.4742857142858,
-          "bottom": 1899.3942857142858
+          "left": 1433.8904109589043,
+          "top": 1289.3136986301372,
+          "right": 1533.8904109589043,
+          "bottom": 1389.3136986301372
         }
-      }
+      },
+      "variant": {}
     },
     {
-      "id": "62db568e648",
+      "id": "fe72344f654",
       "label": "Element",
-      "is": "div",
-      "name": "element",
+      "is": "fe72344f652",
+      "name": "component-instance",
       "attributes": {},
       "style": {
         "box-sizing": "border-box",
-        "display": "block",
-        "background-image": "linear-gradient(rgba(200, 200, 200, 1), rgba(200, 200, 200, 1))"
+        "display": "block"
       },
       "children": [],
       "metadata": {
         "bounds": {
-          "left": 1861.6383561643838,
-          "top": 183.82739726027407,
-          "right": 1961.6383561643838,
-          "bottom": 283.8273972602741
+          "left": 1578.124827297507,
+          "top": 1242.1278238951109,
+          "right": 1678.124827297507,
+          "bottom": 1342.1278238951109
         }
-      }
-    },
-    {
-      "id": "9198ab4f649",
-      "label": "Element",
-      "is": "div",
-      "name": "element",
-      "attributes": {},
-      "style": {
-        "box-sizing": "border-box",
-        "display": "none",
-        "background-image": "linear-gradient(var(--24ce1e4d13456), var(--24ce1e4d13456))"
       },
-      "children": [],
-      "metadata": {
-        "bounds": {
-          "left": 1709.3145719732233,
-          "top": 1600.4115086226004,
-          "right": 1809.3145719732233,
-          "bottom": 1700.4115086226004
-        }
-      }
+      "variant": {}
     }
   ]
 }
