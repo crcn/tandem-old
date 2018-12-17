@@ -442,6 +442,7 @@ export const getInsertableSourceNodeFromSyntheticNode = memoize(
     graph: DependencyGraph
   ) => {
     const sourceNode = getSyntheticSourceNode(node, graph);
+
     if (syntheticNodeIsInShadow(node, document, graph)) {
       const module = getPCNodeModule(sourceNode.id, graph);
       const instancePath = getSyntheticInstancePath(node, document, graph);
@@ -452,6 +453,7 @@ export const getInsertableSourceNodeFromSyntheticNode = memoize(
       const slot = findTreeNodeParent(sourceNode.id, module, (parent: PCNode) =>
         isSlot(parent)
       );
+
       return slot && containsNestedTreeNodeById(slot.id, instancePCComponent)
         ? slot
         : null;
@@ -1404,11 +1406,13 @@ export const getCanvasMouseTargetInspectorNode = (
     state.sourceNodeInspector,
     state.graph
   );
+
   const insertableSourceNode = getInsertableInspectorNode(
     assocInspectorNode,
     state.sourceNodeInspector,
     state.graph
   );
+
   return insertableSourceNode;
 };
 

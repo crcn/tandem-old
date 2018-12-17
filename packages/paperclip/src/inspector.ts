@@ -837,13 +837,7 @@ export const getInsertableInspectorNode = (
 ) => {
   if (inspectorNodeInShadow(child, root)) {
     const slot = getInspectorNodeOwnerSlot(child, root, graph);
-    const owner = getInspectorNodeOwnerInstance(child, root);
-    return owner.children.find(child => {
-      return (
-        child.name === InspectorTreeNodeName.CONTENT &&
-        child.sourceNodeId === slot.sourceNodeId
-      );
-    });
+    return slot;
   } else {
     return child;
   }
