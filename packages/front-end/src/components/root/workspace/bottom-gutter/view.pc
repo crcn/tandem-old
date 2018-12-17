@@ -129,7 +129,10 @@
           "bottom": 520
         }
       },
-      "variant": {}
+      "variant": {},
+      "controllers": [
+        "./console-controller.tsx"
+      ]
     }
   ],
   "metadata": {}

@@ -122,7 +122,8 @@
               "name": "component-instance",
               "attributes": {},
               "style": {
-                "height": "300px"
+                "height": "300px",
+                "display": "none"
               },
               "children": [],
               "metadata": {
