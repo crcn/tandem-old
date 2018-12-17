@@ -208,7 +208,10 @@ import {
   RIGHT_GUTTER_TAB_CLICKED,
   CSS_PROPERTIES_CHANGE_COMPLETED,
   CSSPropertiesChanged,
-  CSS_PROPERTIES_CHANGED
+  CSS_PROPERTIES_CHANGED,
+  BUILD_BUTTON_CONFIGURE_CLICKED,
+  CONFIGURE_BUILD_MODAL_BACKGROUND_CLICKED,
+  CONFIGURE_BUILD_MODAL_X_CLICKED
 } from "../actions";
 import {
   queueOpenFile,
@@ -768,6 +771,23 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
       } else {
         return centerEditorCanvasOrLater(state, fileUri);
       }
+    }
+
+    case BUILD_BUTTON_CONFIGURE_CLICKED: {
+      state = {
+        ...state,
+        showConfigureBuildModal: true
+      };
+      return state;
+    }
+
+    case CONFIGURE_BUILD_MODAL_X_CLICKED:
+    case CONFIGURE_BUILD_MODAL_BACKGROUND_CLICKED: {
+      state = {
+        ...state,
+        showConfigureBuildModal: false
+      };
+      return state;
     }
 
     case FILE_NAVIGATOR_DROPPED_ITEM: {

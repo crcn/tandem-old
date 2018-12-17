@@ -285,6 +285,12 @@ export const RIGHT_GUTTER_TAB_CLICKED = "RIGHT_GUTTER_TAB_CLICKED";
 export const VARIABLE_QUERY_SOURCE_VARIABLE_CHANGE =
   "VARIABLE_QUERY_SOURCE_VARIABLE_CHANGE";
 export const BREAD_CRUMB_CLICKED = "BREAD_CRUMB_CLICKED";
+export const BUILD_BUTTON_START_CLICKED = "BUILD_BUTTON_START_CLICKED";
+export const BUILD_BUTTON_CONFIGURE_CLICKED = "BUILD_BUTTON_CONFIGURE_CLICKED";
+export const CONFIGURE_BUILD_MODAL_X_CLICKED =
+  "CONFIGURE_BUILD_MODAL_X_CLICKED";
+export const CONFIGURE_BUILD_MODAL_BACKGROUND_CLICKED =
+  "CONFIGURE_BUILD_MODAL_BACKGROUND_CLICKED";
 
 export type WrappedEvent<T> = {
   sourceEvent: T;
@@ -878,6 +884,22 @@ export const fileItemContextMenuOpenClicked = publicActionCreator(
     type: FILE_ITEM_CONTEXT_MENU_OPEN_CLICKED
   })
 );
+
+export const buildButtonStartClicked = () => ({
+  type: BUILD_BUTTON_START_CLICKED
+});
+
+export const buildButtonConfigureClicked = () => ({
+  type: BUILD_BUTTON_CONFIGURE_CLICKED
+});
+
+export const configureBuildModalXClicked = () => ({
+  type: CONFIGURE_BUILD_MODAL_X_CLICKED
+});
+
+export const configureBuildModalBackgroundClicked = () => ({
+  type: CONFIGURE_BUILD_MODAL_BACKGROUND_CLICKED
+});
 
 export const addQueryButtonClick = (
   queryType: PCQueryType

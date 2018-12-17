@@ -44,6 +44,7 @@ export class RootComponent extends React.PureComponent<RootOuterProps> {
           unsaved={isUnsaved(root)}
           projectInfo={root.projectInfo}
           dispatch={dispatch}
+          buildButtonProps={{ dispatch }}
         />
       );
     }

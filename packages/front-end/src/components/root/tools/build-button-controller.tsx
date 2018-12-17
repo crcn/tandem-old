@@ -4,8 +4,15 @@ import {
   BuildButtonOption,
   BuildButtonMenu
 } from "./view.pc";
+import { Dispatch } from "redux";
+import {
+  buildButtonStartClicked,
+  buildButtonConfigureClicked
+} from "../../../actions";
 
-export type Props = {};
+export type Props = {
+  dispatch: Dispatch<any>;
+};
 
 type State = {
   open?: boolean;
@@ -24,14 +31,19 @@ export default (Base: React.ComponentClass<BaseBuildButtonProps>) =>
       }
     };
     onShouldClose = () => {
-      this.setState({ open: false });
+      this.closeMenu();
     };
     onStartClick = () => {
-      console.log("onStartClick");
+      this.props.dispatch(buildButtonStartClicked());
+      this.closeMenu();
     };
     onConfigureClick = () => {
-      console.log("onConfigureClick");
+      this.props.dispatch(buildButtonConfigureClicked());
+      this.closeMenu();
     };
+    closeMenu() {
+      this.setState({ open: false });
+    }
     render() {
       const {
         onShouldClose,

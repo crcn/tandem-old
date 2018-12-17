@@ -10,6 +10,7 @@ import HTML5Backend from "react-dnd-html5-backend";
 import { BaseWorkspaceProps, WorkspacePrompt } from "./view.pc";
 import { mapStateToProps as mapStatetoPromptControllerProps } from "./prompt-controller";
 import { ContextMenu } from "../../context-menu/view.pc";
+import { ConfigureBuildModal } from "../../configure-build/view.pc";
 
 export type Props = {
   root: RootState;
@@ -32,6 +33,8 @@ export default (Base: React.ComponentClass<BaseWorkspaceProps>) =>
           selectedInspectorNodes,
           hoveringInspectorNodes,
           selectedFileNodeIds,
+          projectInfo,
+          showConfigureBuildModal,
           sourceNodeInspector,
           documents,
           projectDirectory,
@@ -67,6 +70,12 @@ export default (Base: React.ComponentClass<BaseWorkspaceProps>) =>
 
             <QuickSearchModal root={root} dispatch={dispatch} />
             <ComponentPickerModal root={root} dispatch={dispatch} />
+            {showConfigureBuildModal ? (
+              <ConfigureBuildModal
+                dispatch={dispatch}
+                projectInfo={projectInfo}
+              />
+            ) : null}
             {workspaceProps && (
               <WorkspacePrompt {...workspaceProps} dispatch={dispatch} />
             )}

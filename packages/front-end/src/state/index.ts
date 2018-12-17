@@ -120,6 +120,8 @@ export type ProjectOptions = {
 export type ProjectConfig = {
   scripts?: {
     previewServer?: string;
+    build?: string;
+    openApp?: string;
   };
 
   // relative path to main file
@@ -277,6 +279,7 @@ export type RootState = {
   activeEditorFilePath?: string;
   quickSearch?: QuickSearch;
   editMode: EditMode;
+  showConfigureBuildModal?: boolean;
 
   // defined by context menu
   editingBasenameUri?: string;

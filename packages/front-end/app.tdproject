@@ -1,6 +1,7 @@
 {
   "scripts": {
-    "previewServer": "/usr/local/bin/npm run tandem-preview-server"
+    "previewServer": "/usr/local/bin/npm run tandem-preview-server",
+    "build": "npm run build -- --watch"
   },
   "rootDir": ".",
   "exclude": ["node_modules"],
