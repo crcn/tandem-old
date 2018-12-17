@@ -1,5 +1,9 @@
 import * as React from "react";
-import { BaseBuildButtonProps } from "./view.pc";
+import {
+  BaseBuildButtonProps,
+  BuildButtonOption,
+  BuildButtonMenu
+} from "./view.pc";
 
 export type Props = {};
 
@@ -13,15 +17,51 @@ export default (Base: React.ComponentClass<BaseBuildButtonProps>) =>
       open: false
     };
     onBuildButtonClick = () => {
-      this.setState({
-        open: true
-      });
+      if (!this.state.open) {
+        this.setState({
+          open: true
+        });
+      }
     };
-    onShouldClose = () => {};
+    onShouldClose = () => {
+      this.setState({ open: false });
+    };
+    onStartClick = () => {
+      console.log("onStartClick");
+    };
+    onConfigureClick = () => {
+      console.log("onConfigureClick");
+    };
     render() {
-      const { onShouldClose, onBuildButtonClick } = this;
+      const {
+        onShouldClose,
+        onBuildButtonClick,
+        onStartClick,
+        onConfigureClick
+      } = this;
       const { open } = this.state;
       const { ...rest } = this.props;
+
+      let running = false;
+      let errored = false;
+
+      let buildButtonMenuItems = [];
+
+      if (!running) {
+        buildButtonMenuItems = [
+          <BuildButtonOption
+            key="configure"
+            labelProps={{ text: "Configure" }}
+            onClick={onConfigureClick}
+          />,
+          <BuildButtonOption
+            key="start"
+            labelProps={{ text: "Start" }}
+            onClick={onStartClick}
+          />
+        ];
+      }
+
       return (
         <Base
           {...rest}
@@ -31,10 +71,11 @@ export default (Base: React.ComponentClass<BaseBuildButtonProps>) =>
             centered: true
           }}
           buildButtonProps={{
-            onClick: onBuildButtonClick
+            onMouseDown: onBuildButtonClick
           }}
-          tooltipProps={{
-            variant: "right"
+          tooltipProps={{}}
+          buildButtonMenuProps={{
+            items: buildButtonMenuItems
           }}
         />
       );

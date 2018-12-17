@@ -13,7 +13,7 @@
         "flex-direction": "column",
         "width": "100%",
         "height": "100%",
-        "border-bottom": "2px solid var(--51588fd610365)"
+        "border-bottom": "1px solid var(--51588fd610365)"
       },
       "attributes": {},
       "id": "483373f987277",

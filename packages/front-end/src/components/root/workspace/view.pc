@@ -1,6 +1,6 @@
 {
   "id": "33b1b6b130414",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "metadata": {},
   "name": "module",
   "children": [
@@ -59,7 +59,10 @@
           "style": {
             "box-sizing": "border-box",
             "width": "100%",
-            "flex": "1"
+            "flex": "1",
+            "display": "flex",
+            "flex-direction": "column",
+            "height": "100%"
           },
           "children": [
             {
@@ -89,7 +92,9 @@
               "name": "component-instance",
               "attributes": {},
               "style": {
-                "height": "100%"
+                "height": "100%",
+                "width": "100%",
+                "flex-grow": "1"
               },
               "children": [
                 {
@@ -109,6 +114,26 @@
               ],
               "metadata": {},
               "label": "editor windows"
+            },
+            {
+              "id": "694404cc54447",
+              "is": "694404cc2576",
+              "label": "Bottom Gutter",
+              "name": "component-instance",
+              "attributes": {},
+              "style": {
+                "height": "300px"
+              },
+              "children": [],
+              "metadata": {
+                "bounds": {
+                  "left": -151,
+                  "top": 7,
+                  "right": 714,
+                  "bottom": 432
+                }
+              },
+              "variant": {}
             }
           ],
           "metadata": {

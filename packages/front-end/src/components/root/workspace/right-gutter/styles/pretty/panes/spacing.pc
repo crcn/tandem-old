@@ -268,7 +268,8 @@
                     "af62926b2317"
                   ],
                   "value": {
-                    "color": "var(--d8f6340b1442)"
+                    "color": "var(--d8f6340b1442)",
+                    "height": "10px"
                   },
                   "name": "override",
                   "children": []
@@ -322,7 +323,8 @@
                     "af62926b2317"
                   ],
                   "value": {
-                    "color": "var(--d8f6340b1442)"
+                    "color": "var(--d8f6340b1442)",
+                    "height": "10px"
                   },
                   "name": "override",
                   "children": []
@@ -376,7 +378,8 @@
                     "af62926b2317"
                   ],
                   "value": {
-                    "color": "var(--d8f6340b1442)"
+                    "color": "var(--d8f6340b1442)",
+                    "height": "10px"
                   },
                   "name": "override",
                   "children": []
@@ -428,7 +431,8 @@
                     "af62926b2317"
                   ],
                   "value": {
-                    "color": "var(--d8f6340b1442)"
+                    "color": "var(--d8f6340b1442)",
+                    "height": "10px"
                   },
                   "name": "override",
                   "children": []
