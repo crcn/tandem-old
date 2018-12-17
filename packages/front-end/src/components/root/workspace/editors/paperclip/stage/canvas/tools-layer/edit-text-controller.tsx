@@ -57,6 +57,10 @@ export default (Base: React.ComponentClass<BaseEditTextProps>) =>
         selectedInspectorNode,
         documents
       );
+
+      if (!syntheticNode) {
+        return null;
+      }
       const bounds = getSyntheticVisibleNodeRelativeBounds(
         syntheticNode,
         frames,

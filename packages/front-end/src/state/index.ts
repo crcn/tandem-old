@@ -317,10 +317,6 @@ export type RootState = {
   history: GraphHistory;
   showQuickSearch?: boolean;
   selectedComponentId?: string;
-  queuedScopeSelect?: {
-    previousState: RootState;
-    scope: InspectorNode;
-  };
   queuedDndInfo?: CanvasDroppedItem;
 } & PCEditorState &
   FSSandboxRootState;
@@ -363,7 +359,6 @@ export const persistRootState = (
     state
   );
 
-  const now = Date.now();
   state = refreshModuleInspectorNodes(state);
   return state;
 };
@@ -373,7 +368,7 @@ const getUpdatedInspectorNodes = (
   oldState: RootState,
   scope: InspectorNode
 ) => {
-  const MAX_DEPTH = 0;
+  const MAX_DEPTH = 1;
   const oldScope: InspectorNode = getNestedTreeNodeById(
     scope.id,
     oldState.sourceNodeInspector
@@ -405,23 +400,14 @@ const getUpdatedInspectorNodes = (
     }
   });
 
-  return uniq(newInspectorNodes);
-};
+  // ensure that content nodes are not selected.
+  newInspectorNodes = newInspectorNodes.map(node => {
+    return node.name === InspectorTreeNodeName.CONTENT
+      ? node.children[0]
+      : node;
+  });
 
-export const queueSelectInsertedSyntheticVisibleNodes = (
-  oldState: RootState,
-  newState: RootState,
-  scope: InspectorNode
-) => {
-  return updateRootState(
-    {
-      queuedScopeSelect: {
-        previousState: oldState,
-        scope
-      }
-    },
-    newState
-  );
+  return uniq(newInspectorNodes);
 };
 
 export const selectInsertedSyntheticVisibleNodes = (

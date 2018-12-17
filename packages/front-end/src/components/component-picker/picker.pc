@@ -948,7 +948,15 @@
       "name": "component-instance",
       "attributes": {},
       "style": {},
-      "children": [],
+      "children": [
+        {
+          "slotId": "db4ce6e6659",
+          "id": "848d357662",
+          "children": [],
+          "metadata": {},
+          "name": "plug"
+        }
+      ],
       "metadata": {
         "bounds": {
           "left": 1212,

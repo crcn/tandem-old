@@ -256,7 +256,6 @@ import {
   selectInsertedSyntheticVisibleNodes,
   RegisteredComponent,
   closeFile,
-  queueSelectInsertedSyntheticVisibleNodes,
   shiftActiveEditorTab,
   confirm,
   ConfirmType,
@@ -1972,7 +1971,6 @@ export const canvasReducer = (state: RootState, action: Action) => {
     }
 
     case PC_RUNTIME_EVALUATED: {
-      const queuedScopeSelect = state.queuedScopeSelect;
       const projectInfo = state.projectInfo;
 
       if (projectInfo && projectInfo.config.mainFilePath && !state.openedMain) {
@@ -1996,14 +1994,6 @@ export const canvasReducer = (state: RootState, action: Action) => {
         state = openFile(mainUri, false, false, state);
       }
 
-      if (queuedScopeSelect) {
-        state = selectInsertedSyntheticVisibleNodes(
-          queuedScopeSelect.previousState,
-          state,
-          queuedScopeSelect.scope
-        );
-      }
-
       if (
         state.recenterUriAfterEvaluation &&
         getSyntheticDocumentByDependencyUri(
@@ -2016,7 +2006,7 @@ export const canvasReducer = (state: RootState, action: Action) => {
         state = { ...state, recenterUriAfterEvaluation: null };
       }
 
-      return updateRootState({ queuedScopeSelect: null }, state);
+      return state;
     }
 
     case CANVAS_TEXT_EDIT_CHANGE_COMPLETE:
@@ -2349,6 +2339,7 @@ const handleCanvasMouseClicked = (
       state.sourceNodeInspector,
       state.graph
     );
+
     state = handleArtboardSelectionFromAction(state, inspectorNode);
     state = updateEditorWindow(
       {
@@ -2486,7 +2477,7 @@ const persistInsertNodeFromPoint = (
     state.graph
   );
 
-  state = queueSelectInsertedSyntheticVisibleNodes(oldState, state, scope);
+  state = selectInsertedSyntheticVisibleNodes(oldState, state, scope);
 
   return state;
 };
@@ -3147,11 +3138,7 @@ const clipboardReducer = (state: RootState, action: Action) => {
         state
       );
 
-      state = queueSelectInsertedSyntheticVisibleNodes(
-        oldState,
-        state,
-        scopeNode
-      );
+      state = selectInsertedSyntheticVisibleNodes(oldState, state, scopeNode);
 
       return state;
     }
@@ -3236,7 +3223,7 @@ const convertSyntheticStyleToMixin = (
 
   state = setSelectedInspectorNodes(state);
 
-  state = queueSelectInsertedSyntheticVisibleNodes(
+  state = selectInsertedSyntheticVisibleNodes(
     oldState,
     state,
     getInspectorNodeBySourceNodeId(
@@ -3265,7 +3252,7 @@ const convertSyntheticNodeToComponent = (
 
   state = setSelectedInspectorNodes(state);
 
-  state = queueSelectInsertedSyntheticVisibleNodes(
+  state = selectInsertedSyntheticVisibleNodes(
     oldState,
     state,
     getInspectorNodeBySourceNodeId(
