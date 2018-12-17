@@ -234,6 +234,38 @@
             }
           ],
           "metadata": {}
+        },
+        {
+          "id": "368712de18492",
+          "name": "variant",
+          "label": "right",
+          "isDefault": true,
+          "children": [],
+          "metadata": {}
+        },
+        {
+          "id": "368712de18493",
+          "variantId": "368712de18492",
+          "propertyName": "style",
+          "targetIdPath": [
+            "936f2927705"
+          ],
+          "value": {
+            "left": "90%"
+          },
+          "name": "override",
+          "children": []
+        },
+        {
+          "id": "4496ba59214",
+          "variantId": "368712de18492",
+          "propertyName": "style",
+          "targetIdPath": [],
+          "value": {
+            "transform": "translate(-70%, 0px)"
+          },
+          "name": "override",
+          "children": []
         }
       ],
       "metadata": {
@@ -244,7 +276,84 @@
           "bottom": 510
         }
       },
-      "variant": {}
+      "variant": {},
+      "styleMixins": {
+        "fb4d37ca18486": {
+          "priority": 0
+        }
+      }
+    },
+    {
+      "id": "4496ba59215",
+      "label": "Element",
+      "is": "div",
+      "name": "element",
+      "attributes": {},
+      "style": {
+        "box-sizing": "border-box",
+        "display": "block"
+      },
+      "children": [
+        {
+          "id": "4496ba59221",
+          "label": "Element",
+          "is": "div",
+          "name": "element",
+          "attributes": {},
+          "style": {},
+          "children": [
+            {
+              "id": "4496ba59217",
+              "is": "9f364d2139415",
+              "label": "Button",
+              "name": "component-instance",
+              "attributes": {},
+              "style": {},
+              "children": [],
+              "metadata": {
+                "bounds": {
+                  "left": 300,
+                  "top": 120,
+                  "right": 400,
+                  "bottom": 220
+                }
+              },
+              "variant": {}
+            },
+            {
+              "id": "4496ba59226",
+              "is": "936f2927707",
+              "label": "Tooltip",
+              "name": "component-instance",
+              "attributes": {},
+              "style": {
+                "position": "absolute"
+              },
+              "children": [],
+              "metadata": {
+                "bounds": {
+                  "left": 58,
+                  "top": 297,
+                  "right": 393,
+                  "bottom": 510
+                }
+              },
+              "variant": {
+                "368712de18492": true
+              }
+            }
+          ],
+          "metadata": {}
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": 620,
+          "top": 437,
+          "right": 1215,
+          "bottom": 804
+        }
+      }
     }
   ]
 }

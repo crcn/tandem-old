@@ -188,7 +188,7 @@
               "attributes": {},
               "style": {
                 "box-sizing": "border-box",
-                "display": "none",
+                "display": "block",
                 "width": "auto",
                 "flex-grow": "0",
                 "flex-shrink": "0",
@@ -197,56 +197,19 @@
               },
               "children": [
                 {
-                  "id": "1fb4e79017911",
-                  "is": "1fb4e79017899",
-                  "label": "Play Icon",
+                  "id": "fe72344f18319",
+                  "is": "fe72344f18313",
+                  "label": "Build button",
                   "name": "component-instance",
                   "attributes": {},
-                  "style": {
-                    "display": "none",
-                    "height": "12px"
-                  },
-                  "children": [
-                    {
-                      "id": "1fb4e79017928",
-                      "propertyName": "style",
-                      "targetIdPath": [
-                        "1fb4e79017897"
-                      ],
-                      "value": {
-                        "background": "currentColor"
-                      },
-                      "name": "override",
-                      "children": []
-                    }
-                  ],
-                  "metadata": {
-                    "bounds": {
-                      "left": 919.9806688326229,
-                      "top": 133.4037127577546,
-                      "right": 1319.980668832623,
-                      "bottom": 433.40371275775465
-                    }
-                  },
-                  "variant": {}
-                },
-                {
-                  "id": "1fb4e79017929",
-                  "is": "1fb4e79017906",
-                  "label": "Pause Icon",
-                  "name": "component-instance",
-                  "attributes": {},
-                  "style": {
-                    "display": "none",
-                    "height": "12px"
-                  },
+                  "style": {},
                   "children": [],
                   "metadata": {
                     "bounds": {
-                      "left": -138,
-                      "top": -1534,
-                      "right": 262,
-                      "bottom": -1234
+                      "left": 197,
+                      "top": 59,
+                      "right": 539,
+                      "bottom": 159
                     }
                   },
                   "variant": {}
