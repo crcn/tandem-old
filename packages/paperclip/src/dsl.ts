@@ -928,24 +928,22 @@ export const getVisibleChildren = memoize(
 
 export const getVisibleOrSlotChildren = memoize(
   (node: PCNode) =>
-    node.children.filter(
+    (node.children as PCNode[]).filter(
       child => isVisibleNode(child) || child.name === PCSourceTagNames.SLOT
     ) as PCVisibleNode[]
 );
 export const getOverrides = memoize(
   (node: PCNode) =>
-    node.children
-      .filter(isPCOverride)
-      .sort(
-        (a, b) =>
-          a.propertyName === PCOverridablePropertyName.CHILDREN
-            ? 1
-            : a.variantId
-              ? -1
-              : b.propertyName === PCOverridablePropertyName.CHILDREN
-                ? 0
-                : 1
-      ) as PCOverride[]
+    (node.children.filter(isPCOverride) as PCOverride[]).sort(
+      (a, b) =>
+        a.propertyName === PCOverridablePropertyName.CHILDREN
+          ? 1
+          : a.variantId
+            ? -1
+            : b.propertyName === PCOverridablePropertyName.CHILDREN
+              ? 0
+              : 1
+    ) as PCOverride[]
 );
 
 export const getPCVariants = memoize(

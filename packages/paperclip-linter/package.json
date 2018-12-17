@@ -4,7 +4,8 @@
   "description": "TODOS:   - config to turn linting features on or off   - check when colors are not from global space",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "clean": "rm -rf node_modules"
   },
   "author": "",
   "license": "ISC",

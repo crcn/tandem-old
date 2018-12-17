@@ -1335,7 +1335,7 @@ export const createPaperclipVirtualDOMtranslator = (
     instance: PCComponent | PCComponentInstanceElement,
     context: TranslateContext
   ) => {
-    const plugs = instance.children.filter(
+    const plugs = (instance.children as PCNode[]).filter(
       child => child.name === PCSourceTagNames.PLUG
     ) as PCPlug[];
 
