@@ -13,7 +13,7 @@ export default (Base: React.ComponentClass<BaseOpenModuleProps>) =>
       const { inspectorNode, ...rest } = this.props;
       return (
         <Base {...rest}>
-          <NodeLayer depth={2} inspectorNode={inspectorNode} />
+          <NodeLayer depth={1} inspectorNode={inspectorNode} />
         </Base>
       );
     }
