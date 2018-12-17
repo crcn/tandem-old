@@ -39,24 +39,35 @@ class EnhancedBreadcrumb extends React.PureComponent<BreadcrumbProps> {
   render() {
     const { onClick } = this;
     const { inspectorNode, selected, sourceNode, graph } = this.props;
+
+    let sourceNodeName: PCSourceTagNames;
     let label: string;
-    if (sourceNode.name === PCSourceTagNames.PLUG) {
-      label = (getPCNode(sourceNode.slotId, graph) as PCSlot).label;
+    if (sourceNode) {
+      sourceNodeName = sourceNode.name;
+      if (sourceNode.name === PCSourceTagNames.PLUG) {
+        label = (getPCNode(sourceNode.slotId, graph) as PCSlot).label;
+      } else {
+        label = sourceNode.label;
+      }
+    } else if (inspectorNode.name === InspectorTreeNodeName.CONTENT) {
+      sourceNodeName = PCSourceTagNames.PLUG;
+      label = (getPCNode(inspectorNode.sourceSlotNodeId, graph) as PCSlot)
+        .label;
     } else {
-      label = sourceNode.label;
+      return null;
     }
     return (
       <Breadcrumb
         onClick={onClick}
         variant={cx({
           component:
-            sourceNode.name === PCSourceTagNames.COMPONENT &&
+            sourceNodeName === PCSourceTagNames.COMPONENT &&
             inspectorNode.name !== InspectorTreeNodeName.SHADOW,
-          slot: sourceNode.name === PCSourceTagNames.SLOT,
-          plug: sourceNode.name === PCSourceTagNames.PLUG,
-          text: sourceNode.name === PCSourceTagNames.TEXT,
+          slot: sourceNodeName === PCSourceTagNames.SLOT,
+          plug: sourceNodeName === PCSourceTagNames.PLUG,
+          text: sourceNodeName === PCSourceTagNames.TEXT,
           selected,
-          element: sourceNode.name === PCSourceTagNames.ELEMENT,
+          element: sourceNodeName === PCSourceTagNames.ELEMENT,
           shadow: inspectorNode.name === InspectorTreeNodeName.SHADOW
         })}
         labelProps={{ text: label }}
