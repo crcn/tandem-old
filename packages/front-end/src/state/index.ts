@@ -150,6 +150,17 @@ export enum SyntheticVisibleNodeMetadataKeys {
   EDITING_LABEL = "editingLabel"
 }
 
+export type ScriptProcessLog = {
+  error: boolean;
+  text: string;
+};
+
+export type ScriptProcess = {
+  id: string;
+  logs: ScriptProcessLog[];
+  label: string;
+};
+
 export type RegisteredComponent = {
   uri?: string;
   tagName: string;
@@ -280,6 +291,9 @@ export type RootState = {
   quickSearch?: QuickSearch;
   editMode: EditMode;
   showConfigureBuildModal?: boolean;
+  scriptProcesses: ScriptProcess[];
+
+  buildScriptProcessId?: string;
 
   // defined by context menu
   editingBasenameUri?: string;
@@ -494,6 +508,11 @@ export const teeHistory = (state: RootState) => {
     prevGraph: state.graph
   };
 };
+
+export const getBuildScriptProcess = (state: RootState) =>
+  state.scriptProcesses.find(
+    process => process.id === state.buildScriptProcessId
+  );
 
 export const getSyntheticRelativesOfParentSource = memoize(
   (
@@ -803,6 +822,14 @@ const createEditorWindow = (
 ): EditorWindow => ({
   tabUris,
   activeFilePath
+});
+
+let scriptProcessCount = 0;
+
+export const createScriptProcess = (label: string): ScriptProcess => ({
+  label,
+  id: `script${scriptProcessCount++}`,
+  logs: []
 });
 
 export const getSyntheticWindowBounds = memoize(

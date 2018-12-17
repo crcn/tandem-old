@@ -211,7 +211,14 @@ import {
   CSS_PROPERTIES_CHANGED,
   BUILD_BUTTON_CONFIGURE_CLICKED,
   CONFIGURE_BUILD_MODAL_BACKGROUND_CLICKED,
-  CONFIGURE_BUILD_MODAL_X_CLICKED
+  CONFIGURE_BUILD_MODAL_X_CLICKED,
+  SCRIPT_PROCESS_STARTED,
+  SCRIPT_PROCESS_LOGGED,
+  SCRIPT_PROCESS_CLOSED,
+  ScriptProcessStarted,
+  ScriptProcessLogged,
+  BUILD_SCRIPT_STARTED,
+  BuildScriptStarted
 } from "../actions";
 import {
   queueOpenFile,
@@ -2077,6 +2084,58 @@ export const canvasReducer = (state: RootState, action: Action) => {
       return state;
     }
 
+    case SCRIPT_PROCESS_STARTED: {
+      const { process } = action as ScriptProcessStarted;
+      state = {
+        ...state,
+        scriptProcesses: arraySplice(state.scriptProcesses, 0, 0, process)
+      };
+      break;
+    }
+    case SCRIPT_PROCESS_LOGGED: {
+      const { process, log } = action as ScriptProcessLogged;
+      state = {
+        ...state,
+        scriptProcesses: state.scriptProcesses.map(existing => {
+          if (existing.id === process.id) {
+            return {
+              ...existing,
+              logs: [...existing.logs, log]
+            };
+          } else {
+            return existing;
+          }
+        })
+      };
+      break;
+      break;
+    }
+    case SCRIPT_PROCESS_CLOSED: {
+      const { process } = action as ScriptProcessStarted;
+      state = {
+        ...state,
+        scriptProcesses: state.scriptProcesses.filter(
+          existing => existing.id !== process.id
+        )
+      };
+
+      if (process.id === state.buildScriptProcessId) {
+        state = {
+          ...state,
+          buildScriptProcessId: null
+        };
+      }
+      break;
+    }
+    case BUILD_SCRIPT_STARTED: {
+      const { process } = action as BuildScriptStarted;
+      state = {
+        ...state,
+        buildScriptProcessId: process.id
+      };
+      return state;
+    }
+
     case NEW_STYLE_VARIANT_BUTTON_CLICKED: {
       return updateRootState(
         {
@@ -2998,6 +3057,7 @@ const shortcutReducer = (state: RootState, action: Action): RootState => {
         return state;
       }
     }
+
     case SHORTCUT_DELETE_KEY_DOWN: {
       if (isInputSelected(state) || state.selectedInspectorNodes.length === 0) {
         return state;

@@ -9,9 +9,12 @@ import {
   buildButtonStartClicked,
   buildButtonConfigureClicked
 } from "../../../actions";
+import { last } from "lodash";
+import { ScriptProcess } from "../../../state";
 
 export type Props = {
   dispatch: Dispatch<any>;
+  buildScriptProcess?: ScriptProcess;
 };
 
 type State = {
@@ -52,14 +55,23 @@ export default (Base: React.ComponentClass<BaseBuildButtonProps>) =>
         onConfigureClick
       } = this;
       const { open } = this.state;
-      const { ...rest } = this.props;
+      const { buildScriptProcess, ...rest } = this.props;
 
-      let running = false;
+      let building = Boolean(buildScriptProcess);
       let errored = false;
+      let label: string;
+
+      if (buildScriptProcess) {
+        label = "Building";
+        const lastLog = last(buildScriptProcess.logs);
+        errored = lastLog && lastLog.error;
+      } else {
+        label = "Build project";
+      }
 
       let buildButtonMenuItems = [];
 
-      if (!running) {
+      if (!building) {
         buildButtonMenuItems = [
           <BuildButtonOption
             key="configure"
@@ -82,10 +94,12 @@ export default (Base: React.ComponentClass<BaseBuildButtonProps>) =>
             onShouldClose,
             centered: true
           }}
+          labelProps={{
+            text: label
+          }}
           buildButtonProps={{
             onMouseDown: onBuildButtonClick
           }}
-          tooltipProps={{}}
           buildButtonMenuProps={{
             items: buildButtonMenuItems
           }}

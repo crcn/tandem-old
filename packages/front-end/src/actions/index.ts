@@ -41,7 +41,9 @@ import {
   ProjectInfo,
   BaseQuickSearchResult,
   QuickSearchResult,
-  ProjectTemplate
+  ProjectTemplate,
+  ScriptProcess,
+  ScriptProcessLog
 } from "../state";
 import { InspectorNode } from "paperclip";
 
@@ -291,6 +293,10 @@ export const CONFIGURE_BUILD_MODAL_X_CLICKED =
   "CONFIGURE_BUILD_MODAL_X_CLICKED";
 export const CONFIGURE_BUILD_MODAL_BACKGROUND_CLICKED =
   "CONFIGURE_BUILD_MODAL_BACKGROUND_CLICKED";
+export const SCRIPT_PROCESS_STARTED = "SCRIPT_PROCESS_STARTED";
+export const SCRIPT_PROCESS_LOGGED = "SCRIPT_PROCESS_LOGGED";
+export const SCRIPT_PROCESS_CLOSED = "SCRIPT_PROCESS_LOGGED";
+export const BUILD_SCRIPT_STARTED = "BUILD_SCRIPT_STARTED";
 
 export type WrappedEvent<T> = {
   sourceEvent: T;
@@ -658,6 +664,19 @@ export type SavedFile = {
   uri: string;
 } & Action;
 
+export type ScriptProcessStarted = {
+  process: ScriptProcess;
+} & Action;
+
+export type ScriptProcessLogged = {
+  process: ScriptProcess;
+  log: ScriptProcessLog;
+} & Action;
+
+export type ScriptProcessStopped = {
+  process: ScriptProcess;
+} & Action;
+
 export type SavedAllFiles = {} & Action;
 
 export type InsertToolFinished = {
@@ -722,6 +741,10 @@ export type CanvasDroppedItem = {
   editorUri: string;
   item: RegisteredComponent | TreeNode<any>;
   point: Point;
+} & Action;
+
+export type BuildScriptStarted = {
+  process: ScriptProcess;
 } & Action;
 
 export type VariantClicked = {
@@ -941,6 +964,13 @@ export const browseDirectoryClicked = publicActionCreator(
   })
 );
 
+export const buildScriptStarted = (
+  process: ScriptProcess
+): BuildScriptStarted => ({
+  type: BUILD_SCRIPT_STARTED,
+  process
+});
+
 export const canvasTextEditChangeComplete = (
   value: string
 ): CanvasTextEditChangeComplete => ({
@@ -1055,6 +1085,29 @@ export const fileNavigatorBasenameChanged = (
   item,
   basename,
   type: FILE_NAVIGATOR_BASENAME_CHANGED
+});
+
+export const scriptProcessStarted = (
+  process: ScriptProcess
+): ScriptProcessStarted => ({
+  type: SCRIPT_PROCESS_STARTED,
+  process
+});
+
+export const scriptProcessLog = (
+  process: ScriptProcess,
+  log: ScriptProcessLog
+): ScriptProcessLogged => ({
+  type: SCRIPT_PROCESS_LOGGED,
+  process,
+  log
+});
+
+export const scriptProcessStopped = (
+  process: ScriptProcess
+): ScriptProcessStopped => ({
+  type: SCRIPT_PROCESS_CLOSED,
+  process
 });
 
 export const promptConfirmed = (

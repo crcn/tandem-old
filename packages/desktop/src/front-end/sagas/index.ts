@@ -72,7 +72,7 @@ import {
 } from "tandem-common";
 // import { serverStateLoaded } from "../actions";
 import { DesktopRootState } from "../state";
-import { Action } from "redux";
+import { processSaga } from "./processes";
 
 export function* rootSaga() {
   yield fork(ipcSaga);
@@ -84,6 +84,7 @@ export function* rootSaga() {
   yield fork(watchProjectDirectory);
   yield fork(handleQuickSearch);
   yield fork(chromeSaga);
+  yield fork(processSaga);
 }
 
 function* handleProjectDirectory() {

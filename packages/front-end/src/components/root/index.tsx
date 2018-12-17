@@ -3,7 +3,7 @@ import * as React from "react";
 import { Dispatch } from "redux";
 import { Workspace } from "./workspace/view.pc";
 import { Welcome } from "./welcome/view.pc";
-import { RootState, isUnsaved } from "../../state";
+import { RootState, isUnsaved, getBuildScriptProcess } from "../../state";
 import { Chrome } from "./chrome.pc";
 
 export type RootOuterProps = {
@@ -20,6 +20,7 @@ export class RootComponent extends React.PureComponent<RootOuterProps> {
     }
 
     let content;
+    const buildScriptProcess = getBuildScriptProcess(root);
 
     if (!root.projectInfo) {
       content = (
@@ -44,7 +45,7 @@ export class RootComponent extends React.PureComponent<RootOuterProps> {
           unsaved={isUnsaved(root)}
           projectInfo={root.projectInfo}
           dispatch={dispatch}
-          buildButtonProps={{ dispatch }}
+          buildButtonProps={{ dispatch, buildScriptProcess }}
         />
       );
     }

@@ -8,6 +8,7 @@ init({
   customChrome: false,
   selectedInspectorNodes: [],
   hoveringInspectorNodes: [],
+  scriptProcesses: [],
   editMode: EditMode.PRIMARY,
   selectedFileNodeIds: [],
   sourceNodeInspector: createRootInspectorNode(),

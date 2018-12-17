@@ -951,8 +951,18 @@
       "children": [
         {
           "slotId": "db4ce6e6659",
-          "id": "848d357662",
-          "children": [],
+          "id": "cec0cf27663",
+          "children": [
+            {
+              "id": "cec0cf27662",
+              "name": "text",
+              "label": "Text",
+              "value": "something",
+              "style": {},
+              "children": [],
+              "metadata": {}
+            }
+          ],
           "metadata": {},
           "name": "plug"
         }

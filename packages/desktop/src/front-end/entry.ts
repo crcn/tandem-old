@@ -94,6 +94,7 @@ setTimeout(init, 500, {
   selectedFileNodeIds: [],
   sourceNodeInspector: createRootInspectorNode(),
   sourceNodeInspectorMap: {},
+  scriptProcesses: [],
   editorWindows: [],
   frames: [],
   documents: [],

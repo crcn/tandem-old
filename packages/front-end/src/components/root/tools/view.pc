@@ -70,7 +70,7 @@
                     {
                       "id": "fe72344f18317",
                       "name": "text",
-                      "label": "Text",
+                      "label": "label",
                       "value": "Build project",
                       "style": {
                         "font-size": "9px"
