@@ -50,6 +50,11 @@ export default (Base: React.ComponentClass<BaseTblrInputProps>) =>
             connected,
             disconnected: !connected
           })}
+          primaryInputProps={null}
+          firstInputProps={null}
+          secondInputProps={null}
+          thirdInputProps={null}
+          fourthInputProps={null}
           togglerProps={{
             value: connected,
             options: getButtonBarOptions(connectedIcon, disconnectedIcon),

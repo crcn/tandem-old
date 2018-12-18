@@ -13,7 +13,7 @@ import {
 import { EMPTY_ARRAY, EMPTY_OBJECT } from "tandem-common";
 import { RightGutterTab } from "./tab.pc";
 import * as cx from "classnames";
-import { BaseRightGutterProps } from "./view.pc";
+import { BaseRightGutterProps, ElementProps } from "./view.pc";
 import { RootState, getGlobalFileUri } from "../../../../state";
 import { rightGutterTabClicked } from "../../../../actions";
 import { Dispatch } from "redux";
@@ -24,7 +24,7 @@ const INSPECTOR_NODE_TAB_NAMES = ["properties"];
 export type Props = {
   root: RootState;
   dispatch: Dispatch;
-} & BaseRightGutterProps;
+} & ElementProps;
 
 type State = {
   currentTab: string;

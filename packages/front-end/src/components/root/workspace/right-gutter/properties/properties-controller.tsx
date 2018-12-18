@@ -10,7 +10,7 @@ import {
   isElementLikePCNode,
   isTextLikePCNode
 } from "paperclip";
-import { BasePropertiesProps } from "./view.pc";
+import { BasePropertiesProps, ElementProps } from "./view.pc";
 import { InspectorNode } from "paperclip";
 import { Dispatch } from "redux";
 
@@ -25,7 +25,7 @@ export type Props = {
   dispatch: Dispatch<any>;
   sourceNodeUri: string;
   rootInspectorNode: InspectorNode;
-} & BasePropertiesProps;
+} & ElementProps;
 
 export default (Base: React.ComponentClass<BasePropertiesProps>) =>
   class PropertiesController extends React.PureComponent<Props> {

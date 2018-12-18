@@ -32,6 +32,11 @@ import {
 import { EMPTY_ARRAY, filterNestedNodes, stripProtocol } from "tandem-common";
 import { camelCase, uniq } from "lodash";
 import { PCSlot } from "paperclip";
+import {
+  PCComponentInstanceElement,
+  getPCParentComponentInstances,
+  getInstanceExtends
+} from "paperclip";
 
 export const translatePaperclipModuleToReactTSDefinition = (
   entry: PCDependency,
@@ -173,12 +178,32 @@ const translateComponent = (
     if (child.id === component.id) continue;
     if (child.name === PCSourceTagNames.SLOT) continue;
     context = addScopedLayerLabel(`${child.label} Props`, child.id, context);
+
+    const childIsComponentInstance = isPCComponentInstance(child);
+
+    const hasController =
+      childIsComponentInstance &&
+      Boolean(
+        getInstanceExtends(
+          child as PCComponentInstanceElement,
+          context.graph
+        ).find(component =>
+          Boolean(component.controllers && component.controllers.length)
+        )
+      );
+
+    // if a controller is attached, then require the parameter.
     context = addLineItem(
-      `${getPublicLayerVarName(`${child.label} Props`, child.id, context)}?: `,
+      `${getPublicLayerVarName(`${child.label} Props`, child.id, context)}${
+        hasController ? "" : "?"
+      }: `,
       context
     );
-    if (isPCComponentInstance(child)) {
-      context = addLineItem(`_${child.is}Props`, context);
+    if (childIsComponentInstance) {
+      context = addLineItem(
+        `_${(child as PCComponentInstanceElement).is}Props`,
+        context
+      );
     } else {
       if (child.name === PCSourceTagNames.TEXT) {
         context = addLineItem(`TextProps`, context);

@@ -5,13 +5,13 @@ import {
   SyntheticTextNode
 } from "paperclip";
 import { textValueChanged } from "../../../../../actions";
-import { BaseTextPropertiesProps } from "./view.pc";
+import { BaseTextPropertiesProps, ElementProps } from "./view.pc";
 import { Dispatch } from "redux";
 
 export type Props = {
   dispatch: Dispatch<any>;
   selectedNodes: SyntheticVisibleNode[];
-} & BaseTextPropertiesProps;
+} & ElementProps;
 
 type InnerProps = {
   onTextValueChange: any;

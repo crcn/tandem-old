@@ -18,7 +18,7 @@ import {
   DropdownMenuOption,
   dropdownMenuOptionFromValue
 } from "../../../../inputs/dropdown/controller";
-import { BaseElementPropertiesProps } from "./view.pc";
+import { BaseElementPropertiesProps, ElementProps } from "./view.pc";
 import { Dispatch } from "redux";
 import { memoize } from "tandem-common";
 
@@ -157,7 +157,7 @@ export type Props = {
   sourceNode: PCElement | PCComponent | PCComponentInstanceElement | PCTextNode;
   dispatch: Dispatch<any>;
   graph: DependencyGraph;
-} & BaseElementPropertiesProps;
+} & ElementProps;
 
 export default (Base: React.ComponentClass<BaseElementPropertiesProps>) => {
   return class ElementController extends React.PureComponent<Props> {
@@ -188,6 +188,7 @@ export default (Base: React.ComponentClass<BaseElementPropertiesProps>) => {
           variant={cx({
             allowTitle: true
           })}
+          labelInputProps={null}
           titleInputProps={{
             value: sourceNode.attributes.title,
             onChangeComplete: attributeChangeCallback(

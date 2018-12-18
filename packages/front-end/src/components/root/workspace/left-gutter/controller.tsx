@@ -16,7 +16,7 @@ export type Props = {
   dispatch: Dispatch<any>;
   editingFileNameUri: string;
   documents: SyntheticDocument[];
-} & BaseLeftGutterProps;
+};
 
 type State = {
   width: number;

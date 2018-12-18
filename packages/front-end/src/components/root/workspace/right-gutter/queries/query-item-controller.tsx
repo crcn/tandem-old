@@ -22,6 +22,7 @@ export default (Base: React.ComponentClass<BaseQueryItemProps>) =>
       return (
         <Base
           {...rest}
+          queryOptionsProps={null}
           editButtonProps={{
             right: true,
             content: (

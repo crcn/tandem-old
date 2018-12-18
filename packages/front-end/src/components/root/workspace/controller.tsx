@@ -58,6 +58,11 @@ export default (Base: React.ComponentClass<BaseWorkspaceProps>) =>
                 dispatch,
                 rootDirectory: projectDirectory
               }}
+              bottomGutterProps={{
+                show: root.showBottomGutter,
+                scriptProcesses: root.scriptProcesses,
+                dispatch
+              }}
               editorWindowsProps={{
                 root,
                 dispatch

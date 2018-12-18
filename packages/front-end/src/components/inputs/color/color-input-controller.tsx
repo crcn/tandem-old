@@ -1,6 +1,6 @@
 import * as React from "react";
 import { EMPTY_ARRAY } from "tandem-common";
-import { BaseColorInputProps } from "./view.pc";
+import { BaseColorInputProps, ElementProps } from "./view.pc";
 import { ColorPicker } from "./picker.pc";
 import {
   maybeConvertSwatchValueToColor,
@@ -20,7 +20,7 @@ export type Props = {
   onChangeComplete: any;
   swatchOptionGroups: ColorSwatchGroup[];
   renderColorPicker?: (props: ColorPickerProps) => any;
-} & BaseColorInputProps;
+} & ElementProps;
 
 export default (Base: React.ComponentClass<BaseColorInputProps>) =>
   class ColorInputController extends React.PureComponent<Props> {

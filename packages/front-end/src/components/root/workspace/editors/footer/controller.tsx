@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Dispatch } from "redux";
 import { InspectorNode, DependencyGraph } from "paperclip";
-import { BaseEditorFooterProps } from "./view.pc";
+import { BaseEditorFooterProps, ElementProps } from "./view.pc";
 import { Canvas } from "../../../../../state";
 
 export type Props = {
@@ -10,7 +10,7 @@ export type Props = {
   rootInspectorNode: InspectorNode;
   selectedInspectorNode: InspectorNode;
   dispatch: Dispatch<any>;
-} & BaseEditorFooterProps;
+} & ElementProps;
 
 export default (Base: React.ComponentClass<BaseEditorFooterProps>) =>
   class FooterController extends React.PureComponent<Props> {

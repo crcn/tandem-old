@@ -6,7 +6,7 @@ import {
   PCElement
 } from "paperclip";
 import { Dispatch } from "redux";
-import { BaseImgPropertiesProps } from "./view.pc";
+import { BaseImgPropertiesProps, ElementProps } from "./view.pc";
 import {
   imageSourceInputChanged,
   imageBrowseButtonClicked
@@ -17,7 +17,7 @@ export type Props = {
   sourceNode: PCElement | PCComponentInstanceElement | PCComponent;
   dispatch: Dispatch<any>;
   graph: DependencyGraph;
-} & BaseImgPropertiesProps;
+} & ElementProps;
 
 export default (Base: React.ComponentClass<BaseImgPropertiesProps>) =>
   class ImgPropertyController extends React.PureComponent<Props> {

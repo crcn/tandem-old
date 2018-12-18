@@ -19,6 +19,7 @@ export default (Base: React.ComponentClass<BaseBackgroundInputProps>) =>
         <Base
           value={stringifyCSSBackground(value)}
           {...rest}
+          backgroundPickerProps={null}
           renderColorPicker={props => (
             <BackgroundPicker {...props} value={value} />
           )}

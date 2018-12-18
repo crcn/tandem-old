@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { Bounds, shiftBounds, shiftPoint, Point } from "tandem-common";
-import { BasePopoverProps } from "./view.pc";
+import { BasePopoverProps, ElementProps } from "./view.pc";
 
 export type Props = {
   open: boolean;
@@ -9,7 +9,7 @@ export type Props = {
   anchorRect?: Bounds;
   onShouldClose: any;
   updateContentPosition?: (point: Point, popoverRect: Bounds) => Point;
-} & BasePopoverProps;
+} & ElementProps;
 
 type PopoverState = {
   anchorRect: Bounds;
@@ -44,7 +44,12 @@ export default (Base: React.ComponentClass<BasePopoverProps>) => {
       } = this.props;
       const { anchorRect } = this.state;
 
-      let overrideProps: BasePopoverProps = {};
+      let overrideProps: BasePopoverProps = {
+        contentProps: {
+          onShouldClose,
+          anchorRect
+        }
+      };
 
       if (anchorRect) {
         overrideProps = {

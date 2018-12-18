@@ -28,7 +28,7 @@ export type Props = {
   dispatch: Dispatch<any>;
   selectedFileNodeIds: string[];
   editingFileNameUri: string;
-} & BaseFileNavigatorProps;
+};
 
 const generateFileNavigatorContext = memoize(
   (
@@ -160,7 +160,7 @@ export default (Base: React.ComponentClass<BaseFileNavigatorProps>) =>
       } = this.props;
 
       if (!rootDirectory) {
-        return <Base content={EMPTY_ARRAY} />;
+        return <Base content={EMPTY_ARRAY} addFileDropdownProps={null} />;
       }
       const {
         onNewFileChangeComplete,

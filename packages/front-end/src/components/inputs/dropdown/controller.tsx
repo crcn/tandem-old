@@ -2,7 +2,7 @@ import * as React from "react";
 import * as cx from "classnames";
 import { DropdownMenuItem } from "./menu.pc";
 import { EMPTY_ARRAY, memoize } from "tandem-common";
-import { BaseDropdownProps } from "./view.pc";
+import { BaseDropdownProps, ElementProps } from "./view.pc";
 import { PCVariable } from "paperclip";
 
 export type DropdownMenuOption = {
@@ -30,13 +30,13 @@ export const mapVariablesToDropdownOptions = memoize(
   }
 );
 
-export type Props = BaseDropdownProps & {
+export type Props = {
   value?: any;
   filterable?: boolean;
   options: DropdownMenuOption[];
   onChange?: (value: any) => any;
   onChangeComplete?: (value: any) => any;
-};
+} & ElementProps;
 
 type DropdownState = {
   open: boolean;

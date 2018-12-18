@@ -1,6 +1,6 @@
 import * as React from "react";
 import * as cx from "classnames";
-import { BaseStylesProps } from "./view.pc";
+import { BaseStylesProps, ElementProps } from "./view.pc";
 import { Dispatch } from "redux";
 import {
   getPCNode,
@@ -32,7 +32,7 @@ export type Props = {
   globalVariables: PCVariable[];
   globalQueries: PCQuery[];
   graph: DependencyGraph;
-} & BaseStylesProps;
+} & ElementProps;
 
 enum Tab {
   PROPERTIES,

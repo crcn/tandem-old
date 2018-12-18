@@ -42,7 +42,10 @@
           "bottom": 432
         }
       },
-      "variant": {}
+      "variant": {},
+      "controllers": [
+        "./controller.tsx"
+      ]
     },
     {
       "label": "Console",

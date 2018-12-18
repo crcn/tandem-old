@@ -302,6 +302,7 @@ export type RootState = {
   selectedDirectoryPath?: string;
   prevGraph?: DependencyGraph;
   showSidebar?: boolean;
+  showBottomGutter?: boolean;
   customChrome: boolean;
   renameInspectorNodeId?: string;
 

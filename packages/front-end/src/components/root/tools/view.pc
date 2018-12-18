@@ -73,7 +73,8 @@
                       "label": "label",
                       "value": "Build project",
                       "style": {
-                        "font-size": "9px"
+                        "font-size": "9px",
+                        "font-weight": "700"
                       },
                       "children": [],
                       "metadata": {},

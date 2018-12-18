@@ -108,6 +108,7 @@ export default (Base: React.ComponentClass<BaseInheritProps>) => {
         .map((styleMixinId, i) => {
           return (
             <InheritItem
+              dropdownProps={null}
               alt={Boolean(i % 2)}
               key={styleMixinId}
               onClick={onInheritItemClick as any}

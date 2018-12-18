@@ -1126,8 +1126,10 @@ export const getInstanceExtends = memoize(
     let current: PCComponent | PCComponentInstanceElement = instance;
     const components = [];
 
-    while (current) {
-      components.push((current = getPCNode(current.is, graph) as PCComponent));
+    while (1) {
+      current = getPCNode(current.is, graph) as PCComponent;
+      if (!current) break;
+      components.push(current);
     }
 
     return components;

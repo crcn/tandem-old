@@ -31,6 +31,11 @@ export default (Base: React.ComponentClass<BaseQueriesPaneProps>) =>
       return (
         <Base
           {...rest}
+          elementProps1={null}
+          elementProps2={null}
+          elementProps3={null}
+          elementProps4={null}
+          elementProps5={null}
           addQueryDropdownProps={{
             options: QUERY_DROPDOWN_OPTIONS,
             onChangeComplete: onAddQueryDropdownSelect

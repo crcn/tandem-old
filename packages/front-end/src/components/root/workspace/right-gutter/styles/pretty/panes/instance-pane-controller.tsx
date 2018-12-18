@@ -159,6 +159,7 @@ export default (Base: React.ComponentClass<BaseInstancePaneProps>) =>
             enabled={enabled}
             key={variant.id}
             item={variant}
+            switchProps={null}
             dispatch={dispatch}
             onToggle={onVariantToggle}
             graph={graph}
@@ -171,6 +172,10 @@ export default (Base: React.ComponentClass<BaseInstancePaneProps>) =>
       return (
         <Base
           {...rest}
+          variantOptionProps={null}
+          variantOptionProps1={null}
+          variantOptionProps2={null}
+          variantOptionProps3={null}
           variant={cx({
             hasOverrides: overrideKeys.length > 0
           })}
