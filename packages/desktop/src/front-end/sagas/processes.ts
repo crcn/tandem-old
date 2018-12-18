@@ -1,4 +1,12 @@
-import { fork, take, select, call, put, spawn } from "redux-saga/effects";
+import {
+  fork,
+  take,
+  select,
+  call,
+  put,
+  spawn,
+  cancel
+} from "redux-saga/effects";
 import { eventChannel, END } from "redux-saga";
 import { spawn as spawn2 } from "child_process";
 import {
@@ -9,7 +17,10 @@ import {
   scriptProcessStarted,
   scriptProcessLog,
   scriptProcessStopped,
-  buildScriptStarted
+  buildScriptStarted,
+  BUILD_SCRIPT_CONFIG_CHANGED,
+  SCRIPT_PROCESS_CLOSED,
+  BUILD_BUTTON_STOP_CLICKED
 } from "tandem-front-end";
 
 export function* processSaga() {
@@ -18,16 +29,42 @@ export function* processSaga() {
 
 function* handleStartBuild() {
   while (1) {
-    yield take(BUILD_BUTTON_START_CLICKED);
-    const state: RootState = yield select();
-    const buildScript = state.projectInfo.config.scripts.build;
-    const scriptProcess: ScriptProcess = yield call(
-      spawnScript,
-      buildScript,
-      "Build"
-    );
-    yield put(buildScriptStarted(scriptProcess));
+    const action = yield take([BUILD_BUTTON_START_CLICKED]);
+    yield call(startBuild);
   }
+}
+
+function* startBuild() {
+  const state: RootState = yield select();
+  const buildScript = state.projectInfo.config.scripts.build;
+  const scriptProcess: ScriptProcess = yield call(
+    spawnScript,
+    buildScript,
+    "Build"
+  );
+
+  // check if process has been removed from state
+  yield fork(function* handleScriptChanged() {
+    while (1) {
+      const action = yield take([
+        BUILD_SCRIPT_CONFIG_CHANGED,
+        BUILD_BUTTON_STOP_CLICKED
+      ]);
+      if (action.type === BUILD_BUTTON_STOP_CLICKED) {
+        break;
+      }
+      const state: RootState = yield select();
+      const matchingProccess = state.scriptProcesses.find(
+        proc => proc.id === scriptProcess.id
+      );
+      if (matchingProccess) {
+        yield call(startBuild);
+        break;
+      }
+    }
+  });
+
+  yield put(buildScriptStarted(scriptProcess));
 }
 
 function* spawnScript(script: string, label: string): IterableIterator<any> {
@@ -55,17 +92,36 @@ function* spawnScript(script: string, label: string): IterableIterator<any> {
         })
       );
 
-      proc.on("close", () => emit(END));
+      proc.on("exit", () => emit({ type: "close" }));
+      proc.on("close", () => emit({ type: "close" }));
 
       return () => {
         proc.kill();
       };
     });
 
+    // check if process has been removed from state
+    yield spawn(function*() {
+      while (1) {
+        yield take([
+          BUILD_SCRIPT_CONFIG_CHANGED,
+          SCRIPT_PROCESS_CLOSED,
+          BUILD_BUTTON_STOP_CLICKED
+        ]);
+        const state: RootState = yield select();
+        const matchingProccess = state.scriptProcesses.find(
+          proc => proc.id === scriptProcess.id
+        );
+        if (!matchingProccess) {
+          channel.close();
+          break;
+        }
+      }
+    });
+
     while (1) {
       const event = yield take(channel);
-      console.log("spawnScript", event);
-      if (event === END) {
+      if (event.type === "close") {
         yield put(scriptProcessStopped(scriptProcess));
         break;
       } else if (event.type === "stdout") {

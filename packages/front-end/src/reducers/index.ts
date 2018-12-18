@@ -220,7 +220,11 @@ import {
   BUILD_SCRIPT_STARTED,
   BuildScriptStarted,
   SHORTCUT_TOGGLE_PANEL,
-  CLOSE_BOTTOM_GUTTER_BUTTON_CLICKED
+  CLOSE_BOTTOM_GUTTER_BUTTON_CLICKED,
+  BUILD_SCRIPT_CONFIG_CHANGED,
+  OPEN_APP_SCRIPT_CONFIG_CHANGED,
+  ScriptConfigChanged,
+  BUILD_BUTTON_STOP_CLICKED
 } from "../actions";
 import {
   queueOpenFile,
@@ -281,7 +285,8 @@ import {
   getGlobalFileUri,
   setRootStateFileNodeExpanded,
   centerEditorCanvasOrLater,
-  EditMode
+  EditMode,
+  updateProjectScripts
 } from "../state";
 import {
   PCSourceTagNames,
@@ -440,6 +445,7 @@ import {
 const ZOOM_SENSITIVITY = process.platform === "win32" ? 2500 : 250;
 const MIN_ZOOM = 0.02;
 const MAX_ZOOM = 6400 / 100;
+const MAX_LOGS = 100;
 
 export const rootReducer = (state: RootState, action: Action): RootState => {
   state = fsSandboxReducer(state, action);
@@ -1531,6 +1537,37 @@ export const canvasReducer = (state: RootState, action: Action) => {
       return state;
     }
 
+    case BUILD_BUTTON_STOP_CLICKED:
+    case BUILD_SCRIPT_CONFIG_CHANGED: {
+      const { script } = action as ScriptConfigChanged;
+      state = updateProjectScripts(
+        {
+          build: script
+        },
+        state
+      );
+      state = {
+        ...state,
+        scriptProcesses: state.scriptProcesses.filter(
+          process => process.id !== state.buildScriptProcessId
+        ),
+        buildScriptProcessId: null
+      };
+
+      return state;
+    }
+
+    case OPEN_APP_SCRIPT_CONFIG_CHANGED: {
+      const { script } = action as ScriptConfigChanged;
+      state = updateProjectScripts(
+        {
+          openApp: script
+        },
+        state
+      );
+      return state;
+    }
+
     case CLOSE_BOTTOM_GUTTER_BUTTON_CLICKED:
     case SHORTCUT_TOGGLE_PANEL: {
       state = {
@@ -2111,17 +2148,20 @@ export const canvasReducer = (state: RootState, action: Action) => {
         ...state,
         scriptProcesses: state.scriptProcesses.map(existing => {
           if (existing.id === process.id) {
+            const newLogs = [...existing.logs, log];
+            if (newLogs.length > MAX_LOGS) {
+              newLogs.shift();
+            }
             return {
               ...existing,
-              logs: [...existing.logs, log]
+              logs: newLogs
             };
           } else {
             return existing;
           }
         })
       };
-      break;
-      break;
+      return state;
     }
     case SCRIPT_PROCESS_CLOSED: {
       const { process } = action as ScriptProcessStarted;
@@ -2138,7 +2178,7 @@ export const canvasReducer = (state: RootState, action: Action) => {
           buildScriptProcessId: null
         };
       }
-      break;
+      return state;
     }
     case BUILD_SCRIPT_STARTED: {
       const { process } = action as BuildScriptStarted;

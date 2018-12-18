@@ -117,12 +117,14 @@ export type ProjectOptions = {
   allowCascadeFonts?: boolean;
 };
 
+export type ProjectScripts = {
+  previewServer?: string;
+  build?: string;
+  openApp?: string;
+};
+
 export type ProjectConfig = {
-  scripts?: {
-    previewServer?: string;
-    build?: string;
-    openApp?: string;
-  };
+  scripts?: ProjectScripts;
 
   // relative path to main file
   mainFilePath?: string;
@@ -715,6 +717,28 @@ export const updateOpenFileContent = (
     uri,
     state
   );
+};
+
+export const updateProjectScripts = (
+  scripts: Partial<ProjectScripts>,
+  state: RootState
+) => {
+  // todo - queue file to save
+  state = {
+    ...state,
+    projectInfo: {
+      ...state.projectInfo,
+      config: {
+        ...state.projectInfo.config,
+        scripts: {
+          ...(state.projectInfo.config.scripts || EMPTY_OBJECT),
+          ...scripts
+        }
+      }
+    }
+  };
+
+  return state;
 };
 
 export const getActiveEditorWindow = (state: RootState) =>

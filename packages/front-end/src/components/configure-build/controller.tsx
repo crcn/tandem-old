@@ -3,7 +3,9 @@ import { BaseConfigureBuildModalProps } from "./view.pc";
 import { Dispatch } from "redux";
 import {
   configureBuildModalXClicked,
-  configureBuildModalBackgroundClicked
+  configureBuildModalBackgroundClicked,
+  openAppScriptConfigChanged,
+  buildScriptConfigChanged
 } from "../../actions";
 import { ProjectInfo } from "../../state";
 export type Props = {
@@ -18,8 +20,12 @@ export default (Base: React.ComponentClass<BaseConfigureBuildModalProps>) =>
     onBackgroundClick = () => {
       this.props.dispatch(configureBuildModalBackgroundClicked());
     };
-    onOpenCommandChangeComplete = (value: string) => {};
-    onBuildCommandChangeComplete = (value: string) => {};
+    onOpenCommandChangeComplete = (value: string) => {
+      this.props.dispatch(openAppScriptConfigChanged(value));
+    };
+    onBuildCommandChangeComplete = (value: string) => {
+      this.props.dispatch(buildScriptConfigChanged(value));
+    };
     render() {
       const {
         onCloseButtonClick,

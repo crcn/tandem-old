@@ -289,6 +289,8 @@ export const VARIABLE_QUERY_SOURCE_VARIABLE_CHANGE =
   "VARIABLE_QUERY_SOURCE_VARIABLE_CHANGE";
 export const BREAD_CRUMB_CLICKED = "BREAD_CRUMB_CLICKED";
 export const BUILD_BUTTON_START_CLICKED = "BUILD_BUTTON_START_CLICKED";
+export const BUILD_BUTTON_STOP_CLICKED = "BUILD_BUTTON_STOP_CLICKED";
+export const BUILD_BUTTON_OPEN_APP_CLICKED = "BUILD_BUTTON_OPEN_APP_CLICKED";
 export const BUILD_BUTTON_CONFIGURE_CLICKED = "BUILD_BUTTON_CONFIGURE_CLICKED";
 export const CONFIGURE_BUILD_MODAL_X_CLICKED =
   "CONFIGURE_BUILD_MODAL_X_CLICKED";
@@ -296,10 +298,12 @@ export const CONFIGURE_BUILD_MODAL_BACKGROUND_CLICKED =
   "CONFIGURE_BUILD_MODAL_BACKGROUND_CLICKED";
 export const SCRIPT_PROCESS_STARTED = "SCRIPT_PROCESS_STARTED";
 export const SCRIPT_PROCESS_LOGGED = "SCRIPT_PROCESS_LOGGED";
-export const SCRIPT_PROCESS_CLOSED = "SCRIPT_PROCESS_LOGGED";
+export const SCRIPT_PROCESS_CLOSED = "SCRIPT_PROCESS_CLOSED";
 export const BUILD_SCRIPT_STARTED = "BUILD_SCRIPT_STARTED";
 export const CLOSE_BOTTOM_GUTTER_BUTTON_CLICKED =
   "CLOSE_BOTTOM_GUTTER_BUTTON_CLICKED";
+export const BUILD_SCRIPT_CONFIG_CHANGED = "BUILD_SCRIPT_CONFIG_CHANGED";
+export const OPEN_APP_SCRIPT_CONFIG_CHANGED = "OPEN_APP_SCRIPT_CONFIG_CHANGED";
 
 export type WrappedEvent<T> = {
   sourceEvent: T;
@@ -484,6 +488,10 @@ export type QuickSearchFilterChanged = {
 
 export type QuickSearchResultLoaded = {
   matches: QuickSearchResult[];
+} & Action;
+
+export type ScriptConfigChanged = {
+  script: string;
 } & Action;
 
 export type TreeLayerClick = TreeLayerMouseOver &
@@ -919,8 +927,29 @@ export const buildButtonConfigureClicked = () => ({
   type: BUILD_BUTTON_CONFIGURE_CLICKED
 });
 
+export const buildButtonStopClicked = () => ({
+  type: BUILD_BUTTON_STOP_CLICKED
+});
+export const buildButtonOpenAppClicked = () => ({
+  type: BUILD_BUTTON_OPEN_APP_CLICKED
+});
+
 export const configureBuildModalXClicked = () => ({
   type: CONFIGURE_BUILD_MODAL_X_CLICKED
+});
+
+export const buildScriptConfigChanged = (
+  script: string
+): ScriptConfigChanged => ({
+  type: BUILD_SCRIPT_CONFIG_CHANGED,
+  script
+});
+
+export const openAppScriptConfigChanged = (
+  script: string
+): ScriptConfigChanged => ({
+  type: OPEN_APP_SCRIPT_CONFIG_CHANGED,
+  script
 });
 
 export const configureBuildModalBackgroundClicked = () => ({

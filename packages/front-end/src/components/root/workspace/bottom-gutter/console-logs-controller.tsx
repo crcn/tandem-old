@@ -14,6 +14,7 @@ export default (Base: React.ComponentClass<BaseConsoleLogsProps>) =>
       if (!scriptProcess) {
         return null;
       }
+
       const logs = scriptProcess.logs.map((log, i) => {
         return (
           <ConsoleLog

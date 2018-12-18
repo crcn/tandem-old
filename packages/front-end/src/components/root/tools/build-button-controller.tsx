@@ -7,7 +7,8 @@ import {
 import { Dispatch } from "redux";
 import {
   buildButtonStartClicked,
-  buildButtonConfigureClicked
+  buildButtonConfigureClicked,
+  buildButtonStopClicked
 } from "../../../actions";
 import { last } from "lodash";
 import { ScriptProcess } from "../../../state";
@@ -44,6 +45,10 @@ export default (Base: React.ComponentClass<BaseBuildButtonProps>) =>
       this.props.dispatch(buildButtonConfigureClicked());
       this.closeMenu();
     };
+    onStopClick = () => {
+      this.props.dispatch(buildButtonStopClicked());
+      this.closeMenu();
+    };
     closeMenu() {
       this.setState({ open: false });
     }
@@ -52,6 +57,7 @@ export default (Base: React.ComponentClass<BaseBuildButtonProps>) =>
         onShouldClose,
         onBuildButtonClick,
         onStartClick,
+        onStopClick,
         onConfigureClick
       } = this;
       const { open } = this.state;
@@ -82,6 +88,19 @@ export default (Base: React.ComponentClass<BaseBuildButtonProps>) =>
             key="start"
             labelProps={{ text: "Start" }}
             onClick={onStartClick}
+          />
+        ];
+      } else {
+        buildButtonMenuItems = [
+          <BuildButtonOption
+            key="configure"
+            labelProps={{ text: "Configure" }}
+            onClick={onConfigureClick}
+          />,
+          <BuildButtonOption
+            key="configure"
+            labelProps={{ text: "Stop" }}
+            onClick={onStopClick}
           />
         ];
       }
