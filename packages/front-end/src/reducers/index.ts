@@ -286,7 +286,8 @@ import {
   setRootStateFileNodeExpanded,
   centerEditorCanvasOrLater,
   EditMode,
-  updateProjectScripts
+  updateProjectScripts,
+  removeBuildScriptProcess
 } from "../state";
 import {
   PCSourceTagNames,
@@ -1537,7 +1538,11 @@ export const canvasReducer = (state: RootState, action: Action) => {
       return state;
     }
 
-    case BUILD_BUTTON_STOP_CLICKED:
+    case BUILD_BUTTON_STOP_CLICKED: {
+      state = removeBuildScriptProcess(state);
+      return state;
+    }
+
     case BUILD_SCRIPT_CONFIG_CHANGED: {
       const { script } = action as ScriptConfigChanged;
       state = updateProjectScripts(
@@ -1546,14 +1551,7 @@ export const canvasReducer = (state: RootState, action: Action) => {
         },
         state
       );
-      state = {
-        ...state,
-        scriptProcesses: state.scriptProcesses.filter(
-          process => process.id !== state.buildScriptProcessId
-        ),
-        buildScriptProcessId: null
-      };
-
+      state = removeBuildScriptProcess(state);
       return state;
     }
 

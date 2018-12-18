@@ -683,6 +683,17 @@ const moveDependencyRecordHistory = (
 export const isUnsaved = (state: RootState) =>
   state.openFiles.some(openFile => Boolean(openFile.newContent));
 
+export const removeBuildScriptProcess = (state: RootState) => {
+  state = {
+    ...state,
+    scriptProcesses: state.scriptProcesses.filter(
+      process => process.id !== state.buildScriptProcessId
+    ),
+    buildScriptProcessId: null
+  };
+
+  return state;
+};
 const DEFAULT_CANVAS: Canvas = {
   backgroundColor: "#EEE",
   translate: {
