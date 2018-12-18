@@ -227,6 +227,13 @@ function* handleMenu() {
             }
           },
           {
+            label: "Toggle Panel",
+            accelerator: "meta+j",
+            click: () => {
+              emit(shortcutKeyDown("SHORTCUT_TOGGLE_PANEL"));
+            }
+          },
+          {
             label: "Select Next Tab",
             accelerator: "meta+shift+]",
             click: (a, window, event) => {

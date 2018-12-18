@@ -218,7 +218,9 @@ import {
   ScriptProcessStarted,
   ScriptProcessLogged,
   BUILD_SCRIPT_STARTED,
-  BuildScriptStarted
+  BuildScriptStarted,
+  SHORTCUT_TOGGLE_PANEL,
+  CLOSE_BOTTOM_GUTTER_BUTTON_CLICKED
 } from "../actions";
 import {
   queueOpenFile,
@@ -1529,6 +1531,16 @@ export const canvasReducer = (state: RootState, action: Action) => {
       return state;
     }
 
+    case CLOSE_BOTTOM_GUTTER_BUTTON_CLICKED:
+    case SHORTCUT_TOGGLE_PANEL: {
+      state = {
+        ...state,
+        showBottomGutter: state.showBottomGutter ? false : true
+      };
+
+      return state;
+    }
+
     case SHORTCUT_ZOOM_OUT_KEY_DOWN: {
       const editor = getActiveEditorWindow(state);
       const openFile = getOpenFile(editor.activeFilePath, state.openFiles);
@@ -2088,7 +2100,8 @@ export const canvasReducer = (state: RootState, action: Action) => {
       const { process } = action as ScriptProcessStarted;
       state = {
         ...state,
-        scriptProcesses: arraySplice(state.scriptProcesses, 0, 0, process)
+        scriptProcesses: arraySplice(state.scriptProcesses, 0, 0, process),
+        showBottomGutter: true
       };
       break;
     }

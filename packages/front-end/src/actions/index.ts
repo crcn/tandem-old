@@ -144,6 +144,7 @@ export const TD_PROJECT_LOADED = "TD_PROJECT_LOADED";
 export const CONFIRM_CLOSE_WINDOW = "CONFIRM_CLOSE_WINDOW";
 export const PROJECT_INFO_LOADED = "PROJECT_INFO_LOADED";
 export const SHORTCUT_ZOOM_IN_KEY_DOWN = "SHORTCUT_ZOOM_IN_KEY_DOWN";
+export const SHORTCUT_TOGGLE_PANEL = "SHORTCUT_TOGGLE_PANEL";
 export const SHORTCUT_ZOOM_OUT_KEY_DOWN = "SHORTCUT_ZOOM_OUT_KEY_DOWN";
 export const SHORTCUT_ESCAPE_KEY_DOWN = "SHORTCUT_ESCAPE_KEY_DOWN";
 export const SHORTCUT_SAVE_KEY_DOWN = "SHORTCUT_SAVE_KEY_DOWN";
@@ -297,6 +298,8 @@ export const SCRIPT_PROCESS_STARTED = "SCRIPT_PROCESS_STARTED";
 export const SCRIPT_PROCESS_LOGGED = "SCRIPT_PROCESS_LOGGED";
 export const SCRIPT_PROCESS_CLOSED = "SCRIPT_PROCESS_LOGGED";
 export const BUILD_SCRIPT_STARTED = "BUILD_SCRIPT_STARTED";
+export const CLOSE_BOTTOM_GUTTER_BUTTON_CLICKED =
+  "CLOSE_BOTTOM_GUTTER_BUTTON_CLICKED";
 
 export type WrappedEvent<T> = {
   sourceEvent: T;
@@ -1150,6 +1153,10 @@ export const elementVariantToggled = (
   newVariants,
   node,
   type: ELEMENT_VARIANT_TOGGLED
+});
+
+export const closeBottomGutterButtonClicked = (): Action => ({
+  type: CLOSE_BOTTOM_GUTTER_BUTTON_CLICKED
 });
 
 export const fileNavigatorNewFileClicked = (): Action => ({
