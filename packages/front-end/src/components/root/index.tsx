@@ -45,7 +45,15 @@ export class RootComponent extends React.PureComponent<RootOuterProps> {
           unsaved={isUnsaved(root)}
           projectInfo={root.projectInfo}
           dispatch={dispatch}
-          buildButtonProps={{ dispatch, buildScriptProcess }}
+          buildButtonProps={{
+            dispatch,
+            buildScriptProcess,
+            hasOpenScript: Boolean(
+              root.projectInfo &&
+                root.projectInfo.config.scripts &&
+                root.projectInfo.config.scripts.openApp
+            )
+          }}
         />
       );
     }

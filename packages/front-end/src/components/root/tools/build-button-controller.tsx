@@ -8,7 +8,8 @@ import { Dispatch } from "redux";
 import {
   buildButtonStartClicked,
   buildButtonConfigureClicked,
-  buildButtonStopClicked
+  buildButtonStopClicked,
+  buildButtonOpenAppClicked
 } from "../../../actions";
 import { last } from "lodash";
 import { ScriptProcess } from "../../../state";
@@ -16,6 +17,7 @@ import { ScriptProcess } from "../../../state";
 export type Props = {
   dispatch: Dispatch<any>;
   buildScriptProcess?: ScriptProcess;
+  hasOpenScript: boolean;
 };
 
 type State = {
@@ -49,6 +51,10 @@ export default (Base: React.ComponentClass<BaseBuildButtonProps>) =>
       this.props.dispatch(buildButtonStopClicked());
       this.closeMenu();
     };
+    onOpenAppClick = () => {
+      this.props.dispatch(buildButtonOpenAppClicked());
+      this.closeMenu();
+    };
     closeMenu() {
       this.setState({ open: false });
     }
@@ -57,11 +63,12 @@ export default (Base: React.ComponentClass<BaseBuildButtonProps>) =>
         onShouldClose,
         onBuildButtonClick,
         onStartClick,
+        onOpenAppClick,
         onStopClick,
         onConfigureClick
       } = this;
       const { open } = this.state;
-      const { buildScriptProcess, ...rest } = this.props;
+      const { buildScriptProcess, hasOpenScript, ...rest } = this.props;
 
       let building = Boolean(buildScriptProcess);
       let errored = false;
@@ -97,6 +104,13 @@ export default (Base: React.ComponentClass<BaseBuildButtonProps>) =>
             labelProps={{ text: "Configure" }}
             onClick={onConfigureClick}
           />,
+          hasOpenScript ? (
+            <BuildButtonOption
+              key="configure"
+              labelProps={{ text: "Open app" }}
+              onClick={onOpenAppClick}
+            />
+          ) : null,
           <BuildButtonOption
             key="configure"
             labelProps={{ text: "Stop" }}
@@ -104,6 +118,8 @@ export default (Base: React.ComponentClass<BaseBuildButtonProps>) =>
           />
         ];
       }
+
+      buildButtonMenuItems = buildButtonMenuItems.filter(Boolean);
 
       return (
         <Base

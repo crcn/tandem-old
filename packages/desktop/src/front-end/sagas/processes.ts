@@ -20,17 +20,28 @@ import {
   buildScriptStarted,
   BUILD_SCRIPT_CONFIG_CHANGED,
   SCRIPT_PROCESS_CLOSED,
-  BUILD_BUTTON_STOP_CLICKED
+  BUILD_BUTTON_STOP_CLICKED,
+  BUILD_BUTTON_OPEN_APP_CLICKED
 } from "tandem-front-end";
 
 export function* processSaga() {
   yield fork(handleStartBuild);
+  yield fork(handleOpenApp);
 }
 
 function* handleStartBuild() {
   while (1) {
-    const action = yield take([BUILD_BUTTON_START_CLICKED]);
+    yield take([BUILD_BUTTON_START_CLICKED]);
     yield call(startBuild);
+  }
+}
+
+function* handleOpenApp() {
+  while (1) {
+    yield take(BUILD_BUTTON_OPEN_APP_CLICKED);
+    const state: RootState = yield select();
+    const openAppScript = state.projectInfo.config.scripts.openApp;
+    yield call(spawnScript, openAppScript, "Open App");
   }
 }
 
