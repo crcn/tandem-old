@@ -304,10 +304,10 @@
       "children": [],
       "metadata": {
         "bounds": {
-          "left": 510,
-          "top": 272,
-          "right": 1424,
-          "bottom": 295
+          "left": 519,
+          "top": 438,
+          "right": 1433,
+          "bottom": 461
         }
       },
       "controllers": [
@@ -934,10 +934,10 @@
       ],
       "metadata": {
         "bounds": {
-          "left": 2455,
-          "top": 1648,
-          "right": 3007,
-          "bottom": 2216
+          "left": 2531,
+          "top": 811,
+          "right": 3083,
+          "bottom": 1379
         }
       }
     }

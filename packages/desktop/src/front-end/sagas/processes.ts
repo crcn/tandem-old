@@ -64,11 +64,12 @@ function* startBuild() {
       if (action.type === BUILD_BUTTON_STOP_CLICKED) {
         break;
       }
+
       const state: RootState = yield select();
       const matchingProccess = state.scriptProcesses.find(
         proc => proc.id === scriptProcess.id
       );
-      if (matchingProccess) {
+      if (!matchingProccess) {
         yield call(startBuild);
         break;
       }
