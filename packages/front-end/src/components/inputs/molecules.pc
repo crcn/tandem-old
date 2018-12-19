@@ -158,7 +158,7 @@
                 "border-bottom": "12px solid var(--bc891e755312)",
                 "border-left": "12px solid rgba(255, 0, 0, 0)",
                 "box-sizing": "border-box",
-                "left": "calc(100% - 30px)",
+                "left": "50%",
                 "position": "absolute",
                 "filter": "drop-shadow(0px -1px 0px var(--30f4693267675))",
                 "transform": "translate(-50%, calc(-50% + 1px))",
@@ -242,7 +242,7 @@
           "id": "368712de18492",
           "name": "variant",
           "label": "right",
-          "isDefault": false,
+          "isDefault": true,
           "children": [],
           "metadata": {}
         },
@@ -274,9 +274,9 @@
       "metadata": {
         "bounds": {
           "left": 58,
-          "top": 297,
+          "top": 295,
           "right": 393,
-          "bottom": 510
+          "bottom": 508
         }
       },
       "variant": {},
