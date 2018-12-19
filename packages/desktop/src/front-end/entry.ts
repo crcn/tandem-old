@@ -1,5 +1,9 @@
 import * as fs from "fs";
 import * as fsa from "fs-extra";
+const fixPath = require("fix-path");
+
+fixPath();
+
 const fontManager = require("font-manager");
 import { rootSaga } from "./sagas";
 import { select, take, call } from "redux-saga/effects";
