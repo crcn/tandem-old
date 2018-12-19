@@ -2,6 +2,7 @@ import * as fs from "fs";
 import * as fsa from "fs-extra";
 const fixPath = require("fix-path");
 
+// fix path for electron so that child processes can be executed like NPM
 fixPath();
 
 const fontManager = require("font-manager");
