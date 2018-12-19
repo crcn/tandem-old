@@ -51,6 +51,7 @@
     "redux-saga": "^0.16.0",
     "tandem-common": "^10.1.8",
     "tandem-front-end": "^10.1.9",
+    "terminate": "^2.1.2",
     "update-electron-app": "^1.3.0"
   },
   "devDependencies": {

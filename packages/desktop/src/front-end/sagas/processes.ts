@@ -8,6 +8,7 @@ import {
   cancel
 } from "redux-saga/effects";
 import { eventChannel, delay } from "redux-saga";
+import * as terminate from "terminate";
 import * as path from "path";
 import { spawn as spawn2 } from "child_process";
 import {
@@ -128,7 +129,8 @@ function* spawnScript(
       proc.on("close", () => emit({ type: "close" }));
 
       return () => {
-        proc.kill();
+        console.log("terminate process", proc.pid);
+        terminate(proc.pid);
       };
     });
 
