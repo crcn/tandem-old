@@ -484,7 +484,9 @@
           "name": "text",
           "label": "label",
           "value": "log 1",
-          "style": {},
+          "style": {
+            "word-break": "break-word"
+          },
           "children": [],
           "metadata": {},
           "styleMixins": {
