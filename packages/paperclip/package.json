@@ -1,6 +1,6 @@
 {
   "name": "paperclip",
-  "version": "10.1.9",
+  "version": "10.1.10",
   "description": "Paperclip DSL specific for visual development.",
   "bin": {
     "paperclip-vanilla-compiler": "./bin/paperclip-vanilla-compiler"
