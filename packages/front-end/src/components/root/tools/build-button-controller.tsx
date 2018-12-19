@@ -19,6 +19,7 @@ export type Props = {
   dispatch: Dispatch<any>;
   buildScriptProcess?: ScriptProcess;
   hasOpenScript: boolean;
+  hasBuildScript: boolean;
 };
 
 type State = {
@@ -69,7 +70,12 @@ export default (Base: React.ComponentClass<BaseBuildButtonProps>) =>
         onConfigureClick
       } = this;
       const { open } = this.state;
-      const { buildScriptProcess, hasOpenScript, ...rest } = this.props;
+      const {
+        buildScriptProcess,
+        hasBuildScript,
+        hasOpenScript,
+        ...rest
+      } = this.props;
 
       let building = Boolean(buildScriptProcess);
       let errored = false;
@@ -92,11 +98,13 @@ export default (Base: React.ComponentClass<BaseBuildButtonProps>) =>
             labelProps={{ text: "Configure" }}
             onClick={onConfigureClick}
           />,
-          <BuildButtonOption
-            key="start"
-            labelProps={{ text: "Start" }}
-            onClick={onStartClick}
-          />
+          hasBuildScript ? (
+            <BuildButtonOption
+              key="start"
+              labelProps={{ text: "Start" }}
+              onClick={onStartClick}
+            />
+          ) : null
         ];
       } else {
         buildButtonMenuItems = [

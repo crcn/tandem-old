@@ -48,6 +48,11 @@ export class RootComponent extends React.PureComponent<RootOuterProps> {
           buildButtonProps={{
             dispatch,
             buildScriptProcess,
+            hasBuildScript: Boolean(
+              root.projectInfo &&
+                root.projectInfo.config.scripts &&
+                root.projectInfo.config.scripts.build
+            ),
             hasOpenScript: Boolean(
               root.projectInfo &&
                 root.projectInfo.config.scripts &&
