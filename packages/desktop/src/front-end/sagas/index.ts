@@ -1,6 +1,4 @@
 import {
-  cancelled,
-  cancel,
   fork,
   select,
   take,
@@ -9,16 +7,14 @@ import {
   spawn as spawn2,
   throttle
 } from "redux-saga/effects";
-import { delay } from "redux-saga";
 import * as fs from "fs";
 import * as chokidar from "chokidar";
 import * as fsa from "fs-extra";
 import { debounce } from "lodash";
-import { exec } from "child_process";
 import * as path from "path";
 import { ipcSaga } from "./ipc";
 import { eventChannel } from "redux-saga";
-import { remote, dialog, Menu } from "electron";
+import { remote } from "electron";
 import {
   RootState,
   // PROJECT_DIRECTORY_LOADED,
@@ -42,7 +38,9 @@ import {
   CHROME_MAXIMIZE_BUTTON_CLICKED,
   CHROME_MINIMIZE_BUTTON_CLICKED,
   CONFIRM_CLOSE_WINDOW,
-  ConfirmCloseWindow
+  ConfirmCloseWindow,
+  ProjectConfig,
+  ProjectInfo
 } from "tandem-front-end";
 import {
   findPaperclipSourceFiles,
@@ -88,8 +86,20 @@ export function* rootSaga() {
 }
 
 function* handleProjectDirectory() {
+  let previousInfo: ProjectInfo;
   while (1) {
     yield take(PROJECT_INFO_LOADED);
+    const state: RootState = yield select();
+
+    // skip if there are no changes to the config
+    if (
+      previousInfo &&
+      state.projectInfo.path === previousInfo.path &&
+      state.projectInfo.config.rootDir === previousInfo.config.rootDir
+    ) {
+      continue;
+    }
+    previousInfo = state.projectInfo;
     yield call(loadPCFiles);
   }
 }

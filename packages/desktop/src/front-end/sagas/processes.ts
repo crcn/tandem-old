@@ -7,7 +7,7 @@ import {
   spawn,
   cancel
 } from "redux-saga/effects";
-import { eventChannel, END } from "redux-saga";
+import { eventChannel, END, delay } from "redux-saga";
 import { spawn as spawn2 } from "child_process";
 import {
   BUILD_BUTTON_START_CLICKED,
@@ -21,7 +21,8 @@ import {
   BUILD_SCRIPT_CONFIG_CHANGED,
   SCRIPT_PROCESS_CLOSED,
   BUILD_BUTTON_STOP_CLICKED,
-  BUILD_BUTTON_OPEN_APP_CLICKED
+  BUILD_BUTTON_OPEN_APP_CLICKED,
+  TD_PROJECT_LOADED
 } from "tandem-front-end";
 
 export function* processSaga() {
@@ -59,8 +60,13 @@ function* startBuild() {
     while (1) {
       const action = yield take([
         BUILD_SCRIPT_CONFIG_CHANGED,
-        BUILD_BUTTON_STOP_CLICKED
+        BUILD_BUTTON_STOP_CLICKED,
+        TD_PROJECT_LOADED
       ]);
+
+      // slight pause to ensure that reducer is called first
+      yield delay(0);
+
       if (action.type === BUILD_BUTTON_STOP_CLICKED) {
         break;
       }
@@ -80,7 +86,7 @@ function* startBuild() {
 }
 
 function* spawnScript(script: string, label: string): IterableIterator<any> {
-  const scriptProcess = createScriptProcess(label);
+  const scriptProcess = createScriptProcess(label, script);
 
   yield put(scriptProcessStarted(scriptProcess));
 
@@ -118,7 +124,8 @@ function* spawnScript(script: string, label: string): IterableIterator<any> {
         yield take([
           BUILD_SCRIPT_CONFIG_CHANGED,
           SCRIPT_PROCESS_CLOSED,
-          BUILD_BUTTON_STOP_CLICKED
+          BUILD_BUTTON_STOP_CLICKED,
+          TD_PROJECT_LOADED
         ]);
         const state: RootState = yield select();
         const matchingProccess = state.scriptProcesses.find(

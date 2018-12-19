@@ -287,7 +287,8 @@ import {
   centerEditorCanvasOrLater,
   EditMode,
   updateProjectScripts,
-  removeBuildScriptProcess
+  removeBuildScriptProcess,
+  getBuildScriptProcess
 } from "../state";
 import {
   PCSourceTagNames,
@@ -464,24 +465,54 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
       );
     }
     case PROJECT_INFO_LOADED: {
+      console.log("REDUCER");
       const { info: projectInfo } = action as ProjectInfoLoaded;
 
-      state = updateRootState(
-        {
-          projectInfo,
-          ready: true,
-          openFiles: [],
-          fileCache: {},
-          openedMain: false,
-          sourceNodeInspector: createRootInspectorNode(),
-          projectDirectory: null,
-          graph: {},
-          documents: [],
-          frames: [],
-          editorWindows: []
-        },
-        state
-      );
+      // check if there's just a simple config change. If so, then just change config info
+      if (
+        state.projectInfo &&
+        state.projectInfo.path === projectInfo.path &&
+        state.projectInfo.config.globalFilePath ===
+          projectInfo.config.globalFilePath &&
+        state.projectInfo.config.mainFilePath ===
+          projectInfo.config.mainFilePath &&
+        state.projectInfo.config.rootDir === state.projectInfo.config.rootDir
+      ) {
+        state = updateRootState(
+          {
+            projectInfo
+          },
+          state
+        );
+      } else {
+        state = updateRootState(
+          {
+            projectInfo,
+            ready: true,
+            openFiles: [],
+            fileCache: {},
+            openedMain: false,
+            sourceNodeInspector: createRootInspectorNode(),
+            projectDirectory: null,
+            graph: {},
+            documents: [],
+            frames: [],
+            editorWindows: []
+          },
+          state
+        );
+      }
+      const buildProcess = getBuildScriptProcess(state);
+
+      if (buildProcess) {
+        if (
+          buildProcess.script !==
+          (state.projectInfo.config.scripts &&
+            state.projectInfo.config.scripts.build)
+        ) {
+          state = removeBuildScriptProcess(state);
+        }
+      }
 
       return state;
     }

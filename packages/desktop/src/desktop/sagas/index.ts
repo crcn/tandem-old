@@ -1,4 +1,5 @@
 import { fork, call, take, select, put } from "redux-saga/effects";
+import * as chokidar from "chokidar";
 import { electronSaga } from "./electron";
 import { BrowserWindow, dialog, app } from "electron";
 import {
@@ -39,7 +40,8 @@ import {
   ConfirmCloseWindow,
   CreateProjectButtonClicked
 } from "tandem-front-end";
-import { eventChannel } from "redux-saga";
+import { eventChannel, Channel } from "redux-saga";
+import { DesktopRootState } from "../../front-end/state";
 
 const DEFAULT_TD_PROJECT: TDProject = {
   scripts: {},
@@ -86,6 +88,7 @@ export function* rootSaga() {
   yield fork(handleBrowseImage);
   yield fork(handleChrome);
   yield fork(handleOpenedLocalFile);
+  yield fork(watchProjectFilePath);
 }
 
 function* initProjectDirectory() {
@@ -94,8 +97,6 @@ function* initProjectDirectory() {
     return;
   }
   yield call(loadTDConfig);
-  // yield call(initPCConfig);
-  // yield call(loadProjectDirectory);
 }
 
 function* loadTDConfig() {
@@ -109,6 +110,37 @@ function* loadTDConfig() {
 
   // TODO - validate config here
   yield put(tdProjectLoaded(project, state.tdProjectPath));
+}
+
+function* watchProjectFilePath() {
+  let channel: Channel<any>;
+
+  while (1) {
+    yield take(TD_PROJECT_LOADED);
+    const state: DesktopState = yield select();
+    if (!state.tdProject) {
+      continue;
+    }
+
+    if (channel) {
+      channel.close();
+    }
+
+    channel = eventChannel(emit => {
+      const watcher = chokidar.watch(state.tdProjectPath);
+      watcher.on("change", (event, path) => {
+        emit({ type: event });
+      });
+      return () => {
+        watcher.close();
+      };
+    });
+
+    yield fork(function*() {
+      yield take(channel);
+      yield call(loadTDConfig);
+    });
+  }
 }
 
 function* openMainWindow() {

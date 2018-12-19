@@ -67,6 +67,7 @@ export function projectSaga({
   }
 
   function* handleProjectInfoLoaded() {
+    let previousProjectPath: string;
     while (1) {
       yield take(PROJECT_INFO_LOADED);
       const { projectInfo }: RootState = yield select();
@@ -75,6 +76,14 @@ export function projectSaga({
       if (!projectInfo || !projectInfo.config) {
         continue;
       }
+
+      // don't do unnecessary work. Project may be reloaded if the config
+      // changed locally.
+      if (previousProjectPath === projectInfo.path) {
+        continue;
+      }
+
+      previousProjectPath = projectInfo.path;
 
       yield call(loadDirectory, path.dirname(projectInfo.path));
     }

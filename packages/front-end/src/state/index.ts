@@ -159,6 +159,7 @@ export type ScriptProcessLog = {
 
 export type ScriptProcess = {
   id: string;
+  script: string;
   logs: ScriptProcessLog[];
   label: string;
 };
@@ -876,8 +877,12 @@ const createEditorWindow = (
 
 let scriptProcessCount = 0;
 
-export const createScriptProcess = (label: string): ScriptProcess => ({
+export const createScriptProcess = (
+  label: string,
+  script: string
+): ScriptProcess => ({
   label,
+  script,
   id: `script${scriptProcessCount++}`,
   logs: []
 });
