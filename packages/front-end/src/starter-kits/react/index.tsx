@@ -50,8 +50,8 @@ export const createFiles: ProjectFileCreator = ({
           test: 'echo "Error: no test specified" && exit 1',
           build:
             "paperclip-react-compiler src/**/*.pc --definition --write; webpack",
-          "build-watch":
-            "concurrently 'paperclip-react-compiler \"src/**/*.pc\" --definition --write --watch' 'webpack --watch'"
+          "build:watch":
+            "concurrently 'paperclip-react-compiler \"src/**/*.pc\" --definition --write --watch' 'webpack-dev-server --port=8080 --open'"
         },
         repository: {
           type: "git",
@@ -74,7 +74,8 @@ export const createFiles: ProjectFileCreator = ({
           typescript: "^2.9.2",
           webpack: "^4.15.1",
           "webpack-cli": "^3.0.8",
-          "paperclip-react-compiler": "^10.0.36"
+          "paperclip-react-compiler": "^10.0.36",
+          "webpack-dev-server": "^3.1.10"
         },
         dependencies: {
           react: "^16.4.1",
@@ -106,17 +107,26 @@ src/ # all source files
 
 \`\`\`
 npm run build # builds the project
-npm run build-watch # builds & watches project for any changes
+npm run build:watch # builds & watches project for any changes
 \`\`\`
 
 
 `,
-    "app.tdproject": JSON.stringify({
-      scripts: {},
-      rootDir: ".",
-      exclude: ["node_modules"],
-      mainFilePath: "./src/components/main/view.pc"
-    }),
+    "app.tdproject": JSON.stringify(
+      {
+        scripts: {
+          // want to have an install here in case we're starting with a fresh project, OR there's an update.
+          // may eventually want to change this to a start.sh script.
+          build: "npm install && npm run build:watch",
+          open: "open http://localhost:8080/"
+        },
+        rootDir: ".",
+        exclude: ["node_modules"],
+        mainFilePath: "./src/components/main/view.pc"
+      },
+      null,
+      2
+    ),
     "tsconfig.json": JSON.stringify(
       {
         compileOnSave: true,

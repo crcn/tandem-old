@@ -12,6 +12,7 @@ import {
 } from "../../actions";
 
 export type Props = {
+  content: any;
   dispatch: Dispatch<any>;
   projectInfo: ProjectInfo;
   unsaved: boolean;
@@ -54,8 +55,6 @@ export default (Base: React.ComponentClass<BaseChromeProps>) =>
         onMaximizeClick
       } = this;
 
-      const playing = false;
-
       let title: string = "";
 
       if (projectInfo) {
@@ -70,8 +69,7 @@ export default (Base: React.ComponentClass<BaseChromeProps>) =>
           label={title}
           variant={cx({
             unsaved,
-            playing: playing,
-            paused: !playing
+            hasSelectedProject: Boolean(projectInfo)
           })}
           headerProps={{
             onClick: onHeaderClick

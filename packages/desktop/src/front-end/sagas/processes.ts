@@ -7,7 +7,8 @@ import {
   spawn,
   cancel
 } from "redux-saga/effects";
-import { eventChannel, END, delay } from "redux-saga";
+import { eventChannel, delay } from "redux-saga";
+import * as path from "path";
 import { spawn as spawn2 } from "child_process";
 import {
   BUILD_BUTTON_START_CLICKED,
@@ -24,6 +25,7 @@ import {
   BUILD_BUTTON_OPEN_APP_CLICKED,
   TD_PROJECT_LOADED
 } from "tandem-front-end";
+import { stripProtocol } from "tandem-common";
 
 export function* processSaga() {
   yield fork(handleStartBuild);
@@ -42,7 +44,12 @@ function* handleOpenApp() {
     yield take(BUILD_BUTTON_OPEN_APP_CLICKED);
     const state: RootState = yield select();
     const openAppScript = state.projectInfo.config.scripts.openApp;
-    yield call(spawnScript, openAppScript, "Open App");
+    yield call(
+      spawnScript,
+      openAppScript,
+      "Open App",
+      path.dirname(stripProtocol(state.projectInfo.path))
+    );
   }
 }
 
@@ -52,7 +59,8 @@ function* startBuild() {
   const scriptProcess: ScriptProcess = yield call(
     spawnScript,
     buildScript,
-    "Build"
+    "Build",
+    path.dirname(stripProtocol(state.projectInfo.path))
   );
 
   // check if process has been removed from state
@@ -85,15 +93,21 @@ function* startBuild() {
   yield put(buildScriptStarted(scriptProcess));
 }
 
-function* spawnScript(script: string, label: string): IterableIterator<any> {
+function* spawnScript(
+  script: string,
+  label: string,
+  cwd: string
+): IterableIterator<any> {
   const scriptProcess = createScriptProcess(label, script);
 
   yield put(scriptProcessStarted(scriptProcess));
 
   yield spawn(function*(): any {
     const channel = eventChannel<any>(emit => {
+      console.log("spawning", script);
       const proc = spawn2(script, [], {
-        shell: true
+        shell: true,
+        cwd
       });
 
       proc.stderr.on("data", chunk =>

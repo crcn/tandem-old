@@ -450,7 +450,6 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
       );
     }
     case PROJECT_INFO_LOADED: {
-      console.log("REDUCER");
       const { info: projectInfo } = action as ProjectInfoLoaded;
 
       // check if there's just a simple config change. If so, then just change config info
