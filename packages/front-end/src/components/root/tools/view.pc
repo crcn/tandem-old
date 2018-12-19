@@ -51,7 +51,7 @@
                       "name": "component-instance",
                       "attributes": {},
                       "style": {
-                        "display": "inline-block",
+                        "display": "none",
                         "height": "9px",
                         "color": "var(--24ce1e4d482)",
                         "margin-right": "3px"
@@ -68,13 +68,36 @@
                       "variant": {}
                     },
                     {
+                      "id": "81d340df1797",
+                      "is": "1fb4e79017906",
+                      "label": "Pause Icon",
+                      "name": "component-instance",
+                      "attributes": {},
+                      "style": {
+                        "display": "none",
+                        "height": "9px",
+                        "color": "var(--24ce1e4d482)"
+                      },
+                      "children": [],
+                      "metadata": {
+                        "bounds": {
+                          "left": -138,
+                          "top": -1534,
+                          "right": 262,
+                          "bottom": -1234
+                        }
+                      },
+                      "variant": {}
+                    },
+                    {
                       "id": "fe72344f18317",
                       "name": "text",
                       "label": "label",
                       "value": "Build project",
                       "style": {
                         "font-size": "9px",
-                        "font-weight": "700"
+                        "font-weight": "700",
+                        "user-select": "none"
                       },
                       "children": [],
                       "metadata": {},
@@ -191,6 +214,49 @@
             }
           },
           "variant": {}
+        },
+        {
+          "id": "81d340df1803",
+          "name": "variant",
+          "label": "building",
+          "isDefault": true,
+          "children": [],
+          "metadata": {}
+        },
+        {
+          "id": "81d340df1804",
+          "name": "variant",
+          "label": "paused",
+          "isDefault": false,
+          "children": [],
+          "metadata": {}
+        },
+        {
+          "id": "81d340df1805",
+          "variantId": "81d340df1804",
+          "propertyName": "style",
+          "targetIdPath": [
+            "fe72344f18344"
+          ],
+          "value": {
+            "display": "inline-block"
+          },
+          "name": "override",
+          "children": []
+        },
+        {
+          "id": "81d340df1806",
+          "variantId": "81d340df1803",
+          "propertyName": "style",
+          "targetIdPath": [
+            "81d340df1797"
+          ],
+          "value": {
+            "display": "inline-block",
+            "margin-right": "3px"
+          },
+          "name": "override",
+          "children": []
         }
       ],
       "metadata": {

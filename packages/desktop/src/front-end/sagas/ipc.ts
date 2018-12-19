@@ -1,5 +1,5 @@
 import { ipcRenderer } from "electron";
-import { take, put, fork, spawn } from "redux-saga/effects";
+import { take, put, fork } from "redux-saga/effects";
 import { eventChannel } from "redux-saga";
 import { isPublicAction } from "tandem-common";
 

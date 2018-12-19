@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as cx from "classnames";
 import {
   BaseBuildButtonProps,
   BuildButtonOption,
@@ -75,11 +76,11 @@ export default (Base: React.ComponentClass<BaseBuildButtonProps>) =>
       let label: string;
 
       if (buildScriptProcess) {
-        label = "Building";
+        label = "Building project";
         const lastLog = last(buildScriptProcess.logs);
         errored = lastLog && lastLog.error;
       } else {
-        label = "Build project";
+        label = "Build stopped";
       }
 
       let buildButtonMenuItems = [];
@@ -124,6 +125,10 @@ export default (Base: React.ComponentClass<BaseBuildButtonProps>) =>
       return (
         <Base
           {...rest}
+          variant={cx({
+            building,
+            paused: !building
+          })}
           popoverProps={{
             open,
             onShouldClose,

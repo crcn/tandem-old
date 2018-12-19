@@ -198,7 +198,7 @@
                       "targetIdPath": [
                         "7149f8192506"
                       ],
-                      "value": "Open\n Command\n",
+                      "value": "Open Application Command",
                       "name": "override",
                       "children": []
                     },
