@@ -1,6 +1,6 @@
 {
   "name": "tandem-desktop",
-  "version": "10.1.10",
+  "version": "10.1.11",
   "description": "",
   "private": true,
   "main": "lib/index.js",
@@ -38,6 +38,7 @@
     "@types/raven": "^2.5.1",
     "chokidar": "^2.0.4",
     "crc32": "^0.2.2",
+    "fix-path": "^2.1.0",
     "font-manager": "^0.3.0",
     "fs-extra": "^6.0.1",
     "fsbox": "^10.1.8",
