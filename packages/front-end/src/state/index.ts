@@ -749,6 +749,20 @@ export const updateProjectScripts = (
     }
   };
 
+  state = queueSaveProjectFile(state);
+
+  return state;
+};
+
+const queueSaveProjectFile = (state: RootState) => {
+  state = updateOpenFile(
+    {
+      temporary: false,
+      newContent: new Buffer(JSON.stringify(state.projectInfo.config, null, 2))
+    },
+    state.projectInfo.path,
+    state
+  );
   return state;
 };
 

@@ -1,9 +1,11 @@
 {
-  "scripts": {
-    "previewServer": "/usr/local/bin/npm run tandem-preview-server",
-    "build": "npm run build -- --watch"
-  },
+  "exclude": [
+    "node_modules"
+  ],
+  "globalFilePath": "./src/global.pc",
   "rootDir": ".",
-  "exclude": ["node_modules"],
-  "globalFilePath": "./src/global.pc"
+  "scripts": {
+    "build": "npm run build -- --watch",
+    "previewServer": "/usr/local/bin/npm run tandem-preview-server"
+  }
 }
