@@ -1,4 +1,5 @@
 import * as React from "react";
+
 import {
   getPCNodeDependency,
   getGlobalVariables,
@@ -10,11 +11,11 @@ import {
   getGlobalMediaQueries,
   getInspectorNodeSyntheticDocument
 } from "paperclip";
-import { EMPTY_ARRAY, EMPTY_OBJECT } from "tandem-common";
+import { EMPTY_ARRAY, EMPTY_OBJECT, stripProtocol } from "tandem-common";
 import { RightGutterTab } from "./tab.pc";
 import * as cx from "classnames";
 import { BaseRightGutterProps, ElementProps } from "./view.pc";
-import { RootState, getGlobalFileUri } from "../../../../state";
+import { RootState, getGlobalFileUri, getProjectCWD } from "../../../../state";
 import { rightGutterTabClicked } from "../../../../actions";
 import { Dispatch } from "redux";
 
@@ -55,6 +56,7 @@ export default (Base: React.ComponentClass<BaseRightGutterProps>) =>
         sourceNodeInspector: rootInspectorNode,
         documents
       } = root;
+      const cwd = getProjectCWD(root);
       const projectOptions =
         (projectInfo && projectInfo.config && projectInfo.config.options) ||
         EMPTY_OBJECT;
@@ -120,6 +122,7 @@ export default (Base: React.ComponentClass<BaseRightGutterProps>) =>
             globalQueries
           }}
           stylesProps={{
+            cwd,
             projectOptions,
             visible: availableCurrentTab === TAB_NAMES[0],
             documentColors,

@@ -15,7 +15,7 @@ import {
   getPCNodeModule,
   PCComponent
 } from "paperclip";
-import { RootState, EditorWindow } from "./state";
+import { RootState, EditorWindow, getProjectCWD } from "./state";
 import { appLoaded } from "./actions";
 import {
   FSSandboxOptions,
@@ -113,6 +113,9 @@ export const setup = <TState extends RootState>(
           createPaperclipSaga({
             createRuntime: () => {
               return createRemotePCRuntime(new PaperclipWorker());
+            },
+            getRootDirectory: (state: RootState) => {
+              return getProjectCWD(state);
             },
             getPriorityUris: (state: RootState) => {
               if (!state.editorWindows.length) {

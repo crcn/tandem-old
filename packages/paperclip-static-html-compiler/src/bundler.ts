@@ -20,10 +20,13 @@ export type CompiledModule = (
 
 export type Bundle = KeyValue<CompiledDependency>;
 
-export const bundleDependencyGraph = (graph: DependencyGraph) => {
+export const bundleDependencyGraph = (
+  graph: DependencyGraph,
+  rootDirectory: string
+) => {
   let bundle: Bundle = {};
   for (const uri in graph) {
-    bundle = addDependencyToBundle(uri, bundle, graph);
+    bundle = addDependencyToBundle(uri, bundle, graph, rootDirectory);
   }
 
   return bundle;
@@ -32,7 +35,8 @@ export const bundleDependencyGraph = (graph: DependencyGraph) => {
 const addDependencyToBundle = (
   uri,
   bundle: Bundle,
-  graph: DependencyGraph
+  graph: DependencyGraph,
+  rootDirectory: string
 ): Bundle => {
   const filePath = stripProtocol(uri);
   if (bundle[filePath]) {
@@ -51,8 +55,11 @@ const addDependencyToBundle = (
   // PC module
   if (graph[uri]) {
     const entry = graph[uri];
-    const content = translatePaperclipModuleToHTMLRenderers(entry, graph)
-      .buffer;
+    const content = translatePaperclipModuleToHTMLRenderers(
+      entry,
+      graph,
+      rootDirectory
+    ).buffer;
     const imports = (content.match(/require\(.*?\)/g) || EMPTY_ARRAY).map(
       (req: string) => {
         return req.match(/require\(["'](.*?)["']\)/)[1];
@@ -67,7 +74,7 @@ const addDependencyToBundle = (
         relativePath
       );
       resolvedImports[relativePath] = fullPath;
-      bundle = addDependencyToBundle(fullPath, bundle, graph);
+      bundle = addDependencyToBundle(fullPath, bundle, graph, rootDirectory);
     }
 
     const module = new Function(

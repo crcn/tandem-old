@@ -16,6 +16,7 @@ export type PrettyPaneOuterProps = {
 };
 
 export type Props = {
+  cwd: string;
   documentColors: string[];
   selectedVariant: PCVariant;
   dispatch: Dispatch<any>;
@@ -32,6 +33,7 @@ export default (Base: React.ComponentClass<BaseElementStylerProps>) =>
   class PrettyStylesController extends React.PureComponent<Props> {
     render() {
       const {
+        cwd,
         dispatch,
         selectedVariant,
         computedStyleInfo,
@@ -87,6 +89,7 @@ export default (Base: React.ComponentClass<BaseElementStylerProps>) =>
             computedStyleInfo
           }}
           backgroundsPaneProps={{
+            cwd,
             globalVariables,
             documentColors,
             dispatch,

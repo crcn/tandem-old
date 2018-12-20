@@ -315,7 +315,8 @@ export const createPaperclipVirtualDOMtranslator = (
         context = translateStyle(
           node,
           { ...getInheritedStyle(node.styleMixins, context), ...node.style },
-          context
+          context,
+          getPCNodeDependency(node.id, context.graph).uri
         );
         context = addCloseTag(`}\n`, context);
         context = addCloseTag(`});\n\n`, context);
@@ -377,7 +378,8 @@ export const createPaperclipVirtualDOMtranslator = (
   const translateStyle = (
     target: ContentNode,
     style: any,
-    context: TranslateContext
+    context: TranslateContext,
+    sourceUri: string
   ) => {
     const isSVG = isSVGPCNode(target, context.graph);
 
@@ -387,7 +389,7 @@ export const createPaperclipVirtualDOMtranslator = (
         const propName = key;
         context = addLine(
           `"${SVG_STYLE_PROP_MAP[propName] || propName}": "${stringifyValue(
-            translateStyleValue(key, style[key], context).replace(
+            translateStyleValue(key, style[key], context, sourceUri).replace(
               /[\n\r]/g,
               " "
             )
@@ -399,10 +401,12 @@ export const createPaperclipVirtualDOMtranslator = (
       // TODO - add vendor prefix stuff here
       for (const key in style) {
         context = addLine(
-          `"${key}": "${translateStyleValue(key, style[key], context).replace(
-            /[\n\r]/g,
-            " "
-          )}",`,
+          `"${key}": "${translateStyleValue(
+            key,
+            style[key],
+            context,
+            sourceUri
+          ).replace(/[\n\r]/g, " ")}",`,
           context
         );
       }
@@ -547,7 +551,8 @@ export const createPaperclipVirtualDOMtranslator = (
       context = translateStyle(
         getPCNode(last(override.targetIdPath), context.graph) as ContentNode,
         override.value,
-        context
+        context,
+        getPCNodeDependency(override.id, context.graph).uri
       );
       context = addCloseTag(`}\n`, context);
       context = addCloseTag(`});\n\n`, context);
@@ -590,7 +595,8 @@ export const createPaperclipVirtualDOMtranslator = (
         context = translateStyle(
           getPCNode(last(override.targetIdPath), context.graph) as ContentNode,
           override.value,
-          context
+          context,
+          getPCNodeDependency(override.id, context.graph).uri
         );
         context = addCloseTag(`}\n`, context);
         context = addCloseTag(`}\n`, context);
@@ -610,7 +616,8 @@ export const createPaperclipVirtualDOMtranslator = (
   const translateStyleValue = (
     key: string,
     value: any,
-    { graph }: TranslateContext
+    { graph, rootDirectory }: TranslateContext,
+    sourceUri
   ) => {
     value = computeStyleValue(value, getAllVariableRefMap(graph));
     if (typeof value === "number" && key !== "opacity") {
@@ -618,11 +625,22 @@ export const createPaperclipVirtualDOMtranslator = (
     }
 
     if (typeof value === "string") {
-      if (/url\(.*?\)/.test(value) && !/:\/\//.test(value)) {
-        value = value.replace(
-          /url\(["']?(.*?)["']?\)/,
-          `url(" + require("$1") + ")`
-        );
+      if (/url\(.*?\)/.test(value) && !/https?:\/\//.test(value)) {
+        let uri = value.match(/url\(["']?(.*?)["']?\)/)[1];
+        if (uri.charAt(0) === ".") {
+          uri = `${path.dirname(sourceUri)}/${uri}`;
+        } else {
+          uri = `file://${stripProtocol(rootDirectory)}/${uri}`;
+        }
+
+        value = value.replace(/url\(["']?(.*?)["']?\)/, `url(${uri})`);
+
+        // strip file if it exists.
+        // value = value.replace("file://", "");
+        // value = value.replace(
+        //   /url\(["']?(.*?)["']?\)/,
+        //   `url(" + require("$1") + ")`
+        // );
       } else {
         value = stringifyValue(value);
       }
@@ -1685,6 +1703,7 @@ export const createPaperclipVirtualDOMtranslator = (
   return (
     entry: PCDependency,
     graph: DependencyGraph,
+    rootDirectory: string,
     options: TranslateOptions = EMPTY_OBJECT
   ) =>
     translateModule(entry.content, {
@@ -1695,6 +1714,7 @@ export const createPaperclipVirtualDOMtranslator = (
       definedObjects: {},
       scopedLabelRefs: {},
       depth: 0,
-      warnings: []
+      warnings: [],
+      rootDirectory
     });
 };

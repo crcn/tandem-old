@@ -49,7 +49,7 @@ function translateFile(relPath) {
       content = translatePaperclipModuleToReactTSDefinition(entry, graph);
       contentFilePath = absPath.replace(/\.pc$/, ".pc.d.ts");
     } else {
-      content = translatePaperclipModuleToReact(entry, graph).buffer;
+      content = translatePaperclipModuleToReact(entry, graph, directory).buffer;
       contentFilePath = absPath.replace(/\.pc$/, ".js");
     }
   if (outAbsPath) {

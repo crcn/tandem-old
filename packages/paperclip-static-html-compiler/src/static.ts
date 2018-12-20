@@ -107,7 +107,7 @@ const translatePage = (
 
   const componentDep = getPCNodeDependency(component.id, graph);
 
-  const bundle = bundleDependencyGraph(graph);
+  const bundle = bundleDependencyGraph(graph, cwd);
 
   let externalDepOutputFilePaths = {};
 

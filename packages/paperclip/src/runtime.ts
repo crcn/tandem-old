@@ -34,6 +34,7 @@ export interface PCRuntime extends EventEmitter {
 export type LocalRuntimeInfo = {
   graph: DependencyGraph;
   variants: KeyValue<KeyValue<boolean>>;
+  rootDirectory: string;
   priorityUris: string[];
 };
 
@@ -94,6 +95,7 @@ class LocalPCRuntime extends EventEmitter implements PCRuntime {
     const deletedDocumentIds = [];
     const newSyntheticDocuments = evaluateDependencyGraph(
       this._info.graph,
+      this._info.rootDirectory,
       this._info.variants,
       this._info.priorityUris
     );

@@ -8,6 +8,7 @@ import {
 } from "./inputs/background/state";
 
 export type Props = {
+  cwd: string;
   value: CSSBackground;
   onRemove: any;
   onChange: any;
@@ -24,6 +25,7 @@ export default (Base: React.ComponentClass<BaseBackgroundItemProps>) =>
     render() {
       const { onRemoveButtonClick } = this;
       const {
+        cwd,
         documentColors,
         value,
         onChange,
@@ -34,6 +36,7 @@ export default (Base: React.ComponentClass<BaseBackgroundItemProps>) =>
       return (
         <Base
           backgroundInputProps={{
+            cwd,
             swatchOptionGroups: getPrettyPaneColorSwatchOptionGroups(
               documentColors,
               globalVariables

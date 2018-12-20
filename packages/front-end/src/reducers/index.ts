@@ -1905,11 +1905,18 @@ export const canvasReducer = (state: RootState, action: Action) => {
       const { properties } = action as CSSPropertiesChanged;
       state = teeHistory(state);
       state = { ...state, editMode: EditMode.PRIMARY };
-      return state.selectedInspectorNodes.reduce(
-        (state, node) =>
-          persistCSSProperties(properties, node, state.selectedVariant, state),
-        state
-      );
+      return persistRootState(state => {
+        return state.selectedInspectorNodes.reduce(
+          (state, node) =>
+            persistCSSProperties(
+              properties,
+              node,
+              state.selectedVariant,
+              state
+            ),
+          state
+        );
+      }, state);
     }
     case CSS_PROPERTIES_CHANGED: {
       const { properties } = action as CSSPropertiesChanged;

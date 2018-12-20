@@ -36,17 +36,20 @@ import { fsCacheBusy } from "fsbox";
 export type PaperclipSagaOptions = {
   createRuntime(): PCRuntime;
   getPriorityUris(state: PCEditorState): string[];
+  getRootDirectory(state: PCEditorState): string;
   getRuntimeVariants(state: PCEditorState): KeyValue<KeyValue<boolean>>;
 };
 
 const getRuntimeInfo = memoize(
   (
     graph: DependencyGraph,
+    rootDirectory: string,
     variants: KeyValue<KeyValue<boolean>>,
     priorityUris: string[]
   ): LocalRuntimeInfo => {
     return {
       graph,
+      rootDirectory,
       variants,
       priorityUris
     };
@@ -56,7 +59,8 @@ const getRuntimeInfo = memoize(
 export const createPaperclipSaga = ({
   createRuntime,
   getRuntimeVariants,
-  getPriorityUris
+  getPriorityUris,
+  getRootDirectory
 }: PaperclipSagaOptions) =>
   function* paperclipSaga() {
     yield fork(runtime);
@@ -104,6 +108,7 @@ export const createPaperclipSaga = ({
         rt.setInfo(
           getRuntimeInfo(
             state.graph,
+            getRootDirectory(state),
             getRuntimeVariants(state),
             getPriorityUris(state)
           )

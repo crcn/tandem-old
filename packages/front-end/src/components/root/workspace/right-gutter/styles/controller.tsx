@@ -21,6 +21,7 @@ import { styleTriggersButtonClicked } from "../../../../../actions";
 import { FontFamily, ProjectOptions } from "../../../../../state";
 
 export type Props = {
+  cwd: string;
   visible: boolean;
   documentColors: string[];
   projectOptions: ProjectOptions;
@@ -61,6 +62,7 @@ export default (Base: React.ComponentClass<BaseStylesProps>) =>
     };
     render() {
       const {
+        cwd,
         visible,
         globalVariables,
         dispatch,
@@ -136,6 +138,7 @@ export default (Base: React.ComponentClass<BaseStylesProps>) =>
             onClick: onTriggersTabClick
           }}
           propertiesProps={{
+            cwd,
             projectOptions,
             globalVariables,
             selectedVariant,

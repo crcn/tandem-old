@@ -14,12 +14,14 @@ import {
 import { createPaperclipVirtualDOMtranslator } from "paperclip-virtual-dom-compiler";
 export const compilePaperclipModuleToReact = (
   entry: PCDependency,
-  graph: DependencyGraph
+  graph: DependencyGraph,
+  rootDirectory: string
 ) => {
   const context = { exports: {} };
-  new Function("exports", translatePaperclipModuleToReact(entry, graph).buffer)(
-    context
-  );
+  new Function(
+    "exports",
+    translatePaperclipModuleToReact(entry, graph, rootDirectory).buffer
+  )(context);
   return context.exports;
 };
 

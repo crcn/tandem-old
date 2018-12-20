@@ -4,6 +4,7 @@ import { memoize } from "tandem-common";
 import { CSSBackgroundType, CSSImageBackground } from "./state";
 
 export type Props = {
+  cwd: string;
   value: CSSImageBackground;
   onChange?: any;
   onChangeComplete?: any;
@@ -12,26 +13,34 @@ export type Props = {
 export default (Base: React.ComponentClass<BaseBackgroundImagePickerProps>) =>
   class BackgroundImagePickerController extends React.PureComponent<Props> {
     render() {
-      const { value, onChange, onChangeComplete, ...rest } = this.props;
-
+      const { cwd, value, onChange, onChangeComplete, ...rest } = this.props;
       return (
         <Base
           {...rest}
           fileUriPickerProps={{
+            cwd,
             value: value.uri,
-            onChange: getChangeHandler(value, "uri", onChange)
+            onChangeComplete: getChangeHandler(value, "uri", onChangeComplete)
           }}
           repeatInputProps={{
             value: value.repeat,
-            onChangeComplete: getChangeHandler(value, "repeat", onChange)
+            onChangeComplete: getChangeHandler(
+              value,
+              "repeat",
+              onChangeComplete
+            )
           }}
           positionInputProps={{
             value: value.position,
-            onChangeComplete: getChangeHandler(value, "position", onChange)
+            onChangeComplete: getChangeHandler(
+              value,
+              "position",
+              onChangeComplete
+            )
           }}
           sizeInputProps={{
             value: value.size,
-            onChangeComplete: getChangeHandler(value, "size", onChange)
+            onChangeComplete: getChangeHandler(value, "size", onChangeComplete)
           }}
         />
       );

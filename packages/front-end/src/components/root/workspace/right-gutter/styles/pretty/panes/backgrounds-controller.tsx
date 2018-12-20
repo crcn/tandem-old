@@ -20,6 +20,7 @@ import { BackgroundItem } from "./backgrounds.pc";
 const DEFAULT_COLOR = "rgba(200, 200, 200, 1)";
 
 export type Props = {
+  cwd: string;
   documentColors: string[];
   dispatch: Dispatch;
   computedStyleInfo: ComputedStyleInfo;
@@ -71,7 +72,12 @@ export default (Base: React.ComponentClass<BaseBackgroundsProps>) =>
       return backgroundStyle;
     };
     render() {
-      const { computedStyleInfo, documentColors, globalVariables } = this.props;
+      const {
+        cwd,
+        computedStyleInfo,
+        documentColors,
+        globalVariables
+      } = this.props;
       const { onChange, onChangeComplete, onPlusButtonClick, onRemove } = this;
 
       const { sourceNode } = computedStyleInfo;
@@ -93,6 +99,7 @@ export default (Base: React.ComponentClass<BaseBackgroundsProps>) =>
         return (
           <BackgroundItem
             key={i}
+            cwd={cwd}
             value={background}
             onRemove={() => onRemove(i)}
             globalVariables={globalVariables}

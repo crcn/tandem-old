@@ -23,11 +23,12 @@ const reuseNodeGraphMap = reuser(500, (value: KeyValue<any>) =>
 
 export const evaluateDependencyGraph = (
   graph: DependencyGraph,
+  rootDirectory: string,
   variants: KeyValue<KeyValue<boolean>>,
   uriWhitelist?: string[]
 ): KeyValue<SyntheticDocument> => {
   const documents = {};
-  const renderers = compileDependencyGraph(graph);
+  const renderers = compileDependencyGraph(graph, rootDirectory);
   for (const uri in graph) {
     if (uriWhitelist && uriWhitelist.indexOf(uri) === -1) {
       continue;
@@ -99,19 +100,22 @@ const filterAssocRenderers = (
   return assocRenderers;
 };
 
-const compileDependencyGraph = memoize((graph: DependencyGraph) => {
-  const renderers = {};
-  for (const uri in graph) {
-    const { content: module } = graph[uri];
-    for (const contentNode of module.children) {
-      renderers[`_${contentNode.id}`] = compileContentNodeAsVanilla(
-        contentNode,
-        reuseNodeGraphMap(getComponentGraphRefMap(contentNode, graph)),
-        reuseNodeGraphMap(getVariableRefMap(contentNode, graph)),
-        reuseNodeGraphMap(getQueryRefMap(contentNode, graph)),
-        uri
-      );
+const compileDependencyGraph = memoize(
+  (graph: DependencyGraph, rootDirectory: string) => {
+    const renderers = {};
+    for (const uri in graph) {
+      const { content: module } = graph[uri];
+      for (const contentNode of module.children) {
+        renderers[`_${contentNode.id}`] = compileContentNodeAsVanilla(
+          contentNode,
+          reuseNodeGraphMap(getComponentGraphRefMap(contentNode, graph)),
+          reuseNodeGraphMap(getVariableRefMap(contentNode, graph)),
+          reuseNodeGraphMap(getQueryRefMap(contentNode, graph)),
+          uri,
+          rootDirectory
+        );
+      }
     }
+    return renderers;
   }
-  return renderers;
-});
+);

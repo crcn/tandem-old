@@ -1,11 +1,12 @@
 import * as React from "react";
-import { FILE_PROTOCOL, addProtocol } from "tandem-common";
+import * as path from "path";
 import { BaseFileInputProps } from "./view.pc";
 import { OpenFileContext, FileOpener } from "../../../components/contexts";
 
 export type Props = {
+  cwd: string;
   value: string;
-  onChange?: (value: string) => void;
+  onChangeComplete?: (value: string) => void;
 };
 
 export type State = {
@@ -26,8 +27,8 @@ export default (Base: React.ComponentClass<BaseFileInputProps>) =>
         extensions: ["jpg", "png", "svg", "gif", "jpeg"]
       });
 
-      const fileUri = addProtocol(FILE_PROTOCOL, filePath);
-      this.onFileUriChange(fileUri);
+      const modulePath = filePath.replace(this.props.cwd, "").substr(1);
+      this.onFileUriChange(modulePath);
     };
 
     static getDerivedStateFromProps(nextProps: Props, prevState: State): State {
@@ -54,8 +55,8 @@ export default (Base: React.ComponentClass<BaseFileInputProps>) =>
           value: fileUri
         },
         () => {
-          if (this.props.onChange) {
-            this.props.onChange(fileUri);
+          if (this.props.onChangeComplete) {
+            this.props.onChangeComplete(fileUri);
           }
         }
       );
@@ -63,7 +64,7 @@ export default (Base: React.ComponentClass<BaseFileInputProps>) =>
     render() {
       const { value } = this.state;
       const { onBrowseButtonClick, onFilePathInputChange } = this;
-      const { onChange, ...rest } = this.props;
+      const { onChangeComplete, ...rest } = this.props;
       return (
         <OpenFileContext.Consumer>
           {openFile => {

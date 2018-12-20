@@ -81,13 +81,21 @@ export const compileContentNodeAsVanilla = memoize(
     refMap: KeyValue<PCComponent>,
     varMap: KeyValue<PCVariable>,
     queryMap: KeyValue<PCQuery>,
-    sourceUri: string
+    sourceUri: string,
+    rootDirectory: string
   ) => {
     return new Function(
       `generateUID`,
       `merge`,
       `return ` +
-        translateContentNode(node, refMap, varMap, queryMap, sourceUri)
+        translateContentNode(
+          node,
+          refMap,
+          varMap,
+          queryMap,
+          sourceUri,
+          rootDirectory
+        )
     )(generateUID, merge);
   }
 );
@@ -98,7 +106,8 @@ export const translateModuleToVanilla = memoize(
     componentRefMap: KeyValue<PCComponent>,
     varMap: KeyValue<PCVariable>,
     queryMap: KeyValue<PCQuery>,
-    sourceUri: string
+    sourceUri: string,
+    rootDirectory: string
   ) => {
     return module.children
       .filter(
@@ -113,7 +122,8 @@ export const translateModuleToVanilla = memoize(
             componentRefMap,
             varMap,
             queryMap,
-            sourceUri
+            sourceUri,
+            rootDirectory
           )}`
       )
       .join("\n");
@@ -126,7 +136,8 @@ const translateContentNode = memoize(
     componentRefMap: KeyValue<PCComponent>,
     varMap: KeyValue<PCVariable>,
     queryMap: KeyValue<PCQuery>,
-    sourceUri: string
+    sourceUri: string,
+    rootDirectory: string
   ) => {
     let buffer = `(function() {`;
 
@@ -136,10 +147,16 @@ const translateContentNode = memoize(
       node,
       componentRefMap,
       varMap,
-      sourceUri
+      sourceUri,
+      rootDirectory
     );
-    buffer += translateStaticOverrides(node as PCComponent, varMap, sourceUri);
-    buffer += translateStaticVariants(node, varMap, sourceUri);
+    buffer += translateStaticOverrides(
+      node as PCComponent,
+      varMap,
+      sourceUri,
+      rootDirectory
+    );
+    buffer += translateStaticVariants(node, varMap, sourceUri, rootDirectory);
 
     buffer += `return function(instanceSourceNodeId, instancePath, attributes, style, variant, overrides, windowInfo, components, isRoot) {
       ${translateVariants(node, queryMap, varMap)}
@@ -416,7 +433,8 @@ const translateDynamicOverrides = (
 const translateStaticOverrides = (
   contentNode: PCNode,
   varMap: KeyValue<PCVariable>,
-  sourceUri: string
+  sourceUri: string,
+  rootDirectory: string
 ) => {
   const instances = [
     ...getTreeNodesByName(PCSourceTagNames.COMPONENT_INSTANCE, contentNode),
@@ -430,7 +448,8 @@ const translateStaticOverrides = (
     buffer += `var _${instance.id}Overrides = { ${translateVariantOverrideMap(
       overrideMap.default,
       varMap,
-      sourceUri
+      sourceUri,
+      rootDirectory
     )}};\n`;
   }
 
@@ -440,7 +459,8 @@ const translateStaticOverrides = (
 const translateStaticVariants = (
   contentNode: PCNode,
   varMap: KeyValue<PCVariable>,
-  sourceUri: string
+  sourceUri: string,
+  rootDirectory: string
 ) => {
   const variants = getTreeNodesByName(PCSourceTagNames.VARIANT, contentNode);
   const variantNodes: PCNode[] = uniq(
@@ -479,7 +499,8 @@ const translateStaticVariants = (
       buffer += `${translateVariantOverrideMap(
         overrideMap[variant.id],
         varMap,
-        sourceUri
+        sourceUri,
+        rootDirectory
       )}`;
     }
     buffer += `},`;
@@ -488,21 +509,25 @@ const translateStaticVariants = (
   return buffer + `};\n`;
 };
 
-const mapStyles = (style: any, sourceUri: string) => {
+const mapStyles = (style: any, sourceUri: string, rootDirectory: string) => {
   let newStyle;
   for (const key in style) {
     let value = style[key];
     let newValue = value;
     if (
       typeof value === "string" &&
-      key === "background" &&
+      (key === "background" || key === "background-image") &&
       /url\(.*?\)/.test(value) &&
       !/:\/\//.test(value)
     ) {
-      newValue = value.replace(
-        /url\(["']?(.*?)["']?\)/,
-        `url(${path.dirname(sourceUri)}/$1)`
-      );
+      let uri = value.match(/url\(["']?(.*?)["']?\)/)[1];
+      if (uri.charAt(0) === ".") {
+        uri = `${path.dirname(sourceUri)}/${uri}`;
+      } else {
+        uri = `file://${stripProtocol(rootDirectory)}/${uri}`;
+      }
+
+      newValue = value.replace(/url\(["']?(.*?)["']?\)/, `url(${uri})`);
     }
     if (newValue !== value) {
       if (!newStyle) newStyle = { ...style };
@@ -516,7 +541,8 @@ const translateVariantOverrideMap = memoize(
   (
     map: PCComputedOverrideVariantMap,
     varMap: KeyValue<PCVariable>,
-    sourceUri: string
+    sourceUri: string,
+    rootDirectory: string
   ) => {
     let buffer = ``;
     for (const nodeId in map) {
@@ -525,7 +551,11 @@ const translateVariantOverrideMap = memoize(
       for (const override of overrides) {
         if (override.propertyName === PCOverridablePropertyName.STYLE) {
           buffer += `_${nodeId}Style: ${JSON.stringify(
-            mapStyles(computeStyleWithVars(override.value, varMap), sourceUri)
+            mapStyles(
+              computeStyleWithVars(override.value, varMap),
+              sourceUri,
+              rootDirectory
+            )
           )},`;
         }
         if (override.propertyName === PCOverridablePropertyName.ATTRIBUTES) {
@@ -540,7 +570,12 @@ const translateVariantOverrideMap = memoize(
       }
       buffer += `_${nodeId}Overrides: {`;
 
-      buffer += translateVariantOverrideMap(childMap, varMap, sourceUri);
+      buffer += translateVariantOverrideMap(
+        childMap,
+        varMap,
+        sourceUri,
+        rootDirectory
+      );
 
       buffer += `},`;
     }
@@ -554,7 +589,8 @@ const translateStaticNodeProps = memoize(
     node: PCNode,
     componentRefMap: KeyValue<PCComponent>,
     varMap: KeyValue<PCVariable>,
-    sourceUri: string
+    sourceUri: string,
+    rootDirectory: string
   ) => {
     let buffer = "";
 
@@ -581,7 +617,11 @@ const translateStaticNodeProps = memoize(
       node.name === PCSourceTagNames.STYLE_MIXIN
     ) {
       buffer += `var _${node.id}Style = ${JSON.stringify(
-        mapStyles(computePCNodeStyle(node, componentRefMap, varMap), sourceUri)
+        mapStyles(
+          computePCNodeStyle(node, componentRefMap, varMap),
+          sourceUri,
+          rootDirectory
+        )
       )};`;
     }
 
@@ -599,7 +639,8 @@ const translateStaticNodeProps = memoize(
         child as PCNode,
         componentRefMap,
         varMap,
-        sourceUri
+        sourceUri,
+        rootDirectory
       );
     }
 

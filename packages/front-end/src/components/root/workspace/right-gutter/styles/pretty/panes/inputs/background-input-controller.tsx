@@ -5,6 +5,7 @@ import { ColorSwatchGroup } from "../../../../../../../inputs/color/color-swatch
 import { CSSBackground, stringifyCSSBackground } from "./background/state";
 
 export type Props = {
+  cwd: string;
   value: CSSBackground;
   onChange: any;
   onChangeComplete: any;
@@ -14,14 +15,14 @@ export type Props = {
 export default (Base: React.ComponentClass<BaseBackgroundInputProps>) =>
   class BackgroundInputController extends React.PureComponent<Props> {
     render() {
-      const { value, ...rest } = this.props;
+      const { value, cwd, ...rest } = this.props;
       return (
         <Base
           value={stringifyCSSBackground(value)}
           {...rest}
           backgroundPickerProps={null}
           renderColorPicker={props => (
-            <BackgroundPicker {...props} value={value} />
+            <BackgroundPicker {...props} cwd={cwd} value={value} />
           )}
         />
       );

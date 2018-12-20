@@ -1880,7 +1880,7 @@ const overrideKeyValue = (main, oldOverrides, newOverrides) => {
 // to be used only in tests
 export const evaluateEditedStateSync = (state: PCEditorState) => {
   const documents: SyntheticDocument[] = [];
-  const newDocuments = evaluateDependencyGraph(state.graph, EMPTY_OBJECT);
+  const newDocuments = evaluateDependencyGraph(state.graph, null, EMPTY_OBJECT);
   for (const uri in newDocuments) {
     const newDocument = newDocuments[uri];
     const oldDocument = getSyntheticDocumentByDependencyUri(

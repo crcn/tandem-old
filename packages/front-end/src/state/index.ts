@@ -11,8 +11,7 @@ import {
   getSmallestBounds,
   mergeBounds,
   getNestedTreeNodeById,
-  updateNestedNode,
-  isDirectory,
+  stripProtocol,
   getParentTreeNode,
   TreeNode,
   getBoundsSize,
@@ -886,6 +885,9 @@ export const createScriptProcess = (
   id: `script${scriptProcessCount++}`,
   logs: []
 });
+
+export const getProjectCWD = (state: RootState) =>
+  state.projectInfo && path.dirname(stripProtocol(state.projectInfo.path));
 
 export const getSyntheticWindowBounds = memoize(
   (uri: string, state: RootState) => {

@@ -12,4 +12,4 @@ const { config, directory } = openPCConfig(path.dirname(absPath));
 const graph = loadFSDependencyGraphSync(config, directory, migrate);
 const entry = graph[absUri];
 
-console.log(translateModuleToVanilla(entry.content, getComponentGraphRefMap(entry.content, graph), getVariableRefMap(entry.content, graph), getQueryRefMap(entry.content, graph), absUri));
+console.log(translateModuleToVanilla(entry.content, getComponentGraphRefMap(entry.content, graph), getVariableRefMap(entry.content, graph), getQueryRefMap(entry.content, graph), absUri, directory));

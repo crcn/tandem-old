@@ -11,6 +11,7 @@ import { BaseBackgroundPickerProps } from "./view.pc";
 import { ColorSwatchGroup } from "../../../../../../../../inputs/color/color-swatch-controller";
 
 export type Props = {
+  cwd: string;
   value: CSSBackground;
   onChange?: any;
   onChangeComplete?: any;
@@ -45,6 +46,7 @@ export default (Base: React.ComponentClass<BaseBackgroundPickerProps>) =>
     };
     render() {
       const {
+        cwd,
         value,
         onChange,
         onChangeComplete,
@@ -87,6 +89,7 @@ export default (Base: React.ComponentClass<BaseBackgroundPickerProps>) =>
             swatchOptionGroups
           }}
           backgroundImagePickerProps={{
+            cwd,
             value: value as CSSImageBackground,
             onChange,
             onChangeComplete

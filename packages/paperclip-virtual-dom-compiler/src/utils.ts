@@ -17,6 +17,7 @@ export type ContentNode = PCVisibleNode | PCComponent;
 
 export type TranslateContext = {
   options: TranslateOptions;
+  rootDirectory: string;
   buffer: string;
   newLine?: boolean;
   currentScope?: string;
