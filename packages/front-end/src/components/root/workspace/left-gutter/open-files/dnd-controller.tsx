@@ -10,7 +10,8 @@ import { DropTarget } from "react-dnd";
 import {
   InspectorNode,
   InspectorTreeNodeName,
-  inspectorNodeInShadow
+  inspectorNodeInShadow,
+  getPCNodeContentNode
 } from "paperclip";
 import {
   getPCNode,
@@ -70,6 +71,11 @@ export const withNodeDropTarget = (offset: TreeMoveOffset) =>
           const contentSourceNode =
             contentNode && getPCNode(contentNode.sourceNodeId, graph);
           const draggingInspectorNode = monitor.getItem() as InspectorNode;
+
+          if (inspectorNode.id === draggingInspectorNode.id) {
+            return false;
+          }
+
           const draggedSourceNode = getPCNode(
             draggingInspectorNode.sourceNodeId,
             graph
@@ -86,8 +92,20 @@ export const withNodeDropTarget = (offset: TreeMoveOffset) =>
             getPCNodeModule(assocSourceNodeId, graph)
           );
 
+          // if the dragged node is a component, then ensure that it can only be dragged around
+          // the root level of the module.
           if (draggedSourceNode.name === PCSourceTagNames.COMPONENT) {
-            return !contentSourceNode;
+            if (
+              offset === TreeMoveOffset.APPEND ||
+              offset === TreeMoveOffset.PREPEND
+            ) {
+              return sourceNode.name === PCSourceTagNames.MODULE;
+            } else {
+              return (
+                parentSourceNode &&
+                parentSourceNode.name === PCSourceTagNames.MODULE
+              );
+            }
           }
 
           if (

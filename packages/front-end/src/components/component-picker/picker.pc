@@ -940,6 +940,47 @@
           "bottom": 1379
         }
       }
+    },
+    {
+      "label": "Element",
+      "is": "div",
+      "style": {
+        "box-sizing": "border-box",
+        "display": "block"
+      },
+      "attributes": {},
+      "id": "32bbcf3e655",
+      "name": "component",
+      "children": [],
+      "metadata": {
+        "bounds": {
+          "left": 1594.6971428571428,
+          "top": -608.0114285714285,
+          "right": 1694.6971428571428,
+          "bottom": -508.0114285714285
+        }
+      },
+      "variant": {}
+    },
+    {
+      "id": "32bbcf3e657",
+      "label": "Element",
+      "is": "div",
+      "name": "element",
+      "attributes": {},
+      "style": {
+        "box-sizing": "border-box",
+        "display": "block"
+      },
+      "children": [],
+      "metadata": {
+        "bounds": {
+          "left": 1597.083791369955,
+          "top": -269.1073397520548,
+          "right": 1697.083791369955,
+          "bottom": -169.10733975205483
+        }
+      }
     }
   ]
 }
