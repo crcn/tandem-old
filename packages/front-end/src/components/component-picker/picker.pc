@@ -942,45 +942,118 @@
       }
     },
     {
-      "label": "Element",
+      "label": "A",
       "is": "div",
       "style": {
         "box-sizing": "border-box",
         "display": "block"
       },
       "attributes": {},
-      "id": "32bbcf3e655",
+      "id": "e2b8fd29666",
       "name": "component",
-      "children": [],
+      "children": [
+        {
+          "id": "e2b8fd29671",
+          "name": "variant",
+          "label": "b",
+          "isDefault": true,
+          "children": [],
+          "metadata": {}
+        }
+      ],
       "metadata": {
         "bounds": {
-          "left": 1594.6971428571428,
-          "top": -608.0114285714285,
-          "right": 1694.6971428571428,
-          "bottom": -508.0114285714285
+          "left": 1753.0284717607972,
+          "top": -565.592292358804,
+          "right": 1853.0284717607972,
+          "bottom": -465.592292358804
         }
       },
       "variant": {}
     },
     {
-      "id": "32bbcf3e657",
-      "label": "Element",
+      "label": "B",
       "is": "div",
-      "name": "element",
-      "attributes": {},
       "style": {
         "box-sizing": "border-box",
         "display": "block"
       },
-      "children": [],
+      "attributes": {},
+      "id": "e2b8fd29664",
+      "name": "component",
+      "children": [
+        {
+          "id": "e2b8fd29672",
+          "label": "Element",
+          "is": "div",
+          "name": "element",
+          "attributes": {},
+          "style": {
+            "box-sizing": "border-box",
+            "display": "block"
+          },
+          "children": [
+            {
+              "id": "e2b8fd29684",
+              "children": [
+                {
+                  "id": "e2b8fd29679",
+                  "name": "text",
+                  "label": "Text",
+                  "value": "B",
+                  "style": {},
+                  "children": [],
+                  "metadata": {}
+                }
+              ],
+              "metadata": {},
+              "name": "slot",
+              "label": "content"
+            }
+          ],
+          "metadata": {}
+        }
+      ],
       "metadata": {
         "bounds": {
-          "left": 1597.083791369955,
-          "top": -269.1073397520548,
-          "right": 1697.083791369955,
-          "bottom": -169.10733975205483
+          "left": 1886.1858935397613,
+          "top": -598.8544335040439,
+          "right": 1986.1858935397613,
+          "bottom": -498.85443350404387
         }
-      }
+      },
+      "variant": {}
+    },
+    {
+      "label": "C",
+      "is": "div",
+      "style": {
+        "box-sizing": "border-box",
+        "display": "block"
+      },
+      "attributes": {},
+      "id": "e2b8fd29677",
+      "name": "component",
+      "children": [
+        {
+          "id": "e2b8fd29682",
+          "name": "text",
+          "label": "Text",
+          "value": "C",
+          "style": {},
+          "children": [],
+          "metadata": {}
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": 2021.9406178556096,
+          "top": -633.1389768806691,
+          "right": 2121.9406178556096,
+          "bottom": -533.1389768806691
+        }
+      },
+      "variant": {}
     }
   ]
 }

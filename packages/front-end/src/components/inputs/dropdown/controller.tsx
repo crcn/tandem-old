@@ -136,7 +136,7 @@ export default (Base: React.ComponentClass<BaseDropdownProps>) => {
       const selectedItem: DropdownMenuOption = options.find(
         item => item.value === value
       );
-      const showFilter = open && filterable;
+      const showFilter = open && filterable !== false;
 
       return (
         <Base
