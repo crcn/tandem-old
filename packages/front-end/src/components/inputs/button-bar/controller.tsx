@@ -12,13 +12,13 @@ export type ButtonBarOption = {
 export type Props = {
   options: ButtonBarOption[];
   value: any;
-  onChange: any;
+  onChangeComplete: any;
 };
 
 export default (Base: React.ComponentClass<BaseButtonBarProps>) =>
   class ButtonBarController extends React.PureComponent<Props> {
     render() {
-      const { options, value, onChange } = this.props;
+      const { options, value, onChangeComplete } = this.props;
       const items = (options || EMPTY_ARRAY).map((item, i) => {
         return (
           <ButtonBarItemComponent
@@ -29,7 +29,7 @@ export default (Base: React.ComponentClass<BaseButtonBarProps>) =>
               last: i === options.length - 1,
               first: i === 0
             })}
-            onClick={onChange && (() => onChange(item.value))}
+            onClick={onChangeComplete && (() => onChangeComplete(item.value))}
           />
         );
       });

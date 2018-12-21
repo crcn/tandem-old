@@ -22,8 +22,7 @@ import {
   isTextLikePCNode,
   isElementLikePCNode,
   getNativeComponentName,
-  DependencyGraph,
-  isVoidTagName
+  DependencyGraph
 } from "paperclip";
 import {
   mapVariablesToCSSVarDropdownOptions,
@@ -227,7 +226,10 @@ export default (Base: React.ComponentClass<BaseTypographProps>) =>
           alignmentInputProps={{
             options: ALIGNMENTS,
             value: computedStyleInfo.style["text-align"],
-            onChange: propertyChangeCallback("text-align", onPropertyChange)
+            onChangeComplete: propertyChangeCallback(
+              "text-align",
+              onPropertyChangeComplete
+            )
           }}
           sizeInputProps={{
             value: computedStyleInfo.style["font-size"],

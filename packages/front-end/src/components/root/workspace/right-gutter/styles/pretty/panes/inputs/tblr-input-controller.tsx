@@ -58,7 +58,7 @@ export default (Base: React.ComponentClass<BaseTblrInputProps>) =>
           togglerProps={{
             value: connected,
             options: getButtonBarOptions(connectedIcon, disconnectedIcon),
-            onChange: onToggleOptionChange
+            onChangeComplete: onToggleOptionChange
           }}
         />
       );

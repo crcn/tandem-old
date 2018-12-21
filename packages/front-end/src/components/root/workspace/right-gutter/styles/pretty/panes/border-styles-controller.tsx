@@ -81,7 +81,7 @@ export default (Base: React.ComponentClass<BaseBorderStylesProps>) =>
           togglerProps={{
             value: borderStyling,
             options: TOGGLE_OPTIONS,
-            onChange: onStyleToggleChangeComplete
+            onChangeComplete: onStyleToggleChangeComplete
           }}
           borderInputProps={{
             documentColors,
