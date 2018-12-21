@@ -20,6 +20,7 @@ import {
   Frame
 } from "paperclip";
 import { FrontEndContextOptions } from "../components/contexts";
+import { processSaga } from "./process";
 
 export type FrontEndSagaOptions = {
   openPreview(frame: Frame, state: RootState);
@@ -37,6 +38,7 @@ export const createRootSaga = (options: FrontEndSagaOptions) => {
     yield fork(projectSaga(options));
     yield fork(shortcutSaga);
     yield fork(createPreviewSaga(options));
+    yield fork(processSaga);
   };
 };
 const createPreviewSaga = ({ openPreview }: FrontEndSagaOptions) => {

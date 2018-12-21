@@ -4,7 +4,12 @@ import * as cx from "classnames";
 import { Dispatch } from "redux";
 import { Workspace } from "./workspace/view.pc";
 import { Welcome } from "./welcome/view.pc";
-import { RootState, isUnsaved, getBuildScriptProcess } from "../../state";
+import {
+  RootState,
+  isUnsaved,
+  getBuildScriptProcess,
+  RootReadyType
+} from "../../state";
 import { Chrome } from "./chrome.pc";
 
 export type RootOuterProps = {
@@ -16,7 +21,7 @@ export class RootComponent extends React.PureComponent<RootOuterProps> {
   render() {
     const { root, dispatch } = this.props;
     // TODO - add loading state here
-    if (!root.ready) {
+    if (root.readyType === RootReadyType.LOADING) {
       return null;
     }
 

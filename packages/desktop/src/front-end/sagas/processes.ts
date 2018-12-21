@@ -24,7 +24,8 @@ import {
   SCRIPT_PROCESS_CLOSED,
   BUILD_BUTTON_STOP_CLICKED,
   BUILD_BUTTON_OPEN_APP_CLICKED,
-  TD_PROJECT_LOADED
+  TD_PROJECT_LOADED,
+  UNLOADING
 } from "tandem-front-end";
 import { stripProtocol } from "tandem-common";
 
@@ -141,13 +142,15 @@ function* spawnScript(
           BUILD_SCRIPT_CONFIG_CHANGED,
           SCRIPT_PROCESS_CLOSED,
           BUILD_BUTTON_STOP_CLICKED,
-          TD_PROJECT_LOADED
+          TD_PROJECT_LOADED,
+          UNLOADING
         ]);
         const state: RootState = yield select();
         const matchingProccess = state.scriptProcesses.find(
           proc => proc.id === scriptProcess.id
         );
         if (!matchingProccess) {
+          alert("UNLOAD");
           channel.close();
           break;
         }

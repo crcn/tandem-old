@@ -216,7 +216,11 @@ import {
   BUILD_SCRIPT_CONFIG_CHANGED,
   OPEN_APP_SCRIPT_CONFIG_CHANGED,
   ScriptConfigChanged,
-  BUILD_BUTTON_STOP_CLICKED
+  BUILD_BUTTON_STOP_CLICKED,
+  UNLOADING,
+  UNLOADER_CREATED,
+  UNLOADER_COMPLETED,
+  UnloaderAction
 } from "../actions";
 import {
   queueOpenFile,
@@ -279,7 +283,8 @@ import {
   EditMode,
   updateProjectScripts,
   removeBuildScriptProcess,
-  getBuildScriptProcess
+  getBuildScriptProcess,
+  RootReadyType
 } from "../state";
 import {
   PCSourceTagNames,
@@ -445,7 +450,7 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
     case PROJECT_DIRECTORY_LOADED: {
       const { directory } = action as ProjectDirectoryLoaded;
       return updateRootState(
-        { projectDirectory: directory, ready: true },
+        { projectDirectory: directory, readyType: RootReadyType.LOADED },
         state
       );
     }
@@ -472,7 +477,7 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
         state = updateRootState(
           {
             projectInfo,
-            ready: true,
+            readyType: RootReadyType.LOADED,
             openFiles: [],
             fileCache: {},
             openedMain: false,
@@ -1889,6 +1894,38 @@ export const canvasReducer = (state: RootState, action: Action) => {
           state
         );
       }, state);
+      return state;
+    }
+    case UNLOADING: {
+      state = {
+        ...state,
+        readyType: RootReadyType.UNLOADING
+      };
+      return state;
+    }
+    case UNLOADER_CREATED: {
+      const { unloader } = action as UnloaderAction;
+      state = {
+        ...state,
+        unloaders: [...state.unloaders, unloader]
+      };
+      return state;
+    }
+    case UNLOADER_COMPLETED: {
+      const { unloader } = action as UnloaderAction;
+      state = {
+        ...state,
+        unloaders: state.unloaders.map(({ id, ...rest }) => {
+          return id === unloader.id
+            ? {
+                ...rest,
+                id,
+                completed: true
+              }
+            : unloader;
+        })
+      };
+
       return state;
     }
     case CSS_PROPERTY_CHANGED: {

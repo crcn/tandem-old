@@ -17,7 +17,8 @@ import {
   FontFamily,
   createRootInspectorNode,
   ContextMenuItem,
-  EditMode
+  EditMode,
+  RootReadyType
 } from "tandem-front-end";
 import {
   stripProtocol,
@@ -97,6 +98,8 @@ setTimeout(init, 500, {
   editMode: EditMode.PRIMARY,
   customChrome: Boolean(query.customChrome),
   selectedFileNodeIds: [],
+  readyType: RootReadyType.LOADING,
+  unloaders: [],
   sourceNodeInspector: createRootInspectorNode(),
   sourceNodeInspectorMap: {},
   scriptProcesses: [],

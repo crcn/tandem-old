@@ -284,6 +284,17 @@ export type ProjectTemplate = {
 
 export type ProjectFileCreator = (options: Object) => KeyValue<string>;
 
+export enum RootReadyType {
+  LOADING,
+  LOADED,
+  UNLOADING
+}
+
+export type Unloader = {
+  id: string;
+  completed: boolean;
+};
+
 export type RootState = {
   editorWindows: EditorWindow[];
   mount: Element;
@@ -294,6 +305,7 @@ export type RootState = {
   editMode: EditMode;
   showConfigureBuildModal?: boolean;
   scriptProcesses: ScriptProcess[];
+  unloaders: Unloader[];
 
   buildScriptProcessId?: string;
 
@@ -328,7 +340,7 @@ export type RootState = {
   // TODO - should be ref
   selectedFileNodeIds: string[];
   selectedComponentVariantName?: string;
-  ready?: boolean;
+  readyType?: RootReadyType;
   projectDirectory?: Directory;
   projectInfo?: ProjectInfo;
   history: GraphHistory;
@@ -885,6 +897,17 @@ export const createScriptProcess = (
   id: `script${scriptProcessCount++}`,
   logs: []
 });
+
+let unloaderCount = 0;
+
+export const createUnloader = (): Unloader => ({
+  id: `script${unloaderCount++}`,
+  completed: false
+});
+
+export const isUnloaded = (state: RootState) =>
+  state.readyType === RootReadyType.UNLOADING &&
+  !state.unloaders.some(({ completed }) => !completed);
 
 export const getProjectCWD = (state: RootState) =>
   state.projectInfo && path.dirname(stripProtocol(state.projectInfo.path));

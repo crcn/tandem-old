@@ -940,41 +940,6 @@
           "bottom": 1379
         }
       }
-    },
-    {
-      "id": "c2a919be653",
-      "label": "Element",
-      "is": "div",
-      "name": "element",
-      "attributes": {},
-      "style": {
-        "box-sizing": "border-box",
-        "display": "block",
-        "text-align": "center"
-      },
-      "children": [
-        {
-          "id": "c2a919be655",
-          "name": "text",
-          "label": "Text",
-          "value": "hello",
-          "style": {
-            "color": "rgba(18, 221, 59, 1)",
-            "font-size": "14px",
-            "text-align": "center"
-          },
-          "children": [],
-          "metadata": {}
-        }
-      ],
-      "metadata": {
-        "bounds": {
-          "left": 1857.374269725167,
-          "top": -257.83453088077,
-          "right": 1957.374269725167,
-          "bottom": -157.83453088077
-        }
-      }
     }
   ]
 }

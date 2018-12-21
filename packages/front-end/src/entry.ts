@@ -1,6 +1,6 @@
 import { init } from "./index";
 import { createRootInspectorNode } from "paperclip";
-import { EditMode } from "./state";
+import { EditMode, RootReadyType } from "./state";
 
 init({
   mount: document.getElementById("application"),
@@ -8,6 +8,8 @@ init({
   customChrome: false,
   selectedInspectorNodes: [],
   hoveringInspectorNodes: [],
+  unloaders: [],
+  readyType: RootReadyType.LOADING,
   scriptProcesses: [],
   editMode: EditMode.PRIMARY,
   selectedFileNodeIds: [],

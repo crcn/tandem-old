@@ -43,7 +43,8 @@ import {
   QuickSearchResult,
   ProjectTemplate,
   ScriptProcess,
-  ScriptProcessLog
+  ScriptProcessLog,
+  Unloader
 } from "../state";
 import { InspectorNode } from "paperclip";
 
@@ -304,6 +305,9 @@ export const CLOSE_BOTTOM_GUTTER_BUTTON_CLICKED =
   "CLOSE_BOTTOM_GUTTER_BUTTON_CLICKED";
 export const BUILD_SCRIPT_CONFIG_CHANGED = "BUILD_SCRIPT_CONFIG_CHANGED";
 export const OPEN_APP_SCRIPT_CONFIG_CHANGED = "OPEN_APP_SCRIPT_CONFIG_CHANGED";
+export const UNLOADING = "UNLOADING";
+export const UNLOADER_CREATED = "UNLOADER_CREATED";
+export const UNLOADER_COMPLETED = "UNLOADER_COMPLETED";
 
 export type WrappedEvent<T> = {
   sourceEvent: T;
@@ -799,6 +803,10 @@ export type InheritItemClick = {
   componentId: string;
 } & Action;
 
+export type UnloaderAction = {
+  unloader: Unloader;
+} & Action;
+
 export const quickSearchResultItemSplitButtonClick = (
   item: QuickSearchResult
 ): QuickSearchResultItemSplitButtonClicked => ({
@@ -954,6 +962,20 @@ export const openAppScriptConfigChanged = (
 
 export const configureBuildModalBackgroundClicked = () => ({
   type: CONFIGURE_BUILD_MODAL_BACKGROUND_CLICKED
+});
+
+export const unloading = () => ({
+  type: UNLOADING
+});
+
+export const unloaderCreated = (unloader: Unloader): UnloaderAction => ({
+  unloader,
+  type: UNLOADER_CREATED
+});
+
+export const unloaderCompleted = (unloader: Unloader): UnloaderAction => ({
+  unloader,
+  type: UNLOADER_COMPLETED
 });
 
 export const addQueryButtonClick = (
