@@ -12,6 +12,7 @@ export const startDOMDrag = (
   const sx = startEvent.clientX;
   const sy = startEvent.clientY;
   const doc = startEvent.target.ownerDocument;
+
   let _animating: boolean;
   let _started: boolean;
 

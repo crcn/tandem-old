@@ -229,6 +229,10 @@ export const createPaperclipSaga = ({
     // FIXME: This produces memory leaks when frames are removed from the store.
     function* watchContainer(container: HTMLElement, frame: Frame) {
       const iframe = container.children[0] as HTMLIFrameElement;
+
+      if (!iframe) {
+        return;
+      }
       // wait until it's been mounted, then continue
       const eventChan = eventChannel(emit => {
         const onUnload = () => {
@@ -237,7 +241,9 @@ export const createPaperclipSaga = ({
           emit("unload");
         };
         const onDone = () => {
-          iframe.contentWindow.addEventListener("unload", onUnload);
+          if (iframe.contentWindow) {
+            iframe.contentWindow.addEventListener("unload", onUnload);
+          }
           iframe.removeEventListener("load", onDone);
           emit("load");
         };
@@ -259,6 +265,11 @@ export const createPaperclipSaga = ({
             state.documents
           );
           const graph = state.graph;
+
+          // happens on reload
+          if (!iframe.contentDocument) {
+            continue;
+          }
           const body = iframe.contentDocument.body;
           yield put(
             pcFrameRendered(

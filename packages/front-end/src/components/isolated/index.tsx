@@ -67,7 +67,7 @@ export class Isolate extends React.Component<
 
   componentWillUnmount() {
     if (this._dragDropManager) {
-      this._dragDropManager.getBackend().addEventListeners(this.window);
+      this._dragDropManager.getBackend().removeEventListeners(this.window);
     }
   }
 
