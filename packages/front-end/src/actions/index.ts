@@ -308,6 +308,7 @@ export const OPEN_APP_SCRIPT_CONFIG_CHANGED = "OPEN_APP_SCRIPT_CONFIG_CHANGED";
 export const UNLOADING = "UNLOADING";
 export const UNLOADER_CREATED = "UNLOADER_CREATED";
 export const UNLOADER_COMPLETED = "UNLOADER_COMPLETED";
+export const RELOAD = "RELOAD";
 
 export type WrappedEvent<T> = {
   sourceEvent: T;
@@ -1023,6 +1024,10 @@ export const buildScriptStarted = (
 ): BuildScriptStarted => ({
   type: BUILD_SCRIPT_STARTED,
   process
+});
+
+export const reload = () => ({
+  type: RELOAD
 });
 
 export const canvasTextEditChangeComplete = (

@@ -43,9 +43,6 @@ const SLOW_ACTION_INTERVAL = 10;
 // Dirty, but okay for now. Want to eventually display a prettyier message that reports diagnostics, but
 // that needs to happen _outside_ of the application's scope.
 
-const bugReporter = initBugReporting();
-window.onerror = bugReporter.triggerError;
-
 const reuseUris = reuser(10, (uris: string[]) => uris.join(","));
 
 export const setup = <TState extends RootState>(
@@ -54,8 +51,10 @@ export const setup = <TState extends RootState>(
   saga?: () => IterableIterator<any>
 ) => {
   return (initialState: TState) => {
+    let bugReporter;
+
     const sagaMiddleware = createSagaMiddleware({
-      onError: bugReporter.triggerError
+      onError: e => bugReporter.triggerError(e)
     });
     const store = createStore(
       (state: TState, event: Action) => {
@@ -79,6 +78,7 @@ export const setup = <TState extends RootState>(
       initialState as any,
       applyMiddleware(sagaMiddleware)
     );
+
     sagaMiddleware.run(function*() {
       let {
         readFile,
@@ -148,6 +148,9 @@ export const setup = <TState extends RootState>(
     });
 
     store.dispatch(appLoaded());
+
+    bugReporter = initBugReporting(store.dispatch);
+    window.onerror = bugReporter.triggerError;
   };
 };
 
@@ -162,3 +165,4 @@ export * from "./state";
 export * from "./actions";
 export * from "paperclip";
 export * from "./starter-kits";
+export * from "./sagas/process";

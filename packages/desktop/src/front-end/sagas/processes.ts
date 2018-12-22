@@ -1,12 +1,4 @@
-import {
-  fork,
-  take,
-  select,
-  call,
-  put,
-  spawn,
-  cancel
-} from "redux-saga/effects";
+import { fork, take, select, call, put, spawn } from "redux-saga/effects";
 import { eventChannel, delay } from "redux-saga";
 import * as terminate from "terminate";
 import * as path from "path";
@@ -25,7 +17,10 @@ import {
   BUILD_BUTTON_STOP_CLICKED,
   BUILD_BUTTON_OPEN_APP_CLICKED,
   TD_PROJECT_LOADED,
-  UNLOADING
+  UNLOADING,
+  createUnloader,
+  unloaderCreated,
+  unloaderCompleted
 } from "tandem-front-end";
 import { stripProtocol } from "tandem-common";
 
@@ -33,6 +28,7 @@ export function* processSaga() {
   yield fork(handleStartBuild);
   yield fork(handleOpenApp);
 }
+const UNLOADER_TIMEOUT = 500;
 
 function* handleStartBuild() {
   while (1) {
@@ -150,8 +146,14 @@ function* spawnScript(
           proc => proc.id === scriptProcess.id
         );
         if (!matchingProccess) {
-          alert("UNLOAD");
+          const unloader = createUnloader();
+          yield put(unloaderCreated(unloader));
           channel.close();
+
+          // give some time for async terminator to work. Could
+          // cause race conditions. 🙈
+          yield call(delay, UNLOADER_TIMEOUT);
+          yield put(unloaderCompleted(unloader));
           break;
         }
       }

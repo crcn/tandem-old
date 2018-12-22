@@ -2,7 +2,7 @@ import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { Main } from "./components/main/view.pc";
 
-export const init = () => {
+export const init = (dispatch: Function) => {
   let triggered = false;
 
   const triggerError = error => {
@@ -15,7 +15,7 @@ export const init = () => {
 
     const div = document.createElement("div");
     document.body.appendChild(div);
-    ReactDOM.render(React.createElement(Main, {}), div);
+    ReactDOM.render(React.createElement(Main, { dispatch }), div);
   };
   return {
     triggerError

@@ -71,6 +71,7 @@ import {
 // import { serverStateLoaded } from "../actions";
 import { DesktopRootState } from "../state";
 import { processSaga } from "./processes";
+import { unloadApplication } from "tandem-front-end";
 
 export function* rootSaga() {
   yield fork(ipcSaga);
@@ -395,7 +396,9 @@ function* chromeSaga() {
       }
 
       if (save || closeWithoutSaving) {
-        window.close();
+        yield call(unloadApplication, function*() {
+          window.close();
+        });
       }
     }
   });

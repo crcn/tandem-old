@@ -1,50 +1,34 @@
-import { fork, select, take, put, spawn } from "redux-saga/effects";
-import { eventChannel } from "redux-saga";
-import { unloading, UNLOADER_COMPLETED, UNLOADING } from "../actions";
+import { fork, select, take, put, spawn, call } from "redux-saga/effects";
+import { eventChannel, delay } from "redux-saga";
+import { unloading, UNLOADER_COMPLETED, UNLOADING, RELOAD } from "../actions";
 import { isUnloaded } from "../state";
 
 export function* processSaga() {
-  // yield fork(handleWindowUnload);
+  yield fork(handleWindowReload);
 }
 
-function* handleWindowUnload() {
-  // const initialUnloadChanel = waitForUnload();
-  // console.log("EVENTT");
-  // yield take(initialUnloadChanel);
-  // initialUnloadChanel.close();
-  // yield spawn(function* gracefullyUnload() {
-  //   while(1) {
-  //     yield take([UNLOADER_COMPLETED, UNLOADING]);
-  //     if(isUnloaded(yield select())) {
-  //       break;
-  //     }
-  //   }
-  //   if (1) {
-  //     window.location.reload();
-  //   } else {
-  //     window.close();
-  //   }
-  // });
-  // yield put(unloading());
-}
-
-function waitForUnload() {
-  return eventChannel(emit => {
-    let reloading = false;
-    window.addEventListener("devtools-reload-page", () => {
-      console.log("RELOAD");
-    });
-    window.addEventListener("reload", () => {
-      console.log("RELOAD");
-    });
-    window.addEventListener("unload", event => {
-      return false;
-    });
-    // const onUnload =
-    window.addEventListener("beforeunload", event => {
-      event.returnValue = false;
-      emit({ reloading });
-    });
-    return () => {};
+function* handleWindowReload() {
+  yield take(RELOAD);
+  yield call(unloadApplication, function*() {
+    window.location.reload();
   });
+}
+
+export function* unloadApplication(
+  handleUnloaded: () => IterableIterator<any>
+) {
+  yield spawn(function*() {
+    while (1) {
+      yield take([UNLOADER_COMPLETED, UNLOADING]);
+
+      // delay so that unloaders have time to register to state
+      yield delay(0);
+      if (isUnloaded(yield select())) {
+        break;
+      }
+    }
+    yield call(handleUnloaded);
+  });
+
+  yield put(unloading());
 }

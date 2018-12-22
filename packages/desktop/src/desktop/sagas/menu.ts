@@ -197,8 +197,13 @@ function* handleMenu() {
       {
         label: "View",
         submenu: [
-          { role: "reload" },
-          { role: "forcereload" },
+          {
+            label: "Reload",
+            accelerator: "meta+r",
+            click: (a, window, event) => {
+              emit(shortcutKeyDown("RELOAD"));
+            }
+          },
           { role: "toggledevtools" },
           { type: "separator" },
           { role: "resetzoom" },

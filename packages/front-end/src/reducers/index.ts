@@ -1899,7 +1899,11 @@ export const canvasReducer = (state: RootState, action: Action) => {
     case UNLOADING: {
       state = {
         ...state,
-        readyType: RootReadyType.UNLOADING
+        readyType: RootReadyType.UNLOADING,
+
+        // clear all script processes. This will trigger _actual_ processes
+        // to close
+        scriptProcesses: []
       };
       return state;
     }
