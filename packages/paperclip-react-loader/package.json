@@ -1,6 +1,6 @@
 {
   "name": "paperclip-react-loader",
-  "version": "10.1.14",
+  "version": "10.1.15",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -15,9 +15,9 @@
   "dependencies": {
     "@types/node": "^10.3.3",
     "loader-utils": "^1.1.0",
-    "paperclip": "^10.1.14",
-    "paperclip-migrator": "^10.1.8",
-    "paperclip-react-compiler": "^10.1.14"
+    "paperclip": "^10.1.15",
+    "paperclip-migrator": "^10.1.15",
+    "paperclip-react-compiler": "^10.1.15"
   },
   "devDependencies": {
     "typescript": "3.0.x"
