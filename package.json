@@ -14,11 +14,11 @@
     "test": "lerna exec --parallel -- npm test",
     "precommit": "lint-staged",
     "design-front-end": "cd packages/front-end; ../desktop/node_modules/.bin/Electron ../desktop/lib/index.js app.tdproject",
-    "design-front-end2": "cd packages/front-end-redesign; ../desktop/node_modules/.bin/Electron ../desktop/lib/index.js app.tdproject",
     "clean": "lerna exec --parallel -- npm run clean",
     "bootstrap": "lerna bootstrap",
-    "build-watch": "lerna exec --parallel -- npm run build-watch",
-    "build-desktop-dist": "cd packages/desktop; npm run build-dist;",
+    "build": "lerna exec --parallel -- npm run build",
+    "build:watch": "lerna exec --parallel -- npm run build-watch",
+    "build:dist": "NODE_ENV=production npm run build; cd packages/desktop; npm run build-dist;",
     "prepublish": "npm run bootstrap"
   },
   "lint-staged": {
