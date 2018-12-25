@@ -29,10 +29,6 @@
     "@types/lodash": "^4.14.106",
     "@types/mocha": "^2.2.41",
     "@types/request": "^2.0.0",
-    "@types/socket.io": "^1.4.29",
-    "@types/socket.io-client": "^1.4.30",
-    "@types/source-map": "^0.5.0",
-    "@types/xml-js": "^1.0.0",
     "chai": "^4.0.2",
     "concurrently": "^3.6.1",
     "css-loader": "^0.28.4",
@@ -45,7 +41,6 @@
     "react-hot-loader": "^3.1.2",
     "sass-loader": "^7.0.3",
     "script-ext-html-webpack-plugin": "^2.1.3",
-    "source-map": "^0.5.7",
     "style-loader": "^0.18.2",
     "tandem-webpack-preview-server": "^10.0.36",
     "text-loader": "^0.0.1",
@@ -56,21 +51,17 @@
     "webpack-cli": "^3.0.4",
     "webpack-notifier": "^1.6.0",
     "worker-loader": "^2.0.0",
-    "wrapper-webpack-plugin": "^2.0.0"
-  },
-  "dependencies": {
+    "wrapper-webpack-plugin": "^2.0.0",
     "@types/react": "^16.4.11",
     "@types/react-dom": "^16.0.7",
-    "@types/recompose": "0.x.x",
+    "@types/recompose": "0.x.x"
+  },
+  "dependencies": {
     "classnames": "^2.2.5",
     "crc32": "^0.2.2",
     "fsbox": "^10.1.15",
-    "glob": "^7.1.2",
-    "http-proxy": "^1.16.2",
     "lodash": "^4.17.10",
-    "md5": "^2.2.1",
     "mime-types": "^2.1.20",
-    "mousetrap": "^1.6.1",
     "paperclip": "^10.1.15",
     "paperclip-migrator": "^10.1.15",
     "react": "^16.4.2",
@@ -78,16 +69,11 @@
     "react-dnd-html5-backend": "^5.0.1",
     "react-dom": "^16.4.2",
     "react-hammerjs": "^1.0.1",
-    "react-motion": "^0.5.2",
     "recompose": "^0.28.2",
     "redux": "^4.0.0",
     "redux-saga": "^0.16.0",
-    "request": "^2.81.0",
     "scroll-into-view-if-needed": "^2.2.16",
-    "socket.io": "^2.0.3",
-    "socket.io-client": "^2.0.3",
-    "tandem-common": "^10.1.15",
-    "xml-js": "^1.6.4"
+    "tandem-common": "^10.1.15"
   },
   "gitHead": "61552458fb4697d72287bdc01f1cdc19066a7b52"
 }

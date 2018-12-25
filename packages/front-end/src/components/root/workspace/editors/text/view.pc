@@ -71,7 +71,8 @@
                   "name": "component-instance",
                   "attributes": {},
                   "style": {
-                    "background": "rgba(255, 255, 255, 1)"
+                    "background": "rgba(255, 255, 255, 1)",
+                    "white-space": "nowrap"
                   },
                   "children": [
                     {
@@ -131,7 +132,8 @@
             "padding-left": "8px",
             "padding-top": "8px",
             "padding-right": "8px",
-            "padding-bottom": "8px"
+            "padding-bottom": "8px",
+            "word-break": "break-word"
           },
           "children": [
             {
@@ -167,8 +169,8 @@
       "metadata": {
         "bounds": {
           "left": 0,
-          "right": 600,
           "top": 0,
+          "right": 281,
           "bottom": 400
         }
       },
