@@ -521,10 +521,10 @@
       ],
       "metadata": {
         "bounds": {
-          "left": 1249,
-          "top": 199,
-          "right": 1527,
-          "bottom": 286
+          "left": 1253,
+          "top": 210,
+          "right": 1531,
+          "bottom": 297
         }
       },
       "variant": {
@@ -534,6 +534,27 @@
       "controllers": [
         "./spacing-input-controller.tsx"
       ]
+    },
+    {
+      "id": "c3b6138b2560",
+      "label": "Element",
+      "is": "div",
+      "name": "element",
+      "attributes": {},
+      "style": {
+        "box-sizing": "border-box",
+        "display": "block",
+        "background-image": "linear-gradient(rgba(108, 56, 56, 1), rgba(108, 56, 56, 1))"
+      },
+      "children": [],
+      "metadata": {
+        "bounds": {
+          "left": 1565,
+          "top": 228.5,
+          "right": 1665,
+          "bottom": 328.5
+        }
+      }
     }
   ]
 }
