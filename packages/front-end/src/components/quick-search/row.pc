@@ -192,7 +192,7 @@
           "id": "646b96f948608",
           "name": "variant",
           "label": "hovering",
-          "isDefault": true,
+          "isDefault": false,
           "children": [],
           "metadata": {}
         },
@@ -219,6 +219,36 @@
           },
           "children": [],
           "metadata": {}
+        },
+        {
+          "id": "564cd8f1605",
+          "name": "variant",
+          "label": "preselected",
+          "isDefault": false,
+          "children": [],
+          "metadata": {}
+        },
+        {
+          "id": "564cd8f1606",
+          "variantId": "564cd8f1605",
+          "propertyName": "style",
+          "targetIdPath": [],
+          "value": {
+            "background-image": "linear-gradient(var(--32c1eebd7630), var(--32c1eebd7630))"
+          },
+          "name": "override",
+          "children": []
+        },
+        {
+          "id": "f7d6a42945",
+          "variantId": "646b96f948608",
+          "propertyName": "style",
+          "targetIdPath": [],
+          "value": {
+            "background-image": "linear-gradient(var(--1934368810788), var(--1934368810788))"
+          },
+          "name": "override",
+          "children": []
         }
       ],
       "metadata": {

@@ -170,6 +170,15 @@
       "type": "color",
       "children": [],
       "metadata": {}
+    },
+    {
+      "id": "564cd8f1607",
+      "name": "variable",
+      "value": "rgba(229, 241, 245, 1)",
+      "label": "blue 3",
+      "type": "color",
+      "children": [],
+      "metadata": {}
     }
   ]
 }

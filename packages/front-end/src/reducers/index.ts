@@ -220,7 +220,8 @@ import {
   UNLOADING,
   UNLOADER_CREATED,
   UNLOADER_COMPLETED,
-  UnloaderAction
+  UnloaderAction,
+  QUICK_SEARCH_INPUT_ENTERED
 } from "../actions";
 import {
   queueOpenFile,
@@ -518,6 +519,7 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
 
       return state;
     }
+    case QUICK_SEARCH_INPUT_ENTERED:
     case QUICK_SEARCH_ITEM_CLICKED: {
       const { item } = action as QuickSearchItemClicked;
       if (item.type === QuickSearchResultType.URI) {

@@ -99,13 +99,14 @@
                       "id": "33e083be5",
                       "name": "component-instance",
                       "is": "808486bb13",
-                      "variant": {},
+                      "variant": {
+                        "564cd8f1605": true
+                      },
                       "style": {
-                        "left": 0,
-                        "top": 0,
-                        "right": 400,
-                        "bottom": 300,
-                        "background": "var(--24ce1e4d22305)"
+                        "left": "0",
+                        "top": "0",
+                        "right": "400",
+                        "bottom": "300"
                       },
                       "children": [
                         {
@@ -181,7 +182,9 @@
                       "id": "33e083be7",
                       "name": "component-instance",
                       "is": "808486bb13",
-                      "variant": {},
+                      "variant": {
+                        "646b96f948608": true
+                      },
                       "style": {
                         "left": 0,
                         "top": 0,

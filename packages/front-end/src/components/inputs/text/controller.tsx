@@ -10,33 +10,71 @@ export type WithInputHandlersProps = {
   onChangeComplete?: any;
 } & BaseTextInputProps;
 
+type State = {
+  value: string;
+  _value: string;
+};
+
 export const withPureInputHandlers = () => (
   Base: React.ComponentClass<any>
 ) => {
   return class InputHandlersWrapper extends React.PureComponent<
-    WithInputHandlersProps
+    WithInputHandlersProps,
+    State
   > {
     // needed so that sub components get updates value if source doesn't change.
     state = {
-      value: null,
-      prevValue: null
+      value: this.props.value,
+      _value: this.props.value
     };
 
+    static getDerivedStateFromProps(
+      props: WithInputHandlersProps,
+      state: State
+    ) {
+      let newState = state;
+      if (props.value !== state._value) {
+        newState = {
+          ...newState,
+          _value: props.value,
+          value: props.value
+        };
+      }
+
+      return newState === state ? null : newState;
+    }
+
     onKeyDown = event => {
-      const { onChange, onChangeComplete, value: oldValue } = this.props;
+      const { onKeyDown, onChange, onChangeComplete } = this.props;
+
+      if (onKeyDown) {
+        onKeyDown(event);
+      }
       const nativeEvent = event.nativeEvent;
+
       setTimeout(() => {
         const {
           key,
           target: { value: newValue }
         } = nativeEvent;
-        if (onChange) {
-          onChange(newValue || undefined);
-        }
 
-        if (key === "Enter" && onChangeComplete) {
-          onChangeComplete(newValue || undefined);
-        }
+        const oldState = this.state;
+
+        this.setState(
+          {
+            ...oldState,
+            value: newValue
+          },
+          () => {
+            if (onChange && oldState.value !== newValue) {
+              onChange(newValue || undefined);
+            }
+
+            if (key === "Enter" && onChangeComplete) {
+              onChangeComplete(newValue || undefined);
+            }
+          }
+        );
       });
     };
     onBlur = event => {

@@ -238,6 +238,7 @@ export const SOURCE_INSPECTOR_LAYER_LABEL_CHANGED =
 export const SOURCE_INSPECTOR_LAYER_DROPPED = "SOURCE_INSPECTOR_LAYER_DROPPED";
 export const NEW_FILE_ADDED = "NEW_FILE_ADDED";
 export const QUICK_SEARCH_ITEM_CLICKED = "QUICK_SEARCH_ITEM_CLICKED";
+export const QUICK_SEARCH_INPUT_ENTERED = "QUICK_SEARCH_INPUT_ENTERED";
 export const QUICK_SEARCH_BACKGROUND_CLICK = "QUICK_SEARCH_BACKGROUND_CLICK";
 export const NEW_VARIANT_NAME_ENTERED = "NEW_VARIANT_NAME_ENTERED";
 export const COMPONENT_VARIANT_REMOVED = "COMPONENT_VARIANT_REMOVED";
@@ -1460,6 +1461,13 @@ export const quickSearchItemClicked = (
 ): QuickSearchItemClicked => ({
   item,
   type: QUICK_SEARCH_ITEM_CLICKED
+});
+
+export const quickSearchInputEntered = (
+  item: QuickSearchResult
+): QuickSearchItemClicked => ({
+  item,
+  type: QUICK_SEARCH_INPUT_ENTERED
 });
 
 export const openControllerButtonClicked = (
