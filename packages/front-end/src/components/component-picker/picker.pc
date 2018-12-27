@@ -940,43 +940,6 @@
           "bottom": 1379
         }
       }
-    },
-    {
-      "id": "45c5ae3b653",
-      "label": "Element",
-      "is": "div",
-      "name": "element",
-      "attributes": {},
-      "style": {
-        "box-sizing": "border-box",
-        "display": "block"
-      },
-      "children": [
-        {
-          "id": "45c5ae3b655",
-          "name": "text",
-          "label": "Text",
-          "value": "Double click to edit",
-          "style": {
-            "font-family": "Al Nile"
-          },
-          "children": [],
-          "metadata": {},
-          "styleMixins": {
-            "dc3b39eb1275": {
-              "priority": 0
-            }
-          }
-        }
-      ],
-      "metadata": {
-        "bounds": {
-          "left": 1307.3670971017611,
-          "top": -79.4779373288118,
-          "right": 1407.3670971017611,
-          "bottom": 20.522062671188195
-        }
-      }
     }
   ]
 }

@@ -929,7 +929,7 @@ export const createPaperclipVirtualDOMtranslator = (
       }
 
       // tee-up for combo classes
-      variantSelectors[variantId].push(`._${instance.id}`);
+      variantSelectors[variantId].push(`._${instance.id}`, `._${instance.id} `);
     }
 
     for (const key in map) {
@@ -1027,7 +1027,6 @@ export const createPaperclipVirtualDOMtranslator = (
       context
     );
 
-    // const variantOverrideMap = getInstanceVariantOverrideMap(instance, overrideMap, context);
     const variantSelectors = translateVariantSelectors(instance, overrideMap);
 
     if (Object.keys(variantSelectors).length) {
