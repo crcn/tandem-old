@@ -67,14 +67,14 @@ export const createFiles: ProjectFileCreator = ({
         devDependencies: {
           concurrently: "^4.0.1",
           "html-webpack-plugin": "^3.2.0",
-          "paperclip-react-loader": "^10.0.10",
+          "paperclip-react-loader": "10.0.x",
           "@types/react": "^16.7.3",
           "@types/react-dom": "^16.0.9",
           "ts-loader": "^4.4.2",
           typescript: "^2.9.2",
           webpack: "^4.15.1",
           "webpack-cli": "^3.0.8",
-          "paperclip-react-compiler": "^10.0.36",
+          "paperclip-react-compiler": "10.0.x",
           "webpack-dev-server": "^3.1.10"
         },
         dependencies: {
