@@ -13,13 +13,13 @@ yarn install;
 Then run:
 
 ```
-npm run build-watch;
+npm run build:watch;
 ```
 
 👆🏻 This will start build processes for _all_ packages. Finally, run:
 
 ```
-npm run design-front-end;
+npm run design:front-end;
 ```
 
 👆🏻 To start building Tandem in Tandem.
@@ -27,7 +27,7 @@ npm run design-front-end;
 #### Development commands
 
 ```
-npm run build-watch; # build & watch all packages
-npm run design-front-end; # start Tandem for front-end
-npm run build-desktop-dist; # build desktop app
+npm run design:front-end; # start Tandem for front-end
+npm run build:watch; # build & watch all packages
+npm run build:dist; # build desktop app
 ```

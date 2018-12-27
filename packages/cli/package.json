@@ -6,7 +6,7 @@
   "main": "index.js",
   "bin": {
     "tandem": "./bin/tandem",
-    "build-watch": "echo ''"
+    "build:watch": "echo ''"
   },
   "scripts": {
     "postinstall-old": "node install.js",

@@ -230,8 +230,8 @@ First, copy and paste the following content to `package.json`:
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build-definitions": "paperclip-react-compiler './src/**/*.pc' --definition --write",
-    "build-dist": "webpack",
-    "build": "npm run build-definitions; npm run build-dist"
+    "build:dist": "webpack",
+    "build": "npm run build-definitions; npm run build:dist"
   },
   "author": "",
   "license": "ISC",
@@ -424,7 +424,7 @@ export default (Base: React.ComponentClass<BaseApplicationProps>) =>
   };
 ```
 
-Rebuild your app by running `yarn build-dist`, and refresh the browser. How you should see an app without any todo items.
+Rebuild your app by running `yarn build:dist`, and refresh the browser. How you should see an app without any todo items.
 
 ![Empty todos](./assets/empty-todos.png)
 
