@@ -1,7 +1,8 @@
 {
   "id": "5f6a017190",
+  "version": "0.0.6",
+  "metadata": {},
   "name": "module",
-  "version": "0.0.5",
   "children": [
     {
       "label": "Style behavior tab",
@@ -37,7 +38,7 @@
           ],
           "metadata": {},
           "variant": {
-            "8f20d2149395": true
+            "8f20d2149395": false
           }
         }
       ],
@@ -54,6 +55,5 @@
         "./controller.tsx"
       ]
     }
-  ],
-  "metadata": {}
+  ]
 }

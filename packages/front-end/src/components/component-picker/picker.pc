@@ -418,7 +418,7 @@
                               "children": [],
                               "metadata": {},
                               "variant": {
-                                "936f29271227": true
+                                "936f29271227": false
                               }
                             },
                             {
@@ -442,7 +442,8 @@
                               "children": [],
                               "metadata": {},
                               "variant": {
-                                "936f29271227": true
+                                "936f29271227": false,
+                                "39f5a1891084": true
                               }
                             },
                             {
@@ -466,7 +467,7 @@
                               "children": [],
                               "metadata": {},
                               "variant": {
-                                "936f29271227": true
+                                "936f29271227": false
                               }
                             },
                             {
@@ -490,7 +491,7 @@
                               "children": [],
                               "metadata": {},
                               "variant": {
-                                "936f29271227": true
+                                "936f29271227": false
                               }
                             },
                             {
@@ -817,7 +818,7 @@
           "id": "936f29271227",
           "name": "variant",
           "label": "alt",
-          "isDefault": false,
+          "isDefault": true,
           "children": [],
           "metadata": {}
         },
@@ -855,6 +856,55 @@
             "936f29271184"
           ],
           "value": {},
+          "name": "override",
+          "children": []
+        },
+        {
+          "id": "39f5a1891084",
+          "name": "variant",
+          "label": "hover",
+          "isDefault": true,
+          "children": [],
+          "metadata": {}
+        },
+        {
+          "id": "39f5a1891085",
+          "variantId": "39f5a1891084",
+          "propertyName": "style",
+          "targetIdPath": [],
+          "value": {
+            "background-image": "linear-gradient(var(--1934368810788), var(--1934368810788))"
+          },
+          "name": "override",
+          "children": []
+        },
+        {
+          "id": "98f82cb7850",
+          "name": "variant-trigger",
+          "targetVariantId": "39f5a1891084",
+          "source": {
+            "type": 1,
+            "state": "hover"
+          },
+          "children": [],
+          "metadata": {}
+        },
+        {
+          "id": "47744854653",
+          "name": "variant",
+          "label": "preselected",
+          "isDefault": true,
+          "children": [],
+          "metadata": {}
+        },
+        {
+          "id": "47744854654",
+          "variantId": "47744854653",
+          "propertyName": "style",
+          "targetIdPath": [],
+          "value": {
+            "background-image": "linear-gradient(var(--32c1eebd7630), var(--32c1eebd7630))"
+          },
           "name": "override",
           "children": []
         }
