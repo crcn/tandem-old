@@ -33,7 +33,7 @@
         }
       },
       "variant": {
-        "a9acb8771": true
+        "a9acb8771": false
       }
     },
     {
@@ -68,7 +68,7 @@
         "./box-shadows-inner-controller.tsx"
       ],
       "variant": {
-        "a9acb8771": true
+        "a9acb8771": false
       }
     },
     {
