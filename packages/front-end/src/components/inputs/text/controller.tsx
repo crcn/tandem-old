@@ -8,6 +8,7 @@ export type WithInputHandlersProps = {
   value?: any;
   onChange?: any;
   onChangeComplete?: any;
+  disabled?: boolean;
 } & BaseTextInputProps;
 
 type State = {

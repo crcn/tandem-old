@@ -45,6 +45,7 @@ export default (Base: React.ComponentClass<BaseRadiusInputProps>) =>
           computedStyleInfo.style["border-bottom-left-radius"] &&
         computedStyleInfo.style["border-top-left-radius"] ===
           computedStyleInfo.style["border-bottom-right-radius"];
+
       return (
         <Base
           {...rest}

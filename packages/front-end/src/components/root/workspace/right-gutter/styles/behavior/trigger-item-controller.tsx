@@ -37,7 +37,8 @@ const BASE_SOURCE_OPTIONS: DropdownMenuOption[] = [
   PCElementState.HOVER,
   PCElementState.ACTIVE,
   PCElementState.FOCUS,
-  PCElementState.VISITED
+  PCElementState.VISITED,
+  PCElementState.DISABLED
 ].map(
   (state: PCElementState): DropdownMenuOption => ({
     label: String(state),

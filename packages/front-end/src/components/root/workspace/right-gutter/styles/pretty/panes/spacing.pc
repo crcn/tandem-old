@@ -482,37 +482,45 @@
           "id": "78b8a0422517",
           "children": [
             {
-              "id": "78b8a0422516",
-              "is": "af62926b2310",
-              "label": "primary input",
-              "name": "component-instance",
-              "attributes": {},
-              "style": {
-                "margin-right": "6px"
-              },
+              "id": "a40b6a372946",
               "children": [
                 {
-                  "id": "3cd026343876",
-                  "propertyName": "style",
-                  "targetIdPath": [
-                    "af62926b2317"
-                  ],
-                  "value": {
-                    "display": "none"
+                  "id": "78b8a0422516",
+                  "is": "af62926b2310",
+                  "label": "primary input",
+                  "name": "component-instance",
+                  "attributes": {},
+                  "style": {
+                    "margin-right": "6px"
                   },
-                  "name": "override",
-                  "children": []
+                  "children": [
+                    {
+                      "id": "3cd026343876",
+                      "propertyName": "style",
+                      "targetIdPath": [
+                        "af62926b2317"
+                      ],
+                      "value": {
+                        "display": "none"
+                      },
+                      "name": "override",
+                      "children": []
+                    }
+                  ],
+                  "metadata": {
+                    "bounds": {
+                      "left": 1081,
+                      "top": -10,
+                      "right": 1230,
+                      "bottom": 90
+                    }
+                  },
+                  "variant": {}
                 }
               ],
-              "metadata": {
-                "bounds": {
-                  "left": 1081,
-                  "top": -10,
-                  "right": 1230,
-                  "bottom": 90
-                }
-              },
-              "variant": {}
+              "metadata": {},
+              "name": "slot",
+              "label": "Slot"
             }
           ],
           "metadata": {},

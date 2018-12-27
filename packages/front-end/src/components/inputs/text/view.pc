@@ -23,7 +23,7 @@
           "id": "6507b7e31381",
           "name": "variant",
           "label": "focus",
-          "isDefault": true,
+          "isDefault": false,
           "children": [],
           "metadata": {}
         },
@@ -39,15 +39,25 @@
           "children": []
         },
         {
-          "id": "6507b7e31383",
-          "name": "variant-trigger",
-          "targetVariantId": "6507b7e31381",
-          "source": {
-            "type": 1,
-            "state": "focus"
-          },
+          "id": "e87522711522",
+          "name": "variant",
+          "label": "disabled",
+          "isDefault": true,
           "children": [],
           "metadata": {}
+        },
+        {
+          "id": "e87522711523",
+          "variantId": "e87522711522",
+          "propertyName": "style",
+          "targetIdPath": [],
+          "value": {
+            "background-image": "linear-gradient(var(--bc891e755312), var(--bc891e755312))",
+            "box-shadow": "inset  0px 0px 0px 1px var(--1934368810788)",
+            "opacity": "1"
+          },
+          "name": "override",
+          "children": []
         }
       ],
       "metadata": {

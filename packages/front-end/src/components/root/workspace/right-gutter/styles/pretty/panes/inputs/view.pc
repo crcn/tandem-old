@@ -447,7 +447,8 @@
                                     }
                                   },
                                   "variant": {
-                                    "c475e80b13475": false
+                                    "c475e80b13475": false,
+                                    "a40b6a374094": false
                                   }
                                 }
                               ],
@@ -1454,6 +1455,19 @@
           },
           "name": "override",
           "children": []
+        },
+        {
+          "id": "a40b6a374097",
+          "variantId": "af62926b2038",
+          "propertyName": "variant",
+          "targetIdPath": [
+            "f58613a66649"
+          ],
+          "value": {
+            "a40b6a374094": false
+          },
+          "name": "override",
+          "children": []
         }
       ],
       "metadata": {
@@ -1525,7 +1539,8 @@
                     }
                   },
                   "variant": {
-                    "6507b7e31381": false
+                    "6507b7e31381": false,
+                    "e87522711522": false
                   }
                 }
               ],
@@ -1606,7 +1621,7 @@
           "id": "c475e80b13475",
           "name": "variant",
           "label": "focus",
-          "isDefault": true,
+          "isDefault": false,
           "children": [],
           "metadata": {}
         },
@@ -1633,6 +1648,38 @@
           "value": {
             "box-shadow": "none"
           },
+          "name": "override",
+          "children": []
+        },
+        {
+          "id": "a40b6a374094",
+          "name": "variant",
+          "label": "disabled",
+          "isDefault": false,
+          "children": [],
+          "metadata": {}
+        },
+        {
+          "id": "a40b6a374095",
+          "variantId": "a40b6a374094",
+          "propertyName": "variant",
+          "targetIdPath": [
+            "af62926b2314"
+          ],
+          "value": {
+            "e87522711522": true
+          },
+          "name": "override",
+          "children": []
+        },
+        {
+          "id": "a40b6a374096",
+          "variantId": "a40b6a374094",
+          "propertyName": "style",
+          "targetIdPath": [
+            "af62926b2314"
+          ],
+          "value": {},
           "name": "override",
           "children": []
         }
