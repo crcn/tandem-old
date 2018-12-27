@@ -1,6 +1,6 @@
 {
   "name": "paperclip-static-html-compiler",
-  "version": "10.1.17",
+  "version": "10.1.18",
   "description": "",
   "main": "index.js",
   "bin": {
@@ -25,10 +25,10 @@
     "fs-extra": "^7.0.1",
     "glob": "^7.1.3",
     "lodash": "^4.17.11",
-    "paperclip": "^10.1.15",
-    "paperclip-migrator": "^10.1.15",
-    "paperclip-virtual-dom-compiler": "^10.1.17",
-    "tandem-common": "^10.1.15",
+    "paperclip": "^10.1.18",
+    "paperclip-migrator": "^10.1.18",
+    "paperclip-virtual-dom-compiler": "^10.1.18",
+    "tandem-common": "^10.1.18",
     "yargs": "^12.0.5"
   }
 }
