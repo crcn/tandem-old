@@ -186,6 +186,19 @@ export default (Base: React.ComponentClass<BaseApplicationProps>) => class Appli
 }
 
 `,
+    "src/index.html": `<!DOCTYPE html>
+  <html>
+  <head>
+    <style>
+      body, html {
+        margin: 0;
+        padding: 0;
+      }
+    </style>
+  </head>
+  <body>
+  </body>
+  </html>`,
     "webpack.config.js":
       `` +
       `
@@ -212,7 +225,9 @@ module.exports = {
     ]
   },
   plugins: [
-    new HtmlWebpackPlugin()
+    new HtmlWebpackPlugin({
+      template: __dirname + "/src/index.html"
+    })
   ],
   module: {
     rules: [
