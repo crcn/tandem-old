@@ -58,6 +58,17 @@
           },
           "name": "override",
           "children": []
+        },
+        {
+          "id": "19887e89364",
+          "name": "variant-trigger",
+          "targetVariantId": "6507b7e31381",
+          "source": {
+            "type": 1,
+            "state": "focus"
+          },
+          "children": [],
+          "metadata": {}
         }
       ],
       "metadata": {
