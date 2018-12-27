@@ -1,6 +1,6 @@
 {
   "name": "paperclip-virtual-dom-compiler",
-  "version": "10.1.15",
+  "version": "10.1.17",
   "description": "",
   "main": "index.js",
   "scripts": {

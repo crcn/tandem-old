@@ -1,6 +1,6 @@
 {
   "name": "tandem-desktop",
-  "version": "10.1.16",
+  "version": "10.1.17",
   "description": "",
   "private": true,
   "main": "lib/index.js",
@@ -51,7 +51,7 @@
     "redux": "^4.0.0",
     "redux-saga": "^0.16.0",
     "tandem-common": "^10.1.15",
-    "tandem-front-end": "^10.1.16",
+    "tandem-front-end": "^10.1.17",
     "terminate": "^2.1.2",
     "update-electron-app": "^1.3.0"
   },

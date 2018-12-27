@@ -1,6 +1,6 @@
 {
   "name": "paperclip-react-compiler",
-  "version": "10.1.15",
+  "version": "10.1.17",
   "description": "",
   "main": "index.js",
   "bin": {
@@ -31,7 +31,7 @@
     "lodash": "^4.17.10",
     "paperclip": "^10.1.15",
     "paperclip-migrator": "^10.1.15",
-    "paperclip-virtual-dom-compiler": "^10.1.15",
+    "paperclip-virtual-dom-compiler": "^10.1.17",
     "tandem-common": "^10.1.15",
     "yargs": "^12.0.1"
   },
