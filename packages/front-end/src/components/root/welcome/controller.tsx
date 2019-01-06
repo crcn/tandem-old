@@ -1,7 +1,8 @@
 import * as React from "react";
 import {
   openProjectButtonClicked,
-  createProjectButtonClicked
+  createProjectButtonClicked,
+  linkClicked
 } from "../../../actions";
 import { BaseWelcomeProps, ProjectPill } from "./view.pc";
 import { Dispatch } from "redux";
@@ -66,6 +67,14 @@ export default (Base: React.ComponentClass<BaseWelcomeProps>) =>
       );
     };
 
+    onTutorialsButtonClick = () => {
+      this.props.dispatch(
+        linkClicked(
+          `https://www.youtube.com/playlist?list=PLCNS_PVbhoSXOrjiJQP7ZjZJ4YHULnB2y`
+        )
+      );
+    };
+
     render() {
       const {
         onOpenProjectButtonClick,
@@ -73,6 +82,7 @@ export default (Base: React.ComponentClass<BaseWelcomeProps>) =>
         onPillClick,
         onOptionsChange,
         onPillMouseLeave,
+        onTutorialsButtonClick,
         onPillMouseOver
       } = this;
       const { dispatch, selectedDirectory } = this.props;
@@ -91,6 +101,7 @@ export default (Base: React.ComponentClass<BaseWelcomeProps>) =>
       return (
         <Base
           variant={page}
+          tutorialsButtonProps={{ onClick: onTutorialsButtonClick }}
           openProjectButtonProps={{ onClick: onOpenProjectButtonClick }}
           createProjectButtonProps={{ onClick: onCreateProjectButtonClick }}
           options={options}

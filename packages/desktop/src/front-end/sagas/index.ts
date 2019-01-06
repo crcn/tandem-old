@@ -40,7 +40,9 @@ import {
   CONFIRM_CLOSE_WINDOW,
   ConfirmCloseWindow,
   ProjectConfig,
-  ProjectInfo
+  ProjectInfo,
+  LINK_CICKED,
+  LinkClicked
 } from "tandem-front-end";
 import {
   findPaperclipSourceFiles,
@@ -72,6 +74,7 @@ import {
 import { DesktopRootState } from "../state";
 import { processSaga } from "./processes";
 import { unloadApplication } from "tandem-front-end";
+import { exec } from "child_process";
 
 export function* rootSaga() {
   yield fork(ipcSaga);
@@ -84,6 +87,13 @@ export function* rootSaga() {
   yield fork(handleQuickSearch);
   yield fork(chromeSaga);
   yield fork(processSaga);
+  yield fork(handleOpenLink);
+}
+function* handleOpenLink() {
+  while (1) {
+    const { url }: LinkClicked = yield take(LINK_CICKED);
+    exec(`open ${url}`);
+  }
 }
 
 function* handleProjectDirectory() {

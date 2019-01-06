@@ -13,6 +13,7 @@
   "scripts": {
     "test": "lerna exec --parallel -- npm test",
     "precommit": "lint-staged",
+    "design": "cd packages/front-end; ../desktop/node_modules/.bin/Electron ../desktop/lib/index.js",
     "design:front-end": "cd packages/front-end; ../desktop/node_modules/.bin/Electron ../desktop/lib/index.js app.tdproject",
     "clean": "lerna exec --parallel -- npm run clean",
     "bootstrap": "lerna bootstrap",

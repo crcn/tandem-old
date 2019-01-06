@@ -310,6 +310,7 @@ export const UNLOADING = "UNLOADING";
 export const UNLOADER_CREATED = "UNLOADER_CREATED";
 export const UNLOADER_COMPLETED = "UNLOADER_COMPLETED";
 export const RELOAD = "RELOAD";
+export const LINK_CICKED = "LINK_CICKED";
 
 export type WrappedEvent<T> = {
   sourceEvent: T;
@@ -390,6 +391,10 @@ export type CanvasToolOverlayMousePanning = {
   deltaY: number;
   velocityY: number;
   center: Point;
+} & Action;
+
+export type LinkClicked = {
+  url: string;
 } & Action;
 
 export type ResetPropertyOptionClicked = {
@@ -921,6 +926,11 @@ export const fileItemContextMenuRenameClicked = publicActionCreator(
     type: FILE_ITEM_CONTEXT_MENU_RENAME_CLICKED
   })
 );
+
+export const linkClicked = (url: string): LinkClicked => ({
+  url,
+  type: LINK_CICKED
+});
 
 export const fileItemContextMenuOpenClicked = publicActionCreator(
   (item: FSItem): FileItemContextMenuAction => ({

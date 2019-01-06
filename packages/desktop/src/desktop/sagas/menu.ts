@@ -260,6 +260,22 @@ function* handleMenu() {
             }
           }
         ]
+      },
+      {
+        label: "Help",
+        submenu: [
+          {
+            label: "Tutorials",
+            click: () => {
+              emit({
+                type: "LINK_CICKED",
+                url:
+                  "https://www.youtube.com/playlist?list=PLCNS_PVbhoSXOrjiJQP7ZjZJ4YHULnB2y",
+                "@@public": true
+              });
+            }
+          }
+        ]
       }
     ];
 
