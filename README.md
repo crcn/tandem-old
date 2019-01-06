@@ -17,6 +17,7 @@ Functionality is added in the form of _controllers_ which can be attached to any
 
 ## Resources
 
+- [Tutorial videos](https://www.youtube.com/playlist?list=PLCNS_PVbhoSXOrjiJQP7ZjZJ4YHULnB2y)
 - [User Guide](./docs/user-guide)
 - [Terminology & Concepts](./docs/concepts.md)
 - [Goals & Non-goals](./docs/goals.md)
