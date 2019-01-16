@@ -30,8 +30,12 @@ export const DEFAULT_CONFIG = createPCConfig(".");
 
 export const openPCConfig = (dir: string): PCConfigInfo => {
   const dirParts = dir.split("/");
-  while (dirParts.length) {
-    const possibleDir = dirParts.join("/");
+  let cdir = dir;
+  while (1) {
+    const possibleDir = (cdir = path.dirname(cdir));
+    if (!cdir) {
+      break;
+    }
     const tdProjectBasename = fs
       .readdirSync(possibleDir)
       .find(name => name.indexOf(PAPERCLIP_CONFIG_DEFAULT_EXTENSION) !== -1);
@@ -97,7 +101,7 @@ const walkFiles = (
 
   const subpaths = fs
     .readdirSync(filePath)
-    .map(basename => filePath + "/" + basename);
+    .map(basename => path.join(filePath, basename));
 
   for (let i = 0, { length } = subpaths; i < length; i++) {
     walkFiles(subpaths[i], each);

@@ -36,12 +36,14 @@ function resolvePath(relPath, cwd) {
   return relPath.charAt(0) === "/" ? relPath : path.join(cwd, relPath);
 }
 
+
 function translateFile(relPath) {
   const absPath = resolvePath(relPath, cwd);
   const absUri = addProtocol(FILE_PROTOCOL, absPath);
   const { config, directory } = openPCConfig(path.dirname(absPath));
   const graph = loadFSDependencyGraphSync(config, directory, migrate);
   const entry = graph[absUri];
+  
   let content;
   let contentFilePath;
 
