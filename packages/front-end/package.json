@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "mocha ./lib/**/*-test.js",
-    "build": "paperclip-react-compile  \"src/**/*.pc\" --definition --write && webpack",
+    "build": "paperclip-react-compiler  \"src/**/*.pc\" --definition --write && webpack",
     "build:watch": "concurrently \"paperclip-react-compiler \\\"src/**/*.pc\\\" --definition --write --watch\" \"webpack --watch\"",
     "start": "node lib/back-end/entry",
     "tandem-preview-server": "tandem-webpack-preview-server --config=webpack-tandem-preview.config.js --include-script=node_modules/react/dist/react.min.js --include-script=node_modules/react-dom/dist/react-dom.min.js",
