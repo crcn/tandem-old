@@ -104,10 +104,12 @@ const translateModule = (module: PCModule, context: TranslateContext) => {
 
   for (const uri in imported) {
     const dep = context.graph[uri];
-    let relPath = path.relative(
-      path.dirname(stripProtocol(context.entry.uri)),
-      stripProtocol(dep.uri)
-    );
+    let relPath = path
+      .relative(
+        path.dirname(stripProtocol(context.entry.uri)),
+        stripProtocol(dep.uri)
+      )
+      .replace(/\\/g, "/");
     if (relPath.charAt(0) !== ".") {
       relPath = "./" + relPath;
     }
