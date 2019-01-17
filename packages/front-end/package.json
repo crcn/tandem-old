@@ -5,11 +5,11 @@
   "main": "index.js",
   "scripts": {
     "test": "mocha ./lib/**/*-test.js",
-    "build": "paperclip-react-compiler \"src/**/*.pc\" --definition --write && webpack",
-    "build:watch": "concurrently 'paperclip-react-compiler \"src/**/*.pc\" --definition --write --watch' 'webpack --watch'",
+    "build": "paperclip-react-compile  \"src/**/*.pc\" --definition --write && webpack",
+    "build:watch": "concurrently \"paperclip-react-compiler \\\"src/**/*.pc\\\" --definition --write --watch\" \"webpack --watch\"",
     "start": "node lib/back-end/entry",
     "tandem-preview-server": "tandem-webpack-preview-server --config=webpack-tandem-preview.config.js --include-script=node_modules/react/dist/react.min.js --include-script=node_modules/react-dom/dist/react-dom.min.js",
-    "clean": "rm -rf lib; rm -rf node_modules",
+    "clean": "rm -rf lib && rm -rf node_modules",
     "prepare": "npm run build"
   },
   "repository": {
@@ -33,7 +33,7 @@
     "@types/recompose": "0.x.x",
     "@types/request": "^2.0.0",
     "chai": "^4.0.2",
-    "concurrently": "^3.6.1",
+    "concurrently": "4.1.x",
     "css-loader": "^0.28.4",
     "file-loader": "^1.1.11",
     "html-webpack-plugin": "^3.2.0",

@@ -16,9 +16,9 @@
     "start": "electron lib/index.js",
     "postinstall": "electron-rebuild",
     "build": "tsc && webpack",
-    "build:watch": "tsc && webpack --watch",
+    "build:watch": "concurrently \"tsc --watch\" \"webpack --watch\"",
     "build-front-end": "webpack",
-    "clean": "rm -rf lib; rm -rf node_modules",
+    "clean": "rm -rf lib && rm -rf node_modules",
     "prepare": "npm run build",
     "build:dist": "electron-packager . 'Tandem' --out=dist --overwrite --app-bundle-id='com.tandemcode.tandem' --icon=assets/tandem.icns --osx-sign"
   },

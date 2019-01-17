@@ -29,7 +29,6 @@ export const createPCConfig = (
 export const DEFAULT_CONFIG = createPCConfig(".");
 
 export const openPCConfig = (dir: string): PCConfigInfo => {
-  const dirParts = dir.split("/");
   let cdir = dir;
   while (1) {
     const possibleDir = (cdir = path.dirname(cdir));
@@ -48,8 +47,6 @@ export const openPCConfig = (dir: string): PCConfigInfo => {
         )
       };
     }
-
-    dirParts.pop();
   }
 
   return { directory: dir, config: DEFAULT_CONFIG };

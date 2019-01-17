@@ -125,10 +125,14 @@ export const createPaperclipVirtualDOMtranslator = (
       if (imports.length) {
         context = addLine(`\nvar _imports = {};`, context);
         for (const { uri } of imports) {
-          let relativePath = path.relative(
-            path.dirname(stripProtocol(context.entry.uri)),
-            stripProtocol(uri)
-          );
+          // Change Windows OS path to Unix
+          let relativePath = path
+            .relative(
+              path.dirname(stripProtocol(context.entry.uri)),
+              stripProtocol(uri)
+            )
+            .replace(/\\/g, "/");
+
           if (relativePath.charAt(0) !== ".") {
             relativePath = "./" + relativePath;
           }
@@ -351,8 +355,8 @@ export const createPaperclipVirtualDOMtranslator = (
     }
     const styleMixinIds = Object.keys(styleMixins)
       .filter(a => Boolean(styleMixins[a]))
-      .sort(
-        (a, b) => (styleMixins[a].priority > styleMixins[b].priority ? 1 : -1)
+      .sort((a, b) =>
+        styleMixins[a].priority > styleMixins[b].priority ? 1 : -1
       );
 
     return styleMixinIds.reduce((style, styleMixinId) => {

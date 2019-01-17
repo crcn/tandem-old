@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"\"",
     "build": "tsc",
-    "clean": "rm -rf lib; rm -rf node_modules",
+    "clean": "rm -rf lib && rm -rf node_modules",
     "prepare": "npm run build"
   },
   "author": "",

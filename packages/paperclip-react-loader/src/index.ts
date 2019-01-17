@@ -20,6 +20,7 @@ module.exports = function(source) {
     migrate
   );
   const entry = graph["file://" + uri];
+  console.log(entry, uri, Object.keys(graph));
 
   let content = translatePaperclipModuleToReact(entry, graph, process.cwd())
     .buffer;

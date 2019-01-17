@@ -11,7 +11,7 @@
     "test": "mocha lib/**/*-test.js",
     "build": "tsc",
     "build:watch": "tsc --watch",
-    "clean": "rm -rf lib; rm -rf node_modules",
+    "clean": "rm -rf lib && rm -rf node_modules",
     "prepare": "npm run build"
   },
   "license": "ISC",
