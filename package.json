@@ -13,8 +13,8 @@
   "scripts": {
     "test": "lerna exec --parallel -- npm test",
     "precommit": "lint-staged",
-    "design": "cd packages/front-end && \"..\\desktop\\node_modules\\.bin\\electron\" ../desktop/lib/index.js",
-    "design:front-end": "cd packages/front-end && \"..\\desktop\\node_modules\\.bin\\electron\" \"..\\desktop\\lib\\index.js\" app.tdproject",
+    "design": "cd packages/front-end && \"../desktop/node_modules/.bin/electron\" \"../desktop/lib/index.js\"",
+    "design:front-end": "cd packages/front-end && \"../desktop/node_modules/.bin/electron\" \"../desktop/lib/index.js\" app.tdproject",
     "clean": "lerna exec --parallel -- npm run clean",
     "bootstrap": "lerna bootstrap",
     "build": "lerna exec --parallel -- npm run build",
