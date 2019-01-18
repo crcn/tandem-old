@@ -8,7 +8,9 @@
   },
   "scripts": {
     "test": "echo \"\"",
-    "clean": "rm -rf node_modules"
+    "clean": "rm -rf node_modules",
+    "build": "echo ''",
+    "build:watch": "echo ''"
   },
   "author": "",
   "license": "ISC",

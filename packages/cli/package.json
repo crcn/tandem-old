@@ -5,12 +5,13 @@
   "description": "",
   "main": "index.js",
   "bin": {
-    "tandem": "./bin/tandem",
-    "build:watch": "echo ''"
+    "tandem": "./bin/tandem"
   },
   "scripts": {
     "postinstall-old": "node install.js",
-    "clean": "rm -rf  node_modules"
+    "clean": "rm -rf  node_modules",
+    "build": "echo ''",
+    "build:watch": "echo ''"
   },
   "author": "",
   "license": "ISC",
