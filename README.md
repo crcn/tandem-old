@@ -7,6 +7,8 @@
 
 > This repository is _temporarily_ private until bugs & UX issues have been worked out. I'd like to make sure that everything is solid before public testing, so please don't share the app. 🙂
 
+Current OSX build: https://www.dropbox.com/s/f5pd5swfjokreb0/tandem-10.1.22-osx-x64.zip?dl=0
+
 <br />
 
 Tandem is a visual editor for building the _view_ layer of your web application. This means that you're able to create most of your HTML & CSS visually.
