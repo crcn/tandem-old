@@ -1,6 +1,6 @@
 {
   "name": "paperclip-migrator",
-  "version": "10.1.22",
+  "version": "10.1.23",
   "description": "",
   "main": "index.js",
   "bin": {

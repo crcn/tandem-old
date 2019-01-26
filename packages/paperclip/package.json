@@ -1,6 +1,6 @@
 {
   "name": "paperclip",
-  "version": "10.1.22",
+  "version": "10.1.23",
   "description": "Paperclip DSL specific for visual development.",
   "bin": {
     "paperclip-vanilla-compiler": "./bin/paperclip-vanilla-compiler"
@@ -20,7 +20,7 @@
     "crc32": "^0.2.2",
     "fsbox": "^10.1.22",
     "lodash": "^4.17.10",
-    "paperclip-migrator": "^10.1.22",
+    "paperclip-migrator": "^10.1.23",
     "redux": "^4.0.0",
     "redux-saga": "^0.16.0",
     "tandem-common": "^10.1.22",
