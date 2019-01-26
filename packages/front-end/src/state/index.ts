@@ -88,7 +88,7 @@ import {
   CanvasToolOverlayClicked,
   CanvasDroppedItem
 } from "../actions";
-import { uniq, values, clamp } from "lodash";
+import { uniq, values, clamp, last } from "lodash";
 import { FSSandboxRootState, queueOpenFile, hasFileCacheItem } from "fsbox";
 import {
   refreshInspectorTree,
@@ -442,12 +442,16 @@ const getUpdatedInspectorNodes = (
 export const selectInsertedSyntheticVisibleNodes = (
   oldState: RootState,
   newState: RootState,
-  scope: InspectorNode
+  scope: InspectorNode,
+  onlyOne: boolean = true
 ) => {
-  return setSelectedInspectorNodes(
-    newState,
-    ...getUpdatedInspectorNodes(newState, oldState, scope)
-  );
+  let insertedNodes = getUpdatedInspectorNodes(newState, oldState, scope);
+
+  if (onlyOne && insertedNodes.length) {
+    insertedNodes = [last(insertedNodes)];
+  }
+
+  return setSelectedInspectorNodes(newState, insertedNodes);
 };
 
 export const getInsertableSourceNodeFromSyntheticNode = memoize(
@@ -1146,7 +1150,7 @@ export const openSyntheticVisibleNodeOriginFile = (
   const instance = findNestedNode(state.sourceNodeInspector, child => {
     return !child.instancePath && child.sourceNodeId === sourceNode.id;
   });
-  state = setSelectedInspectorNodes(state, instance);
+  state = setSelectedInspectorNodes(state, [instance]);
   // state = centerCanvasToSelectedNodes(state);
   return state;
 };
@@ -1654,7 +1658,7 @@ export const getFrameFromPoint = (point: Point, state: RootState) => {
 
 export const setSelectedInspectorNodes = (
   root: RootState,
-  ...selection: InspectorNode[]
+  selection: InspectorNode[] = EMPTY_ARRAY
 ) => {
   root = updateRootState(
     {

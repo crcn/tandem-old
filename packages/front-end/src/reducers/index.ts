@@ -3254,7 +3254,7 @@ const shortcutReducer = (state: RootState, action: Action): RootState => {
           state.sourceNodeInspector
         );
         if (nextInspectorNode) {
-          state = setSelectedInspectorNodes(state, nextInspectorNode);
+          state = setSelectedInspectorNodes(state, [nextInspectorNode]);
         } else {
           // does not exist as rep
           state = updateRootState(
@@ -3329,7 +3329,7 @@ const handleArtboardSelectionFromAction = <
   state: RootState,
   node: InspectorNode
 ) => {
-  state = setSelectedInspectorNodes(state, node);
+  state = setSelectedInspectorNodes(state, [node]);
   return state;
 };
 
@@ -3436,6 +3436,7 @@ const convertSyntheticNodeToComponent = (
       state.sourceNodeInspector
     )
   );
+
   return state;
 };
 
