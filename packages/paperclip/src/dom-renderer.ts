@@ -417,8 +417,10 @@ const insertChild = (target: Node, child: Node, index: number) => {
 const normalizeStyle = (value: any) =>
   mapValues(value, (value, key) => {
     if (
-      typeof value === "number" &&
-      /width|height|left|top|right|bottom/.test(key)
+      /width|height|left|top|right|bottom|margin|padding|font-size|radius/.test(
+        key
+      ) &&
+      !isNaN(Number(value))
     ) {
       return `${value}px`;
     }
