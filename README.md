@@ -3,6 +3,7 @@
   <h1 align="center">Tandem (Preview)</h1>
 </p>
 
+> Tandem is still very new, so expect a few bugs while playing around with it. If you'd like to contribute or use Tandem at your company, feel free to reach out at craig.j.condon@gmail.com. 
 
 [Download latest version](https://github.com/tandemcode/tandem/releases)
 
