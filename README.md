@@ -12,6 +12,27 @@ The primary goal for Tandem is to provide a faster, easier, safer, and more scal
 
 ![Split view](./assets/screenshots/v10.1.7.png)
 
+
+### Highlights
+
+- [Tandem was used to build itself as a litmus test](https://github.com/tandemcode/tandem/tree/master/packages/front-end/src/components). 
+- Can be used with your existing codebase (currently only React). 
+- Unopinionated, so you can adapt Tandem to fit your needs.
+- UI files can be split out into multiple files, and organized however you want. 
+- Handwritten HTML & CSS can be mixed with Tandem UIs (this is helpful if you need to integrate complex code). 
+- Not a code replacement. Tandem only allows you to create simple HTML & CSS.
+- Few abstractions. Tandem gives you transparent tooling that's based on web standards.
+
+### Resources
+
+- [Releases](https://github.com/tandemcode/tandem/releases)
+- [Tutorial videos](https://www.youtube.com/playlist?list=PLCNS_PVbhoSXOrjiJQP7ZjZJ4YHULnB2y)
+- [Terminology & Concepts](./docs/concepts.md)
+- [Goals & Non-goals](./docs/goals.md)
+- [Examples](https://github.com/tandemcode/examples)
+- Contributing
+  - [Development](./docs/contributing/development.md)
+
 ### How does it work?
 
 Tandem UI files (`.pc` which stands for [Paperclip](https://github.com/tandemcode/tandem/tree/master/packages/paperclip)) contain JSON data which describes basic HTML & CSS. For example, here's a simple UI:
@@ -149,23 +170,3 @@ This code is specific to React & TypeScript, but Tandem is agnostic to the langu
 
 ![controller](https://user-images.githubusercontent.com/757408/51796101-a0a30400-21a1-11e9-835f-da25788c9861.gif)
 
-
-### Highlights
-
-- [Tandem was used to build itself as a litmus test](https://github.com/tandemcode/tandem/tree/master/packages/front-end/src/components). 
-- Can be used with your existing codebase (currently only React). 
-- Unopinionated, so you can adapt Tandem to fit your needs.
-- UI files can be split out into multiple files, and organized however you want. 
-- Handwritten HTML & CSS can be mixed with Tandem UIs (this is helpful if you need to integrate complex code). 
-- Not a code replacement. Tandem only allows you to create simple HTML & CSS.
-- Few abstractions. Tandem gives you transparent tooling that's based on web standards.
-
-## Resources
-
-- [Releases](https://github.com/tandemcode/tandem/releases)
-- [Tutorial videos](https://www.youtube.com/playlist?list=PLCNS_PVbhoSXOrjiJQP7ZjZJ4YHULnB2y)
-- [Terminology & Concepts](./docs/concepts.md)
-- [Goals & Non-goals](./docs/goals.md)
-- [Examples](https://github.com/tandemcode/examples)
-- Contributing
-  - [Development](./docs/contributing/development.md)
