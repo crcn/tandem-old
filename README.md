@@ -3,7 +3,7 @@
   <h1 align="center">Tandem (Preview)</h1>
 </p>
 
-> Tandem is still bleeding edge, and contains lots of bugs. I wouldn't recommend using it for building production apps yet unless you're comfortable working around its issues.
+> Tandem is still bleeding edge. Feel free to reach out at craig.j.condon@gmail.com if you're interested in contributing, or using it at your company. I'm happy to support. 
 
 [Download latest version](https://github.com/tandemcode/tandem/releases)
 
