@@ -15,7 +15,7 @@ Tandem is a web component builder that's designed to work with many different la
 - UI files can be organized with the code files they're associated with. 
 - Handwritten HTML & CSS can be mixed with Tandem UIs (this is helpful if you need to integrate complex code). 
 - Not a code replacement. Tandem only allows you to create simple HTML & CSS.
-- Few abstractions. Tandem gives you transparent tooling for creating HTML & CSS.
+- Few abstractions. Tandem gives you transparent tooling that's based on web standards.
 
 ## Resources
 
