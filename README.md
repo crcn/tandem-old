@@ -3,7 +3,6 @@
   <h1 align="center">Tandem (Preview)</h1>
 </p>
 
-> Tandem is still bleeding edge. Feel free to reach out at craig.j.condon@gmail.com if you're interested in contributing, or using it at your company. I'm happy to support. 
 
 [Download latest version](https://github.com/tandemcode/tandem/releases)
 
