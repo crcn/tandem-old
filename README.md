@@ -3,15 +3,15 @@
   <h1 align="center">Tandem (Preview)</h1>
 </p>
 
-Tandem web component builder that's designed to work with many different languages & frameworks. It currently works with React apps (more langauge & framework support is planned after [Alpha](https://github.com/tandemcode/tandem/projects/10)). The tooling is inspired by Sketch & Photoshop, and provides you with a slightly augmented yet transparent way to visually build interfaces that are based on web standards. 
-
-Tandem just covers simple HTML & CSS development, and simple behavior. 
+Tandem is a web component builder that's designed to work with many different languages & frameworks. It currently works with React apps (more langauge & framework support is planned after [Alpha](https://github.com/tandemcode/tandem/projects/10)). The tooling is inspired by Sketch & Photoshop, and provides you with a slightly augmented yet transparent way to visually build interfaces that are based on web standards.
 
 ![Split view](./assets/screenshots/v10.1.7.png)
 
-Tandem can be used in your existing codebase (currently only React-based projects), and is relatively unopinionated, so you can adapt it to fit your needs. 
+### Features
 
-Tandem covers most of your HTML & CSS development, but not all of it. There will be cases 
+- Covers simple HTML & CSS. 
+- Can be used in your existing codebase (currently only React). 
+- Unopinionated, so you can adapt Tandem to fit your needs.
 
 ## Resources
 
