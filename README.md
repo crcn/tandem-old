@@ -144,7 +144,7 @@ export default (Base: React.ComponentClass<BaseApplicationProps>) => class Appli
 
 This code is specific to React & TypeScript, but Tandem is agnostic to the language or framework you use. UIs also don't contain information about the code they're integrating with, so you can re-use UIs for multiple language & framework targets.
 
-☝️With this chunk of code, here's the behavior we get the app is compiled:
+☝️With this chunk of code, here's the behavior we get when the app is compiled:
 
 ![controller](https://user-images.githubusercontent.com/757408/51796101-a0a30400-21a1-11e9-835f-da25788c9861.gif)
 
