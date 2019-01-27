@@ -15,7 +15,7 @@ The primary goal for Tandem is to provide a faster, easier, safer, and more scal
 
 ### Highlights
 
-- [Tandem was used to build itself as a litmus test](https://github.com/tandemcode/tandem/tree/master/packages/front-end/src/components). 
+- Tandem was used to build itself as a litmus test. 
 - Can be used with your existing codebase (currently only React). 
 - Unopinionated, so you can adapt Tandem to fit your needs.
 - UI files can be split out into multiple files, and organized however you want. 
