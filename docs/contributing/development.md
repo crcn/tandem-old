@@ -1,6 +1,6 @@
 Public contributions are more than welcome. 🙂
 
-If you plan on building or changing a feature, please submit a ticket beforehand so that there can be a discussion. 
+If you plan on building or changing a feature, please submit a ticket beforehand so that there can be a discussion.
 
 ## Getting Started
 
