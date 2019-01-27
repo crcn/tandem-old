@@ -172,4 +172,4 @@ This code is specific to React & TypeScript, but Tandem is agnostic to the langu
 ![controller](https://user-images.githubusercontent.com/757408/51796101-a0a30400-21a1-11e9-835f-da25788c9861.gif)
 
 
-For more examples, checkout the [examples repository](https://github.com/tandemcode/examples).
+For more examples, check out the [examples repository](https://github.com/tandemcode/examples).
