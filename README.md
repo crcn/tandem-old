@@ -3,24 +3,17 @@
   <h1 align="center">Tandem (Preview)</h1>
 </p>
 
-<br />
-
-> This repository is _temporarily_ private until bugs & UX issues have been worked out. I'd like to make sure that everything is solid before public testing, so please don't share the app. 🙂
-
-Current OSX build: https://www.dropbox.com/s/f5pd5swfjokreb0/tandem-10.1.22-osx-x64.zip?dl=0
-
-<br />
-
-Tandem is a visual editor for building the _view_ layer of your web application. This means that you're able to create most of your HTML & CSS visually.
+Tandem is a component builder for any kind of web application.
 
 ![Split view](./assets/screenshots/v10.1.7.png)
 
-Functionality is added in the form of _controllers_ which can be attached to any component. This is similar in principle to a view / controller relationship in MVC. Tandem components are agnostic to the code attached to them, so you can re-use your views across different languages & frameworks.
+#### Features
+
+- Works with React. Other languages & frameworks are 
 
 ## Resources
 
 - [Tutorial videos](https://www.youtube.com/playlist?list=PLCNS_PVbhoSXOrjiJQP7ZjZJ4YHULnB2y)
-- [User Guide](./docs/user-guide)
 - [Terminology & Concepts](./docs/concepts.md)
 - [Goals & Non-goals](./docs/goals.md)
 - [Design process](./docs/design-process.md)
