@@ -94,7 +94,56 @@ The JSON representation of this ☝️is:
 
 ![controller](https://user-images.githubusercontent.com/757408/51795768-e6f66400-219d-11e9-87fd-9b9a549ce29a.gif)
 
+The code that goes into this controller might look something like this:
 
+```typescript
+import * as React from "react";
+
+// The React compiler can generated TypeScript definition files from .pc files for safely
+// integrating with UIs designed in Tandem. 
+import {BaseApplicationProps} from "./view.pc"
+
+// Props are exported here 
+export type Props = { };
+
+type State = {
+  clickCount: number
+};
+
+// This is factory for creating a controller. The Base variable is the UI designed in Tandem compiled down to React. The React class returned
+// here adds behavior to the Base UI. 
+export default (Base: React.ComponentClass<BaseApplicationProps>) => class ApplicationController extends React.PureComponent<Props, State> {
+  state = {
+    clickCount: 0
+  };
+
+  onCounterButtonClick = () => {
+    this.setState({ clickCount: this.state.clickCount + 1});
+  }
+  render() {
+
+    // Render Base and add behavior. Behavior is added
+    // by defining props that correspond with an element's label. 
+    // "Counter Button" for example takes "counterButtonProps".
+    // "Click Count Into" for example takes "clickCountInfoProps".
+    return <Base 
+      counterButtonProps={{
+        onClick: this.onCounterButtonClick
+      }} 
+      
+      clickCountInfoProps={{
+        text: `Click count: ${this.state.clickCount}`
+      }} />;
+  }
+}
+```
+
+This code is specific to React & TypeScript, but Tandem is agnostic to the language or framework you use. UIs also don't contain information about the code they're integrating with, so you can re-use UIs for multiple language & framework targets.
+
+
+☝️With this chunk of code, here's the behavior we get when we compile the app:
+
+![controller](https://user-images.githubusercontent.com/757408/51796101-a0a30400-21a1-11e9-835f-da25788c9861.gif)
 
 
 ### Highlights
