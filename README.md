@@ -3,6 +3,8 @@
   <h1 align="center">Tandem (Preview)</h1>
 </p>
 
+[Download latest](https://github.com/tandemcode/tandem/releases)
+
 Tandem is a web component builder that's designed to work with many different languages & frameworks (currently works with React apps, more support is planned after [Alpha](https://github.com/tandemcode/tandem/projects/10)). The tooling is inspired by Sketch, Figma, & VSCode, and are based on web standards.
 
 ![Split view](./assets/screenshots/v10.1.7.png)
