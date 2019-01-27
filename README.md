@@ -7,7 +7,7 @@
 
 [Download latest version](https://github.com/tandemcode/tandem/releases)
 
-Tandem is a web component builder that's designed to work with many different languages & frameworks (currently works with React apps, more support is planned after [Alpha](https://github.com/tandemcode/tandem/projects/10)). The tooling is inspired by Sketch, Figma, & VSCode, and are based on web standards.
+Tandem is a web component builder that's designed to work with many languages & frameworks (currently works with React apps, more support is planned after [Alpha](https://github.com/tandemcode/tandem/projects/10)). The tooling is inspired by Sketch, Figma, & VSCode, and are based on web standards.
 
 The primary goal for Tandem is to provide a faster, easier, safer, and more scalable way of building web applications of any kind.
 
