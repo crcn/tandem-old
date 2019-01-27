@@ -19,6 +19,7 @@ Tandem is a web component builder that's designed to work with many different la
 
 ## Resources
 
+- [Releases](https://github.com/tandemcode/tandem/releases)
 - [Tutorial videos](https://www.youtube.com/playlist?list=PLCNS_PVbhoSXOrjiJQP7ZjZJ4YHULnB2y)
 - [Terminology & Concepts](./docs/concepts.md)
 - [Goals & Non-goals](./docs/goals.md)
