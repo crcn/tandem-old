@@ -7,8 +7,9 @@ Tandem is a web component builder that's designed to work with many different la
 
 ![Split view](./assets/screenshots/v10.1.7.png)
 
-### Features
+### Highlights
 
+- [Tandem was used to build itself as a litmus test](https://github.com/tandemcode/tandem/tree/master/packages/front-end/src/components). 
 - Can be used with your existing codebase (currently only React). 
 - Unopinionated, so you can adapt Tandem to fit your needs.
 - UI files can be organized with the code they're associated with. 
