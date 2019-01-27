@@ -75,7 +75,7 @@ export const createFiles: ProjectFileCreator = ({
           webpack: "^4.15.1",
           "webpack-cli": "^3.0.8",
           "paperclip-react-compiler": "10.1.x",
-          "webpack-dev-server": "^3.1.10"
+          "webpack-dev-server": "3.x.x"
         },
         dependencies: {
           react: "^16.4.1",
