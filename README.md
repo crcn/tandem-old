@@ -24,6 +24,5 @@ Tandem is a web component builder that's designed to work with many different la
 - [Terminology & Concepts](./docs/concepts.md)
 - [Goals & Non-goals](./docs/goals.md)
 - [Examples](https://github.com/tandemcode/examples)
-- [Document format](./docs/document-format.md)
 - Contributing
   - [Development](./docs/contributing/development.md)
