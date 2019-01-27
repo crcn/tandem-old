@@ -3,24 +3,23 @@
   <h1 align="center">Tandem (Preview)</h1>
 </p>
 
-<br />
-
-> This repository is _temporarily_ private until bugs & UX issues have been worked out. I'd like to make sure that everything is solid before public testing, so please don't share the app. 🙂
-
-Current OSX build: https://www.dropbox.com/s/f5pd5swfjokreb0/tandem-10.1.22-osx-x64.zip?dl=0
-
-<br />
-
-Tandem is a visual editor for building the _view_ layer of your web application. This means that you're able to create most of your HTML & CSS visually.
+Tandem is a web component builder that's designed to work with many different languages & frameworks (currently works with React apps, more support is planned after [Alpha](https://github.com/tandemcode/tandem/projects/10)). The tooling is inspired by Sketch, Figma, & VSCode, and are based on web standards.
 
 ![Split view](./assets/screenshots/v10.1.7.png)
 
-Functionality is added in the form of _controllers_ which can be attached to any component. This is similar in principle to a view / controller relationship in MVC. Tandem components are agnostic to the code attached to them, so you can re-use your views across different languages & frameworks.
+### Highlights
+
+- [Tandem was used to build itself as a litmus test](https://github.com/tandemcode/tandem/tree/master/packages/front-end/src/components). 
+- Can be used with your existing codebase (currently only React). 
+- Unopinionated, so you can adapt Tandem to fit your needs.
+- UI files can be organized with the code files they're associated with. 
+- Handwritten HTML & CSS can be mixed with Tandem UIs (this is helpful if you need to integrate complex code). 
+- Not a code replacement. Tandem only allows you to create simple HTML & CSS.
+- Few abstractions. Tandem gives you transparent tooling that's based on web standards.
 
 ## Resources
 
 - [Tutorial videos](https://www.youtube.com/playlist?list=PLCNS_PVbhoSXOrjiJQP7ZjZJ4YHULnB2y)
-- [User Guide](./docs/user-guide)
 - [Terminology & Concepts](./docs/concepts.md)
 - [Goals & Non-goals](./docs/goals.md)
 - [Design process](./docs/design-process.md)
