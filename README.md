@@ -3,24 +3,21 @@
   <h1 align="center">Tandem (Preview)</h1>
 </p>
 
-> Tandem is still very new, so expect bugs. If you'd like to contribute or use Tandem at your company, feel free to reach out to hello@tandemcode.com. 
+> Tandem is still very new, so expect bugs. If you'd like to contribute or use Tandem at your company, feel free to reach out to hello@tandemcode.com.
 
 [Download latest version](https://github.com/tandemcode/tandem/releases)
 
-Tandem is a web component builder that's designed to work with many languages & frameworks (currently works with React apps, more support is planned after [Alpha](https://github.com/tandemcode/tandem/projects/10)). The tooling is inspired by Sketch, Figma, & VSCode, and are based on web standards.
-
-The primary goal for Tandem is to provide a faster, easier, safer, and more scalable way of building web applications of any kind.
+Tandem is a UI builder for web applications. It currently works with [React](https://reactjs.org/) - other languages & frameworks will be supported in the future. The primary goal for Tandem is to provide a faster, easier, safer, and more scalable way of creating UIs for web applications of any kind.
 
 ![Split view](./assets/screenshots/v10.1.7.png)
 
-
 ### Highlights
 
-- Tandem was used to build itself as a litmus test. 
-- Designed to work with existing code (currently only React). 
+- Tandem was used to build itself as a litmus test.
+- Designed to work with existing code (currently only React).
 - Unopinionated, so you can adapt Tandem to fit your needs.
-- UI files can be split out into multiple files, and organized however you want. 
-- Handwritten HTML & CSS can be mixed with Tandem UIs (this is helpful if you need to integrate complex code). 
+- UI files can be split out into multiple files, and organized however you want.
+- Handwritten HTML & CSS can be mixed with Tandem UIs (this is helpful if you need to integrate complex code).
 - Not a code replacement. Tandem only allows you to create simple HTML & CSS.
 - Few abstractions. Tandem gives you transparent tooling that's based on web standards.
 
@@ -28,6 +25,7 @@ The primary goal for Tandem is to provide a faster, easier, safer, and more scal
 
 - [Releases](https://github.com/tandemcode/tandem/releases)
 - [Tutorial videos](https://www.youtube.com/playlist?list=PLCNS_PVbhoSXOrjiJQP7ZjZJ4YHULnB2y)
+- [Integrating with existing code](./docs/integrating-with-existing-project.md)
 - [Terminology & Concepts](./docs/concepts.md)
 - [Goals & Non-goals](./docs/goals.md)
 - [Examples](https://github.com/tandemcode/examples)
@@ -127,42 +125,44 @@ The code that goes into this controller might look something like this:
 import * as React from "react";
 
 // The React compiler can generated TypeScript definition files from .pc files for safely
-// integrating with UIs designed in Tandem. 
-import {BaseApplicationProps} from "./view.pc"
+// integrating with UIs designed in Tandem.
+import { BaseApplicationProps } from "./view.pc";
 
-// Props are exported here 
-export type Props = { };
+// Props are exported here
+export type Props = {};
 
 type State = {
-  clickCount: number
+  clickCount: number;
 };
 
 // This is factory for creating a controller. The Base variable is the UI designed in Tandem compiled down to React. The React class returned
-// here adds behavior to the Base UI. 
-export default (Base: React.ComponentClass<BaseApplicationProps>) => class ApplicationController extends React.PureComponent<Props, State> {
-  state = {
-    clickCount: 0
+// here adds behavior to the Base UI.
+export default (Base: React.ComponentClass<BaseApplicationProps>) =>
+  class ApplicationController extends React.PureComponent<Props, State> {
+    state = {
+      clickCount: 0
+    };
+
+    onCounterButtonClick = () => {
+      this.setState({ clickCount: this.state.clickCount + 1 });
+    };
+    render() {
+      // Render Base and add behavior. Behavior is added
+      // by defining props that correspond with an element's label.
+      // "Counter Button" for example takes "counterButtonProps".
+      // "Click Count Into" for example takes "clickCountInfoProps".
+      return (
+        <Base
+          counterButtonProps={{
+            onClick: this.onCounterButtonClick
+          }}
+          clickCountInfoProps={{
+            text: `Click count: ${this.state.clickCount}`
+          }}
+        />
+      );
+    }
   };
-
-  onCounterButtonClick = () => {
-    this.setState({ clickCount: this.state.clickCount + 1});
-  }
-  render() {
-
-    // Render Base and add behavior. Behavior is added
-    // by defining props that correspond with an element's label. 
-    // "Counter Button" for example takes "counterButtonProps".
-    // "Click Count Into" for example takes "clickCountInfoProps".
-    return <Base 
-      counterButtonProps={{
-        onClick: this.onCounterButtonClick
-      }} 
-      
-      clickCountInfoProps={{
-        text: `Click count: ${this.state.clickCount}`
-      }} />;
-  }
-}
 ```
 
 This code is specific to React & TypeScript, but Tandem is agnostic to the language or framework you use. UIs also don't contain information about the code they're integrating with, so you can re-use UIs for multiple language & framework targets.
@@ -170,6 +170,5 @@ This code is specific to React & TypeScript, but Tandem is agnostic to the langu
 ☝️With this chunk of code, here's the behavior we get when the app is compiled:
 
 ![controller](https://user-images.githubusercontent.com/757408/51796101-a0a30400-21a1-11e9-835f-da25788c9861.gif)
-
 
 For more examples, check out the [examples repository](https://github.com/tandemcode/examples).
