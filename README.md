@@ -164,7 +164,7 @@ export default (Base: React.ComponentClass<BaseApplicationProps>) =>
   };
 ```
 
-This code is specific to React & TypeScript, but Tandem is agnostic to the language or framework you use. UIs also don't contain information about the code they're integrating with, so you can re-use UIs for multiple language & framework targets.
+This code is specific to React & TypeScript (more documentation can be found in the [paperclip-react-compiler](./packages/paperclip-react-compiler) module), but Tandem is agnostic to the language or framework you use. UIs also don't contain information about the code they're integrating with, so you can re-use UIs for multiple language & framework targets.
 
 ☝️With this chunk of code, here's the behavior we get when the app is compiled:
 
