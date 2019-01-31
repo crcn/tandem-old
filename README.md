@@ -3,17 +3,16 @@
   <h1 align="center">Tandem (Preview)</h1>
 </p>
 
-> Tandem is still very new, so expect bugs. If you'd like to contribute or use Tandem at your company, feel free to reach out to hello@tandemcode.com.
+> Tandem is still very new, so expect bugs. If you'd like to contribute, feel free to reach out to hello@tandemcode.com.
 
 [Download latest version](https://github.com/tandemcode/tandem/releases)
 
-Tandem is a UI builder for web applications. It currently works with [React](https://reactjs.org/) - other languages & frameworks will be supported in the future. The primary goal for Tandem is to provide a faster, easier, safer, and more scalable way of creating UIs for web applications of any kind.
+Tandem is a UI builder for web applications. It currently works with [React](https://reactjs.org/) - other languages & frameworks will be supported in the future. The primary goal for Tandem is to provide a faster, easier, safer, and more scalable way of creating web UIs.
 
 ![Split view](./assets/screenshots/v10.1.7.png)
 
 ### Highlights
 
-- Tandem was used to build itself as a litmus test.
 - Designed to work with existing code (currently only React).
 - Unopinionated, so you can adapt Tandem to fit your needs.
 - UI files can be split out into multiple files, and organized however you want.
@@ -29,8 +28,7 @@ Tandem is a UI builder for web applications. It currently works with [React](htt
 - [Terminology & Concepts](./docs/concepts.md)
 - [Goals & Non-goals](./docs/goals.md)
 - [Examples](https://github.com/tandemcode/examples)
-- Contributing
-  - [Development](./docs/contributing/development.md)
+- [Development](./docs/contributing/development.md)
 
 ### How does it work?
 
@@ -47,6 +45,7 @@ The JSON representation of this ☝️is:
   "version": "0.0.6",
   "children": [
     {
+
       "label": "Application",
       "is": "div",
       "style": {},

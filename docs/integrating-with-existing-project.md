@@ -1,8 +1,11 @@
 TODO:
 
+- [ ] Use Tandem CLI tools instead
+- [ ] use `tandem init` to setup new project
+
 ## 1. Setting up a Tandem project
 
-First up you'll probably want to setup a Tandem project. To do that, create a `app.tdproject` file in your app's root directory, then paste the following contents into it:
+First you'll need to setup a Tandem project. To do that, create a `app.tdproject` file in your app's root directory, then paste the following contents into it:
 
 ```javascript
 {
