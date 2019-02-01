@@ -5,19 +5,37 @@
 
 > Tandem is still very new, so expect bugs. If you'd like to contribute, feel free to reach out to hello@tandemcode.com.
 
-[Download latest version](https://github.com/tandemcode/tandem/releases)
-
-Tandem is a UI builder for web applications. It currently works with [React](https://reactjs.org/) - other languages & frameworks will be supported in the future. The primary goal for Tandem is to provide a faster, easier, safer, and more scalable way of creating web UIs.
+Tandem is a UI builder for web applications. It currently works with [React](https://reactjs.org/) - other languages & frameworks will be supported in the future. The primary goal for Tandem is to provide a faster, easier, safer, and more scalable alternative to handwritten HTML & CSS code.
 
 ![Split view](./assets/screenshots/v10.1.7.png)
+
+#### Installation
+
+TODO - GIF
+
+Assuming that you have `node.js` installed, run the following command:
+
+```
+npm install tandem-cli --save-dev
+```
+
+After that you can initialize a new Tandem project by running:
+
+```
+./node_modules/.bin/tandem init
+```
+
+☝️ This will walk you through the setup process & then open the app.
+
+More docs for the CLI fool can be found in the [CLI package](./packages/cli)
 
 ### Highlights
 
 - Designed to work with existing code (currently only React).
+- Not a code replacement. Tandem only allows you to create simple HTML & CSS.
 - Unopinionated, so you can adapt Tandem to fit your needs.
 - UI files can be split out into multiple files, and organized however you want.
 - Handwritten HTML & CSS can be mixed with Tandem UIs (this is helpful if you need to integrate complex code).
-- Not a code replacement. Tandem only allows you to create simple HTML & CSS.
 - Few abstractions. Tandem gives you transparent tooling that's based on web standards.
 
 ### Resources

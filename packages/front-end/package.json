@@ -74,7 +74,8 @@
     "redux": "^4.0.0",
     "redux-saga": "^0.16.0",
     "scroll-into-view-if-needed": "^2.2.16",
-    "tandem-common": "^10.1.22"
+    "tandem-common": "^10.1.22",
+    "tandem-starter-kits": "^1.0.0"
   },
   "gitHead": "61552458fb4697d72287bdc01f1cdc19066a7b52"
 }

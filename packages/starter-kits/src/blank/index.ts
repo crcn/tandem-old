@@ -1,5 +1,4 @@
-import * as React from "react";
-import { ProjectTemplate, ProjectFileCreator } from "../../state";
+import { ProjectTemplate, ProjectFileCreator } from "../state";
 import {
   createPCModule,
   createPCComponent,

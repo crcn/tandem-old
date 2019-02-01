@@ -1,0 +1,17 @@
+{
+  "name": "tandem-starter-kits",
+  "version": "1.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@types/node": "^10.12.19",
+    "paperclip": "^10.1.23",
+    "tandem-common": "^10.1.22",
+    "typescript": "^3.3.1"
+  }
+}

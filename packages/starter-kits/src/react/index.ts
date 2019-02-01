@@ -1,6 +1,4 @@
-import * as React from "react";
-import { ProjectTemplate, ProjectFileCreator } from "../../state";
-import { ReactStartKitOptionsForm } from "./form.pc";
+import { ProjectTemplate, ProjectFileCreator } from "../state";
 import {
   createPCModule,
   createPCComponent,
