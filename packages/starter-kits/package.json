@@ -1,6 +1,6 @@
 {
   "name": "tandem-starter-kits",
-  "version": "10.1.24",
+  "version": "10.1.25",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -10,8 +10,8 @@
   "license": "ISC",
   "dependencies": {
     "@types/node": "^10.12.19",
-    "paperclip": "^10.1.24",
-    "tandem-common": "^10.1.24",
+    "paperclip": "^10.1.25",
+    "tandem-common": "^10.1.25",
     "typescript": "^3.3.1"
   },
   "gitHead": "30112134661276713650973969b9f5a94b8beae9"

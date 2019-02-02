@@ -1,4 +1,4 @@
-## 1. Creating a new project
+## 1. Installing Tandem in an existing project
 
 If you haven't already installed the command line tools, go ahead and `cd` to your project directory, then run:
 
@@ -6,7 +6,7 @@ If you haven't already installed the command line tools, go ahead and `cd` to yo
 npm install tandem-cli --save-dev
 ```
 
-After that you can initialize a new Tandem project by running:
+After that you can initialize a new Tandem project file by running:
 
 ```
 ./node_modules/.bin/tandem init
