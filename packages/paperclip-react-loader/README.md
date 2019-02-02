@@ -1,5 +1,7 @@
 **Installation**: `npm install paperclip-react-loader`
 
+**Documentation for writing React controllers can be found in the [paperclip-react-compiler](../paperclip-react-compiler) package.**
+
 This is a Webpack loader for converting Tandem UI files ([\*.pc](../../documentation/ui-files.md)) into React components. Here's a basic `webpack.config.js` example:
 
 ```javascript

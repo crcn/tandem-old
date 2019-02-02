@@ -42,6 +42,8 @@ More info can be found in the [installation docs](./docs/installation.md)
 - [Goals & Non-goals](./docs/goals.md)
 - [Examples](./examples)
 - [Development](./docs/contributing/development.md)
+- Language integrations
+  - [React](./packages/paperclip-react-loader)
 
 ### How does it work?
 
@@ -129,7 +131,7 @@ The JSON representation of this ☝️is:
 
 ☝️HTML & CSS is defined in this JSON structure, and it doesn't really get much more complex. For this example if we want to add behavior, we can do that be attaching a controller to this component. Here's how you do that in the UI:
 
-![controller](https://user-images.githubusercontent.com/757408/51795768-e6f66400-219d-11e9-87fd-9b9a549ce29a.gif)
+![controller](docs/assets/adding-controller.gif)
 
 The code that goes into this controller might look something like this:
 

@@ -30,50 +30,19 @@ That's it! From here you can start building UIs. Note that you can have as many 
 
 Now onto setting up your build configuration.
 
-## 2. Configuring your bundler
+## 2. Setting up the compiler
 
-Setting up the build configuration is necessary in order to connect UI files with your application code.
+In order to use Tandem UIs, you'll need to setup a compiler for the framework you'd like to target. Keep in mind that the _coding style_ for each framework target may differ depending on community standards.
 
-#### Webpack setup
+- React
+  - [Setting up Webpack](../packages/paperclip-react-loader)
 
-Here's a basic `webpack.config.js` example:
+## 3. Adding UI controllers
 
-```javascript
-const fs = require("fs");
+UI controllers allow you to add behavior to your UIs, and they can be written in any language that's supported in Tandem. To add controller, just follow this GIF:
 
-module.exports = {
-  mode: "development",
-  entry: "./src/index,js",
-  output: {
-    path: "./lib",
-    filename: "[name].bundle.js"
-  },
-  resolve: {
-    extensions: [".js", ".ts"]
-  },
-  module: {
-    rules: [
-      {
-        test: /.pc$/,
-        use: [
-          {
-            loader: "paperclip-react-loader",
-            options: {
-              // the config is just the contents of your Tandem project file.
-              config: JSON.parse(fs.readFileSync("./app.tdproject", "utf8"))
-            }
-          }
-        ]
-      }
-    ]
-  }
-};
-```
+![Adding controllers](assets/adding-controller.gif)
 
-Additonal documentation for Webpack can be found in the [paperclip-react-loader package](../packages/paperclip-react-loader).
+Controller docs:
 
----
-
-After you have your webpack
-
-## 3. Creating UI controllers
+- [React](../packages/paperclip-react-compiler)

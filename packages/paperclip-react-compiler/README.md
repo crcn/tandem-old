@@ -43,7 +43,7 @@ Layer props can be defined at the component level by taking the layer name, and 
 
 Slots are areas of your component where you can dynamically insert elements (good for dynamic lists, component states, etc). You can find them in Tandem by looking for layers with a light box icon.
 
-[SLOT IMAGE HERE]
+![Screenshot](./assets/slot-ui.png)
 
 The `items` slot layer you see above can be coded like so:
 
@@ -51,82 +51,102 @@ The `items` slot layer you see above can be coded like so:
 <Application items={"hello world"} />
 ```
 
-☝️ The result of this would be:
+Slots can be used by following a similar rule to regular element & text layers, just take the name of the slot and use the camelCase form it when writing React code.
 
-[SCREENSHOT]
+#### Writing controllers
 
-Slots can be defined by converting their layer name to `camelCase`.
-
-#### Adding controllers
-
-Controllers add behavior to your component, and can be added in Tandem like so:
-
-[GIF]
-
-A basic controller for our `Application` component might look something like this:
+A controller for our `Application` component might look something like this:
 
 ```typescript
 import * as React from "react";
+import { BaseApplicationProps, ListItem } from "./view.pc";
 
-// The React compiler can generated TypeScript definition files from .pc files for safely
-// integrating with UIs designed in Tandem.
-import { BaseApplicationProps } from "./view.pc";
-
-// Props are exported here
-export type Props = {};
+// The controller props *must* be exported
+export type Props = {
+  todoItems: string;
+  addItem: (value: string) => void;
+} & BaseApplicationProps;
 
 type State = {
-  clickCount: number;
+  newItemText?: string;
 };
 
-// This is factory for creating a controller. The Base variable is the UI designed in Tandem compiled down to React. The React class returned
-// here adds behavior to the Base UI.
-export default (Base: React.ComponentClass<BaseApplicationProps>) =>
-  class ApplicationController extends React.PureComponent<Props, State> {
-    state = {
-      clickCount: 0
+// default export needs to be a higher order component
+export default (Base: React.ComponentClass<BaseApplicationProps>) => {
+  // This controller wraps around the Base or logic-less component, and adds behavior to it.
+  return class ApplicationController extends React.PureComponent<Props, State> {
+    state = {};
+    onNewItemInputChange = event => {
+      this.setState({ newItemText: event.target.value });
     };
-
-    onCounterButtonClick = () => {
-      this.setState({ clickCount: this.state.clickCount + 1 });
+    onItemButtonClick = () => {
+      if (this.state.newItemText) {
+        this.props.addItem(this.state.newItemText);
+        this.setState({ newItemText: null });
+      }
     };
     render() {
-      // Render Base and add behavior. Behavior is added
-      // by defining props that correspond with an element's label.
-      // "Counter Button" for example takes "counterButtonProps".
-      // "Click Count Into" for example takes "clickCountInfoProps".
+      const { onItemButtonClick } = this;
+      const items = this.props.todoItems.map((text, i) => {
+        return <ListItem key={i} labelProps={{ text }} />;
+      });
       return (
         <Base
-          counterButtonProps={{
-            onClick: this.onCounterButtonClick
+          items={items}
+          newItemInputProps={{
+            onChange: onNewItemInputChange
           }}
-          clickCountInfoProps={{
-            text: `Click count: ${this.state.clickCount}`
+          addItemButtonProps={{
+            onClick: onItemButtonClick
           }}
         />
       );
     }
   };
+};
 ```
 
-Controllers are coupled to the UIs they're attached to, so if you're creating something generic like a dropdown UI and add a controller, that controller will be used wherever the dropdown is.
+You can learn how to add controllers in the UI by following the [installation docs](../docs/installation.md).
+
+The controller wraps around UIs, so the code usage changes a bit:
+
+```jsx
+import { Application } from "./view.pc";
+
+const addTodoItem = () => {
+  // do something
+};
+
+<Application items={["take out trash", "walk dog"]} addItem={addTodoItem} />;
+```
+
+That's the gist of it. For a more complex example, you can checkout the Tandem [front-end package](../front-end/src/components).
 
 #### CLI Usage
 
 Here's are some basic examples of how you can use the CLI tool:
 
 ```bash
-paperclip-react-compiler "src/**/*.pc" # compile PC files & print to stdout
-paperclip-react-compiler "src/**/*.pc" --out=lib --write # compile PC files & write to lib
-paperclip-react-compiler "src/**/*.pc" --definition --out=lib --write # compile typed definition files for PC components & write to lib
+# compile PC files & print to stdout
+paperclip-react-compiler "src/**/*.pc"
 
-paperclip-react-compiler "src/**/*.pc" --out=lib --write --watch # compile UI components whenever there's a file change
+# compile PC files & write to lib
+paperclip-react-compiler "src/**/*.pc" --out=lib --write
+
+# compile typed definition files for PC components & write to lib
+paperclip-react-compiler "src/**/*.pc" --definition --out=lib --write
+
+# compile UI components whenever there's a file change
+paperclip-react-compiler "src/**/*.pc" --out=lib --write --watch
 ```
 
-The `--definition` flag is particularly useful for identifying props that we can define in our UI. Using the same example screenshot above, the typed definition contents of that would be something like:
+The `--definition` flag is particularly useful for identifying UI props that we can use in code. Here's an example of a typed definition generated from a UI file:
 
 ```typescript
 import * as React from "react";
+
+// Note that since the UI has a controller, we're importing the
+// controllers props so that any other
 import ApplicationController0, {
   Props as ApplicationController0Props
 } from "./controller";
@@ -140,6 +160,7 @@ type ElementProps = {
 } & React.HTMLAttributes<any>;
 
 export type BaseApplicationProps = {
+  // this is a slot
   items?: any;
   innerProps?: ElementProps;
   titleProps?: TextProps;
@@ -163,3 +184,5 @@ export const Application: (
 ... More generated typed definition file code ...
 */
 ```
+
+> This is based on the TODO example app in the `examples/` folder
