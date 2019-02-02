@@ -8,7 +8,7 @@ This module compiles Tandem UIs into React components, and typed definition file
 
 ![Screenshot](./assets/app-screenshot.png)
 
-Assuming that you don't have any [controllers](#adding-controllers) associated with the components above, you can use them like so:
+Assuming that you don't have any [controllers](#writing-controllers) associated with the components above, you can use them like so:
 
 ```javascript
 import {Application, Button, ListItem} from './path/to/components.pc';
@@ -51,7 +51,7 @@ The `items` slot layer you see above can be coded like so:
 <Application items={"hello world"} />
 ```
 
-Slots can be used by following a similar rule to regular element & text layers, just take the name of the slot and use the camelCase form it when writing React code.
+Slots can be used by following a similar rule to element & text layers, just take the name of the slot and use the camelCase form of it when writing React code.
 
 #### Writing controllers
 
@@ -106,11 +106,12 @@ export default (Base: React.ComponentClass<BaseApplicationProps>) => {
 };
 ```
 
-You can learn how to add controllers in the UI by following the [installation docs](../docs/installation.md).
+> You can learn how to add controllers in the UI by following the [installation docs](../../docs/installation.md).
 
 The controller wraps around UIs, so the code usage changes a bit:
 
 ```jsx
+// Application is now the ApplicationController
 import { Application } from "./view.pc";
 
 const addTodoItem = () => {
@@ -185,4 +186,4 @@ export const Application: (
 */
 ```
 
-> This is based on the TODO example app in the `examples/` folder
+> This is based on the TODO example app in the `examples/` folder.
