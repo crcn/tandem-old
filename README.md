@@ -46,6 +46,7 @@ More info can be found in the [installation docs](./docs/installation.md)
 - [Development](./docs/contributing/development.md)
 - Language integrations
   - [React](./packages/paperclip-react-loader)
+    <!--
 
 ### How does it work?
 
@@ -185,4 +186,4 @@ This code is specific to React & TypeScript (more documentation can be found in 
 
 ☝️With this chunk of code, here's the behavior we get when the app is compiled:
 
-![controller](https://user-images.githubusercontent.com/757408/51796101-a0a30400-21a1-11e9-835f-da25788c9861.gif)
+![controller](https://user-images.githubusercontent.com/757408/51796101-a0a30400-21a1-11e9-835f-da25788c9861.gif) -->
