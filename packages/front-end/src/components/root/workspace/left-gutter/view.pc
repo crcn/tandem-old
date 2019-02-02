@@ -1,6 +1,6 @@
 {
   "id": "317401b1466165",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "metadata": {},
   "name": "module",
   "children": [
@@ -32,7 +32,6 @@
             "flex-direction": "column",
             "font-size": "11px",
             "min-height": "200px",
-            "overflow": "scroll",
             "height": "auto",
             "position": "relative",
             "max-height": "60%",

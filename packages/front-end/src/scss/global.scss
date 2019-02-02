@@ -23,5 +23,34 @@ html, body {
 }
 
 input::placeholder {
-  color: rgba(0,0,0,0.15);
+  color: rgba(0,0,0,0.02);
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+  background:rgba(0, 0, 0, 0.02);
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+::-webkit-scrollbar-button {
+  width: 0;
+  height: 0;
+  display: none;
+}
+
+::-webkit-scrollbar-corner {
+  background-color: rgba(0, 0, 0, 0.02);
+}
+
+/* trick to only apply in webkit */
+@media screen and (-webkit-min-device-pixel-ratio:0) { 
+
 }

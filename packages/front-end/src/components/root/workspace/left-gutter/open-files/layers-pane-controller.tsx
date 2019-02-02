@@ -45,7 +45,6 @@ const generateLayersPaneContext = memoize(
 
 const CONTENT_STYLE = {
   display: "inline-block",
-  overflow: "scroll",
   minWidth: "100%"
 };
 

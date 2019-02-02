@@ -429,7 +429,7 @@
           "id": "ed9bceb07742",
           "name": "variant",
           "label": "show properties tab",
-          "isDefault": true,
+          "isDefault": false,
           "children": [],
           "metadata": {}
         },

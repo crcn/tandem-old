@@ -1,6 +1,6 @@
 {
   "id": "c2276d6621338",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "metadata": {},
   "name": "module",
   "children": [
@@ -426,8 +426,8 @@
           "name": "element",
           "attributes": {},
           "style": {
-            "overflow": "scroll",
-            "height": "100%"
+            "height": "100%",
+            "overflow": "hidden"
           },
           "children": [
             {
