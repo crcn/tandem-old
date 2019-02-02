@@ -40,7 +40,7 @@ More info can be found in the [installation docs](./docs/installation.md)
 - [Tutorial videos](https://www.youtube.com/playlist?list=PLCNS_PVbhoSXOrjiJQP7ZjZJ4YHULnB2y)
 - [Terminology & Concepts](./docs/concepts.md)
 - [Goals & Non-goals](./docs/goals.md)
-- [Examples](https://github.com/tandemcode/examples)
+- [Examples](./examples)
 - [Development](./docs/contributing/development.md)
 
 ### How does it work?
