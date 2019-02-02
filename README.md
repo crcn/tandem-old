@@ -5,7 +5,7 @@
 
 > Tandem is still very new, so expect bugs. If you'd like to contribute, feel free to reach out to hello@tandemcode.com.
 
-Tandem is a UI builder for web applications. It currently works with [React](https://reactjs.org/) - other languages & frameworks will be supported in the future. The primary goal for Tandem is to provide a faster, easier, safer, and more scalable alternative to handwritten HTML & CSS code.
+Tandem is a UI builder for web applications. It currently works with [React](https://reactjs.org/), other languages & frameworks will be supported in the future. The primary goal for Tandem is to provide a faster, easier, safer, and more scalable alternative to handwritten HTML & CSS code.
 
 ![Split view](./assets/screenshots/v10.1.7.png)
 
