@@ -34,33 +34,33 @@
           "attributes": {},
           "style": {
             "box-sizing": "border-box",
-            "display": "flex",
-            "justify-content": "center",
             "flex-shrink": "0",
-            "padding-top": "8px",
-            "padding-bottom": "8px",
+            "padding-top": "0px",
+            "padding-bottom": "0px",
             "font-size": "12px",
             "border-bottom": "1px solid rgba(209, 209, 209, 1)",
             "align-items": "center",
             "position": "relative",
             "-webkit-app-region": "drag",
             "background": "var(--51588fd610365)",
-            "padding-right": "12px"
+            "padding-right": "0px",
+            "padding-left": "0px",
+            "height": "33px"
           },
           "children": [
             {
               "id": "32ef79b71042996",
-              "label": "Element",
+              "label": "MacOS buttons",
               "is": "div",
               "name": "element",
               "attributes": {},
               "style": {
                 "box-sizing": "border-box",
-                "display": "inline-block",
-                "position": "absolute",
-                "top": "50%",
+                "display": "none",
+                "top": "6px",
                 "left": "12px",
-                "transform": "translateY(-50%)"
+                "transform": "translateY(-50%)",
+                "position": "relative"
               },
               "children": [
                 {
@@ -134,6 +134,26 @@
               }
             },
             {
+              "id": "22a403a621750",
+              "is": "22a403a63977",
+              "label": "Menu",
+              "name": "component-instance",
+              "attributes": {},
+              "style": {
+                "display": "none"
+              },
+              "children": [],
+              "metadata": {
+                "bounds": {
+                  "left": 0,
+                  "right": 600,
+                  "top": 0,
+                  "bottom": 400
+                }
+              },
+              "variant": {}
+            },
+            {
               "id": "32ef79b7242",
               "label": "center",
               "is": "div",
@@ -143,8 +163,12 @@
                 "box-sizing": "border-box",
                 "display": "inline-block",
                 "align-self": "center",
-                "user-select": "none",
-                "font-weight": "500"
+                "position": "relative",
+                "left": "50%",
+                "transform": "translate(-50%, -50%)",
+                "font-weight": "500",
+                "top": "50%",
+                "user-select": "none"
               },
               "children": [
                 {
@@ -155,7 +179,10 @@
                       "name": "text",
                       "label": "Text",
                       "value": "app.tdproject",
-                      "style": {},
+                      "style": {
+                        "display": "inline-block",
+                        "position": "relative"
+                      },
                       "children": [],
                       "metadata": {}
                     }
@@ -414,7 +441,80 @@
             "1fb4e79016876"
           ],
           "value": {
-            "display": "block"
+            "display": "block",
+            "top": "50%",
+            "transform": "translateY(-50%)"
+          },
+          "name": "override",
+          "children": []
+        },
+        {
+          "id": "7c7f4dd718003",
+          "name": "variant",
+          "label": "macos",
+          "isDefault": true,
+          "children": [],
+          "metadata": {}
+        },
+        {
+          "id": "7c7f4dd718004",
+          "variantId": "7c7f4dd718003",
+          "propertyName": "style",
+          "targetIdPath": [
+            "32ef79b71042996"
+          ],
+          "value": {
+            "display": "none",
+            "top": "50%",
+            "position": "absolute",
+            "height": "12px"
+          },
+          "name": "override",
+          "children": []
+        },
+        {
+          "id": "7c7f4dd718005",
+          "variantId": "7c7f4dd718003",
+          "propertyName": "style",
+          "targetIdPath": [
+            "32ef79b7242"
+          ],
+          "value": {},
+          "name": "override",
+          "children": []
+        },
+        {
+          "id": "7c7f4dd718006",
+          "variantId": "7c7f4dd718003",
+          "propertyName": "style",
+          "targetIdPath": [
+            "32ef79b725"
+          ],
+          "value": {
+            "height": "22px"
+          },
+          "name": "override",
+          "children": []
+        },
+        {
+          "id": "7c7f4dd735451",
+          "name": "variant",
+          "label": "windows",
+          "isDefault": false,
+          "children": [],
+          "metadata": {}
+        },
+        {
+          "id": "7c7f4dd735452",
+          "variantId": "7c7f4dd735451",
+          "propertyName": "style",
+          "targetIdPath": [
+            "22a403a621750"
+          ],
+          "value": {
+            "display": "inline-block",
+            "height": "33px",
+            "position": "absolute"
           },
           "name": "override",
           "children": []
@@ -485,6 +585,95 @@
       "label": "Welcome Preview"
     },
     {
+      "id": "7c7f4dd718007",
+      "is": "8d443eb52140093",
+      "name": "component-instance",
+      "attributes": {},
+      "style": {},
+      "children": [
+        {
+          "slotId": "32ef79b7590",
+          "id": "7c7f4dd718008",
+          "children": [
+            {
+              "id": "7c7f4dd718009",
+              "is": "33b1b6b133319",
+              "name": "component-instance",
+              "attributes": {},
+              "style": {},
+              "children": [
+                {
+                  "id": "7c7f4dd718010",
+                  "propertyName": "style",
+                  "targetIdPath": [
+                    "33b1b6b171359",
+                    "2b3a6c6d1159"
+                  ],
+                  "value": {},
+                  "name": "override",
+                  "children": []
+                },
+                {
+                  "id": "7c7f4dd718011",
+                  "propertyName": "variant",
+                  "targetIdPath": [
+                    "33b1b6b171359",
+                    "2b3a6c6d2278"
+                  ],
+                  "value": {
+                    "66d16f05": true
+                  },
+                  "name": "override",
+                  "children": []
+                }
+              ],
+              "metadata": {
+                "bounds": {
+                  "left": -129,
+                  "top": 991,
+                  "right": 1833.8518233326877,
+                  "bottom": 1974.4100056728703
+                }
+              },
+              "variant": {}
+            }
+          ],
+          "metadata": {},
+          "name": "plug"
+        },
+        {
+          "id": "7c7f4dd718012",
+          "propertyName": "style",
+          "targetIdPath": [
+            "32ef79b725"
+          ],
+          "value": {
+            "padding-top": "0px",
+            "padding-bottom": "0px",
+            "font-weight": "400",
+            "padding-left": "0px",
+            "padding-right": "0px"
+          },
+          "name": "override",
+          "children": []
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": 3696,
+          "top": 293,
+          "right": 5682.299833865996,
+          "bottom": 1334.8391994102403
+        }
+      },
+      "variant": {
+        "1fb4e79017947": false,
+        "1fb4e79017945": true,
+        "7c7f4dd735451": true
+      },
+      "label": "Windows Preview"
+    },
+    {
       "id": "8d443eb52162144",
       "is": "8d443eb52140093",
       "name": "component-instance",
@@ -548,9 +737,11 @@
             "32ef79b725"
           ],
           "value": {
-            "padding-top": "12px",
-            "padding-bottom": "12px",
-            "font-weight": "400"
+            "padding-top": "0px",
+            "padding-bottom": "0px",
+            "font-weight": "400",
+            "padding-left": "0px",
+            "padding-right": "0px"
           },
           "name": "override",
           "children": []
@@ -566,9 +757,10 @@
       },
       "variant": {
         "1fb4e79017947": false,
-        "1fb4e79017945": true
+        "1fb4e79017945": true,
+        "7c7f4dd718003": true
       },
-      "label": "Chrome Preview"
+      "label": "MacOS Preview"
     },
     {
       "label": "chrome header button",
