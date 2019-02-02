@@ -151,7 +151,7 @@ function* openMainWindow() {
   const mainWindow = new BrowserWindow({
     width: 900,
     height: 600,
-    frame: withFrame
+    titleBarStyle: "hidden"
   });
 
   mainWindow.webContents.on;

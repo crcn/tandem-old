@@ -157,14 +157,14 @@ function* handleMenu() {
             click: () => {
               emit(shortcutKeyDown(OPEN_PROJECT_MENU_ITEM_CLICKED));
             }
-          },
-          {
-            label: "New Project...",
-            accelerator: "meta+shift+n",
-            click: () => {
-              emit(shortcutKeyDown(NEW_PROJECT_MENU_ITEM_CLICKED));
-            }
           }
+          // {
+          //   label: "New Project...",
+          //   accelerator: "meta+shift+n",
+          //   click: () => {
+          //     emit(shortcutKeyDown(NEW_PROJECT_MENU_ITEM_CLICKED));
+          //   }
+          // }
         ]
       },
       {

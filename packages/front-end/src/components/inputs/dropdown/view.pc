@@ -225,13 +225,13 @@
                     "box-sizing": "border-box",
                     "display": "block",
                     "max-height": "200px",
-                    "overflow": "scroll",
                     "margin-top": "8px",
                     "border-bottom-left-radius": "2px",
                     "border-top-left-radius": "2px",
                     "border-top-right-radius": "2px",
                     "border-bottom-right-radius": "2px",
-                    "border": "1px solid rgba(238, 238, 238, 1)"
+                    "border": "1px solid rgba(238, 238, 238, 1)",
+                    "overflow-y": "scroll"
                   },
                   "children": [
                     {

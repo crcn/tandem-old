@@ -74,9 +74,7 @@
               "is": "div",
               "name": "element",
               "attributes": {},
-              "style": {
-                "padding-bottom": "12px"
-              },
+              "style": {},
               "children": [
                 {
                   "id": "808486bb8",
@@ -86,10 +84,10 @@
                     "width": "100%",
                     "height": "100%",
                     "boxSizing": "border-box",
-                    "overflow": "scroll",
                     "position": "relative",
-                    "max-height": "200px",
-                    "flex-direction": "column"
+                    "max-height": "203px",
+                    "flex-direction": "column",
+                    "overflow-y": "scroll"
                   },
                   "container": "containerb0459d53",
                   "attributes": {},

@@ -10,8 +10,6 @@
       "style": {
         "flex-direction": "column",
         "color": "#666",
-        "height": "100%",
-        "overflow": "scroll",
         "background": "var(--bc891e755312)"
       },
       "attributes": {},

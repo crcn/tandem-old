@@ -41,12 +41,12 @@ import {
   ProjectInfo,
   BaseQuickSearchResult,
   QuickSearchResult,
-  ProjectTemplate,
   ScriptProcess,
   ScriptProcessLog,
   Unloader
 } from "../state";
 import { InspectorNode } from "paperclip";
+import { ProjectTemplate } from "tandem-starter-kits";
 
 export const PROJECT_LOADED = "PROJECT_LOADED";
 export const ACTIVE_FILE_CHANGED = "ACTIVE_FILE_CHANGED";

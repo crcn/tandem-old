@@ -1,6 +1,6 @@
 {
   "name": "paperclip-sketch",
-  "version": "10.1.23",
+  "version": "10.1.25",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -11,5 +11,5 @@
   },
   "author": "",
   "license": "ISC",
-  "gitHead": "61552458fb4697d72287bdc01f1cdc19066a7b52"
+  "gitHead": "c0f8539549146045f0a9cf6b6f8a7ebf99155134"
 }

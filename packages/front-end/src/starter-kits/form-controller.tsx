@@ -2,7 +2,7 @@ import * as React from "react";
 import * as cx from "classnames";
 import { BaseStarterKitFormOptionsProps } from "./form.pc";
 import { Dispatch } from "redux";
-import { ProjectTemplate } from "../state";
+import { ProjectTemplate } from "tandem-starter-kits";
 import { browseDirectoryClicked } from "../actions";
 
 export type Options = {

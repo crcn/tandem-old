@@ -18,6 +18,9 @@ export type Props = {
   unsaved: boolean;
 } & BaseChromeProps;
 
+const isWindows = navigator.appVersion.indexOf("Win") !== -1;
+const isMacOS = navigator.appVersion.indexOf("Mac") !== -1;
+
 export default (Base: React.ComponentClass<BaseChromeProps>) =>
   class ChromeController extends React.PureComponent<Props> {
     onHeaderClick = (event: React.MouseEvent<any>) => {
@@ -69,6 +72,8 @@ export default (Base: React.ComponentClass<BaseChromeProps>) =>
           label={title}
           variant={cx({
             unsaved,
+            macos: isMacOS,
+            windows: isWindows,
             hasSelectedProject: Boolean(projectInfo)
           })}
           headerProps={{

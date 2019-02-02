@@ -1,6 +1,6 @@
 {
   "name": "tandem-webpack-preview-server",
-  "version": "10.1.22",
+  "version": "10.1.25",
   "description": "",
   "main": "index.js",
   "bin": {
@@ -28,5 +28,5 @@
     "webpack-hot-middleware": "^2.22.2",
     "yargs": "^11.0.0"
   },
-  "gitHead": "61552458fb4697d72287bdc01f1cdc19066a7b52"
+  "gitHead": "c0f8539549146045f0a9cf6b6f8a7ebf99155134"
 }
