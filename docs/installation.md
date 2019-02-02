@@ -1,34 +1,34 @@
-TODO:
+## 1. Creating a new project
 
-- [ ] Use Tandem CLI tools instead
-- [ ] use `tandem init` to setup new project
+If you haven't already installed the command line tools, go ahead and `cd` to your project directory, then run:
 
-## 1. Setting up a Tandem project
-
-First you'll need to setup a Tandem project. To do that, create a `app.tdproject` file in your app's root directory, then paste the following contents into it:
-
-```javascript
-{
-
-  // Tandem will use this directory as a starting point to scan for all `*.pc` files.
-  "rootDir": ".",
-
-  // This tells Tandem where _not_ to look for `*.pc` files.
-  "exclude": [
-    "node_modules"
-  ]
-}
+```
+npm install tandem-cli --save-dev
 ```
 
-> Docs for `*.tdproject` can be found [here](./project-file.md).
+After that you can initialize a new Tandem project by running:
 
-Save that, then open the project file in Tandem. Once ypur project is open, go to the file navigator and add a new component file.
+```
+./node_modules/.bin/tandem init
+```
+
+> If Tandem isn't already downloaded, `init` will go ahead and download the release associated with the `tandem-cli` version. Installing the `tandem-cli` package with your project (instead of globally) ensures that you're using the _correct_ version of Tandem with your UI files.
+
+After you've initialized your project, you can open it up with:
+
+```
+./node_modules/.bin/tandem open
+```
+
+> More docs for the CLI fool can be found in the [CLI package](./packages/cli)
+
+At this point Tandem should be opened. Go ahead and create your first component file like so:
 
 ![Add new file](./assets/add-new-component-file.gif)
 
 That's it! From here you can start building UIs. Note that you can have as many UI files as you want, and they can be organized anywhere in your project. Generally what _I_ like to do is create one UI file per component.
 
-Now onto setting up your build configuration:
+Now onto setting up your build configuration.
 
 ## 2. Configuring your bundler
 

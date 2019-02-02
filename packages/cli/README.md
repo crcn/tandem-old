@@ -1,21 +1,6 @@
 **Installation**: `npm install tandem-cli`
 
-This CLI tool
-
-Inspiration:
-
-- https://docs.cypress.io/guides/getting-started/installing-cypress.html#
-
-TODO:
-
-- [ ] init command
-
-  - [ ] ask where source directory is
-  - [ ] ask which framework (React, blank)
-  - [ ] ask which bundler
-    - [ ] generate code for bundler & paste
-
-- [ ] use tandem-start-kits
+This tool allows you to keep versions of Tandem that are specific to the UI files that are in your project.
 
 #### Usage
 

@@ -9,25 +9,20 @@ Tandem is a UI builder for web applications. It currently works with [React](htt
 
 ![Split view](./assets/screenshots/v10.1.7.png)
 
-#### Installation
+### Installation
 
-TODO - GIF
+```bash
+npm install tandem-cli --dev
+cd path/to/app
 
-Assuming that you have `node.js` installed, run the following command:
+# Create a new project
+tandem init
 
-```
-npm install tandem-cli --save-dev
-```
-
-After that you can initialize a new Tandem project by running:
-
-```
-./node_modules/.bin/tandem init
+# Open project
+tandem open
 ```
 
-☝️ This will walk you through the setup process & then open the app.
-
-More docs for the CLI fool can be found in the [CLI package](./packages/cli)
+More info can be found in the [installation docs](./docs/installation.md)
 
 ### Highlights
 
@@ -40,9 +35,9 @@ More docs for the CLI fool can be found in the [CLI package](./packages/cli)
 
 ### Resources
 
+- [Installation](./docs/nstallation.md)
 - [Releases](https://github.com/tandemcode/tandem/releases)
 - [Tutorial videos](https://www.youtube.com/playlist?list=PLCNS_PVbhoSXOrjiJQP7ZjZJ4YHULnB2y)
-- [Integrating with existing code](./docs/integrating-with-existing-project.md)
 - [Terminology & Concepts](./docs/concepts.md)
 - [Goals & Non-goals](./docs/goals.md)
 - [Examples](https://github.com/tandemcode/examples)
