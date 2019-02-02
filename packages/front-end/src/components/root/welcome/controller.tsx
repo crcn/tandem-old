@@ -11,7 +11,7 @@ import {
   templates,
   createProjectFiles
 } from "../../../starter-kits";
-import { ProjectTemplate } from "../../../state";
+import { ProjectTemplate } from "tandem-starter-kits";
 import { Options as FormOptions } from "../../../starter-kits/form-controller";
 
 export type Props = {

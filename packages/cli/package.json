@@ -26,7 +26,7 @@
     "tandem-starter-kits": "^10.1.25",
     "yargs": "^12.0.5"
   },
-  "gitHead": "30112134661276713650973969b9f5a94b8beae9",
+  "gitHead": "c0f8539549146045f0a9cf6b6f8a7ebf99155134",
   "devDependencies": {
     "@types/chalk": "^2.2.0",
     "@types/commander": "^2.12.2",

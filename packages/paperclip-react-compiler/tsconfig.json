@@ -9,7 +9,7 @@
     "jsx": "react",
     "experimentalDecorators": true
   },
-  "exclude": ["node_modules", "*-test", "lib", "index.d.ts"],
+  "exclude": ["node_modules", "*-test", "lib", "index.d.ts", "examples"],
   "filesGlob": ["./src/**/*.ts"],
   "rootDirs": ["node_modules"]
 }
