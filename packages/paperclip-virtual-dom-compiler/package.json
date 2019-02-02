@@ -17,5 +17,6 @@
     "paperclip": "^10.1.24",
     "tandem-common": "^10.1.24",
     "typescript": "^3.1.6"
-  }
+  },
+  "gitHead": "30112134661276713650973969b9f5a94b8beae9"
 }
