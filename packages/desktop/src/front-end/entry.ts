@@ -50,7 +50,7 @@ initSentry({
 
 const query = Url.parse(String(location), true).query;
 
-const init = setup<DesktopRootState>(
+const init = setup(
   function*() {
     return {
       readFile,
@@ -115,7 +115,7 @@ setTimeout(init, 500, {
   openFiles: [],
   fileCache: {},
   selectedComponentId: null
-});
+} as any);
 
 function* openPreview(frame: Frame) {
   if (!query.previewHost) {

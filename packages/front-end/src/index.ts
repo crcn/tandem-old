@@ -45,22 +45,22 @@ const SLOW_ACTION_INTERVAL = 10;
 
 const reuseUris = reuser(10, (uris: string[]) => uris.join(","));
 
-export const setup = <TState extends RootState>(
+export const setup = (
   createSideEffects: SideEffectCreator,
-  reducer?: Reducer<TState>,
+  reducer?: Reducer<any>,
   saga?: () => IterableIterator<any>
 ) => {
-  return (initialState: TState) => {
+  return (initialState: any) => {
     let bugReporter;
 
     const sagaMiddleware = createSagaMiddleware({
       onError: e => bugReporter.triggerError(e)
     });
     const store = createStore(
-      (state: TState, event: Action) => {
+      (state: any, event: Action) => {
         const now = Date.now();
         const marker = pmark(`action ${event.type}`);
-        state = rootReducer(state, event) as TState;
+        state = rootReducer(state, event) as any;
         if (reducer) {
           state = reducer(state, event);
         }
