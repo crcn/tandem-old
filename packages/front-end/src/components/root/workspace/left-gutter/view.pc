@@ -136,7 +136,21 @@
             "display": "flex",
             "flex-direction": "column"
           },
-          "children": [],
+          "children": [
+            {
+              "id": "35b7393a2490",
+              "propertyName": "style",
+              "targetIdPath": [
+                "9aafcac8899",
+                "806ffd0684"
+              ],
+              "value": {
+                "overflow-y": "hidden"
+              },
+              "name": "override",
+              "children": []
+            }
+          ],
           "metadata": {
             "bounds": {
               "left": 1511,
