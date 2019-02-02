@@ -35,7 +35,7 @@ More info can be found in the [installation docs](./docs/installation.md)
 
 ### Resources
 
-- [Installation](./docs/nstallation.md)
+- [Installation](./docs/installation.md)
 - [Releases](https://github.com/tandemcode/tandem/releases)
 - [Tutorial videos](https://www.youtube.com/playlist?list=PLCNS_PVbhoSXOrjiJQP7ZjZJ4YHULnB2y)
 - [Terminology & Concepts](./docs/concepts.md)
