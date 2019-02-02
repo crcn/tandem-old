@@ -1,6 +1,6 @@
 {
   "name": "paperclip-dom-recorder",
-  "version": "10.1.23",
+  "version": "10.1.24",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -12,8 +12,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "paperclip": "^10.1.23",
-    "tandem-common": "^10.1.22"
+    "paperclip": "^10.1.24",
+    "tandem-common": "^10.1.24"
   },
   "devDependencies": {
     "@types/node": "^10.11.4",

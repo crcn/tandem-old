@@ -1,6 +1,6 @@
 {
   "name": "tandem-front-end",
-  "version": "10.1.23",
+  "version": "10.1.24",
   "description": "Visual editor for web components",
   "main": "index.js",
   "scripts": {
@@ -40,13 +40,13 @@
     "mocha": "^3.4.2",
     "node-sass": "^4.7.2",
     "null-loader": "^0.1.1",
-    "paperclip-react-compiler": "^10.1.23",
-    "paperclip-react-loader": "^10.1.23",
+    "paperclip-react-compiler": "^10.1.24",
+    "paperclip-react-loader": "^10.1.24",
     "react-hot-loader": "^3.1.2",
     "sass-loader": "^7.0.3",
     "script-ext-html-webpack-plugin": "^2.1.3",
     "style-loader": "^0.18.2",
-    "tandem-webpack-preview-server": "^10.1.22",
+    "tandem-webpack-preview-server": "^10.1.24",
     "text-loader": "^0.0.1",
     "ts-loader": "^5.1.0",
     "typescript": "3.0.x",
@@ -60,11 +60,11 @@
   "dependencies": {
     "classnames": "^2.2.5",
     "crc32": "^0.2.2",
-    "fsbox": "^10.1.22",
+    "fsbox": "^10.1.24",
     "lodash": "^4.17.10",
     "mime-types": "^2.1.20",
-    "paperclip": "^10.1.23",
-    "paperclip-migrator": "^10.1.23",
+    "paperclip": "^10.1.24",
+    "paperclip-migrator": "^10.1.24",
     "react": "^16.4.2",
     "react-dnd": "^5.0.0",
     "react-dnd-html5-backend": "^5.0.1",
@@ -74,8 +74,8 @@
     "redux": "^4.0.0",
     "redux-saga": "^0.16.0",
     "scroll-into-view-if-needed": "^2.2.16",
-    "tandem-common": "^10.1.22",
-    "tandem-starter-kits": "^1.0.0"
+    "tandem-common": "^10.1.24",
+    "tandem-starter-kits": "^10.1.24"
   },
   "gitHead": "61552458fb4697d72287bdc01f1cdc19066a7b52"
 }
