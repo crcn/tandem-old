@@ -78,7 +78,10 @@ export function bubbleHTMLIframeEvents(
     "mouseup",
     "keyup",
     "keydown",
-    "paste"
+    "paste",
+    "touchstart",
+    "touchmove",
+    "touchend"
   ];
 
   for (let eventType of eventTypes) {
@@ -88,5 +91,8 @@ export function bubbleHTMLIframeEvents(
   if (options.ignoreScrollEvents !== true) {
     window.addEventListener("wheel", bubbleEvent);
     window.addEventListener("scroll", bubbleEvent);
+    window.addEventListener("touchmove", bubbleEvent);
+    window.addEventListener("touchstart", bubbleEvent);
+    window.addEventListener("touchend", bubbleEvent);
   }
 }

@@ -437,8 +437,8 @@ import {
 } from "paperclip";
 
 const ZOOM_SENSITIVITY = IS_WINDOWS ? 2500 : 250;
-const PAN_X_SENSITIVITY = IS_WINDOWS ? 0.07 : 1;
-const PAN_Y_SENSITIVITY = IS_WINDOWS ? 0.3 : 1;
+const PAN_X_SENSITIVITY = IS_WINDOWS ? 0.05 : 1;
+const PAN_Y_SENSITIVITY = IS_WINDOWS ? 0.05 : 1;
 const MIN_ZOOM = 0.02;
 const MAX_ZOOM = 6400 / 100;
 const MAX_LOGS = 100;

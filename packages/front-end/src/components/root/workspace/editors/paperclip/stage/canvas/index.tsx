@@ -184,17 +184,28 @@ const BaseCanvasComponent = ({
   );
 };
 
+const MAX_WHEEL_DELTA = 150;
+
 const enhance = compose<CanvasInnerProps, CanvasOuterProps>(
   pure,
   withState("canvasOuter", "setCanvasOuter", null),
   withState("canvasContainer", "setCanvasContainer", null),
   withHandlers(() => {
-    // throttle to prevent jankiness
-    const onWheel = (event, dispatch, canvasOuter) => {
-      requestAnimationFrame(() => {
-        const rect = canvasOuter.getBoundingClientRect();
-        dispatch(canvasWheel(rect.width, rect.height, event));
-      });
+    let previousDeltaX: number = 0;
+    let previousDeltaY: number = 0;
+    const onWheel = (event: React.WheelEvent<any>, dispatch, canvasOuter) => {
+      // slight bug in Windows (maybe it's just within a VM), but deltaX & deltaY "hop" on occassion. Here
+      // // we're trying to prevent that.
+      // if (Math.abs(event.deltaX) - Math.abs(previousDeltaX) > MAX_WHEEL_DELTA || Math.abs(event.deltaY) - Math.abs(previousDeltaY) > MAX_WHEEL_DELTA) {
+      //   return;
+      // }
+      // console.log(event.deltaX, previousDeltaX);
+
+      // previousDeltaX = event.deltaX;
+      // previousDeltaY = event.deltaY;
+
+      const rect = canvasOuter.getBoundingClientRect();
+      dispatch(canvasWheel(rect.width, rect.height, event));
     };
 
     return {
@@ -225,9 +236,9 @@ const enhance = compose<CanvasInnerProps, CanvasOuterProps>(
       onWheel: ({ dispatch, canvasOuter }: CanvasInnerProps) => (
         event: React.WheelEvent<any>
       ) => {
-        event.persist();
-        event.preventDefault();
-        event.stopPropagation();
+        // event.persist();
+        // event.preventDefault();
+        // event.stopPropagation();
         onWheel(event, dispatch, canvasOuter);
       }
     };

@@ -5,6 +5,5 @@
   "globalFilePath": "./src/global.pc",
   "rootDir": ".",
   "scripts": {
-    "previewServer": "/usr/local/bin/npm run tandem-preview-server"
   }
 }
