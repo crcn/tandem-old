@@ -68,7 +68,8 @@ import {
   flattenTreeNode,
   getFileFromUri,
   EMPTY_ARRAY,
-  createBounds
+  createBounds,
+  normalizeFilePath
 } from "tandem-common";
 // import { serverStateLoaded } from "../actions";
 import { DesktopRootState } from "../state";
@@ -257,6 +258,7 @@ function* watchProjectDirectory() {
         _actions.forEach(emit);
       }, 10);
       watcher.on("all", (event, path) => {
+        path = normalizeFilePath(path);
         if (/\.DS_Store/.test(path)) {
           return;
         }

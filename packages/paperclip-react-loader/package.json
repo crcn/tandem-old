@@ -16,6 +16,7 @@
     "@types/node": "^10.3.3",
     "loader-utils": "^1.1.0",
     "paperclip": "^10.1.25",
+    "tandem-common": "^10.1.25",
     "paperclip-migrator": "^10.1.25",
     "paperclip-react-compiler": "^10.1.25"
   },

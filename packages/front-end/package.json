@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "mocha ./lib/**/*-test.js",
-    "build": "build:types && webpack",
+    "build": "npm run build:types && webpack",
     "build:types": "paperclip-react-compiler  \"src/**/*.pc\" --definition --write",
     "build:watch": "concurrently \"paperclip-react-compiler \\\"src/**/*.pc\\\" --definition --write --watch\" \"webpack --watch\"",
     "start": "node lib/back-end/entry",

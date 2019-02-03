@@ -5,13 +5,14 @@ import {
   getComponentGraphRefMap,
   getPCNodeDependency
 } from "paperclip";
+import { normalizeFilePath } from "tandem-common";
 const loaderUtils = require("loader-utils");
 
 // TODO - use options for
 module.exports = function(source) {
   this.cacheable && this.cacheable();
   const callback = this.async();
-  const uri = this.resource;
+  const uri = normalizeFilePath(this.resource);
   const options = loaderUtils.getOptions(this) || {};
   const useHMR = options.hmr == null ? true : options.hmr;
   const graph = loadFSDependencyGraphSync(

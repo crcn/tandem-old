@@ -31,7 +31,7 @@ import {
   createPCTextNode
 } from "paperclip";
 import { DesktopState, TDProject } from "../state";
-import { isPublicAction, createBounds } from "tandem-common";
+import { isPublicAction, createBounds, normalizeFilePath } from "tandem-common";
 import { shortcutsSaga } from "./menu";
 import * as fs from "fs";
 import * as fsa from "fs-extra";
@@ -246,7 +246,7 @@ function* handleOpenProject() {
       continue;
     }
 
-    yield put(tdProjectFilePicked(filePath));
+    yield put(tdProjectFilePicked(normalizeFilePath(filePath)));
   }
 }
 
