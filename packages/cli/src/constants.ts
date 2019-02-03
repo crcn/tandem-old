@@ -8,4 +8,4 @@ export const TMP_APP_ROOT_DIR = `${tmpdir()}/tandem`;
 export const TMP_APP_DIR = `${tmpdir()}/tandem/${distVersion}`;
 export const TMP_APP_BIN_PATH = isWin
   ? `${TMP_APP_DIR}/Tandem.${isWin ? "exe" : "app"}`.replace(/\//g, "\\")
-  : `${TMP_APP_DIR}/Tandem-${platform()}-x64/Tandem.${isWin ? "exe" : "app"}`;
+  : `${TMP_APP_DIR}/Tandem.${isWin ? "exe" : "app"}`;
