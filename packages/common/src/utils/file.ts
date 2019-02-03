@@ -1,6 +1,6 @@
 export const resolveFilePath = (relativePath: string, fromPath: string) => {
-  const pp1 = fromPath.split("/");
-  const pp2 = relativePath.split("/");
+  const pp1 = fromPath.split(/[\\/]/);
+  const pp2 = relativePath.split(/[\\/]/);
   pp1.pop();
 
   if (pp2[0] === ".") {
@@ -13,4 +13,8 @@ export const resolveFilePath = (relativePath: string, fromPath: string) => {
   }
 
   return [...pp1, ...pp2].join("/");
+};
+
+export const normalizeFilePath = (filePath: string) => {
+  return filePath.replace(/[\\]/g, "/").replace("C:/", "/");
 };

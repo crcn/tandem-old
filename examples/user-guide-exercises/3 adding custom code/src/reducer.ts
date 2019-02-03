@@ -22,7 +22,6 @@ export default (state: RootState, action: TodoAppAction) => {
     }
     case TodoAppActionType.CLEAR_COMPLETED_BUTTON_CLICKED: {
       state = clearCompleted(state);
-      console.log(state);
       return state;
     }
     case TodoAppActionType.TOGGLE_ITEM_CLICKED: {

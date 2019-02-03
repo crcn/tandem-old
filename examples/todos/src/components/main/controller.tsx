@@ -84,7 +84,6 @@ export default (Base: React.ComponentClass<BaseApplicationProps>) =>
       const { ...rest } = this.props;
       const { todoItems, newTodoText } = this.state;
       const hasCompleted = todoItems.some(item => item.completed);
-      console.log(hasCompleted);
       const items = todoItems.map((todoItem, i) => (
         <TodoItemComponent
           key={i}

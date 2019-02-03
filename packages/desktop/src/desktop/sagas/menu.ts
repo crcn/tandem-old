@@ -8,6 +8,7 @@ import {
 import { fork, put, take, takeEvery } from "redux-saga/effects";
 import { eventChannel } from "redux-saga";
 import { exec } from "child_process";
+import { platform } from "os";
 import {
   MAIN_WINDOW_OPENED,
   OPEN_PROJECT_MENU_ITEM_CLICKED,
@@ -60,6 +61,8 @@ function* handleFSItemContextMenuOptions() {
   );
 }
 
+const cmdKey = platform() === "win32" ? "ctrl" : "meta";
+
 function* handleMenu() {
   const menu = new Menu();
 
@@ -86,14 +89,14 @@ function* handleMenu() {
         submenu: [
           {
             label: "Undo",
-            accelerator: "meta+z",
+            accelerator: `${cmdKey}+z`,
             click: () => {
               emit(shortcutKeyDown("SHORTCUT_UNDO_KEY_DOWN"));
             }
           },
           {
             label: "Redo",
-            accelerator: "meta+y",
+            accelerator: `${cmdKey}+y`,
             click: () => {
               emit(shortcutKeyDown("SHORTCUT_REDO_KEY_DOWN"));
             }
@@ -139,28 +142,28 @@ function* handleMenu() {
         submenu: [
           {
             label: "Save",
-            accelerator: "meta+s",
+            accelerator: `${cmdKey}+s`,
             click: () => {
               emit(shortcutKeyDown("SHORTCUT_SAVE_KEY_DOWN"));
             }
           },
           {
             label: "Search",
-            accelerator: "meta+t",
+            accelerator: `${cmdKey}+t`,
             click: () => {
               emit(shortcutKeyDown("SHORTCUT_QUICK_SEARCH_KEY_DOWN"));
             }
           },
           {
             label: "Open Project...",
-            accelerator: "meta+o",
+            accelerator: `${cmdKey}+o`,
             click: () => {
               emit(shortcutKeyDown(OPEN_PROJECT_MENU_ITEM_CLICKED));
             }
           }
           // {
           //   label: "New Project...",
-          //   accelerator: "meta+shift+n",
+          //   accelerator: `${cmdKey}+shift+n`,
           //   click: () => {
           //     emit(shortcutKeyDown(NEW_PROJECT_MENU_ITEM_CLICKED));
           //   }
@@ -199,7 +202,7 @@ function* handleMenu() {
         submenu: [
           {
             label: "Reload",
-            accelerator: "meta+r",
+            accelerator: `${cmdKey}+r`,
             click: (a, window, event) => {
               emit(shortcutKeyDown("RELOAD"));
             }
@@ -210,14 +213,14 @@ function* handleMenu() {
           ,
           {
             label: "Zoom In",
-            accelerator: "meta+=",
+            accelerator: `${cmdKey}+=`,
             click: (a, window, event) => {
               emit(shortcutKeyDown("SHORTCUT_ZOOM_IN_KEY_DOWN"));
             }
           },
           {
             label: "Zoom Out",
-            accelerator: "meta+-",
+            accelerator: `${cmdKey}+-`,
             click: () => {
               emit(shortcutKeyDown("SHORTCUT_ZOOM_OUT_KEY_DOWN"));
             }
@@ -226,35 +229,35 @@ function* handleMenu() {
           { role: "togglefullscreen" },
           {
             label: "Toggle Side Bar",
-            accelerator: "meta+b",
+            accelerator: `${cmdKey}+b`,
             click: () => {
               emit(shortcutKeyDown("SHORTCUT_TOGGLE_SIDEBAR"));
             }
           },
           {
             label: "Toggle Panel",
-            accelerator: "meta+j",
+            accelerator: `${cmdKey}+j`,
             click: () => {
               emit(shortcutKeyDown("SHORTCUT_TOGGLE_PANEL"));
             }
           },
           {
             label: "Select Next Tab",
-            accelerator: "meta+shift+]",
+            accelerator: `${cmdKey}+shift+]`,
             click: (a, window, event) => {
               emit(shortcutKeyDown("SHORTCUT_SELECT_NEXT_TAB"));
             }
           },
           {
             label: "Select Previous Tab",
-            accelerator: "meta+shift+[",
+            accelerator: `${cmdKey}+shift+[`,
             click: (a, window, event) => {
               emit(shortcutKeyDown("SHORTCUT_SELECT_PREVIOUS_TAB"));
             }
           },
           {
             label: "Close Current Tab",
-            accelerator: "meta+w",
+            accelerator: `${cmdKey}+w`,
             click: (a, window, event) => {
               emit(shortcutKeyDown("SHORTCUT_CLOSE_CURRENT_TAB"));
             }

@@ -452,7 +452,7 @@
           "id": "7c7f4dd718003",
           "name": "variant",
           "label": "macos",
-          "isDefault": true,
+          "isDefault": false,
           "children": [],
           "metadata": {}
         },
@@ -500,7 +500,7 @@
           "id": "7c7f4dd735451",
           "name": "variant",
           "label": "windows",
-          "isDefault": false,
+          "isDefault": true,
           "children": [],
           "metadata": {}
         },
@@ -515,6 +515,19 @@
             "display": "inline-block",
             "height": "33px",
             "position": "absolute"
+          },
+          "name": "override",
+          "children": []
+        },
+        {
+          "id": "ac63f2db35429",
+          "variantId": "7c7f4dd735451",
+          "propertyName": "style",
+          "targetIdPath": [
+            "32ef79b725"
+          ],
+          "value": {
+            "display": "none"
           },
           "name": "override",
           "children": []

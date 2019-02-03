@@ -106,7 +106,7 @@ type FilePathPair = [string, boolean];
 
 export const convertFlatFilesToNested = (files: FilePathPair[]): FSItem[] => {
   const splitParts = files.map(([filePath, isDirectory]) => {
-    return [filePath.split("/"), isDirectory];
+    return [filePath.split(/[\\/]/), isDirectory];
   }) as [string[], boolean][];
 
   const sortedFiles = splitParts
@@ -155,7 +155,7 @@ export const convertFlatFilesToNested = (files: FilePathPair[]): FSItem[] => {
 export const convertFlatFilesToNested2 = (items: FSItem[]): Directory => {
   const splitParts = items.map(item => {
     return [
-      stripProtocol(item.uri).split("/"),
+      stripProtocol(item.uri).split(/[\\/]/),
       item.name === FSItemTagNames.DIRECTORY,
       item
     ];
@@ -278,8 +278,8 @@ export const sortFSItems = (files: FSItem[]) =>
     return a.name === FSItemTagNames.FILE && b.name === FSItemTagNames.DIRECTORY
       ? 1
       : a.name === FSItemTagNames.DIRECTORY && b.name === FSItemTagNames.FILE
-        ? -1
-        : a.uri < b.uri
-          ? -1
-          : 1;
+      ? -1
+      : a.uri < b.uri
+      ? -1
+      : 1;
   });

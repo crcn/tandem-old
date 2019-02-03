@@ -84,6 +84,7 @@ export function projectSaga({
       }
 
       previousProjectPath = projectInfo.path;
+      console.log(projectInfo.path, path.dirname(projectInfo.path));
 
       yield call(loadDirectory, path.dirname(projectInfo.path));
     }
@@ -108,7 +109,7 @@ export function projectSaga({
     const projectDir = path.dirname(stripProtocol(projectInfo.path));
     const relativePathParts = stripProtocol(dir)
       .replace(projectDir, "")
-      .split("/");
+      .split(/[\\/]/);
     for (let i = 0, { length } = relativePathParts; i < length; i++) {
       const subdir = path.join(
         projectDir,

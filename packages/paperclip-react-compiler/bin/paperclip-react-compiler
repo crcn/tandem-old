@@ -57,7 +57,7 @@ function translateFile(relPath) {
   if (outAbsPath) {
     contentFilePath = path.join(
       outAbsPath,
-      difference(contentFilePath.split("/"), outAbsPath.split("/")).slice(1).join("/"),
+      difference(contentFilePath.split(/[\\/]/), outAbsPath.split(/[\\/]/)).slice(1).join("/"),
     );
   }
   if (write) {

@@ -41,7 +41,7 @@
       "name": "style-mixin",
       "label": "Base font",
       "style": {
-        "font-family": "Helvetica Neue",
+        "font-family": "Helvetica Neue, Helvetica",
         "color": "rgba(136, 136, 136, 1)",
         "font-size": "12px",
         "letter-spacing": "0.05em",

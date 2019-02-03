@@ -24,6 +24,7 @@ import {
   stripProtocol,
   createDirectory,
   addProtocol,
+  normalizeFilePath,
   FILE_PROTOCOL,
   createFile,
   Point
@@ -158,7 +159,7 @@ function* readDirectory(dirUri: string): any {
   )).filter(basename => basename !== ".DS_Store");
 
   return dirBasenames.map(basename => {
-    const fullPath = path.join(dir, basename);
+    const fullPath = normalizeFilePath(path.join(dir, basename));
     const uri = addProtocol(FILE_PROTOCOL, fullPath);
     if (fs.lstatSync(fullPath).isDirectory()) {
       return createDirectory(uri);

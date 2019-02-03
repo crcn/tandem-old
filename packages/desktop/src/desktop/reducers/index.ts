@@ -10,6 +10,7 @@ import {
   LOCAL_FILE_LOADED,
   LocalFileLoaded
 } from "../actions";
+import { normalizeFilePath } from "tandem-common";
 
 export const rootReducer = (
   state: DesktopState,
@@ -18,14 +19,14 @@ export const rootReducer = (
   switch (action.type) {
     case TD_PROJECT_FILE_PICKED: {
       const { filePath } = action as TDProjectFilePicked;
-      return { ...state, tdProjectPath: filePath };
+      return { ...state, tdProjectPath: normalizeFilePath(filePath) };
     }
     case LOCAL_FILE_LOADED: {
       const { path } = action as LocalFileLoaded;
       if (/.tdproject/.test(path)) {
         return {
           ...state,
-          tdProjectPath: path
+          tdProjectPath: normalizeFilePath(path)
         };
       }
       return state;

@@ -3,7 +3,7 @@ import * as cx from "classnames";
 import * as path from "path";
 import { BaseChromeProps } from "./chrome.pc";
 import { Dispatch } from "redux";
-import { ProjectInfo } from "../../state";
+import { ProjectInfo, IS_MAC_OS, IS_WINDOWS } from "../../state";
 import {
   CHROME_HEADER_MOUSE_DOWN,
   CHROME_CLOSE_BUTTON_CLICKED,
@@ -17,9 +17,6 @@ export type Props = {
   projectInfo: ProjectInfo;
   unsaved: boolean;
 } & BaseChromeProps;
-
-const isWindows = navigator.appVersion.indexOf("Win") !== -1;
-const isMacOS = navigator.appVersion.indexOf("Mac") !== -1;
 
 export default (Base: React.ComponentClass<BaseChromeProps>) =>
   class ChromeController extends React.PureComponent<Props> {
@@ -72,8 +69,8 @@ export default (Base: React.ComponentClass<BaseChromeProps>) =>
           label={title}
           variant={cx({
             unsaved,
-            macos: isMacOS,
-            windows: isWindows,
+            macos: IS_MAC_OS,
+            windows: IS_WINDOWS,
             hasSelectedProject: Boolean(projectInfo)
           })}
           headerProps={{

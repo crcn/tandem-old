@@ -244,8 +244,6 @@ const normalizeStyleProps = (style: any) => {
           normalizedStyle["font-weight"] = part;
         }
       }
-
-      console.log(fontParts, normalizedStyle);
     } else {
       normalizedStyle[key] = value;
     }

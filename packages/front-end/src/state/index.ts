@@ -226,6 +226,11 @@ export enum QuickSearchResultType {
   COMPONENT = "component"
 }
 
+export const IS_WINDOWS =
+  typeof navigator != null ? navigator.appVersion.indexOf("Win") !== -1 : false;
+export const IS_MAC_OS =
+  typeof navigator != null ? navigator.appVersion.indexOf("Mac") !== -1 : false;
+
 export type BaseQuickSearchResult<TType extends QuickSearchResultType> = {
   label: string;
   description: string;
@@ -1353,8 +1358,8 @@ export const centerEditorCanvas = (
           (height - INITIAL_ZOOM_PADDING) / innerSize.height
         )
       : typeof zoomOrZoomToFit === "number"
-        ? zoomOrZoomToFit
-        : translate.zoom;
+      ? zoomOrZoomToFit
+      : translate.zoom;
 
   state = updateEditorWindow(
     {

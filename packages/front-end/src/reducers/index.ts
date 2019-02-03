@@ -285,7 +285,8 @@ import {
   updateProjectScripts,
   removeBuildScriptProcess,
   getBuildScriptProcess,
-  RootReadyType
+  RootReadyType,
+  IS_WINDOWS
 } from "../state";
 import {
   PCSourceTagNames,
@@ -435,7 +436,9 @@ import {
   getSyntheticInspectorNode
 } from "paperclip";
 
-const ZOOM_SENSITIVITY = process.platform === "win32" ? 2500 : 250;
+const ZOOM_SENSITIVITY = IS_WINDOWS ? 2500 : 250;
+const PAN_X_SENSITIVITY = IS_WINDOWS ? 0.07 : 1;
+const PAN_Y_SENSITIVITY = IS_WINDOWS ? 0.3 : 1;
 const MIN_ZOOM = 0.02;
 const MAX_ZOOM = 6400 / 100;
 const MAX_LOGS = 100;
@@ -1479,6 +1482,10 @@ export const canvasReducer = (state: RootState, action: Action) => {
         canvasHeight,
         canvasWidth
       } = action as CanvasWheel;
+
+      let delta2X = deltaX * PAN_X_SENSITIVITY;
+      let delta2Y = deltaY * PAN_Y_SENSITIVITY;
+
       const editorWindow = getActiveEditorWindow(state);
       const openFile = getOpenFile(
         editorWindow.activeFilePath,
@@ -1504,8 +1511,8 @@ export const canvasReducer = (state: RootState, action: Action) => {
       } else {
         translate = {
           ...translate,
-          left: translate.left - deltaX,
-          top: translate.top - deltaY
+          left: translate.left - delta2X,
+          top: translate.top - delta2Y
         };
       }
 
@@ -3245,8 +3252,8 @@ const shortcutReducer = (state: RootState, action: Action): RootState => {
         ? nextChildren[clamp(index, 0, nextChildren.length - 1)].id
         : getParentTreeNode(parent.id, state.sourceNodeInspector).name !==
           InspectorTreeNodeName.ROOT
-          ? parent.id
-          : null;
+        ? parent.id
+        : null;
 
       if (nextSelectedNodeId) {
         const nextInspectorNode: InspectorNode = getNestedTreeNodeById(

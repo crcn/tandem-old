@@ -3,6 +3,7 @@ import * as fs from "fs";
 
 import { init } from "./desktop";
 import { TDProject } from "./desktop/state";
+import { normalizeFilePath } from "tandem-common";
 
 let projectPath = process.argv[2];
 let project: TDProject;
@@ -16,7 +17,7 @@ if (projectPath) {
 }
 
 init({
-  tdProjectPath: projectPath,
+  tdProjectPath: normalizeFilePath(projectPath),
   tdProject: project,
   info: {}
 });

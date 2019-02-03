@@ -4,6 +4,7 @@ import { ipcMain, MenuItemConstructorOptions, Menu } from "electron";
 import { DesktopState } from "../state";
 import { ContextMenuOption } from "tandem-front-end";
 import { dialog } from "electron";
+import { normalizeFilePath } from "tandem-common";
 export const pid = Date.now() + "_" + Math.random();
 
 export function* ipcSaga() {
@@ -24,12 +25,15 @@ function* actionSaga() {
   }
 }
 
+normalizeFilePath;
+
 function* apiSaga() {
   yield fork(function* getProjectInfo() {
     const chan = takeIPCEvents("getProjectInfo");
     while (1) {
       const { event } = yield take(chan);
       const state: DesktopState = yield select();
+      console.log(state && state.tdProjectPath);
       event.sender.send(
         "projectInfo",
         state.tdProject && {

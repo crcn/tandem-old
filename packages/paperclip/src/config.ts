@@ -3,7 +3,7 @@ import * as path from "path";
 import { PAPERCLIP_CONFIG_DEFAULT_EXTENSION } from "./constants";
 import { isPaperclipUri, DependencyGraph } from "./graph";
 import { PCModule, createPCDependency } from "./dsl";
-import { addProtocol, FILE_PROTOCOL } from "tandem-common";
+import { addProtocol, FILE_PROTOCOL, normalizeFilePath } from "tandem-common";
 
 export type PCConfigInfo = {
   directory: string;
@@ -41,7 +41,7 @@ export const openPCConfig = (dir: string): PCConfigInfo => {
 
     if (tdProjectBasename) {
       return {
-        directory: possibleDir,
+        directory: normalizeFilePath(possibleDir),
         config: JSON.parse(
           fs.readFileSync(path.join(possibleDir, tdProjectBasename), "utf8")
         )
@@ -98,7 +98,7 @@ const walkFiles = (
 
   const subpaths = fs
     .readdirSync(filePath)
-    .map(basename => path.join(filePath, basename));
+    .map(basename => normalizeFilePath(path.join(filePath, basename)));
 
   for (let i = 0, { length } = subpaths; i < length; i++) {
     walkFiles(subpaths[i], each);
