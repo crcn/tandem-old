@@ -5,7 +5,8 @@ const { platform, arch } = process;
 import * as request from "request";
 import * as ProgressBar from "progress";
 import { mkdirpSync } from "fs-extra";
-import { spawn } from "child_process";
+import * as yauzl from "yauzl";
+import * as extract from "extract-zip";
 const { distVersion } = require("../package");
 const archName = `${platform}-${arch}`;
 const fileName = `${archName}-v${distVersion}.zip`;
@@ -77,11 +78,19 @@ function install(filePath, unzipPath) {
     if (fs.existsSync(unzipPath)) {
       return resolve();
     }
-    console.log("Unzipping %s", filePath);
-    const proc = spawn("unzip", ["-qq", filePath, "-d", unzipPath]);
-    proc.stdout.pipe(process.stdout);
-    proc.stderr.pipe(process.stderr);
-    proc.on("exit", resolve);
+    yauzl.open(filePath, (err, zipFile) => {
+      const bar = new ProgressBar(`Unzipping Tandem ${distVersion} [:bar]`, {
+        width: 40,
+        total: zipFile.entryCount
+      });
+
+      extract(filePath, { dir: unzipPath, onEntry: () => bar.tick() }, err => {
+        if (err) {
+          return console.error(err);
+        }
+        resolve();
+      });
+    });
   });
 }
 

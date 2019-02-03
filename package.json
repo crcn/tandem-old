@@ -19,7 +19,8 @@
     "bootstrap": "lerna bootstrap",
     "build": "lerna exec --parallel -- npm run build",
     "build:watch": "lerna exec --parallel -- npm run build:watch",
-    "build:dist": "NODE_ENV=production npm run build; cd packages/desktop; npm run build:dist;",
+    "build:dist": "NODE_ENV=production npm run build && cd packages/desktop && npm run build:dist",
+    "build:dist:win": "npm run build && cd packages/desktop && npm run build:dist:win",
     "prepublish": "npm run bootstrap"
   },
   "lint-staged": {

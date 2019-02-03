@@ -8,10 +8,10 @@ const {difference} = require("lodash");
 const { translatePaperclipModuleToReact, translatePaperclipModuleToReactTSDefinition } = require("..");
 const migrate = require("paperclip-migrator");
 const { openPCConfig, loadFSDependencyGraphSync } = require("paperclip");
-const { addProtocol, FILE_PROTOCOL } = require("tandem-common");
+const { addProtocol, FILE_PROTOCOL, normalizeFilePath } = require("tandem-common");
 const chokidar = require("chokidar");
 
-const filePaths = glob.sync(_[0]);
+const filePaths = glob.sync(_[0]).map(normalizeFilePath);
 const cwd = process.cwd();
 const outAbsPath = outRelPath && resolvePath(outRelPath, cwd);
 
@@ -33,7 +33,7 @@ if (watch) {
 }
 
 function resolvePath(relPath, cwd) {
-  return relPath.charAt(0) === "/" ? relPath : path.join(cwd, relPath);
+  return normalizeFilePath(relPath.charAt(0) === "/" ? relPath : path.join(cwd, relPath));
 }
 
 

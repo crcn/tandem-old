@@ -20,7 +20,8 @@
     "build-front-end": "webpack",
     "clean": "rm -rf lib && rm -rf node_modules",
     "prepare": "npm run build",
-    "build:dist": "electron-packager . 'Tandem' --out=dist --overwrite --app-bundle-id='com.tandemcode.tandem' --icon=assets/tandem.icns --osx-sign"
+    "build:dist": "electron-packager . \"Tandem\" --out=dist --overwrite --app-bundle-id=\"com.tandemcode.tandem\" --icon=\"assets/tandem.icns\" --osx-sign",
+    "build:dist:win": "build"
   },
   "build": {
     "appId": "com.tandemcode.app",
@@ -30,7 +31,10 @@
         "name": "Tandem Project",
         "role": "Editor"
       }
-    ]
+    ],
+    "win": {
+      "target": "zip"
+    }
   },
   "author": "",
   "license": "ISC",

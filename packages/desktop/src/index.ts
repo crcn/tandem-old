@@ -17,7 +17,7 @@ if (projectPath) {
 }
 
 init({
-  tdProjectPath: normalizeFilePath(projectPath),
+  tdProjectPath: projectPath && normalizeFilePath(projectPath),
   tdProject: project,
   info: {}
 });
