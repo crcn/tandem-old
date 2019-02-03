@@ -221,7 +221,9 @@ import {
   UNLOADER_CREATED,
   UNLOADER_COMPLETED,
   UnloaderAction,
-  QUICK_SEARCH_INPUT_ENTERED
+  QUICK_SEARCH_INPUT_ENTERED,
+  MODULE_CONTEXT_MENU_CLOSE_OPTION_CLICKED,
+  ModuleContextMenuOptionClicked
 } from "../actions";
 import {
   queueOpenFile,
@@ -1111,6 +1113,10 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
     }
     case EDITOR_TAB_CLOSE_BUTTON_CLICKED: {
       const { uri } = action as EditorTabClicked;
+      return closeFile(uri, state);
+    }
+    case MODULE_CONTEXT_MENU_CLOSE_OPTION_CLICKED: {
+      const { uri } = action as ModuleContextMenuOptionClicked;
       return closeFile(uri, state);
     }
     case EDITOR_TAB_CONTEXT_MENU_OPEN_IN_BOTTOM_OPTION_CLICKED: {

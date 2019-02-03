@@ -93,6 +93,8 @@ export const EDITOR_TAB_CLOSE_BUTTON_CLICKED =
   "EDITOR_TAB_CLOSE_BUTTON_CLICKED";
 export const EDITOR_TAB_CONTEXT_MENU_OPEN_IN_BOTTOM_OPTION_CLICKED =
   "EDITOR_TAB_CONTEXT_MENU_OPEN_IN_BOTTOM_OPTION_CLICKED";
+export const MODULE_CONTEXT_MENU_CLOSE_OPTION_CLICKED =
+  "MODULE_CONTEXT_MENU_CLOSE_OPTION_CLICKED";
 export const OPEN_FILE_ITEM_CLICKED = "OPEN_FILE_ITEM_CLICKED";
 export const OPEN_FILE_ITEM_CLOSE_CLICKED = "OPEN_FILE_ITEM_CLOSE_CLICKED";
 export const CANVAS_MOUNTED = "CANVAS_MOUNTED";
@@ -228,7 +230,7 @@ export const TEXT_VALUE_CHANGED = "TEXT_VALUE_CHANGED";
 export const ELEMENT_TYPE_CHANGED = "ELEMENT_TYPE_CHANGED";
 export const FILE_ITEM_RIGHT_CLICKED = "FILE_ITEM_RIGHT_CLICKED";
 export const CANVAS_RIGHT_CLICKED = "CANVAS_RIGHT_CLICKED";
-export const PC_LAYER_RIGHT_CLICKED = "PC_LAYER_RIGHT_CLICKED";
+export const ModuleContextMenuOptionClicked = "ModuleContextMenuOptionClicked";
 export const PC_LAYER_DOUBLE_CLICKED = "PC_LAYER_DOUBLE_CLICKED";
 export const SOURCE_INSPECTOR_LAYER_CLICKED = "SOURCE_INSPECTOR_LAYER_CLICKED";
 export const SOURCE_INSPECTOR_LAYER_ARROW_CLICKED =
@@ -326,7 +328,7 @@ export type DocumentRendered = {
   info: ComputedDisplayInfo;
 } & Action;
 
-export type EditorTabContextMenuOpenInBottomTabOptionClicked = {
+export type ModuleContextMenuOptionClicked = {
   uri: string;
 } & Action;
 
@@ -842,8 +844,15 @@ export const editorTabClicked = (
 });
 
 export const editorTabContextMenuOpenInBottomTabOptionClicked = publicActionCreator(
-  (uri: string): EditorTabContextMenuOpenInBottomTabOptionClicked => ({
+  (uri: string): ModuleContextMenuOptionClicked => ({
     type: EDITOR_TAB_CONTEXT_MENU_OPEN_IN_BOTTOM_OPTION_CLICKED,
+    uri
+  })
+);
+
+export const moduleContextMenuCloseOptionClicked = publicActionCreator(
+  (uri: string): ModuleContextMenuOptionClicked => ({
+    type: MODULE_CONTEXT_MENU_CLOSE_OPTION_CLICKED,
     uri
   })
 );
@@ -1393,7 +1402,7 @@ export const pcLayerRightClicked = (
   event: React.MouseEvent<any>
 ): PCLayerRightClicked => ({
   item,
-  type: PC_LAYER_RIGHT_CLICKED,
+  type: ModuleContextMenuOptionClicked,
   event
 });
 

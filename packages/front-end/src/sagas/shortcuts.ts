@@ -17,7 +17,7 @@ import {
   fileItemContextMenuOpenClicked,
   fileItemContextMenuRenameClicked,
   CANVAS_RIGHT_CLICKED,
-  PC_LAYER_RIGHT_CLICKED,
+  ModuleContextMenuOptionClicked,
   PCLayerRightClicked,
   syntheticNodeContextMenuWrapInSlotClicked,
   syntheticNodeContextMenuSelectParentClicked,
@@ -31,7 +31,8 @@ import {
   editorTabContextMenuOpenInBottomTabOptionClicked,
   syntheticNodeContextMenuConvertTextStylesToMixinClicked,
   syntheticNodeContextMenuRenameClicked,
-  syntheticNodeContextMenuShowInCanvasClicked
+  syntheticNodeContextMenuShowInCanvasClicked,
+  moduleContextMenuCloseOptionClicked
 } from "../actions";
 import {
   ContextMenuItem,
@@ -57,7 +58,9 @@ import {
   extendsComponent,
   hasTextStyles,
   getInspectorContentNode,
-  SYNTHETIC_DOCUMENT_NODE_NAME
+  SYNTHETIC_DOCUMENT_NODE_NAME,
+  getSyntheticDocumentDependencyUri,
+  SyntheticDocument
 } from "paperclip";
 
 export type ShortcutSagaOptions = {
@@ -127,21 +130,30 @@ export const createShortcutSaga = ({
       EDITOR_TAB_RIGHT_CLICKED,
       function* handleEditorRightClicked({ event, uri }: EditorTabClicked) {
         yield call(
-          openContextMenu,
+          handleModuleRightClicked,
           {
             left: event.pageX,
             top: event.pageY
           },
-          [
-            {
-              type: ContextMenuOptionType.ITEM,
-              label: "Open in Bottom Tab",
-              action: editorTabContextMenuOpenInBottomTabOptionClicked(uri)
-            }
-          ]
+          uri
         );
       }
     );
+
+    function* handleModuleRightClicked(point: Point, uri: string) {
+      yield call(openContextMenu, point, [
+        {
+          type: ContextMenuOptionType.ITEM,
+          label: "Close",
+          action: moduleContextMenuCloseOptionClicked(uri)
+        },
+        {
+          type: ContextMenuOptionType.ITEM,
+          label: "Open in Bottom Tab",
+          action: editorTabContextMenuOpenInBottomTabOptionClicked(uri)
+        }
+      ]);
+    }
 
     yield takeEvery(CANVAS_RIGHT_CLICKED, function* handleFileItemRightClick({
       event,
@@ -186,38 +198,38 @@ export const createShortcutSaga = ({
       );
     }
 
-    yield takeEvery(PC_LAYER_RIGHT_CLICKED, function* handleFileItemRightClick({
-      event,
-      item
-    }: PCLayerRightClicked) {
-      // this will happen for
-      if (!item) {
-        console.warn(
-          `PC_LAYER_RIGHT_CLICKED dispatched without an inspectorNode`
+    yield takeEvery(
+      ModuleContextMenuOptionClicked,
+      function* handleFileItemRightClick({ event, item }: PCLayerRightClicked) {
+        // this will happen for
+        if (!item) {
+          console.warn(
+            `ModuleContextMenuOptionClicked dispatched without an inspectorNode`
+          );
+          return;
+        }
+        console.log(item);
+
+        const state: RootState = yield select();
+        const node = getInspectorSyntheticNode(item, state.documents);
+
+        // maybe shadow
+        if (!node) {
+          return;
+        }
+
+        yield call(
+          openSyntheticNodeContextMenu,
+          node,
+          {
+            left: event.pageX,
+            top: event.pageY
+          },
+          state,
+          { showRenameLabelOption: true }
         );
-        return;
       }
-      console.log(item);
-
-      const state: RootState = yield select();
-      const node = getInspectorSyntheticNode(item, state.documents);
-
-      // maybe shadow
-      if (!node) {
-        return;
-      }
-
-      yield call(
-        openSyntheticNodeContextMenu,
-        node,
-        {
-          left: event.pageX,
-          top: event.pageY
-        },
-        state,
-        { showRenameLabelOption: true }
-      );
-    });
+    );
 
     function* openSyntheticNodeContextMenu(
       node: SyntheticNode,
@@ -230,6 +242,14 @@ export const createShortcutSaga = ({
       // TODO - need to have options here for handling document: close, move to bottom tab
       if (node.name === SYNTHETIC_DOCUMENT_NODE_NAME) {
         console.warn(`Cannot open context menu for documents (yet)`);
+        return yield call(
+          handleModuleRightClicked,
+          point,
+          getSyntheticDocumentDependencyUri(
+            node as SyntheticDocument,
+            state.graph
+          )
+        );
         return;
       }
 
