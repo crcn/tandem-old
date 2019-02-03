@@ -17,11 +17,7 @@ import {
 import { Dispatch } from "redux";
 import { FileNavigatorContext, FileNavigatorContextProps } from "./contexts";
 import { fileNavigatorNewFileEntered } from "../../../../../actions";
-import { mapVariablesToCSSVarDropdownOptions } from "../../right-gutter/styles/pretty/panes/utils";
-import {
-  dropdownMenuOptionFromValue,
-  DropdownMenuOption
-} from "../../../../inputs/dropdown/controller";
+import { DropdownMenuOption } from "../../../../inputs/dropdown/controller";
 export type Props = {
   activeEditorUri: string;
   rootDirectory: Directory;

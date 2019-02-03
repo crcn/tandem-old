@@ -56,7 +56,8 @@ import {
   inspectorNodeInShadow,
   extendsComponent,
   hasTextStyles,
-  getInspectorContentNode
+  getInspectorContentNode,
+  SYNTHETIC_DOCUMENT_NODE_NAME
 } from "paperclip";
 
 export type ShortcutSagaOptions = {
@@ -189,6 +190,15 @@ export const createShortcutSaga = ({
       event,
       item
     }: PCLayerRightClicked) {
+      // this will happen for
+      if (!item) {
+        console.warn(
+          `PC_LAYER_RIGHT_CLICKED dispatched without an inspectorNode`
+        );
+        return;
+      }
+      console.log(item);
+
       const state: RootState = yield select();
       const node = getInspectorSyntheticNode(item, state.documents);
 
@@ -217,6 +227,12 @@ export const createShortcutSaga = ({
         showRenameLabelOption
       }: OpenSyntheticNodeContextMenuOptions = EMPTY_OBJECT
     ) {
+      // TODO - need to have options here for handling document: close, move to bottom tab
+      if (node.name === SYNTHETIC_DOCUMENT_NODE_NAME) {
+        console.warn(`Cannot open context menu for documents (yet)`);
+        return;
+      }
+
       const syntheticNode = getSyntheticNodeById(node.id, state.documents);
       const sourceNode = getSyntheticSourceNode(syntheticNode, state.graph);
       const syntheticDocument = getSyntheticVisibleNodeDocument(

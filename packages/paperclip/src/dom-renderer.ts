@@ -2,21 +2,10 @@ import { mapValues, omit } from "lodash";
 import {
   SyntheticVisibleNode,
   SyntheticElement,
-  SyntheticTextNode,
-  SYNTHETIC_DOCUMENT_NODE_NAME,
-  isSyntheticContentNode,
-  SyntheticNode
+  SyntheticTextNode
 } from "./synthetic";
 import { ComputedDisplayInfo } from "./edit";
-import {
-  getTreeNodeFromPath,
-  roundBounds,
-  EMPTY_OBJECT,
-  memoize,
-  pmark,
-  stringifyStyle,
-  Bounds
-} from "tandem-common";
+import { getTreeNodeFromPath, EMPTY_OBJECT, memoize } from "tandem-common";
 import {
   TreeNodeOperationalTransformType,
   MoveChildNodeOperationalTransform,
