@@ -337,7 +337,7 @@ function* handleAddControllerClick() {
       continue;
     }
 
-    yield put(componentControllerPicked(controllerFilePath));
+    yield put(componentControllerPicked(normalizeFilePath(controllerFilePath)));
   }
 }
 
@@ -357,7 +357,7 @@ function* handleBrowseImage() {
       continue;
     }
 
-    yield put(imagePathPicked(filePath));
+    yield put(imagePathPicked(normalizeFilePath(filePath)));
   }
 }
 
@@ -371,6 +371,6 @@ function* handleBrowseDirectory() {
       continue;
     }
 
-    yield put(directoryPathPicked(directory));
+    yield put(directoryPathPicked(normalizeFilePath(directory)));
   }
 }
