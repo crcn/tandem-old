@@ -14,14 +14,14 @@ Tandem is a UI builder for web applications. It currently works with React, othe
 In Windows or MacOS, go ahead and run:
 
 ```bash
-npm install tandem-cli --dev
+npm install tandem-cli --save-dev
 cd path/to/app
 
 # Create a new project
-tandem init
+./node_modules/.bin/tandem init
 
 # Open project
-tandem open
+./node_modules/.bin/tandem open
 ```
 
 More info can be found in the [installation docs](./docs/installation.md)

@@ -1,6 +1,6 @@
 {
   "name": "tandem-cli",
-  "version": "10.1.27",
+  "version": "10.1.29",
   "distVersion": "10.1.26",
   "description": "",
   "main": "index.js",
