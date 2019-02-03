@@ -11,7 +11,7 @@ Tandem is a UI builder for web applications. It currently works with React, othe
 
 ### Installation
 
-> Tandem currently only works in MacOS. Windows & Linx versions will be available soon.
+In Windows or MacOS, go ahead and run:
 
 ```bash
 npm install tandem-cli --dev
