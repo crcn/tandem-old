@@ -14,6 +14,7 @@ Tandem is a UI builder for web applications. It currently works with React, othe
 Tandem works in Windows & MacOS. There are a few ways you can install it:
 
 a. Download the stand alone version: https://github.com/tandemcode/tandem/releases
+
 b. Install the command line tools:
 
 ```bash
