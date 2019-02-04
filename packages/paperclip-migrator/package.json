@@ -1,6 +1,6 @@
 {
   "name": "paperclip-migrator",
-  "version": "10.1.26",
+  "version": "10.1.30",
   "description": "",
   "main": "index.js",
   "bin": {
@@ -16,7 +16,7 @@
   "license": "ISC",
   "dependencies": {
     "lodash": "^4.17.10",
-    "tandem-common": "^10.1.26"
+    "tandem-common": "^10.1.30"
   },
   "gitHead": "c0f8539549146045f0a9cf6b6f8a7ebf99155134"
 }

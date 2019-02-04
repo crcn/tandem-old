@@ -1,6 +1,6 @@
 {
   "name": "fsbox",
-  "version": "10.1.26",
+  "version": "10.1.30",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -24,7 +24,7 @@
     "mime-types": "^2.1.20",
     "redux": "^4.0.0",
     "redux-saga": "^0.16.0",
-    "tandem-common": "^10.1.26"
+    "tandem-common": "^10.1.30"
   },
   "gitHead": "c0f8539549146045f0a9cf6b6f8a7ebf99155134"
 }

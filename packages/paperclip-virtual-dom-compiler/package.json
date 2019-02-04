@@ -1,6 +1,6 @@
 {
   "name": "paperclip-virtual-dom-compiler",
-  "version": "10.1.26",
+  "version": "10.1.30",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -14,8 +14,8 @@
   "dependencies": {
     "@types/node": "^10.12.10",
     "lodash": "^4.17.11",
-    "paperclip": "^10.1.26",
-    "tandem-common": "^10.1.26",
+    "paperclip": "^10.1.30",
+    "tandem-common": "^10.1.30",
     "tandem-webpack-preview-server": "^10.1.26",
     "typescript": "^3.1.6"
   },
