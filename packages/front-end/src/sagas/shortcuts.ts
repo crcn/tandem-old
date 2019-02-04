@@ -17,7 +17,6 @@ import {
   fileItemContextMenuOpenClicked,
   fileItemContextMenuRenameClicked,
   CANVAS_RIGHT_CLICKED,
-  ModuleContextMenuOptionClicked,
   PCLayerRightClicked,
   syntheticNodeContextMenuWrapInSlotClicked,
   syntheticNodeContextMenuSelectParentClicked,
@@ -28,11 +27,12 @@ import {
   syntheticNodeContextMenuRemoveClicked,
   EDITOR_TAB_RIGHT_CLICKED,
   EditorTabClicked,
-  editorTabContextMenuOpenInBottomTabOptionClicked,
   syntheticNodeContextMenuConvertTextStylesToMixinClicked,
   syntheticNodeContextMenuRenameClicked,
   syntheticNodeContextMenuShowInCanvasClicked,
-  moduleContextMenuCloseOptionClicked
+  moduleContextMenuCloseOptionClicked,
+  PC_LAYER_RIGHT_CLICKED,
+  editorTabContextMenuOpenInBottomTabOptionClicked
 } from "../actions";
 import {
   ContextMenuItem,
@@ -198,38 +198,38 @@ export const createShortcutSaga = ({
       );
     }
 
-    yield takeEvery(
-      ModuleContextMenuOptionClicked,
-      function* handleFileItemRightClick({ event, item }: PCLayerRightClicked) {
-        // this will happen for
-        if (!item) {
-          console.warn(
-            `ModuleContextMenuOptionClicked dispatched without an inspectorNode`
-          );
-          return;
-        }
-        console.log(item);
-
-        const state: RootState = yield select();
-        const node = getInspectorSyntheticNode(item, state.documents);
-
-        // maybe shadow
-        if (!node) {
-          return;
-        }
-
-        yield call(
-          openSyntheticNodeContextMenu,
-          node,
-          {
-            left: event.pageX,
-            top: event.pageY
-          },
-          state,
-          { showRenameLabelOption: true }
+    yield takeEvery(PC_LAYER_RIGHT_CLICKED, function* handleFileItemRightClick({
+      event,
+      item
+    }: PCLayerRightClicked) {
+      // this will happen for
+      if (!item) {
+        console.warn(
+          `ModuleContextMenuOptionClicked dispatched without an inspectorNode`
         );
+        return;
       }
-    );
+      console.log(item);
+
+      const state: RootState = yield select();
+      const node = getInspectorSyntheticNode(item, state.documents);
+
+      // maybe shadow
+      if (!node) {
+        return;
+      }
+
+      yield call(
+        openSyntheticNodeContextMenu,
+        node,
+        {
+          left: event.pageX,
+          top: event.pageY
+        },
+        state,
+        { showRenameLabelOption: true }
+      );
+    });
 
     function* openSyntheticNodeContextMenu(
       node: SyntheticNode,

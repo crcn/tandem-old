@@ -230,7 +230,7 @@ export const TEXT_VALUE_CHANGED = "TEXT_VALUE_CHANGED";
 export const ELEMENT_TYPE_CHANGED = "ELEMENT_TYPE_CHANGED";
 export const FILE_ITEM_RIGHT_CLICKED = "FILE_ITEM_RIGHT_CLICKED";
 export const CANVAS_RIGHT_CLICKED = "CANVAS_RIGHT_CLICKED";
-export const ModuleContextMenuOptionClicked = "ModuleContextMenuOptionClicked";
+export const PC_LAYER_RIGHT_CLICKED = "PC_LAYER_RIGHT_CLICKED";
 export const PC_LAYER_DOUBLE_CLICKED = "PC_LAYER_DOUBLE_CLICKED";
 export const SOURCE_INSPECTOR_LAYER_CLICKED = "SOURCE_INSPECTOR_LAYER_CLICKED";
 export const SOURCE_INSPECTOR_LAYER_ARROW_CLICKED =
@@ -1402,7 +1402,7 @@ export const pcLayerRightClicked = (
   event: React.MouseEvent<any>
 ): PCLayerRightClicked => ({
   item,
-  type: ModuleContextMenuOptionClicked,
+  type: PC_LAYER_RIGHT_CLICKED,
   event
 });
 
