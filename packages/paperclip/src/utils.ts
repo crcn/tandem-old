@@ -8,9 +8,7 @@ import {
   TEXT_STYLE_NAMES,
   CSS_COLOR_ALIASES,
   PCVisibleNodeMetadataKey,
-  createPCTextStyleMixin,
   PCNode,
-  createPCVariable,
   PCVariableType,
   PCVariable,
   PCStyleMixin

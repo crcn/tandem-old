@@ -1,8 +1,8 @@
 import * as fs from "fs";
 import * as path from "path";
-import { PAPERCLIP_CONFIG_DEFAULT_EXTENSION } from "./constants";
-import { isPaperclipUri, DependencyGraph } from "./graph";
 import { PCModule, createPCDependency } from "./dsl";
+import { isPaperclipUri, DependencyGraph } from "./graph";
+import { PAPERCLIP_CONFIG_DEFAULT_EXTENSION } from "./constants";
 import { addProtocol, FILE_PROTOCOL, normalizeFilePath } from "tandem-common";
 
 export type PCConfigInfo = {

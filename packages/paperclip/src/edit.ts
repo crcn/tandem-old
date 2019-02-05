@@ -92,7 +92,7 @@ import {
 import * as path from "path";
 import { convertFixedBoundsToRelative } from "./synthetic-layout";
 import { diffTreeNode, patchTreeNode } from "./ot";
-import { evaluateDependencyGraph } from "./evaluate2";
+import { evaluateDependencyGraph } from "./evaluate";
 import { FSSandboxRootState } from "fsbox";
 import {
   InspectorNode,

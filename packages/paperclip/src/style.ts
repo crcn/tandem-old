@@ -20,16 +20,11 @@ import {
   extendsComponent,
   PCVariant,
   PCElement,
-  isPCComponentInstance,
   PCOverridablePropertyName,
   isPCComponentOrInstance,
   PCStyleMixin,
   getSortedStyleMixinIds,
-  getPCNodeModule,
   INHERITABLE_STYLE_NAMES,
-  PCSourceTagNames,
-  PCComponentInstanceElement,
-  PCBaseElement,
   TEXT_STYLE_NAMES,
   isElementLikePCNode
 } from "./dsl";

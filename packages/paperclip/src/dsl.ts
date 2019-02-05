@@ -1,20 +1,20 @@
 import {
   memoize,
-  EMPTY_OBJECT,
-  EMPTY_ARRAY,
   TreeNode,
-  filterNestedNodes,
-  findNestedNode,
   Bounds,
-  generateUID,
   KeyValue,
-  getNestedTreeNodeById,
-  replaceNestedNode,
   reduceTree,
-  filterTreeNodeParents,
   NodeFilter,
+  EMPTY_ARRAY,
+  generateUID,
+  EMPTY_OBJECT,
+  findNestedNode,
   flattenTreeNode,
-  getTreeNodesByName
+  replaceNestedNode,
+  filterNestedNodes,
+  getTreeNodesByName,
+  filterTreeNodeParents,
+  getNestedTreeNodeById
 } from "tandem-common";
 import { uniq, isEqual } from "lodash";
 import { Dependency, DependencyGraph, updateGraphDependency } from "./graph";

@@ -1,7 +1,7 @@
 import { DependencyGraph, Dependency } from "./graph";
 import { EventEmitter } from "events";
 import { SyntheticDocument } from "./synthetic";
-import { evaluateDependencyGraph } from "./evaluate2";
+import { evaluateDependencyGraph } from "./evaluate";
 import { KeyValue, pmark, EMPTY_OBJECT } from "tandem-common";
 import { isEqual } from "lodash";
 import {

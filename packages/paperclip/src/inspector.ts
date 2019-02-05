@@ -28,7 +28,6 @@ import {
 import { last } from "lodash";
 
 import {
-  getSyntheticSourceMap,
   getSyntheticDocumentsSourceMap,
   getSyntheticNodeById,
   SyntheticNode,
@@ -62,13 +61,10 @@ import {
   getTreeNodeAncestors,
   EMPTY_OBJECT,
   getTreeNodeFromPath,
-  arraySplice,
   getNestedTreeNodeById,
   replaceNestedNode,
   insertChildNode,
   removeNestedTreeNode,
-  findNestedNode,
-  filterNestedNodes,
   getTreeNodesByName
 } from "tandem-common";
 import { PCEditorState } from "./edit";

@@ -1,6 +1,4 @@
 import { memoize } from "tandem-common";
-import { FileCache, FileCacheItem } from "fsbox";
-import { PAPERCLIP_MIME_TYPE } from "./constants";
 import * as migratePCModule from "paperclip-migrator";
 import { createPCModule } from "./dsl";
 

@@ -5,7 +5,6 @@ import {
   PCSourceTagNames,
   getVariableRefMap,
   PCVisibleNode,
-  PCComponent,
   PCVisibleNodeMetadataKey,
   getQueryRefMap
 } from "./dsl";

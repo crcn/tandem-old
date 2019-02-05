@@ -15,7 +15,7 @@ import {
   InsertChildNodeOperationalTransform,
   RemoveChildNodeOperationalTransform
 } from "./ot";
-import { PCSourceTagNames, PCTextNode } from "./dsl";
+import { PCSourceTagNames } from "./dsl";
 
 const SVG_XMLNS = "http://www.w3.org/2000/svg";
 
@@ -325,8 +325,36 @@ export const patchDOM = (
   return newMap;
 };
 
+const EMPTY_ELEMENT_STYLE_NAMES = [
+  "box-sizing",
+  "display",
+  "background",
+  "background-image",
+  "font-family",
+  "font-weight",
+  "white-space",
+  "position",
+  "text-decoration",
+  "letter-spacing",
+  "color",
+  "border-radius",
+  "box-sizing",
+  "box-shadow",
+  "border-top-left-radius",
+  "border-top-right-radius",
+  "border-bottom-left-radius",
+  "border-bottom-right-radius",
+  "border-left",
+  "border-right",
+  "border-top",
+  "border-bottom",
+  "line-height",
+  "font-size",
+  "text-alignment"
+];
+
 const stripEmptyElement = memoize(style =>
-  omit(style, ["box-sizing", "display"])
+  omit(style, EMPTY_ELEMENT_STYLE_NAMES)
 );
 
 const makeElementClickable = (
