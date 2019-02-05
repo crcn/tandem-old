@@ -1003,9 +1003,9 @@
       },
       "children": [
         {
-          "id": "68b68bfa649",
+          "id": "80c8fafc659",
           "label": "Element",
-          "is": "div",
+          "is": "button",
           "name": "element",
           "attributes": {},
           "style": {

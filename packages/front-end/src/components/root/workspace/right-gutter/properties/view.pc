@@ -1805,6 +1805,318 @@
       "controllers": [
         "./a-controller.tsx"
       ]
+    },
+    {
+      "label": "Attribute Field",
+      "is": "div",
+      "style": {
+        "box-sizing": "border-box",
+        "display": "block"
+      },
+      "attributes": {},
+      "id": "80c8fafc2140",
+      "name": "component",
+      "children": [
+        {
+          "id": "80c8fafc2137",
+          "is": "7149f8192509",
+          "label": "Labeled Input",
+          "name": "component-instance",
+          "attributes": {},
+          "style": {},
+          "children": [
+            {
+              "slotId": "e73029b416045",
+              "id": "80c8fafc2138",
+              "children": [
+                {
+                  "id": "80c8fafc2260",
+                  "children": [
+                    {
+                      "id": "80c8fafc2139",
+                      "is": "80c8fafc2300",
+                      "label": "Text Input",
+                      "name": "component-instance",
+                      "attributes": {},
+                      "style": {},
+                      "children": [],
+                      "metadata": {
+                        "bounds": {
+                          "left": 384,
+                          "top": 298,
+                          "right": 484,
+                          "bottom": 327.0358087589019
+                        }
+                      },
+                      "variant": {}
+                    }
+                  ],
+                  "metadata": {},
+                  "name": "slot",
+                  "label": "input"
+                }
+              ],
+              "metadata": {},
+              "name": "plug"
+            },
+            {
+              "slotId": "ba94dac93878",
+              "id": "80c8fafc2392",
+              "children": [
+                {
+                  "id": "80c8fafc2391",
+                  "name": "text",
+                  "label": "Text",
+                  "value": "label",
+                  "style": {},
+                  "children": [],
+                  "metadata": {},
+                  "styleMixins": {
+                    "33b5126b196": {
+                      "priority": 0
+                    }
+                  }
+                }
+              ],
+              "metadata": {},
+              "name": "plug"
+            }
+          ],
+          "metadata": {
+            "bounds": {
+              "left": 486,
+              "top": 306,
+              "right": 586,
+              "bottom": 353.5832678332798
+            }
+          },
+          "variant": {}
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": 215,
+          "top": -344,
+          "right": 618,
+          "bottom": -264
+        }
+      },
+      "variant": {}
+    },
+    {
+      "label": "Browse Attribute Input",
+      "is": "div",
+      "style": {
+        "box-sizing": "border-box",
+        "display": "block"
+      },
+      "attributes": {},
+      "id": "80c8fafc2270",
+      "name": "component",
+      "children": [
+        {
+          "id": "80c8fafc2275",
+          "label": "Element",
+          "is": "div",
+          "name": "element",
+          "attributes": {},
+          "style": {
+            "box-sizing": "border-box",
+            "display": "flex"
+          },
+          "children": [
+            {
+              "id": "80c8fafc2276",
+              "is": "7149f8199122",
+              "label": "path input",
+              "name": "component-instance",
+              "attributes": {
+                "placeholder": "../img.png"
+              },
+              "style": {
+                "margin-right": "8px"
+              },
+              "children": [],
+              "metadata": {
+                "bounds": {
+                  "left": 384,
+                  "top": 298,
+                  "right": 484,
+                  "bottom": 327.0358087589019
+                }
+              },
+              "variant": {}
+            },
+            {
+              "id": "80c8fafc2277",
+              "is": "9f364d2139415",
+              "label": "upload button",
+              "name": "component-instance",
+              "attributes": {},
+              "style": {},
+              "children": [
+                {
+                  "id": "80c8fafc2278",
+                  "variantId": null,
+                  "propertyName": "text",
+                  "targetIdPath": [
+                    "9f364d2139650"
+                  ],
+                  "value": "Browse",
+                  "name": "override",
+                  "children": []
+                }
+              ],
+              "metadata": {
+                "bounds": {
+                  "left": 1596.3122366520206,
+                  "top": -19.485754611163074,
+                  "right": 1696.3122366520206,
+                  "bottom": 80.51424538883691
+                }
+              },
+              "variant": {}
+            }
+          ],
+          "metadata": {
+            "bounds": {
+              "left": 1420,
+              "top": 44,
+              "right": 1635,
+              "bottom": 67
+            }
+          }
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": 651,
+          "top": -577,
+          "right": 1064,
+          "bottom": -477
+        }
+      },
+      "variant": {}
+    },
+    {
+      "label": "Text Attribute Input",
+      "is": "div",
+      "style": {
+        "box-sizing": "border-box",
+        "display": "block"
+      },
+      "attributes": {},
+      "id": "80c8fafc2300",
+      "name": "component",
+      "children": [
+        {
+          "id": "80c8fafc2299",
+          "is": "7149f8199122",
+          "label": "Text Input",
+          "name": "component-instance",
+          "attributes": {},
+          "style": {},
+          "children": [],
+          "metadata": {
+            "bounds": {
+              "left": 384,
+              "top": 298,
+              "right": 484,
+              "bottom": 327.0358087589019
+            }
+          },
+          "variant": {}
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": 203,
+          "top": -535,
+          "right": 503,
+          "bottom": -435
+        }
+      },
+      "variant": {}
+    },
+    {
+      "label": "Text Area Attribute Input",
+      "is": "div",
+      "style": {
+        "box-sizing": "border-box",
+        "display": "block"
+      },
+      "attributes": {},
+      "id": "80c8fafc2309",
+      "name": "component",
+      "children": [
+        {
+          "id": "80c8fafc2311",
+          "is": "d65d17fd4015",
+          "label": "Textarea",
+          "name": "component-instance",
+          "attributes": {},
+          "style": {},
+          "children": [],
+          "metadata": {
+            "bounds": {
+              "left": 681,
+              "top": 263.5,
+              "right": 781,
+              "bottom": 363.5
+            }
+          },
+          "variant": {}
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": 705,
+          "top": -438,
+          "right": 1184,
+          "bottom": -290
+        }
+      },
+      "variant": {}
+    },
+    {
+      "label": "Dropdown attribute input",
+      "is": "div",
+      "style": {
+        "box-sizing": "border-box",
+        "display": "block"
+      },
+      "attributes": {},
+      "id": "80c8fafc2316",
+      "name": "component",
+      "children": [
+        {
+          "id": "80c8fafc2318",
+          "is": "50e32bec2591",
+          "label": "Dropdown",
+          "name": "component-instance",
+          "attributes": {},
+          "style": {},
+          "children": [],
+          "metadata": {
+            "bounds": {
+              "left": 133,
+              "top": 279,
+              "right": 334,
+              "bottom": 521.2360321797468
+            }
+          },
+          "variant": {}
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": 1198.6548672566373,
+          "top": -579.4623893805309,
+          "right": 1298.6548672566373,
+          "bottom": -479.4623893805309
+        }
+      },
+      "variant": {}
     }
   ]
 }
