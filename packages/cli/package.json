@@ -11,7 +11,8 @@
     "postinstall-old": "node install.js",
     "clean": "rm -rf  node_modules",
     "build": "tsc",
-    "build:watch": "tsc --watch"
+    "build:watch": "tsc --watch",
+    "prepare": "npm run build"
   },
   "author": "",
   "license": "ISC",

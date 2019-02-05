@@ -6,12 +6,12 @@ import {
 } from "../../../actions";
 import { BaseWelcomeProps, ProjectPill } from "./view.pc";
 import { Dispatch } from "redux";
+import { StarterKitFormOptions } from "../../../starter-kits";
 import {
-  StarterKitFormOptions,
+  ProjectTemplate,
   templates,
   createProjectFiles
-} from "../../../starter-kits";
-import { ProjectTemplate } from "tandem-starter-kits";
+} from "tandem-starter-kits";
 import { Options as FormOptions } from "../../../starter-kits/form-controller";
 
 export type Props = {

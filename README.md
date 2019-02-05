@@ -11,7 +11,10 @@ Tandem is a UI builder for web applications. It currently works with React, othe
 
 ### Installation
 
-In Windows or MacOS, go ahead and run:
+Tandem works in Windows & MacOS. There are a few ways you can use the app:
+
+a. Download the stand alone version: https://github.com/tandemcode/tandem/releases/latest
+b. Install the command line tool:
 
 ```bash
 npm install tandem-cli --save-dev
@@ -23,6 +26,9 @@ cd path/to/app
 # Open project
 ./node_modules/.bin/tandem open
 ```
+
+Using Tandem via the command line tool is recommended since you may need multiple versions of the app _if_ you plan
+on using Tandem for multiple projects. This is because the UI files (`*.pc`) may work for certain versions of the app and not others. Therefore you should install the command line tools as a developer dependency of your project to ensure that the editor & UI files always work together.
 
 More info can be found in the [installation docs](./docs/installation.md)
 

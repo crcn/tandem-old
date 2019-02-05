@@ -47,9 +47,9 @@ export const createFiles: ProjectFileCreator = ({
         scripts: {
           test: 'echo "Error: no test specified" && exit 1',
           build:
-            "paperclip-react-compiler src/**/*.pc --definition --write; webpack",
+            'paperclip-react-compiler "src/**/*.pc" --definition --write && webpack',
           "build:watch":
-            "concurrently 'paperclip-react-compiler \"src/**/*.pc\" --definition --write --watch' 'webpack-dev-server --port=8080 --open'"
+            'concurrently "paperclip-react-compiler \\"src/**/*.pc\\" --definition --write --watch" "webpack-dev-server --port=8080 --open"'
         },
         repository: {
           type: "git",
