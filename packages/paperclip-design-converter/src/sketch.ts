@@ -125,7 +125,6 @@ const mapLayer = (layer: any): PCNode => {
       // }
     }
     default: {
-      // console.log(layer._class);
       // throw new Error(`Unsupported layer type: ${layer._class}`);
     }
   }
@@ -143,9 +142,6 @@ const mapSVG = (layer: any, isRoot?: boolean) => {
 
     case "shapePath": {
       const { points } = layer;
-      if (layer.name === "blahh") {
-        console.log(layer);
-      }
       break;
     }
   }

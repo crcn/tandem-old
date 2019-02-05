@@ -46,6 +46,7 @@
     "fix-path": "^2.1.0",
     "font-manager": "^0.3.0",
     "fs-extra": "^6.0.1",
+    "concurrently": "4.1.x",
     "fsbox": "^10.1.32",
     "get-port": "^3.2.0",
     "lodash": "^4.17.11",

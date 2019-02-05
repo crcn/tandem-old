@@ -32,7 +32,9 @@ import {
   syntheticNodeContextMenuShowInCanvasClicked,
   moduleContextMenuCloseOptionClicked,
   PC_LAYER_RIGHT_CLICKED,
-  editorTabContextMenuOpenInBottomTabOptionClicked
+  editorTabContextMenuOpenInBottomTabOptionClicked,
+  syntheticNodeContextMenuCopyClicked,
+  syntheticNodeContextMenuPasteClicked
 } from "../actions";
 import {
   ContextMenuItem,
@@ -209,7 +211,6 @@ export const createShortcutSaga = ({
         );
         return;
       }
-      console.log(item);
 
       const state: RootState = yield select();
       const node = getInspectorSyntheticNode(item, state.documents);
@@ -298,6 +299,16 @@ export const createShortcutSaga = ({
                   type: ContextMenuOptionType.ITEM,
                   label: "Remove",
                   action: syntheticNodeContextMenuRemoveClicked(syntheticNode)
+                },
+                {
+                  type: ContextMenuOptionType.ITEM,
+                  label: "Copy",
+                  action: syntheticNodeContextMenuCopyClicked(syntheticNode)
+                },
+                {
+                  type: ContextMenuOptionType.ITEM,
+                  label: "Paste",
+                  action: syntheticNodeContextMenuPasteClicked(syntheticNode)
                 },
                 sourceNode.name !== PCSourceTagNames.COMPONENT &&
                 !inspectorNodeInShadow(inspectorNode, state.sourceNodeInspector)

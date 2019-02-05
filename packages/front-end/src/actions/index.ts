@@ -190,6 +190,10 @@ export const SYNTHETIC_NODE_CONTEXT_MENU_REMOVE_CLICKED =
   "SYNTHETIC_NODE_CONTEXT_MENU_REMOVE_CLICKED";
 export const SYNTHETIC_NODE_CONTEXT_MENU_RENAME_CLICKED =
   "SYNTHETIC_NODE_CONTEXT_MENU_RENAME_CLICKED";
+export const SYNTHETIC_NODE_CONTEXT_MENU_COPY_CLICKED =
+  "SYNTHETIC_NODE_CONTEXT_MENU_COPYCLICKED";
+export const SYNTHETIC_NODE_CONTEXT_MENU_PASTE_CLICKED =
+  "SYNTHETIC_NODE_CONTEXT_MENU_PASTE_CLICKED";
 export const SYNTHETIC_NODE_CONTEXT_MENU_WRAP_IN_SLOT_CLICKED =
   "SYNTHETIC_NODE_CONTEXT_MENU_WRAP_IN_SLOT_CLICKED";
 export const SYNTHETIC_NODE_CONTEXT_MENU_SELECT_PARENT_CLICKED =
@@ -1095,6 +1099,18 @@ export const syntheticNodeContextMenuRemoveClicked = publicActionCreator(
 export const syntheticNodeContextMenuRenameClicked = publicActionCreator(
   (item: SyntheticVisibleNode): SyntheticNodeContextMenuAction => ({
     type: SYNTHETIC_NODE_CONTEXT_MENU_RENAME_CLICKED,
+    item
+  })
+);
+export const syntheticNodeContextMenuCopyClicked = publicActionCreator(
+  (item: SyntheticVisibleNode): SyntheticNodeContextMenuAction => ({
+    type: SYNTHETIC_NODE_CONTEXT_MENU_COPY_CLICKED,
+    item
+  })
+);
+export const syntheticNodeContextMenuPasteClicked = publicActionCreator(
+  (item: SyntheticVisibleNode): SyntheticNodeContextMenuAction => ({
+    type: SYNTHETIC_NODE_CONTEXT_MENU_PASTE_CLICKED,
     item
   })
 );

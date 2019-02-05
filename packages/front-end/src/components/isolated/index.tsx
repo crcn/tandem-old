@@ -120,7 +120,6 @@ export class Isolate extends React.Component<
   };
 
   onScroll = event => {
-    console.log(event);
     if (this.props.onScroll) this.props.onScroll(event);
     if (this.props.scrolling === false) {
       const db = this._iframe.contentDocument;
@@ -138,9 +137,7 @@ export class Isolate extends React.Component<
     this._dragDropManager = manager;
   }
 
-  onTouchMove = () => {
-    console.log("TOUCH MOVE");
-  };
+  onTouchMove = () => {};
 
   render() {
     // TODO - eventually want to use iframes. Currently not supported though.

@@ -92,7 +92,6 @@ export default (Base: React.ComponentClass<BaseBoxShadowsProps>) =>
       const { computedStyleInfo, dispatch } = this.props;
       const { selectedBoxShadowIndex } = this.state;
       const { setSelectedBoxShadowIndex } = this;
-      console.log(selectedBoxShadowIndex);
       const info = arraySplice(
         parseBoxShadows(computedStyleInfo.style["box-shadow"]),
         selectedBoxShadowIndex,

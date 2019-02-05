@@ -14,7 +14,7 @@ import { debounce } from "lodash";
 import * as path from "path";
 import { ipcSaga } from "./ipc";
 import { eventChannel } from "redux-saga";
-import { remote } from "electron";
+import { remote, clipboard } from "electron";
 import {
   RootState,
   // PROJECT_DIRECTORY_LOADED,
@@ -42,7 +42,12 @@ import {
   ProjectConfig,
   ProjectInfo,
   LINK_CICKED,
-  LinkClicked
+  LinkClicked,
+  FILE_ITEM_CONTEXT_MENU_COPY_PATH_CLICKED,
+  getSyntheticNodeClipboardData,
+  syntheticNodesPasted,
+  SYNTHETIC_NODE_CONTEXT_MENU_PASTE_CLICKED,
+  SYNTHETIC_NODE_CONTEXT_MENU_COPY_CLICKED
 } from "tandem-front-end";
 import {
   findPaperclipSourceFiles,
@@ -89,6 +94,8 @@ export function* rootSaga() {
   yield fork(chromeSaga);
   yield fork(processSaga);
   yield fork(handleOpenLink);
+  yield fork(handleClipboard);
+  console.log("CLIP");
 }
 function* handleOpenLink() {
   while (1) {
@@ -97,6 +104,26 @@ function* handleOpenLink() {
   }
 }
 
+function* handleClipboard() {
+  console.log("HASNDLE CLIPBOARD");
+  yield fork(function* handleCopy() {
+    while (1) {
+      yield take(SYNTHETIC_NODE_CONTEXT_MENU_COPY_CLICKED);
+      clipboard.writeText(
+        JSON.stringify(getSyntheticNodeClipboardData(yield select())),
+        "text/plain"
+      );
+    }
+  });
+
+  yield fork(function* handlePaste() {
+    while (1) {
+      yield take(SYNTHETIC_NODE_CONTEXT_MENU_PASTE_CLICKED);
+      const text = clipboard.readText("text/plain");
+      yield put(syntheticNodesPasted(JSON.parse(text)));
+    }
+  });
+}
 function* handleProjectDirectory() {
   let previousInfo: ProjectInfo;
   while (1) {

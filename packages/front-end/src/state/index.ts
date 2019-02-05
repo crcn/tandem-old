@@ -81,7 +81,8 @@ import {
   getInspectorContentNode,
   getInspectorSyntheticNode,
   getInspectorNodeBySourceNodeId,
-  getSyntheticDocumentByDependencyUri
+  getSyntheticDocumentByDependencyUri,
+  getPCNodeClip
 } from "paperclip";
 import {
   CanvasToolOverlayMouseMoved,
@@ -778,6 +779,13 @@ const queueSaveProjectFile = (state: RootState) => {
   return state;
 };
 
+export const getSyntheticNodeClipboardData = (state: RootState) => {
+  return state.selectedInspectorNodes.map(node => {
+    const syntheticNode = getInspectorSyntheticNode(node, state.documents);
+    return getPCNodeClip(syntheticNode, state.frames, state.graph);
+  });
+};
+
 export const getActiveEditorWindow = (state: RootState) =>
   getEditorWithActiveFileUri(state.activeEditorFilePath, state);
 
@@ -1358,8 +1366,8 @@ export const centerEditorCanvas = (
           (height - INITIAL_ZOOM_PADDING) / innerSize.height
         )
       : typeof zoomOrZoomToFit === "number"
-      ? zoomOrZoomToFit
-      : translate.zoom;
+        ? zoomOrZoomToFit
+        : translate.zoom;
 
   state = updateEditorWindow(
     {

@@ -33,7 +33,6 @@ function* apiSaga() {
     while (1) {
       const { event } = yield take(chan);
       const state: DesktopState = yield select();
-      console.log(state && state.tdProjectPath);
       event.sender.send(
         "projectInfo",
         state.tdProject && {
@@ -60,8 +59,6 @@ function* apiSaga() {
         ],
         properties: ["openFile"]
       }) || [undefined];
-
-      console.log(filePath);
 
       event.sender.send("openDialogResult", filePath);
     }

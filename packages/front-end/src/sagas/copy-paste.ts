@@ -1,6 +1,6 @@
 import { fork, take, select, put } from "redux-saga/effects";
 import { eventChannel } from "redux-saga";
-import { RootState } from "../state";
+import { RootState, getSyntheticNodeClipboardData } from "../state";
 import {
   getSyntheticNodeById,
   PCNodeClip,
@@ -36,15 +36,7 @@ function* handleCopy() {
 
       event.clipboardData.setData(
         "text/plain",
-        JSON.stringify(
-          root.selectedInspectorNodes.map(node => {
-            const syntheticNode = getInspectorSyntheticNode(
-              node,
-              root.documents
-            );
-            return getPCNodeClip(syntheticNode, root.frames, root.graph);
-          })
-        )
+        JSON.stringify(getSyntheticNodeClipboardData(root))
       );
       event.preventDefault();
     }

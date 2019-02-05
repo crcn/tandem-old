@@ -199,7 +199,6 @@ const enhance = compose<CanvasInnerProps, CanvasOuterProps>(
       // if (Math.abs(event.deltaX) - Math.abs(previousDeltaX) > MAX_WHEEL_DELTA || Math.abs(event.deltaY) - Math.abs(previousDeltaY) > MAX_WHEEL_DELTA) {
       //   return;
       // }
-      // console.log(event.deltaX, previousDeltaX);
 
       // previousDeltaX = event.deltaX;
       // previousDeltaY = event.deltaY;

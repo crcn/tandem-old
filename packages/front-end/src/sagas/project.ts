@@ -84,7 +84,6 @@ export function projectSaga({
       }
 
       previousProjectPath = projectInfo.path;
-      console.log(projectInfo.path, path.dirname(projectInfo.path));
 
       yield call(loadDirectory, path.dirname(projectInfo.path));
     }
