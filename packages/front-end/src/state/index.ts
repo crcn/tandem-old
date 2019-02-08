@@ -43,8 +43,6 @@ import {
   getSyntheticVisibleNodeRelativeBounds,
   updateDependencyGraph,
   updateSyntheticVisibleNodeMetadata,
-  isSyntheticVisibleNodeMovable,
-  isSyntheticVisibleNodeResizable,
   diffTreeNode,
   TreeNodeOperationalTransformType,
   PCSourceTagNames,
@@ -56,12 +54,10 @@ import {
   PCVariant,
   TreeNodeOperationalTransform,
   getPCNode,
-  findInstanceOfPCNode,
   isPCComponentInstance,
   PCComponent,
   PCModule,
   SyntheticNode,
-  isSyntheticContentNode,
   PCNode,
   getPCNodeModule,
   getSyntheticInstancePath,
@@ -75,12 +71,10 @@ import {
   inspectorNodeInShadow,
   getInspectorContentNodeContainingChild,
   getInspectorNodeParentShadow,
-  getInspectorSourceNode,
   InspectorTreeNodeName,
   expandInspectorNodeById,
   getInspectorContentNode,
   getInspectorSyntheticNode,
-  getInspectorNodeBySourceNodeId,
   getSyntheticDocumentByDependencyUri,
   getPCNodeClip
 } from "paperclip";
@@ -94,16 +88,11 @@ import { FSSandboxRootState, queueOpenFile, hasFileCacheItem } from "fsbox";
 import {
   refreshInspectorTree,
   InspectorTreeBaseNode,
-  expandSyntheticInspectorNode,
   getSyntheticInspectorNode,
-  evaluateModuleInspector,
   InspectorNode,
   getInsertableInspectorNode
 } from "paperclip";
-import {
-  ContextMenuItem,
-  ContextMenu
-} from "../components/context-menu/view.pc";
+import { ContextMenuItem } from "../components/context-menu/view.pc";
 import { Action } from "redux";
 
 export enum ToolType {

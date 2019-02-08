@@ -4733,6 +4733,115 @@
         }
       },
       "variant": {}
+    },
+    {
+      "label": "Borders icon 3",
+      "is": "svg",
+      "style": {},
+      "attributes": {
+        "width": "90px",
+        "height": "90px",
+        "viewBox": "0 0 90 90",
+        "version": "1.1",
+        "xmlns": "http://www.w3.org/2000/svg",
+        "xmlns:xlink": "http://www.w3.org/1999/xlink"
+      },
+      "id": "993f9ad81121",
+      "name": "component",
+      "children": [
+        {
+          "id": "993f9ad81114",
+          "is": "title",
+          "name": "element",
+          "attributes": {},
+          "style": {},
+          "children": [
+            {
+              "id": "993f9ad81115",
+              "name": "text",
+              "label": "Combined Shape",
+              "value": "Combined Shape",
+              "style": {},
+              "children": [],
+              "metadata": {}
+            }
+          ],
+          "metadata": {}
+        },
+        {
+          "id": "993f9ad81116",
+          "is": "desc",
+          "name": "element",
+          "attributes": {},
+          "style": {},
+          "children": [
+            {
+              "id": "993f9ad81117",
+              "name": "text",
+              "label": "Created with Sketch.",
+              "value": "Created with Sketch.",
+              "style": {},
+              "children": [],
+              "metadata": {}
+            }
+          ],
+          "metadata": {}
+        },
+        {
+          "id": "993f9ad81118",
+          "is": "g",
+          "name": "element",
+          "attributes": {
+            "id": "Page-1",
+            "stroke": "none",
+            "stroke-width": "1",
+            "fill": "none",
+            "fill-rule": "evenodd"
+          },
+          "style": {},
+          "children": [
+            {
+              "id": "993f9ad81119",
+              "is": "g",
+              "name": "element",
+              "attributes": {
+                "id": "Group",
+                "transform": "translate(-0.000000, -0.000000)",
+                "fill": "#000000",
+                "fill-rule": "nonzero"
+              },
+              "style": {},
+              "children": [
+                {
+                  "id": "993f9ad81120",
+                  "is": "path",
+                  "name": "element",
+                  "attributes": {
+                    "d": "M67,90 L23,90 L23,80 L67,80 L67,90 Z M90,67 L80,67 L80,23 L90,23 L90,67 Z M0,67 L0,23 L10,23 L10,67 L2.22044605e-16,67 Z M23,0 L65,0 L65,10 L23,10 L23,0 Z",
+                    "id": "Combined-Shape"
+                  },
+                  "style": {
+                    "background": "currentColor"
+                  },
+                  "children": [],
+                  "metadata": {}
+                }
+              ],
+              "metadata": {}
+            }
+          ],
+          "metadata": {}
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": -2771,
+          "top": -1468,
+          "right": -2371,
+          "bottom": -1168
+        }
+      },
+      "variant": {}
     }
   ]
 }
