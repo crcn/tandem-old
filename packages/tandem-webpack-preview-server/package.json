@@ -1,6 +1,6 @@
 {
   "name": "tandem-webpack-preview-server",
-  "version": "10.1.32",
+  "version": "10.1.33",
   "description": "",
   "main": "index.js",
   "bin": {

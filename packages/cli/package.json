@@ -1,6 +1,6 @@
 {
   "name": "tandem-cli",
-  "version": "10.1.32",
+  "version": "10.1.33",
   "distVersion": "10.1.32",
   "description": "",
   "main": "index.js",
@@ -25,7 +25,7 @@
     "glob": "^7.1.2",
     "progress": "^2.0.0",
     "request": "^2.87.0",
-    "tandem-starter-kits": "^10.1.32",
+    "tandem-starter-kits": "^10.1.33",
     "yargs": "^12.0.5",
     "yauzl": "^2.10.0"
   },
