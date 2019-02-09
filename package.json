@@ -21,7 +21,8 @@
     "build": "lerna exec --parallel -- npm run build",
     "build:watch": "lerna exec --parallel -- npm run build:watch",
     "build:dist": "NODE_ENV=production npm run build && cd packages/desktop && npm run build:dist",
-    "build:dist:win": "npm run build && cd packages/desktop && npm run build:dist:win"
+    "build:dist:win": "npm run build && cd packages/desktop && npm run build:dist:win",
+    "postinstall": "opencollective-postinstall"
   },
   "lint-staged": {
     "*.{ts,tsx,json,css,md}": [
@@ -39,7 +40,14 @@
     "typescript": "^3.3.1"
   },
   "dependencies": {
+    "opencollective-postinstall": "^2.0.2",
+    "terminate": "^2.1.2",
+    "opencollective": "^1.0.3",
     "@typescript-eslint/eslint-plugin": "^1.3.0",
     "terminate": "^2.1.2"
+  },
+  "collective": {
+    "type": "opencollective",
+    "url": "https://opencollective.com/tandem"
   }
 }
