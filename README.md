@@ -6,7 +6,7 @@
 > Tandem is still new, so expect bugs. If you'd like to contribute, feel free to reach out to hello@tandemcode.com.
 
 [![Backers on Open Collective](https://opencollective.com/tandem/backers/badge.svg)](#backers)
-[![Sponsors on Open Collective](https://opencollective.com/tendem/sponsors/badge.svg)](#sponsors)
+[![Sponsors on Open Collective](https://opencollective.com/tandem/sponsors/badge.svg)](#sponsors)
 
 Tandem is a UI builder for web applications. It currently works with React, other languages & frameworks will be supported in the future. The primary goal for Tandem is to provide a faster, easier, safer, and more scalable alternative to handwritten HTML & CSS code.
 
