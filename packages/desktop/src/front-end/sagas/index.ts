@@ -76,7 +76,6 @@ import {
   createBounds,
   normalizeFilePath
 } from "tandem-common";
-// import { serverStateLoaded } from "../actions";
 import { DesktopRootState } from "../state";
 import { processSaga } from "./processes";
 import { unloadApplication } from "tandem-front-end";
@@ -95,7 +94,6 @@ export function* rootSaga() {
   yield fork(processSaga);
   yield fork(handleOpenLink);
   yield fork(handleClipboard);
-  console.log("CLIP");
 }
 function* handleOpenLink() {
   while (1) {
@@ -105,7 +103,6 @@ function* handleOpenLink() {
 }
 
 function* handleClipboard() {
-  console.log("HASNDLE CLIPBOARD");
   yield fork(function* handleCopy() {
     while (1) {
       yield take(SYNTHETIC_NODE_CONTEXT_MENU_COPY_CLICKED);

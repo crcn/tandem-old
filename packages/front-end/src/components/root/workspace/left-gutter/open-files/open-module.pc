@@ -473,19 +473,6 @@
               "variant": {
                 "d3bf183b30": true
               }
-            },
-            {
-              "id": "1fe0cd075854",
-              "label": "Element",
-              "is": "div",
-              "name": "element",
-              "attributes": {},
-              "style": {
-                "box-sizing": "border-box",
-                "display": "block"
-              },
-              "children": [],
-              "metadata": {}
             }
           ],
           "metadata": {}
@@ -509,5 +496,6 @@
         }
       }
     }
-  ]
+  ],
+  "label": "open-module.pc"
 }

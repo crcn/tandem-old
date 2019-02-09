@@ -31,7 +31,6 @@ import {
   canvasDroppedItem,
   canvasDraggedOver,
   canvasMouseDoubleClicked,
-  pcLayerRightClicked,
   canvasRightClicked
 } from "../../../../../../../actions";
 import { DropTarget, DropTargetMonitor } from "react-dnd";

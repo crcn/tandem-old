@@ -3,10 +3,10 @@ import * as cx from "classnames";
 import { memoize } from "tandem-common";
 import { ButtonBarOption } from "../../../../../../inputs/button-bar/controller";
 import { BaseBorderStylesProps } from "./borders.pc";
-import { SyntheticElement, PCVariable, ComputedStyleInfo } from "paperclip";
+import { PCVariable, ComputedStyleInfo } from "paperclip";
 const {
   EmptySquareIcon,
-  BordersIcon
+  BordersIcon3
 } = require("../../../../../../../icons/view.pc");
 
 enum TOGGLE_OPTION {
@@ -16,11 +16,11 @@ enum TOGGLE_OPTION {
 
 const TOGGLE_OPTIONS: ButtonBarOption[] = [
   {
-    icon: <EmptySquareIcon style={{ height: "100%" }} />,
+    icon: <EmptySquareIcon style={{ height: "9px", width: "9px" }} />,
     value: TOGGLE_OPTION.ALL
   },
   {
-    icon: <BordersIcon style={{ height: "100%" }} />,
+    icon: <BordersIcon3 style={{ height: "9px", width: "9px" }} />,
     value: TOGGLE_OPTION.INDIVIDUAL
   }
 ];

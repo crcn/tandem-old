@@ -920,79 +920,7 @@
       "variant": {}
     },
     {
-      "id": "8667fc00491",
-      "label": "Preview",
-      "is": "div",
-      "name": "element",
-      "attributes": {},
-      "style": {
-        "box-sizing": "border-box",
-        "display": "block",
-        "border-left": "0px",
-        "border-top": "0px",
-        "border-right": "0px",
-        "border-bottom": "0px"
-      },
-      "children": [
-        {
-          "id": "f034045a533",
-          "is": "936f29271359",
-          "label": "Component Popdown Picker",
-          "name": "component-instance",
-          "attributes": {},
-          "style": {
-            "position": "absolute",
-            "left": "50%",
-            "top": "200px"
-          },
-          "children": [],
-          "metadata": {
-            "bounds": {
-              "left": 2818,
-              "top": 1210,
-              "right": 3623,
-              "bottom": 1759
-            }
-          },
-          "variant": {
-            "e42d628f657": false
-          }
-        },
-        {
-          "id": "8667fc00397",
-          "is": "936f29271359",
-          "label": "Component Popdown Picker",
-          "name": "component-instance",
-          "attributes": {},
-          "style": {
-            "position": "absolute",
-            "left": "50%"
-          },
-          "children": [],
-          "metadata": {
-            "bounds": {
-              "left": 2818,
-              "top": 1210,
-              "right": 3623,
-              "bottom": 1759
-            }
-          },
-          "variant": {
-            "e42d628f657": true
-          }
-        }
-      ],
-      "metadata": {
-        "bounds": {
-          "left": 2531,
-          "top": 811,
-          "right": 3083,
-          "bottom": 1379
-        }
-      }
-    },
-    {
-      "id": "68b68bfa647",
+      "id": "5c5f499e426",
       "label": "Element",
       "is": "div",
       "name": "element",
@@ -1001,27 +929,13 @@
         "box-sizing": "border-box",
         "display": "block"
       },
-      "children": [
-        {
-          "id": "80c8fafc659",
-          "label": "Element",
-          "is": "button",
-          "name": "element",
-          "attributes": {},
-          "style": {
-            "box-sizing": "border-box",
-            "display": "block"
-          },
-          "children": [],
-          "metadata": {}
-        }
-      ],
+      "children": [],
       "metadata": {
         "bounds": {
-          "left": 12,
-          "top": 577,
-          "right": 392,
-          "bottom": 952
+          "left": 72,
+          "top": 308,
+          "right": 172,
+          "bottom": 408
         }
       }
     }

@@ -1,13 +1,7 @@
-import { fork, take, select, put } from "redux-saga/effects";
 import { eventChannel } from "redux-saga";
+import { fork, take, select, put } from "redux-saga/effects";
 import { RootState, getSyntheticNodeClipboardData } from "../state";
-import {
-  getSyntheticNodeById,
-  PCNodeClip,
-  getPCNodeClip,
-  xmlToPCNode,
-  getInspectorSyntheticNode
-} from "paperclip";
+import { PCNodeClip, xmlToPCNode } from "paperclip";
 import { syntheticNodesPasted } from "../actions";
 
 export function* copyPasteSaga() {

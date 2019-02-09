@@ -131,11 +131,13 @@ export default (Base: React.ComponentClass<BaseStylesProps>) =>
             variantTriggers,
             globalQueries
           }}
-          propertiesTabButonProps={{
-            onClick: onPropertiesTabClick
+          propertiesTabButtonProps={{
+            onClick: onPropertiesTabClick,
+            title: "Styles"
           }}
           triggersTabButtonProps={{
-            onClick: onTriggersTabClick
+            onClick: onTriggersTabClick,
+            title: "Triggers"
           }}
           propertiesProps={{
             cwd,

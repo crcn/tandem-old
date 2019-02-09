@@ -13,8 +13,12 @@ export type Props = {
   computedStyleInfo: ComputedStyleInfo;
 };
 
-const CONNECTED_ICON = <RoundSquareIcon style={{ height: "1em" }} />;
-const DISCONNECTED_ICON = <CornersIcon style={{ height: "1em" }} />;
+const CONNECTED_ICON = (
+  <RoundSquareIcon style={{ height: "12px", width: "12px" }} />
+);
+const DISCONNECTED_ICON = (
+  <CornersIcon style={{ height: "12px", width: "12px" }} />
+);
 
 export default (Base: React.ComponentClass<BaseRadiusInputProps>) =>
   class RadiusInputController extends React.PureComponent<Props> {

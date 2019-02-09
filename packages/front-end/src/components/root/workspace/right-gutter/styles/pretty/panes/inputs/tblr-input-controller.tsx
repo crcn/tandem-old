@@ -4,7 +4,7 @@ import { BaseTblrInputProps } from "./view.pc";
 import { ButtonBarOption } from "../../../../../../../inputs/button-bar/controller";
 import {
   EmptySquareIcon,
-  BordersIcon
+  BordersIcon3
 } from "../../../../../../../../icons/view.pc";
 import { memoize } from "tandem-common";
 
@@ -68,11 +68,15 @@ export default (Base: React.ComponentClass<BaseTblrInputProps>) =>
 const getButtonBarOptions = memoize(
   (connectedIcon: any, disconnectedIcon: any): ButtonBarOption[] => [
     {
-      icon: connectedIcon || <EmptySquareIcon style={{ height: "100%" }} />,
+      icon: connectedIcon || (
+        <EmptySquareIcon style={{ height: "9px", width: "9px" }} />
+      ),
       value: true
     },
     {
-      icon: disconnectedIcon || <BordersIcon style={{ height: "100%" }} />,
+      icon: disconnectedIcon || (
+        <BordersIcon3 style={{ height: "9px", width: "9px" }} />
+      ),
       value: false
     }
   ]

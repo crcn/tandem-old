@@ -4,7 +4,6 @@ import {
   FILE_NAVIGATOR_ITEM_CLICKED,
   FileNavigatorItemClicked,
   TD_PROJECT_LOADED,
-  savedFile,
   projectInfoLoaded,
   PROJECT_INFO_LOADED,
   projectDirectoryDirLoaded,
