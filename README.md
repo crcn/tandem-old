@@ -6,7 +6,7 @@
 > Tandem is still new, so expect bugs. If you'd like to contribute, feel free to reach out to hello@tandemcode.com.
 
 [![Backers on Open Collective](https://opencollective.com/tandem/backers/badge.svg)](#backers)
- [![Sponsors on Open Collective](https://opencollective.com/tendem/sponsors/badge.svg)](#sponsors) 
+[![Sponsors on Open Collective](https://opencollective.com/tendem/sponsors/badge.svg)](#sponsors)
 
 Tandem is a UI builder for web applications. It currently works with React, other languages & frameworks will be supported in the future. The primary goal for Tandem is to provide a faster, easier, safer, and more scalable alternative to handwritten HTML & CSS code.
 
@@ -58,16 +58,14 @@ More info can be found in the [installation docs](./docs/installation.md)
 
 ## Contributors
 
-This project exists thanks to all the people who contribute. 
+This project exists thanks to all the people who contribute.
 <a href="https://github.com/tandemcode/tandem/graphs/contributors"><img src="https://opencollective.com/tandem/contributors.svg?width=890&button=false" /></a>
-
 
 ## Backers
 
 Thank you to all our backers! 🙏 [[Become a backer](https://opencollective.com/tandem#backer)]
 
 <a href="https://opencollective.com/tandem#backers" target="_blank"><img src="https://opencollective.com/tandem/backers.svg?width=890"></a>
-
 
 ## Sponsors
 
@@ -83,5 +81,3 @@ Support this project by becoming a sponsor. Your logo will show up here with a l
 <a href="https://opencollective.com/tandem/sponsor/7/website" target="_blank"><img src="https://opencollective.com/tandem/sponsor/7/avatar.svg"></a>
 <a href="https://opencollective.com/tandem/sponsor/8/website" target="_blank"><img src="https://opencollective.com/tandem/sponsor/8/avatar.svg"></a>
 <a href="https://opencollective.com/tandem/sponsor/9/website" target="_blank"><img src="https://opencollective.com/tandem/sponsor/9/avatar.svg"></a>
-
-
