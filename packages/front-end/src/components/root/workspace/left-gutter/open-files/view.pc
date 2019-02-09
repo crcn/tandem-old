@@ -408,8 +408,8 @@
         "bounds": {
           "left": 320,
           "top": 150,
-          "right": 573.0101574116699,
-          "bottom": 719.6903757530276
+          "right": 684,
+          "bottom": 690
         }
       },
       "controllers": [

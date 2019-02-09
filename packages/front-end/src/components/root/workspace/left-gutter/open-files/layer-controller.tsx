@@ -37,6 +37,8 @@ export type Props = {
   depth?: number;
   inShadow?: boolean;
   inspectorNode: InspectorNode;
+  first?: boolean;
+  last?: boolean;
 };
 
 type ContextProps = {
@@ -67,6 +69,7 @@ type InnerProps = {
 const DRAG_TYPE = "INSPECTOR_NODE";
 
 const LAYER_PADDING = 16;
+const DROP_ZONE_PADDING = LAYER_PADDING + 4;
 
 const CONTAINER_STYLE = {
   display: "inline-block",
@@ -247,9 +250,11 @@ export default (Base: React.ComponentClass<BaseNodeLayerProps>) => {
             }, 10);
           }
         }
-        shouldComponentUpdate(nextProps, nextState) {
+        shouldComponentUpdate(nextProps: InnerProps) {
           return (
             this.props.depth !== nextProps.depth ||
+            this.props.first !== nextProps.first ||
+            this.props.last !== nextProps.last ||
             this.props.isSelected !== nextProps.isSelected ||
             this.props.isHovering !== nextProps.isHovering ||
             this.props.isOver !== nextProps.isOver ||
@@ -275,6 +280,8 @@ export default (Base: React.ComponentClass<BaseNodeLayerProps>) => {
             inspectorNode,
             connectDragSource,
             label,
+            first,
+            last,
             connectDropTarget,
             inShadow,
             editingLabel,
@@ -290,6 +297,8 @@ export default (Base: React.ComponentClass<BaseNodeLayerProps>) => {
           } = this;
           return (
             <Base
+              first={first}
+              last={last}
               onLabelClick={onLabelClick}
               onArrowButtonClick={onArrowButtonClick}
               onLabelDoubleClick={onLabelDoubleClick}
@@ -331,6 +340,8 @@ export default (Base: React.ComponentClass<BaseNodeLayerProps>) => {
       onLabelInputBlur,
       connectDragSource,
       label,
+      first,
+      last,
       connectDropTarget,
       inShadow,
       assocSourceNodeName
@@ -349,6 +360,8 @@ export default (Base: React.ComponentClass<BaseNodeLayerProps>) => {
         children = inspectorNode.children.map((child, i) => {
           return (
             <EnhancedLayer
+              first={i === 0}
+              last={i === inspectorNode.children.length}
               inShadow={inShadow}
               key={child.id + i}
               depth={childDepth}
@@ -359,7 +372,7 @@ export default (Base: React.ComponentClass<BaseNodeLayerProps>) => {
       }
 
       const dropZoneStyle = {
-        width: `calc(100% - ${depth * LAYER_PADDING}px)`
+        width: `calc(100% - ${depth * DROP_ZONE_PADDING}px)`
       };
 
       const isFile =
@@ -367,7 +380,10 @@ export default (Base: React.ComponentClass<BaseNodeLayerProps>) => {
 
       return (
         <span style={CONTAINER_STYLE}>
-          <BeforeDropZone style={dropZoneStyle} inspectorNode={inspectorNode} />
+          <BeforeDropZone
+            style={{ ...dropZoneStyle, display: first ? "block" : "none" }}
+            inspectorNode={inspectorNode}
+          />
           <FocusComponent focus={editingLabel}>
             {connectDropTarget(
               connectDragSource(
@@ -429,8 +445,13 @@ export default (Base: React.ComponentClass<BaseNodeLayerProps>) => {
               )
             )}
           </FocusComponent>
-          <AfterDropZone style={dropZoneStyle} inspectorNode={inspectorNode} />
           {children}
+          {expanded && children.length ? null : (
+            <AfterDropZone
+              style={dropZoneStyle}
+              inspectorNode={inspectorNode}
+            />
+          )}
         </span>
       );
     }
