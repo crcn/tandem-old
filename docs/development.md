@@ -10,6 +10,7 @@ To install, run:
 git clone git@github.com:crcn/tandem.git;
 cd tandem;
 yarn install;
+npm run bootstrap;
 ```
 
 Then run:
