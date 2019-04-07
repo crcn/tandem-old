@@ -1,6 +1,6 @@
 {
   "name": "vscode-tandem-extension",
-  "version": "10.1.33",
+  "version": "10.1.35",
   "description": "",
   "main": "index.js",
   "scripts": {
