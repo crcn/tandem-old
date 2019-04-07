@@ -17,7 +17,6 @@ import {
   getComponentVariants
 } from "paperclip";
 import { EMPTY_ARRAY } from "tandem-common";
-import { styleTriggersButtonClicked } from "../../../../../actions";
 import { FontFamily, ProjectOptions } from "../../../../../state";
 
 export type Props = {
@@ -53,7 +52,6 @@ export default (Base: React.ComponentClass<BaseStylesProps>) =>
       this.setState({
         tab: Tab.TRIGGERS
       });
-      this.props.dispatch(styleTriggersButtonClicked());
     };
     onPropertiesTabClick = () => {
       this.setState({

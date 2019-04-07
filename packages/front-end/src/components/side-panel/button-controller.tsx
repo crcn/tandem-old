@@ -50,7 +50,7 @@ export default (Base: React.ComponentClass<BaseSidePanelButtonProps>) =>
     onCloseButtonClick = () => {
       this.close();
     };
-    onKeyDown = (event: React.KeyboardEvent<any>) => {
+    onKeyUp = (event: React.KeyboardEvent<any>) => {
       if (event.key === "Enter") {
         this.close();
       }
@@ -63,7 +63,7 @@ export default (Base: React.ComponentClass<BaseSidePanelButtonProps>) =>
     };
     render() {
       const {
-        onKeyDown,
+        onKeyUp,
         onButtonClick,
         onCloseButtonClick,
         onShouldClose,
@@ -89,7 +89,7 @@ export default (Base: React.ComponentClass<BaseSidePanelButtonProps>) =>
                 left,
                 right
               })}
-              content={<div onKeyDown={onKeyDown}>{content}</div>}
+              content={<div onKeyUp={onKeyUp}>{content}</div>}
               closeButtonProps={{
                 onClick: onCloseButtonClick
               }}

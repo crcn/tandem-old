@@ -16,7 +16,6 @@ import { RightGutterTab } from "./tab.pc";
 import * as cx from "classnames";
 import { BaseRightGutterProps, ElementProps } from "./view.pc";
 import { RootState, getGlobalFileUri, getProjectCWD } from "../../../../state";
-import { rightGutterTabClicked } from "../../../../actions";
 import { Dispatch } from "redux";
 
 const TAB_NAMES = ["style", "properties"];
@@ -37,9 +36,6 @@ export default (Base: React.ComponentClass<BaseRightGutterProps>) =>
       currentTab: TAB_NAMES[0]
     };
     setTab = (value: string) => {
-      if (this.state.currentTab !== value) {
-        this.props.dispatch(rightGutterTabClicked());
-      }
       this.setState({ ...this.state, currentTab: value });
     };
     render() {

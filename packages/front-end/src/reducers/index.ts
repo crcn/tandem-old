@@ -196,8 +196,6 @@ import {
   VARIABLE_QUERY_SOURCE_VARIABLE_CHANGE,
   VariableQuerySourceVariableChange,
   QueryTypeChanged,
-  STYLE_TRIGGER_BUTTON_CLICKED,
-  RIGHT_GUTTER_TAB_CLICKED,
   CSS_PROPERTIES_CHANGE_COMPLETED,
   CSSPropertiesChanged,
   CSS_PROPERTIES_CHANGED,
@@ -1299,14 +1297,6 @@ export const canvasReducer = (state: RootState, action: Action) => {
         );
         return state;
       }, state);
-      return state;
-    }
-    case RIGHT_GUTTER_TAB_CLICKED:
-    case STYLE_TRIGGER_BUTTON_CLICKED: {
-      state = {
-        ...state,
-        selectedVariant: null
-      };
       return state;
     }
     case VARIABLE_QUERY_SOURCE_VARIABLE_CHANGE: {
@@ -3255,8 +3245,8 @@ const shortcutReducer = (state: RootState, action: Action): RootState => {
         ? nextChildren[clamp(index, 0, nextChildren.length - 1)].id
         : getParentTreeNode(parent.id, state.sourceNodeInspector).name !==
           InspectorTreeNodeName.ROOT
-        ? parent.id
-        : null;
+          ? parent.id
+          : null;
 
       if (nextSelectedNodeId) {
         const nextInspectorNode: InspectorNode = getNestedTreeNodeById(
