@@ -46,8 +46,8 @@ import {
   FILE_ITEM_CONTEXT_MENU_COPY_PATH_CLICKED,
   getInspectorNodeClipboardData,
   inspectorNodePasted,
-  SYNTHETIC_NODE_CONTEXT_MENU_PASTE_CLICKED,
-  SYNTHETIC_NODE_CONTEXT_MENU_COPY_CLICKED
+  INSPECTOR_NODE_CONTEXT_MENU_PASTE_CLICKED,
+  INSPECTOR_NODE_CONTEXT_MENU_COPY_CLICKED
 } from "tandem-front-end";
 import {
   findPaperclipSourceFiles,
@@ -105,7 +105,7 @@ function* handleOpenLink() {
 function* handleClipboard() {
   yield fork(function* handleCopy() {
     while (1) {
-      yield take(SYNTHETIC_NODE_CONTEXT_MENU_COPY_CLICKED);
+      yield take(INSPECTOR_NODE_CONTEXT_MENU_COPY_CLICKED);
       clipboard.writeText(
         JSON.stringify(getInspectorNodeClipboardData(yield select())),
         "text/plain"
@@ -115,7 +115,7 @@ function* handleClipboard() {
 
   yield fork(function* handlePaste() {
     while (1) {
-      yield take(SYNTHETIC_NODE_CONTEXT_MENU_PASTE_CLICKED);
+      yield take(INSPECTOR_NODE_CONTEXT_MENU_PASTE_CLICKED);
       const text = clipboard.readText("text/plain");
       yield put(inspectorNodePasted(JSON.parse(text)));
     }

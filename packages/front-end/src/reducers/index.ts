@@ -29,7 +29,7 @@ import {
   InsertToolFinished,
   SHORTCUT_DELETE_KEY_DOWN,
   CANVAS_TOOL_WINDOW_BACKGROUND_CLICKED,
-  SYNTHETIC_NODES_PASTED,
+  INSPECTOR_NODES_PASTED,
   SyntheticVisibleNodesPasted,
   FILE_NAVIGATOR_ITEM_DOUBLE_CLICKED,
   OPEN_FILE_ITEM_CLICKED,
@@ -147,17 +147,17 @@ import {
   FILE_ITEM_CONTEXT_MENU_RENAME_CLICKED,
   FileItemContextMenuAction,
   FILE_NAVIGATOR_ITEM_BLURRED,
-  SYNTHETIC_NODE_CONTEXT_MENU_CONVERT_TO_COMPONENT_CLICKED,
-  SYNTHETIC_NODE_CONTEXT_MENU_WRAP_IN_ELEMENT_CLICKED,
+  INSPECTOR_NODE_CONTEXT_MENU_CONVERT_TO_COMPONENT_CLICKED,
+  INSPECTOR_NODE_CONTEXT_MENU_WRAP_IN_ELEMENT_CLICKED,
   InspectorNodeContextMenuAction,
-  SYNTHETIC_NODE_CONTEXT_MENU_WRAP_IN_SLOT_CLICKED,
-  SYNTHETIC_NODE_CONTEXT_MENU_SELECT_PARENT_CLICKED,
-  SYNTHETIC_NODE_CONTEXT_MENU_SELECT_SOURCE_NODE_CLICKED,
-  SYNTHETIC_NODE_CONTEXT_MENU_REMOVE_CLICKED,
+  INSPECTOR_NODE_CONTEXT_MENU_WRAP_IN_SLOT_CLICKED,
+  INSPECTOR_NODE_CONTEXT_MENU_SELECT_PARENT_CLICKED,
+  INSPECTOR_NODE_CONTEXT_MENU_SELECT_SOURCE_NODE_CLICKED,
+  INSPECTOR_NODE_CONTEXT_MENU_REMOVE_CLICKED,
   CSS_RESET_PROPERTY_OPTION_CLICKED,
   ResetPropertyOptionClicked,
   EXPORT_NAME_CHANGED,
-  SYNTHETIC_NODE_CONTEXT_MENU_CONVERT_TO_STYLE_MIXIN_CLICKED,
+  INSPECTOR_NODE_CONTEXT_MENU_CONVERT_TO_STYLE_MIXIN_CLICKED,
   QUICK_SEARCH_RESULT_ITEM_SPLIT_BUTTON_CLICKED,
   QuickSearchResultItemSplitButtonClicked,
   ModuleContextMenuOptionClicked,
@@ -171,11 +171,11 @@ import {
   ImagePathPicked,
   CSS_INHERITED_FROM_LABEL_CLICKED,
   CSSInheritedFromLabelClicked,
-  SYNTHETIC_NODE_CONTEXT_MENU_CONVERT_TEXT_STYLES_TO_MIXIN_CLICKED,
-  SYNTHETIC_NODE_CONTEXT_MENU_RENAME_CLICKED,
+  INSPECTOR_NODE_CONTEXT_MENU_CONVERT_TEXT_STYLES_TO_MIXIN_CLICKED,
+  INSPECTOR_NODE_CONTEXT_MENU_RENAME_CLICKED,
   PC_LAYER_DOUBLE_CLICKED,
   PCLayerRightClicked,
-  SYNTHETIC_NODE_CONTEXT_MENU_SHOW_IN_CANVAS_CLICKED,
+  INSPECTOR_NODE_CONTEXT_MENU_SHOW_IN_CANVAS_CLICKED,
   CANVAS_TEXT_EDIT_CHANGE_COMPLETE,
   CanvasTextEditChangeComplete,
   ADD_VARIANT_TRIGGER_CLICKED,
@@ -2934,7 +2934,7 @@ const shortcutReducer = (state: RootState, action: Action): RootState => {
         : setTool(ToolType.COMPONENT, state);
     }
 
-    case SYNTHETIC_NODE_CONTEXT_MENU_SELECT_PARENT_CLICKED: {
+    case INSPECTOR_NODE_CONTEXT_MENU_SELECT_PARENT_CLICKED: {
       const { item: inspectorNode } = action as InspectorNodeContextMenuAction;
       const parent = getParentTreeNode(
         inspectorNode.id,
@@ -2944,7 +2944,7 @@ const shortcutReducer = (state: RootState, action: Action): RootState => {
       return state;
     }
 
-    case SYNTHETIC_NODE_CONTEXT_MENU_SELECT_SOURCE_NODE_CLICKED: {
+    case INSPECTOR_NODE_CONTEXT_MENU_SELECT_SOURCE_NODE_CLICKED: {
       const { item } = action as InspectorNodeContextMenuAction;
       state = openSyntheticVisibleNodeOriginFile(
         getSyntheticNodeById(item.id, state.documents),
@@ -3016,7 +3016,7 @@ const shortcutReducer = (state: RootState, action: Action): RootState => {
       }
       return state;
     }
-    case SYNTHETIC_NODE_CONTEXT_MENU_REMOVE_CLICKED: {
+    case INSPECTOR_NODE_CONTEXT_MENU_REMOVE_CLICKED: {
       const { item: inspectorNode } = action as InspectorNodeContextMenuAction;
       state = persistRootState(state => {
         return persistRemoveInspectorNode(inspectorNode, state);
@@ -3025,7 +3025,7 @@ const shortcutReducer = (state: RootState, action: Action): RootState => {
       return state;
     }
 
-    case SYNTHETIC_NODE_CONTEXT_MENU_RENAME_CLICKED: {
+    case INSPECTOR_NODE_CONTEXT_MENU_RENAME_CLICKED: {
       const { item } = action as InspectorNodeContextMenuAction;
       state = {
         ...state,
@@ -3034,7 +3034,7 @@ const shortcutReducer = (state: RootState, action: Action): RootState => {
       return state;
     }
 
-    case SYNTHETIC_NODE_CONTEXT_MENU_SHOW_IN_CANVAS_CLICKED: {
+    case INSPECTOR_NODE_CONTEXT_MENU_SHOW_IN_CANVAS_CLICKED: {
       const { item } = action as InspectorNodeContextMenuAction;
 
       if (!item) {
@@ -3058,19 +3058,19 @@ const shortcutReducer = (state: RootState, action: Action): RootState => {
       return state;
     }
 
-    case SYNTHETIC_NODE_CONTEXT_MENU_WRAP_IN_SLOT_CLICKED: {
+    case INSPECTOR_NODE_CONTEXT_MENU_WRAP_IN_SLOT_CLICKED: {
       const { item } = action as InspectorNodeContextMenuAction;
       state = wrapInspectorNodeInSlot(item, state);
       return state;
     }
 
-    case SYNTHETIC_NODE_CONTEXT_MENU_CONVERT_TO_COMPONENT_CLICKED: {
+    case INSPECTOR_NODE_CONTEXT_MENU_CONVERT_TO_COMPONENT_CLICKED: {
       const { item } = action as InspectorNodeContextMenuAction;
       state = convertInspectorNodeToComponent(item, state);
       return state;
     }
 
-    case SYNTHETIC_NODE_CONTEXT_MENU_WRAP_IN_ELEMENT_CLICKED: {
+    case INSPECTOR_NODE_CONTEXT_MENU_WRAP_IN_ELEMENT_CLICKED: {
       const { item } = action as InspectorNodeContextMenuAction;
       state = persistRootState(state => {
         const document = getSyntheticVisibleNodeDocument(
@@ -3093,13 +3093,13 @@ const shortcutReducer = (state: RootState, action: Action): RootState => {
       return state;
     }
 
-    case SYNTHETIC_NODE_CONTEXT_MENU_CONVERT_TO_STYLE_MIXIN_CLICKED: {
+    case INSPECTOR_NODE_CONTEXT_MENU_CONVERT_TO_STYLE_MIXIN_CLICKED: {
       const { item } = action as InspectorNodeContextMenuAction;
       state = convertInspectorNodeStyleToMixin(item, state);
       return state;
     }
 
-    case SYNTHETIC_NODE_CONTEXT_MENU_CONVERT_TEXT_STYLES_TO_MIXIN_CLICKED: {
+    case INSPECTOR_NODE_CONTEXT_MENU_CONVERT_TEXT_STYLES_TO_MIXIN_CLICKED: {
       const { item } = action as InspectorNodeContextMenuAction;
       state = convertInspectorNodeStyleToMixin(item, state, true);
       return state;
@@ -3239,7 +3239,7 @@ const shortcutReducer = (state: RootState, action: Action): RootState => {
 
 const clipboardReducer = (state: RootState, action: Action) => {
   switch (action.type) {
-    case SYNTHETIC_NODES_PASTED: {
+    case INSPECTOR_NODES_PASTED: {
       const { clips } = action as SyntheticVisibleNodesPasted;
       const oldState = state;
 
