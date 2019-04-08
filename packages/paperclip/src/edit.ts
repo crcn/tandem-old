@@ -101,7 +101,8 @@ import {
   getSyntheticInspectorNode,
   getInstanceVariantInfo,
   getInspectorContentNode,
-  getInspectorSyntheticNode
+  getInspectorSyntheticNode,
+  InspectorTreeNodeName
 } from "./inspector";
 import {
   getInspectorContentNodeContainingChild,
@@ -253,18 +254,36 @@ export const getFrameSyntheticNode = memoize(
 );
 
 export const getPCNodeClip = (
-  node: SyntheticVisibleNode,
+  node: InspectorNode,
+  rootNode: InspectorNode,
+  documents: SyntheticDocument[],
   frames: Frame[],
   graph: DependencyGraph
 ): PCNodeClip => {
-  const sourceNode = getSyntheticSourceNode(node, graph);
-  const frame = getSyntheticVisibleNodeFrame(node, frames);
+  const sourceNode = getInspectorSourceNode(node, rootNode, graph);
+  const syntheticNode = getInspectorSyntheticNode(node, documents);
+  const contentNode = getInspectorContentNode(node, rootNode);
+  const contentSyntheticNode = getInspectorSyntheticNode(
+    contentNode,
+    documents
+  );
+  const frame =
+    contentSyntheticNode &&
+    getSyntheticVisibleNodeFrame(contentSyntheticNode, frames);
+
   return {
-    uri: getSyntheticSourceUri(node, graph),
+    uri: getPCNodeDependency(node.sourceNodeId, graph).uri,
     node: sourceNode,
-    fixedBounds: isSyntheticContentNode(node, graph)
-      ? frame.bounds
-      : getSyntheticVisibleNodeRelativeBounds(node, frames, graph)
+    fixedBounds:
+      (syntheticNode &&
+        (isSyntheticContentNode(syntheticNode, graph)
+          ? frame.bounds
+          : getSyntheticVisibleNodeRelativeBounds(
+              syntheticNode,
+              frames,
+              graph
+            ))) ||
+      (frame && frame.bounds)
   };
 };
 
@@ -558,10 +577,14 @@ export const persistChangeLabel = <TState extends PCEditorState>(
 };
 
 export const persistConvertNodeToComponent = <TState extends PCEditorState>(
-  node: SyntheticVisibleNode,
+  node: InspectorNode,
   state: TState
 ) => {
-  let sourceNode = getSyntheticSourceNode(node, state.graph) as PCVisibleNode;
+  let sourceNode = getInspectorSourceNode(
+    node,
+    state.sourceNodeInspector,
+    state.graph
+  ) as PCVisibleNode;
 
   if (isComponent(sourceNode)) {
     return state;
@@ -579,7 +602,7 @@ export const persistConvertNodeToComponent = <TState extends PCEditorState>(
     sourceNode.styleMixins
   );
 
-  if (isSyntheticContentNode(node, state.graph)) {
+  if (node.name === InspectorTreeNodeName.CONTENT) {
     component = updatePCNodeMetadata(sourceNode.metadata, component);
     sourceNode = updatePCNodeMetadata(
       {
@@ -614,19 +637,23 @@ export const persistConvertNodeToComponent = <TState extends PCEditorState>(
 export const persistConvertInspectorNodeStyleToMixin = <
   TState extends PCEditorState
 >(
-  node: SyntheticVisibleNode,
+  inspectorNode: InspectorNode,
   variant: PCVariant,
   state: TState,
   justTextStyles?: boolean
 ) => {
-  const sourceNode = getSyntheticSourceNode(node, state.graph) as PCVisibleNode;
-  const document = getSyntheticVisibleNodeDocument(node.id, state.documents);
-  const inspectorNode = getSyntheticInspectorNode(
-    node,
-    document,
+  const sourceNode = getInspectorSourceNode(
+    inspectorNode,
     state.sourceNodeInspector,
     state.graph
-  );
+  ) as PCVisibleNode;
+  // const document = getSyntheticVisibleNodeDocument(node.id, state.documents);
+  // const inspectorNode = getSyntheticInspectorNode(
+  //   node,
+  //   document,
+  //   state.sourceNodeInspector,
+  //   state.graph
+  // );
   const computedStyle = computeStyleInfo(
     inspectorNode,
     state.sourceNodeInspector,
@@ -649,7 +676,7 @@ export const persistConvertInspectorNodeStyleToMixin = <
     const newLabel = `${sourceNode.label} text style`;
     styleMixin = createPCTextStyleMixin(
       style,
-      (node as SyntheticTextNode).value || newLabel,
+      newLabel,
       sourceNode.styleMixins,
       newLabel
     );
@@ -663,7 +690,10 @@ export const persistConvertInspectorNodeStyleToMixin = <
   }
   const module = getPCNodeModule(sourceNode.id, state.graph);
   state = replaceDependencyGraphPCNode(
-    appendChildNode(addBoundsMetadata(node, styleMixin, state), module),
+    appendChildNode(
+      addBoundsMetadata(inspectorNode, styleMixin, state),
+      module
+    ),
     module,
     state
   );
@@ -680,7 +710,7 @@ export const persistConvertInspectorNodeStyleToMixin = <
         priority: Object.keys(sourceNode.styleMixins || EMPTY_OBJECT).length
       }
     },
-    node,
+    inspectorNode,
     variant,
     state
   );
@@ -689,10 +719,14 @@ export const persistConvertInspectorNodeStyleToMixin = <
 };
 
 export const persistWrapInSlot = <TState extends PCEditorState>(
-  node: SyntheticVisibleNode,
+  node: InspectorNode,
   state: TState
 ) => {
-  const sourceNode = getSyntheticSourceNode(node, state.graph) as PCVisibleNode;
+  const sourceNode = getInspectorSourceNode(
+    node,
+    state.sourceNodeInspector,
+    state.graph
+  ) as PCVisibleNode;
 
   if (
     getPCNodeContentNode(
@@ -967,11 +1001,15 @@ export const persistReplacePCNode = <TState extends PCEditorState>(
 
 export const persistStyleMixin = <TState extends PCEditorState>(
   styleMixins: StyleMixins,
-  node: SyntheticVisibleNode,
+  node: InspectorNode,
   variant: PCVariant,
   state: TState
 ) => {
-  const sourceNode = getSyntheticSourceNode(node, state.graph) as PCVisibleNode;
+  const sourceNode = getInspectorSourceNode(
+    node,
+    state.sourceNodeInspector,
+    state.graph
+  ) as PCVisibleNode;
   // const sourceNode = maybeOverride(
   //   PCOverridablePropertyName.INHERIT_STYLE,
   //   styleMixins,
@@ -1595,14 +1633,38 @@ export const persistSyntheticNodeMetadata = <TState extends PCEditorState>(
 };
 
 const addBoundsMetadata = (
-  node: SyntheticVisibleNode,
+  node: InspectorNode,
   child: PCVisibleNode | PCComponent | PCStyleMixin,
   state: PCEditorState
 ) => {
-  const document = getSyntheticVisibleNodeDocument(node.id, state.documents);
-  const frame = getSyntheticVisibleNodeFrame(node, state.frames);
+  const syntheticNode = getInspectorSyntheticNode(node, state.documents);
+  const contentNode = getInspectorContentNode(node, state.sourceNodeInspector);
+  const syntheticContentNode = getInspectorSyntheticNode(
+    contentNode,
+    state.documents
+  );
+
+  if (!syntheticNode && !syntheticContentNode) {
+    console.error(`Synthetic node is invisible`);
+    // const sourceNode = getInspectorSourceNode(node, state.sourceNodeInspector, state.graph);
+
+    return updatePCNodeMetadata(
+      {
+        [PCVisibleNodeMetadataKey.BOUNDS]: DEFAULT_FRAME_BOUNDS
+      },
+      child
+    );
+  }
+  const document = getSyntheticVisibleNodeDocument(
+    syntheticNode.id,
+    state.documents
+  );
+  const frame = getSyntheticVisibleNodeFrame(
+    syntheticContentNode,
+    state.frames
+  );
   const syntheticNodeBounds = getSyntheticVisibleNodeRelativeBounds(
-    node,
+    syntheticNode,
     state.frames,
     state.graph
   );

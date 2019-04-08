@@ -768,10 +768,15 @@ const queueSaveProjectFile = (state: RootState) => {
   return state;
 };
 
-export const getSyntheticNodeClipboardData = (state: RootState) => {
+export const getInspectorNodeClipboardData = (state: RootState) => {
   return state.selectedInspectorNodes.map(node => {
-    const syntheticNode = getInspectorSyntheticNode(node, state.documents);
-    return getPCNodeClip(syntheticNode, state.frames, state.graph);
+    return getPCNodeClip(
+      node,
+      state.sourceNodeInspector,
+      state.documents,
+      state.frames,
+      state.graph
+    );
   });
 };
 

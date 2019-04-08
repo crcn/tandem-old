@@ -149,7 +149,7 @@ import {
   FILE_NAVIGATOR_ITEM_BLURRED,
   SYNTHETIC_NODE_CONTEXT_MENU_CONVERT_TO_COMPONENT_CLICKED,
   SYNTHETIC_NODE_CONTEXT_MENU_WRAP_IN_ELEMENT_CLICKED,
-  SyntheticNodeContextMenuAction,
+  InspectorNodeContextMenuAction,
   SYNTHETIC_NODE_CONTEXT_MENU_WRAP_IN_SLOT_CLICKED,
   SYNTHETIC_NODE_CONTEXT_MENU_SELECT_PARENT_CLICKED,
   SYNTHETIC_NODE_CONTEXT_MENU_SELECT_SOURCE_NODE_CLICKED,
@@ -380,7 +380,8 @@ import {
   inspectorNodeInInstanceOfComponent,
   getInspectorNodeBySourceNodeId,
   persistAddVariantTrigger,
-  PCVariableQuery
+  PCVariableQuery,
+  getInspectorContentNode
 } from "paperclip";
 import {
   roundBounds,
@@ -2021,14 +2022,10 @@ export const canvasReducer = (state: RootState, action: Action) => {
     case INHERIT_PANE_REMOVE_BUTTON_CLICK: {
       const { selectedInspectorNodes } = state;
       const { componentId } = action as InheritPaneRemoveButtonClick;
-      const node = getInspectorSyntheticNode(
-        selectedInspectorNodes[0],
-        state.documents
-      );
       state = persistRootState(state => {
         return persistStyleMixin(
           { [componentId]: undefined },
-          node,
+          selectedInspectorNodes[0],
           state.selectedVariant,
           state
         );
@@ -2038,12 +2035,11 @@ export const canvasReducer = (state: RootState, action: Action) => {
 
     case INHERIT_PANE_ADD_BUTTON_CLICK: {
       const { selectedInspectorNodes } = state;
-      const node = getInspectorSyntheticNode(
-        selectedInspectorNodes[0],
-        state.documents
-      );
-      const sourceNode = getSyntheticSourceNode(
-        node,
+      const inspectorNode = selectedInspectorNodes[0];
+
+      const sourceNode = getInspectorSourceNode(
+        inspectorNode,
+        state.sourceNodeInspector,
         state.graph
       ) as PCVisibleNode;
 
@@ -2056,7 +2052,7 @@ export const canvasReducer = (state: RootState, action: Action) => {
                 .length
             }
           },
-          node,
+          inspectorNode,
           state.selectedVariant,
           state
         );
@@ -2939,17 +2935,7 @@ const shortcutReducer = (state: RootState, action: Action): RootState => {
     }
 
     case SYNTHETIC_NODE_CONTEXT_MENU_SELECT_PARENT_CLICKED: {
-      const { item } = action as SyntheticNodeContextMenuAction;
-      const document = getSyntheticVisibleNodeDocument(
-        item.id,
-        state.documents
-      );
-      const inspectorNode = getSyntheticInspectorNode(
-        item,
-        document,
-        state.sourceNodeInspector,
-        state.graph
-      );
+      const { item: inspectorNode } = action as InspectorNodeContextMenuAction;
       const parent = getParentTreeNode(
         inspectorNode.id,
         state.sourceNodeInspector
@@ -2959,7 +2945,7 @@ const shortcutReducer = (state: RootState, action: Action): RootState => {
     }
 
     case SYNTHETIC_NODE_CONTEXT_MENU_SELECT_SOURCE_NODE_CLICKED: {
-      const { item } = action as SyntheticNodeContextMenuAction;
+      const { item } = action as InspectorNodeContextMenuAction;
       state = openSyntheticVisibleNodeOriginFile(
         getSyntheticNodeById(item.id, state.documents),
         state
@@ -3031,38 +3017,25 @@ const shortcutReducer = (state: RootState, action: Action): RootState => {
       return state;
     }
     case SYNTHETIC_NODE_CONTEXT_MENU_REMOVE_CLICKED: {
-      const { item } = action as SyntheticNodeContextMenuAction;
+      const { item: inspectorNode } = action as InspectorNodeContextMenuAction;
       state = persistRootState(state => {
-        return persistRemoveInspectorNode(
-          getSyntheticInspectorNode(
-            item,
-            getSyntheticVisibleNodeDocument(item.id, state.documents),
-            state.sourceNodeInspector,
-            state.graph
-          ),
-          state
-        );
+        return persistRemoveInspectorNode(inspectorNode, state);
       }, state);
       state = setSelectedInspectorNodes(state);
       return state;
     }
 
     case SYNTHETIC_NODE_CONTEXT_MENU_RENAME_CLICKED: {
-      const { item } = action as SyntheticNodeContextMenuAction;
+      const { item } = action as InspectorNodeContextMenuAction;
       state = {
         ...state,
-        renameInspectorNodeId: getSyntheticInspectorNode(
-          item,
-          getSyntheticVisibleNodeDocument(item.id, state.documents),
-          state.sourceNodeInspector,
-          state.graph
-        ).id
+        renameInspectorNodeId: item.id
       };
       return state;
     }
 
     case SYNTHETIC_NODE_CONTEXT_MENU_SHOW_IN_CANVAS_CLICKED: {
-      const { item } = action as SyntheticNodeContextMenuAction;
+      const { item } = action as InspectorNodeContextMenuAction;
 
       if (!item) {
         return state;
@@ -3086,32 +3059,26 @@ const shortcutReducer = (state: RootState, action: Action): RootState => {
     }
 
     case SYNTHETIC_NODE_CONTEXT_MENU_WRAP_IN_SLOT_CLICKED: {
-      const { item } = action as SyntheticNodeContextMenuAction;
-      state = wrapSyntheticNodeInSlot(item, state);
+      const { item } = action as InspectorNodeContextMenuAction;
+      state = wrapInspectorNodeInSlot(item, state);
       return state;
     }
 
     case SYNTHETIC_NODE_CONTEXT_MENU_CONVERT_TO_COMPONENT_CLICKED: {
-      const { item } = action as SyntheticNodeContextMenuAction;
-      state = convertSyntheticNodeToComponent(item, state);
+      const { item } = action as InspectorNodeContextMenuAction;
+      state = convertInspectorNodeToComponent(item, state);
       return state;
     }
 
     case SYNTHETIC_NODE_CONTEXT_MENU_WRAP_IN_ELEMENT_CLICKED: {
-      const { item } = action as SyntheticNodeContextMenuAction;
+      const { item } = action as InspectorNodeContextMenuAction;
       state = persistRootState(state => {
         const document = getSyntheticVisibleNodeDocument(
           item.id,
           state.documents
         );
-        const inspectorNode = getSyntheticInspectorNode(
-          item,
-          document,
-          state.sourceNodeInspector,
-          state.graph
-        );
         const sourceNode = getInspectorSourceNode(
-          inspectorNode,
+          item,
           state.sourceNodeInspector,
           state.graph
         ) as PCVisibleNode;
@@ -3127,14 +3094,14 @@ const shortcutReducer = (state: RootState, action: Action): RootState => {
     }
 
     case SYNTHETIC_NODE_CONTEXT_MENU_CONVERT_TO_STYLE_MIXIN_CLICKED: {
-      const { item } = action as SyntheticNodeContextMenuAction;
-      state = convertSyntheticStyleToMixin(item, state);
+      const { item } = action as InspectorNodeContextMenuAction;
+      state = convertInspectorNodeStyleToMixin(item, state);
       return state;
     }
 
     case SYNTHETIC_NODE_CONTEXT_MENU_CONVERT_TEXT_STYLES_TO_MIXIN_CLICKED: {
-      const { item } = action as SyntheticNodeContextMenuAction;
-      state = convertSyntheticStyleToMixin(item, state, true);
+      const { item } = action as InspectorNodeContextMenuAction;
+      state = convertInspectorNodeStyleToMixin(item, state, true);
       return state;
     }
 
@@ -3144,21 +3111,14 @@ const shortcutReducer = (state: RootState, action: Action): RootState => {
         return state;
       }
 
-      state = convertSyntheticNodeToComponent(
-        getInspectorSyntheticNode(
-          state.selectedInspectorNodes[0],
-          state.documents
-        ),
+      state = convertInspectorNodeToComponent(
+        state.selectedInspectorNodes[0],
         state
       );
       return state;
     }
     case SHORTCUT_WRAP_IN_SLOT_KEY_DOWN: {
-      const selectedNode = getInspectorSyntheticNode(
-        state.selectedInspectorNodes[0],
-        state.documents
-      );
-      state = wrapSyntheticNodeInSlot(selectedNode, state);
+      state = wrapInspectorNodeInSlot(state.selectedInspectorNodes[0], state);
       return state;
     }
     case SHORTCUT_ESCAPE_KEY_DOWN: {
@@ -3379,8 +3339,8 @@ const normalizeZoom = zoom => {
   return zoom < 1 ? 1 / Math.round(1 / zoom) : Math.round(zoom);
 };
 
-const convertSyntheticStyleToMixin = (
-  node: SyntheticVisibleNode,
+const convertInspectorNodeStyleToMixin = (
+  node: InspectorNode,
   state: RootState,
   justTextStyles?: boolean
 ) => {
@@ -3411,18 +3371,14 @@ const convertSyntheticStyleToMixin = (
   return state;
 };
 
-const convertSyntheticNodeToComponent = (
-  { id }: SyntheticVisibleNode,
+const convertInspectorNodeToComponent = (
+  node: InspectorNode,
   state: RootState
 ) => {
   const oldState = state;
 
   state = persistRootState(
-    state =>
-      persistConvertNodeToComponent(
-        getSyntheticNodeById(id, state.documents),
-        state
-      ),
+    state => persistConvertNodeToComponent(node, state),
     state
   );
 
@@ -3440,23 +3396,23 @@ const convertSyntheticNodeToComponent = (
   return state;
 };
 
-const wrapSyntheticNodeInSlot = (
-  { id }: SyntheticVisibleNode,
-  state: RootState
-) => {
-  const node = getSyntheticNodeById(id, state.documents);
+const wrapInspectorNodeInSlot = ({ id }: InspectorNode, state: RootState) => {
+  // const node = getSyntheticNodeById(id, state.documents);
+  const node = getNestedTreeNodeById(id, state.sourceNodeInspector);
 
-  const sourceNode = getSyntheticSourceNode(node, state.graph);
+  const sourceNode = getInspectorSourceNode(
+    node,
+    state.sourceNodeInspector,
+    state.graph
+  );
   const sourceModule = getPCNodeModule(sourceNode.id, state.graph);
   const contentNode = getPCNodeContentNode(sourceNode.id, sourceModule);
+  const contentInspectorNode = getInspectorContentNode(
+    node,
+    state.sourceNodeInspector
+  );
 
-  if (
-    syntheticNodeIsInShadow(
-      node,
-      getSyntheticVisibleNodeDocument(node.id, state.documents),
-      state.graph
-    )
-  ) {
+  if (inspectorNodeInShadow(node, contentInspectorNode)) {
     return confirm(
       "Cannot perform this action for shadow elements.",
       ConfirmType.ERROR,

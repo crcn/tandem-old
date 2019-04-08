@@ -44,8 +44,8 @@ import {
   LINK_CICKED,
   LinkClicked,
   FILE_ITEM_CONTEXT_MENU_COPY_PATH_CLICKED,
-  getSyntheticNodeClipboardData,
-  syntheticNodesPasted,
+  getInspectorNodeClipboardData,
+  inspectorNodePasted,
   SYNTHETIC_NODE_CONTEXT_MENU_PASTE_CLICKED,
   SYNTHETIC_NODE_CONTEXT_MENU_COPY_CLICKED
 } from "tandem-front-end";
@@ -107,7 +107,7 @@ function* handleClipboard() {
     while (1) {
       yield take(SYNTHETIC_NODE_CONTEXT_MENU_COPY_CLICKED);
       clipboard.writeText(
-        JSON.stringify(getSyntheticNodeClipboardData(yield select())),
+        JSON.stringify(getInspectorNodeClipboardData(yield select())),
         "text/plain"
       );
     }
@@ -117,7 +117,7 @@ function* handleClipboard() {
     while (1) {
       yield take(SYNTHETIC_NODE_CONTEXT_MENU_PASTE_CLICKED);
       const text = clipboard.readText("text/plain");
-      yield put(syntheticNodesPasted(JSON.parse(text)));
+      yield put(inspectorNodePasted(JSON.parse(text)));
     }
   });
 }

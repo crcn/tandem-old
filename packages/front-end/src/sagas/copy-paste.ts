@@ -1,8 +1,8 @@
 import { eventChannel } from "redux-saga";
 import { fork, take, select, put } from "redux-saga/effects";
-import { RootState, getSyntheticNodeClipboardData } from "../state";
+import { RootState, getInspectorNodeClipboardData } from "../state";
 import { PCNodeClip, xmlToPCNode } from "paperclip";
-import { syntheticNodesPasted } from "../actions";
+import { inspectorNodePasted } from "../actions";
 
 export function* copyPasteSaga() {
   yield fork(handleCopy);
@@ -30,7 +30,7 @@ function* handleCopy() {
 
       event.clipboardData.setData(
         "text/plain",
-        JSON.stringify(getSyntheticNodeClipboardData(root))
+        JSON.stringify(getInspectorNodeClipboardData(root))
       );
       event.preventDefault();
     }
@@ -56,7 +56,7 @@ function* handlePaste() {
       // paperclip first
       try {
         const clips = JSON.parse(text) as PCNodeClip[];
-        yield put(syntheticNodesPasted(clips));
+        yield put(inspectorNodePasted(clips));
         event.preventDefault();
         continue;
       } catch (e) {
@@ -72,7 +72,7 @@ function* handlePaste() {
             node
           }
         ];
-        yield put(syntheticNodesPasted(clips));
+        yield put(inspectorNodePasted(clips));
         event.preventDefault();
         continue;
       } catch (e) {}

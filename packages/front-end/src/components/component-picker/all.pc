@@ -98,7 +98,7 @@
       }
     },
     {
-      "id": "a5bde25058454",
+      "id": "9399e92d567",
       "variant": {},
       "is": "dcd2c13f21458",
       "name": "component-instance",
@@ -106,7 +106,7 @@
       "style": {},
       "children": [
         {
-          "id": "7d0ec6331",
+          "id": "9399e92d568",
           "propertyName": "style",
           "targetIdPath": [
             "33949bb8180402"
@@ -122,64 +122,6 @@
           "top": 895,
           "right": 1030.5520794519923,
           "bottom": 1431.962079966811
-        }
-      }
-    },
-    {
-      "id": "f8e114d2429",
-      "label": "Element",
-      "is": "div",
-      "name": "element",
-      "attributes": {},
-      "style": {
-        "box-sizing": "border-box",
-        "display": "block"
-      },
-      "children": [
-        {
-          "id": "f8e114d2431",
-          "label": "Element",
-          "is": "div",
-          "name": "element",
-          "attributes": {},
-          "style": {
-            "box-sizing": "border-box",
-            "display": "block"
-          },
-          "children": [
-            {
-              "id": "5c56664431",
-              "name": "text",
-              "label": "Text",
-              "value": "Double click to edit",
-              "style": {},
-              "children": [],
-              "metadata": {
-                "bounds": {
-                  "left": 1181.608880882705,
-                  "top": -3116.734129496756,
-                  "right": 1281.608880882705,
-                  "bottom": -3086.734129496756
-                }
-              }
-            }
-          ],
-          "metadata": {
-            "bounds": {
-              "left": 1406.1778831266897,
-              "top": -1666.3324608662588,
-              "right": 1506.1778831266897,
-              "bottom": -1566.3324608662588
-            }
-          }
-        }
-      ],
-      "metadata": {
-        "bounds": {
-          "left": 1689.3301033473658,
-          "top": -973.0977148087411,
-          "right": 1789.3301033473658,
-          "bottom": -873.0977148087411
         }
       }
     }

@@ -562,8 +562,8 @@ export type FileItemContextMenuAction = {
   item: FSItem;
 } & Action;
 
-export type SyntheticNodeContextMenuAction = {
-  item: SyntheticVisibleNode;
+export type InspectorNodeContextMenuAction = {
+  item: InspectorNode;
 } & Action;
 
 export type ComponentVariantNameChanged = {
@@ -1007,15 +1007,15 @@ export const fileItemContextMenuOpenInFinderClicked = publicActionCreator(
   })
 );
 
-export const syntheticNodeContextMenuWrapInElementClicked = publicActionCreator(
-  (item: SyntheticVisibleNode): SyntheticNodeContextMenuAction => ({
+export const inspectorNodeContextMenuWrapInElementClicked = publicActionCreator(
+  (item: InspectorNode): InspectorNodeContextMenuAction => ({
     type: SYNTHETIC_NODE_CONTEXT_MENU_WRAP_IN_ELEMENT_CLICKED,
     item
   })
 );
 
-export const syntheticNodeContextMenuConvertToComponentClicked = publicActionCreator(
-  (item: SyntheticVisibleNode): SyntheticNodeContextMenuAction => ({
+export const inspectorNodeContextMenuConvertToComponentClicked = publicActionCreator(
+  (item: InspectorNode): InspectorNodeContextMenuAction => ({
     type: SYNTHETIC_NODE_CONTEXT_MENU_CONVERT_TO_COMPONENT_CLICKED,
     item
   })
@@ -1065,69 +1065,69 @@ export const imageSourceInputChanged = (
   type: IMAGE_SOURCE_INPUT_CHANGED
 });
 
-export const syntheticNodeContextMenuConvertToStyleMixinClicked = publicActionCreator(
-  (item: SyntheticVisibleNode): SyntheticNodeContextMenuAction => ({
+export const inspectorNodeContextMenuConvertToStyleMixinClicked = publicActionCreator(
+  (item: InspectorNode): InspectorNodeContextMenuAction => ({
     type: SYNTHETIC_NODE_CONTEXT_MENU_CONVERT_TO_STYLE_MIXIN_CLICKED,
     item
   })
 );
 
-export const syntheticNodeContextMenuConvertTextStylesToMixinClicked = publicActionCreator(
-  (item: SyntheticVisibleNode): SyntheticNodeContextMenuAction => ({
+export const inspectorNodeContextMenuConvertTextStylesToMixinClicked = publicActionCreator(
+  (item: InspectorNode): InspectorNodeContextMenuAction => ({
     type: SYNTHETIC_NODE_CONTEXT_MENU_CONVERT_TEXT_STYLES_TO_MIXIN_CLICKED,
     item
   })
 );
 
-export const syntheticNodeContextMenuRemoveClicked = publicActionCreator(
-  (item: SyntheticVisibleNode): SyntheticNodeContextMenuAction => ({
+export const inspectorNodeContextMenuRemoveClicked = publicActionCreator(
+  (item: InspectorNode): InspectorNodeContextMenuAction => ({
     type: SYNTHETIC_NODE_CONTEXT_MENU_REMOVE_CLICKED,
     item
   })
 );
 
-export const syntheticNodeContextMenuRenameClicked = publicActionCreator(
-  (item: SyntheticVisibleNode): SyntheticNodeContextMenuAction => ({
+export const inspectorNodeContextMenuRenameClicked = publicActionCreator(
+  (item: InspectorNode): InspectorNodeContextMenuAction => ({
     type: SYNTHETIC_NODE_CONTEXT_MENU_RENAME_CLICKED,
     item
   })
 );
-export const syntheticNodeContextMenuCopyClicked = publicActionCreator(
-  (item: SyntheticVisibleNode): SyntheticNodeContextMenuAction => ({
+export const inspectorNodeContextMenuCopyClicked = publicActionCreator(
+  (item: InspectorNode): InspectorNodeContextMenuAction => ({
     type: SYNTHETIC_NODE_CONTEXT_MENU_COPY_CLICKED,
     item
   })
 );
-export const syntheticNodeContextMenuPasteClicked = publicActionCreator(
-  (item: SyntheticVisibleNode): SyntheticNodeContextMenuAction => ({
+export const inspectorNodeContextMenuPasteClicked = publicActionCreator(
+  (item: InspectorNode): InspectorNodeContextMenuAction => ({
     type: SYNTHETIC_NODE_CONTEXT_MENU_PASTE_CLICKED,
     item
   })
 );
 
-export const syntheticNodeContextMenuWrapInSlotClicked = publicActionCreator(
-  (item: SyntheticVisibleNode): SyntheticNodeContextMenuAction => ({
+export const inspectorNodeContextMenuWrapInSlotClicked = publicActionCreator(
+  (item: InspectorNode): InspectorNodeContextMenuAction => ({
     type: SYNTHETIC_NODE_CONTEXT_MENU_WRAP_IN_SLOT_CLICKED,
     item
   })
 );
 
-export const syntheticNodeContextMenuSelectParentClicked = publicActionCreator(
-  (item: SyntheticVisibleNode): SyntheticNodeContextMenuAction => ({
+export const inspectorNodeContextMenuSelectParentClicked = publicActionCreator(
+  (item: InspectorNode): InspectorNodeContextMenuAction => ({
     type: SYNTHETIC_NODE_CONTEXT_MENU_SELECT_PARENT_CLICKED,
     item
   })
 );
 
-export const syntheticNodeContextMenuSelectSourceNodeClicked = publicActionCreator(
-  (item: SyntheticVisibleNode): SyntheticNodeContextMenuAction => ({
+export const inspectorNodeContextMenuSelectSourceNodeClicked = publicActionCreator(
+  (item: InspectorNode): InspectorNodeContextMenuAction => ({
     type: SYNTHETIC_NODE_CONTEXT_MENU_SELECT_SOURCE_NODE_CLICKED,
     item
   })
 );
 
-export const syntheticNodeContextMenuShowInCanvasClicked = publicActionCreator(
-  (item: SyntheticVisibleNode): SyntheticNodeContextMenuAction => ({
+export const inspectorNodeContextMenuShowInCanvasClicked = publicActionCreator(
+  (item: InspectorNode): InspectorNodeContextMenuAction => ({
     type: SYNTHETIC_NODE_CONTEXT_MENU_SHOW_IN_CANVAS_CLICKED,
     item
   })
@@ -1747,7 +1747,7 @@ export const shortcutKeyDown = publicActionCreator(
   })
 );
 
-export const syntheticNodesPasted = (
+export const inspectorNodePasted = (
   clips: PCNodeClip[]
 ): SyntheticVisibleNodesPasted => ({
   clips,

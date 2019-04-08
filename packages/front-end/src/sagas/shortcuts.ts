@@ -18,23 +18,23 @@ import {
   fileItemContextMenuRenameClicked,
   CANVAS_RIGHT_CLICKED,
   PCLayerRightClicked,
-  syntheticNodeContextMenuWrapInSlotClicked,
-  syntheticNodeContextMenuSelectParentClicked,
-  syntheticNodeContextMenuSelectSourceNodeClicked,
-  syntheticNodeContextMenuConvertToComponentClicked,
-  syntheticNodeContextMenuWrapInElementClicked,
-  syntheticNodeContextMenuConvertToStyleMixinClicked,
-  syntheticNodeContextMenuRemoveClicked,
+  inspectorNodeContextMenuWrapInSlotClicked,
+  inspectorNodeContextMenuSelectParentClicked,
+  inspectorNodeContextMenuSelectSourceNodeClicked,
+  inspectorNodeContextMenuConvertToComponentClicked,
+  inspectorNodeContextMenuWrapInElementClicked,
+  inspectorNodeContextMenuConvertToStyleMixinClicked,
+  inspectorNodeContextMenuRemoveClicked,
   EDITOR_TAB_RIGHT_CLICKED,
   EditorTabClicked,
-  syntheticNodeContextMenuConvertTextStylesToMixinClicked,
-  syntheticNodeContextMenuRenameClicked,
-  syntheticNodeContextMenuShowInCanvasClicked,
+  inspectorNodeContextMenuConvertTextStylesToMixinClicked,
+  inspectorNodeContextMenuRenameClicked,
+  inspectorNodeContextMenuShowInCanvasClicked,
   moduleContextMenuCloseOptionClicked,
   PC_LAYER_RIGHT_CLICKED,
   editorTabContextMenuOpenInBottomTabOptionClicked,
-  syntheticNodeContextMenuCopyClicked,
-  syntheticNodeContextMenuPasteClicked
+  inspectorNodeContextMenuCopyClicked,
+  inspectorNodeContextMenuPasteClicked
 } from "../actions";
 import {
   ContextMenuItem,
@@ -62,14 +62,18 @@ import {
   getInspectorContentNode,
   SYNTHETIC_DOCUMENT_NODE_NAME,
   getSyntheticDocumentDependencyUri,
-  SyntheticDocument
+  SyntheticDocument,
+  getInspectorSourceNode,
+  InspectorTreeNodeName,
+  getPCNode,
+  InspectorNode
 } from "paperclip";
 
 export type ShortcutSagaOptions = {
   openContextMenu: (anchor: Point, options: ContextMenuOption[]) => void;
 };
 
-type OpenSyntheticNodeContextMenuOptions = {
+type openInspectorNodeContextMenuOptions = {
   showRenameLabelOption?: boolean;
 };
 
@@ -189,9 +193,21 @@ export const createShortcutSaga = ({
 
       const rect = ownerIframe.getBoundingClientRect();
 
+      const syntheticNode = getSyntheticNodeById(targetNodeId, state.documents);
+      const document = getSyntheticVisibleNodeDocument(
+        syntheticNode.id,
+        state.documents
+      );
+      const inspectorNode = getSyntheticInspectorNode(
+        syntheticNode,
+        document,
+        state.sourceNodeInspector,
+        state.graph
+      );
+
       yield call(
-        openSyntheticNodeContextMenu,
-        getSyntheticNodeById(targetNodeId, state.documents),
+        openInspectorNodeContextMenu,
+        inspectorNode,
         {
           left: event.pageX + rect.left,
           top: event.pageY + rect.top
@@ -213,16 +229,16 @@ export const createShortcutSaga = ({
       }
 
       const state: RootState = yield select();
-      const node = getInspectorSyntheticNode(item, state.documents);
+      // const node = getInspectorSyntheticNode(item, state.documents);
+      // getInspectorSourceNode(item,
 
-      // maybe shadow
-      if (!node) {
+      if (item.name === InspectorTreeNodeName.SHADOW) {
         return;
       }
 
       yield call(
-        openSyntheticNodeContextMenu,
-        node,
+        openInspectorNodeContextMenu,
+        item,
         {
           left: event.pageX,
           top: event.pageY
@@ -232,56 +248,38 @@ export const createShortcutSaga = ({
       );
     });
 
-    function* openSyntheticNodeContextMenu(
-      node: SyntheticNode,
+    function* openInspectorNodeContextMenu(
+      node: InspectorNode,
       point: Point,
       state: RootState,
       {
         showRenameLabelOption
-      }: OpenSyntheticNodeContextMenuOptions = EMPTY_OBJECT
+      }: openInspectorNodeContextMenuOptions = EMPTY_OBJECT
     ) {
-      // TODO - need to have options here for handling document: close, move to bottom tab
-      if (node.name === SYNTHETIC_DOCUMENT_NODE_NAME) {
-        console.warn(`Cannot open context menu for documents (yet)`);
-        return yield call(
-          handleModuleRightClicked,
-          point,
-          getSyntheticDocumentDependencyUri(
-            node as SyntheticDocument,
-            state.graph
-          )
-        );
-        return;
-      }
-
-      const syntheticNode = getSyntheticNodeById(node.id, state.documents);
-      const sourceNode = getSyntheticSourceNode(syntheticNode, state.graph);
-      const syntheticDocument = getSyntheticVisibleNodeDocument(
-        syntheticNode.id,
-        state.documents
-      );
-      const inspectorNode = getSyntheticInspectorNode(
-        syntheticNode,
-        syntheticDocument,
+      // const syntheticNode = getSyntheticNodeById(node.id, state.documents);
+      const sourceNode = getInspectorSourceNode(
+        node,
         state.sourceNodeInspector,
         state.graph
       );
+      const inspectorContentNode = getInspectorContentNode(
+        node,
+        state.sourceNodeInspector
+      );
+
       const contentNode = getPCNodeContentNode(
         sourceNode.id,
         getPCNodeModule(sourceNode.id, state.graph)
       );
 
-      const inspectorContentNode = getInspectorContentNode(
-        inspectorNode,
-        state.sourceNodeInspector
-      );
+      const inShadow = inspectorNodeInShadow(node, inspectorContentNode);
 
       yield call(openContextMenu, point, [
-        syntheticNodeIsInShadow(syntheticNode, syntheticDocument, state.graph)
+        inShadow
           ? {
               type: ContextMenuOptionType.ITEM,
               label: "Hide",
-              action: syntheticNodeContextMenuRemoveClicked(syntheticNode)
+              action: inspectorNodeContextMenuRemoveClicked(node)
             }
           : {
               type: ContextMenuOptionType.GROUP,
@@ -290,56 +288,50 @@ export const createShortcutSaga = ({
                   ? {
                       type: ContextMenuOptionType.ITEM,
                       label: "Rename",
-                      action: syntheticNodeContextMenuRenameClicked(
-                        syntheticNode
-                      )
+                      action: inspectorNodeContextMenuRenameClicked(node)
                     }
                   : null,
                 {
                   type: ContextMenuOptionType.ITEM,
                   label: "Remove",
-                  action: syntheticNodeContextMenuRemoveClicked(syntheticNode)
+                  action: inspectorNodeContextMenuRemoveClicked(node)
                 },
-                {
-                  type: ContextMenuOptionType.ITEM,
-                  label: "Copy",
-                  action: syntheticNodeContextMenuCopyClicked(syntheticNode)
-                },
+                sourceNode.name !== PCSourceTagNames.SLOT
+                  ? {
+                      type: ContextMenuOptionType.ITEM,
+                      label: "Copy",
+                      action: inspectorNodeContextMenuCopyClicked(node)
+                    }
+                  : null,
                 {
                   type: ContextMenuOptionType.ITEM,
                   label: "Paste",
-                  action: syntheticNodeContextMenuPasteClicked(syntheticNode)
+                  action: inspectorNodeContextMenuPasteClicked(node)
                 },
-                sourceNode.name !== PCSourceTagNames.COMPONENT &&
-                !inspectorNodeInShadow(inspectorNode, state.sourceNodeInspector)
+                sourceNode.name !== PCSourceTagNames.COMPONENT && !inShadow
                   ? {
                       type: ContextMenuOptionType.ITEM,
                       label: "Convert to Component",
-                      action: syntheticNodeContextMenuConvertToComponentClicked(
-                        syntheticNode
+                      action: inspectorNodeContextMenuConvertToComponentClicked(
+                        node
                       )
                     }
                   : null,
 
-                sourceNode.name !== PCSourceTagNames.COMPONENT &&
-                !inspectorNodeInShadow(inspectorNode, state.sourceNodeInspector)
+                sourceNode.name !== PCSourceTagNames.COMPONENT && !inShadow
                   ? {
                       type: ContextMenuOptionType.ITEM,
                       label: "Wrap in Element",
-                      action: syntheticNodeContextMenuWrapInElementClicked(
-                        syntheticNode
-                      )
+                      action: inspectorNodeContextMenuWrapInElementClicked(node)
                     }
                   : null,
                 contentNode.name === PCSourceTagNames.COMPONENT &&
                 contentNode.id !== sourceNode.id &&
-                !inspectorNodeInShadow(inspectorNode, state.sourceNodeInspector)
+                !inShadow
                   ? {
                       type: ContextMenuOptionType.ITEM,
                       label: "Wrap in Slot",
-                      action: syntheticNodeContextMenuWrapInSlotClicked(
-                        syntheticNode
-                      )
+                      action: inspectorNodeContextMenuWrapInSlotClicked(node)
                     }
                   : null,
 
@@ -350,8 +342,8 @@ export const createShortcutSaga = ({
                   ? {
                       type: ContextMenuOptionType.ITEM,
                       label: "Move All Styles to Mixin",
-                      action: syntheticNodeContextMenuConvertToStyleMixinClicked(
-                        syntheticNode
+                      action: inspectorNodeContextMenuConvertToStyleMixinClicked(
+                        node
                       )
                     }
                   : null,
@@ -361,7 +353,7 @@ export const createShortcutSaga = ({
                   sourceNode.name === PCSourceTagNames.ELEMENT ||
                   sourceNode.name === PCSourceTagNames.TEXT) &&
                 hasTextStyles(
-                  inspectorNode,
+                  node,
                   state.sourceNodeInspector,
                   state.selectedVariant,
                   state.graph
@@ -369,8 +361,8 @@ export const createShortcutSaga = ({
                   ? {
                       type: ContextMenuOptionType.ITEM,
                       label: "Move Text Styles to Mixin",
-                      action: syntheticNodeContextMenuConvertTextStylesToMixinClicked(
-                        syntheticNode
+                      action: inspectorNodeContextMenuConvertTextStylesToMixinClicked(
+                        node
                       )
                     }
                   : null
@@ -383,25 +375,20 @@ export const createShortcutSaga = ({
               ? {
                   type: ContextMenuOptionType.ITEM,
                   label: "Select Parent",
-                  action: syntheticNodeContextMenuSelectParentClicked(
-                    syntheticNode
-                  )
+                  action: inspectorNodeContextMenuSelectParentClicked(node)
                 }
               : null,
-            inspectorNodeInShadow(inspectorNode, inspectorContentNode) ||
-            extendsComponent(sourceNode)
+            inShadow || extendsComponent(sourceNode)
               ? {
                   type: ContextMenuOptionType.ITEM,
                   label: "Select Source Layer",
-                  action: syntheticNodeContextMenuSelectSourceNodeClicked(
-                    syntheticNode
-                  )
+                  action: inspectorNodeContextMenuSelectSourceNodeClicked(node)
                 }
               : null,
             {
               type: ContextMenuOptionType.ITEM,
               label: "Center in Canvas",
-              action: syntheticNodeContextMenuShowInCanvasClicked(syntheticNode)
+              action: inspectorNodeContextMenuShowInCanvasClicked(node)
             }
           ].filter(Boolean) as ContextMenuItem[]
         }
