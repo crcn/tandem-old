@@ -90,7 +90,6 @@ import {
   ComponentPickerItemClick,
   COMPONENT_PICKER_ITEM_CLICK,
   SHORTCUT_C_KEY_DOWN,
-  ADD_VARIANT_BUTTON_CLICKED,
   VARIANT_DEFAULT_SWITCH_CLICKED,
   VariantDefaultSwitchClicked,
   VariantLabelChanged,
@@ -3073,10 +3072,6 @@ const shortcutReducer = (state: RootState, action: Action): RootState => {
     case INSPECTOR_NODE_CONTEXT_MENU_WRAP_IN_ELEMENT_CLICKED: {
       const { item } = action as InspectorNodeContextMenuAction;
       state = persistRootState(state => {
-        const document = getSyntheticVisibleNodeDocument(
-          item.id,
-          state.documents
-        );
         const sourceNode = getInspectorSourceNode(
           item,
           state.sourceNodeInspector,

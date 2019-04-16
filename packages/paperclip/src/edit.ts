@@ -68,7 +68,8 @@ import {
   PCStyleMixin,
   isElementLikePCNode,
   PCVariantTrigger,
-  createPCVariantTrigger
+  createPCVariantTrigger,
+  isPCContentNode
 } from "./dsl";
 import {
   SyntheticVisibleNode,
@@ -316,7 +317,27 @@ const replaceDependencyGraphPCNode = <TState extends PCEditorState>(
   newNode: PCNode,
   oldNode: PCNode,
   state: TState
-) => updateDependencyGraph(replacePCNode(newNode, oldNode, state.graph), state);
+) => {
+  if (
+    isPCContentNode(oldNode, state.graph) &&
+    newNode &&
+    !newNode.metadata[PCVisibleNodeMetadataKey.BOUNDS]
+  ) {
+    newNode = {
+      ...newNode,
+      metadata: {
+        ...newNode.metadata,
+        [PCVisibleNodeMetadataKey.BOUNDS]:
+          oldNode.metadata[PCVisibleNodeMetadataKey.BOUNDS] ||
+          DEFAULT_FRAME_BOUNDS
+      }
+    };
+  }
+  return updateDependencyGraph(
+    replacePCNode(newNode, oldNode, state.graph),
+    state
+  );
+};
 
 export const replaceDependency = <TState extends PCEditorState>(
   dep: Dependency<any>,
