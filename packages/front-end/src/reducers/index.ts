@@ -3039,9 +3039,10 @@ const shortcutReducer = (state: RootState, action: Action): RootState => {
       if (!item) {
         return state;
       }
+      const syntheticNode = getInspectorSyntheticNode(item, state.documents);
 
       const uri = getSyntheticDocumentDependencyUri(
-        getSyntheticVisibleNodeDocument(item.id, state.documents),
+        getSyntheticVisibleNodeDocument(syntheticNode.id, state.documents),
         state.graph
       );
       state = centerEditorCanvasOrLater(state, uri);
