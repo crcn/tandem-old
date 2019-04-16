@@ -2117,7 +2117,7 @@
       "variant": {}
     },
     {
-      "id": "5a5fe4fa2004",
+      "id": "5a5fe4fa2318",
       "label": "Element",
       "is": "div",
       "name": "element",
@@ -2128,7 +2128,7 @@
       },
       "children": [
         {
-          "id": "5a5fe4fa2006",
+          "id": "5a5fe4fa2320",
           "is": "b6c162d113",
           "label": "Pane",
           "name": "component-instance",
@@ -2136,48 +2136,22 @@
           "style": {},
           "children": [
             {
-              "slotId": "d6261ad52883",
-              "id": "5a5fe4fa2018",
-              "children": [
-                {
-                  "id": "5a5fe4fa2017",
-                  "is": "9208d19533717",
-                  "label": "element properties",
-                  "name": "component-instance",
-                  "attributes": {},
-                  "style": {},
-                  "children": [],
-                  "metadata": {
-                    "bounds": {
-                      "left": 855,
-                      "top": -132,
-                      "right": 1264,
-                      "bottom": 204
-                    }
-                  },
-                  "variant": {}
-                }
-              ],
-              "metadata": {},
-              "name": "plug"
-            },
-            {
-              "id": "5a5fe4fa2274",
+              "id": "5a5fe4fa2331",
               "variantId": null,
               "propertyName": "text",
               "targetIdPath": [
                 "b6c162d1281"
               ],
-              "value": "pane",
+              "value": "Attributes",
               "name": "override",
               "children": []
             },
             {
               "slotId": "d6261ad53069",
-              "id": "5a5fe4fa2276",
+              "id": "5a5fe4fa2333",
               "children": [
                 {
-                  "id": "5a5fe4fa2275",
+                  "id": "5a5fe4fa2332",
                   "label": "Element",
                   "is": "div",
                   "name": "element",
@@ -2189,10 +2163,10 @@
                   },
                   "children": [
                     {
-                      "id": "5a5fe4fa2279",
+                      "id": "5a5fe4fa2336",
                       "name": "text",
                       "label": "Text",
-                      "value": "Pane",
+                      "value": "custom attributes",
                       "style": {},
                       "children": [],
                       "metadata": {},
@@ -2203,68 +2177,31 @@
                       }
                     },
                     {
-                      "id": "5a5fe4fa2281",
+                      "id": "5a5fe4fa2338",
                       "label": "Element",
-                      "is": "div",
-                      "name": "element",
+                      "is": "f27782548182",
+                      "name": "component-instance",
                       "attributes": {},
                       "style": {
                         "box-sizing": "border-box",
-                        "display": "flex",
-                        "align-items": "center"
+                        "display": "block",
+                        "height": "9px"
                       },
-                      "children": [
-                        {
-                          "id": "5a5fe4fa2283",
-                          "is": "230a1e127813",
-                          "label": "Drop icon",
-                          "name": "component-instance",
-                          "attributes": {},
-                          "style": {
-                            "display": "inline-block",
-                            "height": "12px",
-                            "width": "12px"
-                          },
-                          "children": [],
-                          "metadata": {
-                            "bounds": {
-                              "left": -2415,
-                              "top": 2771,
-                              "right": -2015,
-                              "bottom": 3071
-                            }
-                          },
-                          "variant": {}
-                        },
-                        {
-                          "id": "5a5fe4fa2289",
-                          "is": "38fc2a474961",
-                          "label": "Code Icon",
-                          "name": "component-instance",
-                          "attributes": {},
-                          "style": {
-                            "display": "block",
-                            "width": "12px",
-                            "height": "12px"
-                          },
-                          "children": [],
-                          "metadata": {
-                            "bounds": {
-                              "left": -457,
-                              "top": 1432,
-                              "right": -57,
-                              "bottom": 1732
-                            }
-                          },
-                          "variant": {}
-                        }
-                      ],
-                      "metadata": {}
+                      "children": [],
+                      "metadata": {},
+                      "variant": {}
                     }
                   ],
                   "metadata": {}
                 }
               ],
+              "metadata": {},
+              "name": "plug"
+            },
+            {
+              "slotId": "d6261ad52883",
+              "id": "5a5fe4fa2355",
+              "children": [],
               "metadata": {},
               "name": "plug"
             }
@@ -2282,12 +2219,30 @@
       ],
       "metadata": {
         "bounds": {
-          "left": -233,
-          "top": -60,
-          "right": 102,
-          "bottom": 334
+          "left": -235,
+          "top": 19,
+          "right": 76,
+          "bottom": 240
         }
       }
+    },
+    {
+      "id": "5a5fe4fa2459",
+      "is": "c389e3829",
+      "label": "Table",
+      "name": "component-instance",
+      "attributes": {},
+      "style": {},
+      "children": [],
+      "metadata": {
+        "bounds": {
+          "left": -636,
+          "top": -48,
+          "right": -306.49204469808046,
+          "bottom": 276.6425584867711
+        }
+      },
+      "variant": {}
     }
   ]
 }
