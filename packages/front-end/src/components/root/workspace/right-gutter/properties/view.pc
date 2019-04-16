@@ -2222,7 +2222,7 @@
                           "attributes": {},
                           "style": {
                             "display": "inline-block",
-                            "height": "10px",
+                            "height": "12px",
                             "width": "12px"
                           },
                           "children": [],
