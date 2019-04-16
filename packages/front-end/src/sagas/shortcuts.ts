@@ -34,7 +34,10 @@ import {
   PC_LAYER_RIGHT_CLICKED,
   editorTabContextMenuOpenInBottomTabOptionClicked,
   inspectorNodeContextMenuCopyClicked,
-  inspectorNodeContextMenuPasteClicked
+  inspectorNodeContextMenuPasteClicked,
+  fileItemContextMenuCreateDirectoryClicked,
+  fileItemContextMenuCreateBlankFileClicked,
+  fileItemContextMenuCreateComponentFileClicked
 } from "../actions";
 import {
   ContextMenuItem,
@@ -126,7 +129,31 @@ export const createShortcutSaga = ({
                   action: fileItemContextMenuDeleteClicked(item)
                 }
               ]
-            }
+            },
+            item.name === FSItemTagNames.DIRECTORY && false
+              ? {
+                  type: ContextMenuOptionType.GROUP,
+                  options: [
+                    {
+                      type: ContextMenuOptionType.ITEM,
+                      label: "Create Directory",
+                      action: fileItemContextMenuCreateDirectoryClicked(item)
+                    },
+                    {
+                      type: ContextMenuOptionType.ITEM,
+                      label: "Create Blank File",
+                      action: fileItemContextMenuCreateBlankFileClicked(item)
+                    },
+                    {
+                      type: ContextMenuOptionType.ITEM,
+                      label: "Create Component File",
+                      action: fileItemContextMenuCreateComponentFileClicked(
+                        item
+                      )
+                    }
+                  ]
+                }
+              : null
           ]
         );
       }

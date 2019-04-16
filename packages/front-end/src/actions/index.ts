@@ -178,6 +178,12 @@ export const FILE_ITEM_CONTEXT_MENU_COPY_PATH_CLICKED =
   "FILE_ITEM_CONTEXT_MENU_COPY_PATH_CLICKED";
 export const FILE_ITEM_CONTEXT_MENU_RENAME_CLICKED =
   "FILE_ITEM_CONTEXT_MENU_RENAME_CLICKED";
+export const FILE_ITEM_CONTEXT_MENU_CREATE_DIRECTORY_CLICKED =
+  "FILE_ITEM_CONTEXT_MENU_CREATE_DIRECTORY_CLICKED";
+export const FILE_ITEM_CONTEXT_MENU_CREATE_BLANK_FILE_CLICKED =
+  "FILE_ITEM_CONTEXT_MENU_CREATE_BLANK_FILE_CLICKED";
+export const FILE_ITEM_CONTEXT_MENU_CREATE_COMPONENT_FILE_CLICKED =
+  "FILE_ITEM_CONTEXT_MENU_CREATE_COMPONENT_FILE_CLICKED";
 export const INSPECTOR_NODE_CONTEXT_MENU_CONVERT_TO_COMPONENT_CLICKED =
   "INSPECTOR_NODE_CONTEXT_MENU_CONVERT_TO_COMPONENT_CLICKED";
 export const INSPECTOR_NODE_CONTEXT_MENU_WRAP_IN_ELEMENT_CLICKED =
@@ -927,6 +933,27 @@ export const fileItemContextMenuRenameClicked = publicActionCreator(
   (item: FSItem): FileItemContextMenuAction => ({
     item,
     type: FILE_ITEM_CONTEXT_MENU_RENAME_CLICKED
+  })
+);
+
+export const fileItemContextMenuCreateDirectoryClicked = publicActionCreator(
+  (item: FSItem): FileItemContextMenuAction => ({
+    item,
+    type: FILE_ITEM_CONTEXT_MENU_CREATE_DIRECTORY_CLICKED
+  })
+);
+
+export const fileItemContextMenuCreateBlankFileClicked = publicActionCreator(
+  (item: FSItem): FileItemContextMenuAction => ({
+    item,
+    type: FILE_ITEM_CONTEXT_MENU_CREATE_BLANK_FILE_CLICKED
+  })
+);
+
+export const fileItemContextMenuCreateComponentFileClicked = publicActionCreator(
+  (item: FSItem): FileItemContextMenuAction => ({
+    item,
+    type: FILE_ITEM_CONTEXT_MENU_CREATE_COMPONENT_FILE_CLICKED
   })
 );
 
