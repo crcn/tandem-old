@@ -2945,8 +2945,9 @@ const shortcutReducer = (state: RootState, action: Action): RootState => {
 
     case INSPECTOR_NODE_CONTEXT_MENU_SELECT_SOURCE_NODE_CLICKED: {
       const { item } = action as InspectorNodeContextMenuAction;
+
       state = openSyntheticVisibleNodeOriginFile(
-        getSyntheticNodeById(item.id, state.documents),
+        getInspectorSyntheticNode(item, state.documents),
         state
       );
       return state;

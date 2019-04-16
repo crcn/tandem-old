@@ -2201,9 +2201,44 @@
             {
               "slotId": "d6261ad52883",
               "id": "5a5fe4fa2355",
-              "children": [],
+              "children": [
+                {
+                  "id": "fa0a27ce2158",
+                  "is": "c389e3829",
+                  "label": "Table",
+                  "name": "component-instance",
+                  "attributes": {},
+                  "style": {},
+                  "children": [],
+                  "metadata": {
+                    "bounds": {
+                      "left": -21,
+                      "top": 94,
+                      "right": 308.50795530191954,
+                      "bottom": 418.6425584867711
+                    }
+                  },
+                  "variant": {
+                    "fa0a27ce2156": true
+                  }
+                }
+              ],
               "metadata": {},
               "name": "plug"
+            },
+            {
+              "id": "fa0a27ce2261",
+              "propertyName": "style",
+              "targetIdPath": [
+                "b6c162d140"
+              ],
+              "value": {
+                "padding-right": "0px",
+                "padding-bottom": "6px",
+                "padding-left": "0px"
+              },
+              "name": "override",
+              "children": []
             }
           ],
           "metadata": {
@@ -2214,7 +2249,9 @@
               "bottom": 287.3571410945104
             }
           },
-          "variant": {}
+          "variant": {
+            "b6e7db9d12817": false
+          }
         }
       ],
       "metadata": {

@@ -1,6 +1,6 @@
 {
   "id": "651e07640",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "metadata": {},
   "name": "module",
   "children": [
@@ -548,6 +548,27 @@
           "metadata": {},
           "name": "slot",
           "label": "content"
+        },
+        {
+          "id": "fa0a27ce2156",
+          "name": "variant",
+          "label": "no header",
+          "isDefault": true,
+          "children": [],
+          "metadata": {}
+        },
+        {
+          "id": "fa0a27ce2157",
+          "variantId": "fa0a27ce2156",
+          "propertyName": "style",
+          "targetIdPath": [
+            "c389e38234"
+          ],
+          "value": {
+            "display": "none"
+          },
+          "name": "override",
+          "children": []
         }
       ],
       "metadata": {
@@ -559,6 +580,26 @@
         }
       },
       "variant": {}
+    },
+    {
+      "id": "fa0a27ce2154",
+      "label": "Element",
+      "is": "div",
+      "name": "element",
+      "attributes": {},
+      "style": {
+        "box-sizing": "border-box",
+        "display": "block"
+      },
+      "children": [],
+      "metadata": {
+        "bounds": {
+          "left": -294,
+          "top": 100,
+          "right": -194,
+          "bottom": 200
+        }
+      }
     }
   ]
 }

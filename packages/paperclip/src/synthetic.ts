@@ -285,6 +285,11 @@ export const getSyntheticSourceUri = (
   return getPCNodeDependency(syntheticNode.sourceNodeId, graph).uri;
 };
 
+export const getSyntheticNode = (
+  node: SyntheticNode,
+  documents: SyntheticDocument[]
+) => getSyntheticNodeById(node.id, documents);
+
 export const getSyntheticNodeById = memoize(
   (
     syntheticNodeId: string,
