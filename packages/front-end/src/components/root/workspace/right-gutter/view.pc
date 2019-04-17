@@ -148,7 +148,7 @@
       "label": "Right Gutter",
       "is": "div",
       "style": {
-        "width": "250px",
+        "width": "300px",
         "flex-shrink": "0",
         "display": "flex",
         "flex-direction": "column",
