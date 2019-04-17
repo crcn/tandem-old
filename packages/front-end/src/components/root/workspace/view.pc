@@ -23,7 +23,7 @@
           "name": "component-instance",
           "attributes": {},
           "style": {
-            "width": "250px",
+            "width": "300px",
             "flex-shrink": "0"
           },
           "children": [
@@ -252,7 +252,7 @@
                 "45055e8e8"
               ],
               "value": {
-                "850332f711509": true
+                "850332f711509": false
               },
               "name": "override",
               "children": []
@@ -271,10 +271,10 @@
       ],
       "metadata": {
         "bounds": {
-          "left": -373,
-          "top": 868,
-          "right": 1046,
-          "bottom": 1919
+          "left": -653,
+          "top": 676,
+          "right": 1244,
+          "bottom": 1749
         }
       },
       "controllers": [

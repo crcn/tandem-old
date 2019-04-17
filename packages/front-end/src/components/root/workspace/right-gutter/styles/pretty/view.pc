@@ -81,26 +81,6 @@
           "label": "Inherit Pane"
         },
         {
-          "id": "850332f711388",
-          "is": "850332f711267",
-          "label": "Style Inspector",
-          "name": "component-instance",
-          "attributes": {},
-          "style": {
-            "display": "none"
-          },
-          "children": [],
-          "metadata": {
-            "bounds": {
-              "left": 707.9043734226317,
-              "top": 343.1113716836045,
-              "right": 1043.9043734226316,
-              "bottom": 883.1113716836045
-            }
-          },
-          "variant": {}
-        },
-        {
           "id": "73b39db4591",
           "variant": {},
           "is": "73b39db4544",
@@ -359,6 +339,26 @@
           "children": [],
           "metadata": {},
           "label": "Code Pane"
+        },
+        {
+          "id": "850332f711388",
+          "is": "850332f711267",
+          "label": "Style Inspector",
+          "name": "component-instance",
+          "attributes": {},
+          "style": {
+            "display": "block"
+          },
+          "children": [],
+          "metadata": {
+            "bounds": {
+              "left": 707.9043734226317,
+              "top": 343.1113716836045,
+              "right": 1043.9043734226316,
+              "bottom": 883.1113716836045
+            }
+          },
+          "variant": {}
         },
         {
           "id": "850332f711509",

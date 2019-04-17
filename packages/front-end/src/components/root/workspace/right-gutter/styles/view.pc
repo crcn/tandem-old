@@ -240,7 +240,8 @@
             },
             {
               "id": "45055e8e8",
-              "variant": {},
+              "variant": {
+              },
               "is": "2399b467",
               "name": "component-instance",
               "attributes": {},

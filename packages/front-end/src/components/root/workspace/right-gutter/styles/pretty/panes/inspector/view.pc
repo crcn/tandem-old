@@ -28,7 +28,19 @@
       "name": "component-instance",
       "attributes": {},
       "style": {},
-      "children": [],
+      "children": [
+        {
+          "id": "fad2411936417",
+          "variantId": null,
+          "propertyName": "text",
+          "targetIdPath": [
+            "850332f711260"
+          ],
+          "value": "CSS",
+          "name": "override",
+          "children": []
+        }
+      ],
       "metadata": {
         "bounds": {
           "left": -65,
@@ -683,7 +695,7 @@
                       "id": "850332f711260",
                       "name": "text",
                       "label": "Text",
-                      "value": "Declarations",
+                      "value": "CSS",
                       "style": {},
                       "children": [],
                       "metadata": {},
@@ -867,7 +879,10 @@
           "bottom": 335
         }
       },
-      "variant": {}
+      "variant": {},
+      "controllers": [
+        "./controller.tsx"
+      ]
     }
   ],
   "metadata": {}

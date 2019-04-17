@@ -13,7 +13,7 @@ type State = {
   open: boolean;
 };
 
-const SIDEBAR_WIDTH = 250;
+const SIDEBAR_WIDTH = 300;
 
 export default (Base: React.ComponentClass<BaseSidePanelButtonProps>) =>
   class SidePanelButtonController extends React.PureComponent<Props, State> {

@@ -29,7 +29,7 @@ const MIN_WIDTH = 200;
 export default (Base: React.ComponentClass<BaseLeftGutterProps>) =>
   class LeftGutterController extends React.PureComponent<Props, State> {
     state = {
-      width: 250
+      width: 300
     };
 
     private _dragger: HTMLDivElement;
