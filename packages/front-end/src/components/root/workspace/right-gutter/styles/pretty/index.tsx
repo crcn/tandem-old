@@ -57,67 +57,12 @@ export default (Base: React.ComponentClass<BaseElementStylerProps>) =>
             graph,
             selectedVariant
           }}
-          inheritPaneProps={{
-            projectOptions,
-            dispatch,
-            selectedInspectorNodes,
-            graph
-          }}
           codePaneProps={{
             dispatch,
             computedStyleInfo
           }}
-          layoutPaneProps={{
-            dispatch,
-            selectedVariant,
-            rootInspectorNode,
-            selectedInspectorNodes,
-            computedStyleInfo,
-            graph
-          }}
-          typographyPaneProps={{
-            projectOptions,
-            graph,
-            dispatch,
-            documentColors,
-            computedStyleInfo,
-            fontFamilies,
-            globalVariables
-          }}
-          opacityPaneProps={{
-            dispatch,
-            computedStyleInfo
-          }}
-          backgroundsPaneProps={{
-            cwd,
-            globalVariables,
-            documentColors,
-            dispatch,
-            computedStyleInfo
-          }}
-          spacingPaneProps={{
-            dispatch,
-            computedStyleInfo
-          }}
-          bordersPaneProps={{
-            globalVariables,
-            documentColors,
-            dispatch,
-            computedStyleInfo
-          }}
-          outerShadowsPaneProps={{
-            globalVariables,
-            documentColors,
-            dispatch,
-            computedStyleInfo
-          }}
-          innerShadowsPaneProps={{
-            globalVariables,
-            documentColors,
-            dispatch,
-            computedStyleInfo
-          }}
           styleInspectorProps={{
+            dispatch,
             computedStyleInfo
           }}
         />

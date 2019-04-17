@@ -228,6 +228,8 @@ export const NEW_FILE_ENTERED = "NEW_FILE_ENTERED";
 export const PROJECT_DIRECTORY_DIR_LOADED = "PROJECT_DIRECTORY_DIR_LOADED";
 export const NEW_DIRECTORY_ENTERED = "NEW_DIRECTORY_ENTERED";
 export const RAW_CSS_TEXT_CHANGED = "RAW_CSS_TEXT_CHANGED";
+export const CSS_INSPECTOR_DECLARATION_CREATED =
+  "CSS_INSPECTOR_DECLARATION_CREATED";
 export const CSS_PROPERTY_CHANGED = "CSS_PROPERTY_CHANGED";
 export const CSS_PROPERTIES_CHANGED = "CSS_PROPERTIES_CHANGED";
 export const QUICK_SEARCH_RESULT_ITEM_SPLIT_BUTTON_CLICKED =
@@ -359,6 +361,11 @@ export type ToolbarToolClicked = {
 } & Action;
 
 export type RawCSSTextChanged = {
+  value: string;
+} & Action;
+
+export type CSSInspectorDeclarationCreated = {
+  name: string;
   value: string;
 } & Action;
 
@@ -1695,6 +1702,15 @@ export const sourceInspectorLayerDropped = (
 export const rawCssTextChanged = (value: string): RawCSSTextChanged => ({
   value,
   type: RAW_CSS_TEXT_CHANGED
+});
+
+export const cssInspectorDeclarationCreated = (
+  name: string,
+  value: string
+): CSSInspectorDeclarationCreated => ({
+  name,
+  value,
+  type: CSS_INSPECTOR_DECLARATION_CREATED
 });
 
 export const cssPropertyChanged = (

@@ -202,6 +202,34 @@
               "value": "nowrap",
               "name": "override",
               "children": []
+            },
+            {
+              "slotId": "b4983dea1647",
+              "id": "b4983dea1858",
+              "children": [
+                {
+                  "id": "b4983dea1857",
+                  "is": "b4983dea1850",
+                  "label": "Declaration Input",
+                  "name": "component-instance",
+                  "attributes": {},
+                  "style": {},
+                  "children": [],
+                  "metadata": {
+                    "bounds": {
+                      "left": 1325,
+                      "top": -395.2343135981529,
+                      "right": 1425.0000000000002,
+                      "bottom": -366.198504839251
+                    }
+                  },
+                  "variant": {
+                    "b4983dea1875": true
+                  }
+                }
+              ],
+              "metadata": {},
+              "name": "plug"
             }
           ],
           "metadata": {},
@@ -395,20 +423,28 @@
           "style": {
             "box-sizing": "border-box",
             "display": "block",
-            "flex-grow": "1",
+            "width": "70%",
             "flex-shrink": "1",
-            "width": "70%"
+            "flex-grow": "0"
           },
           "children": [
             {
-              "id": "c72e5283641",
-              "name": "text",
-              "label": "Text",
-              "value": "property",
-              "style": {},
-              "children": [],
+              "id": "b4983dea1647",
+              "children": [
+                {
+                  "id": "c72e5283641",
+                  "name": "text",
+                  "label": "Text",
+                  "value": "property",
+                  "style": {},
+                  "children": [],
+                  "metadata": {},
+                  "styleMixins": {}
+                }
+              ],
               "metadata": {},
-              "styleMixins": {}
+              "name": "slot",
+              "label": "property"
             }
           ],
           "metadata": {},
@@ -433,14 +469,22 @@
           },
           "children": [
             {
-              "id": "c72e5283645",
-              "name": "text",
-              "label": "Text",
-              "value": "value",
-              "style": {},
-              "children": [],
+              "id": "b4983dea1746",
+              "children": [
+                {
+                  "id": "c72e5283645",
+                  "name": "text",
+                  "label": "Text",
+                  "value": "value",
+                  "style": {},
+                  "children": [],
+                  "metadata": {},
+                  "styleMixins": {}
+                }
+              ],
               "metadata": {},
-              "styleMixins": {}
+              "name": "slot",
+              "label": "value"
             }
           ],
           "metadata": {},
@@ -894,6 +938,61 @@
       "controllers": [
         "./controller.tsx"
       ]
+    },
+    {
+      "label": "Declaration Input",
+      "is": "7149f8199122",
+      "style": {
+        "padding-top": "0px",
+        "padding-bottom": "0px",
+        "width": "calc(100% - 12px)",
+        "padding-left": "0px",
+        "padding-right": "6px"
+      },
+      "attributes": {},
+      "id": "b4983dea1850",
+      "name": "component",
+      "children": [
+        {
+          "id": "b4983dea1875",
+          "name": "variant",
+          "label": "focus",
+          "isDefault": true,
+          "children": [],
+          "metadata": {}
+        },
+        {
+          "id": "b4983dea1876",
+          "variantId": "b4983dea1875",
+          "propertyName": "variant",
+          "targetIdPath": [],
+          "value": {
+            "6507b7e31381": true
+          },
+          "name": "override",
+          "children": []
+        },
+        {
+          "id": "7078bf141785",
+          "variantId": null,
+          "propertyName": "attributes",
+          "targetIdPath": [],
+          "value": {},
+          "name": "override",
+          "children": []
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": 849,
+          "top": -336,
+          "right": 949,
+          "bottom": -306.9641912410981
+        }
+      },
+      "variant": {
+        "6507b7e31381": false
+      }
     }
   ],
   "metadata": {}

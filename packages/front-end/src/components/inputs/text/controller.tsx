@@ -61,28 +61,20 @@ export const withPureInputHandlers = () => (
 
         const oldState = this.state;
 
-        this.setState(
-          {
-            ...oldState,
-            value: newValue
-          },
-          () => {
-            if (onChange && oldState.value !== newValue) {
-              onChange(newValue || undefined);
-            }
+        this.setState({
+          ...oldState,
+          value: newValue
+        });
 
-            if (key === "Enter" && onChangeComplete) {
-              onChangeComplete(newValue || undefined);
-            }
-          }
-        );
+        // need to call immediately in case of BLUR
+        if (onChange && oldState.value !== newValue) {
+          onChange(newValue || undefined, nativeEvent);
+        }
+
+        if ((key === "Enter" || key === "Tab") && onChangeComplete) {
+          onChangeComplete(newValue || undefined);
+        }
       });
-    };
-    onBlur = event => {
-      const { onChangeComplete } = this.props;
-      if (onChangeComplete) {
-        onChangeComplete(event.target.value || undefined);
-      }
     };
     componentDidUpdate(props) {
       if (props.value !== this.props.value) {
@@ -93,8 +85,8 @@ export const withPureInputHandlers = () => (
       }
     }
     render() {
-      const { onKeyDown, onBlur } = this;
-      return <Base {...this.props} onKeyDown={onKeyDown} onBlur={onBlur} />;
+      const { onKeyDown } = this;
+      return <Base {...this.props} onKeyDown={onKeyDown} />;
     }
   };
 };

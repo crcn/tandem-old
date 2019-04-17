@@ -24,6 +24,11 @@ export class FocusComponent extends React.Component<FocusProps> {
         self.tagName === "INPUT"
           ? (self as HTMLInputElement)
           : self.querySelector("input");
+
+      // may be an input
+      if (!input) {
+        return;
+      }
       input.select();
     }, 10);
   }

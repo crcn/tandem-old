@@ -225,7 +225,9 @@ import {
   FILE_ITEM_CONTEXT_MENU_CREATE_COMPONENT_FILE_CLICKED,
   FILE_NAVIGATOR_NEW_FILE_ENTERED,
   FILE_NAVIGATOR_NEW_FILE_CLICKED,
-  FileNavigatorNewFileClicked
+  FileNavigatorNewFileClicked,
+  CSS_INSPECTOR_DECLARATION_CREATED,
+  CSSInspectorDeclarationCreated
 } from "../actions";
 import {
   queueOpenFile,
@@ -1933,6 +1935,25 @@ export const canvasReducer = (state: RootState, action: Action) => {
         return state.selectedInspectorNodes.reduce(
           (state, node) =>
             persistRawCSSText(cssText, node, state.selectedVariant, state),
+          state
+        );
+      }, state);
+      return state;
+    }
+
+    case CSS_INSPECTOR_DECLARATION_CREATED: {
+      const { name, value } = action as CSSInspectorDeclarationCreated;
+      state = persistRootState(state => {
+        return state.selectedInspectorNodes.reduce(
+          (state, node) =>
+            persistCSSProperty(
+              name,
+              value,
+              node,
+              state.selectedVariant,
+              state,
+              true
+            ),
           state
         );
       }, state);
