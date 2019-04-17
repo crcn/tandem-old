@@ -117,7 +117,9 @@ export default (Base: React.ComponentClass<BaseElementStylerProps>) =>
             dispatch,
             computedStyleInfo
           }}
-          styleInspectorProps={{}}
+          styleInspectorProps={{
+            computedStyleInfo
+          }}
         />
       );
     }

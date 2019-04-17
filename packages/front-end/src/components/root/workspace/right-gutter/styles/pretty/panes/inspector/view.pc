@@ -371,7 +371,7 @@
       "variant": {}
     },
     {
-      "label": "style prop row",
+      "label": "declaration",
       "is": "div",
       "style": {
         "box-sizing": "border-box",
@@ -643,7 +643,10 @@
         }
       },
       "variant": {},
-      "styleMixins": {}
+      "styleMixins": {},
+      "controllers": [
+        "./declaration-controller.tsx"
+      ]
     },
     {
       "label": "Style Inspector",
@@ -779,35 +782,43 @@
               "id": "850332f711263",
               "children": [
                 {
-                  "id": "850332f711264",
-                  "is": "eace5ea811950",
-                  "label": "Style props",
-                  "name": "component-instance",
-                  "attributes": {},
-                  "style": {},
+                  "id": "a35a82e811945",
                   "children": [
                     {
-                      "id": "850332f711265",
-                      "variantId": null,
-                      "propertyName": "text",
-                      "targetIdPath": [
-                        "26b71d91767",
-                        "c72e5283641"
+                      "id": "850332f711264",
+                      "is": "eace5ea811950",
+                      "label": "Style props",
+                      "name": "component-instance",
+                      "attributes": {},
+                      "style": {},
+                      "children": [
+                        {
+                          "id": "850332f711265",
+                          "variantId": null,
+                          "propertyName": "text",
+                          "targetIdPath": [
+                            "26b71d91767",
+                            "c72e5283641"
+                          ],
+                          "value": "width",
+                          "name": "override",
+                          "children": []
+                        }
                       ],
-                      "value": "width",
-                      "name": "override",
-                      "children": []
+                      "metadata": {
+                        "bounds": {
+                          "left": 614,
+                          "top": -205,
+                          "right": 714,
+                          "bottom": -105
+                        }
+                      },
+                      "variant": {}
                     }
                   ],
-                  "metadata": {
-                    "bounds": {
-                      "left": 614,
-                      "top": -205,
-                      "right": 714,
-                      "bottom": -105
-                    }
-                  },
-                  "variant": {}
+                  "metadata": {},
+                  "name": "slot",
+                  "label": "declarations"
                 }
               ],
               "metadata": {},
