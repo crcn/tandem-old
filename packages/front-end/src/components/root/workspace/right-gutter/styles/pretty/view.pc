@@ -81,6 +81,26 @@
           "label": "Inherit Pane"
         },
         {
+          "id": "850332f711388",
+          "is": "850332f711267",
+          "label": "Style Inspector",
+          "name": "component-instance",
+          "attributes": {},
+          "style": {
+            "display": "none"
+          },
+          "children": [],
+          "metadata": {
+            "bounds": {
+              "left": 707.9043734226317,
+              "top": 343.1113716836045,
+              "right": 1043.9043734226316,
+              "bottom": 883.1113716836045
+            }
+          },
+          "variant": {}
+        },
+        {
           "id": "73b39db4591",
           "variant": {},
           "is": "73b39db4544",
@@ -339,6 +359,144 @@
           "children": [],
           "metadata": {},
           "label": "Code Pane"
+        },
+        {
+          "id": "850332f711509",
+          "name": "variant",
+          "label": "inspector",
+          "isDefault": true,
+          "children": [],
+          "metadata": {}
+        },
+        {
+          "id": "850332f711510",
+          "variantId": "850332f711509",
+          "propertyName": "style",
+          "targetIdPath": [
+            "850332f711388"
+          ],
+          "value": {
+            "display": "block"
+          },
+          "name": "override",
+          "children": []
+        },
+        {
+          "id": "850332f711511",
+          "variantId": "850332f711509",
+          "propertyName": "style",
+          "targetIdPath": [
+            "73b39db4591"
+          ],
+          "value": {
+            "display": "none"
+          },
+          "name": "override",
+          "children": []
+        },
+        {
+          "id": "850332f711512",
+          "variantId": "850332f711509",
+          "propertyName": "style",
+          "targetIdPath": [
+            "73b39db4401"
+          ],
+          "value": {
+            "display": "none"
+          },
+          "name": "override",
+          "children": []
+        },
+        {
+          "id": "850332f711515",
+          "variantId": "850332f711509",
+          "propertyName": "style",
+          "targetIdPath": [
+            "ab9eb3a110018"
+          ],
+          "value": {
+            "display": "none"
+          },
+          "name": "override",
+          "children": []
+        },
+        {
+          "id": "850332f711516",
+          "variantId": "850332f711509",
+          "propertyName": "style",
+          "targetIdPath": [
+            "af2a67c2930"
+          ],
+          "value": {
+            "display": "none"
+          },
+          "name": "override",
+          "children": []
+        },
+        {
+          "id": "850332f711517",
+          "variantId": "850332f711509",
+          "propertyName": "style",
+          "targetIdPath": [
+            "bcda9fb5100963"
+          ],
+          "value": {
+            "display": "none"
+          },
+          "name": "override",
+          "children": []
+        },
+        {
+          "id": "850332f711518",
+          "variantId": "850332f711509",
+          "propertyName": "style",
+          "targetIdPath": [
+            "bcda9fb5100610"
+          ],
+          "value": {
+            "display": "none"
+          },
+          "name": "override",
+          "children": []
+        },
+        {
+          "id": "850332f711519",
+          "variantId": "850332f711509",
+          "propertyName": "style",
+          "targetIdPath": [
+            "cdcf193c20"
+          ],
+          "value": {
+            "display": "none"
+          },
+          "name": "override",
+          "children": []
+        },
+        {
+          "id": "850332f711520",
+          "variantId": "850332f711509",
+          "propertyName": "style",
+          "targetIdPath": [
+            "a71e3cd56949"
+          ],
+          "value": {
+            "display": "none"
+          },
+          "name": "override",
+          "children": []
+        },
+        {
+          "id": "850332f711521",
+          "variantId": "850332f711509",
+          "propertyName": "style",
+          "targetIdPath": [
+            "decafdc7517269"
+          ],
+          "value": {
+            "display": "none"
+          },
+          "name": "override",
+          "children": []
         }
       ],
       "metadata": {
