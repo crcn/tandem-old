@@ -219,7 +219,13 @@ import {
   UNLOADER_COMPLETED,
   UnloaderAction,
   QUICK_SEARCH_INPUT_ENTERED,
-  MODULE_CONTEXT_MENU_CLOSE_OPTION_CLICKED
+  MODULE_CONTEXT_MENU_CLOSE_OPTION_CLICKED,
+  FILE_ITEM_CONTEXT_MENU_CREATE_BLANK_FILE_CLICKED,
+  FILE_ITEM_CONTEXT_MENU_CREATE_DIRECTORY_CLICKED,
+  FILE_ITEM_CONTEXT_MENU_CREATE_COMPONENT_FILE_CLICKED,
+  FILE_NAVIGATOR_NEW_FILE_ENTERED,
+  FILE_NAVIGATOR_NEW_FILE_CLICKED,
+  FileNavigatorNewFileClicked
 } from "../actions";
 import {
   queueOpenFile,
@@ -284,7 +290,8 @@ import {
   removeBuildScriptProcess,
   getBuildScriptProcess,
   RootReadyType,
-  IS_WINDOWS
+  IS_WINDOWS,
+  AddFileType
 } from "../state";
 import {
   PCSourceTagNames,
@@ -741,6 +748,58 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
         },
         state
       );
+      return state;
+    }
+    case FILE_ITEM_CONTEXT_MENU_CREATE_COMPONENT_FILE_CLICKED:
+    case FILE_ITEM_CONTEXT_MENU_CREATE_DIRECTORY_CLICKED:
+    case FILE_ITEM_CONTEXT_MENU_CREATE_BLANK_FILE_CLICKED: {
+      const map = {
+        [FILE_ITEM_CONTEXT_MENU_CREATE_BLANK_FILE_CLICKED]: AddFileType.BLANK,
+        [FILE_ITEM_CONTEXT_MENU_CREATE_BLANK_FILE_CLICKED]:
+          AddFileType.DIRECTORY,
+        [FILE_ITEM_CONTEXT_MENU_CREATE_BLANK_FILE_CLICKED]:
+          AddFileType.COMPONENT
+      };
+      const { item } = action as FileItemContextMenuAction;
+      state = {
+        ...state,
+        addNewFileInfo: {
+          directory: item as Directory,
+          fileType: map[action.type]
+        }
+      };
+      return state;
+    }
+    case FILE_NAVIGATOR_NEW_FILE_CLICKED: {
+      const { fileType } = action as FileNavigatorNewFileClicked;
+      const selectedFileNode: FSItem = getNestedTreeNodeById(
+        state.selectedFileNodeIds[0],
+        state.projectDirectory
+      );
+
+      const activeFileNode: FSItem =
+        this.props.activeEditorUri &&
+        getFileFromUri(this.props.activeEditorUri, state.projectDirectory);
+
+      const targetFileNode = selectedFileNode || activeFileNode;
+
+      const dirFile = targetFileNode
+        ? targetFileNode.name === FSItemTagNames.DIRECTORY
+          ? targetFileNode
+          : getParentTreeNode(targetFileNode.id, state.projectDirectory)
+        : this.props.rootDirectory;
+      state = {
+        ...state,
+        addNewFileInfo: {
+          fileType,
+          directory: dirFile
+        }
+      };
+      return state;
+    }
+
+    case FILE_NAVIGATOR_NEW_FILE_ENTERED: {
+      state = { ...state, addNewFileInfo: null };
       return state;
     }
 

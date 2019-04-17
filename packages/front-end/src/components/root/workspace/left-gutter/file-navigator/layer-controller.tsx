@@ -31,7 +31,7 @@ import {
 } from "./contexts";
 import { DragSource, DropTarget } from "react-dnd";
 import { FocusComponent } from "../../../../focus";
-import { NewFSItemInfo } from "./controller";
+import { NewFSItemInfo } from "../../../../../state";
 
 export type Props = {
   item: FSItem;

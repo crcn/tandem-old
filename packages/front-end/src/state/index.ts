@@ -276,6 +276,17 @@ export enum RootReadyType {
   UNLOADING
 }
 
+export enum AddFileType {
+  BLANK,
+  COMPONENT,
+  DIRECTORY
+}
+
+export type NewFSItemInfo = {
+  fileType: AddFileType;
+  directory: Directory;
+};
+
 export type Unloader = {
   id: string;
   completed: boolean;
@@ -305,6 +316,7 @@ export type RootState = {
   showBottomGutter?: boolean;
   customChrome: boolean;
   renameInspectorNodeId?: string;
+  addNewFileInfo?: NewFSItemInfo;
 
   // TODO - may need to be moved to EditorWindow
   selectedVariant?: PCVariant;

@@ -43,7 +43,8 @@ import {
   QuickSearchResult,
   ScriptProcess,
   ScriptProcessLog,
-  Unloader
+  Unloader,
+  AddFileType
 } from "../state";
 import { InspectorNode } from "paperclip";
 import { ProjectTemplate } from "tandem-starter-kits";
@@ -824,6 +825,10 @@ export type UnloaderAction = {
   unloader: Unloader;
 } & Action;
 
+export type FileNavigatorNewFileClicked = {
+  fileType: AddFileType;
+} & Action;
+
 export const quickSearchResultItemSplitButtonClick = (
   item: QuickSearchResult
 ): QuickSearchResultItemSplitButtonClicked => ({
@@ -1268,7 +1273,10 @@ export const closeBottomGutterButtonClicked = (): Action => ({
   type: CLOSE_BOTTOM_GUTTER_BUTTON_CLICKED
 });
 
-export const fileNavigatorNewFileClicked = (): Action => ({
+export const fileNavigatorNewFileClicked = (
+  fileType: AddFileType
+): FileNavigatorNewFileClicked => ({
+  fileType,
   type: FILE_NAVIGATOR_NEW_FILE_CLICKED
 });
 

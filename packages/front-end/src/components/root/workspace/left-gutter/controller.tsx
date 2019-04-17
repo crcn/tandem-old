@@ -3,7 +3,9 @@ import { BaseLeftGutterProps } from "./view.pc";
 import { DependencyGraph, InspectorNode, SyntheticDocument } from "paperclip";
 import { Dispatch } from "redux";
 import { Directory, startDOMDrag } from "tandem-common";
+import { NewFSItemInfo } from "../../../../state";
 export type Props = {
+  newFSItemInfo: NewFSItemInfo;
   show?: boolean;
   graph: DependencyGraph;
   activeEditorUri: string;
@@ -47,6 +49,7 @@ export default (Base: React.ComponentClass<BaseLeftGutterProps>) =>
     render() {
       const {
         graph,
+        newFSItemInfo,
         activeEditorUri,
         selectedInspectorNodes,
         hoveringInspectorNodes,
@@ -81,6 +84,7 @@ export default (Base: React.ComponentClass<BaseLeftGutterProps>) =>
             documents
           }}
           fileNavigatorPaneProps={{
+            newFSItemInfo,
             editingFileNameUri,
             activeEditorUri,
             rootDirectory,

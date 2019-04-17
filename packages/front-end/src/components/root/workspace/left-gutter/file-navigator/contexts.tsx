@@ -1,7 +1,6 @@
 import * as React from "react";
 import { Dispatch } from "redux";
-import { FSItemTagNames, Directory } from "tandem-common";
-import { NewFSItemInfo } from "./controller";
+import { NewFSItemInfo } from "../../../../../state";
 
 export type FileNavigatorContextProps = {
   newFileInfo: NewFSItemInfo;

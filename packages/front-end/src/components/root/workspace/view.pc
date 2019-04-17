@@ -244,6 +244,19 @@
               "value": false,
               "name": "override",
               "children": []
+            },
+            {
+              "id": "850332f746262",
+              "propertyName": "variant",
+              "targetIdPath": [
+                "45055e8e10",
+                "45055e8e8"
+              ],
+              "value": {
+                "850332f711509": true
+              },
+              "name": "override",
+              "children": []
             }
           ],
           "metadata": {
@@ -259,10 +272,10 @@
       ],
       "metadata": {
         "bounds": {
-          "left": -129,
-          "top": 991,
-          "right": 1833.8518233326877,
-          "bottom": 1974.4100056728703
+          "left": -373,
+          "top": 868,
+          "right": 1046,
+          "bottom": 1919
         }
       },
       "controllers": [

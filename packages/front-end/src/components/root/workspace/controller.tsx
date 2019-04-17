@@ -32,6 +32,7 @@ export default (Base: React.ComponentClass<BaseWorkspaceProps>) =>
           activeEditorFilePath: activeEditorUri,
           selectedInspectorNodes,
           hoveringInspectorNodes,
+          addNewFileInfo,
           selectedFileNodeIds,
           projectInfo,
           showConfigureBuildModal,
@@ -45,6 +46,7 @@ export default (Base: React.ComponentClass<BaseWorkspaceProps>) =>
           <div style={WORKSPACE_STYLE}>
             <Base
               leftGutterProps={{
+                newFSItemInfo: addNewFileInfo,
                 activeEditorUri,
                 renameInspectorNodeId,
                 editingFileNameUri: root.editingBasenameUri,

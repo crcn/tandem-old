@@ -130,7 +130,7 @@ export const createShortcutSaga = ({
                 }
               ]
             },
-            item.name === FSItemTagNames.DIRECTORY && false
+            item.name === FSItemTagNames.DIRECTORY
               ? {
                   type: ContextMenuOptionType.GROUP,
                   options: [
