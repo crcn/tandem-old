@@ -154,7 +154,7 @@ export const createShortcutSaga = ({
                   ]
                 }
               : null
-          ]
+          ].filter(Boolean) as ContextMenuOption[]
         );
       }
     );

@@ -755,9 +755,9 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
     case FILE_ITEM_CONTEXT_MENU_CREATE_BLANK_FILE_CLICKED: {
       const map = {
         [FILE_ITEM_CONTEXT_MENU_CREATE_BLANK_FILE_CLICKED]: AddFileType.BLANK,
-        [FILE_ITEM_CONTEXT_MENU_CREATE_BLANK_FILE_CLICKED]:
+        [FILE_ITEM_CONTEXT_MENU_CREATE_DIRECTORY_CLICKED]:
           AddFileType.DIRECTORY,
-        [FILE_ITEM_CONTEXT_MENU_CREATE_BLANK_FILE_CLICKED]:
+        [FILE_ITEM_CONTEXT_MENU_CREATE_COMPONENT_FILE_CLICKED]:
           AddFileType.COMPONENT
       };
       const { item } = action as FileItemContextMenuAction;
@@ -778,8 +778,8 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
       );
 
       const activeFileNode: FSItem =
-        this.props.activeEditorUri &&
-        getFileFromUri(this.props.activeEditorUri, state.projectDirectory);
+        state.activeEditorFilePath &&
+        getFileFromUri(state.activeEditorFilePath, state.projectDirectory);
 
       const targetFileNode = selectedFileNode || activeFileNode;
 
@@ -787,7 +787,8 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
         ? targetFileNode.name === FSItemTagNames.DIRECTORY
           ? targetFileNode
           : getParentTreeNode(targetFileNode.id, state.projectDirectory)
-        : this.props.rootDirectory;
+        : state.projectDirectory;
+      console.log("ST", dirFile);
       state = {
         ...state,
         addNewFileInfo: {
