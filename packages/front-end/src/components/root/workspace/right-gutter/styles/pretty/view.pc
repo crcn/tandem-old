@@ -82,17 +82,6 @@
           "label": "Filters Pane"
         },
         {
-          "id": "decafdc7517269",
-          "variant": {},
-          "is": "decafdc7265667",
-          "name": "component-instance",
-          "attributes": {},
-          "style": {},
-          "children": [],
-          "metadata": {},
-          "label": "Code Pane"
-        },
-        {
           "id": "850332f711388",
           "is": "850332f711267",
           "label": "Style Inspector",

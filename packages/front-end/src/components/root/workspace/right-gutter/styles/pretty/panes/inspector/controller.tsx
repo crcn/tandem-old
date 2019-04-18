@@ -1,5 +1,6 @@
 import { BaseStyleInspectorProps, Declaration } from "./view.pc";
 import * as React from "react";
+import * as cx from "classnames";
 import { ComputedStyleInfo } from "paperclip";
 import { memoize } from "tandem-common";
 import { Dispatch } from "redux";
@@ -87,6 +88,13 @@ export default (Base: React.ComponentClass<BaseStyleInspectorProps>) => {
       const { computedStyleInfo } = this.props;
 
       const declarations = sortedDeclarationNames.map((styleName, i, ary) => {
+        const overrides = computedStyleInfo.styleOverridesMap[styleName];
+        const isOverride = Boolean(overrides && overrides.length);
+        const isVariant =
+          isOverride && overrides.some(override => Boolean(override.variantId));
+        const isInherited = Boolean(
+          computedStyleInfo.styleInheritanceMap[styleName]
+        );
         return (
           <Declaration
             key={i}
@@ -98,6 +106,12 @@ export default (Base: React.ComponentClass<BaseStyleInspectorProps>) => {
               i === ary.length - 1 ? onLastDeclarationValueKeyDown : null
             }
             value={computedStyleInfo.style[styleName]}
+            variant={cx({
+              mixin: false,
+              override: isOverride && !isVariant,
+              variant: isVariant,
+              inherited: isInherited
+            })}
           />
         );
       });

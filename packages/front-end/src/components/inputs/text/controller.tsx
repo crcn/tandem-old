@@ -84,9 +84,22 @@ export const withPureInputHandlers = () => (
         }
       }
     }
+    onBlur = event => {
+      // possibly clicked somewhere on stage to trigger blur.
+      if (
+        this.state._value !== this.state.value &&
+        this.props.onChangeComplete
+      ) {
+        this.props.onChangeComplete(this.state.value);
+      }
+
+      if (this.props.onBlur) {
+        this.props.onBlur(event);
+      }
+    };
     render() {
-      const { onKeyDown } = this;
-      return <Base {...this.props} onKeyDown={onKeyDown} />;
+      const { onKeyDown, onBlur } = this;
+      return <Base {...this.props} onKeyDown={onKeyDown} onBlur={onBlur} />;
     }
   };
 };

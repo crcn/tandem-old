@@ -10,6 +10,7 @@ export type Props = {
   onValueKeyDown?: any;
   onCreate?: (name: string, value: string) => void;
   onRemove?: () => void;
+  variant?: string;
 };
 
 type State = {
@@ -85,7 +86,7 @@ export default (Base: React.ComponentClass<BaseDeclarationProps>) => {
     };
     render() {
       const { newName, newValue, focusName: focusName2 } = this.state;
-      const { name, value, focusName } = this.props;
+      const { name, value, focusName, variant } = this.props;
       const {
         onNameChange,
         onValueChange,
@@ -95,6 +96,7 @@ export default (Base: React.ComponentClass<BaseDeclarationProps>) => {
       } = this;
       return (
         <Base
+          variant={variant}
           property={
             <NameField
               value={newName || name}
@@ -145,6 +147,7 @@ class NameField extends React.PureComponent<NameFieldProps, NameFieldState> {
   };
   onBlur = event => {
     this.props.onBlur(event);
+    this.setState({ ...this.state, active: false });
   };
 
   static getDerivedStateFromProps(

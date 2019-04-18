@@ -134,13 +134,21 @@
       "style": {
         "box-sizing": "border-box",
         "display": "block",
-        "efg": "ee",
-        "abd": "efg",
-        "abb": "dee",
-        "eff": "nmp",
-        "cde": "ddd"
+        "font-family": "Helvetica"
       },
-      "children": [],
+      "children": [
+        {
+          "id": "5a6802e9434",
+          "name": "text",
+          "label": "Text",
+          "value": "something",
+          "style": {
+            "font-family": ""
+          },
+          "children": [],
+          "metadata": {}
+        }
+      ],
       "metadata": {
         "bounds": {
           "left": 1192.6050836097215,

@@ -57,10 +57,6 @@ export default (Base: React.ComponentClass<BaseElementStylerProps>) =>
             graph,
             selectedVariant
           }}
-          codePaneProps={{
-            dispatch,
-            computedStyleInfo
-          }}
           styleInspectorProps={{
             dispatch,
             computedStyleInfo

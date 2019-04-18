@@ -516,7 +516,7 @@
         {
           "id": "850332f711522",
           "name": "variant",
-          "label": "is override",
+          "label": "override",
           "isDefault": false,
           "children": [],
           "metadata": {}
@@ -524,7 +524,7 @@
         {
           "id": "850332f711523",
           "name": "variant",
-          "label": "is variant",
+          "label": "variant",
           "isDefault": false,
           "children": [],
           "metadata": {}
@@ -532,7 +532,7 @@
         {
           "id": "850332f711524",
           "name": "variant",
-          "label": "is inherited",
+          "label": "inherited",
           "isDefault": false,
           "children": [],
           "metadata": {}
@@ -648,7 +648,7 @@
         {
           "id": "54f2afdb1162",
           "name": "variant",
-          "label": "is mixin",
+          "label": "mixin",
           "isDefault": false,
           "children": [],
           "metadata": {}
