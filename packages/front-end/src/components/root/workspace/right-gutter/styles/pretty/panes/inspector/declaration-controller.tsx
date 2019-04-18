@@ -6,7 +6,7 @@ export type Props = {
   value?: string;
   focusName?: boolean;
   onNameChangeComplete?: (newName: string) => void;
-  onValueChangeComplete?: (newValue: string, tabbed?: boolean) => void;
+  onValueChange?: (newValue: string, tabbed?: boolean) => void;
   onValueKeyDown?: any;
   onCreate?: (name: string, value: string, tabbed?: boolean) => void;
   onRemove?: () => void;
@@ -15,6 +15,9 @@ export type Props = {
 type State = {
   newName?: string;
   newValue?: string;
+  nameFocused?: boolean;
+  _name?: string;
+  _value?: string;
 };
 
 export default (Base: React.ComponentClass<BaseDeclarationProps>) => {
@@ -23,6 +26,19 @@ export default (Base: React.ComponentClass<BaseDeclarationProps>) => {
     State
   > {
     state: State = {};
+    static getDerivedStateFromProps(props: Props, state: State): State {
+      let newState = state;
+      if (props.name !== state._name || props.value !== state._value) {
+        newState = {
+          ...newState,
+          newName: undefined,
+          newValue: undefined,
+          _name: props.name,
+          _value: props.value
+        };
+      }
+      return newState === state ? null : newState;
+    }
     onNameChange = (newName: string) => {
       this.setState({ ...this.state, newName });
       if (!newName || !newName.trim()) {
@@ -37,25 +53,35 @@ export default (Base: React.ComponentClass<BaseDeclarationProps>) => {
     };
     onValueChange = (newValue: string) => {
       this.setState({ ...this.state, newValue });
-      if (!newValue || !newValue.trim()) {
-        if (this.props.onRemove) {
-          this.props.onRemove();
-        }
-      } else {
-        if (this.props.onValueChangeComplete) {
-          this.props.onValueChangeComplete(newValue);
-        }
+      if (this.props.name && this.props.onValueChange) {
+        this.props.onValueChange(newValue);
+      }
 
-        if (!this.props.name && this.props.onCreate) {
-          this.props.onCreate(this.state.newName, newValue);
-        }
+      if (!this.props.name && this.props.onCreate) {
+        this.props.onCreate(this.state.newName, newValue);
+      }
+    };
+    onNameFocus = () => {
+      this.setState({ ...this.state, nameFocused: true });
+    };
+    onNameBlur = () => {
+      this.setState({ ...this.state, nameFocused: false });
+    };
+    onValueBlur = () => {
+      if (!this.props.value && this.props.onRemove) {
+        this.props.onRemove();
       }
     };
     render() {
       const { newName, newValue } = this.state;
       const { name, value, focusName, onValueKeyDown } = this.props;
-      const { onNameChange, onValueChange } = this;
-
+      const {
+        onNameChange,
+        onValueChange,
+        onNameFocus,
+        onNameBlur,
+        onValueBlur
+      } = this;
       return (
         <Base
           property={
@@ -63,13 +89,16 @@ export default (Base: React.ComponentClass<BaseDeclarationProps>) => {
               value={newName || name}
               focus={focusName}
               onChangeComplete={onNameChange}
+              onFocus={onNameFocus}
+              onBlur={onNameBlur}
             />
           }
           value={
             <ValueField
               value={newValue || value}
-              onChangeComplete={onValueChange}
+              onChange={onValueChange}
               onKeyDown={onValueKeyDown}
+              onBlur={onValueBlur}
             />
           }
         />
@@ -82,6 +111,8 @@ type NameFieldProps = {
   focus?: boolean;
   value: string;
   onChangeComplete: any;
+  onFocus: any;
+  onBlur: any;
 };
 
 type NameFieldState = {
@@ -96,6 +127,7 @@ class NameField extends React.PureComponent<NameFieldProps, NameFieldState> {
   };
   onFocus = () => {
     this.setState({ ...this.state, active: true });
+    this.props.onFocus();
   };
   onChangeComplete = (value: string) => {
     this.props.onChangeComplete(value);
@@ -103,6 +135,7 @@ class NameField extends React.PureComponent<NameFieldProps, NameFieldState> {
   };
   onBlur = () => {
     this.setState({ ...this.state, active: false });
+    this.props.onBlur();
   };
 
   static getDerivedStateFromProps(
@@ -143,8 +176,9 @@ class NameField extends React.PureComponent<NameFieldProps, NameFieldState> {
 
 type ValueFieldProps = {
   value: string;
-  onChangeComplete: any;
+  onChange: any;
   onKeyDown?: any;
+  onBlur: any;
 };
 
 type ValueFieldState = {
@@ -161,13 +195,13 @@ class ValueField extends React.PureComponent<ValueFieldProps, ValueFieldState> {
   };
   onBlur = () => {
     this.setState({ ...this.state, active: false });
+    this.props.onBlur();
   };
-  onChangeComplete = (value: string, event: KeyboardEvent) => {
-    this.props.onChangeComplete(value, event);
-    this.onBlur();
+  onChange = value => {
+    this.props.onChange(value);
   };
   render() {
-    const { onFocus, onBlur, onChangeComplete } = this;
+    const { onFocus, onBlur, onChange } = this;
     const { active } = this.state;
     const { value, onKeyDown } = this.props;
     return (
@@ -175,7 +209,7 @@ class ValueField extends React.PureComponent<ValueFieldProps, ValueFieldState> {
         {active ? (
           <DeclarationInput
             focus
-            onChangeComplete={onChangeComplete}
+            onChange={onChange}
             value={value}
             onBlur={onBlur}
             onKeyDown={onKeyDown}

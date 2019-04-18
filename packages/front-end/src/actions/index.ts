@@ -230,6 +230,10 @@ export const NEW_DIRECTORY_ENTERED = "NEW_DIRECTORY_ENTERED";
 export const RAW_CSS_TEXT_CHANGED = "RAW_CSS_TEXT_CHANGED";
 export const CSS_INSPECTOR_DECLARATION_CREATED =
   "CSS_INSPECTOR_DECLARATION_CREATED";
+export const CSS_INSPECTOR_DECLARATION_CHANGED =
+  "CSS_INSPECTOR_DECLARATION_CHANGED";
+export const CSS_INSPECTOR_DECLARATION_NAME_CHANGED =
+  "CSS_INSPECTOR_DECLARATION_NAME_CHANGED";
 export const CSS_PROPERTY_CHANGED = "CSS_PROPERTY_CHANGED";
 export const CSS_PROPERTIES_CHANGED = "CSS_PROPERTIES_CHANGED";
 export const QUICK_SEARCH_RESULT_ITEM_SPLIT_BUTTON_CLICKED =
@@ -367,6 +371,11 @@ export type RawCSSTextChanged = {
 export type CSSInspectorDeclarationCreated = {
   name: string;
   value: string;
+} & Action;
+
+export type CSSInspectorDeclarationNameChanged = {
+  oldName: string;
+  newName: string;
 } & Action;
 
 export type AddVariableButtonClicked = {
@@ -1711,6 +1720,24 @@ export const cssInspectorDeclarationCreated = (
   name,
   value,
   type: CSS_INSPECTOR_DECLARATION_CREATED
+});
+
+export const cssInspectorDeclarationChanged = (
+  name: string,
+  value: string
+): CSSInspectorDeclarationCreated => ({
+  name,
+  value,
+  type: CSS_INSPECTOR_DECLARATION_CHANGED
+});
+
+export const cssInspectorDeclarationNameChanged = (
+  oldName: string,
+  newName: string
+): CSSInspectorDeclarationNameChanged => ({
+  oldName,
+  newName,
+  type: CSS_INSPECTOR_DECLARATION_NAME_CHANGED
 });
 
 export const cssPropertyChanged = (

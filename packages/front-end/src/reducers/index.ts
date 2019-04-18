@@ -227,7 +227,10 @@ import {
   FILE_NAVIGATOR_NEW_FILE_CLICKED,
   FileNavigatorNewFileClicked,
   CSS_INSPECTOR_DECLARATION_CREATED,
-  CSSInspectorDeclarationCreated
+  CSSInspectorDeclarationCreated,
+  CSS_INSPECTOR_DECLARATION_CHANGED,
+  CSS_INSPECTOR_DECLARATION_NAME_CHANGED,
+  CSSInspectorDeclarationNameChanged
 } from "../actions";
 import {
   queueOpenFile,
@@ -389,7 +392,9 @@ import {
   getInspectorNodeBySourceNodeId,
   persistAddVariantTrigger,
   PCVariableQuery,
-  getInspectorContentNode
+  getInspectorContentNode,
+  computePCNodeStyle,
+  computeStyleInfo
 } from "paperclip";
 import {
   roundBounds,
@@ -1941,6 +1946,28 @@ export const canvasReducer = (state: RootState, action: Action) => {
       return state;
     }
 
+    case CSS_INSPECTOR_DECLARATION_NAME_CHANGED: {
+      const { oldName, newName } = action as CSSInspectorDeclarationNameChanged;
+      state = persistRootState(state => {
+        return state.selectedInspectorNodes.reduce((state, node) => {
+          const { style } = computeStyleInfo(
+            node,
+            state.sourceNodeInspector,
+            state.selectedVariant,
+            state.graph
+          );
+          return persistCSSProperties(
+            { [oldName]: undefined, [newName]: style[oldName] },
+            node,
+            state.selectedVariant,
+            state
+          );
+        }, state);
+      }, state);
+      return state;
+    }
+
+    case CSS_INSPECTOR_DECLARATION_CHANGED:
     case CSS_INSPECTOR_DECLARATION_CREATED: {
       const { name, value } = action as CSSInspectorDeclarationCreated;
       state = persistRootState(state => {

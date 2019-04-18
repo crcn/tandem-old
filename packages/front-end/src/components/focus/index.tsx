@@ -19,17 +19,21 @@ export class FocusComponent extends React.Component<FocusProps> {
   }
   focus() {
     setTimeout(() => {
-      const self = ReactDOM.findDOMNode(this) as HTMLElement;
-      const input =
-        self.tagName === "INPUT"
-          ? (self as HTMLInputElement)
-          : self.querySelector("input");
+      try {
+        const self = ReactDOM.findDOMNode(this) as HTMLElement;
+        const input =
+          self.tagName === "INPUT"
+            ? (self as HTMLInputElement)
+            : self.querySelector("input");
 
-      // may be an input
-      if (!input) {
-        return;
+        // may be an input
+        if (!input) {
+          return;
+        }
+        input.select();
+      } catch (e) {
+        console.error(e.stack);
       }
-      input.select();
     }, 10);
   }
   render() {

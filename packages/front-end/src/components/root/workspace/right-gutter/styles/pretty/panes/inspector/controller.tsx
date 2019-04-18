@@ -3,7 +3,12 @@ import * as React from "react";
 import { ComputedStyleInfo } from "paperclip";
 import { memoize } from "tandem-common";
 import { Dispatch } from "redux";
-import { cssInspectorDeclarationCreated } from "../../../../../../../../actions";
+import { isEqual } from "lodash";
+import {
+  cssInspectorDeclarationCreated,
+  cssInspectorDeclarationChanged,
+  cssInspectorDeclarationNameChanged
+} from "../../../../../../../../actions";
 
 export type Props = {
   computedStyleInfo: ComputedStyleInfo;
@@ -12,6 +17,8 @@ export type Props = {
 
 type State = {
   showNewDeclarationInput?: boolean;
+  sortedDeclarationNames: string[];
+  _declarationNames?: string[];
 };
 
 export default (Base: React.ComponentClass<BaseStyleInspectorProps>) => {
@@ -20,24 +27,52 @@ export default (Base: React.ComponentClass<BaseStyleInspectorProps>) => {
     State
   > {
     state = {
-      showNewDeclarationInput: false
+      showNewDeclarationInput: false,
+      sortedDeclarationNames: []
     };
+
+    static getDerivedStateFromProps(props: Props, state: State): State {
+      let newState = state;
+      const sortedDeclarationNames = Object.keys(props.computedStyleInfo.style);
+      if (!isEqual(state._declarationNames, sortedDeclarationNames)) {
+        newState = {
+          ...newState,
+          sortedDeclarationNames,
+          _declarationNames: sortedDeclarationNames
+        };
+      }
+      return newState === state ? null : newState;
+    }
+
     onClickAddNewStyle = () => {
       this.setState({ ...this.state, showNewDeclarationInput: true });
     };
     onCreateProperty = (name: string, value: string) => {
       this.props.dispatch(cssInspectorDeclarationCreated(name, value));
+      this.setState({
+        ...this.state,
+        sortedDeclarationNames: [...this.state.sortedDeclarationNames, name],
+        showNewDeclarationInput: false
+      });
     };
-    onNameChangeComplete = memoize(oldName => newName => {});
-    onValueChangeComplete = memoize(name => value => {
-      console.log("V CHANGE", this);
+    onNameChangeComplete = memoize(oldName => newName => {
+      this.props.dispatch(cssInspectorDeclarationNameChanged(oldName, newName));
+    });
+    onValueChange = memoize(name => value => {
+      this.props.dispatch(cssInspectorDeclarationChanged(name, value || ""));
+      this.setState({ ...this.state, showNewDeclarationInput: false });
+    });
+    onRemoveProperty = memoize(name => () => {
+      this.props.dispatch(cssInspectorDeclarationChanged(name, undefined));
     });
     onRemoveNewProperty = () => {
       this.setState({ ...this.state, showNewDeclarationInput: false });
     };
     onLastDeclarationValueKeyDown = (event: React.KeyboardEvent<any>) => {
       if (event.key === "Tab" && !event.shiftKey) {
-        this.setState({ ...this.state, showNewDeclarationInput: true });
+        setTimeout(() => {
+          this.setState({ ...this.state, showNewDeclarationInput: true });
+        });
       }
     };
     render() {
@@ -45,29 +80,30 @@ export default (Base: React.ComponentClass<BaseStyleInspectorProps>) => {
         onClickAddNewStyle,
         onCreateProperty,
         onNameChangeComplete,
-        onValueChangeComplete,
+        onValueChange,
+        onRemoveProperty,
         onRemoveNewProperty,
         onLastDeclarationValueKeyDown
       } = this;
-      const { showNewDeclarationInput } = this.state;
+      const { showNewDeclarationInput, sortedDeclarationNames } = this.state;
       const { computedStyleInfo } = this.props;
 
-      const declarations = Object.keys(computedStyleInfo.style).map(
-        (styleName, i, ary) => {
-          return (
-            <Declaration
-              key={styleName}
-              name={styleName}
-              onNameChangeComplete={onNameChangeComplete(styleName)}
-              onValueChangeComplete={onValueChangeComplete(styleName)}
-              onValueKeyDown={
-                i === ary.length - 1 ? onLastDeclarationValueKeyDown : null
-              }
-              value={computedStyleInfo.style[styleName]}
-            />
-          );
-        }
-      );
+      const declarations = sortedDeclarationNames.map((styleName, i, ary) => {
+        return (
+          <Declaration
+            key={i}
+            name={styleName}
+            onNameChangeComplete={onNameChangeComplete(styleName)}
+            onValueChange={onValueChange(styleName)}
+            onRemove={onRemoveProperty(styleName)}
+            onValueKeyDown={
+              i === ary.length - 1 ? onLastDeclarationValueKeyDown : null
+            }
+            value={computedStyleInfo.style[styleName]}
+          />
+        );
+      });
+
       if (showNewDeclarationInput) {
         declarations.push(
           <Declaration
@@ -75,6 +111,7 @@ export default (Base: React.ComponentClass<BaseStyleInspectorProps>) => {
             onCreate={onCreateProperty}
             onRemove={onRemoveNewProperty}
             focusName
+            onValueKeyDown={onLastDeclarationValueKeyDown}
           />
         );
       }

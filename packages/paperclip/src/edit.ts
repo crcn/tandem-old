@@ -1729,10 +1729,6 @@ export const persistCSSProperty = <TState extends PCEditorState>(
   state: TState,
   allowUnset?: boolean
 ) => {
-  if (value === "") {
-    value = undefined;
-  }
-
   const computedStyle = computeStyleInfo(
     inspectorNode,
     state.sourceNodeInspector,
