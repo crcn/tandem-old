@@ -2,7 +2,7 @@
   "name": "tandem-desktop",
   "productName": "Tandem",
   "version": "10.1.36",
-  "description": "",
+  "description": "Tandem component builder",
   "private": true,
   "main": "lib/index.js",
   "repository": {
@@ -18,7 +18,7 @@
     "build:watch": "concurrently \"tsc --watch\" \"webpack --watch\"",
     "clean": "rm -rf lib && rm -rf node_modules",
     "prepare": "npm run build",
-    "build:dist": "build"
+    "build:dist": "build --publish onTagOrDraft"
   },
   "build": {
     "appId": "com.tandemcode.tandem",
