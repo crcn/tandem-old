@@ -18,7 +18,7 @@
     "build:watch": "concurrently \"tsc --watch\" \"webpack --watch\"",
     "clean": "rm -rf lib && rm -rf node_modules",
     "prepare": "npm run build",
-    "build:dist": "build --publish onTagOrDraft"
+    "build:dist": "build --publish"
   },
   "build": {
     "appId": "com.tandemcode.tandem",
