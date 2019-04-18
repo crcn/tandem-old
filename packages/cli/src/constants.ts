@@ -1,5 +1,5 @@
 import { tmpdir, platform } from "os";
-const { distVersion } = require("../package");
+const { version: distVersion } = require("../package");
 
 const isWin = platform() === "win32";
 export const PROJECT_FILE_EXTENSION = "tdproject";

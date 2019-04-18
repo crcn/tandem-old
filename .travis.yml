@@ -45,4 +45,5 @@ before_script:
   - sleep 3
 
 script:
+- npm run bootstrap
 - npm run build:dist
