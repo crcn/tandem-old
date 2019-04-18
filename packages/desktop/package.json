@@ -7,7 +7,7 @@
   "main": "lib/index.js",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/crcn/tandem-preview.git"
+    "url": "git+https://github.com/tandemcode/tandem.git"
   },
   "bin": {
     "tandem": "./bin/tandem"
