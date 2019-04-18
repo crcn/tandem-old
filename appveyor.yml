@@ -7,7 +7,7 @@ environment:
 install:
   - ps: Install-Product node $env:nodejs_version
   - set CI=true
-  - npm install -g npm@latest
+  - npm install -g npm@6.7.x
   - set PATH=%APPDATA%\npm;%PATH%
   - npm install
 matrix:
