@@ -14,17 +14,14 @@
   },
   "scripts": {
     "start": "electron lib/index.js",
-    "postinstall": "electron-rebuild",
     "build": "tsc && webpack",
     "build:watch": "concurrently \"tsc --watch\" \"webpack --watch\"",
-    "build-front-end": "webpack",
     "clean": "rm -rf lib && rm -rf node_modules",
     "prepare": "npm run build",
-    "build:dist": "electron-packager . \"Tandem\" --out=dist --overwrite --app-bundle-id=\"com.tandemcode.tandem\" --icon=\"assets/tandem.icns\" --osx-sign",
-    "build:dist:win": "build"
+    "build:dist": "build"
   },
   "build": {
-    "appId": "com.tandemcode.app",
+    "appId": "com.tandemcode.tandem",
     "fileAssociations": [
       {
         "ext": "tdproject",
@@ -32,7 +29,14 @@
         "role": "Editor"
       }
     ],
+    "mac": {
+      "target": "zip",
+      "icon": "assets/tandem.icns"
+    },
     "win": {
+      "target": "zip"
+    },
+    "linux": {
       "target": "zip"
     }
   },
@@ -67,9 +71,6 @@
     "css-loader": "^0.28.11",
     "electron": "^2.0.2",
     "electron-builder": "^20.11.1",
-    "electron-devtools-installer": "^2.2.3",
-    "electron-packager": "^12.1.0",
-    "electron-rebuild": "^1.7.3",
     "file-loader": "^1.1.11",
     "html-webpack-plugin": "^3.2.0",
     "null-loader": "^0.1.1",
