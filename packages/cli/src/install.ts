@@ -7,7 +7,7 @@ import * as ProgressBar from "progress";
 import { mkdirpSync } from "fs-extra";
 import * as yauzl from "yauzl";
 import * as extract from "extract-zip";
-const { version: distVersion } = require("../package");
+const { distVersion } = require("../package");
 const archName = `${platform}-${arch}`;
 const fileName = `${archName}-v${distVersion}.zip`;
 const url = `https://github.com/tandemcode/tandem/releases/download/v${distVersion}/${archName}.zip`;
