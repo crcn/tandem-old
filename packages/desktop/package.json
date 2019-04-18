@@ -1,7 +1,7 @@
 {
   "name": "tandem-desktop",
   "productName": "Tandem",
-  "version": "10.1.38",
+  "version": "10.1.41",
   "description": "Tandem component builder",
   "private": true,
   "main": "lib/index.js",
