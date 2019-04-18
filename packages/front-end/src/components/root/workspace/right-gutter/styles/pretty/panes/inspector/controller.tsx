@@ -70,9 +70,7 @@ export default (Base: React.ComponentClass<BaseStyleInspectorProps>) => {
     };
     onLastDeclarationValueKeyDown = (event: React.KeyboardEvent<any>) => {
       if (event.key === "Tab" && !event.shiftKey) {
-        setTimeout(() => {
-          this.setState({ ...this.state, showNewDeclarationInput: true });
-        });
+        this.setState({ ...this.state, showNewDeclarationInput: true });
       }
     };
     render() {
