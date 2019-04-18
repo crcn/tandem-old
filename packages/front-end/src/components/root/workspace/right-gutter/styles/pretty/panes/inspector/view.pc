@@ -614,7 +614,7 @@
             "54f2afdb1091"
           ],
           "value": {
-            "background-image": "linear-gradient(rgba(113, 234, 89, 1), rgba(113, 234, 89, 1))"
+            "background-image": "linear-gradient(rgba(197, 122, 255, 1), rgba(197, 122, 255, 1))"
           },
           "name": "override",
           "children": []
@@ -649,7 +649,7 @@
           "id": "54f2afdb1162",
           "name": "variant",
           "label": "mixin",
-          "isDefault": false,
+          "isDefault": true,
           "children": [],
           "metadata": {}
         },
@@ -661,7 +661,7 @@
             "54f2afdb1091"
           ],
           "value": {
-            "background-image": "linear-gradient(rgba(197, 122, 255, 1), rgba(197, 122, 255, 1))"
+            "background-image": "linear-gradient(rgba(113, 234, 89, 1), rgba(113, 234, 89, 1))"
           },
           "name": "override",
           "children": []
