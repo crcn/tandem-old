@@ -21,7 +21,7 @@ import {
   inheritPaneAddButtonClick,
   inheritPaneRemoveButtonClick
 } from "../../../../../../../actions";
-import { BaseInheritProps } from "./inherit.pc";
+import { BaseMixinsProps } from "./inherit.pc";
 import { ProjectOptions } from "../../../../../../../state";
 
 export type Props = {
@@ -36,7 +36,7 @@ type State = {
   selectedInspectorNodes: InspectorNode[];
 };
 
-export default (Base: React.ComponentClass<BaseInheritProps>) => {
+export default (Base: React.ComponentClass<BaseMixinsProps>) => {
   return class InheritController extends React.PureComponent<Props, State> {
     constructor(props: Props) {
       super(props);

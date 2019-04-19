@@ -57,6 +57,12 @@ export default (Base: React.ComponentClass<BaseElementStylerProps>) =>
             graph,
             selectedVariant
           }}
+          mixinsProps={{
+            dispatch,
+            selectedInspectorNodes,
+            graph,
+            projectOptions
+          }}
           styleInspectorProps={{
             dispatch,
             computedStyleInfo

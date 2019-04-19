@@ -26,7 +26,8 @@ import {
   getSortedStyleMixinIds,
   INHERITABLE_STYLE_NAMES,
   TEXT_STYLE_NAMES,
-  isElementLikePCNode
+  isElementLikePCNode,
+  PCTextStyleMixin
 } from "./dsl";
 
 import { DependencyGraph } from "./graph";
@@ -50,6 +51,7 @@ const DEFAULT_COMPUTE_STYLE_OPTIONS: ComputeStyleOptions = {
 export type ComputedStyleInfo = {
   sourceNode: PCNode;
   styleOverridesMap: KeyValue<PCStyleOverride[]>;
+  styleMixinMap: KeyValue<PCStyleMixin>;
   styleInheritanceMap: KeyValue<InspectorNode>;
   style: {
     [identifier: string]: string;
@@ -68,6 +70,7 @@ export const computeStyleInfo = memoize(
   ): ComputedStyleInfo | null => {
     let style = {};
     const styleOverridesMap: KeyValue<PCStyleOverride[]> = {};
+    let styleMixinMap: KeyValue<PCStyleMixin> = {};
 
     const sourceNode = getPCNode(inspectorNode.sourceNodeId, graph) as
       | PCVisibleNode
@@ -94,10 +97,8 @@ export const computeStyleInfo = memoize(
     }
 
     if (options.styleMixins !== false && sourceNode.styleMixins) {
-      defaults(
-        style,
-        computeMixinStyle(sourceNode as PCVisibleNode, graph, false)
-      );
+      styleMixinMap = getStyleMixinMap(sourceNode as PCVisibleNode, graph);
+      defaults(style, styleMixinMapToStyle(styleMixinMap));
     }
 
     if (options.overrides !== false) {
@@ -157,6 +158,7 @@ export const computeStyleInfo = memoize(
 
     return {
       sourceNode,
+      styleMixinMap,
       styleOverridesMap,
       styleInheritanceMap,
       style
@@ -164,14 +166,24 @@ export const computeStyleInfo = memoize(
   }
 );
 
-const computeMixinStyle = (
+const styleMixinMapToStyle = (map: KeyValue<PCStyleMixin>) => {
+  let style = {};
+  for (const key in map) {
+    style[key] = map[key].style[key];
+  }
+  return style;
+};
+
+const getStyleMixinMap = (
   node: PCVisibleNode | PCStyleMixin,
   graph: DependencyGraph,
   includeSelf?: boolean
-) => {
-  let style = {};
+): KeyValue<PCStyleMixin> => {
+  let map = {};
   if (includeSelf) {
-    Object.assign(style, node.style);
+    for (const key in node.style) {
+      map[key] = node;
+    }
   }
   if (node.styleMixins) {
     const sortedStyleMixinIds = getSortedStyleMixinIds(node);
@@ -182,10 +194,10 @@ const computeMixinStyle = (
       if (!styleMixin) {
         continue;
       }
-      defaults(style, computeMixinStyle(styleMixin, graph, true));
+      defaults(map, getStyleMixinMap(styleMixin, graph, true));
     }
   }
-  return style;
+  return map;
 };
 
 export const filterTextStyles = (style: any) => {

@@ -1,11 +1,11 @@
 {
   "id": "296b92da26125",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "metadata": {},
   "name": "module",
   "children": [
     {
-      "label": "Inherit",
+      "label": "Mixins",
       "is": "b6c162d113",
       "style": {
         "background": "var(--bc891e755312)"

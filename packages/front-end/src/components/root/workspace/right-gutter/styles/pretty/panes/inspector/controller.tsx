@@ -88,6 +88,7 @@ export default (Base: React.ComponentClass<BaseStyleInspectorProps>) => {
       const { computedStyleInfo } = this.props;
 
       const declarations = sortedDeclarationNames.map((styleName, i, ary) => {
+        const mixin = computedStyleInfo.styleMixinMap[styleName];
         const overrides = computedStyleInfo.styleOverridesMap[styleName];
         const isOverride = Boolean(overrides && overrides.length);
         const isVariant =
@@ -107,7 +108,7 @@ export default (Base: React.ComponentClass<BaseStyleInspectorProps>) => {
             }
             value={computedStyleInfo.style[styleName]}
             variant={cx({
-              mixin: false,
+              mixin: Boolean(mixin),
               override: isOverride && !isVariant,
               variant: isVariant,
               inherited: isInherited

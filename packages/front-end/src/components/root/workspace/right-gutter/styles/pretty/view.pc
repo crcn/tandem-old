@@ -82,6 +82,24 @@
           "label": "Filters Pane"
         },
         {
+          "id": "957e4f662813",
+          "is": "9e4a45489771",
+          "label": "Mixins",
+          "name": "component-instance",
+          "attributes": {},
+          "style": {},
+          "children": [],
+          "metadata": {
+            "bounds": {
+              "left": 544,
+              "top": 260,
+              "right": 944,
+              "bottom": 560
+            }
+          },
+          "variant": {}
+        },
+        {
           "id": "850332f711388",
           "is": "850332f711267",
           "label": "Style Inspector",
