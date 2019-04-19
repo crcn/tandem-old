@@ -14,6 +14,5 @@ examples/*/lib
 yarn.lock
 *.log
 *.zip
-package-lock.json
 packages/*/lib
 *pc.d.ts

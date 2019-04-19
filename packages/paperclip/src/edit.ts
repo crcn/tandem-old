@@ -623,7 +623,7 @@ export const persistConvertNodeToComponent = <TState extends PCEditorState>(
     sourceNode.styleMixins
   );
 
-  if (node.name === InspectorTreeNodeName.CONTENT) {
+  if (isPCContentNode(sourceNode, state.graph)) {
     component = updatePCNodeMetadata(sourceNode.metadata, component);
     sourceNode = updatePCNodeMetadata(
       {
@@ -1130,10 +1130,10 @@ export const persistAppendPCClips = <TState extends PCEditorState>(
     offset === TreeMoveOffset.BEFORE
       ? parentSourceNode.children.indexOf(targetSourceNode)
       : offset === TreeMoveOffset.AFTER
-        ? parentSourceNode.children.indexOf(targetSourceNode) + 1
-        : offset === TreeMoveOffset.APPEND
-          ? parentSourceNode.children.length
-          : 0;
+      ? parentSourceNode.children.indexOf(targetSourceNode) + 1
+      : offset === TreeMoveOffset.APPEND
+      ? parentSourceNode.children.length
+      : 0;
 
   const targetNodeIsModule = parentSourceNode === targetDep.content;
 

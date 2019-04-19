@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/tandemcode/tandem.svg?branch=master)](https://travis-ci.org/tandemcode/tandem) [![Build status](https://ci.appveyor.com/api/projects/status/jaigb20q1pd0ndgn?svg=true)](https://ci.appveyor.com/project/crcn/tandem-06di5)
+
 <p align="center">
   <img src="assets/logo.svg" width="170px">
   <h1 align="center">Tandem (Preview)</h1>
