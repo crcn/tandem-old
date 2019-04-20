@@ -18,7 +18,7 @@ export type Props = {
 
 type State = {
   showNewDeclarationInput?: boolean;
-  sortedDeclarationNames: string[];
+  declarationNames: string[];
   _declarationNames?: string[];
 };
 
@@ -29,18 +29,26 @@ export default (Base: React.ComponentClass<BaseStyleInspectorProps>) => {
   > {
     state = {
       showNewDeclarationInput: false,
-      sortedDeclarationNames: []
+      declarationNames: []
     };
 
     static getDerivedStateFromProps(props: Props, state: State): State {
       let newState = state;
-      const sortedDeclarationNames = Object.keys(props.computedStyleInfo.style);
+      const sortedDeclarationNames = Object.keys(
+        props.computedStyleInfo.style
+      ).sort();
+
       if (!isEqual(state._declarationNames, sortedDeclarationNames)) {
-        newState = {
-          ...newState,
-          sortedDeclarationNames,
-          _declarationNames: sortedDeclarationNames
-        };
+        newState = { ...newState, _declarationNames: sortedDeclarationNames };
+        if (
+          !state.declarationNames ||
+          !isEqual([...state.declarationNames].sort(), sortedDeclarationNames)
+        ) {
+          newState = {
+            ...newState,
+            declarationNames: sortedDeclarationNames
+          };
+        }
       }
       return newState === state ? null : newState;
     }
@@ -49,12 +57,16 @@ export default (Base: React.ComponentClass<BaseStyleInspectorProps>) => {
       this.setState({ ...this.state, showNewDeclarationInput: true });
     };
     onCreateProperty = (name: string, value: string) => {
-      this.props.dispatch(cssInspectorDeclarationCreated(name, value));
-      this.setState({
-        ...this.state,
-        sortedDeclarationNames: [...this.state.sortedDeclarationNames, name],
-        showNewDeclarationInput: false
-      });
+      this.setState(
+        {
+          ...this.state,
+          declarationNames: [...this.state.declarationNames, name],
+          showNewDeclarationInput: false
+        },
+        () => {
+          this.props.dispatch(cssInspectorDeclarationCreated(name, value));
+        }
+      );
     };
     onNameChangeComplete = memoize(oldName => newName => {
       this.props.dispatch(cssInspectorDeclarationNameChanged(oldName, newName));
@@ -84,10 +96,10 @@ export default (Base: React.ComponentClass<BaseStyleInspectorProps>) => {
         onRemoveNewProperty,
         onLastDeclarationValueKeyDown
       } = this;
-      const { showNewDeclarationInput, sortedDeclarationNames } = this.state;
+      const { showNewDeclarationInput, declarationNames } = this.state;
       const { computedStyleInfo } = this.props;
 
-      const declarations = sortedDeclarationNames.map((styleName, i, ary) => {
+      const declarations = declarationNames.map((styleName, i, ary) => {
         const mixin = computedStyleInfo.styleMixinMap[styleName];
         const overrides = computedStyleInfo.styleOverridesMap[styleName];
         const isOverride = Boolean(overrides && overrides.length);

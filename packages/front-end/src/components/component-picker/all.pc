@@ -124,6 +124,32 @@
           "bottom": 1431.962079966811
         }
       }
+    },
+    {
+      "label": "Element",
+      "is": "div",
+      "style": {
+        "box-sizing": "border-box",
+        "display": "flex",
+        "a": "f",
+        "d": "d",
+        "e": "f",
+        "g": "g"
+      },
+      "attributes": {},
+      "id": "3ec70111433",
+      "styleMixins": {},
+      "name": "component",
+      "children": [],
+      "metadata": {
+        "bounds": {
+          "left": 1203,
+          "top": 414,
+          "right": 1303,
+          "bottom": 514
+        }
+      },
+      "variant": {}
     }
   ]
 }
