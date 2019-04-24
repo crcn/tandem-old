@@ -1044,13 +1044,16 @@
       ],
       "metadata": {
         "bounds": {
-          "left": 1503,
-          "top": -228,
-          "right": 1866,
-          "bottom": 351
+          "left": 1469,
+          "top": -314,
+          "right": 1832,
+          "bottom": 265
         }
       },
-      "variant": {}
+      "variant": {},
+      "controllers": [
+        "./controller2.tsx"
+      ]
     },
     {
       "label": "Style Table",
@@ -1064,94 +1067,102 @@
       "name": "component",
       "children": [
         {
-          "id": "41e9185d1852",
-          "is": "eace5ea811965",
-          "label": "declaration",
-          "name": "component-instance",
-          "attributes": {},
-          "style": {},
-          "children": [],
-          "metadata": {
-            "bounds": {
-              "left": 614,
-              "top": 144,
-              "right": 969,
-              "bottom": 194
+          "id": "b37576241977",
+          "children": [
+            {
+              "id": "41e9185d1804",
+              "is": "eace5ea811965",
+              "label": "declaration",
+              "name": "component-instance",
+              "attributes": {},
+              "style": {},
+              "children": [],
+              "metadata": {
+                "bounds": {
+                  "left": 614,
+                  "top": 144,
+                  "right": 969,
+                  "bottom": 194
+                }
+              },
+              "variant": {}
+            },
+            {
+              "id": "41e9185d1816",
+              "is": "eace5ea811965",
+              "label": "declaration",
+              "name": "component-instance",
+              "attributes": {},
+              "style": {},
+              "children": [],
+              "metadata": {
+                "bounds": {
+                  "left": 614,
+                  "top": 144,
+                  "right": 969,
+                  "bottom": 194
+                }
+              },
+              "variant": {}
+            },
+            {
+              "id": "41e9185d1828",
+              "is": "eace5ea811965",
+              "label": "declaration",
+              "name": "component-instance",
+              "attributes": {},
+              "style": {},
+              "children": [],
+              "metadata": {
+                "bounds": {
+                  "left": 614,
+                  "top": 144,
+                  "right": 969,
+                  "bottom": 194
+                }
+              },
+              "variant": {}
+            },
+            {
+              "id": "41e9185d1840",
+              "is": "eace5ea811965",
+              "label": "declaration",
+              "name": "component-instance",
+              "attributes": {},
+              "style": {},
+              "children": [],
+              "metadata": {
+                "bounds": {
+                  "left": 614,
+                  "top": 144,
+                  "right": 969,
+                  "bottom": 194
+                }
+              },
+              "variant": {}
+            },
+            {
+              "id": "41e9185d1852",
+              "is": "eace5ea811965",
+              "label": "declaration",
+              "name": "component-instance",
+              "attributes": {},
+              "style": {},
+              "children": [],
+              "metadata": {
+                "bounds": {
+                  "left": 614,
+                  "top": 144,
+                  "right": 969,
+                  "bottom": 194
+                }
+              },
+              "variant": {}
             }
-          },
-          "variant": {}
-        },
-        {
-          "id": "41e9185d1840",
-          "is": "eace5ea811965",
-          "label": "declaration",
-          "name": "component-instance",
-          "attributes": {},
-          "style": {},
-          "children": [],
-          "metadata": {
-            "bounds": {
-              "left": 614,
-              "top": 144,
-              "right": 969,
-              "bottom": 194
-            }
-          },
-          "variant": {}
-        },
-        {
-          "id": "41e9185d1828",
-          "is": "eace5ea811965",
-          "label": "declaration",
-          "name": "component-instance",
-          "attributes": {},
-          "style": {},
-          "children": [],
-          "metadata": {
-            "bounds": {
-              "left": 614,
-              "top": 144,
-              "right": 969,
-              "bottom": 194
-            }
-          },
-          "variant": {}
-        },
-        {
-          "id": "41e9185d1816",
-          "is": "eace5ea811965",
-          "label": "declaration",
-          "name": "component-instance",
-          "attributes": {},
-          "style": {},
-          "children": [],
-          "metadata": {
-            "bounds": {
-              "left": 614,
-              "top": 144,
-              "right": 969,
-              "bottom": 194
-            }
-          },
-          "variant": {}
-        },
-        {
-          "id": "41e9185d1804",
-          "is": "eace5ea811965",
-          "label": "declaration",
-          "name": "component-instance",
-          "attributes": {},
-          "style": {},
-          "children": [],
-          "metadata": {
-            "bounds": {
-              "left": 614,
-              "top": 144,
-              "right": 969,
-              "bottom": 194
-            }
-          },
-          "variant": {}
+          ],
+          "metadata": {},
+          "name": "slot",
+          "label": "content"
         }
       ],
       "metadata": {
@@ -1162,7 +1173,10 @@
           "bottom": 391
         }
       },
-      "variant": {}
+      "variant": {},
+      "controllers": [
+        "./style-table-controller.tsx"
+      ]
     },
     {
       "label": "main style pane",
@@ -1302,7 +1316,10 @@
           "bottom": 680
         }
       },
-      "variant": {}
+      "variant": {},
+      "controllers": [
+        "./main-style-pane-controller.tsx"
+      ]
     },
     {
       "label": "mixins style panel",
