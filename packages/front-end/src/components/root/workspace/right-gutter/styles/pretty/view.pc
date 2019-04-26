@@ -349,19 +349,31 @@
           "variant": {}
         },
         {
-          "id": "e7d086d513015",
-          "is": "decafdc7265667",
-          "label": "custom css pane",
+          "id": "f7a6123d11339",
+          "is": "850332f711267",
+          "label": "custom code pane",
           "name": "component-instance",
           "attributes": {},
           "style": {},
-          "children": [],
+          "children": [
+            {
+              "id": "f7a6123d11461",
+              "variantId": null,
+              "propertyName": "text",
+              "targetIdPath": [
+                "850332f711260"
+              ],
+              "value": "Custom CSS",
+              "name": "override",
+              "children": []
+            }
+          ],
           "metadata": {
             "bounds": {
-              "left": 784,
-              "top": 275,
-              "right": 1184,
-              "bottom": 575
+              "left": 979,
+              "top": -205,
+              "right": 1315,
+              "bottom": 335
             }
           },
           "variant": {}

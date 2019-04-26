@@ -858,7 +858,9 @@
     {
       "label": "Text Center Icon",
       "is": "svg",
-      "style": {},
+      "style": {
+        "height": "15px"
+      },
       "attributes": {
         "xmlns": "http://www.w3.org/2000/svg",
         "version": "1.1",
@@ -1003,7 +1005,9 @@
     {
       "label": "Text Left Icon",
       "is": "svg",
-      "style": {},
+      "style": {
+        "height": "15px"
+      },
       "attributes": {
         "xmlns": "http://www.w3.org/2000/svg",
         "version": "1.1",
@@ -1593,7 +1597,9 @@
     {
       "label": "Text Right icon",
       "is": "svg",
-      "style": {},
+      "style": {
+        "height": "15px"
+      },
       "attributes": {
         "xmlns": "http://www.w3.org/2000/svg",
         "version": "1.1",
@@ -1745,7 +1751,9 @@
         "y": "0px",
         "viewBox": "0 0 100 125"
       },
-      "style": {},
+      "style": {
+        "height": "15px"
+      },
       "children": [
         {
           "id": "289d8e34190",

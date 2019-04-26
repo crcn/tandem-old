@@ -113,7 +113,7 @@ export default (Base: React.ComponentClass<BaseElementStylerProps>) =>
             computedStyleInfo,
             globalVariables
           }}
-          customCssPaneProps={{
+          customCodePaneProps={{
             dispatch,
             computedStyleInfo
           }}
