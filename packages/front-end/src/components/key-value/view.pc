@@ -1,0 +1,174 @@
+{
+  "id": "a322aff9133",
+  "name": "module",
+  "version": "0.0.6",
+  "children": [
+    {
+      "label": "kv table",
+      "is": "div",
+      "style": {
+        "box-sizing": "border-box",
+        "display": "block"
+      },
+      "attributes": {},
+      "id": "aa9b92aa11454",
+      "name": "component",
+      "children": [
+        {
+          "id": "aa9b92aa11475",
+          "is": "aa9b92aa11442",
+          "label": "kv row",
+          "name": "component-instance",
+          "attributes": {},
+          "style": {},
+          "children": [],
+          "metadata": {
+            "bounds": {
+              "left": 328.48860309108494,
+              "top": 6.667264145768598,
+              "right": 428.48860309108494,
+              "bottom": 106.6672641457686
+            }
+          },
+          "variant": {}
+        },
+        {
+          "id": "aa9b92aa11470",
+          "is": "aa9b92aa11442",
+          "label": "kv row",
+          "name": "component-instance",
+          "attributes": {},
+          "style": {},
+          "children": [],
+          "metadata": {
+            "bounds": {
+              "left": 328.48860309108494,
+              "top": 6.667264145768598,
+              "right": 428.48860309108494,
+              "bottom": 106.6672641457686
+            }
+          },
+          "variant": {}
+        },
+        {
+          "id": "aa9b92aa11465",
+          "is": "aa9b92aa11442",
+          "label": "kv row",
+          "name": "component-instance",
+          "attributes": {},
+          "style": {},
+          "children": [],
+          "metadata": {
+            "bounds": {
+              "left": 328.48860309108494,
+              "top": 6.667264145768598,
+              "right": 428.48860309108494,
+              "bottom": 106.6672641457686
+            }
+          },
+          "variant": {}
+        },
+        {
+          "id": "aa9b92aa11460",
+          "is": "aa9b92aa11442",
+          "label": "kv row",
+          "name": "component-instance",
+          "attributes": {},
+          "style": {},
+          "children": [],
+          "metadata": {
+            "bounds": {
+              "left": 328.48860309108494,
+              "top": 6.667264145768598,
+              "right": 428.48860309108494,
+              "bottom": 106.6672641457686
+            }
+          },
+          "variant": {}
+        },
+        {
+          "id": "aa9b92aa11453",
+          "is": "aa9b92aa11442",
+          "label": "kv row",
+          "name": "component-instance",
+          "attributes": {},
+          "style": {},
+          "children": [],
+          "metadata": {
+            "bounds": {
+              "left": 328.48860309108494,
+              "top": 6.667264145768598,
+              "right": 428.48860309108494,
+              "bottom": 106.6672641457686
+            }
+          },
+          "variant": {}
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": 82,
+          "top": 12,
+          "right": 280,
+          "bottom": 177
+        }
+      },
+      "variant": {}
+    },
+    {
+      "label": "kv row",
+      "is": "div",
+      "style": {
+        "box-sizing": "border-box",
+        "display": "flex"
+      },
+      "attributes": {},
+      "id": "aa9b92aa11442",
+      "name": "component",
+      "children": [
+        {
+          "id": "aa9b92aa11444",
+          "name": "text",
+          "label": "Text",
+          "value": "key",
+          "style": {
+            "flex-grow": "1"
+          },
+          "children": [],
+          "metadata": {},
+          "styleMixins": {
+            "dc3b39eb1275": {
+              "priority": 0
+            }
+          }
+        },
+        {
+          "id": "aa9b92aa11446",
+          "name": "text",
+          "label": "Text",
+          "value": "value",
+          "style": {
+            "flex-grow": "1"
+          },
+          "children": [],
+          "metadata": {},
+          "styleMixins": {
+            "dc3b39eb1275": {
+              "priority": 0
+            }
+          }
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": 328.48860309108494,
+          "top": 6.667264145768598,
+          "right": 428.48860309108494,
+          "bottom": 106.6672641457686
+        }
+      },
+      "variant": {}
+    }
+  ],
+  "metadata": {}
+}
