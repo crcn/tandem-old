@@ -101,10 +101,10 @@
       ],
       "metadata": {
         "bounds": {
-          "left": -669,
-          "top": 614,
-          "right": -269,
-          "bottom": 914
+          "left": -1935,
+          "top": -976,
+          "right": -1535,
+          "bottom": -676
         }
       },
       "variant": {}
@@ -373,10 +373,10 @@
       ],
       "metadata": {
         "bounds": {
-          "left": 607,
-          "top": 358,
-          "right": 1007,
-          "bottom": 658
+          "left": 1234,
+          "top": -897,
+          "right": 1634,
+          "bottom": -597
         }
       },
       "variant": {}
@@ -733,10 +733,10 @@
       ],
       "metadata": {
         "bounds": {
-          "left": 79,
-          "top": 405,
-          "right": 479,
-          "bottom": 705
+          "left": -3575,
+          "top": -861,
+          "right": -3175,
+          "bottom": -561
         }
       },
       "variant": {}
@@ -4193,10 +4193,10 @@
       ],
       "metadata": {
         "bounds": {
-          "left": 126,
-          "top": 437,
-          "right": 526,
-          "bottom": 737
+          "left": 297,
+          "top": -1104,
+          "right": 697,
+          "bottom": -804
         }
       },
       "variant": {}
@@ -4567,10 +4567,10 @@
       ],
       "metadata": {
         "bounds": {
-          "left": 204,
-          "top": 410,
-          "right": 604,
-          "bottom": 710
+          "left": -412,
+          "top": -911,
+          "right": -12,
+          "bottom": -611
         }
       },
       "variant": {}
@@ -4734,10 +4734,10 @@
       ],
       "metadata": {
         "bounds": {
-          "left": 262,
-          "top": 498,
-          "right": 662,
-          "bottom": 798
+          "left": 928,
+          "top": -1428,
+          "right": 1328,
+          "bottom": -1128
         }
       },
       "variant": {}
@@ -4847,6 +4847,201 @@
           "top": -1468,
           "right": -2371,
           "bottom": -1168
+        }
+      },
+      "variant": {}
+    },
+    {
+      "label": "Eye Icon",
+      "is": "svg",
+      "style": {},
+      "attributes": {
+        "height": "100px",
+        "width": "100px",
+        "fill": "#000000",
+        "xmlns:x": "http://ns.adobe.com/Extensibility/1.0/",
+        "xmlns:i": "http://ns.adobe.com/AdobeIllustrator/10.0/",
+        "xmlns:graph": "http://ns.adobe.com/Graphs/1.0/",
+        "xmlns": "http://www.w3.org/2000/svg",
+        "xmlns:xlink": "http://www.w3.org/1999/xlink",
+        "version": "1.1",
+        "x": "0px",
+        "y": "0px",
+        "viewBox": "-949 951 100 100",
+        "style": "enable-background:new -949 951 100 100;",
+        "xml:space": "preserve"
+      },
+      "id": "981545e82932",
+      "name": "component",
+      "children": [
+        {
+          "id": "981545e82927",
+          "is": "g",
+          "name": "element",
+          "attributes": {},
+          "style": {},
+          "children": [
+            {
+              "id": "981545e82928",
+              "is": "g",
+              "name": "element",
+              "attributes": {
+                "i:extraneous": "self"
+              },
+              "style": {},
+              "children": [
+                {
+                  "id": "981545e82929",
+                  "is": "g",
+                  "name": "element",
+                  "attributes": {},
+                  "style": {},
+                  "children": [
+                    {
+                      "id": "981545e82930",
+                      "is": "path",
+                      "name": "element",
+                      "attributes": {
+                        "d": "M-852.1,999.1c-4.6-6-20.7-24-46.9-24c-26.2,0-42.2,18-46.9,24c-0.9,1.1-0.9,2.7,0,3.8c4.6,6,20.7,24,46.9,24     c26.2,0,42.2-18,46.9-24C-851.3,1001.8-851.3,1000.2-852.1,999.1z M-899,1020.3c-10.7,0-19.3-8.6-19.3-19.3s8.6-19.3,19.3-19.3     c10.7,0,19.3,8.6,19.3,19.3S-888.3,1020.3-899,1020.3z"
+                      },
+                      "style": {},
+                      "children": [],
+                      "metadata": {}
+                    },
+                    {
+                      "id": "981545e82931",
+                      "is": "circle",
+                      "name": "element",
+                      "attributes": {
+                        "cx": "-899",
+                        "cy": "1001",
+                        "r": "12.4"
+                      },
+                      "style": {},
+                      "children": [],
+                      "metadata": {}
+                    }
+                  ],
+                  "metadata": {}
+                }
+              ],
+              "metadata": {}
+            }
+          ],
+          "metadata": {}
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": -4655,
+          "top": -1354,
+          "right": -4255,
+          "bottom": -1054
+        }
+      },
+      "variant": {}
+    },
+    {
+      "label": "Hand drawn arrow icon",
+      "is": "svg",
+      "style": {},
+      "attributes": {
+        "height": "100px",
+        "width": "100px",
+        "fill": "#000000",
+        "xmlns": "http://www.w3.org/2000/svg",
+        "xmlns:xlink": "http://www.w3.org/1999/xlink",
+        "version": "1.1",
+        "x": "0px",
+        "y": "0px",
+        "viewBox": "0 0 100 100",
+        "style": "enable-background:new 0 0 100 100;",
+        "xml:space": "preserve"
+      },
+      "id": "981545e82948",
+      "name": "component",
+      "children": [
+        {
+          "id": "981545e82946",
+          "is": "path",
+          "name": "element",
+          "attributes": {
+            "d": "M87.43,33.19C69.31,48.66,48.82,61.28,26.74,70.29c-6.28,2.56-12.66,4.86-19.14,6.85c-0.91,0.28-2.48,0.26-2.59-0.98  c-0.11-1.24,1.57-2.2,2.52-2.5c21.77-6.7,42.41-16.85,61-30.02c5.24-3.71,10.31-7.64,15.19-11.81c0.91-0.78,2.38-1.62,3.62-1.1  C88.44,31.2,88.24,32.5,87.43,33.19z"
+          },
+          "style": {},
+          "children": [],
+          "metadata": {}
+        },
+        {
+          "id": "981545e82947",
+          "is": "path",
+          "name": "element",
+          "attributes": {
+            "d": "M93.55,26.42c1.62,0.87,1.83,2.2,0.89,3.76c-2.2,3.64-5.04,7.01-7.53,10.46c-2.6,3.6-5.2,7.2-7.8,10.8  c-0.75,1.03-2.16,1.85-3.47,1.69c-1.1-0.14-1.73-1.09-1.01-2.08c4.22-5.84,8.44-11.68,12.65-17.52c0.56-0.78,1.12-1.56,1.69-2.34  c-0.02,0.03,1.02-1.28,1.02-1.24c-0.04-0.61-4.15-1.82-4.75-2.01c-3.14-1.03-6.47-1.55-9.78-1.47c-3.57,0.08-1.14-3.7,1.24-3.75  c3.89-0.08,7.7,0.34,11.43,1.48C89.99,24.76,91.84,25.49,93.55,26.42z"
+          },
+          "style": {},
+          "children": [],
+          "metadata": {}
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": -4287,
+          "top": -424,
+          "right": -3887,
+          "bottom": -124
+        }
+      },
+      "variant": {}
+    },
+    {
+      "label": "Gear Icon",
+      "is": "svg",
+      "style": {},
+      "attributes": {
+        "height": "100px",
+        "width": "100px",
+        "fill": "#000000",
+        "xmlns": "http://www.w3.org/2000/svg",
+        "xmlns:xlink": "http://www.w3.org/1999/xlink",
+        "version": "1.1",
+        "x": "0px",
+        "y": "0px",
+        "viewBox": "0 0 20 20",
+        "enable-background": "new 0 0 20 20",
+        "xml:space": "preserve"
+      },
+      "id": "b10ad8711683",
+      "name": "component",
+      "children": [
+        {
+          "id": "b10ad8711681",
+          "is": "g",
+          "name": "element",
+          "attributes": {},
+          "style": {},
+          "children": [
+            {
+              "id": "b10ad8711682",
+              "is": "path",
+              "name": "element",
+              "attributes": {
+                "d": "M17.8,8.5c-0.2-1.1-0.6-2.1-1.2-2.9l1.1-1.9l-1.4-1.4l-1.9,1.1c-0.9-0.6-1.9-1-2.9-1.2L11,0H9L8.5,2.2   C7.4,2.4,6.4,2.8,5.5,3.4L3.6,2.2L2.2,3.6l1.1,1.9c-0.6,0.9-1,1.9-1.2,2.9L0,9v2l2.2,0.5c0.2,1.1,0.6,2.1,1.2,2.9l-1.1,1.9l1.4,1.4   l1.9-1.1c0.9,0.6,1.9,1,2.9,1.2L9,20h2l0.5-2.2c1.1-0.2,2.1-0.6,2.9-1.2l1.9,1.1l1.4-1.4l-1.1-1.9c0.6-0.9,1-1.9,1.2-2.9L20,11V9   L17.8,8.5z M10,15c-2.8,0-5-2.2-5-5c0-2.8,2.2-5,5-5s5,2.2,5,5C15,12.8,12.8,15,10,15z"
+              },
+              "style": {},
+              "children": [],
+              "metadata": {}
+            }
+          ],
+          "metadata": {}
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": -2066,
+          "top": -1714,
+          "right": -1666,
+          "bottom": -1414
         }
       },
       "variant": {}

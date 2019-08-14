@@ -80,10 +80,10 @@
       ],
       "metadata": {
         "bounds": {
-          "left": 128,
-          "top": -110,
-          "right": 466,
-          "bottom": 123
+          "left": 132,
+          "top": -80,
+          "right": 532,
+          "bottom": 176
         }
       },
       "variant": {}
