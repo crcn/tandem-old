@@ -17,6 +17,7 @@ import * as cx from "classnames";
 import { BaseRightGutterProps, ElementProps } from "./view.pc";
 import { RootState, getGlobalFileUri, getProjectCWD } from "../../../../state";
 import { Dispatch } from "redux";
+import { RightGutter2 } from "./view2.pc";
 
 const TAB_NAMES = ["style", "properties"];
 const INSPECTOR_NODE_TAB_NAMES = ["properties"];
@@ -28,22 +29,34 @@ export type Props = {
 
 type State = {
   currentTab: string;
+  showNewGutterTab: boolean;
 };
 
 export default (Base: React.ComponentClass<BaseRightGutterProps>) =>
   class RightGutterController extends React.PureComponent<Props, State> {
     state = {
-      currentTab: TAB_NAMES[0]
+      currentTab: TAB_NAMES[0],
+      showNewGutterTab: false
     };
     setTab = (value: string) => {
       this.setState({ ...this.state, currentTab: value });
+    };
+    onTabDoubleClick = () => {
+      this.setState({
+        ...this.state,
+        showNewGutterTab: !this.state.showNewGutterTab
+      });
     };
     render() {
       const { root, dispatch, ...rest } = this.props;
       const globalFileUri =
         root.projectInfo && getGlobalFileUri(root.projectInfo);
-      const { currentTab } = this.state;
-      const { setTab } = this;
+      const { currentTab, showNewGutterTab } = this.state;
+      const { setTab, onTabDoubleClick } = this;
+
+      if (showNewGutterTab) {
+        return <RightGutter2 onDoubleClick={onTabDoubleClick} />;
+      }
 
       const {
         fontFamilies,
@@ -94,6 +107,7 @@ export default (Base: React.ComponentClass<BaseRightGutterProps>) =>
         return (
           <RightGutterTab
             key={tabName}
+            onDoubleClick={onTabDoubleClick}
             variant={cx({ selected: availableCurrentTab === tabName })}
             onClick={() => setTab(tabName)}
             labelProps={{ text: tabName }}

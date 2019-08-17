@@ -88,7 +88,7 @@
     {
       "id": "8d8f489920787",
       "name": "variable",
-      "value": "rgba(147, 147, 147, 1)",
+      "value": "rgba(255, 0, 0, 1)",
       "label": "grey 5",
       "type": "color",
       "children": [],

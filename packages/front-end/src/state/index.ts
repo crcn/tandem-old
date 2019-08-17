@@ -292,8 +292,13 @@ export type Unloader = {
   completed: boolean;
 };
 
+export type Beta = {
+  showNewRightGutter: boolean;
+};
+
 export type RootState = {
   editorWindows: EditorWindow[];
+  beta: Beta;
   mount: Element;
   openFiles: OpenFile[];
   toolType?: ToolType;

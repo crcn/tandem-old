@@ -7,6 +7,9 @@ init({
   editorWindows: [],
   customChrome: false,
   selectedInspectorNodes: [],
+  beta: {
+    showNewRightGutter: false
+  },
   hoveringInspectorNodes: [],
   unloaders: [],
   readyType: RootReadyType.LOADING,

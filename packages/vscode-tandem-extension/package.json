@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "echo ''",
-    "build:watch": "echo ''"
+    "build:watch": "echo ''",
+    "clean": "echo ''"
   },
   "author": "",
   "license": "ISC"
