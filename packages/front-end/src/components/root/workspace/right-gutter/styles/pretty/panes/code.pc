@@ -1,14 +1,14 @@
 {
   "id": "296b92da21786",
-  "version": "0.0.6",
+  "version": "1.0.0",
   "metadata": {},
   "name": "module",
   "children": [
     {
       "label": "Code",
       "is": "b6c162d113",
-      "style": {},
-      "attributes": {},
+      "style": [],
+      "attributes": [],
       "id": "decafdc7265667",
       "name": "component",
       "children": [
@@ -45,18 +45,73 @@
               },
               "is": "d65d17fd4015",
               "name": "component-instance",
-              "attributes": {},
-              "style": {
-                "width": "100%",
-                "height": "150px",
-                "border-radius": "2px",
-                "box-sizing": "border-box",
-                "resize": "none",
-                "border-left": "0px none",
-                "border-top": "0px none",
-                "border-right": "0px none",
-                "border-bottom": "0px none"
-              },
+              "attributes": [
+                {
+                  "key": "width"
+                },
+                {
+                  "key": "height"
+                },
+                {
+                  "key": "border-radius"
+                },
+                {
+                  "key": "box-sizing"
+                },
+                {
+                  "key": "resize"
+                },
+                {
+                  "key": "border-left"
+                },
+                {
+                  "key": "border-top"
+                },
+                {
+                  "key": "border-right"
+                },
+                {
+                  "key": "border-bottom"
+                }
+              ],
+              "style": [
+                {
+                  "key": "width",
+                  "value": "100%"
+                },
+                {
+                  "key": "height",
+                  "value": "150px"
+                },
+                {
+                  "key": "border-radius",
+                  "value": "2px"
+                },
+                {
+                  "key": "box-sizing",
+                  "value": "border-box"
+                },
+                {
+                  "key": "resize",
+                  "value": "none"
+                },
+                {
+                  "key": "border-left",
+                  "value": "0px none"
+                },
+                {
+                  "key": "border-top",
+                  "value": "0px none"
+                },
+                {
+                  "key": "border-right",
+                  "value": "0px none"
+                },
+                {
+                  "key": "border-bottom",
+                  "value": "0px none"
+                }
+              ],
               "children": [],
               "metadata": {},
               "label": "textarea",
@@ -89,7 +144,7 @@
               "name": "text",
               "label": "Text",
               "value": "Custom CSS",
-              "style": {},
+              "style": [],
               "children": [],
               "metadata": {},
               "styleMixins": {

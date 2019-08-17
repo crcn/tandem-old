@@ -1,21 +1,58 @@
 {
   "id": "483373f936",
-  "version": "0.0.6",
+  "version": "1.0.0",
   "metadata": {},
   "name": "module",
   "children": [
     {
       "label": "Editor",
       "is": "div",
-      "style": {
-        "box-sizing": "border-box",
-        "display": "flex",
-        "flex-direction": "column",
-        "width": "100%",
-        "height": "100%",
-        "border-bottom": "1px solid var(--51588fd610365)"
-      },
-      "attributes": {},
+      "style": [
+        {
+          "key": "box-sizing",
+          "value": "border-box"
+        },
+        {
+          "key": "display",
+          "value": "flex"
+        },
+        {
+          "key": "flex-direction",
+          "value": "column"
+        },
+        {
+          "key": "width",
+          "value": "100%"
+        },
+        {
+          "key": "height",
+          "value": "100%"
+        },
+        {
+          "key": "border-bottom",
+          "value": "1px solid var(--51588fd610365)"
+        }
+      ],
+      "attributes": [
+        {
+          "key": "box-sizing"
+        },
+        {
+          "key": "display"
+        },
+        {
+          "key": "flex-direction"
+        },
+        {
+          "key": "width"
+        },
+        {
+          "key": "height"
+        },
+        {
+          "key": "border-bottom"
+        }
+      ],
       "id": "483373f987277",
       "name": "component",
       "children": [
@@ -24,14 +61,45 @@
           "variant": {},
           "is": "ab406a6b770940",
           "name": "component-instance",
-          "attributes": {},
-          "style": {
-            "display": "flex",
-            "position": "relative",
-            "flex-grow": "0",
-            "height": "36px",
-            "flex-shrink": "0"
-          },
+          "attributes": [
+            {
+              "key": "display"
+            },
+            {
+              "key": "position"
+            },
+            {
+              "key": "flex-grow"
+            },
+            {
+              "key": "height"
+            },
+            {
+              "key": "flex-shrink"
+            }
+          ],
+          "style": [
+            {
+              "key": "display",
+              "value": "flex"
+            },
+            {
+              "key": "position",
+              "value": "relative"
+            },
+            {
+              "key": "flex-grow",
+              "value": "0"
+            },
+            {
+              "key": "height",
+              "value": "36px"
+            },
+            {
+              "key": "flex-shrink",
+              "value": "0"
+            }
+          ],
           "children": [
             {
               "id": "483373f9139767",
@@ -108,13 +176,38 @@
           "label": "Content",
           "is": "div",
           "name": "element",
-          "attributes": {},
-          "style": {
-            "box-sizing": "border-box",
-            "background": "var(--1934368810788)",
-            "width": "100%",
-            "height": "100%"
-          },
+          "attributes": [
+            {
+              "key": "box-sizing"
+            },
+            {
+              "key": "background"
+            },
+            {
+              "key": "width"
+            },
+            {
+              "key": "height"
+            }
+          ],
+          "style": [
+            {
+              "key": "box-sizing",
+              "value": "border-box"
+            },
+            {
+              "key": "background",
+              "value": "var(--1934368810788)"
+            },
+            {
+              "key": "width",
+              "value": "100%"
+            },
+            {
+              "key": "height",
+              "value": "100%"
+            }
+          ],
           "children": [],
           "metadata": {
             "bounds": {
@@ -130,11 +223,24 @@
           "is": "174f96bb76034",
           "label": "Editor Footer",
           "name": "component-instance",
-          "attributes": {},
-          "style": {
-            "display": "flex",
-            "flex-shrink": "0"
-          },
+          "attributes": [
+            {
+              "key": "display"
+            },
+            {
+              "key": "flex-shrink"
+            }
+          ],
+          "style": [
+            {
+              "key": "display",
+              "value": "flex"
+            },
+            {
+              "key": "flex-shrink",
+              "value": "0"
+            }
+          ],
           "children": [],
           "metadata": {
             "bounds": {
@@ -199,8 +305,8 @@
       "variant": {},
       "is": "483373f987277",
       "name": "component-instance",
-      "attributes": {},
-      "style": {},
+      "attributes": [],
+      "style": [],
       "children": [
         {
           "id": "483373f9367294",

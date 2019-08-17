@@ -1,16 +1,30 @@
 {
   "id": "ca37a81122",
+  "version": "1.0.0",
+  "metadata": {},
   "name": "module",
-  "version": "0.0.5",
   "children": [
     {
       "label": "Frame pane",
       "is": "div",
-      "style": {
-        "box-sizing": "border-box",
-        "display": "block"
-      },
-      "attributes": {},
+      "style": [
+        {
+          "key": "box-sizing",
+          "value": "border-box"
+        },
+        {
+          "key": "display",
+          "value": "block"
+        }
+      ],
+      "attributes": [
+        {
+          "key": "box-sizing"
+        },
+        {
+          "key": "display"
+        }
+      ],
       "id": "ca37a81113095",
       "name": "component",
       "children": [
@@ -18,8 +32,8 @@
           "id": "ca37a81113079",
           "is": "b6c162d113",
           "name": "component-instance",
-          "attributes": {},
-          "style": {},
+          "attributes": [],
+          "style": [],
           "children": [
             {
               "id": "ca37a81113080",
@@ -41,18 +55,31 @@
                   "label": "Element",
                   "is": "div",
                   "name": "element",
-                  "attributes": {},
-                  "style": {
-                    "box-sizing": "border-box",
-                    "display": "block"
-                  },
+                  "attributes": [
+                    {
+                      "key": "box-sizing"
+                    },
+                    {
+                      "key": "display"
+                    }
+                  ],
+                  "style": [
+                    {
+                      "key": "box-sizing",
+                      "value": "border-box"
+                    },
+                    {
+                      "key": "display",
+                      "value": "block"
+                    }
+                  ],
                   "children": [
                     {
                       "id": "ca37a81113083",
                       "is": "7149f8192509",
                       "name": "component-instance",
-                      "attributes": {},
-                      "style": {},
+                      "attributes": [],
+                      "style": [],
                       "children": [
                         {
                           "id": "ca37a81113084",
@@ -73,8 +100,8 @@
                               "id": "28a93a0793",
                               "is": "50e32bec2591",
                               "name": "component-instance",
-                              "attributes": {},
-                              "style": {},
+                              "attributes": [],
+                              "style": [],
                               "children": [
                                 {
                                   "id": "28a93a072386",
@@ -129,20 +156,40 @@
                   "label": "Element",
                   "is": "div",
                   "name": "element",
-                  "attributes": {},
-                  "style": {
-                    "box-sizing": "border-box",
-                    "display": "flex"
-                  },
+                  "attributes": [
+                    {
+                      "key": "box-sizing"
+                    },
+                    {
+                      "key": "display"
+                    }
+                  ],
+                  "style": [
+                    {
+                      "key": "box-sizing",
+                      "value": "border-box"
+                    },
+                    {
+                      "key": "display",
+                      "value": "flex"
+                    }
+                  ],
                   "children": [
                     {
                       "id": "ca37a81113086",
                       "is": "7149f8192509",
                       "name": "component-instance",
-                      "attributes": {},
-                      "style": {
-                        "margin-right": "8px"
-                      },
+                      "attributes": [
+                        {
+                          "key": "margin-right"
+                        }
+                      ],
+                      "style": [
+                        {
+                          "key": "margin-right",
+                          "value": "8px"
+                        }
+                      ],
                       "children": [
                         {
                           "id": "ca37a81113087",
@@ -163,8 +210,8 @@
                               "id": "28a93a074389",
                               "is": "7149f8199122",
                               "name": "component-instance",
-                              "attributes": {},
-                              "style": {},
+                              "attributes": [],
+                              "style": [],
                               "children": [],
                               "metadata": {
                                 "bounds": {
@@ -196,8 +243,8 @@
                       "id": "ca37a81113088",
                       "is": "7149f8192509",
                       "name": "component-instance",
-                      "attributes": {},
-                      "style": {},
+                      "attributes": [],
+                      "style": [],
                       "children": [
                         {
                           "id": "ca37a81113089",
@@ -218,8 +265,8 @@
                               "id": "28a93a074536",
                               "is": "7149f8199122",
                               "name": "component-instance",
-                              "attributes": {},
-                              "style": {},
+                              "attributes": [],
+                              "style": [],
                               "children": [],
                               "metadata": {
                                 "bounds": {
@@ -255,20 +302,40 @@
                   "label": "Element",
                   "is": "div",
                   "name": "element",
-                  "attributes": {},
-                  "style": {
-                    "box-sizing": "border-box",
-                    "display": "flex"
-                  },
+                  "attributes": [
+                    {
+                      "key": "box-sizing"
+                    },
+                    {
+                      "key": "display"
+                    }
+                  ],
+                  "style": [
+                    {
+                      "key": "box-sizing",
+                      "value": "border-box"
+                    },
+                    {
+                      "key": "display",
+                      "value": "flex"
+                    }
+                  ],
                   "children": [
                     {
                       "id": "ca37a81113091",
                       "is": "7149f8192509",
                       "name": "component-instance",
-                      "attributes": {},
-                      "style": {
-                        "margin-right": "8px"
-                      },
+                      "attributes": [
+                        {
+                          "key": "margin-right"
+                        }
+                      ],
+                      "style": [
+                        {
+                          "key": "margin-right",
+                          "value": "8px"
+                        }
+                      ],
                       "children": [
                         {
                           "id": "ca37a81113092",
@@ -289,8 +356,8 @@
                               "id": "28a93a074685",
                               "is": "7149f8199122",
                               "name": "component-instance",
-                              "attributes": {},
-                              "style": {},
+                              "attributes": [],
+                              "style": [],
                               "children": [],
                               "metadata": {
                                 "bounds": {
@@ -322,8 +389,8 @@
                       "id": "ca37a81113093",
                       "is": "7149f8192509",
                       "name": "component-instance",
-                      "attributes": {},
-                      "style": {},
+                      "attributes": [],
+                      "style": [],
                       "children": [
                         {
                           "id": "ca37a81113094",
@@ -344,8 +411,8 @@
                               "id": "2cdf775e1064",
                               "is": "7149f8199122",
                               "name": "component-instance",
-                              "attributes": {},
-                              "style": {},
+                              "attributes": [],
+                              "style": [],
                               "children": [],
                               "metadata": {
                                 "bounds": {
@@ -419,6 +486,5 @@
         "./frame-controller.tsx"
       ]
     }
-  ],
-  "metadata": {}
+  ]
 }

@@ -1,6 +1,6 @@
 {
   "id": "67d74e285",
-  "version": "0.0.5",
+  "version": "1.0.0",
   "metadata": {},
   "name": "module",
   "children": [
@@ -8,10 +8,17 @@
       "id": "25d5776e3",
       "is": "67d74e287",
       "name": "component-instance",
-      "attributes": {},
-      "style": {
-        "font-family": "unset"
-      },
+      "attributes": [
+        {
+          "key": "font-family"
+        }
+      ],
+      "style": [
+        {
+          "key": "font-family",
+          "value": "unset"
+        }
+      ],
       "children": [],
       "metadata": {
         "bounds": {
@@ -31,14 +38,45 @@
     {
       "label": "Banner",
       "is": "div",
-      "style": {
-        "box-sizing": "border-box",
-        "padding-left": "8px",
-        "padding-top": "8px",
-        "padding-right": "8px",
-        "padding-bottom": "8px"
-      },
-      "attributes": {},
+      "style": [
+        {
+          "key": "box-sizing",
+          "value": "border-box"
+        },
+        {
+          "key": "padding-left",
+          "value": "8px"
+        },
+        {
+          "key": "padding-top",
+          "value": "8px"
+        },
+        {
+          "key": "padding-right",
+          "value": "8px"
+        },
+        {
+          "key": "padding-bottom",
+          "value": "8px"
+        }
+      ],
+      "attributes": [
+        {
+          "key": "box-sizing"
+        },
+        {
+          "key": "padding-left"
+        },
+        {
+          "key": "padding-top"
+        },
+        {
+          "key": "padding-right"
+        },
+        {
+          "key": "padding-bottom"
+        }
+      ],
       "id": "67d74e287",
       "name": "component",
       "children": [
@@ -47,7 +85,7 @@
           "name": "text",
           "label": "Text",
           "value": "Banner",
-          "style": {},
+          "style": [],
           "children": [],
           "metadata": {
             "bounds": {

@@ -1,18 +1,37 @@
 {
   "id": "4b11d4db0",
-  "version": "0.0.6",
+  "version": "1.0.0",
   "metadata": {},
   "name": "module",
   "children": [
     {
       "label": "Element Styler",
       "is": "div",
-      "style": {
-        "flex-direction": "column",
-        "color": "#666",
-        "background": "var(--bc891e755312)"
-      },
-      "attributes": {},
+      "style": [
+        {
+          "key": "flex-direction",
+          "value": "column"
+        },
+        {
+          "key": "color",
+          "value": "#666"
+        },
+        {
+          "key": "background",
+          "value": "var(--bc891e755312)"
+        }
+      ],
+      "attributes": [
+        {
+          "key": "flex-direction"
+        },
+        {
+          "key": "color"
+        },
+        {
+          "key": "background"
+        }
+      ],
       "id": "2399b467",
       "name": "component",
       "children": [
@@ -20,8 +39,8 @@
           "id": "65d1fb8f36900",
           "is": "f657bb0949423",
           "name": "component-instance",
-          "attributes": {},
-          "style": {},
+          "attributes": [],
+          "style": [],
           "children": [],
           "metadata": {
             "bounds": {
@@ -41,8 +60,8 @@
           "is": "9e4a45489771",
           "label": "mixins pane",
           "name": "component-instance",
-          "attributes": {},
-          "style": {},
+          "attributes": [],
+          "style": [],
           "children": [],
           "metadata": {
             "bounds": {
@@ -209,8 +228,8 @@
           "is": "73b39db4544",
           "label": "layout pane",
           "name": "component-instance",
-          "attributes": {},
-          "style": {},
+          "attributes": [],
+          "style": [],
           "children": [],
           "metadata": {
             "bounds": {
@@ -227,8 +246,8 @@
           "is": "73b39db4362",
           "label": "typography pane",
           "name": "component-instance",
-          "attributes": {},
-          "style": {},
+          "attributes": [],
+          "style": [],
           "children": [],
           "metadata": {
             "bounds": {
@@ -245,8 +264,8 @@
           "is": "ab9eb3a110017",
           "label": "Opacity Pane",
           "name": "component-instance",
-          "attributes": {},
-          "style": {},
+          "attributes": [],
+          "style": [],
           "children": [],
           "metadata": {
             "bounds": {
@@ -263,8 +282,8 @@
           "is": "af62926b5232",
           "label": "borders pane",
           "name": "component-instance",
-          "attributes": {},
-          "style": {},
+          "attributes": [],
+          "style": [],
           "children": [],
           "metadata": {
             "bounds": {
@@ -281,8 +300,8 @@
           "is": "cbddcb698077",
           "label": "Spacing Pane",
           "name": "component-instance",
-          "attributes": {},
-          "style": {},
+          "attributes": [],
+          "style": [],
           "children": [],
           "metadata": {
             "bounds": {
@@ -299,8 +318,8 @@
           "is": "bcda9fb596963",
           "label": "backgrounds pane",
           "name": "component-instance",
-          "attributes": {},
-          "style": {},
+          "attributes": [],
+          "style": [],
           "children": [],
           "metadata": {
             "bounds": {
@@ -317,8 +336,8 @@
           "is": "cdcf193c15",
           "label": "Outer Shadows pane",
           "name": "component-instance",
-          "attributes": {},
-          "style": {},
+          "attributes": [],
+          "style": [],
           "children": [],
           "metadata": {
             "bounds": {
@@ -335,8 +354,8 @@
           "is": "cdcf193c18",
           "label": "Inner Shadows pane",
           "name": "component-instance",
-          "attributes": {},
-          "style": {},
+          "attributes": [],
+          "style": [],
           "children": [],
           "metadata": {
             "bounds": {
@@ -353,8 +372,8 @@
           "is": "850332f711267",
           "label": "custom code pane",
           "name": "component-instance",
-          "attributes": {},
-          "style": {},
+          "attributes": [],
+          "style": [],
           "children": [
             {
               "id": "f7a6123d11461",
@@ -397,8 +416,8 @@
       "is": "97a34b151010442",
       "label": "Comment",
       "name": "component-instance",
-      "attributes": {},
-      "style": {},
+      "attributes": [],
+      "style": [],
       "children": [
         {
           "id": "9b2e6dec15293",

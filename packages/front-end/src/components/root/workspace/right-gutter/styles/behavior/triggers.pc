@@ -1,13 +1,14 @@
 {
   "id": "742ee1a0100",
+  "version": "1.0.0",
+  "metadata": {},
   "name": "module",
-  "version": "0.0.5",
   "children": [
     {
       "label": "Triggers pane",
       "is": "b6c162d113",
-      "style": {},
-      "attributes": {},
+      "style": [],
+      "attributes": [],
       "id": "8f20d2148434",
       "name": "component",
       "children": [
@@ -20,20 +21,45 @@
               "label": "Element",
               "is": "div",
               "name": "element",
-              "attributes": {},
-              "style": {
-                "box-sizing": "border-box",
-                "display": "flex",
-                "justify-content": "space-between",
-                "align-items": "center"
-              },
+              "attributes": [
+                {
+                  "key": "box-sizing"
+                },
+                {
+                  "key": "display"
+                },
+                {
+                  "key": "justify-content"
+                },
+                {
+                  "key": "align-items"
+                }
+              ],
+              "style": [
+                {
+                  "key": "box-sizing",
+                  "value": "border-box"
+                },
+                {
+                  "key": "display",
+                  "value": "flex"
+                },
+                {
+                  "key": "justify-content",
+                  "value": "space-between"
+                },
+                {
+                  "key": "align-items",
+                  "value": "center"
+                }
+              ],
               "children": [
                 {
                   "id": "8f20d2148422",
                   "name": "text",
                   "label": "Text",
                   "value": "Triggers",
-                  "style": {},
+                  "style": [],
                   "children": [],
                   "metadata": {},
                   "styleMixins": {
@@ -47,22 +73,48 @@
                   "label": "Element",
                   "is": "div",
                   "name": "element",
-                  "attributes": {},
-                  "style": {
-                    "box-sizing": "border-box",
-                    "display": "block",
-                    "cursor": "pointer"
-                  },
+                  "attributes": [
+                    {
+                      "key": "box-sizing"
+                    },
+                    {
+                      "key": "display"
+                    },
+                    {
+                      "key": "cursor"
+                    }
+                  ],
+                  "style": [
+                    {
+                      "key": "box-sizing",
+                      "value": "border-box"
+                    },
+                    {
+                      "key": "display",
+                      "value": "block"
+                    },
+                    {
+                      "key": "cursor",
+                      "value": "pointer"
+                    }
+                  ],
                   "children": [
                     {
                       "id": "1158f787986",
                       "is": "d30286e83385",
                       "label": "remove trigger button",
                       "name": "component-instance",
-                      "attributes": {},
-                      "style": {
-                        "display": "none"
-                      },
+                      "attributes": [
+                        {
+                          "key": "display"
+                        }
+                      ],
+                      "style": [
+                        {
+                          "key": "display",
+                          "value": "none"
+                        }
+                      ],
                       "children": [],
                       "metadata": {
                         "bounds": {
@@ -79,11 +131,24 @@
                       "is": "f27782548182",
                       "label": "add trigger button",
                       "name": "component-instance",
-                      "attributes": {},
-                      "style": {
-                        "height": "9px",
-                        "display": "inline-block"
-                      },
+                      "attributes": [
+                        {
+                          "key": "height"
+                        },
+                        {
+                          "key": "display"
+                        }
+                      ],
+                      "style": [
+                        {
+                          "key": "height",
+                          "value": "9px"
+                        },
+                        {
+                          "key": "display",
+                          "value": "inline-block"
+                        }
+                      ],
                       "children": [],
                       "metadata": {
                         "bounds": {
@@ -114,8 +179,8 @@
               "label": "Items",
               "is": "div",
               "name": "element",
-              "attributes": {},
-              "style": {},
+              "attributes": [],
+              "style": [],
               "children": [
                 {
                   "id": "a1c9318c1597",
@@ -125,8 +190,8 @@
                       "is": "26f623457441",
                       "label": "item",
                       "name": "component-instance",
-                      "attributes": {},
-                      "style": {},
+                      "attributes": [],
+                      "style": [],
                       "children": [
                         {
                           "id": "a1c9318c2189",
@@ -161,8 +226,8 @@
                       "is": "26f623457441",
                       "label": "item",
                       "name": "component-instance",
-                      "attributes": {},
-                      "style": {},
+                      "attributes": [],
+                      "style": [],
                       "children": [
                         {
                           "id": "82a5e55b4630",
@@ -197,8 +262,8 @@
                       "is": "26f623457441",
                       "label": "item",
                       "name": "component-instance",
-                      "attributes": {},
-                      "style": {},
+                      "attributes": [],
+                      "style": [],
                       "children": [
                         {
                           "id": "a1c9318c2191",
@@ -241,23 +306,54 @@
               "label": "footer",
               "is": "div",
               "name": "element",
-              "attributes": {},
-              "style": {
-                "box-sizing": "border-box",
-                "display": "none",
-                "margin-right": "12px",
-                "margin-left": "12px"
-              },
+              "attributes": [
+                {
+                  "key": "box-sizing"
+                },
+                {
+                  "key": "display"
+                },
+                {
+                  "key": "margin-right"
+                },
+                {
+                  "key": "margin-left"
+                }
+              ],
+              "style": [
+                {
+                  "key": "box-sizing",
+                  "value": "border-box"
+                },
+                {
+                  "key": "display",
+                  "value": "none"
+                },
+                {
+                  "key": "margin-right",
+                  "value": "12px"
+                },
+                {
+                  "key": "margin-left",
+                  "value": "12px"
+                }
+              ],
               "children": [
                 {
                   "id": "8f20d2148430",
                   "name": "text",
                   "label": "Text",
                   "value": "Action",
-                  "style": {
-                    "width": "100%",
-                    "text-align": "center"
-                  },
+                  "style": [
+                    {
+                      "key": "width",
+                      "value": "100%"
+                    },
+                    {
+                      "key": "text-align",
+                      "value": "center"
+                    }
+                  ],
                   "children": [],
                   "metadata": {},
                   "styleMixins": {
@@ -271,15 +367,52 @@
                   "label": "Element",
                   "is": "div",
                   "name": "element",
-                  "attributes": {},
-                  "style": {
-                    "box-sizing": "border-box",
-                    "display": "block",
-                    "margin-right": "6px",
-                    "margin-left": "6px",
-                    "width": "9px",
-                    "flex-shrink": "0"
-                  },
+                  "attributes": [
+                    {
+                      "key": "box-sizing"
+                    },
+                    {
+                      "key": "display"
+                    },
+                    {
+                      "key": "margin-right"
+                    },
+                    {
+                      "key": "margin-left"
+                    },
+                    {
+                      "key": "width"
+                    },
+                    {
+                      "key": "flex-shrink"
+                    }
+                  ],
+                  "style": [
+                    {
+                      "key": "box-sizing",
+                      "value": "border-box"
+                    },
+                    {
+                      "key": "display",
+                      "value": "block"
+                    },
+                    {
+                      "key": "margin-right",
+                      "value": "6px"
+                    },
+                    {
+                      "key": "margin-left",
+                      "value": "6px"
+                    },
+                    {
+                      "key": "width",
+                      "value": "9px"
+                    },
+                    {
+                      "key": "flex-shrink",
+                      "value": "0"
+                    }
+                  ],
                   "children": [],
                   "metadata": {}
                 },
@@ -288,10 +421,16 @@
                   "name": "text",
                   "label": "Text",
                   "value": "Variant",
-                  "style": {
-                    "text-align": "center",
-                    "width": "100%"
-                  },
+                  "style": [
+                    {
+                      "key": "text-align",
+                      "value": "center"
+                    },
+                    {
+                      "key": "width",
+                      "value": "100%"
+                    }
+                  ],
                   "children": [],
                   "metadata": {},
                   "styleMixins": {
@@ -457,17 +596,66 @@
     {
       "label": "trigger item",
       "is": "div",
-      "style": {
-        "box-sizing": "border-box",
-        "display": "flex",
-        "align-items": "center",
-        "padding-top": "6px",
-        "padding-right": "12px",
-        "padding-bottom": "6px",
-        "padding-left": "12px",
-        "position": "relative"
-      },
-      "attributes": {},
+      "style": [
+        {
+          "key": "box-sizing",
+          "value": "border-box"
+        },
+        {
+          "key": "display",
+          "value": "flex"
+        },
+        {
+          "key": "align-items",
+          "value": "center"
+        },
+        {
+          "key": "padding-top",
+          "value": "6px"
+        },
+        {
+          "key": "padding-right",
+          "value": "12px"
+        },
+        {
+          "key": "padding-bottom",
+          "value": "6px"
+        },
+        {
+          "key": "padding-left",
+          "value": "12px"
+        },
+        {
+          "key": "position",
+          "value": "relative"
+        }
+      ],
+      "attributes": [
+        {
+          "key": "box-sizing"
+        },
+        {
+          "key": "display"
+        },
+        {
+          "key": "align-items"
+        },
+        {
+          "key": "padding-top"
+        },
+        {
+          "key": "padding-right"
+        },
+        {
+          "key": "padding-bottom"
+        },
+        {
+          "key": "padding-left"
+        },
+        {
+          "key": "position"
+        }
+      ],
       "id": "26f623457441",
       "name": "component",
       "children": [
@@ -476,16 +664,59 @@
           "label": "background",
           "is": "div",
           "name": "element",
-          "attributes": {},
-          "style": {
-            "box-sizing": "border-box",
-            "display": "block",
-            "background": "transparent",
-            "width": "100%",
-            "height": "100%",
-            "position": "absolute",
-            "left": "0px"
-          },
+          "attributes": [
+            {
+              "key": "box-sizing"
+            },
+            {
+              "key": "display"
+            },
+            {
+              "key": "background"
+            },
+            {
+              "key": "width"
+            },
+            {
+              "key": "height"
+            },
+            {
+              "key": "position"
+            },
+            {
+              "key": "left"
+            }
+          ],
+          "style": [
+            {
+              "key": "box-sizing",
+              "value": "border-box"
+            },
+            {
+              "key": "display",
+              "value": "block"
+            },
+            {
+              "key": "background",
+              "value": "transparent"
+            },
+            {
+              "key": "width",
+              "value": "100%"
+            },
+            {
+              "key": "height",
+              "value": "100%"
+            },
+            {
+              "key": "position",
+              "value": "absolute"
+            },
+            {
+              "key": "left",
+              "value": "0px"
+            }
+          ],
           "children": [],
           "metadata": {}
         },
@@ -494,8 +725,8 @@
           "is": "50e32bec2591",
           "label": "source input",
           "name": "component-instance",
-          "attributes": {},
-          "style": {},
+          "attributes": [],
+          "style": [],
           "children": [
             {
               "id": "36c603e98794",
@@ -534,13 +765,28 @@
           "name": "text",
           "label": "Text",
           "value": "►",
-          "style": {
-            "display": "inline-block",
-            "margin-right": "6px",
-            "margin-left": "6px",
-            "font-size": "9px",
-            "color": "var(--24ce1e4d482)"
-          },
+          "style": [
+            {
+              "key": "display",
+              "value": "inline-block"
+            },
+            {
+              "key": "margin-right",
+              "value": "6px"
+            },
+            {
+              "key": "margin-left",
+              "value": "6px"
+            },
+            {
+              "key": "font-size",
+              "value": "9px"
+            },
+            {
+              "key": "color",
+              "value": "var(--24ce1e4d482)"
+            }
+          ],
           "children": [],
           "metadata": {}
         },
@@ -549,8 +795,8 @@
           "is": "50e32bec2591",
           "label": "target input",
           "name": "component-instance",
-          "attributes": {},
-          "style": {},
+          "attributes": [],
+          "style": [],
           "children": [
             {
               "id": "36c603e98796",
@@ -620,6 +866,5 @@
         "./trigger-item-controller.tsx"
       ]
     }
-  ],
-  "metadata": {}
+  ]
 }

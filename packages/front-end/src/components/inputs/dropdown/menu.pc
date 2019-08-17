@@ -1,20 +1,51 @@
 {
   "id": "5d6bd01099",
-  "version": "0.0.5",
+  "version": "1.0.0",
   "metadata": {},
   "name": "module",
   "children": [
     {
       "label": "Dropdown Menu Item",
       "is": "div",
-      "style": {
-        "padding": "4px",
-        "border-bottom": "1px  rgba(0,0,0,0.05)",
-        "user-select": "none",
-        "cursor": "default",
-        "background": "var(--bc891e755312)"
-      },
-      "attributes": {},
+      "style": [
+        {
+          "key": "padding",
+          "value": "4px"
+        },
+        {
+          "key": "border-bottom",
+          "value": "1px  rgba(0,0,0,0.05)"
+        },
+        {
+          "key": "user-select",
+          "value": "none"
+        },
+        {
+          "key": "cursor",
+          "value": "default"
+        },
+        {
+          "key": "background",
+          "value": "var(--bc891e755312)"
+        }
+      ],
+      "attributes": [
+        {
+          "key": "padding"
+        },
+        {
+          "key": "border-bottom"
+        },
+        {
+          "key": "user-select"
+        },
+        {
+          "key": "cursor"
+        },
+        {
+          "key": "background"
+        }
+      ],
       "id": "8b8bbe2c859177",
       "name": "component",
       "children": [
@@ -23,9 +54,12 @@
           "name": "text",
           "label": "Text",
           "value": "menu item 1",
-          "style": {
-            "padding": "8px"
-          },
+          "style": [
+            {
+              "key": "padding",
+              "value": "8px"
+            }
+          ],
           "children": [],
           "metadata": {}
         },

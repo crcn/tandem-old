@@ -1,16 +1,30 @@
 {
   "id": "1173728894",
+  "version": "1.0.0",
+  "metadata": {},
   "name": "module",
-  "version": "0.0.6",
   "children": [
     {
       "label": "file input",
       "is": "div",
-      "style": {
-        "box-sizing": "border-box",
-        "display": "flex"
-      },
-      "attributes": {},
+      "style": [
+        {
+          "key": "box-sizing",
+          "value": "border-box"
+        },
+        {
+          "key": "display",
+          "value": "flex"
+        }
+      ],
+      "attributes": [
+        {
+          "key": "box-sizing"
+        },
+        {
+          "key": "display"
+        }
+      ],
       "id": "9fb9afea1357",
       "name": "component",
       "children": [
@@ -19,10 +33,17 @@
           "is": "7149f8199122",
           "label": "file path input",
           "name": "component-instance",
-          "attributes": {},
-          "style": {
-            "margin-right": "6px"
-          },
+          "attributes": [
+            {
+              "key": "margin-right"
+            }
+          ],
+          "style": [
+            {
+              "key": "margin-right",
+              "value": "6px"
+            }
+          ],
           "children": [],
           "metadata": {
             "bounds": {
@@ -39,20 +60,39 @@
           "label": "Element",
           "is": "div",
           "name": "element",
-          "attributes": {},
-          "style": {
-            "box-sizing": "border-box",
-            "display": "flex",
-            "position": "relative"
-          },
+          "attributes": [
+            {
+              "key": "box-sizing"
+            },
+            {
+              "key": "display"
+            },
+            {
+              "key": "position"
+            }
+          ],
+          "style": [
+            {
+              "key": "box-sizing",
+              "value": "border-box"
+            },
+            {
+              "key": "display",
+              "value": "flex"
+            },
+            {
+              "key": "position",
+              "value": "relative"
+            }
+          ],
           "children": [
             {
               "id": "9fb9afea1355",
               "is": "9f364d2139415",
               "label": "browse button",
               "name": "component-instance",
-              "attributes": {},
-              "style": {},
+              "attributes": [],
+              "style": [],
               "children": [
                 {
                   "id": "9fb9afea1356",
@@ -93,6 +133,5 @@
         "./controller.tsx"
       ]
     }
-  ],
-  "metadata": {}
+  ]
 }

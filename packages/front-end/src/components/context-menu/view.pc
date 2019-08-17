@@ -1,25 +1,86 @@
 {
   "id": "8c06472158661",
-  "version": "0.0.5",
+  "version": "1.0.0",
   "metadata": {},
   "name": "module",
   "children": [
     {
       "label": "Context Menu",
       "is": "div",
-      "style": {
-        "min-width": "150px",
-        "background": "var(--bc891e755312)",
-        "position": "fixed",
-        "border-radius": "2px",
-        "box-shadow": "2px 2px 4px 0px rgba(0, 0, 0, 0.23)",
-        "color": "var(--24ce1e4d482)",
-        "width": "unset",
-        "left": "0px",
-        "top": "0px",
-        "z-index": "9999"
-      },
-      "attributes": {},
+      "style": [
+        {
+          "key": "min-width",
+          "value": "150px"
+        },
+        {
+          "key": "background",
+          "value": "var(--bc891e755312)"
+        },
+        {
+          "key": "position",
+          "value": "fixed"
+        },
+        {
+          "key": "border-radius",
+          "value": "2px"
+        },
+        {
+          "key": "box-shadow",
+          "value": "2px 2px 4px 0px rgba(0, 0, 0, 0.23)"
+        },
+        {
+          "key": "color",
+          "value": "var(--24ce1e4d482)"
+        },
+        {
+          "key": "width",
+          "value": "unset"
+        },
+        {
+          "key": "left",
+          "value": "0px"
+        },
+        {
+          "key": "top",
+          "value": "0px"
+        },
+        {
+          "key": "z-index",
+          "value": "9999"
+        }
+      ],
+      "attributes": [
+        {
+          "key": "min-width"
+        },
+        {
+          "key": "background"
+        },
+        {
+          "key": "position"
+        },
+        {
+          "key": "border-radius"
+        },
+        {
+          "key": "box-shadow"
+        },
+        {
+          "key": "color"
+        },
+        {
+          "key": "width"
+        },
+        {
+          "key": "left"
+        },
+        {
+          "key": "top"
+        },
+        {
+          "key": "z-index"
+        }
+      ],
       "id": "8c06472162847",
       "name": "component",
       "children": [
@@ -28,8 +89,8 @@
           "variant": {},
           "is": "8c064721397691",
           "name": "component-instance",
-          "attributes": {},
-          "style": {},
+          "attributes": [],
+          "style": [],
           "children": [],
           "metadata": {},
           "styleMixins": {
@@ -45,8 +106,8 @@
           },
           "is": "8c064721397691",
           "name": "component-instance",
-          "attributes": {},
-          "style": {},
+          "attributes": [],
+          "style": [],
           "children": [],
           "metadata": {}
         },
@@ -55,8 +116,8 @@
           "variant": {},
           "is": "8c064721397691",
           "name": "component-instance",
-          "attributes": {},
-          "style": {},
+          "attributes": [],
+          "style": [],
           "children": [],
           "metadata": {}
         },
@@ -65,11 +126,24 @@
           "variant": {},
           "is": "8c0647211142703",
           "name": "component-instance",
-          "attributes": {},
-          "style": {
-            "width": "100%",
-            "height": "2px"
-          },
+          "attributes": [
+            {
+              "key": "width"
+            },
+            {
+              "key": "height"
+            }
+          ],
+          "style": [
+            {
+              "key": "width",
+              "value": "100%"
+            },
+            {
+              "key": "height",
+              "value": "2px"
+            }
+          ],
           "children": [],
           "metadata": {}
         },
@@ -78,8 +152,8 @@
           "variant": {},
           "is": "8c064721397691",
           "name": "component-instance",
-          "attributes": {},
-          "style": {},
+          "attributes": [],
+          "style": [],
           "children": [],
           "metadata": {}
         },
@@ -88,8 +162,8 @@
           "variant": {},
           "is": "8c064721397691",
           "name": "component-instance",
-          "attributes": {},
-          "style": {},
+          "attributes": [],
+          "style": [],
           "children": [],
           "metadata": {}
         },
@@ -98,8 +172,8 @@
           "variant": {},
           "is": "8c064721397691",
           "name": "component-instance",
-          "attributes": {},
-          "style": {},
+          "attributes": [],
+          "style": [],
           "children": [],
           "metadata": {}
         }
@@ -122,24 +196,62 @@
       "label": "Preview",
       "is": "div",
       "name": "element",
-      "attributes": {},
-      "style": {
-        "background": "rgba(86, 86, 86, 1)"
-      },
+      "attributes": [
+        {
+          "key": "background"
+        }
+      ],
+      "style": [
+        {
+          "key": "background",
+          "value": "rgba(86, 86, 86, 1)"
+        }
+      ],
       "children": [
         {
           "id": "8c06472183765",
           "variant": {},
           "is": "8c06472162847",
           "name": "component-instance",
-          "attributes": {},
-          "style": {
-            "background": "rgba(238, 238, 238, 1)",
-            "position": "absolute",
-            "left": "50%",
-            "top": "50%",
-            "transform": "translate(-50%, -50%)"
-          },
+          "attributes": [
+            {
+              "key": "background"
+            },
+            {
+              "key": "position"
+            },
+            {
+              "key": "left"
+            },
+            {
+              "key": "top"
+            },
+            {
+              "key": "transform"
+            }
+          ],
+          "style": [
+            {
+              "key": "background",
+              "value": "rgba(238, 238, 238, 1)"
+            },
+            {
+              "key": "position",
+              "value": "absolute"
+            },
+            {
+              "key": "left",
+              "value": "50%"
+            },
+            {
+              "key": "top",
+              "value": "50%"
+            },
+            {
+              "key": "transform",
+              "value": "translate(-50%, -50%)"
+            }
+          ],
           "children": [],
           "metadata": {
             "bounds": {
@@ -163,11 +275,24 @@
     {
       "label": "Context Menu item",
       "is": "div",
-      "style": {
-        "padding": "8px",
-        "text-align": "left"
-      },
-      "attributes": {},
+      "style": [
+        {
+          "key": "padding",
+          "value": "8px"
+        },
+        {
+          "key": "text-align",
+          "value": "left"
+        }
+      ],
+      "attributes": [
+        {
+          "key": "padding"
+        },
+        {
+          "key": "text-align"
+        }
+      ],
       "id": "8c064721397691",
       "name": "component",
       "children": [
@@ -176,7 +301,7 @@
           "name": "text",
           "label": "Text",
           "value": "Menu Item",
-          "style": {},
+          "style": [],
           "children": [],
           "metadata": {},
           "styleMixins": {
@@ -218,10 +343,17 @@
     {
       "label": "Divider",
       "is": "div",
-      "style": {
-        "background": "var(--d8f6340b1442)"
-      },
-      "attributes": {},
+      "style": [
+        {
+          "key": "background",
+          "value": "var(--d8f6340b1442)"
+        }
+      ],
+      "attributes": [
+        {
+          "key": "background"
+        }
+      ],
       "id": "8c0647211142703",
       "name": "component",
       "children": [],

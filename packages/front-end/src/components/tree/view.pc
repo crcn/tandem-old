@@ -1,14 +1,14 @@
 {
   "id": "b34e7ef4148",
-  "version": "0.0.5",
+  "version": "1.0.0",
   "metadata": {},
   "name": "module",
   "children": [
     {
       "label": "Tree",
       "is": "div",
-      "style": {},
-      "attributes": {},
+      "style": [],
+      "attributes": [],
       "id": "b34e7ef44413",
       "name": "component",
       "children": [
@@ -17,8 +17,8 @@
           "variant": {},
           "is": "b34e7ef429680",
           "name": "component-instance",
-          "attributes": {},
-          "style": {},
+          "attributes": [],
+          "style": [],
           "children": [
             {
               "id": "b34e7ef41054474",
@@ -47,10 +47,17 @@
     {
       "label": "Node",
       "is": "div",
-      "style": {
-        "position": "relative"
-      },
-      "attributes": {},
+      "style": [
+        {
+          "key": "position",
+          "value": "relative"
+        }
+      ],
+      "attributes": [
+        {
+          "key": "position"
+        }
+      ],
       "id": "b34e7ef429680",
       "name": "component",
       "children": [
@@ -59,14 +66,45 @@
           "variant": {},
           "is": "b34e7ef41152456",
           "name": "component-instance",
-          "attributes": {},
-          "style": {
-            "width": "100%",
-            "height": "2px",
-            "position": "absolute",
-            "right": "0px",
-            "display": "none"
-          },
+          "attributes": [
+            {
+              "key": "width"
+            },
+            {
+              "key": "height"
+            },
+            {
+              "key": "position"
+            },
+            {
+              "key": "right"
+            },
+            {
+              "key": "display"
+            }
+          ],
+          "style": [
+            {
+              "key": "width",
+              "value": "100%"
+            },
+            {
+              "key": "height",
+              "value": "2px"
+            },
+            {
+              "key": "position",
+              "value": "absolute"
+            },
+            {
+              "key": "right",
+              "value": "0px"
+            },
+            {
+              "key": "display",
+              "value": "none"
+            }
+          ],
           "children": [],
           "metadata": {},
           "label": "insert before line"
@@ -76,13 +114,38 @@
           "variant": {},
           "is": "b34e7ef4135181",
           "name": "component-instance",
-          "attributes": {},
-          "style": {
-            "padding": "4px 8px",
-            "width": "100%",
-            "box-sizing": "border-box",
-            "padding-top": "6px"
-          },
+          "attributes": [
+            {
+              "key": "padding"
+            },
+            {
+              "key": "width"
+            },
+            {
+              "key": "box-sizing"
+            },
+            {
+              "key": "padding-top"
+            }
+          ],
+          "style": [
+            {
+              "key": "padding",
+              "value": "4px 8px"
+            },
+            {
+              "key": "width",
+              "value": "100%"
+            },
+            {
+              "key": "box-sizing",
+              "value": "border-box"
+            },
+            {
+              "key": "padding-top",
+              "value": "6px"
+            }
+          ],
           "children": [],
           "metadata": {},
           "label": "Label"
@@ -92,11 +155,24 @@
           "label": "Children",
           "is": "div",
           "name": "element",
-          "attributes": {},
-          "style": {
-            "width": "100%",
-            "display": "block"
-          },
+          "attributes": [
+            {
+              "key": "width"
+            },
+            {
+              "key": "display"
+            }
+          ],
+          "style": [
+            {
+              "key": "width",
+              "value": "100%"
+            },
+            {
+              "key": "display",
+              "value": "block"
+            }
+          ],
           "children": [],
           "metadata": {}
         },
@@ -105,10 +181,17 @@
           "variant": {},
           "is": "b34e7ef41152456",
           "name": "component-instance",
-          "attributes": {},
-          "style": {
-            "display": "none"
-          },
+          "attributes": [
+            {
+              "key": "display"
+            }
+          ],
+          "style": [
+            {
+              "key": "display",
+              "value": "none"
+            }
+          ],
           "children": [],
           "metadata": {},
           "label": "insert after line"
@@ -127,10 +210,17 @@
     {
       "label": "Node Label",
       "is": "div",
-      "style": {
-        "padding": "4px 8px"
-      },
-      "attributes": {},
+      "style": [
+        {
+          "key": "padding",
+          "value": "4px 8px"
+        }
+      ],
+      "attributes": [
+        {
+          "key": "padding"
+        }
+      ],
       "id": "b34e7ef4135181",
       "name": "component",
       "children": [
@@ -139,7 +229,7 @@
           "name": "text",
           "label": "Text",
           "value": "Label",
-          "style": {},
+          "style": [],
           "children": [],
           "metadata": {}
         }
@@ -159,21 +249,41 @@
       "label": "Preview",
       "is": "div",
       "name": "element",
-      "attributes": {},
-      "style": {
-        "background": "rgba(82, 82, 82, 1)"
-      },
+      "attributes": [
+        {
+          "key": "background"
+        }
+      ],
+      "style": [
+        {
+          "key": "background",
+          "value": "rgba(82, 82, 82, 1)"
+        }
+      ],
       "children": [
         {
           "id": "b34e7ef4664200",
           "variant": {},
           "is": "b34e7ef429680",
           "name": "component-instance",
-          "attributes": {},
-          "style": {
-            "width": "200px",
-            "background": "rgba(255, 255, 255, 1)"
-          },
+          "attributes": [
+            {
+              "key": "width"
+            },
+            {
+              "key": "background"
+            }
+          ],
+          "style": [
+            {
+              "key": "width",
+              "value": "200px"
+            },
+            {
+              "key": "background",
+              "value": "rgba(255, 255, 255, 1)"
+            }
+          ],
           "children": [
             {
               "id": "b34e7ef4922568",
@@ -221,14 +331,45 @@
     {
       "label": "Insert Line",
       "is": "div",
-      "style": {
-        "width": "100%",
-        "height": "2px",
-        "background": "rgba(0, 145, 255, 1)",
-        "position": "absolute",
-        "right": "0px"
-      },
-      "attributes": {},
+      "style": [
+        {
+          "key": "width",
+          "value": "100%"
+        },
+        {
+          "key": "height",
+          "value": "2px"
+        },
+        {
+          "key": "background",
+          "value": "rgba(0, 145, 255, 1)"
+        },
+        {
+          "key": "position",
+          "value": "absolute"
+        },
+        {
+          "key": "right",
+          "value": "0px"
+        }
+      ],
+      "attributes": [
+        {
+          "key": "width"
+        },
+        {
+          "key": "height"
+        },
+        {
+          "key": "background"
+        },
+        {
+          "key": "position"
+        },
+        {
+          "key": "right"
+        }
+      ],
       "id": "b34e7ef41152456",
       "name": "component",
       "children": [],

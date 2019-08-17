@@ -1,18 +1,37 @@
 {
   "id": "296b92da17454",
-  "version": "0.0.6",
+  "version": "1.0.0",
   "metadata": {},
   "name": "module",
   "children": [
     {
       "label": "Spacing Pane",
       "is": "div",
-      "style": {
-        "box-sizing": "border-box",
-        "display": "block",
-        "background": "var(--bc891e755312)"
-      },
-      "attributes": {},
+      "style": [
+        {
+          "key": "box-sizing",
+          "value": "border-box"
+        },
+        {
+          "key": "display",
+          "value": "block"
+        },
+        {
+          "key": "background",
+          "value": "var(--bc891e755312)"
+        }
+      ],
+      "attributes": [
+        {
+          "key": "box-sizing"
+        },
+        {
+          "key": "display"
+        },
+        {
+          "key": "background"
+        }
+      ],
       "id": "cbddcb698077",
       "name": "component",
       "children": [
@@ -21,8 +40,8 @@
           "is": "b6c162d113",
           "label": "Pane",
           "name": "component-instance",
-          "attributes": {},
-          "style": {},
+          "attributes": [],
+          "style": [],
           "children": [
             {
               "slotId": "d6261ad52883",
@@ -33,8 +52,8 @@
                   "variant": {},
                   "is": "7149f8192509",
                   "name": "component-instance",
-                  "attributes": {},
-                  "style": {},
+                  "attributes": [],
+                  "style": [],
                   "children": [
                     {
                       "id": "cbddcb698070",
@@ -54,8 +73,8 @@
                           "id": "cbddcb698072",
                           "is": "d2bdce074664",
                           "name": "component-instance",
-                          "attributes": {},
-                          "style": {},
+                          "attributes": [],
+                          "style": [],
                           "children": [
                             {
                               "id": "cbddcb698073",
@@ -92,10 +111,17 @@
                   "is": "cbddcb6911222",
                   "label": "Margin input",
                   "name": "component-instance",
-                  "attributes": {},
-                  "style": {
-                    "margin-bottom": "6px"
-                  },
+                  "attributes": [
+                    {
+                      "key": "margin-bottom"
+                    }
+                  ],
+                  "style": [
+                    {
+                      "key": "margin-bottom",
+                      "value": "6px"
+                    }
+                  ],
                   "children": [],
                   "metadata": {},
                   "variant": {}
@@ -105,8 +131,8 @@
                   "is": "cbddcb6911849",
                   "label": "Padding Input",
                   "name": "component-instance",
-                  "attributes": {},
-                  "style": {},
+                  "attributes": [],
+                  "style": [],
                   "children": [],
                   "metadata": {},
                   "variant": {}
@@ -168,8 +194,8 @@
     {
       "label": "Margin Input",
       "is": "cbddcb698678",
-      "style": {},
-      "attributes": {},
+      "style": [],
+      "attributes": [],
       "id": "cbddcb6911222",
       "name": "component",
       "children": [
@@ -199,8 +225,8 @@
     {
       "label": "Padding Input",
       "is": "cbddcb698678",
-      "style": {},
-      "attributes": {},
+      "style": [],
+      "attributes": [],
       "id": "cbddcb6911849",
       "name": "component",
       "children": [
@@ -230,8 +256,8 @@
     {
       "label": "Spacing input",
       "is": "49786f441973",
-      "style": {},
-      "attributes": {},
+      "style": [],
+      "attributes": [],
       "id": "cbddcb698678",
       "name": "component",
       "children": [
@@ -256,10 +282,17 @@
               "is": "af62926b2310",
               "label": "top input",
               "name": "component-instance",
-              "attributes": {},
-              "style": {
-                "margin-right": "6px"
-              },
+              "attributes": [
+                {
+                  "key": "margin-right"
+                }
+              ],
+              "style": [
+                {
+                  "key": "margin-right",
+                  "value": "6px"
+                }
+              ],
               "children": [
                 {
                   "id": "cbddcb699963",
@@ -311,10 +344,17 @@
               "is": "af62926b2310",
               "label": "right input",
               "name": "component-instance",
-              "attributes": {},
-              "style": {
-                "margin-right": "6px"
-              },
+              "attributes": [
+                {
+                  "key": "margin-right"
+                }
+              ],
+              "style": [
+                {
+                  "key": "margin-right",
+                  "value": "6px"
+                }
+              ],
               "children": [
                 {
                   "id": "cbddcb699965",
@@ -366,10 +406,17 @@
               "is": "af62926b2310",
               "label": "bottom input",
               "name": "component-instance",
-              "attributes": {},
-              "style": {
-                "margin-right": "6px"
-              },
+              "attributes": [
+                {
+                  "key": "margin-right"
+                }
+              ],
+              "style": [
+                {
+                  "key": "margin-right",
+                  "value": "6px"
+                }
+              ],
               "children": [
                 {
                   "id": "cbddcb699967",
@@ -421,8 +468,8 @@
               "is": "af62926b2310",
               "label": "left input",
               "name": "component-instance",
-              "attributes": {},
-              "style": {},
+              "attributes": [],
+              "style": [],
               "children": [
                 {
                   "id": "cbddcb699969",
@@ -489,10 +536,17 @@
                   "is": "af62926b2310",
                   "label": "primary input",
                   "name": "component-instance",
-                  "attributes": {},
-                  "style": {
-                    "margin-right": "6px"
-                  },
+                  "attributes": [
+                    {
+                      "key": "margin-right"
+                    }
+                  ],
+                  "style": [
+                    {
+                      "key": "margin-right",
+                      "value": "6px"
+                    }
+                  ],
                   "children": [
                     {
                       "id": "3cd026343876",
@@ -548,12 +602,31 @@
       "label": "Element",
       "is": "div",
       "name": "element",
-      "attributes": {},
-      "style": {
-        "box-sizing": "border-box",
-        "display": "block",
-        "background-image": "linear-gradient(rgba(108, 56, 56, 1), rgba(108, 56, 56, 1))"
-      },
+      "attributes": [
+        {
+          "key": "box-sizing"
+        },
+        {
+          "key": "display"
+        },
+        {
+          "key": "background-image"
+        }
+      ],
+      "style": [
+        {
+          "key": "box-sizing",
+          "value": "border-box"
+        },
+        {
+          "key": "display",
+          "value": "block"
+        },
+        {
+          "key": "background-image",
+          "value": "linear-gradient(rgba(108, 56, 56, 1), rgba(108, 56, 56, 1))"
+        }
+      ],
       "children": [],
       "metadata": {
         "bounds": {

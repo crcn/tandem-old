@@ -1,6 +1,6 @@
 {
   "id": "9b7b527f6219",
-  "version": "0.0.5",
+  "version": "1.0.0",
   "metadata": {},
   "name": "module",
   "children": [
@@ -8,9 +8,8 @@
       "id": "d3dca34c388",
       "is": "9b7b527f175442",
       "name": "component-instance",
-      "attributes": {},
-      "style": {
-      },
+      "attributes": [],
+      "style": [],
       "children": [
         {
           "slotId": "c00d8561361",
@@ -21,7 +20,7 @@
               "name": "text",
               "label": "Text",
               "value": "button",
-              "style": {},
+              "style": [],
               "children": [],
               "metadata": {}
             }
@@ -38,7 +37,7 @@
               "name": "text",
               "label": "Text",
               "value": "Click to edit",
-              "style": {},
+              "style": [],
               "children": [],
               "metadata": {
                 "bounds": {
@@ -69,8 +68,8 @@
     {
       "label": "Popover",
       "is": "div",
-      "style": {},
-      "attributes": {},
+      "style": [],
+      "attributes": [],
       "id": "9b7b527f175442",
       "name": "component",
       "children": [
@@ -79,8 +78,8 @@
           "label": "Anchor",
           "is": "div",
           "name": "element",
-          "attributes": {},
-          "style": {},
+          "attributes": [],
+          "style": [],
           "children": [
             {
               "label": "anchor",
@@ -91,7 +90,7 @@
                   "name": "text",
                   "label": "Text",
                   "value": "Click to edit",
-                  "style": {},
+                  "style": [],
                   "children": [],
                   "metadata": {}
                 }
@@ -115,10 +114,17 @@
           "variant": {},
           "is": "ddec6a12139577",
           "name": "component-instance",
-          "attributes": {},
-          "style": {
-            "display": "none"
-          },
+          "attributes": [
+            {
+              "key": "display"
+            }
+          ],
+          "style": [
+            {
+              "key": "display",
+              "value": "none"
+            }
+          ],
           "children": [
             {
               "slotId": "e691a1d915771",
@@ -133,11 +139,24 @@
                       "label": "Element",
                       "is": "div",
                       "name": "element",
-                      "attributes": {},
-                      "style": {
-                        "box-sizing": "border-box",
-                        "display": "block"
-                      },
+                      "attributes": [
+                        {
+                          "key": "box-sizing"
+                        },
+                        {
+                          "key": "display"
+                        }
+                      ],
+                      "style": [
+                        {
+                          "key": "box-sizing",
+                          "value": "border-box"
+                        },
+                        {
+                          "key": "display",
+                          "value": "block"
+                        }
+                      ],
                       "children": [],
                       "metadata": {}
                     }
@@ -224,8 +243,8 @@
       "variant": {},
       "is": "97a34b151010442",
       "name": "component-instance",
-      "attributes": {},
-      "style": {},
+      "attributes": [],
+      "style": [],
       "children": [
         {
           "id": "9b7b527f120031",
@@ -261,10 +280,17 @@
     {
       "label": "Content",
       "is": "div",
-      "style": {
-        "width": "100px"
-      },
-      "attributes": {},
+      "style": [
+        {
+          "key": "width",
+          "value": "100px"
+        }
+      ],
+      "attributes": [
+        {
+          "key": "width"
+        }
+      ],
       "id": "ddec6a12139577",
       "name": "component",
       "children": [
@@ -277,11 +303,24 @@
               "label": "Element",
               "is": "div",
               "name": "element",
-              "attributes": {},
-              "style": {
-                "box-sizing": "border-box",
-                "display": "block"
-              },
+              "attributes": [
+                {
+                  "key": "box-sizing"
+                },
+                {
+                  "key": "display"
+                }
+              ],
+              "style": [
+                {
+                  "key": "box-sizing",
+                  "value": "border-box"
+                },
+                {
+                  "key": "display",
+                  "value": "block"
+                }
+              ],
               "children": [],
               "metadata": {}
             }

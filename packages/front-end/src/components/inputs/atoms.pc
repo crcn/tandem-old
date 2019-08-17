@@ -1,17 +1,30 @@
 {
   "id": "76b155a0869608",
-  "version": "0.0.5",
+  "version": "1.0.0",
   "metadata": {},
   "name": "module",
   "children": [
     {
       "label": "Input Row",
       "is": "div",
-      "style": {
-        "display": "flex",
-        "align-items": "center"
-      },
-      "attributes": {},
+      "style": [
+        {
+          "key": "display",
+          "value": "flex"
+        },
+        {
+          "key": "align-items",
+          "value": "center"
+        }
+      ],
+      "attributes": [
+        {
+          "key": "display"
+        },
+        {
+          "key": "align-items"
+        }
+      ],
       "id": "2657ec412855",
       "name": "component",
       "children": [],
@@ -28,11 +41,24 @@
     {
       "label": "Input Row Item",
       "is": "div",
-      "style": {
-        "margin-right": "8px",
-        "box-sizing": "border-box"
-      },
-      "attributes": {},
+      "style": [
+        {
+          "key": "margin-right",
+          "value": "8px"
+        },
+        {
+          "key": "box-sizing",
+          "value": "border-box"
+        }
+      ],
+      "attributes": [
+        {
+          "key": "margin-right"
+        },
+        {
+          "key": "box-sizing"
+        }
+      ],
       "id": "bcda9fb551452",
       "name": "component",
       "children": [],

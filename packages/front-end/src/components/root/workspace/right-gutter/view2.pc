@@ -1,17 +1,37 @@
 {
   "id": "cff629132",
+  "version": "1.0.0",
+  "metadata": {},
   "name": "module",
-  "version": "0.0.6",
   "children": [
     {
       "label": "Right Gutter 2",
       "is": "div",
-      "style": {
-        "box-sizing": "border-box",
-        "display": "block",
-        "min-width": "300px"
-      },
-      "attributes": {},
+      "style": [
+        {
+          "key": "box-sizing",
+          "value": "border-box"
+        },
+        {
+          "key": "display",
+          "value": "block"
+        },
+        {
+          "key": "min-width",
+          "value": "300px"
+        }
+      ],
+      "attributes": [
+        {
+          "key": "box-sizing"
+        },
+        {
+          "key": "display"
+        },
+        {
+          "key": "min-width"
+        }
+      ],
       "id": "8c12bd173408",
       "name": "component",
       "children": [
@@ -20,8 +40,8 @@
           "is": "1b315282200844",
           "label": "attributes section",
           "name": "component-instance",
-          "attributes": {},
-          "style": {},
+          "attributes": [],
+          "style": [],
           "children": [],
           "metadata": {
             "bounds": {
@@ -38,8 +58,8 @@
           "is": "1b315282200756",
           "label": "attributes section",
           "name": "component-instance",
-          "attributes": {},
-          "style": {},
+          "attributes": [],
+          "style": [],
           "children": [],
           "metadata": {
             "bounds": {
@@ -56,8 +76,8 @@
           "is": "1b3152825297",
           "label": "styles section",
           "name": "component-instance",
-          "attributes": {},
-          "style": {},
+          "attributes": [],
+          "style": [],
           "children": [],
           "metadata": {
             "bounds": {
@@ -83,11 +103,24 @@
     {
       "label": "attributes section",
       "is": "div",
-      "style": {
-        "box-sizing": "border-box",
-        "display": "block"
-      },
-      "attributes": {},
+      "style": [
+        {
+          "key": "box-sizing",
+          "value": "border-box"
+        },
+        {
+          "key": "display",
+          "value": "block"
+        }
+      ],
+      "attributes": [
+        {
+          "key": "box-sizing"
+        },
+        {
+          "key": "display"
+        }
+      ],
       "id": "1b315282200756",
       "name": "component",
       "children": [
@@ -96,8 +129,8 @@
           "is": "1b3152825244",
           "label": "Gutter Section",
           "name": "component-instance",
-          "attributes": {},
-          "style": {},
+          "attributes": [],
+          "style": [],
           "children": [
             {
               "id": "1b315282200775",
@@ -119,11 +152,24 @@
                   "is": "f27782548182",
                   "label": "Add icon",
                   "name": "component-instance",
-                  "attributes": {},
-                  "style": {
-                    "height": "9px",
-                    "width": "9px"
-                  },
+                  "attributes": [
+                    {
+                      "key": "height"
+                    },
+                    {
+                      "key": "width"
+                    }
+                  ],
+                  "style": [
+                    {
+                      "key": "height",
+                      "value": "9px"
+                    },
+                    {
+                      "key": "width",
+                      "value": "9px"
+                    }
+                  ],
                   "children": [],
                   "metadata": {
                     "bounds": {
@@ -155,8 +201,8 @@
           "is": "981545e8822",
           "label": "key value input",
           "name": "component-instance",
-          "attributes": {},
-          "style": {},
+          "attributes": [],
+          "style": [],
           "children": [],
           "metadata": {
             "bounds": {
@@ -173,8 +219,8 @@
           "is": "981545e8822",
           "label": "key value input",
           "name": "component-instance",
-          "attributes": {},
-          "style": {},
+          "attributes": [],
+          "style": [],
           "children": [],
           "metadata": {
             "bounds": {
@@ -191,8 +237,8 @@
           "is": "981545e8822",
           "label": "key value input",
           "name": "component-instance",
-          "attributes": {},
-          "style": {},
+          "attributes": [],
+          "style": [],
           "children": [
             {
               "id": "51bf716710448",
@@ -235,8 +281,8 @@
           "is": "981545e8822",
           "label": "key value input",
           "name": "component-instance",
-          "attributes": {},
-          "style": {},
+          "attributes": [],
+          "style": [],
           "children": [
             {
               "id": "51bf716710444",
@@ -278,8 +324,8 @@
           "is": "981545e8822",
           "label": "key value input",
           "name": "component-instance",
-          "attributes": {},
-          "style": {},
+          "attributes": [],
+          "style": [],
           "children": [
             {
               "id": "51bf716710446",
@@ -331,11 +377,24 @@
     {
       "label": "states section",
       "is": "div",
-      "style": {
-        "box-sizing": "border-box",
-        "display": "block"
-      },
-      "attributes": {},
+      "style": [
+        {
+          "key": "box-sizing",
+          "value": "border-box"
+        },
+        {
+          "key": "display",
+          "value": "block"
+        }
+      ],
+      "attributes": [
+        {
+          "key": "box-sizing"
+        },
+        {
+          "key": "display"
+        }
+      ],
       "id": "1b315282200844",
       "name": "component",
       "children": [
@@ -344,8 +403,8 @@
           "is": "1b3152825244",
           "label": "Gutter Section",
           "name": "component-instance",
-          "attributes": {},
-          "style": {},
+          "attributes": [],
+          "style": [],
           "children": [
             {
               "id": "1b315282200864",
@@ -367,10 +426,17 @@
                   "is": "f27782548182",
                   "label": "Add icon",
                   "name": "component-instance",
-                  "attributes": {},
-                  "style": {
-                    "height": "9px"
-                  },
+                  "attributes": [
+                    {
+                      "key": "height"
+                    }
+                  ],
+                  "style": [
+                    {
+                      "key": "height",
+                      "value": "9px"
+                    }
+                  ],
                   "children": [],
                   "metadata": {
                     "bounds": {
@@ -413,19 +479,32 @@
       "label": "Element",
       "is": "div",
       "name": "element",
-      "attributes": {},
-      "style": {
-        "box-sizing": "border-box",
-        "display": "block"
-      },
+      "attributes": [
+        {
+          "key": "box-sizing"
+        },
+        {
+          "key": "display"
+        }
+      ],
+      "style": [
+        {
+          "key": "box-sizing",
+          "value": "border-box"
+        },
+        {
+          "key": "display",
+          "value": "block"
+        }
+      ],
       "children": [
         {
           "id": "1b315282200989",
           "is": "1b3152825244",
           "label": "Gutter Section",
           "name": "component-instance",
-          "attributes": {},
-          "style": {},
+          "attributes": [],
+          "style": [],
           "children": [
             {
               "id": "1b315282201007",
@@ -466,18 +545,31 @@
           "label": "Element",
           "is": "div",
           "name": "element",
-          "attributes": {},
-          "style": {
-            "box-sizing": "border-box",
-            "display": "block"
-          },
+          "attributes": [
+            {
+              "key": "box-sizing"
+            },
+            {
+              "key": "display"
+            }
+          ],
+          "style": [
+            {
+              "key": "box-sizing",
+              "value": "border-box"
+            },
+            {
+              "key": "display",
+              "value": "block"
+            }
+          ],
           "children": [
             {
               "id": "1b315282201011",
               "name": "text",
               "label": "Text",
               "value": "",
-              "style": {},
+              "style": [],
               "children": [],
               "metadata": {}
             }
@@ -489,8 +581,8 @@
           "is": "1b3152825244",
           "label": "Gutter Section",
           "name": "component-instance",
-          "attributes": {},
-          "style": {},
+          "attributes": [],
+          "style": [],
           "children": [
             {
               "slotId": "1b3152825278",
@@ -501,10 +593,17 @@
                   "is": "f27782548182",
                   "label": "Add icon",
                   "name": "component-instance",
-                  "attributes": {},
-                  "style": {
-                    "height": "9px"
-                  },
+                  "attributes": [
+                    {
+                      "key": "height"
+                    }
+                  ],
+                  "style": [
+                    {
+                      "key": "height",
+                      "value": "9px"
+                    }
+                  ],
                   "children": [],
                   "metadata": {
                     "bounds": {
@@ -554,6 +653,5 @@
         }
       }
     }
-  ],
-  "metadata": {}
+  ]
 }

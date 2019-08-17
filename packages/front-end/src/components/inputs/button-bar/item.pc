@@ -1,27 +1,100 @@
 {
   "id": "70ef61a6213",
-  "version": "0.0.6",
+  "version": "1.0.0",
   "metadata": {},
   "name": "module",
   "children": [
     {
       "label": "Button Bar Item",
       "is": "div",
-      "style": {
-        "background": "var(--f63574de434)",
-        "box-sizing": "border-box",
-        "width": "100%",
-        "text-align": "center",
-        "position": "relative",
-        "height": "20px",
-        "border-right": "1px solid var(--d8f6340b1442)",
-        "color": "rgba(123, 123, 123, 1)",
-        "padding-left": "6px",
-        "padding-top": "4px",
-        "padding-right": "6px",
-        "padding-bottom": "7px"
-      },
-      "attributes": {},
+      "style": [
+        {
+          "key": "background",
+          "value": "var(--f63574de434)"
+        },
+        {
+          "key": "box-sizing",
+          "value": "border-box"
+        },
+        {
+          "key": "width",
+          "value": "100%"
+        },
+        {
+          "key": "text-align",
+          "value": "center"
+        },
+        {
+          "key": "position",
+          "value": "relative"
+        },
+        {
+          "key": "height",
+          "value": "20px"
+        },
+        {
+          "key": "border-right",
+          "value": "1px solid var(--d8f6340b1442)"
+        },
+        {
+          "key": "color",
+          "value": "rgba(123, 123, 123, 1)"
+        },
+        {
+          "key": "padding-left",
+          "value": "6px"
+        },
+        {
+          "key": "padding-top",
+          "value": "4px"
+        },
+        {
+          "key": "padding-right",
+          "value": "6px"
+        },
+        {
+          "key": "padding-bottom",
+          "value": "7px"
+        }
+      ],
+      "attributes": [
+        {
+          "key": "background"
+        },
+        {
+          "key": "box-sizing"
+        },
+        {
+          "key": "width"
+        },
+        {
+          "key": "text-align"
+        },
+        {
+          "key": "position"
+        },
+        {
+          "key": "height"
+        },
+        {
+          "key": "border-right"
+        },
+        {
+          "key": "color"
+        },
+        {
+          "key": "padding-left"
+        },
+        {
+          "key": "padding-top"
+        },
+        {
+          "key": "padding-right"
+        },
+        {
+          "key": "padding-bottom"
+        }
+      ],
       "id": "6489655782851",
       "name": "component",
       "children": [
@@ -34,11 +107,24 @@
               "variant": {},
               "is": "38fc2a472503",
               "name": "component-instance",
-              "attributes": {},
-              "style": {
-                "height": "100%",
-                "color": "var(--24ce1e4d482)"
-              },
+              "attributes": [
+                {
+                  "key": "height"
+                },
+                {
+                  "key": "color"
+                }
+              ],
+              "style": [
+                {
+                  "key": "height",
+                  "value": "100%"
+                },
+                {
+                  "key": "color",
+                  "value": "var(--24ce1e4d482)"
+                }
+              ],
               "children": [],
               "metadata": {},
               "label": "icon"

@@ -1,18 +1,44 @@
 {
   "id": "df7169e187",
+  "version": "1.0.0",
+  "metadata": {},
   "name": "module",
-  "version": "0.0.6",
   "children": [
     {
       "label": "Bottom Gutter",
       "is": "div",
-      "style": {
-        "box-sizing": "border-box",
-        "display": "flex",
-        "height": "300px",
-        "position": "relative"
-      },
-      "attributes": {},
+      "style": [
+        {
+          "key": "box-sizing",
+          "value": "border-box"
+        },
+        {
+          "key": "display",
+          "value": "flex"
+        },
+        {
+          "key": "height",
+          "value": "300px"
+        },
+        {
+          "key": "position",
+          "value": "relative"
+        }
+      ],
+      "attributes": [
+        {
+          "key": "box-sizing"
+        },
+        {
+          "key": "display"
+        },
+        {
+          "key": "height"
+        },
+        {
+          "key": "position"
+        }
+      ],
       "id": "694404cc2576",
       "name": "component",
       "children": [
@@ -21,8 +47,8 @@
           "is": "694404cc2671",
           "label": "Console",
           "name": "component-instance",
-          "attributes": {},
-          "style": {},
+          "attributes": [],
+          "style": [],
           "children": [
             {
               "slotId": "d3d61e4d34933",
@@ -49,28 +75,83 @@
           "label": "Element",
           "is": "div",
           "name": "element",
-          "attributes": {},
-          "style": {
-            "box-sizing": "border-box",
-            "display": "block",
-            "position": "absolute",
-            "height": "20px",
-            "width": "20px",
-            "right": "0px",
-            "top": "2px"
-          },
+          "attributes": [
+            {
+              "key": "box-sizing"
+            },
+            {
+              "key": "display"
+            },
+            {
+              "key": "position"
+            },
+            {
+              "key": "height"
+            },
+            {
+              "key": "width"
+            },
+            {
+              "key": "right"
+            },
+            {
+              "key": "top"
+            }
+          ],
+          "style": [
+            {
+              "key": "box-sizing",
+              "value": "border-box"
+            },
+            {
+              "key": "display",
+              "value": "block"
+            },
+            {
+              "key": "position",
+              "value": "absolute"
+            },
+            {
+              "key": "height",
+              "value": "20px"
+            },
+            {
+              "key": "width",
+              "value": "20px"
+            },
+            {
+              "key": "right",
+              "value": "0px"
+            },
+            {
+              "key": "top",
+              "value": "2px"
+            }
+          ],
           "children": [
             {
               "id": "b597af431154",
               "name": "text",
               "label": "close button",
               "value": "×\n",
-              "style": {
-                "cursor": "pointer",
-                "display": "inline-block",
-                "font-size": "14px",
-                "font-weight": "600"
-              },
+              "style": [
+                {
+                  "key": "cursor",
+                  "value": "pointer"
+                },
+                {
+                  "key": "display",
+                  "value": "inline-block"
+                },
+                {
+                  "key": "font-size",
+                  "value": "14px"
+                },
+                {
+                  "key": "font-weight",
+                  "value": "600"
+                }
+              ],
               "children": [],
               "metadata": {},
               "styleMixins": {
@@ -99,14 +180,45 @@
     {
       "label": "Console",
       "is": "div",
-      "style": {
-        "box-sizing": "border-box",
-        "display": "flex",
-        "flex-direction": "column",
-        "width": "100%",
-        "height": "100%"
-      },
-      "attributes": {},
+      "style": [
+        {
+          "key": "box-sizing",
+          "value": "border-box"
+        },
+        {
+          "key": "display",
+          "value": "flex"
+        },
+        {
+          "key": "flex-direction",
+          "value": "column"
+        },
+        {
+          "key": "width",
+          "value": "100%"
+        },
+        {
+          "key": "height",
+          "value": "100%"
+        }
+      ],
+      "attributes": [
+        {
+          "key": "box-sizing"
+        },
+        {
+          "key": "display"
+        },
+        {
+          "key": "flex-direction"
+        },
+        {
+          "key": "width"
+        },
+        {
+          "key": "height"
+        }
+      ],
       "id": "694404cc2671",
       "name": "component",
       "children": [
@@ -115,13 +227,38 @@
           "label": "tab bar",
           "is": "div",
           "name": "element",
-          "attributes": {},
-          "style": {
-            "box-sizing": "border-box",
-            "display": "block",
-            "background-image": "linear-gradient(var(--51588fd610365), var(--51588fd610365))",
-            "flex-shrink": "0px"
-          },
+          "attributes": [
+            {
+              "key": "box-sizing"
+            },
+            {
+              "key": "display"
+            },
+            {
+              "key": "background-image"
+            },
+            {
+              "key": "flex-shrink"
+            }
+          ],
+          "style": [
+            {
+              "key": "box-sizing",
+              "value": "border-box"
+            },
+            {
+              "key": "display",
+              "value": "block"
+            },
+            {
+              "key": "background-image",
+              "value": "linear-gradient(var(--51588fd610365), var(--51588fd610365))"
+            },
+            {
+              "key": "flex-shrink",
+              "value": "0px"
+            }
+          ],
           "children": [
             {
               "id": "d3d61e4d34946",
@@ -131,8 +268,8 @@
                   "is": "d3d61e4d34905",
                   "label": "tab",
                   "name": "component-instance",
-                  "attributes": {},
-                  "style": {},
+                  "attributes": [],
+                  "style": [],
                   "children": [],
                   "metadata": {},
                   "variant": {
@@ -144,8 +281,8 @@
                   "is": "d3d61e4d34905",
                   "label": "tab",
                   "name": "component-instance",
-                  "attributes": {},
-                  "style": {},
+                  "attributes": [],
+                  "style": [],
                   "children": [],
                   "metadata": {},
                   "variant": {}
@@ -163,23 +300,57 @@
           "label": "Element",
           "is": "div",
           "name": "element",
-          "attributes": {},
-          "style": {
-            "box-sizing": "border-box",
-            "display": "flex",
-            "height": "100%",
-            "background-image": "linear-gradient(var(--bc891e755312), var(--bc891e755312))",
-            "position": "relative"
-          },
+          "attributes": [
+            {
+              "key": "box-sizing"
+            },
+            {
+              "key": "display"
+            },
+            {
+              "key": "height"
+            },
+            {
+              "key": "background-image"
+            },
+            {
+              "key": "position"
+            }
+          ],
+          "style": [
+            {
+              "key": "box-sizing",
+              "value": "border-box"
+            },
+            {
+              "key": "display",
+              "value": "flex"
+            },
+            {
+              "key": "height",
+              "value": "100%"
+            },
+            {
+              "key": "background-image",
+              "value": "linear-gradient(var(--bc891e755312), var(--bc891e755312))"
+            },
+            {
+              "key": "position",
+              "value": "relative"
+            }
+          ],
           "children": [
             {
               "id": "d3d61e4d34923",
               "name": "text",
               "label": "no processes label",
               "value": "No running processes",
-              "style": {
-                "display": "none"
-              },
+              "style": [
+                {
+                  "key": "display",
+                  "value": "none"
+                }
+              ],
               "children": [],
               "metadata": {},
               "styleMixins": {
@@ -193,8 +364,8 @@
               "is": "983742ed977",
               "label": "Console Logs",
               "name": "component-instance",
-              "attributes": {},
-              "style": {},
+              "attributes": [],
+              "style": [],
               "children": [],
               "metadata": {},
               "variant": {}
@@ -259,16 +430,59 @@
     {
       "label": "console tab",
       "is": "div",
-      "style": {
-        "box-sizing": "border-box",
-        "display": "inline-block",
-        "padding-left": "12px",
-        "padding-top": "6px",
-        "padding-right": "12px",
-        "padding-bottom": "6px",
-        "background-image": "linear-gradient(var(--51588fd610365), var(--51588fd610365))"
-      },
-      "attributes": {},
+      "style": [
+        {
+          "key": "box-sizing",
+          "value": "border-box"
+        },
+        {
+          "key": "display",
+          "value": "inline-block"
+        },
+        {
+          "key": "padding-left",
+          "value": "12px"
+        },
+        {
+          "key": "padding-top",
+          "value": "6px"
+        },
+        {
+          "key": "padding-right",
+          "value": "12px"
+        },
+        {
+          "key": "padding-bottom",
+          "value": "6px"
+        },
+        {
+          "key": "background-image",
+          "value": "linear-gradient(var(--51588fd610365), var(--51588fd610365))"
+        }
+      ],
+      "attributes": [
+        {
+          "key": "box-sizing"
+        },
+        {
+          "key": "display"
+        },
+        {
+          "key": "padding-left"
+        },
+        {
+          "key": "padding-top"
+        },
+        {
+          "key": "padding-right"
+        },
+        {
+          "key": "padding-bottom"
+        },
+        {
+          "key": "background-image"
+        }
+      ],
       "id": "d3d61e4d34905",
       "name": "component",
       "children": [
@@ -277,7 +491,7 @@
           "name": "text",
           "label": "label",
           "value": "Console",
-          "style": {},
+          "style": [],
           "children": [],
           "metadata": {},
           "styleMixins": {
@@ -319,14 +533,45 @@
     {
       "label": "Console logs",
       "is": "div",
-      "style": {
-        "box-sizing": "border-box",
-        "display": "block",
-        "width": "100%",
-        "height": "100%",
-        "overflow": "scroll"
-      },
-      "attributes": {},
+      "style": [
+        {
+          "key": "box-sizing",
+          "value": "border-box"
+        },
+        {
+          "key": "display",
+          "value": "block"
+        },
+        {
+          "key": "width",
+          "value": "100%"
+        },
+        {
+          "key": "height",
+          "value": "100%"
+        },
+        {
+          "key": "overflow",
+          "value": "scroll"
+        }
+      ],
+      "attributes": [
+        {
+          "key": "box-sizing"
+        },
+        {
+          "key": "display"
+        },
+        {
+          "key": "width"
+        },
+        {
+          "key": "height"
+        },
+        {
+          "key": "overflow"
+        }
+      ],
       "id": "983742ed977",
       "name": "component",
       "children": [
@@ -338,8 +583,8 @@
               "is": "983742ed986",
               "label": "Console Log",
               "name": "component-instance",
-              "attributes": {},
-              "style": {},
+              "attributes": [],
+              "style": [],
               "children": [],
               "metadata": {
                 "bounds": {
@@ -356,8 +601,8 @@
               "is": "983742ed986",
               "label": "Console Log",
               "name": "component-instance",
-              "attributes": {},
-              "style": {},
+              "attributes": [],
+              "style": [],
               "children": [],
               "metadata": {
                 "bounds": {
@@ -374,8 +619,8 @@
               "is": "983742ed986",
               "label": "Console Log",
               "name": "component-instance",
-              "attributes": {},
-              "style": {},
+              "attributes": [],
+              "style": [],
               "children": [],
               "metadata": {
                 "bounds": {
@@ -392,8 +637,8 @@
               "is": "983742ed986",
               "label": "Console Log",
               "name": "component-instance",
-              "attributes": {},
-              "style": {},
+              "attributes": [],
+              "style": [],
               "children": [],
               "metadata": {
                 "bounds": {
@@ -412,8 +657,8 @@
               "is": "983742ed986",
               "label": "Console Log",
               "name": "component-instance",
-              "attributes": {},
-              "style": {},
+              "attributes": [],
+              "style": [],
               "children": [],
               "metadata": {
                 "bounds": {
@@ -432,8 +677,8 @@
               "is": "983742ed986",
               "label": "Console Log",
               "name": "component-instance",
-              "attributes": {},
-              "style": {},
+              "attributes": [],
+              "style": [],
               "children": [],
               "metadata": {
                 "bounds": {
@@ -467,15 +712,52 @@
     {
       "label": "Console Log",
       "is": "div",
-      "style": {
-        "box-sizing": "border-box",
-        "display": "block",
-        "padding-left": "12px",
-        "padding-top": "6px",
-        "padding-right": "12px",
-        "padding-bottom": "6px"
-      },
-      "attributes": {},
+      "style": [
+        {
+          "key": "box-sizing",
+          "value": "border-box"
+        },
+        {
+          "key": "display",
+          "value": "block"
+        },
+        {
+          "key": "padding-left",
+          "value": "12px"
+        },
+        {
+          "key": "padding-top",
+          "value": "6px"
+        },
+        {
+          "key": "padding-right",
+          "value": "12px"
+        },
+        {
+          "key": "padding-bottom",
+          "value": "6px"
+        }
+      ],
+      "attributes": [
+        {
+          "key": "box-sizing"
+        },
+        {
+          "key": "display"
+        },
+        {
+          "key": "padding-left"
+        },
+        {
+          "key": "padding-top"
+        },
+        {
+          "key": "padding-right"
+        },
+        {
+          "key": "padding-bottom"
+        }
+      ],
       "id": "983742ed986",
       "name": "component",
       "children": [
@@ -484,9 +766,12 @@
           "name": "text",
           "label": "label",
           "value": "log 1",
-          "style": {
-            "word-break": "break-word"
-          },
+          "style": [
+            {
+              "key": "word-break",
+              "value": "break-word"
+            }
+          ],
           "children": [],
           "metadata": {},
           "styleMixins": {
@@ -527,6 +812,5 @@
       },
       "variant": {}
     }
-  ],
-  "metadata": {}
+  ]
 }

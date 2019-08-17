@@ -5,3 +5,8 @@ export type RecursivePartial<T> = {
 export type KeyValue<V> = {
   [identifier: string]: V;
 };
+
+export type KeyValuePair = {
+  key: string;
+  value: string;
+};

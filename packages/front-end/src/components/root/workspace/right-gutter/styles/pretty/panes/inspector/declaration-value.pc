@@ -1,36 +1,63 @@
 {
   "id": "d8c26c49182",
+  "version": "1.0.0",
+  "metadata": {},
   "name": "module",
-  "version": "0.0.6",
   "children": [
     {
       "id": "957e4f662000",
       "label": "Element",
       "is": "div",
       "name": "element",
-      "attributes": {},
-      "style": {
-        "box-sizing": "border-box",
-        "display": "block"
-      },
+      "attributes": [
+        {
+          "key": "box-sizing"
+        },
+        {
+          "key": "display"
+        }
+      ],
+      "style": [
+        {
+          "key": "box-sizing",
+          "value": "border-box"
+        },
+        {
+          "key": "display",
+          "value": "block"
+        }
+      ],
       "children": [
         {
           "id": "957e4f662002",
           "label": "Element",
           "is": "div",
           "name": "element",
-          "attributes": {},
-          "style": {
-            "box-sizing": "border-box",
-            "display": "block"
-          },
+          "attributes": [
+            {
+              "key": "box-sizing"
+            },
+            {
+              "key": "display"
+            }
+          ],
+          "style": [
+            {
+              "key": "box-sizing",
+              "value": "border-box"
+            },
+            {
+              "key": "display",
+              "value": "block"
+            }
+          ],
           "children": [
             {
               "id": "957e4f662004",
               "name": "text",
               "label": "Text",
               "value": "linear-gradient",
-              "style": {},
+              "style": [],
               "children": [],
               "metadata": {}
             }
@@ -52,6 +79,5 @@
         }
       }
     }
-  ],
-  "metadata": {}
+  ]
 }

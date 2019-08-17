@@ -1,14 +1,14 @@
 {
   "id": "d7a10bcb1",
-  "version": "0.0.6",
+  "version": "1.0.0",
   "metadata": {},
   "name": "module",
   "children": [
     {
       "label": "before drop zone",
       "is": "6f0de1ad85",
-      "style": {},
-      "attributes": {},
+      "style": [],
+      "attributes": [],
       "id": "207a949d27",
       "name": "component",
       "children": [],
@@ -28,8 +28,8 @@
     {
       "label": "after drop zone",
       "is": "6f0de1ad85",
-      "style": {},
-      "attributes": {},
+      "style": [],
+      "attributes": [],
       "id": "207a949d21",
       "name": "component",
       "children": [],
@@ -49,20 +49,87 @@
     {
       "label": "Drop Zone",
       "is": "div",
-      "style": {
-        "box-sizing": "content-box",
-        "display": "block",
-        "position": "absolute",
-        "right": "0px",
-        "border": "1px solid rgba(255, 255, 255, 1)",
-        "height": "2px",
-        "opacity": "0",
-        "background": "#00B5FF",
-        "width": "100%",
-        "z-index": "1",
-        "transform": "translateY(-50%)"
-      },
-      "attributes": {},
+      "style": [
+        {
+          "key": "box-sizing",
+          "value": "content-box"
+        },
+        {
+          "key": "display",
+          "value": "block"
+        },
+        {
+          "key": "position",
+          "value": "absolute"
+        },
+        {
+          "key": "right",
+          "value": "0px"
+        },
+        {
+          "key": "border",
+          "value": "1px solid rgba(255, 255, 255, 1)"
+        },
+        {
+          "key": "height",
+          "value": "2px"
+        },
+        {
+          "key": "opacity",
+          "value": "0"
+        },
+        {
+          "key": "background",
+          "value": "#00B5FF"
+        },
+        {
+          "key": "width",
+          "value": "100%"
+        },
+        {
+          "key": "z-index",
+          "value": "1"
+        },
+        {
+          "key": "transform",
+          "value": "translateY(-50%)"
+        }
+      ],
+      "attributes": [
+        {
+          "key": "box-sizing"
+        },
+        {
+          "key": "display"
+        },
+        {
+          "key": "position"
+        },
+        {
+          "key": "right"
+        },
+        {
+          "key": "border"
+        },
+        {
+          "key": "height"
+        },
+        {
+          "key": "opacity"
+        },
+        {
+          "key": "background"
+        },
+        {
+          "key": "width"
+        },
+        {
+          "key": "z-index"
+        },
+        {
+          "key": "transform"
+        }
+      ],
       "id": "6f0de1ad85",
       "name": "component",
       "children": [
@@ -92,11 +159,24 @@
           "label": "dot",
           "is": "div",
           "name": "element",
-          "attributes": {},
-          "style": {
-            "box-sizing": "border-box",
-            "display": "block"
-          },
+          "attributes": [
+            {
+              "key": "box-sizing"
+            },
+            {
+              "key": "display"
+            }
+          ],
+          "style": [
+            {
+              "key": "box-sizing",
+              "value": "border-box"
+            },
+            {
+              "key": "display",
+              "value": "block"
+            }
+          ],
           "children": [],
           "metadata": {}
         },
@@ -140,22 +220,48 @@
       "label": "Preview",
       "is": "div",
       "name": "element",
-      "attributes": {},
-      "style": {
-        "box-sizing": "border-box",
-        "display": "block"
-      },
+      "attributes": [
+        {
+          "key": "box-sizing"
+        },
+        {
+          "key": "display"
+        }
+      ],
+      "style": [
+        {
+          "key": "box-sizing",
+          "value": "border-box"
+        },
+        {
+          "key": "display",
+          "value": "block"
+        }
+      ],
       "children": [
         {
           "id": "8e5b50993611",
           "is": "6f0de1ad85",
           "label": "Drop Zone",
           "name": "component-instance",
-          "attributes": {},
-          "style": {
-            "left": "20px",
-            "top": "20px"
-          },
+          "attributes": [
+            {
+              "key": "left"
+            },
+            {
+              "key": "top"
+            }
+          ],
+          "style": [
+            {
+              "key": "left",
+              "value": "20px"
+            },
+            {
+              "key": "top",
+              "value": "20px"
+            }
+          ],
           "children": [],
           "metadata": {
             "bounds": {

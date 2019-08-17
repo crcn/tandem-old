@@ -1,17 +1,30 @@
 {
   "id": "53138fe9121",
-  "version": "0.0.6",
+  "version": "1.0.0",
   "metadata": {},
   "name": "module",
   "children": [
     {
       "label": "Text Preview",
       "is": "div",
-      "style": {
-        "display": "flex",
-        "flex-direction": "column"
-      },
-      "attributes": {},
+      "style": [
+        {
+          "key": "display",
+          "value": "flex"
+        },
+        {
+          "key": "flex-direction",
+          "value": "column"
+        }
+      ],
+      "attributes": [
+        {
+          "key": "display"
+        },
+        {
+          "key": "flex-direction"
+        }
+      ],
       "id": "5c9686b814979",
       "name": "component",
       "children": [
@@ -20,31 +33,104 @@
           "label": "Banner",
           "is": "div",
           "name": "element",
-          "attributes": {},
-          "style": {
-            "box-sizing": "border-box",
-            "display": "flex",
-            "align-items": "center",
-            "justify-content": "space-between",
-            "padding-left": "8px",
-            "padding-top": "8px",
-            "padding-right": "8px",
-            "padding-bottom": "8px",
-            "background": "rgba(88, 185, 255, 1)",
-            "flex-shrink": "0"
-          },
+          "attributes": [
+            {
+              "key": "box-sizing"
+            },
+            {
+              "key": "display"
+            },
+            {
+              "key": "align-items"
+            },
+            {
+              "key": "justify-content"
+            },
+            {
+              "key": "padding-left"
+            },
+            {
+              "key": "padding-top"
+            },
+            {
+              "key": "padding-right"
+            },
+            {
+              "key": "padding-bottom"
+            },
+            {
+              "key": "background"
+            },
+            {
+              "key": "flex-shrink"
+            }
+          ],
+          "style": [
+            {
+              "key": "box-sizing",
+              "value": "border-box"
+            },
+            {
+              "key": "display",
+              "value": "flex"
+            },
+            {
+              "key": "align-items",
+              "value": "center"
+            },
+            {
+              "key": "justify-content",
+              "value": "space-between"
+            },
+            {
+              "key": "padding-left",
+              "value": "8px"
+            },
+            {
+              "key": "padding-top",
+              "value": "8px"
+            },
+            {
+              "key": "padding-right",
+              "value": "8px"
+            },
+            {
+              "key": "padding-bottom",
+              "value": "8px"
+            },
+            {
+              "key": "background",
+              "value": "rgba(88, 185, 255, 1)"
+            },
+            {
+              "key": "flex-shrink",
+              "value": "0"
+            }
+          ],
           "children": [
             {
               "id": "5c9686b848542",
               "name": "text",
               "label": "Text",
               "value": "You're viewing this file in read-only mode. ",
-              "style": {
-                "color": "rgba(255, 255, 255, 1)",
-                "font-weight": "600",
-                "user-select": "none",
-                "cursor": "default"
-              },
+              "style": [
+                {
+                  "key": "color",
+                  "value": "rgba(255, 255, 255, 1)"
+                },
+                {
+                  "key": "font-weight",
+                  "value": "600"
+                },
+                {
+                  "key": "user-select",
+                  "value": "none"
+                },
+                {
+                  "key": "cursor",
+                  "value": "default"
+                }
+              ],
               "children": [],
               "metadata": {},
               "styleMixins": {
@@ -58,22 +144,48 @@
               "label": "cta",
               "is": "div",
               "name": "element",
-              "attributes": {},
-              "style": {
-                "box-sizing": "border-box",
-                "display": "inline-block"
-              },
+              "attributes": [
+                {
+                  "key": "box-sizing"
+                },
+                {
+                  "key": "display"
+                }
+              ],
+              "style": [
+                {
+                  "key": "box-sizing",
+                  "value": "border-box"
+                },
+                {
+                  "key": "display",
+                  "value": "inline-block"
+                }
+              ],
               "children": [
                 {
                   "id": "5c9686b857183",
                   "is": "9f364d2139415",
                   "label": "open text editor button",
                   "name": "component-instance",
-                  "attributes": {},
-                  "style": {
-                    "background": "rgba(255, 255, 255, 1)",
-                    "white-space": "nowrap"
-                  },
+                  "attributes": [
+                    {
+                      "key": "background"
+                    },
+                    {
+                      "key": "white-space"
+                    }
+                  ],
+                  "style": [
+                    {
+                      "key": "background",
+                      "value": "rgba(255, 255, 255, 1)"
+                    },
+                    {
+                      "key": "white-space",
+                      "value": "nowrap"
+                    }
+                  ],
                   "children": [
                     {
                       "id": "5c9686b858034",
@@ -122,40 +234,132 @@
           "label": "content",
           "is": "div",
           "name": "element",
-          "attributes": {},
-          "style": {
-            "box-sizing": "border-box",
-            "display": "block",
-            "position": "relative",
-            "height": "0",
-            "flex-grow": "1",
-            "padding-left": "8px",
-            "padding-top": "8px",
-            "padding-right": "8px",
-            "padding-bottom": "8px",
-            "word-break": "break-word"
-          },
+          "attributes": [
+            {
+              "key": "box-sizing"
+            },
+            {
+              "key": "display"
+            },
+            {
+              "key": "position"
+            },
+            {
+              "key": "height"
+            },
+            {
+              "key": "flex-grow"
+            },
+            {
+              "key": "padding-left"
+            },
+            {
+              "key": "padding-top"
+            },
+            {
+              "key": "padding-right"
+            },
+            {
+              "key": "padding-bottom"
+            },
+            {
+              "key": "word-break"
+            }
+          ],
+          "style": [
+            {
+              "key": "box-sizing",
+              "value": "border-box"
+            },
+            {
+              "key": "display",
+              "value": "block"
+            },
+            {
+              "key": "position",
+              "value": "relative"
+            },
+            {
+              "key": "height",
+              "value": "0"
+            },
+            {
+              "key": "flex-grow",
+              "value": "1"
+            },
+            {
+              "key": "padding-left",
+              "value": "8px"
+            },
+            {
+              "key": "padding-top",
+              "value": "8px"
+            },
+            {
+              "key": "padding-right",
+              "value": "8px"
+            },
+            {
+              "key": "padding-bottom",
+              "value": "8px"
+            },
+            {
+              "key": "word-break",
+              "value": "break-word"
+            }
+          ],
           "children": [
             {
               "id": "5c9686b871035",
               "label": "inner",
               "is": "div",
               "name": "element",
-              "attributes": {},
-              "style": {
-                "box-sizing": "border-box",
-                "display": "block",
-                "height": "100%",
-                "width": "100%",
-                "overflow": "scroll"
-              },
+              "attributes": [
+                {
+                  "key": "box-sizing"
+                },
+                {
+                  "key": "display"
+                },
+                {
+                  "key": "height"
+                },
+                {
+                  "key": "width"
+                },
+                {
+                  "key": "overflow"
+                }
+              ],
+              "style": [
+                {
+                  "key": "box-sizing",
+                  "value": "border-box"
+                },
+                {
+                  "key": "display",
+                  "value": "block"
+                },
+                {
+                  "key": "height",
+                  "value": "100%"
+                },
+                {
+                  "key": "width",
+                  "value": "100%"
+                },
+                {
+                  "key": "overflow",
+                  "value": "scroll"
+                }
+              ],
               "children": [
                 {
                   "id": "6abb1348453",
                   "name": "text",
                   "label": "Text",
                   "value": "import \"./index.scss\";\nimport * as React from \"react\";\nimport { Dispatch } from \"redux\";\nimport { FileCacheItem, getFileCacheItemDataUrl } from \"fsbox\";\nexport type TextEditorProps = {\n  fileCacheItem: FileCacheItem;\n  dispatch: Dispatch<any>;\n};\n\nexport class TextEditorWindow extends React.PureComponent<\nTextEditorProps\n> {\n  render() {\n    const { fileCacheItem } = this.props;\n    return (\n      <div className=\"m-text-editor\">\n        <div dangerouslySetInnerHTML={{__html: fileCacheItem && formatText(fileCacheItem.content.toString(\"utf8\"))}}>\n        </div>\n      </div>\n    );\n  }\n}\n\n\nconst formatText = (text: string) => {\n  return text.replace(/\\n/g, `<br>`).replace(/\\s/g, `&nbsp;&nbsp;`).replace(/\\t/g, `&nbsp;&nbsp;&nbsp;&nbsp;`)\n};\n\nimport \"./index.scss\";\nimport * as React from \"react\";\nimport { Dispatch } from \"redux\";\nimport { FileCacheItem, getFileCacheItemDataUrl } from \"fsbox\";\n\nexport type TextEditorProps = {\n  fileCacheItem: FileCacheItem;\n  dispatch: Dispatch<any>;\n};\n\nexport class TextEditorWindow extends React.PureComponent<\nTextEditorProps\n> {\n  render() {\n    const { fileCacheItem } = this.props;\n    return (\n      <div className=\"m-text-editor\">\n        <div dangerouslySetInnerHTML={{__html: fileCacheItem && formatText(fileCacheItem.content.toString(\"utf8\"))}}>\n        </div>\n      </div>\n    );\n  }\n}\n\n\nconst formatText = (text: string) => {\n  return text.replace(/\\n/g, `<br>`).replace(/\\s/g, `&nbsp;&nbsp;`).replace(/\\t/g, `&nbsp;&nbsp;&nbsp;&nbsp;`)\n};\nimport \"./index.scss\";\nimport * as React from \"react\";\nimport { Dispatch } from \"redux\";\nimport { FileCacheItem, getFileCacheItemDataUrl } from \"fsbox\";\n\nexport type TextEditorProps = {\n  fileCacheItem: FileCacheItem;\n  dispatch: Dispatch<any>;\n};\n\nexport class TextEditorWindow extends React.PureComponent<\nTextEditorProps\n> {\n  render() {\n    const { fileCacheItem } = this.props;\n    return (\n      <div className=\"m-text-editor\">\n        <div dangerouslySetInnerHTML={{__html: fileCacheItem && formatText(fileCacheItem.content.toString(\"utf8\"))}}>\n        </div>\n      </div>\n    );\n  }\n}\n\n\nconst formatText = (text: string) => {\n  return text.replace(/\\n/g, `<br>`).replace(/\\s/g, `&nbsp;&nbsp;`).replace(/\\t/g, `&nbsp;&nbsp;&nbsp;&nbsp;`)\n};\nimport \"./index.scss\";\nimport * as React from \"react\";\nimport { Dispatch } from \"redux\";\nimport { FileCacheItem, getFileCacheItemDataUrl } from \"fsbox\";\n\nexport type TextEditorProps = {\n  fileCacheItem: FileCacheItem;\n  dispatch: Dispatch<any>;\n};\n\nexport class TextEditorWindow extends React.PureComponent<\nTextEditorProps\n> {\n  render() {\n    const { fileCacheItem } = this.props;\n    return (\n      <div className=\"m-text-editor\">\n        <div dangerouslySetInnerHTML={{__html: fileCacheItem && formatText(fileCacheItem.content.toString(\"utf8\"))}}>\n        </div>\n      </div>\n    );\n  }\n}\n\n\nconst formatText = (text: string) => {\n  return text.replace(/\\n/g, `<br>`).replace(/\\s/g, `&nbsp;&nbsp;`).replace(/\\t/g, `&nbsp;&nbsp;&nbsp;&nbsp;`)\n};\nimport \"./index.scss\";\nimport * as React from \"react\";\nimport { Dispatch } from \"redux\";\nimport { FileCacheItem, getFileCacheItemDataUrl } from \"fsbox\";\n\nexport type TextEditorProps = {\n  fileCacheItem: FileCacheItem;\n  dispatch: Dispatch<any>;\n};\n\nexport class TextEditorWindow extends React.PureComponent<\nTextEditorProps\n> {\n  render() {\n    const { fileCacheItem } = this.props;\n    return (\n      <div className=\"m-text-editor\">\n        <div dangerouslySetInnerHTML={{__html: fileCacheItem && formatText(fileCacheItem.content.toString(\"utf8\"))}}>\n        </div>\n      </div>\n    );\n  }\n}\n\n\nconst formatText = (text: string) => {\n  return text.replace(/\\n/g, `<br>`).replace(/\\s/g, `&nbsp;&nbsp;`).replace(/\\t/g, `&nbsp;&nbsp;&nbsp;&nbsp;`)\n};\nimport \"./index.scss\";\nimport * as React from \"react\";\nimport { Dispatch } from \"redux\";\nimport { FileCacheItem, getFileCacheItemDataUrl } from \"fsbox\";\n\nexport type TextEditorProps = {\n  fileCacheItem: FileCacheItem;\n  dispatch: Dispatch<any>;\n};\n\nexport class TextEditorWindow extends React.PureComponent<\nTextEditorProps\n> {\n  render() {\n    const { fileCacheItem } = this.props;\n    return (\n      <div className=\"m-text-editor\">\n        <div dangerouslySetInnerHTML={{__html: fileCacheItem && formatText(fileCacheItem.content.toString(\"utf8\"))}}>\n        </div>\n      </div>\n    );\n  }\n}\n\n\nconst formatText = (text: string) => {\n  return text.replace(/\\n/g, `<br>`).replace(/\\s/g, `&nbsp;&nbsp;`).replace(/\\t/g, `&nbsp;&nbsp;&nbsp;&nbsp;`)\n};\n",
-                  "style": {},
+                  "style": [],
                   "children": [],
                   "metadata": {}
                 }

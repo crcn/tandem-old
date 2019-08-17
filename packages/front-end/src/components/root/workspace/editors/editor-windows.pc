@@ -1,19 +1,44 @@
 {
   "id": "e6a0c2610",
-  "version": "0.0.5",
+  "version": "1.0.0",
   "metadata": {},
   "name": "module",
   "children": [
     {
       "label": "Editor Windows",
       "is": "div",
-      "style": {
-        "box-sizing": "border-box",
-        "display": "flex",
-        "flex-direction": "column",
-        "flex": "1"
-      },
-      "attributes": {},
+      "style": [
+        {
+          "key": "box-sizing",
+          "value": "border-box"
+        },
+        {
+          "key": "display",
+          "value": "flex"
+        },
+        {
+          "key": "flex-direction",
+          "value": "column"
+        },
+        {
+          "key": "flex",
+          "value": "1"
+        }
+      ],
+      "attributes": [
+        {
+          "key": "box-sizing"
+        },
+        {
+          "key": "display"
+        },
+        {
+          "key": "flex-direction"
+        },
+        {
+          "key": "flex"
+        }
+      ],
       "id": "5d6bd010465271",
       "name": "component",
       "children": [
@@ -22,13 +47,38 @@
           "variant": {},
           "is": "483373f987277",
           "name": "component-instance",
-          "attributes": {},
-          "style": {
-            "box-sizing": "border-box",
-            "display": "flex",
-            "flex-direction": "column",
-            "width": "100%"
-          },
+          "attributes": [
+            {
+              "key": "box-sizing"
+            },
+            {
+              "key": "display"
+            },
+            {
+              "key": "flex-direction"
+            },
+            {
+              "key": "width"
+            }
+          ],
+          "style": [
+            {
+              "key": "box-sizing",
+              "value": "border-box"
+            },
+            {
+              "key": "display",
+              "value": "flex"
+            },
+            {
+              "key": "flex-direction",
+              "value": "column"
+            },
+            {
+              "key": "width",
+              "value": "100%"
+            }
+          ],
           "children": [],
           "metadata": {
             "bounds": {
@@ -44,8 +94,8 @@
           "variant": {},
           "is": "483373f987277",
           "name": "component-instance",
-          "attributes": {},
-          "style": {},
+          "attributes": [],
+          "style": [],
           "children": [],
           "metadata": {
             "bounds": {

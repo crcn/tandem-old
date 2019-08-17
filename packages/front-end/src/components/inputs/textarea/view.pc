@@ -1,23 +1,72 @@
 {
   "id": "d65d17fd64",
-  "version": "0.0.6",
+  "version": "1.0.0",
   "metadata": {},
   "name": "module",
   "children": [
     {
       "label": "Textarea",
       "is": "textarea",
-      "style": {
-        "width": "100%",
-        "height": "150px",
-        "border-radius": "2px",
-        "box-sizing": "border-box",
-        "border-left": "0px none rgba(1, 0, 1, 0)",
-        "border-top": "0px none rgba(1, 0, 1, 0)",
-        "border-right": "0px none rgba(1, 0, 1, 0)",
-        "border-bottom": "0px none rgba(1, 0, 1, 0)"
-      },
-      "attributes": {},
+      "style": [
+        {
+          "key": "width",
+          "value": "100%"
+        },
+        {
+          "key": "height",
+          "value": "150px"
+        },
+        {
+          "key": "border-radius",
+          "value": "2px"
+        },
+        {
+          "key": "box-sizing",
+          "value": "border-box"
+        },
+        {
+          "key": "border-left",
+          "value": "0px none rgba(1, 0, 1, 0)"
+        },
+        {
+          "key": "border-top",
+          "value": "0px none rgba(1, 0, 1, 0)"
+        },
+        {
+          "key": "border-right",
+          "value": "0px none rgba(1, 0, 1, 0)"
+        },
+        {
+          "key": "border-bottom",
+          "value": "0px none rgba(1, 0, 1, 0)"
+        }
+      ],
+      "attributes": [
+        {
+          "key": "width"
+        },
+        {
+          "key": "height"
+        },
+        {
+          "key": "border-radius"
+        },
+        {
+          "key": "box-sizing"
+        },
+        {
+          "key": "border-left"
+        },
+        {
+          "key": "border-top"
+        },
+        {
+          "key": "border-right"
+        },
+        {
+          "key": "border-bottom"
+        }
+      ],
       "id": "d65d17fd4015",
       "name": "component",
       "children": [

@@ -14,12 +14,13 @@ import {
   filterNestedNodes,
   getTreeNodesByName,
   filterTreeNodeParents,
-  getNestedTreeNodeById
+  getNestedTreeNodeById,
+  KeyValuePair
 } from "tandem-common";
 import { uniq, isEqual } from "lodash";
 import { Dependency, DependencyGraph, updateGraphDependency } from "./graph";
 
-export const PAPERCLIP_MODULE_VERSION = "0.0.6";
+export const PAPERCLIP_MODULE_VERSION = "1.0.0";
 
 /*------------------------------------------
  * CONSTANTS
@@ -495,7 +496,7 @@ export type StyleMixins = {
 
 export type PCBaseVisibleNode<TName extends PCSourceTagNames> = {
   label?: string;
-  style: KeyValue<any>;
+  style: KeyValuePair[];
 
   // DEPRECATED - used styleMixins instead
   styleMixins?: StyleMixins;
@@ -509,7 +510,7 @@ export type PCBaseElementChild =
 
 export type PCBaseElement<TName extends PCSourceTagNames> = {
   is: string;
-  attributes: KeyValue<string>;
+  attributes: KeyValuePair[];
   children: PCBaseElementChild[];
 } & PCBaseVisibleNode<TName>;
 
@@ -664,7 +665,7 @@ export const getDerrivedPCLabel = (
 };
 
 export const createPCTextStyleMixin = (
-  style: KeyValue<string>,
+  style: KeyValuePair[],
   textValue: string,
   styleMixins?: StyleMixins,
   label: string = textValue
@@ -681,7 +682,7 @@ export const createPCTextStyleMixin = (
 });
 
 export const createPCElementStyleMixin = (
-  style: KeyValue<string>,
+  style: KeyValuePair[],
   styleMixins?: StyleMixins,
   label?: string
 ): PCElementStyleMixin => ({
@@ -1617,12 +1618,12 @@ export const getCSSVars = (value: string) => {
 
 // not usable yet -- maybe with computed later on
 export const computeStyleWithVars = (
-  style: KeyValue<string>,
+  style: KeyValuePair[],
   varMap: KeyValue<PCVariable>
 ) => {
   const expandedStyle = {};
-  for (const key in style) {
-    expandedStyle[key] = computeStyleValue(style[key], varMap);
+  for (const { key, value } of style) {
+    expandedStyle[key] = computeStyleValue(value, varMap);
   }
   return expandedStyle;
 };

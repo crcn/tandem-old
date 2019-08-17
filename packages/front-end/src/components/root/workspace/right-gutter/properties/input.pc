@@ -1,14 +1,14 @@
 {
   "id": "f9ffe26e5",
-  "version": "0.0.5",
+  "version": "1.0.0",
   "metadata": {},
   "name": "module",
   "children": [
     {
       "label": "Input Properties",
       "is": "div",
-      "style": {},
-      "attributes": {},
+      "style": [],
+      "attributes": [],
       "id": "6e2729d443544",
       "name": "component",
       "children": [
@@ -17,8 +17,8 @@
           "variant": {},
           "is": "7149f8192509",
           "name": "component-instance",
-          "attributes": {},
-          "style": {},
+          "attributes": [],
+          "style": [],
           "children": [
             {
               "id": "6e2729d443536",
@@ -83,8 +83,8 @@
                   "is": "7149f8199122",
                   "label": "placeholder input",
                   "name": "component-instance",
-                  "attributes": {},
-                  "style": {},
+                  "attributes": [],
+                  "style": [],
                   "children": [],
                   "metadata": {
                     "bounds": {
@@ -115,8 +115,8 @@
           "is": "7149f8192509",
           "label": "Labeled Input",
           "name": "component-instance",
-          "attributes": {},
-          "style": {},
+          "attributes": [],
+          "style": [],
           "children": [
             {
               "id": "842b4e5728829",
@@ -138,8 +138,8 @@
                   "is": "50e32bec2591",
                   "label": "input type input",
                   "name": "component-instance",
-                  "attributes": {},
-                  "style": {},
+                  "attributes": [],
+                  "style": [],
                   "children": [
                     {
                       "id": "842b4e5758712",

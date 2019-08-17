@@ -1,6 +1,6 @@
 {
   "id": "b64f6eab2",
-  "version": "0.0.5",
+  "version": "1.0.0",
   "metadata": {},
   "name": "module",
   "children": [
@@ -9,8 +9,8 @@
       "is": "60ea77f73",
       "label": "Controller Item",
       "name": "component-instance",
-      "attributes": {},
-      "style": {},
+      "attributes": [],
+      "style": [],
       "children": [],
       "metadata": {
         "bounds": {
@@ -28,18 +28,73 @@
     {
       "label": "Controller Item",
       "is": "div",
-      "style": {
-        "box-sizing": "border-box",
-        "display": "flex",
-        "cursor": "pointer",
-        "padding-left": "12px",
-        "padding-top": "6px",
-        "padding-right": "12px",
-        "padding-bottom": "6px",
-        "justify-content": "space-between",
-        "align-items": "center"
-      },
-      "attributes": {},
+      "style": [
+        {
+          "key": "box-sizing",
+          "value": "border-box"
+        },
+        {
+          "key": "display",
+          "value": "flex"
+        },
+        {
+          "key": "cursor",
+          "value": "pointer"
+        },
+        {
+          "key": "padding-left",
+          "value": "12px"
+        },
+        {
+          "key": "padding-top",
+          "value": "6px"
+        },
+        {
+          "key": "padding-right",
+          "value": "12px"
+        },
+        {
+          "key": "padding-bottom",
+          "value": "6px"
+        },
+        {
+          "key": "justify-content",
+          "value": "space-between"
+        },
+        {
+          "key": "align-items",
+          "value": "center"
+        }
+      ],
+      "attributes": [
+        {
+          "key": "box-sizing"
+        },
+        {
+          "key": "display"
+        },
+        {
+          "key": "cursor"
+        },
+        {
+          "key": "padding-left"
+        },
+        {
+          "key": "padding-top"
+        },
+        {
+          "key": "padding-right"
+        },
+        {
+          "key": "padding-bottom"
+        },
+        {
+          "key": "justify-content"
+        },
+        {
+          "key": "align-items"
+        }
+      ],
       "id": "60ea77f73",
       "name": "component",
       "children": [
@@ -48,7 +103,7 @@
           "name": "text",
           "label": "Label",
           "value": "./controller.tsx",
-          "style": {},
+          "style": [],
           "children": [],
           "metadata": {},
           "styleMixins": {
@@ -61,11 +116,24 @@
           "id": "babf9bd55",
           "is": "f89d0ee72498",
           "name": "component-instance",
-          "attributes": {},
-          "style": {
-            "display": "none",
-            "height": "9px"
-          },
+          "attributes": [
+            {
+              "key": "display"
+            },
+            {
+              "key": "height"
+            }
+          ],
+          "style": [
+            {
+              "key": "display",
+              "value": "none"
+            },
+            {
+              "key": "height",
+              "value": "9px"
+            }
+          ],
           "children": [],
           "metadata": {
             "bounds": {

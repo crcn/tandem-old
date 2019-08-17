@@ -1,23 +1,79 @@
 {
   "id": "2e50685a82",
+  "version": "1.0.0",
+  "metadata": {},
   "name": "module",
-  "version": "0.0.6",
   "children": [
     {
       "label": "starter kit form options",
       "is": "div",
-      "style": {
-        "padding-left": "12px",
-        "padding-top": "12px",
-        "padding-right": "12px",
-        "padding-bottom": "12px",
-        "max-width": "300px",
-        "margin-right": "auto",
-        "margin-left": "auto",
-        "position": "relative",
-        "top": "20%"
-      },
-      "attributes": {},
+      "style": [
+        {
+          "key": "padding-left",
+          "value": "12px"
+        },
+        {
+          "key": "padding-top",
+          "value": "12px"
+        },
+        {
+          "key": "padding-right",
+          "value": "12px"
+        },
+        {
+          "key": "padding-bottom",
+          "value": "12px"
+        },
+        {
+          "key": "max-width",
+          "value": "300px"
+        },
+        {
+          "key": "margin-right",
+          "value": "auto"
+        },
+        {
+          "key": "margin-left",
+          "value": "auto"
+        },
+        {
+          "key": "position",
+          "value": "relative"
+        },
+        {
+          "key": "top",
+          "value": "20%"
+        }
+      ],
+      "attributes": [
+        {
+          "key": "padding-left"
+        },
+        {
+          "key": "padding-top"
+        },
+        {
+          "key": "padding-right"
+        },
+        {
+          "key": "padding-bottom"
+        },
+        {
+          "key": "max-width"
+        },
+        {
+          "key": "margin-right"
+        },
+        {
+          "key": "margin-left"
+        },
+        {
+          "key": "position"
+        },
+        {
+          "key": "top"
+        }
+      ],
       "id": "c6acc7ee930",
       "name": "component",
       "children": [
@@ -26,23 +82,48 @@
           "label": "Element",
           "is": "div",
           "name": "element",
-          "attributes": {},
-          "style": {
-            "box-sizing": "border-box",
-            "display": "block"
-          },
+          "attributes": [
+            {
+              "key": "box-sizing"
+            },
+            {
+              "key": "display"
+            }
+          ],
+          "style": [
+            {
+              "key": "box-sizing",
+              "value": "border-box"
+            },
+            {
+              "key": "display",
+              "value": "block"
+            }
+          ],
           "children": [
             {
               "id": "43b7c711276",
               "name": "text",
               "label": "Title",
               "value": "New TYPE Project",
-              "style": {
-                "padding-bottom": "12px",
-                "display": "inline-block",
-                "font-size": "18px",
-                "font-weight": "600"
-              },
+              "style": [
+                {
+                  "key": "padding-bottom",
+                  "value": "12px"
+                },
+                {
+                  "key": "display",
+                  "value": "inline-block"
+                },
+                {
+                  "key": "font-size",
+                  "value": "18px"
+                },
+                {
+                  "key": "font-weight",
+                  "value": "600"
+                }
+              ],
               "children": [],
               "metadata": {},
               "styleMixins": {
@@ -59,10 +140,17 @@
           "is": "ac29cd45169",
           "label": "React start kit options form",
           "name": "component-instance",
-          "attributes": {},
-          "style": {
-            "display": "none"
-          },
+          "attributes": [
+            {
+              "key": "display"
+            }
+          ],
+          "style": [
+            {
+              "key": "display",
+              "value": "none"
+            }
+          ],
           "children": [],
           "metadata": {
             "bounds": {
@@ -79,8 +167,8 @@
           "is": "7149f8192509",
           "label": "Labeled Input",
           "name": "component-instance",
-          "attributes": {},
-          "style": {},
+          "attributes": [],
+          "style": [],
           "children": [
             {
               "slotId": "e73029b416045",
@@ -91,23 +179,41 @@
                   "label": "Element",
                   "is": "div",
                   "name": "element",
-                  "attributes": {},
-                  "style": {
-                    "box-sizing": "border-box",
-                    "display": "flex"
-                  },
+                  "attributes": [
+                    {
+                      "key": "box-sizing"
+                    },
+                    {
+                      "key": "display"
+                    }
+                  ],
+                  "style": [
+                    {
+                      "key": "box-sizing",
+                      "value": "border-box"
+                    },
+                    {
+                      "key": "display",
+                      "value": "flex"
+                    }
+                  ],
                   "children": [
                     {
                       "id": "c6acc7ee1095",
                       "is": "7149f8199122",
                       "label": "directory input",
                       "name": "component-instance",
-                      "attributes": {
-                        "placeholder": "path/to/directory"
-                      },
-                      "style": {
-                        "margin-right": "12px"
-                      },
+                      "attributes": [
+                        {
+                          "key": "margin-right"
+                        }
+                      ],
+                      "style": [
+                        {
+                          "key": "margin-right",
+                          "value": "12px"
+                        }
+                      ],
                       "children": [],
                       "metadata": {
                         "bounds": {
@@ -124,8 +230,8 @@
                       "is": "9f364d2139415",
                       "label": "browse button",
                       "name": "component-instance",
-                      "attributes": {},
-                      "style": {},
+                      "attributes": [],
+                      "style": [],
                       "children": [
                         {
                           "id": "c6acc7ee1387",
@@ -183,21 +289,46 @@
           "label": "Element",
           "is": "div",
           "name": "element",
-          "attributes": {},
-          "style": {
-            "box-sizing": "border-box",
-            "display": "flex",
-            "justify-content": "flex-end",
-            "padding-top": "6px"
-          },
+          "attributes": [
+            {
+              "key": "box-sizing"
+            },
+            {
+              "key": "display"
+            },
+            {
+              "key": "justify-content"
+            },
+            {
+              "key": "padding-top"
+            }
+          ],
+          "style": [
+            {
+              "key": "box-sizing",
+              "value": "border-box"
+            },
+            {
+              "key": "display",
+              "value": "flex"
+            },
+            {
+              "key": "justify-content",
+              "value": "flex-end"
+            },
+            {
+              "key": "padding-top",
+              "value": "6px"
+            }
+          ],
           "children": [
             {
               "id": "c6acc7ee999",
               "is": "9f364d2139415",
               "label": "create project button",
               "name": "component-instance",
-              "attributes": {},
-              "style": {},
+              "attributes": [],
+              "style": [],
               "children": [
                 {
                   "id": "c6acc7ee1003",
@@ -253,19 +384,32 @@
       "label": "Element",
       "is": "div",
       "name": "element",
-      "attributes": {},
-      "style": {
-        "box-sizing": "border-box",
-        "display": "block"
-      },
+      "attributes": [
+        {
+          "key": "box-sizing"
+        },
+        {
+          "key": "display"
+        }
+      ],
+      "style": [
+        {
+          "key": "box-sizing",
+          "value": "border-box"
+        },
+        {
+          "key": "display",
+          "value": "block"
+        }
+      ],
       "children": [
         {
           "id": "43b7c711198",
           "is": "c6acc7ee930",
           "label": "starter kit form options",
           "name": "component-instance",
-          "attributes": {},
-          "style": {},
+          "attributes": [],
+          "style": [],
           "children": [],
           "metadata": {
             "bounds": {
@@ -287,6 +431,5 @@
         }
       }
     }
-  ],
-  "metadata": {}
+  ]
 }

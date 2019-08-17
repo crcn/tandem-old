@@ -1,16 +1,23 @@
 {
   "id": "808486bb69",
-  "version": "0.0.6",
+  "version": "1.0.0",
   "metadata": {},
   "name": "module",
   "children": [
     {
       "label": "Color Input",
       "is": "div",
-      "style": {
-        "position": "relative"
-      },
-      "attributes": {},
+      "style": [
+        {
+          "key": "position",
+          "value": "relative"
+        }
+      ],
+      "attributes": [
+        {
+          "key": "position"
+        }
+      ],
       "id": "d227ff68826768",
       "name": "component",
       "children": [
@@ -19,10 +26,17 @@
           "variant": {},
           "is": "9b7b527f175442",
           "name": "component-instance",
-          "attributes": {},
-          "style": {
-            "position": "absolute"
-          },
+          "attributes": [
+            {
+              "key": "position"
+            }
+          ],
+          "style": [
+            {
+              "key": "position",
+              "value": "absolute"
+            }
+          ],
           "children": [
             {
               "id": "ddec6a12145779",
@@ -45,17 +59,66 @@
                   "label": "button",
                   "is": "div",
                   "name": "element",
-                  "attributes": {},
-                  "style": {
-                    "padding": "4px 8px",
-                    "border-radius": "2px",
-                    "box-sizing": "border-box",
-                    "background": "red",
-                    "width": "100%",
-                    "height": "22px",
-                    "cursor": "pointer",
-                    "display": "block"
-                  },
+                  "attributes": [
+                    {
+                      "key": "padding"
+                    },
+                    {
+                      "key": "border-radius"
+                    },
+                    {
+                      "key": "box-sizing"
+                    },
+                    {
+                      "key": "background"
+                    },
+                    {
+                      "key": "width"
+                    },
+                    {
+                      "key": "height"
+                    },
+                    {
+                      "key": "cursor"
+                    },
+                    {
+                      "key": "display"
+                    }
+                  ],
+                  "style": [
+                    {
+                      "key": "padding",
+                      "value": "4px 8px"
+                    },
+                    {
+                      "key": "border-radius",
+                      "value": "2px"
+                    },
+                    {
+                      "key": "box-sizing",
+                      "value": "border-box"
+                    },
+                    {
+                      "key": "background",
+                      "value": "red"
+                    },
+                    {
+                      "key": "width",
+                      "value": "100%"
+                    },
+                    {
+                      "key": "height",
+                      "value": "22px"
+                    },
+                    {
+                      "key": "cursor",
+                      "value": "pointer"
+                    },
+                    {
+                      "key": "display",
+                      "value": "block"
+                    }
+                  ],
                   "children": [],
                   "metadata": {},
                   "styleMixins": {
@@ -80,8 +143,8 @@
                       "variant": {},
                       "is": "67e386c762",
                       "name": "component-instance",
-                      "attributes": {},
-                      "style": {},
+                      "attributes": [],
+                      "style": [],
                       "children": [],
                       "metadata": {
                         "bounds": {
@@ -127,14 +190,45 @@
           "label": "popdown",
           "is": "div",
           "name": "element",
-          "attributes": {},
-          "style": {
-            "position": "absolute",
-            "top": "20px",
-            "right": "0",
-            "z-index": "1024",
-            "display": "none"
-          },
+          "attributes": [
+            {
+              "key": "position"
+            },
+            {
+              "key": "top"
+            },
+            {
+              "key": "right"
+            },
+            {
+              "key": "z-index"
+            },
+            {
+              "key": "display"
+            }
+          ],
+          "style": [
+            {
+              "key": "position",
+              "value": "absolute"
+            },
+            {
+              "key": "top",
+              "value": "20px"
+            },
+            {
+              "key": "right",
+              "value": "0"
+            },
+            {
+              "key": "z-index",
+              "value": "1024"
+            },
+            {
+              "key": "display",
+              "value": "none"
+            }
+          ],
           "children": [],
           "metadata": {
             "bounds": {
@@ -164,20 +258,39 @@
       "label": "Preview",
       "is": "div",
       "name": "element",
-      "attributes": {},
-      "style": {},
+      "attributes": [],
+      "style": [],
       "children": [
         {
           "id": "d227ff68923389",
           "variant": {},
           "is": "d227ff68826768",
           "name": "component-instance",
-          "attributes": {},
-          "style": {
-            "width": "100px",
-            "top": "100px",
-            "left": "200px"
-          },
+          "attributes": [
+            {
+              "key": "width"
+            },
+            {
+              "key": "top"
+            },
+            {
+              "key": "left"
+            }
+          ],
+          "style": [
+            {
+              "key": "width",
+              "value": "100px"
+            },
+            {
+              "key": "top",
+              "value": "100px"
+            },
+            {
+              "key": "left",
+              "value": "200px"
+            }
+          ],
           "children": [
             {
               "id": "d227ff681275565",

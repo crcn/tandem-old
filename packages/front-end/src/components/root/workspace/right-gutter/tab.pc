@@ -1,25 +1,86 @@
 {
   "id": "664248a04",
-  "version": "0.0.5",
+  "version": "1.0.0",
   "metadata": {},
   "name": "module",
   "children": [
     {
       "label": "Right Gutter Tab",
       "is": "div",
-      "style": {
-        "text-transform": "uppercase",
-        "text-align": "center",
-        "width": "100%",
-        "padding": "8px",
-        "cursor": "pointer",
-        "background": "var(--51588fd610365)",
-        "padding-top": "10px",
-        "padding-bottom": "10px",
-        "user-select": "none",
-        "font-weight": "600"
-      },
-      "attributes": {},
+      "style": [
+        {
+          "key": "text-transform",
+          "value": "uppercase"
+        },
+        {
+          "key": "text-align",
+          "value": "center"
+        },
+        {
+          "key": "width",
+          "value": "100%"
+        },
+        {
+          "key": "padding",
+          "value": "8px"
+        },
+        {
+          "key": "cursor",
+          "value": "pointer"
+        },
+        {
+          "key": "background",
+          "value": "var(--51588fd610365)"
+        },
+        {
+          "key": "padding-top",
+          "value": "10px"
+        },
+        {
+          "key": "padding-bottom",
+          "value": "10px"
+        },
+        {
+          "key": "user-select",
+          "value": "none"
+        },
+        {
+          "key": "font-weight",
+          "value": "600"
+        }
+      ],
+      "attributes": [
+        {
+          "key": "text-transform"
+        },
+        {
+          "key": "text-align"
+        },
+        {
+          "key": "width"
+        },
+        {
+          "key": "padding"
+        },
+        {
+          "key": "cursor"
+        },
+        {
+          "key": "background"
+        },
+        {
+          "key": "padding-top"
+        },
+        {
+          "key": "padding-bottom"
+        },
+        {
+          "key": "user-select"
+        },
+        {
+          "key": "font-weight"
+        }
+      ],
       "id": "5d7d4069129476",
       "name": "component",
       "children": [
@@ -28,10 +89,16 @@
           "name": "text",
           "label": "label",
           "value": "tab",
-          "style": {
-            "font-size": "10px",
-            "cursor": "pointer"
-          },
+          "style": [
+            {
+              "key": "font-size",
+              "value": "10px"
+            },
+            {
+              "key": "cursor",
+              "value": "pointer"
+            }
+          ],
           "children": [],
           "metadata": {},
           "styleMixins": {
@@ -75,8 +142,8 @@
       "id": "a0c265a6155173",
       "is": "97a34b151010442",
       "name": "component-instance",
-      "attributes": {},
-      "style": {},
+      "attributes": [],
+      "style": [],
       "children": [
         {
           "id": "a0c265a6184739",

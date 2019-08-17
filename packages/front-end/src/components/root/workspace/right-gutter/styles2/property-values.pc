@@ -1,17 +1,37 @@
 {
   "id": "8fc54ef3114",
+  "version": "1.0.0",
+  "metadata": {},
   "name": "module",
-  "version": "0.0.6",
   "children": [
     {
       "label": "style2 color prop value",
       "is": "div",
-      "style": {
-        "box-sizing": "border-box",
-        "display": "inline-flex",
-        "align-items": "center"
-      },
-      "attributes": {},
+      "style": [
+        {
+          "key": "box-sizing",
+          "value": "border-box"
+        },
+        {
+          "key": "display",
+          "value": "inline-flex"
+        },
+        {
+          "key": "align-items",
+          "value": "center"
+        }
+      ],
+      "attributes": [
+        {
+          "key": "box-sizing"
+        },
+        {
+          "key": "display"
+        },
+        {
+          "key": "align-items"
+        }
+      ],
       "id": "8f350e385153",
       "styleMixins": {
         "dc3b39eb1275": {
@@ -25,13 +45,38 @@
           "is": "8f350e384981",
           "label": "Color picker 2",
           "name": "component-instance",
-          "attributes": {},
-          "style": {
-            "flex-shrink": "0",
-            "width": "8px",
-            "position": "relative",
-            "top": "1px"
-          },
+          "attributes": [
+            {
+              "key": "flex-shrink"
+            },
+            {
+              "key": "width"
+            },
+            {
+              "key": "position"
+            },
+            {
+              "key": "top"
+            }
+          ],
+          "style": [
+            {
+              "key": "flex-shrink",
+              "value": "0"
+            },
+            {
+              "key": "width",
+              "value": "8px"
+            },
+            {
+              "key": "position",
+              "value": "relative"
+            },
+            {
+              "key": "top",
+              "value": "1px"
+            }
+          ],
           "children": [
             {
               "id": "8f350e385649",
@@ -78,11 +123,20 @@
           "name": "text",
           "label": "Text",
           "value": "rgba(0, 255, 10, 5)",
-          "style": {
-            "font-size": "10px",
-            "line-height": "",
-            "margin-left": "2px"
-          },
+          "style": [
+            {
+              "key": "font-size",
+              "value": "10px"
+            },
+            {
+              "key": "line-height",
+              "value": ""
+            },
+            {
+              "key": "margin-left",
+              "value": "2px"
+            }
+          ],
           "children": [],
           "metadata": {}
         }
@@ -100,12 +154,31 @@
     {
       "label": "Color picker 2",
       "is": "div",
-      "style": {
-        "box-sizing": "border-box",
-        "display": "inline-block",
-        "flex-shrink": "0"
-      },
-      "attributes": {},
+      "style": [
+        {
+          "key": "box-sizing",
+          "value": "border-box"
+        },
+        {
+          "key": "display",
+          "value": "inline-block"
+        },
+        {
+          "key": "flex-shrink",
+          "value": "0"
+        }
+      ],
+      "attributes": [
+        {
+          "key": "box-sizing"
+        },
+        {
+          "key": "display"
+        },
+        {
+          "key": "flex-shrink"
+        }
+      ],
       "id": "8f350e384981",
       "name": "component",
       "children": [
@@ -114,12 +187,31 @@
           "is": "9b7b527f175442",
           "label": "button",
           "name": "component-instance",
-          "attributes": {},
-          "style": {
-            "color": "rgba(166, 40, 40, 1)",
-            "background-image": "",
-            "display": "inline-block"
-          },
+          "attributes": [
+            {
+              "key": "color"
+            },
+            {
+              "key": "background-image"
+            },
+            {
+              "key": "display"
+            }
+          ],
+          "style": [
+            {
+              "key": "color",
+              "value": "rgba(166, 40, 40, 1)"
+            },
+            {
+              "key": "background-image",
+              "value": ""
+            },
+            {
+              "key": "display",
+              "value": "inline-block"
+            }
+          ],
           "children": [
             {
               "slotId": "c00d8561361",
@@ -130,24 +222,115 @@
                   "label": "Element",
                   "is": "div",
                   "name": "element",
-                  "attributes": {},
-                  "style": {
-                    "box-sizing": "border-box",
-                    "display": "block",
-                    "width": "8px",
-                    "border-top-left-radius": "4px",
-                    "border-top-right-radius": "4px",
-                    "border-bottom-left-radius": "4px",
-                    "border-bottom-right-radius": "4px",
-                    "border-left": "1px solid",
-                    "border-top": "1px solid",
-                    "border-right": "1px solid",
-                    "border-bottom": "1px solid",
-                    "background-image": "linear-gradient(rgba(154, 54, 247, 1), rgba(154, 54, 247, 1))",
-                    "color": "rgba(112, 40, 166, 1)",
-                    "height": "0.8em",
-                    "flex-shrink": "0"
-                  },
+                  "attributes": [
+                    {
+                      "key": "box-sizing"
+                    },
+                    {
+                      "key": "display"
+                    },
+                    {
+                      "key": "width"
+                    },
+                    {
+                      "key": "border-top-left-radius"
+                    },
+                    {
+                      "key": "border-top-right-radius"
+                    },
+                    {
+                      "key": "border-bottom-left-radius"
+                    },
+                    {
+                      "key": "border-bottom-right-radius"
+                    },
+                    {
+                      "key": "border-left"
+                    },
+                    {
+                      "key": "border-top"
+                    },
+                    {
+                      "key": "border-right"
+                    },
+                    {
+                      "key": "border-bottom"
+                    },
+                    {
+                      "key": "background-image"
+                    },
+                    {
+                      "key": "color"
+                    },
+                    {
+                      "key": "height"
+                    },
+                    {
+                      "key": "flex-shrink"
+                    }
+                  ],
+                  "style": [
+                    {
+                      "key": "box-sizing",
+                      "value": "border-box"
+                    },
+                    {
+                      "key": "display",
+                      "value": "block"
+                    },
+                    {
+                      "key": "width",
+                      "value": "8px"
+                    },
+                    {
+                      "key": "border-top-left-radius",
+                      "value": "4px"
+                    },
+                    {
+                      "key": "border-top-right-radius",
+                      "value": "4px"
+                    },
+                    {
+                      "key": "border-bottom-left-radius",
+                      "value": "4px"
+                    },
+                    {
+                      "key": "border-bottom-right-radius",
+                      "value": "4px"
+                    },
+                    {
+                      "key": "border-left",
+                      "value": "1px solid"
+                    },
+                    {
+                      "key": "border-top",
+                      "value": "1px solid"
+                    },
+                    {
+                      "key": "border-right",
+                      "value": "1px solid"
+                    },
+                    {
+                      "key": "border-bottom",
+                      "value": "1px solid"
+                    },
+                    {
+                      "key": "background-image",
+                      "value": "linear-gradient(rgba(154, 54, 247, 1), rgba(154, 54, 247, 1))"
+                    },
+                    {
+                      "key": "color",
+                      "value": "rgba(112, 40, 166, 1)"
+                    },
+                    {
+                      "key": "height",
+                      "value": "0.8em"
+                    },
+                    {
+                      "key": "flex-shrink",
+                      "value": "0"
+                    }
+                  ],
                   "children": [],
                   "metadata": {}
                 }
@@ -180,11 +363,24 @@
     {
       "label": "style2 list prop value",
       "is": "div",
-      "style": {
-        "box-sizing": "border-box",
-        "display": "block"
-      },
-      "attributes": {},
+      "style": [
+        {
+          "key": "box-sizing",
+          "value": "border-box"
+        },
+        {
+          "key": "display",
+          "value": "block"
+        }
+      ],
+      "attributes": [
+        {
+          "key": "box-sizing"
+        },
+        {
+          "key": "display"
+        }
+      ],
       "id": "8f350e385491",
       "name": "component",
       "children": [
@@ -193,12 +389,31 @@
           "is": "50e32bec2591",
           "label": "Dropdown",
           "name": "component-instance",
-          "attributes": {},
-          "style": {
-            "display": "inline-block",
-            "width": "",
-            "background-image": ""
-          },
+          "attributes": [
+            {
+              "key": "display"
+            },
+            {
+              "key": "width"
+            },
+            {
+              "key": "background-image"
+            }
+          ],
+          "style": [
+            {
+              "key": "display",
+              "value": "inline-block"
+            },
+            {
+              "key": "width",
+              "value": ""
+            },
+            {
+              "key": "background-image",
+              "value": ""
+            }
+          ],
           "children": [
             {
               "id": "8f350e385566",
@@ -264,6 +479,5 @@
       },
       "variant": {}
     }
-  ],
-  "metadata": {}
+  ]
 }

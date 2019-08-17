@@ -1,22 +1,72 @@
 {
   "id": "4ea7a0b596",
+  "version": "1.0.0",
+  "metadata": {},
   "name": "module",
-  "version": "0.0.6",
   "children": [
     {
       "label": "Side Panel",
       "is": "div",
-      "style": {
-        "min-width": "300px",
-        "min-height": "200px",
-        "background": "var(--bc891e755312)",
-        "border-left": "1px solid var(--d8f6340b1442)",
-        "border-top": "1px solid var(--d8f6340b1442)",
-        "border-right": "1px solid var(--d8f6340b1442)",
-        "border-bottom": "1px solid var(--d8f6340b1442)",
-        "position": "relative"
-      },
-      "attributes": {},
+      "style": [
+        {
+          "key": "min-width",
+          "value": "300px"
+        },
+        {
+          "key": "min-height",
+          "value": "200px"
+        },
+        {
+          "key": "background",
+          "value": "var(--bc891e755312)"
+        },
+        {
+          "key": "border-left",
+          "value": "1px solid var(--d8f6340b1442)"
+        },
+        {
+          "key": "border-top",
+          "value": "1px solid var(--d8f6340b1442)"
+        },
+        {
+          "key": "border-right",
+          "value": "1px solid var(--d8f6340b1442)"
+        },
+        {
+          "key": "border-bottom",
+          "value": "1px solid var(--d8f6340b1442)"
+        },
+        {
+          "key": "position",
+          "value": "relative"
+        }
+      ],
+      "attributes": [
+        {
+          "key": "min-width"
+        },
+        {
+          "key": "min-height"
+        },
+        {
+          "key": "background"
+        },
+        {
+          "key": "border-left"
+        },
+        {
+          "key": "border-top"
+        },
+        {
+          "key": "border-right"
+        },
+        {
+          "key": "border-bottom"
+        },
+        {
+          "key": "position"
+        }
+      ],
       "id": "5673c5c2846",
       "name": "component",
       "children": [
@@ -25,11 +75,20 @@
           "name": "text",
           "label": "close button",
           "value": "×\n",
-          "style": {
-            "position": "absolute",
-            "font-size": "24px",
-            "cursor": "pointer"
-          },
+          "style": [
+            {
+              "key": "position",
+              "value": "absolute"
+            },
+            {
+              "key": "font-size",
+              "value": "24px"
+            },
+            {
+              "key": "cursor",
+              "value": "pointer"
+            }
+          ],
           "children": [],
           "metadata": {},
           "styleMixins": {
@@ -104,15 +163,52 @@
           "label": "Content",
           "is": "div",
           "name": "element",
-          "attributes": {},
-          "style": {
-            "box-sizing": "border-box",
-            "display": "block",
-            "padding-left": "0px",
-            "padding-top": "0px",
-            "padding-right": "0px",
-            "padding-bottom": "0px"
-          },
+          "attributes": [
+            {
+              "key": "box-sizing"
+            },
+            {
+              "key": "display"
+            },
+            {
+              "key": "padding-left"
+            },
+            {
+              "key": "padding-top"
+            },
+            {
+              "key": "padding-right"
+            },
+            {
+              "key": "padding-bottom"
+            }
+          ],
+          "style": [
+            {
+              "key": "box-sizing",
+              "value": "border-box"
+            },
+            {
+              "key": "display",
+              "value": "block"
+            },
+            {
+              "key": "padding-left",
+              "value": "0px"
+            },
+            {
+              "key": "padding-top",
+              "value": "0px"
+            },
+            {
+              "key": "padding-right",
+              "value": "0px"
+            },
+            {
+              "key": "padding-bottom",
+              "value": "0px"
+            }
+          ],
           "children": [
             {
               "id": "5673c5c21322",
@@ -122,14 +218,32 @@
                   "name": "text",
                   "label": "Content",
                   "value": "Content here",
-                  "style": {
-                    "padding-left": "12px",
-                    "padding-top": "12px",
-                    "padding-right": "12px",
-                    "padding-bottom": "12px",
-                    "box-sizing": "content-box",
-                    "display": "inline-block"
-                  },
+                  "style": [
+                    {
+                      "key": "padding-left",
+                      "value": "12px"
+                    },
+                    {
+                      "key": "padding-top",
+                      "value": "12px"
+                    },
+                    {
+                      "key": "padding-right",
+                      "value": "12px"
+                    },
+                    {
+                      "key": "padding-bottom",
+                      "value": "12px"
+                    },
+                    {
+                      "key": "box-sizing",
+                      "value": "content-box"
+                    },
+                    {
+                      "key": "display",
+                      "value": "inline-block"
+                    }
+                  ],
                   "children": [],
                   "metadata": {},
                   "styleMixins": {
@@ -206,12 +320,31 @@
     {
       "label": "side panel button",
       "is": "div",
-      "style": {
-        "box-sizing": "border-box",
-        "display": "block",
-        "cursor": "pointer"
-      },
-      "attributes": {},
+      "style": [
+        {
+          "key": "box-sizing",
+          "value": "border-box"
+        },
+        {
+          "key": "display",
+          "value": "block"
+        },
+        {
+          "key": "cursor",
+          "value": "pointer"
+        }
+      ],
+      "attributes": [
+        {
+          "key": "box-sizing"
+        },
+        {
+          "key": "display"
+        },
+        {
+          "key": "cursor"
+        }
+      ],
       "id": "5673c5c21327",
       "name": "component",
       "children": [
@@ -220,8 +353,8 @@
           "is": "9b7b527f175442",
           "label": "Popover",
           "name": "component-instance",
-          "attributes": {},
-          "style": {},
+          "attributes": [],
+          "style": [],
           "children": [
             {
               "slotId": "c00d8561361",
@@ -232,11 +365,24 @@
                   "label": "button outer",
                   "is": "div",
                   "name": "element",
-                  "attributes": {},
-                  "style": {
-                    "box-sizing": "border-box",
-                    "display": "block"
-                  },
+                  "attributes": [
+                    {
+                      "key": "box-sizing"
+                    },
+                    {
+                      "key": "display"
+                    }
+                  ],
+                  "style": [
+                    {
+                      "key": "box-sizing",
+                      "value": "border-box"
+                    },
+                    {
+                      "key": "display",
+                      "value": "block"
+                    }
+                  ],
                   "children": [
                     {
                       "id": "5673c5c21336",
@@ -246,7 +392,7 @@
                           "name": "text",
                           "label": "Text",
                           "value": "Button",
-                          "style": {},
+                          "style": [],
                           "children": [],
                           "metadata": {},
                           "styleMixins": {
@@ -312,25 +458,69 @@
       "label": "Preview",
       "is": "div",
       "name": "element",
-      "attributes": {},
-      "style": {
-        "box-sizing": "border-box",
-        "display": "block",
-        "padding-left": "20px",
-        "padding-top": "20px",
-        "padding-right": "20px",
-        "padding-bottom": "20px"
-      },
+      "attributes": [
+        {
+          "key": "box-sizing"
+        },
+        {
+          "key": "display"
+        },
+        {
+          "key": "padding-left"
+        },
+        {
+          "key": "padding-top"
+        },
+        {
+          "key": "padding-right"
+        },
+        {
+          "key": "padding-bottom"
+        }
+      ],
+      "style": [
+        {
+          "key": "box-sizing",
+          "value": "border-box"
+        },
+        {
+          "key": "display",
+          "value": "block"
+        },
+        {
+          "key": "padding-left",
+          "value": "20px"
+        },
+        {
+          "key": "padding-top",
+          "value": "20px"
+        },
+        {
+          "key": "padding-right",
+          "value": "20px"
+        },
+        {
+          "key": "padding-bottom",
+          "value": "20px"
+        }
+      ],
       "children": [
         {
           "id": "1f58a7a8213",
           "is": "5673c5c2846",
           "label": "Side Panel",
           "name": "component-instance",
-          "attributes": {},
-          "style": {
-            "margin-bottom": "10px"
-          },
+          "attributes": [
+            {
+              "key": "margin-bottom"
+            }
+          ],
+          "style": [
+            {
+              "key": "margin-bottom",
+              "value": "10px"
+            }
+          ],
           "children": [],
           "metadata": {
             "bounds": {
@@ -349,8 +539,8 @@
           "is": "5673c5c2846",
           "label": "Side Panel",
           "name": "component-instance",
-          "attributes": {},
-          "style": {},
+          "attributes": [],
+          "style": [],
           "children": [],
           "metadata": {
             "bounds": {
@@ -374,6 +564,5 @@
         }
       }
     }
-  ],
-  "metadata": {}
+  ]
 }

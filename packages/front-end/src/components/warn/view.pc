@@ -1,18 +1,37 @@
 {
   "id": "5f48853318158",
-  "version": "0.0.5",
+  "version": "1.0.0",
   "metadata": {},
   "name": "module",
   "children": [
     {
       "label": "Experimental warning",
       "is": "div",
-      "style": {
-        "box-sizing": "border-box",
-        "display": "block",
-        "opacity": 0.459
-      },
-      "attributes": {},
+      "style": [
+        {
+          "key": "box-sizing",
+          "value": "border-box"
+        },
+        {
+          "key": "display",
+          "value": "block"
+        },
+        {
+          "key": "opacity",
+          "value": 0.459
+        }
+      ],
+      "attributes": [
+        {
+          "key": "box-sizing"
+        },
+        {
+          "key": "display"
+        },
+        {
+          "key": "opacity"
+        }
+      ],
       "id": "5f48853331665",
       "name": "component",
       "children": [
@@ -21,29 +40,108 @@
           "label": "Element",
           "is": "div",
           "name": "element",
-          "attributes": {},
-          "style": {
-            "box-sizing": "border-box",
-            "display": "block",
-            "color": "rgba(164, 145, 21, 1)",
-            "background": "rgba(238, 220, 82, 1)",
-            "padding-left": "8px",
-            "padding-top": "4px",
-            "padding-right": "4px",
-            "padding-bottom": "4px",
-            "border-bottom-left-radius": "2px",
-            "border-top-left-radius": "2px",
-            "border-top-right-radius": "2px",
-            "border-bottom-right-radius": "2px",
-            "border": "1px solid rgba(164, 145, 21, 1)"
-          },
+          "attributes": [
+            {
+              "key": "box-sizing"
+            },
+            {
+              "key": "display"
+            },
+            {
+              "key": "color"
+            },
+            {
+              "key": "background"
+            },
+            {
+              "key": "padding-left"
+            },
+            {
+              "key": "padding-top"
+            },
+            {
+              "key": "padding-right"
+            },
+            {
+              "key": "padding-bottom"
+            },
+            {
+              "key": "border-bottom-left-radius"
+            },
+            {
+              "key": "border-top-left-radius"
+            },
+            {
+              "key": "border-top-right-radius"
+            },
+            {
+              "key": "border-bottom-right-radius"
+            },
+            {
+              "key": "border"
+            }
+          ],
+          "style": [
+            {
+              "key": "box-sizing",
+              "value": "border-box"
+            },
+            {
+              "key": "display",
+              "value": "block"
+            },
+            {
+              "key": "color",
+              "value": "rgba(164, 145, 21, 1)"
+            },
+            {
+              "key": "background",
+              "value": "rgba(238, 220, 82, 1)"
+            },
+            {
+              "key": "padding-left",
+              "value": "8px"
+            },
+            {
+              "key": "padding-top",
+              "value": "4px"
+            },
+            {
+              "key": "padding-right",
+              "value": "4px"
+            },
+            {
+              "key": "padding-bottom",
+              "value": "4px"
+            },
+            {
+              "key": "border-bottom-left-radius",
+              "value": "2px"
+            },
+            {
+              "key": "border-top-left-radius",
+              "value": "2px"
+            },
+            {
+              "key": "border-top-right-radius",
+              "value": "2px"
+            },
+            {
+              "key": "border-bottom-right-radius",
+              "value": "2px"
+            },
+            {
+              "key": "border",
+              "value": "1px solid rgba(164, 145, 21, 1)"
+            }
+          ],
           "children": [
             {
               "id": "5f48853345174",
               "name": "text",
               "label": "Text",
               "value": "This is an experimental feature",
-              "style": {},
+              "style": [],
               "children": [],
               "metadata": {}
             }

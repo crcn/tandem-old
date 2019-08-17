@@ -1,17 +1,37 @@
 {
   "id": "2f74552e141",
+  "version": "1.0.0",
+  "metadata": {},
   "name": "module",
-  "version": "0.0.5",
   "children": [
     {
       "label": "Node overlay",
       "is": "div",
-      "style": {
-        "display": "block",
-        "position": "relative",
-        "box-shadow": "inset  0px 0px 0px 1px rgba(88, 185, 255, 1)"
-      },
-      "attributes": {},
+      "style": [
+        {
+          "key": "display",
+          "value": "block"
+        },
+        {
+          "key": "position",
+          "value": "relative"
+        },
+        {
+          "key": "box-shadow",
+          "value": "inset  0px 0px 0px 1px rgba(88, 185, 255, 1)"
+        }
+      ],
+      "attributes": [
+        {
+          "key": "display"
+        },
+        {
+          "key": "position"
+        },
+        {
+          "key": "box-shadow"
+        }
+      ],
       "id": "7a40476a1359",
       "name": "component",
       "children": [
@@ -20,34 +40,122 @@
           "label": "label container",
           "is": "div",
           "name": "element",
-          "attributes": {},
-          "style": {
-            "box-sizing": "border-box",
-            "display": "block",
-            "position": "absolute",
-            "white-space": "nowrap",
-            "bottom": "-25px",
-            "background": "rgba(88, 185, 255, 1)",
-            "border": "1px none rgba(230, 230, 230, 1)",
-            "padding-left": "8px",
-            "padding-top": "4px",
-            "padding-right": "8px",
-            "padding-bottom": "4px",
-            "right": "0px"
-          },
+          "attributes": [
+            {
+              "key": "box-sizing"
+            },
+            {
+              "key": "display"
+            },
+            {
+              "key": "position"
+            },
+            {
+              "key": "white-space"
+            },
+            {
+              "key": "bottom"
+            },
+            {
+              "key": "background"
+            },
+            {
+              "key": "border"
+            },
+            {
+              "key": "padding-left"
+            },
+            {
+              "key": "padding-top"
+            },
+            {
+              "key": "padding-right"
+            },
+            {
+              "key": "padding-bottom"
+            },
+            {
+              "key": "right"
+            }
+          ],
+          "style": [
+            {
+              "key": "box-sizing",
+              "value": "border-box"
+            },
+            {
+              "key": "display",
+              "value": "block"
+            },
+            {
+              "key": "position",
+              "value": "absolute"
+            },
+            {
+              "key": "white-space",
+              "value": "nowrap"
+            },
+            {
+              "key": "bottom",
+              "value": "-25px"
+            },
+            {
+              "key": "background",
+              "value": "rgba(88, 185, 255, 1)"
+            },
+            {
+              "key": "border",
+              "value": "1px none rgba(230, 230, 230, 1)"
+            },
+            {
+              "key": "padding-left",
+              "value": "8px"
+            },
+            {
+              "key": "padding-top",
+              "value": "4px"
+            },
+            {
+              "key": "padding-right",
+              "value": "8px"
+            },
+            {
+              "key": "padding-bottom",
+              "value": "4px"
+            },
+            {
+              "key": "right",
+              "value": "0px"
+            }
+          ],
           "children": [
             {
               "id": "c2bda15b463",
               "name": "text",
               "label": "label",
               "value": "100 x 400",
-              "style": {
-                "color": "rgba(255, 255, 255, 1)",
-                "font-size": "10px",
-                "display": "inline-block",
-                "letter-spacing": "0.04em",
-                "font-weight": "600"
-              },
+              "style": [
+                {
+                  "key": "color",
+                  "value": "rgba(255, 255, 255, 1)"
+                },
+                {
+                  "key": "font-size",
+                  "value": "10px"
+                },
+                {
+                  "key": "display",
+                  "value": "inline-block"
+                },
+                {
+                  "key": "letter-spacing",
+                  "value": "0.04em"
+                },
+                {
+                  "key": "font-weight",
+                  "value": "600"
+                }
+              ],
               "children": [],
               "metadata": {},
               "styleMixins": {
@@ -80,25 +188,69 @@
       "label": "Preview",
       "is": "div",
       "name": "element",
-      "attributes": {},
-      "style": {
-        "box-sizing": "border-box",
-        "display": "block"
-      },
+      "attributes": [
+        {
+          "key": "box-sizing"
+        },
+        {
+          "key": "display"
+        }
+      ],
+      "style": [
+        {
+          "key": "box-sizing",
+          "value": "border-box"
+        },
+        {
+          "key": "display",
+          "value": "block"
+        }
+      ],
       "children": [
         {
           "id": "c2bda15b372",
           "is": "7a40476a1359",
           "label": "Node overlay",
           "name": "component-instance",
-          "attributes": {},
-          "style": {
-            "width": "400px",
-            "height": "200px",
-            "position": "relative",
-            "left": "100px",
-            "top": "100px"
-          },
+          "attributes": [
+            {
+              "key": "width"
+            },
+            {
+              "key": "height"
+            },
+            {
+              "key": "position"
+            },
+            {
+              "key": "left"
+            },
+            {
+              "key": "top"
+            }
+          ],
+          "style": [
+            {
+              "key": "width",
+              "value": "400px"
+            },
+            {
+              "key": "height",
+              "value": "200px"
+            },
+            {
+              "key": "position",
+              "value": "relative"
+            },
+            {
+              "key": "left",
+              "value": "100px"
+            },
+            {
+              "key": "top",
+              "value": "100px"
+            }
+          ],
           "children": [],
           "metadata": {
             "bounds": {
@@ -120,6 +272,5 @@
         }
       }
     }
-  ],
-  "metadata": {}
+  ]
 }

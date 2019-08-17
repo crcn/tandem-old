@@ -1,14 +1,14 @@
 {
   "id": "9672de3b355557",
-  "version": "0.0.6",
+  "version": "1.0.0",
   "metadata": {},
   "name": "module",
   "children": [
     {
       "label": "CSS Measurement Input",
       "is": "7149f8199122",
-      "style": {},
-      "attributes": {},
+      "style": [],
+      "attributes": [],
       "id": "a329dd6d16879",
       "name": "component",
       "children": [],
@@ -28,8 +28,8 @@
     {
       "label": "CSS Dropdown Input",
       "is": "50e32bec2591",
-      "style": {},
-      "attributes": {},
+      "style": [],
+      "attributes": [],
       "id": "d2bdce074664",
       "name": "component",
       "children": [
@@ -76,8 +76,8 @@
     {
       "label": "labeled css input",
       "is": "7149f8192509",
-      "style": {},
-      "attributes": {},
+      "style": [],
+      "attributes": [],
       "id": "82e036ac7328",
       "name": "component",
       "children": [
@@ -114,10 +114,17 @@
                   "is": "7149f8199122",
                   "label": "Text Input",
                   "name": "component-instance",
-                  "attributes": {},
-                  "style": {
-                    "line-height": "1"
-                  },
+                  "attributes": [
+                    {
+                      "key": "line-height"
+                    }
+                  ],
+                  "style": [
+                    {
+                      "key": "line-height",
+                      "value": "1"
+                    }
+                  ],
                   "children": [],
                   "metadata": {
                     "bounds": {
@@ -147,10 +154,16 @@
               "name": "text",
               "label": "label",
               "value": "label",
-              "style": {
-                "margin-bottom": "0px",
-                "margin-left": "2px"
-              },
+              "style": [
+                {
+                  "key": "margin-bottom",
+                  "value": "0px"
+                },
+                {
+                  "key": "margin-left",
+                  "value": "2px"
+                }
+              ],
               "children": [],
               "metadata": {},
               "styleMixins": {
@@ -197,15 +210,52 @@
     {
       "label": "css input row",
       "is": "div",
-      "style": {
-        "box-sizing": "border-box",
-        "display": "flex",
-        "align-items": "center",
-        "width": "100%",
-        "padding-top": "8px",
-        "padding-bottom": "8px"
-      },
-      "attributes": {},
+      "style": [
+        {
+          "key": "box-sizing",
+          "value": "border-box"
+        },
+        {
+          "key": "display",
+          "value": "flex"
+        },
+        {
+          "key": "align-items",
+          "value": "center"
+        },
+        {
+          "key": "width",
+          "value": "100%"
+        },
+        {
+          "key": "padding-top",
+          "value": "8px"
+        },
+        {
+          "key": "padding-bottom",
+          "value": "8px"
+        }
+      ],
+      "attributes": [
+        {
+          "key": "box-sizing"
+        },
+        {
+          "key": "display"
+        },
+        {
+          "key": "align-items"
+        },
+        {
+          "key": "width"
+        },
+        {
+          "key": "padding-top"
+        },
+        {
+          "key": "padding-bottom"
+        }
+      ],
       "id": "488ffe1f6704",
       "name": "component",
       "children": [
@@ -214,13 +264,38 @@
           "label": "left",
           "is": "div",
           "name": "element",
-          "attributes": {},
-          "style": {
-            "box-sizing": "border-box",
-            "display": "block",
-            "padding-right": "8px",
-            "width": "100px"
-          },
+          "attributes": [
+            {
+              "key": "box-sizing"
+            },
+            {
+              "key": "display"
+            },
+            {
+              "key": "padding-right"
+            },
+            {
+              "key": "width"
+            }
+          ],
+          "style": [
+            {
+              "key": "box-sizing",
+              "value": "border-box"
+            },
+            {
+              "key": "display",
+              "value": "block"
+            },
+            {
+              "key": "padding-right",
+              "value": "8px"
+            },
+            {
+              "key": "width",
+              "value": "100px"
+            }
+          ],
           "children": [
             {
               "id": "9798784b2222",
@@ -230,7 +305,7 @@
                   "name": "text",
                   "label": "Text",
                   "value": "css-property",
-                  "style": {},
+                  "style": [],
                   "children": [],
                   "metadata": {},
                   "styleMixins": {
@@ -252,12 +327,31 @@
           "label": "right",
           "is": "div",
           "name": "element",
-          "attributes": {},
-          "style": {
-            "box-sizing": "border-box",
-            "display": "block",
-            "width": "100%"
-          },
+          "attributes": [
+            {
+              "key": "box-sizing"
+            },
+            {
+              "key": "display"
+            },
+            {
+              "key": "width"
+            }
+          ],
+          "style": [
+            {
+              "key": "box-sizing",
+              "value": "border-box"
+            },
+            {
+              "key": "display",
+              "value": "block"
+            },
+            {
+              "key": "width",
+              "value": "100%"
+            }
+          ],
           "children": [
             {
               "id": "4c8367f41704",
@@ -267,8 +361,8 @@
                   "is": "7149f8199122",
                   "label": "Text Input",
                   "name": "component-instance",
-                  "attributes": {},
-                  "style": {},
+                  "attributes": [],
+                  "style": [],
                   "children": [],
                   "metadata": {
                     "bounds": {
@@ -313,11 +407,24 @@
     {
       "label": "TBLR input",
       "is": "div",
-      "style": {
-        "box-sizing": "border-box",
-        "display": "block"
-      },
-      "attributes": {},
+      "style": [
+        {
+          "key": "box-sizing",
+          "value": "border-box"
+        },
+        {
+          "key": "display",
+          "value": "block"
+        }
+      ],
+      "attributes": [
+        {
+          "key": "box-sizing"
+        },
+        {
+          "key": "display"
+        }
+      ],
       "id": "49786f441973",
       "name": "component",
       "children": [
@@ -326,20 +433,39 @@
           "label": "Element",
           "is": "div",
           "name": "element",
-          "attributes": {},
-          "style": {
-            "box-sizing": "border-box",
-            "display": "flex",
-            "align-items": "center"
-          },
+          "attributes": [
+            {
+              "key": "box-sizing"
+            },
+            {
+              "key": "display"
+            },
+            {
+              "key": "align-items"
+            }
+          ],
+          "style": [
+            {
+              "key": "box-sizing",
+              "value": "border-box"
+            },
+            {
+              "key": "display",
+              "value": "flex"
+            },
+            {
+              "key": "align-items",
+              "value": "center"
+            }
+          ],
           "children": [
             {
               "id": "c6b2d08b7238",
               "is": "7149f8192509",
               "label": "Labeled Input",
               "name": "component-instance",
-              "attributes": {},
-              "style": {},
+              "attributes": [],
+              "style": [],
               "children": [
                 {
                   "slotId": "e73029b416045",
@@ -350,27 +476,83 @@
                       "label": "Element",
                       "is": "div",
                       "name": "element",
-                      "attributes": {},
-                      "style": {
-                        "box-sizing": "border-box",
-                        "display": "flex",
-                        "position": "relative",
-                        "opacity": 1,
-                        "margin-right": "0px"
-                      },
+                      "attributes": [
+                        {
+                          "key": "box-sizing"
+                        },
+                        {
+                          "key": "display"
+                        },
+                        {
+                          "key": "position"
+                        },
+                        {
+                          "key": "opacity"
+                        },
+                        {
+                          "key": "margin-right"
+                        }
+                      ],
+                      "style": [
+                        {
+                          "key": "box-sizing",
+                          "value": "border-box"
+                        },
+                        {
+                          "key": "display",
+                          "value": "flex"
+                        },
+                        {
+                          "key": "position",
+                          "value": "relative"
+                        },
+                        {
+                          "key": "opacity",
+                          "value": 1
+                        },
+                        {
+                          "key": "margin-right",
+                          "value": "0px"
+                        }
+                      ],
                       "children": [
                         {
                           "id": "8480ea5b7291",
                           "label": "primary input container",
                           "is": "div",
                           "name": "element",
-                          "attributes": {},
-                          "style": {
-                            "box-sizing": "border-box",
-                            "display": "block",
-                            "position": "relative",
-                            "width": "100%"
-                          },
+                          "attributes": [
+                            {
+                              "key": "box-sizing"
+                            },
+                            {
+                              "key": "display"
+                            },
+                            {
+                              "key": "position"
+                            },
+                            {
+                              "key": "width"
+                            }
+                          ],
+                          "style": [
+                            {
+                              "key": "box-sizing",
+                              "value": "border-box"
+                            },
+                            {
+                              "key": "display",
+                              "value": "block"
+                            },
+                            {
+                              "key": "position",
+                              "value": "relative"
+                            },
+                            {
+                              "key": "width",
+                              "value": "100%"
+                            }
+                          ],
                           "children": [
                             {
                               "id": "f58613a66764",
@@ -380,10 +562,17 @@
                                   "is": "af62926b2310",
                                   "label": "primary input",
                                   "name": "component-instance",
-                                  "attributes": {},
-                                  "style": {
-                                    "padding-right": "6px"
-                                  },
+                                  "attributes": [
+                                    {
+                                      "key": "padding-right"
+                                    }
+                                  ],
+                                  "style": [
+                                    {
+                                      "key": "padding-right",
+                                      "value": "6px"
+                                    }
+                                  ],
                                   "children": [
                                     {
                                       "id": "f58613a66650",
@@ -412,11 +601,24 @@
                                               "is": "8bf103e218",
                                               "label": "Borders Icon",
                                               "name": "component-instance",
-                                              "attributes": {},
-                                              "style": {
-                                                "display": "none",
-                                                "height": "1em"
-                                              },
+                                              "attributes": [
+                                                {
+                                                  "key": "display"
+                                                },
+                                                {
+                                                  "key": "height"
+                                                }
+                                              ],
+                                              "style": [
+                                                {
+                                                  "key": "display",
+                                                  "value": "none"
+                                                },
+                                                {
+                                                  "key": "height",
+                                                  "value": "1em"
+                                                }
+                                              ],
                                               "children": [],
                                               "metadata": {
                                                 "bounds": {
@@ -461,15 +663,52 @@
                               "label": "overlay",
                               "is": "div",
                               "name": "element",
-                              "attributes": {},
-                              "style": {
-                                "box-sizing": "border-box",
-                                "display": "none",
-                                "position": "absolute",
-                                "width": "100%",
-                                "height": "100%",
-                                "top": "0px"
-                              },
+                              "attributes": [
+                                {
+                                  "key": "box-sizing"
+                                },
+                                {
+                                  "key": "display"
+                                },
+                                {
+                                  "key": "position"
+                                },
+                                {
+                                  "key": "width"
+                                },
+                                {
+                                  "key": "height"
+                                },
+                                {
+                                  "key": "top"
+                                }
+                              ],
+                              "style": [
+                                {
+                                  "key": "box-sizing",
+                                  "value": "border-box"
+                                },
+                                {
+                                  "key": "display",
+                                  "value": "none"
+                                },
+                                {
+                                  "key": "position",
+                                  "value": "absolute"
+                                },
+                                {
+                                  "key": "width",
+                                  "value": "100%"
+                                },
+                                {
+                                  "key": "height",
+                                  "value": "100%"
+                                },
+                                {
+                                  "key": "top",
+                                  "value": "0px"
+                                }
+                              ],
                               "children": [],
                               "metadata": {}
                             }
@@ -488,11 +727,24 @@
                           "is": "6489655782833",
                           "label": "toggler",
                           "name": "component-instance",
-                          "attributes": {},
-                          "style": {
-                            "flex-shrink": "0",
-                            "width": "55px"
-                          },
+                          "attributes": [
+                            {
+                              "key": "flex-shrink"
+                            },
+                            {
+                              "key": "width"
+                            }
+                          ],
+                          "style": [
+                            {
+                              "key": "flex-shrink",
+                              "value": "0"
+                            },
+                            {
+                              "key": "width",
+                              "value": "55px"
+                            }
+                          ],
                           "children": [
                             {
                               "slotId": "a282a90069",
@@ -503,8 +755,8 @@
                                   "is": "6489655782851",
                                   "label": "Button Bar Item",
                                   "name": "component-instance",
-                                  "attributes": {},
-                                  "style": {},
+                                  "attributes": [],
+                                  "style": [],
                                   "children": [
                                     {
                                       "slotId": "e42107633",
@@ -518,11 +770,24 @@
                                               "is": "8bf103e27",
                                               "label": "Empty Square Icon",
                                               "name": "component-instance",
-                                              "attributes": {},
-                                              "style": {
-                                                "display": "block",
-                                                "height": "0.9em"
-                                              },
+                                              "attributes": [
+                                                {
+                                                  "key": "display"
+                                                },
+                                                {
+                                                  "key": "height"
+                                                }
+                                              ],
+                                              "style": [
+                                                {
+                                                  "key": "display",
+                                                  "value": "block"
+                                                },
+                                                {
+                                                  "key": "height",
+                                                  "value": "0.9em"
+                                                }
+                                              ],
                                               "children": [],
                                               "metadata": {
                                                 "bounds": {
@@ -561,8 +826,8 @@
                                   "is": "6489655782851",
                                   "label": "Button Bar Item",
                                   "name": "component-instance",
-                                  "attributes": {},
-                                  "style": {},
+                                  "attributes": [],
+                                  "style": [],
                                   "children": [
                                     {
                                       "slotId": "e42107633",
@@ -576,12 +841,31 @@
                                               "is": "993f9ad81121",
                                               "label": "Borders Icon",
                                               "name": "component-instance",
-                                              "attributes": {},
-                                              "style": {
-                                                "display": "block",
-                                                "height": "11px",
-                                                "width": "11px"
-                                              },
+                                              "attributes": [
+                                                {
+                                                  "key": "display"
+                                                },
+                                                {
+                                                  "key": "height"
+                                                },
+                                                {
+                                                  "key": "width"
+                                                }
+                                              ],
+                                              "style": [
+                                                {
+                                                  "key": "display",
+                                                  "value": "block"
+                                                },
+                                                {
+                                                  "key": "height",
+                                                  "value": "11px"
+                                                },
+                                                {
+                                                  "key": "width",
+                                                  "value": "11px"
+                                                }
+                                              ],
                                               "children": [],
                                               "metadata": {
                                                 "bounds": {
@@ -669,23 +953,55 @@
           "label": "Element",
           "is": "div",
           "name": "element",
-          "attributes": {},
-          "style": {
-            "box-sizing": "border-box",
-            "display": "none",
-            "margin-top": "6px"
-          },
+          "attributes": [
+            {
+              "key": "box-sizing"
+            },
+            {
+              "key": "display"
+            },
+            {
+              "key": "margin-top"
+            }
+          ],
+          "style": [
+            {
+              "key": "box-sizing",
+              "value": "border-box"
+            },
+            {
+              "key": "display",
+              "value": "none"
+            },
+            {
+              "key": "margin-top",
+              "value": "6px"
+            }
+          ],
           "children": [
             {
               "id": "1b9666ba6044",
               "label": "first outer",
               "is": "div",
               "name": "element",
-              "attributes": {},
-              "style": {
-                "box-sizing": "border-box",
-                "display": "block"
-              },
+              "attributes": [
+                {
+                  "key": "box-sizing"
+                },
+                {
+                  "key": "display"
+                }
+              ],
+              "style": [
+                {
+                  "key": "box-sizing",
+                  "value": "border-box"
+                },
+                {
+                  "key": "display",
+                  "value": "block"
+                }
+              ],
               "children": [
                 {
                   "id": "266255b85099",
@@ -695,10 +1011,17 @@
                       "is": "af62926b2310",
                       "label": "first input",
                       "name": "component-instance",
-                      "attributes": {},
-                      "style": {
-                        "padding-right": "6px"
-                      },
+                      "attributes": [
+                        {
+                          "key": "padding-right"
+                        }
+                      ],
+                      "style": [
+                        {
+                          "key": "padding-right",
+                          "value": "6px"
+                        }
+                      ],
                       "children": [
                         {
                           "id": "af62926b2411",
@@ -727,11 +1050,24 @@
                                   "is": "8bf103e218",
                                   "label": "Borders Icon",
                                   "name": "component-instance",
-                                  "attributes": {},
-                                  "style": {
-                                    "display": "block",
-                                    "height": "1em"
-                                  },
+                                  "attributes": [
+                                    {
+                                      "key": "display"
+                                    },
+                                    {
+                                      "key": "height"
+                                    }
+                                  ],
+                                  "style": [
+                                    {
+                                      "key": "display",
+                                      "value": "block"
+                                    },
+                                    {
+                                      "key": "height",
+                                      "value": "1em"
+                                    }
+                                  ],
                                   "children": [],
                                   "metadata": {
                                     "bounds": {
@@ -776,11 +1112,24 @@
               "label": "second outer",
               "is": "div",
               "name": "element",
-              "attributes": {},
-              "style": {
-                "box-sizing": "border-box",
-                "display": "block"
-              },
+              "attributes": [
+                {
+                  "key": "box-sizing"
+                },
+                {
+                  "key": "display"
+                }
+              ],
+              "style": [
+                {
+                  "key": "box-sizing",
+                  "value": "border-box"
+                },
+                {
+                  "key": "display",
+                  "value": "block"
+                }
+              ],
               "children": [
                 {
                   "id": "266255b85169",
@@ -790,10 +1139,17 @@
                       "is": "af62926b2310",
                       "label": "second input",
                       "name": "component-instance",
-                      "attributes": {},
-                      "style": {
-                        "padding-right": "6px"
-                      },
+                      "attributes": [
+                        {
+                          "key": "padding-right"
+                        }
+                      ],
+                      "style": [
+                        {
+                          "key": "padding-right",
+                          "value": "6px"
+                        }
+                      ],
                       "children": [
                         {
                           "slotId": "af62926b2330",
@@ -807,11 +1163,24 @@
                                   "is": "8bf103e218",
                                   "label": "bottom input icon",
                                   "name": "component-instance",
-                                  "attributes": {},
-                                  "style": {
-                                    "display": "block",
-                                    "height": "1em"
-                                  },
+                                  "attributes": [
+                                    {
+                                      "key": "display"
+                                    },
+                                    {
+                                      "key": "height"
+                                    }
+                                  ],
+                                  "style": [
+                                    {
+                                      "key": "display",
+                                      "value": "block"
+                                    },
+                                    {
+                                      "key": "height",
+                                      "value": "1em"
+                                    }
+                                  ],
                                   "children": [],
                                   "metadata": {
                                     "bounds": {
@@ -863,11 +1232,24 @@
               "label": "third outer",
               "is": "div",
               "name": "element",
-              "attributes": {},
-              "style": {
-                "box-sizing": "border-box",
-                "display": "block"
-              },
+              "attributes": [
+                {
+                  "key": "box-sizing"
+                },
+                {
+                  "key": "display"
+                }
+              ],
+              "style": [
+                {
+                  "key": "box-sizing",
+                  "value": "border-box"
+                },
+                {
+                  "key": "display",
+                  "value": "block"
+                }
+              ],
               "children": [
                 {
                   "id": "266255b85239",
@@ -877,10 +1259,17 @@
                       "is": "af62926b2310",
                       "label": "third input",
                       "name": "component-instance",
-                      "attributes": {},
-                      "style": {
-                        "padding-right": "6px"
-                      },
+                      "attributes": [
+                        {
+                          "key": "padding-right"
+                        }
+                      ],
+                      "style": [
+                        {
+                          "key": "padding-right",
+                          "value": "6px"
+                        }
+                      ],
                       "children": [
                         {
                           "slotId": "af62926b2330",
@@ -894,11 +1283,24 @@
                                   "is": "8bf103e218",
                                   "label": "Borders Icon",
                                   "name": "component-instance",
-                                  "attributes": {},
-                                  "style": {
-                                    "display": "block",
-                                    "height": "1em"
-                                  },
+                                  "attributes": [
+                                    {
+                                      "key": "display"
+                                    },
+                                    {
+                                      "key": "height"
+                                    }
+                                  ],
+                                  "style": [
+                                    {
+                                      "key": "display",
+                                      "value": "block"
+                                    },
+                                    {
+                                      "key": "height",
+                                      "value": "1em"
+                                    }
+                                  ],
                                   "children": [],
                                   "metadata": {
                                     "bounds": {
@@ -950,11 +1352,24 @@
               "label": "fourth outer",
               "is": "div",
               "name": "element",
-              "attributes": {},
-              "style": {
-                "box-sizing": "border-box",
-                "display": "block"
-              },
+              "attributes": [
+                {
+                  "key": "box-sizing"
+                },
+                {
+                  "key": "display"
+                }
+              ],
+              "style": [
+                {
+                  "key": "box-sizing",
+                  "value": "border-box"
+                },
+                {
+                  "key": "display",
+                  "value": "block"
+                }
+              ],
               "children": [
                 {
                   "id": "266255b85309",
@@ -964,8 +1379,8 @@
                       "is": "af62926b2310",
                       "label": "fourth input",
                       "name": "component-instance",
-                      "attributes": {},
-                      "style": {},
+                      "attributes": [],
+                      "style": [],
                       "children": [
                         {
                           "slotId": "af62926b2330",
@@ -979,11 +1394,24 @@
                                   "is": "8bf103e218",
                                   "label": "borders icon",
                                   "name": "component-instance",
-                                  "attributes": {},
-                                  "style": {
-                                    "display": "block",
-                                    "height": "1em"
-                                  },
+                                  "attributes": [
+                                    {
+                                      "key": "display"
+                                    },
+                                    {
+                                      "key": "height"
+                                    }
+                                  ],
+                                  "style": [
+                                    {
+                                      "key": "display",
+                                      "value": "block"
+                                    },
+                                    {
+                                      "key": "height",
+                                      "value": "1em"
+                                    }
+                                  ],
                                   "children": [],
                                   "metadata": {
                                     "bounds": {
@@ -1487,11 +1915,24 @@
     {
       "label": "inline labeled input",
       "is": "div",
-      "style": {
-        "box-sizing": "border-box",
-        "display": "block"
-      },
-      "attributes": {},
+      "style": [
+        {
+          "key": "box-sizing",
+          "value": "border-box"
+        },
+        {
+          "key": "display",
+          "value": "block"
+        }
+      ],
+      "attributes": [
+        {
+          "key": "box-sizing"
+        },
+        {
+          "key": "display"
+        }
+      ],
       "id": "af62926b2310",
       "name": "component",
       "children": [
@@ -1500,19 +1941,80 @@
           "label": "Element",
           "is": "div",
           "name": "element",
-          "attributes": {},
-          "style": {
-            "box-sizing": "border-box",
-            "display": "flex",
-            "flex-direction": "row",
-            "align-items": "center",
-            "border-bottom-left-radius": "2px",
-            "border-top-left-radius": "2px",
-            "border-top-right-radius": "2px",
-            "border-bottom-right-radius": "2px",
-            "background": "var(--f63574de434)",
-            "position": "relative"
-          },
+          "attributes": [
+            {
+              "key": "box-sizing"
+            },
+            {
+              "key": "display"
+            },
+            {
+              "key": "flex-direction"
+            },
+            {
+              "key": "align-items"
+            },
+            {
+              "key": "border-bottom-left-radius"
+            },
+            {
+              "key": "border-top-left-radius"
+            },
+            {
+              "key": "border-top-right-radius"
+            },
+            {
+              "key": "border-bottom-right-radius"
+            },
+            {
+              "key": "background"
+            },
+            {
+              "key": "position"
+            }
+          ],
+          "style": [
+            {
+              "key": "box-sizing",
+              "value": "border-box"
+            },
+            {
+              "key": "display",
+              "value": "flex"
+            },
+            {
+              "key": "flex-direction",
+              "value": "row"
+            },
+            {
+              "key": "align-items",
+              "value": "center"
+            },
+            {
+              "key": "border-bottom-left-radius",
+              "value": "2px"
+            },
+            {
+              "key": "border-top-left-radius",
+              "value": "2px"
+            },
+            {
+              "key": "border-top-right-radius",
+              "value": "2px"
+            },
+            {
+              "key": "border-bottom-right-radius",
+              "value": "2px"
+            },
+            {
+              "key": "background",
+              "value": "var(--f63574de434)"
+            },
+            {
+              "key": "position",
+              "value": "relative"
+            }
+          ],
           "children": [
             {
               "id": "af62926b2338",
@@ -1522,14 +2024,45 @@
                   "is": "7149f8199122",
                   "label": "Text Input",
                   "name": "component-instance",
-                  "attributes": {},
-                  "style": {
-                    "border": "0px none",
-                    "top": "0px",
-                    "box-sizing": "border-box",
-                    "display": "block",
-                    "padding-right": "12px"
-                  },
+                  "attributes": [
+                    {
+                      "key": "border"
+                    },
+                    {
+                      "key": "top"
+                    },
+                    {
+                      "key": "box-sizing"
+                    },
+                    {
+                      "key": "display"
+                    },
+                    {
+                      "key": "padding-right"
+                    }
+                  ],
+                  "style": [
+                    {
+                      "key": "border",
+                      "value": "0px none"
+                    },
+                    {
+                      "key": "top",
+                      "value": "0px"
+                    },
+                    {
+                      "key": "box-sizing",
+                      "value": "border-box"
+                    },
+                    {
+                      "key": "display",
+                      "value": "block"
+                    },
+                    {
+                      "key": "padding-right",
+                      "value": "12px"
+                    }
+                  ],
                   "children": [],
                   "metadata": {
                     "bounds": {
@@ -1565,14 +2098,45 @@
               "label": "icon container",
               "is": "div",
               "name": "element",
-              "attributes": {},
-              "style": {
-                "box-sizing": "border-box",
-                "display": "block",
-                "position": "absolute",
-                "top": "4px",
-                "right": "4px"
-              },
+              "attributes": [
+                {
+                  "key": "box-sizing"
+                },
+                {
+                  "key": "display"
+                },
+                {
+                  "key": "position"
+                },
+                {
+                  "key": "top"
+                },
+                {
+                  "key": "right"
+                }
+              ],
+              "style": [
+                {
+                  "key": "box-sizing",
+                  "value": "border-box"
+                },
+                {
+                  "key": "display",
+                  "value": "block"
+                },
+                {
+                  "key": "position",
+                  "value": "absolute"
+                },
+                {
+                  "key": "top",
+                  "value": "4px"
+                },
+                {
+                  "key": "right",
+                  "value": "4px"
+                }
+              ],
               "children": [
                 {
                   "id": "af62926b2330",
@@ -1582,14 +2146,45 @@
                       "is": "8bf103e218",
                       "label": "Borders Icon",
                       "name": "component-instance",
-                      "attributes": {},
-                      "style": {
-                        "display": "block",
-                        "height": "0.6em",
-                        "color": "var(--24ce1e4d482)",
-                        "position": "relative",
-                        "top": "2px"
-                      },
+                      "attributes": [
+                        {
+                          "key": "display"
+                        },
+                        {
+                          "key": "height"
+                        },
+                        {
+                          "key": "color"
+                        },
+                        {
+                          "key": "position"
+                        },
+                        {
+                          "key": "top"
+                        }
+                      ],
+                      "style": [
+                        {
+                          "key": "display",
+                          "value": "block"
+                        },
+                        {
+                          "key": "height",
+                          "value": "0.6em"
+                        },
+                        {
+                          "key": "color",
+                          "value": "var(--24ce1e4d482)"
+                        },
+                        {
+                          "key": "position",
+                          "value": "relative"
+                        },
+                        {
+                          "key": "top",
+                          "value": "2px"
+                        }
+                      ],
                       "children": [],
                       "metadata": {
                         "bounds": {
@@ -1701,8 +2296,8 @@
     {
       "label": "Background input",
       "is": "d227ff68826768",
-      "style": {},
-      "attributes": {},
+      "style": [],
+      "attributes": [],
       "id": "5b0f4e2a2138",
       "name": "component",
       "children": [
@@ -1715,8 +2310,8 @@
               "is": "feaf302b1678",
               "label": "Background picker",
               "name": "component-instance",
-              "attributes": {},
-              "style": {},
+              "attributes": [],
+              "style": [],
               "children": [],
               "metadata": {
                 "bounds": {

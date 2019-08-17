@@ -1,14 +1,14 @@
 {
   "id": "296b92da31921",
-  "version": "0.0.5",
+  "version": "1.0.0",
   "metadata": {},
   "name": "module",
   "children": [
     {
       "label": "Filters",
       "is": "b6c162d113",
-      "style": {},
-      "attributes": {},
+      "style": [],
+      "attributes": [],
       "id": "bcda9fb597947",
       "name": "component",
       "children": [
@@ -41,20 +41,45 @@
               "label": "Element",
               "is": "div",
               "name": "element",
-              "attributes": {},
-              "style": {
-                "box-sizing": "border-box",
-                "display": "flex",
-                "align-items": "center",
-                "justify-content": "space-between"
-              },
+              "attributes": [
+                {
+                  "key": "box-sizing"
+                },
+                {
+                  "key": "display"
+                },
+                {
+                  "key": "align-items"
+                },
+                {
+                  "key": "justify-content"
+                }
+              ],
+              "style": [
+                {
+                  "key": "box-sizing",
+                  "value": "border-box"
+                },
+                {
+                  "key": "display",
+                  "value": "flex"
+                },
+                {
+                  "key": "align-items",
+                  "value": "center"
+                },
+                {
+                  "key": "justify-content",
+                  "value": "space-between"
+                }
+              ],
               "children": [
                 {
                   "id": "43fa80866967",
                   "name": "text",
                   "label": "Text",
                   "value": "Filters",
-                  "style": {},
+                  "style": [],
                   "children": [],
                   "metadata": {},
                   "styleMixins": {
@@ -68,21 +93,41 @@
                   "label": "Element",
                   "is": "div",
                   "name": "element",
-                  "attributes": {},
-                  "style": {
-                    "box-sizing": "border-box",
-                    "display": "block"
-                  },
+                  "attributes": [
+                    {
+                      "key": "box-sizing"
+                    },
+                    {
+                      "key": "display"
+                    }
+                  ],
+                  "style": [
+                    {
+                      "key": "box-sizing",
+                      "value": "border-box"
+                    },
+                    {
+                      "key": "display",
+                      "value": "block"
+                    }
+                  ],
                   "children": [
                     {
                       "id": "43fa80866975",
                       "is": "f27782548182",
                       "label": "Add icon",
                       "name": "component-instance",
-                      "attributes": {},
-                      "style": {
-                        "height": "9px"
-                      },
+                      "attributes": [
+                        {
+                          "key": "height"
+                        }
+                      ],
+                      "style": [
+                        {
+                          "key": "height",
+                          "value": "9px"
+                        }
+                      ],
                       "children": [],
                       "metadata": {
                         "bounds": {
@@ -121,8 +166,8 @@
           "is": "43fa80867000",
           "label": "Filter item",
           "name": "component-instance",
-          "attributes": {},
-          "style": {},
+          "attributes": [],
+          "style": [],
           "children": [],
           "metadata": {
             "bounds": {
@@ -150,11 +195,24 @@
     {
       "label": "Filter item",
       "is": "div",
-      "style": {
-        "box-sizing": "border-box",
-        "display": "block"
-      },
-      "attributes": {},
+      "style": [
+        {
+          "key": "box-sizing",
+          "value": "border-box"
+        },
+        {
+          "key": "display",
+          "value": "block"
+        }
+      ],
+      "attributes": [
+        {
+          "key": "box-sizing"
+        },
+        {
+          "key": "display"
+        }
+      ],
       "id": "43fa80867000",
       "name": "component",
       "children": [],

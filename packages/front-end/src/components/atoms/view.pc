@@ -1,6 +1,6 @@
 {
   "id": "6ceccc4089",
-  "version": "0.0.6",
+  "version": "1.0.0",
   "metadata": {},
   "name": "module",
   "children": [
@@ -8,17 +8,44 @@
       "id": "33b5126b196",
       "name": "style-mixin",
       "label": "label font",
-      "style": {
-        "color": "rgba(136, 136, 136, 1)",
-        "font-size": "9px",
-        "display": "inline-block",
-        "opacity": "1",
-        "pointer": "default",
-        "user-select": "none",
-        "font-weight": "500",
-        "cursor": "default",
-        "letter-spacing": "0.08em"
-      },
+      "style": [
+        {
+          "key": "color",
+          "value": "rgba(136, 136, 136, 1)"
+        },
+        {
+          "key": "font-size",
+          "value": "9px"
+        },
+        {
+          "key": "display",
+          "value": "inline-block"
+        },
+        {
+          "key": "opacity",
+          "value": "1"
+        },
+        {
+          "key": "pointer",
+          "value": "default"
+        },
+        {
+          "key": "user-select",
+          "value": "none"
+        },
+        {
+          "key": "font-weight",
+          "value": "500"
+        },
+        {
+          "key": "cursor",
+          "value": "default"
+        },
+        {
+          "key": "letter-spacing",
+          "value": "0.08em"
+        }
+      ],
       "value": "Label",
       "targetType": "text",
       "children": [],
@@ -40,13 +67,28 @@
       "id": "dc3b39eb1275",
       "name": "style-mixin",
       "label": "Base font",
-      "style": {
-        "font-family": "Helvetica Neue, Helvetica",
-        "color": "rgba(136, 136, 136, 1)",
-        "font-size": "12px",
-        "letter-spacing": "0.05em",
-        "font-weight": "400"
-      },
+      "style": [
+        {
+          "key": "font-family",
+          "value": "Helvetica Neue, Helvetica"
+        },
+        {
+          "key": "color",
+          "value": "rgba(136, 136, 136, 1)"
+        },
+        {
+          "key": "font-size",
+          "value": "12px"
+        },
+        {
+          "key": "letter-spacing",
+          "value": "0.05em"
+        },
+        {
+          "key": "font-weight",
+          "value": "400"
+        }
+      ],
       "value": "Base font",
       "targetType": "text",
       "children": [],
@@ -63,14 +105,32 @@
       "id": "dc3b39eb1627",
       "name": "style-mixin",
       "label": "Header font style",
-      "style": {
-        "text-transform": "uppercase",
-        "font-size": "10px",
-        "color": "var(--24ce1e4d482)",
-        "font-weight": "600",
-        "user-select": "none",
-        "cursor": "default"
-      },
+      "style": [
+        {
+          "key": "text-transform",
+          "value": "uppercase"
+        },
+        {
+          "key": "font-size",
+          "value": "10px"
+        },
+        {
+          "key": "color",
+          "value": "var(--24ce1e4d482)"
+        },
+        {
+          "key": "font-weight",
+          "value": "600"
+        },
+        {
+          "key": "user-select",
+          "value": "none"
+        },
+        {
+          "key": "cursor",
+          "value": "default"
+        }
+      ],
       "value": "header",
       "targetType": "text",
       "children": [],
@@ -92,17 +152,44 @@
       "id": "c29da5f4213993",
       "label": "Default border",
       "name": "style-mixin",
-      "style": {
-        "border-bottom-left-radius": "2px",
-        "border-top-left-radius": "2px",
-        "border-top-right-radius": "2px",
-        "border-bottom-right-radius": "2px",
-        "border-left": "1px none rgba(1, 0, 1, 0)",
-        "border-top": "1px none rgba(1, 0, 1, 0)",
-        "border-right": "1px none rgba(1, 0, 1, 0)",
-        "border-bottom": "1px none rgba(1, 0, 1, 0)",
-        "box-shadow": "inset 0px 0px 0px 1px var(--dd86347b1545)"
-      },
+      "style": [
+        {
+          "key": "border-bottom-left-radius",
+          "value": "2px"
+        },
+        {
+          "key": "border-top-left-radius",
+          "value": "2px"
+        },
+        {
+          "key": "border-top-right-radius",
+          "value": "2px"
+        },
+        {
+          "key": "border-bottom-right-radius",
+          "value": "2px"
+        },
+        {
+          "key": "border-left",
+          "value": "1px none rgba(1, 0, 1, 0)"
+        },
+        {
+          "key": "border-top",
+          "value": "1px none rgba(1, 0, 1, 0)"
+        },
+        {
+          "key": "border-right",
+          "value": "1px none rgba(1, 0, 1, 0)"
+        },
+        {
+          "key": "border-bottom",
+          "value": "1px none rgba(1, 0, 1, 0)"
+        },
+        {
+          "key": "box-shadow",
+          "value": "inset 0px 0px 0px 1px var(--dd86347b1545)"
+        }
+      ],
       "targetType": "element",
       "children": [],
       "metadata": {
@@ -118,11 +205,20 @@
       "id": "61225017220906",
       "name": "style-mixin",
       "label": "Nowrap ellipsis",
-      "style": {
-        "overflow": "hidden",
-        "text-overflow": "ellipsis",
-        "white-space": "nowrap"
-      },
+      "style": [
+        {
+          "key": "overflow",
+          "value": "hidden"
+        },
+        {
+          "key": "text-overflow",
+          "value": "ellipsis"
+        },
+        {
+          "key": "white-space",
+          "value": "nowrap"
+        }
+      ],
       "value": "Super long text that should be ellipsises",
       "targetType": "text",
       "children": [],
@@ -139,15 +235,36 @@
       "id": "9cd522d52691",
       "label": "Input background",
       "name": "style-mixin",
-      "style": {
-        "box-sizing": "border-box",
-        "display": "block",
-        "border-bottom-left-radius": "2px",
-        "border-top-left-radius": "2px",
-        "border-top-right-radius": "2px",
-        "border-bottom-right-radius": "2px",
-        "background": "rgba(250, 250, 250, 1)"
-      },
+      "style": [
+        {
+          "key": "box-sizing",
+          "value": "border-box"
+        },
+        {
+          "key": "display",
+          "value": "block"
+        },
+        {
+          "key": "border-bottom-left-radius",
+          "value": "2px"
+        },
+        {
+          "key": "border-top-left-radius",
+          "value": "2px"
+        },
+        {
+          "key": "border-top-right-radius",
+          "value": "2px"
+        },
+        {
+          "key": "border-bottom-right-radius",
+          "value": "2px"
+        },
+        {
+          "key": "background",
+          "value": "rgba(250, 250, 250, 1)"
+        }
+      ],
       "targetType": "element",
       "children": [],
       "metadata": {
@@ -163,9 +280,12 @@
       "id": "9798784b2419",
       "name": "style-mixin",
       "label": "Base font + nobreak",
-      "style": {
-        "white-space": "nowrap"
-      },
+      "style": [
+        {
+          "key": "white-space",
+          "value": "nowrap"
+        }
+      ],
       "styleMixins": {
         "dc3b39eb1275": {
           "priority": 0
@@ -187,11 +307,20 @@
       "id": "fb4d37ca18486",
       "label": "Default shadow style",
       "name": "style-mixin",
-      "style": {
-        "box-sizing": "border-box",
-        "display": "block",
-        "filter": "drop-shadow(4px 4px 2px rgba(0,0,0,0.1))"
-      },
+      "style": [
+        {
+          "key": "box-sizing",
+          "value": "border-box"
+        },
+        {
+          "key": "display",
+          "value": "block"
+        },
+        {
+          "key": "filter",
+          "value": "drop-shadow(4px 4px 2px rgba(0,0,0,0.1))"
+        }
+      ],
       "targetType": "element",
       "children": [],
       "metadata": {

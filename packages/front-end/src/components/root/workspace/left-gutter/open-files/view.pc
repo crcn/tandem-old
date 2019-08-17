@@ -1,20 +1,51 @@
 {
   "id": "b34e7ef42461334",
-  "version": "0.0.6",
+  "version": "1.0.0",
   "metadata": {},
   "name": "module",
   "children": [
     {
       "label": "Layers Pane",
       "is": "b6c162d113",
-      "style": {
-        "display": "flex",
-        "flex-direction": "column",
-        "min-height": "200px",
-        "height": "100%",
-        "position": "relative"
-      },
-      "attributes": {},
+      "style": [
+        {
+          "key": "display",
+          "value": "flex"
+        },
+        {
+          "key": "flex-direction",
+          "value": "column"
+        },
+        {
+          "key": "min-height",
+          "value": "200px"
+        },
+        {
+          "key": "height",
+          "value": "100%"
+        },
+        {
+          "key": "position",
+          "value": "relative"
+        }
+      ],
+      "attributes": [
+        {
+          "key": "display"
+        },
+        {
+          "key": "flex-direction"
+        },
+        {
+          "key": "min-height"
+        },
+        {
+          "key": "height"
+        },
+        {
+          "key": "position"
+        }
+      ],
       "id": "b34e7ef42482727",
       "name": "component",
       "children": [
@@ -68,14 +99,45 @@
               "id": "fe256b421",
               "is": "fe256b416",
               "name": "component-instance",
-              "attributes": {},
-              "style": {
-                "box-sizing": "border-box",
-                "flex-direction": "column",
-                "font-size": "11px",
-                "display": "inline-block",
-                "min-width": "100%"
-              },
+              "attributes": [
+                {
+                  "key": "box-sizing"
+                },
+                {
+                  "key": "flex-direction"
+                },
+                {
+                  "key": "font-size"
+                },
+                {
+                  "key": "display"
+                },
+                {
+                  "key": "min-width"
+                }
+              ],
+              "style": [
+                {
+                  "key": "box-sizing",
+                  "value": "border-box"
+                },
+                {
+                  "key": "flex-direction",
+                  "value": "column"
+                },
+                {
+                  "key": "font-size",
+                  "value": "11px"
+                },
+                {
+                  "key": "display",
+                  "value": "inline-block"
+                },
+                {
+                  "key": "min-width",
+                  "value": "100%"
+                }
+              ],
               "children": [
                 {
                   "id": "fe256b422",
@@ -235,13 +297,38 @@
               "id": "fe256b420",
               "is": "fe256b416",
               "name": "component-instance",
-              "attributes": {},
-              "style": {
-                "box-sizing": "border-box",
-                "flex-direction": "column",
-                "font-size": "11px",
-                "display": "inline-block"
-              },
+              "attributes": [
+                {
+                  "key": "box-sizing"
+                },
+                {
+                  "key": "flex-direction"
+                },
+                {
+                  "key": "font-size"
+                },
+                {
+                  "key": "display"
+                }
+              ],
+              "style": [
+                {
+                  "key": "box-sizing",
+                  "value": "border-box"
+                },
+                {
+                  "key": "flex-direction",
+                  "value": "column"
+                },
+                {
+                  "key": "font-size",
+                  "value": "11px"
+                },
+                {
+                  "key": "display",
+                  "value": "inline-block"
+                }
+              ],
               "children": [
                 {
                   "id": "60bb6ec47",

@@ -1,21 +1,58 @@
 {
   "id": "76b155a0907062",
-  "version": "0.0.6",
+  "version": "1.0.0",
   "metadata": {},
   "name": "module",
   "children": [
     {
       "label": "Text Input",
       "is": "input",
-      "style": {
-        "width": "100%",
-        "box-sizing": "border-box",
-        "padding-left": "6px",
-        "padding-bottom": "4px",
-        "padding-top": "4px",
-        "padding-right": "6px"
-      },
-      "attributes": {},
+      "style": [
+        {
+          "key": "width",
+          "value": "100%"
+        },
+        {
+          "key": "box-sizing",
+          "value": "border-box"
+        },
+        {
+          "key": "padding-left",
+          "value": "6px"
+        },
+        {
+          "key": "padding-bottom",
+          "value": "4px"
+        },
+        {
+          "key": "padding-top",
+          "value": "4px"
+        },
+        {
+          "key": "padding-right",
+          "value": "6px"
+        }
+      ],
+      "attributes": [
+        {
+          "key": "width"
+        },
+        {
+          "key": "box-sizing"
+        },
+        {
+          "key": "padding-left"
+        },
+        {
+          "key": "padding-bottom"
+        },
+        {
+          "key": "padding-top"
+        },
+        {
+          "key": "padding-right"
+        }
+      ],
       "id": "7149f8199122",
       "name": "component",
       "children": [
@@ -96,8 +133,8 @@
       "id": "2c83e997767",
       "is": "2c83e997743",
       "name": "component-instance",
-      "attributes": {},
-      "style": {},
+      "attributes": [],
+      "style": [],
       "children": [
         {
           "id": "2c83e997858",
@@ -148,11 +185,24 @@
     {
       "label": "Auto comlete text input",
       "is": "div",
-      "style": {
-        "box-sizing": "border-box",
-        "display": "block"
-      },
-      "attributes": {},
+      "style": [
+        {
+          "key": "box-sizing",
+          "value": "border-box"
+        },
+        {
+          "key": "display",
+          "value": "block"
+        }
+      ],
+      "attributes": [
+        {
+          "key": "box-sizing"
+        },
+        {
+          "key": "display"
+        }
+      ],
       "id": "2c83e997743",
       "name": "component",
       "children": [
@@ -160,8 +210,8 @@
           "id": "2c83e997737",
           "is": "9b7b527f175442",
           "name": "component-instance",
-          "attributes": {},
-          "style": {},
+          "attributes": [],
+          "style": [],
           "children": [
             {
               "slotId": "c00d8561361",
@@ -171,8 +221,8 @@
                   "id": "2c83e997739",
                   "is": "7149f8199122",
                   "name": "component-instance",
-                  "attributes": {},
-                  "style": {},
+                  "attributes": [],
+                  "style": [],
                   "children": [],
                   "metadata": {
                     "bounds": {
@@ -198,18 +248,73 @@
                   "label": "menu outer",
                   "is": "div",
                   "name": "element",
-                  "attributes": {},
-                  "style": {
-                    "box-sizing": "border-box",
-                    "display": "block",
-                    "margin-top": "4px",
-                    "border-bottom-left-radius": "2px",
-                    "border-top-left-radius": "2px",
-                    "border-top-right-radius": "2px",
-                    "border-bottom-right-radius": "2px",
-                    "border": "1px solid var(--d8f6340b1442)",
-                    "overflow": "scroll"
-                  },
+                  "attributes": [
+                    {
+                      "key": "box-sizing"
+                    },
+                    {
+                      "key": "display"
+                    },
+                    {
+                      "key": "margin-top"
+                    },
+                    {
+                      "key": "border-bottom-left-radius"
+                    },
+                    {
+                      "key": "border-top-left-radius"
+                    },
+                    {
+                      "key": "border-top-right-radius"
+                    },
+                    {
+                      "key": "border-bottom-right-radius"
+                    },
+                    {
+                      "key": "border"
+                    },
+                    {
+                      "key": "overflow"
+                    }
+                  ],
+                  "style": [
+                    {
+                      "key": "box-sizing",
+                      "value": "border-box"
+                    },
+                    {
+                      "key": "display",
+                      "value": "block"
+                    },
+                    {
+                      "key": "margin-top",
+                      "value": "4px"
+                    },
+                    {
+                      "key": "border-bottom-left-radius",
+                      "value": "2px"
+                    },
+                    {
+                      "key": "border-top-left-radius",
+                      "value": "2px"
+                    },
+                    {
+                      "key": "border-top-right-radius",
+                      "value": "2px"
+                    },
+                    {
+                      "key": "border-bottom-right-radius",
+                      "value": "2px"
+                    },
+                    {
+                      "key": "border",
+                      "value": "1px solid var(--d8f6340b1442)"
+                    },
+                    {
+                      "key": "overflow",
+                      "value": "scroll"
+                    }
+                  ],
                   "children": [
                     {
                       "id": "4200e313386",
@@ -218,8 +323,8 @@
                           "id": "2c83e997904",
                           "is": "8b8bbe2c859177",
                           "name": "component-instance",
-                          "attributes": {},
-                          "style": {},
+                          "attributes": [],
+                          "style": [],
                           "children": [
                             {
                               "id": "2c83e9973980",
@@ -249,8 +354,8 @@
                           "id": "2c83e9971078",
                           "is": "8b8bbe2c859177",
                           "name": "component-instance",
-                          "attributes": {},
-                          "style": {},
+                          "attributes": [],
+                          "style": [],
                           "children": [
                             {
                               "id": "2c83e9974740",
@@ -280,8 +385,8 @@
                           "id": "2c83e9971014",
                           "is": "8b8bbe2c859177",
                           "name": "component-instance",
-                          "attributes": {},
-                          "style": {},
+                          "attributes": [],
+                          "style": [],
                           "children": [
                             {
                               "id": "2c83e9973358",
@@ -311,8 +416,8 @@
                           "id": "2c83e997956",
                           "is": "8b8bbe2c859177",
                           "name": "component-instance",
-                          "attributes": {},
-                          "style": {},
+                          "attributes": [],
+                          "style": [],
                           "children": [
                             {
                               "id": "2c83e9972667",
@@ -342,8 +447,8 @@
                           "id": "2c83e997742",
                           "is": "8b8bbe2c859177",
                           "name": "component-instance",
-                          "attributes": {},
-                          "style": {},
+                          "attributes": [],
+                          "style": [],
                           "children": [
                             {
                               "id": "2c83e9975362",

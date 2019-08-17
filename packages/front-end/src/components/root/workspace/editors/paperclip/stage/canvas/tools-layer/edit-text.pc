@@ -1,17 +1,23 @@
 {
   "id": "c4e8096c109",
+  "version": "1.0.0",
+  "metadata": {},
   "name": "module",
-  "version": "0.0.5",
   "children": [
     {
       "label": "edit text",
       "is": "7149f8199122",
-      "style": {
-        "position": "absolute"
-      },
-      "attributes": {
-        "placeholder": "text"
-      },
+      "style": [
+        {
+          "key": "position",
+          "value": "absolute"
+        }
+      ],
+      "attributes": [
+        {
+          "key": "position"
+        }
+      ],
       "id": "6cb86618699",
       "name": "component",
       "children": [],
@@ -28,6 +34,5 @@
         "./edit-text-controller.tsx"
       ]
     }
-  ],
-  "metadata": {}
+  ]
 }

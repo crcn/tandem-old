@@ -1,17 +1,30 @@
 {
   "id": "11188f860",
-  "version": "0.0.5",
+  "version": "1.0.0",
   "metadata": {},
   "name": "module",
   "children": [
     {
       "label": "Frame",
       "is": "div",
-      "style": {
-        "position": "absolute",
-        "background": "transparent"
-      },
-      "attributes": {},
+      "style": [
+        {
+          "key": "position",
+          "value": "absolute"
+        },
+        {
+          "key": "background",
+          "value": "transparent"
+        }
+      ],
+      "attributes": [
+        {
+          "key": "position"
+        },
+        {
+          "key": "background"
+        }
+      ],
       "id": "11188f863945",
       "name": "component",
       "children": [
@@ -20,14 +33,45 @@
           "label": "Background",
           "is": "div",
           "name": "element",
-          "attributes": {},
-          "style": {
-            "width": "100%",
-            "height": "100%",
-            "background": "transparent",
-            "top": "0px",
-            "position": "absolute"
-          },
+          "attributes": [
+            {
+              "key": "width"
+            },
+            {
+              "key": "height"
+            },
+            {
+              "key": "background"
+            },
+            {
+              "key": "top"
+            },
+            {
+              "key": "position"
+            }
+          ],
+          "style": [
+            {
+              "key": "width",
+              "value": "100%"
+            },
+            {
+              "key": "height",
+              "value": "100%"
+            },
+            {
+              "key": "background",
+              "value": "transparent"
+            },
+            {
+              "key": "top",
+              "value": "0px"
+            },
+            {
+              "key": "position",
+              "value": "absolute"
+            }
+          ],
           "children": [],
           "metadata": {}
         },
@@ -36,44 +80,155 @@
           "label": "top bar",
           "is": "div",
           "name": "element",
-          "attributes": {},
-          "style": {
-            "transform": "translateY(-100%)",
-            "top": "-4px",
-            "position": "absolute",
-            "width": "100%",
-            "color": "var(--24ce1e4d482)",
-            "cursor": "default",
-            "display": "flex",
-            "overflow": "hidden",
-            "justify-content": "space-between",
-            "user-select": "none",
-            "align-items": "center"
-          },
+          "attributes": [
+            {
+              "key": "transform"
+            },
+            {
+              "key": "top"
+            },
+            {
+              "key": "position"
+            },
+            {
+              "key": "width"
+            },
+            {
+              "key": "color"
+            },
+            {
+              "key": "cursor"
+            },
+            {
+              "key": "display"
+            },
+            {
+              "key": "overflow"
+            },
+            {
+              "key": "justify-content"
+            },
+            {
+              "key": "user-select"
+            },
+            {
+              "key": "align-items"
+            }
+          ],
+          "style": [
+            {
+              "key": "transform",
+              "value": "translateY(-100%)"
+            },
+            {
+              "key": "top",
+              "value": "-4px"
+            },
+            {
+              "key": "position",
+              "value": "absolute"
+            },
+            {
+              "key": "width",
+              "value": "100%"
+            },
+            {
+              "key": "color",
+              "value": "var(--24ce1e4d482)"
+            },
+            {
+              "key": "cursor",
+              "value": "default"
+            },
+            {
+              "key": "display",
+              "value": "flex"
+            },
+            {
+              "key": "overflow",
+              "value": "hidden"
+            },
+            {
+              "key": "justify-content",
+              "value": "space-between"
+            },
+            {
+              "key": "user-select",
+              "value": "none"
+            },
+            {
+              "key": "align-items",
+              "value": "center"
+            }
+          ],
           "children": [
             {
               "id": "f6f985952",
               "label": "Element",
               "is": "div",
               "name": "element",
-              "attributes": {},
-              "style": {
-                "box-sizing": "border-box",
-                "display": "flex",
-                "align-items": "center"
-              },
+              "attributes": [
+                {
+                  "key": "box-sizing"
+                },
+                {
+                  "key": "display"
+                },
+                {
+                  "key": "align-items"
+                }
+              ],
+              "style": [
+                {
+                  "key": "box-sizing",
+                  "value": "border-box"
+                },
+                {
+                  "key": "display",
+                  "value": "flex"
+                },
+                {
+                  "key": "align-items",
+                  "value": "center"
+                }
+              ],
               "children": [
                 {
                   "id": "f6f985951",
                   "is": "1fd9c8366",
                   "name": "component-instance",
-                  "attributes": {},
-                  "style": {
-                    "display": "none",
-                    "height": "20px",
-                    "width": "14px",
-                    "margin-right": "4px"
-                  },
+                  "attributes": [
+                    {
+                      "key": "display"
+                    },
+                    {
+                      "key": "height"
+                    },
+                    {
+                      "key": "width"
+                    },
+                    {
+                      "key": "margin-right"
+                    }
+                  ],
+                  "style": [
+                    {
+                      "key": "display",
+                      "value": "none"
+                    },
+                    {
+                      "key": "height",
+                      "value": "20px"
+                    },
+                    {
+                      "key": "width",
+                      "value": "14px"
+                    },
+                    {
+                      "key": "margin-right",
+                      "value": "4px"
+                    }
+                  ],
                   "children": [],
                   "metadata": {
                     "bounds": {
@@ -89,9 +244,12 @@
                   "name": "text",
                   "label": "Title",
                   "value": "Title",
-                  "style": {
-                    "color": "rgba(160, 155, 155, 1)"
-                  },
+                  "style": [
+                    {
+                      "key": "color",
+                      "value": "rgba(160, 155, 155, 1)"
+                    }
+                  ],
                   "children": [],
                   "metadata": {}
                 }
@@ -103,26 +261,76 @@
               "label": "controls",
               "is": "div",
               "name": "element",
-              "attributes": {},
-              "style": {
-                "cursor": "pointer",
-                "display": "none"
-              },
+              "attributes": [
+                {
+                  "key": "cursor"
+                },
+                {
+                  "key": "display"
+                }
+              ],
+              "style": [
+                {
+                  "key": "cursor",
+                  "value": "pointer"
+                },
+                {
+                  "key": "display",
+                  "value": "none"
+                }
+              ],
               "children": [
                 {
                   "id": "5b2acf9d8078",
                   "variant": {},
                   "is": "5b2acf9d22",
                   "name": "component-instance",
-                  "attributes": {},
-                  "style": {
-                    "display": "inline-block",
-                    "width": "22px",
-                    "height": "20px",
-                    "opacity": "0p",
-                    "cursor": "pointer",
-                    "position": "relative"
-                  },
+                  "attributes": [
+                    {
+                      "key": "display"
+                    },
+                    {
+                      "key": "width"
+                    },
+                    {
+                      "key": "height"
+                    },
+                    {
+                      "key": "opacity"
+                    },
+                    {
+                      "key": "cursor"
+                    },
+                    {
+                      "key": "position"
+                    }
+                  ],
+                  "style": [
+                    {
+                      "key": "display",
+                      "value": "inline-block"
+                    },
+                    {
+                      "key": "width",
+                      "value": "22px"
+                    },
+                    {
+                      "key": "height",
+                      "value": "20px"
+                    },
+                    {
+                      "key": "opacity",
+                      "value": "0p"
+                    },
+                    {
+                      "key": "cursor",
+                      "value": "pointer"
+                    },
+                    {
+                      "key": "position",
+                      "value": "relative"
+                    }
+                  ],
                   "children": [],
                   "metadata": {},
                   "label": "preview button"
@@ -171,10 +379,17 @@
     {
       "label": "Frames",
       "is": "div",
-      "style": {
-        "background": "var(--bc891e755312)"
-      },
-      "attributes": {},
+      "style": [
+        {
+          "key": "background",
+          "value": "var(--bc891e755312)"
+        }
+      ],
+      "attributes": [
+        {
+          "key": "background"
+        }
+      ],
       "id": "bae08a2e609807",
       "name": "component",
       "children": [
@@ -183,16 +398,59 @@
           "label": "Background",
           "is": "div",
           "name": "element",
-          "attributes": {},
-          "style": {
-            "background": "transparent",
-            "width": "100%",
-            "height": "100%",
-            "position": "fixed",
-            "left": "0px",
-            "top": "0px",
-            "z-index": "-1"
-          },
+          "attributes": [
+            {
+              "key": "background"
+            },
+            {
+              "key": "width"
+            },
+            {
+              "key": "height"
+            },
+            {
+              "key": "position"
+            },
+            {
+              "key": "left"
+            },
+            {
+              "key": "top"
+            },
+            {
+              "key": "z-index"
+            }
+          ],
+          "style": [
+            {
+              "key": "background",
+              "value": "transparent"
+            },
+            {
+              "key": "width",
+              "value": "100%"
+            },
+            {
+              "key": "height",
+              "value": "100%"
+            },
+            {
+              "key": "position",
+              "value": "fixed"
+            },
+            {
+              "key": "left",
+              "value": "0px"
+            },
+            {
+              "key": "top",
+              "value": "0px"
+            },
+            {
+              "key": "z-index",
+              "value": "-1"
+            }
+          ],
           "children": [],
           "metadata": {}
         },
@@ -201,23 +459,60 @@
           "label": "content",
           "is": "div",
           "name": "element",
-          "attributes": {},
-          "style": {},
+          "attributes": [],
+          "style": [],
           "children": [
             {
               "id": "bae08a2e609802",
               "variant": {},
               "is": "11188f863945",
               "name": "component-instance",
-              "attributes": {},
-              "style": {
-                "position": "absolute",
-                "background": "rgba(255,255,255,1)",
-                "width": "50px",
-                "left": "100px",
-                "top": "500px",
-                "height": "300px"
-              },
+              "attributes": [
+                {
+                  "key": "position"
+                },
+                {
+                  "key": "background"
+                },
+                {
+                  "key": "width"
+                },
+                {
+                  "key": "left"
+                },
+                {
+                  "key": "top"
+                },
+                {
+                  "key": "height"
+                }
+              ],
+              "style": [
+                {
+                  "key": "position",
+                  "value": "absolute"
+                },
+                {
+                  "key": "background",
+                  "value": "rgba(255,255,255,1)"
+                },
+                {
+                  "key": "width",
+                  "value": "50px"
+                },
+                {
+                  "key": "left",
+                  "value": "100px"
+                },
+                {
+                  "key": "top",
+                  "value": "500px"
+                },
+                {
+                  "key": "height",
+                  "value": "300px"
+                }
+              ],
               "children": [
                 {
                   "id": "bae08a2e609803",
@@ -299,15 +594,52 @@
               "variant": {},
               "is": "11188f863945",
               "name": "component-instance",
-              "attributes": {},
-              "style": {
-                "width": "200px",
-                "left": "800px",
-                "top": "300px",
-                "position": "absolute",
-                "height": "100px",
-                "background": "rgba(255,255,255,1)"
-              },
+              "attributes": [
+                {
+                  "key": "width"
+                },
+                {
+                  "key": "left"
+                },
+                {
+                  "key": "top"
+                },
+                {
+                  "key": "position"
+                },
+                {
+                  "key": "height"
+                },
+                {
+                  "key": "background"
+                }
+              ],
+              "style": [
+                {
+                  "key": "width",
+                  "value": "200px"
+                },
+                {
+                  "key": "left",
+                  "value": "800px"
+                },
+                {
+                  "key": "top",
+                  "value": "300px"
+                },
+                {
+                  "key": "position",
+                  "value": "absolute"
+                },
+                {
+                  "key": "height",
+                  "value": "100px"
+                },
+                {
+                  "key": "background",
+                  "value": "rgba(255,255,255,1)"
+                }
+              ],
               "children": [
                 {
                   "id": "bae08a2e609806",
@@ -349,15 +681,52 @@
               "variant": {},
               "is": "11188f863945",
               "name": "component-instance",
-              "attributes": {},
-              "style": {
-                "width": "400px",
-                "left": "100px",
-                "top": "100px",
-                "position": "absolute",
-                "height": "300px",
-                "background": "rgba(255,255,255,1)"
-              },
+              "attributes": [
+                {
+                  "key": "width"
+                },
+                {
+                  "key": "left"
+                },
+                {
+                  "key": "top"
+                },
+                {
+                  "key": "position"
+                },
+                {
+                  "key": "height"
+                },
+                {
+                  "key": "background"
+                }
+              ],
+              "style": [
+                {
+                  "key": "width",
+                  "value": "400px"
+                },
+                {
+                  "key": "left",
+                  "value": "100px"
+                },
+                {
+                  "key": "top",
+                  "value": "100px"
+                },
+                {
+                  "key": "position",
+                  "value": "absolute"
+                },
+                {
+                  "key": "height",
+                  "value": "300px"
+                },
+                {
+                  "key": "background",
+                  "value": "rgba(255,255,255,1)"
+                }
+              ],
               "children": [
                 {
                   "id": "1c708b423634",
@@ -450,10 +819,17 @@
       "variant": {},
       "is": "bae08a2e609807",
       "name": "component-instance",
-      "attributes": {},
-      "style": {
-        "background": "rgba(200, 200, 200, 1)"
-      },
+      "attributes": [
+        {
+          "key": "background"
+        }
+      ],
+      "style": [
+        {
+          "key": "background",
+          "value": "rgba(200, 200, 200, 1)"
+        }
+      ],
       "children": [],
       "metadata": {
         "bounds": {
