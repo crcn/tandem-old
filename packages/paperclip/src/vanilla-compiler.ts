@@ -12,7 +12,7 @@ import {
 import {
   PCNode,
   getOverrideMap,
-  PCOverridablePropertyName,
+  PCOverridableType,
   PCTextNode,
   PCBaseElementChild,
   isVisibleNode,
@@ -467,10 +467,9 @@ const translateStaticVariants = (
     (getTreeNodesByName(PCSourceTagNames.OVERRIDE, contentNode) as PCOverride[])
       .filter(override => {
         return (
-          override.propertyName === PCOverridablePropertyName.STYLE ||
-          override.propertyName ===
-            PCOverridablePropertyName.VARIANT_IS_DEFAULT ||
-          override.propertyName === PCOverridablePropertyName.VARIANT
+          override.propertyName === PCOverridableType.STYLE ||
+          override.propertyName === PCOverridableType.VARIANT_IS_DEFAULT ||
+          override.propertyName === PCOverridableType.VARIANT
         );
       })
       .map(override => {
@@ -549,7 +548,7 @@ const translateVariantOverrideMap = memoize(
       const { overrides, children: childMap } = map[nodeId];
 
       for (const override of overrides) {
-        if (override.propertyName === PCOverridablePropertyName.STYLE) {
+        if (override.propertyName === PCOverridableType.STYLE) {
           buffer += `_${nodeId}Style: ${JSON.stringify(
             mapStyles(
               computeStyleWithVars(override.value, varMap),
@@ -558,13 +557,13 @@ const translateVariantOverrideMap = memoize(
             )
           )},`;
         }
-        if (override.propertyName === PCOverridablePropertyName.ATTRIBUTES) {
+        if (override.propertyName === PCOverridableType.ATTRIBUTES) {
           buffer += `_${nodeId}Attributes: ${JSON.stringify(override.value)},`;
         }
-        if (override.propertyName === PCOverridablePropertyName.VARIANT) {
+        if (override.propertyName === PCOverridableType.VARIANT) {
           buffer += `_${nodeId}Variant: ${JSON.stringify(override.value)},`;
         }
-        if (override.propertyName === PCOverridablePropertyName.TEXT) {
+        if (override.propertyName === PCOverridableType.TEXT) {
           buffer += `_${nodeId}Value: ${JSON.stringify(override.value)},`;
         }
       }

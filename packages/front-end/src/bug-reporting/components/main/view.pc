@@ -1,6 +1,6 @@
 {
   "id": "cf827dd439",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "metadata": {},
   "name": "module",
   "children": [
@@ -481,13 +481,13 @@
                         {
                           "id": "2cb68e4e12648",
                           "variantId": null,
-                          "propertyName": "text",
                           "targetIdPath": [
                             "9f364d2139650"
                           ],
                           "value": "Restart app",
                           "name": "override",
-                          "children": []
+                          "children": [],
+                          "type": "text"
                         }
                       ],
                       "metadata": {},

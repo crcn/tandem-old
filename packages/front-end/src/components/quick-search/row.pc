@@ -1,6 +1,6 @@
 {
   "id": "28fcdf040",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "metadata": {},
   "name": "module",
   "children": [
@@ -353,13 +353,16 @@
         {
           "id": "1dc9871d4870",
           "variantId": "1dc9871d3624",
-          "propertyName": "style",
           "targetIdPath": [],
-          "value": {
-            "background": "var(--f63574de434)"
-          },
+          "value": [
+            {
+              "key": "background",
+              "value": "var(--f63574de434)"
+            }
+          ],
           "name": "override",
-          "children": []
+          "children": [],
+          "type": "add-style-block"
         },
         {
           "id": "646b96f933019",
@@ -434,15 +437,18 @@
         {
           "id": "646b96f949286",
           "variantId": "646b96f948608",
-          "propertyName": "style",
           "targetIdPath": [
             "646b96f933019"
           ],
-          "value": {
-            "display": "inline-block"
-          },
+          "value": [
+            {
+              "key": "display",
+              "value": "inline-block"
+            }
+          ],
           "name": "override",
-          "children": []
+          "children": [],
+          "type": "add-style-block"
         },
         {
           "id": "f32ac6af39966",
@@ -466,24 +472,30 @@
         {
           "id": "564cd8f1606",
           "variantId": "564cd8f1605",
-          "propertyName": "style",
           "targetIdPath": [],
-          "value": {
-            "background-image": "linear-gradient(var(--32c1eebd7630), var(--32c1eebd7630))"
-          },
+          "value": [
+            {
+              "key": "background-image",
+              "value": "linear-gradient(var(--32c1eebd7630), var(--32c1eebd7630))"
+            }
+          ],
           "name": "override",
-          "children": []
+          "children": [],
+          "type": "add-style-block"
         },
         {
           "id": "f7d6a42945",
           "variantId": "646b96f948608",
-          "propertyName": "style",
           "targetIdPath": [],
-          "value": {
-            "background-image": "linear-gradient(var(--1934368810788), var(--1934368810788))"
-          },
+          "value": [
+            {
+              "key": "background-image",
+              "value": "linear-gradient(var(--1934368810788), var(--1934368810788))"
+            }
+          ],
           "name": "override",
-          "children": []
+          "children": [],
+          "type": "add-style-block"
         }
       ],
       "metadata": {

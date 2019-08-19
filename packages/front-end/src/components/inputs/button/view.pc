@@ -1,6 +1,6 @@
 {
   "id": "9f364d2139376",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "metadata": {},
   "name": "module",
   "children": [
@@ -146,14 +146,20 @@
         {
           "id": "38b32d581284",
           "variantId": "38b32d581121",
-          "propertyName": "style",
           "targetIdPath": [],
-          "value": {
-            "background": "rgba(227, 227, 227, 1)",
-            "color": "var(--24ce1e4d482)"
-          },
+          "value": [
+            {
+              "key": "background",
+              "value": "rgba(227, 227, 227, 1)"
+            },
+            {
+              "key": "color",
+              "value": "var(--24ce1e4d482)"
+            }
+          ],
           "name": "override",
-          "children": []
+          "children": [],
+          "type": "add-style-block"
         },
         {
           "id": "c6acc7ee1385",
@@ -166,14 +172,20 @@
         {
           "id": "c6acc7ee1386",
           "variantId": "c6acc7ee1385",
-          "propertyName": "style",
           "targetIdPath": [],
-          "value": {
-            "cursor": "default",
-            "opacity": 0.253
-          },
+          "value": [
+            {
+              "key": "cursor",
+              "value": "default"
+            },
+            {
+              "key": "opacity",
+              "value": 0.253
+            }
+          ],
           "name": "override",
-          "children": []
+          "children": [],
+          "type": "add-style-block"
         }
       ],
       "metadata": {

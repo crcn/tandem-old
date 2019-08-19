@@ -1,6 +1,6 @@
 {
   "id": "2e50685a82",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "metadata": {},
   "name": "module",
   "children": [
@@ -236,13 +236,13 @@
                         {
                           "id": "c6acc7ee1387",
                           "variantId": null,
-                          "propertyName": "text",
                           "targetIdPath": [
                             "9f364d2139650"
                           ],
                           "value": "browse",
                           "name": "override",
-                          "children": []
+                          "children": [],
+                          "type": "text"
                         }
                       ],
                       "metadata": {
@@ -265,13 +265,13 @@
             {
               "id": "c6acc7ee1171",
               "variantId": null,
-              "propertyName": "text",
               "targetIdPath": [
                 "7149f8192506"
               ],
               "value": "Project Directory",
               "name": "override",
-              "children": []
+              "children": [],
+              "type": "text"
             }
           ],
           "metadata": {
@@ -333,13 +333,13 @@
                 {
                   "id": "c6acc7ee1003",
                   "variantId": null,
-                  "propertyName": "text",
                   "targetIdPath": [
                     "9f364d2139650"
                   ],
                   "value": "Create Project",
                   "name": "override",
-                  "children": []
+                  "children": [],
+                  "type": "text"
                 }
               ],
               "metadata": {

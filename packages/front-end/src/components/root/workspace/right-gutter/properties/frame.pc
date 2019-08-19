@@ -1,6 +1,6 @@
 {
   "id": "ca37a81122",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "metadata": {},
   "name": "module",
   "children": [
@@ -38,13 +38,13 @@
             {
               "id": "ca37a81113080",
               "variantId": null,
-              "propertyName": "text",
               "targetIdPath": [
                 "b6c162d1281"
               ],
               "value": "Frame",
               "name": "override",
-              "children": []
+              "children": [],
+              "type": "text"
             },
             {
               "slotId": "d6261ad52883",
@@ -84,13 +84,13 @@
                         {
                           "id": "ca37a81113084",
                           "variantId": null,
-                          "propertyName": "text",
                           "targetIdPath": [
                             "7149f8192506"
                           ],
                           "value": "Preset",
                           "name": "override",
-                          "children": []
+                          "children": [],
+                          "type": "text"
                         },
                         {
                           "slotId": "e73029b416045",
@@ -106,13 +106,13 @@
                                 {
                                   "id": "28a93a072386",
                                   "variantId": null,
-                                  "propertyName": "text",
                                   "targetIdPath": [
                                     "67e386c7935"
                                   ],
                                   "value": "iPhone 8+",
                                   "name": "override",
-                                  "children": []
+                                  "children": [],
+                                  "type": "text"
                                 }
                               ],
                               "metadata": {
@@ -194,13 +194,13 @@
                         {
                           "id": "ca37a81113087",
                           "variantId": null,
-                          "propertyName": "text",
                           "targetIdPath": [
                             "7149f8192506"
                           ],
                           "value": "x",
                           "name": "override",
-                          "children": []
+                          "children": [],
+                          "type": "text"
                         },
                         {
                           "slotId": "e73029b416045",
@@ -249,13 +249,13 @@
                         {
                           "id": "ca37a81113089",
                           "variantId": null,
-                          "propertyName": "text",
                           "targetIdPath": [
                             "7149f8192506"
                           ],
                           "value": "y",
                           "name": "override",
-                          "children": []
+                          "children": [],
+                          "type": "text"
                         },
                         {
                           "slotId": "e73029b416045",
@@ -340,13 +340,13 @@
                         {
                           "id": "ca37a81113092",
                           "variantId": null,
-                          "propertyName": "text",
                           "targetIdPath": [
                             "7149f8192506"
                           ],
                           "value": "Width",
                           "name": "override",
-                          "children": []
+                          "children": [],
+                          "type": "text"
                         },
                         {
                           "slotId": "e73029b416045",
@@ -395,13 +395,13 @@
                         {
                           "id": "ca37a81113094",
                           "variantId": null,
-                          "propertyName": "text",
                           "targetIdPath": [
                             "7149f8192506"
                           ],
                           "value": "Height",
                           "name": "override",
-                          "children": []
+                          "children": [],
+                          "type": "text"
                         },
                         {
                           "slotId": "e73029b416045",
@@ -449,15 +449,18 @@
             },
             {
               "id": "af9e87101229",
-              "propertyName": "style",
               "targetIdPath": [
                 "b6c162d1281"
               ],
-              "value": {
-                "font-weight": "unset\nuser-select"
-              },
+              "value": [
+                {
+                  "key": "font-weight",
+                  "value": "unset\nuser-select"
+                }
+              ],
               "name": "override",
-              "children": []
+              "children": [],
+              "type": "add-style-block"
             }
           ],
           "metadata": {

@@ -20,7 +20,7 @@ import {
 import { uniq, isEqual } from "lodash";
 import { Dependency, DependencyGraph, updateGraphDependency } from "./graph";
 
-export const PAPERCLIP_MODULE_VERSION = "1.0.0";
+export const PAPERCLIP_MODULE_VERSION = "1.0.1";
 
 /*------------------------------------------
  * CONSTANTS
@@ -60,7 +60,7 @@ export enum PCSourceTagNames {
   INHERIT_STYLE = "inherit-style"
 }
 
-export enum PCOverridablePropertyName {
+export enum PCOverridableType {
   TEXT = "text",
   CHILDREN = "children",
   INHERIT_STYLE = "styleMixins",
@@ -68,8 +68,13 @@ export enum PCOverridablePropertyName {
   // DEPRECATED
   VARIANT_IS_DEFAULT = "isDefault",
   VARIANT = "variant",
+
+  // DEPRECATED
   STYLE = "style",
+
+  ADD_STYLE_BLOCK = "add-style-block",
   ATTRIBUTES = "attributes",
+  ADD_ATTRIBUTES = "add-attributes",
   LABEL = "label",
   SLOT = "slot",
   CONTENT = "content"
@@ -370,8 +375,8 @@ export type PCVariantTrigger = {
   targetVariantId: string | null;
 } & PCBaseSourceNode<PCSourceTagNames.VARIANT_TRIGGER>;
 
-export type PCBaseOverride<TPropertyName extends PCOverridablePropertyName> = {
-  propertyName: TPropertyName;
+export type PCBaseOverride<TOverrideType extends PCOverridableType> = {
+  type: TOverrideType;
   targetIdPath: string[];
   variantId: string;
 } & PCBaseSourceNode<PCSourceTagNames.OVERRIDE>;
@@ -433,38 +438,36 @@ export type PCPlug = {
 } & PCBaseSourceNode<PCSourceTagNames.PLUG>;
 
 export type PCBaseValueOverride<
-  TPropertyName extends PCOverridablePropertyName,
+  TOverrideType extends PCOverridableType,
   TValue
 > = {
   value: TValue;
-} & PCBaseOverride<TPropertyName>;
+} & PCBaseOverride<TOverrideType>;
 
 export type PCStyleOverride = PCBaseValueOverride<
-  PCOverridablePropertyName.STYLE,
+  PCOverridableType.STYLE,
   KeyValue<any>
 >;
 export type PCTextOverride = PCBaseValueOverride<
-  PCOverridablePropertyName.TEXT,
+  PCOverridableType.TEXT,
   string
 >;
-export type PCChildrenOverride = PCBaseOverride<
-  PCOverridablePropertyName.CHILDREN
->;
+export type PCChildrenOverride = PCBaseOverride<PCOverridableType.CHILDREN>;
 export type PCAttributesOverride = PCBaseValueOverride<
-  PCOverridablePropertyName.ATTRIBUTES,
+  PCOverridableType.ATTRIBUTES,
   KeyValue<any>
 >;
 export type PCLabelOverride = PCBaseValueOverride<
-  PCOverridablePropertyName.LABEL,
+  PCOverridableType.LABEL,
   string
 >;
 export type PCVariantOverride = PCBaseValueOverride<
-  PCOverridablePropertyName.VARIANT_IS_DEFAULT,
+  PCOverridableType.VARIANT_IS_DEFAULT,
   string[]
 >;
 
 export type PCVariant2Override = PCBaseValueOverride<
-  PCOverridablePropertyName.VARIANT,
+  PCOverridableType.VARIANT,
   string[]
 >;
 
@@ -823,7 +826,7 @@ export const createPCPlug = (
 
 export const createPCOverride = (
   targetIdPath: string[],
-  propertyName: PCOverridablePropertyName,
+  type: PCOverridableType,
   value: any,
   variantId?: string
 ): PCOverride => {
@@ -831,11 +834,11 @@ export const createPCOverride = (
 
   let children;
 
-  if (propertyName === PCOverridablePropertyName.CHILDREN) {
+  if (type === PCOverridableType.CHILDREN) {
     return {
       id,
       variantId,
-      propertyName,
+      type,
       targetIdPath,
       name: PCSourceTagNames.OVERRIDE,
       children: value || [],
@@ -846,7 +849,7 @@ export const createPCOverride = (
   return {
     id,
     variantId,
-    propertyName,
+    type,
     targetIdPath,
     value,
     name: PCSourceTagNames.OVERRIDE,
@@ -869,7 +872,11 @@ export const createPCDependency = (
 export const isValueOverride = (
   node: PCOverride
 ): node is PCBaseValueOverride<any, any> => {
-  return node.propertyName !== PCOverridablePropertyName.CHILDREN;
+  return (
+    node.type !== PCOverridableType.CHILDREN &&
+    node.type !== PCOverridableType.ADD_STYLE_BLOCK &&
+    node.type !== PCOverridableType.ADD_ATTRIBUTES
+  );
 };
 
 export const isVisibleNode = (node: PCNode): node is PCVisibleNode =>
@@ -937,11 +944,11 @@ export const getOverrides = memoize(
   (node: PCNode) =>
     (node.children.filter(isPCOverride) as PCOverride[]).sort(
       (a, b) =>
-        a.propertyName === PCOverridablePropertyName.CHILDREN
+        a.type === PCOverridableType.CHILDREN
           ? 1
           : a.variantId
             ? -1
-            : b.propertyName === PCOverridablePropertyName.CHILDREN
+            : b.type === PCOverridableType.CHILDREN
               ? 0
               : 1
     ) as PCOverride[]
@@ -962,8 +969,7 @@ export const getPCVariantOverrides = memoize(
     instance.children.filter(
       override =>
         isPCOverride(override) &&
-        override.propertyName ===
-          PCOverridablePropertyName.VARIANT_IS_DEFAULT &&
+        override.type === PCOverridableType.VARIANT_IS_DEFAULT &&
         override.variantId == variantId
     ) as PCVariantOverride[]
 );
@@ -1459,7 +1465,7 @@ const pcNodeShallowEquals = (a: PCNode, b: PCNode) => {
 
 const overrideShallowEquals = (a: PCOverride, b: PCOverride) => {
   return (
-    a.propertyName === b.propertyName &&
+    a.type === b.type &&
     (a as PCBaseValueOverride<any, any>).value ==
       (b as PCBaseValueOverride<any, any>).value &&
     isEqual(a.targetIdPath, b.targetIdPath)
@@ -1564,9 +1570,8 @@ export const getVariableGraphRefs = memoize(
     const refIds =
       isVisibleNode(node) || node.name === PCSourceTagNames.COMPONENT
         ? getNodeStyleRefIds(node.style)
-        : isPCOverride(node) &&
-          node.propertyName === PCOverridablePropertyName.STYLE
-          ? getNodeStyleRefIds(node.value)
+        : isPCOverride(node) && node.type === PCOverridableType.STYLE
+          ? getNodeStyleRefIds(node.type)
           : EMPTY_ARRAY;
 
     for (let i = 0, { length } = refIds; i < length; i++) {
@@ -1643,11 +1648,9 @@ export const computeStyleValue = (
   return value;
 };
 
-export const getNodeStyleRefIds = memoize((style: KeyValue<string>) => {
+export const getNodeStyleRefIds = memoize((style: KeyValuePair[]) => {
   const refIds = {};
-  for (const key in style) {
-    const value = style[key];
-
+  for (const { key, value } of style) {
     // value c
     if (value && styleValueContainsCSSVar(String(value))) {
       const cssVars = getCSSVars(value);

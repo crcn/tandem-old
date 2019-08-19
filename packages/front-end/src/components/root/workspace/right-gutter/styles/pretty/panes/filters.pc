@@ -1,6 +1,6 @@
 {
   "id": "296b92da31921",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "metadata": {},
   "name": "module",
   "children": [
@@ -14,23 +14,23 @@
       "children": [
         {
           "id": "bcda9fb597946",
-          "propertyName": "text",
           "targetIdPath": [
             "b6c162d1281"
           ],
           "value": "Filters",
           "name": "override",
-          "children": []
+          "children": [],
+          "type": "text"
         },
         {
           "id": "bcda9fb5129573",
-          "propertyName": "text",
           "targetIdPath": [
             "6fd27ae1495"
           ],
           "value": "   ",
           "name": "override",
-          "children": []
+          "children": [],
+          "type": "text"
         },
         {
           "slotId": "d6261ad53069",
@@ -151,15 +151,18 @@
         },
         {
           "id": "43fa80866997",
-          "propertyName": "style",
           "targetIdPath": [
             "b6c162d140"
           ],
-          "value": {
-            "padding-bottom": "0px"
-          },
+          "value": [
+            {
+              "key": "padding-bottom",
+              "value": "0px"
+            }
+          ],
           "name": "override",
-          "children": []
+          "children": [],
+          "type": "add-style-block"
         },
         {
           "id": "43fa80867002",

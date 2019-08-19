@@ -1,6 +1,6 @@
 {
   "id": "8fc54ef3114",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "metadata": {},
   "name": "module",
   "children": [
@@ -80,32 +80,53 @@
           "children": [
             {
               "id": "8f350e385649",
-              "propertyName": "style",
               "targetIdPath": [
                 "8f350e385127"
               ],
-              "value": {
-                "width": "8px",
-                "border-top-left-radius": "2px",
-                "border-top-right-radius": "2px",
-                "border-bottom-left-radius": "2px",
-                "border-bottom-right-radius": "2px",
-                "height": "8px"
-              },
+              "value": [
+                {
+                  "key": "width",
+                  "value": "8px"
+                },
+                {
+                  "key": "border-top-left-radius",
+                  "value": "2px"
+                },
+                {
+                  "key": "border-top-right-radius",
+                  "value": "2px"
+                },
+                {
+                  "key": "border-bottom-left-radius",
+                  "value": "2px"
+                },
+                {
+                  "key": "border-bottom-right-radius",
+                  "value": "2px"
+                },
+                {
+                  "key": "height",
+                  "value": "8px"
+                }
+              ],
               "name": "override",
-              "children": []
+              "children": [],
+              "type": "add-style-block"
             },
             {
               "id": "8f350e385650",
-              "propertyName": "style",
               "targetIdPath": [
                 "8f350e384983"
               ],
-              "value": {
-                "width": "8px"
-              },
+              "value": [
+                {
+                  "key": "width",
+                  "value": "8px"
+                }
+              ],
               "name": "override",
-              "children": []
+              "children": [],
+              "type": "add-style-block"
             }
           ],
           "metadata": {
@@ -418,44 +439,71 @@
             {
               "id": "8f350e385566",
               "variantId": null,
-              "propertyName": "text",
               "targetIdPath": [
                 "67e386c7935"
               ],
               "value": "something",
               "name": "override",
-              "children": []
+              "children": [],
+              "type": "text"
             },
             {
               "id": "8f350e385644",
-              "propertyName": "style",
               "targetIdPath": [
                 "8b8bbe2c232831"
               ],
-              "value": {
-                "font-size": "10px",
-                "box-shadow": "inset  0px 0px 0px 0px var(--dd86347b1545)",
-                "padding-top": "2px",
-                "padding-right": "4px",
-                "padding-bottom": "2px",
-                "padding-left": "4px",
-                "background-image": "linear-gradient(rgba(238, 238, 238, 1), rgba(238, 238, 238, 1))"
-              },
+              "value": [
+                {
+                  "key": "font-size",
+                  "value": "10px"
+                },
+                {
+                  "key": "box-shadow",
+                  "value": "inset  0px 0px 0px 0px var(--dd86347b1545)"
+                },
+                {
+                  "key": "padding-top",
+                  "value": "2px"
+                },
+                {
+                  "key": "padding-right",
+                  "value": "4px"
+                },
+                {
+                  "key": "padding-bottom",
+                  "value": "2px"
+                },
+                {
+                  "key": "padding-left",
+                  "value": "4px"
+                },
+                {
+                  "key": "background-image",
+                  "value": "linear-gradient(rgba(238, 238, 238, 1), rgba(238, 238, 238, 1))"
+                }
+              ],
               "name": "override",
-              "children": []
+              "children": [],
+              "type": "add-style-block"
             },
             {
               "id": "8f350e385645",
-              "propertyName": "style",
               "targetIdPath": [
                 "67e386c7935"
               ],
-              "value": {
-                "font-size": "inherit",
-                "margin-right": "6px"
-              },
+              "value": [
+                {
+                  "key": "font-size",
+                  "value": "inherit"
+                },
+                {
+                  "key": "margin-right",
+                  "value": "6px"
+                }
+              ],
               "name": "override",
-              "children": []
+              "children": [],
+              "type": "add-style-block"
             }
           ],
           "metadata": {

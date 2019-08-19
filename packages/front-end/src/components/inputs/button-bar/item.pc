@@ -1,6 +1,6 @@
 {
   "id": "70ef61a6213",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "metadata": {},
   "name": "module",
   "children": [
@@ -144,15 +144,24 @@
         {
           "id": "15d6c81f4",
           "variantId": "15d6c81f3",
-          "propertyName": "style",
           "targetIdPath": [],
-          "value": {
-            "border-right": "none",
-            "border-top-right-radius": "1px",
-            "border-bottom-right-radius": "1px"
-          },
+          "value": [
+            {
+              "key": "border-right",
+              "value": "none"
+            },
+            {
+              "key": "border-top-right-radius",
+              "value": "1px"
+            },
+            {
+              "key": "border-bottom-right-radius",
+              "value": "1px"
+            }
+          ],
           "name": "override",
-          "children": []
+          "children": [],
+          "type": "add-style-block"
         },
         {
           "id": "15d6c81f5",
@@ -165,14 +174,20 @@
         {
           "id": "15d6c81f6",
           "variantId": "15d6c81f5",
-          "propertyName": "style",
           "targetIdPath": [],
-          "value": {
-            "background": "#00B5FF",
-            "color": "rgba(255, 255, 255, 1)"
-          },
+          "value": [
+            {
+              "key": "background",
+              "value": "#00B5FF"
+            },
+            {
+              "key": "color",
+              "value": "rgba(255, 255, 255, 1)"
+            }
+          ],
           "name": "override",
-          "children": []
+          "children": [],
+          "type": "add-style-block"
         },
         {
           "id": "af62926b2035",
@@ -185,15 +200,24 @@
         {
           "id": "af62926b2036",
           "variantId": "af62926b2035",
-          "propertyName": "style",
           "targetIdPath": [],
-          "value": {
-            "text-align": "center",
-            "border-bottom-left-radius": "1px",
-            "border-top-left-radius": "1px"
-          },
+          "value": [
+            {
+              "key": "text-align",
+              "value": "center"
+            },
+            {
+              "key": "border-bottom-left-radius",
+              "value": "1px"
+            },
+            {
+              "key": "border-top-left-radius",
+              "value": "1px"
+            }
+          ],
           "name": "override",
-          "children": []
+          "children": [],
+          "type": "add-style-block"
         }
       ],
       "metadata": {

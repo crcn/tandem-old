@@ -1,6 +1,6 @@
 {
   "id": "b34e7ef4148",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "metadata": {},
   "name": "module",
   "children": [
@@ -22,13 +22,13 @@
           "children": [
             {
               "id": "b34e7ef41054474",
-              "propertyName": "style",
               "targetIdPath": [
                 "b34e7ef4710988"
               ],
-              "value": {},
+              "value": [],
               "name": "override",
-              "children": []
+              "children": [],
+              "type": "add-style-block"
             }
           ],
           "metadata": {}
@@ -287,26 +287,29 @@
           "children": [
             {
               "id": "b34e7ef4922568",
-              "propertyName": "style",
               "targetIdPath": [
                 "b34e7ef4338028"
               ],
-              "value": {
-                "background": "rgba(200, 200, 200, 1)"
-              },
+              "value": [
+                {
+                  "key": "background",
+                  "value": "rgba(200, 200, 200, 1)"
+                }
+              ],
               "name": "override",
-              "children": []
+              "children": [],
+              "type": "add-style-block"
             },
             {
               "id": "b34e7ef42007988",
-              "propertyName": "text",
               "targetIdPath": [
                 "b34e7ef4338028",
                 "b34e7ef4147857"
               ],
               "value": "Quick Search",
               "name": "override",
-              "children": []
+              "children": [],
+              "type": "text"
             }
           ],
           "metadata": {

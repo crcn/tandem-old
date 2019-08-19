@@ -1,6 +1,6 @@
 {
   "id": "cff629132",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "metadata": {},
   "name": "module",
   "children": [
@@ -135,13 +135,13 @@
             {
               "id": "1b315282200775",
               "variantId": null,
-              "propertyName": "text",
               "targetIdPath": [
                 "1b3152825271"
               ],
               "value": "Attributes",
               "name": "override",
-              "children": []
+              "children": [],
+              "type": "text"
             },
             {
               "slotId": "1b3152825278",
@@ -243,24 +243,24 @@
             {
               "id": "51bf716710448",
               "variantId": null,
-              "propertyName": "text",
               "targetIdPath": [
                 "981545e81068"
               ],
               "value": "src",
               "name": "override",
-              "children": []
+              "children": [],
+              "type": "text"
             },
             {
               "id": "51bf716710449",
               "variantId": null,
-              "propertyName": "text",
               "targetIdPath": [
                 "981545e81074"
               ],
               "value": "path/to/src/2",
               "name": "override",
-              "children": []
+              "children": [],
+              "type": "text"
             }
           ],
           "metadata": {
@@ -287,24 +287,24 @@
             {
               "id": "51bf716710444",
               "variantId": null,
-              "propertyName": "text",
               "targetIdPath": [
                 "981545e81068"
               ],
               "value": "immutable key",
               "name": "override",
-              "children": []
+              "children": [],
+              "type": "text"
             },
             {
               "id": "51bf716710445",
               "variantId": null,
-              "propertyName": "text",
               "targetIdPath": [
                 "981545e81074"
               ],
               "value": "value",
               "name": "override",
-              "children": []
+              "children": [],
+              "type": "text"
             }
           ],
           "metadata": {
@@ -330,24 +330,24 @@
             {
               "id": "51bf716710446",
               "variantId": null,
-              "propertyName": "text",
               "targetIdPath": [
                 "981545e81068"
               ],
               "value": "src",
               "name": "override",
-              "children": []
+              "children": [],
+              "type": "text"
             },
             {
               "id": "51bf716710447",
               "variantId": null,
-              "propertyName": "text",
               "targetIdPath": [
                 "981545e81074"
               ],
               "value": "path/to/src",
               "name": "override",
-              "children": []
+              "children": [],
+              "type": "text"
             }
           ],
           "metadata": {
@@ -409,13 +409,13 @@
             {
               "id": "1b315282200864",
               "variantId": null,
-              "propertyName": "text",
               "targetIdPath": [
                 "1b3152825271"
               ],
               "value": "States",
               "name": "override",
-              "children": []
+              "children": [],
+              "type": "text"
             },
             {
               "slotId": "1b3152825278",
@@ -508,26 +508,29 @@
           "children": [
             {
               "id": "1b315282201007",
-              "propertyName": "style",
               "targetIdPath": [
                 "1b3152825274"
               ],
-              "value": {
-                "display": "none"
-              },
+              "value": [
+                {
+                  "key": "display",
+                  "value": "none"
+                }
+              ],
               "name": "override",
-              "children": []
+              "children": [],
+              "type": "add-style-block"
             },
             {
               "id": "1b315282201008",
               "variantId": null,
-              "propertyName": "text",
               "targetIdPath": [
                 "1b3152825271"
               ],
               "value": "behavior",
               "name": "override",
-              "children": []
+              "children": [],
+              "type": "text"
             }
           ],
           "metadata": {
@@ -622,13 +625,13 @@
             {
               "id": "1b315282201144",
               "variantId": null,
-              "propertyName": "text",
               "targetIdPath": [
                 "1b3152825271"
               ],
               "value": "Conditions",
               "name": "override",
-              "children": []
+              "children": [],
+              "type": "text"
             }
           ],
           "metadata": {

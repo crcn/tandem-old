@@ -1,6 +1,6 @@
 {
   "id": "11188f860",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "metadata": {},
   "name": "module",
   "children": [
@@ -352,15 +352,18 @@
         {
           "id": "f6f985954",
           "variantId": "f6f985953",
-          "propertyName": "style",
           "targetIdPath": [
             "f6f985951"
           ],
-          "value": {
-            "display": "block"
-          },
+          "value": [
+            {
+              "key": "display",
+              "value": "block"
+            }
+          ],
           "name": "override",
-          "children": []
+          "children": [],
+          "type": "add-style-block"
         }
       ],
       "metadata": {
@@ -516,68 +519,98 @@
               "children": [
                 {
                   "id": "bae08a2e609803",
-                  "propertyName": "style",
                   "targetIdPath": [
                     "b0a6d2a258432"
                   ],
-                  "value": {
-                    "height": "30px",
-                    "width": "30px",
-                    "top": "0px"
-                  },
+                  "value": [
+                    {
+                      "key": "height",
+                      "value": "30px"
+                    },
+                    {
+                      "key": "width",
+                      "value": "30px"
+                    },
+                    {
+                      "key": "top",
+                      "value": "0px"
+                    }
+                  ],
                   "name": "override",
-                  "children": []
+                  "children": [],
+                  "type": "add-style-block"
                 },
                 {
                   "id": "bae08a2e609804",
-                  "propertyName": "style",
                   "targetIdPath": [
                     "bae08a2e11842"
                   ],
-                  "value": {
-                    "float": "right"
-                  },
+                  "value": [
+                    {
+                      "key": "float",
+                      "value": "right"
+                    }
+                  ],
                   "name": "override",
-                  "children": []
+                  "children": [],
+                  "type": "add-style-block"
                 },
                 {
                   "id": "1c708b474661",
-                  "propertyName": "style",
                   "targetIdPath": [
                     "b0a6d2a262324"
                   ],
-                  "value": {
-                    "display": "inline-flex",
-                    "overflow": "hidden"
-                  },
+                  "value": [
+                    {
+                      "key": "display",
+                      "value": "inline-flex"
+                    },
+                    {
+                      "key": "overflow",
+                      "value": "hidden"
+                    }
+                  ],
                   "name": "override",
-                  "children": []
+                  "children": [],
+                  "type": "add-style-block"
                 },
                 {
                   "id": "1c708b4357262",
-                  "propertyName": "style",
                   "targetIdPath": [
                     "bae08a2e437639"
                   ],
-                  "value": {
-                    "width": "100%"
-                  },
+                  "value": [
+                    {
+                      "key": "width",
+                      "value": "100%"
+                    }
+                  ],
                   "name": "override",
-                  "children": []
+                  "children": [],
+                  "type": "add-style-block"
                 },
                 {
                   "id": "1c708b4423988",
-                  "propertyName": "style",
                   "targetIdPath": [
                     "11188f8623368"
                   ],
-                  "value": {
-                    "text-overflow": "ellipsis",
-                    "width": "100%",
-                    "flex-shrink": "1"
-                  },
+                  "value": [
+                    {
+                      "key": "text-overflow",
+                      "value": "ellipsis"
+                    },
+                    {
+                      "key": "width",
+                      "value": "100%"
+                    },
+                    {
+                      "key": "flex-shrink",
+                      "value": "1"
+                    }
+                  ],
                   "name": "override",
-                  "children": []
+                  "children": [],
+                  "type": "add-style-block"
                 }
               ],
               "metadata": {
@@ -643,28 +676,34 @@
               "children": [
                 {
                   "id": "bae08a2e609806",
-                  "propertyName": "style",
                   "targetIdPath": [
                     "bae08a2e11842"
                   ],
-                  "value": {
-                    "float": "right"
-                  },
+                  "value": [
+                    {
+                      "key": "float",
+                      "value": "right"
+                    }
+                  ],
                   "name": "override",
-                  "children": []
+                  "children": [],
+                  "type": "add-style-block"
                 },
                 {
                   "id": "3d4d7efc25648",
-                  "propertyName": "style",
                   "targetIdPath": [
                     "77a7a2c122",
                     "8b8bbe2c232831"
                   ],
-                  "value": {
-                    "padding": "none"
-                  },
+                  "value": [
+                    {
+                      "key": "padding",
+                      "value": "none"
+                    }
+                  ],
                   "name": "override",
-                  "children": []
+                  "children": [],
+                  "type": "add-style-block"
                 }
               ],
               "metadata": {
@@ -730,62 +769,80 @@
               "children": [
                 {
                   "id": "1c708b423634",
-                  "propertyName": "style",
                   "targetIdPath": [
                     "b0a6d2a258432"
                   ],
-                  "value": {
-                    "height": "30px",
-                    "width": "30px",
-                    "top": "0px"
-                  },
+                  "value": [
+                    {
+                      "key": "height",
+                      "value": "30px"
+                    },
+                    {
+                      "key": "width",
+                      "value": "30px"
+                    },
+                    {
+                      "key": "top",
+                      "value": "0px"
+                    }
+                  ],
                   "name": "override",
-                  "children": []
+                  "children": [],
+                  "type": "add-style-block"
                 },
                 {
                   "id": "1c708b423635",
-                  "propertyName": "style",
                   "targetIdPath": [
                     "bae08a2e11842"
                   ],
-                  "value": {
-                    "float": "right"
-                  },
+                  "value": [
+                    {
+                      "key": "float",
+                      "value": "right"
+                    }
+                  ],
                   "name": "override",
-                  "children": []
+                  "children": [],
+                  "type": "add-style-block"
                 },
                 {
                   "id": "60bcc5b2203",
-                  "propertyName": "style",
                   "targetIdPath": [
                     "77a7a2c122"
                   ],
-                  "value": {},
+                  "value": [],
                   "name": "override",
-                  "children": []
+                  "children": [],
+                  "type": "add-style-block"
                 },
                 {
                   "id": "5b2acf9d88333",
-                  "propertyName": "style",
                   "targetIdPath": [
                     "b0a6d2a262324"
                   ],
-                  "value": {},
+                  "value": [],
                   "name": "override",
-                  "children": []
+                  "children": [],
+                  "type": "add-style-block"
                 },
                 {
                   "id": "5b2acf9d200670",
-                  "propertyName": "style",
                   "targetIdPath": [
                     "5b2acf9d8078"
                   ],
-                  "value": {
-                    "position": "relative",
-                    "top": "2px"
-                  },
+                  "value": [
+                    {
+                      "key": "position",
+                      "value": "relative"
+                    },
+                    {
+                      "key": "top",
+                      "value": "2px"
+                    }
+                  ],
                   "name": "override",
-                  "children": []
+                  "children": [],
+                  "type": "add-style-block"
                 }
               ],
               "metadata": {

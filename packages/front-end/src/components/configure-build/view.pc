@@ -1,6 +1,6 @@
 {
   "id": "a8ea458088",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "metadata": {},
   "name": "module",
   "children": [
@@ -394,13 +394,13 @@
                     {
                       "id": "7b302ae8214",
                       "variantId": null,
-                      "propertyName": "text",
                       "targetIdPath": [
                         "7149f8192506"
                       ],
                       "value": "Build Command\n",
                       "name": "override",
-                      "children": []
+                      "children": [],
+                      "type": "text"
                     },
                     {
                       "slotId": "e73029b416045",
@@ -450,13 +450,13 @@
                     {
                       "id": "7b302ae8207",
                       "variantId": null,
-                      "propertyName": "text",
                       "targetIdPath": [
                         "7149f8192506"
                       ],
                       "value": "Open Application Command",
                       "name": "override",
-                      "children": []
+                      "children": [],
+                      "type": "text"
                     },
                     {
                       "slotId": "e73029b416045",

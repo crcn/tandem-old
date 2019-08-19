@@ -1,6 +1,6 @@
 {
   "id": "483373f936",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "metadata": {},
   "name": "module",
   "children": [
@@ -103,40 +103,45 @@
           "children": [
             {
               "id": "483373f9139767",
-              "propertyName": "style",
               "targetIdPath": [
                 "fde5849e438439",
                 "fde5849e449846"
               ],
-              "value": {
-                "align-items": "cente\ncolor"
-              },
+              "value": [
+                {
+                  "key": "align-items",
+                  "value": "cente\ncolor"
+                }
+              ],
               "name": "override",
-              "children": []
+              "children": [],
+              "type": "add-style-block"
             },
             {
               "id": "6cbd9c7d17642",
-              "propertyName": "style",
               "targetIdPath": [
                 "fde5849e307480"
               ],
-              "value": {
-                "padding": "4px 16px"
-              },
+              "value": [
+                {
+                  "key": "padding",
+                  "value": "4px 16px"
+                }
+              ],
               "name": "override",
-              "children": []
+              "children": [],
+              "type": "add-style-block"
             },
             {
               "id": "eb20349c161920",
-              "propertyName": "style",
               "targetIdPath": [],
-              "value": {},
+              "value": [],
               "name": "override",
-              "children": []
+              "children": [],
+              "type": "add-style-block"
             },
             {
               "id": "70e2870d251",
-              "propertyName": "variant",
               "targetIdPath": [
                 "fde5849e438439",
                 "fde5849e449846"
@@ -145,11 +150,11 @@
                 "f4e04d3116": true
               },
               "name": "override",
-              "children": []
+              "children": [],
+              "type": "variant"
             },
             {
               "id": "9b6f5cb5159",
-              "propertyName": "variant",
               "targetIdPath": [
                 "fde5849e438439",
                 "fde5849e455558"
@@ -158,7 +163,8 @@
                 "f4e04d3116": false
               },
               "name": "override",
-              "children": []
+              "children": [],
+              "type": "variant"
             }
           ],
           "metadata": {
@@ -263,7 +269,6 @@
         {
           "id": "7b7795227541",
           "variantId": "7b7795227540",
-          "propertyName": "variant",
           "targetIdPath": [
             "483373f987275"
           ],
@@ -271,20 +276,24 @@
             "e0030d447938": true
           },
           "name": "override",
-          "children": []
+          "children": [],
+          "type": "variant"
         },
         {
           "id": "7b7795227542",
           "variantId": "7b7795227540",
-          "propertyName": "style",
           "targetIdPath": [
             "7b7795226011"
           ],
-          "value": {
-            "display": "flex"
-          },
+          "value": [
+            {
+              "key": "display",
+              "value": "flex"
+            }
+          ],
           "name": "override",
-          "children": []
+          "children": [],
+          "type": "add-style-block"
         }
       ],
       "metadata": {
@@ -310,26 +319,26 @@
       "children": [
         {
           "id": "483373f9367294",
-          "propertyName": "style",
           "targetIdPath": [
             "483373f987276"
           ],
-          "value": {},
+          "value": [],
           "name": "override",
-          "children": []
+          "children": [],
+          "type": "add-style-block"
         },
         {
           "id": "f4e04d3118",
           "variantId": "f4e04d3116",
-          "propertyName": "style",
           "targetIdPath": [
             "483373f987275",
             "fde5849e438439",
             "fde5849e449846"
           ],
-          "value": {},
+          "value": [],
           "name": "override",
-          "children": []
+          "children": [],
+          "type": "add-style-block"
         }
       ],
       "metadata": {

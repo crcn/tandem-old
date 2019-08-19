@@ -1,6 +1,6 @@
 {
   "id": "cff629125",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "metadata": {},
   "name": "module",
   "children": [
@@ -385,28 +385,40 @@
         {
           "id": "1b315282201114",
           "variantId": "1b315282201058",
-          "propertyName": "style",
           "targetIdPath": [
             "1b3152825262"
           ],
-          "value": {
-            "background-image": "unset",
-            "border-bottom": "unset",
-            "text-transform": "titlecase"
-          },
+          "value": [
+            {
+              "key": "background-image",
+              "value": "unset"
+            },
+            {
+              "key": "border-bottom",
+              "value": "unset"
+            },
+            {
+              "key": "text-transform",
+              "value": "titlecase"
+            }
+          ],
           "name": "override",
-          "children": []
+          "children": [],
+          "type": "add-style-block"
         },
         {
           "id": "1b315282201115",
           "variantId": "1b315282201058",
-          "propertyName": "style",
           "targetIdPath": [],
-          "value": {
-            "border-bottom": "1px solid var(--30f4693267675)"
-          },
+          "value": [
+            {
+              "key": "border-bottom",
+              "value": "1px solid var(--30f4693267675)"
+            }
+          ],
           "name": "override",
-          "children": []
+          "children": [],
+          "type": "add-style-block"
         }
       ],
       "metadata": {

@@ -1,6 +1,6 @@
 {
   "id": "612dda3e4",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "metadata": {},
   "name": "module",
   "children": [
@@ -90,13 +90,16 @@
         {
           "id": "ef1965694",
           "variantId": "ef1965693",
-          "propertyName": "style",
           "targetIdPath": [],
-          "value": {
-            "background": "rgba(255, 255, 255, 1)"
-          },
+          "value": [
+            {
+              "key": "background",
+              "value": "rgba(255, 255, 255, 1)"
+            }
+          ],
           "name": "override",
-          "children": []
+          "children": [],
+          "type": "add-style-block"
         }
       ],
       "metadata": {

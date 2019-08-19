@@ -1,6 +1,6 @@
 {
   "id": "76b155a0889212",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "metadata": {},
   "name": "module",
   "children": [
@@ -111,11 +111,11 @@
                     {
                       "id": "80b0b6e7408",
                       "variantId": null,
-                      "propertyName": "attributes",
                       "targetIdPath": [],
-                      "value": {},
+                      "value": [],
                       "name": "override",
-                      "children": []
+                      "children": [],
+                      "type": "add-attributes"
                     }
                   ],
                   "metadata": {},
@@ -545,26 +545,32 @@
         {
           "id": "368712de18493",
           "variantId": "368712de18492",
-          "propertyName": "style",
           "targetIdPath": [
             "936f2927705"
           ],
-          "value": {
-            "left": "calc(100% - 30px)"
-          },
+          "value": [
+            {
+              "key": "left",
+              "value": "calc(100% - 30px)"
+            }
+          ],
           "name": "override",
-          "children": []
+          "children": [],
+          "type": "add-style-block"
         },
         {
           "id": "4496ba59214",
           "variantId": "368712de18492",
-          "propertyName": "style",
           "targetIdPath": [],
-          "value": {
-            "transform": "translate(-70%, 0px)"
-          },
+          "value": [
+            {
+              "key": "transform",
+              "value": "translate(-70%, 0px)"
+            }
+          ],
           "name": "override",
-          "children": []
+          "children": [],
+          "type": "add-style-block"
         }
       ],
       "metadata": {

@@ -20,7 +20,7 @@ import {
   extendsComponent,
   PCVariant,
   PCElement,
-  PCOverridablePropertyName,
+  PCOverridableType,
   isPCComponentOrInstance,
   PCStyleMixin,
   getSortedStyleMixinIds,
@@ -110,7 +110,7 @@ export const computeStyleInfo = memoize(
       );
 
       for (const override of overrides) {
-        if (override.propertyName === PCOverridablePropertyName.STYLE) {
+        if (override.propertyName === PCOverridableType.STYLE) {
           for (const key in override.value) {
             if (!styleOverridesMap[key]) {
               styleOverridesMap[key] = [];

@@ -1,6 +1,6 @@
 {
   "id": "76b155a0877453",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "metadata": {},
   "name": "module",
   "children": [
@@ -190,24 +190,24 @@
                 {
                   "id": "d789e7004",
                   "variantId": null,
-                  "propertyName": "isDefault",
                   "targetIdPath": [
                     "15d6c81f3"
                   ],
                   "value": false,
                   "name": "override",
-                  "children": []
+                  "children": [],
+                  "type": "isDefault"
                 },
                 {
                   "id": "d789e7005",
                   "variantId": null,
-                  "propertyName": "isDefault",
                   "targetIdPath": [
                     "15d6c81f5"
                   ],
                   "value": false,
                   "name": "override",
-                  "children": []
+                  "children": [],
+                  "type": "isDefault"
                 }
               ],
               "metadata": {}
@@ -279,24 +279,24 @@
                 {
                   "id": "9bb8b8487884",
                   "variantId": null,
-                  "propertyName": "isDefault",
                   "targetIdPath": [
                     "15d6c81f3"
                   ],
                   "value": false,
                   "name": "override",
-                  "children": []
+                  "children": [],
+                  "type": "isDefault"
                 },
                 {
                   "id": "9bb8b8487885",
                   "variantId": null,
-                  "propertyName": "isDefault",
                   "targetIdPath": [
                     "15d6c81f5"
                   ],
                   "value": true,
                   "name": "override",
-                  "children": []
+                  "children": [],
+                  "type": "isDefault"
                 }
               ],
               "metadata": {}
@@ -368,24 +368,24 @@
                 {
                   "id": "d789e7006",
                   "variantId": null,
-                  "propertyName": "isDefault",
                   "targetIdPath": [
                     "15d6c81f3"
                   ],
                   "value": false,
                   "name": "override",
-                  "children": []
+                  "children": [],
+                  "type": "isDefault"
                 },
                 {
                   "id": "ddf283f44",
                   "variantId": null,
-                  "propertyName": "isDefault",
                   "targetIdPath": [
                     "15d6c81f5"
                   ],
                   "value": true,
                   "name": "override",
-                  "children": []
+                  "children": [],
+                  "type": "isDefault"
                 }
               ],
               "metadata": {}
@@ -466,13 +466,13 @@
                 {
                   "id": "ddf283f43",
                   "variantId": null,
-                  "propertyName": "isDefault",
                   "targetIdPath": [
                     "15d6c81f3"
                   ],
                   "value": true,
                   "name": "override",
-                  "children": []
+                  "children": [],
+                  "type": "isDefault"
                 }
               ],
               "metadata": {}

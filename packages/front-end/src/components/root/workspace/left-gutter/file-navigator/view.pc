@@ -1,6 +1,6 @@
 {
   "id": "317401b1465283",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "metadata": {},
   "name": "module",
   "children": [
@@ -226,16 +226,22 @@
                             },
                             {
                               "id": "784b91d3799",
-                              "propertyName": "style",
                               "targetIdPath": [
                                 "806ffd0684"
                               ],
-                              "value": {
-                                "width": "140px",
-                                "box-shadow": "0px 2px 2px 1px rgba(0, 0, 0, 0.19)"
-                              },
+                              "value": [
+                                {
+                                  "key": "width",
+                                  "value": "140px"
+                                },
+                                {
+                                  "key": "box-shadow",
+                                  "value": "0px 2px 2px 1px rgba(0, 0, 0, 0.19)"
+                                }
+                              ],
                               "name": "override",
-                              "children": []
+                              "children": [],
+                              "type": "add-style-block"
                             }
                           ],
                           "metadata": {
@@ -345,13 +351,13 @@
                                 {
                                   "id": "5a14767c291822",
                                   "variantId": null,
-                                  "propertyName": "text",
                                   "targetIdPath": [
                                     "d3bf183b18"
                                   ],
                                   "value": "src\n",
                                   "name": "override",
-                                  "children": []
+                                  "children": [],
+                                  "type": "text"
                                 }
                               ],
                               "metadata": {
@@ -386,13 +392,13 @@
                                 {
                                   "id": "5a14767c291824",
                                   "variantId": null,
-                                  "propertyName": "text",
                                   "targetIdPath": [
                                     "d3bf183b18"
                                   ],
                                   "value": "entry.ts\n",
                                   "name": "override",
-                                  "children": []
+                                  "children": [],
+                                  "type": "text"
                                 }
                               ],
                               "metadata": {
@@ -428,13 +434,13 @@
                                 {
                                   "id": "5a14767c291826",
                                   "variantId": null,
-                                  "propertyName": "text",
                                   "targetIdPath": [
                                     "d3bf183b18"
                                   ],
                                   "value": "components",
                                   "name": "override",
-                                  "children": []
+                                  "children": [],
+                                  "type": "text"
                                 }
                               ],
                               "metadata": {
@@ -469,13 +475,13 @@
                                 {
                                   "id": "5a14767c291828",
                                   "variantId": null,
-                                  "propertyName": "text",
                                   "targetIdPath": [
                                     "d3bf183b18"
                                   ],
                                   "value": "main",
                                   "name": "override",
-                                  "children": []
+                                  "children": [],
+                                  "type": "text"
                                 }
                               ],
                               "metadata": {
@@ -511,13 +517,13 @@
                                 {
                                   "id": "5a14767c291830",
                                   "variantId": null,
-                                  "propertyName": "text",
                                   "targetIdPath": [
                                     "d3bf183b18"
                                   ],
                                   "value": "index\n.tsx",
                                   "name": "override",
-                                  "children": []
+                                  "children": [],
+                                  "type": "text"
                                 }
                               ],
                               "metadata": {
@@ -553,13 +559,13 @@
                                 {
                                   "id": "5a14767c291832",
                                   "variantId": null,
-                                  "propertyName": "text",
                                   "targetIdPath": [
                                     "d3bf183b18"
                                   ],
                                   "value": "welcome.tsx\n",
                                   "name": "override",
-                                  "children": []
+                                  "children": [],
+                                  "type": "text"
                                 }
                               ],
                               "metadata": {
@@ -598,13 +604,13 @@
                                 {
                                   "id": "5a14767c291834",
                                   "variantId": null,
-                                  "propertyName": "text",
                                   "targetIdPath": [
                                     "d3bf183b18"
                                   ],
                                   "value": "about.tsx",
                                   "name": "override",
-                                  "children": []
+                                  "children": [],
+                                  "type": "text"
                                 }
                               ],
                               "metadata": {
@@ -645,20 +651,38 @@
             },
             {
               "id": "5a14767c291835",
-              "propertyName": "style",
               "targetIdPath": [
                 "b6c162d140"
               ],
-              "value": {
-                "padding-left": "0px",
-                "padding-top": "0px",
-                "padding-right": "0px",
-                "padding-bottom": "0px",
-                "display": "flex",
-                "flex-direction": "column"
-              },
+              "value": [
+                {
+                  "key": "padding-left",
+                  "value": "0px"
+                },
+                {
+                  "key": "padding-top",
+                  "value": "0px"
+                },
+                {
+                  "key": "padding-right",
+                  "value": "0px"
+                },
+                {
+                  "key": "padding-bottom",
+                  "value": "0px"
+                },
+                {
+                  "key": "display",
+                  "value": "flex"
+                },
+                {
+                  "key": "flex-direction",
+                  "value": "column"
+                }
+              ],
               "name": "override",
-              "children": []
+              "children": [],
+              "type": "add-style-block"
             }
           ],
           "metadata": {
@@ -714,39 +738,45 @@
         {
           "id": "5a14767c105850",
           "variantId": "5a14767c104431",
-          "propertyName": "variant",
           "targetIdPath": [],
           "value": {
             "a6fd80839": true
           },
           "name": "override",
-          "children": []
+          "children": [],
+          "type": "variant"
         },
         {
           "id": "5a14767c108687",
           "variantId": "5a14767c103012",
-          "propertyName": "variant",
           "targetIdPath": [],
           "value": {
             "5a14767c40472": true,
             "7982ea828779": true
           },
           "name": "override",
-          "children": []
+          "children": [],
+          "type": "variant"
         },
         {
           "id": "5a14767c111524",
           "variantId": "5a14767c104431",
-          "propertyName": "style",
           "targetIdPath": [
             "d3bf183b19"
           ],
-          "value": {
-            "display": "block",
-            "opacity": 0
-          },
+          "value": [
+            {
+              "key": "display",
+              "value": "block"
+            },
+            {
+              "key": "opacity",
+              "value": 0
+            }
+          ],
           "name": "override",
-          "children": []
+          "children": [],
+          "type": "add-style-block"
         },
         {
           "id": "5a14767c120802",
@@ -759,13 +789,13 @@
         {
           "id": "5a14767c121862",
           "variantId": "5a14767c120802",
-          "propertyName": "variant",
           "targetIdPath": [],
           "value": {
             "a6fd808313": true
           },
           "name": "override",
-          "children": []
+          "children": [],
+          "type": "variant"
         },
         {
           "id": "5a14767c122922",
@@ -778,13 +808,13 @@
         {
           "id": "5a14767c123982",
           "variantId": "5a14767c122922",
-          "propertyName": "variant",
           "targetIdPath": [],
           "value": {
             "6f0de1ad114": true
           },
           "name": "override",
-          "children": []
+          "children": [],
+          "type": "variant"
         },
         {
           "id": "5a14767c125042",
@@ -797,13 +827,13 @@
         {
           "id": "5a14767c126102",
           "variantId": "5a14767c125042",
-          "propertyName": "variant",
           "targetIdPath": [],
           "value": {
             "3e8417591": true
           },
           "name": "override",
-          "children": []
+          "children": [],
+          "type": "variant"
         },
         {
           "id": "5a14767c144940",
@@ -816,13 +846,13 @@
         {
           "id": "5a14767c146273",
           "variantId": "5a14767c144940",
-          "propertyName": "variant",
           "targetIdPath": [],
           "value": {
             "d3bf183b37": true
           },
           "name": "override",
-          "children": []
+          "children": [],
+          "type": "variant"
         },
         {
           "slotId": "35d42f392709",
@@ -833,16 +863,22 @@
         },
         {
           "id": "b306b32e1080",
-          "propertyName": "style",
           "targetIdPath": [
             "d3bf183b16"
           ],
-          "value": {
-            "cursor": "default",
-            "white-space": "nowrap"
-          },
+          "value": [
+            {
+              "key": "cursor",
+              "value": "default"
+            },
+            {
+              "key": "white-space",
+              "value": "nowrap"
+            }
+          ],
           "name": "override",
-          "children": []
+          "children": [],
+          "type": "add-style-block"
         },
         {
           "id": "f8ce55d74655",
@@ -855,13 +891,13 @@
         {
           "id": "f8ce55d75746",
           "variantId": "f8ce55d74655",
-          "propertyName": "variant",
           "targetIdPath": [],
           "value": {
             "fc243cf081": true
           },
           "name": "override",
-          "children": []
+          "children": [],
+          "type": "variant"
         },
         {
           "id": "f8ce55d76837",
@@ -874,13 +910,16 @@
         {
           "id": "f8ce55d77928",
           "variantId": "f8ce55d76837",
-          "propertyName": "style",
           "targetIdPath": [],
-          "value": {
-            "opacity": 0.419
-          },
+          "value": [
+            {
+              "key": "opacity",
+              "value": 0.419
+            }
+          ],
           "name": "override",
-          "children": []
+          "children": [],
+          "type": "add-style-block"
         },
         {
           "id": "32c1eebd4262",
@@ -893,13 +932,16 @@
         {
           "id": "32c1eebd5385",
           "variantId": "32c1eebd4262",
-          "propertyName": "style",
           "targetIdPath": [],
-          "value": {
-            "background": "var(--32c1eebd7630)"
-          },
+          "value": [
+            {
+              "key": "background",
+              "value": "var(--32c1eebd7630)"
+            }
+          ],
           "name": "override",
-          "children": []
+          "children": [],
+          "type": "add-style-block"
         }
       ],
       "metadata": {
@@ -933,15 +975,18 @@
       "children": [
         {
           "id": "cce8ea6863",
-          "propertyName": "style",
           "targetIdPath": [
             "d3bf183b19"
           ],
-          "value": {
-            "opacity": 0
-          },
+          "value": [
+            {
+              "key": "opacity",
+              "value": 0
+            }
+          ],
           "name": "override",
-          "children": []
+          "children": [],
+          "type": "add-style-block"
         }
       ],
       "metadata": {
@@ -969,13 +1014,13 @@
         {
           "id": "332ba50118833",
           "variantId": null,
-          "propertyName": "text",
           "targetIdPath": [
             "97a34b151010441"
           ],
           "value": "Error UI for existing file (like vscode), ability to move files, ability to delete files",
           "name": "override",
-          "children": []
+          "children": [],
+          "type": "text"
         }
       ],
       "metadata": {
@@ -1023,13 +1068,16 @@
         {
           "id": "b75388d74737",
           "variantId": "b75388d73795",
-          "propertyName": "style",
           "targetIdPath": [],
-          "value": {
-            "background": "var(--24ce1e4d22305)"
-          },
+          "value": [
+            {
+              "key": "background",
+              "value": "var(--24ce1e4d22305)"
+            }
+          ],
           "name": "override",
-          "children": []
+          "children": [],
+          "type": "add-style-block"
         }
       ],
       "metadata": {

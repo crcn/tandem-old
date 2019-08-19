@@ -1,6 +1,6 @@
 {
   "id": "a5bde25018988",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "metadata": {},
   "name": "module",
   "children": [
@@ -164,40 +164,52 @@
           "children": [
             {
               "id": "33949bb8371360",
-              "propertyName": "style",
               "targetIdPath": [
                 "33949bb8180402"
               ],
-              "value": {
-                "width": "33.333%",
-                "padding": "8px"
-              },
+              "value": [
+                {
+                  "key": "width",
+                  "value": "33.333%"
+                },
+                {
+                  "key": "padding",
+                  "value": "8px"
+                }
+              ],
               "name": "override",
-              "children": []
+              "children": [],
+              "type": "add-style-block"
             },
             {
               "id": "33949bb81080620",
-              "propertyName": "attributes",
               "targetIdPath": [
                 "dcd2c13f709198"
               ],
-              "value": {
-                "placeholder": "Filter"
-              },
+              "value": [
+                {
+                  "key": "placeholder",
+                  "value": "Filter"
+                }
+              ],
               "name": "override",
-              "children": []
+              "children": [],
+              "type": "add-attributes"
             },
             {
               "id": "33949bb81131300",
-              "propertyName": "style",
               "targetIdPath": [
                 "dcd2c13f709198"
               ],
-              "value": {
-                "opacity": 0.862
-              },
+              "value": [
+                {
+                  "key": "opacity",
+                  "value": 0.862
+                }
+              ],
               "name": "override",
-              "children": []
+              "children": [],
+              "type": "add-style-block"
             }
           ],
           "metadata": {

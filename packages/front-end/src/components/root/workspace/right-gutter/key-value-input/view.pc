@@ -1,6 +1,6 @@
 {
   "id": "2412cef182",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "metadata": {},
   "name": "module",
   "children": [
@@ -176,13 +176,16 @@
         {
           "id": "49050ecb20575",
           "variantId": "49050ecb20574",
-          "propertyName": "style",
           "targetIdPath": [],
-          "value": {
-            "opacity": "0.5"
-          },
+          "value": [
+            {
+              "key": "opacity",
+              "value": "0.5"
+            }
+          ],
           "name": "override",
-          "children": []
+          "children": [],
+          "type": "add-style-block"
         },
         {
           "id": "49050ecb20602",
@@ -195,13 +198,16 @@
         {
           "id": "49050ecb20603",
           "variantId": "49050ecb20602",
-          "propertyName": "style",
           "targetIdPath": [],
-          "value": {
-            "text-decoration": "line-through"
-          },
+          "value": [
+            {
+              "key": "text-decoration",
+              "value": "line-through"
+            }
+          ],
           "name": "override",
-          "children": []
+          "children": [],
+          "type": "add-style-block"
         }
       ],
       "metadata": {

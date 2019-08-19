@@ -21,7 +21,7 @@
 // import {
 //   createPCVariant,
 //   createPCOverride,
-//   PCOverridablePropertyName,
+//   PCOverridableType,
 //   getPCNode,
 //   PCComponent,
 //   getOverrides,
@@ -300,7 +300,7 @@
 //     const overrides = getOverrides(component);
 //     expect(overrides.length).to.eql(1);
 //     const [override] = overrides;
-//     expect(override.propertyName).to.eql(PCOverridablePropertyName.STYLE);
+//     expect(override.propertyName).to.eql(PCOverridableType.STYLE);
 //     expect((override as PCStyleOverride).value).to.eql({ color: "red" });
 //     expect(override.targetIdPath).to.eql([]);
 //   });
@@ -312,7 +312,7 @@
 //   //     variant,
 //   //     createPCOverride(
 //   //       [],
-//   //       PCOverridablePropertyName.STYLE,
+//   //       PCOverridableType.STYLE,
 //   //       { color: "red" },
 //   //       variant.id
 //   //     )
@@ -332,7 +332,7 @@
 
 //   //   const [override] = getOverrides(instance);
 //   //   expect(override.propertyName).to.eql(
-//   //     PCOverridablePropertyName.VARIANT_IS_DEFAULT
+//   //     PCOverridableType.VARIANT_IS_DEFAULT
 //   //   );
 //   //   expect((override as PCVariantOverride).value).to.eql(true);
 //   //   expect(override.targetIdPath).to.eql([variant.id]);
@@ -348,7 +348,7 @@
 //   //     variant,
 //   //     createPCOverride(
 //   //       [],
-//   //       PCOverridablePropertyName.STYLE,
+//   //       PCOverridableType.STYLE,
 //   //       { color: "red" },
 //   //       variant.id
 //   //     )
@@ -370,7 +370,7 @@
 
 //   //   const [override] = getOverrides(instance);
 //   //   expect(override.propertyName).to.eql(
-//   //     PCOverridablePropertyName.VARIANT_IS_DEFAULT
+//   //     PCOverridableType.VARIANT_IS_DEFAULT
 //   //   );
 //   //   expect((override as PCVariantOverride).value).to.eql(true);
 //   //   expect(override.targetIdPath).to.eql([variant.id]);

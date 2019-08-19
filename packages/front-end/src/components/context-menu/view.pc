@@ -1,6 +1,6 @@
 {
   "id": "8c06472158661",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "metadata": {},
   "name": "module",
   "children": [
@@ -321,13 +321,16 @@
         {
           "id": "e549f6861033",
           "variantId": "e549f686984",
-          "propertyName": "style",
           "targetIdPath": [],
-          "value": {
-            "background": "var(--d8f6340b1442)"
-          },
+          "value": [
+            {
+              "key": "background",
+              "value": "var(--d8f6340b1442)"
+            }
+          ],
           "name": "override",
-          "children": []
+          "children": [],
+          "type": "add-style-block"
         }
       ],
       "metadata": {

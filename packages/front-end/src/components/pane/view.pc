@@ -1,6 +1,6 @@
 {
   "id": "b78f10d1027",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "metadata": {},
   "name": "module",
   "children": [
@@ -313,13 +313,16 @@
         {
           "id": "b6e7db9d12816",
           "variantId": "b6e7db9d12815",
-          "propertyName": "style",
           "targetIdPath": [],
-          "value": {
-            "box-shadow": "inset  -1px 0px 0px 0px var(--f63574de434), inset  0px -1px 0px 0px var(--f63574de434)"
-          },
+          "value": [
+            {
+              "key": "box-shadow",
+              "value": "inset  -1px 0px 0px 0px var(--f63574de434), inset  0px -1px 0px 0px var(--f63574de434)"
+            }
+          ],
           "name": "override",
-          "children": []
+          "children": [],
+          "type": "add-style-block"
         },
         {
           "id": "b6e7db9d12817",
@@ -332,14 +335,20 @@
         {
           "id": "b6e7db9d12818",
           "variantId": "b6e7db9d12817",
-          "propertyName": "style",
           "targetIdPath": [],
-          "value": {
-            "box-shadow": "inset  0px -1px 0px 0px var(--f63574de434), inset  1px 0px 0px 0px var(--f63574de434)",
-            "border-bottom": "1px solid var(--d8f6340b1442)"
-          },
+          "value": [
+            {
+              "key": "box-shadow",
+              "value": "inset  0px -1px 0px 0px var(--f63574de434), inset  1px 0px 0px 0px var(--f63574de434)"
+            },
+            {
+              "key": "border-bottom",
+              "value": "1px solid var(--d8f6340b1442)"
+            }
+          ],
           "name": "override",
-          "children": []
+          "children": [],
+          "type": "add-style-block"
         }
       ],
       "metadata": {

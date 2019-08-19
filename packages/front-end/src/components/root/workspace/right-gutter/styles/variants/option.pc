@@ -1,6 +1,6 @@
 {
   "id": "6a863e8637",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "metadata": {},
   "name": "module",
   "children": [
@@ -125,13 +125,13 @@
                 {
                   "id": "2a94b5ff3",
                   "variantId": null,
-                  "propertyName": "style",
                   "targetIdPath": [
                     "6f30576e7"
                   ],
-                  "value": {},
+                  "value": [],
                   "name": "override",
-                  "children": []
+                  "children": [],
+                  "type": "add-style-block"
                 }
               ],
               "metadata": {
@@ -316,13 +316,16 @@
         {
           "id": "6cf317c23",
           "variantId": "c2b44e3f3",
-          "propertyName": "style",
           "targetIdPath": [],
-          "value": {
-            "background": "rgba(212, 222, 240, 1)"
-          },
+          "value": [
+            {
+              "key": "background",
+              "value": "rgba(212, 222, 240, 1)"
+            }
+          ],
           "name": "override",
-          "children": []
+          "children": [],
+          "type": "add-style-block"
         },
         {
           "id": "cc845f08779",
@@ -343,16 +346,15 @@
         {
           "id": "cc845f081417",
           "variantId": "cc845f081098",
-          "propertyName": "style",
           "targetIdPath": [],
-          "value": {},
+          "value": [],
           "name": "override",
-          "children": []
+          "children": [],
+          "type": "add-style-block"
         },
         {
           "id": "24793dfa522",
           "variantId": "cc845f08779",
-          "propertyName": "variant",
           "targetIdPath": [
             "6f30576e9"
           ],
@@ -360,12 +362,12 @@
             "246c305d8": true
           },
           "name": "override",
-          "children": []
+          "children": [],
+          "type": "variant"
         },
         {
           "id": "147a2c92522",
           "variantId": "cc845f081098",
-          "propertyName": "variant",
           "targetIdPath": [
             "6f30576e9"
           ],
@@ -373,26 +375,32 @@
             "246c305d8": false
           },
           "name": "override",
-          "children": []
+          "children": [],
+          "type": "variant"
         },
         {
           "id": "a0474dc08232",
           "variantId": "a0474dc08215",
-          "propertyName": "style",
           "targetIdPath": [
             "a0474dc08216"
           ],
-          "value": {
-            "display": "block",
-            "height": "9px"
-          },
+          "value": [
+            {
+              "key": "display",
+              "value": "block"
+            },
+            {
+              "key": "height",
+              "value": "9px"
+            }
+          ],
           "name": "override",
-          "children": []
+          "children": [],
+          "type": "add-style-block"
         },
         {
           "id": "a0474dc08255",
           "variantId": "a0474dc08215",
-          "propertyName": "variant",
           "targetIdPath": [
             "6f30576e9"
           ],
@@ -400,7 +408,8 @@
             "246c305d8": false
           },
           "name": "override",
-          "children": []
+          "children": [],
+          "type": "variant"
         },
         {
           "id": "a0474dc08464",
@@ -413,30 +422,42 @@
         {
           "id": "a0474dc08465",
           "variantId": "a0474dc08464",
-          "propertyName": "style",
           "targetIdPath": [
             "a0474dc08216"
           ],
-          "value": {
-            "display": "block",
-            "height": "12px",
-            "color": "var(--32ef79b7820935)"
-          },
+          "value": [
+            {
+              "key": "display",
+              "value": "block"
+            },
+            {
+              "key": "height",
+              "value": "12px"
+            },
+            {
+              "key": "color",
+              "value": "var(--32ef79b7820935)"
+            }
+          ],
           "name": "override",
-          "children": []
+          "children": [],
+          "type": "add-style-block"
         },
         {
           "id": "64db157d1307",
           "variantId": "a0474dc08215",
-          "propertyName": "style",
           "targetIdPath": [
             "6f30576e9"
           ],
-          "value": {
-            "opacity": 1
-          },
+          "value": [
+            {
+              "key": "opacity",
+              "value": 1
+            }
+          ],
           "name": "override",
-          "children": []
+          "children": [],
+          "type": "add-style-block"
         },
         {
           "id": "4f6549161307",
@@ -449,15 +470,18 @@
         {
           "id": "4f6549161308",
           "variantId": "4f6549161307",
-          "propertyName": "style",
           "targetIdPath": [
             "6f30576e9"
           ],
-          "value": {
-            "opacity": 1
-          },
+          "value": [
+            {
+              "key": "opacity",
+              "value": 1
+            }
+          ],
           "name": "override",
-          "children": []
+          "children": [],
+          "type": "add-style-block"
         },
         {
           "id": "7219652c1307",
@@ -470,17 +494,26 @@
         {
           "id": "7219652c1308",
           "variantId": "7219652c1307",
-          "propertyName": "style",
           "targetIdPath": [
             "a0474dc08216"
           ],
-          "value": {
-            "display": "block",
-            "height": "12px",
-            "color": "var(--24ce1e4d13456)"
-          },
+          "value": [
+            {
+              "key": "display",
+              "value": "block"
+            },
+            {
+              "key": "height",
+              "value": "12px"
+            },
+            {
+              "key": "color",
+              "value": "var(--24ce1e4d13456)"
+            }
+          ],
           "name": "override",
-          "children": []
+          "children": [],
+          "type": "add-style-block"
         }
       ],
       "metadata": {
