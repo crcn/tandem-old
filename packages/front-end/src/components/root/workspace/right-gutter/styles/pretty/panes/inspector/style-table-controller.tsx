@@ -119,6 +119,7 @@ export default (Base: React.ComponentClass<BaseStyleTableProps>) => {
           />
         );
       }
+      return null;
 
       return (
         <Base
