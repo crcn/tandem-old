@@ -1,5 +1,6 @@
 Immediate:
 
+- [ ] start wiring up new UI
 - [ ] fix critical vulnerabilities
 - [ ] refactor styles to be list instead of key/value
 - [ ] ability to preview individual components
