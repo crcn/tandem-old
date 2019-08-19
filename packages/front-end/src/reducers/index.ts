@@ -2527,7 +2527,10 @@ export const canvasReducer = (state: RootState, action: Action) => {
           return persistInsertNodeFromPoint(
             createPCElement(
               "div",
-              { "box-sizing": "border-box", display: "block" },
+              [
+                { key: "box-sizing", value: "border-box" },
+                { key: "display", value: "box" }
+              ],
               null,
               null,
               "Element"
@@ -2898,10 +2901,13 @@ const handleLoadedDroppedItem = (
     if (isImageUri(item.uri)) {
       sourceNode = createPCElement(
         "img",
-        {},
-        {
-          src
-        }
+        [],
+        [
+          {
+            key: "src",
+            value: src
+          }
+        ]
       );
       if (isSvgUri(item.uri)) {
         const source = content.toString("utf8");

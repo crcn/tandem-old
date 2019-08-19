@@ -208,7 +208,7 @@ const generateBlankFileContent = (basename: string) => {
   if (/\.pc$/.test(basename)) {
     return JSON.stringify(
       createPCModule([
-        createPCElement("div", {}, {}, EMPTY_ARRAY, "Frame", {
+        createPCElement("div", [], [], EMPTY_ARRAY, "Frame", {
           [PCVisibleNodeMetadataKey.BOUNDS]: createBounds(0, 600, 0, 400)
         })
       ]),

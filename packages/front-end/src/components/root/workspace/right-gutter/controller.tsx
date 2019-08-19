@@ -55,7 +55,12 @@ export default (Base: React.ComponentClass<BaseRightGutterProps>) =>
       const { setTab, onTabDoubleClick } = this;
 
       if (showNewGutterTab) {
-        return <RightGutter2 onDoubleClick={onTabDoubleClick} />;
+        return (
+          <RightGutter2
+            onDoubleClick={onTabDoubleClick}
+            stylesSectionProps={{}}
+          />
+        );
       }
 
       const {

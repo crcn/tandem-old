@@ -995,9 +995,9 @@ export const createPaperclipVirtualDOMtranslator = (
     for (const key in map) {
       const instanceMap = map[key][instance.id] || EMPTY_OBJECT;
 
-      const overrides = instanceMap.overrides || EMPTY_ARRAY;
+      const overrides = (instanceMap.overrides || EMPTY_ARRAY) as PCOverride[];
       for (const override of overrides) {
-        if (override.propertyName !== PCOverridableType.VARIANT) {
+        if (override.type !== PCOverridableType.VARIANT) {
           continue;
         }
 

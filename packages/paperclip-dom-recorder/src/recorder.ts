@@ -22,7 +22,8 @@ import {
   appendChildNode,
   EMPTY_ARRAY,
   KeyValue,
-  EMPTY_OBJECT
+  EMPTY_OBJECT,
+  hashToKeyValuePair
 } from "tandem-common";
 
 const FRAME_WIDTH = 1440;
@@ -180,7 +181,7 @@ const convertDOMToPC = (node: Node): PCNode => {
       let pcElement = createPCElement(
         tagName,
         computeStyle(element),
-        attributes,
+        hashToKeyValuePair(attributes),
         children,
         tagName
       );
@@ -223,7 +224,7 @@ const computeStyle = (element: HTMLElement) => {
     Object.assign(computedStyle, parseStyle(element.getAttribute("style")));
   }
 
-  return normalizeStyleProps(computedStyle);
+  return hashToKeyValuePair(normalizeStyleProps(computedStyle));
 };
 
 const normalizeStyleProps = (style: any) => {

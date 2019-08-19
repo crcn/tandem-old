@@ -1441,7 +1441,7 @@ export const persistUpdateVariable = <TState extends PCEditorState>(
 };
 
 const maybeOverride = (
-  propertyName: PCOverridableType,
+  type: PCOverridableType,
   value: any,
   variant: PCVariant,
   mapOverride: (value, override) => any,
@@ -1542,7 +1542,7 @@ const maybeOverride = (
         return (
           child.name === PCSourceTagNames.OVERRIDE &&
           child.targetIdPath.join("/") === overrideIdPath.join("/") &&
-          child.type === propertyName &&
+          child.type === type &&
           (!variantId || child.variantId == variantId)
         );
       }
@@ -1583,12 +1583,7 @@ const maybeOverride = (
       variantId ||
       node.id !== targetSourceId
     ) {
-      const override = createPCOverride(
-        overrideIdPath,
-        propertyName,
-        value,
-        variantId
-      );
+      const override = createPCOverride(overrideIdPath, type, value, variantId);
       return appendChildNode(override, mutableInstanceSourceNode);
     }
   }
