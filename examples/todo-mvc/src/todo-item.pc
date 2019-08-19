@@ -1,17 +1,37 @@
 {
   "id": "5ae042c814",
+  "version": "1.0.1",
+  "metadata": {},
   "name": "module",
-  "version": "0.0.5",
   "children": [
     {
       "label": "todo item",
       "is": "li",
-      "style": {
-        "position": "relative",
-        "font-size": "24px",
-        "border-bottom": "1px solid var(--905d90be434)"
-      },
-      "attributes": {},
+      "style": [
+        {
+          "key": "position",
+          "value": "relative"
+        },
+        {
+          "key": "font-size",
+          "value": "24px"
+        },
+        {
+          "key": "border-bottom",
+          "value": "1px solid var(--905d90be434)"
+        }
+      ],
+      "attributes": [
+        {
+          "key": "position"
+        },
+        {
+          "key": "font-size"
+        },
+        {
+          "key": "border-bottom"
+        }
+      ],
       "id": "70b2f99d2116",
       "name": "component",
       "children": [
@@ -20,30 +40,95 @@
           "label": "div",
           "is": "div",
           "name": "element",
-          "attributes": {},
-          "style": {},
+          "attributes": [],
+          "style": [],
           "children": [
             {
               "id": "70b2f99d2111",
               "label": "input",
               "is": "input",
               "name": "element",
-              "attributes": {
-                "type": "checkbox"
-              },
-              "style": {
-                "text-align": "center",
-                "width": "40px",
-                "height": "40px",
-                "position": "absolute",
-                "top": "0px",
-                "bottom": "0px",
-                "margin": "auto 0px",
-                "border": "none",
-                "-webkit-appearance": "none",
-                "opacity": "0",
-                "background": "none"
-              },
+              "attributes": [
+                {
+                  "key": "text-align"
+                },
+                {
+                  "key": "width"
+                },
+                {
+                  "key": "height"
+                },
+                {
+                  "key": "position"
+                },
+                {
+                  "key": "top"
+                },
+                {
+                  "key": "bottom"
+                },
+                {
+                  "key": "margin"
+                },
+                {
+                  "key": "border"
+                },
+                {
+                  "key": "-webkit-appearance"
+                },
+                {
+                  "key": "opacity"
+                },
+                {
+                  "key": "background"
+                }
+              ],
+              "style": [
+                {
+                  "key": "text-align",
+                  "value": "center"
+                },
+                {
+                  "key": "width",
+                  "value": "40px"
+                },
+                {
+                  "key": "height",
+                  "value": "40px"
+                },
+                {
+                  "key": "position",
+                  "value": "absolute"
+                },
+                {
+                  "key": "top",
+                  "value": "0px"
+                },
+                {
+                  "key": "bottom",
+                  "value": "0px"
+                },
+                {
+                  "key": "margin",
+                  "value": "auto 0px"
+                },
+                {
+                  "key": "border",
+                  "value": "none"
+                },
+                {
+                  "key": "-webkit-appearance",
+                  "value": "none"
+                },
+                {
+                  "key": "opacity",
+                  "value": "0"
+                },
+                {
+                  "key": "background",
+                  "value": "none"
+                }
+              ],
               "children": [],
               "metadata": {}
             },
@@ -52,24 +137,73 @@
               "label": "label",
               "is": "label",
               "name": "element",
-              "attributes": {},
-              "style": {
-                "background-image": "url(\"data",
-                "background-repeat": "no-repeat",
-                "background-position": "left center",
-                "word-break": "break-all",
-                "padding": "15px 15px 15px 60px",
-                "display": "block",
-                "line-height": "1.2",
-                "transition": "color 0.4s ease 0s"
-              },
+              "attributes": [
+                {
+                  "key": "background-image"
+                },
+                {
+                  "key": "background-repeat"
+                },
+                {
+                  "key": "background-position"
+                },
+                {
+                  "key": "word-break"
+                },
+                {
+                  "key": "padding"
+                },
+                {
+                  "key": "display"
+                },
+                {
+                  "key": "line-height"
+                },
+                {
+                  "key": "transition"
+                }
+              ],
+              "style": [
+                {
+                  "key": "background-image",
+                  "value": "url(\"data"
+                },
+                {
+                  "key": "background-repeat",
+                  "value": "no-repeat"
+                },
+                {
+                  "key": "background-position",
+                  "value": "left center"
+                },
+                {
+                  "key": "word-break",
+                  "value": "break-all"
+                },
+                {
+                  "key": "padding",
+                  "value": "15px 15px 15px 60px"
+                },
+                {
+                  "key": "display",
+                  "value": "block"
+                },
+                {
+                  "key": "line-height",
+                  "value": "1.2"
+                },
+                {
+                  "key": "transition",
+                  "value": "color 0.4s ease 0s"
+                }
+              ],
               "children": [
                 {
                   "id": "70b2f99d2113",
                   "name": "text",
                   "label": "label text",
                   "value": "item 2",
-                  "style": {},
+                  "style": [],
                   "children": [],
                   "metadata": {}
                 }
@@ -82,28 +216,143 @@
               "label": "button",
               "is": "button",
               "name": "element",
-              "attributes": {},
-              "style": {
-                "margin": "auto 0px 11px",
-                "padding": "0px",
-                "border": "0px",
-                "background": "none",
-                "font-size": "30px",
-                "vertical-align": "baseline",
-                "font-family": "inherit",
-                "font-weight": "inherit",
-                "color": "var(--905d90be428)",
-                "-webkit-appearance": "none",
-                "-webkit-font-smoothing": "antialiased",
-                "display": "none",
-                "position": "absolute",
-                "top": "0px",
-                "right": "10px",
-                "bottom": "0px",
-                "width": "40px",
-                "height": "40px",
-                "transition": "color 0.2s ease-out 0s"
-              },
+              "attributes": [
+                {
+                  "key": "margin"
+                },
+                {
+                  "key": "padding"
+                },
+                {
+                  "key": "border"
+                },
+                {
+                  "key": "background"
+                },
+                {
+                  "key": "font-size"
+                },
+                {
+                  "key": "vertical-align"
+                },
+                {
+                  "key": "font-family"
+                },
+                {
+                  "key": "font-weight"
+                },
+                {
+                  "key": "color"
+                },
+                {
+                  "key": "-webkit-appearance"
+                },
+                {
+                  "key": "-webkit-font-smoothing"
+                },
+                {
+                  "key": "display"
+                },
+                {
+                  "key": "position"
+                },
+                {
+                  "key": "top"
+                },
+                {
+                  "key": "right"
+                },
+                {
+                  "key": "bottom"
+                },
+                {
+                  "key": "width"
+                },
+                {
+                  "key": "height"
+                },
+                {
+                  "key": "transition"
+                }
+              ],
+              "style": [
+                {
+                  "key": "margin",
+                  "value": "auto 0px 11px"
+                },
+                {
+                  "key": "padding",
+                  "value": "0px"
+                },
+                {
+                  "key": "border",
+                  "value": "0px"
+                },
+                {
+                  "key": "background",
+                  "value": "none"
+                },
+                {
+                  "key": "font-size",
+                  "value": "30px"
+                },
+                {
+                  "key": "vertical-align",
+                  "value": "baseline"
+                },
+                {
+                  "key": "font-family",
+                  "value": "inherit"
+                },
+                {
+                  "key": "font-weight",
+                  "value": "inherit"
+                },
+                {
+                  "key": "color",
+                  "value": "var(--905d90be428)"
+                },
+                {
+                  "key": "-webkit-appearance",
+                  "value": "none"
+                },
+                {
+                  "key": "-webkit-font-smoothing",
+                  "value": "antialiased"
+                },
+                {
+                  "key": "display",
+                  "value": "none"
+                },
+                {
+                  "key": "position",
+                  "value": "absolute"
+                },
+                {
+                  "key": "top",
+                  "value": "0px"
+                },
+                {
+                  "key": "right",
+                  "value": "10px"
+                },
+                {
+                  "key": "bottom",
+                  "value": "0px"
+                },
+                {
+                  "key": "width",
+                  "value": "40px"
+                },
+                {
+                  "key": "height",
+                  "value": "40px"
+                },
+                {
+                  "key": "transition",
+                  "value": "color 0.2s ease-out 0s"
+                }
+              ],
               "children": [],
               "metadata": {}
             }
@@ -115,23 +364,108 @@
           "label": "input",
           "is": "input",
           "name": "element",
-          "attributes": {},
-          "style": {
-            "position": "relative",
-            "margin": "0px",
-            "width": "100%",
-            "font-size": "24px",
-            "font-family": "inherit",
-            "font-weight": "inherit",
-            "line-height": "1.4em",
-            "color": "inherit",
-            "padding": "6px",
-            "border": "1px solid var(--905d90be429)",
-            "box-shadow": "var(--905d90be422) 0px -1px 5px 0px inset",
-            "box-sizing": "border-box",
-            "-webkit-font-smoothing": "antialiased",
-            "display": "none"
-          },
+          "attributes": [
+            {
+              "key": "position"
+            },
+            {
+              "key": "margin"
+            },
+            {
+              "key": "width"
+            },
+            {
+              "key": "font-size"
+            },
+            {
+              "key": "font-family"
+            },
+            {
+              "key": "font-weight"
+            },
+            {
+              "key": "line-height"
+            },
+            {
+              "key": "color"
+            },
+            {
+              "key": "padding"
+            },
+            {
+              "key": "border"
+            },
+            {
+              "key": "box-shadow"
+            },
+            {
+              "key": "box-sizing"
+            },
+            {
+              "key": "-webkit-font-smoothing"
+            },
+            {
+              "key": "display"
+            }
+          ],
+          "style": [
+            {
+              "key": "position",
+              "value": "relative"
+            },
+            {
+              "key": "margin",
+              "value": "0px"
+            },
+            {
+              "key": "width",
+              "value": "100%"
+            },
+            {
+              "key": "font-size",
+              "value": "24px"
+            },
+            {
+              "key": "font-family",
+              "value": "inherit"
+            },
+            {
+              "key": "font-weight",
+              "value": "inherit"
+            },
+            {
+              "key": "line-height",
+              "value": "1.4em"
+            },
+            {
+              "key": "color",
+              "value": "inherit"
+            },
+            {
+              "key": "padding",
+              "value": "6px"
+            },
+            {
+              "key": "border",
+              "value": "1px solid var(--905d90be429)"
+            },
+            {
+              "key": "box-shadow",
+              "value": "var(--905d90be422) 0px -1px 5px 0px inset"
+            },
+            {
+              "key": "box-sizing",
+              "value": "border-box"
+            },
+            {
+              "key": "-webkit-font-smoothing",
+              "value": "antialiased"
+            },
+            {
+              "key": "display",
+              "value": "none"
+            }
+          ],
           "children": [],
           "metadata": {}
         },
@@ -146,13 +480,16 @@
         {
           "id": "70b2f99d10434",
           "variantId": "70b2f99d10009",
-          "propertyName": "style",
           "targetIdPath": [],
-          "value": {
-            "border-bottom": "1px none"
-          },
+          "value": [
+            {
+              "key": "border-bottom",
+              "value": "1px none"
+            }
+          ],
           "name": "override",
-          "children": []
+          "children": [],
+          "type": "add-style-block"
         },
         {
           "id": "320c526078624",
@@ -165,20 +502,38 @@
         {
           "id": "320c526080113",
           "variantId": "320c526078624",
-          "propertyName": "style",
           "targetIdPath": [
             "70b2f99d2112"
           ],
-          "value": {
-            "font-family": "Helvetica Neue",
-            "font-size": "24px",
-            "font-weight": "300",
-            "color": "var(--905d90be435)",
-            "list-style": "none",
-            "text-decoration": "line-through"
-          },
+          "value": [
+            {
+              "key": "font-family",
+              "value": "Helvetica Neue"
+            },
+            {
+              "key": "font-size",
+              "value": "24px"
+            },
+            {
+              "key": "font-weight",
+              "value": "300"
+            },
+            {
+              "key": "color",
+              "value": "var(--905d90be435)"
+            },
+            {
+              "key": "list-style",
+              "value": "none"
+            },
+            {
+              "key": "text-decoration",
+              "value": "line-through"
+            }
+          ],
           "name": "override",
-          "children": []
+          "children": [],
+          "type": "add-style-block"
         }
       ],
       "metadata": {
@@ -199,6 +554,5 @@
         "./todo-item-controller.tsx"
       ]
     }
-  ],
-  "metadata": {}
+  ]
 }

@@ -756,7 +756,7 @@ export const getInstanceVariantInfo = memoize(
       const variantOverride = parentSourceNode.children.find(
         (child: PCNode) =>
           child.name === PCSourceTagNames.OVERRIDE &&
-          child.propertyName === PCOverridableType.VARIANT &&
+          child.type === PCOverridableType.VARIANT &&
           (last(child.targetIdPath) === instance.id ||
             (child.targetIdPath.length === 0 &&
               parentSourceNode.id === instance.id)) &&

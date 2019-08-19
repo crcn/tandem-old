@@ -1,24 +1,55 @@
 {
   "id": "fbcd3a7b3",
+  "version": "1.0.1",
+  "metadata": {},
   "name": "module",
-  "version": "0.0.6",
   "children": [
     {
       "id": "5b90e54e102",
       "label": "border style",
       "name": "style-mixin",
-      "style": {
-        "box-sizing": "border-box",
-        "display": "block",
-        "border-left": "1px solid var(--5b90e54e101)",
-        "border-top": "1px solid var(--5b90e54e101)",
-        "border-right": "1px solid var(--5b90e54e101)",
-        "border-bottom": "1px solid var(--5b90e54e101)",
-        "border-top-left-radius": "2px",
-        "border-top-right-radius": "2px",
-        "border-bottom-left-radius": "2px",
-        "border-bottom-right-radius": "2px"
-      },
+      "style": [
+        {
+          "key": "box-sizing",
+          "value": "border-box"
+        },
+        {
+          "key": "display",
+          "value": "block"
+        },
+        {
+          "key": "border-left",
+          "value": "1px solid var(--5b90e54e101)"
+        },
+        {
+          "key": "border-top",
+          "value": "1px solid var(--5b90e54e101)"
+        },
+        {
+          "key": "border-right",
+          "value": "1px solid var(--5b90e54e101)"
+        },
+        {
+          "key": "border-bottom",
+          "value": "1px solid var(--5b90e54e101)"
+        },
+        {
+          "key": "border-top-left-radius",
+          "value": "2px"
+        },
+        {
+          "key": "border-top-right-radius",
+          "value": "2px"
+        },
+        {
+          "key": "border-bottom-left-radius",
+          "value": "2px"
+        },
+        {
+          "key": "border-bottom-right-radius",
+          "value": "2px"
+        }
+      ],
       "targetType": "element",
       "children": [],
       "metadata": {
@@ -34,10 +65,16 @@
       "id": "5b90e54e106",
       "name": "style-mixin",
       "label": "text style",
-      "style": {
-        "font-family": "Helvetica",
-        "color": "var(--5b90e54e110)"
-      },
+      "style": [
+        {
+          "key": "font-family",
+          "value": "Helvetica"
+        },
+        {
+          "key": "color",
+          "value": "var(--5b90e54e110)"
+        }
+      ],
       "value": "Default text",
       "targetType": "text",
       "children": [],
@@ -50,6 +87,5 @@
         }
       }
     }
-  ],
-  "metadata": {}
+  ]
 }

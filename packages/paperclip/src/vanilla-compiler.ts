@@ -7,7 +7,8 @@ import {
   EMPTY_OBJECT,
   stripProtocol,
   FILE_PROTOCOL,
-  addProtocol
+  addProtocol,
+  keyValuePairToHash
 } from "tandem-common";
 import {
   PCNode,
@@ -467,9 +468,9 @@ const translateStaticVariants = (
     (getTreeNodesByName(PCSourceTagNames.OVERRIDE, contentNode) as PCOverride[])
       .filter(override => {
         return (
-          override.propertyName === PCOverridableType.STYLE ||
-          override.propertyName === PCOverridableType.VARIANT_IS_DEFAULT ||
-          override.propertyName === PCOverridableType.VARIANT
+          override.type === PCOverridableType.ADD_STYLE_BLOCK ||
+          override.type === PCOverridableType.VARIANT_IS_DEFAULT ||
+          override.type === PCOverridableType.VARIANT
         );
       })
       .map(override => {
@@ -548,22 +549,22 @@ const translateVariantOverrideMap = memoize(
       const { overrides, children: childMap } = map[nodeId];
 
       for (const override of overrides) {
-        if (override.propertyName === PCOverridableType.STYLE) {
+        if (override.type === PCOverridableType.ADD_STYLE_BLOCK) {
           buffer += `_${nodeId}Style: ${JSON.stringify(
             mapStyles(
-              computeStyleWithVars(override.value, varMap),
+              computeStyleWithVars(keyValuePairToHash(override.value), varMap),
               sourceUri,
               rootDirectory
             )
           )},`;
         }
-        if (override.propertyName === PCOverridableType.ATTRIBUTES) {
+        if (override.type === PCOverridableType.ADD_ATTRIBUTES) {
           buffer += `_${nodeId}Attributes: ${JSON.stringify(override.value)},`;
         }
-        if (override.propertyName === PCOverridableType.VARIANT) {
+        if (override.type === PCOverridableType.VARIANT) {
           buffer += `_${nodeId}Variant: ${JSON.stringify(override.value)},`;
         }
-        if (override.propertyName === PCOverridableType.TEXT) {
+        if (override.type === PCOverridableType.TEXT) {
           buffer += `_${nodeId}Value: ${JSON.stringify(override.value)},`;
         }
       }
@@ -595,9 +596,7 @@ const translateStaticNodeProps = memoize(
 
     if (isBaseElement(node)) {
       buffer += `var _${node.id}Attributes = {\n`;
-      for (const name in node.attributes) {
-        let value = node.attributes[name];
-
+      for (let { key, value } of node.attributes) {
         if (node.is === "img" && !/\w+:\/\//.test(value)) {
           value = addProtocol(
             FILE_PROTOCOL,
@@ -605,7 +604,7 @@ const translateStaticNodeProps = memoize(
           );
         }
 
-        buffer += `"${name}": ${JSON.stringify(value)},\n`;
+        buffer += `"${key}": ${JSON.stringify(value)},\n`;
       }
       buffer += `};\n`;
     }

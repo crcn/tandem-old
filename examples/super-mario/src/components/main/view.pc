@@ -1,13 +1,14 @@
 {
   "id": "66408e834",
+  "version": "1.0.1",
+  "metadata": {},
   "name": "module",
-  "version": "0.0.6",
   "children": [
     {
       "label": "Application",
       "is": "div",
-      "style": {},
-      "attributes": {},
+      "style": [],
+      "attributes": [],
       "id": "66408e833",
       "name": "component",
       "children": [
@@ -16,7 +17,7 @@
           "name": "text",
           "label": "App content",
           "value": "App content",
-          "style": {},
+          "style": [],
           "children": [],
           "metadata": {}
         },
@@ -25,8 +26,8 @@
           "is": "66408e8383",
           "label": "Mario",
           "name": "component-instance",
-          "attributes": {},
-          "style": {},
+          "attributes": [],
+          "style": [],
           "children": [],
           "metadata": {
             "bounds": {
@@ -55,15 +56,52 @@
     {
       "label": "Mario",
       "is": "div",
-      "style": {
-        "box-sizing": "border-box",
-        "display": "block",
-        "background-image": "url(\"../../assets/mario-sprite-sheet.png\")",
-        "background-repeat": "no-repeat",
-        "background-size": "auto",
-        "background-position": "0px 0px"
-      },
-      "attributes": {},
+      "style": [
+        {
+          "key": "box-sizing",
+          "value": "border-box"
+        },
+        {
+          "key": "display",
+          "value": "block"
+        },
+        {
+          "key": "background-image",
+          "value": "url(\"../../assets/mario-sprite-sheet.png\")"
+        },
+        {
+          "key": "background-repeat",
+          "value": "no-repeat"
+        },
+        {
+          "key": "background-size",
+          "value": "auto"
+        },
+        {
+          "key": "background-position",
+          "value": "0px 0px"
+        }
+      ],
+      "attributes": [
+        {
+          "key": "box-sizing"
+        },
+        {
+          "key": "display"
+        },
+        {
+          "key": "background-image"
+        },
+        {
+          "key": "background-repeat"
+        },
+        {
+          "key": "background-size"
+        },
+        {
+          "key": "background-position"
+        }
+      ],
       "id": "66408e8383",
       "name": "component",
       "children": [],
@@ -77,6 +115,5 @@
       },
       "variant": {}
     }
-  ],
-  "metadata": {}
+  ]
 }

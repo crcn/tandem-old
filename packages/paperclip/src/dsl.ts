@@ -15,7 +15,8 @@ import {
   getTreeNodesByName,
   filterTreeNodeParents,
   getNestedTreeNodeById,
-  KeyValuePair
+  KeyValuePair,
+  keyValuePairToHash
 } from "tandem-common";
 import { uniq, isEqual } from "lodash";
 import { Dependency, DependencyGraph, updateGraphDependency } from "./graph";
@@ -69,11 +70,7 @@ export enum PCOverridableType {
   VARIANT_IS_DEFAULT = "isDefault",
   VARIANT = "variant",
 
-  // DEPRECATED
-  STYLE = "style",
-
   ADD_STYLE_BLOCK = "add-style-block",
-  ATTRIBUTES = "attributes",
   ADD_ATTRIBUTES = "add-attributes",
   LABEL = "label",
   SLOT = "slot",
@@ -310,6 +307,14 @@ export enum PCVisibleNodeMetadataKey {
   BOUNDS = "bounds"
 }
 
+export enum HtmlAttribute {
+  href = "href",
+  title = "title",
+  src = "src",
+  placeholder = "placeholder",
+  type = "type"
+}
+
 export const COMPUTED_OVERRIDE_DEFAULT_KEY = "default";
 
 /*------------------------------------------
@@ -444,18 +449,18 @@ export type PCBaseValueOverride<
   value: TValue;
 } & PCBaseOverride<TOverrideType>;
 
-export type PCStyleOverride = PCBaseValueOverride<
-  PCOverridableType.STYLE,
-  KeyValue<any>
+export type PCAddStyleBlockOverride = PCBaseValueOverride<
+  PCOverridableType.ADD_STYLE_BLOCK,
+  KeyValuePair<string>[]
 >;
 export type PCTextOverride = PCBaseValueOverride<
   PCOverridableType.TEXT,
   string
 >;
 export type PCChildrenOverride = PCBaseOverride<PCOverridableType.CHILDREN>;
-export type PCAttributesOverride = PCBaseValueOverride<
-  PCOverridableType.ATTRIBUTES,
-  KeyValue<any>
+export type PCAddAttributesOverride = PCBaseValueOverride<
+  PCOverridableType.ADD_ATTRIBUTES,
+  KeyValuePair<string>[]
 >;
 export type PCLabelOverride = PCBaseValueOverride<
   PCOverridableType.LABEL,
@@ -471,17 +476,17 @@ export type PCVariant2Override = PCBaseValueOverride<
   string[]
 >;
 
-export type PCVisibleNodeOverride = PCStyleOverride | PCLabelOverride;
+export type PCVisibleNodeOverride = PCAddStyleBlockOverride | PCLabelOverride;
 export type PCTextNodeOverride = PCVisibleNodeOverride | PCTextOverride;
 export type PCParentOverride = PCVisibleNodeOverride | PCChildrenOverride;
-export type PCElementOverride = PCAttributesOverride | PCParentOverride;
+export type PCElementOverride = PCAddAttributesOverride | PCParentOverride;
 export type PCComponentInstanceOverride = PCElementOverride | PCVariantOverride;
 
 export type PCOverride =
-  | PCStyleOverride
+  | PCAddStyleBlockOverride
   | PCTextOverride
   | PCChildrenOverride
-  | PCAttributesOverride
+  | PCAddAttributesOverride
   | PCVariantOverride
   | PCLabelOverride
   | PCVariant2Override;
@@ -499,7 +504,7 @@ export type StyleMixins = {
 
 export type PCBaseVisibleNode<TName extends PCSourceTagNames> = {
   label?: string;
-  style: KeyValuePair[];
+  style: KeyValuePair<string>[];
 
   // DEPRECATED - used styleMixins instead
   styleMixins?: StyleMixins;
@@ -513,7 +518,7 @@ export type PCBaseElementChild =
 
 export type PCBaseElement<TName extends PCSourceTagNames> = {
   is: string;
-  attributes: KeyValuePair[];
+  attributes: KeyValuePair<string>[];
   children: PCBaseElementChild[];
 } & PCBaseVisibleNode<TName>;
 
@@ -629,8 +634,8 @@ export const createPCModule = (
 export const createPCComponent = (
   label?: string,
   is?: string,
-  style?: KeyValue<string>,
-  attributes?: KeyValue<string>,
+  style?: KeyValuePair<string>[],
+  attributes?: KeyValuePair<string>[],
   children?: PCComponentChild[],
   metadata?: any,
   styleMixins?: StyleMixins
@@ -668,7 +673,7 @@ export const getDerrivedPCLabel = (
 };
 
 export const createPCTextStyleMixin = (
-  style: KeyValuePair[],
+  style: KeyValuePair<string>[],
   textValue: string,
   styleMixins?: StyleMixins,
   label: string = textValue
@@ -685,7 +690,7 @@ export const createPCTextStyleMixin = (
 });
 
 export const createPCElementStyleMixin = (
-  style: KeyValuePair[],
+  style: KeyValuePair<string>[],
   styleMixins?: StyleMixins,
   label?: string
 ): PCElementStyleMixin => ({
@@ -754,8 +759,8 @@ export const createPCVariable = (
 
 export const createPCElement = (
   is: string = "div",
-  style: KeyValue<any> = EMPTY_OBJECT,
-  attributes: KeyValue<string> = EMPTY_OBJECT,
+  style: KeyValuePair<any>[] = EMPTY_OBJECT,
+  attributes: KeyValuePair<string>[] = EMPTY_OBJECT,
   children: PCBaseElementChild[] = EMPTY_ARRAY,
   label?: string,
   metadata?: KeyValue<any>
@@ -772,8 +777,8 @@ export const createPCElement = (
 
 export const createPCComponentInstance = (
   is: string,
-  style: KeyValue<any> = EMPTY_OBJECT,
-  attributes: KeyValue<string> = EMPTY_OBJECT,
+  style: KeyValuePair<any>[] = EMPTY_OBJECT,
+  attributes: KeyValuePair<string>[] = EMPTY_OBJECT,
   children: PCComponentInstanceChild[] = EMPTY_ARRAY,
   metadata?: KeyValue<any>,
   label?: string
@@ -872,11 +877,7 @@ export const createPCDependency = (
 export const isValueOverride = (
   node: PCOverride
 ): node is PCBaseValueOverride<any, any> => {
-  return (
-    node.type !== PCOverridableType.CHILDREN &&
-    node.type !== PCOverridableType.ADD_STYLE_BLOCK &&
-    node.type !== PCOverridableType.ADD_ATTRIBUTES
-  );
+  return node.type !== PCOverridableType.CHILDREN;
 };
 
 export const isVisibleNode = (node: PCNode): node is PCVisibleNode =>
@@ -1386,7 +1387,7 @@ export const computePCNodeStyle = memoize(
     varMap: KeyValue<PCVariable>
   ) => {
     if (!node.styleMixins) {
-      return computeStyleWithVars(node.style, varMap);
+      return computeStyleWithVars(keyValuePairToHash(node.style), varMap);
     }
 
     let style = {};
@@ -1403,7 +1404,7 @@ export const computePCNodeStyle = memoize(
       );
     }
 
-    Object.assign(style, node.style);
+    Object.assign(style, keyValuePairToHash(node.style));
 
     return computeStyleWithVars(style, varMap);
   }
@@ -1570,8 +1571,8 @@ export const getVariableGraphRefs = memoize(
     const refIds =
       isVisibleNode(node) || node.name === PCSourceTagNames.COMPONENT
         ? getNodeStyleRefIds(node.style)
-        : isPCOverride(node) && node.type === PCOverridableType.STYLE
-          ? getNodeStyleRefIds(node.type)
+        : isPCOverride(node) && node.type === PCOverridableType.ADD_STYLE_BLOCK
+          ? getNodeStyleRefIds(node.value)
           : EMPTY_ARRAY;
 
     for (let i = 0, { length } = refIds; i < length; i++) {
@@ -1621,14 +1622,13 @@ export const getCSSVars = (value: string) => {
   );
 };
 
-// not usable yet -- maybe with computed later on
 export const computeStyleWithVars = (
-  style: KeyValuePair[],
+  style: KeyValue<string>,
   varMap: KeyValue<PCVariable>
 ) => {
   const expandedStyle = {};
-  for (const { key, value } of style) {
-    expandedStyle[key] = computeStyleValue(value, varMap);
+  for (const key in style) {
+    expandedStyle[key] = computeStyleValue(style[key], varMap);
   }
   return expandedStyle;
 };
@@ -1648,7 +1648,7 @@ export const computeStyleValue = (
   return value;
 };
 
-export const getNodeStyleRefIds = memoize((style: KeyValuePair[]) => {
+export const getNodeStyleRefIds = memoize((style: KeyValuePair<string>[]) => {
   const refIds = {};
   for (const { key, value } of style) {
     // value c

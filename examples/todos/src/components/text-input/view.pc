@@ -1,17 +1,37 @@
 {
   "id": "642429ea1",
+  "version": "1.0.1",
+  "metadata": {},
   "name": "module",
-  "version": "0.0.6",
   "children": [
     {
       "label": "input",
       "is": "input",
-      "style": {
-        "box-sizing": "border-box",
-        "display": "inline-block",
-        "margin-right": "12px"
-      },
-      "attributes": {},
+      "style": [
+        {
+          "key": "box-sizing",
+          "value": "border-box"
+        },
+        {
+          "key": "display",
+          "value": "inline-block"
+        },
+        {
+          "key": "margin-right",
+          "value": "12px"
+        }
+      ],
+      "attributes": [
+        {
+          "key": "box-sizing"
+        },
+        {
+          "key": "display"
+        },
+        {
+          "key": "margin-right"
+        }
+      ],
       "id": "5b90e54e459",
       "styleMixins": {
         "5b90e54e102": {
@@ -31,16 +51,28 @@
         {
           "id": "5b90e54e526",
           "variantId": "5b90e54e524",
-          "propertyName": "style",
           "targetIdPath": [],
-          "value": {
-            "border-left": "1px solid var(--5b90e54e525)",
-            "border-top": "1px solid var(--5b90e54e525)",
-            "border-right": "1px solid var(--5b90e54e525)",
-            "border-bottom": "1px solid var(--5b90e54e525)"
-          },
+          "value": [
+            {
+              "key": "border-left",
+              "value": "1px solid var(--5b90e54e525)"
+            },
+            {
+              "key": "border-top",
+              "value": "1px solid var(--5b90e54e525)"
+            },
+            {
+              "key": "border-right",
+              "value": "1px solid var(--5b90e54e525)"
+            },
+            {
+              "key": "border-bottom",
+              "value": "1px solid var(--5b90e54e525)"
+            }
+          ],
           "name": "override",
-          "children": []
+          "children": [],
+          "type": "add-style-block"
         },
         {
           "id": "5b90e54e527",
@@ -64,6 +96,5 @@
       },
       "variant": {}
     }
-  ],
-  "metadata": {}
+  ]
 }

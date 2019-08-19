@@ -1,20 +1,58 @@
 {
   "id": "fae3cdfe4",
+  "version": "1.0.1",
+  "metadata": {},
   "name": "module",
-  "version": "0.0.6",
   "children": [
     {
       "label": "Application",
       "is": "div",
-      "style": {
-        "background-image": "linear-gradient(var(--47b63f0e114), var(--47b63f0e114))",
-        "border-top-right-radius": "4px",
-        "border-bottom-left-radius": "4px",
-        "border-bottom-right-radius": "4px",
-        "max-width": "420px",
-        "border-top-left-radius": "4px"
-      },
-      "attributes": {},
+      "style": [
+        {
+          "key": "background-image",
+          "value": "linear-gradient(var(--47b63f0e114), var(--47b63f0e114))"
+        },
+        {
+          "key": "border-top-right-radius",
+          "value": "4px"
+        },
+        {
+          "key": "border-bottom-left-radius",
+          "value": "4px"
+        },
+        {
+          "key": "border-bottom-right-radius",
+          "value": "4px"
+        },
+        {
+          "key": "max-width",
+          "value": "420px"
+        },
+        {
+          "key": "border-top-left-radius",
+          "value": "4px"
+        }
+      ],
+      "attributes": [
+        {
+          "key": "background-image"
+        },
+        {
+          "key": "border-top-right-radius"
+        },
+        {
+          "key": "border-bottom-left-radius"
+        },
+        {
+          "key": "border-bottom-right-radius"
+        },
+        {
+          "key": "max-width"
+        },
+        {
+          "key": "border-top-left-radius"
+        }
+      ],
       "id": "fae3cdfe3",
       "name": "component",
       "children": [
@@ -23,25 +61,71 @@
           "label": "Header",
           "is": "div",
           "name": "element",
-          "attributes": {},
-          "style": {
-            "box-sizing": "content-box",
-            "display": "block",
-            "padding-left": "12px",
-            "padding-top": "12px",
-            "padding-right": "24px",
-            "padding-bottom": "12px",
-            "text-align": "right"
-          },
+          "attributes": [
+            {
+              "key": "box-sizing"
+            },
+            {
+              "key": "display"
+            },
+            {
+              "key": "padding-left"
+            },
+            {
+              "key": "padding-top"
+            },
+            {
+              "key": "padding-right"
+            },
+            {
+              "key": "padding-bottom"
+            },
+            {
+              "key": "text-align"
+            }
+          ],
+          "style": [
+            {
+              "key": "box-sizing",
+              "value": "content-box"
+            },
+            {
+              "key": "display",
+              "value": "block"
+            },
+            {
+              "key": "padding-left",
+              "value": "12px"
+            },
+            {
+              "key": "padding-top",
+              "value": "12px"
+            },
+            {
+              "key": "padding-right",
+              "value": "24px"
+            },
+            {
+              "key": "padding-bottom",
+              "value": "12px"
+            },
+            {
+              "key": "text-align",
+              "value": "right"
+            }
+          ],
           "children": [
             {
               "id": "fae3cdfe57",
               "name": "text",
               "label": "result",
               "value": "5",
-              "style": {
-                "font-size": "2em"
-              },
+              "style": [
+                {
+                  "key": "font-size",
+                  "value": "2em"
+                }
+              ],
               "children": [],
               "metadata": {},
               "styleMixins": {
@@ -58,30 +142,43 @@
           "label": "Buttons",
           "is": "div",
           "name": "element",
-          "attributes": {},
-          "style": {
-            "box-sizing": "border-box",
-            "display": "block"
-          },
+          "attributes": [
+            {
+              "key": "box-sizing"
+            },
+            {
+              "key": "display"
+            }
+          ],
+          "style": [
+            {
+              "key": "box-sizing",
+              "value": "border-box"
+            },
+            {
+              "key": "display",
+              "value": "block"
+            }
+          ],
           "children": [
             {
               "id": "fae3cdfe66",
               "is": "fae3cdfe61",
               "label": "clear button",
               "name": "component-instance",
-              "attributes": {},
-              "style": {},
+              "attributes": [],
+              "style": [],
               "children": [
                 {
                   "id": "fae3cdfe73",
                   "variantId": null,
-                  "propertyName": "text",
                   "targetIdPath": [
                     "fae3cdfe69"
                   ],
                   "value": "c",
                   "name": "override",
-                  "children": []
+                  "children": [],
+                  "type": "text"
                 }
               ],
               "metadata": {},
@@ -94,19 +191,19 @@
               "is": "fae3cdfe61",
               "label": "negate button",
               "name": "component-instance",
-              "attributes": {},
-              "style": {},
+              "attributes": [],
+              "style": [],
               "children": [
                 {
                   "id": "fae3cdfe76",
                   "variantId": null,
-                  "propertyName": "text",
                   "targetIdPath": [
                     "fae3cdfe69"
                   ],
                   "value": "+/-",
                   "name": "override",
-                  "children": []
+                  "children": [],
+                  "type": "text"
                 }
               ],
               "metadata": {},
@@ -119,19 +216,19 @@
               "is": "fae3cdfe61",
               "label": "decimal button",
               "name": "component-instance",
-              "attributes": {},
-              "style": {},
+              "attributes": [],
+              "style": [],
               "children": [
                 {
                   "id": "fae3cdfe81",
                   "variantId": null,
-                  "propertyName": "text",
                   "targetIdPath": [
                     "fae3cdfe69"
                   ],
                   "value": "%",
                   "name": "override",
-                  "children": []
+                  "children": [],
+                  "type": "text"
                 }
               ],
               "metadata": {},
@@ -144,21 +241,28 @@
               "is": "fae3cdfe61",
               "label": "divide button",
               "name": "component-instance",
-              "attributes": {},
-              "style": {
-                "border-right": "0px solid rgba(230, 27, 27, 1)"
-              },
+              "attributes": [
+                {
+                  "key": "border-right"
+                }
+              ],
+              "style": [
+                {
+                  "key": "border-right",
+                  "value": "0px solid rgba(230, 27, 27, 1)"
+                }
+              ],
               "children": [
                 {
                   "id": "fae3cdfe86",
                   "variantId": null,
-                  "propertyName": "text",
                   "targetIdPath": [
                     "fae3cdfe69"
                   ],
                   "value": "÷",
                   "name": "override",
-                  "children": []
+                  "children": [],
+                  "type": "text"
                 }
               ],
               "metadata": {},
@@ -171,19 +275,19 @@
               "is": "fae3cdfe61",
               "label": "seven button",
               "name": "component-instance",
-              "attributes": {},
-              "style": {},
+              "attributes": [],
+              "style": [],
               "children": [
                 {
                   "id": "fae3cdfe146",
                   "variantId": null,
-                  "propertyName": "text",
                   "targetIdPath": [
                     "fae3cdfe69"
                   ],
                   "value": "7",
                   "name": "override",
-                  "children": []
+                  "children": [],
+                  "type": "text"
                 }
               ],
               "metadata": {},
@@ -196,19 +300,19 @@
               "is": "fae3cdfe61",
               "label": "eight button",
               "name": "component-instance",
-              "attributes": {},
-              "style": {},
+              "attributes": [],
+              "style": [],
               "children": [
                 {
                   "id": "fae3cdfe141",
                   "variantId": null,
-                  "propertyName": "text",
                   "targetIdPath": [
                     "fae3cdfe69"
                   ],
                   "value": "8",
                   "name": "override",
-                  "children": []
+                  "children": [],
+                  "type": "text"
                 }
               ],
               "metadata": {},
@@ -221,19 +325,19 @@
               "is": "fae3cdfe61",
               "label": "nine button",
               "name": "component-instance",
-              "attributes": {},
-              "style": {},
+              "attributes": [],
+              "style": [],
               "children": [
                 {
                   "id": "fae3cdfe136",
                   "variantId": null,
-                  "propertyName": "text",
                   "targetIdPath": [
                     "fae3cdfe69"
                   ],
                   "value": "9\n",
                   "name": "override",
-                  "children": []
+                  "children": [],
+                  "type": "text"
                 }
               ],
               "metadata": {},
@@ -246,22 +350,35 @@
               "is": "fae3cdfe61",
               "label": "multiply button",
               "name": "component-instance",
-              "attributes": {},
-              "style": {
-                "border-right": "0px solid rgba(230, 27, 27, 1)",
-                "border-top": "1px solid var(--47b63f0e114)"
-              },
+              "attributes": [
+                {
+                  "key": "border-right"
+                },
+                {
+                  "key": "border-top"
+                }
+              ],
+              "style": [
+                {
+                  "key": "border-right",
+                  "value": "0px solid rgba(230, 27, 27, 1)"
+                },
+                {
+                  "key": "border-top",
+                  "value": "1px solid var(--47b63f0e114)"
+                }
+              ],
               "children": [
                 {
                   "id": "fae3cdfe131",
                   "variantId": null,
-                  "propertyName": "text",
                   "targetIdPath": [
                     "fae3cdfe69"
                   ],
                   "value": "×\n\n",
                   "name": "override",
-                  "children": []
+                  "children": [],
+                  "type": "text"
                 }
               ],
               "metadata": {},
@@ -276,19 +393,19 @@
               "is": "fae3cdfe61",
               "label": "four button",
               "name": "component-instance",
-              "attributes": {},
-              "style": {},
+              "attributes": [],
+              "style": [],
               "children": [
                 {
                   "id": "fae3cdfe126",
                   "variantId": null,
-                  "propertyName": "text",
                   "targetIdPath": [
                     "fae3cdfe69"
                   ],
                   "value": "4",
                   "name": "override",
-                  "children": []
+                  "children": [],
+                  "type": "text"
                 }
               ],
               "metadata": {},
@@ -301,19 +418,19 @@
               "is": "fae3cdfe61",
               "label": "five button",
               "name": "component-instance",
-              "attributes": {},
-              "style": {},
+              "attributes": [],
+              "style": [],
               "children": [
                 {
                   "id": "fae3cdfe121",
                   "variantId": null,
-                  "propertyName": "text",
                   "targetIdPath": [
                     "fae3cdfe69"
                   ],
                   "value": "5",
                   "name": "override",
-                  "children": []
+                  "children": [],
+                  "type": "text"
                 }
               ],
               "metadata": {},
@@ -326,19 +443,19 @@
               "is": "fae3cdfe61",
               "label": "six button",
               "name": "component-instance",
-              "attributes": {},
-              "style": {},
+              "attributes": [],
+              "style": [],
               "children": [
                 {
                   "id": "fae3cdfe116",
                   "variantId": null,
-                  "propertyName": "text",
                   "targetIdPath": [
                     "fae3cdfe69"
                   ],
                   "value": "6",
                   "name": "override",
-                  "children": []
+                  "children": [],
+                  "type": "text"
                 }
               ],
               "metadata": {},
@@ -351,21 +468,28 @@
               "is": "fae3cdfe61",
               "label": "minus button",
               "name": "component-instance",
-              "attributes": {},
-              "style": {
-                "border-right": "0px solid var(--47b63f0e114)"
-              },
+              "attributes": [
+                {
+                  "key": "border-right"
+                }
+              ],
+              "style": [
+                {
+                  "key": "border-right",
+                  "value": "0px solid var(--47b63f0e114)"
+                }
+              ],
               "children": [
                 {
                   "id": "fae3cdfe111",
                   "variantId": null,
-                  "propertyName": "text",
                   "targetIdPath": [
                     "fae3cdfe69"
                   ],
                   "value": "-",
                   "name": "override",
-                  "children": []
+                  "children": [],
+                  "type": "text"
                 }
               ],
               "metadata": {},
@@ -378,19 +502,19 @@
               "is": "fae3cdfe61",
               "label": "one button",
               "name": "component-instance",
-              "attributes": {},
-              "style": {},
+              "attributes": [],
+              "style": [],
               "children": [
                 {
                   "id": "fae3cdfe106",
                   "variantId": null,
-                  "propertyName": "text",
                   "targetIdPath": [
                     "fae3cdfe69"
                   ],
                   "value": "1",
                   "name": "override",
-                  "children": []
+                  "children": [],
+                  "type": "text"
                 }
               ],
               "metadata": {},
@@ -403,19 +527,19 @@
               "is": "fae3cdfe61",
               "label": "two button",
               "name": "component-instance",
-              "attributes": {},
-              "style": {},
+              "attributes": [],
+              "style": [],
               "children": [
                 {
                   "id": "fae3cdfe101",
                   "variantId": null,
-                  "propertyName": "text",
                   "targetIdPath": [
                     "fae3cdfe69"
                   ],
                   "value": "2",
                   "name": "override",
-                  "children": []
+                  "children": [],
+                  "type": "text"
                 }
               ],
               "metadata": {},
@@ -428,19 +552,19 @@
               "is": "fae3cdfe61",
               "label": "three button",
               "name": "component-instance",
-              "attributes": {},
-              "style": {},
+              "attributes": [],
+              "style": [],
               "children": [
                 {
                   "id": "fae3cdfe96",
                   "variantId": null,
-                  "propertyName": "text",
                   "targetIdPath": [
                     "fae3cdfe69"
                   ],
                   "value": "3",
                   "name": "override",
-                  "children": []
+                  "children": [],
+                  "type": "text"
                 }
               ],
               "metadata": {},
@@ -453,21 +577,28 @@
               "is": "fae3cdfe61",
               "label": "add button",
               "name": "component-instance",
-              "attributes": {},
-              "style": {
-                "border-right": "0px solid var(--47b63f0e114)"
-              },
+              "attributes": [
+                {
+                  "key": "border-right"
+                }
+              ],
+              "style": [
+                {
+                  "key": "border-right",
+                  "value": "0px solid var(--47b63f0e114)"
+                }
+              ],
               "children": [
                 {
                   "id": "fae3cdfe91",
                   "variantId": null,
-                  "propertyName": "text",
                   "targetIdPath": [
                     "fae3cdfe69"
                   ],
                   "value": "+",
                   "name": "override",
-                  "children": []
+                  "children": [],
+                  "type": "text"
                 }
               ],
               "metadata": {},
@@ -480,21 +611,28 @@
               "is": "fae3cdfe61",
               "label": "zero button",
               "name": "component-instance",
-              "attributes": {},
-              "style": {
-                "width": "50%"
-              },
+              "attributes": [
+                {
+                  "key": "width"
+                }
+              ],
+              "style": [
+                {
+                  "key": "width",
+                  "value": "50%"
+                }
+              ],
               "children": [
                 {
                   "id": "47b63f0e103",
                   "variantId": null,
-                  "propertyName": "text",
                   "targetIdPath": [
                     "fae3cdfe69"
                   ],
                   "value": "0",
                   "name": "override",
-                  "children": []
+                  "children": [],
+                  "type": "text"
                 }
               ],
               "metadata": {},
@@ -507,19 +645,19 @@
               "is": "fae3cdfe61",
               "label": "dot button",
               "name": "component-instance",
-              "attributes": {},
-              "style": {},
+              "attributes": [],
+              "style": [],
               "children": [
                 {
                   "id": "47b63f0e108",
                   "variantId": null,
-                  "propertyName": "text",
                   "targetIdPath": [
                     "fae3cdfe69"
                   ],
                   "value": ".",
                   "name": "override",
-                  "children": []
+                  "children": [],
+                  "type": "text"
                 }
               ],
               "metadata": {},
@@ -532,21 +670,28 @@
               "is": "fae3cdfe61",
               "label": "equals button",
               "name": "component-instance",
-              "attributes": {},
-              "style": {
-                "border-right": "0px solid var(--47b63f0e114)"
-              },
+              "attributes": [
+                {
+                  "key": "border-right"
+                }
+              ],
+              "style": [
+                {
+                  "key": "border-right",
+                  "value": "0px solid var(--47b63f0e114)"
+                }
+              ],
               "children": [
                 {
                   "id": "fae3cdfe74",
                   "variantId": null,
-                  "propertyName": "text",
                   "targetIdPath": [
                     "fae3cdfe69"
                   ],
                   "value": "=",
                   "name": "override",
-                  "children": []
+                  "children": [],
+                  "type": "text"
                 }
               ],
               "metadata": {},
@@ -574,23 +719,108 @@
     {
       "label": "Button",
       "is": "div",
-      "style": {
-        "box-sizing": "border-box",
-        "display": "inline-block",
-        "padding-left": "12px",
-        "padding-top": "12px",
-        "padding-right": "12px",
-        "padding-bottom": "12px",
-        "text-align": "center",
-        "background-image": "linear-gradient(var(--47b63f0e114), var(--47b63f0e114))",
-        "border-left": "0px solid rgba(230, 27, 27, 1)",
-        "border-top": "1px solid var(--47b63f0e114)",
-        "border-right": "1px solid var(--47b63f0e114)",
-        "border-bottom": "0px solid var(--47b63f0e114)",
-        "cursor": "pointer",
-        "width": "25%"
-      },
-      "attributes": {},
+      "style": [
+        {
+          "key": "box-sizing",
+          "value": "border-box"
+        },
+        {
+          "key": "display",
+          "value": "inline-block"
+        },
+        {
+          "key": "padding-left",
+          "value": "12px"
+        },
+        {
+          "key": "padding-top",
+          "value": "12px"
+        },
+        {
+          "key": "padding-right",
+          "value": "12px"
+        },
+        {
+          "key": "padding-bottom",
+          "value": "12px"
+        },
+        {
+          "key": "text-align",
+          "value": "center"
+        },
+        {
+          "key": "background-image",
+          "value": "linear-gradient(var(--47b63f0e114), var(--47b63f0e114))"
+        },
+        {
+          "key": "border-left",
+          "value": "0px solid rgba(230, 27, 27, 1)"
+        },
+        {
+          "key": "border-top",
+          "value": "1px solid var(--47b63f0e114)"
+        },
+        {
+          "key": "border-right",
+          "value": "1px solid var(--47b63f0e114)"
+        },
+        {
+          "key": "border-bottom",
+          "value": "0px solid var(--47b63f0e114)"
+        },
+        {
+          "key": "cursor",
+          "value": "pointer"
+        },
+        {
+          "key": "width",
+          "value": "25%"
+        }
+      ],
+      "attributes": [
+        {
+          "key": "box-sizing"
+        },
+        {
+          "key": "display"
+        },
+        {
+          "key": "padding-left"
+        },
+        {
+          "key": "padding-top"
+        },
+        {
+          "key": "padding-right"
+        },
+        {
+          "key": "padding-bottom"
+        },
+        {
+          "key": "text-align"
+        },
+        {
+          "key": "background-image"
+        },
+        {
+          "key": "border-left"
+        },
+        {
+          "key": "border-top"
+        },
+        {
+          "key": "border-right"
+        },
+        {
+          "key": "border-bottom"
+        },
+        {
+          "key": "cursor"
+        },
+        {
+          "key": "width"
+        }
+      ],
       "id": "fae3cdfe61",
       "name": "component",
       "children": [
@@ -599,11 +829,20 @@
           "name": "text",
           "label": "Text",
           "value": "button",
-          "style": {
-            "-moz-user-select": "none",
-            "user-select": "none",
-            "font-weight": "500"
-          },
+          "style": [
+            {
+              "key": "-moz-user-select",
+              "value": "none"
+            },
+            {
+              "key": "user-select",
+              "value": "none"
+            },
+            {
+              "key": "font-weight",
+              "value": "500"
+            }
+          ],
           "children": [],
           "metadata": {},
           "styleMixins": {
@@ -639,48 +878,60 @@
         {
           "id": "47b63f0e119",
           "variantId": "47b63f0e117",
-          "propertyName": "style",
           "targetIdPath": [],
-          "value": {
-            "background-image": "linear-gradient(var(--47b63f0e118), var(--47b63f0e118))"
-          },
+          "value": [
+            {
+              "key": "background-image",
+              "value": "linear-gradient(var(--47b63f0e118), var(--47b63f0e118))"
+            }
+          ],
           "name": "override",
-          "children": []
+          "children": [],
+          "type": "add-style-block"
         },
         {
           "id": "47b63f0e121",
           "variantId": "47b63f0e115",
-          "propertyName": "style",
           "targetIdPath": [],
-          "value": {
-            "background-image": "linear-gradient(var(--47b63f0e120), var(--47b63f0e120))"
-          },
+          "value": [
+            {
+              "key": "background-image",
+              "value": "linear-gradient(var(--47b63f0e120), var(--47b63f0e120))"
+            }
+          ],
           "name": "override",
-          "children": []
+          "children": [],
+          "type": "add-style-block"
         },
         {
           "id": "47b63f0e123",
           "variantId": "47b63f0e116",
-          "propertyName": "style",
           "targetIdPath": [],
-          "value": {
-            "background-image": "linear-gradient(var(--47b63f0e122), var(--47b63f0e122))"
-          },
+          "value": [
+            {
+              "key": "background-image",
+              "value": "linear-gradient(var(--47b63f0e122), var(--47b63f0e122))"
+            }
+          ],
           "name": "override",
-          "children": []
+          "children": [],
+          "type": "add-style-block"
         },
         {
           "id": "47b63f0e124",
           "variantId": "47b63f0e116",
-          "propertyName": "style",
           "targetIdPath": [
             "fae3cdfe69"
           ],
-          "value": {
-            "color": "var(--47b63f0e114)"
-          },
+          "value": [
+            {
+              "key": "color",
+              "value": "var(--47b63f0e114)"
+            }
+          ],
           "name": "override",
-          "children": []
+          "children": [],
+          "type": "add-style-block"
         },
         {
           "id": "47b63f0e273",
@@ -693,26 +944,32 @@
         {
           "id": "47b63f0e274",
           "variantId": "47b63f0e273",
-          "propertyName": "style",
           "targetIdPath": [],
-          "value": {
-            "background-image": "linear-gradient(rgba(255, 255, 255, 1), rgba(255, 255, 255, 1))"
-          },
+          "value": [
+            {
+              "key": "background-image",
+              "value": "linear-gradient(rgba(255, 255, 255, 1), rgba(255, 255, 255, 1))"
+            }
+          ],
           "name": "override",
-          "children": []
+          "children": [],
+          "type": "add-style-block"
         },
         {
           "id": "47b63f0e275",
           "variantId": "47b63f0e273",
-          "propertyName": "style",
           "targetIdPath": [
             "fae3cdfe69"
           ],
-          "value": {
-            "color": "var(--47b63f0e120)"
-          },
+          "value": [
+            {
+              "key": "color",
+              "value": "var(--47b63f0e120)"
+            }
+          ],
           "name": "override",
-          "children": []
+          "children": [],
+          "type": "add-style-block"
         }
       ],
       "metadata": {
@@ -729,10 +986,16 @@
       "id": "47b63f0e112",
       "name": "style-mixin",
       "label": "Base text style",
-      "style": {
-        "color": "rgba(255, 255, 255, 1)",
-        "font-family": "Helvetica"
-      },
+      "style": [
+        {
+          "key": "color",
+          "value": "rgba(255, 255, 255, 1)"
+        },
+        {
+          "key": "font-family",
+          "value": "Helvetica"
+        }
+      ],
       "value": "button",
       "targetType": "text",
       "children": [],
@@ -786,25 +1049,69 @@
       "label": "Preview",
       "is": "div",
       "name": "element",
-      "attributes": {},
-      "style": {
-        "box-sizing": "border-box",
-        "display": "block",
-        "background-image": "linear-gradient(rgba(234, 234, 234, 1), rgba(234, 234, 234, 1))"
-      },
+      "attributes": [
+        {
+          "key": "box-sizing"
+        },
+        {
+          "key": "display"
+        },
+        {
+          "key": "background-image"
+        }
+      ],
+      "style": [
+        {
+          "key": "box-sizing",
+          "value": "border-box"
+        },
+        {
+          "key": "display",
+          "value": "block"
+        },
+        {
+          "key": "background-image",
+          "value": "linear-gradient(rgba(234, 234, 234, 1), rgba(234, 234, 234, 1))"
+        }
+      ],
       "children": [
         {
           "id": "47b63f0e299",
           "is": "fae3cdfe3",
           "label": "Application",
           "name": "component-instance",
-          "attributes": {},
-          "style": {
-            "margin-left": "auto",
-            "margin-right": "auto",
-            "margin-bottom": "auto",
-            "margin-top": "200px"
-          },
+          "attributes": [
+            {
+              "key": "margin-left"
+            },
+            {
+              "key": "margin-right"
+            },
+            {
+              "key": "margin-bottom"
+            },
+            {
+              "key": "margin-top"
+            }
+          ],
+          "style": [
+            {
+              "key": "margin-left",
+              "value": "auto"
+            },
+            {
+              "key": "margin-right",
+              "value": "auto"
+            },
+            {
+              "key": "margin-bottom",
+              "value": "auto"
+            },
+            {
+              "key": "margin-top",
+              "value": "200px"
+            }
+          ],
           "children": [],
           "metadata": {
             "bounds": {
@@ -826,6 +1133,5 @@
         }
       }
     }
-  ],
-  "metadata": {}
+  ]
 }

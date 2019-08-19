@@ -1,16 +1,30 @@
 {
   "id": "1ece7a3519",
+  "version": "1.0.1",
+  "metadata": {},
   "name": "module",
-  "version": "0.0.5",
   "children": [
     {
       "label": "footer button",
       "is": "li",
-      "style": {
-        "display": "inline",
-        "color": "inherit"
-      },
-      "attributes": {},
+      "style": [
+        {
+          "key": "display",
+          "value": "inline"
+        },
+        {
+          "key": "color",
+          "value": "inherit"
+        }
+      ],
+      "attributes": [
+        {
+          "key": "display"
+        },
+        {
+          "key": "color"
+        }
+      ],
       "id": "320c526030263",
       "styleMixins": {
         "320c5260433": {
@@ -24,24 +38,59 @@
           "label": "a",
           "is": "a",
           "name": "element",
-          "attributes": {
-            "href": "#/all"
-          },
-          "style": {
-            "color": "inherit",
-            "margin": "3px",
-            "padding": "3px 7px",
-            "text-decoration": "none",
-            "border": "1px solid rgba(175, 47, 47, 0)",
-            "border-radius": "3px"
-          },
+          "attributes": [
+            {
+              "key": "color"
+            },
+            {
+              "key": "margin"
+            },
+            {
+              "key": "padding"
+            },
+            {
+              "key": "text-decoration"
+            },
+            {
+              "key": "border"
+            },
+            {
+              "key": "border-radius"
+            }
+          ],
+          "style": [
+            {
+              "key": "color",
+              "value": "inherit"
+            },
+            {
+              "key": "margin",
+              "value": "3px"
+            },
+            {
+              "key": "padding",
+              "value": "3px 7px"
+            },
+            {
+              "key": "text-decoration",
+              "value": "none"
+            },
+            {
+              "key": "border",
+              "value": "1px solid rgba(175, 47, 47, 0)"
+            },
+            {
+              "key": "border-radius",
+              "value": "3px"
+            }
+          ],
           "children": [
             {
               "id": "320c526030262",
               "name": "text",
               "label": "label text",
               "value": "All",
-              "style": {},
+              "style": [],
               "children": [],
               "metadata": {}
             }
@@ -59,26 +108,32 @@
         {
           "id": "320c526042566",
           "variantId": "320c526042073",
-          "propertyName": "style",
           "targetIdPath": [
             "320c526030261"
           ],
-          "value": {
-            "border": "1px solid var(--905d90be431)"
-          },
+          "value": [
+            {
+              "key": "border",
+              "value": "1px solid var(--905d90be431)"
+            }
+          ],
           "name": "override",
-          "children": []
+          "children": [],
+          "type": "add-style-block"
         },
         {
           "id": "320c526044535",
           "variantId": "320c526042073",
-          "propertyName": "style",
           "targetIdPath": [],
-          "value": {
-            "color": "inherit"
-          },
+          "value": [
+            {
+              "key": "color",
+              "value": "inherit"
+            }
+          ],
           "name": "override",
-          "children": []
+          "children": [],
+          "type": "add-style-block"
         }
       ],
       "metadata": {
@@ -94,6 +149,5 @@
         "./footer-button-controller.tsx"
       ]
     }
-  ],
-  "metadata": {}
+  ]
 }

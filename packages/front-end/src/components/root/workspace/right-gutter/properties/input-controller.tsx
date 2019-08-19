@@ -6,9 +6,11 @@ import {
   PCElement,
   PCComponentInstanceElement,
   getNativeComponentName,
-  DependencyGraph
+  DependencyGraph,
+  HtmlAttribute
 } from "paperclip";
 import { Dispatch } from "redux";
+import { kvpGetValue } from "tandem-common";
 import { BaseInputPropertiesProps } from "./input.pc";
 import { dropdownMenuOptionFromValue } from "../../../../inputs/dropdown/controller";
 
@@ -57,13 +59,16 @@ export default (Base: React.ComponentClass<BaseInputPropertiesProps>) =>
       return (
         <Base
           placeholderInputProps={{
-            value: sourceNode.attributes.placeholder,
+            value: kvpGetValue(
+              HtmlAttribute.placeholder,
+              sourceNode.attributes
+            ),
             onChange: onPlaceholderChange
           }}
           inputTypeInputProps={{
             options: INPUT_TYPE_OPTIONS,
             onChangeComplete: onInputTypeChange,
-            value: sourceNode.attributes.type
+            value: kvpGetValue(HtmlAttribute.type, sourceNode.attributes)
           }}
         />
       );

@@ -17,7 +17,8 @@ import {
   EMPTY_ARRAY,
   appendChildNode,
   KeyValue,
-  EMPTY_OBJECT
+  EMPTY_OBJECT,
+  hashToKeyValuePair
 } from "tandem-common";
 
 const FRAME_PADDING = 50;
@@ -34,7 +35,7 @@ const convertXMLJSONToPCNode = node => {
   if (node.type === "element") {
     return createPCElement(
       node.name,
-      {},
+      [],
       node.attributes,
       (node.elements || EMPTY_ARRAY).map(convertXMLJSONToPCNode)
     );
@@ -79,9 +80,8 @@ export const elevateColorsToGlobal = (
       node.name === PCSourceTagNames.TEXT
     ) {
       let newStyle;
-      for (const key in node.style) {
-        let value: string = node.style[key];
-        const colors = findCSSColors(node.style[key]);
+      for (let { key, value } of node.style) {
+        const colors = findCSSColors(value);
         if (colors.length) {
           if (!newStyle) {
             newStyle = { ...node.style };
@@ -157,7 +157,7 @@ export const elevateTypographyToMixins = (
     ) {
       const typographyStyle = {};
       const otherStyle = {};
-      for (const key in node.style) {
+      for (const { key, value } of node.style) {
         if (TEXT_STYLE_NAMES.indexOf(key) !== -1) {
           typographyStyle[key] = node.style[key];
         } else {
@@ -172,7 +172,7 @@ export const elevateTypographyToMixins = (
             id: `via${node.id}`,
             name: PCSourceTagNames.STYLE_MIXIN,
             targetType: PCSourceTagNames.TEXT,
-            style: typographyStyle,
+            style: hashToKeyValuePair(typographyStyle),
             value: `Text Style ${Object.keys(typographyMixinMap).length + 1}`,
             label: `Text Style ${Object.keys(typographyMixinMap).length + 1}`,
             children: EMPTY_ARRAY,
@@ -180,7 +180,7 @@ export const elevateTypographyToMixins = (
           });
         node = {
           ...node,
-          style: otherStyle,
+          style: hashToKeyValuePair(otherStyle),
           styleMixins: {
             ...(node.styleMixins || EMPTY_OBJECT),
             [mixin.id]: {

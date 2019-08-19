@@ -11,7 +11,7 @@ import {
   PCSourceTagNames,
   PCNode,
   extendsComponent,
-  PCStyleOverride,
+  PCAddStyleBlockOverride,
   isVisibleNode,
   getOverrides,
   getPCNode,
@@ -60,7 +60,9 @@ import {
   memoize,
   EMPTY_ARRAY,
   getTreeNodesByName,
-  getParentTreeNode
+  getParentTreeNode,
+  keyValuePairToHash,
+  KeyValue
 } from "tandem-common";
 import * as path from "path";
 import {
@@ -318,7 +320,10 @@ export const createPaperclipVirtualDOMtranslator = (
         context = addOpenTag(`"._${node.id}": {\n`, context);
         context = translateStyle(
           node,
-          { ...getInheritedStyle(node.styleMixins, context), ...node.style },
+          {
+            ...getInheritedStyle(node.styleMixins, context),
+            ...keyValuePairToHash(node.style)
+          },
           context,
           getPCNodeDependency(node.id, context.graph).uri
         );
@@ -381,7 +386,7 @@ export const createPaperclipVirtualDOMtranslator = (
 
   const translateStyle = (
     target: ContentNode,
-    style: any,
+    style: KeyValue<string>,
     context: TranslateContext,
     sourceUri: string
   ) => {
@@ -445,9 +450,8 @@ export const createPaperclipVirtualDOMtranslator = (
     // FIXME: need to sort based on variant priority
     const styleOverrides = (getOverrides(instance).filter(
       node =>
-        node.propertyName === PCOverridableType.STYLE &&
-        Object.keys(node.value).length
-    ) as PCStyleOverride[]).sort((a, b) => {
+        node.type === PCOverridableType.ADD_STYLE_BLOCK && node.value.length
+    ) as PCAddStyleBlockOverride[]).sort((a, b) => {
       return a.variantId ? 1 : -1;
     });
 
@@ -554,7 +558,7 @@ export const createPaperclipVirtualDOMtranslator = (
       context = addOpenTag(`["${selector}"]: {\n`, context);
       context = translateStyle(
         getPCNode(last(override.targetIdPath), context.graph) as ContentNode,
-        override.value,
+        keyValuePairToHash(override.value),
         context,
         getPCNodeDependency(override.id, context.graph).uri
       );
@@ -598,7 +602,7 @@ export const createPaperclipVirtualDOMtranslator = (
         );
         context = translateStyle(
           getPCNode(last(override.targetIdPath), context.graph) as ContentNode,
-          override.value,
+          keyValuePairToHash(override.value),
           context,
           getPCNodeDependency(override.id, context.graph).uri
         );
@@ -619,7 +623,7 @@ export const createPaperclipVirtualDOMtranslator = (
 
   const translateStyleValue = (
     key: string,
-    value: any,
+    value: string,
     { graph, rootDirectory }: TranslateContext,
     sourceUri
   ) => {
@@ -941,7 +945,7 @@ export const createPaperclipVirtualDOMtranslator = (
 
       const overrides: PCOverride[] = instanceMap.overrides || EMPTY_ARRAY;
       for (const override of overrides) {
-        if (override.propertyName !== PCOverridableType.VARIANT) {
+        if (override.type !== PCOverridableType.VARIANT) {
           continue;
         }
 
@@ -1070,7 +1074,8 @@ export const createPaperclipVirtualDOMtranslator = (
     const visibleNodes = filterNestedNodes(
       component,
       node => isVisibleNode(node) || node.name === PCSourceTagNames.COMPONENT
-    );
+    ) as (PCVisibleNode | PCComponent)[];
+
     for (const node of visibleNodes) {
       // overrides provided when component is created, so ski
       if (node.name === PCSourceTagNames.COMPONENT && extendsComponent(node)) {
@@ -1096,7 +1101,11 @@ export const createPaperclipVirtualDOMtranslator = (
         node.name === PCSourceTagNames.COMPONENT ||
         node.name === PCSourceTagNames.COMPONENT_INSTANCE
       ) {
-        context = translateInnerAttributes(node.id, node.attributes, context);
+        context = translateInnerAttributes(
+          node.id,
+          keyValuePairToHash(node.attributes),
+          context
+        );
       }
       context = addLine(`key: "${node.id}",`, context);
 
@@ -1266,9 +1275,9 @@ export const createPaperclipVirtualDOMtranslator = (
   };
 
   const isStaticOverride = (override: PCOverride) =>
-    override.propertyName !== PCOverridableType.CHILDREN && !override.variantId;
+    override.type !== PCOverridableType.CHILDREN && !override.variantId;
   const isDynamicOverride = (override: PCOverride) =>
-    (override.propertyName === PCOverridableType.CHILDREN &&
+    (override.type === PCOverridableType.CHILDREN &&
       override.children.length > 0) ||
     Boolean(override.variantId);
 
@@ -1436,7 +1445,7 @@ export const createPaperclipVirtualDOMtranslator = (
     overrides
   }: PCComputedNoverOverrideMap) => {
     for (const override of overrides) {
-      if (override.propertyName === PCOverridableType.CHILDREN) {
+      if (override.type === PCOverridableType.CHILDREN) {
         return true;
       }
     }
@@ -1456,8 +1465,8 @@ export const createPaperclipVirtualDOMtranslator = (
     context: TranslateContext
   ) => {
     if (override.variantId) {
-      switch (override.propertyName) {
-        case PCOverridableType.STYLE: {
+      switch (override.type) {
+        case PCOverridableType.ADD_STYLE_BLOCK: {
           context = addLine(
             `${varName}.${parts.classAttributeName} = (${varName}.${
               parts.classAttributeName
@@ -1491,7 +1500,7 @@ export const createPaperclipVirtualDOMtranslator = (
       return context;
     }
 
-    switch (override.propertyName) {
+    switch (override.type) {
       case PCOverridableType.TEXT: {
         return addLine(`text: ${JSON.stringify(override.value)},`, context);
       }
@@ -1501,10 +1510,10 @@ export const createPaperclipVirtualDOMtranslator = (
           context
         );
       }
-      case PCOverridableType.ATTRIBUTES: {
+      case PCOverridableType.ADD_ATTRIBUTES: {
         context = translateInnerAttributes(
           last(override.targetIdPath),
-          override.value,
+          keyValuePairToHash(override.value),
           context
         );
         break;
@@ -1521,7 +1530,7 @@ export const createPaperclipVirtualDOMtranslator = (
     includeNodeId: boolean = true
   ) => {
     const styleOverrides = overrides.filter(
-      override => override.propertyName === PCOverridableType.STYLE
+      override => override.type === PCOverridableType.ADD_STYLE_BLOCK
     );
     if (!styleOverrides.length && !includeNodeId) {
       return context;
@@ -1550,7 +1559,7 @@ export const createPaperclipVirtualDOMtranslator = (
 
   const translateInnerAttributes = (
     nodeId: string,
-    attributes: any,
+    attributes: KeyValue<string>,
     context: TranslateContext
   ) => {
     const node = getPCNode(nodeId, context.graph) as PCComponentInstanceElement;
@@ -1584,7 +1593,7 @@ export const createPaperclipVirtualDOMtranslator = (
 
   const hasStyle = (node: PCVisibleNode | PCComponent) => {
     return (
-      Object.keys(node.style).length > 0 ||
+      node.style.length > 0 ||
       (node.styleMixins && Object.keys(node.styleMixins).length > 0)
     );
   };

@@ -1,13 +1,14 @@
 {
   "id": "a9bb1eee4",
+  "version": "1.0.1",
+  "metadata": {},
   "name": "module",
-  "version": "0.0.6",
   "children": [
     {
       "label": "Application",
       "is": "div",
-      "style": {},
-      "attributes": {},
+      "style": [],
+      "attributes": [],
       "id": "a9bb1eee3",
       "name": "component",
       "children": [
@@ -16,7 +17,7 @@
           "name": "text",
           "label": "App content",
           "value": "App content",
-          "style": {},
+          "style": [],
           "children": [],
           "metadata": {}
         }
@@ -34,6 +35,5 @@
         "./controller.tsx"
       ]
     }
-  ],
-  "metadata": {}
+  ]
 }

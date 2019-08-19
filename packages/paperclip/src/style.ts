@@ -14,7 +14,7 @@ import {
 import {
   PCComponent,
   PCVisibleNode,
-  PCStyleOverride,
+  PCAddStyleBlockOverride,
   getPCNode,
   PCNode,
   extendsComponent,
@@ -50,7 +50,7 @@ const DEFAULT_COMPUTE_STYLE_OPTIONS: ComputeStyleOptions = {
 
 export type ComputedStyleInfo = {
   sourceNode: PCNode;
-  styleOverridesMap: KeyValue<PCStyleOverride[]>;
+  styleOverridesMap: KeyValue<PCAddStyleBlockOverride[]>;
   styleMixinMap: KeyValue<PCStyleMixin>;
   styleInheritanceMap: KeyValue<InspectorNode>;
   style: {
@@ -69,7 +69,7 @@ export const computeStyleInfo = memoize(
     options: ComputeStyleOptions = DEFAULT_COMPUTE_STYLE_OPTIONS
   ): ComputedStyleInfo | null => {
     let style = {};
-    const styleOverridesMap: KeyValue<PCStyleOverride[]> = {};
+    const styleOverridesMap: KeyValue<PCAddStyleBlockOverride[]> = {};
     let styleMixinMap: KeyValue<PCStyleMixin> = {};
 
     const sourceNode = getPCNode(inspectorNode.sourceNodeId, graph) as
@@ -110,8 +110,8 @@ export const computeStyleInfo = memoize(
       );
 
       for (const override of overrides) {
-        if (override.propertyName === PCOverridableType.STYLE) {
-          for (const key in override.value) {
+        if (override.type === PCOverridableType.ADD_STYLE_BLOCK) {
+          for (const { key, value } of override.value) {
             if (!styleOverridesMap[key]) {
               styleOverridesMap[key] = [];
             }
