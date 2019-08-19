@@ -71,17 +71,7 @@
           "value": "none"
         }
       ],
-      "attributes": [
-        {
-          "key": "width"
-        },
-        {
-          "key": "position"
-        },
-        {
-          "key": "outline"
-        }
-      ],
+      "attributes": [],
       "id": "50e32bec2591",
       "name": "component",
       "children": [
@@ -125,38 +115,7 @@
                       "label": "button",
                       "is": "div",
                       "name": "element",
-                      "attributes": [
-                        {
-                          "key": "box-sizing"
-                        },
-                        {
-                          "key": "display"
-                        },
-                        {
-                          "key": "align-items"
-                        },
-                        {
-                          "key": "user-select"
-                        },
-                        {
-                          "key": "background"
-                        },
-                        {
-                          "key": "cursor"
-                        },
-                        {
-                          "key": "padding-left"
-                        },
-                        {
-                          "key": "padding-top"
-                        },
-                        {
-                          "key": "padding-right"
-                        },
-                        {
-                          "key": "padding-bottom"
-                        }
-                      ],
+                      "attributes": [],
                       "style": [
                         {
                           "key": "box-sizing",
@@ -206,37 +165,8 @@
                           "name": "component-instance",
                           "attributes": [
                             {
-                              "key": "width"
-                            },
-                            {
-                              "key": "padding"
-                            },
-                            {
-                              "key": "border-radius"
-                            },
-                            {
-                              "key": "border"
-                            },
-                            {
-                              "key": "box-sizing"
-                            },
-                            {
-                              "key": "display"
-                            },
-                            {
-                              "key": "padding-top"
-                            },
-                            {
-                              "key": "padding-right"
-                            },
-                            {
-                              "key": "padding-bottom"
-                            },
-                            {
-                              "key": "padding-left"
-                            },
-                            {
-                              "key": "box-shadow"
+                              "key": "placeholder",
+                              "value": "filter"
                             }
                           ],
                           "style": [
@@ -350,20 +280,7 @@
                           "variant": {},
                           "is": "e186b96e4079",
                           "name": "component-instance",
-                          "attributes": [
-                            {
-                              "key": "height"
-                            },
-                            {
-                              "key": "position"
-                            },
-                            {
-                              "key": "opacity"
-                            },
-                            {
-                              "key": "top"
-                            }
-                          ],
+                          "attributes": [],
                           "style": [
                             {
                               "key": "height",
@@ -411,38 +328,7 @@
                   "label": "Menu",
                   "is": "div",
                   "name": "element",
-                  "attributes": [
-                    {
-                      "key": "box-sizing"
-                    },
-                    {
-                      "key": "display"
-                    },
-                    {
-                      "key": "max-height"
-                    },
-                    {
-                      "key": "margin-top"
-                    },
-                    {
-                      "key": "border-bottom-left-radius"
-                    },
-                    {
-                      "key": "border-top-left-radius"
-                    },
-                    {
-                      "key": "border-top-right-radius"
-                    },
-                    {
-                      "key": "border-bottom-right-radius"
-                    },
-                    {
-                      "key": "border"
-                    },
-                    {
-                      "key": "overflow-y"
-                    }
-                  ],
+                  "attributes": [],
                   "style": [
                     {
                       "key": "box-sizing",
@@ -904,11 +790,7 @@
       "variant": {},
       "is": "50e32bec2591",
       "name": "component-instance",
-      "attributes": [
-        {
-          "key": "background"
-        }
-      ],
+      "attributes": [],
       "style": [
         {
           "key": "background",
@@ -1159,14 +1041,7 @@
       "label": "Element",
       "is": "div",
       "name": "element",
-      "attributes": [
-        {
-          "key": "box-sizing"
-        },
-        {
-          "key": "display"
-        }
-      ],
+      "attributes": [],
       "style": [
         {
           "key": "box-sizing",

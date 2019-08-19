@@ -95,41 +95,7 @@
           "value": "translateY(-50%)"
         }
       ],
-      "attributes": [
-        {
-          "key": "box-sizing"
-        },
-        {
-          "key": "display"
-        },
-        {
-          "key": "position"
-        },
-        {
-          "key": "right"
-        },
-        {
-          "key": "border"
-        },
-        {
-          "key": "height"
-        },
-        {
-          "key": "opacity"
-        },
-        {
-          "key": "background"
-        },
-        {
-          "key": "width"
-        },
-        {
-          "key": "z-index"
-        },
-        {
-          "key": "transform"
-        }
-      ],
+      "attributes": [],
       "id": "6f0de1ad85",
       "name": "component",
       "children": [
@@ -168,14 +134,7 @@
           "label": "dot",
           "is": "div",
           "name": "element",
-          "attributes": [
-            {
-              "key": "box-sizing"
-            },
-            {
-              "key": "display"
-            }
-          ],
+          "attributes": [],
           "style": [
             {
               "key": "box-sizing",
@@ -265,14 +224,7 @@
       "label": "Preview",
       "is": "div",
       "name": "element",
-      "attributes": [
-        {
-          "key": "box-sizing"
-        },
-        {
-          "key": "display"
-        }
-      ],
+      "attributes": [],
       "style": [
         {
           "key": "box-sizing",
@@ -289,14 +241,7 @@
           "is": "6f0de1ad85",
           "label": "Drop Zone",
           "name": "component-instance",
-          "attributes": [
-            {
-              "key": "left"
-            },
-            {
-              "key": "top"
-            }
-          ],
+          "attributes": [],
           "style": [
             {
               "key": "left",

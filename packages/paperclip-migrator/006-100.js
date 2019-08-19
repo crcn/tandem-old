@@ -26,7 +26,7 @@ module.exports = (module) => {
 
     if (node.attributes) {
       const newAttributes = [];
-      for (const key in node.style) {
+      for (const key in node.attributes) {
         newAttributes.push({
           key,
           value: node.attributes[key]

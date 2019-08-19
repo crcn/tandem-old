@@ -41,20 +41,7 @@
               "label": "Element",
               "is": "div",
               "name": "element",
-              "attributes": [
-                {
-                  "key": "box-sizing"
-                },
-                {
-                  "key": "display"
-                },
-                {
-                  "key": "align-items"
-                },
-                {
-                  "key": "justify-content"
-                }
-              ],
+              "attributes": [],
               "style": [
                 {
                   "key": "box-sizing",
@@ -93,14 +80,7 @@
                   "label": "Element",
                   "is": "div",
                   "name": "element",
-                  "attributes": [
-                    {
-                      "key": "box-sizing"
-                    },
-                    {
-                      "key": "display"
-                    }
-                  ],
+                  "attributes": [],
                   "style": [
                     {
                       "key": "box-sizing",
@@ -117,11 +97,7 @@
                       "is": "f27782548182",
                       "label": "Add icon",
                       "name": "component-instance",
-                      "attributes": [
-                        {
-                          "key": "height"
-                        }
-                      ],
+                      "attributes": [],
                       "style": [
                         {
                           "key": "height",
@@ -208,14 +184,7 @@
           "value": "block"
         }
       ],
-      "attributes": [
-        {
-          "key": "box-sizing"
-        },
-        {
-          "key": "display"
-        }
-      ],
+      "attributes": [],
       "id": "43fa80867000",
       "name": "component",
       "children": [],

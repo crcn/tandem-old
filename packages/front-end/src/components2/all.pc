@@ -17,14 +17,7 @@
           "value": "flex"
         }
       ],
-      "attributes": [
-        {
-          "key": "box-sizing"
-        },
-        {
-          "key": "display"
-        }
-      ],
+      "attributes": [],
       "id": "d5fcef9e502",
       "name": "component",
       "children": [
@@ -33,23 +26,7 @@
           "label": "Element",
           "is": "div",
           "name": "element",
-          "attributes": [
-            {
-              "key": "box-sizing"
-            },
-            {
-              "key": "display"
-            },
-            {
-              "key": "width"
-            },
-            {
-              "key": "height"
-            },
-            {
-              "key": "background-image"
-            }
-          ],
+          "attributes": [],
           "style": [
             {
               "key": "box-sizing",
@@ -78,32 +55,7 @@
               "label": "gutter",
               "is": "div",
               "name": "element",
-              "attributes": [
-                {
-                  "key": "box-sizing"
-                },
-                {
-                  "key": "display"
-                },
-                {
-                  "key": "width"
-                },
-                {
-                  "key": "height"
-                },
-                {
-                  "key": "padding-left"
-                },
-                {
-                  "key": "padding-top"
-                },
-                {
-                  "key": "padding-right"
-                },
-                {
-                  "key": "padding-bottom"
-                }
-              ],
+              "attributes": [],
               "style": [
                 {
                   "key": "box-sizing",
@@ -161,20 +113,7 @@
               "label": "Element",
               "is": "div",
               "name": "element",
-              "attributes": [
-                {
-                  "key": "box-sizing"
-                },
-                {
-                  "key": "display"
-                },
-                {
-                  "key": "width"
-                },
-                {
-                  "key": "background-image"
-                }
-              ],
+              "attributes": [],
               "style": [
                 {
                   "key": "box-sizing",

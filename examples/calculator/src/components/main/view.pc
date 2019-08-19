@@ -33,26 +33,7 @@
           "value": "4px"
         }
       ],
-      "attributes": [
-        {
-          "key": "background-image"
-        },
-        {
-          "key": "border-top-right-radius"
-        },
-        {
-          "key": "border-bottom-left-radius"
-        },
-        {
-          "key": "border-bottom-right-radius"
-        },
-        {
-          "key": "max-width"
-        },
-        {
-          "key": "border-top-left-radius"
-        }
-      ],
+      "attributes": [],
       "id": "fae3cdfe3",
       "name": "component",
       "children": [
@@ -61,29 +42,7 @@
           "label": "Header",
           "is": "div",
           "name": "element",
-          "attributes": [
-            {
-              "key": "box-sizing"
-            },
-            {
-              "key": "display"
-            },
-            {
-              "key": "padding-left"
-            },
-            {
-              "key": "padding-top"
-            },
-            {
-              "key": "padding-right"
-            },
-            {
-              "key": "padding-bottom"
-            },
-            {
-              "key": "text-align"
-            }
-          ],
+          "attributes": [],
           "style": [
             {
               "key": "box-sizing",
@@ -142,14 +101,7 @@
           "label": "Buttons",
           "is": "div",
           "name": "element",
-          "attributes": [
-            {
-              "key": "box-sizing"
-            },
-            {
-              "key": "display"
-            }
-          ],
+          "attributes": [],
           "style": [
             {
               "key": "box-sizing",
@@ -241,11 +193,7 @@
               "is": "fae3cdfe61",
               "label": "divide button",
               "name": "component-instance",
-              "attributes": [
-                {
-                  "key": "border-right"
-                }
-              ],
+              "attributes": [],
               "style": [
                 {
                   "key": "border-right",
@@ -350,14 +298,7 @@
               "is": "fae3cdfe61",
               "label": "multiply button",
               "name": "component-instance",
-              "attributes": [
-                {
-                  "key": "border-right"
-                },
-                {
-                  "key": "border-top"
-                }
-              ],
+              "attributes": [],
               "style": [
                 {
                   "key": "border-right",
@@ -468,11 +409,7 @@
               "is": "fae3cdfe61",
               "label": "minus button",
               "name": "component-instance",
-              "attributes": [
-                {
-                  "key": "border-right"
-                }
-              ],
+              "attributes": [],
               "style": [
                 {
                   "key": "border-right",
@@ -577,11 +514,7 @@
               "is": "fae3cdfe61",
               "label": "add button",
               "name": "component-instance",
-              "attributes": [
-                {
-                  "key": "border-right"
-                }
-              ],
+              "attributes": [],
               "style": [
                 {
                   "key": "border-right",
@@ -611,11 +544,7 @@
               "is": "fae3cdfe61",
               "label": "zero button",
               "name": "component-instance",
-              "attributes": [
-                {
-                  "key": "width"
-                }
-              ],
+              "attributes": [],
               "style": [
                 {
                   "key": "width",
@@ -670,11 +599,7 @@
               "is": "fae3cdfe61",
               "label": "equals button",
               "name": "component-instance",
-              "attributes": [
-                {
-                  "key": "border-right"
-                }
-              ],
+              "attributes": [],
               "style": [
                 {
                   "key": "border-right",
@@ -777,50 +702,7 @@
           "value": "25%"
         }
       ],
-      "attributes": [
-        {
-          "key": "box-sizing"
-        },
-        {
-          "key": "display"
-        },
-        {
-          "key": "padding-left"
-        },
-        {
-          "key": "padding-top"
-        },
-        {
-          "key": "padding-right"
-        },
-        {
-          "key": "padding-bottom"
-        },
-        {
-          "key": "text-align"
-        },
-        {
-          "key": "background-image"
-        },
-        {
-          "key": "border-left"
-        },
-        {
-          "key": "border-top"
-        },
-        {
-          "key": "border-right"
-        },
-        {
-          "key": "border-bottom"
-        },
-        {
-          "key": "cursor"
-        },
-        {
-          "key": "width"
-        }
-      ],
+      "attributes": [],
       "id": "fae3cdfe61",
       "name": "component",
       "children": [
@@ -1049,17 +931,7 @@
       "label": "Preview",
       "is": "div",
       "name": "element",
-      "attributes": [
-        {
-          "key": "box-sizing"
-        },
-        {
-          "key": "display"
-        },
-        {
-          "key": "background-image"
-        }
-      ],
+      "attributes": [],
       "style": [
         {
           "key": "box-sizing",
@@ -1080,20 +952,7 @@
           "is": "fae3cdfe3",
           "label": "Application",
           "name": "component-instance",
-          "attributes": [
-            {
-              "key": "margin-left"
-            },
-            {
-              "key": "margin-right"
-            },
-            {
-              "key": "margin-bottom"
-            },
-            {
-              "key": "margin-top"
-            }
-          ],
+          "attributes": [],
           "style": [
             {
               "key": "margin-left",

@@ -41,32 +41,7 @@
           "value": "relative"
         }
       ],
-      "attributes": [
-        {
-          "key": "min-width"
-        },
-        {
-          "key": "min-height"
-        },
-        {
-          "key": "background"
-        },
-        {
-          "key": "border-left"
-        },
-        {
-          "key": "border-top"
-        },
-        {
-          "key": "border-right"
-        },
-        {
-          "key": "border-bottom"
-        },
-        {
-          "key": "position"
-        }
-      ],
+      "attributes": [],
       "id": "5673c5c2846",
       "name": "component",
       "children": [
@@ -196,26 +171,7 @@
           "label": "Content",
           "is": "div",
           "name": "element",
-          "attributes": [
-            {
-              "key": "box-sizing"
-            },
-            {
-              "key": "display"
-            },
-            {
-              "key": "padding-left"
-            },
-            {
-              "key": "padding-top"
-            },
-            {
-              "key": "padding-right"
-            },
-            {
-              "key": "padding-bottom"
-            }
-          ],
+          "attributes": [],
           "style": [
             {
               "key": "box-sizing",
@@ -400,17 +356,7 @@
           "value": "pointer"
         }
       ],
-      "attributes": [
-        {
-          "key": "box-sizing"
-        },
-        {
-          "key": "display"
-        },
-        {
-          "key": "cursor"
-        }
-      ],
+      "attributes": [],
       "id": "5673c5c21327",
       "name": "component",
       "children": [
@@ -431,14 +377,7 @@
                   "label": "button outer",
                   "is": "div",
                   "name": "element",
-                  "attributes": [
-                    {
-                      "key": "box-sizing"
-                    },
-                    {
-                      "key": "display"
-                    }
-                  ],
+                  "attributes": [],
                   "style": [
                     {
                       "key": "box-sizing",
@@ -524,26 +463,7 @@
       "label": "Preview",
       "is": "div",
       "name": "element",
-      "attributes": [
-        {
-          "key": "box-sizing"
-        },
-        {
-          "key": "display"
-        },
-        {
-          "key": "padding-left"
-        },
-        {
-          "key": "padding-top"
-        },
-        {
-          "key": "padding-right"
-        },
-        {
-          "key": "padding-bottom"
-        }
-      ],
+      "attributes": [],
       "style": [
         {
           "key": "box-sizing",
@@ -576,11 +496,7 @@
           "is": "5673c5c2846",
           "label": "Side Panel",
           "name": "component-instance",
-          "attributes": [
-            {
-              "key": "margin-bottom"
-            }
-          ],
+          "attributes": [],
           "style": [
             {
               "key": "margin-bottom",

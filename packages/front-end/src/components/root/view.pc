@@ -17,14 +17,7 @@
           "value": "block"
         }
       ],
-      "attributes": [
-        {
-          "key": "box-sizing"
-        },
-        {
-          "key": "display"
-        }
-      ],
+      "attributes": [],
       "id": "8d443eb51250574",
       "name": "component",
       "children": [
@@ -33,14 +26,7 @@
           "label": "",
           "is": "div",
           "name": "element",
-          "attributes": [
-            {
-              "key": "box-sizing"
-            },
-            {
-              "key": "display"
-            }
-          ],
+          "attributes": [],
           "style": [
             {
               "key": "box-sizing",

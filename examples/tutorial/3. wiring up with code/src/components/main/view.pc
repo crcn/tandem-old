@@ -17,29 +17,7 @@
           "label": "Center",
           "is": "div",
           "name": "element",
-          "attributes": [
-            {
-              "key": "box-sizing"
-            },
-            {
-              "key": "display"
-            },
-            {
-              "key": "max-width"
-            },
-            {
-              "key": "margin-left"
-            },
-            {
-              "key": "margin-right"
-            },
-            {
-              "key": "margin-bottom"
-            },
-            {
-              "key": "margin-top"
-            }
-          ],
+          "attributes": [],
           "style": [
             {
               "key": "box-sizing",
@@ -102,14 +80,7 @@
               "label": "controls",
               "is": "div",
               "name": "element",
-              "attributes": [
-                {
-                  "key": "box-sizing"
-                },
-                {
-                  "key": "display"
-                }
-              ],
+              "attributes": [],
               "style": [
                 {
                   "key": "box-sizing",
@@ -126,38 +97,7 @@
                   "label": "add new item input",
                   "is": "input",
                   "name": "element",
-                  "attributes": [
-                    {
-                      "key": "box-sizing"
-                    },
-                    {
-                      "key": "display"
-                    },
-                    {
-                      "key": "border-top-left-radius"
-                    },
-                    {
-                      "key": "border-top-right-radius"
-                    },
-                    {
-                      "key": "border-bottom-left-radius"
-                    },
-                    {
-                      "key": "border-bottom-right-radius"
-                    },
-                    {
-                      "key": "border-left"
-                    },
-                    {
-                      "key": "border-top"
-                    },
-                    {
-                      "key": "border-right"
-                    },
-                    {
-                      "key": "border-bottom"
-                    }
-                  ],
+                  "attributes": [],
                   "style": [
                     {
                       "key": "box-sizing",
@@ -208,41 +148,7 @@
                   "label": "add todo button",
                   "is": "div",
                   "name": "element",
-                  "attributes": [
-                    {
-                      "key": "box-sizing"
-                    },
-                    {
-                      "key": "display"
-                    },
-                    {
-                      "key": "background-image"
-                    },
-                    {
-                      "key": "padding-left"
-                    },
-                    {
-                      "key": "padding-top"
-                    },
-                    {
-                      "key": "padding-right"
-                    },
-                    {
-                      "key": "padding-bottom"
-                    },
-                    {
-                      "key": "border-top-left-radius"
-                    },
-                    {
-                      "key": "border-top-right-radius"
-                    },
-                    {
-                      "key": "border-bottom-left-radius"
-                    },
-                    {
-                      "key": "border-bottom-right-radius"
-                    }
-                  ],
+                  "attributes": [],
                   "style": [
                     {
                       "key": "box-sizing",
@@ -319,17 +225,7 @@
               "label": "items",
               "is": "div",
               "name": "element",
-              "attributes": [
-                {
-                  "key": "box-sizing"
-                },
-                {
-                  "key": "display"
-                },
-                {
-                  "key": "margin-top"
-                }
-              ],
+              "attributes": [],
               "style": [
                 {
                   "key": "box-sizing",
@@ -474,26 +370,7 @@
           "value": "6px"
         }
       ],
-      "attributes": [
-        {
-          "key": "box-sizing"
-        },
-        {
-          "key": "display"
-        },
-        {
-          "key": "margin-left"
-        },
-        {
-          "key": "margin-top"
-        },
-        {
-          "key": "margin-right"
-        },
-        {
-          "key": "margin-bottom"
-        }
-      ],
+      "attributes": [],
       "id": "df32c254261",
       "name": "component",
       "children": [

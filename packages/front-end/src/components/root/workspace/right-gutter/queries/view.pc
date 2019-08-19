@@ -17,14 +17,7 @@
           "value": "block"
         }
       ],
-      "attributes": [
-        {
-          "key": "box-sizing"
-        },
-        {
-          "key": "display"
-        }
-      ],
+      "attributes": [],
       "id": "66811b5c421",
       "name": "component",
       "children": [
@@ -56,20 +49,7 @@
                   "label": "Element",
                   "is": "div",
                   "name": "element",
-                  "attributes": [
-                    {
-                      "key": "box-sizing"
-                    },
-                    {
-                      "key": "display"
-                    },
-                    {
-                      "key": "justify-content"
-                    },
-                    {
-                      "key": "align-items"
-                    }
-                  ],
+                  "attributes": [],
                   "style": [
                     {
                       "key": "box-sizing",
@@ -108,17 +88,7 @@
                       "label": "controls",
                       "is": "div",
                       "name": "element",
-                      "attributes": [
-                        {
-                          "key": "box-sizing"
-                        },
-                        {
-                          "key": "display"
-                        },
-                        {
-                          "key": "cursor"
-                        }
-                      ],
+                      "attributes": [],
                       "style": [
                         {
                           "key": "box-sizing",
@@ -151,11 +121,7 @@
                                   "is": "f27782548182",
                                   "label": "add button",
                                   "name": "component-instance",
-                                  "attributes": [
-                                    {
-                                      "key": "height"
-                                    }
-                                  ],
+                                  "attributes": [],
                                   "style": [
                                     {
                                       "key": "height",
@@ -435,29 +401,7 @@
           "value": "12px"
         }
       ],
-      "attributes": [
-        {
-          "key": "box-sizing"
-        },
-        {
-          "key": "display"
-        },
-        {
-          "key": "align-items"
-        },
-        {
-          "key": "padding-top"
-        },
-        {
-          "key": "padding-right"
-        },
-        {
-          "key": "padding-bottom"
-        },
-        {
-          "key": "padding-left"
-        }
-      ],
+      "attributes": [],
       "id": "f97289c6592",
       "name": "component",
       "children": [
@@ -466,20 +410,7 @@
           "is": "5673c5c21327",
           "label": "edit button",
           "name": "component-instance",
-          "attributes": [
-            {
-              "key": "display"
-            },
-            {
-              "key": "color"
-            },
-            {
-              "key": "height"
-            },
-            {
-              "key": "margin-right"
-            }
-          ],
+          "attributes": [],
           "style": [
             {
               "key": "display",
@@ -508,14 +439,7 @@
                   "is": "9f7a77048356",
                   "label": "Pencil Icon 2",
                   "name": "component-instance",
-                  "attributes": [
-                    {
-                      "key": "display"
-                    },
-                    {
-                      "key": "height"
-                    }
-                  ],
+                  "attributes": [],
                   "style": [
                     {
                       "key": "display",
@@ -583,7 +507,12 @@
           "is": "7149f8199122",
           "label": "label input",
           "name": "component-instance",
-          "attributes": [],
+          "attributes": [
+            {
+              "key": "placeholder",
+              "value": "Name"
+            }
+          ],
           "style": [],
           "children": [],
           "metadata": {
@@ -639,26 +568,7 @@
           "value": "0px"
         }
       ],
-      "attributes": [
-        {
-          "key": "box-sizing"
-        },
-        {
-          "key": "display"
-        },
-        {
-          "key": "padding-left"
-        },
-        {
-          "key": "padding-top"
-        },
-        {
-          "key": "padding-right"
-        },
-        {
-          "key": "padding-bottom"
-        }
-      ],
+      "attributes": [],
       "id": "f97289c61969",
       "name": "component",
       "children": [
@@ -817,26 +727,7 @@
           "value": "0px"
         }
       ],
-      "attributes": [
-        {
-          "key": "box-sizing"
-        },
-        {
-          "key": "display"
-        },
-        {
-          "key": "padding-left"
-        },
-        {
-          "key": "padding-top"
-        },
-        {
-          "key": "padding-right"
-        },
-        {
-          "key": "padding-bottom"
-        }
-      ],
+      "attributes": [],
       "id": "f97289c62059",
       "name": "component",
       "children": [
@@ -1063,26 +954,7 @@
           "value": "12px"
         }
       ],
-      "attributes": [
-        {
-          "key": "box-sizing"
-        },
-        {
-          "key": "display"
-        },
-        {
-          "key": "padding-left"
-        },
-        {
-          "key": "padding-top"
-        },
-        {
-          "key": "padding-right"
-        },
-        {
-          "key": "padding-bottom"
-        }
-      ],
+      "attributes": [],
       "id": "9bda7c6d850",
       "name": "component",
       "children": [
@@ -1159,11 +1031,7 @@
           "is": "f97289c61969",
           "label": "Media Query Options",
           "name": "component-instance",
-          "attributes": [
-            {
-              "key": "display"
-            }
-          ],
+          "attributes": [],
           "style": [
             {
               "key": "display",
@@ -1186,11 +1054,7 @@
           "is": "f97289c62059",
           "label": "Variable Query Options",
           "name": "component-instance",
-          "attributes": [
-            {
-              "key": "display"
-            }
-          ],
+          "attributes": [],
           "style": [
             {
               "key": "display",

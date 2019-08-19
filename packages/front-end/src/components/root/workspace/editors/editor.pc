@@ -33,26 +33,7 @@
           "value": "1px solid var(--51588fd610365)"
         }
       ],
-      "attributes": [
-        {
-          "key": "box-sizing"
-        },
-        {
-          "key": "display"
-        },
-        {
-          "key": "flex-direction"
-        },
-        {
-          "key": "width"
-        },
-        {
-          "key": "height"
-        },
-        {
-          "key": "border-bottom"
-        }
-      ],
+      "attributes": [],
       "id": "483373f987277",
       "name": "component",
       "children": [
@@ -61,23 +42,7 @@
           "variant": {},
           "is": "ab406a6b770940",
           "name": "component-instance",
-          "attributes": [
-            {
-              "key": "display"
-            },
-            {
-              "key": "position"
-            },
-            {
-              "key": "flex-grow"
-            },
-            {
-              "key": "height"
-            },
-            {
-              "key": "flex-shrink"
-            }
-          ],
+          "attributes": [],
           "style": [
             {
               "key": "display",
@@ -182,20 +147,7 @@
           "label": "Content",
           "is": "div",
           "name": "element",
-          "attributes": [
-            {
-              "key": "box-sizing"
-            },
-            {
-              "key": "background"
-            },
-            {
-              "key": "width"
-            },
-            {
-              "key": "height"
-            }
-          ],
+          "attributes": [],
           "style": [
             {
               "key": "box-sizing",
@@ -229,14 +181,7 @@
           "is": "174f96bb76034",
           "label": "Editor Footer",
           "name": "component-instance",
-          "attributes": [
-            {
-              "key": "display"
-            },
-            {
-              "key": "flex-shrink"
-            }
-          ],
+          "attributes": [],
           "style": [
             {
               "key": "display",

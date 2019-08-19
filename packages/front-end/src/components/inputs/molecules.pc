@@ -17,14 +17,7 @@
           "value": "1"
         }
       ],
-      "attributes": [
-        {
-          "key": "width"
-        },
-        {
-          "key": "flex"
-        }
-      ],
+      "attributes": [],
       "id": "7149f8192509",
       "name": "component",
       "children": [
@@ -33,11 +26,7 @@
           "label": "Element",
           "is": "div",
           "name": "element",
-          "attributes": [
-            {
-              "key": "margin-bottom"
-            }
-          ],
+          "attributes": [],
           "style": [
             {
               "key": "margin-bottom",
@@ -84,11 +73,7 @@
           "label": "Input",
           "is": "div",
           "name": "element",
-          "attributes": [
-            {
-              "key": "margin-bottom"
-            }
-          ],
+          "attributes": [],
           "style": [
             {
               "key": "margin-bottom",
@@ -175,23 +160,7 @@
           "value": "relative"
         }
       ],
-      "attributes": [
-        {
-          "key": "box-sizing"
-        },
-        {
-          "key": "display"
-        },
-        {
-          "key": "flex-direction"
-        },
-        {
-          "key": "filter"
-        },
-        {
-          "key": "position"
-        }
-      ],
+      "attributes": [],
       "id": "936f2927707",
       "name": "component",
       "children": [
@@ -200,23 +169,7 @@
           "label": "arrow container",
           "is": "div",
           "name": "element",
-          "attributes": [
-            {
-              "key": "box-sizing"
-            },
-            {
-              "key": "display"
-            },
-            {
-              "key": "width"
-            },
-            {
-              "key": "height"
-            },
-            {
-              "key": "flex-shrink"
-            }
-          ],
+          "attributes": [],
           "style": [
             {
               "key": "box-sizing",
@@ -245,41 +198,7 @@
               "label": "arrow",
               "is": "div",
               "name": "element",
-              "attributes": [
-                {
-                  "key": "display"
-                },
-                {
-                  "key": "border-top"
-                },
-                {
-                  "key": "border-right"
-                },
-                {
-                  "key": "border-bottom"
-                },
-                {
-                  "key": "border-left"
-                },
-                {
-                  "key": "box-sizing"
-                },
-                {
-                  "key": "left"
-                },
-                {
-                  "key": "position"
-                },
-                {
-                  "key": "filter"
-                },
-                {
-                  "key": "transform"
-                },
-                {
-                  "key": "top"
-                }
-              ],
+              "attributes": [],
               "style": [
                 {
                   "key": "display",
@@ -337,47 +256,7 @@
           "label": "Card",
           "is": "div",
           "name": "element",
-          "attributes": [
-            {
-              "key": "background-image"
-            },
-            {
-              "key": "display"
-            },
-            {
-              "key": "width"
-            },
-            {
-              "key": "height"
-            },
-            {
-              "key": "border-left"
-            },
-            {
-              "key": "border-top"
-            },
-            {
-              "key": "border-right"
-            },
-            {
-              "key": "border-bottom"
-            },
-            {
-              "key": "box-sizing"
-            },
-            {
-              "key": "border-top-left-radius"
-            },
-            {
-              "key": "border-top-right-radius"
-            },
-            {
-              "key": "border-bottom-left-radius"
-            },
-            {
-              "key": "border-bottom-right-radius"
-            }
-          ],
+          "attributes": [],
           "style": [
             {
               "key": "background-image",
@@ -438,35 +317,7 @@
               "label": "Content Wrapper",
               "is": "div",
               "name": "element",
-              "attributes": [
-                {
-                  "key": "box-sizing"
-                },
-                {
-                  "key": "display"
-                },
-                {
-                  "key": "padding-left"
-                },
-                {
-                  "key": "padding-top"
-                },
-                {
-                  "key": "padding-right"
-                },
-                {
-                  "key": "padding-bottom"
-                },
-                {
-                  "key": "width"
-                },
-                {
-                  "key": "height"
-                },
-                {
-                  "key": "position"
-                }
-              ],
+              "attributes": [],
               "style": [
                 {
                   "key": "box-sizing",
@@ -593,14 +444,7 @@
       "label": "Element",
       "is": "div",
       "name": "element",
-      "attributes": [
-        {
-          "key": "box-sizing"
-        },
-        {
-          "key": "display"
-        }
-      ],
+      "attributes": [],
       "style": [
         {
           "key": "box-sizing",
@@ -643,11 +487,7 @@
               "is": "936f2927707",
               "label": "Tooltip",
               "name": "component-instance",
-              "attributes": [
-                {
-                  "key": "position"
-                }
-              ],
+              "attributes": [],
               "style": [
                 {
                   "key": "position",

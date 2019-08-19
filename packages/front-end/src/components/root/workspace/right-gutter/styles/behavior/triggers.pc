@@ -21,20 +21,7 @@
               "label": "Element",
               "is": "div",
               "name": "element",
-              "attributes": [
-                {
-                  "key": "box-sizing"
-                },
-                {
-                  "key": "display"
-                },
-                {
-                  "key": "justify-content"
-                },
-                {
-                  "key": "align-items"
-                }
-              ],
+              "attributes": [],
               "style": [
                 {
                   "key": "box-sizing",
@@ -73,17 +60,7 @@
                   "label": "Element",
                   "is": "div",
                   "name": "element",
-                  "attributes": [
-                    {
-                      "key": "box-sizing"
-                    },
-                    {
-                      "key": "display"
-                    },
-                    {
-                      "key": "cursor"
-                    }
-                  ],
+                  "attributes": [],
                   "style": [
                     {
                       "key": "box-sizing",
@@ -104,11 +81,7 @@
                       "is": "d30286e83385",
                       "label": "remove trigger button",
                       "name": "component-instance",
-                      "attributes": [
-                        {
-                          "key": "display"
-                        }
-                      ],
+                      "attributes": [],
                       "style": [
                         {
                           "key": "display",
@@ -131,14 +104,7 @@
                       "is": "f27782548182",
                       "label": "add trigger button",
                       "name": "component-instance",
-                      "attributes": [
-                        {
-                          "key": "height"
-                        },
-                        {
-                          "key": "display"
-                        }
-                      ],
+                      "attributes": [],
                       "style": [
                         {
                           "key": "height",
@@ -306,20 +272,7 @@
               "label": "footer",
               "is": "div",
               "name": "element",
-              "attributes": [
-                {
-                  "key": "box-sizing"
-                },
-                {
-                  "key": "display"
-                },
-                {
-                  "key": "margin-right"
-                },
-                {
-                  "key": "margin-left"
-                }
-              ],
+              "attributes": [],
               "style": [
                 {
                   "key": "box-sizing",
@@ -367,26 +320,7 @@
                   "label": "Element",
                   "is": "div",
                   "name": "element",
-                  "attributes": [
-                    {
-                      "key": "box-sizing"
-                    },
-                    {
-                      "key": "display"
-                    },
-                    {
-                      "key": "margin-right"
-                    },
-                    {
-                      "key": "margin-left"
-                    },
-                    {
-                      "key": "width"
-                    },
-                    {
-                      "key": "flex-shrink"
-                    }
-                  ],
+                  "attributes": [],
                   "style": [
                     {
                       "key": "box-sizing",
@@ -663,32 +597,7 @@
           "value": "relative"
         }
       ],
-      "attributes": [
-        {
-          "key": "box-sizing"
-        },
-        {
-          "key": "display"
-        },
-        {
-          "key": "align-items"
-        },
-        {
-          "key": "padding-top"
-        },
-        {
-          "key": "padding-right"
-        },
-        {
-          "key": "padding-bottom"
-        },
-        {
-          "key": "padding-left"
-        },
-        {
-          "key": "position"
-        }
-      ],
+      "attributes": [],
       "id": "26f623457441",
       "name": "component",
       "children": [
@@ -697,29 +606,7 @@
           "label": "background",
           "is": "div",
           "name": "element",
-          "attributes": [
-            {
-              "key": "box-sizing"
-            },
-            {
-              "key": "display"
-            },
-            {
-              "key": "background"
-            },
-            {
-              "key": "width"
-            },
-            {
-              "key": "height"
-            },
-            {
-              "key": "position"
-            },
-            {
-              "key": "left"
-            }
-          ],
+          "attributes": [],
           "style": [
             {
               "key": "box-sizing",

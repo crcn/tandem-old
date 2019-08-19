@@ -21,17 +21,7 @@
           "value": "12px"
         }
       ],
-      "attributes": [
-        {
-          "key": "box-sizing"
-        },
-        {
-          "key": "display"
-        },
-        {
-          "key": "margin-right"
-        }
-      ],
+      "attributes": [],
       "id": "5b90e54e459",
       "styleMixins": {
         "5b90e54e102": {

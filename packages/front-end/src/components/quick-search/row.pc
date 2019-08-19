@@ -9,20 +9,7 @@
       "is": "808486bb13",
       "label": "Search Result",
       "name": "component-instance",
-      "attributes": [
-        {
-          "key": "padding-top"
-        },
-        {
-          "key": "padding-right"
-        },
-        {
-          "key": "padding-bottom"
-        },
-        {
-          "key": "padding-left"
-        }
-      ],
+      "attributes": [],
       "style": [
         {
           "key": "padding-top",
@@ -121,47 +108,7 @@
           "value": "12px"
         }
       ],
-      "attributes": [
-        {
-          "key": "width"
-        },
-        {
-          "key": "boxSizing"
-        },
-        {
-          "key": "marginTop"
-        },
-        {
-          "key": "user-select"
-        },
-        {
-          "key": "cursor"
-        },
-        {
-          "key": "vertical-align"
-        },
-        {
-          "key": "display"
-        },
-        {
-          "key": "padding-top"
-        },
-        {
-          "key": "padding-right"
-        },
-        {
-          "key": "padding-bottom"
-        },
-        {
-          "key": "align-items"
-        },
-        {
-          "key": "position"
-        },
-        {
-          "key": "padding-left"
-        }
-      ],
+      "attributes": [],
       "label": "Search Result",
       "children": [
         {
@@ -183,17 +130,7 @@
             }
           ],
           "container": "container5ab7d6b5",
-          "attributes": [
-            {
-              "key": "display"
-            },
-            {
-              "key": "margin-right"
-            },
-            {
-              "key": "user-select"
-            }
-          ],
+          "attributes": [],
           "is": "div",
           "children": [
             {
@@ -228,23 +165,7 @@
                   ],
                   "children": [],
                   "metadata": {},
-                  "attributes": [
-                    {
-                      "key": "display"
-                    },
-                    {
-                      "key": "position"
-                    },
-                    {
-                      "key": "height"
-                    },
-                    {
-                      "key": "vertical-align"
-                    },
-                    {
-                      "key": "color"
-                    }
-                  ],
+                  "attributes": [],
                   "styleMixins": {
                     "dc3b39eb1275": {
                       "priority": 0
@@ -282,20 +203,7 @@
             }
           ],
           "container": "container5ab7d6b5",
-          "attributes": [
-            {
-              "key": "display"
-            },
-            {
-              "key": "flex"
-            },
-            {
-              "key": "user-select"
-            },
-            {
-              "key": "width"
-            }
-          ],
+          "attributes": [],
           "is": "div",
           "children": [
             {
@@ -322,17 +230,7 @@
                   ],
                   "children": [],
                   "metadata": {},
-                  "attributes": [
-                    {
-                      "key": "display"
-                    },
-                    {
-                      "key": "width"
-                    },
-                    {
-                      "key": "color"
-                    }
-                  ],
+                  "attributes": [],
                   "styleMixins": {
                     "dc3b39eb1275": {
                       "priority": 0
@@ -369,26 +267,7 @@
           "is": "711f2f581678",
           "label": "split tab button",
           "name": "component-instance",
-          "attributes": [
-            {
-              "key": "display"
-            },
-            {
-              "key": "height"
-            },
-            {
-              "key": "flex-grow"
-            },
-            {
-              "key": "flex-shrink"
-            },
-            {
-              "key": "width"
-            },
-            {
-              "key": "color"
-            }
-          ],
+          "attributes": [],
           "style": [
             {
               "key": "display",

@@ -21,17 +21,7 @@
           "value": "1px solid var(--d8f6340b1442)"
         }
       ],
-      "attributes": [
-        {
-          "key": "display"
-        },
-        {
-          "key": "flex-direction"
-        },
-        {
-          "key": "border-bottom"
-        }
-      ],
+      "attributes": [],
       "id": "b6c162d113",
       "name": "component",
       "children": [
@@ -39,50 +29,7 @@
           "id": "b6c162d132",
           "is": "div",
           "name": "element",
-          "attributes": [
-            {
-              "key": "width"
-            },
-            {
-              "key": "padding-bottom"
-            },
-            {
-              "key": "box-sizing"
-            },
-            {
-              "key": "text-transform"
-            },
-            {
-              "key": "color"
-            },
-            {
-              "key": "font-size"
-            },
-            {
-              "key": "font-weight"
-            },
-            {
-              "key": "display"
-            },
-            {
-              "key": "pointer"
-            },
-            {
-              "key": "user-select"
-            },
-            {
-              "key": "letter-spacing"
-            },
-            {
-              "key": "padding-left"
-            },
-            {
-              "key": "padding-top"
-            },
-            {
-              "key": "padding-right"
-            }
-          ],
+          "attributes": [],
           "style": [
             {
               "key": "width",
@@ -193,38 +140,7 @@
           "id": "b6c162d140",
           "is": "div",
           "name": "element",
-          "attributes": [
-            {
-              "key": "height"
-            },
-            {
-              "key": "width"
-            },
-            {
-              "key": "padding-top"
-            },
-            {
-              "key": "box-sizing"
-            },
-            {
-              "key": "flex"
-            },
-            {
-              "key": "position"
-            },
-            {
-              "key": "color"
-            },
-            {
-              "key": "padding-left"
-            },
-            {
-              "key": "padding-right"
-            },
-            {
-              "key": "padding-bottom"
-            }
-          ],
+          "attributes": [],
           "style": [
             {
               "key": "height",

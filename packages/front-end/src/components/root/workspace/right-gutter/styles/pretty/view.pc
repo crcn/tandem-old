@@ -21,17 +21,7 @@
           "value": "var(--bc891e755312)"
         }
       ],
-      "attributes": [
-        {
-          "key": "flex-direction"
-        },
-        {
-          "key": "color"
-        },
-        {
-          "key": "background"
-        }
-      ],
+      "attributes": [],
       "id": "2399b467",
       "name": "component",
       "children": [

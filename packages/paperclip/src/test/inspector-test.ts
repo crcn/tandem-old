@@ -58,8 +58,8 @@ describe(__filename + "#", () => {
   const case3 = () => {
     return [
       "Can insert a new slot into a component",
-      createPCModule([createPCComponent(null, "div", {}, {})]),
-      createPCModule([createPCComponent(null, "div", {}, {}, [createPCSlot()])])
+      createPCModule([createPCComponent(null, "div", [], [])]),
+      createPCModule([createPCComponent(null, "div", [], [], [createPCSlot()])])
     ];
   };
 
@@ -68,7 +68,7 @@ describe(__filename + "#", () => {
 
     const slot = createPCSlot([slotChild]);
 
-    const component = createPCComponent(null, "div", {}, {}, [slot]);
+    const component = createPCComponent(null, "div", [], [], [slot]);
 
     const module = createPCModule([component]);
 
@@ -84,7 +84,7 @@ describe(__filename + "#", () => {
 
     const slot = createPCSlot([slotChild]);
 
-    const component = createPCComponent(null, "div", {}, {}, [slot]);
+    const component = createPCComponent(null, "div", [], [], [slot]);
     const instance = createPCComponentInstance(component.id);
     const instance2 = createPCComponentInstance(component.id);
 

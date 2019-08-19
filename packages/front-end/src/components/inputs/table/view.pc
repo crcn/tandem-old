@@ -49,38 +49,7 @@
           "value": "16px"
         }
       ],
-      "attributes": [
-        {
-          "key": "box-sizing"
-        },
-        {
-          "key": "flex-grow"
-        },
-        {
-          "key": "text-align"
-        },
-        {
-          "key": "border-right"
-        },
-        {
-          "key": "padding-top"
-        },
-        {
-          "key": "padding-bottom"
-        },
-        {
-          "key": "display"
-        },
-        {
-          "key": "width"
-        },
-        {
-          "key": "padding-left"
-        },
-        {
-          "key": "padding-right"
-        }
-      ],
+      "attributes": [],
       "id": "c389e38219",
       "name": "component",
       "children": [
@@ -206,14 +175,7 @@
           "value": "flex"
         }
       ],
-      "attributes": [
-        {
-          "key": "box-sizing"
-        },
-        {
-          "key": "display"
-        }
-      ],
+      "attributes": [],
       "id": "c389e38216",
       "name": "component",
       "children": [
@@ -224,20 +186,7 @@
               "id": "c389e38226",
               "is": "c389e38219",
               "name": "component-instance",
-              "attributes": [
-                {
-                  "key": "flex-grow"
-                },
-                {
-                  "key": "flex-shrink"
-                },
-                {
-                  "key": "display"
-                },
-                {
-                  "key": "font-family"
-                }
-              ],
+              "attributes": [],
               "style": [
                 {
                   "key": "flex-grow",
@@ -275,11 +224,7 @@
               "id": "c389e38224",
               "is": "c389e38219",
               "name": "component-instance",
-              "attributes": [
-                {
-                  "key": "flex-shrink"
-                }
-              ],
+              "attributes": [],
               "style": [
                 {
                   "key": "flex-shrink",
@@ -403,23 +348,7 @@
           "value": "var(--24ce1e4d482)"
         }
       ],
-      "attributes": [
-        {
-          "key": "box-sizing"
-        },
-        {
-          "key": "display"
-        },
-        {
-          "key": "flex-direction"
-        },
-        {
-          "key": "font-size"
-        },
-        {
-          "key": "color"
-        }
-      ],
+      "attributes": [],
       "id": "c389e3829",
       "name": "component",
       "children": [
@@ -512,11 +441,7 @@
               "id": "cc878eb5324099",
               "is": "c389e38216",
               "name": "component-instance",
-              "attributes": [
-                {
-                  "key": "display"
-                }
-              ],
+              "attributes": [],
               "style": [
                 {
                   "key": "display",
@@ -563,11 +488,7 @@
               "id": "cc878eb5337197",
               "is": "c389e38216",
               "name": "component-instance",
-              "attributes": [
-                {
-                  "key": "display"
-                }
-              ],
+              "attributes": [],
               "style": [
                 {
                   "key": "display",
@@ -611,11 +532,7 @@
               "id": "cc878eb5311065",
               "is": "c389e38216",
               "name": "component-instance",
-              "attributes": [
-                {
-                  "key": "display"
-                }
-              ],
+              "attributes": [],
               "style": [
                 {
                   "key": "display",
@@ -662,11 +579,7 @@
               "id": "4cc76c5b9",
               "is": "c389e38216",
               "name": "component-instance",
-              "attributes": [
-                {
-                  "key": "display"
-                }
-              ],
+              "attributes": [],
               "style": [
                 {
                   "key": "display",
@@ -793,14 +706,7 @@
       "label": "Element",
       "is": "div",
       "name": "element",
-      "attributes": [
-        {
-          "key": "box-sizing"
-        },
-        {
-          "key": "display"
-        }
-      ],
+      "attributes": [],
       "style": [
         {
           "key": "box-sizing",

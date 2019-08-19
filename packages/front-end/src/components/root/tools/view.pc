@@ -21,17 +21,7 @@
           "value": "pointer"
         }
       ],
-      "attributes": [
-        {
-          "key": "box-sizing"
-        },
-        {
-          "key": "display"
-        },
-        {
-          "key": "cursor"
-        }
-      ],
+      "attributes": [],
       "id": "fe72344f18313",
       "name": "component",
       "children": [
@@ -52,32 +42,7 @@
                   "label": "build button",
                   "is": "div",
                   "name": "element",
-                  "attributes": [
-                    {
-                      "key": "box-sizing"
-                    },
-                    {
-                      "key": "display"
-                    },
-                    {
-                      "key": "padding-left"
-                    },
-                    {
-                      "key": "padding-top"
-                    },
-                    {
-                      "key": "padding-right"
-                    },
-                    {
-                      "key": "padding-bottom"
-                    },
-                    {
-                      "key": "align-items"
-                    },
-                    {
-                      "key": "background-image"
-                    }
-                  ],
+                  "attributes": [],
                   "style": [
                     {
                       "key": "box-sizing",
@@ -118,20 +83,7 @@
                       "is": "1fb4e79017899",
                       "label": "Play Icon",
                       "name": "component-instance",
-                      "attributes": [
-                        {
-                          "key": "display"
-                        },
-                        {
-                          "key": "height"
-                        },
-                        {
-                          "key": "color"
-                        },
-                        {
-                          "key": "margin-right"
-                        }
-                      ],
+                      "attributes": [],
                       "style": [
                         {
                           "key": "display",
@@ -166,17 +118,7 @@
                       "is": "1fb4e79017906",
                       "label": "Pause Icon",
                       "name": "component-instance",
-                      "attributes": [
-                        {
-                          "key": "display"
-                        },
-                        {
-                          "key": "height"
-                        },
-                        {
-                          "key": "color"
-                        }
-                      ],
+                      "attributes": [],
                       "style": [
                         {
                           "key": "display",
@@ -250,14 +192,7 @@
                   "is": "936f2927707",
                   "label": "Tooltip",
                   "name": "component-instance",
-                  "attributes": [
-                    {
-                      "key": "width"
-                    },
-                    {
-                      "key": "padding-right"
-                    }
-                  ],
+                  "attributes": [],
                   "style": [
                     {
                       "key": "width",
@@ -444,14 +379,7 @@
           "value": "block"
         }
       ],
-      "attributes": [
-        {
-          "key": "box-sizing"
-        },
-        {
-          "key": "display"
-        }
-      ],
+      "attributes": [],
       "id": "d8b0f2c217756",
       "name": "component",
       "children": [
@@ -463,14 +391,7 @@
               "label": "Element",
               "is": "def97aeb17794",
               "name": "component-instance",
-              "attributes": [
-                {
-                  "key": "box-sizing"
-                },
-                {
-                  "key": "display"
-                }
-              ],
+              "attributes": [],
               "style": [
                 {
                   "key": "box-sizing",
@@ -502,14 +423,7 @@
               "label": "Element",
               "is": "def97aeb17794",
               "name": "component-instance",
-              "attributes": [
-                {
-                  "key": "box-sizing"
-                },
-                {
-                  "key": "display"
-                }
-              ],
+              "attributes": [],
               "style": [
                 {
                   "key": "box-sizing",
@@ -544,14 +458,7 @@
               "label": "Element",
               "is": "def97aeb17794",
               "name": "component-instance",
-              "attributes": [
-                {
-                  "key": "box-sizing"
-                },
-                {
-                  "key": "display"
-                }
-              ],
+              "attributes": [],
               "style": [
                 {
                   "key": "box-sizing",
@@ -629,23 +536,7 @@
           "value": "pointer"
         }
       ],
-      "attributes": [
-        {
-          "key": "padding-left"
-        },
-        {
-          "key": "padding-top"
-        },
-        {
-          "key": "padding-right"
-        },
-        {
-          "key": "padding-bottom"
-        },
-        {
-          "key": "cursor"
-        }
-      ],
+      "attributes": [],
       "id": "def97aeb17794",
       "styleMixins": {
         "dc3b39eb1275": {

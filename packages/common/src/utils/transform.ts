@@ -6,6 +6,7 @@ import {
   Translate,
   shiftBounds
 } from "../state";
+import { KeyValue } from "./types";
 
 export function translateAbsoluteToRelativePoint(event, relativeElement) {
   const zoom = relativeElement;
@@ -21,7 +22,9 @@ export function translateAbsoluteToRelativePoint(event, relativeElement) {
   return { left: rx, top: ry };
 }
 
-export function calculateCSSMeasurments(style): any {
+export function calculateCSSMeasurments(
+  style: KeyValue<string> | CSSStyleDeclaration
+): any {
   const calculated = {};
   for (let key in style) {
     if (hasMeasurement(key)) {
@@ -109,22 +112,6 @@ export function calculateUntransformedBoundingRect(node: HTMLElement) {
 
 function hasMeasurement(key) {
   return /left|top|right|bottom|width|height|padding|margin|border/.test(key);
-}
-
-function roundMeasurements(style) {
-  const roundedStyle = {};
-  for (let key in style) {
-    const measurement: string = (roundedStyle[key] = style[key]);
-    if (hasMeasurement(key)) {
-      const value = measurement.match(/^(-?[\d\.]+)/)[1];
-      const unit = measurement.match(/([a-z]+)$/)[1];
-
-      // ceiling is necessary here for zoomed in elements
-      roundedStyle[key] = Math.round(Number(value)) + unit;
-    }
-  }
-
-  return roundedStyle;
 }
 
 export const getRelativeElementPosition = (element: HTMLElement) => {

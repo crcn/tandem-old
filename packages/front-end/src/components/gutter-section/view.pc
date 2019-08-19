@@ -68,17 +68,7 @@
           "value": "column"
         }
       ],
-      "attributes": [
-        {
-          "key": "box-sizing"
-        },
-        {
-          "key": "display"
-        },
-        {
-          "key": "flex-direction"
-        }
-      ],
+      "attributes": [],
       "id": "1b3152825244",
       "name": "component",
       "children": [
@@ -87,44 +77,7 @@
           "label": "Header",
           "is": "div",
           "name": "element",
-          "attributes": [
-            {
-              "key": "box-sizing"
-            },
-            {
-              "key": "display"
-            },
-            {
-              "key": "padding-left"
-            },
-            {
-              "key": "padding-right"
-            },
-            {
-              "key": "padding-bottom"
-            },
-            {
-              "key": "padding-top"
-            },
-            {
-              "key": "justify-content"
-            },
-            {
-              "key": "background-image"
-            },
-            {
-              "key": "text-transform"
-            },
-            {
-              "key": "font-size"
-            },
-            {
-              "key": "font-weight"
-            },
-            {
-              "key": "border-bottom"
-            }
-          ],
+          "attributes": [],
           "style": [
             {
               "key": "box-sizing",
@@ -203,20 +156,7 @@
               "label": "Element",
               "is": "div",
               "name": "element",
-              "attributes": [
-                {
-                  "key": "box-sizing"
-                },
-                {
-                  "key": "display"
-                },
-                {
-                  "key": "width"
-                },
-                {
-                  "key": "align-items"
-                }
-              ],
+              "attributes": [],
               "style": [
                 {
                   "key": "box-sizing",
@@ -244,17 +184,7 @@
                       "label": "Element",
                       "is": "div",
                       "name": "element",
-                      "attributes": [
-                        {
-                          "key": "box-sizing"
-                        },
-                        {
-                          "key": "display"
-                        },
-                        {
-                          "key": "opacity"
-                        }
-                      ],
+                      "attributes": [],
                       "style": [
                         {
                           "key": "box-sizing",
@@ -275,17 +205,7 @@
                           "is": "b10ad8711683",
                           "label": "Gear Icon",
                           "name": "component-instance",
-                          "attributes": [
-                            {
-                              "key": "display"
-                            },
-                            {
-                              "key": "width"
-                            },
-                            {
-                              "key": "height"
-                            }
-                          ],
+                          "attributes": [],
                           "style": [
                             {
                               "key": "display",
@@ -338,17 +258,7 @@
           "label": "Content",
           "is": "div",
           "name": "element",
-          "attributes": [
-            {
-              "key": "box-sizing"
-            },
-            {
-              "key": "display"
-            },
-            {
-              "key": "width"
-            }
-          ],
+          "attributes": [],
           "style": [
             {
               "key": "box-sizing",

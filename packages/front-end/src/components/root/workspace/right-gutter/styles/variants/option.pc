@@ -52,23 +52,7 @@
           "value": "6px"
         }
       ],
-      "attributes": [
-        {
-          "key": "box-sizing"
-        },
-        {
-          "key": "padding-left"
-        },
-        {
-          "key": "padding-top"
-        },
-        {
-          "key": "padding-right"
-        },
-        {
-          "key": "padding-bottom"
-        }
-      ],
+      "attributes": [],
       "id": "1d51efba14",
       "name": "component",
       "children": [
@@ -77,17 +61,7 @@
           "label": "Element",
           "is": "div",
           "name": "element",
-          "attributes": [
-            {
-              "key": "box-sizing"
-            },
-            {
-              "key": "display"
-            },
-            {
-              "key": "align-items"
-            }
-          ],
+          "attributes": [],
           "style": [
             {
               "key": "box-sizing",
@@ -110,11 +84,7 @@
               },
               "is": "6f30576e8",
               "name": "component-instance",
-              "attributes": [
-                {
-                  "key": "margin-right"
-                }
-              ],
+              "attributes": [],
               "style": [
                 {
                   "key": "margin-right",
@@ -149,26 +119,7 @@
               "label": "Input",
               "is": "div",
               "name": "element",
-              "attributes": [
-                {
-                  "key": "box-sizing"
-                },
-                {
-                  "key": "border-radius"
-                },
-                {
-                  "key": "display"
-                },
-                {
-                  "key": "flex-grow"
-                },
-                {
-                  "key": "justify-content"
-                },
-                {
-                  "key": "align-items"
-                }
-              ],
+              "attributes": [],
               "style": [
                 {
                   "key": "box-sizing",
@@ -226,14 +177,7 @@
               "is": "98d3a3ab395",
               "label": "Bolt icon",
               "name": "component-instance",
-              "attributes": [
-                {
-                  "key": "display"
-                },
-                {
-                  "key": "color"
-                }
-              ],
+              "attributes": [],
               "style": [
                 {
                   "key": "display",
@@ -260,23 +204,7 @@
               "variant": [],
               "is": "82eac94a20",
               "name": "component-instance",
-              "attributes": [
-                {
-                  "key": "display"
-                },
-                {
-                  "key": "height"
-                },
-                {
-                  "key": "position"
-                },
-                {
-                  "key": "top"
-                },
-                {
-                  "key": "cursor"
-                }
-              ],
+              "attributes": [],
               "style": [
                 {
                   "key": "display",

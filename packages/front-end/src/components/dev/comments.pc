@@ -21,23 +21,7 @@
               "label": "Element",
               "is": "ul",
               "name": "element",
-              "attributes": [
-                {
-                  "key": "box-sizing"
-                },
-                {
-                  "key": "margin-left"
-                },
-                {
-                  "key": "margin-top"
-                },
-                {
-                  "key": "margin-right"
-                },
-                {
-                  "key": "margin-bottom"
-                }
-              ],
+              "attributes": [],
               "style": [
                 {
                   "key": "box-sizing",
@@ -66,11 +50,7 @@
                   "label": "Element",
                   "is": "li",
                   "name": "element",
-                  "attributes": [
-                    {
-                      "key": "box-sizing"
-                    }
-                  ],
+                  "attributes": [],
                   "style": [
                     {
                       "key": "box-sizing",
@@ -148,29 +128,7 @@
           "value": "column"
         }
       ],
-      "attributes": [
-        {
-          "key": "background"
-        },
-        {
-          "key": "overflow"
-        },
-        {
-          "key": "padding"
-        },
-        {
-          "key": "font-family"
-        },
-        {
-          "key": "font-size"
-        },
-        {
-          "key": "display"
-        },
-        {
-          "key": "flex-direction"
-        }
-      ],
+      "attributes": [],
       "id": "97a34b151010442",
       "name": "component",
       "children": [
@@ -179,29 +137,7 @@
           "label": "Element",
           "is": "div",
           "name": "element",
-          "attributes": [
-            {
-              "key": "background"
-            },
-            {
-              "key": "width"
-            },
-            {
-              "key": "height"
-            },
-            {
-              "key": "position"
-            },
-            {
-              "key": "right"
-            },
-            {
-              "key": "transform"
-            },
-            {
-              "key": "top"
-            }
-          ],
+          "attributes": [],
           "style": [
             {
               "key": "background",
@@ -240,17 +176,7 @@
           "label": "Element",
           "is": "div",
           "name": "element",
-          "attributes": [
-            {
-              "key": "height"
-            },
-            {
-              "key": "width"
-            },
-            {
-              "key": "margin-top"
-            }
-          ],
+          "attributes": [],
           "style": [
             {
               "key": "height",

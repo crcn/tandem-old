@@ -41,32 +41,7 @@
           "value": "relative"
         }
       ],
-      "attributes": [
-        {
-          "key": "box-sizing"
-        },
-        {
-          "key": "display"
-        },
-        {
-          "key": "padding-left"
-        },
-        {
-          "key": "padding-top"
-        },
-        {
-          "key": "padding-right"
-        },
-        {
-          "key": "padding-bottom"
-        },
-        {
-          "key": "align-items"
-        },
-        {
-          "key": "position"
-        }
-      ],
+      "attributes": [],
       "id": "3fb9d47e20",
       "name": "component",
       "children": [
@@ -75,23 +50,7 @@
           "label": "inputs",
           "is": "div",
           "name": "element",
-          "attributes": [
-            {
-              "key": "box-sizing"
-            },
-            {
-              "key": "display"
-            },
-            {
-              "key": "left"
-            },
-            {
-              "key": "top"
-            },
-            {
-              "key": "align-items"
-            }
-          ],
+          "attributes": [],
           "style": [
             {
               "key": "box-sizing",
@@ -120,32 +79,7 @@
               "is": "d30286e83385",
               "label": "remove button",
               "name": "component-instance",
-              "attributes": [
-                {
-                  "key": "display"
-                },
-                {
-                  "key": "height"
-                },
-                {
-                  "key": "flex-shrink"
-                },
-                {
-                  "key": "color"
-                },
-                {
-                  "key": "margin-right"
-                },
-                {
-                  "key": "opacity"
-                },
-                {
-                  "key": "margin-left"
-                },
-                {
-                  "key": "cursor"
-                }
-              ],
+              "attributes": [],
               "style": [
                 {
                   "key": "display",
@@ -195,23 +129,7 @@
               "id": "3fb9d47e21",
               "is": "d227ff68826768",
               "name": "component-instance",
-              "attributes": [
-                {
-                  "key": "display"
-                },
-                {
-                  "key": "width"
-                },
-                {
-                  "key": "height"
-                },
-                {
-                  "key": "flex-shrink"
-                },
-                {
-                  "key": "margin-right"
-                }
-              ],
+              "attributes": [],
               "style": [
                 {
                   "key": "display",
@@ -308,11 +226,7 @@
               "id": "3fb9d47e23",
               "is": "7149f8199122",
               "name": "component-instance",
-              "attributes": [
-                {
-                  "key": "margin-right"
-                }
-              ],
+              "attributes": [],
               "style": [
                 {
                   "key": "margin-right",
@@ -334,11 +248,7 @@
               "id": "3fb9d47e24",
               "is": "7149f8199122",
               "name": "component-instance",
-              "attributes": [
-                {
-                  "key": "margin-right"
-                }
-              ],
+              "attributes": [],
               "style": [
                 {
                   "key": "margin-right",
@@ -360,11 +270,7 @@
               "id": "3fb9d47e25",
               "is": "7149f8199122",
               "name": "component-instance",
-              "attributes": [
-                {
-                  "key": "margin-right"
-                }
-              ],
+              "attributes": [],
               "style": [
                 {
                   "key": "margin-right",

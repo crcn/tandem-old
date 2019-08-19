@@ -17,14 +17,7 @@
           "value": "column"
         }
       ],
-      "attributes": [
-        {
-          "key": "display"
-        },
-        {
-          "key": "flex-direction"
-        }
-      ],
+      "attributes": [],
       "id": "ab9eb3a110017",
       "name": "component",
       "children": [
@@ -67,14 +60,7 @@
               "variant": {},
               "is": "7149f8192509",
               "name": "component-instance",
-              "attributes": [
-                {
-                  "key": "width"
-                },
-                {
-                  "key": "flex"
-                }
-              ],
+              "attributes": [],
               "style": [
                 {
                   "key": "width",

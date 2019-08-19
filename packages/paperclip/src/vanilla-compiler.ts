@@ -509,7 +509,11 @@ const translateStaticVariants = (
   return buffer + `};\n`;
 };
 
-const mapStyles = (style: any, sourceUri: string, rootDirectory: string) => {
+const mapStyles = (
+  style: KeyValue<string>,
+  sourceUri: string,
+  rootDirectory: string
+) => {
   let newStyle;
   for (const key in style) {
     let value = style[key];

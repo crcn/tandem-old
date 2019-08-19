@@ -13,6 +13,7 @@ import {
   getParentTreeNode,
   appendChildNode,
   cloneTreeNode,
+  keyValuePairToHash,
   pointIntersectsBounds,
   mergeBounds,
   replaceNestedNode,
@@ -1765,7 +1766,7 @@ export const persistCSSProperty = <TState extends PCEditorState>(
       return {
         ...sourceNode,
         style: omitNull({
-          ...sourceNode.style,
+          ...keyValuePairToHash(sourceNode.style),
           [name]: value
         })
       } as PCVisibleNode;
@@ -1820,7 +1821,7 @@ export const persistAttribute = <TState extends PCEditorState>(
       ({
         ...sourceNode,
         attributes: omitNull({
-          ...sourceNode.attributes,
+          ...keyValuePairToHash(sourceNode.attributes),
           [name]: value
         })
       } as PCVisibleNode)

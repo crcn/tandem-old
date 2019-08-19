@@ -48,35 +48,7 @@
               },
               "is": "d65d17fd4015",
               "name": "component-instance",
-              "attributes": [
-                {
-                  "key": "width"
-                },
-                {
-                  "key": "height"
-                },
-                {
-                  "key": "border-radius"
-                },
-                {
-                  "key": "box-sizing"
-                },
-                {
-                  "key": "resize"
-                },
-                {
-                  "key": "border-left"
-                },
-                {
-                  "key": "border-top"
-                },
-                {
-                  "key": "border-right"
-                },
-                {
-                  "key": "border-bottom"
-                }
-              ],
+              "attributes": [],
               "style": [
                 {
                   "key": "width",

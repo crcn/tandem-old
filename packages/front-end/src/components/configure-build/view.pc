@@ -41,32 +41,7 @@
           "value": "0px"
         }
       ],
-      "attributes": [
-        {
-          "key": "box-sizing"
-        },
-        {
-          "key": "display"
-        },
-        {
-          "key": "position"
-        },
-        {
-          "key": "top"
-        },
-        {
-          "key": "width"
-        },
-        {
-          "key": "height"
-        },
-        {
-          "key": "z-index"
-        },
-        {
-          "key": "left"
-        }
-      ],
+      "attributes": [],
       "id": "18a9cfc32689",
       "name": "component",
       "children": [
@@ -75,26 +50,7 @@
           "label": "background",
           "is": "div",
           "name": "element",
-          "attributes": [
-            {
-              "key": "box-sizing"
-            },
-            {
-              "key": "display"
-            },
-            {
-              "key": "width"
-            },
-            {
-              "key": "height"
-            },
-            {
-              "key": "position"
-            },
-            {
-              "key": "background-image"
-            }
-          ],
+          "attributes": [],
           "style": [
             {
               "key": "box-sizing",
@@ -129,68 +85,7 @@
           "label": "Element",
           "is": "div",
           "name": "element",
-          "attributes": [
-            {
-              "key": "box-sizing"
-            },
-            {
-              "key": "display"
-            },
-            {
-              "key": "width"
-            },
-            {
-              "key": "background-image"
-            },
-            {
-              "key": "border-top-left-radius"
-            },
-            {
-              "key": "border-top-right-radius"
-            },
-            {
-              "key": "border-bottom-left-radius"
-            },
-            {
-              "key": "border-bottom-right-radius"
-            },
-            {
-              "key": "left"
-            },
-            {
-              "key": "top"
-            },
-            {
-              "key": "transform"
-            },
-            {
-              "key": "position"
-            },
-            {
-              "key": "padding-left"
-            },
-            {
-              "key": "padding-top"
-            },
-            {
-              "key": "padding-right"
-            },
-            {
-              "key": "padding-bottom"
-            },
-            {
-              "key": "border-left"
-            },
-            {
-              "key": "border-top"
-            },
-            {
-              "key": "border-right"
-            },
-            {
-              "key": "border-bottom"
-            }
-          ],
+          "attributes": [],
           "style": [
             {
               "key": "box-sizing",
@@ -279,20 +174,7 @@
               "label": "header",
               "is": "div",
               "name": "element",
-              "attributes": [
-                {
-                  "key": "box-sizing"
-                },
-                {
-                  "key": "display"
-                },
-                {
-                  "key": "align-items"
-                },
-                {
-                  "key": "justify-content"
-                }
-              ],
+              "attributes": [],
               "style": [
                 {
                   "key": "box-sizing",
@@ -357,17 +239,7 @@
               "label": "Content",
               "is": "div",
               "name": "element",
-              "attributes": [
-                {
-                  "key": "box-sizing"
-                },
-                {
-                  "key": "display"
-                },
-                {
-                  "key": "padding-top"
-                }
-              ],
+              "attributes": [],
               "style": [
                 {
                   "key": "box-sizing",
@@ -411,7 +283,12 @@
                           "is": "7149f8199122",
                           "label": "build command input",
                           "name": "component-instance",
-                          "attributes": [],
+                          "attributes": [
+                            {
+                              "key": "placeholder",
+                              "value": "webpack --watch"
+                            }
+                          ],
                           "style": [],
                           "children": [],
                           "metadata": {
@@ -467,7 +344,12 @@
                           "is": "7149f8199122",
                           "label": "open command input",
                           "name": "component-instance",
-                          "attributes": [],
+                          "attributes": [
+                            {
+                              "key": "placeholder",
+                              "value": "open http://localhost:8080/"
+                            }
+                          ],
                           "style": [],
                           "children": [],
                           "metadata": {
@@ -521,14 +403,7 @@
       "label": "Element",
       "is": "div",
       "name": "element",
-      "attributes": [
-        {
-          "key": "box-sizing"
-        },
-        {
-          "key": "display"
-        }
-      ],
+      "attributes": [],
       "style": [
         {
           "key": "box-sizing",

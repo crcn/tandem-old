@@ -21,17 +21,7 @@
           "value": "300px"
         }
       ],
-      "attributes": [
-        {
-          "key": "box-sizing"
-        },
-        {
-          "key": "display"
-        },
-        {
-          "key": "min-width"
-        }
-      ],
+      "attributes": [],
       "id": "8c12bd173408",
       "name": "component",
       "children": [
@@ -113,14 +103,7 @@
           "value": "block"
         }
       ],
-      "attributes": [
-        {
-          "key": "box-sizing"
-        },
-        {
-          "key": "display"
-        }
-      ],
+      "attributes": [],
       "id": "1b315282200756",
       "name": "component",
       "children": [
@@ -152,14 +135,7 @@
                   "is": "f27782548182",
                   "label": "Add icon",
                   "name": "component-instance",
-                  "attributes": [
-                    {
-                      "key": "height"
-                    },
-                    {
-                      "key": "width"
-                    }
-                  ],
+                  "attributes": [],
                   "style": [
                     {
                       "key": "height",
@@ -387,14 +363,7 @@
           "value": "block"
         }
       ],
-      "attributes": [
-        {
-          "key": "box-sizing"
-        },
-        {
-          "key": "display"
-        }
-      ],
+      "attributes": [],
       "id": "1b315282200844",
       "name": "component",
       "children": [
@@ -426,11 +395,7 @@
                   "is": "f27782548182",
                   "label": "Add icon",
                   "name": "component-instance",
-                  "attributes": [
-                    {
-                      "key": "height"
-                    }
-                  ],
+                  "attributes": [],
                   "style": [
                     {
                       "key": "height",
@@ -479,14 +444,7 @@
       "label": "Element",
       "is": "div",
       "name": "element",
-      "attributes": [
-        {
-          "key": "box-sizing"
-        },
-        {
-          "key": "display"
-        }
-      ],
+      "attributes": [],
       "style": [
         {
           "key": "box-sizing",
@@ -548,14 +506,7 @@
           "label": "Element",
           "is": "div",
           "name": "element",
-          "attributes": [
-            {
-              "key": "box-sizing"
-            },
-            {
-              "key": "display"
-            }
-          ],
+          "attributes": [],
           "style": [
             {
               "key": "box-sizing",
@@ -596,11 +547,7 @@
                   "is": "f27782548182",
                   "label": "Add icon",
                   "name": "component-instance",
-                  "attributes": [
-                    {
-                      "key": "height"
-                    }
-                  ],
+                  "attributes": [],
                   "style": [
                     {
                       "key": "height",

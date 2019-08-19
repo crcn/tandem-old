@@ -57,44 +57,7 @@
           "value": "7px"
         }
       ],
-      "attributes": [
-        {
-          "key": "background"
-        },
-        {
-          "key": "box-sizing"
-        },
-        {
-          "key": "width"
-        },
-        {
-          "key": "text-align"
-        },
-        {
-          "key": "position"
-        },
-        {
-          "key": "height"
-        },
-        {
-          "key": "border-right"
-        },
-        {
-          "key": "color"
-        },
-        {
-          "key": "padding-left"
-        },
-        {
-          "key": "padding-top"
-        },
-        {
-          "key": "padding-right"
-        },
-        {
-          "key": "padding-bottom"
-        }
-      ],
+      "attributes": [],
       "id": "6489655782851",
       "name": "component",
       "children": [
@@ -107,14 +70,7 @@
               "variant": {},
               "is": "38fc2a472503",
               "name": "component-instance",
-              "attributes": [
-                {
-                  "key": "height"
-                },
-                {
-                  "key": "color"
-                }
-              ],
+              "attributes": [],
               "style": [
                 {
                   "key": "height",

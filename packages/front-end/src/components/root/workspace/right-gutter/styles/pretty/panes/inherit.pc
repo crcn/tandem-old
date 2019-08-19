@@ -13,11 +13,7 @@
           "value": "var(--bc891e755312)"
         }
       ],
-      "attributes": [
-        {
-          "key": "background"
-        }
-      ],
+      "attributes": [],
       "id": "9e4a45489771",
       "name": "component",
       "children": [
@@ -94,23 +90,7 @@
               "id": "d19a9272052",
               "is": "5f48853331665",
               "name": "component-instance",
-              "attributes": [
-                {
-                  "key": "margin-left"
-                },
-                {
-                  "key": "margin-top"
-                },
-                {
-                  "key": "margin-right"
-                },
-                {
-                  "key": "margin-bottom"
-                },
-                {
-                  "key": "display"
-                }
-              ],
+              "attributes": [],
               "style": [
                 {
                   "key": "margin-left",
@@ -151,14 +131,7 @@
                   "variant": {},
                   "is": "9e4a454812260",
                   "name": "component-instance",
-                  "attributes": [
-                    {
-                      "key": "margin-bottom"
-                    },
-                    {
-                      "key": "padding-top"
-                    }
-                  ],
+                  "attributes": [],
                   "style": [
                     {
                       "key": "margin-bottom",
@@ -246,11 +219,7 @@
                   "variant": {},
                   "is": "9e4a454812260",
                   "name": "component-instance",
-                  "attributes": [
-                    {
-                      "key": "margin-bottom"
-                    }
-                  ],
+                  "attributes": [],
                   "style": [
                     {
                       "key": "margin-bottom",
@@ -301,17 +270,7 @@
               "label": "Element",
               "is": "div",
               "name": "element",
-              "attributes": [
-                {
-                  "key": "box-sizing"
-                },
-                {
-                  "key": "display"
-                },
-                {
-                  "key": "justify-content"
-                }
-              ],
+              "attributes": [],
               "style": [
                 {
                   "key": "box-sizing",
@@ -346,17 +305,7 @@
                   "label": "Element",
                   "is": "div",
                   "name": "element",
-                  "attributes": [
-                    {
-                      "key": "box-sizing"
-                    },
-                    {
-                      "key": "display"
-                    },
-                    {
-                      "key": "align-items"
-                    }
-                  ],
+                  "attributes": [],
                   "style": [
                     {
                       "key": "box-sizing",
@@ -377,20 +326,7 @@
                       "is": "d30286e83385",
                       "label": "Remove Button",
                       "name": "component-instance",
-                      "attributes": [
-                        {
-                          "key": "display"
-                        },
-                        {
-                          "key": "position"
-                        },
-                        {
-                          "key": "top"
-                        },
-                        {
-                          "key": "height"
-                        }
-                      ],
+                      "attributes": [],
                       "style": [
                         {
                           "key": "display",
@@ -424,23 +360,7 @@
                       "id": "a4d4c3d72",
                       "is": "f27782548182",
                       "name": "component-instance",
-                      "attributes": [
-                        {
-                          "key": "display"
-                        },
-                        {
-                          "key": "height"
-                        },
-                        {
-                          "key": "cursor"
-                        },
-                        {
-                          "key": "position"
-                        },
-                        {
-                          "key": "top"
-                        }
-                      ],
+                      "attributes": [],
                       "style": [
                         {
                           "key": "display",

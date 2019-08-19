@@ -25,20 +25,7 @@
           "value": "100%"
         }
       ],
-      "attributes": [
-        {
-          "key": "box-sizing"
-        },
-        {
-          "key": "flex-direction"
-        },
-        {
-          "key": "display"
-        },
-        {
-          "key": "min-width"
-        }
-      ],
+      "attributes": [],
       "id": "fe256b416",
       "name": "component",
       "children": [
@@ -47,14 +34,7 @@
           "label": "Content",
           "is": "div",
           "name": "element",
-          "attributes": [
-            {
-              "key": "box-sizing"
-            },
-            {
-              "key": "display"
-            }
-          ],
+          "attributes": [],
           "style": [
             {
               "key": "box-sizing",
@@ -70,32 +50,7 @@
               "id": "fe256b423",
               "is": "d3bf183b20",
               "name": "component-instance",
-              "attributes": [
-                {
-                  "key": "box-sizing"
-                },
-                {
-                  "key": "display"
-                },
-                {
-                  "key": "padding-left"
-                },
-                {
-                  "key": "padding-top"
-                },
-                {
-                  "key": "padding-right"
-                },
-                {
-                  "key": "padding-bottom"
-                },
-                {
-                  "key": "align-items"
-                },
-                {
-                  "key": "justify-content"
-                }
-              ],
+              "attributes": [],
               "style": [
                 {
                   "key": "box-sizing",
@@ -188,32 +143,7 @@
               "id": "d3bf183b22",
               "is": "d3bf183b20",
               "name": "component-instance",
-              "attributes": [
-                {
-                  "key": "box-sizing"
-                },
-                {
-                  "key": "display"
-                },
-                {
-                  "key": "padding-left"
-                },
-                {
-                  "key": "padding-top"
-                },
-                {
-                  "key": "padding-right"
-                },
-                {
-                  "key": "padding-bottom"
-                },
-                {
-                  "key": "align-items"
-                },
-                {
-                  "key": "justify-content"
-                }
-              ],
+              "attributes": [],
               "style": [
                 {
                   "key": "box-sizing",
@@ -292,11 +222,7 @@
               "id": "fe256b42",
               "is": "d3bf183b20",
               "name": "component-instance",
-              "attributes": [
-                {
-                  "key": "padding-left"
-                }
-              ],
+              "attributes": [],
               "style": [
                 {
                   "key": "padding-left",
@@ -368,11 +294,7 @@
               "id": "d3bf183b43",
               "is": "d3bf183b20",
               "name": "component-instance",
-              "attributes": [
-                {
-                  "key": "padding-left"
-                }
-              ],
+              "attributes": [],
               "style": [
                 {
                   "key": "padding-left",
@@ -455,32 +377,7 @@
               "id": "d3bf183b52",
               "is": "d3bf183b20",
               "name": "component-instance",
-              "attributes": [
-                {
-                  "key": "box-sizing"
-                },
-                {
-                  "key": "display"
-                },
-                {
-                  "key": "padding-left"
-                },
-                {
-                  "key": "padding-top"
-                },
-                {
-                  "key": "padding-right"
-                },
-                {
-                  "key": "padding-bottom"
-                },
-                {
-                  "key": "align-items"
-                },
-                {
-                  "key": "justify-content"
-                }
-              ],
+              "attributes": [],
               "style": [
                 {
                   "key": "box-sizing",
@@ -570,11 +467,7 @@
               "id": "d3bf183b50",
               "is": "d3bf183b20",
               "name": "component-instance",
-              "attributes": [
-                {
-                  "key": "padding-left"
-                }
-              ],
+              "attributes": [],
               "style": [
                 {
                   "key": "padding-left",
@@ -626,11 +519,7 @@
               "id": "d3bf183b54",
               "is": "d3bf183b20",
               "name": "component-instance",
-              "attributes": [
-                {
-                  "key": "padding-left"
-                }
-              ],
+              "attributes": [],
               "style": [
                 {
                   "key": "padding-left",

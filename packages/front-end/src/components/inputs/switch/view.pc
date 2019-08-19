@@ -37,14 +37,7 @@
           "value": "pointer"
         }
       ],
-      "attributes": [
-        {
-          "key": "box-sizing"
-        },
-        {
-          "key": "cursor"
-        }
-      ],
+      "attributes": [],
       "id": "6f30576e8",
       "name": "component",
       "children": [
@@ -53,26 +46,7 @@
           "label": "track",
           "is": "div",
           "name": "element",
-          "attributes": [
-            {
-              "key": "box-sizing"
-            },
-            {
-              "key": "width"
-            },
-            {
-              "key": "height"
-            },
-            {
-              "key": "border-radius"
-            },
-            {
-              "key": "background"
-            },
-            {
-              "key": "position"
-            }
-          ],
+          "attributes": [],
           "style": [
             {
               "key": "box-sizing",
@@ -105,32 +79,7 @@
               "label": "dot",
               "is": "div",
               "name": "element",
-              "attributes": [
-                {
-                  "key": "box-sizing"
-                },
-                {
-                  "key": "width"
-                },
-                {
-                  "key": "height"
-                },
-                {
-                  "key": "background"
-                },
-                {
-                  "key": "border-radius"
-                },
-                {
-                  "key": "position"
-                },
-                {
-                  "key": "opacity"
-                },
-                {
-                  "key": "top"
-                }
-              ],
+              "attributes": [],
               "style": [
                 {
                   "key": "box-sizing",

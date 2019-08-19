@@ -15,7 +15,8 @@
       ],
       "attributes": [
         {
-          "key": "position"
+          "key": "placeholder",
+          "value": "text"
         }
       ],
       "id": "6cb86618699",

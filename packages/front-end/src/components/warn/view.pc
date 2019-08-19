@@ -21,17 +21,7 @@
           "value": 0.459
         }
       ],
-      "attributes": [
-        {
-          "key": "box-sizing"
-        },
-        {
-          "key": "display"
-        },
-        {
-          "key": "opacity"
-        }
-      ],
+      "attributes": [],
       "id": "5f48853331665",
       "name": "component",
       "children": [
@@ -40,47 +30,7 @@
           "label": "Element",
           "is": "div",
           "name": "element",
-          "attributes": [
-            {
-              "key": "box-sizing"
-            },
-            {
-              "key": "display"
-            },
-            {
-              "key": "color"
-            },
-            {
-              "key": "background"
-            },
-            {
-              "key": "padding-left"
-            },
-            {
-              "key": "padding-top"
-            },
-            {
-              "key": "padding-right"
-            },
-            {
-              "key": "padding-bottom"
-            },
-            {
-              "key": "border-bottom-left-radius"
-            },
-            {
-              "key": "border-top-left-radius"
-            },
-            {
-              "key": "border-top-right-radius"
-            },
-            {
-              "key": "border-bottom-right-radius"
-            },
-            {
-              "key": "border"
-            }
-          ],
+          "attributes": [],
           "style": [
             {
               "key": "box-sizing",

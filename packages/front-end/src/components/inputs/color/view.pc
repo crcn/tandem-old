@@ -13,11 +13,7 @@
           "value": "relative"
         }
       ],
-      "attributes": [
-        {
-          "key": "position"
-        }
-      ],
+      "attributes": [],
       "id": "d227ff68826768",
       "name": "component",
       "children": [
@@ -26,11 +22,7 @@
           "variant": {},
           "is": "9b7b527f175442",
           "name": "component-instance",
-          "attributes": [
-            {
-              "key": "position"
-            }
-          ],
+          "attributes": [],
           "style": [
             {
               "key": "position",
@@ -62,32 +54,7 @@
                   "label": "button",
                   "is": "div",
                   "name": "element",
-                  "attributes": [
-                    {
-                      "key": "padding"
-                    },
-                    {
-                      "key": "border-radius"
-                    },
-                    {
-                      "key": "box-sizing"
-                    },
-                    {
-                      "key": "background"
-                    },
-                    {
-                      "key": "width"
-                    },
-                    {
-                      "key": "height"
-                    },
-                    {
-                      "key": "cursor"
-                    },
-                    {
-                      "key": "display"
-                    }
-                  ],
+                  "attributes": [],
                   "style": [
                     {
                       "key": "padding",
@@ -193,23 +160,7 @@
           "label": "popdown",
           "is": "div",
           "name": "element",
-          "attributes": [
-            {
-              "key": "position"
-            },
-            {
-              "key": "top"
-            },
-            {
-              "key": "right"
-            },
-            {
-              "key": "z-index"
-            },
-            {
-              "key": "display"
-            }
-          ],
+          "attributes": [],
           "style": [
             {
               "key": "position",
@@ -269,17 +220,7 @@
           "variant": {},
           "is": "d227ff68826768",
           "name": "component-instance",
-          "attributes": [
-            {
-              "key": "width"
-            },
-            {
-              "key": "top"
-            },
-            {
-              "key": "left"
-            }
-          ],
+          "attributes": [],
           "style": [
             {
               "key": "width",

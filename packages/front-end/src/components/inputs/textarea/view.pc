@@ -41,32 +41,7 @@
           "value": "0px none rgba(1, 0, 1, 0)"
         }
       ],
-      "attributes": [
-        {
-          "key": "width"
-        },
-        {
-          "key": "height"
-        },
-        {
-          "key": "border-radius"
-        },
-        {
-          "key": "box-sizing"
-        },
-        {
-          "key": "border-left"
-        },
-        {
-          "key": "border-top"
-        },
-        {
-          "key": "border-right"
-        },
-        {
-          "key": "border-bottom"
-        }
-      ],
+      "attributes": [],
       "id": "d65d17fd4015",
       "name": "component",
       "children": [

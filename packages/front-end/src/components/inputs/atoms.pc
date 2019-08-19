@@ -17,14 +17,7 @@
           "value": "center"
         }
       ],
-      "attributes": [
-        {
-          "key": "display"
-        },
-        {
-          "key": "align-items"
-        }
-      ],
+      "attributes": [],
       "id": "2657ec412855",
       "name": "component",
       "children": [],
@@ -51,14 +44,7 @@
           "value": "border-box"
         }
       ],
-      "attributes": [
-        {
-          "key": "margin-right"
-        },
-        {
-          "key": "box-sizing"
-        }
-      ],
+      "attributes": [],
       "id": "bcda9fb551452",
       "name": "component",
       "children": [],

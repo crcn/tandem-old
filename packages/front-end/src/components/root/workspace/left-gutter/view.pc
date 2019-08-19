@@ -41,32 +41,7 @@
           "value": "var(--bc891e755312)"
         }
       ],
-      "attributes": [
-        {
-          "key": "border-right"
-        },
-        {
-          "key": "flex-direction"
-        },
-        {
-          "key": "height"
-        },
-        {
-          "key": "align-items"
-        },
-        {
-          "key": "justify-content"
-        },
-        {
-          "key": "position"
-        },
-        {
-          "key": "display"
-        },
-        {
-          "key": "background"
-        }
-      ],
+      "attributes": [],
       "id": "317401b1484197",
       "name": "component",
       "children": [
@@ -75,35 +50,7 @@
           "variant": {},
           "is": "b34e7ef42482727",
           "name": "component-instance",
-          "attributes": [
-            {
-              "key": "display"
-            },
-            {
-              "key": "flex-direction"
-            },
-            {
-              "key": "font-size"
-            },
-            {
-              "key": "min-height"
-            },
-            {
-              "key": "height"
-            },
-            {
-              "key": "position"
-            },
-            {
-              "key": "max-height"
-            },
-            {
-              "key": "flex-shrink"
-            },
-            {
-              "key": "flex-grow"
-            }
-          ],
+          "attributes": [],
           "style": [
             {
               "key": "display",
@@ -238,23 +185,7 @@
           "id": "5a14767c294089",
           "is": "5a14767c291836",
           "name": "component-instance",
-          "attributes": [
-            {
-              "key": "flex-grow"
-            },
-            {
-              "key": "height"
-            },
-            {
-              "key": "flex-shrink"
-            },
-            {
-              "key": "display"
-            },
-            {
-              "key": "flex-direction"
-            }
-          ],
+          "attributes": [],
           "style": [
             {
               "key": "flex-grow",
@@ -311,35 +242,7 @@
           "label": "dragger",
           "is": "div",
           "name": "element",
-          "attributes": [
-            {
-              "key": "box-sizing"
-            },
-            {
-              "key": "display"
-            },
-            {
-              "key": "background"
-            },
-            {
-              "key": "position"
-            },
-            {
-              "key": "height"
-            },
-            {
-              "key": "right"
-            },
-            {
-              "key": "width"
-            },
-            {
-              "key": "cursor"
-            },
-            {
-              "key": "opacity"
-            }
-          ],
+          "attributes": [],
           "style": [
             {
               "key": "box-sizing",

@@ -373,7 +373,7 @@ export const createPaperclipVirtualDOMtranslator = (
         computed[styleMixinId] ||
         (computed[styleMixinId] = {
           ...getInheritedStyle(styleMixin.styleMixins, context, computed),
-          ...styleMixin.style
+          ...keyValuePairToHash(styleMixin.style)
         });
       return { ...style, ...compStyle };
     }, {});

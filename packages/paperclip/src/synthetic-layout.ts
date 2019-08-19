@@ -14,7 +14,8 @@ import {
   Bounds,
   shiftBounds,
   moveBounds,
-  getNestedTreeNodeById
+  getNestedTreeNodeById,
+  kvpGetValue
 } from "tandem-common";
 import { Frame } from "./edit";
 

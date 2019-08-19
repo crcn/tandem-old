@@ -61,47 +61,7 @@
           "value": "100vh"
         }
       ],
-      "attributes": [
-        {
-          "key": "box-sizing"
-        },
-        {
-          "key": "display"
-        },
-        {
-          "key": "flex-direction"
-        },
-        {
-          "key": "font-family"
-        },
-        {
-          "key": "font-size"
-        },
-        {
-          "key": "color"
-        },
-        {
-          "key": "background"
-        },
-        {
-          "key": "border-bottom-left-radius"
-        },
-        {
-          "key": "border-top-left-radius"
-        },
-        {
-          "key": "border-top-right-radius"
-        },
-        {
-          "key": "border-bottom-right-radius"
-        },
-        {
-          "key": "width"
-        },
-        {
-          "key": "height"
-        }
-      ],
+      "attributes": [],
       "id": "8d443eb52140093",
       "name": "component",
       "children": [
@@ -110,47 +70,7 @@
           "label": "header",
           "is": "div",
           "name": "element",
-          "attributes": [
-            {
-              "key": "box-sizing"
-            },
-            {
-              "key": "flex-shrink"
-            },
-            {
-              "key": "padding-top"
-            },
-            {
-              "key": "padding-bottom"
-            },
-            {
-              "key": "font-size"
-            },
-            {
-              "key": "border-bottom"
-            },
-            {
-              "key": "align-items"
-            },
-            {
-              "key": "position"
-            },
-            {
-              "key": "-webkit-app-region"
-            },
-            {
-              "key": "background"
-            },
-            {
-              "key": "padding-right"
-            },
-            {
-              "key": "padding-left"
-            },
-            {
-              "key": "height"
-            }
-          ],
+          "attributes": [],
           "style": [
             {
               "key": "box-sizing",
@@ -211,26 +131,7 @@
               "label": "MacOS buttons",
               "is": "div",
               "name": "element",
-              "attributes": [
-                {
-                  "key": "box-sizing"
-                },
-                {
-                  "key": "display"
-                },
-                {
-                  "key": "top"
-                },
-                {
-                  "key": "left"
-                },
-                {
-                  "key": "transform"
-                },
-                {
-                  "key": "position"
-                }
-              ],
+              "attributes": [],
               "style": [
                 {
                   "key": "box-sizing",
@@ -262,11 +163,7 @@
                   "id": "32ef79b71531706",
                   "is": "32ef79b71331754",
                   "name": "component-instance",
-                  "attributes": [
-                    {
-                      "key": "background"
-                    }
-                  ],
+                  "attributes": [],
                   "style": [
                     {
                       "key": "background",
@@ -289,11 +186,7 @@
                   "id": "32ef79b71509488",
                   "is": "32ef79b71331754",
                   "name": "component-instance",
-                  "attributes": [
-                    {
-                      "key": "background"
-                    }
-                  ],
+                  "attributes": [],
                   "style": [
                     {
                       "key": "background",
@@ -316,11 +209,7 @@
                   "id": "32ef79b71376185",
                   "is": "32ef79b71331754",
                   "name": "component-instance",
-                  "attributes": [
-                    {
-                      "key": "background"
-                    }
-                  ],
+                  "attributes": [],
                   "style": [
                     {
                       "key": "background",
@@ -354,11 +243,7 @@
               "is": "22a403a63977",
               "label": "Menu",
               "name": "component-instance",
-              "attributes": [
-                {
-                  "key": "display"
-                }
-              ],
+              "attributes": [],
               "style": [
                 {
                   "key": "display",
@@ -381,35 +266,7 @@
               "label": "center",
               "is": "div",
               "name": "element",
-              "attributes": [
-                {
-                  "key": "box-sizing"
-                },
-                {
-                  "key": "display"
-                },
-                {
-                  "key": "align-self"
-                },
-                {
-                  "key": "position"
-                },
-                {
-                  "key": "left"
-                },
-                {
-                  "key": "transform"
-                },
-                {
-                  "key": "font-weight"
-                },
-                {
-                  "key": "top"
-                },
-                {
-                  "key": "user-select"
-                }
-              ],
+              "attributes": [],
               "style": [
                 {
                   "key": "box-sizing",
@@ -480,14 +337,7 @@
                   "label": "unsaved circle",
                   "is": "div",
                   "name": "element",
-                  "attributes": [
-                    {
-                      "key": "box-sizing"
-                    },
-                    {
-                      "key": "display"
-                    }
-                  ],
+                  "attributes": [],
                   "style": [
                     {
                       "key": "box-sizing",
@@ -509,29 +359,7 @@
               "label": "controls",
               "is": "div",
               "name": "element",
-              "attributes": [
-                {
-                  "key": "box-sizing"
-                },
-                {
-                  "key": "display"
-                },
-                {
-                  "key": "width"
-                },
-                {
-                  "key": "flex-grow"
-                },
-                {
-                  "key": "flex-shrink"
-                },
-                {
-                  "key": "position"
-                },
-                {
-                  "key": "right"
-                }
-              ],
+              "attributes": [],
               "style": [
                 {
                   "key": "box-sizing",
@@ -599,29 +427,7 @@
           "label": "content",
           "is": "div",
           "name": "element",
-          "attributes": [
-            {
-              "key": "box-sizing"
-            },
-            {
-              "key": "display"
-            },
-            {
-              "key": "width"
-            },
-            {
-              "key": "position"
-            },
-            {
-              "key": "flex-grow"
-            },
-            {
-              "key": "overflow"
-            },
-            {
-              "key": "background"
-            }
-          ],
+          "attributes": [],
           "style": [
             {
               "key": "box-sizing",
@@ -1367,53 +1173,7 @@
           "value": "1px none rgba(255, 255, 255, 0.4)"
         }
       ],
-      "attributes": [
-        {
-          "key": "box-sizing"
-        },
-        {
-          "key": "display"
-        },
-        {
-          "key": "margin-right"
-        },
-        {
-          "key": "width"
-        },
-        {
-          "key": "height"
-        },
-        {
-          "key": "cursor"
-        },
-        {
-          "key": "background"
-        },
-        {
-          "key": "border-bottom-left-radius"
-        },
-        {
-          "key": "border-top-left-radius"
-        },
-        {
-          "key": "border-top-right-radius"
-        },
-        {
-          "key": "border-bottom-right-radius"
-        },
-        {
-          "key": "border-left"
-        },
-        {
-          "key": "border-top"
-        },
-        {
-          "key": "border-right"
-        },
-        {
-          "key": "border-bottom"
-        }
-      ],
+      "attributes": [],
       "id": "32ef79b71331754",
       "name": "component",
       "children": [],

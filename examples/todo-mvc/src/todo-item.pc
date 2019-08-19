@@ -21,17 +21,7 @@
           "value": "1px solid var(--905d90be434)"
         }
       ],
-      "attributes": [
-        {
-          "key": "position"
-        },
-        {
-          "key": "font-size"
-        },
-        {
-          "key": "border-bottom"
-        }
-      ],
+      "attributes": [],
       "id": "70b2f99d2116",
       "name": "component",
       "children": [
@@ -50,37 +40,8 @@
               "name": "element",
               "attributes": [
                 {
-                  "key": "text-align"
-                },
-                {
-                  "key": "width"
-                },
-                {
-                  "key": "height"
-                },
-                {
-                  "key": "position"
-                },
-                {
-                  "key": "top"
-                },
-                {
-                  "key": "bottom"
-                },
-                {
-                  "key": "margin"
-                },
-                {
-                  "key": "border"
-                },
-                {
-                  "key": "-webkit-appearance"
-                },
-                {
-                  "key": "opacity"
-                },
-                {
-                  "key": "background"
+                  "key": "type",
+                  "value": "checkbox"
                 }
               ],
               "style": [
@@ -137,32 +98,7 @@
               "label": "label",
               "is": "label",
               "name": "element",
-              "attributes": [
-                {
-                  "key": "background-image"
-                },
-                {
-                  "key": "background-repeat"
-                },
-                {
-                  "key": "background-position"
-                },
-                {
-                  "key": "word-break"
-                },
-                {
-                  "key": "padding"
-                },
-                {
-                  "key": "display"
-                },
-                {
-                  "key": "line-height"
-                },
-                {
-                  "key": "transition"
-                }
-              ],
+              "attributes": [],
               "style": [
                 {
                   "key": "background-image",
@@ -216,65 +152,7 @@
               "label": "button",
               "is": "button",
               "name": "element",
-              "attributes": [
-                {
-                  "key": "margin"
-                },
-                {
-                  "key": "padding"
-                },
-                {
-                  "key": "border"
-                },
-                {
-                  "key": "background"
-                },
-                {
-                  "key": "font-size"
-                },
-                {
-                  "key": "vertical-align"
-                },
-                {
-                  "key": "font-family"
-                },
-                {
-                  "key": "font-weight"
-                },
-                {
-                  "key": "color"
-                },
-                {
-                  "key": "-webkit-appearance"
-                },
-                {
-                  "key": "-webkit-font-smoothing"
-                },
-                {
-                  "key": "display"
-                },
-                {
-                  "key": "position"
-                },
-                {
-                  "key": "top"
-                },
-                {
-                  "key": "right"
-                },
-                {
-                  "key": "bottom"
-                },
-                {
-                  "key": "width"
-                },
-                {
-                  "key": "height"
-                },
-                {
-                  "key": "transition"
-                }
-              ],
+              "attributes": [],
               "style": [
                 {
                   "key": "margin",
@@ -364,50 +242,7 @@
           "label": "input",
           "is": "input",
           "name": "element",
-          "attributes": [
-            {
-              "key": "position"
-            },
-            {
-              "key": "margin"
-            },
-            {
-              "key": "width"
-            },
-            {
-              "key": "font-size"
-            },
-            {
-              "key": "font-family"
-            },
-            {
-              "key": "font-weight"
-            },
-            {
-              "key": "line-height"
-            },
-            {
-              "key": "color"
-            },
-            {
-              "key": "padding"
-            },
-            {
-              "key": "border"
-            },
-            {
-              "key": "box-shadow"
-            },
-            {
-              "key": "box-sizing"
-            },
-            {
-              "key": "-webkit-font-smoothing"
-            },
-            {
-              "key": "display"
-            }
-          ],
+          "attributes": [],
           "style": [
             {
               "key": "position",

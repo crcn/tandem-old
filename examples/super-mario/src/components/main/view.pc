@@ -82,26 +82,7 @@
           "value": "0px 0px"
         }
       ],
-      "attributes": [
-        {
-          "key": "box-sizing"
-        },
-        {
-          "key": "display"
-        },
-        {
-          "key": "background-image"
-        },
-        {
-          "key": "background-repeat"
-        },
-        {
-          "key": "background-size"
-        },
-        {
-          "key": "background-position"
-        }
-      ],
+      "attributes": [],
       "id": "66408e8383",
       "name": "component",
       "children": [],

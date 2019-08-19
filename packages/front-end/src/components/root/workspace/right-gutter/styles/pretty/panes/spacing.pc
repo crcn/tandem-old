@@ -21,17 +21,7 @@
           "value": "var(--bc891e755312)"
         }
       ],
-      "attributes": [
-        {
-          "key": "box-sizing"
-        },
-        {
-          "key": "display"
-        },
-        {
-          "key": "background"
-        }
-      ],
+      "attributes": [],
       "id": "cbddcb698077",
       "name": "component",
       "children": [
@@ -111,11 +101,7 @@
                   "is": "cbddcb6911222",
                   "label": "Margin input",
                   "name": "component-instance",
-                  "attributes": [
-                    {
-                      "key": "margin-bottom"
-                    }
-                  ],
+                  "attributes": [],
                   "style": [
                     {
                       "key": "margin-bottom",
@@ -285,11 +271,7 @@
               "is": "af62926b2310",
               "label": "top input",
               "name": "component-instance",
-              "attributes": [
-                {
-                  "key": "margin-right"
-                }
-              ],
+              "attributes": [],
               "style": [
                 {
                   "key": "margin-right",
@@ -356,11 +338,7 @@
               "is": "af62926b2310",
               "label": "right input",
               "name": "component-instance",
-              "attributes": [
-                {
-                  "key": "margin-right"
-                }
-              ],
+              "attributes": [],
               "style": [
                 {
                   "key": "margin-right",
@@ -427,11 +405,7 @@
               "is": "af62926b2310",
               "label": "bottom input",
               "name": "component-instance",
-              "attributes": [
-                {
-                  "key": "margin-right"
-                }
-              ],
+              "attributes": [],
               "style": [
                 {
                   "key": "margin-right",
@@ -578,11 +552,7 @@
                   "is": "af62926b2310",
                   "label": "primary input",
                   "name": "component-instance",
-                  "attributes": [
-                    {
-                      "key": "margin-right"
-                    }
-                  ],
+                  "attributes": [],
                   "style": [
                     {
                       "key": "margin-right",
@@ -647,17 +617,7 @@
       "label": "Element",
       "is": "div",
       "name": "element",
-      "attributes": [
-        {
-          "key": "box-sizing"
-        },
-        {
-          "key": "display"
-        },
-        {
-          "key": "background-image"
-        }
-      ],
+      "attributes": [],
       "style": [
         {
           "key": "box-sizing",

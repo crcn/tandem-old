@@ -17,32 +17,7 @@
           "label": "Element",
           "is": "div",
           "name": "element",
-          "attributes": [
-            {
-              "key": "box-sizing"
-            },
-            {
-              "key": "display"
-            },
-            {
-              "key": "width"
-            },
-            {
-              "key": "height"
-            },
-            {
-              "key": "margin-left"
-            },
-            {
-              "key": "margin-right"
-            },
-            {
-              "key": "margin-top"
-            },
-            {
-              "key": "flex-direction"
-            }
-          ],
+          "attributes": [],
           "style": [
             {
               "key": "box-sizing",
@@ -118,14 +93,7 @@
               "label": "header",
               "is": "div",
               "name": "element",
-              "attributes": [
-                {
-                  "key": "box-sizing"
-                },
-                {
-                  "key": "display"
-                }
-              ],
+              "attributes": [],
               "style": [
                 {
                   "key": "box-sizing",
@@ -144,46 +112,8 @@
                   "name": "element",
                   "attributes": [
                     {
-                      "key": "box-sizing"
-                    },
-                    {
-                      "key": "display"
-                    },
-                    {
-                      "key": "width"
-                    },
-                    {
-                      "key": "border"
-                    },
-                    {
-                      "key": "border-bottom-left-radius"
-                    },
-                    {
-                      "key": "border-top-left-radius"
-                    },
-                    {
-                      "key": "border-top-right-radius"
-                    },
-                    {
-                      "key": "border-bottom-right-radius"
-                    },
-                    {
-                      "key": "font-size"
-                    },
-                    {
-                      "key": "padding-left"
-                    },
-                    {
-                      "key": "padding-top"
-                    },
-                    {
-                      "key": "padding-right"
-                    },
-                    {
-                      "key": "padding-bottom"
-                    },
-                    {
-                      "key": "margin-right"
+                      "key": "placeholder",
+                      "value": "New todo"
                     }
                   ],
                   "style": [
@@ -266,20 +196,7 @@
               "label": "items",
               "is": "div",
               "name": "element",
-              "attributes": [
-                {
-                  "key": "box-sizing"
-                },
-                {
-                  "key": "display"
-                },
-                {
-                  "key": "margin-top"
-                },
-                {
-                  "key": "margin-bottom"
-                }
-              ],
+              "attributes": [],
               "style": [
                 {
                   "key": "box-sizing",
@@ -315,29 +232,7 @@
                   "label": "list item",
                   "is": "8645569738",
                   "name": "component-instance",
-                  "attributes": [
-                    {
-                      "key": "box-sizing"
-                    },
-                    {
-                      "key": "display"
-                    },
-                    {
-                      "key": "border-bottom"
-                    },
-                    {
-                      "key": "padding-left"
-                    },
-                    {
-                      "key": "padding-top"
-                    },
-                    {
-                      "key": "padding-right"
-                    },
-                    {
-                      "key": "padding-bottom"
-                    }
-                  ],
+                  "attributes": [],
                   "style": [
                     {
                       "key": "box-sizing",
@@ -389,29 +284,7 @@
                   "label": "list item",
                   "is": "8645569738",
                   "name": "component-instance",
-                  "attributes": [
-                    {
-                      "key": "box-sizing"
-                    },
-                    {
-                      "key": "display"
-                    },
-                    {
-                      "key": "border-bottom"
-                    },
-                    {
-                      "key": "padding-left"
-                    },
-                    {
-                      "key": "padding-top"
-                    },
-                    {
-                      "key": "padding-right"
-                    },
-                    {
-                      "key": "padding-bottom"
-                    }
-                  ],
+                  "attributes": [],
                   "style": [
                     {
                       "key": "box-sizing",
@@ -463,29 +336,7 @@
                   "label": "list item",
                   "is": "8645569738",
                   "name": "component-instance",
-                  "attributes": [
-                    {
-                      "key": "box-sizing"
-                    },
-                    {
-                      "key": "display"
-                    },
-                    {
-                      "key": "border-bottom"
-                    },
-                    {
-                      "key": "padding-left"
-                    },
-                    {
-                      "key": "padding-top"
-                    },
-                    {
-                      "key": "padding-right"
-                    },
-                    {
-                      "key": "padding-bottom"
-                    }
-                  ],
+                  "attributes": [],
                   "style": [
                     {
                       "key": "box-sizing",
@@ -537,26 +388,7 @@
                   "label": "list item",
                   "is": "8645569738",
                   "name": "component-instance",
-                  "attributes": [
-                    {
-                      "key": "box-sizing"
-                    },
-                    {
-                      "key": "display"
-                    },
-                    {
-                      "key": "padding-left"
-                    },
-                    {
-                      "key": "padding-top"
-                    },
-                    {
-                      "key": "padding-right"
-                    },
-                    {
-                      "key": "padding-bottom"
-                    }
-                  ],
+                  "attributes": [],
                   "style": [
                     {
                       "key": "box-sizing",
@@ -609,14 +441,7 @@
               "label": "footer",
               "is": "div",
               "name": "element",
-              "attributes": [
-                {
-                  "key": "box-sizing"
-                },
-                {
-                  "key": "display"
-                }
-              ],
+              "attributes": [],
               "style": [
                 {
                   "key": "box-sizing",
@@ -633,44 +458,7 @@
                   "label": "button",
                   "is": "8645569772",
                   "name": "component-instance",
-                  "attributes": [
-                    {
-                      "key": "box-sizing"
-                    },
-                    {
-                      "key": "display"
-                    },
-                    {
-                      "key": "background"
-                    },
-                    {
-                      "key": "border-bottom-left-radius"
-                    },
-                    {
-                      "key": "border-top-left-radius"
-                    },
-                    {
-                      "key": "border-top-right-radius"
-                    },
-                    {
-                      "key": "border-bottom-right-radius"
-                    },
-                    {
-                      "key": "padding-left"
-                    },
-                    {
-                      "key": "padding-top"
-                    },
-                    {
-                      "key": "padding-right"
-                    },
-                    {
-                      "key": "padding-bottom"
-                    },
-                    {
-                      "key": "float"
-                    }
-                  ],
+                  "attributes": [],
                   "style": [
                     {
                       "key": "box-sizing",
@@ -794,29 +582,7 @@
           "value": "6px"
         }
       ],
-      "attributes": [
-        {
-          "key": "box-sizing"
-        },
-        {
-          "key": "display"
-        },
-        {
-          "key": "border-bottom"
-        },
-        {
-          "key": "padding-left"
-        },
-        {
-          "key": "padding-top"
-        },
-        {
-          "key": "padding-right"
-        },
-        {
-          "key": "padding-bottom"
-        }
-      ],
+      "attributes": [],
       "id": "8645569738",
       "name": "component",
       "children": [
@@ -827,13 +593,8 @@
           "name": "element",
           "attributes": [
             {
-              "key": "box-sizing"
-            },
-            {
-              "key": "display"
-            },
-            {
-              "key": "margin-right"
+              "key": "type",
+              "value": "checkbox"
             }
           ],
           "style": [
@@ -960,41 +721,7 @@
           "value": "6px"
         }
       ],
-      "attributes": [
-        {
-          "key": "box-sizing"
-        },
-        {
-          "key": "display"
-        },
-        {
-          "key": "background"
-        },
-        {
-          "key": "border-bottom-left-radius"
-        },
-        {
-          "key": "border-top-left-radius"
-        },
-        {
-          "key": "border-top-right-radius"
-        },
-        {
-          "key": "border-bottom-right-radius"
-        },
-        {
-          "key": "padding-left"
-        },
-        {
-          "key": "padding-top"
-        },
-        {
-          "key": "padding-right"
-        },
-        {
-          "key": "padding-bottom"
-        }
-      ],
+      "attributes": [],
       "id": "8645569772",
       "name": "component",
       "children": [

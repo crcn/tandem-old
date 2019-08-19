@@ -21,17 +21,7 @@
           "value": "border-box"
         }
       ],
-      "attributes": [
-        {
-          "key": "height"
-        },
-        {
-          "key": "position"
-        },
-        {
-          "key": "box-sizing"
-        }
-      ],
+      "attributes": [],
       "id": "956880c910105",
       "name": "component",
       "children": [
@@ -40,41 +30,7 @@
           "label": "track",
           "is": "div",
           "name": "element",
-          "attributes": [
-            {
-              "key": "width"
-            },
-            {
-              "key": "height"
-            },
-            {
-              "key": "background"
-            },
-            {
-              "key": "position"
-            },
-            {
-              "key": "transform"
-            },
-            {
-              "key": "top"
-            },
-            {
-              "key": "margin-left"
-            },
-            {
-              "key": "border-top-left-radius"
-            },
-            {
-              "key": "border-top-right-radius"
-            },
-            {
-              "key": "border-bottom-left-radius"
-            },
-            {
-              "key": "border-bottom-right-radius"
-            }
-          ],
+          "attributes": [],
           "style": [
             {
               "key": "width",
@@ -129,32 +85,7 @@
           "label": "grabber",
           "is": "div",
           "name": "element",
-          "attributes": [
-            {
-              "key": "width"
-            },
-            {
-              "key": "height"
-            },
-            {
-              "key": "border-radius"
-            },
-            {
-              "key": "background"
-            },
-            {
-              "key": "position"
-            },
-            {
-              "key": "transform"
-            },
-            {
-              "key": "left"
-            },
-            {
-              "key": "top"
-            }
-          ],
+          "attributes": [],
           "style": [
             {
               "key": "width",

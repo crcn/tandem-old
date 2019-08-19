@@ -45,35 +45,7 @@
           "value": "linear-gradient(var(--dd86347b1545), var(--dd86347b1545))"
         }
       ],
-      "attributes": [
-        {
-          "key": "box-sizing"
-        },
-        {
-          "key": "display"
-        },
-        {
-          "key": "width"
-        },
-        {
-          "key": "height"
-        },
-        {
-          "key": "position"
-        },
-        {
-          "key": "left"
-        },
-        {
-          "key": "z-index"
-        },
-        {
-          "key": "top"
-        },
-        {
-          "key": "background-image"
-        }
-      ],
+      "attributes": [],
       "id": "9f364d214148",
       "name": "component",
       "children": [
@@ -82,59 +54,7 @@
           "label": "Element",
           "is": "div",
           "name": "element",
-          "attributes": [
-            {
-              "key": "box-sizing"
-            },
-            {
-              "key": "display"
-            },
-            {
-              "key": "background"
-            },
-            {
-              "key": "position"
-            },
-            {
-              "key": "left"
-            },
-            {
-              "key": "top"
-            },
-            {
-              "key": "transform"
-            },
-            {
-              "key": "border-bottom-left-radius"
-            },
-            {
-              "key": "border-top-left-radius"
-            },
-            {
-              "key": "border-top-right-radius"
-            },
-            {
-              "key": "border-bottom-right-radius"
-            },
-            {
-              "key": "padding-left"
-            },
-            {
-              "key": "padding-top"
-            },
-            {
-              "key": "padding-right"
-            },
-            {
-              "key": "padding-bottom"
-            },
-            {
-              "key": "flex-direction"
-            },
-            {
-              "key": "border"
-            }
-          ],
+          "attributes": [],
           "style": [
             {
               "key": "box-sizing",
@@ -224,11 +144,7 @@
               "id": "9f364d2138980",
               "is": "7149f8199122",
               "name": "component-instance",
-              "attributes": [
-                {
-                  "key": "margin-bottom"
-                }
-              ],
+              "attributes": [],
               "style": [
                 {
                   "key": "margin-bottom",
@@ -252,17 +168,7 @@
               "label": "Element",
               "is": "div",
               "name": "element",
-              "attributes": [
-                {
-                  "key": "box-sizing"
-                },
-                {
-                  "key": "display"
-                },
-                {
-                  "key": "justify-content"
-                }
-              ],
+              "attributes": [],
               "style": [
                 {
                   "key": "box-sizing",
@@ -282,11 +188,7 @@
                   "id": "9f364d2139869",
                   "is": "9f364d2139415",
                   "name": "component-instance",
-                  "attributes": [
-                    {
-                      "key": "margin-right"
-                    }
-                  ],
+                  "attributes": [],
                   "style": [
                     {
                       "key": "margin-right",
@@ -379,14 +281,7 @@
       "label": "Preview",
       "is": "div",
       "name": "element",
-      "attributes": [
-        {
-          "key": "box-sizing"
-        },
-        {
-          "key": "display"
-        }
-      ],
+      "attributes": [],
       "style": [
         {
           "key": "box-sizing",
@@ -436,23 +331,7 @@
           "label": "Element",
           "is": "div",
           "name": "element",
-          "attributes": [
-            {
-              "key": "box-sizing"
-            },
-            {
-              "key": "display"
-            },
-            {
-              "key": "background-image"
-            },
-            {
-              "key": "width"
-            },
-            {
-              "key": "height"
-            }
-          ],
+          "attributes": [],
           "style": [
             {
               "key": "box-sizing",

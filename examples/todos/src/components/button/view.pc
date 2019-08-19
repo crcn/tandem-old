@@ -65,50 +65,7 @@
           "value": "pointer"
         }
       ],
-      "attributes": [
-        {
-          "key": "box-sizing"
-        },
-        {
-          "key": "display"
-        },
-        {
-          "key": "padding-left"
-        },
-        {
-          "key": "padding-top"
-        },
-        {
-          "key": "padding-right"
-        },
-        {
-          "key": "padding-bottom"
-        },
-        {
-          "key": "border-top-left-radius"
-        },
-        {
-          "key": "border-top-right-radius"
-        },
-        {
-          "key": "border-bottom-left-radius"
-        },
-        {
-          "key": "border-bottom-right-radius"
-        },
-        {
-          "key": "background-image"
-        },
-        {
-          "key": "user-select"
-        },
-        {
-          "key": "-moz-user-select"
-        },
-        {
-          "key": "cursor"
-        }
-      ],
+      "attributes": [],
       "id": "c3cf2ba6124",
       "name": "component",
       "children": [

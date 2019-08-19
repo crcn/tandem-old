@@ -45,35 +45,7 @@
           "value": "20%"
         }
       ],
-      "attributes": [
-        {
-          "key": "padding-left"
-        },
-        {
-          "key": "padding-top"
-        },
-        {
-          "key": "padding-right"
-        },
-        {
-          "key": "padding-bottom"
-        },
-        {
-          "key": "max-width"
-        },
-        {
-          "key": "margin-right"
-        },
-        {
-          "key": "margin-left"
-        },
-        {
-          "key": "position"
-        },
-        {
-          "key": "top"
-        }
-      ],
+      "attributes": [],
       "id": "c6acc7ee930",
       "name": "component",
       "children": [
@@ -82,14 +54,7 @@
           "label": "Element",
           "is": "div",
           "name": "element",
-          "attributes": [
-            {
-              "key": "box-sizing"
-            },
-            {
-              "key": "display"
-            }
-          ],
+          "attributes": [],
           "style": [
             {
               "key": "box-sizing",
@@ -140,11 +105,7 @@
           "is": "ac29cd45169",
           "label": "React start kit options form",
           "name": "component-instance",
-          "attributes": [
-            {
-              "key": "display"
-            }
-          ],
+          "attributes": [],
           "style": [
             {
               "key": "display",
@@ -179,14 +140,7 @@
                   "label": "Element",
                   "is": "div",
                   "name": "element",
-                  "attributes": [
-                    {
-                      "key": "box-sizing"
-                    },
-                    {
-                      "key": "display"
-                    }
-                  ],
+                  "attributes": [],
                   "style": [
                     {
                       "key": "box-sizing",
@@ -205,7 +159,8 @@
                       "name": "component-instance",
                       "attributes": [
                         {
-                          "key": "margin-right"
+                          "key": "placeholder",
+                          "value": "path/to/directory"
                         }
                       ],
                       "style": [
@@ -289,20 +244,7 @@
           "label": "Element",
           "is": "div",
           "name": "element",
-          "attributes": [
-            {
-              "key": "box-sizing"
-            },
-            {
-              "key": "display"
-            },
-            {
-              "key": "justify-content"
-            },
-            {
-              "key": "padding-top"
-            }
-          ],
+          "attributes": [],
           "style": [
             {
               "key": "box-sizing",
@@ -384,14 +326,7 @@
       "label": "Element",
       "is": "div",
       "name": "element",
-      "attributes": [
-        {
-          "key": "box-sizing"
-        },
-        {
-          "key": "display"
-        }
-      ],
+      "attributes": [],
       "style": [
         {
           "key": "box-sizing",

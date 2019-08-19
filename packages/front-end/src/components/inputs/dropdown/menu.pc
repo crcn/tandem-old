@@ -29,23 +29,7 @@
           "value": "var(--bc891e755312)"
         }
       ],
-      "attributes": [
-        {
-          "key": "padding"
-        },
-        {
-          "key": "border-bottom"
-        },
-        {
-          "key": "user-select"
-        },
-        {
-          "key": "cursor"
-        },
-        {
-          "key": "background"
-        }
-      ],
+      "attributes": [],
       "id": "8b8bbe2c859177",
       "name": "component",
       "children": [

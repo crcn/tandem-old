@@ -57,44 +57,7 @@
           "value": "nowrap"
         }
       ],
-      "attributes": [
-        {
-          "key": "box-sizing"
-        },
-        {
-          "key": "padding"
-        },
-        {
-          "key": "align-items"
-        },
-        {
-          "key": "background"
-        },
-        {
-          "key": "color"
-        },
-        {
-          "key": "cursor"
-        },
-        {
-          "key": "padding-left"
-        },
-        {
-          "key": "height"
-        },
-        {
-          "key": "overflow"
-        },
-        {
-          "key": "text-overflow"
-        },
-        {
-          "key": "user-select"
-        },
-        {
-          "key": "white-space"
-        }
-      ],
+      "attributes": [],
       "id": "fde5849e96847",
       "name": "component",
       "children": [
@@ -229,17 +192,7 @@
       "label": "Element",
       "is": "div",
       "name": "element",
-      "attributes": [
-        {
-          "key": "box-sizing"
-        },
-        {
-          "key": "display"
-        },
-        {
-          "key": "white-space"
-        }
-      ],
+      "attributes": [],
       "style": [
         {
           "key": "box-sizing",
@@ -260,29 +213,7 @@
           "is": "fde5849e96847",
           "label": "Editor Tab",
           "name": "component-instance",
-          "attributes": [
-            {
-              "key": "display"
-            },
-            {
-              "key": "height"
-            },
-            {
-              "key": "padding-left"
-            },
-            {
-              "key": "overflow"
-            },
-            {
-              "key": "width"
-            },
-            {
-              "key": "padding-top"
-            },
-            {
-              "key": "position"
-            }
-          ],
+          "attributes": [],
           "style": [
             {
               "key": "display",

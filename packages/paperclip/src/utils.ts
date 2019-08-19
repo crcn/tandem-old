@@ -18,6 +18,7 @@ import {
   appendChildNode,
   KeyValue,
   EMPTY_OBJECT,
+  keyValuePairToHash,
   hashToKeyValuePair
 } from "tandem-common";
 
@@ -84,7 +85,7 @@ export const elevateColorsToGlobal = (
         const colors = findCSSColors(value);
         if (colors.length) {
           if (!newStyle) {
-            newStyle = { ...node.style };
+            newStyle = { ...keyValuePairToHash(node.style) };
           }
 
           for (const color of colors) {
@@ -146,7 +147,9 @@ export const elevateTypographyToMixins = (
       (child as PCStyleMixin).targetType === PCSourceTagNames.TEXT
     ) {
       const styleMixin = child as PCTextStyleMixin;
-      typographyMixinMap[JSON.stringify(styleMixin.style)] = styleMixin;
+      typographyMixinMap[
+        JSON.stringify(keyValuePairToHash(styleMixin.style))
+      ] = styleMixin;
     }
   }
 
@@ -159,9 +162,9 @@ export const elevateTypographyToMixins = (
       const otherStyle = {};
       for (const { key, value } of node.style) {
         if (TEXT_STYLE_NAMES.indexOf(key) !== -1) {
-          typographyStyle[key] = node.style[key];
+          typographyStyle[key] = value;
         } else {
-          otherStyle[key] = node.style[key];
+          otherStyle[key] = value;
         }
       }
       if (Object.keys(typographyStyle).length) {

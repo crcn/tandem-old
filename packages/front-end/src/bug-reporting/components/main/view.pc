@@ -45,35 +45,7 @@
           "value": "99999"
         }
       ],
-      "attributes": [
-        {
-          "key": "box-sizing"
-        },
-        {
-          "key": "display"
-        },
-        {
-          "key": "background"
-        },
-        {
-          "key": "position"
-        },
-        {
-          "key": "left"
-        },
-        {
-          "key": "top"
-        },
-        {
-          "key": "width"
-        },
-        {
-          "key": "height"
-        },
-        {
-          "key": "z-index"
-        }
-      ],
+      "attributes": [],
       "id": "900e27cd182",
       "name": "component",
       "children": [
@@ -82,29 +54,7 @@
           "label": "Container",
           "is": "div",
           "name": "element",
-          "attributes": [
-            {
-              "key": "box-sizing"
-            },
-            {
-              "key": "display"
-            },
-            {
-              "key": "position"
-            },
-            {
-              "key": "left"
-            },
-            {
-              "key": "top"
-            },
-            {
-              "key": "width"
-            },
-            {
-              "key": "height"
-            }
-          ],
+          "attributes": [],
           "style": [
             {
               "key": "box-sizing",
@@ -141,68 +91,7 @@
               "label": "Center",
               "is": "div",
               "name": "element",
-              "attributes": [
-                {
-                  "key": "box-sizing"
-                },
-                {
-                  "key": "display"
-                },
-                {
-                  "key": "width"
-                },
-                {
-                  "key": "margin-right"
-                },
-                {
-                  "key": "margin-left"
-                },
-                {
-                  "key": "position"
-                },
-                {
-                  "key": "top"
-                },
-                {
-                  "key": "background"
-                },
-                {
-                  "key": "border-top-left-radius"
-                },
-                {
-                  "key": "border-top-right-radius"
-                },
-                {
-                  "key": "border-bottom-left-radius"
-                },
-                {
-                  "key": "border-bottom-right-radius"
-                },
-                {
-                  "key": "border-left"
-                },
-                {
-                  "key": "border-top"
-                },
-                {
-                  "key": "border-right"
-                },
-                {
-                  "key": "border-bottom"
-                },
-                {
-                  "key": "padding-left"
-                },
-                {
-                  "key": "padding-top"
-                },
-                {
-                  "key": "padding-right"
-                },
-                {
-                  "key": "padding-bottom"
-                }
-              ],
+              "attributes": [],
               "style": [
                 {
                   "key": "box-sizing",
@@ -359,16 +248,8 @@
                   "name": "element",
                   "attributes": [
                     {
-                      "key": "box-sizing"
-                    },
-                    {
-                      "key": "display"
-                    },
-                    {
-                      "key": "font-weight"
-                    },
-                    {
-                      "key": "color"
+                      "key": "href",
+                      "value": "https://github.com/tandemcode/tandem/issues"
                     }
                   ],
                   "style": [
@@ -421,20 +302,7 @@
                   "label": "Element",
                   "is": "div",
                   "name": "element",
-                  "attributes": [
-                    {
-                      "key": "box-sizing"
-                    },
-                    {
-                      "key": "display"
-                    },
-                    {
-                      "key": "margin-top"
-                    },
-                    {
-                      "key": "justify-content"
-                    }
-                  ],
+                  "attributes": [],
                   "style": [
                     {
                       "key": "box-sizing",
@@ -459,14 +327,7 @@
                       "label": "restart button",
                       "is": "9f364d2139415",
                       "name": "component-instance",
-                      "attributes": [
-                        {
-                          "key": "box-sizing"
-                        },
-                        {
-                          "key": "display"
-                        }
-                      ],
+                      "attributes": [],
                       "style": [
                         {
                           "key": "box-sizing",
@@ -521,14 +382,7 @@
       "label": "Preview",
       "is": "div",
       "name": "element",
-      "attributes": [
-        {
-          "key": "box-sizing"
-        },
-        {
-          "key": "display"
-        }
-      ],
+      "attributes": [],
       "style": [
         {
           "key": "box-sizing",
@@ -545,11 +399,7 @@
           "is": "900e27cd182",
           "label": "Main",
           "name": "component-instance",
-          "attributes": [
-            {
-              "key": "z-index"
-            }
-          ],
+          "attributes": [],
           "style": [
             {
               "key": "z-index",
@@ -572,14 +422,7 @@
           "is": "33b1b6b133319",
           "label": "Workspace",
           "name": "component-instance",
-          "attributes": [
-            {
-              "key": "opacity"
-            },
-            {
-              "key": "display"
-            }
-          ],
+          "attributes": [],
           "style": [
             {
               "key": "opacity",

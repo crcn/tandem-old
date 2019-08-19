@@ -29,23 +29,7 @@
           "value": "38px"
         }
       ],
-      "attributes": [
-        {
-          "key": "display"
-        },
-        {
-          "key": "background"
-        },
-        {
-          "key": "position"
-        },
-        {
-          "key": "flex-grow"
-        },
-        {
-          "key": "height"
-        }
-      ],
+      "attributes": [],
       "id": "ab406a6b770940",
       "name": "component",
       "children": [
@@ -54,26 +38,7 @@
           "label": "tools",
           "is": "div",
           "name": "element",
-          "attributes": [
-            {
-              "key": "box-sizing"
-            },
-            {
-              "key": "display"
-            },
-            {
-              "key": "align-items"
-            },
-            {
-              "key": "padding"
-            },
-            {
-              "key": "color"
-            },
-            {
-              "key": "opacity"
-            }
-          ],
+          "attributes": [],
           "style": [
             {
               "key": "box-sizing",
@@ -108,19 +73,8 @@
               "name": "component-instance",
               "attributes": [
                 {
-                  "key": "height"
-                },
-                {
-                  "key": "margin-right"
-                },
-                {
-                  "key": "cursor"
-                },
-                {
-                  "key": "position"
-                },
-                {
-                  "key": "top"
+                  "key": "title",
+                  "value": "pointer tool"
                 }
               ],
               "style": [
@@ -155,14 +109,7 @@
                       "is": "bc641d4124463",
                       "label": "Pointer Icon",
                       "name": "component-instance",
-                      "attributes": [
-                        {
-                          "key": "display"
-                        },
-                        {
-                          "key": "height"
-                        }
-                      ],
+                      "attributes": [],
                       "style": [
                         {
                           "key": "display",
@@ -199,19 +146,8 @@
               "name": "component-instance",
               "attributes": [
                 {
-                  "key": "height"
-                },
-                {
-                  "key": "top"
-                },
-                {
-                  "key": "position"
-                },
-                {
-                  "key": "margin-right"
-                },
-                {
-                  "key": "cursor"
+                  "key": "title",
+                  "value": "insert text tool"
                 }
               ],
               "style": [
@@ -246,20 +182,7 @@
                       "is": "bc641d4113153",
                       "label": "Text Icon",
                       "name": "component-instance",
-                      "attributes": [
-                        {
-                          "key": "display"
-                        },
-                        {
-                          "key": "height"
-                        },
-                        {
-                          "key": "position"
-                        },
-                        {
-                          "key": "top"
-                        }
-                      ],
+                      "attributes": [],
                       "style": [
                         {
                           "key": "display",
@@ -306,13 +229,8 @@
               "name": "component-instance",
               "attributes": [
                 {
-                  "key": "height"
-                },
-                {
-                  "key": "margin-right"
-                },
-                {
-                  "key": "cursor"
+                  "key": "title",
+                  "value": "insert element tool"
                 }
               ],
               "style": [
@@ -339,20 +257,7 @@
                       "is": "bc641d4118808",
                       "label": "Rectangle Icon",
                       "name": "component-instance",
-                      "attributes": [
-                        {
-                          "key": "display"
-                        },
-                        {
-                          "key": "position"
-                        },
-                        {
-                          "key": "top"
-                        },
-                        {
-                          "key": "height"
-                        }
-                      ],
+                      "attributes": [],
                       "style": [
                         {
                           "key": "display",
@@ -409,16 +314,8 @@
                       "name": "component-instance",
                       "attributes": [
                         {
-                          "key": "height"
-                        },
-                        {
-                          "key": "position"
-                        },
-                        {
-                          "key": "top"
-                        },
-                        {
-                          "key": "cursor"
+                          "key": "title",
+                          "value": "insert component tool"
                         }
                       ],
                       "style": [
@@ -449,11 +346,7 @@
                               "is": "bc641d484882",
                               "label": "Puzzle Icon",
                               "name": "component-instance",
-                              "attributes": [
-                                {
-                                  "key": "height"
-                                }
-                              ],
+                              "attributes": [],
                               "style": [
                                 {
                                   "key": "height",
@@ -612,20 +505,7 @@
           "value": "0px"
         }
       ],
-      "attributes": [
-        {
-          "key": "box-sizing"
-        },
-        {
-          "key": "display"
-        },
-        {
-          "key": "flex"
-        },
-        {
-          "key": "width"
-        }
-      ],
+      "attributes": [],
       "id": "fde5849e79779",
       "name": "component",
       "children": [
@@ -679,32 +559,7 @@
           },
           "is": "fde5849e96847",
           "name": "component-instance",
-          "attributes": [
-            {
-              "key": "box-sizing"
-            },
-            {
-              "key": "font-family"
-            },
-            {
-              "key": "padding"
-            },
-            {
-              "key": "align-items"
-            },
-            {
-              "key": "color"
-            },
-            {
-              "key": "cursor"
-            },
-            {
-              "key": "padding-left"
-            },
-            {
-              "key": "height"
-            }
-          ],
+          "attributes": [],
           "style": [
             {
               "key": "box-sizing",
@@ -936,17 +791,7 @@
       "label": "Preview",
       "is": "div",
       "name": "element",
-      "attributes": [
-        {
-          "key": "box-sizing"
-        },
-        {
-          "key": "display"
-        },
-        {
-          "key": "flex-direction"
-        }
-      ],
+      "attributes": [],
       "style": [
         {
           "key": "box-sizing",
@@ -967,23 +812,7 @@
           "variant": {},
           "is": "ab406a6b770940",
           "name": "component-instance",
-          "attributes": [
-            {
-              "key": "display"
-            },
-            {
-              "key": "background"
-            },
-            {
-              "key": "position"
-            },
-            {
-              "key": "flex-grow"
-            },
-            {
-              "key": "height"
-            }
-          ],
+          "attributes": [],
           "style": [
             {
               "key": "display",
@@ -1021,17 +850,7 @@
           "variant": {},
           "is": "bae08a2e609807",
           "name": "component-instance",
-          "attributes": [
-            {
-              "key": "background"
-            },
-            {
-              "key": "height"
-            },
-            {
-              "key": "position"
-            }
-          ],
+          "attributes": [],
           "style": [
             {
               "key": "background",
@@ -1096,14 +915,7 @@
           "value": "block"
         }
       ],
-      "attributes": [
-        {
-          "key": "box-sizing"
-        },
-        {
-          "key": "display"
-        }
-      ],
+      "attributes": [],
       "id": "3ee7fcc51260",
       "name": "component",
       "children": [
@@ -1115,14 +927,7 @@
               "is": "bc641d4124463",
               "label": "Pointer Icon",
               "name": "component-instance",
-              "attributes": [
-                {
-                  "key": "display"
-                },
-                {
-                  "key": "width"
-                }
-              ],
+              "attributes": [],
               "style": [
                 {
                   "key": "display",

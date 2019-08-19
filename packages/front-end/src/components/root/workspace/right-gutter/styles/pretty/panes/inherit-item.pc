@@ -33,26 +33,7 @@
           "value": "6px"
         }
       ],
-      "attributes": [
-        {
-          "key": "display"
-        },
-        {
-          "key": "align-items"
-        },
-        {
-          "key": "padding-left"
-        },
-        {
-          "key": "padding-top"
-        },
-        {
-          "key": "padding-right"
-        },
-        {
-          "key": "padding-bottom"
-        }
-      ],
+      "attributes": [],
       "id": "9e4a454812260",
       "name": "component",
       "children": [
@@ -61,29 +42,7 @@
           "label": "Element",
           "is": "div",
           "name": "element",
-          "attributes": [
-            {
-              "key": "height"
-            },
-            {
-              "key": "border"
-            },
-            {
-              "key": "border-radius"
-            },
-            {
-              "key": "margin-right"
-            },
-            {
-              "key": "box-sizing"
-            },
-            {
-              "key": "display"
-            },
-            {
-              "key": "align-items"
-            }
-          ],
+          "attributes": [],
           "style": [
             {
               "key": "height",
@@ -120,17 +79,7 @@
               "is": "ec3f9b216704",
               "label": "Color Palette Icon",
               "name": "component-instance",
-              "attributes": [
-                {
-                  "key": "display"
-                },
-                {
-                  "key": "height"
-                },
-                {
-                  "key": "color"
-                }
-              ],
+              "attributes": [],
               "style": [
                 {
                   "key": "display",
@@ -195,11 +144,7 @@
           "id": "14f530171",
           "is": "50e32bec2591",
           "name": "component-instance",
-          "attributes": [
-            {
-              "key": "box-shadow"
-            }
-          ],
+          "attributes": [],
           "style": [
             {
               "key": "box-shadow",

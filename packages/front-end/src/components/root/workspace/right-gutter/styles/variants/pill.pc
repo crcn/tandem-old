@@ -41,32 +41,7 @@
           "value": "8px"
         }
       ],
-      "attributes": [
-        {
-          "key": "background"
-        },
-        {
-          "key": "padding-left"
-        },
-        {
-          "key": "padding-top"
-        },
-        {
-          "key": "padding-right"
-        },
-        {
-          "key": "padding-bottom"
-        },
-        {
-          "key": "font-size"
-        },
-        {
-          "key": "border-radius"
-        },
-        {
-          "key": "margin-right"
-        }
-      ],
+      "attributes": [],
       "id": "2c32917123",
       "name": "component",
       "children": [

@@ -21,17 +21,7 @@
           "value": "inset  0px 0px 0px 1px rgba(88, 185, 255, 1)"
         }
       ],
-      "attributes": [
-        {
-          "key": "display"
-        },
-        {
-          "key": "position"
-        },
-        {
-          "key": "box-shadow"
-        }
-      ],
+      "attributes": [],
       "id": "7a40476a1359",
       "name": "component",
       "children": [
@@ -40,44 +30,7 @@
           "label": "label container",
           "is": "div",
           "name": "element",
-          "attributes": [
-            {
-              "key": "box-sizing"
-            },
-            {
-              "key": "display"
-            },
-            {
-              "key": "position"
-            },
-            {
-              "key": "white-space"
-            },
-            {
-              "key": "bottom"
-            },
-            {
-              "key": "background"
-            },
-            {
-              "key": "border"
-            },
-            {
-              "key": "padding-left"
-            },
-            {
-              "key": "padding-top"
-            },
-            {
-              "key": "padding-right"
-            },
-            {
-              "key": "padding-bottom"
-            },
-            {
-              "key": "right"
-            }
-          ],
+          "attributes": [],
           "style": [
             {
               "key": "box-sizing",
@@ -188,14 +141,7 @@
       "label": "Preview",
       "is": "div",
       "name": "element",
-      "attributes": [
-        {
-          "key": "box-sizing"
-        },
-        {
-          "key": "display"
-        }
-      ],
+      "attributes": [],
       "style": [
         {
           "key": "box-sizing",
@@ -212,23 +158,7 @@
           "is": "7a40476a1359",
           "label": "Node overlay",
           "name": "component-instance",
-          "attributes": [
-            {
-              "key": "width"
-            },
-            {
-              "key": "height"
-            },
-            {
-              "key": "position"
-            },
-            {
-              "key": "left"
-            },
-            {
-              "key": "top"
-            }
-          ],
+          "attributes": [],
           "style": [
             {
               "key": "width",

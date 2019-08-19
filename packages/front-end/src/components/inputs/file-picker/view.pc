@@ -17,14 +17,7 @@
           "value": "flex"
         }
       ],
-      "attributes": [
-        {
-          "key": "box-sizing"
-        },
-        {
-          "key": "display"
-        }
-      ],
+      "attributes": [],
       "id": "9fb9afea1357",
       "name": "component",
       "children": [
@@ -33,11 +26,7 @@
           "is": "7149f8199122",
           "label": "file path input",
           "name": "component-instance",
-          "attributes": [
-            {
-              "key": "margin-right"
-            }
-          ],
+          "attributes": [],
           "style": [
             {
               "key": "margin-right",
@@ -60,17 +49,7 @@
           "label": "Element",
           "is": "div",
           "name": "element",
-          "attributes": [
-            {
-              "key": "box-sizing"
-            },
-            {
-              "key": "display"
-            },
-            {
-              "key": "position"
-            }
-          ],
+          "attributes": [],
           "style": [
             {
               "key": "box-sizing",

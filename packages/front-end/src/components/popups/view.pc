@@ -8,11 +8,7 @@
       "id": "25d5776e3",
       "is": "67d74e287",
       "name": "component-instance",
-      "attributes": [
-        {
-          "key": "font-family"
-        }
-      ],
+      "attributes": [],
       "style": [
         {
           "key": "font-family",
@@ -60,23 +56,7 @@
           "value": "8px"
         }
       ],
-      "attributes": [
-        {
-          "key": "box-sizing"
-        },
-        {
-          "key": "padding-left"
-        },
-        {
-          "key": "padding-top"
-        },
-        {
-          "key": "padding-right"
-        },
-        {
-          "key": "padding-bottom"
-        }
-      ],
+      "attributes": [],
       "id": "67d74e287",
       "name": "component",
       "children": [

@@ -88,17 +88,7 @@
           "value": "10px"
         }
       ],
-      "attributes": [
-        {
-          "key": "display"
-        },
-        {
-          "key": "flex-direction"
-        },
-        {
-          "key": "font-size"
-        }
-      ],
+      "attributes": [],
       "id": "bcda9fb597619",
       "name": "component",
       "children": [
@@ -244,14 +234,7 @@
               "label": "items",
               "is": "div",
               "name": "element",
-              "attributes": [
-                {
-                  "key": "box-sizing"
-                },
-                {
-                  "key": "display"
-                }
-              ],
+              "attributes": [],
               "style": [
                 {
                   "key": "box-sizing",
@@ -335,23 +318,7 @@
               "label": "labels",
               "is": "div",
               "name": "element",
-              "attributes": [
-                {
-                  "key": "box-sizing"
-                },
-                {
-                  "key": "display"
-                },
-                {
-                  "key": "padding-left"
-                },
-                {
-                  "key": "text-align"
-                },
-                {
-                  "key": "padding-right"
-                }
-              ],
+              "attributes": [],
               "style": [
                 {
                   "key": "box-sizing",
@@ -483,20 +450,7 @@
               "label": "Element",
               "is": "div",
               "name": "element",
-              "attributes": [
-                {
-                  "key": "box-sizing"
-                },
-                {
-                  "key": "display"
-                },
-                {
-                  "key": "justify-content"
-                },
-                {
-                  "key": "align-items"
-                }
-              ],
+              "attributes": [],
               "style": [
                 {
                   "key": "box-sizing",
@@ -551,14 +505,7 @@
                           "label": "controls",
                           "is": "div",
                           "name": "element",
-                          "attributes": [
-                            {
-                              "key": "box-sizing"
-                            },
-                            {
-                              "key": "display"
-                            }
-                          ],
+                          "attributes": [],
                           "style": [
                             {
                               "key": "box-sizing",
@@ -595,20 +542,7 @@
                   "label": "Element",
                   "is": "div",
                   "name": "element",
-                  "attributes": [
-                    {
-                      "key": "box-sizing"
-                    },
-                    {
-                      "key": "display"
-                    },
-                    {
-                      "key": "align-items"
-                    },
-                    {
-                      "key": "cursor"
-                    }
-                  ],
+                  "attributes": [],
                   "style": [
                     {
                       "key": "box-sizing",
@@ -632,23 +566,7 @@
                       "id": "3fb9d47e50",
                       "is": "38fc2a476190",
                       "name": "component-instance",
-                      "attributes": [
-                        {
-                          "key": "display"
-                        },
-                        {
-                          "key": "height"
-                        },
-                        {
-                          "key": "position"
-                        },
-                        {
-                          "key": "top"
-                        },
-                        {
-                          "key": "margin-right"
-                        }
-                      ],
+                      "attributes": [],
                       "style": [
                         {
                           "key": "display",
@@ -686,20 +604,7 @@
                       "id": "3fb9d47e47",
                       "is": "f27782548182",
                       "name": "component-instance",
-                      "attributes": [
-                        {
-                          "key": "display"
-                        },
-                        {
-                          "key": "height"
-                        },
-                        {
-                          "key": "position"
-                        },
-                        {
-                          "key": "top"
-                        }
-                      ],
+                      "attributes": [],
                       "style": [
                         {
                           "key": "display",

@@ -21,17 +21,7 @@
           "value": "100%"
         }
       ],
-      "attributes": [
-        {
-          "key": "display"
-        },
-        {
-          "key": "width"
-        },
-        {
-          "key": "height"
-        }
-      ],
+      "attributes": [],
       "id": "33b1b6b133319",
       "name": "component",
       "children": [
@@ -40,14 +30,7 @@
           "variant": {},
           "is": "317401b1484197",
           "name": "component-instance",
-          "attributes": [
-            {
-              "key": "width"
-            },
-            {
-              "key": "flex-shrink"
-            }
-          ],
+          "attributes": [],
           "style": [
             {
               "key": "width",
@@ -90,26 +73,7 @@
           "label": "Center",
           "is": "div",
           "name": "element",
-          "attributes": [
-            {
-              "key": "box-sizing"
-            },
-            {
-              "key": "width"
-            },
-            {
-              "key": "flex"
-            },
-            {
-              "key": "display"
-            },
-            {
-              "key": "flex-direction"
-            },
-            {
-              "key": "height"
-            }
-          ],
+          "attributes": [],
           "style": [
             {
               "key": "box-sizing",
@@ -142,11 +106,7 @@
               "variant": {},
               "is": "1ecbd3329725",
               "name": "component-instance",
-              "attributes": [
-                {
-                  "key": "display"
-                }
-              ],
+              "attributes": [],
               "style": [
                 {
                   "key": "display",
@@ -169,17 +129,7 @@
               "variant": {},
               "is": "5d6bd010465271",
               "name": "component-instance",
-              "attributes": [
-                {
-                  "key": "height"
-                },
-                {
-                  "key": "width"
-                },
-                {
-                  "key": "flex-grow"
-                }
-              ],
+              "attributes": [],
               "style": [
                 {
                   "key": "height",
@@ -221,14 +171,7 @@
               "is": "694404cc2576",
               "label": "Bottom Gutter",
               "name": "component-instance",
-              "attributes": [
-                {
-                  "key": "height"
-                },
-                {
-                  "key": "display"
-                }
-              ],
+              "attributes": [],
               "style": [
                 {
                   "key": "height",
@@ -269,14 +212,7 @@
           },
           "is": "8b8bbe2c724435",
           "name": "component-instance",
-          "attributes": [
-            {
-              "key": "flex-shrink"
-            },
-            {
-              "key": "flex-direction"
-            }
-          ],
+          "attributes": [],
           "style": [
             {
               "key": "flex-shrink",
@@ -501,14 +437,7 @@
           "value": "10px"
         }
       ],
-      "attributes": [
-        {
-          "key": "box-sizing"
-        },
-        {
-          "key": "padding"
-        }
-      ],
+      "attributes": [],
       "id": "1ecbd3329725",
       "name": "component",
       "children": [
@@ -517,11 +446,7 @@
           "label": "Header",
           "is": "h4",
           "name": "element",
-          "attributes": [
-            {
-              "key": "box-sizing"
-            }
-          ],
+          "attributes": [],
           "style": [
             {
               "key": "box-sizing",

@@ -227,7 +227,7 @@ const computeStyle = (element: HTMLElement) => {
   return hashToKeyValuePair(normalizeStyleProps(computedStyle));
 };
 
-const normalizeStyleProps = (style: any) => {
+const normalizeStyleProps = (style: KeyValue<string>) => {
   const normalizedStyle = {};
 
   for (const key in style) {

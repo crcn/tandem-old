@@ -33,26 +33,7 @@
           "value": "var(--bc891e755312)"
         }
       ],
-      "attributes": [
-        {
-          "key": "box-sizing"
-        },
-        {
-          "key": "display"
-        },
-        {
-          "key": "flex-direction"
-        },
-        {
-          "key": "height"
-        },
-        {
-          "key": "overflow"
-        },
-        {
-          "key": "background"
-        }
-      ],
+      "attributes": [],
       "id": "45055e8e9",
       "name": "component",
       "children": [
@@ -61,17 +42,7 @@
           "label": "top",
           "is": "div",
           "name": "element",
-          "attributes": [
-            {
-              "key": "border-bottom"
-            },
-            {
-              "key": "box-shadow"
-            },
-            {
-              "key": "display"
-            }
-          ],
+          "attributes": [],
           "style": [
             {
               "key": "border-bottom",
@@ -92,35 +63,7 @@
               "label": "tab bar",
               "is": "div",
               "name": "element",
-              "attributes": [
-                {
-                  "key": "box-sizing"
-                },
-                {
-                  "key": "padding-left"
-                },
-                {
-                  "key": "padding-top"
-                },
-                {
-                  "key": "padding-right"
-                },
-                {
-                  "key": "padding-bottom"
-                },
-                {
-                  "key": "align-content"
-                },
-                {
-                  "key": "align-items"
-                },
-                {
-                  "key": "display"
-                },
-                {
-                  "key": "flex-shrink"
-                }
-              ],
+              "attributes": [],
               "style": [
                 {
                   "key": "box-sizing",
@@ -165,17 +108,7 @@
                   "label": "Element",
                   "is": "div",
                   "name": "element",
-                  "attributes": [
-                    {
-                      "key": "box-sizing"
-                    },
-                    {
-                      "key": "display"
-                    },
-                    {
-                      "key": "width"
-                    }
-                  ],
+                  "attributes": [],
                   "style": [
                     {
                       "key": "box-sizing",
@@ -239,26 +172,7 @@
                   "label": "tools",
                   "is": "div",
                   "name": "element",
-                  "attributes": [
-                    {
-                      "key": "box-sizing"
-                    },
-                    {
-                      "key": "display"
-                    },
-                    {
-                      "key": "flex-shrink"
-                    },
-                    {
-                      "key": "position"
-                    },
-                    {
-                      "key": "top"
-                    },
-                    {
-                      "key": "cursor"
-                    }
-                  ],
+                  "attributes": [],
                   "style": [
                     {
                       "key": "box-sizing",
@@ -299,26 +213,7 @@
                           "is": "230a1e127813",
                           "label": "icon",
                           "name": "component-instance",
-                          "attributes": [
-                            {
-                              "key": "display"
-                            },
-                            {
-                              "key": "height"
-                            },
-                            {
-                              "key": "margin-right"
-                            },
-                            {
-                              "key": "color"
-                            },
-                            {
-                              "key": "position"
-                            },
-                            {
-                              "key": "top"
-                            }
-                          ],
+                          "attributes": [],
                           "style": [
                             {
                               "key": "display",
@@ -372,20 +267,7 @@
                           "label": "icon",
                           "is": "98d3a3ab395",
                           "name": "component-instance",
-                          "attributes": [
-                            {
-                              "key": "box-sizing"
-                            },
-                            {
-                              "key": "display"
-                            },
-                            {
-                              "key": "height"
-                            },
-                            {
-                              "key": "color"
-                            }
-                          ],
+                          "attributes": [],
                           "style": [
                             {
                               "key": "box-sizing",
@@ -449,20 +331,7 @@
           "label": "tabs",
           "is": "div",
           "name": "element",
-          "attributes": [
-            {
-              "key": "box-sizing"
-            },
-            {
-              "key": "display"
-            },
-            {
-              "key": "height"
-            },
-            {
-              "key": "overflow"
-            }
-          ],
+          "attributes": [],
           "style": [
             {
               "key": "box-sizing",
@@ -487,11 +356,7 @@
               "is": "4e40c2b98546",
               "label": "behavior",
               "name": "component-instance",
-              "attributes": [
-                {
-                  "key": "display"
-                }
-              ],
+              "attributes": [],
               "style": [
                 {
                   "key": "display",

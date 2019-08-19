@@ -17,14 +17,7 @@
           "value": "block"
         }
       ],
-      "attributes": [
-        {
-          "key": "box-sizing"
-        },
-        {
-          "key": "display"
-        }
-      ],
+      "attributes": [],
       "id": "f657bb0949423",
       "name": "component",
       "children": [
@@ -227,20 +220,7 @@
                   "label": "Element",
                   "is": "div",
                   "name": "element",
-                  "attributes": [
-                    {
-                      "key": "box-sizing"
-                    },
-                    {
-                      "key": "display"
-                    },
-                    {
-                      "key": "justify-content"
-                    },
-                    {
-                      "key": "align-items"
-                    }
-                  ],
+                  "attributes": [],
                   "style": [
                     {
                       "key": "box-sizing",
@@ -278,14 +258,7 @@
                       "id": "4b2435eb4497",
                       "is": "50e32bec2591",
                       "name": "component-instance",
-                      "attributes": [
-                        {
-                          "key": "width"
-                        },
-                        {
-                          "key": "display"
-                        }
-                      ],
+                      "attributes": [],
                       "style": [
                         {
                           "key": "width",
@@ -305,14 +278,7 @@
                               "id": "f657bb09149437",
                               "is": "3f456f80651",
                               "name": "component-instance",
-                              "attributes": [
-                                {
-                                  "key": "display"
-                                },
-                                {
-                                  "key": "height"
-                                }
-                              ],
+                              "attributes": [],
                               "style": [
                                 {
                                   "key": "display",

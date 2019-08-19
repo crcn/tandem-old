@@ -25,20 +25,7 @@
           "value": "1"
         }
       ],
-      "attributes": [
-        {
-          "key": "box-sizing"
-        },
-        {
-          "key": "display"
-        },
-        {
-          "key": "flex-direction"
-        },
-        {
-          "key": "flex"
-        }
-      ],
+      "attributes": [],
       "id": "5d6bd010465271",
       "name": "component",
       "children": [
@@ -47,20 +34,7 @@
           "variant": {},
           "is": "483373f987277",
           "name": "component-instance",
-          "attributes": [
-            {
-              "key": "box-sizing"
-            },
-            {
-              "key": "display"
-            },
-            {
-              "key": "flex-direction"
-            },
-            {
-              "key": "width"
-            }
-          ],
+          "attributes": [],
           "style": [
             {
               "key": "box-sizing",

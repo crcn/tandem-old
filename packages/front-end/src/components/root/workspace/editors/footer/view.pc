@@ -29,23 +29,7 @@
           "value": "0"
         }
       ],
-      "attributes": [
-        {
-          "key": "background-image"
-        },
-        {
-          "key": "display"
-        },
-        {
-          "key": "align-items"
-        },
-        {
-          "key": "border-top"
-        },
-        {
-          "key": "flex-shrink"
-        }
-      ],
+      "attributes": [],
       "id": "174f96bb76034",
       "name": "component",
       "children": [
@@ -54,29 +38,7 @@
           "label": "zoom",
           "is": "div",
           "name": "element",
-          "attributes": [
-            {
-              "key": "box-sizing"
-            },
-            {
-              "key": "font-family"
-            },
-            {
-              "key": "padding-right"
-            },
-            {
-              "key": "padding-left"
-            },
-            {
-              "key": "display"
-            },
-            {
-              "key": "width"
-            },
-            {
-              "key": "user-select"
-            }
-          ],
+          "attributes": [],
           "style": [
             {
               "key": "box-sizing",
@@ -153,14 +115,7 @@
           "is": "5dee72436",
           "label": "Breadcrumbs",
           "name": "component-instance",
-          "attributes": [
-            {
-              "key": "width"
-            },
-            {
-              "key": "flex-grow"
-            }
-          ],
+          "attributes": [],
           "style": [
             {
               "key": "width",
@@ -225,26 +180,7 @@
           "value": "30px"
         }
       ],
-      "attributes": [
-        {
-          "key": "box-sizing"
-        },
-        {
-          "key": "width"
-        },
-        {
-          "key": "display"
-        },
-        {
-          "key": "flex-direction"
-        },
-        {
-          "key": "overflow"
-        },
-        {
-          "key": "height"
-        }
-      ],
+      "attributes": [],
       "id": "5dee72436",
       "name": "component",
       "children": [
@@ -385,17 +321,7 @@
           "value": "pointer"
         }
       ],
-      "attributes": [
-        {
-          "key": "display"
-        },
-        {
-          "key": "align-items"
-        },
-        {
-          "key": "cursor"
-        }
-      ],
+      "attributes": [],
       "id": "5dee724311",
       "name": "component",
       "children": [
@@ -404,26 +330,7 @@
           "label": "label container",
           "is": "div",
           "name": "element",
-          "attributes": [
-            {
-              "key": "background-image"
-            },
-            {
-              "key": "display"
-            },
-            {
-              "key": "height"
-            },
-            {
-              "key": "align-items"
-            },
-            {
-              "key": "padding-left"
-            },
-            {
-              "key": "padding-right"
-            }
-          ],
+          "attributes": [],
           "style": [
             {
               "key": "background-image",
@@ -456,11 +363,7 @@
               "label": "Icon",
               "is": "div",
               "name": "element",
-              "attributes": [
-                {
-                  "key": "margin-right"
-                }
-              ],
+              "attributes": [],
               "style": [
                 {
                   "key": "margin-right",
@@ -473,11 +376,7 @@
                   "is": "e387963e1284",
                   "label": "Replace Icon",
                   "name": "component-instance",
-                  "attributes": [
-                    {
-                      "key": "display"
-                    }
-                  ],
+                  "attributes": [],
                   "style": [
                     {
                       "key": "display",
@@ -500,11 +399,7 @@
                   "is": "28fcc84635",
                   "label": "Shadow Icon",
                   "name": "component-instance",
-                  "attributes": [
-                    {
-                      "key": "display"
-                    }
-                  ],
+                  "attributes": [],
                   "style": [
                     {
                       "key": "display",
@@ -527,11 +422,7 @@
                   "is": "724c3c9e7",
                   "label": "Component Icon",
                   "name": "component-instance",
-                  "attributes": [
-                    {
-                      "key": "display"
-                    }
-                  ],
+                  "attributes": [],
                   "style": [
                     {
                       "key": "display",
@@ -554,14 +445,7 @@
                   "is": "8bf103e27",
                   "label": "Empty Square Icon",
                   "name": "component-instance",
-                  "attributes": [
-                    {
-                      "key": "display"
-                    },
-                    {
-                      "key": "height"
-                    }
-                  ],
+                  "attributes": [],
                   "style": [
                     {
                       "key": "display",
@@ -588,20 +472,7 @@
                   "is": "bc641d4113153",
                   "label": "Text Icon",
                   "name": "component-instance",
-                  "attributes": [
-                    {
-                      "key": "display"
-                    },
-                    {
-                      "key": "height"
-                    },
-                    {
-                      "key": "position"
-                    },
-                    {
-                      "key": "top"
-                    }
-                  ],
+                  "attributes": [],
                   "style": [
                     {
                       "key": "display",
@@ -636,14 +507,7 @@
                   "is": "e387963e7248",
                   "label": "Dotted box icon",
                   "name": "component-instance",
-                  "attributes": [
-                    {
-                      "key": "display"
-                    },
-                    {
-                      "key": "height"
-                    }
-                  ],
+                  "attributes": [],
                   "style": [
                     {
                       "key": "display",
@@ -694,20 +558,7 @@
           "label": "arrow container",
           "is": "div",
           "name": "element",
-          "attributes": [
-            {
-              "key": "box-sizing"
-            },
-            {
-              "key": "display"
-            },
-            {
-              "key": "flex-shrink"
-            },
-            {
-              "key": "position"
-            }
-          ],
+          "attributes": [],
           "style": [
             {
               "key": "box-sizing",
@@ -732,35 +583,7 @@
               "label": "arrow",
               "is": "div",
               "name": "element",
-              "attributes": [
-                {
-                  "key": "box-sizing"
-                },
-                {
-                  "key": "display"
-                },
-                {
-                  "key": "border-top"
-                },
-                {
-                  "key": "border-right"
-                },
-                {
-                  "key": "border-bottom"
-                },
-                {
-                  "key": "border-left"
-                },
-                {
-                  "key": "position"
-                },
-                {
-                  "key": "transform"
-                },
-                {
-                  "key": "filter"
-                }
-              ],
+              "attributes": [],
               "style": [
                 {
                   "key": "box-sizing",
@@ -1172,14 +995,7 @@
       "label": "Element",
       "is": "div",
       "name": "element",
-      "attributes": [
-        {
-          "key": "box-sizing"
-        },
-        {
-          "key": "display"
-        }
-      ],
+      "attributes": [],
       "style": [
         {
           "key": "box-sizing",
@@ -1196,11 +1012,7 @@
           "is": "5dee72436",
           "label": "Breadcrumbs",
           "name": "component-instance",
-          "attributes": [
-            {
-              "key": "border-top"
-            }
-          ],
+          "attributes": [],
           "style": [
             {
               "key": "border-top",

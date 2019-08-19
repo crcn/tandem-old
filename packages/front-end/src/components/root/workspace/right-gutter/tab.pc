@@ -49,38 +49,7 @@
           "value": "600"
         }
       ],
-      "attributes": [
-        {
-          "key": "text-transform"
-        },
-        {
-          "key": "text-align"
-        },
-        {
-          "key": "width"
-        },
-        {
-          "key": "padding"
-        },
-        {
-          "key": "cursor"
-        },
-        {
-          "key": "background"
-        },
-        {
-          "key": "padding-top"
-        },
-        {
-          "key": "padding-bottom"
-        },
-        {
-          "key": "user-select"
-        },
-        {
-          "key": "font-weight"
-        }
-      ],
+      "attributes": [],
       "id": "5d7d4069129476",
       "name": "component",
       "children": [

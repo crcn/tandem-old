@@ -65,50 +65,7 @@
           "value": "none"
         }
       ],
-      "attributes": [
-        {
-          "key": "box-sizing"
-        },
-        {
-          "key": "color"
-        },
-        {
-          "key": "cursor"
-        },
-        {
-          "key": "display"
-        },
-        {
-          "key": "padding-left"
-        },
-        {
-          "key": "padding-top"
-        },
-        {
-          "key": "padding-right"
-        },
-        {
-          "key": "padding-bottom"
-        },
-        {
-          "key": "background"
-        },
-        {
-          "key": "border-bottom-left-radius"
-        },
-        {
-          "key": "border-top-left-radius"
-        },
-        {
-          "key": "border-top-right-radius"
-        },
-        {
-          "key": "border-bottom-right-radius"
-        },
-        {
-          "key": "user-select"
-        }
-      ],
+      "attributes": [],
       "id": "9f364d2139415",
       "name": "component",
       "children": [

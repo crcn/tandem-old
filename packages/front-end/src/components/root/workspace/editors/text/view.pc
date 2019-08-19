@@ -17,14 +17,7 @@
           "value": "column"
         }
       ],
-      "attributes": [
-        {
-          "key": "display"
-        },
-        {
-          "key": "flex-direction"
-        }
-      ],
+      "attributes": [],
       "id": "5c9686b814979",
       "name": "component",
       "children": [
@@ -33,38 +26,7 @@
           "label": "Banner",
           "is": "div",
           "name": "element",
-          "attributes": [
-            {
-              "key": "box-sizing"
-            },
-            {
-              "key": "display"
-            },
-            {
-              "key": "align-items"
-            },
-            {
-              "key": "justify-content"
-            },
-            {
-              "key": "padding-left"
-            },
-            {
-              "key": "padding-top"
-            },
-            {
-              "key": "padding-right"
-            },
-            {
-              "key": "padding-bottom"
-            },
-            {
-              "key": "background"
-            },
-            {
-              "key": "flex-shrink"
-            }
-          ],
+          "attributes": [],
           "style": [
             {
               "key": "box-sizing",
@@ -144,14 +106,7 @@
               "label": "cta",
               "is": "div",
               "name": "element",
-              "attributes": [
-                {
-                  "key": "box-sizing"
-                },
-                {
-                  "key": "display"
-                }
-              ],
+              "attributes": [],
               "style": [
                 {
                   "key": "box-sizing",
@@ -168,14 +123,7 @@
                   "is": "9f364d2139415",
                   "label": "open text editor button",
                   "name": "component-instance",
-                  "attributes": [
-                    {
-                      "key": "background"
-                    },
-                    {
-                      "key": "white-space"
-                    }
-                  ],
+                  "attributes": [],
                   "style": [
                     {
                       "key": "background",
@@ -243,38 +191,7 @@
           "label": "content",
           "is": "div",
           "name": "element",
-          "attributes": [
-            {
-              "key": "box-sizing"
-            },
-            {
-              "key": "display"
-            },
-            {
-              "key": "position"
-            },
-            {
-              "key": "height"
-            },
-            {
-              "key": "flex-grow"
-            },
-            {
-              "key": "padding-left"
-            },
-            {
-              "key": "padding-top"
-            },
-            {
-              "key": "padding-right"
-            },
-            {
-              "key": "padding-bottom"
-            },
-            {
-              "key": "word-break"
-            }
-          ],
+          "attributes": [],
           "style": [
             {
               "key": "box-sizing",
@@ -323,23 +240,7 @@
               "label": "inner",
               "is": "div",
               "name": "element",
-              "attributes": [
-                {
-                  "key": "box-sizing"
-                },
-                {
-                  "key": "display"
-                },
-                {
-                  "key": "height"
-                },
-                {
-                  "key": "width"
-                },
-                {
-                  "key": "overflow"
-                }
-              ],
+              "attributes": [],
               "style": [
                 {
                   "key": "box-sizing",
