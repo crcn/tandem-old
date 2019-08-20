@@ -23,7 +23,9 @@ import {
   KeyValue,
   filterNestedNodes,
   EMPTY_ARRAY,
-  updateProperties
+  updateProperties,
+  kvpSetValue,
+  kvpOmitUndefined
 } from "tandem-common";
 import { values, identity, uniq, last, pickBy, isNull } from "lodash";
 import { DependencyGraph, Dependency } from "./graph";
@@ -1765,10 +1767,7 @@ export const persistCSSProperty = <TState extends PCEditorState>(
     (sourceNode: PCVisibleNode) => {
       return {
         ...sourceNode,
-        style: omitNull({
-          ...keyValuePairToHash(sourceNode.style),
-          [name]: value
-        })
+        style: kvpOmitUndefined(kvpSetValue(name, value, sourceNode.style))
       } as PCVisibleNode;
     }
   )(
@@ -1820,10 +1819,9 @@ export const persistAttribute = <TState extends PCEditorState>(
     (sourceNode: PCElement) =>
       ({
         ...sourceNode,
-        attributes: omitNull({
-          ...keyValuePairToHash(sourceNode.attributes),
-          [name]: value
-        })
+        attributes: kvpOmitUndefined(
+          kvpSetValue(name, value, sourceNode.attributes)
+        )
       } as PCVisibleNode)
   )(element, state.documents, state.graph);
 

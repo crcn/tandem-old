@@ -1,4 +1,5 @@
 import { memoize } from "./memoization";
+import { arraySplice } from "./array";
 
 export type RecursivePartial<T> = {
   [P in keyof T]?: T[P] | RecursivePartial<T[P]>
@@ -9,8 +10,8 @@ export type KeyValue<V> = {
 };
 
 export type KeyValuePair<V> = {
-  key: string;
-  value: V;
+  key?: string;
+  value?: V;
 };
 
 export const keyValuePairToHash = memoize(
@@ -38,3 +39,18 @@ export const kvpGetValue = memoize(
     return keyValuePairToHash(kvp)[key];
   }
 );
+
+export const kvpSetValue = (
+  key: string,
+  value: string,
+  kvp: KeyValuePair<string>[]
+) => {
+  const i = kvp.findIndex(kv => kv.key === key);
+  return i === -1
+    ? [...kvp, { key, value }]
+    : arraySplice(kvp, i, 1, { key, value });
+};
+
+export const kvpOmitUndefined = (kvp: KeyValuePair<string>[]) => {
+  return kvp.filter(({ key, value }) => key != null && value != null);
+};

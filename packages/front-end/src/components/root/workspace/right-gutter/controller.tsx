@@ -55,7 +55,7 @@ export default (Base: React.ComponentClass<BaseRightGutterProps>) =>
       const { setTab, onTabDoubleClick } = this;
 
       if (showNewGutterTab) {
-        return <RightGutter2 />;
+        return <RightGutter2 root={root} dispatch={dispatch} />;
       }
 
       const {

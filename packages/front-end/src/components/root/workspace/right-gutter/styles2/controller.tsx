@@ -1,14 +1,18 @@
 import * as React from "react";
-import { BaseStylesSectionProps, StylesSection, StyleBlock } from "./view.pc";
+import { BaseStylesSectionProps, StyleBlock } from "./view.pc";
+import { ComputedStyleBlock } from "paperclip";
 
-export type Props = {};
+export type Props = {
+  computedStyleBlocks: ComputedStyleBlock[];
+};
 
 export default (Base: React.ComponentClass<BaseStylesSectionProps>) => {
   class StylesSection extends React.Component<Props> {
     render() {
-      console.log("SECTION");
-
-      const styleBlocks = [<StyleBlock />, <StyleBlock />];
+      const { computedStyleBlocks } = this.props;
+      const styleBlocks = computedStyleBlocks.map((styleBlock, i) => {
+        return <StyleBlock styleBlock={styleBlock} />;
+      });
 
       return <Base content={styleBlocks} />;
     }

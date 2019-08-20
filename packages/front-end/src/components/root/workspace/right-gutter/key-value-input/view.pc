@@ -5,7 +5,7 @@
   "name": "module",
   "children": [
     {
-      "label": "key value input",
+      "label": "key value item",
       "is": "div",
       "style": [
         {
@@ -77,7 +77,7 @@
               ],
               "metadata": {},
               "name": "slot",
-              "label": "key"
+              "label": "label"
             }
           ],
           "metadata": {}
@@ -184,11 +184,8 @@
       }
     },
     {
-      "id": "88d5c61171453",
-      "label": "Element",
+      "label": "Key value list",
       "is": "div",
-      "name": "element",
-      "attributes": [],
       "style": [
         {
           "key": "box-sizing",
@@ -196,18 +193,139 @@
         },
         {
           "key": "display",
-          "value": "block"
+          "value": "box"
         }
       ],
-      "children": [],
+      "attributes": {},
+      "id": "9a232ac07895",
+      "name": "component",
+      "children": [
+        {
+          "id": "fddc1360623",
+          "children": [
+            {
+              "id": "fddc1360670",
+              "is": "981545e8822",
+              "label": "key value item",
+              "name": "component-instance",
+              "attributes": {},
+              "style": {},
+              "children": [
+                {
+                  "id": "fddc1360740",
+                  "variantId": null,
+                  "type": "text",
+                  "targetIdPath": [
+                    "981545e81074"
+                  ],
+                  "value": "duplicate",
+                  "name": "override",
+                  "children": []
+                }
+              ],
+              "metadata": {
+                "bounds": {
+                  "left": 407,
+                  "top": 139,
+                  "right": 640,
+                  "bottom": 239
+                }
+              },
+              "variant": {}
+            },
+            {
+              "id": "fddc1360659",
+              "is": "981545e8822",
+              "label": "key value item",
+              "name": "component-instance",
+              "attributes": {},
+              "style": {},
+              "children": [
+                {
+                  "id": "fddc1360741",
+                  "variantId": null,
+                  "type": "text",
+                  "targetIdPath": [
+                    "981545e81074"
+                  ],
+                  "value": "overridden",
+                  "name": "override",
+                  "children": []
+                }
+              ],
+              "metadata": {
+                "bounds": {
+                  "left": 407,
+                  "top": 139,
+                  "right": 640,
+                  "bottom": 239
+                }
+              },
+              "variant": {
+                "49050ecb20602": true
+              }
+            },
+            {
+              "id": "fddc1360681",
+              "is": "981545e8822",
+              "label": "key value item",
+              "name": "component-instance",
+              "attributes": {},
+              "style": {},
+              "children": [
+                {
+                  "id": "fddc1360692",
+                  "variantId": null,
+                  "type": "text",
+                  "targetIdPath": [
+                    "981545e81068"
+                  ],
+                  "value": "some key",
+                  "name": "override",
+                  "children": []
+                },
+                {
+                  "id": "fddc1360693",
+                  "variantId": null,
+                  "type": "text",
+                  "targetIdPath": [
+                    "981545e81074"
+                  ],
+                  "value": "some value",
+                  "name": "override",
+                  "children": []
+                }
+              ],
+              "metadata": {
+                "bounds": {
+                  "left": 407,
+                  "top": 139,
+                  "right": 640,
+                  "bottom": 239
+                }
+              },
+              "variant": {
+                "49050ecb20574": true
+              }
+            }
+          ],
+          "metadata": {},
+          "name": "slot",
+          "label": "items"
+        }
+      ],
       "metadata": {
         "bounds": {
-          "left": 610,
-          "top": 37.5,
-          "right": 710,
-          "bottom": 137.5
+          "left": 853,
+          "top": 84,
+          "right": 1075,
+          "bottom": 315
         }
-      }
+      },
+      "variant": {},
+      "controllers": [
+        "./controller.tsx"
+      ]
     }
   ]
 }

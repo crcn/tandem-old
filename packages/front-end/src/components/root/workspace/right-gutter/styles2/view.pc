@@ -1585,31 +1585,93 @@
                       ],
                       "children": [
                         {
-                          "id": "981545e8972",
+                          "id": "97f7d13f7926",
+                          "is": "9a232ac07895",
+                          "label": "properties list",
+                          "name": "component-instance",
+                          "attributes": {},
+                          "style": {},
                           "children": [
                             {
-                              "id": "981545e81019",
-                              "label": "Element",
-                              "is": "div",
-                              "name": "element",
-                              "attributes": [],
-                              "style": [
+                              "slotId": "fddc1360623",
+                              "id": "97f7d13f8337",
+                              "children": [
                                 {
-                                  "key": "box-sizing",
-                                  "value": "border-box"
-                                },
-                                {
-                                  "key": "display",
-                                  "value": "block"
+                                  "id": "97f7d13f8360",
+                                  "children": [
+                                    {
+                                      "id": "97f7d13f8735",
+                                      "is": "981545e8822",
+                                      "label": "key value item",
+                                      "name": "component-instance",
+                                      "attributes": {},
+                                      "style": {},
+                                      "children": [],
+                                      "metadata": {
+                                        "bounds": {
+                                          "left": 407,
+                                          "top": 139,
+                                          "right": 640,
+                                          "bottom": 239
+                                        }
+                                      },
+                                      "variant": {}
+                                    },
+                                    {
+                                      "id": "97f7d13f8393",
+                                      "is": "981545e8822",
+                                      "label": "key value item",
+                                      "name": "component-instance",
+                                      "attributes": {},
+                                      "style": {},
+                                      "children": [],
+                                      "metadata": {
+                                        "bounds": {
+                                          "left": 407,
+                                          "top": 139,
+                                          "right": 640,
+                                          "bottom": 239
+                                        }
+                                      },
+                                      "variant": {}
+                                    },
+                                    {
+                                      "id": "97f7d13f8614",
+                                      "is": "981545e8822",
+                                      "label": "key value item",
+                                      "name": "component-instance",
+                                      "attributes": {},
+                                      "style": {},
+                                      "children": [],
+                                      "metadata": {
+                                        "bounds": {
+                                          "left": 267.1828117037258,
+                                          "top": -83.27401032733053,
+                                          "right": 500.18281170372575,
+                                          "bottom": 16.72598967266947
+                                        }
+                                      },
+                                      "variant": {}
+                                    }
+                                  ],
+                                  "metadata": {},
+                                  "name": "slot",
+                                  "label": "properties"
                                 }
                               ],
-                              "children": [],
-                              "metadata": {}
+                              "metadata": {},
+                              "name": "plug"
                             }
                           ],
-                          "metadata": {},
-                          "name": "slot",
-                          "label": "properties"
+                          "metadata": {
+                            "bounds": {
+                              "left": 653.5578087027246,
+                              "top": -72.48060670688957,
+                              "right": 875.5578087027247,
+                              "bottom": 158.51939329311043
+                            }
+                          },
+                          "variant": {}
                         }
                       ],
                       "metadata": {}

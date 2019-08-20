@@ -16,6 +16,7 @@ import {
   filterTreeNodeParents,
   getNestedTreeNodeById,
   KeyValuePair,
+  kvpSetValue,
   keyValuePairToHash
 } from "tandem-common";
 import { uniq, isEqual } from "lodash";

@@ -154,7 +154,7 @@ export default (Base: React.ComponentClass<BaseNodeLayerProps>) => {
       }
     ),
 
-    withNodeDropTarget(TreeMoveOffset.PREPEND),
+    withNodeDropTarget(TreeMoveOffset.APPEND),
     DragSource(
       DRAG_TYPE,
       {

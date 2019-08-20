@@ -1,16 +1,22 @@
 Immediate:
 
-- [ ] start wiring up new UI
-- [ ] fix critical vulnerabilities
-- [ ] refactor styles to be list instead of key/value
-- [ ] ability to preview individual components
-- [ ] resolve where to put states & conditions
-- [ ] resolve how to toggle instance styles
-- [ ] UI for states
-- [ ] UI for conditions
-- [ ] UI for style block settings
-- [ ] UI for CSS variables
-- [ ] icon for src file upload
+- [ ] styles MVP (make this usable FIRST so that we can get a feel for it)
+  - [ ] style block
+    - [ ] ability to insert style
+    - [ ] ability to change key & value
+    - [ ] ability to add value by pressing enter
+    - [ ] wire up + button
+  - [ ] computed inherited styles
+    - [ ] compute enabled & disabled props
+  - [ ] compute overridden props
+  - [ ] prop value inputs
+    - [ ] color picker (requires parser)
+    - [ ] dropdown for enums (font family) - should be customizable
+- [ ] move style prop to own tag (needed for multiple style blocks)
+  - [ ] `variantId` prop
+  - [ ]
+- [ ] wire up attributes
+  - [ ]
 
 Maybe:
 

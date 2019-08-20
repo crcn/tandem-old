@@ -2,7 +2,8 @@ import {
   memoize,
   KeyValue,
   getParentTreeNode,
-  EMPTY_OBJECT
+  EMPTY_OBJECT,
+  keyValuePairToHash
 } from "tandem-common";
 import { defaults, pick } from "lodash";
 import {
@@ -92,8 +93,8 @@ export const computeStyleInfo = memoize(
       }
     }
 
-    if (options.self !== false) {
-      Object.assign(style, sourceNode.style);
+    if (options.self !== false && sourceNode.style) {
+      Object.assign(style, keyValuePairToHash(sourceNode.style));
     }
 
     if (options.styleMixins !== false && sourceNode.styleMixins) {
