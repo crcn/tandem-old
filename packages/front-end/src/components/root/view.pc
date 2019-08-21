@@ -1,22 +1,12 @@
 {
   "id": "8d443eb51221151",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "metadata": {},
   "name": "module",
   "children": [
     {
       "label": "App",
       "is": "div",
-      "style": [
-        {
-          "key": "box-sizing",
-          "value": "border-box"
-        },
-        {
-          "key": "display",
-          "value": "block"
-        }
-      ],
       "attributes": [],
       "id": "8d443eb51250574",
       "name": "component",
@@ -27,23 +17,12 @@
           "is": "div",
           "name": "element",
           "attributes": [],
-          "style": [
-            {
-              "key": "box-sizing",
-              "value": "border-box"
-            },
-            {
-              "key": "display",
-              "value": "block"
-            }
-          ],
           "children": [
             {
               "id": "8d443eb51294772",
               "is": "33b1b6b133319",
               "name": "component-instance",
               "attributes": [],
-              "style": [],
               "children": [],
               "metadata": {
                 "bounds": {
@@ -53,7 +32,14 @@
                   "bottom": 1974.4100056728703
                 }
               },
-              "variant": {}
+              "variant": {},
+              "styles": [
+                {
+                  "id": "285383541.1566398145481",
+                  "parts": {},
+                  "properties": []
+                }
+              ]
             }
           ],
           "metadata": {
@@ -63,7 +49,23 @@
               "right": 321.2170527475856,
               "bottom": 577.4961358553633
             }
-          }
+          },
+          "styles": [
+            {
+              "id": "5572848657.1566398145481",
+              "parts": {},
+              "properties": [
+                {
+                  "key": "box-sizing",
+                  "value": "border-box"
+                },
+                {
+                  "key": "display",
+                  "value": "block"
+                }
+              ]
+            }
+          ]
         }
       ],
       "metadata": {
@@ -74,7 +76,23 @@
           "bottom": 1689.3120136703856
         }
       },
-      "variant": {}
+      "variant": {},
+      "styles": [
+        {
+          "id": "3525400566.1566398145481",
+          "parts": {},
+          "properties": [
+            {
+              "key": "box-sizing",
+              "value": "border-box"
+            },
+            {
+              "key": "display",
+              "value": "block"
+            }
+          ]
+        }
+      ]
     }
   ]
 }

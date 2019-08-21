@@ -1,50 +1,12 @@
 {
   "id": "cf827dd439",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "metadata": {},
   "name": "module",
   "children": [
     {
       "label": "Main",
       "is": "div",
-      "style": [
-        {
-          "key": "box-sizing",
-          "value": "border-box"
-        },
-        {
-          "key": "display",
-          "value": "block"
-        },
-        {
-          "key": "background",
-          "value": "rgba(255, 255, 255, 0.6)"
-        },
-        {
-          "key": "position",
-          "value": "fixed"
-        },
-        {
-          "key": "left",
-          "value": "0px"
-        },
-        {
-          "key": "top",
-          "value": "0px"
-        },
-        {
-          "key": "width",
-          "value": "100vw"
-        },
-        {
-          "key": "height",
-          "value": "100vh"
-        },
-        {
-          "key": "z-index",
-          "value": "99999"
-        }
-      ],
       "attributes": [],
       "id": "900e27cd182",
       "name": "component",
@@ -55,36 +17,6 @@
           "is": "div",
           "name": "element",
           "attributes": [],
-          "style": [
-            {
-              "key": "box-sizing",
-              "value": "border-box"
-            },
-            {
-              "key": "display",
-              "value": "block"
-            },
-            {
-              "key": "position",
-              "value": "absolute"
-            },
-            {
-              "key": "left",
-              "value": "0px"
-            },
-            {
-              "key": "top",
-              "value": "0px"
-            },
-            {
-              "key": "width",
-              "value": "100%"
-            },
-            {
-              "key": "height",
-              "value": "100%"
-            }
-          ],
           "children": [
             {
               "id": "900e27cd186",
@@ -92,154 +24,86 @@
               "is": "div",
               "name": "element",
               "attributes": [],
-              "style": [
-                {
-                  "key": "box-sizing",
-                  "value": "border-box"
-                },
-                {
-                  "key": "display",
-                  "value": "block"
-                },
-                {
-                  "key": "width",
-                  "value": "400px"
-                },
-                {
-                  "key": "margin-right",
-                  "value": "auto"
-                },
-                {
-                  "key": "margin-left",
-                  "value": "auto"
-                },
-                {
-                  "key": "position",
-                  "value": "relative"
-                },
-                {
-                  "key": "top",
-                  "value": "20%"
-                },
-                {
-                  "key": "background",
-                  "value": "var(--d8f6340b1442)"
-                },
-                {
-                  "key": "border-top-left-radius",
-                  "value": "2px"
-                },
-                {
-                  "key": "border-top-right-radius",
-                  "value": "2px"
-                },
-                {
-                  "key": "border-bottom-left-radius",
-                  "value": "2px"
-                },
-                {
-                  "key": "border-bottom-right-radius",
-                  "value": "2px"
-                },
-                {
-                  "key": "border-left",
-                  "value": "1px solid var(--30f4693267675)"
-                },
-                {
-                  "key": "border-top",
-                  "value": "1px solid var(--30f4693267675)"
-                },
-                {
-                  "key": "border-right",
-                  "value": "1px solid var(--30f4693267675)"
-                },
-                {
-                  "key": "border-bottom",
-                  "value": "1px solid var(--30f4693267675)"
-                },
-                {
-                  "key": "padding-left",
-                  "value": "12px"
-                },
-                {
-                  "key": "padding-top",
-                  "value": "12px"
-                },
-                {
-                  "key": "padding-right",
-                  "value": "12px"
-                },
-                {
-                  "key": "padding-bottom",
-                  "value": "12px"
-                }
-              ],
               "children": [
                 {
                   "id": "4325aac312606",
                   "name": "text",
                   "label": "Title",
                   "value": "Whoops, looks like an unexpected error occurred.",
-                  "style": [
-                    {
-                      "key": "font-weight",
-                      "value": "600"
-                    },
-                    {
-                      "key": "font-size",
-                      "value": "14px"
-                    },
-                    {
-                      "key": "color",
-                      "value": "var(--24ce1e4d482)"
-                    },
-                    {
-                      "key": "display",
-                      "value": "block"
-                    },
-                    {
-                      "key": "margin-bottom",
-                      "value": "12px"
-                    }
-                  ],
                   "children": [],
                   "metadata": {},
-                  "styleMixins": {
-                    "dc3b39eb1275": {
-                      "priority": 0
+                  "styles": [
+                    {
+                      "id": "5096352529.1566398145451",
+                      "parts": {},
+                      "properties": [
+                        {
+                          "key": "font-weight",
+                          "value": "600"
+                        },
+                        {
+                          "key": "font-size",
+                          "value": "14px"
+                        },
+                        {
+                          "key": "color",
+                          "value": "var(--24ce1e4d482)"
+                        },
+                        {
+                          "key": "display",
+                          "value": "block"
+                        },
+                        {
+                          "key": "margin-bottom",
+                          "value": "12px"
+                        }
+                      ]
+                    },
+                    {
+                      "id": "5116195608.1566398145450",
+                      "mixinId": "dc3b39eb1275",
+                      "parts": {},
+                      "properties": []
                     }
-                  }
+                  ]
                 },
                 {
                   "id": "4325aac312614",
                   "name": "text",
                   "label": "Text",
                   "value": "If you're able to reproduce this issue, please help us make the app better by ",
-                  "style": [
-                    {
-                      "key": "color",
-                      "value": "var(--24ce1e4d482)"
-                    },
-                    {
-                      "key": "font-weight",
-                      "value": "500"
-                    },
-                    {
-                      "key": "margin-bottom",
-                      "value": "12px"
-                    },
-                    {
-                      "key": "display",
-                      "value": "inline"
-                    }
-                  ],
                   "children": [],
                   "metadata": {},
-                  "styleMixins": {
-                    "dc3b39eb1275": {
-                      "priority": 0
+                  "styles": [
+                    {
+                      "id": "8434334207.1566398145451",
+                      "parts": {},
+                      "properties": [
+                        {
+                          "key": "color",
+                          "value": "var(--24ce1e4d482)"
+                        },
+                        {
+                          "key": "font-weight",
+                          "value": "500"
+                        },
+                        {
+                          "key": "margin-bottom",
+                          "value": "12px"
+                        },
+                        {
+                          "key": "display",
+                          "value": "inline"
+                        }
+                      ]
+                    },
+                    {
+                      "id": "8108414632.1566398145451",
+                      "mixinId": "dc3b39eb1275",
+                      "parts": {},
+                      "properties": []
                     }
-                  }
+                  ]
                 },
                 {
                   "id": "2cb68e4e12627",
@@ -252,50 +116,63 @@
                       "value": "https://github.com/tandemcode/tandem/issues"
                     }
                   ],
-                  "style": [
-                    {
-                      "key": "box-sizing",
-                      "value": "border-box"
-                    },
-                    {
-                      "key": "display",
-                      "value": "inline"
-                    },
-                    {
-                      "key": "font-weight",
-                      "value": "600"
-                    },
-                    {
-                      "key": "color",
-                      "value": "var(--24ce1e4d13456)"
-                    }
-                  ],
                   "children": [
                     {
                       "id": "2cb68e4e12630",
                       "name": "text",
                       "label": "Text",
                       "value": "filing a bug ticket on GitHub.",
-                      "style": [
-                        {
-                          "key": "color",
-                          "value": "var(--24ce1e4d13456)"
-                        },
-                        {
-                          "key": "text-decoration",
-                          "value": "none"
-                        }
-                      ],
                       "children": [],
-                      "metadata": {}
+                      "metadata": {},
+                      "styles": [
+                        {
+                          "id": "7730376179.1566398145451",
+                          "parts": {},
+                          "properties": [
+                            {
+                              "key": "color",
+                              "value": "var(--24ce1e4d13456)"
+                            },
+                            {
+                              "key": "text-decoration",
+                              "value": "none"
+                            }
+                          ]
+                        }
+                      ]
                     }
                   ],
                   "metadata": {},
-                  "styleMixins": {
-                    "dc3b39eb1275": {
-                      "priority": 0
+                  "styles": [
+                    {
+                      "id": "5956199985.1566398145451",
+                      "parts": {},
+                      "properties": [
+                        {
+                          "key": "box-sizing",
+                          "value": "border-box"
+                        },
+                        {
+                          "key": "display",
+                          "value": "inline"
+                        },
+                        {
+                          "key": "font-weight",
+                          "value": "600"
+                        },
+                        {
+                          "key": "color",
+                          "value": "var(--24ce1e4d13456)"
+                        }
+                      ]
+                    },
+                    {
+                      "id": "1215716573.1566398145451",
+                      "mixinId": "dc3b39eb1275",
+                      "parts": {},
+                      "properties": []
                     }
-                  }
+                  ]
                 },
                 {
                   "id": "2cb68e4e12635",
@@ -303,24 +180,6 @@
                   "is": "div",
                   "name": "element",
                   "attributes": [],
-                  "style": [
-                    {
-                      "key": "box-sizing",
-                      "value": "border-box"
-                    },
-                    {
-                      "key": "display",
-                      "value": "flex"
-                    },
-                    {
-                      "key": "margin-top",
-                      "value": "12px"
-                    },
-                    {
-                      "key": "justify-content",
-                      "value": "flex-end"
-                    }
-                  ],
                   "children": [
                     {
                       "id": "2cb68e4e12641",
@@ -328,16 +187,6 @@
                       "is": "9f364d2139415",
                       "name": "component-instance",
                       "attributes": [],
-                      "style": [
-                        {
-                          "key": "box-sizing",
-                          "value": "border-box"
-                        },
-                        {
-                          "key": "display",
-                          "value": "inline-block"
-                        }
-                      ],
                       "children": [
                         {
                           "id": "2cb68e4e12648",
@@ -352,16 +201,180 @@
                         }
                       ],
                       "metadata": {},
-                      "variant": {}
+                      "variant": {},
+                      "styles": [
+                        {
+                          "id": "3765108512.1566398145451",
+                          "parts": {},
+                          "properties": [
+                            {
+                              "key": "box-sizing",
+                              "value": "border-box"
+                            },
+                            {
+                              "key": "display",
+                              "value": "inline-block"
+                            }
+                          ]
+                        }
+                      ]
                     }
                   ],
-                  "metadata": {}
+                  "metadata": {},
+                  "styles": [
+                    {
+                      "id": "9508664334.1566398145451",
+                      "parts": {},
+                      "properties": [
+                        {
+                          "key": "box-sizing",
+                          "value": "border-box"
+                        },
+                        {
+                          "key": "display",
+                          "value": "flex"
+                        },
+                        {
+                          "key": "margin-top",
+                          "value": "12px"
+                        },
+                        {
+                          "key": "justify-content",
+                          "value": "flex-end"
+                        }
+                      ]
+                    }
+                  ]
                 }
               ],
-              "metadata": {}
+              "metadata": {},
+              "styles": [
+                {
+                  "id": "6504581098.1566398145450",
+                  "parts": {},
+                  "properties": [
+                    {
+                      "key": "box-sizing",
+                      "value": "border-box"
+                    },
+                    {
+                      "key": "display",
+                      "value": "block"
+                    },
+                    {
+                      "key": "width",
+                      "value": "400px"
+                    },
+                    {
+                      "key": "margin-right",
+                      "value": "auto"
+                    },
+                    {
+                      "key": "margin-left",
+                      "value": "auto"
+                    },
+                    {
+                      "key": "position",
+                      "value": "relative"
+                    },
+                    {
+                      "key": "top",
+                      "value": "20%"
+                    },
+                    {
+                      "key": "background",
+                      "value": "var(--d8f6340b1442)"
+                    },
+                    {
+                      "key": "border-top-left-radius",
+                      "value": "2px"
+                    },
+                    {
+                      "key": "border-top-right-radius",
+                      "value": "2px"
+                    },
+                    {
+                      "key": "border-bottom-left-radius",
+                      "value": "2px"
+                    },
+                    {
+                      "key": "border-bottom-right-radius",
+                      "value": "2px"
+                    },
+                    {
+                      "key": "border-left",
+                      "value": "1px solid var(--30f4693267675)"
+                    },
+                    {
+                      "key": "border-top",
+                      "value": "1px solid var(--30f4693267675)"
+                    },
+                    {
+                      "key": "border-right",
+                      "value": "1px solid var(--30f4693267675)"
+                    },
+                    {
+                      "key": "border-bottom",
+                      "value": "1px solid var(--30f4693267675)"
+                    },
+                    {
+                      "key": "padding-left",
+                      "value": "12px"
+                    },
+                    {
+                      "key": "padding-top",
+                      "value": "12px"
+                    },
+                    {
+                      "key": "padding-right",
+                      "value": "12px"
+                    },
+                    {
+                      "key": "padding-bottom",
+                      "value": "12px"
+                    }
+                  ]
+                }
+              ]
             }
           ],
-          "metadata": {}
+          "metadata": {},
+          "styles": [
+            {
+              "id": "9541924965.1566398145450",
+              "parts": {},
+              "properties": [
+                {
+                  "key": "box-sizing",
+                  "value": "border-box"
+                },
+                {
+                  "key": "display",
+                  "value": "block"
+                },
+                {
+                  "key": "position",
+                  "value": "absolute"
+                },
+                {
+                  "key": "left",
+                  "value": "0px"
+                },
+                {
+                  "key": "top",
+                  "value": "0px"
+                },
+                {
+                  "key": "width",
+                  "value": "100%"
+                },
+                {
+                  "key": "height",
+                  "value": "100%"
+                }
+              ]
+            }
+          ]
         }
       ],
       "metadata": {
@@ -375,6 +388,50 @@
       "variant": {},
       "controllers": [
         "./controller.tsx"
+      ],
+      "styles": [
+        {
+          "id": "1778417485.1566398145450",
+          "parts": {},
+          "properties": [
+            {
+              "key": "box-sizing",
+              "value": "border-box"
+            },
+            {
+              "key": "display",
+              "value": "block"
+            },
+            {
+              "key": "background",
+              "value": "rgba(255, 255, 255, 0.6)"
+            },
+            {
+              "key": "position",
+              "value": "fixed"
+            },
+            {
+              "key": "left",
+              "value": "0px"
+            },
+            {
+              "key": "top",
+              "value": "0px"
+            },
+            {
+              "key": "width",
+              "value": "100vw"
+            },
+            {
+              "key": "height",
+              "value": "100vh"
+            },
+            {
+              "key": "z-index",
+              "value": "99999"
+            }
+          ]
+        }
       ]
     },
     {
@@ -383,16 +440,6 @@
       "is": "div",
       "name": "element",
       "attributes": [],
-      "style": [
-        {
-          "key": "box-sizing",
-          "value": "border-box"
-        },
-        {
-          "key": "display",
-          "value": "block"
-        }
-      ],
       "children": [
         {
           "id": "900e27cd12658",
@@ -400,12 +447,6 @@
           "label": "Main",
           "name": "component-instance",
           "attributes": [],
-          "style": [
-            {
-              "key": "z-index",
-              "value": "9999"
-            }
-          ],
           "children": [],
           "metadata": {
             "bounds": {
@@ -415,7 +456,19 @@
               "bottom": 840
             }
           },
-          "variant": {}
+          "variant": {},
+          "styles": [
+            {
+              "id": "2890995269.1566398145451",
+              "parts": {},
+              "properties": [
+                {
+                  "key": "z-index",
+                  "value": "9999"
+                }
+              ]
+            }
+          ]
         },
         {
           "id": "900e27cd239",
@@ -423,16 +476,6 @@
           "label": "Workspace",
           "name": "component-instance",
           "attributes": [],
-          "style": [
-            {
-              "key": "opacity",
-              "value": 0.982
-            },
-            {
-              "key": "display",
-              "value": "block"
-            }
-          ],
           "children": [],
           "metadata": {
             "bounds": {
@@ -442,7 +485,23 @@
               "bottom": 1974.4100056728703
             }
           },
-          "variant": {}
+          "variant": {},
+          "styles": [
+            {
+              "id": "8144980247.1566398145451",
+              "parts": {},
+              "properties": [
+                {
+                  "key": "opacity",
+                  "value": 0.982
+                },
+                {
+                  "key": "display",
+                  "value": "block"
+                }
+              ]
+            }
+          ]
         }
       ],
       "metadata": {
@@ -452,7 +511,23 @@
           "right": 4221,
           "bottom": 1247
         }
-      }
+      },
+      "styles": [
+        {
+          "id": "2708161380.1566398145451",
+          "parts": {},
+          "properties": [
+            {
+              "key": "box-sizing",
+              "value": "border-box"
+            },
+            {
+              "key": "display",
+              "value": "block"
+            }
+          ]
+        }
+      ]
     }
   ]
 }

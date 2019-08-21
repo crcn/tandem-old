@@ -1,5 +1,6 @@
 Immediate:
 
+- [ ]
 - [ ] refactor
   - [ ] styles as their own nodes
   - [ ] variant style overrides as their
@@ -20,6 +21,8 @@ Immediate:
   - [ ]
 - [ ] wire up attributes
   - [ ]
+- [ ] refactor how overrides work
+  - [ ] happen only at instance level. Should be prop.
 
 Maybe:
 

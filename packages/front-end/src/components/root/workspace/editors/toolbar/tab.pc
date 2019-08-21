@@ -1,62 +1,12 @@
 {
   "id": "1273009774",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "metadata": {},
   "name": "module",
   "children": [
     {
       "label": "Editor Tab",
       "is": "div",
-      "style": [
-        {
-          "key": "box-sizing",
-          "value": "border-box"
-        },
-        {
-          "key": "padding",
-          "value": "8px 16px"
-        },
-        {
-          "key": "align-items",
-          "value": "center"
-        },
-        {
-          "key": "background",
-          "value": "var(--51588fd610365)"
-        },
-        {
-          "key": "color",
-          "value": "rgba(112, 112, 112, 1)"
-        },
-        {
-          "key": "cursor",
-          "value": "pointer"
-        },
-        {
-          "key": "padding-left",
-          "value": "20px"
-        },
-        {
-          "key": "height",
-          "value": "100%"
-        },
-        {
-          "key": "overflow",
-          "value": "hidden"
-        },
-        {
-          "key": "text-overflow",
-          "value": "\"\""
-        },
-        {
-          "key": "user-select",
-          "value": "none"
-        },
-        {
-          "key": "white-space",
-          "value": "nowrap"
-        }
-      ],
       "attributes": [],
       "id": "fde5849e96847",
       "name": "component",
@@ -66,34 +16,27 @@
           "name": "text",
           "label": "label",
           "value": "tab",
-          "style": [],
           "children": [],
           "metadata": {},
-          "styleMixins": {
-            "dc3b39eb1275": {
-              "priority": 0
+          "styles": [
+            {
+              "id": "6895484258.1566398145493",
+              "parts": {},
+              "properties": []
+            },
+            {
+              "id": "1857486131.1566398145493",
+              "mixinId": "dc3b39eb1275",
+              "parts": {},
+              "properties": []
             }
-          }
+          ]
         },
         {
           "id": "f0d3191523498",
           "name": "text",
           "label": "x button",
           "value": "×",
-          "style": [
-            {
-              "key": "margin-left",
-              "value": "8px"
-            },
-            {
-              "key": "visibility",
-              "value": "hidden"
-            },
-            {
-              "key": "cursor",
-              "value": "pointer"
-            }
-          ],
           "children": [
             {
               "id": "e24f65cc1559",
@@ -108,11 +51,32 @@
             }
           ],
           "metadata": {},
-          "styleMixins": {
-            "dc3b39eb1275": {
-              "priority": 0
+          "styles": [
+            {
+              "id": "2918287079.1566398145493",
+              "parts": {},
+              "properties": [
+                {
+                  "key": "margin-left",
+                  "value": "8px"
+                },
+                {
+                  "key": "visibility",
+                  "value": "hidden"
+                },
+                {
+                  "key": "cursor",
+                  "value": "pointer"
+                }
+              ]
+            },
+            {
+              "id": "3572205352.1566398145493",
+              "mixinId": "dc3b39eb1275",
+              "parts": {},
+              "properties": []
             }
-          }
+          ]
         },
         {
           "id": "f4e04d3116",
@@ -124,21 +88,27 @@
         },
         {
           "id": "f4e04d3117",
-          "variantId": "f4e04d3116",
+          "name": "override",
+          "type": "styles",
           "targetIdPath": [],
           "value": [
             {
-              "key": "background",
-              "value": "var(--1934368810788)"
-            },
-            {
-              "key": "user-select",
-              "value": "none"
+              "id": "6061251064.1566398145493",
+              "parts": {},
+              "variantId": "f4e04d3116",
+              "properties": [
+                {
+                  "key": "background",
+                  "value": "var(--1934368810788)"
+                },
+                {
+                  "key": "user-select",
+                  "value": "none"
+                }
+              ]
             }
           ],
-          "name": "override",
-          "children": [],
-          "type": "add-style-block"
+          "children": []
         },
         {
           "id": "e24f65cc1557",
@@ -150,31 +120,37 @@
         },
         {
           "id": "e24f65cc1558",
-          "variantId": "e24f65cc1557",
+          "name": "override",
+          "type": "styles",
           "targetIdPath": [
             "f0d3191523498"
           ],
           "value": [
             {
-              "key": "visibility",
-              "value": "visible"
-            },
-            {
-              "key": "font-size",
-              "value": "12px"
-            },
-            {
-              "key": "position",
-              "value": "relative"
-            },
-            {
-              "key": "top",
-              "value": "1px"
+              "id": "7313711264.1566398145493",
+              "parts": {},
+              "variantId": "e24f65cc1557",
+              "properties": [
+                {
+                  "key": "visibility",
+                  "value": "visible"
+                },
+                {
+                  "key": "font-size",
+                  "value": "12px"
+                },
+                {
+                  "key": "position",
+                  "value": "relative"
+                },
+                {
+                  "key": "top",
+                  "value": "1px"
+                }
+              ]
             }
           ],
-          "name": "override",
-          "children": [],
-          "type": "add-style-block"
+          "children": []
         }
       ],
       "metadata": {
@@ -185,7 +161,63 @@
           "bottom": 487.39435041328807
         }
       },
-      "variant": {}
+      "variant": {},
+      "styles": [
+        {
+          "id": "9343470065.1566398145492",
+          "parts": {},
+          "properties": [
+            {
+              "key": "box-sizing",
+              "value": "border-box"
+            },
+            {
+              "key": "padding",
+              "value": "8px 16px"
+            },
+            {
+              "key": "align-items",
+              "value": "center"
+            },
+            {
+              "key": "background",
+              "value": "var(--51588fd610365)"
+            },
+            {
+              "key": "color",
+              "value": "rgba(112, 112, 112, 1)"
+            },
+            {
+              "key": "cursor",
+              "value": "pointer"
+            },
+            {
+              "key": "padding-left",
+              "value": "20px"
+            },
+            {
+              "key": "height",
+              "value": "100%"
+            },
+            {
+              "key": "overflow",
+              "value": "hidden"
+            },
+            {
+              "key": "text-overflow",
+              "value": "\"\""
+            },
+            {
+              "key": "user-select",
+              "value": "none"
+            },
+            {
+              "key": "white-space",
+              "value": "nowrap"
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "f91245fc598",
@@ -193,20 +225,6 @@
       "is": "div",
       "name": "element",
       "attributes": [],
-      "style": [
-        {
-          "key": "box-sizing",
-          "value": "border-box"
-        },
-        {
-          "key": "display",
-          "value": "block"
-        },
-        {
-          "key": "white-space",
-          "value": "nowrap"
-        }
-      ],
       "children": [
         {
           "id": "f91245fc561",
@@ -214,36 +232,6 @@
           "label": "Editor Tab",
           "name": "component-instance",
           "attributes": [],
-          "style": [
-            {
-              "key": "display",
-              "value": "inline-block"
-            },
-            {
-              "key": "height",
-              "value": "unset"
-            },
-            {
-              "key": "padding-left",
-              "value": "20px"
-            },
-            {
-              "key": "overflow",
-              "value": "hidden"
-            },
-            {
-              "key": "width",
-              "value": "100%"
-            },
-            {
-              "key": "padding-top",
-              "value": "unset"
-            },
-            {
-              "key": "position",
-              "value": "relative"
-            }
-          ],
           "children": [
             {
               "id": "f91245fc942",
@@ -258,37 +246,49 @@
             },
             {
               "id": "f91245fc1456",
+              "name": "override",
+              "type": "styles",
               "targetIdPath": [
                 "fde5849e113917"
               ],
               "value": [
                 {
-                  "key": "width",
-                  "value": "100%"
-                },
-                {
-                  "key": "display",
-                  "value": "inline-block"
+                  "id": "240171679.1566398145493",
+                  "parts": {},
+                  "properties": [
+                    {
+                      "key": "width",
+                      "value": "100%"
+                    },
+                    {
+                      "key": "display",
+                      "value": "inline-block"
+                    }
+                  ]
                 }
               ],
-              "name": "override",
-              "children": [],
-              "type": "add-style-block"
+              "children": []
             },
             {
               "id": "f91245fc4345",
+              "name": "override",
+              "type": "styles",
               "targetIdPath": [
                 "f0d3191523498"
               ],
               "value": [
                 {
-                  "key": "white-space",
-                  "value": "nowrap"
+                  "id": "4325525449.1566398145493",
+                  "parts": {},
+                  "properties": [
+                    {
+                      "key": "white-space",
+                      "value": "nowrap"
+                    }
+                  ]
                 }
               ],
-              "name": "override",
-              "children": [],
-              "type": "add-style-block"
+              "children": []
             }
           ],
           "metadata": {
@@ -299,7 +299,43 @@
               "bottom": 952.3943504132881
             }
           },
-          "variant": {}
+          "variant": {},
+          "styles": [
+            {
+              "id": "8444597339.1566398145493",
+              "parts": {},
+              "properties": [
+                {
+                  "key": "display",
+                  "value": "inline-block"
+                },
+                {
+                  "key": "height",
+                  "value": "unset"
+                },
+                {
+                  "key": "padding-left",
+                  "value": "20px"
+                },
+                {
+                  "key": "overflow",
+                  "value": "hidden"
+                },
+                {
+                  "key": "width",
+                  "value": "100%"
+                },
+                {
+                  "key": "padding-top",
+                  "value": "unset"
+                },
+                {
+                  "key": "position",
+                  "value": "relative"
+                }
+              ]
+            }
+          ]
         }
       ],
       "metadata": {
@@ -309,7 +345,27 @@
           "right": 1271,
           "bottom": 1496
         }
-      }
+      },
+      "styles": [
+        {
+          "id": "4218318826.1566398145493",
+          "parts": {},
+          "properties": [
+            {
+              "key": "box-sizing",
+              "value": "border-box"
+            },
+            {
+              "key": "display",
+              "value": "block"
+            },
+            {
+              "key": "white-space",
+              "value": "nowrap"
+            }
+          ]
+        }
+      ]
     }
   ]
 }

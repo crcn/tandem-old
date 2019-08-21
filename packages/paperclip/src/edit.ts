@@ -1806,7 +1806,7 @@ export const persistAttribute = <TState extends PCEditorState>(
     value = undefined;
   }
   const updatedNode = maybeOverride(
-    PCOverridableType.ADD_ATTRIBUTES,
+    PCOverridableType.ATTRIBUTES,
     { [name]: value },
     null,
     (attributes, override) => {

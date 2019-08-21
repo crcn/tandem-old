@@ -1,13 +1,12 @@
 {
   "id": "f9ffe26e5",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "metadata": {},
   "name": "module",
   "children": [
     {
       "label": "Input Properties",
       "is": "div",
-      "style": [],
       "attributes": [],
       "id": "6e2729d443544",
       "name": "component",
@@ -18,7 +17,6 @@
           "is": "7149f8192509",
           "name": "component-instance",
           "attributes": [],
-          "style": [],
           "children": [
             {
               "id": "6e2729d443536",
@@ -32,39 +30,57 @@
             },
             {
               "id": "6e2729d443538",
+              "name": "override",
+              "type": "styles",
               "targetIdPath": [
                 "7149f8192506"
               ],
-              "value": [],
-              "name": "override",
-              "children": [],
-              "type": "add-style-block"
+              "value": [
+                {
+                  "id": "5395089733.1566398145507",
+                  "parts": {},
+                  "properties": []
+                }
+              ],
+              "children": []
             },
             {
               "id": "6e2729d443539",
+              "name": "override",
+              "type": "styles",
               "targetIdPath": [
                 "7149f8199969"
               ],
-              "value": [],
-              "name": "override",
-              "children": [],
-              "type": "add-style-block"
+              "value": [
+                {
+                  "id": "6520390078.1566398145507",
+                  "parts": {},
+                  "properties": []
+                }
+              ],
+              "children": []
             },
             {
               "id": "6e2729d443540",
+              "name": "override",
+              "type": "styles",
               "targetIdPath": [
                 "7149f8199969",
                 "7149f8199120"
               ],
               "value": [
                 {
-                  "key": "border",
-                  "value": "1px solid rgba(0,0,0,0.1)"
+                  "id": "654306370.1566398145507",
+                  "parts": {},
+                  "properties": [
+                    {
+                      "key": "border",
+                      "value": "1px solid rgba(0,0,0,0.1)"
+                    }
+                  ]
                 }
               ],
-              "name": "override",
-              "children": [],
-              "type": "add-style-block"
+              "children": []
             },
             {
               "id": "6e2729d443541",
@@ -87,7 +103,6 @@
                   "label": "placeholder input",
                   "name": "component-instance",
                   "attributes": [],
-                  "style": [],
                   "children": [],
                   "metadata": {
                     "bounds": {
@@ -97,7 +112,14 @@
                       "bottom": 327.0358087589019
                     }
                   },
-                  "variant": {}
+                  "variant": {},
+                  "styles": [
+                    {
+                      "id": "4735307765.1566398145507",
+                      "parts": {},
+                      "properties": []
+                    }
+                  ]
                 }
               ],
               "metadata": {},
@@ -111,7 +133,14 @@
               "right": 1403,
               "bottom": 374
             }
-          }
+          },
+          "styles": [
+            {
+              "id": "2522250925.1566398145506",
+              "parts": {},
+              "properties": []
+            }
+          ]
         },
         {
           "id": "842b4e5723884",
@@ -119,7 +148,6 @@
           "label": "Labeled Input",
           "name": "component-instance",
           "attributes": [],
-          "style": [],
           "children": [
             {
               "id": "842b4e5728829",
@@ -142,7 +170,6 @@
                   "label": "input type input",
                   "name": "component-instance",
                   "attributes": [],
-                  "style": [],
                   "children": [
                     {
                       "id": "842b4e5758712",
@@ -164,7 +191,14 @@
                       "bottom": 521.2360321797468
                     }
                   },
-                  "variant": {}
+                  "variant": {},
+                  "styles": [
+                    {
+                      "id": "280295837.1566398145507",
+                      "parts": {},
+                      "properties": []
+                    }
+                  ]
                 }
               ],
               "metadata": {},
@@ -179,7 +213,14 @@
               "bottom": 353.5832678332798
             }
           },
-          "variant": {}
+          "variant": {},
+          "styles": [
+            {
+              "id": "5736506166.1566398145507",
+              "parts": {},
+              "properties": []
+            }
+          ]
         }
       ],
       "metadata": {
@@ -193,7 +234,14 @@
       "controllers": [
         "./input-controller.tsx"
       ],
-      "variant": {}
+      "variant": {},
+      "styles": [
+        {
+          "id": "9201852272.1566398145506",
+          "parts": {},
+          "properties": []
+        }
+      ]
     }
   ]
 }

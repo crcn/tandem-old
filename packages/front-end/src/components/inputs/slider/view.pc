@@ -1,26 +1,12 @@
 {
   "id": "76b155a0891181",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "metadata": {},
   "name": "module",
   "children": [
     {
       "label": "Slider",
       "is": "div",
-      "style": [
-        {
-          "key": "height",
-          "value": "11px"
-        },
-        {
-          "key": "position",
-          "value": "relative"
-        },
-        {
-          "key": "box-sizing",
-          "value": "border-box"
-        }
-      ],
       "attributes": [],
       "id": "956880c910105",
       "name": "component",
@@ -31,54 +17,60 @@
           "is": "div",
           "name": "element",
           "attributes": [],
-          "style": [
-            {
-              "key": "width",
-              "value": "calc(100% - 8px)"
-            },
-            {
-              "key": "height",
-              "value": "4px"
-            },
-            {
-              "key": "background",
-              "value": "var(--d8f6340b1442)"
-            },
-            {
-              "key": "position",
-              "value": "absolute"
-            },
-            {
-              "key": "transform",
-              "value": "translateY(-50%)"
-            },
-            {
-              "key": "top",
-              "value": "50%"
-            },
-            {
-              "key": "margin-left",
-              "value": "4px"
-            },
-            {
-              "key": "border-top-left-radius",
-              "value": "2px"
-            },
-            {
-              "key": "border-top-right-radius",
-              "value": "2px"
-            },
-            {
-              "key": "border-bottom-left-radius",
-              "value": "2px"
-            },
-            {
-              "key": "border-bottom-right-radius",
-              "value": "2px"
-            }
-          ],
           "children": [],
-          "metadata": {}
+          "metadata": {},
+          "styles": [
+            {
+              "id": "6340581196.1566398145467",
+              "parts": {},
+              "properties": [
+                {
+                  "key": "width",
+                  "value": "calc(100% - 8px)"
+                },
+                {
+                  "key": "height",
+                  "value": "4px"
+                },
+                {
+                  "key": "background",
+                  "value": "var(--d8f6340b1442)"
+                },
+                {
+                  "key": "position",
+                  "value": "absolute"
+                },
+                {
+                  "key": "transform",
+                  "value": "translateY(-50%)"
+                },
+                {
+                  "key": "top",
+                  "value": "50%"
+                },
+                {
+                  "key": "margin-left",
+                  "value": "4px"
+                },
+                {
+                  "key": "border-top-left-radius",
+                  "value": "2px"
+                },
+                {
+                  "key": "border-top-right-radius",
+                  "value": "2px"
+                },
+                {
+                  "key": "border-bottom-left-radius",
+                  "value": "2px"
+                },
+                {
+                  "key": "border-bottom-right-radius",
+                  "value": "2px"
+                }
+              ]
+            }
+          ]
         },
         {
           "id": "956880c910104",
@@ -86,42 +78,48 @@
           "is": "div",
           "name": "element",
           "attributes": [],
-          "style": [
-            {
-              "key": "width",
-              "value": "8px"
-            },
-            {
-              "key": "height",
-              "value": "8px"
-            },
-            {
-              "key": "border-radius",
-              "value": "8px"
-            },
-            {
-              "key": "background",
-              "value": "var(--24ce1e4d482)"
-            },
-            {
-              "key": "position",
-              "value": "absolute"
-            },
-            {
-              "key": "transform",
-              "value": "translate(-50%, -50%)"
-            },
-            {
-              "key": "left",
-              "value": "50%"
-            },
-            {
-              "key": "top",
-              "value": "50%"
-            }
-          ],
           "children": [],
-          "metadata": {}
+          "metadata": {},
+          "styles": [
+            {
+              "id": "5937765360.1566398145467",
+              "parts": {},
+              "properties": [
+                {
+                  "key": "width",
+                  "value": "8px"
+                },
+                {
+                  "key": "height",
+                  "value": "8px"
+                },
+                {
+                  "key": "border-radius",
+                  "value": "8px"
+                },
+                {
+                  "key": "background",
+                  "value": "var(--24ce1e4d482)"
+                },
+                {
+                  "key": "position",
+                  "value": "absolute"
+                },
+                {
+                  "key": "transform",
+                  "value": "translate(-50%, -50%)"
+                },
+                {
+                  "key": "left",
+                  "value": "50%"
+                },
+                {
+                  "key": "top",
+                  "value": "50%"
+                }
+              ]
+            }
+          ]
         }
       ],
       "metadata": {
@@ -135,7 +133,27 @@
       "controllers": [
         "./controller.tsx"
       ],
-      "variant": {}
+      "variant": {},
+      "styles": [
+        {
+          "id": "6802645176.1566398145467",
+          "parts": {},
+          "properties": [
+            {
+              "key": "height",
+              "value": "11px"
+            },
+            {
+              "key": "position",
+              "value": "relative"
+            },
+            {
+              "key": "box-sizing",
+              "value": "border-box"
+            }
+          ]
+        }
+      ]
     }
   ]
 }

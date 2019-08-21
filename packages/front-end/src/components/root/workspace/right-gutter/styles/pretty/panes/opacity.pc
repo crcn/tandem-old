@@ -1,55 +1,57 @@
 {
   "id": "ab9eb3a123020",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "metadata": {},
   "name": "module",
   "children": [
     {
       "label": "Opacity Pane",
       "is": "b6c162d113",
-      "style": [
-        {
-          "key": "display",
-          "value": "flex"
-        },
-        {
-          "key": "flex-direction",
-          "value": "column"
-        }
-      ],
       "attributes": [],
       "id": "ab9eb3a110017",
       "name": "component",
       "children": [
         {
           "id": "ab9eb3a110015",
+          "name": "override",
+          "type": "styles",
           "targetIdPath": [
             "b6c162d132"
           ],
           "value": [
             {
-              "key": "display",
-              "value": "none"
+              "id": "8870471254.1566398145543",
+              "parts": {},
+              "properties": [
+                {
+                  "key": "display",
+                  "value": "none"
+                }
+              ]
             }
           ],
-          "name": "override",
-          "children": [],
-          "type": "add-style-block"
+          "children": []
         },
         {
           "id": "ab9eb3a110016",
+          "name": "override",
+          "type": "styles",
           "targetIdPath": [
             "b6c162d140"
           ],
           "value": [
             {
-              "key": "padding-bottom",
-              "value": "4px"
+              "id": "7705300950.1566398145543",
+              "parts": {},
+              "properties": [
+                {
+                  "key": "padding-bottom",
+                  "value": "4px"
+                }
+              ]
             }
           ],
-          "name": "override",
-          "children": [],
-          "type": "add-style-block"
+          "children": []
         },
         {
           "slotId": "d6261ad52883",
@@ -61,16 +63,6 @@
               "is": "7149f8192509",
               "name": "component-instance",
               "attributes": [],
-              "style": [
-                {
-                  "key": "width",
-                  "value": "100%"
-                },
-                {
-                  "key": "flex",
-                  "value": "1"
-                }
-              ],
               "children": [
                 {
                   "id": "ab9eb3a110009",
@@ -84,13 +76,19 @@
                 },
                 {
                   "id": "ab9eb3a110013",
+                  "name": "override",
+                  "type": "styles",
                   "targetIdPath": [
                     "7149f8192506"
                   ],
-                  "value": [],
-                  "name": "override",
-                  "children": [],
-                  "type": "add-style-block"
+                  "value": [
+                    {
+                      "id": "8790968477.1566398145543",
+                      "parts": {},
+                      "properties": []
+                    }
+                  ],
+                  "children": []
                 },
                 {
                   "id": "ab9eb3a110014",
@@ -113,22 +111,27 @@
                       "is": "956880c910105",
                       "name": "component-instance",
                       "attributes": [],
-                      "style": [],
                       "children": [
                         {
                           "id": "ab9eb3a110012",
+                          "name": "override",
+                          "type": "styles",
                           "targetIdPath": [
                             "956880c910104"
                           ],
                           "value": [
                             {
-                              "key": "left",
-                              "value": "80%"
+                              "id": "690992065.1566398145543",
+                              "parts": {},
+                              "properties": [
+                                {
+                                  "key": "left",
+                                  "value": "80%"
+                                }
+                              ]
                             }
                           ],
-                          "name": "override",
-                          "children": [],
-                          "type": "add-style-block"
+                          "children": []
                         }
                       ],
                       "metadata": {
@@ -139,14 +142,37 @@
                           "bottom": 750
                         }
                       },
-                      "label": "Slider Input"
+                      "label": "Slider Input",
+                      "styles": [
+                        {
+                          "id": "1511742736.1566398145543",
+                          "parts": {},
+                          "properties": []
+                        }
+                      ]
                     }
                   ],
                   "metadata": {},
                   "name": "plug"
                 }
               ],
-              "metadata": {}
+              "metadata": {},
+              "styles": [
+                {
+                  "id": "5030391676.1566398145543",
+                  "parts": {},
+                  "properties": [
+                    {
+                      "key": "width",
+                      "value": "100%"
+                    },
+                    {
+                      "key": "flex",
+                      "value": "1"
+                    }
+                  ]
+                }
+              ]
             }
           ],
           "metadata": {},
@@ -166,7 +192,23 @@
       ],
       "variant": {
         "b6e7db9d12817": true
-      }
+      },
+      "styles": [
+        {
+          "id": "341028616.1566398145543",
+          "parts": {},
+          "properties": [
+            {
+              "key": "display",
+              "value": "flex"
+            },
+            {
+              "key": "flex-direction",
+              "value": "column"
+            }
+          ]
+        }
+      ]
     }
   ]
 }

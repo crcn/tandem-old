@@ -1,46 +1,12 @@
 {
   "id": "612dda3e4",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "metadata": {},
   "name": "module",
   "children": [
     {
       "label": "variant pill",
       "is": "div",
-      "style": [
-        {
-          "key": "background",
-          "value": "rgba(237, 236, 236, 1)"
-        },
-        {
-          "key": "padding-left",
-          "value": "8px"
-        },
-        {
-          "key": "padding-top",
-          "value": "2px"
-        },
-        {
-          "key": "padding-right",
-          "value": "8px"
-        },
-        {
-          "key": "padding-bottom",
-          "value": "2px"
-        },
-        {
-          "key": "font-size",
-          "value": "10px"
-        },
-        {
-          "key": "border-radius",
-          "value": "2px"
-        },
-        {
-          "key": "margin-right",
-          "value": "8px"
-        }
-      ],
       "attributes": [],
       "id": "2c32917123",
       "name": "component",
@@ -50,9 +16,15 @@
           "name": "text",
           "label": "Text",
           "value": "variant 1",
-          "style": [],
           "children": [],
-          "metadata": {}
+          "metadata": {},
+          "styles": [
+            {
+              "id": "4176726695.1566398145553",
+              "parts": {},
+              "properties": []
+            }
+          ]
         },
         {
           "id": "ef1965693",
@@ -64,17 +36,23 @@
         },
         {
           "id": "ef1965694",
-          "variantId": "ef1965693",
+          "name": "override",
+          "type": "styles",
           "targetIdPath": [],
           "value": [
             {
-              "key": "background",
-              "value": "rgba(255, 255, 255, 1)"
+              "id": "6020584915.1566398145553",
+              "parts": {},
+              "variantId": "ef1965693",
+              "properties": [
+                {
+                  "key": "background",
+                  "value": "rgba(255, 255, 255, 1)"
+                }
+              ]
             }
           ],
-          "name": "override",
-          "children": [],
-          "type": "add-style-block"
+          "children": []
         }
       ],
       "metadata": {
@@ -85,7 +63,47 @@
           "bottom": 299.0179917419708
         }
       },
-      "variant": {}
+      "variant": {},
+      "styles": [
+        {
+          "id": "2411859112.1566398145553",
+          "parts": {},
+          "properties": [
+            {
+              "key": "background",
+              "value": "rgba(237, 236, 236, 1)"
+            },
+            {
+              "key": "padding-left",
+              "value": "8px"
+            },
+            {
+              "key": "padding-top",
+              "value": "2px"
+            },
+            {
+              "key": "padding-right",
+              "value": "8px"
+            },
+            {
+              "key": "padding-bottom",
+              "value": "2px"
+            },
+            {
+              "key": "font-size",
+              "value": "10px"
+            },
+            {
+              "key": "border-radius",
+              "value": "2px"
+            },
+            {
+              "key": "margin-right",
+              "value": "8px"
+            }
+          ]
+        }
+      ]
     }
   ]
 }

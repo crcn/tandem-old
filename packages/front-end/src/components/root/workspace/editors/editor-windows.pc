@@ -1,30 +1,12 @@
 {
   "id": "e6a0c2610",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "metadata": {},
   "name": "module",
   "children": [
     {
       "label": "Editor Windows",
       "is": "div",
-      "style": [
-        {
-          "key": "box-sizing",
-          "value": "border-box"
-        },
-        {
-          "key": "display",
-          "value": "flex"
-        },
-        {
-          "key": "flex-direction",
-          "value": "column"
-        },
-        {
-          "key": "flex",
-          "value": "1"
-        }
-      ],
       "attributes": [],
       "id": "5d6bd010465271",
       "name": "component",
@@ -35,24 +17,6 @@
           "is": "483373f987277",
           "name": "component-instance",
           "attributes": [],
-          "style": [
-            {
-              "key": "box-sizing",
-              "value": "border-box"
-            },
-            {
-              "key": "display",
-              "value": "flex"
-            },
-            {
-              "key": "flex-direction",
-              "value": "column"
-            },
-            {
-              "key": "width",
-              "value": "100%"
-            }
-          ],
           "children": [],
           "metadata": {
             "bounds": {
@@ -61,7 +25,31 @@
               "right": 1558.7505661263158,
               "bottom": 1732.8733593566594
             }
-          }
+          },
+          "styles": [
+            {
+              "id": "8260286724.1566398145485",
+              "parts": {},
+              "properties": [
+                {
+                  "key": "box-sizing",
+                  "value": "border-box"
+                },
+                {
+                  "key": "display",
+                  "value": "flex"
+                },
+                {
+                  "key": "flex-direction",
+                  "value": "column"
+                },
+                {
+                  "key": "width",
+                  "value": "100%"
+                }
+              ]
+            }
+          ]
         },
         {
           "id": "5d6bd010465270",
@@ -69,7 +57,6 @@
           "is": "483373f987277",
           "name": "component-instance",
           "attributes": [],
-          "style": [],
           "children": [],
           "metadata": {
             "bounds": {
@@ -78,7 +65,14 @@
               "right": 1558.7505661263158,
               "bottom": 1732.8733593566594
             }
-          }
+          },
+          "styles": [
+            {
+              "id": "1428791242.1566398145485",
+              "parts": {},
+              "properties": []
+            }
+          ]
         }
       ],
       "metadata": {
@@ -92,7 +86,31 @@
       "controllers": [
         "./editor-windows-controller.tsx"
       ],
-      "variant": {}
+      "variant": {},
+      "styles": [
+        {
+          "id": "7369096995.1566398145485",
+          "parts": {},
+          "properties": [
+            {
+              "key": "box-sizing",
+              "value": "border-box"
+            },
+            {
+              "key": "display",
+              "value": "flex"
+            },
+            {
+              "key": "flex-direction",
+              "value": "column"
+            },
+            {
+              "key": "flex",
+              "value": "1"
+            }
+          ]
+        }
+      ]
     }
   ]
 }

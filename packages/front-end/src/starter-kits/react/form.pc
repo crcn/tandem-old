@@ -1,22 +1,12 @@
 {
   "id": "247bd5dd72",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "metadata": {},
   "name": "module",
   "children": [
     {
       "label": "React start kit options form",
       "is": "div",
-      "style": [
-        {
-          "key": "box-sizing",
-          "value": "border-box"
-        },
-        {
-          "key": "display",
-          "value": "block"
-        }
-      ],
       "attributes": [],
       "id": "ac29cd45169",
       "name": "component",
@@ -27,7 +17,6 @@
           "label": "Labeled Input",
           "name": "component-instance",
           "attributes": [],
-          "style": [],
           "children": [
             {
               "id": "80b0b6e7426",
@@ -49,7 +38,14 @@
               "bottom": 353.5832678332798
             }
           },
-          "variant": {}
+          "variant": {},
+          "styles": [
+            {
+              "id": "4625816270.1566398145599",
+              "parts": {},
+              "properties": []
+            }
+          ]
         }
       ],
       "metadata": {
@@ -60,7 +56,23 @@
           "bottom": 316
         }
       },
-      "variant": {}
+      "variant": {},
+      "styles": [
+        {
+          "id": "9278098015.1566398145599",
+          "parts": {},
+          "properties": [
+            {
+              "key": "box-sizing",
+              "value": "border-box"
+            },
+            {
+              "key": "display",
+              "value": "block"
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "80b0b6e7452",
@@ -68,7 +80,6 @@
       "label": "Text Input",
       "name": "component-instance",
       "attributes": [],
-      "style": [],
       "children": [],
       "metadata": {
         "bounds": {
@@ -78,7 +89,14 @@
           "bottom": 59.03580875890191
         }
       },
-      "variant": {}
+      "variant": {},
+      "styles": [
+        {
+          "id": "2343901598.1566398145599",
+          "parts": {},
+          "properties": []
+        }
+      ]
     }
   ]
 }

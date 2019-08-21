@@ -1,18 +1,12 @@
 {
   "id": "c4e8096c109",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "metadata": {},
   "name": "module",
   "children": [
     {
       "label": "edit text",
       "is": "7149f8199122",
-      "style": [
-        {
-          "key": "position",
-          "value": "absolute"
-        }
-      ],
       "attributes": [
         {
           "key": "placeholder",
@@ -33,6 +27,18 @@
       "variant": {},
       "controllers": [
         "./edit-text-controller.tsx"
+      ],
+      "styles": [
+        {
+          "id": "4970334324.1566398145488",
+          "parts": {},
+          "properties": [
+            {
+              "key": "position",
+              "value": "absolute"
+            }
+          ]
+        }
       ]
     }
   ]

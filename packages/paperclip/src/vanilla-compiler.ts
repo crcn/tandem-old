@@ -562,7 +562,7 @@ const translateVariantOverrideMap = memoize(
             )
           )},`;
         }
-        if (override.type === PCOverridableType.ADD_ATTRIBUTES) {
+        if (override.type === PCOverridableType.ATTRIBUTES) {
           buffer += `_${nodeId}Attributes: ${JSON.stringify(override.value)},`;
         }
         if (override.type === PCOverridableType.VARIANT) {

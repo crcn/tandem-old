@@ -1,6 +1,6 @@
 {
   "id": "20c173b6184",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "metadata": {},
   "name": "module",
   "children": []

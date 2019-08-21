@@ -68,8 +68,8 @@ export enum PCOverridableType {
   VARIANT_IS_DEFAULT = "isDefault",
   VARIANT = "variant",
 
-  ADD_STYLE_BLOCKS = "add-style-blocks",
-  ADD_ATTRIBUTES = "add-attributes",
+  STYLES = "styles",
+  ATTRIBUTES = "attributes",
   LABEL = "label",
   SLOT = "slot",
   CONTENT = "content"
@@ -381,7 +381,6 @@ export type PCVariantTrigger = {
 export type PCBaseOverride<TOverrideType extends PCOverridableType> = {
   type: TOverrideType;
   targetIdPath: string[];
-  variantId: string;
 } & PCBaseSourceNode<PCSourceTagNames.OVERRIDE>;
 
 export type PCSlot = {
@@ -402,15 +401,11 @@ type PCStyleBlockPseudoParts = {
   placeholder?: boolean;
 };
 
-export enum PCStyleBlockType {
-  MIXIN,
-  DECLARATION
-}
-
 export type PCStyleBlock = {
   id: string;
   variantId?: string;
-  type: PCStyleBlockType;
+  mixinId?: string;
+  label?: string;
   parts: PCStyleBlockPseudoParts;
   properties: KeyValuePair<string>[];
 };
@@ -469,7 +464,7 @@ export type PCBaseValueOverride<
 } & PCBaseOverride<TOverrideType>;
 
 export type PCAddStyleBlockOverride = PCBaseValueOverride<
-  PCOverridableType.ADD_STYLE_BLOCK,
+  PCOverridableType.ADD_STYLE_BLOCKS,
   KeyValuePair<string>[]
 >;
 export type PCTextOverride = PCBaseValueOverride<
@@ -478,7 +473,7 @@ export type PCTextOverride = PCBaseValueOverride<
 >;
 export type PCChildrenOverride = PCBaseOverride<PCOverridableType.CHILDREN>;
 export type PCAddAttributesOverride = PCBaseValueOverride<
-  PCOverridableType.ADD_ATTRIBUTES,
+  PCOverridableType.ATTRIBUTES,
   KeyValuePair<string>[]
 >;
 export type PCLabelOverride = PCBaseValueOverride<

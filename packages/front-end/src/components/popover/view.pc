@@ -1,6 +1,6 @@
 {
   "id": "9b7b527f6219",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "metadata": {},
   "name": "module",
   "children": [
@@ -9,7 +9,6 @@
       "is": "9b7b527f175442",
       "name": "component-instance",
       "attributes": [],
-      "style": [],
       "children": [
         {
           "slotId": "c00d8561361",
@@ -20,9 +19,15 @@
               "name": "text",
               "label": "Text",
               "value": "button",
-              "style": [],
               "children": [],
-              "metadata": {}
+              "metadata": {},
+              "styles": [
+                {
+                  "id": "7832190444.1566398145474",
+                  "parts": {},
+                  "properties": []
+                }
+              ]
             }
           ],
           "metadata": {},
@@ -37,7 +42,6 @@
               "name": "text",
               "label": "Text",
               "value": "Click to edit",
-              "style": [],
               "children": [],
               "metadata": {
                 "bounds": {
@@ -46,7 +50,14 @@
                   "right": 326,
                   "bottom": 657.3606686878522
                 }
-              }
+              },
+              "styles": [
+                {
+                  "id": "5552256058.1566398145474",
+                  "parts": {},
+                  "properties": []
+                }
+              ]
             }
           ],
           "metadata": {},
@@ -63,12 +74,18 @@
       },
       "variant": {
         "e691a1d98281": true
-      }
+      },
+      "styles": [
+        {
+          "id": "1959995380.1566398145474",
+          "parts": {},
+          "properties": []
+        }
+      ]
     },
     {
       "label": "Popover",
       "is": "div",
-      "style": [],
       "attributes": [],
       "id": "9b7b527f175442",
       "name": "component",
@@ -79,7 +96,6 @@
           "is": "div",
           "name": "element",
           "attributes": [],
-          "style": [],
           "children": [
             {
               "label": "anchor",
@@ -90,9 +106,15 @@
                   "name": "text",
                   "label": "Text",
                   "value": "Click to edit",
-                  "style": [],
                   "children": [],
-                  "metadata": {}
+                  "metadata": {},
+                  "styles": [
+                    {
+                      "id": "9029610272.1566398145474",
+                      "parts": {},
+                      "properties": []
+                    }
+                  ]
                 }
               ],
               "metadata": {},
@@ -107,7 +129,14 @@
                 "to": "children"
               }
             ]
-          }
+          },
+          "styles": [
+            {
+              "id": "1650670311.1566398145474",
+              "parts": {},
+              "properties": []
+            }
+          ]
         },
         {
           "id": "ddec6a12139578",
@@ -115,12 +144,6 @@
           "is": "ddec6a12139577",
           "name": "component-instance",
           "attributes": [],
-          "style": [
-            {
-              "key": "display",
-              "value": "none"
-            }
-          ],
           "children": [
             {
               "slotId": "e691a1d915771",
@@ -136,18 +159,24 @@
                       "is": "div",
                       "name": "element",
                       "attributes": [],
-                      "style": [
-                        {
-                          "key": "box-sizing",
-                          "value": "border-box"
-                        },
-                        {
-                          "key": "display",
-                          "value": "block"
-                        }
-                      ],
                       "children": [],
-                      "metadata": {}
+                      "metadata": {},
+                      "styles": [
+                        {
+                          "id": "3206360681.1566398145474",
+                          "parts": {},
+                          "properties": [
+                            {
+                              "key": "box-sizing",
+                              "value": "border-box"
+                            },
+                            {
+                              "key": "display",
+                              "value": "block"
+                            }
+                          ]
+                        }
+                      ]
                     }
                   ],
                   "metadata": {},
@@ -159,32 +188,44 @@
             },
             {
               "id": "eec65c3e5051",
+              "name": "override",
+              "type": "styles",
               "targetIdPath": [
                 "806ffd0684"
               ],
               "value": [
                 {
-                  "key": "min-width",
-                  "value": "100px"
-                },
-                {
-                  "key": "box-shadow",
-                  "value": "0px 2px 2px 1px rgba(0, 0, 0, 0.19)"
+                  "id": "7025769309.1566398145474",
+                  "parts": {},
+                  "properties": [
+                    {
+                      "key": "min-width",
+                      "value": "100px"
+                    },
+                    {
+                      "key": "box-shadow",
+                      "value": "0px 2px 2px 1px rgba(0, 0, 0, 0.19)"
+                    }
+                  ]
                 }
               ],
-              "name": "override",
-              "children": [],
-              "type": "add-style-block"
+              "children": []
             },
             {
               "id": "bc891e7571",
+              "name": "override",
+              "type": "styles",
               "targetIdPath": [
                 "2c83e997741"
               ],
-              "value": [],
-              "name": "override",
-              "children": [],
-              "type": "add-style-block"
+              "value": [
+                {
+                  "id": "9753479775.1566398145474",
+                  "parts": {},
+                  "properties": []
+                }
+              ],
+              "children": []
             }
           ],
           "metadata": {},
@@ -196,7 +237,19 @@
                 "to": "children"
               }
             ]
-          }
+          },
+          "styles": [
+            {
+              "id": "791294115.1566398145474",
+              "parts": {},
+              "properties": [
+                {
+                  "key": "display",
+                  "value": "none"
+                }
+              ]
+            }
+          ]
         },
         {
           "id": "e691a1d98281",
@@ -208,19 +261,25 @@
         },
         {
           "id": "d3dca34c4329",
-          "variantId": "e691a1d98281",
+          "name": "override",
+          "type": "styles",
           "targetIdPath": [
             "ddec6a12139578"
           ],
           "value": [
             {
-              "key": "display",
-              "value": "block"
+              "id": "8411516378.1566398145474",
+              "parts": {},
+              "variantId": "e691a1d98281",
+              "properties": [
+                {
+                  "key": "display",
+                  "value": "block"
+                }
+              ]
             }
           ],
-          "name": "override",
-          "children": [],
-          "type": "add-style-block"
+          "children": []
         }
       ],
       "metadata": {
@@ -234,7 +293,14 @@
       "controllers": [
         "./controller.tsx"
       ],
-      "variant": {}
+      "variant": {},
+      "styles": [
+        {
+          "id": "941910218.1566398145474",
+          "parts": {},
+          "properties": []
+        }
+      ]
     },
     {
       "id": "9b7b527f113874",
@@ -242,7 +308,6 @@
       "is": "97a34b151010442",
       "name": "component-instance",
       "attributes": [],
-      "style": [],
       "children": [
         {
           "id": "9b7b527f120031",
@@ -273,17 +338,18 @@
           "bottom": 540.7213373757045
         }
       },
-      "label": "NOTICE"
+      "label": "NOTICE",
+      "styles": [
+        {
+          "id": "1887368800.1566398145474",
+          "parts": {},
+          "properties": []
+        }
+      ]
     },
     {
       "label": "Content",
       "is": "div",
-      "style": [
-        {
-          "key": "width",
-          "value": "100px"
-        }
-      ],
       "attributes": [],
       "id": "ddec6a12139577",
       "name": "component",
@@ -298,18 +364,24 @@
               "is": "div",
               "name": "element",
               "attributes": [],
-              "style": [
-                {
-                  "key": "box-sizing",
-                  "value": "border-box"
-                },
-                {
-                  "key": "display",
-                  "value": "block"
-                }
-              ],
               "children": [],
-              "metadata": {}
+              "metadata": {},
+              "styles": [
+                {
+                  "id": "7746363406.1566398145474",
+                  "parts": {},
+                  "properties": [
+                    {
+                      "key": "box-sizing",
+                      "value": "border-box"
+                    },
+                    {
+                      "key": "display",
+                      "value": "block"
+                    }
+                  ]
+                }
+              ]
             }
           ],
           "metadata": {},
@@ -327,7 +399,19 @@
       "controllers": [
         "./content-controller.tsx"
       ],
-      "variant": {}
+      "variant": {},
+      "styles": [
+        {
+          "id": "6020899116.1566398145474",
+          "parts": {},
+          "properties": [
+            {
+              "key": "width",
+              "value": "100px"
+            }
+          ]
+        }
+      ]
     }
   ]
 }

@@ -1510,7 +1510,7 @@ export const createPaperclipVirtualDOMtranslator = (
           context
         );
       }
-      case PCOverridableType.ADD_ATTRIBUTES: {
+      case PCOverridableType.ATTRIBUTES: {
         context = translateInnerAttributes(
           last(override.targetIdPath),
           keyValuePairToHash(override.value),
