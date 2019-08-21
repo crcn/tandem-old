@@ -328,6 +328,8 @@ export const UNLOADER_CREATED = "UNLOADER_CREATED";
 export const UNLOADER_COMPLETED = "UNLOADER_COMPLETED";
 export const RELOAD = "RELOAD";
 export const LINK_CICKED = "LINK_CICKED";
+export const STYLE_BLOCK_LAST_PROPERTY_TABBED_OR_ENTERED =
+  "STYLE_BLOCK_LAST_PROPERTY_TABBED_OR_ENTERED";
 
 export type WrappedEvent<T> = {
   sourceEvent: T;
@@ -870,6 +872,10 @@ export const editorTabClicked = (
   uri,
   event,
   type: EDITOR_TAB_CLICKED
+});
+
+export const styleBlockLastPropertyTabbedOrEntered = () => ({
+  type: STYLE_BLOCK_LAST_PROPERTY_TABBED_OR_ENTERED
 });
 
 export const editorTabContextMenuOpenInBottomTabOptionClicked = publicActionCreator(

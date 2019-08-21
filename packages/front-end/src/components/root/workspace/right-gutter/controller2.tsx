@@ -18,7 +18,7 @@ export type Props = {
 export default (Base: React.ComponentClass<BaseRightGutter2Props>) => {
   return class RightGutter2Controller extends React.Component<Props> {
     render() {
-      const { root } = this.props;
+      const { root, dispatch } = this.props;
       const selectedInspectorNodes = root.selectedInspectorNodes;
       if (!selectedInspectorNodes.length) {
         return null;
@@ -39,7 +39,8 @@ export default (Base: React.ComponentClass<BaseRightGutter2Props>) => {
       return (
         <Base
           stylesSectionProps={{
-            computedStyleBlocks
+            computedStyleBlocks,
+            dispatch
           }}
         />
       );

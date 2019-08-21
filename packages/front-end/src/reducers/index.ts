@@ -230,7 +230,8 @@ import {
   CSSInspectorDeclarationCreated,
   CSS_INSPECTOR_DECLARATION_CHANGED,
   CSS_INSPECTOR_DECLARATION_NAME_CHANGED,
-  CSSInspectorDeclarationNameChanged
+  CSSInspectorDeclarationNameChanged,
+  STYLE_BLOCK_LAST_PROPERTY_TABBED_OR_ENTERED
 } from "../actions";
 import {
   queueOpenFile,
@@ -1032,6 +1033,10 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
     case COMPONENT_VARIANT_NAME_CLICKED: {
       const { name } = action as ComponentVariantNameClicked;
       state = updateRootState({ selectedComponentVariantName: name }, state);
+      return state;
+    }
+
+    case STYLE_BLOCK_LAST_PROPERTY_TABBED_OR_ENTERED: {
       return state;
     }
 

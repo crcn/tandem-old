@@ -22,7 +22,7 @@ import {
 import { uniq, isEqual } from "lodash";
 import { Dependency, DependencyGraph, updateGraphDependency } from "./graph";
 
-export const PAPERCLIP_MODULE_VERSION = "1.0.1";
+export const PAPERCLIP_MODULE_VERSION = "1.0.2";
 
 /*------------------------------------------
  * CONSTANTS
@@ -56,10 +56,7 @@ export enum PCSourceTagNames {
   // An override is a node that overrides a specific property or style within a variant, or shadow.
   OVERRIDE = "override",
 
-  TEXT = "text",
-
-  // TOD
-  INHERIT_STYLE = "inherit-style"
+  TEXT = "text"
 }
 
 export enum PCOverridableType {
@@ -71,7 +68,7 @@ export enum PCOverridableType {
   VARIANT_IS_DEFAULT = "isDefault",
   VARIANT = "variant",
 
-  ADD_STYLE_BLOCK = "add-style-block",
+  ADD_STYLE_BLOCKS = "add-style-blocks",
   ADD_ATTRIBUTES = "add-attributes",
   LABEL = "label",
   SLOT = "slot",
@@ -397,6 +394,27 @@ export enum PCQueryType {
   VARIABLE
 }
 
+type PCStyleBlockPseudoParts = {
+  before?: boolean;
+  after?: boolean;
+  firstLine?: boolean;
+  selection?: boolean;
+  placeholder?: boolean;
+};
+
+export enum PCStyleBlockType {
+  MIXIN,
+  DECLARATION
+}
+
+export type PCStyleBlock = {
+  id: string;
+  variantId?: string;
+  type: PCStyleBlockType;
+  parts: PCStyleBlockPseudoParts;
+  properties: KeyValuePair<string>[];
+};
+
 export type PCBaseQuery<TType extends PCQueryType, TCondition> = {
   label?: string;
   type: TType;
@@ -505,10 +523,7 @@ export type StyleMixins = {
 
 export type PCBaseVisibleNode<TName extends PCSourceTagNames> = {
   label?: string;
-  style: KeyValuePair<string>[];
-
-  // DEPRECATED - used styleMixins instead
-  styleMixins?: StyleMixins;
+  styles: PCStyleBlock[];
 } & PCBaseSourceNode<TName>;
 
 export type PCBaseElementChild =
@@ -643,8 +658,8 @@ export const createPCComponent = (
 ): PCComponent => ({
   label,
   is: is || "div",
-  style: style || EMPTY_OBJECT,
-  attributes: attributes || EMPTY_OBJECT,
+  style: style || EMPTY_ARRAY,
+  attributes: attributes || EMPTY_ARRAY,
   id: generateUID(),
   styleMixins,
   name: PCSourceTagNames.COMPONENT,
@@ -760,8 +775,8 @@ export const createPCVariable = (
 
 export const createPCElement = (
   is: string = "div",
-  style: KeyValuePair<any>[] = EMPTY_OBJECT,
-  attributes: KeyValuePair<string>[] = EMPTY_OBJECT,
+  style: KeyValuePair<any>[] = EMPTY_ARRAY,
+  attributes: KeyValuePair<string>[] = EMPTY_ARRAY,
   children: PCBaseElementChild[] = EMPTY_ARRAY,
   label?: string,
   metadata?: KeyValue<any>
@@ -770,16 +785,16 @@ export const createPCElement = (
   label,
   is: is || "div",
   name: PCSourceTagNames.ELEMENT,
-  attributes: attributes || EMPTY_OBJECT,
-  style: style || EMPTY_OBJECT,
+  attributes: attributes || EMPTY_ARRAY,
+  style: style || EMPTY_ARRAY,
   children: children || EMPTY_ARRAY,
   metadata: metadata || EMPTY_OBJECT
 });
 
 export const createPCComponentInstance = (
   is: string,
-  style: KeyValuePair<any>[] = EMPTY_OBJECT,
-  attributes: KeyValuePair<string>[] = EMPTY_OBJECT,
+  style: KeyValuePair<any>[] = EMPTY_ARRAY,
+  attributes: KeyValuePair<string>[] = EMPTY_ARRAY,
   children: PCComponentInstanceChild[] = EMPTY_ARRAY,
   metadata?: KeyValue<any>,
   label?: string
@@ -788,8 +803,8 @@ export const createPCComponentInstance = (
   is: is || "div",
   label,
   name: PCSourceTagNames.COMPONENT_INSTANCE,
-  attributes: attributes || EMPTY_OBJECT,
-  style: style || EMPTY_OBJECT,
+  attributes: attributes || EMPTY_ARRAY,
+  style: style || EMPTY_ARRAY,
   children: children || EMPTY_ARRAY,
   metadata: metadata || EMPTY_OBJECT,
   variant: EMPTY_OBJECT
@@ -798,13 +813,13 @@ export const createPCComponentInstance = (
 export const createPCTextNode = (
   value: string,
   label?: string,
-  style: any = EMPTY_OBJECT
+  style: any = EMPTY_ARRAY
 ): PCTextNode => ({
   id: generateUID(),
   name: PCSourceTagNames.TEXT,
   label: label || value,
   value,
-  style: style || EMPTY_OBJECT,
+  style: style || EMPTY_ARRAY,
   children: [],
   metadata: {}
 });

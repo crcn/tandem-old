@@ -1589,8 +1589,8 @@
                           "is": "9a232ac07895",
                           "label": "properties list",
                           "name": "component-instance",
-                          "attributes": {},
-                          "style": {},
+                          "attributes": [],
+                          "style": [],
                           "children": [
                             {
                               "slotId": "fddc1360623",
@@ -1604,8 +1604,8 @@
                                       "is": "981545e8822",
                                       "label": "key value item",
                                       "name": "component-instance",
-                                      "attributes": {},
-                                      "style": {},
+                                      "attributes": [],
+                                      "style": [],
                                       "children": [],
                                       "metadata": {
                                         "bounds": {
@@ -1622,8 +1622,8 @@
                                       "is": "981545e8822",
                                       "label": "key value item",
                                       "name": "component-instance",
-                                      "attributes": {},
-                                      "style": {},
+                                      "attributes": [],
+                                      "style": [],
                                       "children": [],
                                       "metadata": {
                                         "bounds": {
@@ -1640,8 +1640,8 @@
                                       "is": "981545e8822",
                                       "label": "key value item",
                                       "name": "component-instance",
-                                      "attributes": {},
-                                      "style": {},
+                                      "attributes": [],
+                                      "style": [],
                                       "children": [],
                                       "metadata": {
                                         "bounds": {

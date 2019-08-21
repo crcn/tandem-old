@@ -51,6 +51,19 @@ export const kvpSetValue = (
     : arraySplice(kvp, i, 1, { key, value });
 };
 
+export const kvpMerge = (...kvps: KeyValuePair<string>[][]) => {
+  const used = {};
+  const merged: KeyValuePair<string>[] = [];
+  for (let i = kvps.length; i--; ) {
+    for (const { key, value } of kvps[i]) {
+      if (used[key]) continue;
+      used[key] = 1;
+      merged.push({ key, value });
+    }
+  }
+  return merged;
+};
+
 export const kvpOmitUndefined = (kvp: KeyValuePair<string>[]) => {
   return kvp.filter(({ key, value }) => key != null && value != null);
 };

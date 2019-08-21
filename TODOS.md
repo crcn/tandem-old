@@ -1,5 +1,8 @@
 Immediate:
 
+- [ ] refactor
+  - [ ] styles as their own nodes
+  - [ ] variant style overrides as their
 - [ ] styles MVP (make this usable FIRST so that we can get a feel for it)
   - [ ] style block
     - [ ] ability to insert style

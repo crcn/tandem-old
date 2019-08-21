@@ -25,7 +25,8 @@ import {
   EMPTY_ARRAY,
   updateProperties,
   kvpSetValue,
-  kvpOmitUndefined
+  kvpOmitUndefined,
+  kvpMerge
 } from "tandem-common";
 import { values, identity, uniq, last, pickBy, isNull } from "lodash";
 import { DependencyGraph, Dependency } from "./graph";
@@ -1751,20 +1752,19 @@ export const persistCSSProperty = <TState extends PCEditorState>(
     { key: name, value },
     variant,
     (style, override) => {
-      const prevStyle = (override && override.value) || EMPTY_OBJECT;
+      const prevStyle = (override && override.value) || EMPTY_ARRAY;
+      console.log(style, prevStyle);
 
       // note that we're omitting null since that kind of value may accidentally override parent props which
       // doesn't transpile to actually overrides styles.
       return overrideKeyValue(
         computedStyle,
         prevStyle,
-        omitNull({
-          ...prevStyle,
-          ...style
-        })
+        kvpOmitUndefined(kvpMerge(prevStyle, style))
       );
     },
     (sourceNode: PCVisibleNode) => {
+      console.log(sourceNode);
       return {
         ...sourceNode,
         style: kvpOmitUndefined(kvpSetValue(name, value, sourceNode.style))

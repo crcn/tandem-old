@@ -59,6 +59,10 @@
             {
               "key": "width",
               "value": "100%"
+            },
+            {
+              "key": "padding-right",
+              "value": "4px"
             }
           ],
           "children": [
@@ -100,6 +104,10 @@
             {
               "key": "width",
               "value": "100%"
+            },
+            {
+              "key": "padding-left",
+              "value": "4px"
             }
           ],
           "children": [
@@ -170,10 +178,10 @@
       ],
       "metadata": {
         "bounds": {
-          "left": 407,
-          "top": 139,
-          "right": 640,
-          "bottom": 239
+          "left": 403,
+          "top": 138,
+          "right": 636,
+          "bottom": 238
         }
       },
       "variant": {},
@@ -181,7 +189,10 @@
         "dc3b39eb1275": {
           "priority": 0
         }
-      }
+      },
+      "controllers": [
+        "./item-controller.tsx"
+      ]
     },
     {
       "label": "Key value list",
@@ -204,12 +215,68 @@
           "id": "fddc1360623",
           "children": [
             {
+              "id": "77b252e1657",
+              "is": "981545e8822",
+              "label": "key value item",
+              "name": "component-instance",
+              "attributes": [],
+              "style": [],
+              "children": [
+                {
+                  "id": "77b252e1658",
+                  "variantId": null,
+                  "type": "text",
+                  "targetIdPath": [
+                    "981545e81074"
+                  ],
+                  "value": "duplicate",
+                  "name": "override",
+                  "children": []
+                },
+                {
+                  "slotId": "981545e81080",
+                  "id": "77b252e1673",
+                  "children": [
+                    {
+                      "id": "68339ab2918",
+                      "is": "77b252e1669",
+                      "label": "Key Value Item Text Input",
+                      "name": "component-instance",
+                      "attributes": [],
+                      "style": [],
+                      "children": [],
+                      "metadata": {
+                        "bounds": {
+                          "left": 738,
+                          "top": 84,
+                          "right": 838,
+                          "bottom": 113.03580875890191
+                        }
+                      },
+                      "variant": {}
+                    }
+                  ],
+                  "metadata": {},
+                  "name": "plug"
+                }
+              ],
+              "metadata": {
+                "bounds": {
+                  "left": 407,
+                  "top": 139,
+                  "right": 640,
+                  "bottom": 239
+                }
+              },
+              "variant": {}
+            },
+            {
               "id": "fddc1360670",
               "is": "981545e8822",
               "label": "key value item",
               "name": "component-instance",
-              "attributes": {},
-              "style": {},
+              "attributes": [],
+              "style": [],
               "children": [
                 {
                   "id": "fddc1360740",
@@ -238,8 +305,8 @@
               "is": "981545e8822",
               "label": "key value item",
               "name": "component-instance",
-              "attributes": {},
-              "style": {},
+              "attributes": [],
+              "style": [],
               "children": [
                 {
                   "id": "fddc1360741",
@@ -270,8 +337,8 @@
               "is": "981545e8822",
               "label": "key value item",
               "name": "component-instance",
-              "attributes": {},
-              "style": {},
+              "attributes": [],
+              "style": [],
               "children": [
                 {
                   "id": "fddc1360692",
@@ -326,6 +393,91 @@
       "controllers": [
         "./controller.tsx"
       ]
+    },
+    {
+      "label": "Key Value Item Text Input",
+      "is": "7149f8199122",
+      "style": [
+        {
+          "key": "display",
+          "value": "block"
+        },
+        {
+          "key": "padding-left",
+          "value": "0px"
+        },
+        {
+          "key": "padding-top",
+          "value": "0px"
+        },
+        {
+          "key": "padding-right",
+          "value": "0px"
+        },
+        {
+          "key": "padding-bottom",
+          "value": "0px"
+        },
+        {
+          "key": "background-image",
+          "value": "linear-gradient(rgba(253, 252, 252, 1), rgba(253, 252, 252, 1))"
+        },
+        {
+          "key": "border-top-left-radius",
+          "value": "2px"
+        },
+        {
+          "key": "border-top-right-radius",
+          "value": "2px"
+        },
+        {
+          "key": "border-bottom-left-radius",
+          "value": "2px"
+        },
+        {
+          "key": "border-bottom-right-radius",
+          "value": "2px"
+        }
+      ],
+      "attributes": [],
+      "id": "77b252e1669",
+      "name": "component",
+      "children": [],
+      "metadata": {
+        "bounds": {
+          "left": 738,
+          "top": 84,
+          "right": 838,
+          "bottom": 113.03580875890191
+        }
+      },
+      "variant": {}
+    },
+    {
+      "id": "5a49f0a0559",
+      "label": "Element",
+      "is": "div",
+      "name": "element",
+      "attributes": [],
+      "style": [
+        {
+          "key": "box-sizing",
+          "value": "border-box"
+        },
+        {
+          "key": "display",
+          "value": "box"
+        }
+      ],
+      "children": [],
+      "metadata": {
+        "bounds": {
+          "left": 566,
+          "top": -14.5,
+          "right": 666,
+          "bottom": 85.5
+        }
+      }
     }
   ]
 }
