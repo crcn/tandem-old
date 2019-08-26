@@ -5,7 +5,6 @@ import { Dispatch } from "redux";
 import {
   getInspectorSourceNode,
   getPCNodeContentNode,
-  computeStyleBlocks,
   PCVisibleNode,
   getPCNodeModule
 } from "paperclip";
@@ -28,13 +27,15 @@ export default (Base: React.ComponentClass<BaseRightGutter2Props>) => {
         root.sourceNodeInspector,
         root.graph
       ) as PCVisibleNode;
-      const computedStyleBlocks = computeStyleBlocks(
-        sourceNode,
-        getPCNodeContentNode(
-          sourceNode.id,
-          getPCNodeModule(sourceNode.id, root.graph)
-        ) as PCVisibleNode
-      );
+      // const computedStyleBlocks = computeStyleBlocks(
+      //   sourceNode,
+      //   getPCNodeContentNode(
+      //     sourceNode.id,
+      //     getPCNodeModule(sourceNode.id, root.graph)
+      //   ) as PCVisibleNode
+      // );
+
+      const computedStyleBlocks = [];
 
       return (
         <Base

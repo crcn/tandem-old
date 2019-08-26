@@ -14,36 +14,38 @@ export type ComputedStyleBlock = {
   properties: ComputedStyleProperty[];
 };
 
-export const computeStyleBlocks = memoize(
-  (
-    node: PCVisibleNode | PCComponent,
-    root: PCVisibleNode | PCComponent,
-    self: boolean = true
-  ): ComputedStyleBlock[] => {
-    const computedStyleBlocks = [];
+// export const computeStyleBlocks = memoize(
+//   (
+//     node: PCVisibleNode | PCComponent,
+//     root: PCVisibleNode | PCComponent,
+//     self: boolean = true
+//   ): ComputedStyleBlock[] => {
+//     const computedStyleBlocks = [];
 
-    if (self) {
-      const used = {};
+//     if (self) {
+//       const used = {};
 
-      computedStyleBlocks.push({
-        sourceNode: node,
-        properties: node.style.map(({ key, value }) => {
-          const ret = {
-            key,
-            value,
-            inherited: false,
-            overridden: !used[key],
-            enabled: true
-          };
+//       computedStyleBlocks.push({
+//         sourceNode: node,
+//         properties: node.styles.reduce((props, properties: { key, value }) => {
+//           for (const {key, value} of properties) {
+//             const ret = {
+//               key,
+//               value,
+//               inherited: false,
+//               overridden: !used[key],
+//               enabled: true
+//             };
 
-          used[key] = 1;
-          return ret;
-        })
-      });
-    }
+//             used[key] = 1;
+//           }
+//           return ret;
+//         }, {})
+//       });
+//     }
 
-    // TODO - compute mixins
+//     // TODO - compute mixins
 
-    return computedStyleBlocks;
-  }
-);
+//     return computedStyleBlocks;
+//   }
+// );

@@ -1,6 +1,6 @@
 Immediate:
 
-- [ ]
+- [ ] refactor paperclip/src/style.js
 - [ ] refactor
   - [ ] styles as their own nodes
   - [ ] variant style overrides as their

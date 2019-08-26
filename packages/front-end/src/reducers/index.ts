@@ -351,7 +351,6 @@ import {
   persistToggleInstanceVariant,
   persistRemoveVariantOverride,
   getPCVariants,
-  persistStyleMixin,
   persistStyleMixinComponentId,
   isPaperclipUri,
   syntheticNodeIsInShadow,
@@ -395,7 +394,9 @@ import {
   PCVariableQuery,
   getInspectorContentNode,
   computePCNodeStyle,
-  computeStyleInfo
+  computeStyleInfo,
+  removeStyleMixin,
+  createPCStyleBlock
 } from "paperclip";
 import {
   roundBounds,
@@ -2135,8 +2136,8 @@ export const canvasReducer = (state: RootState, action: Action) => {
       const { selectedInspectorNodes } = state;
       const { componentId } = action as InheritPaneRemoveButtonClick;
       state = persistRootState(state => {
-        return persistStyleMixin(
-          { [componentId]: undefined },
+        return removeStyleMixin(
+          componentId,
           selectedInspectorNodes[0],
           state.selectedVariant,
           state
@@ -2145,6 +2146,7 @@ export const canvasReducer = (state: RootState, action: Action) => {
       return state;
     }
 
+    // __DEPRECATED__
     case INHERIT_PANE_ADD_BUTTON_CLICK: {
       const { selectedInspectorNodes } = state;
       const inspectorNode = selectedInspectorNodes[0];
@@ -2155,21 +2157,23 @@ export const canvasReducer = (state: RootState, action: Action) => {
         state.graph
       ) as PCVisibleNode;
 
-      state = persistRootState(state => {
-        // undefined so that nothing is selected in dropdown.
-        state = persistStyleMixin(
-          {
-            [Date.now()]: {
-              priority: Object.keys(sourceNode.styleMixins || EMPTY_OBJECT)
-                .length
-            }
-          },
-          inspectorNode,
-          state.selectedVariant,
-          state
-        );
-        return state;
-      }, state);
+      throw new Error(`not fixed yet`);
+
+      // state = persistRootState(state => {
+      //   // undefined so that nothing is selected in dropdown.
+      //   state = persistStyleMixin(
+      //     {
+      //       [Date.now()]: {
+      //         priority: Object.keys(sourceNode.styleMixins || EMPTY_OBJECT)
+      //           .length
+      //       }
+      //     },
+      //     inspectorNode,
+      //     state.selectedVariant,
+      //     state
+      //   );
+      //   return state;
+      // }, state);
 
       return state;
     }
@@ -2533,8 +2537,10 @@ export const canvasReducer = (state: RootState, action: Action) => {
             createPCElement(
               "div",
               [
-                { key: "box-sizing", value: "border-box" },
-                { key: "display", value: "box" }
+                createPCStyleBlock([
+                  { key: "box-sizing", value: "border-box" },
+                  { key: "display", value: "box" }
+                ])
               ],
               null,
               null,

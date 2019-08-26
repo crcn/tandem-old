@@ -17,7 +17,8 @@ import {
   getPCNodeContentNode,
   getPCNodeModule,
   ComputedStyleInfo,
-  getInstanceVariantInfo
+  getInstanceVariantInfo,
+  getVanillStyle
 } from "paperclip";
 import { dropdownMenuOptionFromValue } from "../../../../../../inputs/dropdown/controller";
 import {
@@ -131,8 +132,8 @@ export default (Base: React.ComponentClass<BaseInstancePaneProps>) =>
           return (
             inCurrentInstance ||
             (!selectedVariant &&
-              instanceSourceNode.style &&
-              Boolean(instanceSourceNode.style[key]))
+              instanceSourceNode.styles &&
+              Boolean(getVanillStyle(instanceSourceNode.styles)[key]))
           );
         })
       ];

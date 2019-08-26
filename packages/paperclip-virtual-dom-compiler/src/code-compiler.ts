@@ -11,7 +11,7 @@ import {
   PCSourceTagNames,
   PCNode,
   extendsComponent,
-  PCAddStyleBlockOverride,
+  PCStylesOverride,
   isVisibleNode,
   getOverrides,
   getPCNode,
@@ -31,7 +31,6 @@ import {
   isPCComponentOrInstance,
   getVariantTriggers,
   PCMediaQuery,
-  StyleMixins,
   isSlot,
   PCSlot,
   PCStyleMixin,
@@ -82,6 +81,7 @@ import {
   makeSafeVarName
 } from "./utils";
 import { PCQueryType } from "paperclip";
+import { PCStyleBlock } from "paperclip/src";
 
 export type TranslateParts = {
   elementCreator: string;
@@ -321,8 +321,8 @@ export const createPaperclipVirtualDOMtranslator = (
         context = translateStyle(
           node,
           {
-            ...getInheritedStyle(node.styleMixins, context),
-            ...keyValuePairToHash(node.style)
+            ...getInheritedStyle(getStyleMixinIds(node), context),
+            ...getVanillaStyleHash(node.styles)
           },
           context,
           getPCNodeDependency(node.id, context.graph).uri
@@ -350,19 +350,24 @@ export const createPaperclipVirtualDOMtranslator = (
     background: "fill"
   };
 
+  const getStyleMixinIds = (node: PCVisibleNode | PCComponent | PCStyleMixin) =>
+    node.styles.map(block => block.mixinId).filter(Boolean);
+  const getVanillaStyleHash = (styles: PCStyleBlock[]) => {
+    return styles.reduce((style, block) => {
+      if (block.mixinId || Object.keys(block.parts).length || block.variantId)
+        return style;
+      return { ...keyValuePairToHash(block.properties), ...style };
+    }, {});
+  };
+
   const getInheritedStyle = (
-    styleMixins: StyleMixins,
+    styleMixinIds: string[],
     context: TranslateContext,
     computed = {}
   ) => {
-    if (!styleMixins) {
+    if (!styleMixinIds.length) {
       return {};
     }
-    const styleMixinIds = Object.keys(styleMixins)
-      .filter(a => Boolean(styleMixins[a]))
-      .sort(
-        (a, b) => (styleMixins[a].priority > styleMixins[b].priority ? 1 : -1)
-      );
 
     return styleMixinIds.reduce((style, styleMixinId) => {
       const styleMixin = getPCNode(styleMixinId, context.graph) as PCStyleMixin;
@@ -372,8 +377,8 @@ export const createPaperclipVirtualDOMtranslator = (
       const compStyle =
         computed[styleMixinId] ||
         (computed[styleMixinId] = {
-          ...getInheritedStyle(styleMixin.styleMixins, context, computed),
-          ...keyValuePairToHash(styleMixin.style)
+          ...getInheritedStyle(getStyleMixinIds(styleMixin), context, computed),
+          ...getVanillaStyleHash(styleMixin.styles)
         });
       return { ...style, ...compStyle };
     }, {});
@@ -449,9 +454,8 @@ export const createPaperclipVirtualDOMtranslator = (
   ) => {
     // FIXME: need to sort based on variant priority
     const styleOverrides = (getOverrides(instance).filter(
-      node =>
-        node.type === PCOverridableType.ADD_STYLE_BLOCK && node.value.length
-    ) as PCAddStyleBlockOverride[]).sort((a, b) => {
+      node => node.type === PCOverridableType.STYLES && node.value.length
+    ) as PCStylesOverride[]).sort((a, b) => {
       return a.variantId ? 1 : -1;
     });
 
@@ -558,7 +562,7 @@ export const createPaperclipVirtualDOMtranslator = (
       context = addOpenTag(`["${selector}"]: {\n`, context);
       context = translateStyle(
         getPCNode(last(override.targetIdPath), context.graph) as ContentNode,
-        keyValuePairToHash(override.value),
+        getVanillaStyleHash(override.value),
         context,
         getPCNodeDependency(override.id, context.graph).uri
       );
@@ -602,7 +606,7 @@ export const createPaperclipVirtualDOMtranslator = (
         );
         context = translateStyle(
           getPCNode(last(override.targetIdPath), context.graph) as ContentNode,
-          keyValuePairToHash(override.value),
+          getVanillaStyleHash(override.value),
           context,
           getPCNodeDependency(override.id, context.graph).uri
         );
@@ -1466,7 +1470,7 @@ export const createPaperclipVirtualDOMtranslator = (
   ) => {
     if (override.variantId) {
       switch (override.type) {
-        case PCOverridableType.ADD_STYLE_BLOCK: {
+        case PCOverridableType.STYLES: {
           context = addLine(
             `${varName}.${parts.classAttributeName} = (${varName}.${
               parts.classAttributeName
@@ -1530,7 +1534,7 @@ export const createPaperclipVirtualDOMtranslator = (
     includeNodeId: boolean = true
   ) => {
     const styleOverrides = overrides.filter(
-      override => override.type === PCOverridableType.ADD_STYLE_BLOCK
+      override => override.type === PCOverridableType.STYLES
     );
     if (!styleOverrides.length && !includeNodeId) {
       return context;
@@ -1592,10 +1596,7 @@ export const createPaperclipVirtualDOMtranslator = (
   };
 
   const hasStyle = (node: PCVisibleNode | PCComponent) => {
-    return (
-      node.style.length > 0 ||
-      (node.styleMixins && Object.keys(node.styleMixins).length > 0)
-    );
+    return Boolean(node.styles.length);
   };
 
   const translateVisibleNode = (node: PCNode, context: TranslateContext) => {

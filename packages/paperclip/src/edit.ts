@@ -56,7 +56,6 @@ import {
   PCComponentInstanceElement,
   filterPCNodes,
   isPCComponentInstance,
-  StyleMixins,
   PCVariable,
   createPCSlot,
   getPCNodeContentNode,
@@ -618,13 +617,12 @@ export const persistConvertNodeToComponent = <TState extends PCEditorState>(
   let component = createPCComponent(
     sourceNode.label,
     (sourceNode as PCElement).is,
-    sourceNode.style,
+    sourceNode.styles,
     (sourceNode as PCElement).attributes,
     sourceNode.name === PCSourceTagNames.TEXT
       ? [cloneTreeNode(sourceNode)]
       : (sourceNode.children || []).map(node => cloneTreeNode(node)),
-    null,
-    sourceNode.styleMixins
+    null
   );
 
   if (isPCContentNode(sourceNode, state.graph)) {
@@ -699,19 +697,10 @@ export const persistConvertInspectorNodeStyleToMixin = <
 
   if (sourceNode.name === PCSourceTagNames.TEXT || justTextStyles) {
     const newLabel = `${sourceNode.label} text style`;
-    styleMixin = createPCTextStyleMixin(
-      style,
-      newLabel,
-      sourceNode.styleMixins,
-      newLabel
-    );
+    styleMixin = createPCTextStyleMixin(style, newLabel, newLabel);
   } else if (isElementLikePCNode(sourceNode)) {
     const newLabel = `${sourceNode.label} style`;
-    styleMixin = createPCElementStyleMixin(
-      style,
-      sourceNode.styleMixins,
-      newLabel
-    );
+    styleMixin = createPCElementStyleMixin(style, newLabel);
   }
   const module = getPCNodeModule(sourceNode.id, state.graph);
   state = replaceDependencyGraphPCNode(
@@ -728,17 +717,7 @@ export const persistConvertInspectorNodeStyleToMixin = <
     state = persistCSSProperty(key, undefined, inspectorNode, variant, state);
   }
 
-  state = persistStyleMixin(
-    {
-      [styleMixin.id]: {
-        // TODO - this needs to be part of the variant
-        priority: Object.keys(sourceNode.styleMixins || EMPTY_OBJECT).length
-      }
-    },
-    inspectorNode,
-    variant,
-    state
-  );
+  state = addStyleMixin(styleMixin.id, inspectorNode, variant, state);
 
   return state;
 };
@@ -1024,8 +1003,8 @@ export const persistReplacePCNode = <TState extends PCEditorState>(
   return replaceDependencyGraphPCNode(newChild, oldChild, state);
 };
 
-export const persistStyleMixin = <TState extends PCEditorState>(
-  styleMixins: StyleMixins,
+export const addStyleMixin = <TState extends PCEditorState>(
+  mixinId: string,
   node: InspectorNode,
   variant: PCVariant,
   state: TState
@@ -1035,33 +1014,54 @@ export const persistStyleMixin = <TState extends PCEditorState>(
     state.sourceNodeInspector,
     state.graph
   ) as PCVisibleNode;
-  // const sourceNode = maybeOverride(
-  //   PCOverridableType.INHERIT_STYLE,
-  //   styleMixins,
-  //   variant,
-  //   (value, override) => {
-  //     const prevStyle = (override && override.value) || EMPTY_OBJECT;
-  //     return overrideKeyValue(node.style, prevStyle, {
-  //       ...prevStyle,
-  //       ...value
-  //     });
-  //   },
-  //   (node: PCBaseVisibleNode<any>) => ({
-  //     ...node,
-  //     styleMixins: omitNull({
-  //       ...(node.styleMixins || EMPTY_OBJECT),
-  //       ...styleMixins
-  //     })
-  //   })
-  // )(node, state.documents, state.graph);
+
+  const hasStyleMixin = sourceNode.styles.some(
+    block => block.mixinId === mixinId
+  );
+  if (hasStyleMixin) {
+    return state;
+  }
 
   state = replaceDependencyGraphPCNode(
     {
       ...sourceNode,
-      styleMixins: omitNull({
-        ...(sourceNode.styleMixins || EMPTY_OBJECT),
-        ...styleMixins
-      })
+      styles: [
+        ...sourceNode.styles,
+        {
+          mixinId
+        }
+      ]
+    } as PCVisibleNode,
+    sourceNode,
+    state
+  );
+
+  return state;
+};
+
+export const removeStyleMixin = <TState extends PCEditorState>(
+  mixinId: string,
+  node: InspectorNode,
+  variant: PCVariant,
+  state: TState
+) => {
+  const sourceNode = getInspectorSourceNode(
+    node,
+    state.sourceNodeInspector,
+    state.graph
+  ) as PCVisibleNode;
+
+  const styleMixinIndex = sourceNode.styles.findIndex(
+    block => block.mixinId === mixinId
+  );
+  if (styleMixinIndex === -1) {
+    return state;
+  }
+
+  state = replaceDependencyGraphPCNode(
+    {
+      ...sourceNode,
+      styles: arraySplice(sourceNode.styles, styleMixinIndex, 1)
     } as PCVisibleNode,
     sourceNode,
     state
@@ -1077,43 +1077,16 @@ export const persistStyleMixinComponentId = <TState extends PCEditorState>(
   variant: PCVariant,
   state: TState
 ) => {
-  // const sourceNode = maybeOverride(
-  //   PCOverridableType.INHERIT_STYLE,
-  //   null,
-  //   variant,
-  //   (value, override) => {
-  //     const prevStyle = (override && override.value) || EMPTY_OBJECT;
-  //     return overrideKeyValue(node.style, prevStyle, {
-  //       ...prevStyle,
-  //       [oldComponentId]: undefined,
-  //       [newComponentId]: prevStyle[oldComponentId] || { priority: 0 }
-  //     });
-  //   },
-  //   (node: PCBaseVisibleNode<any>) => ({
-  //     ...node,
-  // styleMixins: {
-  //   ...(node.styleMixins || EMPTY_OBJECT),
-  //   [oldComponentId]: undefined,
-  //   [newComponentId]: node.styleMixins[oldComponentId]
-  // }
-  //   })
-  // )(node, state.documents, state.graph);
   const sourceNode = getSyntheticSourceNode(node, state.graph) as PCVisibleNode;
-
-  state = replaceDependencyGraphPCNode(
-    {
-      ...sourceNode,
-      styleMixins: {
-        ...(sourceNode.styleMixins || EMPTY_OBJECT),
-        [oldComponentId]: undefined,
-        [newComponentId]: sourceNode.styleMixins[oldComponentId]
-      }
-    } as PCVisibleNode,
-    sourceNode,
-    state
+  const inspectorNode = getSyntheticInspectorNode(
+    node,
+    getSyntheticVisibleNodeDocument(node.id, state.documents),
+    state.sourceNodeInspector,
+    state.graph
   );
 
-  // state = replaceDependencyGraphPCNode(sourceNode, sourceNode, state);
+  state = removeStyleMixin(oldComponentId, inspectorNode, variant, state);
+  state = addStyleMixin(newComponentId, inspectorNode, variant, state);
 
   return state;
 };
@@ -1748,7 +1721,7 @@ export const persistCSSProperty = <TState extends PCEditorState>(
   }
 
   const updatedNode = maybeOverride2(
-    PCOverridableType.ADD_STYLE_BLOCK,
+    PCOverridableType.STYLES,
     { key: name, value },
     variant,
     (style, override) => {
@@ -1765,9 +1738,10 @@ export const persistCSSProperty = <TState extends PCEditorState>(
     },
     (sourceNode: PCVisibleNode) => {
       console.log(sourceNode);
+      throw new Error(`NOT UPDATED YET`);
       return {
-        ...sourceNode,
-        style: kvpOmitUndefined(kvpSetValue(name, value, sourceNode.style))
+        ...sourceNode
+        // style: kvpOmitUndefined(kvpSetValue(name, value, sourceNode.style))
       } as PCVisibleNode;
     }
   )(

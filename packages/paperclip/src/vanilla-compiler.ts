@@ -38,7 +38,8 @@ import {
   PCVariantTriggerSourceType,
   PCVariantTriggerQuerySource,
   PCMediaQuery,
-  PCVariableQuery
+  PCVariableQuery,
+  getVanillStyle
 } from "./dsl";
 import * as path from "path";
 import { uniq } from "lodash";
@@ -468,7 +469,7 @@ const translateStaticVariants = (
     (getTreeNodesByName(PCSourceTagNames.OVERRIDE, contentNode) as PCOverride[])
       .filter(override => {
         return (
-          override.type === PCOverridableType.ADD_STYLE_BLOCK ||
+          override.type === PCOverridableType.STYLES ||
           override.type === PCOverridableType.VARIANT_IS_DEFAULT ||
           override.type === PCOverridableType.VARIANT
         );
@@ -553,10 +554,10 @@ const translateVariantOverrideMap = memoize(
       const { overrides, children: childMap } = map[nodeId];
 
       for (const override of overrides) {
-        if (override.type === PCOverridableType.ADD_STYLE_BLOCK) {
+        if (override.type === PCOverridableType.STYLES) {
           buffer += `_${nodeId}Style: ${JSON.stringify(
             mapStyles(
-              computeStyleWithVars(keyValuePairToHash(override.value), varMap),
+              computeStyleWithVars(getVanillStyle(override.value), varMap),
               sourceUri,
               rootDirectory
             )

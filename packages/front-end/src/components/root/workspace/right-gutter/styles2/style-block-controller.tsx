@@ -23,6 +23,9 @@ export default (Base: React.ComponentClass<BaseStyleBlockProps>) => {
             open: false,
             onShouldClose: () => {}
           }}
+          keyValueItemProps={null}
+          keyValueItemProps1={null}
+          keyValueItemProps2={null}
           propertiesListProps={{
             items: styleBlock.properties,
             onInsertNewRow
