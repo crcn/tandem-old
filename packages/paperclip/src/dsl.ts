@@ -1290,7 +1290,7 @@ export const getComponentRefIds = memoize(
           if ((node as PCVisibleNode).styles) {
             for (const style of (node as PCVisibleNode).styles) {
               if (style.mixinId) {
-                iss = [...iss, ...style.mixinId];
+                iss = [...iss, style.mixinId];
               }
             }
           }
@@ -1413,6 +1413,10 @@ export const getVanillStyle = (blocks: PCStyleBlock[]) => {
       {}
     );
 };
+
+export const filterStyleMixins = memoize((blocks: PCStyleBlock[]) => {
+  return blocks.filter(style => style.mixinId);
+});
 
 export const computePCNodeStyle = memoize(
   (
