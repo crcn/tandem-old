@@ -1,6 +1,5 @@
 Immediate:
 
-- [ ] figure out proper way to do overrides in vanilla renderer
 - [ ] rewire style variants in vanilla renderer
 - [ ] rewire style variants in code compiler
 - [ ] refactor
