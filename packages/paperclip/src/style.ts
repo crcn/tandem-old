@@ -9,7 +9,6 @@ import { defaults, pick } from "lodash";
 import {
   InspectorNode,
   getInspectorNodeOverrides,
-  getInspectorNodeBySourceNodeId,
   InspectorTreeNodeName
 } from "./inspector";
 import {
@@ -28,7 +27,6 @@ import {
   INHERITABLE_STYLE_NAMES,
   TEXT_STYLE_NAMES,
   isElementLikePCNode,
-  PCTextStyleMixin,
   getVanillStyle,
   filterStyleMixins
 } from "./dsl";

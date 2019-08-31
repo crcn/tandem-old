@@ -1,26 +1,6 @@
 import * as xml from "xml-js";
-import {
-  createPCTextNode,
-  createPCElement,
-  PCModule,
-  PCTextStyleMixin,
-  PCSourceTagNames,
-  TEXT_STYLE_NAMES,
-  CSS_COLOR_ALIASES,
-  PCVisibleNodeMetadataKey,
-  PCNode,
-  PCVariableType,
-  PCVariable,
-  PCStyleMixin
-} from "./dsl";
-import {
-  EMPTY_ARRAY,
-  appendChildNode,
-  KeyValue,
-  EMPTY_OBJECT,
-  keyValuePairToHash,
-  hashToKeyValuePair
-} from "tandem-common";
+import { createPCTextNode, createPCElement } from "./dsl";
+import { EMPTY_ARRAY } from "tandem-common";
 
 // const FRAME_PADDING = 50;
 

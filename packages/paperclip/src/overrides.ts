@@ -14,10 +14,10 @@ import {
   KeyValue,
   EMPTY_OBJECT,
   keyValuePairToHash,
-  EMPTY_ARRAY,
-  generateUID
+  EMPTY_ARRAY
 } from "tandem-common";
 import { uniq, defaults } from "lodash";
+const crc32 = require("crc32");
 
 export const COMPUTED_OVERRIDE_DEFAULT_KEY = "default";
 
@@ -33,7 +33,7 @@ export type BaseComputedOverride<TType extends ComputedOverrideType, TValue> = {
   source: PCOverride;
   type: TType;
   value: TValue;
-  variantId: string;
+  variantId?: string;
 };
 
 export type ComputedStyleOverride = BaseComputedOverride<
@@ -171,19 +171,19 @@ const computeStyleOverride = (
 ): ComputedStyleOverride[] => {
   const computedOverrides = {};
   for (const block of override.value) {
-    const variantId = block.variantId || COMPUTED_OVERRIDE_DEFAULT_KEY;
-    if (!computedOverrides[variantId]) {
-      (computedOverrides[variantId] as ComputedStyleOverride) = {
-        id: generateUID(),
+    const key = block.variantId || COMPUTED_OVERRIDE_DEFAULT_KEY;
+    if (!computedOverrides[key]) {
+      (computedOverrides[key] as ComputedStyleOverride) = {
+        id: crc32(`${override.id}-${block.id}`),
         source: override,
         type: ComputedOverrideType.STYLE,
         value: {},
-        variantId
+        variantId: block.variantId
       };
     }
 
     defaults(
-      computedOverrides[variantId].value,
+      computedOverrides[key].value,
       keyValuePairToHash(block.properties)
     );
   }
@@ -196,10 +196,10 @@ const computeAttributesOverride = (
 ): ComputedAttributesOverride[] => {
   return [
     {
-      id: generateUID(),
+      id: crc32(`${override.id}-computed`),
       type: ComputedOverrideType.ATTRIBUTES,
       value: keyValuePairToHash(override.value),
-      variantId: override.variantId || COMPUTED_OVERRIDE_DEFAULT_KEY,
+      variantId: override.variantId,
       source: override
     }
   ];
@@ -210,10 +210,10 @@ const computeTextOverride = (
 ): ComputedTextOverride[] => {
   return [
     {
-      id: generateUID(),
+      id: crc32(`${override.id}-computed`),
       type: ComputedOverrideType.TEXT,
       value: override.value,
-      variantId: override.variantId || COMPUTED_OVERRIDE_DEFAULT_KEY,
+      variantId: override.variantId,
       source: override
     }
   ];
@@ -224,10 +224,10 @@ const computeVariantOverride = (
 ): ComputedVariantOverride[] => {
   return [
     {
-      id: generateUID(),
+      id: crc32(`${override.id}-computed`),
       type: ComputedOverrideType.VARIANT,
       value: override.value,
-      variantId: override.variantId || COMPUTED_OVERRIDE_DEFAULT_KEY,
+      variantId: override.variantId,
       source: override
     }
   ];
