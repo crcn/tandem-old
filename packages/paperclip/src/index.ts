@@ -18,3 +18,4 @@ export * from "./inspector";
 export * from "./style";
 export * from "./utils";
 export * from "./style-block";
+export * from "./overrides";

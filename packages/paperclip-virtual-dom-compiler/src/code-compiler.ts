@@ -22,10 +22,10 @@ import {
   getPCNodeDependency,
   getOverrideMap,
   COMPUTED_OVERRIDE_DEFAULT_KEY,
-  PCComputedOverrideVariantMap,
+  ComputedOverrideVariantMap,
   PCOverride,
   PCOverridableType,
-  PCComputedNoverOverrideMap,
+  ComputedNodeOverrideMap,
   isPCComponentInstance,
   computeStyleValue,
   isPCComponentOrInstance,
@@ -34,7 +34,7 @@ import {
   isSlot,
   PCSlot,
   PCStyleMixin,
-  PCComputedOverrideMap,
+  ComputedOverrideMap,
   mergeVariantOverrides,
   getPCNodeContentNode,
   PCVariant,
@@ -80,8 +80,14 @@ import {
   addScopedLayerLabel,
   makeSafeVarName
 } from "./utils";
-import { PCQueryType } from "paperclip";
-import { PCStyleBlock } from "paperclip/src";
+import {
+  PCQueryType,
+  PCStyleBlock,
+  ComputedOverride,
+  ComputedOverrideType,
+  computePCOverrides
+} from "paperclip";
+import { ComputedStyleOverride } from "paperclip/src";
 
 export type TranslateParts = {
   elementCreator: string;
@@ -453,11 +459,9 @@ export const createPaperclipVirtualDOMtranslator = (
     context: TranslateContext
   ) => {
     // FIXME: need to sort based on variant priority
-    const styleOverrides = (getOverrides(instance).filter(
+    const styleOverrides = computePCOverrides(getOverrides(instance).filter(
       node => node.type === PCOverridableType.STYLES && node.value.length
-    ) as PCStylesOverride[]).sort((a, b) => {
-      return a.variantId ? 1 : -1;
-    });
+    ) as PCStylesOverride[]) as ComputedStyleOverride[];
 
     for (const override of styleOverrides) {
       // console.log(instance.id, component.id, override.targetIdPath.length === 0 && instance.id === component.id);
@@ -465,7 +469,8 @@ export const createPaperclipVirtualDOMtranslator = (
       // override id is added as className to target element when imported. Necessary
       // to ensure that edge-cases like portals still maintain override values.
       let targetSelector = `._${
-        override.targetIdPath.length === 0 && instance.id === component.id
+        override.source.targetIdPath.length === 0 &&
+        instance.id === component.id
           ? instance.id
           : override.id
       }`;
@@ -561,10 +566,13 @@ export const createPaperclipVirtualDOMtranslator = (
       context = addOpenTag(`mergeProps(styleRules, {\n`, context);
       context = addOpenTag(`["${selector}"]: {\n`, context);
       context = translateStyle(
-        getPCNode(last(override.targetIdPath), context.graph) as ContentNode,
-        getVanillaStyleHash(override.value),
+        getPCNode(
+          last(override.source.targetIdPath),
+          context.graph
+        ) as ContentNode,
+        override.value,
         context,
-        getPCNodeDependency(override.id, context.graph).uri
+        getPCNodeDependency(override.source.id, context.graph).uri
       );
       context = addCloseTag(`}\n`, context);
       context = addCloseTag(`});\n\n`, context);
@@ -605,10 +613,13 @@ export const createPaperclipVirtualDOMtranslator = (
           context
         );
         context = translateStyle(
-          getPCNode(last(override.targetIdPath), context.graph) as ContentNode,
-          getVanillaStyleHash(override.value),
+          getPCNode(
+            last(override.source.targetIdPath),
+            context.graph
+          ) as ContentNode,
+          override.value,
           context,
-          getPCNodeDependency(override.id, context.graph).uri
+          getPCNodeDependency(override.source.id, context.graph).uri
         );
         context = addCloseTag(`}\n`, context);
         context = addCloseTag(`}\n`, context);
@@ -773,7 +784,7 @@ export const createPaperclipVirtualDOMtranslator = (
 
       // variants need to come first since there may be child overrides that have variant styles
 
-      context = translateDynamicOverrideKeys(contentNode, context);
+      // context = translateDynamicOverrideKeys(contentNode, context);
       context = translateContentNodeVariantOverrides(contentNode, context);
       context = translateContentNodeOverrides(contentNode, context);
 
@@ -910,7 +921,7 @@ export const createPaperclipVirtualDOMtranslator = (
       getPCNodeContentNode(instance.id, context.entry.content) || instance;
     context = translateStaticStyleOverride(
       instance.id,
-      getAllNodeOverrides(instance.id, contentNode),
+      computePCOverrides(getAllNodeOverrides(instance.id, contentNode)),
       context,
       true
     );
@@ -928,7 +939,7 @@ export const createPaperclipVirtualDOMtranslator = (
 
   const translateVariantSelectors = (
     instance: PCComponentInstanceElement | PCComponent,
-    map: PCComputedOverrideMap
+    map: ComputedOverrideMap
   ) => {
     const variantSelectors = {};
 
@@ -947,13 +958,16 @@ export const createPaperclipVirtualDOMtranslator = (
     for (const key in map) {
       const instanceMap = map[key][instance.id] || EMPTY_OBJECT;
 
-      const overrides: PCOverride[] = instanceMap.overrides || EMPTY_ARRAY;
+      const overrides: ComputedOverride[] =
+        instanceMap.overrides || EMPTY_ARRAY;
       for (const override of overrides) {
-        if (override.type !== PCOverridableType.VARIANT) {
+        if (override.type !== ComputedOverrideType.VARIANT) {
           continue;
         }
 
-        let instancePathSelector = override.targetIdPath.map(id => `._${id}`);
+        let instancePathSelector = override.source.targetIdPath.map(
+          id => `._${id}`
+        );
 
         let newKey: string;
 
@@ -973,8 +987,8 @@ export const createPaperclipVirtualDOMtranslator = (
           if (
             instancePathSelector.length !== 0 &&
             !(
-              override.targetIdPath.length === 1 &&
-              override.targetIdPath[0] === instance.id
+              override.source.targetIdPath.length === 1 &&
+              override.source.targetIdPath[0] === instance.id
             )
           ) {
             postfix += " ";
@@ -991,7 +1005,7 @@ export const createPaperclipVirtualDOMtranslator = (
 
   const getInstanceVariantOverrideMap = (
     instance: PCComponentInstanceElement | PCComponent,
-    map: PCComputedOverrideMap,
+    map: ComputedOverrideMap,
     context: TranslateContext
   ) => {
     const newMap = {};
@@ -1052,7 +1066,7 @@ export const createPaperclipVirtualDOMtranslator = (
   };
 
   const translateUsedComponentOverrideMap = (
-    map: PCComputedOverrideVariantMap,
+    map: ComputedOverrideVariantMap,
     context: TranslateContext
   ) => {
     for (const key in map) {
@@ -1117,7 +1131,7 @@ export const createPaperclipVirtualDOMtranslator = (
       if (node.name !== PCSourceTagNames.COMPONENT_INSTANCE) {
         context = translateStaticStyleOverride(
           node.id,
-          getAllNodeOverrides(node.id, component),
+          computePCOverrides(getAllNodeOverrides(node.id, component)),
           context
         );
       }
@@ -1197,7 +1211,7 @@ export const createPaperclipVirtualDOMtranslator = (
 
     for (let i = instances.length; i--; ) {
       const instance = instances[i];
-      context = translateDynamicOverrides(component, instance, null, context);
+      // context = translateDynamicOverrides(component, instance, null, context);
       context = translatePlugs(component, instance, context);
     }
 
@@ -1249,12 +1263,14 @@ export const createPaperclipVirtualDOMtranslator = (
     return context;
   };
 
-  const isComputedOverride = (map: any): map is PCComputedNoverOverrideMap =>
+  const isComputedOverride = (map: any): map is ComputedNodeOverrideMap =>
     Boolean(map.children);
 
-  const mapContainersOverride = (filter: (override: PCOverride) => boolean) => {
+  const mapContainersOverride = (
+    filter: (override: ComputedOverride) => boolean
+  ) => {
     const check = memoize(
-      (map: PCComputedNoverOverrideMap | PCComputedOverrideVariantMap) => {
+      (map: ComputedNodeOverrideMap | ComputedOverrideVariantMap) => {
         if (isComputedOverride(map)) {
           if (map.overrides.find(filter)) {
             return true;
@@ -1278,12 +1294,8 @@ export const createPaperclipVirtualDOMtranslator = (
     return check;
   };
 
-  const isStaticOverride = (override: PCOverride) =>
-    override.type !== PCOverridableType.CHILDREN && !override.variantId;
-  const isDynamicOverride = (override: PCOverride) =>
-    (override.type === PCOverridableType.CHILDREN &&
-      override.children.length > 0) ||
-    Boolean(override.variantId);
+  const isStaticOverride = (override: ComputedOverride) => !override.variantId;
+  const isDynamicOverride = (override: ComputedOverride) => false;
 
   const mapContainsStaticOverrides = mapContainersOverride(isStaticOverride);
 
@@ -1330,38 +1342,38 @@ export const createPaperclipVirtualDOMtranslator = (
     return context;
   };
 
-  const translateDynamicOverrideKeys = (
-    contentNode: ContentNode,
-    context: TranslateContext
-  ) => {
-    const instances = filterNestedNodes(
-      contentNode,
-      node =>
-        node.name === PCSourceTagNames.COMPONENT_INSTANCE ||
-        node.name === PCSourceTagNames.COMPONENT
-    );
+  // const translateDynamicOverrideKeys = (
+  //   contentNode: ContentNode,
+  //   context: TranslateContext
+  // ) => {
+  //   const instances = filterNestedNodes(
+  //     contentNode,
+  //     node =>
+  //       node.name === PCSourceTagNames.COMPONENT_INSTANCE ||
+  //       node.name === PCSourceTagNames.COMPONENT
+  //   );
 
-    for (const instance of instances) {
-      const overrides = getOverrides(instance);
+  //   for (const instance of instances) {
+  //     const overrides = getOverrides(instance);
 
-      for (const override of overrides) {
-        if (isDynamicOverride(override)) {
-          let keyPath: string[];
+  //     for (const override of overrides) {
+  //       if (isDynamicOverride(override)) {
+  //         let keyPath: string[];
 
-          if (getNestedTreeNodeById(last(override.targetIdPath), contentNode)) {
-            keyPath = [`_${last(override.targetIdPath)}Props`];
-          } else {
-            keyPath = [instance.id + "Props", ...override.targetIdPath].map(
-              id => `_${id}`
-            );
-          }
-          context = defineNestedObject(keyPath, true, context);
-        }
-      }
-    }
+  //         if (getNestedTreeNodeById(last(override.targetIdPath), contentNode)) {
+  //           keyPath = [`_${last(override.targetIdPath)}Props`];
+  //         } else {
+  //           keyPath = [instance.id + "Props", ...override.targetIdPath].map(
+  //             id => `_${id}`
+  //           );
+  //         }
+  //         context = defineNestedObject(keyPath, true, context);
+  //       }
+  //     }
+  //   }
 
-    return context;
-  };
+  //   return context;
+  // };
 
   const translatePlugs = (
     component: ContentNode,
@@ -1414,45 +1426,45 @@ export const createPaperclipVirtualDOMtranslator = (
     return context;
   };
 
-  const translateDynamicOverrides = (
-    component: ContentNode,
-    instance: PCComponent | PCComponentInstanceElement,
-    variantId: string,
-    context: TranslateContext
-  ) => {
-    const overrides = getOverrides(instance);
+  // const translateDynamicOverrides = (
+  //   component: ContentNode,
+  //   instance: PCComponent | PCComponentInstanceElement,
+  //   variantId: string,
+  //   context: TranslateContext
+  // ) => {
+  //   const overrides = getOverrides(instance);
 
-    for (const override of overrides) {
-      if (isDynamicOverride(override) && override.variantId == variantId) {
-        let keyPath: string[];
+  //   for (const override of overrides) {
+  //     if (isDynamicOverride(override) && override.variantId == variantId) {
+  //       let keyPath: string[];
 
-        if (getNestedTreeNodeById(last(override.targetIdPath), component)) {
-          keyPath = [`_${last(override.targetIdPath)}Props`];
-        } else {
-          keyPath = [instance.id + "Props", ...override.targetIdPath].map(
-            id => `_${id}`
-          );
-        }
-        context = translateDynamicOverrideSetter(
-          keyPath.join("."),
-          override,
-          context
-        );
-      }
-    }
+  //       if (getNestedTreeNodeById(last(override.targetIdPath), component)) {
+  //         keyPath = [`_${last(override.targetIdPath)}Props`];
+  //       } else {
+  //         keyPath = [instance.id + "Props", ...override.targetIdPath].map(
+  //           id => `_${id}`
+  //         );
+  //       }
+  //       context = translateDynamicOverrideSetter(
+  //         keyPath.join("."),
+  //         override,
+  //         context
+  //       );
+  //     }
+  //   }
 
-    return context;
-  };
+  //   return context;
+  // };
 
   const hasDynamicOverrides = ({
     children,
     overrides
-  }: PCComputedNoverOverrideMap) => {
-    for (const override of overrides) {
-      if (override.type === PCOverridableType.CHILDREN) {
-        return true;
-      }
-    }
+  }: ComputedNodeOverrideMap) => {
+    // for (const override of overrides) {
+    //   if (override.type === ComputedOverrideType.CHILDREN) {
+    //     return true;
+    //   }
+    // }
 
     for (const key in children) {
       if (hasDynamicOverrides(children[key])) {
@@ -1497,7 +1509,7 @@ export const createPaperclipVirtualDOMtranslator = (
   };
 
   const translateStaticOverride = (
-    override: PCOverride,
+    override: ComputedOverride,
     context: TranslateContext
   ) => {
     if (override.variantId) {
@@ -1505,19 +1517,19 @@ export const createPaperclipVirtualDOMtranslator = (
     }
 
     switch (override.type) {
-      case PCOverridableType.TEXT: {
+      case ComputedOverrideType.TEXT: {
         return addLine(`text: ${JSON.stringify(override.value)},`, context);
       }
-      case PCOverridableType.VARIANT: {
+      case ComputedOverrideType.VARIANT: {
         return addLine(
           `variant: "${Object.keys(override.value).join(" ")}",`,
           context
         );
       }
-      case PCOverridableType.ATTRIBUTES: {
+      case ComputedOverrideType.ATTRIBUTES: {
         context = translateInnerAttributes(
-          last(override.targetIdPath),
-          keyValuePairToHash(override.value),
+          last(override.source.targetIdPath),
+          override.value,
           context
         );
         break;
@@ -1529,12 +1541,12 @@ export const createPaperclipVirtualDOMtranslator = (
 
   const translateStaticStyleOverride = (
     nodeId: string,
-    overrides: PCOverride[],
+    overrides: ComputedOverride[],
     context: TranslateContext,
     includeNodeId: boolean = true
   ) => {
     const styleOverrides = overrides.filter(
-      override => override.type === PCOverridableType.STYLES
+      override => override.type === ComputedOverrideType.STYLE
     );
     if (!styleOverrides.length && !includeNodeId) {
       return context;

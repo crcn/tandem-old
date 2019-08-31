@@ -1,6 +1,8 @@
 Immediate:
 
-- [ ] refactor paperclip/src/style.js
+- [ ] figure out proper way to do overrides in vanilla renderer
+- [ ] rewire style variants in vanilla renderer
+- [ ] rewire style variants in code compiler
 - [ ] refactor
   - [ ] styles as their own nodes
   - [ ] variant style overrides as their

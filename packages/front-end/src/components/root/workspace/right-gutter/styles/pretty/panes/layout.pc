@@ -1052,7 +1052,7 @@
                           "value": [],
                           "name": "override",
                           "children": [],
-                          "type": "add-attributes"
+                          "type": "attributes"
                         },
                         {
                           "slotId": "e73029b416045",
@@ -1189,7 +1189,7 @@
                           "value": [],
                           "name": "override",
                           "children": [],
-                          "type": "add-attributes"
+                          "type": "attributes"
                         },
                         {
                           "slotId": "e73029b416045",
@@ -1715,7 +1715,7 @@
                       "value": [],
                       "name": "override",
                       "children": [],
-                      "type": "add-attributes"
+                      "type": "attributes"
                     },
                     {
                       "slotId": "e73029b416045",
@@ -1998,7 +1998,7 @@
                       "value": [],
                       "name": "override",
                       "children": [],
-                      "type": "add-attributes"
+                      "type": "attributes"
                     },
                     {
                       "slotId": "e73029b416045",

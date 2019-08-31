@@ -1311,7 +1311,7 @@
           ],
           "name": "override",
           "children": [],
-          "type": "add-attributes"
+          "type": "attributes"
         },
         {
           "id": "6f0de1ad114",

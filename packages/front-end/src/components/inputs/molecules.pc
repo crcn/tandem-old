@@ -96,7 +96,7 @@
                       "value": [],
                       "name": "override",
                       "children": [],
-                      "type": "add-attributes"
+                      "type": "attributes"
                     }
                   ],
                   "metadata": {},

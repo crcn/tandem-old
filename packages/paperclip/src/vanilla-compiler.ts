@@ -7,17 +7,14 @@ import {
   EMPTY_OBJECT,
   stripProtocol,
   FILE_PROTOCOL,
-  addProtocol,
-  keyValuePairToHash
+  addProtocol
 } from "tandem-common";
 import {
   PCNode,
-  getOverrideMap,
   PCOverridableType,
   PCTextNode,
   PCBaseElementChild,
   isVisibleNode,
-  PCComputedOverrideVariantMap,
   PCComponentInstanceElement,
   PCBaseElement,
   PCComponent,
@@ -41,10 +38,14 @@ import {
   PCVariableQuery,
   getVanillStyle
 } from "./dsl";
+import {
+  getOverrideMap,
+  ComputedOverrideVariantMap,
+  ComputedOverrideType
+} from "./overrides";
 import * as path from "path";
 import { uniq } from "lodash";
 import { SyntheticElement } from "./synthetic";
-import { DependencyGraph } from "./graph";
 
 export type VanillaPCRenderers = KeyValue<VanillaPCRenderer>;
 
@@ -544,7 +545,7 @@ const mapStyles = (
 
 const translateVariantOverrideMap = memoize(
   (
-    map: PCComputedOverrideVariantMap,
+    map: ComputedOverrideVariantMap,
     varMap: KeyValue<PCVariable>,
     sourceUri: string,
     rootDirectory: string
@@ -554,22 +555,22 @@ const translateVariantOverrideMap = memoize(
       const { overrides, children: childMap } = map[nodeId];
 
       for (const override of overrides) {
-        if (override.type === PCOverridableType.STYLES) {
+        if (override.type === ComputedOverrideType.STYLE) {
           buffer += `_${nodeId}Style: ${JSON.stringify(
             mapStyles(
-              computeStyleWithVars(getVanillStyle(override.value), varMap),
+              computeStyleWithVars(override.value, varMap),
               sourceUri,
               rootDirectory
             )
           )},`;
         }
-        if (override.type === PCOverridableType.ATTRIBUTES) {
+        if (override.type === ComputedOverrideType.ATTRIBUTES) {
           buffer += `_${nodeId}Attributes: ${JSON.stringify(override.value)},`;
         }
-        if (override.type === PCOverridableType.VARIANT) {
+        if (override.type === ComputedOverrideType.VARIANT) {
           buffer += `_${nodeId}Variant: ${JSON.stringify(override.value)},`;
         }
-        if (override.type === PCOverridableType.TEXT) {
+        if (override.type === ComputedOverrideType.TEXT) {
           buffer += `_${nodeId}Value: ${JSON.stringify(override.value)},`;
         }
       }

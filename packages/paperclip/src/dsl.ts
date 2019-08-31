@@ -313,8 +313,6 @@ export enum HtmlAttribute {
   type = "type"
 }
 
-export const COMPUTED_OVERRIDE_DEFAULT_KEY = "default";
-
 /*------------------------------------------
  * STATE
  *-----------------------------------------*/
@@ -564,23 +562,6 @@ export type PCNode =
   | PCTextStyleMixin
   | PCVariantTrigger
   | PCQuery;
-
-export type PCComputedOverrideMap = {
-  [COMPUTED_OVERRIDE_DEFAULT_KEY]: PCComputedOverrideVariantMap;
-
-  // variant id
-  [identifier: string]: PCComputedOverrideVariantMap;
-};
-
-export type PCComputedOverrideVariantMap = {
-  // target node id
-  [identifier: string]: PCComputedNoverOverrideMap;
-};
-
-export type PCComputedNoverOverrideMap = {
-  overrides: PCOverride[];
-  children: PCComputedOverrideVariantMap;
-};
 
 export enum PCVariantTriggerSourceType {
   QUERY,
@@ -1399,19 +1380,27 @@ export const variableQueryPassed = (
   return false;
 };
 
-export const getVanillStyle = (blocks: PCStyleBlock[]) => {
-  return blocks
-    .filter(
-      style =>
-        !style.mixinId && !style.variantId && !Object.keys(style.parts).length
-    )
-    .reduce(
-      (style, block) => ({
-        ...keyValuePairToHash(block.properties),
-        ...style
-      }),
-      {}
-    );
+export const getVanillStyle = (blocks: PCStyleBlock[], variantId?: string) => {
+  return styleBlocksToHash(
+    blocks,
+    style =>
+      !style.mixinId &&
+      style.variantId == variantId &&
+      !Object.keys(style.parts).length
+  );
+};
+
+export const styleBlocksToHash = (
+  blocks: PCStyleBlock[],
+  filter = (block: PCStyleBlock) => true
+) => {
+  return blocks.filter(filter).reduce(
+    (style, block) => ({
+      ...keyValuePairToHash(block.properties),
+      ...style
+    }),
+    {}
+  );
 };
 
 export const filterStyleMixins = memoize((blocks: PCStyleBlock[]) => {
@@ -1692,115 +1681,8 @@ export const filterNestedOverrides = memoize(
   (node: PCNode): PCOverride[] => filterNestedNodes(node, isPCOverride)
 );
 
-export const getOverrideMap = memoize(
-  (node: PCNode, contentNode: PCNode, includeSelf?: boolean) => {
-    const map: PCComputedOverrideMap = {
-      default: {}
-    };
-
-    const overrides = uniq([
-      ...getOverrides(node),
-      ...getOverrides(contentNode).filter(override => {
-        return override.targetIdPath.indexOf(node.id) !== -1;
-      })
-    ]);
-
-    for (const override of overrides) {
-      if (override.variantId && !map[override.variantId]) {
-        map[override.variantId] = {};
-      }
-
-      let targetOverrides: any;
-
-      if (
-        !(targetOverrides =
-          map[override.variantId || COMPUTED_OVERRIDE_DEFAULT_KEY])
-      ) {
-        targetOverrides = map[
-          override.variantId || COMPUTED_OVERRIDE_DEFAULT_KEY
-        ] = {};
-      }
-
-      const targetIdPath = [...override.targetIdPath];
-      const targetId = targetIdPath.pop() || node.id;
-      if (
-        includeSelf &&
-        override.targetIdPath.length &&
-        !getNestedTreeNodeById(targetId, node)
-      ) {
-        targetIdPath.unshift(node.id);
-      }
-
-      for (const nodeId of targetIdPath) {
-        if (!targetOverrides[nodeId]) {
-          targetOverrides[nodeId] = {
-            overrides: [],
-            children: {}
-          };
-        }
-
-        targetOverrides = targetOverrides[nodeId].children;
-      }
-
-      if (!targetOverrides[targetId]) {
-        targetOverrides[targetId] = {
-          overrides: [],
-          children: {}
-        };
-      }
-
-      targetOverrides[targetId].overrides.push(override);
-    }
-
-    return map;
-  }
-);
-
-export const mergeVariantOverrides = (variantMap: PCComputedOverrideMap) => {
-  let map: PCComputedOverrideVariantMap = {};
-  for (const variantId in variantMap) {
-    map = mergeVariantOverrides2(variantMap[variantId], map);
-  }
-
-  return map;
-};
-
-const mergeVariantOverrides2 = (
-  oldMap: PCComputedOverrideVariantMap,
-  existingMap: PCComputedOverrideVariantMap
-) => {
-  let newMap: PCComputedOverrideVariantMap = { ...existingMap };
-  for (const key in oldMap) {
-    newMap[key] = {
-      overrides: existingMap[key]
-        ? [...existingMap[key].overrides, ...oldMap[key].overrides]
-        : oldMap[key].overrides,
-      children: mergeVariantOverrides2(
-        oldMap[key].children,
-        (existingMap[key] || EMPTY_OBJECT).children || EMPTY_OBJECT
-      )
-    };
-  }
-
-  return newMap;
-};
-
-export const flattenPCOverrideMap = memoize(
-  (
-    map: PCComputedOverrideVariantMap,
-    idPath: string[] = [],
-    flattened: KeyValue<PCOverride[]> = {}
-  ): KeyValue<PCOverride[]> => {
-    for (const nodeId in map) {
-      flattened[[...idPath, nodeId].join(" ")] = map[nodeId].overrides;
-      flattenPCOverrideMap(
-        map[nodeId].children,
-        [...idPath, nodeId],
-        flattened
-      );
-    }
-    return flattened;
-  }
+const computePCOverrides = memoize(
+  (node: PCNode, contentNode: PCNode, includeSelf?: boolean) => {}
 );
 
 /*------------------------------------------
