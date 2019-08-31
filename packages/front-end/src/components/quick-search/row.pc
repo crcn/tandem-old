@@ -1,6 +1,6 @@
 {
   "id": "28fcdf040",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "metadata": {},
   "name": "module",
   "children": [
@@ -230,26 +230,6 @@
           ]
         },
         {
-          "id": "1dc9871d4870",
-          "name": "override",
-          "type": "styles",
-          "targetIdPath": [],
-          "value": [
-            {
-              "id": "1360183994.1566398145476",
-              "parts": {},
-              "variantId": "1dc9871d3624",
-              "properties": [
-                {
-                  "key": "background",
-                  "value": "var(--f63574de434)"
-                }
-              ]
-            }
-          ],
-          "children": []
-        },
-        {
           "id": "646b96f933019",
           "is": "711f2f581678",
           "label": "split tab button",
@@ -266,6 +246,17 @@
           },
           "variant": {},
           "styles": [
+            {
+              "id": "7602676475.1566398145476",
+              "parts": {},
+              "variantId": "646b96f948608",
+              "properties": [
+                {
+                  "key": "display",
+                  "value": "inline-block"
+                }
+              ]
+            },
             {
               "id": "5995328026.1566398145476",
               "parts": {},
@@ -307,28 +298,6 @@
           "metadata": {}
         },
         {
-          "id": "646b96f949286",
-          "name": "override",
-          "type": "styles",
-          "targetIdPath": [
-            "646b96f933019"
-          ],
-          "value": [
-            {
-              "id": "7602676475.1566398145476",
-              "parts": {},
-              "variantId": "646b96f948608",
-              "properties": [
-                {
-                  "key": "display",
-                  "value": "inline-block"
-                }
-              ]
-            }
-          ],
-          "children": []
-        },
-        {
           "id": "f32ac6af39966",
           "name": "variant-trigger",
           "targetVariantId": "646b96f948608",
@@ -346,46 +315,6 @@
           "isDefault": false,
           "children": [],
           "metadata": {}
-        },
-        {
-          "id": "564cd8f1606",
-          "name": "override",
-          "type": "styles",
-          "targetIdPath": [],
-          "value": [
-            {
-              "id": "8427438504.1566398145476",
-              "parts": {},
-              "variantId": "564cd8f1605",
-              "properties": [
-                {
-                  "key": "background-image",
-                  "value": "linear-gradient(var(--32c1eebd7630), var(--32c1eebd7630))"
-                }
-              ]
-            }
-          ],
-          "children": []
-        },
-        {
-          "id": "f7d6a42945",
-          "name": "override",
-          "type": "styles",
-          "targetIdPath": [],
-          "value": [
-            {
-              "id": "2656104804.1566398145476",
-              "parts": {},
-              "variantId": "646b96f948608",
-              "properties": [
-                {
-                  "key": "background-image",
-                  "value": "linear-gradient(var(--1934368810788), var(--1934368810788))"
-                }
-              ]
-            }
-          ],
-          "children": []
         }
       ],
       "metadata": {
@@ -401,6 +330,39 @@
       ],
       "variant": {},
       "styles": [
+        {
+          "id": "1360183994.1566398145476",
+          "parts": {},
+          "variantId": "1dc9871d3624",
+          "properties": [
+            {
+              "key": "background",
+              "value": "var(--f63574de434)"
+            }
+          ]
+        },
+        {
+          "id": "8427438504.1566398145476",
+          "parts": {},
+          "variantId": "564cd8f1605",
+          "properties": [
+            {
+              "key": "background-image",
+              "value": "linear-gradient(var(--32c1eebd7630), var(--32c1eebd7630))"
+            }
+          ]
+        },
+        {
+          "id": "2656104804.1566398145476",
+          "parts": {},
+          "variantId": "646b96f948608",
+          "properties": [
+            {
+              "key": "background-image",
+              "value": "linear-gradient(var(--1934368810788), var(--1934368810788))"
+            }
+          ]
+        },
         {
           "id": "1045363468.1566398145476",
           "parts": {},

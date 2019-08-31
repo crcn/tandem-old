@@ -1,6 +1,6 @@
 {
   "id": "df7169e187",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "metadata": {},
   "name": "module",
   "children": [
@@ -229,6 +229,17 @@
           "metadata": {},
           "styles": [
             {
+              "id": "4246710294.1566398145484",
+              "parts": {},
+              "variantId": "d3d61e4d34921",
+              "properties": [
+                {
+                  "key": "display",
+                  "value": "none"
+                }
+              ]
+            },
+            {
               "id": "517972929.1566398145484",
               "parts": {},
               "properties": [
@@ -267,6 +278,41 @@
               "children": [],
               "metadata": {},
               "styles": [
+                {
+                  "id": "7663025696.1566398145484",
+                  "parts": {},
+                  "variantId": "d3d61e4d34921",
+                  "properties": [
+                    {
+                      "key": "position",
+                      "value": "absolute"
+                    },
+                    {
+                      "key": "left",
+                      "value": "50%"
+                    },
+                    {
+                      "key": "top",
+                      "value": "50%"
+                    },
+                    {
+                      "key": "transform",
+                      "value": "translate(-50%, -50%)"
+                    },
+                    {
+                      "key": "font-size",
+                      "value": "14px"
+                    },
+                    {
+                      "key": "font-weight",
+                      "value": "600"
+                    },
+                    {
+                      "key": "display",
+                      "value": "block"
+                    }
+                  ]
+                },
                 {
                   "id": "4026094714.1566398145484",
                   "parts": {},
@@ -340,74 +386,6 @@
           "isDefault": false,
           "children": [],
           "metadata": {}
-        },
-        {
-          "id": "d3d61e4d34922",
-          "name": "override",
-          "type": "styles",
-          "targetIdPath": [
-            "694404cc2673"
-          ],
-          "value": [
-            {
-              "id": "4246710294.1566398145484",
-              "parts": {},
-              "variantId": "d3d61e4d34921",
-              "properties": [
-                {
-                  "key": "display",
-                  "value": "none"
-                }
-              ]
-            }
-          ],
-          "children": []
-        },
-        {
-          "id": "d3d61e4d34945",
-          "name": "override",
-          "type": "styles",
-          "targetIdPath": [
-            "d3d61e4d34923"
-          ],
-          "value": [
-            {
-              "id": "7663025696.1566398145484",
-              "parts": {},
-              "variantId": "d3d61e4d34921",
-              "properties": [
-                {
-                  "key": "position",
-                  "value": "absolute"
-                },
-                {
-                  "key": "left",
-                  "value": "50%"
-                },
-                {
-                  "key": "top",
-                  "value": "50%"
-                },
-                {
-                  "key": "transform",
-                  "value": "translate(-50%, -50%)"
-                },
-                {
-                  "key": "font-size",
-                  "value": "14px"
-                },
-                {
-                  "key": "font-weight",
-                  "value": "600"
-                },
-                {
-                  "key": "display",
-                  "value": "block"
-                }
-              ]
-            }
-          ],
-          "children": []
         }
       ],
       "metadata": {
@@ -486,26 +464,6 @@
           "isDefault": true,
           "children": [],
           "metadata": {}
-        },
-        {
-          "id": "d3d61e4d34980",
-          "name": "override",
-          "type": "styles",
-          "targetIdPath": [],
-          "value": [
-            {
-              "id": "1539289782.1566398145484",
-              "parts": {},
-              "variantId": "d3d61e4d34979",
-              "properties": [
-                {
-                  "key": "background-image",
-                  "value": "linear-gradient(var(--bc891e755312), var(--bc891e755312))"
-                }
-              ]
-            }
-          ],
-          "children": []
         }
       ],
       "metadata": {
@@ -518,6 +476,17 @@
       },
       "variant": {},
       "styles": [
+        {
+          "id": "1539289782.1566398145484",
+          "parts": {},
+          "variantId": "d3d61e4d34979",
+          "properties": [
+            {
+              "key": "background-image",
+              "value": "linear-gradient(var(--bc891e755312), var(--bc891e755312))"
+            }
+          ]
+        },
         {
           "id": "5699427447.1566398145484",
           "parts": {},
@@ -775,6 +744,17 @@
           "metadata": {},
           "styles": [
             {
+              "id": "6635189320.1566398145485",
+              "parts": {},
+              "variantId": "838d1061527",
+              "properties": [
+                {
+                  "key": "color",
+                  "value": "var(--4325aac312609)"
+                }
+              ]
+            },
+            {
               "id": "9467713902.1566398145485",
               "parts": {},
               "properties": [
@@ -799,28 +779,6 @@
           "isDefault": true,
           "children": [],
           "metadata": {}
-        },
-        {
-          "id": "838d1061528",
-          "name": "override",
-          "type": "styles",
-          "targetIdPath": [
-            "983742ed988"
-          ],
-          "value": [
-            {
-              "id": "6635189320.1566398145485",
-              "parts": {},
-              "variantId": "838d1061527",
-              "properties": [
-                {
-                  "key": "color",
-                  "value": "var(--4325aac312609)"
-                }
-              ]
-            }
-          ],
-          "children": []
         }
       ],
       "metadata": {

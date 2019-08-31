@@ -1,6 +1,6 @@
 {
   "id": "76b155a0889212",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "metadata": {},
   "name": "module",
   "children": [
@@ -189,6 +189,17 @@
               "children": [],
               "metadata": {},
               "styles": [
+                {
+                  "id": "6732901202.1566398145467",
+                  "parts": {},
+                  "variantId": "368712de18492",
+                  "properties": [
+                    {
+                      "key": "left",
+                      "value": "calc(100% - 30px)"
+                    }
+                  ]
+                },
                 {
                   "id": "6637438803.1566398145467",
                   "parts": {},
@@ -432,48 +443,6 @@
           "isDefault": true,
           "children": [],
           "metadata": {}
-        },
-        {
-          "id": "368712de18493",
-          "name": "override",
-          "type": "styles",
-          "targetIdPath": [
-            "936f2927705"
-          ],
-          "value": [
-            {
-              "id": "6732901202.1566398145467",
-              "parts": {},
-              "variantId": "368712de18492",
-              "properties": [
-                {
-                  "key": "left",
-                  "value": "calc(100% - 30px)"
-                }
-              ]
-            }
-          ],
-          "children": []
-        },
-        {
-          "id": "4496ba59214",
-          "name": "override",
-          "type": "styles",
-          "targetIdPath": [],
-          "value": [
-            {
-              "id": "7531425086.1566398145467",
-              "parts": {},
-              "variantId": "368712de18492",
-              "properties": [
-                {
-                  "key": "transform",
-                  "value": "translate(-70%, 0px)"
-                }
-              ]
-            }
-          ],
-          "children": []
         }
       ],
       "metadata": {
@@ -486,6 +455,17 @@
       },
       "variant": {},
       "styles": [
+        {
+          "id": "7531425086.1566398145467",
+          "parts": {},
+          "variantId": "368712de18492",
+          "properties": [
+            {
+              "key": "transform",
+              "value": "translate(-70%, 0px)"
+            }
+          ]
+        },
         {
           "id": "3198201685.1566398145466",
           "parts": {},

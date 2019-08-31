@@ -1,6 +1,6 @@
 {
   "id": "70ef61a6213",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "metadata": {},
   "name": "module",
   "children": [
@@ -54,34 +54,6 @@
           "metadata": {}
         },
         {
-          "id": "15d6c81f4",
-          "name": "override",
-          "type": "styles",
-          "targetIdPath": [],
-          "value": [
-            {
-              "id": "7279258534.1566398145460",
-              "parts": {},
-              "variantId": "15d6c81f3",
-              "properties": [
-                {
-                  "key": "border-right",
-                  "value": "none"
-                },
-                {
-                  "key": "border-top-right-radius",
-                  "value": "1px"
-                },
-                {
-                  "key": "border-bottom-right-radius",
-                  "value": "1px"
-                }
-              ]
-            }
-          ],
-          "children": []
-        },
-        {
           "id": "15d6c81f5",
           "name": "variant",
           "label": "selected",
@@ -90,64 +62,12 @@
           "metadata": {}
         },
         {
-          "id": "15d6c81f6",
-          "name": "override",
-          "type": "styles",
-          "targetIdPath": [],
-          "value": [
-            {
-              "id": "6454342173.1566398145460",
-              "parts": {},
-              "variantId": "15d6c81f5",
-              "properties": [
-                {
-                  "key": "background",
-                  "value": "#00B5FF"
-                },
-                {
-                  "key": "color",
-                  "value": "rgba(255, 255, 255, 1)"
-                }
-              ]
-            }
-          ],
-          "children": []
-        },
-        {
           "id": "af62926b2035",
           "name": "variant",
           "label": "first",
           "isDefault": false,
           "children": [],
           "metadata": {}
-        },
-        {
-          "id": "af62926b2036",
-          "name": "override",
-          "type": "styles",
-          "targetIdPath": [],
-          "value": [
-            {
-              "id": "6364660608.1566398145460",
-              "parts": {},
-              "variantId": "af62926b2035",
-              "properties": [
-                {
-                  "key": "text-align",
-                  "value": "center"
-                },
-                {
-                  "key": "border-bottom-left-radius",
-                  "value": "1px"
-                },
-                {
-                  "key": "border-top-left-radius",
-                  "value": "1px"
-                }
-              ]
-            }
-          ],
-          "children": []
         }
       ],
       "metadata": {
@@ -160,6 +80,59 @@
       },
       "variant": {},
       "styles": [
+        {
+          "id": "7279258534.1566398145460",
+          "parts": {},
+          "variantId": "15d6c81f3",
+          "properties": [
+            {
+              "key": "border-right",
+              "value": "none"
+            },
+            {
+              "key": "border-top-right-radius",
+              "value": "1px"
+            },
+            {
+              "key": "border-bottom-right-radius",
+              "value": "1px"
+            }
+          ]
+        },
+        {
+          "id": "6454342173.1566398145460",
+          "parts": {},
+          "variantId": "15d6c81f5",
+          "properties": [
+            {
+              "key": "background",
+              "value": "#00B5FF"
+            },
+            {
+              "key": "color",
+              "value": "rgba(255, 255, 255, 1)"
+            }
+          ]
+        },
+        {
+          "id": "6364660608.1566398145460",
+          "parts": {},
+          "variantId": "af62926b2035",
+          "properties": [
+            {
+              "key": "text-align",
+              "value": "center"
+            },
+            {
+              "key": "border-bottom-left-radius",
+              "value": "1px"
+            },
+            {
+              "key": "border-top-left-radius",
+              "value": "1px"
+            }
+          ]
+        },
         {
           "id": "6433341197.1566398145460",
           "parts": {},

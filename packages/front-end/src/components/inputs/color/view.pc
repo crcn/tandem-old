@@ -1,6 +1,6 @@
 {
   "id": "808486bb69",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "metadata": {},
   "name": "module",
   "children": [
@@ -140,22 +140,6 @@
               ],
               "metadata": {},
               "name": "plug"
-            },
-            {
-              "id": "e68983c8240615",
-              "name": "override",
-              "type": "styles",
-              "targetIdPath": [
-                "d227ff68826765"
-              ],
-              "value": [
-                {
-                  "id": "6986002374.1566398145464",
-                  "parts": {},
-                  "properties": []
-                }
-              ],
-              "children": []
             }
           ],
           "metadata": {

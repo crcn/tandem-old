@@ -1,6 +1,6 @@
 {
   "id": "11188f860",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "metadata": {},
   "name": "module",
   "children": [
@@ -77,6 +77,17 @@
                     }
                   },
                   "styles": [
+                    {
+                      "id": "9877250321.1566398145489",
+                      "parts": {},
+                      "variantId": "f6f985953",
+                      "properties": [
+                        {
+                          "key": "display",
+                          "value": "block"
+                        }
+                      ]
+                    },
                     {
                       "id": "1641956193.1566398145489",
                       "parts": {},
@@ -274,28 +285,6 @@
           "isDefault": false,
           "children": [],
           "metadata": {}
-        },
-        {
-          "id": "f6f985954",
-          "name": "override",
-          "type": "styles",
-          "targetIdPath": [
-            "f6f985951"
-          ],
-          "value": [
-            {
-              "id": "9877250321.1566398145489",
-              "parts": {},
-              "variantId": "f6f985953",
-              "properties": [
-                {
-                  "key": "display",
-                  "value": "block"
-                }
-              ]
-            }
-          ],
-          "children": []
         }
       ],
       "metadata": {

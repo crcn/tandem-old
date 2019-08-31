@@ -1,6 +1,6 @@
 {
   "id": "5d6bd01099",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "metadata": {},
   "name": "module",
   "children": [
@@ -40,56 +40,12 @@
           "metadata": {}
         },
         {
-          "id": "cd433e9f1196",
-          "name": "override",
-          "type": "styles",
-          "targetIdPath": [],
-          "value": [
-            {
-              "id": "1641841280.1566398145464",
-              "parts": {},
-              "variantId": "cd433e9f899",
-              "properties": [
-                {
-                  "key": "background",
-                  "value": "var(--f63574de434)"
-                },
-                {
-                  "key": "border-bottom",
-                  "value": "0px  rgba(0,0,0,0.05)"
-                }
-              ]
-            }
-          ],
-          "children": []
-        },
-        {
           "id": "cd433e9f6531",
           "name": "variant",
           "label": "special",
           "isDefault": false,
           "children": [],
           "metadata": {}
-        },
-        {
-          "id": "cd433e9f6828",
-          "name": "override",
-          "type": "styles",
-          "targetIdPath": [],
-          "value": [
-            {
-              "id": "8020284510.1566398145464",
-              "parts": {},
-              "variantId": "cd433e9f6531",
-              "properties": [
-                {
-                  "key": "color",
-                  "value": "rgba(223, 18, 233, 1)"
-                }
-              ]
-            }
-          ],
-          "children": []
         }
       ],
       "metadata": {
@@ -102,6 +58,32 @@
       },
       "variant": {},
       "styles": [
+        {
+          "id": "1641841280.1566398145464",
+          "parts": {},
+          "variantId": "cd433e9f899",
+          "properties": [
+            {
+              "key": "background",
+              "value": "var(--f63574de434)"
+            },
+            {
+              "key": "border-bottom",
+              "value": "0px  rgba(0,0,0,0.05)"
+            }
+          ]
+        },
+        {
+          "id": "8020284510.1566398145464",
+          "parts": {},
+          "variantId": "cd433e9f6531",
+          "properties": [
+            {
+              "key": "color",
+              "value": "rgba(223, 18, 233, 1)"
+            }
+          ]
+        },
         {
           "id": "8222346868.1566398145464",
           "parts": {},

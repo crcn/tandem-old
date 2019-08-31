@@ -1,6 +1,6 @@
 {
   "id": "b78f10d1027",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "metadata": {},
   "name": "module",
   "children": [
@@ -239,56 +239,12 @@
           "metadata": {}
         },
         {
-          "id": "b6e7db9d12816",
-          "name": "override",
-          "type": "styles",
-          "targetIdPath": [],
-          "value": [
-            {
-              "id": "5395914005.1566398145473",
-              "parts": {},
-              "variantId": "b6e7db9d12815",
-              "properties": [
-                {
-                  "key": "box-shadow",
-                  "value": "inset  -1px 0px 0px 0px var(--f63574de434), inset  0px -1px 0px 0px var(--f63574de434)"
-                }
-              ]
-            }
-          ],
-          "children": []
-        },
-        {
           "id": "b6e7db9d12817",
           "name": "variant",
           "label": "right",
           "isDefault": false,
           "children": [],
           "metadata": {}
-        },
-        {
-          "id": "b6e7db9d12818",
-          "name": "override",
-          "type": "styles",
-          "targetIdPath": [],
-          "value": [
-            {
-              "id": "169361162.1566398145473",
-              "parts": {},
-              "variantId": "b6e7db9d12817",
-              "properties": [
-                {
-                  "key": "box-shadow",
-                  "value": "inset  0px -1px 0px 0px var(--f63574de434), inset  1px 0px 0px 0px var(--f63574de434)"
-                },
-                {
-                  "key": "border-bottom",
-                  "value": "1px solid var(--d8f6340b1442)"
-                }
-              ]
-            }
-          ],
-          "children": []
         }
       ],
       "metadata": {
@@ -301,6 +257,32 @@
       },
       "variant": {},
       "styles": [
+        {
+          "id": "5395914005.1566398145473",
+          "parts": {},
+          "variantId": "b6e7db9d12815",
+          "properties": [
+            {
+              "key": "box-shadow",
+              "value": "inset  -1px 0px 0px 0px var(--f63574de434), inset  0px -1px 0px 0px var(--f63574de434)"
+            }
+          ]
+        },
+        {
+          "id": "169361162.1566398145473",
+          "parts": {},
+          "variantId": "b6e7db9d12817",
+          "properties": [
+            {
+              "key": "box-shadow",
+              "value": "inset  0px -1px 0px 0px var(--f63574de434), inset  1px 0px 0px 0px var(--f63574de434)"
+            },
+            {
+              "key": "border-bottom",
+              "value": "1px solid var(--d8f6340b1442)"
+            }
+          ]
+        },
         {
           "id": "1023139628.1566398145473",
           "parts": {},

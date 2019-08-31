@@ -1,6 +1,6 @@
 {
   "id": "328486385",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "metadata": {},
   "name": "module",
   "children": [
@@ -35,6 +35,17 @@
               },
               "variant": {},
               "styles": [
+                {
+                  "id": "2697031028.1566398145524",
+                  "parts": {},
+                  "variantId": "4353cabb6134",
+                  "properties": [
+                    {
+                      "key": "opacity",
+                      "value": 1
+                    }
+                  ]
+                },
                 {
                   "id": "5836794897.1566398145524",
                   "parts": {},
@@ -343,34 +354,6 @@
           "metadata": {}
         },
         {
-          "id": "3fb9d47e32",
-          "name": "override",
-          "type": "styles",
-          "targetIdPath": [],
-          "value": [
-            {
-              "id": "2334742709.1566398145524",
-              "parts": {},
-              "variantId": "3fb9d47e31",
-              "properties": [
-                {
-                  "key": "background",
-                  "value": "rgba(132, 193, 255, 1)"
-                },
-                {
-                  "key": "padding-left",
-                  "value": "16px"
-                },
-                {
-                  "key": "padding-right",
-                  "value": "16px"
-                }
-              ]
-            }
-          ],
-          "children": []
-        },
-        {
           "id": "4353cabb6134",
           "name": "variant",
           "label": "hovering",
@@ -388,28 +371,6 @@
           },
           "children": [],
           "metadata": {}
-        },
-        {
-          "id": "4353cabb6136",
-          "name": "override",
-          "type": "styles",
-          "targetIdPath": [
-            "4353cabb6117"
-          ],
-          "value": [
-            {
-              "id": "2697031028.1566398145524",
-              "parts": {},
-              "variantId": "4353cabb6134",
-              "properties": [
-                {
-                  "key": "opacity",
-                  "value": 1
-                }
-              ]
-            }
-          ],
-          "children": []
         }
       ],
       "metadata": {
@@ -425,6 +386,25 @@
       ],
       "variant": {},
       "styles": [
+        {
+          "id": "2334742709.1566398145524",
+          "parts": {},
+          "variantId": "3fb9d47e31",
+          "properties": [
+            {
+              "key": "background",
+              "value": "rgba(132, 193, 255, 1)"
+            },
+            {
+              "key": "padding-left",
+              "value": "16px"
+            },
+            {
+              "key": "padding-right",
+              "value": "16px"
+            }
+          ]
+        },
         {
           "id": "19264197.1566398145524",
           "parts": {},

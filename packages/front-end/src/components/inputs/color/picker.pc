@@ -1,6 +1,6 @@
 {
   "id": "b5f797ed34250",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "metadata": {},
   "name": "module",
   "children": [
@@ -150,6 +150,17 @@
               "metadata": {},
               "label": "Spectrum",
               "styles": [
+                {
+                  "id": "6314500965.1566398145463",
+                  "parts": {},
+                  "variantId": "43fa80867728",
+                  "properties": [
+                    {
+                      "key": "height",
+                      "value": "20px"
+                    }
+                  ]
+                },
                 {
                   "id": "9277019560.1566398145463",
                   "parts": {},
@@ -386,30 +397,7 @@
           "is": "dc9a302c2",
           "name": "component-instance",
           "attributes": [],
-          "children": [
-            {
-              "id": "d7ae73f2333",
-              "name": "override",
-              "type": "styles",
-              "targetIdPath": [
-                "db9643831"
-              ],
-              "value": [
-                {
-                  "id": "8955362133.1566398145463",
-                  "parts": {},
-                  "variantId": "d7ae73f2167",
-                  "properties": [
-                    {
-                      "key": "display",
-                      "value": "none"
-                    }
-                  ]
-                }
-              ],
-              "children": []
-            }
-          ],
+          "children": [],
           "metadata": {
             "bounds": {
               "left": -624.4534349901305,
@@ -420,6 +408,17 @@
           },
           "label": "Color Swatches",
           "styles": [
+            {
+              "id": "8955362133.1566398145463",
+              "parts": {},
+              "variantId": "d7ae73f2167",
+              "properties": [
+                {
+                  "key": "display",
+                  "value": "none"
+                }
+              ]
+            },
             {
               "id": "789323701.1566398145463",
               "parts": {},
@@ -522,28 +521,6 @@
                 {
                   "key": "border-bottom",
                   "value": "1px solid var(--d8f6340b1442)"
-                }
-              ]
-            }
-          ],
-          "children": []
-        },
-        {
-          "id": "43fa80869884",
-          "name": "override",
-          "type": "styles",
-          "targetIdPath": [
-            "41979411464689"
-          ],
-          "value": [
-            {
-              "id": "6314500965.1566398145463",
-              "parts": {},
-              "variantId": "43fa80867728",
-              "properties": [
-                {
-                  "key": "height",
-                  "value": "20px"
                 }
               ]
             }
@@ -1821,6 +1798,17 @@
           "variant": {},
           "styles": [
             {
+              "id": "8324599563.1566398145463",
+              "parts": {},
+              "variantId": "596b7f9f679",
+              "properties": [
+                {
+                  "key": "display",
+                  "value": "block"
+                }
+              ]
+            },
+            {
               "id": "570661679.1566398145463",
               "parts": {},
               "properties": [
@@ -2223,60 +2211,6 @@
           "isDefault": true,
           "children": [],
           "metadata": {}
-        },
-        {
-          "id": "596b7f9f2196",
-          "name": "override",
-          "type": "styles",
-          "targetIdPath": [
-            "52771059438"
-          ],
-          "value": [
-            {
-              "id": "8324599563.1566398145463",
-              "parts": {},
-              "variantId": "596b7f9f679",
-              "properties": [
-                {
-                  "key": "display",
-                  "value": "block"
-                }
-              ]
-            }
-          ],
-          "children": []
-        },
-        {
-          "id": "4ad8e384673",
-          "name": "override",
-          "type": "styles",
-          "targetIdPath": [],
-          "value": [
-            {
-              "id": "2526610235.1566398145463",
-              "parts": {},
-              "variantId": "596b7f9f679",
-              "properties": [
-                {
-                  "key": "padding-top",
-                  "value": "12px"
-                },
-                {
-                  "key": "padding-right",
-                  "value": "12px"
-                },
-                {
-                  "key": "padding-bottom",
-                  "value": "12px"
-                },
-                {
-                  "key": "padding-left",
-                  "value": "12px"
-                }
-              ]
-            }
-          ],
-          "children": []
         }
       ],
       "metadata": {
@@ -2292,6 +2226,29 @@
         "./color-swatch-controller.tsx"
       ],
       "styles": [
+        {
+          "id": "2526610235.1566398145463",
+          "parts": {},
+          "variantId": "596b7f9f679",
+          "properties": [
+            {
+              "key": "padding-top",
+              "value": "12px"
+            },
+            {
+              "key": "padding-right",
+              "value": "12px"
+            },
+            {
+              "key": "padding-bottom",
+              "value": "12px"
+            },
+            {
+              "key": "padding-left",
+              "value": "12px"
+            }
+          ]
+        },
         {
           "id": "1938184359.1566398145463",
           "parts": {},
@@ -2383,46 +2340,6 @@
           "isDefault": true,
           "children": [],
           "metadata": {}
-        },
-        {
-          "id": "a5ab78792",
-          "name": "override",
-          "type": "styles",
-          "targetIdPath": [],
-          "value": [
-            {
-              "id": "8199671851.1566398145463",
-              "parts": {},
-              "variantId": "a5ab78791",
-              "properties": [
-                {
-                  "key": "background",
-                  "value": "var(--24ce1e4d13456)"
-                },
-                {
-                  "key": "margin-right",
-                  "value": "4px"
-                },
-                {
-                  "key": "padding-left",
-                  "value": "2px"
-                },
-                {
-                  "key": "padding-top",
-                  "value": "2px"
-                },
-                {
-                  "key": "padding-right",
-                  "value": "2px"
-                },
-                {
-                  "key": "padding-bottom",
-                  "value": "2px"
-                }
-              ]
-            }
-          ],
-          "children": []
         }
       ],
       "metadata": {
@@ -2435,6 +2352,37 @@
       },
       "variant": {},
       "styles": [
+        {
+          "id": "8199671851.1566398145463",
+          "parts": {},
+          "variantId": "a5ab78791",
+          "properties": [
+            {
+              "key": "background",
+              "value": "var(--24ce1e4d13456)"
+            },
+            {
+              "key": "margin-right",
+              "value": "4px"
+            },
+            {
+              "key": "padding-left",
+              "value": "2px"
+            },
+            {
+              "key": "padding-top",
+              "value": "2px"
+            },
+            {
+              "key": "padding-right",
+              "value": "2px"
+            },
+            {
+              "key": "padding-bottom",
+              "value": "2px"
+            }
+          ]
+        },
         {
           "id": "9710227820.1566398145463",
           "parts": {},

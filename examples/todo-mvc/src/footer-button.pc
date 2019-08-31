@@ -1,6 +1,6 @@
 {
   "id": "1ece7a3519",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "metadata": {},
   "name": "module",
   "children": [
@@ -42,6 +42,17 @@
           "metadata": {},
           "styles": [
             {
+              "id": "926920279.1567269756787",
+              "parts": {},
+              "variantId": "320c526042073",
+              "properties": [
+                {
+                  "key": "border",
+                  "value": "1px solid var(--905d90be431)"
+                }
+              ]
+            },
+            {
               "id": "6153380753.1567269756787",
               "parts": {},
               "properties": [
@@ -80,48 +91,6 @@
           "isDefault": false,
           "children": [],
           "metadata": {}
-        },
-        {
-          "id": "320c526042566",
-          "name": "override",
-          "type": "styles",
-          "targetIdPath": [
-            "320c526030261"
-          ],
-          "value": [
-            {
-              "id": "926920279.1567269756787",
-              "parts": {},
-              "variantId": "320c526042073",
-              "properties": [
-                {
-                  "key": "border",
-                  "value": "1px solid var(--905d90be431)"
-                }
-              ]
-            }
-          ],
-          "children": []
-        },
-        {
-          "id": "320c526044535",
-          "name": "override",
-          "type": "styles",
-          "targetIdPath": [],
-          "value": [
-            {
-              "id": "3627659185.1567269756787",
-              "parts": {},
-              "variantId": "320c526042073",
-              "properties": [
-                {
-                  "key": "color",
-                  "value": "inherit"
-                }
-              ]
-            }
-          ],
-          "children": []
         }
       ],
       "metadata": {
@@ -137,6 +106,17 @@
         "./footer-button-controller.tsx"
       ],
       "styles": [
+        {
+          "id": "3627659185.1567269756787",
+          "parts": {},
+          "variantId": "320c526042073",
+          "properties": [
+            {
+              "key": "color",
+              "value": "inherit"
+            }
+          ]
+        },
         {
           "id": "2989668798.1567269756787",
           "parts": {},

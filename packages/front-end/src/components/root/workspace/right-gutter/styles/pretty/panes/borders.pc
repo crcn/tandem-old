@@ -1,6 +1,6 @@
 {
   "id": "296b92da24677",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "metadata": {},
   "name": "module",
   "children": [
@@ -1686,6 +1686,28 @@
               "label": "toggler",
               "styles": [
                 {
+                  "id": "8542467054.1566398145521",
+                  "parts": {},
+                  "variantId": "7be2457128",
+                  "properties": [
+                    {
+                      "key": "float",
+                      "value": "unset"
+                    }
+                  ]
+                },
+                {
+                  "id": "1584347300.1566398145521",
+                  "parts": {},
+                  "variantId": "7be2457129",
+                  "properties": [
+                    {
+                      "key": "float",
+                      "value": "unset"
+                    }
+                  ]
+                },
+                {
                   "id": "8687760496.1566398145521",
                   "parts": {},
                   "properties": [
@@ -1769,6 +1791,17 @@
           ],
           "metadata": {},
           "styles": [
+            {
+              "id": "4959625243.1566398145521",
+              "parts": {},
+              "variantId": "7be2457128",
+              "properties": [
+                {
+                  "key": "display",
+                  "value": "block"
+                }
+              ]
+            },
             {
               "id": "8081752142.1566398145521",
               "parts": {},
@@ -1936,6 +1969,17 @@
           "metadata": {},
           "styles": [
             {
+              "id": "8940713282.1566398145521",
+              "parts": {},
+              "variantId": "7be2457129",
+              "properties": [
+                {
+                  "key": "display",
+                  "value": "block"
+                }
+              ]
+            },
+            {
               "id": "1035655356.1566398145521",
               "parts": {},
               "properties": [
@@ -1966,111 +2010,6 @@
           "isDefault": true,
           "children": [],
           "metadata": {}
-        },
-        {
-          "id": "7be2457130",
-          "name": "override",
-          "type": "styles",
-          "targetIdPath": [
-            "7be2457127"
-          ],
-          "value": [
-            {
-              "id": "8940713282.1566398145521",
-              "parts": {},
-              "variantId": "7be2457129",
-              "properties": [
-                {
-                  "key": "display",
-                  "value": "block"
-                }
-              ]
-            }
-          ],
-          "children": []
-        },
-        {
-          "id": "7be2457131",
-          "name": "override",
-          "type": "styles",
-          "targetIdPath": [
-            "7be2457126"
-          ],
-          "value": [
-            {
-              "id": "4959625243.1566398145521",
-              "parts": {},
-              "variantId": "7be2457128",
-              "properties": [
-                {
-                  "key": "display",
-                  "value": "block"
-                }
-              ]
-            }
-          ],
-          "children": []
-        },
-        {
-          "id": "7be2457132",
-          "name": "override",
-          "type": "styles",
-          "targetIdPath": [
-            "7be2457119"
-          ],
-          "value": [
-            {
-              "id": "8542467054.1566398145521",
-              "parts": {},
-              "variantId": "7be2457128",
-              "properties": [
-                {
-                  "key": "float",
-                  "value": "unset"
-                }
-              ]
-            }
-          ],
-          "children": []
-        },
-        {
-          "id": "7be2457134",
-          "name": "override",
-          "type": "styles",
-          "targetIdPath": [
-            "7be2457133"
-          ],
-          "value": [
-            {
-              "id": "2727307008.1566398145521",
-              "parts": {},
-              "variantId": "7be2457128",
-              "properties": []
-            }
-          ],
-          "children": []
-        },
-        {
-          "id": "16b636177",
-          "name": "override",
-          "type": "styles",
-          "targetIdPath": [
-            "7be2457119"
-          ],
-          "value": [
-            {
-              "id": "1584347300.1566398145521",
-              "parts": {},
-              "variantId": "7be2457129",
-              "properties": [
-                {
-                  "key": "float",
-                  "value": "unset"
-                }
-              ]
-            }
-          ],
-          "children": []
         }
       ],
       "metadata": {

@@ -1,6 +1,6 @@
 {
   "id": "2412cef182",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "metadata": {},
   "name": "module",
   "children": [
@@ -134,52 +134,12 @@
           "metadata": {}
         },
         {
-          "id": "49050ecb20575",
-          "name": "override",
-          "type": "styles",
-          "targetIdPath": [],
-          "value": [
-            {
-              "id": "2651660114.1566398145504",
-              "parts": {},
-              "variantId": "49050ecb20574",
-              "properties": [
-                {
-                  "key": "opacity",
-                  "value": "0.5"
-                }
-              ]
-            }
-          ],
-          "children": []
-        },
-        {
           "id": "49050ecb20602",
           "name": "variant",
           "label": "overridden",
           "isDefault": false,
           "children": [],
           "metadata": {}
-        },
-        {
-          "id": "49050ecb20603",
-          "name": "override",
-          "type": "styles",
-          "targetIdPath": [],
-          "value": [
-            {
-              "id": "5753300714.1566398145504",
-              "parts": {},
-              "variantId": "49050ecb20602",
-              "properties": [
-                {
-                  "key": "text-decoration",
-                  "value": "line-through"
-                }
-              ]
-            }
-          ],
-          "children": []
         }
       ],
       "metadata": {
@@ -195,6 +155,28 @@
         "./item-controller.tsx"
       ],
       "styles": [
+        {
+          "id": "2651660114.1566398145504",
+          "parts": {},
+          "variantId": "49050ecb20574",
+          "properties": [
+            {
+              "key": "opacity",
+              "value": "0.5"
+            }
+          ]
+        },
+        {
+          "id": "5753300714.1566398145504",
+          "parts": {},
+          "variantId": "49050ecb20602",
+          "properties": [
+            {
+              "key": "text-decoration",
+              "value": "line-through"
+            }
+          ]
+        },
         {
           "id": "2072811979.1566398145504",
           "parts": {},

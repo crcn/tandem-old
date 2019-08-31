@@ -1,6 +1,6 @@
 {
   "id": "f657bb0940848",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "metadata": {},
   "name": "module",
   "children": [
@@ -289,6 +289,17 @@
                               "variant": {},
                               "styles": [
                                 {
+                                  "id": "683355479.1566398145539",
+                                  "parts": {},
+                                  "variantId": "4b2435eb14293",
+                                  "properties": [
+                                    {
+                                      "key": "height",
+                                      "value": "12px"
+                                    }
+                                  ]
+                                },
+                                {
                                   "id": "5704689390.1566398145539",
                                   "parts": {},
                                   "properties": [
@@ -353,6 +364,17 @@
                       "variant": {},
                       "label": "reset dropdown",
                       "styles": [
+                        {
+                          "id": "7739941746.1566398145539",
+                          "parts": {},
+                          "variantId": "4b2435eb14293",
+                          "properties": [
+                            {
+                              "key": "display",
+                              "value": "block"
+                            }
+                          ]
+                        },
                         {
                           "id": "484442535.1566398145539",
                           "parts": {},
@@ -427,50 +449,6 @@
           "isDefault": true,
           "children": [],
           "metadata": {}
-        },
-        {
-          "id": "4b2435eb15518",
-          "name": "override",
-          "type": "styles",
-          "targetIdPath": [
-            "4b2435eb4497"
-          ],
-          "value": [
-            {
-              "id": "7739941746.1566398145539",
-              "parts": {},
-              "variantId": "4b2435eb14293",
-              "properties": [
-                {
-                  "key": "display",
-                  "value": "block"
-                }
-              ]
-            }
-          ],
-          "children": []
-        },
-        {
-          "id": "3f456f801917",
-          "name": "override",
-          "type": "styles",
-          "targetIdPath": [
-            "f657bb09149437"
-          ],
-          "value": [
-            {
-              "id": "683355479.1566398145539",
-              "parts": {},
-              "variantId": "4b2435eb14293",
-              "properties": [
-                {
-                  "key": "height",
-                  "value": "12px"
-                }
-              ]
-            }
-          ],
-          "children": []
         }
       ],
       "metadata": {

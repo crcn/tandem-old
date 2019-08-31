@@ -1,6 +1,6 @@
 {
   "id": "b78264862",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "metadata": {},
   "name": "module",
   "children": [
@@ -312,6 +312,17 @@
           "label": "dropdown",
           "styles": [
             {
+              "id": "1682400526.1566398145529",
+              "parts": {},
+              "variantId": "308dd31382",
+              "properties": [
+                {
+                  "key": "color",
+                  "value": "var(--f63574de434)"
+                }
+              ]
+            },
+            {
               "id": "4943948273.1566398145528",
               "parts": {},
               "properties": [
@@ -332,30 +343,6 @@
           "metadata": {}
         },
         {
-          "id": "308dd31383",
-          "name": "override",
-          "type": "styles",
-          "targetIdPath": [],
-          "value": [
-            {
-              "id": "6762441061.1566398145529",
-              "parts": {},
-              "variantId": "308dd31382",
-              "properties": [
-                {
-                  "key": "background",
-                  "value": "var(--24ce1e4d13456)"
-                },
-                {
-                  "key": "color",
-                  "value": "rgba(255, 255, 255, 1)"
-                }
-              ]
-            }
-          ],
-          "children": []
-        },
-        {
           "id": "be1fb4993",
           "variantId": null,
           "targetIdPath": [
@@ -373,21 +360,6 @@
           "isDefault": false,
           "children": [],
           "metadata": {}
-        },
-        {
-          "id": "c7da0a1d96284",
-          "name": "override",
-          "type": "styles",
-          "targetIdPath": [],
-          "value": [
-            {
-              "id": "1337053446.1566398145529",
-              "parts": {},
-              "variantId": "c7da0a1d90996",
-              "properties": []
-            }
-          ],
-          "children": []
         },
         {
           "id": "6bb53bbd671",
@@ -410,62 +382,6 @@
             }
           ],
           "children": []
-        },
-        {
-          "id": "6bb53bbd915",
-          "name": "override",
-          "type": "styles",
-          "targetIdPath": [
-            "9e4a454812258"
-          ],
-          "value": [
-            {
-              "id": "4531870692.1566398145529",
-              "parts": {},
-              "variantId": "c7da0a1d90996",
-              "properties": []
-            }
-          ],
-          "children": []
-        },
-        {
-          "id": "ac2d4f9a1739",
-          "name": "override",
-          "type": "styles",
-          "targetIdPath": [
-            "14f530171"
-          ],
-          "value": [
-            {
-              "id": "1682400526.1566398145529",
-              "parts": {},
-              "variantId": "308dd31382",
-              "properties": [
-                {
-                  "key": "color",
-                  "value": "var(--f63574de434)"
-                }
-              ]
-            }
-          ],
-          "children": []
-        },
-        {
-          "id": "ac2d4f9a1742",
-          "name": "override",
-          "type": "styles",
-          "targetIdPath": [
-            "899e765b754"
-          ],
-          "value": [
-            {
-              "id": "3001946405.1566398145529",
-              "parts": {},
-              "variantId": "308dd31382",
-              "properties": []
-            }
-          ],
-          "children": []
         }
       ],
       "metadata": {
@@ -481,6 +397,21 @@
       ],
       "variant": {},
       "styles": [
+        {
+          "id": "6762441061.1566398145529",
+          "parts": {},
+          "variantId": "308dd31382",
+          "properties": [
+            {
+              "key": "background",
+              "value": "var(--24ce1e4d13456)"
+            },
+            {
+              "key": "color",
+              "value": "rgba(255, 255, 255, 1)"
+            }
+          ]
+        },
         {
           "id": "8441563075.1566398145528",
           "parts": {},

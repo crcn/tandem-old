@@ -1,6 +1,6 @@
 {
   "id": "ab406a6b793607",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "metadata": {},
   "name": "module",
   "children": [
@@ -436,6 +436,17 @@
           },
           "styles": [
             {
+              "id": "8871240432.1566398145495",
+              "parts": {},
+              "variantId": "e0030d447938",
+              "properties": [
+                {
+                  "key": "opacity",
+                  "value": 1
+                }
+              ]
+            },
+            {
               "id": "8772874607.1566398145494",
               "parts": {},
               "properties": [
@@ -509,28 +520,6 @@
           "isDefault": true,
           "children": [],
           "metadata": {}
-        },
-        {
-          "id": "e0030d447939",
-          "name": "override",
-          "type": "styles",
-          "targetIdPath": [
-            "fde5849e307480"
-          ],
-          "value": [
-            {
-              "id": "8871240432.1566398145495",
-              "parts": {},
-              "variantId": "e0030d447938",
-              "properties": [
-                {
-                  "key": "opacity",
-                  "value": 1
-                }
-              ]
-            }
-          ],
-          "children": []
         }
       ],
       "metadata": {
@@ -672,20 +661,6 @@
                       "value": "hidden"
                     }
                   ]
-                }
-              ],
-              "children": []
-            },
-            {
-              "id": "70e2870d816",
-              "name": "override",
-              "type": "styles",
-              "targetIdPath": [],
-              "value": [
-                {
-                  "id": "8444864388.1566398145495",
-                  "parts": {},
-                  "properties": []
                 }
               ],
               "children": []
@@ -1139,6 +1114,29 @@
               "variant": {},
               "styles": [
                 {
+                  "id": "6406414480.1566398145495",
+                  "parts": {},
+                  "variantId": "3ee7fcc51273",
+                  "properties": [
+                    {
+                      "key": "font-size",
+                      "value": "unset"
+                    },
+                    {
+                      "key": "display",
+                      "value": "block"
+                    },
+                    {
+                      "key": "height",
+                      "value": "1em"
+                    },
+                    {
+                      "key": "color",
+                      "value": "var(--24ce1e4d13456)"
+                    }
+                  ]
+                },
+                {
                   "id": "7886981498.1566398145495",
                   "parts": {},
                   "properties": [
@@ -1166,60 +1164,6 @@
           "isDefault": true,
           "children": [],
           "metadata": {}
-        },
-        {
-          "id": "3ee7fcc51274",
-          "name": "override",
-          "type": "styles",
-          "targetIdPath": [],
-          "value": [
-            {
-              "id": "5305255489.1566398145495",
-              "parts": {},
-              "variantId": "3ee7fcc51273",
-              "properties": [
-                {
-                  "key": "color",
-                  "value": "var(--24ce1e4d13456)"
-                }
-              ]
-            }
-          ],
-          "children": []
-        },
-        {
-          "id": "3ee7fcc51276",
-          "name": "override",
-          "type": "styles",
-          "targetIdPath": [
-            "3ee7fcc51262"
-          ],
-          "value": [
-            {
-              "id": "6406414480.1566398145495",
-              "parts": {},
-              "variantId": "3ee7fcc51273",
-              "properties": [
-                {
-                  "key": "font-size",
-                  "value": "unset"
-                },
-                {
-                  "key": "display",
-                  "value": "block"
-                },
-                {
-                  "key": "height",
-                  "value": "1em"
-                },
-                {
-                  "key": "color",
-                  "value": "var(--24ce1e4d13456)"
-                }
-              ]
-            }
-          ],
-          "children": []
         }
       ],
       "metadata": {
@@ -1232,6 +1176,17 @@
       },
       "variant": {},
       "styles": [
+        {
+          "id": "5305255489.1566398145495",
+          "parts": {},
+          "variantId": "3ee7fcc51273",
+          "properties": [
+            {
+              "key": "color",
+              "value": "var(--24ce1e4d13456)"
+            }
+          ]
+        },
         {
           "id": "5767021635.1566398145495",
           "parts": {},

@@ -1,6 +1,6 @@
 {
   "id": "ef4ef14483",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "metadata": {},
   "name": "module",
   "children": [
@@ -1241,6 +1241,17 @@
           "variant": {},
           "styles": [
             {
+              "id": "44379756.1566398145514",
+              "parts": {},
+              "variantId": "9bda7c6d902",
+              "properties": [
+                {
+                  "key": "display",
+                  "value": "block"
+                }
+              ]
+            },
+            {
               "id": "587892488.1566398145514",
               "parts": {},
               "properties": [
@@ -1270,6 +1281,17 @@
           "variant": {},
           "styles": [
             {
+              "id": "7094048028.1566398145514",
+              "parts": {},
+              "variantId": "9bda7c6d904",
+              "properties": [
+                {
+                  "key": "display",
+                  "value": "block"
+                }
+              ]
+            },
+            {
               "id": "5111701303.1566398145514",
               "parts": {},
               "properties": [
@@ -1290,56 +1312,12 @@
           "metadata": {}
         },
         {
-          "id": "9bda7c6d903",
-          "name": "override",
-          "type": "styles",
-          "targetIdPath": [
-            "9bda7c6d852"
-          ],
-          "value": [
-            {
-              "id": "44379756.1566398145514",
-              "parts": {},
-              "variantId": "9bda7c6d902",
-              "properties": [
-                {
-                  "key": "display",
-                  "value": "block"
-                }
-              ]
-            }
-          ],
-          "children": []
-        },
-        {
           "id": "9bda7c6d904",
           "name": "variant",
           "label": "variable",
           "isDefault": true,
           "children": [],
           "metadata": {}
-        },
-        {
-          "id": "9bda7c6d905",
-          "name": "override",
-          "type": "styles",
-          "targetIdPath": [
-            "9bda7c6d877"
-          ],
-          "value": [
-            {
-              "id": "7094048028.1566398145514",
-              "parts": {},
-              "variantId": "9bda7c6d904",
-              "properties": [
-                {
-                  "key": "display",
-                  "value": "block"
-                }
-              ]
-            }
-          ],
-          "children": []
         }
       ],
       "metadata": {

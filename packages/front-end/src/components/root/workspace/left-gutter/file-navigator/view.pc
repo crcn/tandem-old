@@ -1,6 +1,6 @@
 {
   "id": "317401b1465283",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "metadata": {},
   "name": "module",
   "children": [
@@ -921,52 +921,12 @@
           "metadata": {}
         },
         {
-          "id": "f8ce55d77928",
-          "name": "override",
-          "type": "styles",
-          "targetIdPath": [],
-          "value": [
-            {
-              "id": "4791229697.1566398145497",
-              "parts": {},
-              "variantId": "f8ce55d76837",
-              "properties": [
-                {
-                  "key": "opacity",
-                  "value": 0.419
-                }
-              ]
-            }
-          ],
-          "children": []
-        },
-        {
           "id": "32c1eebd4262",
           "name": "variant",
           "label": "active",
           "isDefault": true,
           "children": [],
           "metadata": {}
-        },
-        {
-          "id": "32c1eebd5385",
-          "name": "override",
-          "type": "styles",
-          "targetIdPath": [],
-          "value": [
-            {
-              "id": "1196560967.1566398145497",
-              "parts": {},
-              "variantId": "32c1eebd4262",
-              "properties": [
-                {
-                  "key": "background",
-                  "value": "var(--32c1eebd7630)"
-                }
-              ]
-            }
-          ],
-          "children": []
         }
       ],
       "metadata": {
@@ -985,6 +945,28 @@
         "./layer-controller.tsx"
       ],
       "styles": [
+        {
+          "id": "4791229697.1566398145497",
+          "parts": {},
+          "variantId": "f8ce55d76837",
+          "properties": [
+            {
+              "key": "opacity",
+              "value": 0.419
+            }
+          ]
+        },
+        {
+          "id": "1196560967.1566398145497",
+          "parts": {},
+          "variantId": "32c1eebd4262",
+          "properties": [
+            {
+              "key": "background",
+              "value": "var(--32c1eebd7630)"
+            }
+          ]
+        },
         {
           "id": "2299405800.1566398145497",
           "parts": {},
@@ -1098,26 +1080,6 @@
           "isDefault": true,
           "children": [],
           "metadata": {}
-        },
-        {
-          "id": "b75388d74737",
-          "name": "override",
-          "type": "styles",
-          "targetIdPath": [],
-          "value": [
-            {
-              "id": "2371547453.1566398145497",
-              "parts": {},
-              "variantId": "b75388d73795",
-              "properties": [
-                {
-                  "key": "background",
-                  "value": "var(--24ce1e4d22305)"
-                }
-              ]
-            }
-          ],
-          "children": []
         }
       ],
       "metadata": {
@@ -1130,6 +1092,17 @@
       },
       "variant": {},
       "styles": [
+        {
+          "id": "2371547453.1566398145497",
+          "parts": {},
+          "variantId": "b75388d73795",
+          "properties": [
+            {
+              "key": "background",
+              "value": "var(--24ce1e4d22305)"
+            }
+          ]
+        },
         {
           "id": "1058610987.1566398145497",
           "parts": {},

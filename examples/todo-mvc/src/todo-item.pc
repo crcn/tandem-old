@@ -1,6 +1,6 @@
 {
   "id": "5ae042c814",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "metadata": {},
   "name": "module",
   "children": [
@@ -109,6 +109,37 @@
               ],
               "metadata": {},
               "styles": [
+                {
+                  "id": "9115965303.1567269756799",
+                  "parts": {},
+                  "variantId": "320c526078624",
+                  "properties": [
+                    {
+                      "key": "font-family",
+                      "value": "Helvetica Neue"
+                    },
+                    {
+                      "key": "font-size",
+                      "value": "24px"
+                    },
+                    {
+                      "key": "font-weight",
+                      "value": "300"
+                    },
+                    {
+                      "key": "color",
+                      "value": "var(--905d90be435)"
+                    },
+                    {
+                      "key": "list-style",
+                      "value": "none"
+                    },
+                    {
+                      "key": "text-decoration",
+                      "value": "line-through"
+                    }
+                  ]
+                },
                 {
                   "id": "155685142.1567269756799",
                   "parts": {},
@@ -334,74 +365,12 @@
           "metadata": {}
         },
         {
-          "id": "70b2f99d10434",
-          "name": "override",
-          "type": "styles",
-          "targetIdPath": [],
-          "value": [
-            {
-              "id": "390979489.1567269756799",
-              "parts": {},
-              "variantId": "70b2f99d10009",
-              "properties": [
-                {
-                  "key": "border-bottom",
-                  "value": "1px none"
-                }
-              ]
-            }
-          ],
-          "children": []
-        },
-        {
           "id": "320c526078624",
           "name": "variant",
           "label": "completed",
           "isDefault": true,
           "children": [],
           "metadata": {}
-        },
-        {
-          "id": "320c526080113",
-          "name": "override",
-          "type": "styles",
-          "targetIdPath": [
-            "70b2f99d2112"
-          ],
-          "value": [
-            {
-              "id": "9115965303.1567269756799",
-              "parts": {},
-              "variantId": "320c526078624",
-              "properties": [
-                {
-                  "key": "font-family",
-                  "value": "Helvetica Neue"
-                },
-                {
-                  "key": "font-size",
-                  "value": "24px"
-                },
-                {
-                  "key": "font-weight",
-                  "value": "300"
-                },
-                {
-                  "key": "color",
-                  "value": "var(--905d90be435)"
-                },
-                {
-                  "key": "list-style",
-                  "value": "none"
-                },
-                {
-                  "key": "text-decoration",
-                  "value": "line-through"
-                }
-              ]
-            }
-          ],
-          "children": []
         }
       ],
       "metadata": {
@@ -417,6 +386,17 @@
         "./todo-item-controller.tsx"
       ],
       "styles": [
+        {
+          "id": "390979489.1567269756799",
+          "parts": {},
+          "variantId": "70b2f99d10009",
+          "properties": [
+            {
+              "key": "border-bottom",
+              "value": "1px none"
+            }
+          ]
+        },
         {
           "id": "3854049180.1567269756799",
           "parts": {},

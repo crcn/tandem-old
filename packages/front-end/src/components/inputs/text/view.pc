@@ -1,6 +1,6 @@
 {
   "id": "76b155a0907062",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "metadata": {},
   "name": "module",
   "children": [
@@ -20,60 +20,12 @@
           "metadata": {}
         },
         {
-          "id": "6507b7e31382",
-          "name": "override",
-          "type": "styles",
-          "targetIdPath": [],
-          "value": [
-            {
-              "id": "9000273627.1566398145469",
-              "parts": {},
-              "variantId": "6507b7e31381",
-              "properties": [
-                {
-                  "key": "box-shadow",
-                  "value": "inset  0px 0px 0px 1px var(--24ce1e4d13456)"
-                }
-              ]
-            }
-          ],
-          "children": []
-        },
-        {
           "id": "e87522711522",
           "name": "variant",
           "label": "disabled",
           "isDefault": true,
           "children": [],
           "metadata": {}
-        },
-        {
-          "id": "e87522711523",
-          "name": "override",
-          "type": "styles",
-          "targetIdPath": [],
-          "value": [
-            {
-              "id": "5582056872.1566398145469",
-              "parts": {},
-              "variantId": "e87522711522",
-              "properties": [
-                {
-                  "key": "background-image",
-                  "value": "linear-gradient(var(--bc891e755312), var(--bc891e755312))"
-                },
-                {
-                  "key": "box-shadow",
-                  "value": "inset  0px 0px 0px 1px var(--1934368810788)"
-                },
-                {
-                  "key": "opacity",
-                  "value": "1"
-                }
-              ]
-            }
-          ],
-          "children": []
         },
         {
           "id": "19887e89364",
@@ -100,6 +52,36 @@
       ],
       "variant": {},
       "styles": [
+        {
+          "id": "9000273627.1566398145469",
+          "parts": {},
+          "variantId": "6507b7e31381",
+          "properties": [
+            {
+              "key": "box-shadow",
+              "value": "inset  0px 0px 0px 1px var(--24ce1e4d13456)"
+            }
+          ]
+        },
+        {
+          "id": "5582056872.1566398145469",
+          "parts": {},
+          "variantId": "e87522711522",
+          "properties": [
+            {
+              "key": "background-image",
+              "value": "linear-gradient(var(--bc891e755312), var(--bc891e755312))"
+            },
+            {
+              "key": "box-shadow",
+              "value": "inset  0px 0px 0px 1px var(--1934368810788)"
+            },
+            {
+              "key": "opacity",
+              "value": "1"
+            }
+          ]
+        },
         {
           "id": "6695111832.1566398145469",
           "parts": {},

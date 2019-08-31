@@ -1,6 +1,6 @@
 {
   "id": "9f364d2139376",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "metadata": {},
   "name": "module",
   "children": [
@@ -50,60 +50,12 @@
           "metadata": {}
         },
         {
-          "id": "38b32d581284",
-          "name": "override",
-          "type": "styles",
-          "targetIdPath": [],
-          "value": [
-            {
-              "id": "4335843429.1566398145461",
-              "parts": {},
-              "variantId": "38b32d581121",
-              "properties": [
-                {
-                  "key": "background",
-                  "value": "rgba(227, 227, 227, 1)"
-                },
-                {
-                  "key": "color",
-                  "value": "var(--24ce1e4d482)"
-                }
-              ]
-            }
-          ],
-          "children": []
-        },
-        {
           "id": "c6acc7ee1385",
           "name": "variant",
           "label": "disabled",
           "isDefault": true,
           "children": [],
           "metadata": {}
-        },
-        {
-          "id": "c6acc7ee1386",
-          "name": "override",
-          "type": "styles",
-          "targetIdPath": [],
-          "value": [
-            {
-              "id": "2750368737.1566398145461",
-              "parts": {},
-              "variantId": "c6acc7ee1385",
-              "properties": [
-                {
-                  "key": "cursor",
-                  "value": "default"
-                },
-                {
-                  "key": "opacity",
-                  "value": 0.253
-                }
-              ]
-            }
-          ],
-          "children": []
         }
       ],
       "metadata": {
@@ -116,6 +68,36 @@
       },
       "variant": {},
       "styles": [
+        {
+          "id": "4335843429.1566398145461",
+          "parts": {},
+          "variantId": "38b32d581121",
+          "properties": [
+            {
+              "key": "background",
+              "value": "rgba(227, 227, 227, 1)"
+            },
+            {
+              "key": "color",
+              "value": "var(--24ce1e4d482)"
+            }
+          ]
+        },
+        {
+          "id": "2750368737.1566398145461",
+          "parts": {},
+          "variantId": "c6acc7ee1385",
+          "properties": [
+            {
+              "key": "cursor",
+              "value": "default"
+            },
+            {
+              "key": "opacity",
+              "value": 0.253
+            }
+          ]
+        },
         {
           "id": "4313488163.1566398145461",
           "parts": {},

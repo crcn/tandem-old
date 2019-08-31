@@ -1,6 +1,6 @@
 {
   "id": "d65d17fd64",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "metadata": {},
   "name": "module",
   "children": [
@@ -29,26 +29,6 @@
           },
           "children": [],
           "metadata": {}
-        },
-        {
-          "id": "c475e80b1644",
-          "name": "override",
-          "type": "styles",
-          "targetIdPath": [],
-          "value": [
-            {
-              "id": "5834693449.1566398145469",
-              "parts": {},
-              "variantId": "c475e80b836",
-              "properties": [
-                {
-                  "key": "box-shadow",
-                  "value": "inset  0px 0px 0px 1px var(--24ce1e4d13456)"
-                }
-              ]
-            }
-          ],
-          "children": []
         }
       ],
       "metadata": {
@@ -64,6 +44,17 @@
       ],
       "variant": {},
       "styles": [
+        {
+          "id": "5834693449.1566398145469",
+          "parts": {},
+          "variantId": "c475e80b836",
+          "properties": [
+            {
+              "key": "box-shadow",
+              "value": "inset  0px 0px 0px 1px var(--24ce1e4d13456)"
+            }
+          ]
+        },
         {
           "id": "1553470153.1566398145469",
           "parts": {},

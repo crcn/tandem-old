@@ -1,6 +1,6 @@
 {
   "id": "296b92da36265",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "metadata": {},
   "name": "module",
   "children": [
@@ -168,68 +168,12 @@
           "metadata": {}
         },
         {
-          "id": "3fb9d47e52",
-          "name": "override",
-          "type": "styles",
-          "targetIdPath": [
-            "3fb9d47e50"
-          ],
-          "value": [
-            {
-              "id": "8692386025.1566398145526",
-              "parts": {},
-              "variantId": "3fb9d47e51",
-              "properties": [
-                {
-                  "key": "display",
-                  "value": "block"
-                }
-              ]
-            }
-          ],
-          "children": []
-        },
-        {
           "id": "a9acb8771",
           "name": "variant",
           "label": "has items",
           "isDefault": true,
           "children": [],
           "metadata": {}
-        },
-        {
-          "id": "a9acb8772",
-          "name": "override",
-          "type": "styles",
-          "targetIdPath": [
-            "cdcf193c7"
-          ],
-          "value": [
-            {
-              "id": "4640179651.1566398145526",
-              "parts": {},
-              "variantId": "a9acb8771",
-              "properties": [
-                {
-                  "key": "display",
-                  "value": "flex"
-                },
-                {
-                  "key": "padding-right",
-                  "value": "12px"
-                },
-                {
-                  "key": "padding-left",
-                  "value": "48px"
-                },
-                {
-                  "key": "padding-top",
-                  "value": "6px"
-                }
-              ]
-            }
-          ],
-          "children": []
         },
         {
           "id": "a9acb8773",
@@ -502,6 +446,29 @@
               "metadata": {},
               "styles": [
                 {
+                  "id": "4640179651.1566398145526",
+                  "parts": {},
+                  "variantId": "a9acb8771",
+                  "properties": [
+                    {
+                      "key": "display",
+                      "value": "flex"
+                    },
+                    {
+                      "key": "padding-right",
+                      "value": "12px"
+                    },
+                    {
+                      "key": "padding-left",
+                      "value": "48px"
+                    },
+                    {
+                      "key": "padding-top",
+                      "value": "6px"
+                    }
+                  ]
+                },
+                {
                   "id": "1797041551.1566398145526",
                   "parts": {},
                   "properties": [
@@ -659,6 +626,17 @@
                       },
                       "label": "remove button",
                       "styles": [
+                        {
+                          "id": "8692386025.1566398145526",
+                          "parts": {},
+                          "variantId": "3fb9d47e51",
+                          "properties": [
+                            {
+                              "key": "display",
+                              "value": "block"
+                            }
+                          ]
+                        },
                         {
                           "id": "5189268528.1566398145526",
                           "parts": {},

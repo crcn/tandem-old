@@ -1,6 +1,6 @@
 {
   "id": "905d90be0",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "metadata": {},
   "name": "module",
   "children": [
@@ -11482,6 +11482,17 @@
               "metadata": {},
               "styles": [
                 {
+                  "id": "2646960463.1567269756796",
+                  "parts": {},
+                  "variantId": "320c526021004",
+                  "properties": [
+                    {
+                      "key": "top",
+                      "value": "unset"
+                    }
+                  ]
+                },
+                {
                   "id": "3934896913.1567269756796",
                   "parts": {},
                   "properties": [
@@ -11542,6 +11553,17 @@
               ],
               "metadata": {},
               "styles": [
+                {
+                  "id": "3930579400.1567269756796",
+                  "parts": {},
+                  "variantId": "320c526021004",
+                  "properties": [
+                    {
+                      "key": "display",
+                      "value": "block"
+                    }
+                  ]
+                },
                 {
                   "id": "326461013.1567269756796",
                   "parts": {},
@@ -11622,6 +11644,21 @@
           "metadata": {},
           "styles": [
             {
+              "id": "9030742209.1567269756796",
+              "parts": {},
+              "variantId": "320c526021004",
+              "properties": [
+                {
+                  "key": "display",
+                  "value": "block"
+                },
+                {
+                  "key": "position",
+                  "value": "relative"
+                }
+              ]
+            },
+            {
               "id": "7389801738.1567269756796",
               "parts": {},
               "properties": [
@@ -11660,76 +11697,6 @@
           "isDefault": true,
           "children": [],
           "metadata": {}
-        },
-        {
-          "id": "320c526021492",
-          "name": "override",
-          "type": "styles",
-          "targetIdPath": [
-            "320c526016600"
-          ],
-          "value": [
-            {
-              "id": "9030742209.1567269756796",
-              "parts": {},
-              "variantId": "320c526021004",
-              "properties": [
-                {
-                  "key": "display",
-                  "value": "block"
-                },
-                {
-                  "key": "position",
-                  "value": "relative"
-                }
-              ]
-            }
-          ],
-          "children": []
-        },
-        {
-          "id": "320c526023441",
-          "name": "override",
-          "type": "styles",
-          "targetIdPath": [
-            "320c526016607"
-          ],
-          "value": [
-            {
-              "id": "2646960463.1567269756796",
-              "parts": {},
-              "variantId": "320c526021004",
-              "properties": [
-                {
-                  "key": "top",
-                  "value": "unset"
-                }
-              ]
-            }
-          ],
-          "children": []
-        },
-        {
-          "id": "320c526028312",
-          "name": "override",
-          "type": "styles",
-          "targetIdPath": [
-            "320c526016617"
-          ],
-          "value": [
-            {
-              "id": "3930579400.1567269756796",
-              "parts": {},
-              "variantId": "320c526021004",
-              "properties": [
-                {
-                  "key": "display",
-                  "value": "block"
-                }
-              ]
-            }
-          ],
-          "children": []
         }
       ],
       "metadata": {

@@ -1,6 +1,6 @@
 {
   "id": "296b92da14567",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "metadata": {},
   "name": "module",
   "children": [
@@ -28,6 +28,17 @@
           },
           "variant": {},
           "styles": [
+            {
+              "id": "303114071.1566398145518",
+              "parts": {},
+              "variantId": "53e3d7ba5873",
+              "properties": [
+                {
+                  "key": "opacity",
+                  "value": 1
+                }
+              ]
+            },
             {
               "id": "4318773361.1566398145518",
               "parts": {},
@@ -238,28 +249,6 @@
           },
           "children": [],
           "metadata": {}
-        },
-        {
-          "id": "53e3d7ba5875",
-          "name": "override",
-          "type": "styles",
-          "targetIdPath": [
-            "53e3d7ba5746"
-          ],
-          "value": [
-            {
-              "id": "303114071.1566398145518",
-              "parts": {},
-              "variantId": "53e3d7ba5873",
-              "properties": [
-                {
-                  "key": "opacity",
-                  "value": 1
-                }
-              ]
-            }
-          ],
-          "children": []
         }
       ],
       "metadata": {
@@ -894,26 +883,6 @@
           "isDefault": true,
           "children": [],
           "metadata": {}
-        },
-        {
-          "id": "7c8a2ff2271",
-          "name": "override",
-          "type": "styles",
-          "targetIdPath": [],
-          "value": [
-            {
-              "id": "7275420914.1566398145518",
-              "parts": {},
-              "variantId": "7c8a2ff2270",
-              "properties": [
-                {
-                  "key": "padding-bottom",
-                  "value": "6px"
-                }
-              ]
-            }
-          ],
-          "children": []
         }
       ],
       "metadata": {
@@ -931,6 +900,17 @@
         "b6e7db9d12817": true
       },
       "styles": [
+        {
+          "id": "7275420914.1566398145518",
+          "parts": {},
+          "variantId": "7c8a2ff2270",
+          "properties": [
+            {
+              "key": "padding-bottom",
+              "value": "6px"
+            }
+          ]
+        },
         {
           "id": "8299480119.1566398145518",
           "parts": {},

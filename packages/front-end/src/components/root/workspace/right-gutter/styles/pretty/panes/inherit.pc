@@ -1,6 +1,6 @@
 {
   "id": "296b92da26125",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "metadata": {},
   "name": "module",
   "children": [
@@ -354,6 +354,29 @@
                       "variant": {},
                       "styles": [
                         {
+                          "id": "8369815106.1566398145530",
+                          "parts": {},
+                          "variantId": "ff05cf7d1",
+                          "properties": [
+                            {
+                              "key": "display",
+                              "value": "block"
+                            },
+                            {
+                              "key": "margin-right",
+                              "value": "6px"
+                            },
+                            {
+                              "key": "position",
+                              "value": "relative"
+                            },
+                            {
+                              "key": "cursor",
+                              "value": "pointer"
+                            }
+                          ]
+                        },
+                        {
                           "id": "5963641178.1566398145530",
                           "parts": {},
                           "properties": [
@@ -504,40 +527,6 @@
               "id": "2310463992.1566398145530",
               "parts": {},
               "properties": []
-            }
-          ],
-          "children": []
-        },
-        {
-          "id": "d30286e83418",
-          "name": "override",
-          "type": "styles",
-          "targetIdPath": [
-            "d30286e83393"
-          ],
-          "value": [
-            {
-              "id": "8369815106.1566398145530",
-              "parts": {},
-              "variantId": "ff05cf7d1",
-              "properties": [
-                {
-                  "key": "display",
-                  "value": "block"
-                },
-                {
-                  "key": "margin-right",
-                  "value": "6px"
-                },
-                {
-                  "key": "position",
-                  "value": "relative"
-                },
-                {
-                  "key": "cursor",
-                  "value": "pointer"
-                }
-              ]
             }
           ],
           "children": []
