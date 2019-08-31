@@ -1,5 +1,8 @@
 const {memoize} = require('tandem-common');
 
+let i = 0;
+let j = 0;
+
 module.exports = (module) => {
 
   const mapModule = (module) => {
@@ -13,19 +16,36 @@ module.exports = (module) => {
   };
 
   const mapNode = (node) => {
-
     let newNode = {...node};
 
     const directOverrides = getDirectOverrides(node, module);
 
-    if (directOverrides.length) {
-      console.log("HAS DIRECT");
+    if (directOverrides.length && newNode.styles) {
+
+      const newStyles = [];
+
+      for (const override of directOverrides) {
+        if (override.type !== 'styles') {
+          continue;
+        }
+
+        newStyles.push(...override.value.filter(block => block.properties.length > 0));
+      }
+
+      newStyles.push(...newNode.styles);
+
+      newNode = {
+        ...newNode,
+        styles: newStyles
+      };
+      
+      i += directOverrides.length;
     }
   
     return {
       ...newNode,
       children: node.children.filter(child => {
-        return !isDirectOverride(child, module);
+        return !(isDirectOverride(child, module) && child.type === 'styles');
       }).map(mapNode)
     };
   };
@@ -51,7 +71,7 @@ const getNodeById = memoize((nodeId, root) => {
 
 const getContentNode = (node, module) => {
   const ancestors = getAncestors(node, module);
-  return ancestors[0];
+  return ancestors[1];
 }; 
 
 const getAllOverrides = memoize((currentNode) => { 
@@ -107,7 +127,7 @@ const getAncestors = memoize((node, module) => {
     if (!parent) {
       break;
     }
-    ancestors.push(parent);
+    ancestors.unshift(parent);
   }
 
   return ancestors;
