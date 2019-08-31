@@ -7,6 +7,7 @@ const _005_006 = require("./005-006");
 const _006_100 = require("./006-100");
 const _100_101 = require("./100-101");
 const _101_102 = require("./101-102");
+const _102_103 = require("./102-103");
 
 const migrators = {
   "0.0.0": _000_001,
@@ -18,6 +19,7 @@ const migrators = {
   "0.0.6": _006_100,
   "1.0.0": _100_101,
   "1.0.1": _101_102,
+  "1.0.2": _102_103,
 };
 
 module.exports = (oldModule) => {

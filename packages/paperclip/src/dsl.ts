@@ -16,13 +16,12 @@ import {
   filterTreeNodeParents,
   getNestedTreeNodeById,
   KeyValuePair,
-  kvpSetValue,
   keyValuePairToHash
 } from "tandem-common";
 import { uniq, isEqual } from "lodash";
 import { Dependency, DependencyGraph, updateGraphDependency } from "./graph";
 
-export const PAPERCLIP_MODULE_VERSION = "1.0.2";
+export const PAPERCLIP_MODULE_VERSION = "1.0.3";
 
 /*------------------------------------------
  * CONSTANTS
