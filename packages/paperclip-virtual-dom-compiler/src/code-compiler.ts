@@ -320,7 +320,8 @@ export const createPaperclipVirtualDOMtranslator = (
           return context;
         }
 
-        for (const block of node.styles) {
+        for (let i = node.styles.length; i--; ) {
+          const block = node.styles[i];
           context = translateStyleBlock(
             block,
             node,
@@ -662,7 +663,8 @@ export const createPaperclipVirtualDOMtranslator = (
         continue;
       }
 
-      for (const block of override.value) {
+      for (let i = override.value.length; i--; ) {
+        const block = override.value[i];
         context = translateStyleBlock(
           block,
           override,
