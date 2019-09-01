@@ -16,10 +16,12 @@ import {
   filterTreeNodeParents,
   getNestedTreeNodeById,
   KeyValuePair,
-  keyValuePairToHash
+  keyValuePairToHash,
+  hashToKeyValuePair
 } from "tandem-common";
-import { uniq, isEqual } from "lodash";
+import { uniq, isEqual, defaults } from "lodash";
 import { Dependency, DependencyGraph, updateGraphDependency } from "./graph";
+import * as crc32 from "crc32";
 
 export const PAPERCLIP_MODULE_VERSION = "1.0.3";
 
@@ -1431,6 +1433,49 @@ export const computePCNodeStyle = memoize(
     }
 
     return computeStyleWithVars(style, varMap);
+  }
+);
+
+export const computePCStyleBlock = memoize(
+  (
+    block: PCStyleBlock,
+    componentRefs: KeyValue<PCComponent>,
+    varMap: KeyValue<PCVariable>
+  ) => {
+    let style = {};
+
+    if (block.mixinId) {
+      const mixin = componentRefs[block.mixinId];
+      if (!mixin) {
+        console.warn(`Style block mixinId ${block.mixinId} does not exist`);
+        return style;
+      }
+      Object.assign(
+        style,
+        computePCStyleBlocks(mixin.styles, componentRefs, varMap)
+      );
+    } else {
+      Object.assign(style, keyValuePairToHash(block.properties));
+    }
+
+    return computeStyleWithVars(style, varMap);
+  }
+);
+
+export const computePCStyleBlocks = memoize(
+  (
+    blocks: PCStyleBlock[],
+    componentRefs: KeyValue<PCComponent>,
+    varMap: KeyValue<PCVariable>,
+    variantId?: string
+  ) => {
+    return blocks.filter(block => block.variantId == variantId).reduce(
+      (style, block) => ({
+        ...computePCStyleBlock(block, componentRefs, varMap),
+        ...style
+      }),
+      {}
+    );
   }
 );
 

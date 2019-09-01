@@ -368,17 +368,7 @@
                 "b6c162d140"
               ],
               "value": [
-                {
-                  "id": "2320693155.1566398145514",
-                  "parts": {},
-                  "variantId": "f4e4ad4e636",
-                  "properties": [
-                    {
-                      "key": "padding-bottom",
-                      "value": "6px"
-                    }
-                  ]
-                }
+                
               ],
               "children": []
             },

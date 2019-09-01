@@ -7,7 +7,8 @@ import {
   EMPTY_OBJECT,
   stripProtocol,
   FILE_PROTOCOL,
-  addProtocol
+  addProtocol,
+  keyValuePairToHash
 } from "tandem-common";
 import {
   PCNode,
@@ -36,12 +37,12 @@ import {
   PCVariantTriggerQuerySource,
   PCMediaQuery,
   PCVariableQuery,
-  getVanillStyle
+  computePCStyleBlocks
 } from "./dsl";
 import {
   getOverrideMap,
-  ComputedOverrideVariantMap,
-  ComputedOverrideType
+  ComputedNodeOverrideMap,
+  ComputedOverrideMap
 } from "./overrides";
 import * as path from "path";
 import { uniq } from "lodash";
@@ -146,6 +147,7 @@ const translateContentNode = memoize(
 
     buffer += `var EMPTY_ARRAY = [];\n`;
     buffer += `var EMPTY_OBJECT = {};\n`;
+
     buffer += translateStaticNodeProps(
       node,
       componentRefMap,
@@ -161,8 +163,17 @@ const translateContentNode = memoize(
     );
     buffer += translateStaticVariants(node, varMap, sourceUri, rootDirectory);
 
+    buffer += translateStaticOverrides2(
+      node as PCComponent,
+      componentRefMap,
+      varMap,
+      sourceUri,
+      rootDirectory
+    );
+
     buffer += `return function(instanceSourceNodeId, instancePath, attributes, style, variant, overrides, windowInfo, components, isRoot) {
       ${translateVariants(node, queryMap, varMap)}
+      ${translateVarintOverrides(node, queryMap, varMap)}
       var childInstancePath = instancePath == null ? "" : (instancePath ? instancePath + "." : "") + instanceSourceNodeId;
 
       // tiny optimization
@@ -261,6 +272,40 @@ const translateVisibleNode = memoize(
     }
   }
 );
+
+const fixId = id => id.replace(".", "");
+
+const translateVarintOverrides = (
+  contentNode: PCVisibleNode | PCComponent | PCStyleMixin,
+  queryMap: KeyValue<PCQuery>,
+  varMap: KeyValue<PCVariable>
+) => {
+  let buffer = "";
+
+  const allOverrides = getTreeNodesByName(
+    PCSourceTagNames.OVERRIDE,
+    contentNode
+  ) as PCOverride[];
+
+  for (const override of allOverrides) {
+    if (override.type === PCOverridableType.STYLES) {
+      for (const block of override.value) {
+        if (block.variantId) {
+          buffer += `if (variant['${block.variantId}']) {\n`;
+        }
+
+        buffer += `merge(_${fixId(block.id)}StyleOverride, overrides);\n`;
+
+        if (block.variantId) {
+          buffer += `}\n`;
+        }
+      }
+    }
+  }
+
+  return buffer;
+};
+
 const translateVariants = (
   contentNode: PCVisibleNode | PCComponent | PCStyleMixin,
   queryMap: KeyValue<PCQuery>,
@@ -433,6 +478,54 @@ const translateDynamicOverrides = (
   return buffer + `}))`;
 };
 
+const translateStaticOverrides2 = (
+  contentNode: PCNode,
+  componentRefMap: KeyValue<PCComponent>,
+  varMap: KeyValue<PCVariable>,
+  sourceUri: string,
+  rootDirectory: string
+) => {
+  let buffer = "";
+  const allOverrides = getTreeNodesByName(
+    PCSourceTagNames.OVERRIDE,
+    contentNode
+  ) as PCOverride[];
+  for (const override of allOverrides) {
+    const parent = getParentTreeNode(override.id, contentNode) as
+      | PCComponent
+      | PCComponentInstanceElement;
+
+    if (override.type === PCOverridableType.STYLES) {
+      for (const block of override.value) {
+        buffer += `var _${fixId(block.id)}StyleOverride = {`;
+
+        buffer += `_${parent.id}Overrides: {`;
+        const instancePath = override.targetIdPath.slice(
+          0,
+          override.targetIdPath.length - 1
+        );
+        const nodeId = override.targetIdPath[override.targetIdPath.length - 1];
+
+        for (const idPath of instancePath) {
+          buffer += `"_${idPath}Overrides": {`;
+        }
+
+        buffer += `"_${nodeId}Style": `;
+
+        buffer += JSON.stringify(
+          computePCStyleBlocks([block], componentRefMap, varMap, null, false)
+        );
+
+        if (instancePath.length) {
+          buffer += "}".repeat(instancePath.length);
+        }
+        buffer += `}};\n`;
+      }
+    }
+  }
+  return buffer;
+};
+
 const translateStaticOverrides = (
   contentNode: PCNode,
   varMap: KeyValue<PCVariable>,
@@ -545,7 +638,7 @@ const mapStyles = (
 
 const translateVariantOverrideMap = memoize(
   (
-    map: ComputedOverrideVariantMap,
+    map: ComputedOverrideMap,
     varMap: KeyValue<PCVariable>,
     sourceUri: string,
     rootDirectory: string
@@ -555,7 +648,7 @@ const translateVariantOverrideMap = memoize(
       const { overrides, children: childMap } = map[nodeId];
 
       for (const override of overrides) {
-        if (override.type === ComputedOverrideType.STYLE) {
+        if (override.type === PCOverridableType.STYLES) {
           buffer += `_${nodeId}Style: ${JSON.stringify(
             mapStyles(
               computeStyleWithVars(override.value, varMap),
@@ -564,13 +657,13 @@ const translateVariantOverrideMap = memoize(
             )
           )},`;
         }
-        if (override.type === ComputedOverrideType.ATTRIBUTES) {
+        if (override.type === PCOverridableType.ATTRIBUTES) {
           buffer += `_${nodeId}Attributes: ${JSON.stringify(override.value)},`;
         }
-        if (override.type === ComputedOverrideType.VARIANT) {
+        if (override.type === PCOverridableType.VARIANT) {
           buffer += `_${nodeId}Variant: ${JSON.stringify(override.value)},`;
         }
-        if (override.type === ComputedOverrideType.TEXT) {
+        if (override.type === PCOverridableType.TEXT) {
           buffer += `_${nodeId}Value: ${JSON.stringify(override.value)},`;
         }
       }
