@@ -1,6 +1,6 @@
 Immediate:
 
-- [ ] move overrides to instance
+- [ ] fix vanilla renderer
 - [ ] move slots to params
 - [ ] styles must by applied in their correct order (even variants)
 - [ ] rewire style variants in vanilla renderer

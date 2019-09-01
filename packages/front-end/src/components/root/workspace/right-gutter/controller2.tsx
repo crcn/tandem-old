@@ -6,7 +6,8 @@ import {
   getInspectorSourceNode,
   getPCNodeContentNode,
   PCVisibleNode,
-  getPCNodeModule
+  getPCNodeModule,
+  computeStyleBlocks
 } from "paperclip";
 
 export type Props = {
@@ -22,20 +23,14 @@ export default (Base: React.ComponentClass<BaseRightGutter2Props>) => {
       if (!selectedInspectorNodes.length) {
         return null;
       }
-      const sourceNode = getInspectorSourceNode(
+
+      const computedStyleBlocks = computeStyleBlocks(
         selectedInspectorNodes[0],
         root.sourceNodeInspector,
         root.graph
-      ) as PCVisibleNode;
-      // const computedStyleBlocks = computeStyleBlocks(
-      //   sourceNode,
-      //   getPCNodeContentNode(
-      //     sourceNode.id,
-      //     getPCNodeModule(sourceNode.id, root.graph)
-      //   ) as PCVisibleNode
-      // );
+      );
 
-      const computedStyleBlocks = [];
+      console.log(computedStyleBlocks);
 
       return (
         <Base
