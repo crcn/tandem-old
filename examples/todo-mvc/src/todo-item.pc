@@ -116,7 +116,7 @@
                   "properties": [
                     {
                       "key": "font-family",
-                      "value": "Helvetica Neue"
+                      "value": "Inter"
                     },
                     {
                       "key": "font-size",

@@ -92,7 +92,7 @@
           "properties": [
             {
               "key": "font-family",
-              "value": "Helvetica Neue, Helvetica"
+              "value": "Inter"
             },
             {
               "key": "color",

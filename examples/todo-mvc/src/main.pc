@@ -6314,7 +6314,7 @@
             },
             {
               "key": "font-family",
-              "value": "Helvetica Neue"
+              "value": "Inter"
             },
             {
               "key": "background",
@@ -10531,7 +10531,7 @@
             },
             {
               "key": "font-family",
-              "value": "Helvetica Neue"
+              "value": "Inter"
             },
             {
               "key": "background",
@@ -10786,7 +10786,7 @@
           "properties": [
             {
               "key": "font-family",
-              "value": "Helvetica Neue"
+              "value": "Inter"
             },
             {
               "key": "font-size",
