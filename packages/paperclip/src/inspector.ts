@@ -15,6 +15,7 @@ import {
   isSlot,
   PCModule,
   getComponentSlots,
+  isComponentLike,
   PCSlot,
   PCOverridableType,
   getSlotPlug,
@@ -425,7 +426,6 @@ const isUnreppedSourceNode = (node: PCNode) =>
   node.name === PCSourceTagNames.VARIABLE ||
   node.name === PCSourceTagNames.VARIANT_TRIGGER ||
   node.name === PCSourceTagNames.QUERY ||
-  node.name === PCSourceTagNames.OVERRIDE ||
   node.name === PCSourceTagNames.VARIANT;
 
 const patchInspectorTree2 = (
@@ -748,20 +748,21 @@ export const getInstanceVariantInfo = memoize(
       if (!parentSourceNode) {
         continue;
       }
-      const variant =
-        parentSourceNode.name === PCSourceTagNames.COMPONENT ||
-        parentSourceNode.name === PCSourceTagNames.COMPONENT_INSTANCE
-          ? parentSourceNode.variant
-          : EMPTY_OBJECT;
-      const variantOverride = parentSourceNode.children.find(
-        (child: PCNode) =>
-          child.name === PCSourceTagNames.OVERRIDE &&
-          child.type === PCOverridableType.VARIANT &&
-          (last(child.targetIdPath) === instance.id ||
-            (child.targetIdPath.length === 0 &&
-              parentSourceNode.id === instance.id)) &&
-          child.variantId == selectedVariantId
-      ) as PCBaseValueOverride<any, any>;
+
+      const variant = isComponentLike(parentSourceNode)
+        ? parentSourceNode.variant
+        : EMPTY_OBJECT;
+      const variantOverride = isComponentLike(parentSourceNode)
+        ? parentSourceNode.overrides.find(
+            (override: PCOverride) =>
+              override.type === PCOverridableType.VARIANT &&
+              (last(override.targetIdPath) === instance.id ||
+                (override.targetIdPath.length === 0 &&
+                  parentSourceNode.id === instance.id)) &&
+              override.variantId == selectedVariantId
+          )
+        : null;
+
       Object.assign(enabled, variant, variantOverride && variantOverride.value);
     }
 

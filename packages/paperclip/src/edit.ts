@@ -52,7 +52,6 @@ import {
   PCVariant,
   isComponent,
   getPCVariants,
-  isPCOverride,
   PCComponentInstanceElement,
   filterPCNodes,
   isPCComponentInstance,
@@ -992,7 +991,61 @@ export const persistRemoveVariantOverride = <TState extends PCEditorState>(
     state.graph,
     variant && variant.id
   ).find(override => last(override.targetIdPath) === targetVariantId);
-  return replaceDependencyGraphPCNode(null, override, state);
+  return replaceDependencyGraphOverride(
+    getSyntheticSourceNode(instance, state.graph) as PCComponentInstanceElement,
+    override,
+    state
+  );
+};
+
+const replaceDependencyGraphOverride = <TState extends PCEditorState>(
+  instance: PCComponentInstanceElement | PCComponent,
+  newOverride: PCOverride,
+  state: TState
+) => {
+  const newInstance: PCComponent | PCComponentInstanceElement = {
+    ...instance,
+    overrides: instance.overrides
+      .map(override => {
+        return override.id === newOverride.id ? newOverride : override;
+      })
+      .filter(Boolean)
+  };
+
+  return replaceDependencyGraphPCNode(
+    null,
+    replaceOverride(newInstance, newOverride.id, newOverride),
+    state
+  );
+};
+
+const replaceOverride = <
+  TType extends PCComponentInstanceElement | PCComponent
+>(
+  instance: TType,
+  overrideId: string,
+  newOverride: PCOverride
+): TType => {
+  const newInstance: TType = {
+    ...(instance as any),
+    overrides: instance.overrides
+      .map(override => {
+        return override.id === overrideId ? newOverride : override;
+      })
+      .filter(Boolean)
+  };
+  return newInstance;
+};
+
+const addOverride = <TType extends PCComponentInstanceElement | PCComponent>(
+  instance: TType,
+  newOverride: PCOverride
+): TType => {
+  const newInstance: TType = {
+    ...(instance as any),
+    overrides: [...instance.overrides, newOverride]
+  };
+  return newInstance;
 };
 
 export const persistReplacePCNode = <TState extends PCEditorState>(
@@ -1318,14 +1371,15 @@ const maybeOverride2 = (
 
     const targetIdPath = targetIdPathParts.join(".");
 
-    const topMostInstanceNode = getPCNode(topMostInstanceId, graph);
-    let existingOverride = topMostInstanceNode.children.find(
-      (child: PCNode) => {
+    const topMostInstanceNode = getPCNode(topMostInstanceId, graph) as
+      | PCComponent
+      | PCComponentInstanceElement;
+    let existingOverride = topMostInstanceNode.overrides.find(
+      (override: PCOverride) => {
         return (
-          child.name === PCSourceTagNames.OVERRIDE &&
-          child.type === type &&
-          child.targetIdPath.join(".") === targetIdPath &&
-          child.variantId == variantId
+          override.type === type &&
+          override.targetIdPath.join(".") === targetIdPath &&
+          override.variantId == variantId
         );
       }
     ) as PCOverride;
@@ -1334,24 +1388,17 @@ const maybeOverride2 = (
 
     if (existingOverride) {
       if (value == null) {
-        return removeNestedTreeNode(existingOverride, topMostInstanceNode);
+        return replaceOverride(topMostInstanceNode, existingOverride.id, null);
       }
-      if (existingOverride.type === PCOverridableType.CHILDREN) {
-        existingOverride = {
-          ...existingOverride,
-          children: value
-        };
-      } else {
-        existingOverride = {
-          ...existingOverride,
-          value
-        };
-      }
+      existingOverride = {
+        ...existingOverride,
+        value
+      };
 
-      return replaceNestedNode(
-        existingOverride,
+      return replaceOverride(
+        topMostInstanceNode,
         existingOverride.id,
-        topMostInstanceNode
+        existingOverride
       );
     } else {
       const override = createPCOverride(
@@ -1360,7 +1407,7 @@ const maybeOverride2 = (
         value,
         variantId
       );
-      return appendChildNode(override, topMostInstanceNode);
+      return addOverride(topMostInstanceNode, override);
     }
   }
 
@@ -1444,16 +1491,19 @@ const maybeOverride = (
         .filter(variant => variant.isDefault)
         .map(variant => variant.id)
     : [];
-  const variantOverrides = filterNestedNodes(
-    contentSourceNode,
-    node =>
-      isPCOverride(node) && defaultVariantIds.indexOf(node.variantId) !== -1
-  ).filter(
-    (override: PCOverride) =>
-      last(override.targetIdPath) === sourceNode.id ||
-      (override.targetIdPath.length === 0 &&
-        sourceNode.id === contentSourceNode.id)
-  );
+
+  const variantOverrides = [];
+
+  // const variantOverrides = filterNestedNodes(
+  //   contentSourceNode,
+  //   node =>
+  //     isPCOverride(node) && defaultVariantIds.indexOf(node.variantId) !== -1
+  // ).filter(
+  //   (override: PCOverride) =>
+  //     last(override.targetIdPath) === sourceNode.id ||
+  //     (override.targetIdPath.length === 0 &&
+  //       sourceNode.id === contentSourceNode.id)
+  // );
 
   if (
     isSyntheticNodeImmutable(
@@ -1514,42 +1564,38 @@ const maybeOverride = (
       return !getNestedTreeNodeById(path[index + 1], getPCNode(id, graph));
     });
 
-    let existingOverride = mutableInstanceSourceNode.children.find(
-      (child: PCOverride) => {
-        return (
-          child.name === PCSourceTagNames.OVERRIDE &&
-          child.targetIdPath.join("/") === overrideIdPath.join("/") &&
-          child.type === type &&
-          (!variantId || child.variantId == variantId)
-        );
-      }
-    ) as PCOverride;
+    let existingOverride =
+      mutableInstanceSourceNode.name === PCSourceTagNames.COMPONENT_INSTANCE
+        ? ((mutableInstanceSourceNode as PCComponentInstanceElement).overrides.find(
+            (override: PCOverride) => {
+              return (
+                override.targetIdPath.join("/") === overrideIdPath.join("/") &&
+                override.type === type &&
+                (!variantId || override.variantId == variantId)
+              );
+            }
+          ) as PCOverride)
+        : null;
 
     value = mapOverride(value, existingOverride);
 
     if (existingOverride) {
       if (value == null) {
-        return removeNestedTreeNode(
-          existingOverride,
-          mutableInstanceSourceNode
+        return replaceOverride(
+          mutableInstanceSourceNode as PCComponentInstanceElement,
+          existingOverride.id,
+          null
         );
       }
-      if (existingOverride.type === PCOverridableType.CHILDREN) {
-        existingOverride = {
-          ...existingOverride,
-          children: value
-        };
-      } else {
-        existingOverride = {
-          ...existingOverride,
-          value
-        };
-      }
+      existingOverride = {
+        ...existingOverride,
+        value
+      };
 
-      return replaceNestedNode(
-        existingOverride,
+      return replaceOverride(
+        mutableInstanceSourceNode as PCComponentInstanceElement,
         existingOverride.id,
-        mutableInstanceSourceNode
+        existingOverride
       );
     } else if (
       isSyntheticNodeImmutable(
@@ -1561,7 +1607,10 @@ const maybeOverride = (
       node.id !== targetSourceId
     ) {
       const override = createPCOverride(overrideIdPath, type, value, variantId);
-      return appendChildNode(override, mutableInstanceSourceNode);
+      return addOverride(
+        mutableInstanceSourceNode as PCComponentInstanceElement,
+        override
+      );
     }
   }
 

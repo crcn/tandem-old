@@ -330,10 +330,10 @@ export type PCModule = {
 
 export type PCComponentChild = PCVisibleNode | PCVariant | PCSlot;
 
-type BaseComponentLike = {
+type BaseComponentLike<TType extends PCSourceTagNames> = {
   variant: KeyValue<boolean>;
   overrides: PCOverride[];
-};
+} & PCBaseElement<TType>;
 
 export type PCComponent = {
   /**
@@ -353,8 +353,7 @@ export type PCComponent = {
   controllers?: string[];
   is?: string;
   children: PCComponentChild[];
-} & PCBaseElement<PCSourceTagNames.COMPONENT> &
-  BaseComponentLike;
+} & BaseComponentLike<PCSourceTagNames.COMPONENT>;
 
 export type PCElementStyleMixin = {
   targetType: PCSourceTagNames.ELEMENT;
@@ -530,10 +529,9 @@ export type PCElement = PCBaseElement<PCSourceTagNames.ELEMENT>;
 
 export type PCComponentInstanceChild = PCBaseElementChild | PCPlug;
 
-export type PCComponentInstanceElement = {} & PCBaseElement<
+export type PCComponentInstanceElement = {} & BaseComponentLike<
   PCSourceTagNames.COMPONENT_INSTANCE
-> &
-  BaseComponentLike;
+>;
 
 export type PCTextNode = {
   value: string;
@@ -1392,6 +1390,15 @@ export const styleBlocksToHash = (
       ...style
     }),
     {}
+  );
+};
+
+export const isComponentLike = (
+  node: PCNode
+): node is BaseComponentLike<any> => {
+  return (
+    node.name === PCSourceTagNames.COMPONENT_INSTANCE ||
+    node.name === PCSourceTagNames.COMPONENT
   );
 };
 

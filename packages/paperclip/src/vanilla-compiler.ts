@@ -282,10 +282,12 @@ const translateVarintOverrides = (
 ) => {
   let buffer = "";
 
-  const allOverrides = getTreeNodesByName(
-    PCSourceTagNames.OVERRIDE,
-    contentNode
-  ) as PCOverride[];
+  // const allOverrides = getTreeNodesByName(
+  //   PCSourceTagNames.OVERRIDE,
+  //   contentNode
+  // ) as PCOverride[];
+
+  const allOverrides = [];
 
   for (const override of allOverrides) {
     if (override.type === PCOverridableType.STYLES) {
@@ -486,10 +488,12 @@ const translateStaticOverrides2 = (
   rootDirectory: string
 ) => {
   let buffer = "";
-  const allOverrides = getTreeNodesByName(
-    PCSourceTagNames.OVERRIDE,
-    contentNode
-  ) as PCOverride[];
+  // const allOverrides = getTreeNodesByName(
+  //   PCSourceTagNames.OVERRIDE,
+  //   contentNode
+  // ) as PCOverride[];
+
+  const allOverrides = [];
   for (const override of allOverrides) {
     const parent = getParentTreeNode(override.id, contentNode) as
       | PCComponent
@@ -512,9 +516,9 @@ const translateStaticOverrides2 = (
 
         buffer += `"_${nodeId}Style": `;
 
-        buffer += JSON.stringify(
-          computePCStyleBlocks([block], componentRefMap, varMap, null, false)
-        );
+        // buffer += JSON.stringify(
+        //   computePCStyleBlocks([block], componentRefMap, varMap, null, false)
+        // );
 
         if (instancePath.length) {
           buffer += "}".repeat(instancePath.length);
@@ -541,12 +545,12 @@ const translateStaticOverrides = (
 
   for (const instance of instances) {
     const overrideMap = getOverrideMap(instance, contentNode);
-    buffer += `var _${instance.id}Overrides = { ${translateVariantOverrideMap(
-      overrideMap.default,
-      varMap,
-      sourceUri,
-      rootDirectory
-    )}};\n`;
+    // buffer += `var _${instance.id}Overrides = { ${translateVariantOverrideMap(
+    //   overrideMap.default,
+    //   varMap,
+    //   sourceUri,
+    //   rootDirectory
+    // )}};\n`;
   }
 
   return buffer;
@@ -559,19 +563,21 @@ const translateStaticVariants = (
   rootDirectory: string
 ) => {
   const variants = getTreeNodesByName(PCSourceTagNames.VARIANT, contentNode);
-  const variantNodes: PCNode[] = uniq(
-    (getTreeNodesByName(PCSourceTagNames.OVERRIDE, contentNode) as PCOverride[])
-      .filter(override => {
-        return (
-          override.type === PCOverridableType.STYLES ||
-          override.type === PCOverridableType.VARIANT_IS_DEFAULT ||
-          override.type === PCOverridableType.VARIANT
-        );
-      })
-      .map(override => {
-        return getParentTreeNode(override.id, contentNode);
-      })
-  );
+  // const variantNodes: PCNode[] = uniq(
+  //   (getTreeNodesByName(PCSourceTagNames.OVERRIDE, contentNode) as PCOverride[])
+  //     .filter(override => {
+  //       return (
+  //         override.type === PCOverridableType.STYLES ||
+  //         override.type === PCOverridableType.VARIANT_IS_DEFAULT ||
+  //         override.type === PCOverridableType.VARIANT
+  //       );
+  //     })
+  //     .map(override => {
+  //       return getParentTreeNode(override.id, contentNode);
+  //     })
+  // );
+
+  const variantNodes = [];
 
   let buffer = `_${contentNode.id}Variants = {`;
 
@@ -591,12 +597,12 @@ const translateStaticVariants = (
       if (!overrideMap[variant.id]) {
         continue;
       }
-      buffer += `${translateVariantOverrideMap(
-        overrideMap[variant.id],
-        varMap,
-        sourceUri,
-        rootDirectory
-      )}`;
+      // buffer += `${translateVariantOverrideMap(
+      //   overrideMap[variant.id],
+      //   varMap,
+      //   sourceUri,
+      //   rootDirectory
+      // )}`;
     }
     buffer += `},`;
   }
@@ -649,13 +655,13 @@ const translateVariantOverrideMap = memoize(
 
       for (const override of overrides) {
         if (override.type === PCOverridableType.STYLES) {
-          buffer += `_${nodeId}Style: ${JSON.stringify(
-            mapStyles(
-              computeStyleWithVars(override.value, varMap),
-              sourceUri,
-              rootDirectory
-            )
-          )},`;
+          // buffer += `_${nodeId}Style: ${JSON.stringify(
+          //   mapStyles(
+          //     computeStyleWithVars(override.value, varMap),
+          //     sourceUri,
+          //     rootDirectory
+          //   )
+          // )},`;
         }
         if (override.type === PCOverridableType.ATTRIBUTES) {
           buffer += `_${nodeId}Attributes: ${JSON.stringify(override.value)},`;
