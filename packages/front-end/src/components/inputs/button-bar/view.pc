@@ -1,6 +1,6 @@
 {
   "id": "76b155a0877453",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "metadata": {},
   "name": "module",
   "children": [
@@ -41,29 +41,8 @@
                         }
                       ]
                     }
-                  ]
-                },
-                {
-                  "id": "d789e7004",
-                  "variantId": null,
-                  "targetIdPath": [
-                    "15d6c81f3"
                   ],
-                  "value": false,
-                  "name": "override",
-                  "children": [],
-                  "type": "isDefault"
-                },
-                {
-                  "id": "d789e7005",
-                  "variantId": null,
-                  "targetIdPath": [
-                    "15d6c81f5"
-                  ],
-                  "value": false,
-                  "name": "override",
-                  "children": [],
-                  "type": "isDefault"
+                  "overrides": []
                 }
               ],
               "metadata": {},
@@ -102,6 +81,28 @@
                     }
                   ]
                 }
+              ],
+              "overrides": [
+                {
+                  "id": "d789e7004",
+                  "variantId": null,
+                  "targetIdPath": [
+                    "15d6c81f3"
+                  ],
+                  "value": false,
+                  "children": [],
+                  "type": "isDefault"
+                },
+                {
+                  "id": "d789e7005",
+                  "variantId": null,
+                  "targetIdPath": [
+                    "15d6c81f5"
+                  ],
+                  "value": false,
+                  "children": [],
+                  "type": "isDefault"
+                }
               ]
             },
             {
@@ -130,29 +131,8 @@
                         }
                       ]
                     }
-                  ]
-                },
-                {
-                  "id": "9bb8b8487884",
-                  "variantId": null,
-                  "targetIdPath": [
-                    "15d6c81f3"
                   ],
-                  "value": false,
-                  "name": "override",
-                  "children": [],
-                  "type": "isDefault"
-                },
-                {
-                  "id": "9bb8b8487885",
-                  "variantId": null,
-                  "targetIdPath": [
-                    "15d6c81f5"
-                  ],
-                  "value": true,
-                  "name": "override",
-                  "children": [],
-                  "type": "isDefault"
+                  "overrides": []
                 }
               ],
               "metadata": {},
@@ -183,6 +163,28 @@
                     }
                   ]
                 }
+              ],
+              "overrides": [
+                {
+                  "id": "9bb8b8487884",
+                  "variantId": null,
+                  "targetIdPath": [
+                    "15d6c81f3"
+                  ],
+                  "value": false,
+                  "children": [],
+                  "type": "isDefault"
+                },
+                {
+                  "id": "9bb8b8487885",
+                  "variantId": null,
+                  "targetIdPath": [
+                    "15d6c81f5"
+                  ],
+                  "value": true,
+                  "children": [],
+                  "type": "isDefault"
+                }
               ]
             },
             {
@@ -211,29 +213,8 @@
                         }
                       ]
                     }
-                  ]
-                },
-                {
-                  "id": "d789e7006",
-                  "variantId": null,
-                  "targetIdPath": [
-                    "15d6c81f3"
                   ],
-                  "value": false,
-                  "name": "override",
-                  "children": [],
-                  "type": "isDefault"
-                },
-                {
-                  "id": "ddf283f44",
-                  "variantId": null,
-                  "targetIdPath": [
-                    "15d6c81f5"
-                  ],
-                  "value": true,
-                  "name": "override",
-                  "children": [],
-                  "type": "isDefault"
+                  "overrides": []
                 }
               ],
               "metadata": {},
@@ -263,6 +244,28 @@
                       "value": "relative"
                     }
                   ]
+                }
+              ],
+              "overrides": [
+                {
+                  "id": "d789e7006",
+                  "variantId": null,
+                  "targetIdPath": [
+                    "15d6c81f3"
+                  ],
+                  "value": false,
+                  "children": [],
+                  "type": "isDefault"
+                },
+                {
+                  "id": "ddf283f44",
+                  "variantId": null,
+                  "targetIdPath": [
+                    "15d6c81f5"
+                  ],
+                  "value": true,
+                  "children": [],
+                  "type": "isDefault"
                 }
               ]
             },
@@ -294,18 +297,8 @@
                         }
                       ]
                     }
-                  ]
-                },
-                {
-                  "id": "ddf283f43",
-                  "variantId": null,
-                  "targetIdPath": [
-                    "15d6c81f3"
                   ],
-                  "value": true,
-                  "name": "override",
-                  "children": [],
-                  "type": "isDefault"
+                  "overrides": []
                 }
               ],
               "metadata": {},
@@ -339,6 +332,18 @@
                       "value": "22px"
                     }
                   ]
+                }
+              ],
+              "overrides": [
+                {
+                  "id": "ddf283f43",
+                  "variantId": null,
+                  "targetIdPath": [
+                    "15d6c81f3"
+                  ],
+                  "value": true,
+                  "children": [],
+                  "type": "isDefault"
                 }
               ]
             }
@@ -473,7 +478,8 @@
             }
           ]
         }
-      ]
+      ],
+      "overrides": []
     }
   ]
 }

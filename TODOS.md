@@ -1,6 +1,7 @@
 Immediate:
 
-- [ ] add synthetic style sheet
+- [ ] move overrides to instance
+- [ ] move slots to params
 - [ ] styles must by applied in their correct order (even variants)
 - [ ] rewire style variants in vanilla renderer
 - [ ] rewire style variants in code compiler

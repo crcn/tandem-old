@@ -1,6 +1,6 @@
 {
   "id": "a8ea458088",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "metadata": {},
   "name": "module",
   "children": [
@@ -159,17 +159,6 @@
                   "attributes": [],
                   "children": [
                     {
-                      "id": "7b302ae8214",
-                      "variantId": null,
-                      "targetIdPath": [
-                        "7149f8192506"
-                      ],
-                      "value": "Build Command\n",
-                      "name": "override",
-                      "children": [],
-                      "type": "text"
-                    },
-                    {
                       "slotId": "e73029b416045",
                       "id": "7b302ae8215",
                       "children": [
@@ -200,7 +189,8 @@
                               "parts": {},
                               "properties": []
                             }
-                          ]
+                          ],
+                          "overrides": []
                         }
                       ],
                       "metadata": {},
@@ -222,6 +212,18 @@
                       "parts": {},
                       "properties": []
                     }
+                  ],
+                  "overrides": [
+                    {
+                      "id": "7b302ae8214",
+                      "variantId": null,
+                      "targetIdPath": [
+                        "7149f8192506"
+                      ],
+                      "value": "Build Command\n",
+                      "children": [],
+                      "type": "text"
+                    }
                   ]
                 },
                 {
@@ -231,17 +233,6 @@
                   "name": "component-instance",
                   "attributes": [],
                   "children": [
-                    {
-                      "id": "7b302ae8207",
-                      "variantId": null,
-                      "targetIdPath": [
-                        "7149f8192506"
-                      ],
-                      "value": "Open Application Command",
-                      "name": "override",
-                      "children": [],
-                      "type": "text"
-                    },
                     {
                       "slotId": "e73029b416045",
                       "id": "7b302ae8209",
@@ -273,7 +264,8 @@
                               "parts": {},
                               "properties": []
                             }
-                          ]
+                          ],
+                          "overrides": []
                         }
                       ],
                       "metadata": {},
@@ -294,6 +286,18 @@
                       "id": "6904787453.1566398145457",
                       "parts": {},
                       "properties": []
+                    }
+                  ],
+                  "overrides": [
+                    {
+                      "id": "7b302ae8207",
+                      "variantId": null,
+                      "targetIdPath": [
+                        "7149f8192506"
+                      ],
+                      "value": "Open Application Command",
+                      "children": [],
+                      "type": "text"
                     }
                   ]
                 }
@@ -463,7 +467,8 @@
             }
           ]
         }
-      ]
+      ],
+      "overrides": []
     },
     {
       "id": "7b302ae8231",
@@ -494,7 +499,8 @@
               "parts": {},
               "properties": []
             }
-          ]
+          ],
+          "overrides": []
         }
       ],
       "metadata": {

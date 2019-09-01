@@ -1,6 +1,6 @@
 {
   "id": "76b155a0889212",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "metadata": {},
   "name": "module",
   "children": [
@@ -88,17 +88,7 @@
                   "is": "7149f8199122",
                   "name": "component-instance",
                   "attributes": [],
-                  "children": [
-                    {
-                      "id": "80b0b6e7408",
-                      "variantId": null,
-                      "targetIdPath": [],
-                      "value": [],
-                      "name": "override",
-                      "children": [],
-                      "type": "attributes"
-                    }
-                  ],
+                  "children": [],
                   "metadata": {},
                   "label": "project name input",
                   "bind": {
@@ -114,6 +104,16 @@
                       "id": "3648395288.1566398145466",
                       "parts": {},
                       "properties": []
+                    }
+                  ],
+                  "overrides": [
+                    {
+                      "id": "80b0b6e7408",
+                      "variantId": null,
+                      "targetIdPath": [],
+                      "value": [],
+                      "children": [],
+                      "type": "attributes"
                     }
                   ]
                 }
@@ -164,7 +164,8 @@
             }
           ]
         }
-      ]
+      ],
+      "overrides": []
     },
     {
       "label": "Tooltip",
@@ -498,7 +499,8 @@
           "parts": {},
           "properties": []
         }
-      ]
+      ],
+      "overrides": []
     },
     {
       "id": "4496ba59215",
@@ -536,7 +538,8 @@
                   "parts": {},
                   "properties": []
                 }
-              ]
+              ],
+              "overrides": []
             },
             {
               "id": "4496ba59226",
@@ -567,7 +570,8 @@
                     }
                   ]
                 }
-              ]
+              ],
+              "overrides": []
             }
           ],
           "metadata": {},

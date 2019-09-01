@@ -1,6 +1,6 @@
 {
   "id": "8c06472158661",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "metadata": {},
   "name": "module",
   "children": [
@@ -31,7 +31,8 @@
               "parts": {},
               "properties": []
             }
-          ]
+          ],
+          "overrides": []
         },
         {
           "id": "8c064721502470",
@@ -49,7 +50,8 @@
               "parts": {},
               "properties": []
             }
-          ]
+          ],
+          "overrides": []
         },
         {
           "id": "8c064721506666",
@@ -65,7 +67,8 @@
               "parts": {},
               "properties": []
             }
-          ]
+          ],
+          "overrides": []
         },
         {
           "id": "8c0647211201683",
@@ -90,7 +93,8 @@
                 }
               ]
             }
-          ]
+          ],
+          "overrides": []
         },
         {
           "id": "8c064721510866",
@@ -106,7 +110,8 @@
               "parts": {},
               "properties": []
             }
-          ]
+          ],
+          "overrides": []
         },
         {
           "id": "8c064721515070",
@@ -122,7 +127,8 @@
               "parts": {},
               "properties": []
             }
-          ]
+          ],
+          "overrides": []
         },
         {
           "id": "8c064721519278",
@@ -138,7 +144,8 @@
               "parts": {},
               "properties": []
             }
-          ]
+          ],
+          "overrides": []
         }
       ],
       "metadata": {
@@ -200,7 +207,8 @@
             }
           ]
         }
-      ]
+      ],
+      "overrides": []
     },
     {
       "id": "8c06472192134",
@@ -251,7 +259,8 @@
                 }
               ]
             }
-          ]
+          ],
+          "overrides": []
         }
       ],
       "metadata": {
@@ -347,7 +356,8 @@
             }
           ]
         }
-      ]
+      ],
+      "overrides": []
     },
     {
       "label": "Divider",
@@ -376,7 +386,8 @@
             }
           ]
         }
-      ]
+      ],
+      "overrides": []
     }
   ]
 }

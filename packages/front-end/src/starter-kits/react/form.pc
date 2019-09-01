@@ -1,6 +1,6 @@
 {
   "id": "247bd5dd72",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "metadata": {},
   "name": "module",
   "children": [
@@ -17,19 +17,7 @@
           "label": "Labeled Input",
           "name": "component-instance",
           "attributes": [],
-          "children": [
-            {
-              "id": "80b0b6e7426",
-              "variantId": null,
-              "targetIdPath": [
-                "7149f8192506"
-              ],
-              "value": "Package Name",
-              "name": "override",
-              "children": [],
-              "type": "text"
-            }
-          ],
+          "children": [],
           "metadata": {
             "bounds": {
               "left": 486,
@@ -44,6 +32,18 @@
               "id": "4625816270.1566398145599",
               "parts": {},
               "properties": []
+            }
+          ],
+          "overrides": [
+            {
+              "id": "80b0b6e7426",
+              "variantId": null,
+              "targetIdPath": [
+                "7149f8192506"
+              ],
+              "value": "Package Name",
+              "children": [],
+              "type": "text"
             }
           ]
         }
@@ -72,7 +72,8 @@
             }
           ]
         }
-      ]
+      ],
+      "overrides": []
     },
     {
       "id": "80b0b6e7452",
@@ -96,7 +97,8 @@
           "parts": {},
           "properties": []
         }
-      ]
+      ],
+      "overrides": []
     }
   ]
 }

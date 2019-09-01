@@ -1,6 +1,6 @@
 {
   "id": "df7169e187",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "metadata": {},
   "name": "module",
   "children": [
@@ -43,7 +43,8 @@
               "parts": {},
               "properties": []
             }
-          ]
+          ],
+          "overrides": []
         },
         {
           "id": "b597af43979",
@@ -165,7 +166,8 @@
             }
           ]
         }
-      ]
+      ],
+      "overrides": []
     },
     {
       "label": "Console",
@@ -201,7 +203,8 @@
                       "parts": {},
                       "properties": []
                     }
-                  ]
+                  ],
+                  "overrides": []
                 },
                 {
                   "id": "d3d61e4d34906",
@@ -218,7 +221,8 @@
                       "parts": {},
                       "properties": []
                     }
-                  ]
+                  ],
+                  "overrides": []
                 }
               ],
               "metadata": {},
@@ -346,7 +350,8 @@
                   "parts": {},
                   "properties": []
                 }
-              ]
+              ],
+              "overrides": []
             }
           ],
           "metadata": {},
@@ -427,7 +432,8 @@
             }
           ]
         }
-      ]
+      ],
+      "overrides": []
     },
     {
       "label": "console tab",
@@ -521,7 +527,8 @@
             }
           ]
         }
-      ]
+      ],
+      "overrides": []
     },
     {
       "label": "Console logs",
@@ -555,7 +562,8 @@
                   "parts": {},
                   "properties": []
                 }
-              ]
+              ],
+              "overrides": []
             },
             {
               "id": "838d1061416",
@@ -579,7 +587,8 @@
                   "parts": {},
                   "properties": []
                 }
-              ]
+              ],
+              "overrides": []
             },
             {
               "id": "838d1061426",
@@ -603,7 +612,8 @@
                   "parts": {},
                   "properties": []
                 }
-              ]
+              ],
+              "overrides": []
             },
             {
               "id": "838d1061436",
@@ -629,7 +639,8 @@
                   "parts": {},
                   "properties": []
                 }
-              ]
+              ],
+              "overrides": []
             },
             {
               "id": "838d1061446",
@@ -655,7 +666,8 @@
                   "parts": {},
                   "properties": []
                 }
-              ]
+              ],
+              "overrides": []
             },
             {
               "id": "838d1061456",
@@ -679,7 +691,8 @@
                   "parts": {},
                   "properties": []
                 }
-              ]
+              ],
+              "overrides": []
             }
           ],
           "metadata": {},
@@ -726,7 +739,8 @@
             }
           ]
         }
-      ]
+      ],
+      "overrides": []
     },
     {
       "label": "Console Log",
@@ -821,7 +835,8 @@
             }
           ]
         }
-      ]
+      ],
+      "overrides": []
     }
   ]
 }

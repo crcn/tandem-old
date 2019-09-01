@@ -1,6 +1,6 @@
 {
   "id": "b34e7ef4148",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "metadata": {},
   "name": "module",
   "children": [
@@ -17,10 +17,18 @@
           "is": "b34e7ef429680",
           "name": "component-instance",
           "attributes": [],
-          "children": [
+          "children": [],
+          "metadata": {},
+          "styles": [
+            {
+              "id": "200840933.1566398145583",
+              "parts": {},
+              "properties": []
+            }
+          ],
+          "overrides": [
             {
               "id": "b34e7ef41054474",
-              "name": "override",
               "type": "styles",
               "targetIdPath": [
                 "b34e7ef4710988"
@@ -33,14 +41,6 @@
                 }
               ],
               "children": []
-            }
-          ],
-          "metadata": {},
-          "styles": [
-            {
-              "id": "200840933.1566398145583",
-              "parts": {},
-              "properties": []
             }
           ]
         }
@@ -60,7 +60,8 @@
           "parts": {},
           "properties": []
         }
-      ]
+      ],
+      "overrides": []
     },
     {
       "label": "Node",
@@ -105,7 +106,8 @@
                 }
               ]
             }
-          ]
+          ],
+          "overrides": []
         },
         {
           "id": "b34e7ef4338028",
@@ -139,7 +141,8 @@
                 }
               ]
             }
-          ]
+          ],
+          "overrides": []
         },
         {
           "id": "b34e7ef4710988",
@@ -186,7 +189,8 @@
                 }
               ]
             }
-          ]
+          ],
+          "overrides": []
         }
       ],
       "metadata": {
@@ -209,7 +213,8 @@
             }
           ]
         }
-      ]
+      ],
+      "overrides": []
     },
     {
       "label": "Node Label",
@@ -254,7 +259,8 @@
             }
           ]
         }
-      ]
+      ],
+      "overrides": []
     },
     {
       "id": "b34e7ef463390",
@@ -269,10 +275,34 @@
           "is": "b34e7ef429680",
           "name": "component-instance",
           "attributes": [],
-          "children": [
+          "children": [],
+          "metadata": {
+            "bounds": {
+              "left": 658,
+              "top": 384,
+              "right": 877.5078553178573,
+              "bottom": 538.8267808885354
+            }
+          },
+          "styles": [
+            {
+              "id": "3252216673.1566398145583",
+              "parts": {},
+              "properties": [
+                {
+                  "key": "width",
+                  "value": "200px"
+                },
+                {
+                  "key": "background",
+                  "value": "rgba(255, 255, 255, 1)"
+                }
+              ]
+            }
+          ],
+          "overrides": [
             {
               "id": "b34e7ef4922568",
-              "name": "override",
               "type": "styles",
               "targetIdPath": [
                 "b34e7ef4338028"
@@ -298,33 +328,8 @@
                 "b34e7ef4147857"
               ],
               "value": "Quick Search",
-              "name": "override",
               "children": [],
               "type": "text"
-            }
-          ],
-          "metadata": {
-            "bounds": {
-              "left": 658,
-              "top": 384,
-              "right": 877.5078553178573,
-              "bottom": 538.8267808885354
-            }
-          },
-          "styles": [
-            {
-              "id": "3252216673.1566398145583",
-              "parts": {},
-              "properties": [
-                {
-                  "key": "width",
-                  "value": "200px"
-                },
-                {
-                  "key": "background",
-                  "value": "rgba(255, 255, 255, 1)"
-                }
-              ]
             }
           ]
         }
@@ -393,7 +398,8 @@
             }
           ]
         }
-      ]
+      ],
+      "overrides": []
     }
   ]
 }

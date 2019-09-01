@@ -1,6 +1,6 @@
 {
   "id": "4ea7a0b596",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "metadata": {},
   "name": "module",
   "children": [
@@ -336,7 +336,8 @@
             }
           ]
         }
-      ]
+      ],
+      "overrides": []
     },
     {
       "label": "side panel button",
@@ -446,7 +447,8 @@
               "parts": {},
               "properties": []
             }
-          ]
+          ],
+          "overrides": []
         }
       ],
       "metadata": {
@@ -480,7 +482,8 @@
             }
           ]
         }
-      ]
+      ],
+      "overrides": []
     },
     {
       "id": "1f58a7a8203",
@@ -518,7 +521,8 @@
                 }
               ]
             }
-          ]
+          ],
+          "overrides": []
         },
         {
           "id": "1f58a7a8205",
@@ -544,7 +548,8 @@
               "parts": {},
               "properties": []
             }
-          ]
+          ],
+          "overrides": []
         }
       ],
       "metadata": {

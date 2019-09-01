@@ -1,6 +1,6 @@
 {
   "id": "296b92da21786",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "metadata": {},
   "name": "module",
   "children": [
@@ -11,37 +11,6 @@
       "id": "decafdc7265667",
       "name": "component",
       "children": [
-        {
-          "id": "decafdc7268416",
-          "targetIdPath": [
-            "b6c162d1281"
-          ],
-          "value": "custom CSS",
-          "name": "override",
-          "children": [],
-          "type": "text"
-        },
-        {
-          "id": "f46b8deb3979",
-          "name": "override",
-          "type": "styles",
-          "targetIdPath": [
-            "b6c162d140"
-          ],
-          "value": [
-            {
-              "id": "7911983440.1566398145527",
-              "parts": {},
-              "properties": [
-                {
-                  "key": "padding-bottom",
-                  "value": "8px"
-                }
-              ]
-            }
-          ],
-          "children": []
-        },
         {
           "slotId": "d6261ad52883",
           "id": "9f0149bb4453",
@@ -106,27 +75,12 @@
                   "parts": {},
                   "properties": []
                 }
-              ]
+              ],
+              "overrides": []
             }
           ],
           "metadata": {},
           "name": "plug"
-        },
-        {
-          "id": "144aa5a18203",
-          "name": "override",
-          "type": "styles",
-          "targetIdPath": [
-            "b6c162d1281"
-          ],
-          "value": [
-            {
-              "id": "3446714597.1566398145527",
-              "parts": {},
-              "properties": []
-            }
-          ],
-          "children": []
         },
         {
           "slotId": "d6261ad53069",
@@ -177,6 +131,52 @@
           "id": "9810325465.1566398145527",
           "parts": {},
           "properties": []
+        }
+      ],
+      "overrides": [
+        {
+          "id": "decafdc7268416",
+          "targetIdPath": [
+            "b6c162d1281"
+          ],
+          "value": "custom CSS",
+          "children": [],
+          "type": "text"
+        },
+        {
+          "id": "f46b8deb3979",
+          "type": "styles",
+          "targetIdPath": [
+            "b6c162d140"
+          ],
+          "value": [
+            {
+              "id": "7911983440.1566398145527",
+              "parts": {},
+              "properties": [
+                {
+                  "key": "padding-bottom",
+                  "value": "8px"
+                }
+              ]
+            }
+          ],
+          "children": []
+        },
+        {
+          "id": "144aa5a18203",
+          "type": "styles",
+          "targetIdPath": [
+            "b6c162d1281"
+          ],
+          "value": [
+            {
+              "id": "3446714597.1566398145527",
+              "parts": {},
+              "properties": []
+            }
+          ],
+          "children": []
         }
       ]
     }

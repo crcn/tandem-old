@@ -1,6 +1,6 @@
 {
   "id": "5f6a017190",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "metadata": {},
   "name": "module",
   "children": [
@@ -17,10 +17,21 @@
           "label": "triggers pane",
           "name": "component-instance",
           "attributes": [],
-          "children": [
+          "children": [],
+          "metadata": {},
+          "variant": {
+            "8f20d2149395": false
+          },
+          "styles": [
+            {
+              "id": "372598951.1566398145517",
+              "parts": {},
+              "properties": []
+            }
+          ],
+          "overrides": [
             {
               "id": "8f20d2149397",
-              "name": "override",
               "type": "styles",
               "targetIdPath": [
                 "b6c162d140"
@@ -38,17 +49,6 @@
                 }
               ],
               "children": []
-            }
-          ],
-          "metadata": {},
-          "variant": {
-            "8f20d2149395": false
-          },
-          "styles": [
-            {
-              "id": "372598951.1566398145517",
-              "parts": {},
-              "properties": []
             }
           ]
         }
@@ -80,7 +80,8 @@
             }
           ]
         }
-      ]
+      ],
+      "overrides": []
     }
   ]
 }

@@ -1,6 +1,6 @@
 {
   "id": "70ef61a6213",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "metadata": {},
   "name": "module",
   "children": [
@@ -39,7 +39,8 @@
                     }
                   ]
                 }
-              ]
+              ],
+              "overrides": []
             }
           ],
           "metadata": {},
@@ -193,7 +194,8 @@
           "parts": {},
           "properties": []
         }
-      ]
+      ],
+      "overrides": []
     }
   ]
 }

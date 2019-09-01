@@ -1,6 +1,6 @@
 {
   "id": "eb0fba972975",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "metadata": {},
   "name": "module",
   "children": [
@@ -125,7 +125,8 @@
           "parts": {},
           "properties": []
         }
-      ]
+      ],
+      "overrides": []
     },
     {
       "label": " Bottom Left Corner Icon",
@@ -212,7 +213,8 @@
           "parts": {},
           "properties": []
         }
-      ]
+      ],
+      "overrides": []
     },
     {
       "label": "Bottom Right Corner Icon",
@@ -299,7 +301,8 @@
           "parts": {},
           "properties": []
         }
-      ]
+      ],
+      "overrides": []
     },
     {
       "label": "Brush Icon",
@@ -434,7 +437,8 @@
           "parts": {},
           "properties": []
         }
-      ]
+      ],
+      "overrides": []
     },
     {
       "label": "Code Icon",
@@ -579,7 +583,8 @@
           "parts": {},
           "properties": []
         }
-      ]
+      ],
+      "overrides": []
     },
     {
       "label": "Minus Icon",
@@ -751,7 +756,8 @@
           "parts": {},
           "properties": []
         }
-      ]
+      ],
+      "overrides": []
     },
     {
       "label": "More Icon",
@@ -932,7 +938,8 @@
           "parts": {},
           "properties": []
         }
-      ]
+      ],
+      "overrides": []
     },
     {
       "label": "Open Icon",
@@ -1100,7 +1107,8 @@
           "parts": {},
           "properties": []
         }
-      ]
+      ],
+      "overrides": []
     },
     {
       "label": "Play Icon",
@@ -1200,7 +1208,8 @@
           "parts": {},
           "properties": []
         }
-      ]
+      ],
+      "overrides": []
     },
     {
       "label": "Plus Icon",
@@ -1368,7 +1377,8 @@
           "parts": {},
           "properties": []
         }
-      ]
+      ],
+      "overrides": []
     },
     {
       "label": "Pointer Icon",
@@ -1480,7 +1490,8 @@
           "parts": {},
           "properties": []
         }
-      ]
+      ],
+      "overrides": []
     },
     {
       "label": "Puzzle Icon",
@@ -1588,7 +1599,8 @@
             }
           ]
         }
-      ]
+      ],
+      "overrides": []
     },
     {
       "label": "Rectangle Icon",
@@ -1717,7 +1729,8 @@
           "parts": {},
           "properties": []
         }
-      ]
+      ],
+      "overrides": []
     },
     {
       "label": "Text Center Icon",
@@ -2017,7 +2030,8 @@
             }
           ]
         }
-      ]
+      ],
+      "overrides": []
     },
     {
       "label": "Text Left Icon",
@@ -2317,7 +2331,8 @@
             }
           ]
         }
-      ]
+      ],
+      "overrides": []
     },
     {
       "label": "Text Icon",
@@ -2396,7 +2411,8 @@
           "parts": {},
           "properties": []
         }
-      ]
+      ],
+      "overrides": []
     },
     {
       "label": "Top Left Corner Icon",
@@ -2483,7 +2499,8 @@
           "parts": {},
           "properties": []
         }
-      ]
+      ],
+      "overrides": []
     },
     {
       "label": "Top Right Corner Icon",
@@ -2570,7 +2587,8 @@
           "parts": {},
           "properties": []
         }
-      ]
+      ],
+      "overrides": []
     },
     {
       "label": "Trash Icon",
@@ -2914,7 +2932,8 @@
           "parts": {},
           "properties": []
         }
-      ]
+      ],
+      "overrides": []
     },
     {
       "label": "Wand Icon",
@@ -3209,7 +3228,8 @@
           "parts": {},
           "properties": []
         }
-      ]
+      ],
+      "overrides": []
     },
     {
       "label": "Text Right icon",
@@ -3504,7 +3524,8 @@
             }
           ]
         }
-      ]
+      ],
+      "overrides": []
     },
     {
       "id": "38fc2a472503",
@@ -3809,7 +3830,8 @@
             }
           ]
         }
-      ]
+      ],
+      "overrides": []
     },
     {
       "label": "Reset Icon",
@@ -4000,7 +4022,8 @@
           "parts": {},
           "properties": []
         }
-      ]
+      ],
+      "overrides": []
     },
     {
       "label": "Joystick Icon",
@@ -4175,7 +4198,8 @@
           "parts": {},
           "properties": []
         }
-      ]
+      ],
+      "overrides": []
     },
     {
       "label": "Empty Square Icon",
@@ -4274,7 +4298,8 @@
           "parts": {},
           "properties": []
         }
-      ]
+      ],
+      "overrides": []
     },
     {
       "label": "Borders Icon",
@@ -4420,7 +4445,8 @@
           "parts": {},
           "properties": []
         }
-      ]
+      ],
+      "overrides": []
     },
     {
       "label": "Shadow Icon",
@@ -4854,7 +4880,8 @@
             }
           ]
         }
-      ]
+      ],
+      "overrides": []
     },
     {
       "label": "Insert Icon",
@@ -5014,7 +5041,8 @@
           "parts": {},
           "properties": []
         }
-      ]
+      ],
+      "overrides": []
     },
     {
       "label": "Component Icon",
@@ -5140,7 +5168,8 @@
             }
           ]
         }
-      ]
+      ],
+      "overrides": []
     },
     {
       "label": "Circle Icon",
@@ -5289,7 +5318,8 @@
             }
           ]
         }
-      ]
+      ],
+      "overrides": []
     },
     {
       "label": "File Icon",
@@ -5388,7 +5418,8 @@
           "parts": {},
           "properties": []
         }
-      ]
+      ],
+      "overrides": []
     },
     {
       "label": "Replace Icon",
@@ -5637,7 +5668,8 @@
           "parts": {},
           "properties": []
         }
-      ]
+      ],
+      "overrides": []
     },
     {
       "label": "Dotted box icon",
@@ -6563,7 +6595,8 @@
           "parts": {},
           "properties": []
         }
-      ]
+      ],
+      "overrides": []
     },
     {
       "label": "Pencil Icon",
@@ -6755,7 +6788,8 @@
           "parts": {},
           "properties": []
         }
-      ]
+      ],
+      "overrides": []
     },
     {
       "label": "Folder Icon",
@@ -6834,7 +6868,8 @@
           "parts": {},
           "properties": []
         }
-      ]
+      ],
+      "overrides": []
     },
     {
       "label": "Color Palette Icon",
@@ -6917,7 +6952,8 @@
           "parts": {},
           "properties": []
         }
-      ]
+      ],
+      "overrides": []
     },
     {
       "label": "Split down icon",
@@ -7100,7 +7136,8 @@
           "parts": {},
           "properties": []
         }
-      ]
+      ],
+      "overrides": []
     },
     {
       "label": "Add icon",
@@ -7272,7 +7309,8 @@
             }
           ]
         }
-      ]
+      ],
+      "overrides": []
     },
     {
       "label": "corners icon",
@@ -7446,7 +7484,8 @@
           "parts": {},
           "properties": []
         }
-      ]
+      ],
+      "overrides": []
     },
     {
       "label": "round square icon",
@@ -7521,7 +7560,8 @@
           "parts": {},
           "properties": []
         }
-      ]
+      ],
+      "overrides": []
     },
     {
       "label": "Borders icon 2",
@@ -7791,7 +7831,8 @@
           "parts": {},
           "properties": []
         }
-      ]
+      ],
+      "overrides": []
     },
     {
       "label": "Trash Icon 2",
@@ -8000,7 +8041,8 @@
           "parts": {},
           "properties": []
         }
-      ]
+      ],
+      "overrides": []
     },
     {
       "label": "Bolt icon",
@@ -8083,7 +8125,8 @@
           "parts": {},
           "properties": []
         }
-      ]
+      ],
+      "overrides": []
     },
     {
       "label": "Brush icon 2",
@@ -8207,7 +8250,8 @@
           "parts": {},
           "properties": []
         }
-      ]
+      ],
+      "overrides": []
     },
     {
       "label": "Drop icon",
@@ -8309,7 +8353,8 @@
           "parts": {},
           "properties": []
         }
-      ]
+      ],
+      "overrides": []
     },
     {
       "label": "Pencil Icon 2",
@@ -8417,7 +8462,8 @@
           "parts": {},
           "properties": []
         }
-      ]
+      ],
+      "overrides": []
     },
     {
       "label": "Open Icon 2",
@@ -8484,7 +8530,8 @@
           "parts": {},
           "properties": []
         }
-      ]
+      ],
+      "overrides": []
     },
     {
       "label": "Split Icon 2",
@@ -9048,7 +9095,8 @@
           "parts": {},
           "properties": []
         }
-      ]
+      ],
+      "overrides": []
     },
     {
       "label": "Image Icon",
@@ -9211,7 +9259,8 @@
           "parts": {},
           "properties": []
         }
-      ]
+      ],
+      "overrides": []
     },
     {
       "label": "Play Icon",
@@ -9310,7 +9359,8 @@
           "parts": {},
           "properties": []
         }
-      ]
+      ],
+      "overrides": []
     },
     {
       "label": "Pause Icon",
@@ -9434,7 +9484,8 @@
           "parts": {},
           "properties": []
         }
-      ]
+      ],
+      "overrides": []
     },
     {
       "label": "Reset Icon 2",
@@ -9537,7 +9588,8 @@
           "parts": {},
           "properties": []
         }
-      ]
+      ],
+      "overrides": []
     },
     {
       "label": "Borders icon 3",
@@ -9748,7 +9800,8 @@
           "parts": {},
           "properties": []
         }
-      ]
+      ],
+      "overrides": []
     },
     {
       "label": "Eye Icon",
@@ -9931,7 +9984,8 @@
           "parts": {},
           "properties": []
         }
-      ]
+      ],
+      "overrides": []
     },
     {
       "label": "Hand drawn arrow icon",
@@ -10041,7 +10095,8 @@
           "parts": {},
           "properties": []
         }
-      ]
+      ],
+      "overrides": []
     },
     {
       "label": "Gear Icon",
@@ -10147,7 +10202,8 @@
           "parts": {},
           "properties": []
         }
-      ]
+      ],
+      "overrides": []
     },
     {
       "label": "question mark icon",
@@ -10648,7 +10704,8 @@
           "parts": {},
           "properties": []
         }
-      ]
+      ],
+      "overrides": []
     }
   ]
 }

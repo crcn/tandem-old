@@ -1,6 +1,6 @@
 {
   "id": "a5bde25030259",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "metadata": {},
   "name": "module",
   "children": [
@@ -10,28 +10,7 @@
       "is": "97a34b151010442",
       "name": "component-instance",
       "attributes": [],
-      "children": [
-        {
-          "id": "839a748a5",
-          "targetIdPath": [
-            "97a34b151010439"
-          ],
-          "value": " ",
-          "name": "override",
-          "children": [],
-          "type": "text"
-        },
-        {
-          "id": "839a748a6",
-          "targetIdPath": [
-            "97a34b151010441"
-          ],
-          "value": "TODO: component picker should be part of quick search HUD instead",
-          "name": "override",
-          "children": [],
-          "type": "text"
-        }
-      ],
+      "children": [],
       "metadata": {
         "bounds": {
           "left": 101,
@@ -46,6 +25,26 @@
           "id": "3966321296.1566398145454",
           "parts": {},
           "properties": []
+        }
+      ],
+      "overrides": [
+        {
+          "id": "839a748a5",
+          "targetIdPath": [
+            "97a34b151010439"
+          ],
+          "value": " ",
+          "children": [],
+          "type": "text"
+        },
+        {
+          "id": "839a748a6",
+          "targetIdPath": [
+            "97a34b151010441"
+          ],
+          "value": "TODO: component picker should be part of quick search HUD instead",
+          "children": [],
+          "type": "text"
         }
       ]
     },
@@ -77,7 +76,8 @@
               "parts": {},
               "properties": []
             }
-          ]
+          ],
+          "overrides": []
         }
       ],
       "metadata": {
@@ -122,7 +122,8 @@
           "parts": {},
           "properties": []
         }
-      ]
+      ],
+      "overrides": []
     },
     {
       "id": "9399e92d567",
@@ -130,24 +131,7 @@
       "is": "dcd2c13f21458",
       "name": "component-instance",
       "attributes": [],
-      "children": [
-        {
-          "id": "9399e92d568",
-          "name": "override",
-          "type": "styles",
-          "targetIdPath": [
-            "33949bb8180402"
-          ],
-          "value": [
-            {
-              "id": "7678055197.1566398145454",
-              "parts": {},
-              "properties": []
-            }
-          ],
-          "children": []
-        }
-      ],
+      "children": [],
       "metadata": {
         "bounds": {
           "left": 99,
@@ -161,6 +145,23 @@
           "id": "669985174.1566398145454",
           "parts": {},
           "properties": []
+        }
+      ],
+      "overrides": [
+        {
+          "id": "9399e92d568",
+          "type": "styles",
+          "targetIdPath": [
+            "33949bb8180402"
+          ],
+          "value": [
+            {
+              "id": "7678055197.1566398145454",
+              "parts": {},
+              "properties": []
+            }
+          ],
+          "children": []
         }
       ]
     }

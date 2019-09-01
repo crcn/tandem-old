@@ -1,6 +1,6 @@
 {
   "id": "2e50685a82",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "metadata": {},
   "name": "module",
   "children": [
@@ -102,7 +102,8 @@
                 }
               ]
             }
-          ]
+          ],
+          "overrides": []
         },
         {
           "id": "c6acc7ee985",
@@ -154,7 +155,8 @@
                             }
                           ]
                         }
-                      ]
+                      ],
+                      "overrides": []
                     },
                     {
                       "id": "c6acc7ee1089",
@@ -162,19 +164,7 @@
                       "label": "browse button",
                       "name": "component-instance",
                       "attributes": [],
-                      "children": [
-                        {
-                          "id": "c6acc7ee1387",
-                          "variantId": null,
-                          "targetIdPath": [
-                            "9f364d2139650"
-                          ],
-                          "value": "browse",
-                          "name": "override",
-                          "children": [],
-                          "type": "text"
-                        }
-                      ],
+                      "children": [],
                       "metadata": {
                         "bounds": {
                           "left": 146,
@@ -189,6 +179,18 @@
                           "id": "3603583580.1566398145598",
                           "parts": {},
                           "properties": []
+                        }
+                      ],
+                      "overrides": [
+                        {
+                          "id": "c6acc7ee1387",
+                          "variantId": null,
+                          "targetIdPath": [
+                            "9f364d2139650"
+                          ],
+                          "value": "browse",
+                          "children": [],
+                          "type": "text"
                         }
                       ]
                     }
@@ -214,17 +216,6 @@
               ],
               "metadata": {},
               "name": "plug"
-            },
-            {
-              "id": "c6acc7ee1171",
-              "variantId": null,
-              "targetIdPath": [
-                "7149f8192506"
-              ],
-              "value": "Project Directory",
-              "name": "override",
-              "children": [],
-              "type": "text"
             }
           ],
           "metadata": {
@@ -242,6 +233,18 @@
               "parts": {},
               "properties": []
             }
+          ],
+          "overrides": [
+            {
+              "id": "c6acc7ee1171",
+              "variantId": null,
+              "targetIdPath": [
+                "7149f8192506"
+              ],
+              "value": "Project Directory",
+              "children": [],
+              "type": "text"
+            }
           ]
         },
         {
@@ -257,19 +260,7 @@
               "label": "create project button",
               "name": "component-instance",
               "attributes": [],
-              "children": [
-                {
-                  "id": "c6acc7ee1003",
-                  "variantId": null,
-                  "targetIdPath": [
-                    "9f364d2139650"
-                  ],
-                  "value": "Create Project",
-                  "name": "override",
-                  "children": [],
-                  "type": "text"
-                }
-              ],
+              "children": [],
               "metadata": {
                 "bounds": {
                   "left": 300,
@@ -286,6 +277,18 @@
                   "id": "6531422980.1566398145598",
                   "parts": {},
                   "properties": []
+                }
+              ],
+              "overrides": [
+                {
+                  "id": "c6acc7ee1003",
+                  "variantId": null,
+                  "targetIdPath": [
+                    "9f364d2139650"
+                  ],
+                  "value": "Create Project",
+                  "children": [],
+                  "type": "text"
                 }
               ]
             }
@@ -380,7 +383,8 @@
             }
           ]
         }
-      ]
+      ],
+      "overrides": []
     },
     {
       "id": "43b7c711235",
@@ -411,7 +415,8 @@
               "parts": {},
               "properties": []
             }
-          ]
+          ],
+          "overrides": []
         }
       ],
       "metadata": {

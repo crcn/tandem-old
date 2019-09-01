@@ -1,6 +1,6 @@
 {
   "id": "cff629125",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "metadata": {},
   "name": "module",
   "children": [
@@ -39,7 +39,8 @@
                   "parts": {},
                   "properties": []
                 }
-              ]
+              ],
+              "overrides": []
             }
           ],
           "metadata": {},
@@ -61,7 +62,8 @@
           "parts": {},
           "properties": []
         }
-      ]
+      ],
+      "overrides": []
     },
     {
       "label": "Gutter Section",
@@ -157,7 +159,8 @@
                                 }
                               ]
                             }
-                          ]
+                          ],
+                          "overrides": []
                         }
                       ],
                       "metadata": {},
@@ -389,7 +392,8 @@
             }
           ]
         }
-      ]
+      ],
+      "overrides": []
     }
   ]
 }

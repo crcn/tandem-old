@@ -1,6 +1,6 @@
 {
   "id": "2412cef182",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "metadata": {},
   "name": "module",
   "children": [
@@ -217,7 +217,8 @@
           "parts": {},
           "properties": []
         }
-      ]
+      ],
+      "overrides": []
     },
     {
       "label": "Key value list",
@@ -236,17 +237,6 @@
               "name": "component-instance",
               "attributes": [],
               "children": [
-                {
-                  "id": "77b252e1658",
-                  "variantId": null,
-                  "type": "text",
-                  "targetIdPath": [
-                    "981545e81074"
-                  ],
-                  "value": "duplicate",
-                  "name": "override",
-                  "children": []
-                },
                 {
                   "slotId": "981545e81080",
                   "id": "77b252e1673",
@@ -273,7 +263,8 @@
                           "parts": {},
                           "properties": []
                         }
-                      ]
+                      ],
+                      "overrides": []
                     }
                   ],
                   "metadata": {},
@@ -295,6 +286,18 @@
                   "parts": {},
                   "properties": []
                 }
+              ],
+              "overrides": [
+                {
+                  "id": "77b252e1658",
+                  "variantId": null,
+                  "type": "text",
+                  "targetIdPath": [
+                    "981545e81074"
+                  ],
+                  "value": "duplicate",
+                  "children": []
+                }
               ]
             },
             {
@@ -303,19 +306,7 @@
               "label": "key value item",
               "name": "component-instance",
               "attributes": [],
-              "children": [
-                {
-                  "id": "fddc1360740",
-                  "variantId": null,
-                  "type": "text",
-                  "targetIdPath": [
-                    "981545e81074"
-                  ],
-                  "value": "duplicate",
-                  "name": "override",
-                  "children": []
-                }
-              ],
+              "children": [],
               "metadata": {
                 "bounds": {
                   "left": 407,
@@ -331,6 +322,18 @@
                   "parts": {},
                   "properties": []
                 }
+              ],
+              "overrides": [
+                {
+                  "id": "fddc1360740",
+                  "variantId": null,
+                  "type": "text",
+                  "targetIdPath": [
+                    "981545e81074"
+                  ],
+                  "value": "duplicate",
+                  "children": []
+                }
               ]
             },
             {
@@ -339,19 +342,7 @@
               "label": "key value item",
               "name": "component-instance",
               "attributes": [],
-              "children": [
-                {
-                  "id": "fddc1360741",
-                  "variantId": null,
-                  "type": "text",
-                  "targetIdPath": [
-                    "981545e81074"
-                  ],
-                  "value": "overridden",
-                  "name": "override",
-                  "children": []
-                }
-              ],
+              "children": [],
               "metadata": {
                 "bounds": {
                   "left": 407,
@@ -369,6 +360,18 @@
                   "parts": {},
                   "properties": []
                 }
+              ],
+              "overrides": [
+                {
+                  "id": "fddc1360741",
+                  "variantId": null,
+                  "type": "text",
+                  "targetIdPath": [
+                    "981545e81074"
+                  ],
+                  "value": "overridden",
+                  "children": []
+                }
               ]
             },
             {
@@ -377,30 +380,7 @@
               "label": "key value item",
               "name": "component-instance",
               "attributes": [],
-              "children": [
-                {
-                  "id": "fddc1360692",
-                  "variantId": null,
-                  "type": "text",
-                  "targetIdPath": [
-                    "981545e81068"
-                  ],
-                  "value": "some key",
-                  "name": "override",
-                  "children": []
-                },
-                {
-                  "id": "fddc1360693",
-                  "variantId": null,
-                  "type": "text",
-                  "targetIdPath": [
-                    "981545e81074"
-                  ],
-                  "value": "some value",
-                  "name": "override",
-                  "children": []
-                }
-              ],
+              "children": [],
               "metadata": {
                 "bounds": {
                   "left": 407,
@@ -417,6 +397,28 @@
                   "id": "8222039032.1566398145504",
                   "parts": {},
                   "properties": []
+                }
+              ],
+              "overrides": [
+                {
+                  "id": "fddc1360692",
+                  "variantId": null,
+                  "type": "text",
+                  "targetIdPath": [
+                    "981545e81068"
+                  ],
+                  "value": "some key",
+                  "children": []
+                },
+                {
+                  "id": "fddc1360693",
+                  "variantId": null,
+                  "type": "text",
+                  "targetIdPath": [
+                    "981545e81074"
+                  ],
+                  "value": "some value",
+                  "children": []
                 }
               ]
             }
@@ -453,7 +455,8 @@
             }
           ]
         }
-      ]
+      ],
+      "overrides": []
     },
     {
       "label": "Key Value Item Text Input",
@@ -518,7 +521,8 @@
             }
           ]
         }
-      ]
+      ],
+      "overrides": []
     },
     {
       "id": "5a49f0a0559",

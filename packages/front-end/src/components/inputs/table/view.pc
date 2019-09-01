@@ -1,6 +1,6 @@
 {
   "id": "651e07640",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "metadata": {},
   "name": "module",
   "children": [
@@ -156,7 +156,8 @@
             }
           ]
         }
-      ]
+      ],
+      "overrides": []
     },
     {
       "label": "Table Row",
@@ -211,25 +212,15 @@
                   "parts": {},
                   "properties": []
                 }
-              ]
+              ],
+              "overrides": []
             },
             {
               "id": "c389e38224",
               "is": "c389e38219",
               "name": "component-instance",
               "attributes": [],
-              "children": [
-                {
-                  "id": "4cc76c5b34",
-                  "targetIdPath": [
-                    "4cc76c5b32"
-                  ],
-                  "value": true,
-                  "name": "override",
-                  "children": [],
-                  "type": "isDefault"
-                }
-              ],
+              "children": [],
               "metadata": {
                 "bounds": {
                   "left": -311,
@@ -251,6 +242,17 @@
                       "value": "1"
                     }
                   ]
+                }
+              ],
+              "overrides": [
+                {
+                  "id": "4cc76c5b34",
+                  "targetIdPath": [
+                    "4cc76c5b32"
+                  ],
+                  "value": true,
+                  "children": [],
+                  "type": "isDefault"
                 }
               ]
             }
@@ -330,7 +332,8 @@
             }
           ]
         }
-      ]
+      ],
+      "overrides": []
     },
     {
       "label": "Table",
@@ -347,30 +350,7 @@
               "is": "c389e38216",
               "name": "component-instance",
               "attributes": [],
-              "children": [
-                {
-                  "id": "4cc76c5b4",
-                  "variantId": null,
-                  "targetIdPath": [
-                    "c389e38229"
-                  ],
-                  "value": true,
-                  "name": "override",
-                  "children": [],
-                  "type": "isDefault"
-                },
-                {
-                  "id": "2842a72d7",
-                  "variantId": null,
-                  "targetIdPath": [
-                    "c389e38227"
-                  ],
-                  "value": false,
-                  "name": "override",
-                  "children": [],
-                  "type": "isDefault"
-                }
-              ],
+              "children": [],
               "metadata": {
                 "bounds": {
                   "left": -309,
@@ -400,6 +380,28 @@
                   "parts": {},
                   "properties": []
                 }
+              ],
+              "overrides": [
+                {
+                  "id": "4cc76c5b4",
+                  "variantId": null,
+                  "targetIdPath": [
+                    "c389e38229"
+                  ],
+                  "value": true,
+                  "children": [],
+                  "type": "isDefault"
+                },
+                {
+                  "id": "2842a72d7",
+                  "variantId": null,
+                  "targetIdPath": [
+                    "c389e38227"
+                  ],
+                  "value": false,
+                  "children": [],
+                  "type": "isDefault"
+                }
               ]
             },
             {
@@ -407,30 +409,7 @@
               "is": "c389e38216",
               "name": "component-instance",
               "attributes": [],
-              "children": [
-                {
-                  "id": "4cc76c5b8",
-                  "variantId": null,
-                  "targetIdPath": [
-                    "c389e38229"
-                  ],
-                  "value": false,
-                  "name": "override",
-                  "children": [],
-                  "type": "isDefault"
-                },
-                {
-                  "id": "2842a72d6",
-                  "variantId": null,
-                  "targetIdPath": [
-                    "c389e38227"
-                  ],
-                  "value": false,
-                  "name": "override",
-                  "children": [],
-                  "type": "isDefault"
-                }
-              ],
+              "children": [],
               "metadata": {
                 "bounds": {
                   "left": -309,
@@ -445,6 +424,28 @@
                   "parts": {},
                   "properties": []
                 }
+              ],
+              "overrides": [
+                {
+                  "id": "4cc76c5b8",
+                  "variantId": null,
+                  "targetIdPath": [
+                    "c389e38229"
+                  ],
+                  "value": false,
+                  "children": [],
+                  "type": "isDefault"
+                },
+                {
+                  "id": "2842a72d6",
+                  "variantId": null,
+                  "targetIdPath": [
+                    "c389e38227"
+                  ],
+                  "value": false,
+                  "children": [],
+                  "type": "isDefault"
+                }
               ]
             },
             {
@@ -452,30 +453,7 @@
               "is": "c389e38216",
               "name": "component-instance",
               "attributes": [],
-              "children": [
-                {
-                  "id": "cc878eb5324100",
-                  "variantId": null,
-                  "targetIdPath": [
-                    "c389e38229"
-                  ],
-                  "value": true,
-                  "name": "override",
-                  "children": [],
-                  "type": "isDefault"
-                },
-                {
-                  "id": "cc878eb5324101",
-                  "variantId": null,
-                  "targetIdPath": [
-                    "c389e38227"
-                  ],
-                  "value": false,
-                  "name": "override",
-                  "children": [],
-                  "type": "isDefault"
-                }
-              ],
+              "children": [],
               "metadata": {
                 "bounds": {
                   "left": -309,
@@ -498,6 +476,28 @@
                     }
                   ]
                 }
+              ],
+              "overrides": [
+                {
+                  "id": "cc878eb5324100",
+                  "variantId": null,
+                  "targetIdPath": [
+                    "c389e38229"
+                  ],
+                  "value": true,
+                  "children": [],
+                  "type": "isDefault"
+                },
+                {
+                  "id": "cc878eb5324101",
+                  "variantId": null,
+                  "targetIdPath": [
+                    "c389e38227"
+                  ],
+                  "value": false,
+                  "children": [],
+                  "type": "isDefault"
+                }
               ]
             },
             {
@@ -505,30 +505,7 @@
               "is": "c389e38216",
               "name": "component-instance",
               "attributes": [],
-              "children": [
-                {
-                  "id": "cc878eb5337198",
-                  "variantId": null,
-                  "targetIdPath": [
-                    "c389e38229"
-                  ],
-                  "value": true,
-                  "name": "override",
-                  "children": [],
-                  "type": "isDefault"
-                },
-                {
-                  "id": "cc878eb5337199",
-                  "variantId": null,
-                  "targetIdPath": [
-                    "c389e38227"
-                  ],
-                  "value": false,
-                  "name": "override",
-                  "children": [],
-                  "type": "isDefault"
-                }
-              ],
+              "children": [],
               "metadata": {
                 "bounds": {
                   "left": -309,
@@ -548,6 +525,28 @@
                     }
                   ]
                 }
+              ],
+              "overrides": [
+                {
+                  "id": "cc878eb5337198",
+                  "variantId": null,
+                  "targetIdPath": [
+                    "c389e38229"
+                  ],
+                  "value": true,
+                  "children": [],
+                  "type": "isDefault"
+                },
+                {
+                  "id": "cc878eb5337199",
+                  "variantId": null,
+                  "targetIdPath": [
+                    "c389e38227"
+                  ],
+                  "value": false,
+                  "children": [],
+                  "type": "isDefault"
+                }
               ]
             },
             {
@@ -555,30 +554,7 @@
               "is": "c389e38216",
               "name": "component-instance",
               "attributes": [],
-              "children": [
-                {
-                  "id": "cc878eb5311066",
-                  "variantId": null,
-                  "targetIdPath": [
-                    "c389e38229"
-                  ],
-                  "value": true,
-                  "name": "override",
-                  "children": [],
-                  "type": "isDefault"
-                },
-                {
-                  "id": "cc878eb5311067",
-                  "variantId": null,
-                  "targetIdPath": [
-                    "c389e38227"
-                  ],
-                  "value": false,
-                  "name": "override",
-                  "children": [],
-                  "type": "isDefault"
-                }
-              ],
+              "children": [],
               "metadata": {
                 "bounds": {
                   "left": -309,
@@ -601,6 +577,28 @@
                     }
                   ]
                 }
+              ],
+              "overrides": [
+                {
+                  "id": "cc878eb5311066",
+                  "variantId": null,
+                  "targetIdPath": [
+                    "c389e38229"
+                  ],
+                  "value": true,
+                  "children": [],
+                  "type": "isDefault"
+                },
+                {
+                  "id": "cc878eb5311067",
+                  "variantId": null,
+                  "targetIdPath": [
+                    "c389e38227"
+                  ],
+                  "value": false,
+                  "children": [],
+                  "type": "isDefault"
+                }
               ]
             },
             {
@@ -608,30 +606,7 @@
               "is": "c389e38216",
               "name": "component-instance",
               "attributes": [],
-              "children": [
-                {
-                  "id": "4cc76c5b10",
-                  "variantId": null,
-                  "targetIdPath": [
-                    "c389e38229"
-                  ],
-                  "value": true,
-                  "name": "override",
-                  "children": [],
-                  "type": "isDefault"
-                },
-                {
-                  "id": "2842a72d5",
-                  "variantId": null,
-                  "targetIdPath": [
-                    "c389e38227"
-                  ],
-                  "value": false,
-                  "name": "override",
-                  "children": [],
-                  "type": "isDefault"
-                }
-              ],
+              "children": [],
               "metadata": {
                 "bounds": {
                   "left": -309,
@@ -651,6 +626,28 @@
                     }
                   ]
                 }
+              ],
+              "overrides": [
+                {
+                  "id": "4cc76c5b10",
+                  "variantId": null,
+                  "targetIdPath": [
+                    "c389e38229"
+                  ],
+                  "value": true,
+                  "children": [],
+                  "type": "isDefault"
+                },
+                {
+                  "id": "2842a72d5",
+                  "variantId": null,
+                  "targetIdPath": [
+                    "c389e38227"
+                  ],
+                  "value": false,
+                  "children": [],
+                  "type": "isDefault"
+                }
               ]
             },
             {
@@ -658,30 +655,7 @@
               "is": "c389e38216",
               "name": "component-instance",
               "attributes": [],
-              "children": [
-                {
-                  "id": "2842a72d3",
-                  "variantId": null,
-                  "targetIdPath": [
-                    "c389e38227"
-                  ],
-                  "value": false,
-                  "name": "override",
-                  "children": [],
-                  "type": "isDefault"
-                },
-                {
-                  "id": "2842a72d4",
-                  "variantId": null,
-                  "targetIdPath": [
-                    "c389e38229"
-                  ],
-                  "value": false,
-                  "name": "override",
-                  "children": [],
-                  "type": "isDefault"
-                }
-              ],
+              "children": [],
               "metadata": {
                 "bounds": {
                   "left": -309,
@@ -698,6 +672,28 @@
                   "id": "4096849732.1566398145468",
                   "parts": {},
                   "properties": []
+                }
+              ],
+              "overrides": [
+                {
+                  "id": "2842a72d3",
+                  "variantId": null,
+                  "targetIdPath": [
+                    "c389e38227"
+                  ],
+                  "value": false,
+                  "children": [],
+                  "type": "isDefault"
+                },
+                {
+                  "id": "2842a72d4",
+                  "variantId": null,
+                  "targetIdPath": [
+                    "c389e38229"
+                  ],
+                  "value": false,
+                  "children": [],
+                  "type": "isDefault"
                 }
               ]
             }
@@ -751,7 +747,8 @@
             }
           ]
         }
-      ]
+      ],
+      "overrides": []
     },
     {
       "id": "fa0a27ce2154",

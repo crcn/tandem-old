@@ -13,7 +13,6 @@ import {
   extendsComponent,
   PCStylesOverride,
   isVisibleNode,
-  getOverrides,
   getPCNode,
   isComponent,
   PCDependency,
@@ -463,7 +462,7 @@ export const createPaperclipVirtualDOMtranslator = (
 
   const translateStyleBlock = (
     block: PCStyleBlock,
-    owner: PCStylesOverride | ContentNode,
+    owner: ContentNode,
     targetNode: ContentNode,
     context: TranslateContext,
     prefix: string = ""
@@ -638,7 +637,7 @@ export const createPaperclipVirtualDOMtranslator = (
     context: TranslateContext
   ) => {
     // FIXME: need to sort based on variant priority
-    const styleOverrides = getOverrides(instance).filter(
+    const styleOverrides = instance.overrides.filter(
       node => node.type === PCOverridableType.STYLES && node.value.length
     ) as PCStylesOverride[];
 
@@ -667,7 +666,7 @@ export const createPaperclipVirtualDOMtranslator = (
         const block = override.value[i];
         context = translateStyleBlock(
           block,
-          override,
+          instance,
           targetNode,
           context,
           targetSelector
@@ -1112,11 +1111,11 @@ export const createPaperclipVirtualDOMtranslator = (
       context
     );
     context = translateUsedComponentOverrides(instance, context);
-    const contentNode =
-      getPCNodeContentNode(instance.id, context.entry.content) || instance;
+    // const contentNode =
+    // getPCNodeContentNode(instance.id, context.entry.content) || instance;
     context = translateStaticStyleOverride(
       instance.id,
-      getAllNodeOverrides(instance.id, contentNode),
+      EMPTY_ARRAY,
       context,
       true
     );
@@ -1136,10 +1135,8 @@ export const createPaperclipVirtualDOMtranslator = (
     instance: PCComponentInstanceElement | PCComponent
   ) => {
     const variantSelectors = {};
-    const overrides = instance.children.filter(
-      child =>
-        child.name === PCSourceTagNames.OVERRIDE &&
-        (child as PCOverride).type === PCOverridableType.VARIANT
+    const overrides = instance.overrides.filter(
+      child => (child as PCOverride).type === PCOverridableType.VARIANT
     ) as PCVariantOverride[];
 
     for (const variantId in instance.variant) {
@@ -1196,9 +1193,7 @@ export const createPaperclipVirtualDOMtranslator = (
   ) => {
     const contentNode =
       getPCNodeContentNode(instance.id, context.entry.content) || instance;
-    const overrides = instance.children.filter(
-      child => child.name === PCSourceTagNames.OVERRIDE
-    ) as PCOverride[];
+    const { overrides } = instance;
     const overrideMap = getOverrideMap(instance, contentNode);
     context = translateUsedComponentOverrideMap(overrideMap, context);
 
@@ -1285,7 +1280,8 @@ export const createPaperclipVirtualDOMtranslator = (
       if (node.name !== PCSourceTagNames.COMPONENT_INSTANCE) {
         context = translateStaticStyleOverride(
           node.id,
-          getAllNodeOverrides(node.id, component),
+          // getAllNodeOverrides(node.id, component),
+          EMPTY_ARRAY,
           context
         );
       }
@@ -1306,19 +1302,20 @@ export const createPaperclipVirtualDOMtranslator = (
     return context;
   };
 
-  const getAllNodeOverrides = (nodeId: string, contentNode: PCNode) => {
-    const node = getNestedTreeNodeById(nodeId, contentNode) as PCNode;
-    return (getTreeNodesByName(
-      PCSourceTagNames.OVERRIDE,
-      contentNode
-    ) as PCOverride[]).filter(override => {
-      return (
-        last(override.targetIdPath) === nodeId ||
-        (override.targetIdPath.length === 0 &&
-          node.children.indexOf(override) !== -1)
-      );
-    });
-  };
+  // const getAllNodeOverrides = (nodeId: string, contentNode: PCNode) => {
+  //   const node = getNestedTreeNodeById(nodeId, contentNode) as PCNode;
+
+  //   return (getTreeNodesByName(
+  //     PCSourceTagNames.OVERRIDE,
+  //     contentNode
+  //   ) as PCOverride[]).filter(override => {
+  //     return (
+  //       last(override.targetIdPath) === nodeId ||
+  //       (override.targetIdPath.length === 0 &&
+  //         node.children.indexOf(override) !== -1)
+  //     );
+  //   });
+  // };
 
   const translateControllers = (
     renderName: string,
@@ -1484,10 +1481,10 @@ export const createPaperclipVirtualDOMtranslator = (
       node =>
         node.name === PCSourceTagNames.COMPONENT_INSTANCE ||
         node.name === PCSourceTagNames.COMPONENT
-    );
+    ) as (PCComponent | PCComponentInstanceElement)[];
 
     for (const instance of instances) {
-      const overrides = getOverrides(instance);
+      const overrides = instance.overrides;
 
       for (const override of overrides) {
         if (isDynamicOverride(override)) {
@@ -1565,7 +1562,7 @@ export const createPaperclipVirtualDOMtranslator = (
     variantId: string,
     context: TranslateContext
   ) => {
-    const overrides = getOverrides(instance);
+    const { overrides } = instance;
 
     for (const override of overrides) {
       if (isDynamicOverride(override) && override.variantId == variantId) {

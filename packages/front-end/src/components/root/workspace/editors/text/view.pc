@@ -1,6 +1,6 @@
 {
   "id": "53138fe9121",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "metadata": {},
   "name": "module",
   "children": [
@@ -69,10 +69,35 @@
                   "label": "open text editor button",
                   "name": "component-instance",
                   "attributes": [],
-                  "children": [
+                  "children": [],
+                  "metadata": {
+                    "bounds": {
+                      "left": 300,
+                      "top": 120,
+                      "right": 400,
+                      "bottom": 220
+                    }
+                  },
+                  "variant": {},
+                  "styles": [
+                    {
+                      "id": "5274523426.1566398145492",
+                      "parts": {},
+                      "properties": [
+                        {
+                          "key": "background",
+                          "value": "rgba(255, 255, 255, 1)"
+                        },
+                        {
+                          "key": "white-space",
+                          "value": "nowrap"
+                        }
+                      ]
+                    }
+                  ],
+                  "overrides": [
                     {
                       "id": "5c9686b858034",
-                      "name": "override",
                       "type": "styles",
                       "targetIdPath": [
                         "9f364d2139650"
@@ -106,34 +131,8 @@
                         "9f364d2139650"
                       ],
                       "value": "Open in Text Editor",
-                      "name": "override",
                       "children": [],
                       "type": "text"
-                    }
-                  ],
-                  "metadata": {
-                    "bounds": {
-                      "left": 300,
-                      "top": 120,
-                      "right": 400,
-                      "bottom": 220
-                    }
-                  },
-                  "variant": {},
-                  "styles": [
-                    {
-                      "id": "5274523426.1566398145492",
-                      "parts": {},
-                      "properties": [
-                        {
-                          "key": "background",
-                          "value": "rgba(255, 255, 255, 1)"
-                        },
-                        {
-                          "key": "white-space",
-                          "value": "nowrap"
-                        }
-                      ]
                     }
                   ]
                 }
@@ -343,7 +342,8 @@
             }
           ]
         }
-      ]
+      ],
+      "overrides": []
     }
   ]
 }

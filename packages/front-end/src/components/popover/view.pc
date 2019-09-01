@@ -1,6 +1,6 @@
 {
   "id": "9b7b527f6219",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "metadata": {},
   "name": "module",
   "children": [
@@ -81,7 +81,8 @@
           "parts": {},
           "properties": []
         }
-      ]
+      ],
+      "overrides": []
     },
     {
       "label": "Popover",
@@ -185,47 +186,6 @@
               ],
               "metadata": {},
               "name": "plug"
-            },
-            {
-              "id": "eec65c3e5051",
-              "name": "override",
-              "type": "styles",
-              "targetIdPath": [
-                "806ffd0684"
-              ],
-              "value": [
-                {
-                  "id": "7025769309.1566398145474",
-                  "parts": {},
-                  "properties": [
-                    {
-                      "key": "min-width",
-                      "value": "100px"
-                    },
-                    {
-                      "key": "box-shadow",
-                      "value": "0px 2px 2px 1px rgba(0, 0, 0, 0.19)"
-                    }
-                  ]
-                }
-              ],
-              "children": []
-            },
-            {
-              "id": "bc891e7571",
-              "name": "override",
-              "type": "styles",
-              "targetIdPath": [
-                "2c83e997741"
-              ],
-              "value": [
-                {
-                  "id": "9753479775.1566398145474",
-                  "parts": {},
-                  "properties": []
-                }
-              ],
-              "children": []
             }
           ],
           "metadata": {},
@@ -260,6 +220,47 @@
                 }
               ]
             }
+          ],
+          "overrides": [
+            {
+              "id": "eec65c3e5051",
+              "type": "styles",
+              "targetIdPath": [
+                "806ffd0684"
+              ],
+              "value": [
+                {
+                  "id": "7025769309.1566398145474",
+                  "parts": {},
+                  "properties": [
+                    {
+                      "key": "min-width",
+                      "value": "100px"
+                    },
+                    {
+                      "key": "box-shadow",
+                      "value": "0px 2px 2px 1px rgba(0, 0, 0, 0.19)"
+                    }
+                  ]
+                }
+              ],
+              "children": []
+            },
+            {
+              "id": "bc891e7571",
+              "type": "styles",
+              "targetIdPath": [
+                "2c83e997741"
+              ],
+              "value": [
+                {
+                  "id": "9753479775.1566398145474",
+                  "parts": {},
+                  "properties": []
+                }
+              ],
+              "children": []
+            }
           ]
         },
         {
@@ -289,7 +290,8 @@
           "parts": {},
           "properties": []
         }
-      ]
+      ],
+      "overrides": []
     },
     {
       "id": "9b7b527f113874",
@@ -297,28 +299,7 @@
       "is": "97a34b151010442",
       "name": "component-instance",
       "attributes": [],
-      "children": [
-        {
-          "id": "9b7b527f120031",
-          "targetIdPath": [
-            "97a34b151010441"
-          ],
-          "value": "Use this component for any UI that needs to \"pop over\" ALLL of the UI",
-          "name": "override",
-          "children": [],
-          "type": "text"
-        },
-        {
-          "id": "9b7b527f135422",
-          "targetIdPath": [
-            "97a34b151010439"
-          ],
-          "value": " ",
-          "name": "override",
-          "children": [],
-          "type": "text"
-        }
-      ],
+      "children": [],
       "metadata": {
         "bounds": {
           "left": 438,
@@ -333,6 +314,26 @@
           "id": "1887368800.1566398145474",
           "parts": {},
           "properties": []
+        }
+      ],
+      "overrides": [
+        {
+          "id": "9b7b527f120031",
+          "targetIdPath": [
+            "97a34b151010441"
+          ],
+          "value": "Use this component for any UI that needs to \"pop over\" ALLL of the UI",
+          "children": [],
+          "type": "text"
+        },
+        {
+          "id": "9b7b527f135422",
+          "targetIdPath": [
+            "97a34b151010439"
+          ],
+          "value": " ",
+          "children": [],
+          "type": "text"
         }
       ]
     },
@@ -400,7 +401,8 @@
             }
           ]
         }
-      ]
+      ],
+      "overrides": []
     }
   ]
 }

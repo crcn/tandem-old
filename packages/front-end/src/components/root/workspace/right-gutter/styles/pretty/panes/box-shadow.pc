@@ -1,6 +1,6 @@
 {
   "id": "328486385",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "metadata": {},
   "name": "module",
   "children": [
@@ -84,91 +84,15 @@
                     }
                   ]
                 }
-              ]
+              ],
+              "overrides": []
             },
             {
               "id": "3fb9d47e21",
               "is": "d227ff68826768",
               "name": "component-instance",
               "attributes": [],
-              "children": [
-                {
-                  "id": "3fb9d47e27",
-                  "name": "override",
-                  "type": "styles",
-                  "targetIdPath": [
-                    "ff4f91e03148"
-                  ],
-                  "value": [
-                    {
-                      "id": "3549416965.1566398145524",
-                      "parts": {},
-                      "properties": [
-                        {
-                          "key": "width",
-                          "value": "100%"
-                        },
-                        {
-                          "key": "height",
-                          "value": "100%"
-                        }
-                      ]
-                    }
-                  ],
-                  "children": []
-                },
-                {
-                  "id": "3fb9d47e28",
-                  "name": "override",
-                  "type": "styles",
-                  "targetIdPath": [
-                    "d227ff68826765"
-                  ],
-                  "value": [
-                    {
-                      "id": "5452064992.1566398145524",
-                      "parts": {},
-                      "properties": [
-                        {
-                          "key": "display",
-                          "value": "block"
-                        },
-                        {
-                          "key": "height",
-                          "value": "22px"
-                        },
-                        {
-                          "key": "width",
-                          "value": "22px"
-                        }
-                      ]
-                    }
-                  ],
-                  "children": []
-                },
-                {
-                  "id": "3fb9d47e53",
-                  "name": "override",
-                  "type": "styles",
-                  "targetIdPath": [
-                    "ff4f91e03148",
-                    "46686eab3161"
-                  ],
-                  "value": [
-                    {
-                      "id": "7898927474.1566398145524",
-                      "parts": {},
-                      "properties": [
-                        {
-                          "key": "display",
-                          "value": "block"
-                        }
-                      ]
-                    }
-                  ],
-                  "children": []
-                }
-              ],
+              "children": [],
               "metadata": {
                 "bounds": {
                   "left": -195,
@@ -205,6 +129,81 @@
                     }
                   ]
                 }
+              ],
+              "overrides": [
+                {
+                  "id": "3fb9d47e27",
+                  "type": "styles",
+                  "targetIdPath": [
+                    "ff4f91e03148"
+                  ],
+                  "value": [
+                    {
+                      "id": "3549416965.1566398145524",
+                      "parts": {},
+                      "properties": [
+                        {
+                          "key": "width",
+                          "value": "100%"
+                        },
+                        {
+                          "key": "height",
+                          "value": "100%"
+                        }
+                      ]
+                    }
+                  ],
+                  "children": []
+                },
+                {
+                  "id": "3fb9d47e28",
+                  "type": "styles",
+                  "targetIdPath": [
+                    "d227ff68826765"
+                  ],
+                  "value": [
+                    {
+                      "id": "5452064992.1566398145524",
+                      "parts": {},
+                      "properties": [
+                        {
+                          "key": "display",
+                          "value": "block"
+                        },
+                        {
+                          "key": "height",
+                          "value": "22px"
+                        },
+                        {
+                          "key": "width",
+                          "value": "22px"
+                        }
+                      ]
+                    }
+                  ],
+                  "children": []
+                },
+                {
+                  "id": "3fb9d47e53",
+                  "type": "styles",
+                  "targetIdPath": [
+                    "ff4f91e03148",
+                    "46686eab3161"
+                  ],
+                  "value": [
+                    {
+                      "id": "7898927474.1566398145524",
+                      "parts": {},
+                      "properties": [
+                        {
+                          "key": "display",
+                          "value": "block"
+                        }
+                      ]
+                    }
+                  ],
+                  "children": []
+                }
               ]
             },
             {
@@ -233,7 +232,8 @@
                     }
                   ]
                 }
-              ]
+              ],
+              "overrides": []
             },
             {
               "id": "3fb9d47e24",
@@ -261,7 +261,8 @@
                     }
                   ]
                 }
-              ]
+              ],
+              "overrides": []
             },
             {
               "id": "3fb9d47e25",
@@ -289,7 +290,8 @@
                     }
                   ]
                 }
-              ]
+              ],
+              "overrides": []
             },
             {
               "id": "3fb9d47e26",
@@ -312,7 +314,8 @@
                   "parts": {},
                   "properties": []
                 }
-              ]
+              ],
+              "overrides": []
             }
           ],
           "metadata": {},
@@ -443,7 +446,8 @@
             }
           ]
         }
-      ]
+      ],
+      "overrides": []
     }
   ]
 }

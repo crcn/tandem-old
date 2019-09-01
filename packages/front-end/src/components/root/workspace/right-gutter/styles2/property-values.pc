@@ -1,6 +1,6 @@
 {
   "id": "8fc54ef3114",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "metadata": {},
   "name": "module",
   "children": [
@@ -17,10 +17,43 @@
           "label": "Color picker 2",
           "name": "component-instance",
           "attributes": [],
-          "children": [
+          "children": [],
+          "metadata": {
+            "bounds": {
+              "left": 50.46088693308049,
+              "top": -72.3314861204579,
+              "right": 150.46088693308047,
+              "bottom": 27.668513879542104
+            }
+          },
+          "variant": {},
+          "styles": [
+            {
+              "id": "5007556319.1566398145563",
+              "parts": {},
+              "properties": [
+                {
+                  "key": "flex-shrink",
+                  "value": "0"
+                },
+                {
+                  "key": "width",
+                  "value": "8px"
+                },
+                {
+                  "key": "position",
+                  "value": "relative"
+                },
+                {
+                  "key": "top",
+                  "value": "1px"
+                }
+              ]
+            }
+          ],
+          "overrides": [
             {
               "id": "8f350e385649",
-              "name": "override",
               "type": "styles",
               "targetIdPath": [
                 "8f350e385127"
@@ -61,7 +94,6 @@
             },
             {
               "id": "8f350e385650",
-              "name": "override",
               "type": "styles",
               "targetIdPath": [
                 "8f350e384983"
@@ -79,39 +111,6 @@
                 }
               ],
               "children": []
-            }
-          ],
-          "metadata": {
-            "bounds": {
-              "left": 50.46088693308049,
-              "top": -72.3314861204579,
-              "right": 150.46088693308047,
-              "bottom": 27.668513879542104
-            }
-          },
-          "variant": {},
-          "styles": [
-            {
-              "id": "5007556319.1566398145563",
-              "parts": {},
-              "properties": [
-                {
-                  "key": "flex-shrink",
-                  "value": "0"
-                },
-                {
-                  "key": "width",
-                  "value": "8px"
-                },
-                {
-                  "key": "position",
-                  "value": "relative"
-                },
-                {
-                  "key": "top",
-                  "value": "1px"
-                }
-              ]
             }
           ]
         },
@@ -178,7 +177,8 @@
           "parts": {},
           "properties": []
         }
-      ]
+      ],
+      "overrides": []
     },
     {
       "label": "Color picker 2",
@@ -308,7 +308,8 @@
                 }
               ]
             }
-          ]
+          ],
+          "overrides": []
         }
       ],
       "metadata": {
@@ -339,7 +340,8 @@
             }
           ]
         }
-      ]
+      ],
+      "overrides": []
     },
     {
       "label": "style2 list prop value",
@@ -354,7 +356,37 @@
           "label": "Dropdown",
           "name": "component-instance",
           "attributes": [],
-          "children": [
+          "children": [],
+          "metadata": {
+            "bounds": {
+              "left": 133,
+              "top": 279,
+              "right": 334,
+              "bottom": 521.2360321797468
+            }
+          },
+          "variant": {},
+          "styles": [
+            {
+              "id": "8417338151.1566398145563",
+              "parts": {},
+              "properties": [
+                {
+                  "key": "display",
+                  "value": "inline-block"
+                },
+                {
+                  "key": "width",
+                  "value": ""
+                },
+                {
+                  "key": "background-image",
+                  "value": ""
+                }
+              ]
+            }
+          ],
+          "overrides": [
             {
               "id": "8f350e385566",
               "variantId": null,
@@ -362,13 +394,11 @@
                 "67e386c7935"
               ],
               "value": "something",
-              "name": "override",
               "children": [],
               "type": "text"
             },
             {
               "id": "8f350e385644",
-              "name": "override",
               "type": "styles",
               "targetIdPath": [
                 "8b8bbe2c232831"
@@ -413,7 +443,6 @@
             },
             {
               "id": "8f350e385645",
-              "name": "override",
               "type": "styles",
               "targetIdPath": [
                 "67e386c7935"
@@ -435,35 +464,6 @@
                 }
               ],
               "children": []
-            }
-          ],
-          "metadata": {
-            "bounds": {
-              "left": 133,
-              "top": 279,
-              "right": 334,
-              "bottom": 521.2360321797468
-            }
-          },
-          "variant": {},
-          "styles": [
-            {
-              "id": "8417338151.1566398145563",
-              "parts": {},
-              "properties": [
-                {
-                  "key": "display",
-                  "value": "inline-block"
-                },
-                {
-                  "key": "width",
-                  "value": ""
-                },
-                {
-                  "key": "background-image",
-                  "value": ""
-                }
-              ]
             }
           ]
         }
@@ -492,7 +492,8 @@
             }
           ]
         }
-      ]
+      ],
+      "overrides": []
     }
   ]
 }
