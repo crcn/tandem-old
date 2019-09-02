@@ -57,15 +57,15 @@ export const stringifySyntheticCSSObject = memoize(
       case SyntheticCSSObjectType.STYLE_SHEET: {
         buffer += object.rules
           .map(rule => stringifySyntheticCSSObject(rule))
-          .join("\n\n");
+          .join("");
         break;
       }
       case SyntheticCSSObjectType.STYLE_RULE: {
-        buffer += `${object.selectorText} {\n`;
+        buffer += `\n${object.selectorText} {\n`;
         for (const { key, value } of object.style) {
           buffer += `  ${key}: ${value};\n`;
         }
-        buffer += "}";
+        buffer += "}\n";
         break;
       }
     }

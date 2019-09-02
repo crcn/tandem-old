@@ -28,7 +28,7 @@ export const translateModuleToCSSSyleSheet = (
       )
     )
     .map(stringifySyntheticCSSObject)
-    .join("\n\n");
+    .join("");
 };
 
 export const generateSyntheticStyleSheet = memoize(
@@ -81,7 +81,7 @@ const generateSyntheticRulesFromStyles = memoize(
       );
     }
 
-    return rules;
+    return rules.filter(Boolean);
   }
 );
 
@@ -95,6 +95,9 @@ const generateSyntheticRuleFromStyles = memoize(
     let selectorText = prefixSelectorText;
 
     const properties = computePCStyleBlock(block, componentRefMap, varRefMap);
+    if (Object.keys(properties).length === 0) {
+      return null;
+    }
     if (block.variantId) {
       selectorText = `._${block.variantId}${selectorText}, ._${
         block.variantId
