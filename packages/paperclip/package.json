@@ -20,12 +20,14 @@
     "chai": "^4.1.2",
     "crc32": "^0.2.2",
     "fsbox": "^10.1.38",
+    "glob": "^7.1.4",
     "lodash": "^4.17.15",
     "paperclip-migrator": "^10.1.38",
     "redux": "^4.0.0",
     "redux-saga": "^0.16.0",
     "tandem-common": "^10.1.38",
-    "xml-js": "^1.6.8"
+    "xml-js": "^1.6.8",
+    "yargs": "^14.0.0"
   },
   "devDependencies": {
     "@types/mocha": "^5.2.0",

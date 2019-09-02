@@ -1,11 +1,5 @@
 import { PCStyleBlock } from "./dsl";
-import {
-  KeyValue,
-  generateUID,
-  keyValuePairToHash,
-  memoize,
-  KeyValuePair
-} from "tandem-common";
+import { generateUID, memoize, KeyValuePair } from "tandem-common";
 
 export enum SyntheticCSSObjectType {
   STYLE_SHEET = "STYLE_SHEET",

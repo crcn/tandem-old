@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 const path = require("path");
 const fs = require("fs");
-const fsa = require("fs-extra");
 const {_,write,definition,out: outRelPath,watch} = require("yargs").argv;
 const glob = require("glob");
 const {difference} = require("lodash");
