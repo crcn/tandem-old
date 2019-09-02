@@ -1,4 +1,4 @@
-import { SyntheticVisibleNode } from "./synthetic";
+import { SyntheticVisibleNode } from "./synthetic-dom";
 import {
   updateNestedNodeFromPath,
   arraySplice,

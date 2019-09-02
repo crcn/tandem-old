@@ -6,7 +6,7 @@ TODO:
 - check flexbox
 - respect align-content
 */
-import { SyntheticVisibleNode, SyntheticDocument } from "./synthetic";
+import { SyntheticVisibleNode, SyntheticDocument } from "./synthetic-dom";
 import {
   Point,
   memoize,

@@ -3,7 +3,7 @@ import { Action } from "redux";
 import { DependencyGraph } from "./graph";
 import { TreeNodeOperationalTransform } from "./ot";
 import { KeyValue } from "tandem-common";
-import { SyntheticDocument } from "./synthetic";
+import { SyntheticDocument } from "./synthetic-dom";
 
 export const PC_SYNTHETIC_FRAME_RENDERED = "PC_SYNTHETIC_FRAME_RENDERED";
 export const PC_DEPENDENCY_GRAPH_LOADED = "PC_DEPENDENCY_GRAPH_LOADED";

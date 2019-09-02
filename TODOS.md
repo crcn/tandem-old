@@ -1,5 +1,7 @@
 Immediate:
 
+- [ ] SyntheticStyleSheet (needed for pseudo selectors)
+- [ ] make CSS selectors readable
 - [ ] fix vanilla renderer
 - [ ] move slots to params
 - [ ] styles must by applied in their correct order (even variants)

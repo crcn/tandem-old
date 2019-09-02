@@ -404,6 +404,8 @@ type PCStyleBlockPseudoParts = {
   placeholder?: boolean;
 };
 
+export type PCContentNode = PCVisibleNode | PCComponent;
+
 export type PCStyleBlock = {
   id: string;
   variantId?: string;
@@ -1467,13 +1469,15 @@ export const computePCStyleBlocks = memoize(
     varMap: KeyValue<PCVariable>,
     variantId?: string
   ) => {
-    return blocks.filter(block => block.variantId == variantId).reduce(
-      (style, block) => ({
-        ...computePCStyleBlock(block, componentRefs, varMap),
-        ...style
-      }),
-      {}
-    );
+    return blocks
+      .filter(block => block.variantId == variantId)
+      .reduce(
+        (style, block) => ({
+          ...computePCStyleBlock(block, componentRefs, varMap),
+          ...style
+        }),
+        {}
+      );
   }
 );
 

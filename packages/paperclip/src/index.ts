@@ -1,4 +1,4 @@
-export * from "./synthetic";
+export * from "./synthetic-dom";
 export * from "./loader";
 export * from "./dsl";
 export * from "./evaluate";

@@ -14,7 +14,7 @@ import {
   WindowInfo
 } from "./vanilla-compiler";
 import { DependencyGraph } from "./graph";
-import { createSytheticDocument, SyntheticDocument } from "./synthetic";
+import { createSytheticDocument, SyntheticDocument } from "./synthetic-dom";
 
 const reuseNodeGraphMap = reuser(500, (value: KeyValue<any>) =>
   Object.keys(value).join(",")

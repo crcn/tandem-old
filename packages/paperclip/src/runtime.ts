@@ -1,6 +1,6 @@
 import { DependencyGraph, Dependency } from "./graph";
 import { EventEmitter } from "events";
-import { SyntheticDocument } from "./synthetic";
+import { SyntheticDocument } from "./synthetic-dom";
 import { evaluateDependencyGraph } from "./evaluate";
 import { KeyValue, pmark, EMPTY_OBJECT } from "tandem-common";
 import { isEqual } from "lodash";
@@ -203,7 +203,7 @@ export class RemotePCRuntime extends EventEmitter implements PCRuntime {
           changes,
           variants: value.variants,
           priorityUris: value.priorityUris,
-          lastUpdatedAt: (this._lastUpdatedAt = timestamp)
+          lastUpdatedAt: this._lastUpdatedAt = timestamp
         }
       });
     }

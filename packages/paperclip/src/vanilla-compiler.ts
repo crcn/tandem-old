@@ -46,7 +46,7 @@ import {
 } from "./overrides";
 import * as path from "path";
 import { uniq } from "lodash";
-import { SyntheticElement } from "./synthetic";
+import { SyntheticElement } from "./synthetic-dom";
 
 export type VanillaPCRenderers = KeyValue<VanillaPCRenderer>;
 

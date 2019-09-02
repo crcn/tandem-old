@@ -91,7 +91,7 @@ import {
   SyntheticInstanceElement,
   getInheritedAndSelfOverrides,
   SyntheticNode
-} from "./synthetic";
+} from "./synthetic-dom";
 import * as path from "path";
 import { convertFixedBoundsToRelative } from "./synthetic-layout";
 import { diffTreeNode, patchTreeNode } from "./ot";
@@ -1160,10 +1160,10 @@ export const persistAppendPCClips = <TState extends PCEditorState>(
     offset === TreeMoveOffset.BEFORE
       ? parentSourceNode.children.indexOf(targetSourceNode)
       : offset === TreeMoveOffset.AFTER
-        ? parentSourceNode.children.indexOf(targetSourceNode) + 1
-        : offset === TreeMoveOffset.APPEND
-          ? parentSourceNode.children.length
-          : 0;
+      ? parentSourceNode.children.indexOf(targetSourceNode) + 1
+      : offset === TreeMoveOffset.APPEND
+      ? parentSourceNode.children.length
+      : 0;
 
   const targetNodeIsModule = parentSourceNode === targetDep.content;
 

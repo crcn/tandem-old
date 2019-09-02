@@ -37,7 +37,7 @@ import {
   SyntheticVisibleNode,
   getSyntheticSourceNode,
   getSyntheticDocumentByDependencyUri
-} from "./synthetic";
+} from "./synthetic-dom";
 
 import {
   diffTreeNode,

@@ -3,7 +3,7 @@ import {
   SyntheticVisibleNode,
   SyntheticElement,
   SyntheticTextNode
-} from "./synthetic";
+} from "./synthetic-dom";
 import { ComputedDisplayInfo } from "./edit";
 import { getTreeNodeFromPath, EMPTY_OBJECT, memoize } from "tandem-common";
 import {

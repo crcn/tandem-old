@@ -14,7 +14,7 @@
   "license": "ISC",
   "dependencies": {
     "@types/node": "^10.12.10",
-    "lodash": "^4.17.11",
+    "lodash": "^4.17.15",
     "paperclip": "^10.1.38",
     "tandem-common": "^10.1.38",
     "tandem-webpack-preview-server": "^10.1.38",

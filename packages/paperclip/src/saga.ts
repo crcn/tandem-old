@@ -29,7 +29,7 @@ import {
   SyntheticDocument,
   SyntheticVisibleNode,
   getSyntheticDocumentByDependencyUri
-} from "./synthetic";
+} from "./synthetic-dom";
 import { PCRuntime, LocalRuntimeInfo } from "./runtime";
 import { fsCacheBusy } from "fsbox";
 
@@ -210,10 +210,12 @@ export const createPaperclipSaga = ({
       const index = document.children.findIndex(
         child => child.id === syntheticContentNodeId
       );
-      return ots.filter(ot => ot.nodePath[0] === index).map(ot => ({
-        ...ot,
-        nodePath: ot.nodePath.slice(1)
-      }));
+      return ots
+        .filter(ot => ot.nodePath[0] === index)
+        .map(ot => ({
+          ...ot,
+          nodePath: ot.nodePath.slice(1)
+        }));
     };
 
     const frameNodeMap: KeyValue<SyntheticNativeNodeMap> = {};
