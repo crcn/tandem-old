@@ -4,7 +4,8 @@
   "description": "Paperclip DSL specific for visual development.",
   "bin": {
     "paperclip-vanilla-compiler": "./bin/paperclip-vanilla-compiler",
-    "paperclip-css-compiler": "./bin/paperclip-css-compiler"
+    "paperclip-css-compiler": "./bin/paperclip-css-compiler",
+    "paperclip-html-compiler": "./bin/paperclip-html-compiler"
   },
   "main": "index.js",
   "author": "",

@@ -14,6 +14,7 @@ export * from "./edit";
 export * from "./config";
 export * from "./runtime";
 export * from "./vanilla-compiler";
+export * from "./vanilla-compiler2";
 export * from "./inspector";
 export * from "./style";
 export * from "./utils";

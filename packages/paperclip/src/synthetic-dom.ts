@@ -32,6 +32,7 @@ import {
   PCStyleMixin
 } from "./dsl";
 import { diffTreeNode, patchTreeNode } from "./ot";
+import { SyntheticCSSStyleSheet } from "./synthetic-cssom";
 
 /*------------------------------------------
  * STATE
@@ -302,10 +303,10 @@ export const getSyntheticNodeById = memoize(
     if (!document) {
       return null;
     }
-    return getNestedTreeNodeById(
+    return (getNestedTreeNodeById(
       syntheticNodeId,
       document
-    ) as SyntheticVisibleNode;
+    ) as any) as SyntheticVisibleNode;
   }
 );
 
@@ -499,6 +500,31 @@ export const syntheticNodeIsInShadow = (
 
 // alias
 export const isSyntheticNodeImmutable = syntheticNodeIsInShadow;
+
+export const stringifySyntheticNode = memoize(
+  (node: SyntheticNode, depth: number = 0) => {
+    const indent = "  ".repeat(depth);
+    if (isSyntheticTextNode(node)) {
+      return indent + node.value + `\n`;
+    } else if (isSyntheticElement(node)) {
+      let buffer = `${indent}<${node.name}`;
+      for (const key in node.attributes) {
+        buffer += ` ${key}="${node.attributes[key]}"`;
+      }
+      buffer += `>\n`;
+      for (const child of node.children) {
+        buffer += stringifySyntheticNode(child, depth + 1);
+      }
+
+      buffer += `${indent}</${node.name}>\n`;
+      return buffer;
+    } else {
+      return node.children
+        .map(child => stringifySyntheticNode(child, depth))
+        .join("\n");
+    }
+  }
+);
 
 /*------------------------------------------
  * SETTERS

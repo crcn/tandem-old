@@ -1,0 +1,33 @@
+#!/usr/bin/env node
+const {compileContentNodeAsVanilla, stringifySyntheticNode, evaluateDependencyGraph, openPCConfig, loadFSDependencyGraphSync, getComponentGraphRefMap, getVariableRefMap, getQueryRefMap} = require('..');
+const {addProtocol, FILE_PROTOCOL} = require('tandem-common');
+const migrate = require("paperclip-migrator");
+const fs = require('fs');
+const path = require('path');
+const {_,write,definition,out: outRelPath,watch} = require("yargs").argv;
+const relPath = _[0];
+const cwd = process.cwd();
+const absPath = relPath.charAt(0) === "/" ? relPath : path.join(cwd, relPath);
+const absUri = addProtocol(FILE_PROTOCOL, absPath);
+const { config, directory } = openPCConfig(path.dirname(absPath));
+const graph = loadFSDependencyGraphSync(config, directory, migrate);
+const entry = graph[absUri];
+
+const documents = evaluateDependencyGraph(graph, "", {}, [
+  absUri
+]);
+
+const document = documents[absUri];
+
+console.log(stringifySyntheticNode(document));
+
+// const fn = compileContentNodeAsVanilla(
+//   entry.content, 
+//   getComponentGraphRefMap(entry.content, graph), 
+//   getVariableRefMap(entry.content, graph), 
+//   getQueryRefMap(entry.content, graph), 
+//   absUri, 
+//   directory
+// );
+
+// console.log(fn.toString());

@@ -15,6 +15,7 @@ import {
 } from "./vanilla-compiler";
 import { DependencyGraph } from "./graph";
 import { createSytheticDocument, SyntheticDocument } from "./synthetic-dom";
+import { compileContentNodeToVanillaRenderer } from "./vanilla-compiler2";
 
 const reuseNodeGraphMap = reuser(500, (value: KeyValue<any>) =>
   Object.keys(value).join(",")
@@ -105,7 +106,7 @@ const compileDependencyGraph = memoize(
     for (const uri in graph) {
       const { content: module } = graph[uri];
       for (const contentNode of module.children) {
-        renderers[`_${contentNode.id}`] = compileContentNodeAsVanilla(
+        renderers[`_${contentNode.id}`] = compileContentNodeToVanillaRenderer(
           contentNode,
           reuseNodeGraphMap(getComponentGraphRefMap(contentNode, graph)),
           reuseNodeGraphMap(getVariableRefMap(contentNode, graph)),
