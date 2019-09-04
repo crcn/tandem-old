@@ -1,4 +1,11 @@
-import { memoize, reuser, EMPTY_OBJECT, KeyValue, Bounds } from "tandem-common";
+import {
+  memoize,
+  reuser,
+  EMPTY_OBJECT,
+  KeyValue,
+  Bounds,
+  appendChildNode
+} from "tandem-common";
 import {
   PCModule,
   getComponentGraphRefMap,
@@ -50,6 +57,7 @@ const evaluateModule = memoize(
     variants: KeyValue<KeyValue<boolean>>,
     usedRenderers: VanillaPCRenderers
   ) => {
+    appendChildNode;
     return createSytheticDocument(
       module.id,
       module.children
@@ -59,7 +67,7 @@ const evaluateModule = memoize(
             child.name !== PCSourceTagNames.QUERY
         )
         .map(child => {
-          return usedRenderers[`_${child.id}`](
+          const contentNode = usedRenderers[`_${child.id}`](
             child.id,
             null,
             EMPTY_OBJECT,
@@ -70,6 +78,8 @@ const evaluateModule = memoize(
             usedRenderers,
             true
           );
+
+          return contentNode;
         })
     );
   }

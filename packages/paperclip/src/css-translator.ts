@@ -17,7 +17,8 @@ import {
 export const translateModuleToCSSSyleSheet = (
   module: PCModule,
   componentRefMap: KeyValue<PCComponent>,
-  varRefMap: KeyValue<PCVariable>
+  varRefMap: KeyValue<PCVariable>,
+  indent: number = 0
 ) => {
   return module.children
     .map(child =>
@@ -27,7 +28,7 @@ export const translateModuleToCSSSyleSheet = (
         varRefMap
       )
     )
-    .map(stringifySyntheticCSSObject)
+    .map(obj => stringifySyntheticCSSObject(obj, indent))
     .join("");
 };
 

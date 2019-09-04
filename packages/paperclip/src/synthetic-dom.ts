@@ -50,15 +50,19 @@ export type SyntheticDocument = {
   children: SyntheticVisibleNode[];
 } & SyntheticBaseNode;
 
-// TODO
-export type SyntheticStyleSheet = {};
-
 export type SyntheticElement = {
   instancePath: string;
+  className: string;
   attributes: KeyValue<string>;
+
+  // DEPRECATED
   style: KeyValue<any>;
   children: Array<SyntheticVisibleNode | PCOverride>;
 } & SyntheticBaseNode;
+
+export type SyntheticStyle = {
+  sheet: SyntheticCSSStyleSheet;
+} & SyntheticElement;
 
 export type SyntheticInstanceElement = {
   variant: KeyValue<boolean>;
@@ -67,13 +71,19 @@ export type SyntheticInstanceElement = {
 
 export type SyntheticTextNode = {
   instancePath: string;
+  className?: string;
   value: string;
+
+  // DEPRECATED
   style: KeyValue<any>;
   children: Array<PCOverride>;
 } & SyntheticBaseNode;
 
 export type SyntheticVisibleNode = SyntheticElement | SyntheticTextNode;
-export type SyntheticNode = SyntheticDocument | SyntheticVisibleNode;
+export type SyntheticNode =
+  | SyntheticDocument
+  | SyntheticStyle
+  | SyntheticVisibleNode;
 
 /*------------------------------------------
  * STATE FACTORIES
@@ -505,9 +515,15 @@ export const stringifySyntheticNode = memoize(
   (node: SyntheticNode, depth: number = 0) => {
     const indent = "  ".repeat(depth);
     if (isSyntheticTextNode(node)) {
-      return indent + node.value + `\n`;
+      if (!node.className) {
+        return indent + node.value + "\n";
+      }
+      return indent + `<span class="${node.className}">${node.value}</span>\n`;
     } else if (isSyntheticElement(node)) {
       let buffer = `${indent}<${node.name}`;
+      if (node.className) {
+        buffer += ` class="${node.className}"`;
+      }
       for (const key in node.attributes) {
         buffer += ` ${key}="${node.attributes[key]}"`;
       }

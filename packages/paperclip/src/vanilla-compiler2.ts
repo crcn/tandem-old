@@ -13,7 +13,9 @@ import {
   PCBaseElement,
   extendsComponent,
   PCComponentInstanceElement,
-  PCTextNode
+  PCTextNode,
+  PCTextStyleMixin,
+  PCElementStyleMixin
 } from "./dsl";
 import { memoize, KeyValue, generateUID } from "tandem-common";
 
@@ -126,7 +128,8 @@ const translateVisibleNode = memoize(
         isContentNode ? 'instancePath || ""' : `childInstancePath`
       },
       name: "${node.is}",
-      style: ${translateDynamicStyle(node, isContentNode)},
+      className: "${translateDynamicClassName(node, isContentNode)}",
+      style: EMPTY_OBJECT,
       metadata: EMPTY_OBJECT,
       attributes: ${translateDynamicAttributes(node, isContentNode)},
       children: [${node.children
@@ -138,7 +141,8 @@ const translateVisibleNode = memoize(
       return `{
       id: generateUID(),
       sourceNodeId: "${node.id}",
-      style: ${translateDynamicStyle(node, isContentNode)},
+      className: "${translateDynamicClassName(node, isContentNode)}",
+      style: EMPTY_OBJECT,
       instancePath: childInstancePath,
       metadata: EMPTY_OBJECT,
       name: "text",
@@ -152,7 +156,8 @@ const translateVisibleNode = memoize(
         return `{
           id: generateUID(),
           sourceNodeId: "${node.id}",
-          style: ${translateDynamicStyle(node, isContentNode)},
+          className: "${translateDynamicClassName(node, isContentNode)}",
+          style: EMPTY_OBJECT,
           instancePath: childInstancePath,
           metadata: EMPTY_OBJECT,
           name: "element",
@@ -166,7 +171,8 @@ const translateVisibleNode = memoize(
         return `{
           id: generateUID(),
           sourceNodeId: "${node.id}",
-          style: ${translateDynamicStyle(node, isContentNode)},
+          className: "${translateDynamicClassName(node, isContentNode)}",
+          style: EMPTY_OBJECT,
           instancePath: childInstancePath,
           metadata: EMPTY_OBJECT,
           name: "text",
@@ -184,6 +190,15 @@ const translateDynamicVariant = (node: PCBaseElement<any>) => {
   // return `overrides._${node.id}Variant ? Object.assign({},  _${
   //   node.id
   // }Variant, overrides._${node.id}Variant) : _${node.id}Variant`;
+};
+
+const translateDynamicClassName = (
+  node: PCVisibleNode | PCTextStyleMixin | PCElementStyleMixin | PCComponent,
+  isContentNode: boolean
+) => {
+  let buffer = `_${node.id}`;
+
+  return buffer;
 };
 
 const translateDynamicOverrides = (

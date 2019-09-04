@@ -45,21 +45,22 @@ export const createSyntheticCSSStyleRule = (
 });
 
 export const stringifySyntheticCSSObject = memoize(
-  (object: SyntheticCSSObject) => {
+  (object: SyntheticCSSObject, depth: number = 0) => {
     let buffer = "";
+    const indent = "  ".repeat(depth);
     switch (object.type) {
       case SyntheticCSSObjectType.STYLE_SHEET: {
         buffer += object.rules
-          .map(rule => stringifySyntheticCSSObject(rule))
+          .map(rule => stringifySyntheticCSSObject(rule, depth))
           .join("");
         break;
       }
       case SyntheticCSSObjectType.STYLE_RULE: {
-        buffer += `\n${object.selectorText} {\n`;
+        buffer += `\n${indent}${object.selectorText} {\n`;
         for (const { key, value } of object.style) {
-          buffer += `  ${key}: ${value};\n`;
+          buffer += `${indent}  ${key}: ${value};\n`;
         }
-        buffer += "}\n";
+        buffer += indent + "}\n";
         break;
       }
     }

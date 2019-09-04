@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-const {compileContentNodeAsVanilla, stringifySyntheticNode, evaluateDependencyGraph, openPCConfig, loadFSDependencyGraphSync, getComponentGraphRefMap, getVariableRefMap, getQueryRefMap} = require('..');
+const {compileContentNodeAsVanilla, stringifySyntheticNode, evaluateDependencyGraph, translateModuleToCSSSyleSheet, openPCConfig, loadFSDependencyGraphSync, getComponentGraphRefMap, getVariableRefMap, getQueryRefMap} = require('..');
 const {addProtocol, FILE_PROTOCOL} = require('tandem-common');
 const migrate = require("paperclip-migrator");
 const fs = require('fs');
@@ -16,10 +16,47 @@ const entry = graph[absUri];
 const documents = evaluateDependencyGraph(graph, "", {}, [
   absUri
 ]);
+const sheetContent = translateModuleToCSSSyleSheet(
+  entry.content, 
+  getComponentGraphRefMap(entry.content, graph), 
+  getVariableRefMap(entry.content, graph), 
+  3
+);
 
 const document = documents[absUri];
 
-console.log(stringifySyntheticNode(document));
+const doc = {
+  name: "html",
+  attributes: {},
+  children: [
+    {
+      name: "head",
+      attributes: {},
+      children: [
+        {
+          name: "style",
+          attributes: {},
+          children: [
+            {
+              name: "text",
+              value: sheetContent
+            }
+          ]
+        }
+      ]
+    },
+    {
+      name: "body",
+      attributes: {},
+      children: document.children
+    }
+  ]
+};
+
+
+const bodyContent = stringifySyntheticNode(doc);
+
+console.log(bodyContent);
 
 // const fn = compileContentNodeAsVanilla(
 //   entry.content, 
