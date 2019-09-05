@@ -25,9 +25,44 @@ export type ComputedOverrideMap = {
 
 export type ComputedNodeOverrideMap = {
   overrides: PCOverride[];
+
+  // TODO - change to decendents
   children: ComputedOverrideMap;
 };
 
+export const overridesToTargetMap = memoize(
+  (overrides: PCOverride[]): ComputedOverrideMap => {
+    let rootMap: ComputedOverrideMap = {};
+    for (const override of overrides) {
+      let currentMap = rootMap;
+      const instancePath = [...override.targetIdPath];
+      const targetId = instancePath.pop();
+      for (const nodeId of instancePath) {
+        if (!currentMap[nodeId]) {
+          currentMap[nodeId] = {
+            overrides: [],
+            children: {}
+          };
+        }
+
+        currentMap = currentMap[nodeId].children;
+      }
+
+      if (!currentMap[targetId]) {
+        currentMap[targetId] = {
+          overrides: [],
+          children: {}
+        };
+      }
+
+      currentMap[targetId].overrides.push(override);
+    }
+
+    return rootMap;
+  }
+);
+
+// DEPRECATED
 export const getOverrideMap = memoize(
   (node: PCNode, contentNode: PCNode, includeSelf?: boolean) => {
     const map: ComputedOverrideMap = {};

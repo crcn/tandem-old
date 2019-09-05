@@ -5,7 +5,13 @@ import {
   PCComponent,
   PCVariable,
   computePCStyleBlock,
-  PCModule
+  PCModule,
+  isVisibleNode,
+  PCNode,
+  PCSourceTagNames,
+  isComponentLike,
+  PCOverride,
+  PCOverridableType
 } from "./dsl";
 import {
   createSyntheticCSSStyleSheet,
@@ -46,18 +52,64 @@ export const generateSyntheticStyleSheet = memoize(
 
 export const generateSyntheticStyleRules = memoize(
   (
-    node: PCContentNode,
+    node: PCNode,
     componentRefMap: KeyValue<PCComponent>,
     varRefMap: KeyValue<PCVariable>
   ): SyntheticCSSStyleRule[] => {
     const selectorText = `._${node.id}`;
+    const rules: SyntheticCSSStyleRule[] = [];
 
-    const rules = generateSyntheticRulesFromStyles(
-      selectorText,
-      node.styles,
-      componentRefMap,
-      varRefMap
-    );
+    if (isVisibleNode(node) || node.name === PCSourceTagNames.COMPONENT) {
+      rules.push(
+        ...generateSyntheticRulesFromStyles(
+          selectorText,
+          node.styles,
+          componentRefMap,
+          varRefMap
+        )
+      );
+    }
+
+    if (isComponentLike(node)) {
+      rules.push(
+        ...generateSyntheticRulesFromOverrides(
+          node.overrides,
+          componentRefMap,
+          varRefMap
+        )
+      );
+    }
+
+    for (const child of node.children) {
+      rules.push(
+        ...generateSyntheticStyleRules(child, componentRefMap, varRefMap)
+      );
+    }
+
+    return rules;
+  }
+);
+
+const generateSyntheticRulesFromOverrides = memoize(
+  (
+    overrides: PCOverride[],
+    componentRefMap: KeyValue<PCComponent>,
+    varRefMap: KeyValue<PCVariable>
+  ): SyntheticCSSStyleRule[] => {
+    const rules = [];
+    for (const override of overrides) {
+      if (override.type === PCOverridableType.STYLES) {
+        const prefixSelectorText = `._${override.id}`;
+        rules.push(
+          ...generateSyntheticRulesFromStyles(
+            prefixSelectorText,
+            override.value,
+            componentRefMap,
+            varRefMap
+          )
+        );
+      }
+    }
 
     return rules;
   }
