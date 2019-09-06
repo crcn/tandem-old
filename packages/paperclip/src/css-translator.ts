@@ -11,7 +11,9 @@ import {
   PCSourceTagNames,
   isComponentLike,
   PCOverride,
-  PCOverridableType
+  PCOverridableType,
+  getComponentGraphRefMap,
+  getVariableRefMap
 } from "./dsl";
 import {
   createSyntheticCSSStyleSheet,
@@ -19,19 +21,22 @@ import {
   createSyntheticCSSStyleRule,
   stringifySyntheticCSSObject
 } from "./synthetic-cssom";
+import { DependencyGraph } from "./graph";
 
 export const translateModuleToCSSSyleSheet = (
   module: PCModule,
-  componentRefMap: KeyValue<PCComponent>,
-  varRefMap: KeyValue<PCVariable>,
+  graph: DependencyGraph,
   indent: number = 0
 ) => {
+  const usedTargetComponents = getComponentGraphRefMap(module, graph);
+
   return module.children
+    .concat(Object.values(usedTargetComponents))
     .map(child =>
       generateSyntheticStyleSheet(
-        child as PCContentNode,
-        componentRefMap,
-        varRefMap
+        child,
+        getComponentGraphRefMap(child, graph),
+        getVariableRefMap(child, graph)
       )
     )
     .map(obj => stringifySyntheticCSSObject(obj, indent))
@@ -40,7 +45,7 @@ export const translateModuleToCSSSyleSheet = (
 
 export const generateSyntheticStyleSheet = memoize(
   (
-    contentNode: PCContentNode,
+    contentNode: PCNode,
     componentRefMap: KeyValue<PCComponent>,
     varRefMap: KeyValue<PCVariable>
   ) => {

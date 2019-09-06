@@ -18,8 +18,7 @@ const documents = evaluateDependencyGraph(graph, "", {}, [
 ]);
 const sheetContent = translateModuleToCSSSyleSheet(
   entry.content, 
-  getComponentGraphRefMap(entry.content, graph), 
-  getVariableRefMap(entry.content, graph), 
+  graph,
   3
 );
 

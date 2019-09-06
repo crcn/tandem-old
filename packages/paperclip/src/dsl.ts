@@ -1579,13 +1579,13 @@ export const getVariableGraphRefs = memoize(
     ) {
       for (const override of node.overrides) {
         if (override.type === PCOverridableType.STYLES) {
-          refIds.push(...getNodeStyleRefIds(override.value));
+          refIds.push(...getNodeStyleRefIds(override.value, graph));
         }
       }
     }
 
     if (isVisibleNode(node) || node.name === PCSourceTagNames.COMPONENT) {
-      refIds.push(...getNodeStyleRefIds(node.styles));
+      refIds.push(...getNodeStyleRefIds(node.styles, graph));
     }
 
     for (let i = 0, { length } = refIds; i < length; i++) {
@@ -1644,26 +1644,39 @@ export const computeStyleValue = (
       var ref = varMap[cssVar];
       value = ref ? value.replace(`var(--${cssVar})`, ref.value) : value;
     }
+    if (value.indexOf(`var`) !== -1) {
+      console.warn(`var still exists: ${value}`);
+      console.log(`var map: ${JSON.stringify(varMap, null, 2)}`);
+    }
   }
 
   return value;
 };
 
-export const getNodeStyleRefIds = memoize((blocks: PCStyleBlock[]) => {
-  const refIds = {};
-  for (const block of blocks) {
-    for (const { key, value } of block.properties) {
-      // value c
-      if (value && styleValueContainsCSSVar(String(value))) {
-        const cssVars = getCSSVars(value);
-        for (const cssVar of cssVars) {
-          refIds[cssVar] = 1;
+export const getNodeStyleRefIds = memoize(
+  (blocks: PCStyleBlock[], graph: DependencyGraph) => {
+    const refIds = [];
+    for (const block of blocks) {
+      if (block.mixinId) {
+        const mixin = getPCNode(block.mixinId, graph) as PCStyleMixin;
+        if (mixin) {
+          refIds.push(...getNodeStyleRefIds(mixin.styles, graph));
+        }
+      } else {
+        for (const { value } of block.properties) {
+          // value c
+          if (value && styleValueContainsCSSVar(String(value))) {
+            const cssVars = getCSSVars(value);
+            for (const cssVar of cssVars) {
+              refIds.push(cssVar);
+            }
+          }
         }
       }
     }
+    return uniq(refIds);
   }
-  return Object.keys(refIds);
-});
+);
 
 /*------------------------------------------
  * SETTERS
