@@ -404,7 +404,7 @@ type PCStyleBlockPseudoParts = {
   placeholder?: boolean;
 };
 
-export type PCContentNode = PCVisibleNode | PCComponent;
+export type PCContentNode = PCVisibleNode | PCComponent | PCStyleMixin;
 
 export type PCStyleBlock = {
   id: string;

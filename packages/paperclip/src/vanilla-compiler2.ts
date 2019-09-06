@@ -18,20 +18,22 @@ import {
   PCElementStyleMixin,
   isComponentLike,
   PCOverride,
-  PCOverridableType
+  PCOverridableType,
+  getPCVariants
 } from "./dsl";
 import {
   memoize,
   KeyValue,
   generateUID,
   filterNestedNodes,
-  EMPTY_ARRAY
+  EMPTY_ARRAY,
+  EMPTY_OBJECT,
+  addProtocol,
+  FILE_PROTOCOL,
+  stripProtocol
 } from "tandem-common";
-import {
-  overridesToTargetMap,
-  ComputedNodeOverrideMap,
-  ComputedOverrideMap
-} from "./overrides";
+import { overridesToTargetMap, ComputedOverrideMap } from "./overrides";
+import * as path from "path";
 
 const merge = (a, b) => {
   if (b == null) return a;
@@ -94,6 +96,13 @@ const translateContentNode = memoize(
     buffer += `var EMPTY_OBJECT = {};\n`;
 
     buffer += translateAllOverrides(node);
+    buffer += translateStaticNodeProps(
+      node,
+      componentRefMap,
+      varMap,
+      sourceUri,
+      rootDirectory
+    );
 
     buffer += ` return function(instanceSourceNodeId, instancePath, attributes, className, variant, overrides, windowInfo, components, isRoot) {
 
@@ -108,9 +117,7 @@ const translateContentNode = memoize(
   }
 );
 
-const translateAllOverrides = (
-  contentNode: PCComponent | PCVisibleNode | PCStyleMixin
-) => {
+const translateAllOverrides = (contentNode: PCContentNode) => {
   const instanceNodes = filterNestedNodes(contentNode, isComponentLike) as (
     | PCComponent
     | PCComponentInstanceElement)[];
@@ -191,7 +198,9 @@ const translateVisibleNode = memoize(
           isContentNode ? 'instancePath || ""' : "childInstancePath"
         }, ${translateDynamicAttributes(node, isContentNode)}, _${
           node.id
-        }ClassName, ${translateDynamicVariant(node)}, ${translatePlugs(
+        }ClassName, ${translateDynamicVariant(node as
+          | PCComponent
+          | PCComponentInstanceElement)}, ${translatePlugs(
           node as PCComponent
         )}, windowInfo, components, ${isContentNode ? "isRoot" : "false"})`;
       }
@@ -261,39 +270,49 @@ const translateVisibleNode = memoize(
   }
 );
 
-const translateClassNames = (node: PCNode, isContentNode: boolean = false) => {
+const translateClassNames = (
+  node: PCNode | PCComponent,
+  isContentNode: boolean = false
+) => {
   let buffer = "";
 
-  buffer += `
-  var _${node.id}ClassName = "";
-
-  if (overrides._${node.id}Overrides && overrides._${
-    node.id
-  }Overrides.className) {
-    _${node.id}ClassName = "_" + overrides._${node.id}Overrides.className + " ";
-  }
-
-  _${node.id}ClassName += "_${node.id}";
-
-  `;
-
-  if (isContentNode) {
+  if (isVisibleNode(node) || node.name === PCSourceTagNames.COMPONENT) {
     buffer += `
-      _${node.id}ClassName += " " + className;
+    var _${node.id}ClassName = "";
+
+    if (overrides._${node.id}Overrides && overrides._${
+      node.id
+    }Overrides.className) {
+      _${node.id}ClassName = overrides._${node.id}Overrides.className + " ";
+    }
+
+    _${node.id}ClassName += "_${node.id}";
+
     `;
+
+    if (isContentNode) {
+      buffer += `
+        _${
+          node.id
+        }ClassName += " " + className + " " + Object.keys(variant).filter(id => variant[id]).map(id => "_" + id).join(" ");
+      `;
+    }
   }
+
   for (const child of node.children) {
     buffer += translateClassNames(child);
   }
   return buffer;
 };
 
-const translateDynamicVariant = (node: PCBaseElement<any>) => {
-  return `{}`;
-
-  // return `overrides._${node.id}Variant ? Object.assign({},  _${
-  //   node.id
-  // }Variant, overrides._${node.id}Variant) : _${node.id}Variant`;
+const translateDynamicVariant = (
+  node: PCComponentInstanceElement | PCComponent
+) => {
+  return `overrides._${node.id}Overrides && overrides._${
+    node.id
+  }Overrides.variant ? Object.assign({}, _${node.id}Variant, overrides._${
+    node.id
+  }Overrides.variant) : _${node.id}Variant`;
 };
 
 const translatePlugs = (node: PCComponent | PCComponentInstanceElement) => {
@@ -312,24 +331,74 @@ const translatePlugs = (node: PCComponent | PCComponentInstanceElement) => {
   return buffer + `}))`;
 };
 
+const translateStaticNodeProps = memoize(
+  (
+    node: PCNode,
+    componentRefMap: KeyValue<PCComponent>,
+    varMap: KeyValue<PCVariable>,
+    sourceUri: string,
+    rootDirectory: string
+  ) => {
+    let buffer = "";
+
+    if (isBaseElement(node)) {
+      buffer += `var _${node.id}Attributes = {\n`;
+      for (let { key, value } of node.attributes) {
+        if (node.is === "img" && !/\w+:\/\//.test(value)) {
+          path;
+          value = addProtocol(
+            FILE_PROTOCOL,
+            path.resolve(path.dirname(stripProtocol(sourceUri)), value)
+          );
+        }
+
+        buffer += `"${key}": ${JSON.stringify(value)},\n`;
+      }
+      buffer += `};\n`;
+    }
+
+    if (
+      node.name === PCSourceTagNames.COMPONENT_INSTANCE ||
+      node.name === PCSourceTagNames.COMPONENT
+    ) {
+      buffer += `var _${node.id}Variant = ${JSON.stringify(
+        (node as any).variant || EMPTY_OBJECT
+      )};`;
+    }
+
+    for (const child of node.children) {
+      buffer += translateStaticNodeProps(
+        child as PCNode,
+        componentRefMap,
+        varMap,
+        sourceUri,
+        rootDirectory
+      );
+    }
+
+    return buffer;
+  }
+);
+
 const translateDynamicAttributes = (
   node: PCBaseElement<any>,
   isContentNode: boolean
 ) => {
-  return `{}`;
-  // if (isContentNode) {
-  //   return `overrides._${node.id}Attributes ? Object.assign({}, _${
-  //     node.id
-  //   }Attributes, overrides._${
-  //     node.id
-  //   }Attributes, attributes) : Object.assign({}, _${
-  //     node.id
-  //   }Attributes, attributes)`;
-  // }
+  if (isContentNode) {
+    return `overrides._${node.id}Overrides && overrides._${
+      node.id
+    }Overrides.attributes ? Object.assign({}, _${
+      node.id
+    }Attributes, overrides._${
+      node.id
+    }Overrides.attributes, attributes) : Object.assign({}, _${
+      node.id
+    }Attributes, attributes)`;
+  }
 
-  // return `overrides._${node.id}Attributes ? Object.assign({}, _${
-  //   node.id
-  // }Attributes, overrides._${node.id}Attributes) : _${node.id}Attributes`;
+  return `overrides._${node.id}Attributes ? Object.assign({}, _${
+    node.id
+  }Attributes, overrides._${node.id}Attributes) : _${node.id}Attributes`;
 };
 
 const translateDynamicStyle = (
