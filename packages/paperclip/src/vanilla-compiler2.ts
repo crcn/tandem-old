@@ -98,6 +98,8 @@ const translateContentNode = memoize(
     buffer += ` return function(instanceSourceNodeId, instancePath, attributes, className, variant, overrides, windowInfo, components, isRoot) {
 
       var childInstancePath = instancePath == null ? "" : (instancePath ? instancePath + "." : "") + instanceSourceNodeId;
+
+      ${translateClassNames(node, true)}
       
       return ${translateVisibleNode(node, true)};
     }`;
@@ -187,13 +189,9 @@ const translateVisibleNode = memoize(
           isContentNode ? "instanceSourceNodeId" : `"${node.id}"`
         }, ${
           isContentNode ? 'instancePath || ""' : "childInstancePath"
-        }, ${translateDynamicAttributes(
-          node,
-          isContentNode
-        )}, ${translateDynamicClassName(
-          node,
-          isContentNode
-        )}, ${translateDynamicVariant(node)}, ${translatePlugs(
+        }, ${translateDynamicAttributes(node, isContentNode)}, _${
+          node.id
+        }ClassName, ${translateDynamicVariant(node)}, ${translatePlugs(
           node as PCComponent
         )}, windowInfo, components, ${isContentNode ? "isRoot" : "false"})`;
       }
@@ -205,7 +203,7 @@ const translateVisibleNode = memoize(
         isContentNode ? 'instancePath || ""' : `childInstancePath`
       },
       name: "${node.is}",
-      className: ${translateDynamicClassName(node, isContentNode)},
+      className: _${node.id}ClassName,
       style: EMPTY_OBJECT,
       metadata: EMPTY_OBJECT,
       attributes: ${translateDynamicAttributes(node, isContentNode)},
@@ -218,7 +216,7 @@ const translateVisibleNode = memoize(
       return `{
       id: generateUID(),
       sourceNodeId: "${node.id}",
-      className: ${translateDynamicClassName(node, isContentNode)},
+      className: _${node.id}ClassName,
       style: EMPTY_OBJECT,
       instancePath: childInstancePath,
       metadata: EMPTY_OBJECT,
@@ -235,7 +233,7 @@ const translateVisibleNode = memoize(
         return `{
           id: generateUID(),
           sourceNodeId: "${node.id}",
-          className: ${translateDynamicClassName(node, isContentNode)},
+          className: _${node.id}ClassName,
           style: EMPTY_OBJECT,
           instancePath: childInstancePath,
           metadata: EMPTY_OBJECT,
@@ -250,7 +248,7 @@ const translateVisibleNode = memoize(
         return `{
           id: generateUID(),
           sourceNodeId: "${node.id}",
-          className: ${translateDynamicClassName(node, isContentNode)},
+          className: _${node.id}ClassName,
           style: EMPTY_OBJECT,
           instancePath: childInstancePath,
           metadata: EMPTY_OBJECT,
@@ -263,25 +261,39 @@ const translateVisibleNode = memoize(
   }
 );
 
+const translateClassNames = (node: PCNode, isContentNode: boolean = false) => {
+  let buffer = "";
+
+  buffer += `
+  var _${node.id}ClassName = "";
+
+  if (overrides._${node.id}Overrides && overrides._${
+    node.id
+  }Overrides.className) {
+    _${node.id}ClassName = "_" + overrides._${node.id}Overrides.className + " ";
+  }
+
+  _${node.id}ClassName += "_${node.id}";
+
+  `;
+
+  if (isContentNode) {
+    buffer += `
+      _${node.id}ClassName += " " + className;
+    `;
+  }
+  for (const child of node.children) {
+    buffer += translateClassNames(child);
+  }
+  return buffer;
+};
+
 const translateDynamicVariant = (node: PCBaseElement<any>) => {
   return `{}`;
 
   // return `overrides._${node.id}Variant ? Object.assign({},  _${
   //   node.id
   // }Variant, overrides._${node.id}Variant) : _${node.id}Variant`;
-};
-
-const translateDynamicClassName = (
-  node: PCVisibleNode | PCTextStyleMixin | PCElementStyleMixin | PCComponent,
-  isContentNode: boolean
-) => {
-  let buffer = `"_${node.id}"`;
-
-  return `(overrides._${node.id}Overrides && overrides._${
-    node.id
-  }Overrides.className ? overrides._${
-    node.id
-  }Overrides.className + " " : "") + "_${node.id}"`;
 };
 
 const translatePlugs = (node: PCComponent | PCComponentInstanceElement) => {

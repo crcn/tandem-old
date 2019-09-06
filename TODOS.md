@@ -1,5 +1,6 @@
 Immediate:
 
+- [ ] variants for HTML compiler
 - [ ] new HTML compiler (needed to test renderer works)
 - [ ] SyntheticStyleSheet (needed for pseudo selectors)
 - [ ] make CSS selectors readable

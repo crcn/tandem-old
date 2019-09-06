@@ -71,7 +71,7 @@ const evaluateModule = memoize(
             child.id,
             null,
             EMPTY_OBJECT,
-            EMPTY_OBJECT,
+            "",
             variants[child.id] || EMPTY_OBJECT,
             EMPTY_OBJECT,
             getWindowInfo(child as PCVisibleNode),

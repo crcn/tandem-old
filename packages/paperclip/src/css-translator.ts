@@ -87,7 +87,11 @@ export const generateSyntheticStyleRules = memoize(
 
     for (const child of node.children) {
       rules.push(
-        ...generateSyntheticStyleRules(child, componentRefMap, varRefMap)
+        ...generateSyntheticStyleRules(
+          child as PCNode,
+          componentRefMap,
+          varRefMap
+        )
       );
     }
 
