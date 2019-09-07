@@ -187,7 +187,7 @@ export const createPaperclipSaga = ({
                     getNestedTreeNodeById(
                       newFrame.syntheticContentNodeId,
                       oldDocument
-                    ) as SyntheticNode,
+                    ) as SyntheticVisibleNode,
                     frameOts
                   );
                 }
@@ -291,6 +291,12 @@ export const createPaperclipSaga = ({
 
       yield call(watchContainer, container, frame);
     }
+
+    function patchContainer2(
+      frame: Frame,
+      contentNode: SyntheticVisibleNode,
+      ots: TreeNodeOperationalTransform[]
+    ) {}
 
     function* patchContainer(
       frame: Frame,

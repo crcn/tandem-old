@@ -89,7 +89,7 @@ export const setup = (
         openContextMenu,
         deleteFile,
         openFile
-      } = yield call(createSideEffects);
+      }: ReturnType<any> = yield call(createSideEffects);
 
       readFile = setReaderMimetype(
         PAPERCLIP_MIME_TYPE,

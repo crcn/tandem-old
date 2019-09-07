@@ -1646,7 +1646,6 @@ export const computeStyleValue = (
     }
     if (value.indexOf(`var`) !== -1) {
       console.warn(`var still exists: ${value}`);
-      console.log(`var map: ${JSON.stringify(varMap, null, 2)}`);
     }
   }
 

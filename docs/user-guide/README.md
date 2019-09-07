@@ -244,7 +244,7 @@ First, copy and paste the following content to `package.json`:
     "paperclip-react-compiler": "^10.0.33",
     "paperclip-react-loader": "^10.0.33",
     "ts-loader": "^5.2.2",
-    "typescript": "^3.1.3",
+    "typescript": "^3.6.2",
     "uglifyjs-webpack-plugin": "^2.0.1",
     "webpack": "^4.21.0",
     "webpack-cli": "^3.1.2"

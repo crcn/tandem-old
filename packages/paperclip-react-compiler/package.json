@@ -22,7 +22,7 @@
     "chai": "^4.1.2",
     "enzyme": "^3.3.0",
     "mocha": "^5.2.0",
-    "typescript": "3.0.x"
+    "typescript": "^3.6.2"
   },
   "dependencies": {
     "chokidar": "^2.0.4",

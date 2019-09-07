@@ -1,5 +1,12 @@
-import { fork, select, take, put, spawn, call } from "redux-saga/effects";
-import { eventChannel, delay } from "redux-saga";
+import {
+  fork,
+  select,
+  take,
+  put,
+  spawn,
+  call,
+  delay
+} from "redux-saga/effects";
 import { unloading, UNLOADER_COMPLETED, UNLOADING, RELOAD } from "../actions";
 import { isUnloaded } from "../state";
 

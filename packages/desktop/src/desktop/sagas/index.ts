@@ -40,7 +40,7 @@ import {
   ConfirmCloseWindow,
   CreateProjectButtonClicked
 } from "tandem-front-end";
-import { eventChannel, Channel } from "redux-saga";
+import { eventChannel, Channel, EventChannel } from "redux-saga";
 import { DesktopRootState } from "../../front-end/state";
 
 const DEFAULT_TD_PROJECT: TDProject = {
@@ -113,7 +113,7 @@ function* loadTDConfig() {
 }
 
 function* watchProjectFilePath() {
-  let channel: Channel<any>;
+  let channel: EventChannel<any>;
 
   while (1) {
     yield take(TD_PROJECT_LOADED);

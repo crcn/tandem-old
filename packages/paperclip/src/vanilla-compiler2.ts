@@ -53,7 +53,26 @@ export const translateModuleToVanillaRenderer = memoize(
     queryMap: KeyValue<PCQuery>,
     sourceUri: string,
     rootDirectory: string
-  ) => {}
+  ) => {
+    return module.children
+      .filter(
+        child =>
+          child.name !== PCSourceTagNames.VARIABLE &&
+          child.name !== PCSourceTagNames.QUERY
+      )
+      .map(
+        (child: PCComponent | PCVisibleNode | PCStyleMixin) =>
+          `exports._${child.id} = ${translateContentNode(
+            child,
+            componentRefMap,
+            varMap,
+            queryMap,
+            sourceUri,
+            rootDirectory
+          )}`
+      )
+      .join("\n");
+  }
 );
 
 export const compileContentNodeToVanillaRenderer = memoize(
@@ -299,7 +318,7 @@ const translateClassNames = (
     }
   }
 
-  for (const child of node.children) {
+  for (const child of node.children as any) {
     buffer += translateClassNames(child);
   }
   return buffer;
