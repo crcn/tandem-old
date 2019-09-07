@@ -13,7 +13,8 @@ import {
   PCOverride,
   PCOverridableType,
   getComponentGraphRefMap,
-  getVariableRefMap
+  getVariableRefMap,
+  getAllVariableRefMap
 } from "./dsl";
 import {
   createSyntheticCSSStyleSheet,
@@ -28,20 +29,22 @@ export const translateModuleToCSSSyleSheet = (
   graph: DependencyGraph,
   indent: number = 0
 ) => {
-  const usedTargetComponents = getComponentGraphRefMap(module, graph);
-
   return module.children
-    .concat(Object.values(usedTargetComponents))
     .map(child =>
       generateSyntheticStyleSheet(
         child,
         getComponentGraphRefMap(child, graph),
-        getVariableRefMap(child, graph)
+
+        // should be okay since variable refs probably
+        // wouldn't be touched a whole lot.
+        getAllVariableRefMap(graph)
       )
     )
     .map(obj => stringifySyntheticCSSObject(obj, indent))
     .join("");
 };
+
+export const translateContentNodeToStylesheet = memoize(() => {});
 
 export const generateSyntheticStyleSheet = memoize(
   (
@@ -49,9 +52,25 @@ export const generateSyntheticStyleSheet = memoize(
     componentRefMap: KeyValue<PCComponent>,
     varRefMap: KeyValue<PCVariable>
   ) => {
-    return createSyntheticCSSStyleSheet(
-      generateSyntheticStyleRules(contentNode, componentRefMap, varRefMap)
+    const contentNodeRules = generateSyntheticStyleRules(
+      contentNode,
+      componentRefMap,
+      varRefMap
     );
+    const refComponentRules = Object.values(componentRefMap).reduce(
+      (rules, component) => {
+        rules.push(
+          ...generateSyntheticStyleRules(component, componentRefMap, varRefMap)
+        );
+        return rules;
+      },
+      []
+    );
+
+    return createSyntheticCSSStyleSheet([
+      ...contentNodeRules,
+      ...refComponentRules
+    ]);
   }
 );
 
