@@ -179,6 +179,63 @@
         }
       ],
       "overrides": []
+    },
+    {
+      "id": "3f15261e109",
+      "label": "Element",
+      "is": "div",
+      "name": "element",
+      "attributes": [],
+      "styles": [
+        {
+          "id": "3f15261e108",
+          "parts": {},
+          "properties": [
+            {
+              "key": "box-sizing",
+              "value": "border-box"
+            },
+            {
+              "key": "display",
+              "value": "box"
+            }
+          ]
+        }
+      ],
+      "children": [
+        {
+          "id": "3f15261e111",
+          "name": "text",
+          "label": "Text",
+          "value": "something",
+          "styles": [
+            {
+              "id": "dcb9d765110",
+              "parts": {},
+              "properties": [
+                {
+                  "key": "color",
+                  "value": "rgba(223, 45, 45, 1)"
+                },
+                {
+                  "key": "font-family",
+                  "value": "Avenir Next"
+                }
+              ]
+            }
+          ],
+          "children": [],
+          "metadata": {}
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": 143,
+          "top": -199,
+          "right": 243,
+          "bottom": -99
+        }
+      }
     }
   ]
 }

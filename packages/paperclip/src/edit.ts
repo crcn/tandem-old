@@ -71,7 +71,9 @@ import {
   isElementLikePCNode,
   PCVariantTrigger,
   createPCVariantTrigger,
-  isPCContentNode
+  isPCContentNode,
+  PCStyleBlock,
+  createPCStyleBlock
 } from "./dsl";
 import {
   SyntheticVisibleNode,
@@ -1786,12 +1788,10 @@ export const persistCSSProperty = <TState extends PCEditorState>(
       );
     },
     (sourceNode: PCVisibleNode) => {
-      console.log(sourceNode);
-      throw new Error(`NOT UPDATED YET`);
       return {
-        ...sourceNode
-        // style: kvpOmitUndefined(kvpSetValue(name, value, sourceNode.style))
-      } as PCVisibleNode;
+        ...sourceNode,
+        styles: updateStyleBlockProperty(name, value, sourceNode.styles)
+      };
     }
   )(
     inspectorNode.instancePath,
@@ -1801,6 +1801,30 @@ export const persistCSSProperty = <TState extends PCEditorState>(
   );
 
   return replaceDependencyGraphPCNode(updatedNode, updatedNode, state);
+};
+
+const updateStyleBlockProperty = (
+  key: string,
+  value: string,
+  blocks: PCStyleBlock[]
+) => {
+  if (!blocks.length || blocks[0].mixinId || blocks[0].variantId) {
+    return [createPCStyleBlock([{ key, value }]), ...blocks];
+  }
+  const block = blocks[0];
+
+  const index = block.properties.findIndex(prop => prop.key === key);
+
+  return [
+    {
+      ...blocks[0],
+      properties:
+        index === -1
+          ? [{ key, value }, ...block.properties]
+          : arraySplice(block.properties, index, 1, { key, value })
+    },
+    ...blocks.slice(1)
+  ];
 };
 
 export const persistCSSProperties = <TState extends PCEditorState>(

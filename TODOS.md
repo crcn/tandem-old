@@ -1,5 +1,9 @@
 Immediate:
 
+- [ ] realtime connection between Figma & Tandem
+  - [ ] connect _mixin_
+  - [ ] can do away with pretty styler
+- [ ] re-wire old styler
 - [ ] wire up style blocks
 - [ ] variants for HTML compiler
 - [ ] make CSS selectors readable

@@ -54,9 +54,6 @@ export type SyntheticElement = {
   instancePath: string;
   className: string;
   attributes: KeyValue<string>;
-
-  // DEPRECATED
-  style: KeyValue<any>;
   children: Array<SyntheticVisibleNode | PCOverride>;
 } & SyntheticBaseNode;
 
@@ -148,21 +145,6 @@ export const isSyntheticVisibleNode = (
   return Boolean(sn.sourceNodeId) && Boolean(sn.name);
 };
 
-export const isSyntheticVisibleNodeMovable = (
-  node: SyntheticVisibleNode,
-  graph: DependencyGraph
-) =>
-  isSyntheticContentNode(node, graph) ||
-  /fixed|relative|absolute/.test(node.style.position || "static");
-
-export const isSyntheticVisibleNodeResizable = (
-  node: SyntheticVisibleNode,
-  graph: DependencyGraph
-) =>
-  isSyntheticContentNode(node, graph) ||
-  isSyntheticVisibleNodeMovable(node, graph) ||
-  /block|inline-block|flex|inline-flex/.test(node.style.display || "inline");
-
 /*------------------------------------------
  * GETTERS
  *-----------------------------------------*/
@@ -194,29 +176,31 @@ export const getInheritedAndSelfOverrides = memoize(
 );
 
 export const getSyntheticNodeStyleColors = memoize((node: SyntheticNode) => {
-  return uniq(_getSyntheticNodeStyleColors(node));
+  console.error("TODO need to do this");
+  return [];
 });
 
-export const _getSyntheticNodeStyleColors = memoize((node: SyntheticNode) => {
-  const colors: string[] = [];
-  if ((node as SyntheticVisibleNode).style) {
-    for (const key in (node as SyntheticVisibleNode).style) {
-      const value: string = (node as SyntheticVisibleNode).style[key];
-      const colorParts = String(value).match(/((rgba?|hsl)\(.*\)|#[^\s]+)/);
-      if (colorParts) {
-        colors.push(colorParts[1]);
-      }
-    }
-  }
+// TODO - move to CSSOM
+// export const _getSyntheticNodeStyleColors = memoize((node: SyntheticNode) => {
+//   const colors: string[] = [];
+//   if ((node as SyntheticVisibleNode).style) {
+//     for (const key in (node as SyntheticVisibleNode).style) {
+//       const value: string = (node as SyntheticVisibleNode).style[key];
+//       const colorParts = String(value).match(/((rgba?|hsl)\(.*\)|#[^\s]+)/);
+//       if (colorParts) {
+//         colors.push(colorParts[1]);
+//       }
+//     }
+//   }
 
-  for (let i = 0, { length } = node.children; i < length; i++) {
-    colors.push(
-      ..._getSyntheticNodeStyleColors(node.children[i] as SyntheticNode)
-    );
-  }
+//   for (let i = 0, { length } = node.children; i < length; i++) {
+//     colors.push(
+//       ..._getSyntheticNodeStyleColors(node.children[i] as SyntheticNode)
+//     );
+//   }
 
-  return colors;
-});
+//   return colors;
+// });
 
 export const getSyntheticSourceNode = (
   node: SyntheticVisibleNode | SyntheticDocument,
