@@ -73,11 +73,11 @@ function* startBuild() {
   // check if process has been removed from state
   yield fork(function* handleScriptChanged() {
     while (1) {
-      const action = (yield take([
+      const action = ((yield take([
         BUILD_SCRIPT_CONFIG_CHANGED,
         BUILD_BUTTON_STOP_CLICKED,
         TD_PROJECT_LOADED
-      ])) as Action<any>;
+      ])) as any) as Action<any>;
 
       // slight pause to ensure that reducer is called first
       yield delay(0);

@@ -2,7 +2,9 @@ import { mapValues, omit } from "lodash";
 import {
   SyntheticVisibleNode,
   SyntheticElement,
-  SyntheticTextNode
+  SyntheticTextNode,
+  SyntheticContentNode,
+  SyntheticDocument
 } from "./synthetic-dom";
 import { ComputedDisplayInfo } from "./edit";
 import { getTreeNodeFromPath, EMPTY_OBJECT, memoize } from "tandem-common";
@@ -16,33 +18,55 @@ import {
   RemoveChildNodeOperationalTransform
 } from "./ot";
 import { PCSourceTagNames } from "./dsl";
+import {
+  SyntheticCSSStyleSheet,
+  stringifySyntheticCSSObject
+} from "./synthetic-cssom";
 
 const SVG_XMLNS = "http://www.w3.org/2000/svg";
 
-export type SyntheticNativeNodeMap = {
+export type SyntheticNativeDOMMap = {
   [identifier: string]: Node;
+};
+
+export type SyntheticNativeCSSOMMap = {
+  [identifier: string]: CSSStyleRule;
+};
+
+export type SyntheticNativeMap = {
+  dom: SyntheticNativeDOMMap;
+  cssom: SyntheticNativeCSSOMMap;
 };
 
 export const renderDOM = (
   native: HTMLElement,
-  synthetic: SyntheticVisibleNode,
+  syntheticContentNode: SyntheticContentNode,
   document: Document = window.document
 ) => {
   while (native.childNodes.length) {
     native.removeChild(native.childNodes[0]);
   }
 
-  const nativeMap = {};
+  const domMap = {};
+  const cssomMap = {};
+
+  if (syntheticContentNode.sheet) {
+    native.appendChild(
+      createStyle(syntheticContentNode.sheet, document, cssomMap)
+    );
+  }
 
   // Not ethat we cannot render directly to the element passed in
   // since we need to assume that its type is immutable (like body)
   // applySyntheticNodeProps(native, synthetic, nativeMap, true);
-  native.appendChild(createNativeNode(synthetic, document, nativeMap, true));
+  native.appendChild(
+    createNativeNode(syntheticContentNode, document, domMap, true)
+  );
 
-  return nativeMap;
+  return { dom: domMap, cssom: null };
 };
 
-export const waitForDOMReady = (map: SyntheticNativeNodeMap) => {
+export const waitForDOMReady = (map: SyntheticNativeDOMMap) => {
   const loadableElements = Object.values(map).filter(element =>
     /img/.test(element.nodeName)
   ) as (HTMLImageElement)[];
@@ -56,8 +80,20 @@ export const waitForDOMReady = (map: SyntheticNativeNodeMap) => {
   );
 };
 
+const createStyle = (
+  sheet: SyntheticCSSStyleSheet,
+  document: Document,
+  cssomMap
+) => {
+  const style = document.createElement("style");
+  style.type = "text/css";
+  style.textContent = stringifySyntheticCSSObject(sheet);
+
+  return style;
+};
+
 export const computeDisplayInfo = (
-  map: SyntheticNativeNodeMap
+  map: SyntheticNativeDOMMap
 ): ComputedDisplayInfo => {
   const computed: ComputedDisplayInfo = {};
 
@@ -119,24 +155,10 @@ const SVG_STYlE_KEY_MAP = {
   background: "fill"
 };
 
-const setStyle = (target: HTMLElement, style: any) => {
-  const normalizedStyle = normalizeStyle(style);
-  let cstyle;
-  if (target.namespaceURI === SVG_XMLNS) {
-    cstyle = {};
-    for (const key in normalizedStyle) {
-      cstyle[SVG_STYlE_KEY_MAP[key] || key] = normalizedStyle[key];
-    }
-  } else {
-    cstyle = normalizedStyle;
-  }
-  Object.assign(target.style, cstyle);
-};
-
 const createNativeNode = (
   synthetic: SyntheticVisibleNode,
   document: Document,
-  map: SyntheticNativeNodeMap,
+  map: SyntheticNativeDOMMap,
   isContentNode: boolean,
   xmlns?: string
 ) => {
@@ -168,7 +190,7 @@ const createNativeNode = (
 const applySyntheticNodeProps = (
   nativeElement: HTMLElement,
   synthetic: SyntheticVisibleNode,
-  map: SyntheticNativeNodeMap,
+  map: SyntheticNativeDOMMap,
   isContentNode: boolean,
   xmlns?: string
 ) => {
@@ -178,9 +200,9 @@ const applySyntheticNodeProps = (
   for (const name in attrs) {
     setAttribute(nativeElement, name, attrs[name]);
   }
-  if (synthetic.style) {
-    setStyle(nativeElement, synthetic.style);
-  }
+
+  nativeElement.setAttribute("class", synthetic.className);
+
   setStyleConstraintsIfRoot(synthetic, nativeElement, isContentNode);
   if (isText) {
     nativeElement.appendChild(
@@ -201,7 +223,7 @@ const applySyntheticNodeProps = (
 
 const removeElementsFromMap = (
   synthetic: SyntheticVisibleNode,
-  map: SyntheticNativeNodeMap
+  map: SyntheticNativeDOMMap
 ) => {
   map[synthetic.id] = undefined;
   for (let i = 0, { length } = synthetic.children; i < length; i++) {
@@ -213,7 +235,7 @@ export const patchDOM = (
   transforms: TreeNodeOperationalTransform[],
   synthetic: SyntheticVisibleNode,
   root: HTMLElement,
-  map: SyntheticNativeNodeMap
+  map: SyntheticNativeDOMMap
 ) => {
   let newMap = map;
   let newSyntheticTree: SyntheticVisibleNode = synthetic;
@@ -409,7 +431,6 @@ const resetElementStyle = (
       target.style.margin = "0px";
     }
   }
-  setStyle(target, synthetic.style || EMPTY_OBJECT);
 };
 
 const removeClickableStyle = (

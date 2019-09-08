@@ -1,4 +1,4 @@
-import { PCStyleBlock } from "./dsl";
+import { PCStyleBlock, PCVisibleNode, PCNode } from "./dsl";
 import { generateUID, memoize, KeyValuePair } from "tandem-common";
 
 export enum SyntheticCSSObjectType {
@@ -12,11 +12,12 @@ export type BaseSyntheticCSSObject<TType extends SyntheticCSSObjectType> = {
 };
 
 export type SyntheticCSSStyleSheet = {
+  sourceNodeId: string;
   rules: SyntheticCSSRule[];
 } & BaseSyntheticCSSObject<SyntheticCSSObjectType.STYLE_SHEET>;
 
 export type SyntheticCSSStyleRule = {
-  source: PCStyleBlock;
+  sourceNodeId: string;
   selectorText: string;
   style: KeyValuePair<string>[];
 } & BaseSyntheticCSSObject<SyntheticCSSObjectType.STYLE_RULE>;
@@ -25,9 +26,11 @@ export type SyntheticCSSRule = SyntheticCSSStyleRule;
 export type SyntheticCSSObject = SyntheticCSSStyleRule | SyntheticCSSStyleSheet;
 
 export const createSyntheticCSSStyleSheet = (
-  rules: SyntheticCSSRule[]
+  rules: SyntheticCSSRule[],
+  source: PCNode
 ): SyntheticCSSStyleSheet => ({
-  id: generateUID(),
+  sourceNodeId: source.id,
+  id: `synthetic-css-${source.id}`,
   type: SyntheticCSSObjectType.STYLE_SHEET,
   rules
 });
@@ -37,9 +40,9 @@ export const createSyntheticCSSStyleRule = (
   properties: KeyValuePair<string>[],
   source: PCStyleBlock
 ): SyntheticCSSStyleRule => ({
-  id: generateUID(),
+  id: `synthetic-css-${source.id}`,
   type: SyntheticCSSObjectType.STYLE_RULE,
-  source,
+  sourceNodeId: source.id,
   selectorText,
   style: properties
 });

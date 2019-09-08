@@ -67,10 +67,10 @@ export const generateSyntheticStyleSheet = memoize(
       []
     );
 
-    return createSyntheticCSSStyleSheet([
-      ...contentNodeRules,
-      ...refComponentRules
-    ]);
+    return createSyntheticCSSStyleSheet(
+      [...contentNodeRules, ...refComponentRules],
+      contentNode
+    );
   }
 );
 

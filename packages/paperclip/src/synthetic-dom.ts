@@ -47,7 +47,7 @@ export type SyntheticBaseNode = {
 
 export type SyntheticDocument = {
   instancePath?: string;
-  children: SyntheticVisibleNode[];
+  children: SyntheticContentNode[];
 } & SyntheticBaseNode;
 
 export type SyntheticElement = {
@@ -59,10 +59,6 @@ export type SyntheticElement = {
   style: KeyValue<any>;
   children: Array<SyntheticVisibleNode | PCOverride>;
 } & SyntheticBaseNode;
-
-export type SyntheticStyle = {
-  sheet: SyntheticCSSStyleSheet;
-} & SyntheticElement;
 
 export type SyntheticInstanceElement = {
   variant: KeyValue<boolean>;
@@ -80,10 +76,10 @@ export type SyntheticTextNode = {
 } & SyntheticBaseNode;
 
 export type SyntheticVisibleNode = SyntheticElement | SyntheticTextNode;
-export type SyntheticNode =
-  | SyntheticDocument
-  | SyntheticStyle
-  | SyntheticVisibleNode;
+export type SyntheticContentNode = {
+  sheet?: SyntheticCSSStyleSheet;
+} & SyntheticVisibleNode;
+export type SyntheticNode = SyntheticDocument | SyntheticVisibleNode;
 
 /*------------------------------------------
  * STATE FACTORIES
@@ -93,7 +89,7 @@ export const createSytheticDocument = (
   sourceNodeId: string,
   children?: SyntheticVisibleNode[]
 ): SyntheticDocument => ({
-  id: generateUID(),
+  id: `synthetic-dom-${sourceNodeId}`,
   metadata: EMPTY_OBJECT,
   sourceNodeId,
   name: SYNTHETIC_DOCUMENT_NODE_NAME,

@@ -24,7 +24,6 @@ import {
 import {
   memoize,
   KeyValue,
-  generateUID,
   filterNestedNodes,
   EMPTY_ARRAY,
   EMPTY_OBJECT,
@@ -85,7 +84,6 @@ export const compileContentNodeToVanillaRenderer = memoize(
     rootDirectory: string
   ) => {
     return new Function(
-      `generateUID`,
       `merge`,
       `return ` +
         translateContentNode(
@@ -96,7 +94,7 @@ export const compileContentNodeToVanillaRenderer = memoize(
           sourceUri,
           rootDirectory
         )
-    )(generateUID, merge);
+    )(merge);
   }
 );
 
@@ -225,7 +223,7 @@ const translateVisibleNode = memoize(
       }
 
       return `{
-      id: generateUID(),
+      id: "synthetic-dom-${node.id}" + childInstancePath,
       sourceNodeId: ${isContentNode ? "instanceSourceNodeId" : `"${node.id}"`},
       instancePath: ${
         isContentNode ? 'instancePath || ""' : `childInstancePath`
@@ -242,7 +240,7 @@ const translateVisibleNode = memoize(
     }`;
     } else if (node.name === PCSourceTagNames.TEXT) {
       return `{
-      id: generateUID(),
+      id: "synthetic-dom-${node.id}" + childInstancePath,
       sourceNodeId: "${node.id}",
       className: _${node.id}ClassName,
       style: EMPTY_OBJECT,
@@ -259,7 +257,7 @@ const translateVisibleNode = memoize(
       // in the future.
       if (node.targetType === PCSourceTagNames.ELEMENT) {
         return `{
-          id: generateUID(),
+          id: "synthetic-dom-${node.id}" + childInstancePath,
           sourceNodeId: "${node.id}",
           className: _${node.id}ClassName,
           style: EMPTY_OBJECT,
@@ -274,7 +272,7 @@ const translateVisibleNode = memoize(
         }`;
       } else if (node.targetType === PCSourceTagNames.TEXT) {
         return `{
-          id: generateUID(),
+          id: "synthetic-dom-${node.id}" + childInstancePath,
           sourceNodeId: "${node.id}",
           className: _${node.id}ClassName,
           style: EMPTY_OBJECT,

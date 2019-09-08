@@ -16,7 +16,7 @@ import {
 import { publicActionCreator } from "tandem-common";
 import {
   ComputedDisplayInfo,
-  SyntheticNativeNodeMap,
+  SyntheticNativeDOMMap,
   SyntheticVisibleNode,
   PCNodeClip,
   PCVariantTrigger,
@@ -340,7 +340,7 @@ export type ProjectLoaded = {
 } & Action;
 
 export type DocumentRendered = {
-  nativeMap: SyntheticNativeNodeMap;
+  nativeMap: SyntheticNativeDOMMap;
   documentId: string;
   info: ComputedDisplayInfo;
 } & Action;
@@ -1841,7 +1841,7 @@ export const inspectorNodePasted = (
 export const documentRendered = (
   documentId: string,
   info: ComputedDisplayInfo,
-  nativeMap: SyntheticNativeNodeMap
+  nativeMap: SyntheticNativeDOMMap
 ): DocumentRendered => ({
   nativeMap,
   documentId,

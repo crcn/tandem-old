@@ -8,10 +8,11 @@ import {
   PCRuntimeEvaluated
 } from "./actions";
 import {
-  SyntheticNativeNodeMap,
+  SyntheticNativeDOMMap,
   renderDOM,
   patchDOM,
-  computeDisplayInfo
+  computeDisplayInfo,
+  SyntheticNativeMap
 } from "./dom-renderer";
 import {
   KeyValue,
@@ -28,7 +29,8 @@ import {
   getSyntheticNodeById,
   SyntheticDocument,
   SyntheticVisibleNode,
-  getSyntheticDocumentByDependencyUri
+  getSyntheticDocumentByDependencyUri,
+  SyntheticContentNode
 } from "./synthetic-dom";
 import { PCRuntime, LocalRuntimeInfo } from "./runtime";
 import { fsCacheBusy } from "fsbox";
@@ -218,7 +220,7 @@ export const createPaperclipSaga = ({
         }));
     };
 
-    const frameNodeMap: KeyValue<SyntheticNativeNodeMap> = {};
+    const frameNodeMap: KeyValue<SyntheticNativeMap> = {};
 
     function* initContainer(frame: Frame, graph: DependencyGraph) {
       const container = createContainer();
@@ -265,7 +267,8 @@ export const createPaperclipSaga = ({
           const contentNode = getSyntheticNodeById(
             frame.syntheticContentNodeId,
             state.documents
-          );
+          ) as SyntheticContentNode;
+
           const graph = state.graph;
 
           // happens on reload
@@ -273,17 +276,12 @@ export const createPaperclipSaga = ({
             continue;
           }
           const body = iframe.contentDocument.body;
-          yield put(
-            pcFrameRendered(
-              frame,
-              computeDisplayInfo(
-                (frameNodeMap[frame.syntheticContentNodeId] = renderDOM(
-                  body,
-                  contentNode
-                ))
-              )
-            )
-          );
+
+          const nativeMap = (frameNodeMap[
+            frame.syntheticContentNodeId
+          ] = renderDOM(body, contentNode));
+
+          yield put(pcFrameRendered(frame, computeDisplayInfo(nativeMap.dom)));
         } else if (eventType === "unload") {
           break;
         }
@@ -291,12 +289,6 @@ export const createPaperclipSaga = ({
 
       yield call(watchContainer, container, frame);
     }
-
-    function patchContainer2(
-      frame: Frame,
-      contentNode: SyntheticVisibleNode,
-      ots: TreeNodeOperationalTransform[]
-    ) {}
 
     function* patchContainer(
       frame: Frame,
@@ -312,17 +304,20 @@ export const createPaperclipSaga = ({
         return;
       }
 
-      frameNodeMap[frame.syntheticContentNodeId] = patchDOM(
-        ots,
-        contentNode,
-        body,
-        frameNodeMap[frame.syntheticContentNodeId]
-      );
+      frameNodeMap[frame.syntheticContentNodeId] = {
+        ...frameNodeMap[frame.syntheticContentNodeId],
+        dom: patchDOM(
+          ots,
+          contentNode,
+          body,
+          frameNodeMap[frame.syntheticContentNodeId].dom
+        )
+      };
 
       yield put(
         pcFrameRendered(
           frame,
-          computeDisplayInfo(frameNodeMap[frame.syntheticContentNodeId])
+          computeDisplayInfo(frameNodeMap[frame.syntheticContentNodeId].dom)
         )
       );
 

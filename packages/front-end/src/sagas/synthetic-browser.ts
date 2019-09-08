@@ -21,7 +21,7 @@
 //   computeDisplayInfo,
 //   waitForDOMReady,
 //   SyntheticDocument,
-//   SyntheticNativeNodeMap
+//   SyntheticNativeDOMMap
 // } from "paperclip";
 // import { eventChannel } from "redux-saga";
 // import {
@@ -93,7 +93,7 @@
 
 // function* componentDocumentDisplayInfo(
 //   documentId: string,
-//   nativeNodeMap: SyntheticNativeNodeMap
+//   nativeNodeMap: SyntheticNativeDOMMap
 // ) {
 //   yield put(
 //     documentRendered(
