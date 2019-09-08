@@ -1,8 +1,7 @@
 Immediate:
 
+- [ ] wire up style blocks
 - [ ] variants for HTML compiler
-- [ ] new HTML compiler (needed to test renderer works)
-- [ ] SyntheticStyleSheet (needed for pseudo selectors)
 - [ ] make CSS selectors readable
 - [ ] fix vanilla renderer
 - [ ] move slots to params
