@@ -1,5 +1,6 @@
 Immediate:
 
+- [ ] diffing algorithm
 - [ ] realtime connection between Figma & Tandem
   - [ ] connect _mixin_
   - [ ] can do away with pretty styler

@@ -30,7 +30,7 @@ export type SyntheticNativeDOMMap = {
 };
 
 export type SyntheticNativeCSSOMMap = {
-  [identifier: string]: CSSStyleRule;
+  [identifier: string]: CSSRule;
 };
 
 export type SyntheticNativeMap = {
@@ -48,11 +48,14 @@ export const renderDOM = (
   }
 
   const domMap = {};
-  const cssomMap = {};
+  let cssomMap = {};
 
   if (syntheticContentNode.sheet) {
-    native.appendChild(
-      createStyle(syntheticContentNode.sheet, document, cssomMap)
+    const style = createStyle(syntheticContentNode.sheet, document, cssomMap);
+    native.appendChild(style);
+    cssomMap = createCSSOMMap(
+      style.sheet as CSSStyleSheet,
+      syntheticContentNode.sheet
     );
   }
 
@@ -63,7 +66,7 @@ export const renderDOM = (
     createNativeNode(syntheticContentNode, document, domMap, true)
   );
 
-  return { dom: domMap, cssom: null };
+  return { dom: domMap, cssom: cssomMap };
 };
 
 export const waitForDOMReady = (map: SyntheticNativeDOMMap) => {
@@ -88,7 +91,6 @@ const createStyle = (
   const style = document.createElement("style");
   style.type = "text/css";
   style.textContent = stringifySyntheticCSSObject(sheet);
-
   return style;
 };
 
@@ -114,6 +116,20 @@ export const computeDisplayInfo = (
   }
 
   return computed;
+};
+
+const createCSSOMMap = (
+  nativeSheet: CSSStyleSheet,
+  syntheticSheet: SyntheticCSSStyleSheet
+) => {
+  const map: SyntheticNativeCSSOMMap = {};
+
+  for (let i = 0, n = syntheticSheet.rules.length; i < n; i++) {
+    const rule = syntheticSheet.rules[i];
+    map[rule.id] = nativeSheet.cssRules[i];
+  }
+
+  return map;
 };
 
 const setStyleConstraintsIfRoot = (
