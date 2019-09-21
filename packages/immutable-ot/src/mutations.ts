@@ -17,30 +17,30 @@ type BaseOTMutation<TType extends MutationType> = {
   path: Key[];
 };
 
-type Insert = {
+export type Insert = {
   index: number;
   value: any;
 } & BaseOTMutation<MutationType.INSERT>;
 
-type Remove = {
+export type Remove = {
   index: number;
 } & BaseOTMutation<MutationType.REMOVE>;
 
-type Replace = {
+export type Replace = {
   value: any;
 } & BaseOTMutation<MutationType.REPLACE>;
 
-type Move = {
+export type Move = {
   oldIndex: number;
   newIndex: number;
 } & BaseOTMutation<MutationType.MOVE>;
 
-type Set = {
+export type Set = {
   propertyName: string;
   value: any;
 } & BaseOTMutation<MutationType.SET>;
 
-type Unset = {
+export type Unset = {
   propertyName: string;
 } & BaseOTMutation<MutationType.UNSET>;
 

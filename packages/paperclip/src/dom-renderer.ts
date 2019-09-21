@@ -8,15 +8,7 @@ import {
 } from "./synthetic-dom";
 import { ComputedDisplayInfo } from "./edit";
 import { getTreeNodeFromPath, EMPTY_OBJECT, memoize } from "tandem-common";
-import {
-  TreeNodeOperationalTransformType,
-  MoveChildNodeOperationalTransform,
-  TreeNodeOperationalTransform,
-  patchTreeNode,
-  SetNodePropertyOperationalTransform,
-  InsertChildNodeOperationalTransform,
-  RemoveChildNodeOperationalTransform
-} from "./ot";
+import { MutationType, Mutation, getValue, patch, Set } from "immutable-ot";
 import { PCSourceTagNames } from "./dsl";
 import {
   SyntheticCSSStyleSheet,
@@ -233,7 +225,6 @@ const applySyntheticNodeProps = (
     }
   }
 
-  makeElementClickable(nativeElement, synthetic, isContentNode);
   return (map[synthetic.id] = nativeElement);
 };
 
@@ -248,7 +239,7 @@ const removeElementsFromMap = (
 };
 
 export const patchDOM = (
-  transforms: TreeNodeOperationalTransform[],
+  transforms: Mutation[],
   synthetic: SyntheticVisibleNode,
   root: HTMLElement,
   map: SyntheticNativeDOMMap
@@ -257,28 +248,18 @@ export const patchDOM = (
   let newSyntheticTree: SyntheticVisibleNode = synthetic;
 
   for (const transform of transforms) {
-    const oldSyntheticTarget = getTreeNodeFromPath(
-      transform.nodePath,
-      newSyntheticTree
-    );
-    const isContentNode = transform.nodePath.length === 0;
+    const oldSyntheticTarget = getValue(newSyntheticTree, transform.path);
+    const isContentNode = transform.path.length === 0;
     const target = newMap[oldSyntheticTarget.id] as HTMLElement;
-    newSyntheticTree = patchTreeNode([transform], newSyntheticTree);
-    const syntheticTarget = getTreeNodeFromPath(
-      transform.nodePath,
-      newSyntheticTree
-    );
+    newSyntheticTree = patch(newSyntheticTree, [transform]);
+    const syntheticTarget = getValue(newSyntheticTree, transform.path);
     switch (transform.type) {
-      case TreeNodeOperationalTransformType.SET_PROPERTY: {
-        const {
-          name,
-          value
-        } = transform as SetNodePropertyOperationalTransform;
+      case MutationType.SET: {
+        const { propertyName: name, value } = transform;
 
         if (name === "style") {
           resetElementStyle(target, syntheticTarget);
           setStyleConstraintsIfRoot(syntheticTarget, target, isContentNode);
-          makeElementClickable(target, syntheticTarget, isContentNode);
         } else if (name === "attributes") {
           for (const key in value) {
             if (!value[key]) {
@@ -294,13 +275,12 @@ export const patchDOM = (
           }
           const xmlnsTransform = transforms.find(
             transform =>
-              transform.type ===
-                TreeNodeOperationalTransformType.SET_PROPERTY &&
-              transform.name === "attributes" &&
+              transform.type === MutationType.SET &&
+              transform.propertyName === "attributes" &&
               transform.value.xmlns
-          ) as SetNodePropertyOperationalTransform;
+          ) as Set;
           const newTarget = createNativeNode(
-            getTreeNodeFromPath(transform.nodePath, newSyntheticTree),
+            getValue(newSyntheticTree, transform.path),
             root.ownerDocument,
             newMap,
             isContentNode,
@@ -315,11 +295,8 @@ export const patchDOM = (
 
         break;
       }
-      case TreeNodeOperationalTransformType.INSERT_CHILD: {
-        const {
-          child,
-          index
-        } = transform as InsertChildNodeOperationalTransform;
+      case MutationType.INSERT: {
+        const { value: child, index } = transform;
 
         if (newMap === map) {
           newMap = { ...map };
@@ -336,19 +313,29 @@ export const patchDOM = (
 
         break;
       }
-      case TreeNodeOperationalTransformType.REMOVE_CHILD: {
-        const { index } = transform as RemoveChildNodeOperationalTransform;
+      case MutationType.REMOVE: {
+        const { index } = transform;
         target.removeChild(target.childNodes[index]);
-        if (target.childNodes.length === 0) {
-          makeElementClickable(target, syntheticTarget, isContentNode);
-        }
         break;
       }
-      case TreeNodeOperationalTransformType.MOVE_CHILD: {
-        const {
-          oldIndex,
-          newIndex
-        } = transform as MoveChildNodeOperationalTransform;
+      case MutationType.REPLACE: {
+        const { value: child } = transform;
+
+        const nativeChild = createNativeNode(
+          child as SyntheticVisibleNode,
+          root.ownerDocument,
+          newMap,
+          false,
+          target.namespaceURI
+        );
+
+        const parent = target.parentNode;
+        parent.insertBefore(nativeChild, target);
+        target.remove();
+        break;
+      }
+      case MutationType.MOVE: {
+        const { oldIndex, newIndex } = transform;
         const child = target.childNodes[oldIndex];
         target.removeChild(child);
         insertChild(target, child, newIndex);
@@ -394,42 +381,6 @@ const EMPTY_ELEMENT_STYLE_NAMES = [
 const stripEmptyElement = memoize(style =>
   omit(style, EMPTY_ELEMENT_STYLE_NAMES)
 );
-
-const makeElementClickable = (
-  target: HTMLElement,
-  synthetic: SyntheticVisibleNode,
-  isContentNode: boolean
-) => {
-  // if (synthetic.name === "div" && !isContentNode) {
-  //   const style = synthetic.style || EMPTY_OBJECT;
-  //   if (
-  //     target.childNodes.length === 0 &&
-  //     Object.keys(stripEmptyElement(style)).length === 0
-  //   ) {
-  //     target.dataset.empty = "1";
-  //     Object.assign(target.style, {
-  //       width: `100%`,
-  //       height: `50px`,
-  //       minWidth: `50px`,
-  //       border: `2px dashed rgba(0,0,0,0.05)`,
-  //       boxSizing: `border-box`,
-  //       borderRadius: `2px`,
-  //       position: `relative`
-  //     });
-  //     const placeholder = document.createElement("div");
-  //     Object.assign(placeholder.style, {
-  //       left: `50%`,
-  //       top: `50%`,
-  //       position: `absolute`,
-  //       transform: `translate(-50%, -50%)`,
-  //       color: `rgba(0,0,0,0.05)`,
-  //       fontFamily: "Helvetica"
-  //     });
-  //     placeholder.textContent = `Empty element`;
-  //     target.appendChild(placeholder);
-  //   }
-  // }
-};
 
 const resetElementStyle = (
   target: HTMLElement,

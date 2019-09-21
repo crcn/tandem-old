@@ -27,7 +27,7 @@ import {
   getPCNodeDependency
 } from "./dsl";
 import { last } from "lodash";
-
+import { isNodeMutation, getMutationTargetNode } from "./ot";
 import {
   getSyntheticDocumentsSourceMap,
   getSyntheticNodeById,
@@ -39,11 +39,7 @@ import {
   getSyntheticDocumentByDependencyUri
 } from "./synthetic-dom";
 
-import {
-  diffTreeNode,
-  TreeNodeOperationalTransformType,
-  patchTreeNode
-} from "./ot";
+import { diff, patch, Mutation, getValue, MutationType } from "immutable-ot";
 
 import {
   TreeNode,
@@ -438,20 +434,24 @@ const patchInspectorTree2 = (
   const newModule = newGraph[uri].content;
   const oldModule = oldGraph[uri].content;
   let tmpModule = oldModule;
-  const now = Date.now();
-  const ots = diffTreeNode(tmpModule, newModule);
+  const ots = diff(tmpModule, newModule);
 
   let newSourceMap = sourceMap;
 
   for (const ot of ots) {
-    const targetNode = getTreeNodeFromPath(ot.nodePath, tmpModule) as PCNode;
+    if (!isNodeMutation(ot)) {
+      continue;
+    }
+
+    const targetNode = getMutationTargetNode(tmpModule, ot);
 
     if (isUnreppedSourceNode(targetNode as PCNode)) {
       continue;
     }
 
-    tmpModule = patchTreeNode([ot], tmpModule);
-    const patchedTarget = getTreeNodeFromPath(ot.nodePath, tmpModule) as PCNode;
+    tmpModule = patch(tmpModule, [ot]);
+
+    const patchedTarget = getMutationTargetNode(tmpModule, ot) as PCNode;
 
     const targetInspectorNodeInstanceIds = newSourceMap[patchedTarget.id];
 
@@ -469,8 +469,8 @@ const patchInspectorTree2 = (
               rootInspectorNode
             );
       switch (ot.type) {
-        case TreeNodeOperationalTransformType.INSERT_CHILD: {
-          const { child } = ot;
+        case MutationType.INSERT: {
+          const { value: child } = ot;
           const pcChild = child as PCNode;
           const reppedChildren = patchedTarget.children.filter(
             child => !isUnreppedSourceNode(child)
@@ -573,7 +573,7 @@ const patchInspectorTree2 = (
 
           break;
         }
-        case TreeNodeOperationalTransformType.REMOVE_CHILD: {
+        case MutationType.REMOVE: {
           const { index } = ot;
           const pcChild = targetNode.children[index] as PCNode;
           const inspectorChild = newInspectorNode.children.find(child => {
@@ -609,7 +609,7 @@ const patchInspectorTree2 = (
 
           break;
         }
-        case TreeNodeOperationalTransformType.MOVE_CHILD: {
+        case MutationType.MOVE: {
           const { oldIndex, newIndex } = ot;
           const pcChild = targetNode.children[oldIndex] as PCNode;
           const beforeChild = targetNode.children[newIndex] as PCNode;
@@ -641,8 +641,8 @@ const patchInspectorTree2 = (
 
           break;
         }
-        case TreeNodeOperationalTransformType.SET_PROPERTY: {
-          const { name, value } = ot;
+        case MutationType.SET: {
+          const { propertyName: name, value } = ot;
 
           // instance type change, so we need to replace all current children with appropriate shadow & plugs
           if (

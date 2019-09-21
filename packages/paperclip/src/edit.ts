@@ -96,7 +96,7 @@ import {
 } from "./synthetic-dom";
 import * as path from "path";
 // import { convertFixedBoundsToRelative } from "./synthetic-layout";
-import { diffTreeNode, patchTreeNode } from "./ot";
+import { diff, patch } from "immutable-ot";
 import { evaluateDependencyGraph } from "./evaluate";
 import { FSSandboxRootState } from "fsbox";
 import {
@@ -2006,7 +2006,7 @@ export const evaluateEditedStateSync = (state: PCEditorState) => {
     );
     documents.push(
       oldDocument
-        ? patchTreeNode(diffTreeNode(oldDocument, newDocument), oldDocument)
+        ? patch(oldDocument, diff(oldDocument, newDocument))
         : newDocument
     );
   }

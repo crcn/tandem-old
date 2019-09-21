@@ -22,7 +22,7 @@ import {
   memoize
 } from "tandem-common";
 import { DependencyGraph } from "./graph";
-import { TreeNodeOperationalTransform } from "./ot";
+import { Mutation } from "immutable-ot";
 import { PCEditorState, Frame, getSyntheticDocumentFrames } from "./edit";
 import {
   SyntheticNode,
@@ -207,16 +207,16 @@ export const createPaperclipSaga = ({
     const mapContentNodeOperationalTransforms = (
       syntheticContentNodeId: string,
       document: SyntheticDocument,
-      ots: TreeNodeOperationalTransform[]
+      ots: Mutation[]
     ) => {
       const index = document.children.findIndex(
         child => child.id === syntheticContentNodeId
       );
       return ots
-        .filter(ot => ot.nodePath[0] === index)
+        .filter(ot => ot.path[0] === index)
         .map(ot => ({
           ...ot,
-          nodePath: ot.nodePath.slice(1)
+          path: ot.path.slice(1)
         }));
     };
 
@@ -293,7 +293,7 @@ export const createPaperclipSaga = ({
     function* patchContainer(
       frame: Frame,
       contentNode: SyntheticVisibleNode,
-      ots: TreeNodeOperationalTransform[]
+      ots: Mutation[]
     ) {
       const marker = pmark(`*patchContainer()`);
       const container: HTMLElement = frame.$container;

@@ -27,7 +27,7 @@ import {
   insertChildNode,
   appendChildNode
 } from "tandem-common";
-import { patchTreeNode, diffTreeNode } from "../ot";
+import { diff, patch } from "immutable-ot";
 
 describe(__filename + "#", () => {
   const A_DEP_URI = "a.pc";
@@ -248,10 +248,7 @@ describe(__filename + "#", () => {
       const newGraph = {
         a: {
           ...graph.a,
-          content: patchTreeNode(
-            diffTreeNode(a as PCModule, b as PCModule),
-            a as PCModule
-          )
+          content: patch(a as PCModule, diff(a as PCModule, b as PCModule))
         }
       };
 

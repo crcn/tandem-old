@@ -16,6 +16,7 @@ export const getValue = (object, keyPath: Key[]) => {
     return value && value[part];
   }, object);
 };
+
 export const setValue = (
   object,
   value,

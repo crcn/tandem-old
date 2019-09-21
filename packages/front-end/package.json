@@ -60,6 +60,7 @@
     "classnames": "^2.2.5",
     "crc32": "^0.2.2",
     "fsbox": "^10.1.38",
+    "immutable-ot": "^1.0.0",
     "lodash": "^4.17.15",
     "mime-types": "^2.1.20",
     "paperclip": "^10.1.38",

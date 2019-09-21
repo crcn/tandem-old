@@ -6,7 +6,8 @@
   "scripts": {
     "test": "mocha lib/test",
     "build": "tsc",
-    "build:watch": "tsc --watch"
+    "build:watch": "tsc --watch",
+    "clean": "rm -rf lib && rm -rf node_modules"
   },
   "author": "",
   "license": "ISC",

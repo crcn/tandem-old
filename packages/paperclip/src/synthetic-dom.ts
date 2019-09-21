@@ -31,7 +31,7 @@ import {
   PCModule,
   PCStyleMixin
 } from "./dsl";
-import { diffTreeNode, patchTreeNode } from "./ot";
+import { diff, patch } from "immutable-ot";
 import { SyntheticCSSStyleSheet } from "./synthetic-cssom";
 
 /*------------------------------------------
@@ -542,7 +542,7 @@ export const upsertSyntheticDocument = (
     oldDocuments,
     oldDocumentIndex,
     1,
-    patchTreeNode(diffTreeNode(oldDocument, newDocument), oldDocument)
+    patch(oldDocument, diff(oldDocument, newDocument))
   );
 };
 
