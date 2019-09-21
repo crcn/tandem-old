@@ -312,7 +312,7 @@ import {
   getSyntheticNodeById,
   SyntheticVisibleNode,
   getPCNodeDependency,
-  updateSyntheticVisibleNodePosition,
+  // updateSyntheticVisibleNodePosition,
   updateSyntheticVisibleNodeBounds,
   persistInsertNode,
   persistChangeLabel,
@@ -1204,56 +1204,56 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
 
 export const canvasReducer = (state: RootState, action: Action) => {
   switch (action.type) {
-    case RESIZER_MOVED: {
-      const { point: newPoint } = action as ResizerMoved;
-      state = updateEditorWindow(
-        {
-          movingOrResizing: true
-        },
-        state.activeEditorFilePath,
-        state
-      );
+    // case RESIZER_MOVED: {
+    //   const { point: newPoint } = action as ResizerMoved;
+    //   state = updateEditorWindow(
+    //     {
+    //       movingOrResizing: true
+    //     },
+    //     state.activeEditorFilePath,
+    //     state
+    //   );
 
-      if (
-        isSelectionMovable(
-          state.selectedInspectorNodes,
-          state.sourceNodeInspector,
-          state.graph
-        )
-      ) {
-        const selectionBounds = getSelectionBounds(
-          state.selectedInspectorNodes,
-          state.documents,
-          state.frames,
-          state.graph
-        );
+    //   if (
+    //     isSelectionMovable(
+    //       state.selectedInspectorNodes,
+    //       state.sourceNodeInspector,
+    //       state.graph
+    //     )
+    //   ) {
+    //     const selectionBounds = getSelectionBounds(
+    //       state.selectedInspectorNodes,
+    //       state.documents,
+    //       state.frames,
+    //       state.graph
+    //     );
 
-        let movedBounds = moveBounds(selectionBounds, newPoint);
+    //     let movedBounds = moveBounds(selectionBounds, newPoint);
 
-        for (const node of state.selectedInspectorNodes) {
-          const syntheticNode = getInspectorSyntheticNode(
-            node,
-            state.documents
-          );
-          const itemBounds = getSyntheticVisibleNodeRelativeBounds(
-            syntheticNode,
-            state.frames,
-            state.graph
-          );
-          const newBounds = roundBounds(
-            scaleInnerBounds(itemBounds, selectionBounds, movedBounds)
-          );
+    //     for (const node of state.selectedInspectorNodes) {
+    //       const syntheticNode = getInspectorSyntheticNode(
+    //         node,
+    //         state.documents
+    //       );
+    //       const itemBounds = getSyntheticVisibleNodeRelativeBounds(
+    //         syntheticNode,
+    //         state.frames,
+    //         state.graph
+    //       );
+    //       const newBounds = roundBounds(
+    //         scaleInnerBounds(itemBounds, selectionBounds, movedBounds)
+    //       );
 
-          state = updateSyntheticVisibleNodePosition(
-            newBounds,
-            syntheticNode,
-            state
-          );
-        }
-      }
+    //       state = updateSyntheticVisibleNodePosition(
+    //         newBounds,
+    //         syntheticNode,
+    //         state
+    //       );
+    //     }
+    //   }
 
-      return state;
-    }
+    //   return state;
+    // }
     case FRAME_BOUNDS_CHANGED: {
       const { newBounds } = action as FrameBoundsChanged;
       state = persistSyntheticNodeMetadata(
@@ -3327,8 +3327,8 @@ const shortcutReducer = (state: RootState, action: Action): RootState => {
         ? nextChildren[clamp(index, 0, nextChildren.length - 1)].id
         : getParentTreeNode(parent.id, state.sourceNodeInspector).name !==
           InspectorTreeNodeName.ROOT
-          ? parent.id
-          : null;
+        ? parent.id
+        : null;
 
       if (nextSelectedNodeId) {
         const nextInspectorNode: InspectorNode = getNestedTreeNodeById(

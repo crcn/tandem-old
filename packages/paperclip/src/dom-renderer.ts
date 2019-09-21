@@ -400,38 +400,35 @@ const makeElementClickable = (
   synthetic: SyntheticVisibleNode,
   isContentNode: boolean
 ) => {
-  if (synthetic.name === "div" && !isContentNode) {
-    const style = synthetic.style || EMPTY_OBJECT;
-    if (
-      target.childNodes.length === 0 &&
-      Object.keys(stripEmptyElement(style)).length === 0
-    ) {
-      target.dataset.empty = "1";
-      Object.assign(target.style, {
-        width: `100%`,
-        height: `50px`,
-        minWidth: `50px`,
-        border: `2px dashed rgba(0,0,0,0.05)`,
-        boxSizing: `border-box`,
-        borderRadius: `2px`,
-        position: `relative`
-      });
-
-      const placeholder = document.createElement("div");
-      Object.assign(placeholder.style, {
-        left: `50%`,
-        top: `50%`,
-        position: `absolute`,
-        transform: `translate(-50%, -50%)`,
-        color: `rgba(0,0,0,0.05)`,
-        fontFamily: "Helvetica"
-      });
-
-      placeholder.textContent = `Empty element`;
-
-      target.appendChild(placeholder);
-    }
-  }
+  // if (synthetic.name === "div" && !isContentNode) {
+  //   const style = synthetic.style || EMPTY_OBJECT;
+  //   if (
+  //     target.childNodes.length === 0 &&
+  //     Object.keys(stripEmptyElement(style)).length === 0
+  //   ) {
+  //     target.dataset.empty = "1";
+  //     Object.assign(target.style, {
+  //       width: `100%`,
+  //       height: `50px`,
+  //       minWidth: `50px`,
+  //       border: `2px dashed rgba(0,0,0,0.05)`,
+  //       boxSizing: `border-box`,
+  //       borderRadius: `2px`,
+  //       position: `relative`
+  //     });
+  //     const placeholder = document.createElement("div");
+  //     Object.assign(placeholder.style, {
+  //       left: `50%`,
+  //       top: `50%`,
+  //       position: `absolute`,
+  //       transform: `translate(-50%, -50%)`,
+  //       color: `rgba(0,0,0,0.05)`,
+  //       fontFamily: "Helvetica"
+  //     });
+  //     placeholder.textContent = `Empty element`;
+  //     target.appendChild(placeholder);
+  //   }
+  // }
 };
 
 const resetElementStyle = (

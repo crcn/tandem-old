@@ -21,3 +21,4 @@ export * from "./utils";
 export * from "./style-block";
 export * from "./overrides";
 export * from "./css-translator";
+export * from "./diff-patch";

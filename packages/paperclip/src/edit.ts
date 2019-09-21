@@ -95,7 +95,7 @@ import {
   SyntheticNode
 } from "./synthetic-dom";
 import * as path from "path";
-import { convertFixedBoundsToRelative } from "./synthetic-layout";
+// import { convertFixedBoundsToRelative } from "./synthetic-layout";
 import { diffTreeNode, patchTreeNode } from "./ot";
 import { evaluateDependencyGraph } from "./evaluate";
 import { FSSandboxRootState } from "fsbox";
@@ -482,44 +482,44 @@ export const updateFrameBounds = <TState extends PCEditorState>(
   );
 };
 
-export const updateSyntheticVisibleNodePosition = <
-  TState extends PCEditorState
->(
-  position: Point,
-  node: SyntheticVisibleNode,
-  state: TState
-) => {
-  if (isSyntheticContentNode(node, state.graph)) {
-    return updateFramePosition(
-      position,
-      getSyntheticVisibleNodeFrame(node, state.frames),
-      state
-    );
-  }
+// export const updateSyntheticVisibleNodePosition = <
+//   TState extends PCEditorState
+// >(
+//   position: Point,
+//   node: SyntheticVisibleNode,
+//   state: TState
+// ) => {
+//   if (isSyntheticContentNode(node, state.graph)) {
+//     return updateFramePosition(
+//       position,
+//       getSyntheticVisibleNodeFrame(node, state.frames),
+//       state
+//     );
+//   }
 
-  return updateSyntheticVisibleNode(node, state, node => {
-    const bounds = getSyntheticVisibleNodeRelativeBounds(
-      node,
-      state.frames,
-      state.graph
-    );
-    const newBounds = convertFixedBoundsToRelative(
-      moveBounds(bounds, position),
-      node,
-      getSyntheticVisibleNodeDocument(node.id, state.documents),
-      getSyntheticVisibleNodeFrame(node, state.frames)
-    );
+//   return updateSyntheticVisibleNode(node, state, node => {
+//     const bounds = getSyntheticVisibleNodeRelativeBounds(
+//       node,
+//       state.frames,
+//       state.graph
+//     );
+//     const newBounds = convertFixedBoundsToRelative(
+//       moveBounds(bounds, position),
+//       node,
+//       getSyntheticVisibleNodeDocument(node.id, state.documents),
+//       getSyntheticVisibleNodeFrame(node, state.frames)
+//     );
 
-    return {
-      ...node,
-      style: {
-        ...node.style,
-        left: newBounds.left,
-        top: newBounds.top
-      }
-    };
-  });
-};
+//     return {
+//       ...node,
+//       style: {
+//         ...node.style,
+//         left: newBounds.left,
+//         top: newBounds.top
+//       }
+//     };
+//   });
+// };
 
 export const updateSyntheticVisibleNodeBounds = <TState extends PCEditorState>(
   bounds: Bounds,
