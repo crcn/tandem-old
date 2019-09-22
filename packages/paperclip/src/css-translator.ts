@@ -1,6 +1,5 @@
 import { memoize, KeyValue, hashToKeyValuePair } from "tandem-common";
 import {
-  PCContentNode,
   PCStyleBlock,
   PCComponent,
   PCVariable,
@@ -13,7 +12,6 @@ import {
   PCOverride,
   PCOverridableType,
   getComponentGraphRefMap,
-  getVariableRefMap,
   getAllVariableRefMap
 } from "./dsl";
 import {

@@ -31,11 +31,6 @@ export const patch = <TValue>(oldValue: TValue, mutations: Mutation[]) => {
         target = { ...target, [mutation.propertyName]: mutation.value };
         break;
       }
-      case MutationType.UNSET: {
-        target = { ...target };
-        delete target[mutation.propertyName];
-        break;
-      }
     }
 
     newValue = setValue(newValue, target, mutation.path);

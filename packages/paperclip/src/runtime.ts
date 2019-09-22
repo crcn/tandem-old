@@ -4,7 +4,7 @@ import { SyntheticDocument } from "./synthetic-dom";
 import { evaluateDependencyGraph } from "./evaluate";
 import { KeyValue, pmark, EMPTY_OBJECT } from "tandem-common";
 import { isEqual } from "lodash";
-import { diff, patch, MutationType, Mutation } from "immutable-ot";
+import { diff, patch, Mutation } from "immutable-ot";
 import { PCModule, createPCDependency } from "./dsl";
 
 export interface PCRuntime extends EventEmitter {
@@ -101,6 +101,7 @@ class LocalPCRuntime extends EventEmitter implements PCRuntime {
       let prevSyntheticDocument = this._syntheticDocuments[uri];
       if (prevSyntheticDocument) {
         const ots = diff(prevSyntheticDocument, newSyntheticDocument);
+
         if (ots.length) {
           prevSyntheticDocument = documentMap[uri] = patch(
             prevSyntheticDocument,

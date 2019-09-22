@@ -482,44 +482,23 @@ export const updateFrameBounds = <TState extends PCEditorState>(
   );
 };
 
-// export const updateSyntheticVisibleNodePosition = <
-//   TState extends PCEditorState
-// >(
-//   position: Point,
-//   node: SyntheticVisibleNode,
-//   state: TState
-// ) => {
-//   if (isSyntheticContentNode(node, state.graph)) {
-//     return updateFramePosition(
-//       position,
-//       getSyntheticVisibleNodeFrame(node, state.frames),
-//       state
-//     );
-//   }
+export const updateSyntheticVisibleNodePosition = <
+  TState extends PCEditorState
+>(
+  position: Point,
+  node: SyntheticVisibleNode,
+  state: TState
+) => {
+  if (isSyntheticContentNode(node, state.graph)) {
+    return updateFramePosition(
+      position,
+      getSyntheticVisibleNodeFrame(node, state.frames),
+      state
+    );
+  }
 
-//   return updateSyntheticVisibleNode(node, state, node => {
-//     const bounds = getSyntheticVisibleNodeRelativeBounds(
-//       node,
-//       state.frames,
-//       state.graph
-//     );
-//     const newBounds = convertFixedBoundsToRelative(
-//       moveBounds(bounds, position),
-//       node,
-//       getSyntheticVisibleNodeDocument(node.id, state.documents),
-//       getSyntheticVisibleNodeFrame(node, state.frames)
-//     );
-
-//     return {
-//       ...node,
-//       style: {
-//         ...node.style,
-//         left: newBounds.left,
-//         top: newBounds.top
-//       }
-//     };
-//   });
-// };
+  return state;
+};
 
 export const updateSyntheticVisibleNodeBounds = <TState extends PCEditorState>(
   bounds: Bounds,
@@ -596,6 +575,43 @@ export const persistChangeLabel = <TState extends PCEditorState>(
   const newNode = {
     ...sourceNode,
     label: newLabel
+  };
+
+  return replaceDependencyGraphPCNode(newNode, newNode, state);
+};
+
+export const persistAddStyleBlock = <TState extends PCEditorState>(
+  sourceNode: PCVisibleNode,
+  state: TState
+) => {
+  const newNode: PCVisibleNode = {
+    ...sourceNode,
+    styles: [...sourceNode.styles, createPCStyleBlock([])]
+  };
+
+  return replaceDependencyGraphPCNode(newNode, newNode, state);
+};
+
+export const persistAddStyleBlockProperty = <TState extends PCEditorState>(
+  { id: sourceNodeId }: PCVisibleNode,
+  { id: blockId }: PCStyleBlock,
+  state: TState
+) => {
+  const sourceNode = getPCNode(sourceNodeId, state.graph) as PCVisibleNode;
+  const blockIndex = sourceNode.styles.findIndex(block => block.id === blockId);
+  const block = sourceNode.styles[blockIndex];
+
+  const newNode: PCVisibleNode = {
+    ...sourceNode,
+    styles: arraySplice(sourceNode.styles, blockIndex, 1, {
+      ...block,
+      properties: [
+        ...block.properties,
+
+        // make it empty
+        {}
+      ]
+    })
   };
 
   return replaceDependencyGraphPCNode(newNode, newNode, state);
@@ -1777,7 +1793,6 @@ export const persistCSSProperty = <TState extends PCEditorState>(
     variant,
     (style, override) => {
       const prevStyle = (override && override.value) || EMPTY_ARRAY;
-      console.log(style, prevStyle);
 
       // note that we're omitting null since that kind of value may accidentally override parent props which
       // doesn't transpile to actually overrides styles.

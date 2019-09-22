@@ -231,7 +231,9 @@ import {
   CSS_INSPECTOR_DECLARATION_CHANGED,
   CSS_INSPECTOR_DECLARATION_NAME_CHANGED,
   CSSInspectorDeclarationNameChanged,
-  STYLE_BLOCK_LAST_PROPERTY_TABBED_OR_ENTERED
+  STYLE_BLOCK_LAST_PROPERTY_TABBED_OR_ENTERED,
+  STYLE_ADD_BLOCK_BUTTON_CLICKED,
+  StyleBlockNewPropertyAdded
 } from "../actions";
 import {
   queueOpenFile,
@@ -312,7 +314,7 @@ import {
   getSyntheticNodeById,
   SyntheticVisibleNode,
   getPCNodeDependency,
-  // updateSyntheticVisibleNodePosition,
+  updateSyntheticVisibleNodePosition,
   updateSyntheticVisibleNodeBounds,
   persistInsertNode,
   persistChangeLabel,
@@ -396,7 +398,9 @@ import {
   computePCNodeStyle,
   computeStyleInfo,
   removeStyleMixin,
-  createPCStyleBlock
+  createPCStyleBlock,
+  persistAddStyleBlock,
+  persistAddStyleBlockProperty
 } from "paperclip";
 import {
   roundBounds,
@@ -797,7 +801,6 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
           ? targetFileNode
           : getParentTreeNode(targetFileNode.id, state.projectDirectory)
         : state.projectDirectory;
-      console.log("ST", dirFile);
       state = {
         ...state,
         addNewFileInfo: {
@@ -1038,7 +1041,19 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
     }
 
     case STYLE_BLOCK_LAST_PROPERTY_TABBED_OR_ENTERED: {
-      return state;
+      const { node, block } = action as StyleBlockNewPropertyAdded;
+      return persistAddStyleBlockProperty(node, block, state);
+    }
+
+    case STYLE_ADD_BLOCK_BUTTON_CLICKED: {
+      return persistAddStyleBlock(
+        getInspectorSourceNode(
+          state.selectedInspectorNodes[0],
+          state.sourceNodeInspector,
+          state.graph
+        ) as PCVisibleNode,
+        state
+      );
     }
 
     case SOURCE_INSPECTOR_LAYER_DROPPED: {
@@ -1204,56 +1219,56 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
 
 export const canvasReducer = (state: RootState, action: Action) => {
   switch (action.type) {
-    // case RESIZER_MOVED: {
-    //   const { point: newPoint } = action as ResizerMoved;
-    //   state = updateEditorWindow(
-    //     {
-    //       movingOrResizing: true
-    //     },
-    //     state.activeEditorFilePath,
-    //     state
-    //   );
+    case RESIZER_MOVED: {
+      const { point: newPoint } = action as ResizerMoved;
+      state = updateEditorWindow(
+        {
+          movingOrResizing: true
+        },
+        state.activeEditorFilePath,
+        state
+      );
 
-    //   if (
-    //     isSelectionMovable(
-    //       state.selectedInspectorNodes,
-    //       state.sourceNodeInspector,
-    //       state.graph
-    //     )
-    //   ) {
-    //     const selectionBounds = getSelectionBounds(
-    //       state.selectedInspectorNodes,
-    //       state.documents,
-    //       state.frames,
-    //       state.graph
-    //     );
+      if (
+        isSelectionMovable(
+          state.selectedInspectorNodes,
+          state.sourceNodeInspector,
+          state.graph
+        )
+      ) {
+        const selectionBounds = getSelectionBounds(
+          state.selectedInspectorNodes,
+          state.documents,
+          state.frames,
+          state.graph
+        );
 
-    //     let movedBounds = moveBounds(selectionBounds, newPoint);
+        let movedBounds = moveBounds(selectionBounds, newPoint);
 
-    //     for (const node of state.selectedInspectorNodes) {
-    //       const syntheticNode = getInspectorSyntheticNode(
-    //         node,
-    //         state.documents
-    //       );
-    //       const itemBounds = getSyntheticVisibleNodeRelativeBounds(
-    //         syntheticNode,
-    //         state.frames,
-    //         state.graph
-    //       );
-    //       const newBounds = roundBounds(
-    //         scaleInnerBounds(itemBounds, selectionBounds, movedBounds)
-    //       );
+        for (const node of state.selectedInspectorNodes) {
+          const syntheticNode = getInspectorSyntheticNode(
+            node,
+            state.documents
+          );
+          const itemBounds = getSyntheticVisibleNodeRelativeBounds(
+            syntheticNode,
+            state.frames,
+            state.graph
+          );
+          const newBounds = roundBounds(
+            scaleInnerBounds(itemBounds, selectionBounds, movedBounds)
+          );
 
-    //       state = updateSyntheticVisibleNodePosition(
-    //         newBounds,
-    //         syntheticNode,
-    //         state
-    //       );
-    //     }
-    //   }
+          state = updateSyntheticVisibleNodePosition(
+            newBounds,
+            syntheticNode,
+            state
+          );
+        }
+      }
 
-    //   return state;
-    // }
+      return state;
+    }
     case FRAME_BOUNDS_CHANGED: {
       const { newBounds } = action as FrameBoundsChanged;
       state = persistSyntheticNodeMetadata(

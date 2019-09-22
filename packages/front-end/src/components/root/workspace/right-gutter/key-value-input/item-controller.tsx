@@ -24,7 +24,7 @@ export default (Base: React.ComponentClass<BaseKeyValueItemProps>) => {
           label={
             <EditableLabel
               value={name}
-              editing={editName}
+              editing={editName || name == null}
               onChangeComplete={onNameChangeComplete}
             >
               {name}

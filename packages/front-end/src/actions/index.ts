@@ -30,7 +30,10 @@ import {
   PCQueryType,
   PCMediaQueryCondition,
   PCQuery,
-  PCVariableQueryCondition
+  PCVariableQueryCondition,
+  PCStyleBlock,
+  PCNode,
+  PCVisibleNode
 } from "paperclip";
 import { RegisteredComponent } from "..";
 import {
@@ -330,6 +333,7 @@ export const RELOAD = "RELOAD";
 export const LINK_CICKED = "LINK_CICKED";
 export const STYLE_BLOCK_LAST_PROPERTY_TABBED_OR_ENTERED =
   "STYLE_BLOCK_LAST_PROPERTY_TABBED_OR_ENTERED";
+export const STYLE_ADD_BLOCK_BUTTON_CLICKED = "STYLE_ADD_BLOCK_BUTTON_CLICKED";
 
 export type WrappedEvent<T> = {
   sourceEvent: T;
@@ -847,6 +851,11 @@ export type FileNavigatorNewFileClicked = {
   fileType: AddFileType;
 } & Action;
 
+export type StyleBlockNewPropertyAdded = {
+  block: PCStyleBlock;
+  node: PCVisibleNode;
+} & Action;
+
 export const quickSearchResultItemSplitButtonClick = (
   item: QuickSearchResult
 ): QuickSearchResultItemSplitButtonClicked => ({
@@ -874,8 +883,17 @@ export const editorTabClicked = (
   type: EDITOR_TAB_CLICKED
 });
 
-export const styleBlockLastPropertyTabbedOrEntered = () => ({
-  type: STYLE_BLOCK_LAST_PROPERTY_TABBED_OR_ENTERED
+export const StyleBlockNewPropertyAdded = (
+  node: PCVisibleNode,
+  block: PCStyleBlock
+): StyleBlockNewPropertyAdded => ({
+  type: STYLE_BLOCK_LAST_PROPERTY_TABBED_OR_ENTERED,
+  node,
+  block
+});
+
+export const styleAddBlockButtonClicked = () => ({
+  type: STYLE_ADD_BLOCK_BUTTON_CLICKED
 });
 
 export const editorTabContextMenuOpenInBottomTabOptionClicked = publicActionCreator(

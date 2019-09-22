@@ -48,6 +48,7 @@ const diffArray = (
   const model = oldArray.concat();
 
   let used = {};
+  let inserted = false;
 
   // insert, update, move
   for (let i = 0, n = newArray.length; i < n; i++) {
@@ -66,6 +67,7 @@ const diffArray = (
     }
 
     if (i >= oldArray.length) {
+      model.splice(i, 0, newItem);
       operations.push(insert(i, newItem, path));
       // does not exist
     } else if (oldItem == null) {
@@ -87,6 +89,7 @@ const diffArray = (
         diff2(replItem, newItem, [...path, i], operations);
       } else {
         model.splice(i, 0, newItem);
+        inserted = true;
         operations.push(insert(i, newItem, path));
       }
 
@@ -119,16 +122,29 @@ const diffObject = (
   operations: Mutation[]
 ) => {
   for (const key in oldItem) {
-    if (newItem[key] == null && oldItem[key] != null) {
+    const newValue = newItem[key];
+    const oldValue = oldItem[key];
+    if (
+      typeof newValue === typeof oldValue &&
+      typeof newValue === "object" &&
+      newValue != null &&
+      oldValue != null
+    ) {
+      diff2(oldValue, newValue, [...path, key], operations);
+    } else if (newValue == null) {
       operations.push(unset(key, path));
-    } else {
-      diff2(oldItem[key], newItem[key], [...path, key], operations);
     }
   }
 
   for (const key in newItem) {
-    if (oldItem[key] == null) {
-      operations.push(set(key, newItem[key], path));
+    const newValue = newItem[key];
+    const oldValue = oldItem[key];
+    if (
+      newValue != null &&
+      newValue !== oldValue &&
+      (typeof newValue !== typeof oldValue || typeof newValue !== "object")
+    ) {
+      operations.push(set(key, newValue, path));
     }
   }
 

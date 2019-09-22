@@ -38,8 +38,14 @@
                       "parts": {},
                       "properties": [
                         {
+                          "key": "font-weight"
+                        },
+                        {
+                          "key": "display"
+                        },
+                        {
                           "key": "font-family",
-                          "value": "Avenir Next"
+                          "value": "Apple Braille"
                         }
                       ]
                     }
@@ -155,10 +161,10 @@
       ],
       "metadata": {
         "bounds": {
-          "left": 132,
-          "top": -80,
-          "right": 532,
-          "bottom": 176
+          "left": 98,
+          "top": -82,
+          "right": 498,
+          "bottom": 174
         }
       },
       "variant": {},
@@ -181,14 +187,14 @@
       "overrides": []
     },
     {
-      "id": "3f15261e109",
+      "id": "b1b99f90109",
       "label": "Element",
       "is": "div",
       "name": "element",
       "attributes": [],
       "styles": [
         {
-          "id": "3f15261e108",
+          "id": "b1b99f90108",
           "parts": {},
           "properties": [
             {
@@ -204,36 +210,21 @@
       ],
       "children": [
         {
-          "id": "3f15261e111",
+          "id": "b1b99f90111",
           "name": "text",
           "label": "Text",
-          "value": "something",
-          "styles": [
-            {
-              "id": "dcb9d765110",
-              "parts": {},
-              "properties": [
-                {
-                  "key": "color",
-                  "value": "rgba(223, 45, 45, 1)"
-                },
-                {
-                  "key": "font-family",
-                  "value": "Avenir Next"
-                }
-              ]
-            }
-          ],
+          "value": "Someting",
+          "styles": [],
           "children": [],
           "metadata": {}
         }
       ],
       "metadata": {
         "bounds": {
-          "left": 143,
-          "top": -199,
-          "right": 243,
-          "bottom": -99
+          "left": -83,
+          "top": -41,
+          "right": 17,
+          "bottom": 59
         }
       }
     }

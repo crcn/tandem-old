@@ -1627,7 +1627,7 @@
                                 {
                                   "id": "49050ecb18301",
                                   "is": "f27782548182",
-                                  "label": "Add icon",
+                                  "label": "add button",
                                   "name": "component-instance",
                                   "attributes": [],
                                   "children": [],
@@ -4423,7 +4423,7 @@
                 {
                   "id": "1b3152828066",
                   "is": "f27782548182",
-                  "label": "Add icon",
+                  "label": "add button",
                   "name": "component-instance",
                   "attributes": [],
                   "children": [],

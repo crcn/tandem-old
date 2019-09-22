@@ -18,7 +18,9 @@ export const keyValuePairToHash = memoize(
   (kvp: KeyValuePair<string>[]): KeyValue<string> => {
     const hash = {};
     for (const { key, value } of kvp) {
-      hash[key] = value;
+      if (!hash[key]) {
+        hash[key] = value;
+      }
     }
     return hash;
   }

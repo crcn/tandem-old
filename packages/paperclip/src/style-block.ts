@@ -25,7 +25,7 @@ export type ComputedStyleProperty = {
 };
 
 export type ComputedStyleBlock = {
-  owner: PCNode;
+  owner: PCVisibleNode;
   block: PCStyleBlock;
   properties: ComputedStyleProperty[];
 };
@@ -74,7 +74,7 @@ export const computeStyleBlocks = memoize(
         if (styleBlockContainsInheritedProps(block)) {
           const computedStyleBlock: ComputedStyleBlock = {
             block,
-            owner: parentSourceNode,
+            owner: parentSourceNode as PCVisibleNode,
             properties: block.properties.map(({ key, value }) => ({
               key,
               value,

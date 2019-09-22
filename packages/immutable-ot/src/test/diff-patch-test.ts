@@ -10,11 +10,11 @@ describe(__filename + "#", () => {
       [3, 2, 1, 0],
       [MutationType.MOVE, MutationType.MOVE, MutationType.MOVE]
     ],
-    [{ a: "b" }, { a: "c" }, [MutationType.REPLACE]],
+    [{ a: "b" }, { a: "c" }, [MutationType.SET]],
     [
       [{ a: "c", b: "c" }],
       [{ a: "d", b: "e" }],
-      [MutationType.REPLACE, MutationType.REPLACE]
+      [MutationType.SET, MutationType.SET]
     ]
   ].forEach(([a, b, mutationTypes]) => {
     it(`can diff & patch ${JSON.stringify(a)} to ${JSON.stringify(b)}`, () => {

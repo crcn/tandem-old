@@ -8,8 +8,7 @@ export enum MutationType {
   REMOVE,
   REPLACE,
   MOVE,
-  SET,
-  UNSET
+  SET
 }
 
 type BaseOTMutation<TType extends MutationType> = {
@@ -40,11 +39,7 @@ export type Set = {
   value: any;
 } & BaseOTMutation<MutationType.SET>;
 
-export type Unset = {
-  propertyName: string;
-} & BaseOTMutation<MutationType.UNSET>;
-
-export type Mutation = Insert | Remove | Replace | Move | Set | Unset;
+export type Mutation = Insert | Remove | Replace | Move | Set;
 
 export const remove = (index: number, path: Key[]): Remove => ({
   type: MutationType.REMOVE,
@@ -63,9 +58,10 @@ export const set = (propertyName: string, value: any, path: Key[]): Set => ({
   value,
   path
 });
-export const unset = (propertyName: string, path: Key[]): Unset => ({
-  type: MutationType.UNSET,
+export const unset = (propertyName: string, path: Key[]): Set => ({
+  type: MutationType.SET,
   propertyName,
+  value: undefined,
   path
 });
 export const move = (

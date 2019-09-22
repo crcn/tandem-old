@@ -175,13 +175,26 @@ export const getInheritedAndSelfOverrides = memoize(
   }
 );
 
-export const getSyntheticNodeStyleColors = memoize((node: SyntheticNode) => {
-  console.error("TODO need to do this");
-  return [];
-});
+export const getSyntheticDocumentColors = memoize(
+  (document: SyntheticDocument) => {
+    const colors: string[] = [];
+    for (const contentNode of document.children) {
+      const sheet = (contentNode as SyntheticContentNode).sheet;
+      for (const rule of sheet.rules) {
+        for (const { value } of rule.style) {
+          const colorParts = String(value).match(/((rgba?|hsl)\(.*\)|#[^\s]+)/);
+          if (colorParts) {
+            colors.push(colorParts[1]);
+          }
+        }
+      }
+    }
+    return uniq(colors);
+  }
+);
 
 // TODO - move to CSSOM
-// export const _getSyntheticNodeStyleColors = memoize((node: SyntheticNode) => {
+// export const _getSyntheticDocumentColors = memoize((node: SyntheticNode) => {
 //   const colors: string[] = [];
 //   if ((node as SyntheticVisibleNode).style) {
 //     for (const key in (node as SyntheticVisibleNode).style) {
@@ -195,7 +208,7 @@ export const getSyntheticNodeStyleColors = memoize((node: SyntheticNode) => {
 
 //   for (let i = 0, { length } = node.children; i < length; i++) {
 //     colors.push(
-//       ..._getSyntheticNodeStyleColors(node.children[i] as SyntheticNode)
+//       ..._getSyntheticDocumentColors(node.children[i] as SyntheticNode)
 //     );
 //   }
 

@@ -46,10 +46,7 @@ export const paperclipReducer = <
       );
     }
     case PC_RUNTIME_EVALUATED: {
-      const { allDocuments, catchingUp } = action as PCRuntimeEvaluated;
-      if (catchingUp) {
-        return state;
-      }
+      const { allDocuments } = action as PCRuntimeEvaluated;
       return upsertFrames({
         ...Object(state as any),
         documents: allDocuments

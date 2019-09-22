@@ -2,7 +2,8 @@ import * as React from "react";
 import { BaseStyleBlockProps } from "./view.pc";
 import { ComputedStyleBlock } from "paperclip";
 import { Dispatch } from "redux";
-import { styleBlockLastPropertyTabbedOrEntered } from "../../../../../actions";
+import * as cx from "classnames";
+import { StyleBlockNewPropertyAdded } from "../../../../../actions";
 
 export type Props = {
   styleBlock: ComputedStyleBlock;
@@ -12,7 +13,12 @@ export type Props = {
 export default (Base: React.ComponentClass<BaseStyleBlockProps>) => {
   return class StyleBlock extends React.Component<Props> {
     onInsertNewRow = () => {
-      this.props.dispatch(styleBlockLastPropertyTabbedOrEntered());
+      this.props.dispatch(
+        StyleBlockNewPropertyAdded(
+          this.props.styleBlock.owner,
+          this.props.styleBlock.block
+        )
+      );
     };
     render() {
       const { styleBlock } = this.props;
@@ -22,6 +28,12 @@ export default (Base: React.ComponentClass<BaseStyleBlockProps>) => {
           addPropertyDropdownProps={{
             open: false,
             onShouldClose: () => {}
+          }}
+          variant={cx({
+            empty: styleBlock.properties.length === 0
+          })}
+          addButtonProps={{
+            onClick: onInsertNewRow
           }}
           keyValueItemProps={null}
           keyValueItemProps1={null}

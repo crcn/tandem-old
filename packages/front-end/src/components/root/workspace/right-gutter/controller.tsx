@@ -3,7 +3,7 @@ import * as React from "react";
 import {
   getPCNodeDependency,
   getGlobalVariables,
-  getSyntheticNodeStyleColors,
+  getSyntheticDocumentColors,
   getInspectorSyntheticNode,
   InspectorTreeNodeName,
   getSyntheticDocumentByDependencyUri,
@@ -100,7 +100,7 @@ export default (Base: React.ComponentClass<BaseRightGutterProps>) =>
           )
         : null;
       const documentColors =
-        (syntheticDocument && getSyntheticNodeStyleColors(syntheticDocument)) ||
+        (syntheticDocument && getSyntheticDocumentColors(syntheticDocument)) ||
         EMPTY_ARRAY;
 
       const tabs = availableTabs.map((tabName, i) => {

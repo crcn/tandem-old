@@ -8,9 +8,8 @@ import {
   PCRuntimeEvaluated
 } from "./actions";
 import {
-  SyntheticNativeDOMMap,
   renderDOM,
-  patchDOM,
+  patchNative,
   computeDisplayInfo,
   SyntheticNativeMap
 } from "./dom-renderer";
@@ -213,10 +212,10 @@ export const createPaperclipSaga = ({
         child => child.id === syntheticContentNodeId
       );
       return ots
-        .filter(ot => ot.path[0] === index)
+        .filter(ot => ot.path[1] === index)
         .map(ot => ({
           ...ot,
-          path: ot.path.slice(1)
+          path: ot.path.slice(2)
         }));
     };
 
@@ -304,15 +303,12 @@ export const createPaperclipSaga = ({
         return;
       }
 
-      frameNodeMap[frame.syntheticContentNodeId] = {
-        ...frameNodeMap[frame.syntheticContentNodeId],
-        dom: patchDOM(
-          ots,
-          contentNode,
-          body,
-          frameNodeMap[frame.syntheticContentNodeId].dom
-        )
-      };
+      frameNodeMap[frame.syntheticContentNodeId] = patchNative(
+        ots,
+        contentNode,
+        body,
+        frameNodeMap[frame.syntheticContentNodeId]
+      );
 
       yield put(
         pcFrameRendered(

@@ -7,12 +7,13 @@ import {
   SyntheticDocument
 } from "./synthetic-dom";
 import { ComputedDisplayInfo } from "./edit";
-import { getTreeNodeFromPath, EMPTY_OBJECT, memoize } from "tandem-common";
+import { EMPTY_OBJECT, memoize, keyValuePairToHash } from "tandem-common";
 import { MutationType, Mutation, getValue, patch, Set } from "immutable-ot";
 import { PCSourceTagNames } from "./dsl";
 import {
   SyntheticCSSStyleSheet,
-  stringifySyntheticCSSObject
+  stringifySyntheticCSSObject,
+  SyntheticCSSStyleRule
 } from "./synthetic-cssom";
 
 const SVG_XMLNS = "http://www.w3.org/2000/svg";
@@ -22,7 +23,7 @@ export type SyntheticNativeDOMMap = {
 };
 
 export type SyntheticNativeCSSOMMap = {
-  [identifier: string]: CSSRule;
+  [identifier: string]: CSSRule | CSSStyleSheet;
 };
 
 export type SyntheticNativeMap = {
@@ -114,7 +115,9 @@ const createCSSOMMap = (
   nativeSheet: CSSStyleSheet,
   syntheticSheet: SyntheticCSSStyleSheet
 ) => {
-  const map: SyntheticNativeCSSOMMap = {};
+  const map: SyntheticNativeCSSOMMap = {
+    [syntheticSheet.id]: nativeSheet
+  };
 
   for (let i = 0, n = syntheticSheet.rules.length; i < n; i++) {
     const rule = syntheticSheet.rules[i];
@@ -238,113 +241,236 @@ const removeElementsFromMap = (
   }
 };
 
-export const patchDOM = (
-  transforms: Mutation[],
-  synthetic: SyntheticVisibleNode,
-  root: HTMLElement,
-  map: SyntheticNativeDOMMap
-) => {
-  let newMap = map;
-  let newSyntheticTree: SyntheticVisibleNode = synthetic;
+const isStyleSheetMutation = (mutation: Mutation) => {
+  return mutation.path[0] === "sheet";
+};
 
-  for (const transform of transforms) {
-    const oldSyntheticTarget = getValue(newSyntheticTree, transform.path);
-    const isContentNode = transform.path.length === 0;
-    const target = newMap[oldSyntheticTarget.id] as HTMLElement;
-    newSyntheticTree = patch(newSyntheticTree, [transform]);
-    const syntheticTarget = getValue(newSyntheticTree, transform.path);
-    switch (transform.type) {
-      case MutationType.SET: {
-        const { propertyName: name, value } = transform;
+const isStyleRuleMutation = (mutation: Mutation) => {
+  return mutation.path.indexOf("style") !== -1;
+};
 
-        if (name === "style") {
-          resetElementStyle(target, syntheticTarget);
-          setStyleConstraintsIfRoot(syntheticTarget, target, isContentNode);
-        } else if (name === "attributes") {
-          for (const key in value) {
-            if (!value[key]) {
-              target.removeAttribute(key);
-            } else {
-              setAttribute(target, key, value[key]);
-            }
-          }
-        } else if (name === "name") {
-          const parent = target.parentNode;
-          if (newMap === map) {
-            newMap = { ...map };
-          }
-          const xmlnsTransform = transforms.find(
-            transform =>
-              transform.type === MutationType.SET &&
-              transform.propertyName === "attributes" &&
-              transform.value.xmlns
-          ) as Set;
-          const newTarget = createNativeNode(
-            getValue(newSyntheticTree, transform.path),
-            root.ownerDocument,
-            newMap,
-            isContentNode,
-            xmlnsTransform && xmlnsTransform.value.xmlns
-          );
+const patchStyleSheet = (
+  contentNode: SyntheticContentNode,
+  mutation: Mutation,
+  map: SyntheticNativeCSSOMMap
+): [SyntheticContentNode, SyntheticNativeCSSOMMap] => {
+  let newContentNode = patch(contentNode, [mutation]);
 
-          parent.insertBefore(newTarget, target);
-          parent.removeChild(target);
-        } else if (syntheticTarget.name === "text" && name === "value") {
-          target.childNodes[0].nodeValue = value;
-        }
+  if (isStyleRuleMutation(mutation)) {
+    const oldTargetStyleRule = getValue(
+      contentNode,
+      mutation.path.slice(0, mutation.path.lastIndexOf("style"))
+    ) as SyntheticCSSStyleRule;
+    const newTargetStyleRule = getValue(
+      newContentNode,
+      mutation.path.slice(0, mutation.path.lastIndexOf("style"))
+    ) as SyntheticCSSStyleRule;
 
-        break;
+    const nativeRule = map[newTargetStyleRule.id] as CSSStyleRule;
+    const newStyle = keyValuePairToHash(newTargetStyleRule.style);
+    const oldStyle = keyValuePairToHash(oldTargetStyleRule.style);
+
+    nativeRule.selectorText = newTargetStyleRule.selectorText;
+    for (const key in newStyle) {
+      if (newStyle[key] !== oldStyle[key]) {
+        nativeRule.style[key] = newStyle[key];
       }
+    }
+
+    for (const key in oldStyle) {
+      if (newStyle[key] == null) {
+        nativeRule.style[key] = "";
+      }
+    }
+  } else {
+    const newTarget = newContentNode.sheet;
+    const styleSheet = map[newTarget.id] as CSSStyleSheet;
+
+    switch (mutation.type) {
       case MutationType.INSERT: {
-        const { value: child, index } = transform;
-
-        if (newMap === map) {
-          newMap = { ...map };
-        }
-        const nativeChild = createNativeNode(
-          child as SyntheticVisibleNode,
-          root.ownerDocument,
-          newMap,
-          false,
-          target.namespaceURI
+        styleSheet.insertRule(
+          stringifySyntheticCSSObject(mutation.value),
+          mutation.index
         );
-        removeClickableStyle(target, syntheticTarget);
-        insertChild(target, nativeChild, index);
-
+        map = {
+          ...map,
+          [mutation.value.id]: styleSheet.cssRules[mutation.index]
+        };
         break;
       }
       case MutationType.REMOVE: {
-        const { index } = transform;
-        target.removeChild(target.childNodes[index]);
-        break;
-      }
-      case MutationType.REPLACE: {
-        const { value: child } = transform;
-
-        const nativeChild = createNativeNode(
-          child as SyntheticVisibleNode,
-          root.ownerDocument,
-          newMap,
-          false,
-          target.namespaceURI
-        );
-
-        const parent = target.parentNode;
-        parent.insertBefore(nativeChild, target);
-        target.remove();
+        const oldRule = contentNode.sheet.rules[mutation.index];
+        styleSheet.deleteRule(mutation.index);
+        map = {
+          ...map,
+          [oldRule.id]: undefined
+        };
         break;
       }
       case MutationType.MOVE: {
-        const { oldIndex, newIndex } = transform;
-        const child = target.childNodes[oldIndex];
-        target.removeChild(child);
-        insertChild(target, child, newIndex);
+        const rule = styleSheet.cssRules[mutation.oldIndex];
+        styleSheet.deleteRule(mutation.oldIndex);
+        styleSheet.insertRule(rule.cssText, mutation.newIndex);
         break;
       }
       default: {
-        throw new Error(`OT not supported yet`);
+        console.error(`cannot apply patch: ${JSON.stringify(mutation)}`);
+        break;
       }
     }
+  }
+
+  return [newContentNode, map];
+};
+
+export const patchHTMLNode = (
+  contentNode: SyntheticContentNode,
+  root: HTMLElement,
+  mutation: Mutation,
+  mutations: Mutation[],
+  map: SyntheticNativeDOMMap
+): [SyntheticContentNode, SyntheticNativeDOMMap] => {
+  const childrenIndex = mutation.path.lastIndexOf("children");
+  const oldSyntheticTarget =
+    childrenIndex === -1
+      ? contentNode
+      : getValue(
+          contentNode,
+          mutation.path.slice(
+            0,
+            childrenIndex === mutation.path.length - 1
+              ? childrenIndex
+              : childrenIndex + 2
+          )
+        );
+  const isContentNode = mutation.path.length === 0;
+  let newMap = map;
+  const target = newMap[oldSyntheticTarget.id] as HTMLElement;
+  contentNode = patch(contentNode, [mutation]);
+  const syntheticTarget = getValue(contentNode, mutation.path);
+  switch (mutation.type) {
+    case MutationType.SET: {
+      const { propertyName: name, value } = mutation;
+
+      if (name === "style") {
+        resetElementStyle(target, syntheticTarget);
+        setStyleConstraintsIfRoot(syntheticTarget, target, isContentNode);
+      } else if (name === "attributes") {
+        for (const key in value) {
+          if (!value[key]) {
+            target.removeAttribute(key);
+          } else {
+            setAttribute(target, key, value[key]);
+          }
+        }
+      } else if (name === "name") {
+        const parent = target.parentNode;
+        if (newMap === map) {
+          newMap = { ...newMap };
+        }
+        const xmlnsTransform = mutations.find(
+          mutation =>
+            mutation.type === MutationType.SET &&
+            mutation.propertyName === "attributes" &&
+            mutation.value.xmlns
+        ) as Set;
+        const newTarget = createNativeNode(
+          getValue(contentNode, mutation.path),
+          root.ownerDocument,
+          map,
+          isContentNode,
+          xmlnsTransform && xmlnsTransform.value.xmlns
+        );
+
+        parent.insertBefore(newTarget, target);
+        parent.removeChild(target);
+      } else if (syntheticTarget.name === "text" && name === "value") {
+        target.childNodes[0].nodeValue = value;
+      }
+
+      break;
+    }
+    case MutationType.INSERT: {
+      const { value: child, index } = mutation;
+
+      if (newMap === map) {
+        newMap = { ...newMap };
+      }
+      const nativeChild = createNativeNode(
+        child as SyntheticVisibleNode,
+        root.ownerDocument,
+        map,
+        false,
+        target.namespaceURI
+      );
+      removeClickableStyle(target, syntheticTarget);
+      insertChild(target, nativeChild, index);
+
+      break;
+    }
+    case MutationType.REMOVE: {
+      const { index } = mutation;
+      target.removeChild(target.childNodes[index]);
+      break;
+    }
+    case MutationType.REPLACE: {
+      const { value: child } = mutation;
+
+      const nativeChild = createNativeNode(
+        child as SyntheticVisibleNode,
+        root.ownerDocument,
+        map,
+        false,
+        target.namespaceURI
+      );
+
+      const parent = target.parentNode;
+      parent.insertBefore(nativeChild, target);
+      target.remove();
+      break;
+    }
+    case MutationType.MOVE: {
+      const { oldIndex, newIndex } = mutation;
+      const child = target.childNodes[oldIndex];
+      target.removeChild(child);
+      insertChild(target, child, newIndex);
+      break;
+    }
+    default: {
+      throw new Error(`OT not supported yet: ${JSON.stringify(mutation)}`);
+    }
+  }
+
+  return [contentNode, map];
+};
+
+export const patchNative = (
+  mutations: Mutation[],
+  contentNode: SyntheticContentNode,
+  root: HTMLElement,
+  map: SyntheticNativeMap
+) => {
+  let newMap = map;
+  let newContentNode: SyntheticVisibleNode = contentNode;
+
+  for (const mutation of mutations) {
+    let { cssom, dom } = newMap;
+    if (isStyleSheetMutation(mutation)) {
+      [newContentNode, cssom] = patchStyleSheet(
+        newContentNode,
+        mutation,
+        map.cssom
+      );
+    } else {
+      [newContentNode, dom] = patchHTMLNode(
+        newContentNode,
+        root,
+        mutation,
+        mutations,
+        map.dom
+      );
+    }
+    newMap = { cssom, dom };
   }
 
   return newMap;
