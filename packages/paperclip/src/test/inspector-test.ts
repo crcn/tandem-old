@@ -27,7 +27,7 @@ import {
   insertChildNode,
   appendChildNode
 } from "tandem-common";
-import { patchTreeNode, diffTreeNode } from "../ot";
+import { diff, patch } from "immutable-ot";
 
 describe(__filename + "#", () => {
   const A_DEP_URI = "a.pc";
@@ -58,8 +58,8 @@ describe(__filename + "#", () => {
   const case3 = () => {
     return [
       "Can insert a new slot into a component",
-      createPCModule([createPCComponent(null, "div", {}, {})]),
-      createPCModule([createPCComponent(null, "div", {}, {}, [createPCSlot()])])
+      createPCModule([createPCComponent(null, "div", [], [])]),
+      createPCModule([createPCComponent(null, "div", [], [], [createPCSlot()])])
     ];
   };
 
@@ -68,7 +68,7 @@ describe(__filename + "#", () => {
 
     const slot = createPCSlot([slotChild]);
 
-    const component = createPCComponent(null, "div", {}, {}, [slot]);
+    const component = createPCComponent(null, "div", [], [], [slot]);
 
     const module = createPCModule([component]);
 
@@ -84,7 +84,7 @@ describe(__filename + "#", () => {
 
     const slot = createPCSlot([slotChild]);
 
-    const component = createPCComponent(null, "div", {}, {}, [slot]);
+    const component = createPCComponent(null, "div", [], [], [slot]);
     const instance = createPCComponentInstance(component.id);
     const instance2 = createPCComponentInstance(component.id);
 
@@ -248,10 +248,7 @@ describe(__filename + "#", () => {
       const newGraph = {
         a: {
           ...graph.a,
-          content: patchTreeNode(
-            diffTreeNode(a as PCModule, b as PCModule),
-            a as PCModule
-          )
+          content: patch(a as PCModule, diff(a as PCModule, b as PCModule))
         }
       };
 

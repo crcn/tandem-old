@@ -1,6 +1,6 @@
 import * as lru from "lru-cache";
 
-const DEFAULT_LRU_MAX = 1000;
+const DEFAULT_LRU_MAX = 10000;
 
 // need this for default arguments
 const getArgumentCount = (fn: Function) => {

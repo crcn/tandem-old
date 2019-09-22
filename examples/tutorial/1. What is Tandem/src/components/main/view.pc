@@ -1,13 +1,13 @@
 {
   "id": "a9bb1eee4",
+  "version": "1.0.3",
+  "metadata": {},
   "name": "module",
-  "version": "0.0.6",
   "children": [
     {
       "label": "Application",
       "is": "div",
-      "style": {},
-      "attributes": {},
+      "attributes": [],
       "id": "a9bb1eee3",
       "name": "component",
       "children": [
@@ -16,9 +16,15 @@
           "name": "text",
           "label": "App content",
           "value": "App content",
-          "style": {},
           "children": [],
-          "metadata": {}
+          "metadata": {},
+          "styles": [
+            {
+              "id": "8129724145.1567269756804",
+              "parts": {},
+              "properties": []
+            }
+          ]
         }
       ],
       "metadata": {
@@ -32,8 +38,14 @@
       "variant": {},
       "controllers": [
         "./controller.tsx"
+      ],
+      "styles": [
+        {
+          "id": "1258461606.1567269756804",
+          "parts": {},
+          "properties": []
+        }
       ]
     }
-  ],
-  "metadata": {}
+  ]
 }

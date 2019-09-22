@@ -1,13 +1,13 @@
 {
   "id": "66408e834",
+  "version": "1.0.3",
+  "metadata": {},
   "name": "module",
-  "version": "0.0.6",
   "children": [
     {
       "label": "Application",
       "is": "div",
-      "style": {},
-      "attributes": {},
+      "attributes": [],
       "id": "66408e833",
       "name": "component",
       "children": [
@@ -16,17 +16,22 @@
           "name": "text",
           "label": "App content",
           "value": "App content",
-          "style": {},
           "children": [],
-          "metadata": {}
+          "metadata": {},
+          "styles": [
+            {
+              "id": "4092630471.1567269756785",
+              "parts": {},
+              "properties": []
+            }
+          ]
         },
         {
           "id": "66408e8385",
           "is": "66408e8383",
           "label": "Mario",
           "name": "component-instance",
-          "attributes": {},
-          "style": {},
+          "attributes": [],
           "children": [],
           "metadata": {
             "bounds": {
@@ -36,7 +41,14 @@
               "bottom": 202
             }
           },
-          "variant": {}
+          "variant": {},
+          "styles": [
+            {
+              "id": "7493996214.1567269756785",
+              "parts": {},
+              "properties": []
+            }
+          ]
         }
       ],
       "metadata": {
@@ -50,20 +62,19 @@
       "variant": {},
       "controllers": [
         "./controller.tsx"
+      ],
+      "styles": [
+        {
+          "id": "4265605728.1567269756785",
+          "parts": {},
+          "properties": []
+        }
       ]
     },
     {
       "label": "Mario",
       "is": "div",
-      "style": {
-        "box-sizing": "border-box",
-        "display": "block",
-        "background-image": "url(\"../../assets/mario-sprite-sheet.png\")",
-        "background-repeat": "no-repeat",
-        "background-size": "auto",
-        "background-position": "0px 0px"
-      },
-      "attributes": {},
+      "attributes": [],
       "id": "66408e8383",
       "name": "component",
       "children": [],
@@ -75,8 +86,39 @@
           "bottom": 675
         }
       },
-      "variant": {}
+      "variant": {},
+      "styles": [
+        {
+          "id": "3027713944.1567269756785",
+          "parts": {},
+          "properties": [
+            {
+              "key": "box-sizing",
+              "value": "border-box"
+            },
+            {
+              "key": "display",
+              "value": "block"
+            },
+            {
+              "key": "background-image",
+              "value": "url(\"../../assets/mario-sprite-sheet.png\")"
+            },
+            {
+              "key": "background-repeat",
+              "value": "no-repeat"
+            },
+            {
+              "key": "background-size",
+              "value": "auto"
+            },
+            {
+              "key": "background-position",
+              "value": "0px 0px"
+            }
+          ]
+        }
+      ]
     }
-  ],
-  "metadata": {}
+  ]
 }

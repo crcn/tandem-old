@@ -11,9 +11,8 @@ import {
   PCSourceTagNames,
   PCNode,
   extendsComponent,
-  PCStyleOverride,
+  PCStylesOverride,
   isVisibleNode,
-  getOverrides,
   getPCNode,
   isComponent,
   PCDependency,
@@ -21,22 +20,17 @@ import {
   getComponentRefIds,
   getPCNodeDependency,
   getOverrideMap,
-  COMPUTED_OVERRIDE_DEFAULT_KEY,
-  PCComputedOverrideVariantMap,
   PCOverride,
-  PCOverridablePropertyName,
-  PCComputedNoverOverrideMap,
+  PCOverridableType,
+  ComputedNodeOverrideMap,
   isPCComponentInstance,
   computeStyleValue,
   isPCComponentOrInstance,
   getVariantTriggers,
   PCMediaQuery,
-  StyleMixins,
   isSlot,
   PCSlot,
   PCStyleMixin,
-  PCComputedOverrideMap,
-  mergeVariantOverrides,
   getPCNodeContentNode,
   PCVariant,
   PCVariantTrigger,
@@ -60,7 +54,9 @@ import {
   memoize,
   EMPTY_ARRAY,
   getTreeNodesByName,
-  getParentTreeNode
+  getParentTreeNode,
+  keyValuePairToHash,
+  KeyValue
 } from "tandem-common";
 import * as path from "path";
 import {
@@ -79,7 +75,15 @@ import {
   addScopedLayerLabel,
   makeSafeVarName
 } from "./utils";
-import { PCQueryType } from "paperclip";
+import {
+  PCQueryType,
+  PCStyleBlock,
+  PCVariantOverride,
+  ComputedOverrideMap,
+  computePCStyleBlock,
+  getComponentGraphRefMap,
+  getGlobalVariables
+} from "paperclip";
 
 export type TranslateParts = {
   elementCreator: string;
@@ -310,20 +314,34 @@ export const createPaperclipVirtualDOMtranslator = (
         (node: PCNode) =>
           isVisibleNode(node) || node.name === PCSourceTagNames.COMPONENT
       )
-      .reduce((context, node: ContentNode) => {
+      .reduce((context, node: PCComponent | PCVisibleNode) => {
         if (!hasStyle(node)) {
           return context;
         }
-        context = addOpenTag(`mergeProps(styleRules, {\n`, context);
-        context = addOpenTag(`"._${node.id}": {\n`, context);
-        context = translateStyle(
-          node,
-          { ...getInheritedStyle(node.styleMixins, context), ...node.style },
-          context,
-          getPCNodeDependency(node.id, context.graph).uri
-        );
-        context = addCloseTag(`}\n`, context);
-        context = addCloseTag(`});\n\n`, context);
+
+        for (let i = node.styles.length; i--; ) {
+          const block = node.styles[i];
+          context = translateStyleBlock(
+            block,
+            node,
+            node,
+            context,
+            `._${node.id}`
+          );
+        }
+        // context = addOpenTag(`mergeProps(styleRules, {\n`, context);
+        // context = addOpenTag(`"._${node.id}": {\n`, context);
+        // context = translateStyle(
+        //   node,
+        //   {
+        //     ...getInheritedStyle(getStyleMixinIds(node), context),
+        //     ...getVanillaStyleHash(node.styles)
+        //   },
+        //   context,
+        //   getPCNodeDependency(node.id, context.graph).uri
+        // );
+        // context = addCloseTag(`}\n`, context);
+        // context = addCloseTag(`});\n\n`, context);
         return context;
       }, context);
 
@@ -345,19 +363,24 @@ export const createPaperclipVirtualDOMtranslator = (
     background: "fill"
   };
 
+  const getStyleMixinIds = (node: PCVisibleNode | PCComponent | PCStyleMixin) =>
+    node.styles.map(block => block.mixinId).filter(Boolean);
+  const getVanillaStyleHash = (styles: PCStyleBlock[]) => {
+    return styles.reduce((style, block) => {
+      if (block.mixinId || Object.keys(block.parts).length || block.variantId)
+        return style;
+      return { ...keyValuePairToHash(block.properties), ...style };
+    }, {});
+  };
+
   const getInheritedStyle = (
-    styleMixins: StyleMixins,
+    styleMixinIds: string[],
     context: TranslateContext,
     computed = {}
   ) => {
-    if (!styleMixins) {
+    if (!styleMixinIds.length) {
       return {};
     }
-    const styleMixinIds = Object.keys(styleMixins)
-      .filter(a => Boolean(styleMixins[a]))
-      .sort((a, b) =>
-        styleMixins[a].priority > styleMixins[b].priority ? 1 : -1
-      );
 
     return styleMixinIds.reduce((style, styleMixinId) => {
       const styleMixin = getPCNode(styleMixinId, context.graph) as PCStyleMixin;
@@ -367,8 +390,8 @@ export const createPaperclipVirtualDOMtranslator = (
       const compStyle =
         computed[styleMixinId] ||
         (computed[styleMixinId] = {
-          ...getInheritedStyle(styleMixin.styleMixins, context, computed),
-          ...styleMixin.style
+          ...getInheritedStyle(getStyleMixinIds(styleMixin), context, computed),
+          ...getVanillaStyleHash(styleMixin.styles)
         });
       return { ...style, ...compStyle };
     }, {});
@@ -381,7 +404,7 @@ export const createPaperclipVirtualDOMtranslator = (
 
   const translateStyle = (
     target: ContentNode,
-    style: any,
+    style: KeyValue<string>,
     context: TranslateContext,
     sourceUri: string
   ) => {
@@ -437,19 +460,186 @@ export const createPaperclipVirtualDOMtranslator = (
     return context;
   };
 
+  const translateStyleBlock = (
+    block: PCStyleBlock,
+    owner: ContentNode,
+    targetNode: ContentNode,
+    context: TranslateContext,
+    prefix: string = ""
+  ) => {
+    const style = computePCStyleBlock(
+      block,
+      getComponentGraphRefMap(owner, context.graph),
+      getAllVariableRefMap(context.graph)
+    );
+
+    if (Object.keys(style).length === 0) {
+      console.log(`style block ${block.id} is empty`);
+      return context;
+    }
+
+    // override id is added as className to target element when imported. Necessary
+    // to ensure that edge-cases like portals still maintain override values.
+    let targetSelector = prefix;
+
+    let selector = targetSelector;
+    let baseSelector = selector;
+
+    // if variant is defined, then it will be defined at the component level. Note that
+    // we'll need to include combo variants here at some point. Also note that component ID isn't necessary
+    // here since variant IDS are specific to components.
+    let mediaTriggers: PCVariantTrigger[] = [];
+    let variableTriggerPassed: boolean;
+    if (block.variantId) {
+      const variant = getPCNode(block.variantId, context.graph) as PCVariant;
+
+      if (!variant) {
+        console.warn(
+          `style block with variant ${block.variantId} not found. Dropping.`
+        );
+        return context;
+      }
+
+      const variantComponent = getPCNodeContentNode(
+        variant.id,
+        getPCNodeModule(variant.id, context.graph)
+      ) as PCComponent;
+
+      const variantTriggers =
+        (variant && getVariantTriggers(variant, variantComponent)) ||
+        EMPTY_ARRAY;
+
+      const queryTriggers = variantTriggers.filter(
+        trigger =>
+          trigger.source &&
+          trigger.source.type === PCVariantTriggerSourceType.QUERY
+      );
+
+      variableTriggerPassed = queryTriggers.some(trigger => {
+        const query = getPCNode(
+          (trigger.source as PCVariantTriggerQuerySource).queryId,
+          context.graph
+        ) as PCQuery;
+        if (query && query.type == PCQueryType.VARIABLE) {
+          return variableQueryPassed(
+            query,
+            getAllVariableRefMap(context.graph)
+          );
+        }
+
+        return false;
+      });
+
+      if (variableTriggerPassed) {
+        selector = `${targetSelector}`;
+      } else {
+        baseSelector = `" + (overrides.variantPrefixSelectors && overrides.variantPrefixSelectors["${
+          block.variantId
+        }"] && overrides.variantPrefixSelectors["${
+          block.variantId
+        }"].map(prefix => prefix + "${targetSelector}").join(", ") + ", " || "") + " `;
+
+        selector = `${baseSelector} ._${block.variantId} ${targetSelector}, ._${
+          block.variantId
+        }${targetSelector}`;
+      }
+
+      mediaTriggers = queryTriggers.filter(trigger => {
+        const query = getPCNode(
+          (trigger.source as PCVariantTriggerQuerySource).queryId,
+          context.graph
+        ) as PCQuery;
+        return query && query.type === PCQueryType.MEDIA;
+      });
+
+      const variantTriggerSelectors = variantTriggers
+        .map(trigger => {
+          if (!trigger.source) {
+            return null;
+          }
+          if (trigger.source.type === PCVariantTriggerSourceType.STATE) {
+            let prefix = `._${variantComponent.id}:${trigger.source.state}`;
+
+            if (targetSelector !== `._${variantComponent.id}`) {
+              return `${prefix} ${targetSelector}`;
+            }
+
+            return prefix;
+          }
+        })
+        .filter(Boolean);
+
+      if (variantTriggerSelectors.length) {
+        selector += ", " + variantTriggerSelectors.join(", ");
+      }
+    }
+
+    context = addOpenTag(`mergeProps(styleRules, {\n`, context);
+    context = addOpenTag(`["${selector}"]: {\n`, context);
+
+    context = translateStyle(
+      targetNode,
+      style,
+      context,
+      getPCNodeDependency(owner.id, context.graph).uri
+    );
+    context = addCloseTag(`}\n`, context);
+    context = addCloseTag(`});\n\n`, context);
+
+    if (mediaTriggers.length && !variableTriggerPassed) {
+      let mediaText = "@media all";
+
+      mediaText += mediaTriggers
+        .map(trigger => {
+          let buffer = "";
+          const source = trigger.source as PCVariantTriggerQuerySource;
+          const mediaQuery = getPCNode(
+            source.queryId,
+            context.graph
+          ) as PCMediaQuery;
+          if (!mediaQuery) {
+            return null;
+          }
+          if (mediaQuery.condition && mediaQuery.condition.minWidth) {
+            buffer += ` and (min-width: ${px(mediaQuery.condition.minWidth)})`;
+          }
+          if (mediaQuery.condition && mediaQuery.condition.maxWidth) {
+            buffer += ` and (max-width: ${px(mediaQuery.condition.maxWidth)})`;
+          }
+
+          return buffer;
+        })
+        .filter(Boolean)
+        .join(", ");
+      context = addOpenTag(`mergeProps(styleRules, {\n`, context);
+      context = addOpenTag(`["${mediaText}"]: {\n`, context);
+      context = addOpenTag(
+        `["${baseSelector} ${targetSelector}"]: {\n`,
+        context
+      );
+      context = translateStyle(
+        targetNode,
+        keyValuePairToHash(block.properties),
+        context,
+        getPCNodeDependency(owner.id, context.graph).uri
+      );
+      context = addCloseTag(`}\n`, context);
+      context = addCloseTag(`}\n`, context);
+      context = addCloseTag(`});\n\n`, context);
+    }
+
+    return context;
+  };
+
   const translateStyleVariantOverrides = (
     instance: PCComponentInstanceElement | PCComponent,
     component: ContentNode,
     context: TranslateContext
   ) => {
     // FIXME: need to sort based on variant priority
-    const styleOverrides = (getOverrides(instance).filter(
-      node =>
-        node.propertyName === PCOverridablePropertyName.STYLE &&
-        Object.keys(node.value).length
-    ) as PCStyleOverride[]).sort((a, b) => {
-      return a.variantId ? 1 : -1;
-    });
+    const styleOverrides = instance.overrides.filter(
+      node => node.type === PCOverridableType.STYLES && node.value.length
+    ) as PCStylesOverride[];
 
     for (const override of styleOverrides) {
       // console.log(instance.id, component.id, override.targetIdPath.length === 0 && instance.id === component.id);
@@ -461,151 +651,174 @@ export const createPaperclipVirtualDOMtranslator = (
           ? instance.id
           : override.id
       }`;
-      let selector = targetSelector;
-      let baseSelector = selector;
 
-      // If an instance, then is a child of component and we should include in the scope
-      // of the style override to ensure that we don't override other instances.
-      // if (instance.name === PCSourceTagNames.COMPONENT_INSTANCE) {
-      //   selector = `._${instance.id} ${selector}`;
+      const targetNode = getPCNode(
+        last(override.targetIdPath),
+        context.graph
+      ) as ContentNode;
+
+      if (!targetNode) {
+        console.warn(`Orphaned override ${override.id}`);
+        continue;
+      }
+
+      for (let i = override.value.length; i--; ) {
+        const block = override.value[i];
+        context = translateStyleBlock(
+          block,
+          instance,
+          targetNode,
+          context,
+          targetSelector
+        );
+      }
+      continue;
+
+      // let selector = targetSelector;
+      // let baseSelector = selector;
+
+      // // if variant is defined, then it will be defined at the component level. Note that
+      // // we'll need to include combo variants here at some point. Also note that component ID isn't necessary
+      // // here since variant IDS are specific to components.
+      // let mediaTriggers: PCVariantTrigger[] = [];
+      // let variableTriggerPassed: boolean;
+      // if (override.variantId) {
+      //   const variant = getPCNode(
+      //     override.variantId,
+      //     context.graph
+      //   ) as PCVariant;
+
+      //   const variantTriggers =
+      //     (variant && getVariantTriggers(variant, component as PCComponent)) ||
+      //     EMPTY_ARRAY;
+
+      //   const queryTriggers = variantTriggers.filter(
+      //     trigger =>
+      //       trigger.source &&
+      //       trigger.source.type === PCVariantTriggerSourceType.QUERY
+      //   );
+
+      //   variableTriggerPassed = queryTriggers.some(trigger => {
+      //     const query = getPCNode(
+      //       (trigger.source as PCVariantTriggerQuerySource).queryId,
+      //       context.graph
+      //     ) as PCQuery;
+      //     if (query && query.type == PCQueryType.VARIABLE) {
+      //       return variableQueryPassed(
+      //         query,
+      //         getAllVariableRefMap(context.graph)
+      //       );
+      //     }
+
+      //     return false;
+      //   });
+
+      //   if (variableTriggerPassed) {
+      //     selector = `${targetSelector}`;
+      //   } else {
+      //     baseSelector = `" + (overrides.variantPrefixSelectors && overrides.variantPrefixSelectors["${
+      //       override.variantId
+      //     }"] && overrides.variantPrefixSelectors["${
+      //       override.variantId
+      //     }"].map(prefix => prefix + "${targetSelector}").join(", ") + ", " || "") + " `;
+
+      //     selector = `${baseSelector} ._${
+      //       override.variantId
+      //     } ${targetSelector}, ._${override.variantId}${targetSelector}`;
+      //   }
+
+      //   mediaTriggers = queryTriggers.filter(trigger => {
+      //     const query = getPCNode(
+      //       (trigger.source as PCVariantTriggerQuerySource).queryId,
+      //       context.graph
+      //     ) as PCQuery;
+      //     return query && query.type === PCQueryType.MEDIA;
+      //   });
+
+      //   const variantTriggerSelectors = variantTriggers
+      //     .map(trigger => {
+      //       if (!trigger.source) {
+      //         return null;
+      //       }
+      //       if (trigger.source.type === PCVariantTriggerSourceType.STATE) {
+      //         let prefix = `._${component.id}:${trigger.source.state}`;
+
+      //         if (targetSelector !== `._${component.id}`) {
+      //           return `${prefix} ${targetSelector}`;
+      //         }
+
+      //         return prefix;
+      //       }
+      //     })
+      //     .filter(Boolean);
+
+      //   if (variantTriggerSelectors.length) {
+      //     selector += ", " + variantTriggerSelectors.join(", ");
+      //   }
       // }
 
-      // if variant is defined, then it will be defined at the component level. Note that
-      // we'll need to include combo variants here at some point. Also note that component ID isn't necessary
-      // here since variant IDS are specific to components.
-      let mediaTriggers: PCVariantTrigger[] = [];
-      let variableTriggerPassed: boolean;
-      if (override.variantId) {
-        const variant = getPCNode(
-          override.variantId,
-          context.graph
-        ) as PCVariant;
+      // context = addOpenTag(`mergeProps(styleRules, {\n`, context);
+      // context = addOpenTag(`["${selector}"]: {\n`, context);
+      // context = translateStyle(
+      //   getPCNode(
+      //     last(override.source.targetIdPath),
+      //     context.graph
+      //   ) as ContentNode,
+      //   override.value,
+      //   context,
+      //   getPCNodeDependency(override.source.id, context.graph).uri
+      // );
+      // context = addCloseTag(`}\n`, context);
+      // context = addCloseTag(`});\n\n`, context);
 
-        const variantTriggers =
-          (variant && getVariantTriggers(variant, component as PCComponent)) ||
-          EMPTY_ARRAY;
+      // if (mediaTriggers.length && !variableTriggerPassed) {
+      //   let mediaText = "@media all";
 
-        const queryTriggers = variantTriggers.filter(
-          trigger =>
-            trigger.source &&
-            trigger.source.type === PCVariantTriggerSourceType.QUERY
-        );
+      //   mediaText += mediaTriggers
+      //     .map(trigger => {
+      //       let buffer = "";
+      //       const source = trigger.source as PCVariantTriggerQuerySource;
+      //       const mediaQuery = getPCNode(
+      //         source.queryId,
+      //         context.graph
+      //       ) as PCMediaQuery;
+      //       if (!mediaQuery) {
+      //         return null;
+      //       }
+      //       if (mediaQuery.condition && mediaQuery.condition.minWidth) {
+      //         buffer += ` and (min-width: ${px(
+      //           mediaQuery.condition.minWidth
+      //         )})`;
+      //       }
+      //       if (mediaQuery.condition && mediaQuery.condition.maxWidth) {
+      //         buffer += ` and (max-width: ${px(
+      //           mediaQuery.condition.maxWidth
+      //         )})`;
+      //       }
 
-        variableTriggerPassed = queryTriggers.some(trigger => {
-          const query = getPCNode(
-            (trigger.source as PCVariantTriggerQuerySource).queryId,
-            context.graph
-          ) as PCQuery;
-          if (query && query.type == PCQueryType.VARIABLE) {
-            return variableQueryPassed(
-              query,
-              getAllVariableRefMap(context.graph)
-            );
-          }
-
-          return false;
-        });
-
-        if (variableTriggerPassed) {
-          selector = `${targetSelector}`;
-        } else {
-          baseSelector = `" + (overrides.variantPrefixSelectors && overrides.variantPrefixSelectors["${
-            override.variantId
-          }"] && overrides.variantPrefixSelectors["${
-            override.variantId
-          }"].map(prefix => prefix + "${targetSelector}").join(", ") + ", " || "") + " `;
-
-          selector = `${baseSelector} ._${
-            override.variantId
-          } ${targetSelector}, ._${override.variantId}${targetSelector}`;
-        }
-
-        mediaTriggers = queryTriggers.filter(trigger => {
-          const query = getPCNode(
-            (trigger.source as PCVariantTriggerQuerySource).queryId,
-            context.graph
-          ) as PCQuery;
-          return query && query.type === PCQueryType.MEDIA;
-        });
-
-        const variantTriggerSelectors = variantTriggers
-          .map(trigger => {
-            if (!trigger.source) {
-              return null;
-            }
-            if (trigger.source.type === PCVariantTriggerSourceType.STATE) {
-              let prefix = `._${component.id}:${trigger.source.state}`;
-
-              if (targetSelector !== `._${component.id}`) {
-                return `${prefix} ${targetSelector}`;
-              }
-
-              return prefix;
-            }
-          })
-          .filter(Boolean);
-
-        if (variantTriggerSelectors.length) {
-          selector += ", " + variantTriggerSelectors.join(", ");
-        }
-      }
-
-      context = addOpenTag(`mergeProps(styleRules, {\n`, context);
-      context = addOpenTag(`["${selector}"]: {\n`, context);
-      context = translateStyle(
-        getPCNode(last(override.targetIdPath), context.graph) as ContentNode,
-        override.value,
-        context,
-        getPCNodeDependency(override.id, context.graph).uri
-      );
-      context = addCloseTag(`}\n`, context);
-      context = addCloseTag(`});\n\n`, context);
-
-      if (mediaTriggers.length && !variableTriggerPassed) {
-        let mediaText = "@media all";
-
-        mediaText += mediaTriggers
-          .map(trigger => {
-            let buffer = "";
-            const source = trigger.source as PCVariantTriggerQuerySource;
-            const mediaQuery = getPCNode(
-              source.queryId,
-              context.graph
-            ) as PCMediaQuery;
-            if (!mediaQuery) {
-              return null;
-            }
-            if (mediaQuery.condition && mediaQuery.condition.minWidth) {
-              buffer += ` and (min-width: ${px(
-                mediaQuery.condition.minWidth
-              )})`;
-            }
-            if (mediaQuery.condition && mediaQuery.condition.maxWidth) {
-              buffer += ` and (max-width: ${px(
-                mediaQuery.condition.maxWidth
-              )})`;
-            }
-
-            return buffer;
-          })
-          .filter(Boolean)
-          .join(", ");
-        context = addOpenTag(`mergeProps(styleRules, {\n`, context);
-        context = addOpenTag(`["${mediaText}"]: {\n`, context);
-        context = addOpenTag(
-          `["${baseSelector} ${targetSelector}"]: {\n`,
-          context
-        );
-        context = translateStyle(
-          getPCNode(last(override.targetIdPath), context.graph) as ContentNode,
-          override.value,
-          context,
-          getPCNodeDependency(override.id, context.graph).uri
-        );
-        context = addCloseTag(`}\n`, context);
-        context = addCloseTag(`}\n`, context);
-        context = addCloseTag(`});\n\n`, context);
-      }
+      //       return buffer;
+      //     })
+      //     .filter(Boolean)
+      //     .join(", ");
+      //   context = addOpenTag(`mergeProps(styleRules, {\n`, context);
+      //   context = addOpenTag(`["${mediaText}"]: {\n`, context);
+      //   context = addOpenTag(
+      //     `["${baseSelector} ${targetSelector}"]: {\n`,
+      //     context
+      //   );
+      //   context = translateStyle(
+      //     getPCNode(
+      //       last(override.source.targetIdPath),
+      //       context.graph
+      //     ) as ContentNode,
+      //     override.value,
+      //     context,
+      //     getPCNodeDependency(override.source.id, context.graph).uri
+      //   );
+      //   context = addCloseTag(`}\n`, context);
+      //   context = addCloseTag(`}\n`, context);
+      //   context = addCloseTag(`});\n\n`, context);
+      // }
     }
     return context;
   };
@@ -619,7 +832,7 @@ export const createPaperclipVirtualDOMtranslator = (
 
   const translateStyleValue = (
     key: string,
-    value: any,
+    value: string,
     { graph, rootDirectory }: TranslateContext,
     sourceUri
   ) => {
@@ -898,11 +1111,11 @@ export const createPaperclipVirtualDOMtranslator = (
       context
     );
     context = translateUsedComponentOverrides(instance, context);
-    const contentNode =
-      getPCNodeContentNode(instance.id, context.entry.content) || instance;
+    // const contentNode =
+    // getPCNodeContentNode(instance.id, context.entry.content) || instance;
     context = translateStaticStyleOverride(
       instance.id,
-      getAllNodeOverrides(instance.id, contentNode),
+      EMPTY_ARRAY,
       context,
       true
     );
@@ -919,10 +1132,12 @@ export const createPaperclipVirtualDOMtranslator = (
   };
 
   const translateVariantSelectors = (
-    instance: PCComponentInstanceElement | PCComponent,
-    map: PCComputedOverrideMap
+    instance: PCComponentInstanceElement | PCComponent
   ) => {
     const variantSelectors = {};
+    const overrides = instance.overrides.filter(
+      child => (child as PCOverride).type === PCOverridableType.VARIANT
+    ) as PCVariantOverride[];
 
     for (const variantId in instance.variant) {
       if (!instance.variant[variantId]) {
@@ -936,87 +1151,40 @@ export const createPaperclipVirtualDOMtranslator = (
       variantSelectors[variantId].push(`._${instance.id}`, `._${instance.id} `);
     }
 
-    for (const key in map) {
-      const instanceMap = map[key][instance.id] || EMPTY_OBJECT;
+    for (const override of overrides) {
+      let instancePathSelector = override.targetIdPath.map(id => `._${id}`);
 
-      const overrides: PCOverride[] = instanceMap.overrides || EMPTY_ARRAY;
-      for (const override of overrides) {
-        if (override.propertyName !== PCOverridablePropertyName.VARIANT) {
-          continue;
+      let newKey: string;
+
+      if (!override.variantId) {
+        newKey = instance.id;
+      } else {
+        newKey = override.variantId;
+      }
+
+      for (const variantId in override.value) {
+        if (!variantSelectors[variantId]) {
+          variantSelectors[variantId] = [];
         }
 
-        let instancePathSelector = override.targetIdPath.map(id => `._${id}`);
+        let postfix = instancePathSelector.join(" ");
 
-        let newKey: string;
-
-        if (key === COMPUTED_OVERRIDE_DEFAULT_KEY) {
-          newKey = instance.id;
-        } else {
-          newKey = key;
+        if (
+          instancePathSelector.length !== 0 &&
+          !(
+            override.targetIdPath.length === 1 &&
+            override.targetIdPath[0] === instance.id
+          )
+        ) {
+          postfix += " ";
         }
 
-        for (const variantId in override.value) {
-          if (!variantSelectors[variantId]) {
-            variantSelectors[variantId] = [];
-          }
-
-          let postfix = instancePathSelector.join(" ");
-
-          if (
-            instancePathSelector.length !== 0 &&
-            !(
-              override.targetIdPath.length === 1 &&
-              override.targetIdPath[0] === instance.id
-            )
-          ) {
-            postfix += " ";
-          }
-
-          // tee-up for combo classes
-          variantSelectors[variantId].push(`._${newKey} ${postfix}`);
-        }
+        // tee-up for combo classes
+        variantSelectors[variantId].push(`._${newKey} ${postfix}`);
       }
     }
 
     return variantSelectors;
-  };
-
-  const getInstanceVariantOverrideMap = (
-    instance: PCComponentInstanceElement | PCComponent,
-    map: PCComputedOverrideMap,
-    context: TranslateContext
-  ) => {
-    const newMap = {};
-
-    for (const key in map) {
-      const instanceMap = map[key][instance.id] || EMPTY_OBJECT;
-
-      const overrides = instanceMap.overrides || EMPTY_ARRAY;
-      for (const override of overrides) {
-        if (override.propertyName !== PCOverridablePropertyName.VARIANT) {
-          continue;
-        }
-
-        let newKey: string;
-
-        if (key === COMPUTED_OVERRIDE_DEFAULT_KEY) {
-          newKey = context.currentScope;
-        } else {
-          newKey = key;
-        }
-
-        for (const variantId in override.value) {
-          if (!newMap[variantId]) {
-            newMap[variantId] = [];
-          }
-
-          // tee-up for combo classes
-          newMap[variantId].push([newKey]);
-        }
-      }
-    }
-
-    return newMap;
   };
 
   const translateUsedComponentOverrides = (
@@ -1025,13 +1193,11 @@ export const createPaperclipVirtualDOMtranslator = (
   ) => {
     const contentNode =
       getPCNodeContentNode(instance.id, context.entry.content) || instance;
+    const { overrides } = instance;
     const overrideMap = getOverrideMap(instance, contentNode);
-    context = translateUsedComponentOverrideMap(
-      mergeVariantOverrides(overrideMap),
-      context
-    );
+    context = translateUsedComponentOverrideMap(overrideMap, context);
 
-    const variantSelectors = translateVariantSelectors(instance, overrideMap);
+    const variantSelectors = translateVariantSelectors(instance);
 
     if (Object.keys(variantSelectors).length) {
       context = addLine(
@@ -1044,17 +1210,22 @@ export const createPaperclipVirtualDOMtranslator = (
   };
 
   const translateUsedComponentOverrideMap = (
-    map: PCComputedOverrideVariantMap,
+    map: ComputedOverrideMap,
     context: TranslateContext
   ) => {
-    for (const key in map) {
-      const { children, overrides } = map[key];
-      if (mapContainsStaticOverrides(map[key])) {
-        context = addOpenTag(`_${key}: {\n`, context);
+    for (const nodeId in map) {
+      const { children, overrides } = map[nodeId];
+      if (mapContainsStaticOverrides(map[nodeId])) {
+        context = addOpenTag(`_${nodeId}: {\n`, context);
         for (const override of overrides) {
           context = translateStaticOverride(override, context);
         }
-        context = translateStaticStyleOverride(key, overrides, context, false);
+        context = translateStaticStyleOverride(
+          nodeId,
+          overrides,
+          context,
+          false
+        );
         context = translateUsedComponentOverrideMap(children, context);
         context = addCloseTag(`},\n`, context);
       }
@@ -1070,7 +1241,8 @@ export const createPaperclipVirtualDOMtranslator = (
     const visibleNodes = filterNestedNodes(
       component,
       node => isVisibleNode(node) || node.name === PCSourceTagNames.COMPONENT
-    );
+    ) as (PCVisibleNode | PCComponent)[];
+
     for (const node of visibleNodes) {
       // overrides provided when component is created, so ski
       if (node.name === PCSourceTagNames.COMPONENT && extendsComponent(node)) {
@@ -1096,7 +1268,11 @@ export const createPaperclipVirtualDOMtranslator = (
         node.name === PCSourceTagNames.COMPONENT ||
         node.name === PCSourceTagNames.COMPONENT_INSTANCE
       ) {
-        context = translateInnerAttributes(node.id, node.attributes, context);
+        context = translateInnerAttributes(
+          node.id,
+          keyValuePairToHash(node.attributes),
+          context
+        );
       }
       context = addLine(`key: "${node.id}",`, context);
 
@@ -1104,7 +1280,8 @@ export const createPaperclipVirtualDOMtranslator = (
       if (node.name !== PCSourceTagNames.COMPONENT_INSTANCE) {
         context = translateStaticStyleOverride(
           node.id,
-          getAllNodeOverrides(node.id, component),
+          // getAllNodeOverrides(node.id, component),
+          EMPTY_ARRAY,
           context
         );
       }
@@ -1125,19 +1302,20 @@ export const createPaperclipVirtualDOMtranslator = (
     return context;
   };
 
-  const getAllNodeOverrides = (nodeId: string, contentNode: PCNode) => {
-    const node = getNestedTreeNodeById(nodeId, contentNode) as PCNode;
-    return (getTreeNodesByName(
-      PCSourceTagNames.OVERRIDE,
-      contentNode
-    ) as PCOverride[]).filter(override => {
-      return (
-        last(override.targetIdPath) === nodeId ||
-        (override.targetIdPath.length === 0 &&
-          node.children.indexOf(override) !== -1)
-      );
-    });
-  };
+  // const getAllNodeOverrides = (nodeId: string, contentNode: PCNode) => {
+  //   const node = getNestedTreeNodeById(nodeId, contentNode) as PCNode;
+
+  //   return (getTreeNodesByName(
+  //     PCSourceTagNames.OVERRIDE,
+  //     contentNode
+  //   ) as PCOverride[]).filter(override => {
+  //     return (
+  //       last(override.targetIdPath) === nodeId ||
+  //       (override.targetIdPath.length === 0 &&
+  //         node.children.indexOf(override) !== -1)
+  //     );
+  //   });
+  // };
 
   const translateControllers = (
     renderName: string,
@@ -1195,13 +1373,6 @@ export const createPaperclipVirtualDOMtranslator = (
     component: ContentNode,
     context: TranslateContext
   ) => {
-    // const instances = filterNestedNodes(
-    //   component,
-    //   node =>
-    //     node.name === PCSourceTagNames.COMPONENT ||
-    //     node.name === PCSourceTagNames.COMPONENT_INSTANCE
-    // );
-
     const variants = getPCVariants(component);
     for (const variant of variants) {
       context = addOpenTag(
@@ -1217,31 +1388,18 @@ export const createPaperclipVirtualDOMtranslator = (
         } + " " : "") + "_${variant.id}";`,
         context
       );
-      // for (let i = instances.length; i--; ) {
-      //   const instance = instances[i];
-      //   const overrideMap = getOverrideMap(instance);
-      //   if (!overrideMap[variant.id]) {
-      //     continue;
-      //   }
-      //   context = translateDynamicOverrides(
-      //     component,
-      //     instance,
-      //     variant.id,
-      //     context
-      //   );
-      // }
       context = addCloseTag(`}\n`, context);
     }
 
     return context;
   };
 
-  const isComputedOverride = (map: any): map is PCComputedNoverOverrideMap =>
+  const isComputedOverride = (map: any): map is ComputedNodeOverrideMap =>
     Boolean(map.children);
 
   const mapContainersOverride = (filter: (override: PCOverride) => boolean) => {
     const check = memoize(
-      (map: PCComputedNoverOverrideMap | PCComputedOverrideVariantMap) => {
+      (map: ComputedOverrideMap | ComputedNodeOverrideMap) => {
         if (isComputedOverride(map)) {
           if (map.overrides.find(filter)) {
             return true;
@@ -1265,12 +1423,8 @@ export const createPaperclipVirtualDOMtranslator = (
     return check;
   };
 
-  const isStaticOverride = (override: PCOverride) =>
-    override.propertyName !== PCOverridablePropertyName.CHILDREN &&
-    !override.variantId;
+  const isStaticOverride = (override: PCOverride) => !override.variantId;
   const isDynamicOverride = (override: PCOverride) =>
-    (override.propertyName === PCOverridablePropertyName.CHILDREN &&
-      override.children.length > 0) ||
     Boolean(override.variantId);
 
   const mapContainsStaticOverrides = mapContainersOverride(isStaticOverride);
@@ -1327,10 +1481,10 @@ export const createPaperclipVirtualDOMtranslator = (
       node =>
         node.name === PCSourceTagNames.COMPONENT_INSTANCE ||
         node.name === PCSourceTagNames.COMPONENT
-    );
+    ) as (PCComponent | PCComponentInstanceElement)[];
 
     for (const instance of instances) {
-      const overrides = getOverrides(instance);
+      const overrides = instance.overrides;
 
       for (const override of overrides) {
         if (isDynamicOverride(override)) {
@@ -1408,7 +1562,7 @@ export const createPaperclipVirtualDOMtranslator = (
     variantId: string,
     context: TranslateContext
   ) => {
-    const overrides = getOverrides(instance);
+    const { overrides } = instance;
 
     for (const override of overrides) {
       if (isDynamicOverride(override) && override.variantId == variantId) {
@@ -1435,12 +1589,12 @@ export const createPaperclipVirtualDOMtranslator = (
   const hasDynamicOverrides = ({
     children,
     overrides
-  }: PCComputedNoverOverrideMap) => {
-    for (const override of overrides) {
-      if (override.propertyName === PCOverridablePropertyName.CHILDREN) {
-        return true;
-      }
-    }
+  }: ComputedNodeOverrideMap) => {
+    // for (const override of overrides) {
+    //   if (override.type === ComputedOverrideType.CHILDREN) {
+    //     return true;
+    //   }
+    // }
 
     for (const key in children) {
       if (hasDynamicOverrides(children[key])) {
@@ -1457,8 +1611,8 @@ export const createPaperclipVirtualDOMtranslator = (
     context: TranslateContext
   ) => {
     if (override.variantId) {
-      switch (override.propertyName) {
-        case PCOverridablePropertyName.STYLE: {
+      switch (override.type) {
+        case PCOverridableType.STYLES: {
           context = addLine(
             `${varName}.${parts.classAttributeName} = (${varName}.${
               parts.classAttributeName
@@ -1469,7 +1623,7 @@ export const createPaperclipVirtualDOMtranslator = (
           );
           return context;
         }
-        case PCOverridablePropertyName.VARIANT: {
+        case PCOverridableType.VARIANT: {
           context = addLine(
             `${varName}.variant = (${varName}.variant ? ${varName}.variant + " " : "") + "${Object.keys(
               override.value
@@ -1492,20 +1646,20 @@ export const createPaperclipVirtualDOMtranslator = (
       return context;
     }
 
-    switch (override.propertyName) {
-      case PCOverridablePropertyName.TEXT: {
+    switch (override.type) {
+      case PCOverridableType.TEXT: {
         return addLine(`text: ${JSON.stringify(override.value)},`, context);
       }
-      case PCOverridablePropertyName.VARIANT: {
+      case PCOverridableType.VARIANT: {
         return addLine(
           `variant: "${Object.keys(override.value).join(" ")}",`,
           context
         );
       }
-      case PCOverridablePropertyName.ATTRIBUTES: {
+      case PCOverridableType.ATTRIBUTES: {
         context = translateInnerAttributes(
           last(override.targetIdPath),
-          override.value,
+          keyValuePairToHash(override.value),
           context
         );
         break;
@@ -1522,8 +1676,9 @@ export const createPaperclipVirtualDOMtranslator = (
     includeNodeId: boolean = true
   ) => {
     const styleOverrides = overrides.filter(
-      override => override.propertyName === PCOverridablePropertyName.STYLE
+      override => override.type === PCOverridableType.STYLES
     );
+
     if (!styleOverrides.length && !includeNodeId) {
       return context;
     }
@@ -1551,7 +1706,7 @@ export const createPaperclipVirtualDOMtranslator = (
 
   const translateInnerAttributes = (
     nodeId: string,
-    attributes: any,
+    attributes: KeyValue<string>,
     context: TranslateContext
   ) => {
     const node = getPCNode(nodeId, context.graph) as PCComponentInstanceElement;
@@ -1584,10 +1739,7 @@ export const createPaperclipVirtualDOMtranslator = (
   };
 
   const hasStyle = (node: PCVisibleNode | PCComponent) => {
-    return (
-      Object.keys(node.style).length > 0 ||
-      (node.styleMixins && Object.keys(node.styleMixins).length > 0)
-    );
+    return Boolean(node.styles.length);
   };
 
   const translateVisibleNode = (node: PCNode, context: TranslateContext) => {

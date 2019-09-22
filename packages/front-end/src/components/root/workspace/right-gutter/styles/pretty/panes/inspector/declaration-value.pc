@@ -1,41 +1,56 @@
 {
   "id": "d8c26c49182",
+  "version": "1.0.4",
+  "metadata": {},
   "name": "module",
-  "version": "0.0.6",
   "children": [
     {
       "id": "957e4f662000",
       "label": "Element",
       "is": "div",
       "name": "element",
-      "attributes": {},
-      "style": {
-        "box-sizing": "border-box",
-        "display": "block"
-      },
+      "attributes": [],
       "children": [
         {
           "id": "957e4f662002",
           "label": "Element",
           "is": "div",
           "name": "element",
-          "attributes": {},
-          "style": {
-            "box-sizing": "border-box",
-            "display": "block"
-          },
+          "attributes": [],
           "children": [
             {
               "id": "957e4f662004",
               "name": "text",
               "label": "Text",
               "value": "linear-gradient",
-              "style": {},
               "children": [],
-              "metadata": {}
+              "metadata": {},
+              "styles": [
+                {
+                  "id": "9100206074.1566398145535",
+                  "parts": {},
+                  "properties": []
+                }
+              ]
             }
           ],
-          "metadata": {}
+          "metadata": {},
+          "styles": [
+            {
+              "id": "6998034798.1566398145535",
+              "parts": {},
+              "properties": [
+                {
+                  "key": "box-sizing",
+                  "value": "border-box"
+                },
+                {
+                  "key": "display",
+                  "value": "block"
+                }
+              ]
+            }
+          ]
         }
       ],
       "metadata": {
@@ -46,12 +61,28 @@
           "bottom": 65.72947653935461
         }
       },
-      "styleMixins": {
-        "dc3b39eb1275": {
-          "priority": 0
+      "styles": [
+        {
+          "id": "1638211455.1566398145535",
+          "parts": {},
+          "properties": [
+            {
+              "key": "box-sizing",
+              "value": "border-box"
+            },
+            {
+              "key": "display",
+              "value": "block"
+            }
+          ]
+        },
+        {
+          "id": "343512271.1566398145535",
+          "mixinId": "dc3b39eb1275",
+          "parts": {},
+          "properties": []
         }
-      }
+      ]
     }
-  ],
-  "metadata": {}
+  ]
 }

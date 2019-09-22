@@ -15,8 +15,9 @@ import {
   isSlot,
   PCModule,
   getComponentSlots,
+  isComponentLike,
   PCSlot,
-  PCOverridablePropertyName,
+  PCOverridableType,
   getSlotPlug,
   getPCNodeModule,
   getPCVariants,
@@ -26,7 +27,7 @@ import {
   getPCNodeDependency
 } from "./dsl";
 import { last } from "lodash";
-
+import { isNodeMutation, getMutationTargetNode } from "./ot";
 import {
   getSyntheticDocumentsSourceMap,
   getSyntheticNodeById,
@@ -36,13 +37,9 @@ import {
   SyntheticVisibleNode,
   getSyntheticSourceNode,
   getSyntheticDocumentByDependencyUri
-} from "./synthetic";
+} from "./synthetic-dom";
 
-import {
-  diffTreeNode,
-  TreeNodeOperationalTransformType,
-  patchTreeNode
-} from "./ot";
+import { diff, patch, Mutation, getValue, MutationType } from "immutable-ot";
 
 import {
   TreeNode,
@@ -425,7 +422,6 @@ const isUnreppedSourceNode = (node: PCNode) =>
   node.name === PCSourceTagNames.VARIABLE ||
   node.name === PCSourceTagNames.VARIANT_TRIGGER ||
   node.name === PCSourceTagNames.QUERY ||
-  node.name === PCSourceTagNames.OVERRIDE ||
   node.name === PCSourceTagNames.VARIANT;
 
 const patchInspectorTree2 = (
@@ -438,20 +434,24 @@ const patchInspectorTree2 = (
   const newModule = newGraph[uri].content;
   const oldModule = oldGraph[uri].content;
   let tmpModule = oldModule;
-  const now = Date.now();
-  const ots = diffTreeNode(tmpModule, newModule);
+  const ots = diff(tmpModule, newModule);
 
   let newSourceMap = sourceMap;
 
   for (const ot of ots) {
-    const targetNode = getTreeNodeFromPath(ot.nodePath, tmpModule) as PCNode;
+    if (!isNodeMutation(ot)) {
+      continue;
+    }
+
+    const targetNode = getMutationTargetNode(tmpModule, ot);
 
     if (isUnreppedSourceNode(targetNode as PCNode)) {
       continue;
     }
 
-    tmpModule = patchTreeNode([ot], tmpModule);
-    const patchedTarget = getTreeNodeFromPath(ot.nodePath, tmpModule) as PCNode;
+    tmpModule = patch(tmpModule, [ot]);
+
+    const patchedTarget = getMutationTargetNode(tmpModule, ot) as PCNode;
 
     const targetInspectorNodeInstanceIds = newSourceMap[patchedTarget.id];
 
@@ -469,8 +469,8 @@ const patchInspectorTree2 = (
               rootInspectorNode
             );
       switch (ot.type) {
-        case TreeNodeOperationalTransformType.INSERT_CHILD: {
-          const { child } = ot;
+        case MutationType.INSERT: {
+          const { value: child } = ot;
           const pcChild = child as PCNode;
           const reppedChildren = patchedTarget.children.filter(
             child => !isUnreppedSourceNode(child)
@@ -573,7 +573,7 @@ const patchInspectorTree2 = (
 
           break;
         }
-        case TreeNodeOperationalTransformType.REMOVE_CHILD: {
+        case MutationType.REMOVE: {
           const { index } = ot;
           const pcChild = targetNode.children[index] as PCNode;
           const inspectorChild = newInspectorNode.children.find(child => {
@@ -609,7 +609,7 @@ const patchInspectorTree2 = (
 
           break;
         }
-        case TreeNodeOperationalTransformType.MOVE_CHILD: {
+        case MutationType.MOVE: {
           const { oldIndex, newIndex } = ot;
           const pcChild = targetNode.children[oldIndex] as PCNode;
           const beforeChild = targetNode.children[newIndex] as PCNode;
@@ -641,8 +641,8 @@ const patchInspectorTree2 = (
 
           break;
         }
-        case TreeNodeOperationalTransformType.SET_PROPERTY: {
-          const { name, value } = ot;
+        case MutationType.SET: {
+          const { propertyName: name, value } = ot;
 
           // instance type change, so we need to replace all current children with appropriate shadow & plugs
           if (
@@ -748,20 +748,21 @@ export const getInstanceVariantInfo = memoize(
       if (!parentSourceNode) {
         continue;
       }
-      const variant =
-        parentSourceNode.name === PCSourceTagNames.COMPONENT ||
-        parentSourceNode.name === PCSourceTagNames.COMPONENT_INSTANCE
-          ? parentSourceNode.variant
-          : EMPTY_OBJECT;
-      const variantOverride = parentSourceNode.children.find(
-        (child: PCNode) =>
-          child.name === PCSourceTagNames.OVERRIDE &&
-          child.propertyName === PCOverridablePropertyName.VARIANT &&
-          (last(child.targetIdPath) === instance.id ||
-            (child.targetIdPath.length === 0 &&
-              parentSourceNode.id === instance.id)) &&
-          child.variantId == selectedVariantId
-      ) as PCBaseValueOverride<any, any>;
+
+      const variant = isComponentLike(parentSourceNode)
+        ? parentSourceNode.variant
+        : EMPTY_OBJECT;
+      const variantOverride = isComponentLike(parentSourceNode)
+        ? parentSourceNode.overrides.find(
+            (override: PCOverride) =>
+              override.type === PCOverridableType.VARIANT &&
+              (last(override.targetIdPath) === instance.id ||
+                (override.targetIdPath.length === 0 &&
+                  parentSourceNode.id === instance.id)) &&
+              override.variantId == selectedVariantId
+          )
+        : null;
+
       Object.assign(enabled, variant, variantOverride && variantOverride.value);
     }
 

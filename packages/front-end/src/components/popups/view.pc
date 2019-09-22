@@ -1,6 +1,6 @@
 {
   "id": "67d74e285",
-  "version": "0.0.5",
+  "version": "1.0.4",
   "metadata": {},
   "name": "module",
   "children": [
@@ -8,10 +8,7 @@
       "id": "25d5776e3",
       "is": "67d74e287",
       "name": "component-instance",
-      "attributes": {},
-      "style": {
-        "font-family": "unset"
-      },
+      "attributes": [],
       "children": [],
       "metadata": {
         "bounds": {
@@ -22,23 +19,30 @@
         }
       },
       "variant": {},
-      "styleMixins": {
-        "1542269688891": {
-          "priority": 0
+      "styles": [
+        {
+          "id": "4147239227.1566398145474",
+          "parts": {},
+          "properties": [
+            {
+              "key": "font-family",
+              "value": "unset"
+            }
+          ]
+        },
+        {
+          "id": "6149815960.1566398145474",
+          "mixinId": "1542269688891",
+          "parts": {},
+          "properties": []
         }
-      }
+      ],
+      "overrides": []
     },
     {
       "label": "Banner",
       "is": "div",
-      "style": {
-        "box-sizing": "border-box",
-        "padding-left": "8px",
-        "padding-top": "8px",
-        "padding-right": "8px",
-        "padding-bottom": "8px"
-      },
-      "attributes": {},
+      "attributes": [],
       "id": "67d74e287",
       "name": "component",
       "children": [
@@ -47,7 +51,6 @@
           "name": "text",
           "label": "Text",
           "value": "Banner",
-          "style": {},
           "children": [],
           "metadata": {
             "bounds": {
@@ -56,7 +59,14 @@
               "right": 447.97162956155205,
               "bottom": 305.41940484919706
             }
-          }
+          },
+          "styles": [
+            {
+              "id": "3823892519.1566398145474",
+              "parts": {},
+              "properties": []
+            }
+          ]
         },
         {
           "id": "67d74e289",
@@ -76,11 +86,41 @@
         }
       },
       "variant": {},
-      "styleMixins": {
-        "dc3b39eb1275": {
-          "priority": 0
+      "styles": [
+        {
+          "id": "9853853761.1566398145474",
+          "parts": {},
+          "properties": [
+            {
+              "key": "box-sizing",
+              "value": "border-box"
+            },
+            {
+              "key": "padding-left",
+              "value": "8px"
+            },
+            {
+              "key": "padding-top",
+              "value": "8px"
+            },
+            {
+              "key": "padding-right",
+              "value": "8px"
+            },
+            {
+              "key": "padding-bottom",
+              "value": "8px"
+            }
+          ]
+        },
+        {
+          "id": "746652807.1566398145474",
+          "mixinId": "dc3b39eb1275",
+          "parts": {},
+          "properties": []
         }
-      }
+      ],
+      "overrides": []
     }
   ]
 }

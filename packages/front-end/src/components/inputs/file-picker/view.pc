@@ -1,16 +1,13 @@
 {
   "id": "1173728894",
+  "version": "1.0.4",
+  "metadata": {},
   "name": "module",
-  "version": "0.0.6",
   "children": [
     {
       "label": "file input",
       "is": "div",
-      "style": {
-        "box-sizing": "border-box",
-        "display": "flex"
-      },
-      "attributes": {},
+      "attributes": [],
       "id": "9fb9afea1357",
       "name": "component",
       "children": [
@@ -19,10 +16,7 @@
           "is": "7149f8199122",
           "label": "file path input",
           "name": "component-instance",
-          "attributes": {},
-          "style": {
-            "margin-right": "6px"
-          },
+          "attributes": [],
           "children": [],
           "metadata": {
             "bounds": {
@@ -32,40 +26,35 @@
               "bottom": 327.0358087589019
             }
           },
-          "variant": {}
+          "variant": {},
+          "styles": [
+            {
+              "id": "7962241419.1566398145466",
+              "parts": {},
+              "properties": [
+                {
+                  "key": "margin-right",
+                  "value": "6px"
+                }
+              ]
+            }
+          ],
+          "overrides": []
         },
         {
           "id": "6fc47e06486",
           "label": "Element",
           "is": "div",
           "name": "element",
-          "attributes": {},
-          "style": {
-            "box-sizing": "border-box",
-            "display": "flex",
-            "position": "relative"
-          },
+          "attributes": [],
           "children": [
             {
               "id": "9fb9afea1355",
               "is": "9f364d2139415",
               "label": "browse button",
               "name": "component-instance",
-              "attributes": {},
-              "style": {},
-              "children": [
-                {
-                  "id": "9fb9afea1356",
-                  "variantId": null,
-                  "propertyName": "text",
-                  "targetIdPath": [
-                    "9f364d2139650"
-                  ],
-                  "value": "browse",
-                  "name": "override",
-                  "children": []
-                }
-              ],
+              "attributes": [],
+              "children": [],
               "metadata": {
                 "bounds": {
                   "left": 300,
@@ -74,10 +63,49 @@
                   "bottom": 220
                 }
               },
-              "variant": {}
+              "variant": {},
+              "styles": [
+                {
+                  "id": "9202255798.1566398145466",
+                  "parts": {},
+                  "properties": []
+                }
+              ],
+              "overrides": [
+                {
+                  "id": "9fb9afea1356",
+                  "variantId": null,
+                  "targetIdPath": [
+                    "9f364d2139650"
+                  ],
+                  "value": "browse",
+                  "children": [],
+                  "type": "text"
+                }
+              ]
             }
           ],
-          "metadata": {}
+          "metadata": {},
+          "styles": [
+            {
+              "id": "3826197368.1566398145466",
+              "parts": {},
+              "properties": [
+                {
+                  "key": "box-sizing",
+                  "value": "border-box"
+                },
+                {
+                  "key": "display",
+                  "value": "flex"
+                },
+                {
+                  "key": "position",
+                  "value": "relative"
+                }
+              ]
+            }
+          ]
         }
       ],
       "metadata": {
@@ -91,8 +119,24 @@
       "variant": {},
       "controllers": [
         "./controller.tsx"
-      ]
+      ],
+      "styles": [
+        {
+          "id": "4001389786.1566398145466",
+          "parts": {},
+          "properties": [
+            {
+              "key": "box-sizing",
+              "value": "border-box"
+            },
+            {
+              "key": "display",
+              "value": "flex"
+            }
+          ]
+        }
+      ],
+      "overrides": []
     }
-  ],
-  "metadata": {}
+  ]
 }

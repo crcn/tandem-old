@@ -1,0 +1,24 @@
+{
+  "name": "immutable-ot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha lib/test",
+    "build": "tsc",
+    "build:watch": "tsc --watch",
+    "clean": "rm -rf lib && rm -rf node_modules"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/chai": "^4.2.3",
+    "@types/mocha": "^5.2.7",
+    "chai": "^4.2.0",
+    "mocha": "^6.2.0",
+    "typescript": "^3.6.3"
+  },
+  "dependencies": {
+    "@types/node": "^12.7.5"
+  }
+}

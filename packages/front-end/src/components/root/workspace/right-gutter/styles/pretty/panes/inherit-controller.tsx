@@ -97,29 +97,21 @@ export default (Base: React.ComponentClass<BaseMixinsProps>) => {
           : null
       );
 
-      const items = Object.keys(sourceNode.styleMixins || EMPTY_OBJECT)
-        .filter(k => Boolean(sourceNode.styleMixins[k]))
-        .sort((a, b) => {
-          return sourceNode.styleMixins[a].priority >
-            sourceNode.styleMixins[b].priority
-            ? -1
-            : 1;
-        })
-        .map((styleMixinId, i) => {
-          return (
-            <InheritItem
-              dropdownProps={null}
-              alt={Boolean(i % 2)}
-              key={styleMixinId}
-              onClick={onInheritItemClick as any}
-              selected={selectedStyleMixinId === styleMixinId}
-              styleMixinId={styleMixinId}
-              styleMixin={getPCNode(styleMixinId, graph) as PCStyleMixin}
-              allStyleMixins={allStyleMixins}
-              dispatch={dispatch}
-            />
-          );
-        });
+      const items = [].map((styleMixinId, i) => {
+        return (
+          <InheritItem
+            dropdownProps={null}
+            alt={Boolean(i % 2)}
+            key={styleMixinId}
+            onClick={onInheritItemClick as any}
+            selected={selectedStyleMixinId === styleMixinId}
+            styleMixinId={styleMixinId}
+            styleMixin={getPCNode(styleMixinId, graph) as PCStyleMixin}
+            allStyleMixins={allStyleMixins}
+            dispatch={dispatch}
+          />
+        );
+      });
 
       return (
         <Base

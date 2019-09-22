@@ -21,7 +21,7 @@
     "tandem-common": "^10.1.38"
   },
   "devDependencies": {
-    "typescript": "3.0.x"
+    "typescript": "^3.6.2"
   },
   "gitHead": "62ff73f435d5ddc97b8ff23b2356ed36f69c1486"
 }

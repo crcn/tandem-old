@@ -1,14 +1,10 @@
 import { DependencyGraph, Dependency } from "./graph";
 import { EventEmitter } from "events";
-import { SyntheticDocument } from "./synthetic";
+import { SyntheticDocument } from "./synthetic-dom";
 import { evaluateDependencyGraph } from "./evaluate";
 import { KeyValue, pmark, EMPTY_OBJECT } from "tandem-common";
 import { isEqual } from "lodash";
-import {
-  patchTreeNode,
-  TreeNodeOperationalTransform,
-  diffTreeNode
-} from "./ot";
+import { diff, patch, Mutation } from "immutable-ot";
 import { PCModule, createPCDependency } from "./dsl";
 
 export interface PCRuntime extends EventEmitter {
@@ -24,7 +20,7 @@ export interface PCRuntime extends EventEmitter {
     event: "evaluate",
     listener: (
       newDocuments: KeyValue<SyntheticDocument>,
-      diffs: KeyValue<TreeNodeOperationalTransform[]>,
+      diffs: KeyValue<Mutation[]>,
       deletedDocumentIds: string[],
       timestamp: number
     ) => void
@@ -89,7 +85,7 @@ class LocalPCRuntime extends EventEmitter implements PCRuntime {
 
   private _evaluateNow() {
     const marker = pmark("LocalPCRuntime._evaluateNow()");
-    const diffs: KeyValue<TreeNodeOperationalTransform[]> = {};
+    const diffs: KeyValue<Mutation[]> = {};
     const newDocumentMap: KeyValue<SyntheticDocument> = {};
     const documentMap = {};
     const deletedDocumentIds = [];
@@ -104,11 +100,12 @@ class LocalPCRuntime extends EventEmitter implements PCRuntime {
       const newSyntheticDocument = newSyntheticDocuments[uri];
       let prevSyntheticDocument = this._syntheticDocuments[uri];
       if (prevSyntheticDocument) {
-        const ots = diffTreeNode(prevSyntheticDocument, newSyntheticDocument);
+        const ots = diff(prevSyntheticDocument, newSyntheticDocument);
+
         if (ots.length) {
-          prevSyntheticDocument = documentMap[uri] = patchTreeNode(
-            ots,
-            prevSyntheticDocument
+          prevSyntheticDocument = documentMap[uri] = patch(
+            prevSyntheticDocument,
+            ots
           );
           diffs[uri] = ots;
         } else {
@@ -139,9 +136,7 @@ class LocalPCRuntime extends EventEmitter implements PCRuntime {
   }
 }
 
-export type DependencyGraphChanges = KeyValue<
-  PCModule | TreeNodeOperationalTransform[]
->;
+export type DependencyGraphChanges = KeyValue<PCModule | Mutation[]>;
 
 export type RemoteConnection = {
   addEventListener(type: "message", listener: any): any;
@@ -186,7 +181,7 @@ export class RemotePCRuntime extends EventEmitter implements PCRuntime {
     for (const uri in value.graph) {
       const oldDep = oldInfo && oldInfo.graph[uri];
       if (oldDep) {
-        const ots = diffTreeNode(oldDep.content, value.graph[uri].content);
+        const ots = diff(oldDep.content, value.graph[uri].content);
         changes[uri] = ots;
       } else {
         changes[uri] = value.graph[uri].content;
@@ -203,7 +198,7 @@ export class RemotePCRuntime extends EventEmitter implements PCRuntime {
           changes,
           variants: value.variants,
           priorityUris: value.priorityUris,
-          lastUpdatedAt: (this._lastUpdatedAt = timestamp)
+          lastUpdatedAt: this._lastUpdatedAt = timestamp
         }
       });
     }
@@ -225,9 +220,9 @@ export class RemotePCRuntime extends EventEmitter implements PCRuntime {
       };
 
       for (const uri in diffs) {
-        this._syntheticDocuments[uri] = patchTreeNode(
-          diffs[uri],
-          this._syntheticDocuments[uri]
+        this._syntheticDocuments[uri] = patch(
+          this._syntheticDocuments[uri],
+          diffs[uri]
         );
       }
 
@@ -267,7 +262,7 @@ const patchDependencyGraph = (
     const change = changes[uri];
     if (Array.isArray(change)) {
       newGraph[uri] = change.length
-        ? createPCDependency(uri, patchTreeNode(change, oldGraph[uri].content))
+        ? createPCDependency(uri, patch(oldGraph[uri].content, change))
         : oldGraph[uri];
     } else {
       newGraph[uri] = createPCDependency(uri, change);

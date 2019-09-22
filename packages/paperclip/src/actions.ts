@@ -1,9 +1,9 @@
 import { ComputedDisplayInfo, Frame } from "./edit";
 import { Action } from "redux";
 import { DependencyGraph } from "./graph";
-import { TreeNodeOperationalTransform } from "./ot";
 import { KeyValue } from "tandem-common";
-import { SyntheticDocument } from "./synthetic";
+import { SyntheticDocument } from "./synthetic-dom";
+import { Mutation } from "immutable-ot";
 
 export const PC_SYNTHETIC_FRAME_RENDERED = "PC_SYNTHETIC_FRAME_RENDERED";
 export const PC_DEPENDENCY_GRAPH_LOADED = "PC_DEPENDENCY_GRAPH_LOADED";
@@ -32,7 +32,7 @@ export type PCDependencyGraphLoaded = {
 
 export type PCRuntimeEvaluated = {
   newDocuments: KeyValue<SyntheticDocument>;
-  diffs: KeyValue<TreeNodeOperationalTransform[]>;
+  diffs: KeyValue<Mutation[]>;
   allDocuments: SyntheticDocument[];
   catchingUp: boolean;
 } & Action;
@@ -71,7 +71,7 @@ export const pcFrameContainerCreated = (
 
 export const pcRuntimeEvaluated = (
   newDocuments: KeyValue<SyntheticDocument>,
-  diffs: KeyValue<TreeNodeOperationalTransform[]>,
+  diffs: KeyValue<Mutation[]>,
   allDocuments: SyntheticDocument[],
   catchingUp: boolean
 ): PCRuntimeEvaluated => ({

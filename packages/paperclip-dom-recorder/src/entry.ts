@@ -1,8 +1,8 @@
-import { PCDOMRecorder } from "recorder";
+// import { PCDOMRecorder } from "./recorder";
 
-const recorder = new PCDOMRecorder();
+// const recorder = new PCDOMRecorder();
 
-window["paperclipDOMRecorder"] = recorder;
+// window["paperclipDOMRecorder"] = recorder;
 
-recorder.takeSnapshot();
-recorder.copy();
+// recorder.takeSnapshot();
+// recorder.copy();

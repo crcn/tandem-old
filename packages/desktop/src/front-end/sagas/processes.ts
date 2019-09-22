@@ -1,5 +1,13 @@
-import { fork, take, select, call, put, spawn } from "redux-saga/effects";
-import { eventChannel, delay } from "redux-saga";
+import {
+  fork,
+  take,
+  select,
+  call,
+  put,
+  spawn,
+  delay
+} from "redux-saga/effects";
+import { eventChannel } from "redux-saga";
 import * as terminate from "terminate";
 import * as path from "path";
 import { spawn as spawn2 } from "child_process";
@@ -23,6 +31,7 @@ import {
   unloaderCompleted
 } from "tandem-front-end";
 import { stripProtocol } from "tandem-common";
+import { Action } from "redux";
 
 export function* processSaga() {
   yield fork(handleStartBuild);
@@ -64,11 +73,11 @@ function* startBuild() {
   // check if process has been removed from state
   yield fork(function* handleScriptChanged() {
     while (1) {
-      const action = yield take([
+      const action = ((yield take([
         BUILD_SCRIPT_CONFIG_CHANGED,
         BUILD_BUTTON_STOP_CLICKED,
         TD_PROJECT_LOADED
-      ]);
+      ])) as any) as Action<any>;
 
       // slight pause to ensure that reducer is called first
       yield delay(0);

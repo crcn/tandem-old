@@ -15,7 +15,7 @@ export default (Base: React.ComponentClass<BaseMainProps>) =>
       // safety measure incase reload action handler is not working
       setTimeout(() => {
         window.location.reload();
-      }, 1000);
+      }, 500);
     };
 
     render() {

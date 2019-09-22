@@ -1,37 +1,16 @@
 {
   "id": "296b92da31921",
-  "version": "0.0.5",
+  "version": "1.0.4",
   "metadata": {},
   "name": "module",
   "children": [
     {
       "label": "Filters",
       "is": "b6c162d113",
-      "style": {},
-      "attributes": {},
+      "attributes": [],
       "id": "bcda9fb597947",
       "name": "component",
       "children": [
-        {
-          "id": "bcda9fb597946",
-          "propertyName": "text",
-          "targetIdPath": [
-            "b6c162d1281"
-          ],
-          "value": "Filters",
-          "name": "override",
-          "children": []
-        },
-        {
-          "id": "bcda9fb5129573",
-          "propertyName": "text",
-          "targetIdPath": [
-            "6fd27ae1495"
-          ],
-          "value": "   ",
-          "name": "override",
-          "children": []
-        },
         {
           "slotId": "d6261ad53069",
           "id": "43fa80866960",
@@ -41,48 +20,42 @@
               "label": "Element",
               "is": "div",
               "name": "element",
-              "attributes": {},
-              "style": {
-                "box-sizing": "border-box",
-                "display": "flex",
-                "align-items": "center",
-                "justify-content": "space-between"
-              },
+              "attributes": [],
               "children": [
                 {
                   "id": "43fa80866967",
                   "name": "text",
                   "label": "Text",
                   "value": "Filters",
-                  "style": {},
                   "children": [],
                   "metadata": {},
-                  "styleMixins": {
-                    "dc3b39eb1627": {
-                      "priority": 0
+                  "styles": [
+                    {
+                      "id": "1879099088.1566398145528",
+                      "parts": {},
+                      "properties": []
+                    },
+                    {
+                      "id": "7917322693.1566398145528",
+                      "mixinId": "dc3b39eb1627",
+                      "parts": {},
+                      "properties": []
                     }
-                  }
+                  ]
                 },
                 {
                   "id": "43fa80866971",
                   "label": "Element",
                   "is": "div",
                   "name": "element",
-                  "attributes": {},
-                  "style": {
-                    "box-sizing": "border-box",
-                    "display": "block"
-                  },
+                  "attributes": [],
                   "children": [
                     {
                       "id": "43fa80866975",
                       "is": "f27782548182",
                       "label": "Add icon",
                       "name": "component-instance",
-                      "attributes": {},
-                      "style": {
-                        "height": "9px"
-                      },
+                      "attributes": [],
                       "children": [],
                       "metadata": {
                         "bounds": {
@@ -92,37 +65,77 @@
                           "bottom": 2734
                         }
                       },
-                      "variant": {}
+                      "variant": {},
+                      "styles": [
+                        {
+                          "id": "4112389704.1566398145528",
+                          "parts": {},
+                          "properties": [
+                            {
+                              "key": "height",
+                              "value": "9px"
+                            }
+                          ]
+                        }
+                      ],
+                      "overrides": []
                     }
                   ],
-                  "metadata": {}
+                  "metadata": {},
+                  "styles": [
+                    {
+                      "id": "886640173.1566398145528",
+                      "parts": {},
+                      "properties": [
+                        {
+                          "key": "box-sizing",
+                          "value": "border-box"
+                        },
+                        {
+                          "key": "display",
+                          "value": "block"
+                        }
+                      ]
+                    }
+                  ]
                 }
               ],
-              "metadata": {}
+              "metadata": {},
+              "styles": [
+                {
+                  "id": "341480361.1566398145528",
+                  "parts": {},
+                  "properties": [
+                    {
+                      "key": "box-sizing",
+                      "value": "border-box"
+                    },
+                    {
+                      "key": "display",
+                      "value": "flex"
+                    },
+                    {
+                      "key": "align-items",
+                      "value": "center"
+                    },
+                    {
+                      "key": "justify-content",
+                      "value": "space-between"
+                    }
+                  ]
+                }
+              ]
             }
           ],
           "metadata": {},
           "name": "plug"
         },
         {
-          "id": "43fa80866997",
-          "propertyName": "style",
-          "targetIdPath": [
-            "b6c162d140"
-          ],
-          "value": {
-            "padding-bottom": "0px"
-          },
-          "name": "override",
-          "children": []
-        },
-        {
           "id": "43fa80867002",
           "is": "43fa80867000",
           "label": "Filter item",
           "name": "component-instance",
-          "attributes": {},
-          "style": {},
+          "attributes": [],
           "children": [],
           "metadata": {
             "bounds": {
@@ -132,7 +145,15 @@
               "bottom": 533.801358085512
             }
           },
-          "variant": {}
+          "variant": {},
+          "styles": [
+            {
+              "id": "2817621839.1566398145528",
+              "parts": {},
+              "properties": []
+            }
+          ],
+          "overrides": []
         }
       ],
       "metadata": {
@@ -145,16 +166,59 @@
       },
       "variant": {
         "b6e7db9d12817": true
-      }
+      },
+      "styles": [
+        {
+          "id": "6497935752.1566398145528",
+          "parts": {},
+          "properties": []
+        }
+      ],
+      "overrides": [
+        {
+          "id": "bcda9fb597946",
+          "targetIdPath": [
+            "b6c162d1281"
+          ],
+          "value": "Filters",
+          "children": [],
+          "type": "text"
+        },
+        {
+          "id": "bcda9fb5129573",
+          "targetIdPath": [
+            "6fd27ae1495"
+          ],
+          "value": "   ",
+          "children": [],
+          "type": "text"
+        },
+        {
+          "id": "43fa80866997",
+          "type": "styles",
+          "targetIdPath": [
+            "b6c162d140"
+          ],
+          "value": [
+            {
+              "id": "2056437903.1566398145528",
+              "parts": {},
+              "properties": [
+                {
+                  "key": "padding-bottom",
+                  "value": "0px"
+                }
+              ]
+            }
+          ],
+          "children": []
+        }
+      ]
     },
     {
       "label": "Filter item",
       "is": "div",
-      "style": {
-        "box-sizing": "border-box",
-        "display": "block"
-      },
-      "attributes": {},
+      "attributes": [],
       "id": "43fa80867000",
       "name": "component",
       "children": [],
@@ -166,7 +230,24 @@
           "bottom": 533.801358085512
         }
       },
-      "variant": {}
+      "variant": {},
+      "styles": [
+        {
+          "id": "9024601813.1566398145528",
+          "parts": {},
+          "properties": [
+            {
+              "key": "box-sizing",
+              "value": "border-box"
+            },
+            {
+              "key": "display",
+              "value": "block"
+            }
+          ]
+        }
+      ],
+      "overrides": []
     }
   ]
 }

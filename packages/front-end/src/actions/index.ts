@@ -16,7 +16,7 @@ import {
 import { publicActionCreator } from "tandem-common";
 import {
   ComputedDisplayInfo,
-  SyntheticNativeNodeMap,
+  SyntheticNativeDOMMap,
   SyntheticVisibleNode,
   PCNodeClip,
   PCVariantTrigger,
@@ -30,7 +30,10 @@ import {
   PCQueryType,
   PCMediaQueryCondition,
   PCQuery,
-  PCVariableQueryCondition
+  PCVariableQueryCondition,
+  PCStyleBlock,
+  PCNode,
+  PCVisibleNode
 } from "paperclip";
 import { RegisteredComponent } from "..";
 import {
@@ -328,6 +331,9 @@ export const UNLOADER_CREATED = "UNLOADER_CREATED";
 export const UNLOADER_COMPLETED = "UNLOADER_COMPLETED";
 export const RELOAD = "RELOAD";
 export const LINK_CICKED = "LINK_CICKED";
+export const STYLE_BLOCK_LAST_PROPERTY_TABBED_OR_ENTERED =
+  "STYLE_BLOCK_LAST_PROPERTY_TABBED_OR_ENTERED";
+export const STYLE_ADD_BLOCK_BUTTON_CLICKED = "STYLE_ADD_BLOCK_BUTTON_CLICKED";
 
 export type WrappedEvent<T> = {
   sourceEvent: T;
@@ -338,7 +344,7 @@ export type ProjectLoaded = {
 } & Action;
 
 export type DocumentRendered = {
-  nativeMap: SyntheticNativeNodeMap;
+  nativeMap: SyntheticNativeDOMMap;
   documentId: string;
   info: ComputedDisplayInfo;
 } & Action;
@@ -845,6 +851,11 @@ export type FileNavigatorNewFileClicked = {
   fileType: AddFileType;
 } & Action;
 
+export type StyleBlockNewPropertyAdded = {
+  block: PCStyleBlock;
+  node: PCVisibleNode;
+} & Action;
+
 export const quickSearchResultItemSplitButtonClick = (
   item: QuickSearchResult
 ): QuickSearchResultItemSplitButtonClicked => ({
@@ -870,6 +881,19 @@ export const editorTabClicked = (
   uri,
   event,
   type: EDITOR_TAB_CLICKED
+});
+
+export const StyleBlockNewPropertyAdded = (
+  node: PCVisibleNode,
+  block: PCStyleBlock
+): StyleBlockNewPropertyAdded => ({
+  type: STYLE_BLOCK_LAST_PROPERTY_TABBED_OR_ENTERED,
+  node,
+  block
+});
+
+export const styleAddBlockButtonClicked = () => ({
+  type: STYLE_ADD_BLOCK_BUTTON_CLICKED
 });
 
 export const editorTabContextMenuOpenInBottomTabOptionClicked = publicActionCreator(
@@ -1835,7 +1859,7 @@ export const inspectorNodePasted = (
 export const documentRendered = (
   documentId: string,
   info: ComputedDisplayInfo,
-  nativeMap: SyntheticNativeNodeMap
+  nativeMap: SyntheticNativeDOMMap
 ): DocumentRendered => ({
   nativeMap,
   documentId,

@@ -31,7 +31,8 @@ import {
   PCModule,
   PCStyleMixin
 } from "./dsl";
-import { diffTreeNode, patchTreeNode } from "./ot";
+import { diff, patch } from "immutable-ot";
+import { SyntheticCSSStyleSheet } from "./synthetic-cssom";
 
 /*------------------------------------------
  * STATE
@@ -46,16 +47,13 @@ export type SyntheticBaseNode = {
 
 export type SyntheticDocument = {
   instancePath?: string;
-  children: SyntheticVisibleNode[];
+  children: SyntheticContentNode[];
 } & SyntheticBaseNode;
-
-// TODO
-export type SyntheticStyleSheet = {};
 
 export type SyntheticElement = {
   instancePath: string;
+  className: string;
   attributes: KeyValue<string>;
-  style: KeyValue<any>;
   children: Array<SyntheticVisibleNode | PCOverride>;
 } & SyntheticBaseNode;
 
@@ -66,12 +64,18 @@ export type SyntheticInstanceElement = {
 
 export type SyntheticTextNode = {
   instancePath: string;
+  className?: string;
   value: string;
+
+  // DEPRECATED
   style: KeyValue<any>;
   children: Array<PCOverride>;
 } & SyntheticBaseNode;
 
 export type SyntheticVisibleNode = SyntheticElement | SyntheticTextNode;
+export type SyntheticContentNode = {
+  sheet?: SyntheticCSSStyleSheet;
+} & SyntheticVisibleNode;
 export type SyntheticNode = SyntheticDocument | SyntheticVisibleNode;
 
 /*------------------------------------------
@@ -82,7 +86,7 @@ export const createSytheticDocument = (
   sourceNodeId: string,
   children?: SyntheticVisibleNode[]
 ): SyntheticDocument => ({
-  id: generateUID(),
+  id: `synthetic-dom-${sourceNodeId}`,
   metadata: EMPTY_OBJECT,
   sourceNodeId,
   name: SYNTHETIC_DOCUMENT_NODE_NAME,
@@ -141,21 +145,6 @@ export const isSyntheticVisibleNode = (
   return Boolean(sn.sourceNodeId) && Boolean(sn.name);
 };
 
-export const isSyntheticVisibleNodeMovable = (
-  node: SyntheticVisibleNode,
-  graph: DependencyGraph
-) =>
-  isSyntheticContentNode(node, graph) ||
-  /fixed|relative|absolute/.test(node.style.position || "static");
-
-export const isSyntheticVisibleNodeResizable = (
-  node: SyntheticVisibleNode,
-  graph: DependencyGraph
-) =>
-  isSyntheticContentNode(node, graph) ||
-  isSyntheticVisibleNodeMovable(node, graph) ||
-  /block|inline-block|flex|inline-flex/.test(node.style.display || "inline");
-
 /*------------------------------------------
  * GETTERS
  *-----------------------------------------*/
@@ -186,30 +175,45 @@ export const getInheritedAndSelfOverrides = memoize(
   }
 );
 
-export const getSyntheticNodeStyleColors = memoize((node: SyntheticNode) => {
-  return uniq(_getSyntheticNodeStyleColors(node));
-});
-
-export const _getSyntheticNodeStyleColors = memoize((node: SyntheticNode) => {
-  const colors: string[] = [];
-  if ((node as SyntheticVisibleNode).style) {
-    for (const key in (node as SyntheticVisibleNode).style) {
-      const value: string = (node as SyntheticVisibleNode).style[key];
-      const colorParts = String(value).match(/((rgba?|hsl)\(.*\)|#[^\s]+)/);
-      if (colorParts) {
-        colors.push(colorParts[1]);
+export const getSyntheticDocumentColors = memoize(
+  (document: SyntheticDocument) => {
+    const colors: string[] = [];
+    for (const contentNode of document.children) {
+      const sheet = (contentNode as SyntheticContentNode).sheet;
+      for (const rule of sheet.rules) {
+        for (const { value } of rule.style) {
+          const colorParts = String(value).match(/((rgba?|hsl)\(.*\)|#[^\s]+)/);
+          if (colorParts) {
+            colors.push(colorParts[1]);
+          }
+        }
       }
     }
+    return uniq(colors);
   }
+);
 
-  for (let i = 0, { length } = node.children; i < length; i++) {
-    colors.push(
-      ..._getSyntheticNodeStyleColors(node.children[i] as SyntheticNode)
-    );
-  }
+// TODO - move to CSSOM
+// export const _getSyntheticDocumentColors = memoize((node: SyntheticNode) => {
+//   const colors: string[] = [];
+//   if ((node as SyntheticVisibleNode).style) {
+//     for (const key in (node as SyntheticVisibleNode).style) {
+//       const value: string = (node as SyntheticVisibleNode).style[key];
+//       const colorParts = String(value).match(/((rgba?|hsl)\(.*\)|#[^\s]+)/);
+//       if (colorParts) {
+//         colors.push(colorParts[1]);
+//       }
+//     }
+//   }
 
-  return colors;
-});
+//   for (let i = 0, { length } = node.children; i < length; i++) {
+//     colors.push(
+//       ..._getSyntheticDocumentColors(node.children[i] as SyntheticNode)
+//     );
+//   }
+
+//   return colors;
+// });
 
 export const getSyntheticSourceNode = (
   node: SyntheticVisibleNode | SyntheticDocument,
@@ -302,10 +306,10 @@ export const getSyntheticNodeById = memoize(
     if (!document) {
       return null;
     }
-    return getNestedTreeNodeById(
+    return (getNestedTreeNodeById(
       syntheticNodeId,
       document
-    ) as SyntheticVisibleNode;
+    ) as any) as SyntheticVisibleNode;
   }
 );
 
@@ -500,6 +504,37 @@ export const syntheticNodeIsInShadow = (
 // alias
 export const isSyntheticNodeImmutable = syntheticNodeIsInShadow;
 
+export const stringifySyntheticNode = memoize(
+  (node: SyntheticNode, depth: number = 0) => {
+    const indent = "  ".repeat(depth);
+    if (isSyntheticTextNode(node)) {
+      if (!node.className) {
+        return indent + node.value + "\n";
+      }
+      return indent + `<span class="${node.className}">${node.value}</span>\n`;
+    } else if (isSyntheticElement(node)) {
+      let buffer = `${indent}<${node.name}`;
+      if (node.className) {
+        buffer += ` class="${node.className}"`;
+      }
+      for (const key in node.attributes) {
+        buffer += ` ${key}="${node.attributes[key]}"`;
+      }
+      buffer += `>\n`;
+      for (const child of node.children) {
+        buffer += stringifySyntheticNode(child, depth + 1);
+      }
+
+      buffer += `${indent}</${node.name}>\n`;
+      return buffer;
+    } else {
+      return node.children
+        .map(child => stringifySyntheticNode(child, depth))
+        .join("\n");
+    }
+  }
+);
+
 /*------------------------------------------
  * SETTERS
  *-----------------------------------------*/
@@ -520,7 +555,7 @@ export const upsertSyntheticDocument = (
     oldDocuments,
     oldDocumentIndex,
     1,
-    patchTreeNode(diffTreeNode(oldDocument, newDocument), oldDocument)
+    patch(oldDocument, diff(oldDocument, newDocument))
   );
 };
 

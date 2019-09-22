@@ -1,4 +1,6 @@
-export const stringifyStyle = (style: any) => {
+import { KeyValue } from "./types";
+
+export const stringifyStyle = (style: KeyValue<string>) => {
   let buffer = ``;
 
   for (const name in style) {

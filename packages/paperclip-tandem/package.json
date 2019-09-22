@@ -13,7 +13,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "typescript": "3.0.x"
+    "typescript": "^3.6.2"
   },
   "gitHead": "c0f8539549146045f0a9cf6b6f8a7ebf99155134"
 }

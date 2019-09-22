@@ -3,7 +3,7 @@ import * as React from "react";
 import {
   getPCNodeDependency,
   getGlobalVariables,
-  getSyntheticNodeStyleColors,
+  getSyntheticDocumentColors,
   getInspectorSyntheticNode,
   InspectorTreeNodeName,
   getSyntheticDocumentByDependencyUri,
@@ -55,7 +55,7 @@ export default (Base: React.ComponentClass<BaseRightGutterProps>) =>
       const { setTab, onTabDoubleClick } = this;
 
       if (showNewGutterTab) {
-        return <RightGutter2 onDoubleClick={onTabDoubleClick} />;
+        return <RightGutter2 root={root} dispatch={dispatch} />;
       }
 
       const {
@@ -100,7 +100,7 @@ export default (Base: React.ComponentClass<BaseRightGutterProps>) =>
           )
         : null;
       const documentColors =
-        (syntheticDocument && getSyntheticNodeStyleColors(syntheticDocument)) ||
+        (syntheticDocument && getSyntheticDocumentColors(syntheticDocument)) ||
         EMPTY_ARRAY;
 
       const tabs = availableTabs.map((tabName, i) => {

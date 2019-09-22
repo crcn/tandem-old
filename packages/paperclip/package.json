@@ -3,7 +3,9 @@
   "version": "10.1.38",
   "description": "Paperclip DSL specific for visual development.",
   "bin": {
-    "paperclip-vanilla-compiler": "./bin/paperclip-vanilla-compiler"
+    "paperclip-vanilla-compiler": "./bin/paperclip-vanilla-compiler",
+    "paperclip-css-compiler": "./bin/paperclip-css-compiler",
+    "paperclip-html-compiler": "./bin/paperclip-html-compiler"
   },
   "main": "index.js",
   "author": "",
@@ -19,22 +21,24 @@
     "chai": "^4.1.2",
     "crc32": "^0.2.2",
     "fsbox": "^10.1.38",
-    "lodash": "^4.17.10",
+    "glob": "^7.1.4",
+    "immutable-ot": "^1.0.0",
+    "lodash": "^4.17.15",
     "paperclip-migrator": "^10.1.38",
     "redux": "^4.0.0",
-    "redux-saga": "^0.16.0",
+    "redux-saga": "^1.0.5",
     "tandem-common": "^10.1.38",
-    "xml-js": "^1.6.8"
+    "xml-js": "^1.6.8",
+    "yargs": "^14.0.0"
   },
   "devDependencies": {
     "@types/mocha": "^5.2.0",
     "@types/node": "^10.3.3",
     "@types/redux": "^3.6.0",
-    "@types/redux-saga": "^0.10.5",
     "@types/xml-js": "^1.0.0",
     "lint-staged": "^7.1.2",
     "mocha": "^5.2.0",
-    "typescript": "3.1.x"
+    "typescript": "^3.6.2"
   },
   "gitHead": "62ff73f435d5ddc97b8ff23b2356ed36f69c1486"
 }

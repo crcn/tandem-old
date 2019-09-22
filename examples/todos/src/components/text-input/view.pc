@@ -1,23 +1,14 @@
 {
   "id": "642429ea1",
+  "version": "1.0.3",
+  "metadata": {},
   "name": "module",
-  "version": "0.0.6",
   "children": [
     {
       "label": "input",
       "is": "input",
-      "style": {
-        "box-sizing": "border-box",
-        "display": "inline-block",
-        "margin-right": "12px"
-      },
-      "attributes": {},
+      "attributes": [],
       "id": "5b90e54e459",
-      "styleMixins": {
-        "5b90e54e102": {
-          "priority": 0
-        }
-      },
       "name": "component",
       "children": [
         {
@@ -27,20 +18,6 @@
           "isDefault": true,
           "children": [],
           "metadata": {}
-        },
-        {
-          "id": "5b90e54e526",
-          "variantId": "5b90e54e524",
-          "propertyName": "style",
-          "targetIdPath": [],
-          "value": {
-            "border-left": "1px solid var(--5b90e54e525)",
-            "border-top": "1px solid var(--5b90e54e525)",
-            "border-right": "1px solid var(--5b90e54e525)",
-            "border-bottom": "1px solid var(--5b90e54e525)"
-          },
-          "name": "override",
-          "children": []
         },
         {
           "id": "5b90e54e527",
@@ -62,8 +39,56 @@
           "bottom": -41
         }
       },
-      "variant": {}
+      "variant": {},
+      "styles": [
+        {
+          "id": "1729463387.1567269756802",
+          "parts": {},
+          "variantId": "5b90e54e524",
+          "properties": [
+            {
+              "key": "border-left",
+              "value": "1px solid var(--5b90e54e525)"
+            },
+            {
+              "key": "border-top",
+              "value": "1px solid var(--5b90e54e525)"
+            },
+            {
+              "key": "border-right",
+              "value": "1px solid var(--5b90e54e525)"
+            },
+            {
+              "key": "border-bottom",
+              "value": "1px solid var(--5b90e54e525)"
+            }
+          ]
+        },
+        {
+          "id": "1474713551.1567269756802",
+          "parts": {},
+          "properties": [
+            {
+              "key": "box-sizing",
+              "value": "border-box"
+            },
+            {
+              "key": "display",
+              "value": "inline-block"
+            },
+            {
+              "key": "margin-right",
+              "value": "12px"
+            }
+          ]
+        },
+        {
+          "id": "9535777262.1567269756802",
+          "mixinId": "5b90e54e102",
+          "parts": {},
+          "properties": []
+        }
+      ]
     }
-  ],
-  "metadata": {}
+  ]
 }

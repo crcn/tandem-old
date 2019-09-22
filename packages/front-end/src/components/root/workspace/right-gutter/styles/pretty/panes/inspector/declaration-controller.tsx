@@ -94,6 +94,8 @@ export default (Base: React.ComponentClass<BaseDeclarationProps>) => {
         onNameBlur,
         onValueKeyDown
       } = this;
+      return null;
+
       return (
         <Base
           variant={variant}

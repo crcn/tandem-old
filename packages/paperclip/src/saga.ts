@@ -8,10 +8,10 @@ import {
   PCRuntimeEvaluated
 } from "./actions";
 import {
-  SyntheticNativeNodeMap,
   renderDOM,
-  patchDOM,
-  computeDisplayInfo
+  patchNative,
+  computeDisplayInfo,
+  SyntheticNativeMap
 } from "./dom-renderer";
 import {
   KeyValue,
@@ -21,15 +21,16 @@ import {
   memoize
 } from "tandem-common";
 import { DependencyGraph } from "./graph";
-import { TreeNodeOperationalTransform } from "./ot";
+import { Mutation } from "immutable-ot";
 import { PCEditorState, Frame, getSyntheticDocumentFrames } from "./edit";
 import {
   SyntheticNode,
   getSyntheticNodeById,
   SyntheticDocument,
   SyntheticVisibleNode,
-  getSyntheticDocumentByDependencyUri
-} from "./synthetic";
+  getSyntheticDocumentByDependencyUri,
+  SyntheticContentNode
+} from "./synthetic-dom";
 import { PCRuntime, LocalRuntimeInfo } from "./runtime";
 import { fsCacheBusy } from "fsbox";
 
@@ -187,7 +188,7 @@ export const createPaperclipSaga = ({
                     getNestedTreeNodeById(
                       newFrame.syntheticContentNodeId,
                       oldDocument
-                    ) as SyntheticNode,
+                    ) as SyntheticVisibleNode,
                     frameOts
                   );
                 }
@@ -205,18 +206,20 @@ export const createPaperclipSaga = ({
     const mapContentNodeOperationalTransforms = (
       syntheticContentNodeId: string,
       document: SyntheticDocument,
-      ots: TreeNodeOperationalTransform[]
+      ots: Mutation[]
     ) => {
       const index = document.children.findIndex(
         child => child.id === syntheticContentNodeId
       );
-      return ots.filter(ot => ot.nodePath[0] === index).map(ot => ({
-        ...ot,
-        nodePath: ot.nodePath.slice(1)
-      }));
+      return ots
+        .filter(ot => ot.path[1] === index)
+        .map(ot => ({
+          ...ot,
+          path: ot.path.slice(2)
+        }));
     };
 
-    const frameNodeMap: KeyValue<SyntheticNativeNodeMap> = {};
+    const frameNodeMap: KeyValue<SyntheticNativeMap> = {};
 
     function* initContainer(frame: Frame, graph: DependencyGraph) {
       const container = createContainer();
@@ -263,7 +266,8 @@ export const createPaperclipSaga = ({
           const contentNode = getSyntheticNodeById(
             frame.syntheticContentNodeId,
             state.documents
-          );
+          ) as SyntheticContentNode;
+
           const graph = state.graph;
 
           // happens on reload
@@ -271,17 +275,12 @@ export const createPaperclipSaga = ({
             continue;
           }
           const body = iframe.contentDocument.body;
-          yield put(
-            pcFrameRendered(
-              frame,
-              computeDisplayInfo(
-                (frameNodeMap[frame.syntheticContentNodeId] = renderDOM(
-                  body,
-                  contentNode
-                ))
-              )
-            )
-          );
+
+          const nativeMap = (frameNodeMap[
+            frame.syntheticContentNodeId
+          ] = renderDOM(body, contentNode));
+
+          yield put(pcFrameRendered(frame, computeDisplayInfo(nativeMap.dom)));
         } else if (eventType === "unload") {
           break;
         }
@@ -293,7 +292,7 @@ export const createPaperclipSaga = ({
     function* patchContainer(
       frame: Frame,
       contentNode: SyntheticVisibleNode,
-      ots: TreeNodeOperationalTransform[]
+      ots: Mutation[]
     ) {
       const marker = pmark(`*patchContainer()`);
       const container: HTMLElement = frame.$container;
@@ -304,7 +303,7 @@ export const createPaperclipSaga = ({
         return;
       }
 
-      frameNodeMap[frame.syntheticContentNodeId] = patchDOM(
+      frameNodeMap[frame.syntheticContentNodeId] = patchNative(
         ots,
         contentNode,
         body,
@@ -314,7 +313,7 @@ export const createPaperclipSaga = ({
       yield put(
         pcFrameRendered(
           frame,
-          computeDisplayInfo(frameNodeMap[frame.syntheticContentNodeId])
+          computeDisplayInfo(frameNodeMap[frame.syntheticContentNodeId].dom)
         )
       );
 

@@ -11,7 +11,8 @@ import {
   PCComponentInstanceElement,
   PCElement,
   getNativeComponentName,
-  PCTextNode
+  PCTextNode,
+  HtmlAttribute
 } from "paperclip";
 import { elementTypeChanged, attributeChanged } from "../../../../../actions";
 import {
@@ -20,7 +21,7 @@ import {
 } from "../../../../inputs/dropdown/controller";
 import { BaseElementPropertiesProps, ElementProps } from "./view.pc";
 import { Dispatch } from "redux";
-import { memoize } from "tandem-common";
+import { memoize, kvpGetValue } from "tandem-common";
 
 const TYPE_MENU_OPTIONS: DropdownMenuOption[] = [
   "a",
@@ -190,7 +191,7 @@ export default (Base: React.ComponentClass<BaseElementPropertiesProps>) => {
           })}
           labelInputProps={null}
           titleInputProps={{
-            value: sourceNode.attributes.title,
+            value: kvpGetValue(HtmlAttribute.title, sourceNode.attributes),
             onChangeComplete: attributeChangeCallback(
               "title",
               onAttributeChangeComplete

@@ -230,7 +230,10 @@ import {
   CSSInspectorDeclarationCreated,
   CSS_INSPECTOR_DECLARATION_CHANGED,
   CSS_INSPECTOR_DECLARATION_NAME_CHANGED,
-  CSSInspectorDeclarationNameChanged
+  CSSInspectorDeclarationNameChanged,
+  STYLE_BLOCK_LAST_PROPERTY_TABBED_OR_ENTERED,
+  STYLE_ADD_BLOCK_BUTTON_CLICKED,
+  StyleBlockNewPropertyAdded
 } from "../actions";
 import {
   queueOpenFile,
@@ -350,7 +353,6 @@ import {
   persistToggleInstanceVariant,
   persistRemoveVariantOverride,
   getPCVariants,
-  persistStyleMixin,
   persistStyleMixinComponentId,
   isPaperclipUri,
   syntheticNodeIsInShadow,
@@ -394,7 +396,11 @@ import {
   PCVariableQuery,
   getInspectorContentNode,
   computePCNodeStyle,
-  computeStyleInfo
+  computeStyleInfo,
+  removeStyleMixin,
+  createPCStyleBlock,
+  persistAddStyleBlock,
+  persistAddStyleBlockProperty
 } from "paperclip";
 import {
   roundBounds,
@@ -795,7 +801,6 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
           ? targetFileNode
           : getParentTreeNode(targetFileNode.id, state.projectDirectory)
         : state.projectDirectory;
-      console.log("ST", dirFile);
       state = {
         ...state,
         addNewFileInfo: {
@@ -1033,6 +1038,22 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
       const { name } = action as ComponentVariantNameClicked;
       state = updateRootState({ selectedComponentVariantName: name }, state);
       return state;
+    }
+
+    case STYLE_BLOCK_LAST_PROPERTY_TABBED_OR_ENTERED: {
+      const { node, block } = action as StyleBlockNewPropertyAdded;
+      return persistAddStyleBlockProperty(node, block, state);
+    }
+
+    case STYLE_ADD_BLOCK_BUTTON_CLICKED: {
+      return persistAddStyleBlock(
+        getInspectorSourceNode(
+          state.selectedInspectorNodes[0],
+          state.sourceNodeInspector,
+          state.graph
+        ) as PCVisibleNode,
+        state
+      );
     }
 
     case SOURCE_INSPECTOR_LAYER_DROPPED: {
@@ -2130,8 +2151,8 @@ export const canvasReducer = (state: RootState, action: Action) => {
       const { selectedInspectorNodes } = state;
       const { componentId } = action as InheritPaneRemoveButtonClick;
       state = persistRootState(state => {
-        return persistStyleMixin(
-          { [componentId]: undefined },
+        return removeStyleMixin(
+          componentId,
           selectedInspectorNodes[0],
           state.selectedVariant,
           state
@@ -2140,6 +2161,7 @@ export const canvasReducer = (state: RootState, action: Action) => {
       return state;
     }
 
+    // __DEPRECATED__
     case INHERIT_PANE_ADD_BUTTON_CLICK: {
       const { selectedInspectorNodes } = state;
       const inspectorNode = selectedInspectorNodes[0];
@@ -2150,21 +2172,23 @@ export const canvasReducer = (state: RootState, action: Action) => {
         state.graph
       ) as PCVisibleNode;
 
-      state = persistRootState(state => {
-        // undefined so that nothing is selected in dropdown.
-        state = persistStyleMixin(
-          {
-            [Date.now()]: {
-              priority: Object.keys(sourceNode.styleMixins || EMPTY_OBJECT)
-                .length
-            }
-          },
-          inspectorNode,
-          state.selectedVariant,
-          state
-        );
-        return state;
-      }, state);
+      throw new Error(`not fixed yet`);
+
+      // state = persistRootState(state => {
+      //   // undefined so that nothing is selected in dropdown.
+      //   state = persistStyleMixin(
+      //     {
+      //       [Date.now()]: {
+      //         priority: Object.keys(sourceNode.styleMixins || EMPTY_OBJECT)
+      //           .length
+      //       }
+      //     },
+      //     inspectorNode,
+      //     state.selectedVariant,
+      //     state
+      //   );
+      //   return state;
+      // }, state);
 
       return state;
     }
@@ -2527,7 +2551,12 @@ export const canvasReducer = (state: RootState, action: Action) => {
           return persistInsertNodeFromPoint(
             createPCElement(
               "div",
-              { "box-sizing": "border-box", display: "block" },
+              [
+                createPCStyleBlock([
+                  { key: "box-sizing", value: "border-box" },
+                  { key: "display", value: "box" }
+                ])
+              ],
               null,
               null,
               "Element"
@@ -2898,10 +2927,13 @@ const handleLoadedDroppedItem = (
     if (isImageUri(item.uri)) {
       sourceNode = createPCElement(
         "img",
-        {},
-        {
-          src
-        }
+        [],
+        [
+          {
+            key: "src",
+            value: src
+          }
+        ]
       );
       if (isSvgUri(item.uri)) {
         const source = content.toString("utf8");
@@ -3310,8 +3342,8 @@ const shortcutReducer = (state: RootState, action: Action): RootState => {
         ? nextChildren[clamp(index, 0, nextChildren.length - 1)].id
         : getParentTreeNode(parent.id, state.sourceNodeInspector).name !==
           InspectorTreeNodeName.ROOT
-          ? parent.id
-          : null;
+        ? parent.id
+        : null;
 
       if (nextSelectedNodeId) {
         const nextInspectorNode: InspectorNode = getNestedTreeNodeById(

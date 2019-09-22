@@ -2,32 +2,33 @@ import {
   memoize,
   KeyValue,
   getParentTreeNode,
-  EMPTY_OBJECT
+  EMPTY_OBJECT,
+  keyValuePairToHash
 } from "tandem-common";
 import { defaults, pick } from "lodash";
 import {
   InspectorNode,
   getInspectorNodeOverrides,
-  getInspectorNodeBySourceNodeId,
   InspectorTreeNodeName
 } from "./inspector";
 import {
   PCComponent,
   PCVisibleNode,
-  PCStyleOverride,
+  PCStylesOverride,
   getPCNode,
   PCNode,
   extendsComponent,
   PCVariant,
   PCElement,
-  PCOverridablePropertyName,
+  PCOverridableType,
   isPCComponentOrInstance,
   PCStyleMixin,
   getSortedStyleMixinIds,
   INHERITABLE_STYLE_NAMES,
   TEXT_STYLE_NAMES,
   isElementLikePCNode,
-  PCTextStyleMixin
+  getVanillStyle,
+  filterStyleMixins
 } from "./dsl";
 
 import { DependencyGraph } from "./graph";
@@ -50,7 +51,7 @@ const DEFAULT_COMPUTE_STYLE_OPTIONS: ComputeStyleOptions = {
 
 export type ComputedStyleInfo = {
   sourceNode: PCNode;
-  styleOverridesMap: KeyValue<PCStyleOverride[]>;
+  styleOverridesMap: KeyValue<PCStylesOverride[]>;
   styleMixinMap: KeyValue<PCStyleMixin>;
   styleInheritanceMap: KeyValue<InspectorNode>;
   style: {
@@ -69,7 +70,7 @@ export const computeStyleInfo = memoize(
     options: ComputeStyleOptions = DEFAULT_COMPUTE_STYLE_OPTIONS
   ): ComputedStyleInfo | null => {
     let style = {};
-    const styleOverridesMap: KeyValue<PCStyleOverride[]> = {};
+    const styleOverridesMap: KeyValue<PCStylesOverride[]> = {};
     let styleMixinMap: KeyValue<PCStyleMixin> = {};
 
     const sourceNode = getPCNode(inspectorNode.sourceNodeId, graph) as
@@ -86,17 +87,21 @@ export const computeStyleInfo = memoize(
         ) as PCElement;
         if (isPCComponentOrInstance(parent)) {
           // defaults -- parents cannot disable
-          defaults(style, parent.style);
+          defaults(style, getVanillStyle(parent.styles));
         }
         current = parent;
       }
     }
 
-    if (options.self !== false) {
-      Object.assign(style, sourceNode.style);
+    if (options.self !== false && sourceNode.styles) {
+      Object.assign(style, getVanillStyle(sourceNode.styles));
     }
 
-    if (options.styleMixins !== false && sourceNode.styleMixins) {
+    if (
+      options.styleMixins !== false &&
+      sourceNode.styles &&
+      filterStyleMixins(sourceNode.styles).length
+    ) {
       styleMixinMap = getStyleMixinMap(sourceNode as PCVisibleNode, graph);
       defaults(style, styleMixinMapToStyle(styleMixinMap));
     }
@@ -110,13 +115,16 @@ export const computeStyleInfo = memoize(
       );
 
       for (const override of overrides) {
-        if (override.propertyName === PCOverridablePropertyName.STYLE) {
-          for (const key in override.value) {
-            if (!styleOverridesMap[key]) {
-              styleOverridesMap[key] = [];
+        if (override.type === PCOverridableType.STYLES) {
+          for (const block of override.value) {
+            // TODO - need to consider mixin ids & variants here
+            for (const { key, value } of block.properties) {
+              if (!styleOverridesMap[key]) {
+                styleOverridesMap[key] = [];
+              }
+              styleOverridesMap[key].push(override);
+              style[key] = override.value[key];
             }
-            styleOverridesMap[key].push(override);
-            style[key] = override.value[key];
           }
         }
       }
@@ -169,7 +177,7 @@ export const computeStyleInfo = memoize(
 const styleMixinMapToStyle = (map: KeyValue<PCStyleMixin>) => {
   let style = {};
   for (const key in map) {
-    style[key] = map[key].style[key];
+    style[key] = getVanillStyle(map[key].styles)[key];
   }
   return style;
 };
@@ -181,11 +189,12 @@ const getStyleMixinMap = (
 ): KeyValue<PCStyleMixin> => {
   let map = {};
   if (includeSelf) {
-    for (const key in node.style) {
+    const vanillaStyle = getVanillStyle(node.styles);
+    for (const key in vanillaStyle) {
       map[key] = node;
     }
   }
-  if (node.styleMixins) {
+  if (filterStyleMixins(node.styles)) {
     const sortedStyleMixinIds = getSortedStyleMixinIds(node);
     for (const styleMixinId of sortedStyleMixinIds) {
       const styleMixin = getPCNode(styleMixinId, graph) as PCStyleMixin;

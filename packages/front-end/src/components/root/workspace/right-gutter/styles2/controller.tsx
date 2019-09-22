@@ -1,16 +1,34 @@
 import * as React from "react";
-import { BaseStylesSectionProps, StylesSection, StyleBlock } from "./view.pc";
+import { BaseStylesSectionProps, StyleBlock } from "./view.pc";
+import { ComputedStyleBlock } from "paperclip";
+import { Dispatch } from "redux";
+import { styleAddBlockButtonClicked } from "../../../../../actions";
 
-export type Props = {};
+export type Props = {
+  computedStyleBlocks: ComputedStyleBlock[];
+  dispatch: Dispatch;
+};
 
 export default (Base: React.ComponentClass<BaseStylesSectionProps>) => {
   class StylesSection extends React.Component<Props> {
+    onAddButtonClick = () => {
+      this.props.dispatch(styleAddBlockButtonClicked());
+    };
     render() {
-      console.log("SECTION");
+      const { onAddButtonClick } = this;
+      const { computedStyleBlocks, dispatch } = this.props;
+      const styleBlocks = computedStyleBlocks.map((styleBlock, i) => {
+        return <StyleBlock styleBlock={styleBlock} dispatch={dispatch} />;
+      });
 
-      const styleBlocks = [<StyleBlock />, <StyleBlock />];
-
-      return <Base content={styleBlocks} />;
+      return (
+        <Base
+          content={styleBlocks}
+          addButtonProps={{
+            onClick: onAddButtonClick
+          }}
+        />
+      );
     }
   }
 

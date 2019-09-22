@@ -1,17 +1,18 @@
 {
   "id": "c4e8096c109",
+  "version": "1.0.4",
+  "metadata": {},
   "name": "module",
-  "version": "0.0.5",
   "children": [
     {
       "label": "edit text",
       "is": "7149f8199122",
-      "style": {
-        "position": "absolute"
-      },
-      "attributes": {
-        "placeholder": "text"
-      },
+      "attributes": [
+        {
+          "key": "placeholder",
+          "value": "text"
+        }
+      ],
       "id": "6cb86618699",
       "name": "component",
       "children": [],
@@ -26,8 +27,20 @@
       "variant": {},
       "controllers": [
         "./edit-text-controller.tsx"
-      ]
+      ],
+      "styles": [
+        {
+          "id": "4970334324.1566398145488",
+          "parts": {},
+          "properties": [
+            {
+              "key": "position",
+              "value": "absolute"
+            }
+          ]
+        }
+      ],
+      "overrides": []
     }
-  ],
-  "metadata": {}
+  ]
 }

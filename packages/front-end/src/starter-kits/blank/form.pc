@@ -1,13 +1,13 @@
 {
   "id": "2e50685a80",
+  "version": "1.0.4",
+  "metadata": {},
   "name": "module",
-  "version": "0.0.6",
   "children": [
     {
       "label": "Blank form options",
       "is": "div",
-      "style": {},
-      "attributes": {},
+      "attributes": [],
       "id": "c6acc7ee889",
       "name": "component",
       "children": [],
@@ -19,8 +19,15 @@
           "bottom": 280
         }
       },
-      "variant": {}
+      "variant": {},
+      "styles": [
+        {
+          "id": "9759014931.1566398145597",
+          "parts": {},
+          "properties": []
+        }
+      ],
+      "overrides": []
     }
-  ],
-  "metadata": {}
+  ]
 }

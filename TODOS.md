@@ -1,14 +1,40 @@
 Immediate:
 
-- [ ] refactor styles to be list instead of key/value
-- [ ] ability to preview individual components
-- [ ] resolve where to put states & conditions
-- [ ] resolve how to toggle instance styles
-- [ ] UI for states
-- [ ] UI for conditions
-- [ ] UI for style block settings
-- [ ] UI for CSS variables
-- [ ] icon for src file upload
+- [ ] diffing algorithm
+- [ ] realtime connection between Figma & Tandem
+  - [ ] connect _mixin_
+  - [ ] can do away with pretty styler
+- [ ] re-wire old styler
+- [ ] wire up style blocks
+- [ ] variants for HTML compiler
+- [ ] make CSS selectors readable
+- [ ] fix vanilla renderer
+- [ ] move slots to params
+- [ ] styles must by applied in their correct order (even variants)
+- [ ] rewire style variants in vanilla renderer
+- [ ] rewire style variants in code compiler
+- [ ] refactor
+  - [ ] styles as their own nodes
+  - [ ] variant style overrides as their
+- [ ] styles MVP (make this usable FIRST so that we can get a feel for it)
+  - [ ] style block
+    - [ ] ability to insert style
+    - [ ] ability to change key & value
+    - [ ] ability to add value by pressing enter
+    - [ ] wire up + button
+  - [ ] computed inherited styles
+    - [ ] compute enabled & disabled props
+  - [ ] compute overridden props
+  - [ ] prop value inputs
+    - [ ] color picker (requires parser)
+    - [ ] dropdown for enums (font family) - should be customizable
+- [ ] move style prop to own tag (needed for multiple style blocks)
+  - [ ] `variantId` prop
+  - [ ]
+- [ ] wire up attributes
+  - [ ]
+- [ ] refactor how overrides work
+  - [ ] happen only at instance level. Should be prop.
 
 Maybe:
 

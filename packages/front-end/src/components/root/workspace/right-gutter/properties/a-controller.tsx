@@ -1,10 +1,11 @@
 import * as React from "react";
 import { BaseAPropertiesProps } from "./view.pc";
 import { Dispatch } from "redux";
+import { kvpGetValue } from "tandem-common";
 import {
-  PCNode,
   PCElement,
   PCComponent,
+  HtmlAttribute,
   PCComponentInstanceElement
 } from "paperclip";
 import { attributeChanged } from "../../../../../actions";
@@ -31,7 +32,7 @@ export default (Base: React.ComponentClass<BaseAPropertiesProps>) =>
         <Base
           {...rest}
           hrefInputProps={{
-            value: sourceNode.attributes.href,
+            value: kvpGetValue(HtmlAttribute.href, sourceNode.attributes),
             onChange: onHrefChangeComplete
           }}
         />

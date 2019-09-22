@@ -10,7 +10,7 @@
 //   createPCVariant,
 //   createPCDependency,
 //   createPCOverride,
-//   PCOverridablePropertyName,
+//   PCOverridableType,
 //   createPCTextNode,
 //   createPCSlot,
 //   createPCPlug
@@ -241,7 +241,7 @@
 
 //       const component2 = cleanIds(
 //         createPCComponent("Test", component1.id, { a: "b2" }, { c: "a2" }, [
-//           createPCOverride([container.id], PCOverridablePropertyName.CHILDREN, [
+//           createPCOverride([container.id], PCOverridableType.CHILDREN, [
 //             createPCElement("div", { a: "bb" }, { c: "dd" })
 //           ])
 //         ])
@@ -308,7 +308,7 @@
 //     const container2 = cleanIds(createPCElement("b", {}, {}));
 //     const component2 = cleanIds(
 //       createPCComponent("Test", component1.id, { color: "green" }, {}, [
-//         createPCOverride([container1.id], PCOverridablePropertyName.CHILDREN, [
+//         createPCOverride([container1.id], PCOverridableType.CHILDREN, [
 //           container2,
 //           createPCElement("b2", {}, {})
 //         ])
@@ -318,7 +318,7 @@
 //     const container3 = cleanIds(createPCElement("c", {}, {}));
 //     const component3 = cleanIds(
 //       createPCComponent("Test", component2.id, { color: "blue" }, {}, [
-//         createPCOverride([container2.id], PCOverridablePropertyName.CHILDREN, [
+//         createPCOverride([container2.id], PCOverridableType.CHILDREN, [
 //           container3
 //         ])
 //       ])
@@ -327,7 +327,7 @@
 //     const container4 = cleanIds(createPCElement("d", {}, {}));
 //     const component4 = cleanIds(
 //       createPCComponent("Test", component3.id, {}, {}, [
-//         createPCOverride([container3.id], PCOverridablePropertyName.CHILDREN, [
+//         createPCOverride([container3.id], PCOverridableType.CHILDREN, [
 //           container4
 //         ])
 //       ])
@@ -451,7 +451,7 @@
 
 //     const component2 = cleanIds(
 //       createPCComponent("Test", component1.id, {}, {}, [
-//         createPCOverride([container1.id], PCOverridablePropertyName.STYLE, {
+//         createPCOverride([container1.id], PCOverridableType.STYLE, {
 //           color: "red"
 //         })
 //       ])
@@ -508,7 +508,7 @@
 //       createPCElement("a", { color: "blue" }, {}, [
 //         createPCOverride(
 //           [],
-//           PCOverridablePropertyName.STYLE,
+//           PCOverridableType.STYLE,
 //           { color: "red" },
 //           variant1.id
 //         )
@@ -623,7 +623,7 @@
 //       createPCComponentInstance(component.id, {}, {}, [
 //         createPCOverride(
 //           [variant.id],
-//           PCOverridablePropertyName.VARIANT_IS_DEFAULT,
+//           PCOverridableType.VARIANT_IS_DEFAULT,
 //           false
 //         )
 //       ])

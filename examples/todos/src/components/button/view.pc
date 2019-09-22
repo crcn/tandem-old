@@ -1,28 +1,13 @@
 {
   "id": "fbcd3a7b1",
+  "version": "1.0.3",
+  "metadata": {},
   "name": "module",
-  "version": "0.0.6",
   "children": [
     {
       "label": "Button",
       "is": "div",
-      "style": {
-        "box-sizing": "border-box",
-        "display": "inline-block",
-        "padding-left": "12px",
-        "padding-top": "6px",
-        "padding-right": "12px",
-        "padding-bottom": "6px",
-        "border-top-left-radius": "2px",
-        "border-top-right-radius": "2px",
-        "border-bottom-left-radius": "2px",
-        "border-bottom-right-radius": "2px",
-        "background-image": "linear-gradient(var(--5b90e54e79), var(--5b90e54e79))",
-        "user-select": "none",
-        "-moz-user-select": "none",
-        "cursor": "pointer"
-      },
-      "attributes": {},
+      "attributes": [],
       "id": "c3cf2ba6124",
       "name": "component",
       "children": [
@@ -31,14 +16,21 @@
           "name": "text",
           "label": "Text",
           "value": "Button",
-          "style": {},
           "children": [],
           "metadata": {},
-          "styleMixins": {
-            "5b90e54e106": {
-              "priority": 0
+          "styles": [
+            {
+              "id": "3800592082.1567269756801",
+              "parts": {},
+              "properties": []
+            },
+            {
+              "id": "8919440213.1567269756801",
+              "mixinId": "5b90e54e106",
+              "parts": {},
+              "properties": []
             }
-          }
+          ]
         },
         {
           "id": "5b90e54e404",
@@ -47,18 +39,6 @@
           "isDefault": true,
           "children": [],
           "metadata": {}
-        },
-        {
-          "id": "5b90e54e405",
-          "variantId": "5b90e54e404",
-          "propertyName": "style",
-          "targetIdPath": [],
-          "value": {
-            "opacity": "0.373",
-            "cursor": "not-allowed"
-          },
-          "name": "override",
-          "children": []
         },
         {
           "id": "5b90e54e406",
@@ -81,12 +61,91 @@
         }
       },
       "variant": {},
-      "styleMixins": {
-        "5b90e54e102": {
-          "priority": 0
+      "styles": [
+        {
+          "id": "1680485075.1567269756801",
+          "parts": {},
+          "variantId": "5b90e54e404",
+          "properties": [
+            {
+              "key": "opacity",
+              "value": "0.373"
+            },
+            {
+              "key": "cursor",
+              "value": "not-allowed"
+            }
+          ]
+        },
+        {
+          "id": "7278123596.1567269756801",
+          "parts": {},
+          "properties": [
+            {
+              "key": "box-sizing",
+              "value": "border-box"
+            },
+            {
+              "key": "display",
+              "value": "inline-block"
+            },
+            {
+              "key": "padding-left",
+              "value": "12px"
+            },
+            {
+              "key": "padding-top",
+              "value": "6px"
+            },
+            {
+              "key": "padding-right",
+              "value": "12px"
+            },
+            {
+              "key": "padding-bottom",
+              "value": "6px"
+            },
+            {
+              "key": "border-top-left-radius",
+              "value": "2px"
+            },
+            {
+              "key": "border-top-right-radius",
+              "value": "2px"
+            },
+            {
+              "key": "border-bottom-left-radius",
+              "value": "2px"
+            },
+            {
+              "key": "border-bottom-right-radius",
+              "value": "2px"
+            },
+            {
+              "key": "background-image",
+              "value": "linear-gradient(var(--5b90e54e79), var(--5b90e54e79))"
+            },
+            {
+              "key": "user-select",
+              "value": "none"
+            },
+            {
+              "key": "-moz-user-select",
+              "value": "none"
+            },
+            {
+              "key": "cursor",
+              "value": "pointer"
+            }
+          ]
+        },
+        {
+          "id": "5812170904.1567269756801",
+          "mixinId": "5b90e54e102",
+          "parts": {},
+          "properties": []
         }
-      }
+      ]
     }
-  ],
-  "metadata": {}
+  ]
 }

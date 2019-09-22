@@ -1,17 +1,13 @@
 {
   "id": "53138fe9121",
-  "version": "0.0.6",
+  "version": "1.0.4",
   "metadata": {},
   "name": "module",
   "children": [
     {
       "label": "Text Preview",
       "is": "div",
-      "style": {
-        "display": "flex",
-        "flex-direction": "column"
-      },
-      "attributes": {},
+      "attributes": [],
       "id": "5c9686b814979",
       "name": "component",
       "children": [
@@ -20,87 +16,60 @@
           "label": "Banner",
           "is": "div",
           "name": "element",
-          "attributes": {},
-          "style": {
-            "box-sizing": "border-box",
-            "display": "flex",
-            "align-items": "center",
-            "justify-content": "space-between",
-            "padding-left": "8px",
-            "padding-top": "8px",
-            "padding-right": "8px",
-            "padding-bottom": "8px",
-            "background": "rgba(88, 185, 255, 1)",
-            "flex-shrink": "0"
-          },
+          "attributes": [],
           "children": [
             {
               "id": "5c9686b848542",
               "name": "text",
               "label": "Text",
               "value": "You're viewing this file in read-only mode. ",
-              "style": {
-                "color": "rgba(255, 255, 255, 1)",
-                "font-weight": "600",
-                "user-select": "none",
-                "cursor": "default"
-              },
               "children": [],
               "metadata": {},
-              "styleMixins": {
-                "dc3b39eb1275": {
-                  "priority": 0
+              "styles": [
+                {
+                  "id": "3876582590.1566398145492",
+                  "parts": {},
+                  "properties": [
+                    {
+                      "key": "color",
+                      "value": "rgba(255, 255, 255, 1)"
+                    },
+                    {
+                      "key": "font-weight",
+                      "value": "600"
+                    },
+                    {
+                      "key": "user-select",
+                      "value": "none"
+                    },
+                    {
+                      "key": "cursor",
+                      "value": "default"
+                    }
+                  ]
+                },
+                {
+                  "id": "3283266319.1566398145492",
+                  "mixinId": "dc3b39eb1275",
+                  "parts": {},
+                  "properties": []
                 }
-              }
+              ]
             },
             {
               "id": "5c9686b856345",
               "label": "cta",
               "is": "div",
               "name": "element",
-              "attributes": {},
-              "style": {
-                "box-sizing": "border-box",
-                "display": "inline-block"
-              },
+              "attributes": [],
               "children": [
                 {
                   "id": "5c9686b857183",
                   "is": "9f364d2139415",
                   "label": "open text editor button",
                   "name": "component-instance",
-                  "attributes": {},
-                  "style": {
-                    "background": "rgba(255, 255, 255, 1)",
-                    "white-space": "nowrap"
-                  },
-                  "children": [
-                    {
-                      "id": "5c9686b858034",
-                      "propertyName": "style",
-                      "targetIdPath": [
-                        "9f364d2139650"
-                      ],
-                      "value": {
-                        "font-size": "10px",
-                        "color": "rgba(88, 185, 255, 1)",
-                        "font-weight": "600"
-                      },
-                      "name": "override",
-                      "children": []
-                    },
-                    {
-                      "id": "5c9686b859225",
-                      "variantId": null,
-                      "propertyName": "text",
-                      "targetIdPath": [
-                        "9f364d2139650"
-                      ],
-                      "value": "Open in Text Editor",
-                      "name": "override",
-                      "children": []
-                    }
-                  ],
+                  "attributes": [],
+                  "children": [],
                   "metadata": {
                     "bounds": {
                       "left": 300,
@@ -109,61 +78,244 @@
                       "bottom": 220
                     }
                   },
-                  "variant": {}
+                  "variant": {},
+                  "styles": [
+                    {
+                      "id": "5274523426.1566398145492",
+                      "parts": {},
+                      "properties": [
+                        {
+                          "key": "background",
+                          "value": "rgba(255, 255, 255, 1)"
+                        },
+                        {
+                          "key": "white-space",
+                          "value": "nowrap"
+                        }
+                      ]
+                    }
+                  ],
+                  "overrides": [
+                    {
+                      "id": "5c9686b858034",
+                      "type": "styles",
+                      "targetIdPath": [
+                        "9f364d2139650"
+                      ],
+                      "value": [
+                        {
+                          "id": "7952077266.1566398145492",
+                          "parts": {},
+                          "properties": [
+                            {
+                              "key": "font-size",
+                              "value": "10px"
+                            },
+                            {
+                              "key": "color",
+                              "value": "rgba(88, 185, 255, 1)"
+                            },
+                            {
+                              "key": "font-weight",
+                              "value": "600"
+                            }
+                          ]
+                        }
+                      ],
+                      "children": []
+                    },
+                    {
+                      "id": "5c9686b859225",
+                      "variantId": null,
+                      "targetIdPath": [
+                        "9f364d2139650"
+                      ],
+                      "value": "Open in Text Editor",
+                      "children": [],
+                      "type": "text"
+                    }
+                  ]
                 }
               ],
-              "metadata": {}
+              "metadata": {},
+              "styles": [
+                {
+                  "id": "8722607746.1566398145492",
+                  "parts": {},
+                  "properties": [
+                    {
+                      "key": "box-sizing",
+                      "value": "border-box"
+                    },
+                    {
+                      "key": "display",
+                      "value": "inline-block"
+                    }
+                  ]
+                }
+              ]
             }
           ],
-          "metadata": {}
+          "metadata": {},
+          "styles": [
+            {
+              "id": "3426025306.1566398145492",
+              "parts": {},
+              "properties": [
+                {
+                  "key": "box-sizing",
+                  "value": "border-box"
+                },
+                {
+                  "key": "display",
+                  "value": "flex"
+                },
+                {
+                  "key": "align-items",
+                  "value": "center"
+                },
+                {
+                  "key": "justify-content",
+                  "value": "space-between"
+                },
+                {
+                  "key": "padding-left",
+                  "value": "8px"
+                },
+                {
+                  "key": "padding-top",
+                  "value": "8px"
+                },
+                {
+                  "key": "padding-right",
+                  "value": "8px"
+                },
+                {
+                  "key": "padding-bottom",
+                  "value": "8px"
+                },
+                {
+                  "key": "background",
+                  "value": "rgba(88, 185, 255, 1)"
+                },
+                {
+                  "key": "flex-shrink",
+                  "value": "0"
+                }
+              ]
+            }
+          ]
         },
         {
           "id": "5c9686b870134",
           "label": "content",
           "is": "div",
           "name": "element",
-          "attributes": {},
-          "style": {
-            "box-sizing": "border-box",
-            "display": "block",
-            "position": "relative",
-            "height": "0",
-            "flex-grow": "1",
-            "padding-left": "8px",
-            "padding-top": "8px",
-            "padding-right": "8px",
-            "padding-bottom": "8px",
-            "word-break": "break-word"
-          },
+          "attributes": [],
           "children": [
             {
               "id": "5c9686b871035",
               "label": "inner",
               "is": "div",
               "name": "element",
-              "attributes": {},
-              "style": {
-                "box-sizing": "border-box",
-                "display": "block",
-                "height": "100%",
-                "width": "100%",
-                "overflow": "scroll"
-              },
+              "attributes": [],
               "children": [
                 {
                   "id": "6abb1348453",
                   "name": "text",
                   "label": "Text",
                   "value": "import \"./index.scss\";\nimport * as React from \"react\";\nimport { Dispatch } from \"redux\";\nimport { FileCacheItem, getFileCacheItemDataUrl } from \"fsbox\";\nexport type TextEditorProps = {\n  fileCacheItem: FileCacheItem;\n  dispatch: Dispatch<any>;\n};\n\nexport class TextEditorWindow extends React.PureComponent<\nTextEditorProps\n> {\n  render() {\n    const { fileCacheItem } = this.props;\n    return (\n      <div className=\"m-text-editor\">\n        <div dangerouslySetInnerHTML={{__html: fileCacheItem && formatText(fileCacheItem.content.toString(\"utf8\"))}}>\n        </div>\n      </div>\n    );\n  }\n}\n\n\nconst formatText = (text: string) => {\n  return text.replace(/\\n/g, `<br>`).replace(/\\s/g, `&nbsp;&nbsp;`).replace(/\\t/g, `&nbsp;&nbsp;&nbsp;&nbsp;`)\n};\n\nimport \"./index.scss\";\nimport * as React from \"react\";\nimport { Dispatch } from \"redux\";\nimport { FileCacheItem, getFileCacheItemDataUrl } from \"fsbox\";\n\nexport type TextEditorProps = {\n  fileCacheItem: FileCacheItem;\n  dispatch: Dispatch<any>;\n};\n\nexport class TextEditorWindow extends React.PureComponent<\nTextEditorProps\n> {\n  render() {\n    const { fileCacheItem } = this.props;\n    return (\n      <div className=\"m-text-editor\">\n        <div dangerouslySetInnerHTML={{__html: fileCacheItem && formatText(fileCacheItem.content.toString(\"utf8\"))}}>\n        </div>\n      </div>\n    );\n  }\n}\n\n\nconst formatText = (text: string) => {\n  return text.replace(/\\n/g, `<br>`).replace(/\\s/g, `&nbsp;&nbsp;`).replace(/\\t/g, `&nbsp;&nbsp;&nbsp;&nbsp;`)\n};\nimport \"./index.scss\";\nimport * as React from \"react\";\nimport { Dispatch } from \"redux\";\nimport { FileCacheItem, getFileCacheItemDataUrl } from \"fsbox\";\n\nexport type TextEditorProps = {\n  fileCacheItem: FileCacheItem;\n  dispatch: Dispatch<any>;\n};\n\nexport class TextEditorWindow extends React.PureComponent<\nTextEditorProps\n> {\n  render() {\n    const { fileCacheItem } = this.props;\n    return (\n      <div className=\"m-text-editor\">\n        <div dangerouslySetInnerHTML={{__html: fileCacheItem && formatText(fileCacheItem.content.toString(\"utf8\"))}}>\n        </div>\n      </div>\n    );\n  }\n}\n\n\nconst formatText = (text: string) => {\n  return text.replace(/\\n/g, `<br>`).replace(/\\s/g, `&nbsp;&nbsp;`).replace(/\\t/g, `&nbsp;&nbsp;&nbsp;&nbsp;`)\n};\nimport \"./index.scss\";\nimport * as React from \"react\";\nimport { Dispatch } from \"redux\";\nimport { FileCacheItem, getFileCacheItemDataUrl } from \"fsbox\";\n\nexport type TextEditorProps = {\n  fileCacheItem: FileCacheItem;\n  dispatch: Dispatch<any>;\n};\n\nexport class TextEditorWindow extends React.PureComponent<\nTextEditorProps\n> {\n  render() {\n    const { fileCacheItem } = this.props;\n    return (\n      <div className=\"m-text-editor\">\n        <div dangerouslySetInnerHTML={{__html: fileCacheItem && formatText(fileCacheItem.content.toString(\"utf8\"))}}>\n        </div>\n      </div>\n    );\n  }\n}\n\n\nconst formatText = (text: string) => {\n  return text.replace(/\\n/g, `<br>`).replace(/\\s/g, `&nbsp;&nbsp;`).replace(/\\t/g, `&nbsp;&nbsp;&nbsp;&nbsp;`)\n};\nimport \"./index.scss\";\nimport * as React from \"react\";\nimport { Dispatch } from \"redux\";\nimport { FileCacheItem, getFileCacheItemDataUrl } from \"fsbox\";\n\nexport type TextEditorProps = {\n  fileCacheItem: FileCacheItem;\n  dispatch: Dispatch<any>;\n};\n\nexport class TextEditorWindow extends React.PureComponent<\nTextEditorProps\n> {\n  render() {\n    const { fileCacheItem } = this.props;\n    return (\n      <div className=\"m-text-editor\">\n        <div dangerouslySetInnerHTML={{__html: fileCacheItem && formatText(fileCacheItem.content.toString(\"utf8\"))}}>\n        </div>\n      </div>\n    );\n  }\n}\n\n\nconst formatText = (text: string) => {\n  return text.replace(/\\n/g, `<br>`).replace(/\\s/g, `&nbsp;&nbsp;`).replace(/\\t/g, `&nbsp;&nbsp;&nbsp;&nbsp;`)\n};\nimport \"./index.scss\";\nimport * as React from \"react\";\nimport { Dispatch } from \"redux\";\nimport { FileCacheItem, getFileCacheItemDataUrl } from \"fsbox\";\n\nexport type TextEditorProps = {\n  fileCacheItem: FileCacheItem;\n  dispatch: Dispatch<any>;\n};\n\nexport class TextEditorWindow extends React.PureComponent<\nTextEditorProps\n> {\n  render() {\n    const { fileCacheItem } = this.props;\n    return (\n      <div className=\"m-text-editor\">\n        <div dangerouslySetInnerHTML={{__html: fileCacheItem && formatText(fileCacheItem.content.toString(\"utf8\"))}}>\n        </div>\n      </div>\n    );\n  }\n}\n\n\nconst formatText = (text: string) => {\n  return text.replace(/\\n/g, `<br>`).replace(/\\s/g, `&nbsp;&nbsp;`).replace(/\\t/g, `&nbsp;&nbsp;&nbsp;&nbsp;`)\n};\n",
-                  "style": {},
                   "children": [],
-                  "metadata": {}
+                  "metadata": {},
+                  "styles": [
+                    {
+                      "id": "4709954730.1566398145492",
+                      "parts": {},
+                      "properties": []
+                    }
+                  ]
                 }
               ],
-              "metadata": {}
+              "metadata": {},
+              "styles": [
+                {
+                  "id": "8039232170.1566398145492",
+                  "parts": {},
+                  "properties": [
+                    {
+                      "key": "box-sizing",
+                      "value": "border-box"
+                    },
+                    {
+                      "key": "display",
+                      "value": "block"
+                    },
+                    {
+                      "key": "height",
+                      "value": "100%"
+                    },
+                    {
+                      "key": "width",
+                      "value": "100%"
+                    },
+                    {
+                      "key": "overflow",
+                      "value": "scroll"
+                    }
+                  ]
+                }
+              ]
             }
           ],
-          "metadata": {}
+          "metadata": {},
+          "styles": [
+            {
+              "id": "9481711947.1566398145492",
+              "parts": {},
+              "properties": [
+                {
+                  "key": "box-sizing",
+                  "value": "border-box"
+                },
+                {
+                  "key": "display",
+                  "value": "block"
+                },
+                {
+                  "key": "position",
+                  "value": "relative"
+                },
+                {
+                  "key": "height",
+                  "value": "0"
+                },
+                {
+                  "key": "flex-grow",
+                  "value": "1"
+                },
+                {
+                  "key": "padding-left",
+                  "value": "8px"
+                },
+                {
+                  "key": "padding-top",
+                  "value": "8px"
+                },
+                {
+                  "key": "padding-right",
+                  "value": "8px"
+                },
+                {
+                  "key": "padding-bottom",
+                  "value": "8px"
+                },
+                {
+                  "key": "word-break",
+                  "value": "break-word"
+                }
+              ]
+            }
+          ]
         }
       ],
       "metadata": {
@@ -174,7 +326,24 @@
           "bottom": 400
         }
       },
-      "variant": {}
+      "variant": {},
+      "styles": [
+        {
+          "id": "6704737344.1566398145492",
+          "parts": {},
+          "properties": [
+            {
+              "key": "display",
+              "value": "flex"
+            },
+            {
+              "key": "flex-direction",
+              "value": "column"
+            }
+          ]
+        }
+      ],
+      "overrides": []
     }
   ]
 }

@@ -1,17 +1,13 @@
 {
   "id": "247bd5dd72",
-  "version": "0.0.6",
+  "version": "1.0.4",
   "metadata": {},
   "name": "module",
   "children": [
     {
       "label": "React start kit options form",
       "is": "div",
-      "style": {
-        "box-sizing": "border-box",
-        "display": "block"
-      },
-      "attributes": {},
+      "attributes": [],
       "id": "ac29cd45169",
       "name": "component",
       "children": [
@@ -20,21 +16,8 @@
           "is": "7149f8192509",
           "label": "Labeled Input",
           "name": "component-instance",
-          "attributes": {},
-          "style": {},
-          "children": [
-            {
-              "id": "80b0b6e7426",
-              "variantId": null,
-              "propertyName": "text",
-              "targetIdPath": [
-                "7149f8192506"
-              ],
-              "value": "Package Name",
-              "name": "override",
-              "children": []
-            }
-          ],
+          "attributes": [],
+          "children": [],
           "metadata": {
             "bounds": {
               "left": 486,
@@ -43,7 +26,26 @@
               "bottom": 353.5832678332798
             }
           },
-          "variant": {}
+          "variant": {},
+          "styles": [
+            {
+              "id": "4625816270.1566398145599",
+              "parts": {},
+              "properties": []
+            }
+          ],
+          "overrides": [
+            {
+              "id": "80b0b6e7426",
+              "variantId": null,
+              "targetIdPath": [
+                "7149f8192506"
+              ],
+              "value": "Package Name",
+              "children": [],
+              "type": "text"
+            }
+          ]
         }
       ],
       "metadata": {
@@ -54,15 +56,31 @@
           "bottom": 316
         }
       },
-      "variant": {}
+      "variant": {},
+      "styles": [
+        {
+          "id": "9278098015.1566398145599",
+          "parts": {},
+          "properties": [
+            {
+              "key": "box-sizing",
+              "value": "border-box"
+            },
+            {
+              "key": "display",
+              "value": "block"
+            }
+          ]
+        }
+      ],
+      "overrides": []
     },
     {
       "id": "80b0b6e7452",
       "is": "7149f8199122",
       "label": "Text Input",
       "name": "component-instance",
-      "attributes": {},
-      "style": {},
+      "attributes": [],
       "children": [],
       "metadata": {
         "bounds": {
@@ -72,7 +90,15 @@
           "bottom": 59.03580875890191
         }
       },
-      "variant": {}
+      "variant": {},
+      "styles": [
+        {
+          "id": "2343901598.1566398145599",
+          "parts": {},
+          "properties": []
+        }
+      ],
+      "overrides": []
     }
   ]
 }

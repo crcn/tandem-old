@@ -141,6 +141,8 @@ export default (Base: React.ComponentClass<BaseStyleInspectorProps>) => {
         );
       }
 
+      return null;
+
       return (
         <Base
           declarations={declarations}

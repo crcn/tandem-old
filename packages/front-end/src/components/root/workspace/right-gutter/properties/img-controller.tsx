@@ -2,11 +2,13 @@ import * as React from "react";
 import {
   DependencyGraph,
   PCComponent,
+  HtmlAttribute,
   PCComponentInstanceElement,
   PCElement
 } from "paperclip";
 import { Dispatch } from "redux";
 import { BaseImgPropertiesProps, ElementProps } from "./view.pc";
+import { kvpGetValue } from "tandem-common";
 import {
   imageSourceInputChanged,
   imageBrowseButtonClicked
@@ -39,7 +41,7 @@ export default (Base: React.ComponentClass<BaseImgPropertiesProps>) =>
         <Base
           {...rest}
           pathInputProps={{
-            value: sourceNode.attributes.src,
+            value: kvpGetValue(HtmlAttribute.src, sourceNode.attributes),
             onChangeComplete: onPathChangeComplete
           }}
           uploadButtonProps={{

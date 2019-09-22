@@ -31,6 +31,15 @@ import {
   addProtocol,
   FILE_PROTOCOL
 } from "tandem-common";
+
+import {
+  diff,
+  patch,
+  getValue,
+  setValue,
+  Mutation,
+  MutationType
+} from "immutable-ot";
 import {
   SyntheticVisibleNode,
   PCEditorState,
@@ -43,16 +52,12 @@ import {
   getSyntheticVisibleNodeRelativeBounds,
   updateDependencyGraph,
   updateSyntheticVisibleNodeMetadata,
-  diffTreeNode,
-  TreeNodeOperationalTransformType,
   PCSourceTagNames,
-  patchTreeNode,
   SyntheticDocument,
   updateSyntheticDocument,
   getFramesByDependencyUri,
   PCVisibleNode,
   PCVariant,
-  TreeNodeOperationalTransform,
   getPCNode,
   isPCComponentInstance,
   PCComponent,
@@ -167,7 +172,7 @@ export type Canvas = {
 
 export type GraphHistoryItem = {
   snapshot?: DependencyGraph;
-  transforms?: KeyValue<TreeNodeOperationalTransform[]>;
+  transforms?: KeyValue<Mutation[]>;
 };
 
 export type GraphHistory = {
@@ -412,21 +417,21 @@ const getUpdatedInspectorNodes = (
 
   let newInspectorNodes: InspectorNode[] = [];
   let model = oldScope;
-  diffTreeNode(oldScope, newScope).forEach(ot => {
-    const target = getTreeNodeFromPath(ot.nodePath, model);
-    model = patchTreeNode([ot], model);
+  diff(oldScope, newScope).forEach(mutation => {
+    const target = getValue(model, mutation.path);
+    model = patch(model, [mutation]);
 
-    if (ot.nodePath.length > MAX_DEPTH) {
+    if (mutation.path.length > MAX_DEPTH) {
       return;
     }
 
     // TODO - will need to check if new parent is not in an instance of a component.
     // Will also need to consider child overrides though.
-    if (ot.type === TreeNodeOperationalTransformType.INSERT_CHILD) {
-      newInspectorNodes.push(ot.child as InspectorNode);
+    if (mutation.type === MutationType.INSERT) {
+      newInspectorNodes.push(mutation.value as InspectorNode);
     } else if (
-      ot.type === TreeNodeOperationalTransformType.SET_PROPERTY &&
-      ot.name === "source"
+      mutation.type === MutationType.SET &&
+      mutation.propertyName === "source"
     ) {
       newInspectorNodes.push(target);
     }
@@ -600,11 +605,7 @@ const addHistory = (
   const modifiedDeps = getModifiedDependencies(newGraph, currentGraph);
   const transforms = {};
   for (const dep of modifiedDeps) {
-    transforms[dep.uri] = diffTreeNode(
-      currentGraph[dep.uri].content,
-      dep.content,
-      EMPTY_OBJECT
-    );
+    transforms[dep.uri] = diff(currentGraph[dep.uri].content, dep.content);
   }
 
   return updateRootState(
@@ -659,7 +660,7 @@ const getGraphAtHistoricPoint = (
     for (const uri in transforms) {
       newGraph[uri] = {
         ...newGraph[uri],
-        content: patchTreeNode(transforms[uri], graph[uri].content)
+        content: patch(graph[uri].content, transforms[uri])
       };
     }
     return newGraph;
@@ -1377,8 +1378,8 @@ export const centerEditorCanvas = (
           (height - INITIAL_ZOOM_PADDING) / innerSize.height
         )
       : typeof zoomOrZoomToFit === "number"
-        ? zoomOrZoomToFit
-        : translate.zoom;
+      ? zoomOrZoomToFit
+      : translate.zoom;
 
   state = updateEditorWindow(
     {
