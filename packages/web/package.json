@@ -1,6 +1,6 @@
 {
   "name": "tandem-web",
-  "version": "1.0.0",
+  "version": "10.1.38",
   "description": "My webpack project",
   "main": "index.js",
   "scripts": {
@@ -8,7 +8,8 @@
     "build": "webpack",
     "build:watch": "webapck --watch",
     "start": "webpack-dev-server",
-    "clean": "rm -rf node_modules && rm -rf dist"
+    "clean": "rm -rf node_modules && rm -rf dist",
+    "prepare": "npm run build"
   },
   "author": "",
   "license": "ISC",
