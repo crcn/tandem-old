@@ -62,9 +62,12 @@ const openFile = (options: FileOpenerOptions) => {
   return new Promise<string>(resolve => {});
 };
 
+const mount = document.createElement("div");
+document.body.appendChild(mount);
+
 // give some time so that the loader shows up.
 setTimeout(init, 500, {
-  mount: document.getElementById("application"),
+  mount,
   selectedInspectorNodes: [],
   hoveringInspectorNodes: [],
   editMode: EditMode.PRIMARY,

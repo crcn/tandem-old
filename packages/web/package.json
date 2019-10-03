@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo ''",
     "build": "webpack",
-    "build:watch": "webapck --watch",
+    "build:watch": "echo ''",
     "start": "webpack-dev-server",
     "clean": "rm -rf node_modules && rm -rf dist",
     "prepare": "npm run build"

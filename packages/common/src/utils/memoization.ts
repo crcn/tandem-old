@@ -1,4 +1,4 @@
-import * as lru from "lru-cache";
+import * as LRU from "lru-cache";
 
 const DEFAULT_LRU_MAX = 10000;
 
@@ -30,7 +30,7 @@ export const memoize = <TFunc extends (...args: any[]) => any>(
 
   return compilFastMemoFn(argumentCount, lruMax > 0)(
     fn,
-    lru({ max: lruMax })
+    new LRU({ max: lruMax })
   ) as TFunc;
 };
 
@@ -64,7 +64,7 @@ export const reuser = <TValue>(
   getKey: (value: TValue) => string,
   equals: (a: TValue, b: TValue) => boolean = shallowEquals
 ): ((value: TValue) => TValue) => {
-  const cache = lru({ max: lruMax });
+  const cache = new LRU({ max: lruMax });
   return (value: TValue) => {
     const key = getKey(value);
     if (!cache.has(key) || !equals(cache.get(key), value)) {
@@ -124,7 +124,12 @@ const compilFastMemoFn = (argumentCount: number, acceptPrimitives: boolean) => {
       }
 
       if (!currMemo.has(key)) {
-        currMemo.set(key, fn(${args.join(", ")}));
+        try {
+          currMemo.set(key, fn(${args.join(", ")}));
+        } catch(e) {
+          console.error("ERR", fn.toString());
+          throw e;
+        }
       }
 
       return currMemo.get(key);
