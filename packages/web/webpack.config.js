@@ -67,7 +67,18 @@ module.exports = {
 		open: true
 	},
 
-	resolve: {
-		extensions: ['.tsx', '.ts', '.js']
-	}
+  resolve: {
+    extensions: ['.js', '.ts', '.tsx', '.json'],
+    alias: {
+      cluster: 'null-loader?cluster',
+      net: 'null-loader?net',
+      tls: 'null-loader?tls',
+      fs: 'null-loader?fs'
+    },
+    modules: [
+      path.resolve(__dirname, 'src'),
+      path.resolve(__dirname, 'node_modules'),
+      'node_modules'
+    ]
+  },
 };

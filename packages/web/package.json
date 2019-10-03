@@ -19,12 +19,13 @@
     "@types/react": "^16.9.4",
     "@types/react-dom": "^16.9.1",
     "@types/redux-saga": "^0.10.5",
-    "paperclip": "^10.1.38",
+    "null-loader": "^3.0.0",
+    "paperclip": "10.1.x",
     "react": "^16.10.1",
     "react-dom": "^16.10.1",
     "redux-saga": "^1.1.1",
-    "tandem-common": "^10.1.38",
-    "tandem-front-end": "^10.1.38"
+    "tandem-common": "10.1.x",
+    "tandem-front-end": "10.1.x"
   },
   "devDependencies": {
     "babel-plugin-syntax-dynamic-import": "^6.18.0",
