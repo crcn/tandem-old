@@ -1,15 +1,5 @@
-# 🚀 Welcome to your new awesome project!
+TODOS:
 
-This project has been created using **webpack scaffold**, you can now run
-
-```
-npm run build
-```
-
-or
-
-```
-yarn build
-```
-
-to bundle your application
+- [ ] code pen like functionality
+- [ ] ability to save code pens as project
+- [ ] possibly clone project to repository
