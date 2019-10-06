@@ -5,7 +5,8 @@ const fs = require("fs");
 module.exports = {
   devtool: 'none',
   entry: {
-    index: [__dirname + '/src/index.ts']
+    index: [__dirname + '/src/index.ts'],
+    test: [__dirname + '/src/test/e2e/support/entry.ts']
   },
   output: {
     path: resolve(__dirname, 'lib', 'front-end'),
@@ -24,9 +25,6 @@ module.exports = {
       resolve(__dirname, 'src'),
       resolve(__dirname, 'node_modules'),
       'node_modules'
-
-      // fixes bug for resolving mime-db
-      // resolve(__dirname, 'node_modules', 'mime-types', 'node_modules')
     ]
   },
   module: {

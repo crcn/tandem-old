@@ -18,13 +18,21 @@ import {
   FSItem,
   FSItemTagNames,
   getFileFromUri,
-  stripProtocol
+  stripProtocol,
+  normalizeFilePath,
+  createDirectory,
+  createFile
 } from "tandem-common";
 import { ProjectConfig, ProjectInfo, RootState } from "../state";
 
+export type DirectoryItem = {
+  basename: string;
+  isDirectory: boolean;
+};
+
 export type ProjectSagaOptions = {
   loadProjectInfo(): IterableIterator<ProjectInfo>;
-  readDirectory(path: string): IterableIterator<FSItem>;
+  readDirectory(path: string): IterableIterator<DirectoryItem>;
   deleteFile(path: string): IterableIterator<any>;
 };
 
@@ -125,9 +133,27 @@ export function projectSaga({
         continue;
       }
 
-      const items = yield call(readDirectory, subdirUri);
+      const items = mapDirectoryItems(
+        subdirUri,
+        yield call(readDirectory, subdirUri)
+      );
+      console.log(items);
       yield put(projectDirectoryDirLoaded(items));
     }
+  }
+
+  function mapDirectoryItems(dirUri: string, items: DirectoryItem[]) {
+    const dir = stripProtocol(dirUri);
+
+    return items.map(({ basename, isDirectory }) => {
+      const fullPath = normalizeFilePath(path.join(dir, basename));
+      const uri = addProtocol(FILE_PROTOCOL, fullPath);
+      if (isDirectory) {
+        return createDirectory(uri);
+      } else {
+        return createFile(uri);
+      }
+    });
   }
 
   function* handleFileNavigatorItemClick() {

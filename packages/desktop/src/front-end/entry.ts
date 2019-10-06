@@ -160,12 +160,10 @@ function* readDirectory(dirUri: string): any {
 
   return dirBasenames.map(basename => {
     const fullPath = normalizeFilePath(path.join(dir, basename));
-    const uri = addProtocol(FILE_PROTOCOL, fullPath);
-    if (fs.lstatSync(fullPath).isDirectory()) {
-      return createDirectory(uri);
-    } else {
-      return createFile(uri);
-    }
+    return {
+      basename,
+      isDirectory: fs.lstatSync(fullPath).isDirectory()
+    };
   });
 }
 

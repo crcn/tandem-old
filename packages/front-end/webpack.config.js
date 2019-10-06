@@ -12,7 +12,15 @@ module.exports = merge({}, base, {
   mode: "development",
   plugins: [
     new HtmlWebpackPlugin({
-      title: "Aerial Playground",
+      filename: "test.html",
+      title: "Tandem Playground",
+      chunks: ["test"],
+      template: __dirname + '/src/index.html'
+    }),
+    new HtmlWebpackPlugin({
+      chunks: ["index"],
+      filename: "index.html",
+      title: "Tandem Playground",
       template: __dirname + '/src/index.html'
     }),
     new webpack.NamedModulesPlugin(),

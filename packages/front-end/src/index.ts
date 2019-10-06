@@ -48,8 +48,9 @@ const reuseUris = reuser(10, (uris: string[]) => uris.join(","));
 export const setup = (
   createSideEffects: SideEffectCreator,
   reducer?: Reducer<any>,
-  saga?: () => IterableIterator<any>
+  saga: () => IterableIterator<any> = function*() {}
 ) => {
+  console.log("SAGA?", saga);
   return (initialState: any) => {
     let bugReporter;
 
@@ -159,7 +160,6 @@ const getVariants = memoize((componentId: string, variantId: string) => ({
     [variantId]: true
   }
 }));
-export const init = (initialState: RootState) => {};
 
 export * from "./state";
 export * from "./actions";

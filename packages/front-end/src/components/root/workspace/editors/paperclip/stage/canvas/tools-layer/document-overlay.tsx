@@ -19,7 +19,7 @@ import {
   StructReference,
   reuser
 } from "tandem-common";
-// import { Dispatcher, Bounds, wrapEventToDispatch, weakMemo, StructReference } from "aerial-common2";
+// import { Dispatcher, Bounds, wrapEventToDispatch, weakMemo, StructReference } from "tandem-common2";
 import { Dispatch } from "redux";
 import {
   canvasToolOverlayMousePanStart,

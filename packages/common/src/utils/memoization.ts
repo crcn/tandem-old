@@ -127,7 +127,6 @@ const compilFastMemoFn = (argumentCount: number, acceptPrimitives: boolean) => {
         try {
           currMemo.set(key, fn(${args.join(", ")}));
         } catch(e) {
-          console.error("ERR", fn.toString());
           throw e;
         }
       }

@@ -1,0 +1,4 @@
+{
+  "testFiles": "**/*-test.js",
+  "integrationFolder": "lib/test/e2e"
+}

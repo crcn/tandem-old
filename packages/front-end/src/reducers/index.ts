@@ -533,7 +533,6 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
       const uri = node.uri;
       state = setSelectedFileNodeIds(state, node.id);
       state = setFileExpanded(node, true, state);
-
       if (!isDirectory(node)) {
         state = openFile(uri, true, false, state);
         return state;
