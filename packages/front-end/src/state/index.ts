@@ -29,7 +29,8 @@ import {
   containsNestedTreeNodeById,
   updateProperties,
   addProtocol,
-  FILE_PROTOCOL
+  FILE_PROTOCOL,
+  flattenTreeNode
 } from "tandem-common";
 
 import {
@@ -1629,7 +1630,10 @@ export const getCanvasMouseTargetNodeIdFromPoint = (
   const intersectingBounds: Bounds[] = [];
   const intersectingBoundsMap = new Map<Bounds, string>();
   const mouseFramePoint = { left: mouseX, top: mouseY };
-  for (const id in computedInfo) {
+  const nodeIds = flattenTreeNode(contentNode)
+    .map((child: SyntheticVisibleNode) => child.id)
+    .reverse();
+  for (const id of nodeIds) {
     const { bounds } = computedInfo[id];
     const node = getNestedTreeNodeById(id, contentNode);
 

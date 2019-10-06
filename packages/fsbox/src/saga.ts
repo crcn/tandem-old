@@ -77,7 +77,6 @@ export const createFSSandboxSaga = ({
 
     function* loadFile(uri: string) {
       yield put(fsSandboxItemLoading(uri));
-      console.log("READ FILE", uri);
       const { content, mimeType } = yield call(readFile, uri);
       yield put(fsSandboxItemLoaded(uri, content, mimeType));
     }

@@ -334,12 +334,16 @@ export const pointIntersectsBounds = (point: Point, bounds: Bounds) =>
     point.top < bounds.top ||
     point.top > bounds.bottom
   );
-export const getSmallestBounds = (...bounds: Bounds[]) =>
-  bounds.reduce(
-    (a, b) => {
-      const asize = getBoundsSize(a);
-      const bsize = getBoundsSize(b);
-      return asize.width * asize.height < bsize.width * bsize.height ? a : b;
-    },
-    { left: Infinity, right: Infinity, top: Infinity, bottom: Infinity }
-  );
+export const getSmallestBounds = (...bounds: Bounds[]) => {
+  if (bounds.length === 0) {
+    return { left: Infinity, top: Infinity, right: Infinity, bottom: Infinity };
+  }
+  if (bounds.length === 1) {
+    return bounds[0];
+  }
+  return bounds.slice(1).reduce((a, b) => {
+    const asize = getBoundsSize(a);
+    const bsize = getBoundsSize(b);
+    return asize.width * asize.height < bsize.width * bsize.height ? a : b;
+  }, bounds[0]);
+};

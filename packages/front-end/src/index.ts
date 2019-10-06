@@ -50,7 +50,6 @@ export const setup = (
   reducer?: Reducer<any>,
   saga: () => IterableIterator<any> = function*() {}
 ) => {
-  console.log("SAGA?", saga);
   return (initialState: any) => {
     let bugReporter;
 

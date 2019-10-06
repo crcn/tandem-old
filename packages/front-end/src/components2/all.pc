@@ -227,6 +227,76 @@
           "bottom": 59
         }
       }
+    },
+    {
+      "id": "d799eb75159",
+      "label": "Element",
+      "is": "div",
+      "name": "element",
+      "attributes": [],
+      "styles": [
+        {
+          "id": "d799eb75158",
+          "parts": {},
+          "properties": [
+            {
+              "key": "box-sizing",
+              "value": "border-box"
+            },
+            {
+              "key": "display",
+              "value": "box"
+            }
+          ]
+        }
+      ],
+      "children": [
+        {
+          "id": "d799eb75162",
+          "label": "Element",
+          "is": "div",
+          "name": "element",
+          "attributes": [],
+          "styles": [
+            {
+              "id": "d799eb75161",
+              "parts": {},
+              "properties": [
+                {
+                  "key": "background-image",
+                  "value": "linear-gradient(rgba(200, 200, 200, 1), rgba(200, 200, 200, 1))"
+                },
+                {
+                  "key": "height",
+                  "value": "100%"
+                },
+                {
+                  "key": "width",
+                  "value": "100%"
+                },
+                {
+                  "key": "box-sizing",
+                  "value": "border-box"
+                },
+                {
+                  "key": "display",
+                  "value": "block"
+                }
+              ]
+            }
+          ],
+          "children": [],
+          "metadata": {}
+        }
+      ],
+      "metadata": {
+        "bounds": {
+          "left": 19,
+          "top": -312,
+          "right": 160,
+          "bottom": -189
+        }
+      }
     }
   ]
 }
