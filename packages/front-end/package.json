@@ -65,7 +65,7 @@
     "crc32": "^0.2.2",
     "cypress": "^3.4.1",
     "fsbox": "^10.1.38",
-    "immutable-ot": "^1.0.0",
+    "immutable-ot": "1.2.x",
     "lodash": "^4.17.15",
     "mime-types": "^2.1.20",
     "paperclip": "^10.1.38",

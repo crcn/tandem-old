@@ -2017,6 +2017,7 @@ export const canvasReducer = (state: RootState, action: Action) => {
 
     case FRAME_MODE_CHANGE_COMPLETE: {
       const { frame, mode } = action as FrameModeChangeComplete;
+
       state = persistRootState(state => {
         return persistSyntheticNodeMetadata(
           { mode },
@@ -2553,7 +2554,11 @@ export const canvasReducer = (state: RootState, action: Action) => {
               [
                 createPCStyleBlock([
                   { key: "box-sizing", value: "border-box" },
-                  { key: "display", value: "box" }
+                  { key: "display", value: "block" },
+
+                  // to make it insertable
+                  { key: "width", value: "100%" },
+                  { key: "height", value: "100%" }
                 ])
               ],
               null,

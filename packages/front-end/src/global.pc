@@ -89,7 +89,7 @@
       "id": "8d8f489920787",
       "name": "variable",
       "value": "rgba(255, 0, 0, 1)",
-      "label": "grey 5",
+      "label": "grey 5all",
       "type": "color",
       "children": [],
       "metadata": {}

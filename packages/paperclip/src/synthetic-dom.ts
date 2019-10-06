@@ -33,6 +33,7 @@ import {
 } from "./dsl";
 import { diff, patch } from "immutable-ot";
 import { SyntheticCSSStyleSheet } from "./synthetic-cssom";
+import { patchTreeNode, diffTreeNode } from "./ot";
 
 /*------------------------------------------
  * STATE
@@ -555,7 +556,7 @@ export const upsertSyntheticDocument = (
     oldDocuments,
     oldDocumentIndex,
     1,
-    patch(oldDocument, diff(oldDocument, newDocument))
+    patchTreeNode(oldDocument, diffTreeNode(oldDocument, newDocument))
   );
 };
 

@@ -41,6 +41,8 @@ export type PaperclipSagaOptions = {
   getRuntimeVariants(state: PCEditorState): KeyValue<KeyValue<boolean>>;
 };
 
+const RENDER_TIMEOUT = 50;
+
 const getRuntimeInfo = memoize(
   (
     graph: DependencyGraph,
@@ -126,6 +128,7 @@ export const createPaperclipSaga = ({
           const { diffs }: PCRuntimeEvaluated = yield take(
             PC_RUNTIME_EVALUATED
           );
+
           const marker = pmark(`*nativeRenderer()`);
           const state: PCEditorState = yield select();
 
@@ -268,8 +271,6 @@ export const createPaperclipSaga = ({
             state.documents
           ) as SyntheticContentNode;
 
-          const graph = state.graph;
-
           // happens on reload
           if (!iframe.contentDocument) {
             continue;
@@ -308,6 +309,11 @@ export const createPaperclipSaga = ({
         contentNode,
         body,
         frameNodeMap[frame.syntheticContentNodeId]
+      );
+
+      // need to timeout for a sec so that rendering happens after React
+      yield call(
+        () => new Promise(resolve => setTimeout(resolve, RENDER_TIMEOUT))
       );
 
       yield put(

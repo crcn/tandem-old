@@ -4,8 +4,9 @@ import { SyntheticDocument } from "./synthetic-dom";
 import { evaluateDependencyGraph } from "./evaluate";
 import { KeyValue, pmark, EMPTY_OBJECT } from "tandem-common";
 import { isEqual } from "lodash";
-import { diff, patch, Mutation } from "immutable-ot";
+import { Mutation } from "immutable-ot";
 import { PCModule, createPCDependency } from "./dsl";
+import { diffTreeNode, patchTreeNode } from "./ot";
 
 export interface PCRuntime extends EventEmitter {
   getInfo(): LocalRuntimeInfo;
@@ -100,10 +101,10 @@ class LocalPCRuntime extends EventEmitter implements PCRuntime {
       const newSyntheticDocument = newSyntheticDocuments[uri];
       let prevSyntheticDocument = this._syntheticDocuments[uri];
       if (prevSyntheticDocument) {
-        const ots = diff(prevSyntheticDocument, newSyntheticDocument);
+        const ots = diffTreeNode(prevSyntheticDocument, newSyntheticDocument);
 
         if (ots.length) {
-          prevSyntheticDocument = documentMap[uri] = patch(
+          prevSyntheticDocument = documentMap[uri] = patchTreeNode(
             prevSyntheticDocument,
             ots
           );
@@ -181,7 +182,7 @@ export class RemotePCRuntime extends EventEmitter implements PCRuntime {
     for (const uri in value.graph) {
       const oldDep = oldInfo && oldInfo.graph[uri];
       if (oldDep) {
-        const ots = diff(oldDep.content, value.graph[uri].content);
+        const ots = diffTreeNode(oldDep.content, value.graph[uri].content);
         changes[uri] = ots;
       } else {
         changes[uri] = value.graph[uri].content;
@@ -220,7 +221,7 @@ export class RemotePCRuntime extends EventEmitter implements PCRuntime {
       };
 
       for (const uri in diffs) {
-        this._syntheticDocuments[uri] = patch(
+        this._syntheticDocuments[uri] = patchTreeNode(
           this._syntheticDocuments[uri],
           diffs[uri]
         );
@@ -262,7 +263,7 @@ const patchDependencyGraph = (
     const change = changes[uri];
     if (Array.isArray(change)) {
       newGraph[uri] = change.length
-        ? createPCDependency(uri, patch(oldGraph[uri].content, change))
+        ? createPCDependency(uri, patchTreeNode(oldGraph[uri].content, change))
         : oldGraph[uri];
     } else {
       newGraph[uri] = createPCDependency(uri, change);

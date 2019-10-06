@@ -1354,6 +1354,25 @@ export const isVariantTriggered = memoize(
   }
 );
 
+export const clonePCNode = (node: PCNode) => {
+  let clone = {
+    ...node,
+    id: generateUID(),
+    children: node.children.map(clonePCNode)
+  };
+
+  if (isVisibleNode(clone)) {
+    clone.styles = clone.styles.map(clonePCStyleBlock);
+  }
+
+  return clone;
+};
+
+export const clonePCStyleBlock = (block: PCStyleBlock) => ({
+  ...block,
+  id: generateUID()
+});
+
 export const variableQueryPassed = (
   query: PCVariableQuery,
   varMap: KeyValue<PCVariable>

@@ -33,14 +33,7 @@ import {
   flattenTreeNode
 } from "tandem-common";
 
-import {
-  diff,
-  patch,
-  getValue,
-  setValue,
-  Mutation,
-  MutationType
-} from "immutable-ot";
+import { getValue, setValue, Mutation, MutationType } from "immutable-ot";
 import {
   SyntheticVisibleNode,
   PCEditorState,
@@ -82,7 +75,9 @@ import {
   getInspectorContentNode,
   getInspectorSyntheticNode,
   getSyntheticDocumentByDependencyUri,
-  getPCNodeClip
+  getPCNodeClip,
+  diffTreeNode,
+  patchTreeNode
 } from "paperclip";
 import {
   CanvasToolOverlayMouseMoved,
@@ -418,9 +413,9 @@ const getUpdatedInspectorNodes = (
 
   let newInspectorNodes: InspectorNode[] = [];
   let model = oldScope;
-  diff(oldScope, newScope).forEach(mutation => {
+  diffTreeNode(oldScope, newScope).forEach(mutation => {
     const target = getValue(model, mutation.path);
-    model = patch(model, [mutation]);
+    model = patchTreeNode(model, [mutation]);
 
     if (mutation.path.length > MAX_DEPTH) {
       return;
@@ -606,7 +601,10 @@ const addHistory = (
   const modifiedDeps = getModifiedDependencies(newGraph, currentGraph);
   const transforms = {};
   for (const dep of modifiedDeps) {
-    transforms[dep.uri] = diff(currentGraph[dep.uri].content, dep.content);
+    transforms[dep.uri] = diffTreeNode(
+      currentGraph[dep.uri].content,
+      dep.content
+    );
   }
 
   return updateRootState(
@@ -661,7 +659,7 @@ const getGraphAtHistoricPoint = (
     for (const uri in transforms) {
       newGraph[uri] = {
         ...newGraph[uri],
-        content: patch(graph[uri].content, transforms[uri])
+        content: patchTreeNode(graph[uri].content, transforms[uri])
       };
     }
     return newGraph;
@@ -1634,6 +1632,9 @@ export const getCanvasMouseTargetNodeIdFromPoint = (
     .map((child: SyntheticVisibleNode) => child.id)
     .reverse();
   for (const id of nodeIds) {
+    if (!computedInfo[id]) {
+      continue;
+    }
     const { bounds } = computedInfo[id];
     const node = getNestedTreeNodeById(id, contentNode);
 

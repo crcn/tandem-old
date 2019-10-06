@@ -12,7 +12,6 @@ import {
   removeNestedTreeNode,
   getParentTreeNode,
   appendChildNode,
-  cloneTreeNode,
   keyValuePairToHash,
   pointIntersectsBounds,
   mergeBounds,
@@ -73,7 +72,8 @@ import {
   createPCVariantTrigger,
   isPCContentNode,
   PCStyleBlock,
-  createPCStyleBlock
+  createPCStyleBlock,
+  clonePCNode
 } from "./dsl";
 import {
   SyntheticVisibleNode,
@@ -96,7 +96,6 @@ import {
 } from "./synthetic-dom";
 import * as path from "path";
 // import { convertFixedBoundsToRelative } from "./synthetic-layout";
-import { diff, patch } from "immutable-ot";
 import { evaluateDependencyGraph } from "./evaluate";
 import { FSSandboxRootState } from "fsbox";
 import {
@@ -114,6 +113,7 @@ import {
   getInspectorNodeBySourceNodeId
 } from "./inspector";
 import { computeStyleInfo, getTextStyles, filterTextStyles } from "./style";
+import { patchTreeNode, diffTreeNode } from "./ot";
 
 /*------------------------------------------
  * CONSTANTS
@@ -637,8 +637,8 @@ export const persistConvertNodeToComponent = <TState extends PCEditorState>(
     sourceNode.styles,
     (sourceNode as PCElement).attributes,
     sourceNode.name === PCSourceTagNames.TEXT
-      ? [cloneTreeNode(sourceNode)]
-      : (sourceNode.children || []).map(node => cloneTreeNode(node)),
+      ? [clonePCNode(sourceNode)]
+      : (sourceNode.children || []).map(node => clonePCNode(node)),
     null
   );
 
@@ -1228,7 +1228,7 @@ export const persistAppendPCClips = <TState extends PCEditorState>(
         );
       }
     } else {
-      let clonedChild = cloneTreeNode(sourceNode);
+      let clonedChild = clonePCNode(sourceNode);
       if (
         targetNodeIsModule &&
         !clonedChild.metadata[PCVisibleNodeMetadataKey.BOUNDS]
@@ -2021,7 +2021,7 @@ export const evaluateEditedStateSync = (state: PCEditorState) => {
     );
     documents.push(
       oldDocument
-        ? patch(oldDocument, diff(oldDocument, newDocument))
+        ? patchTreeNode(oldDocument, diffTreeNode(oldDocument, newDocument))
         : newDocument
     );
   }

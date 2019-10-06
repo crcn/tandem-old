@@ -27,7 +27,7 @@ import {
   getPCNodeDependency
 } from "./dsl";
 import { last } from "lodash";
-import { isNodeMutation, getMutationTargetNode } from "./ot";
+import { getMutationTargetNode, diffTreeNode, patchTreeNode } from "./ot";
 import {
   getSyntheticDocumentsSourceMap,
   getSyntheticNodeById,
@@ -434,12 +434,18 @@ const patchInspectorTree2 = (
   const newModule = newGraph[uri].content;
   const oldModule = oldGraph[uri].content;
   let tmpModule = oldModule;
-  const ots = diff(tmpModule, newModule);
+  const ots = diffTreeNode(tmpModule, newModule);
 
   let newSourceMap = sourceMap;
 
   for (const ot of ots) {
-    if (!isNodeMutation(ot)) {
+    const childrenIndex = ot.path.lastIndexOf("children");
+
+    if (
+      childrenIndex !== 0 &&
+      childrenIndex !== ot.path.length - 1 &&
+      childrenIndex !== ot.path.length - 2
+    ) {
       continue;
     }
 
@@ -449,7 +455,8 @@ const patchInspectorTree2 = (
       continue;
     }
 
-    tmpModule = patch(tmpModule, [ot]);
+    const parent = getParentTreeNode(targetNode.id, tmpModule);
+    tmpModule = patchTreeNode(tmpModule, [ot]);
 
     const patchedTarget = getMutationTargetNode(tmpModule, ot) as PCNode;
 
@@ -641,6 +648,11 @@ const patchInspectorTree2 = (
 
           break;
         }
+        case MutationType.REPLACE: {
+          const {} = ot;
+          break;
+        }
+
         case MutationType.SET: {
           const { propertyName: name, value } = ot;
 
