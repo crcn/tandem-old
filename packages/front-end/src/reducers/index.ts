@@ -2075,7 +2075,6 @@ export const canvasReducer = (state: RootState, action: Action) => {
     //   );
     // }
     case CSS_PROPERTIES_CHANGE_COMPLETED: {
-      console.log("PROP");
       const { properties } = action as CSSPropertiesChanged;
       state = teeHistory(state);
       state = { ...state, editMode: EditMode.PRIMARY };

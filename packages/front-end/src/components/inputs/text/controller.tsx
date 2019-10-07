@@ -72,8 +72,6 @@ export const withPureInputHandlers = () => (
           onChange(newValue || undefined, nativeEvent);
         }
 
-        console.log(key, onChangeComplete);
-
         if ((key === "Enter" || key === "Tab") && onChangeComplete) {
           onChangeComplete(newValue || undefined);
         }

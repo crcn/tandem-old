@@ -148,7 +148,7 @@ export default (Base: React.ComponentClass<BaseFileNavigatorLayerProps>) => {
           this.props.dispatch(fileItemRightClicked(this.props.item, event));
         };
         onDoubleClick = () => {
-          this.props.dispatch(fileNavigatorItemDoubleClicked(this.props.item));
+          // this.props.dispatch(fileNavigatorItemDoubleClicked(this.props.item));
         };
         onArrowClick = (event: React.MouseEvent<any>) => {
           this.props.dispatch(

@@ -967,26 +967,27 @@ export const getInspectorNodeOverrides = memoize(
     if (!inspectorNode.sourceNodeId) {
       return overrides;
     }
-    const sourceNode = getPCNode(inspectorNode.sourceNodeId, graph);
-    const inheritedOverrides = getInheritedOverridesOverrides(
-      inspectorNode,
-      rootInspectorNode,
-      graph
-    );
-    for (const override of inheritedOverrides) {
-      const overrideModule = getPCNodeModule(override.id, graph);
-      const matchesVariant =
-        !override.variantId || override.variantId == (variant && variant.id);
-      const overrideIsTarget =
-        last(override.targetIdPath) === inspectorNode.sourceNodeId;
-      const overrideTargetIsParent =
-        override.targetIdPath.length === 0 &&
-        getParentTreeNode(override.id, overrideModule).id === sourceNode.id;
+    // const sourceNode = getPCNode(inspectorNode.sourceNodeId, graph);
+    // const inheritedOverrides = getInheritedOverridesOverrides(
+    //   inspectorNode,
+    //   rootInspectorNode,
+    //   graph
+    // );
+    // for (const override of inheritedOverrides) {
+    //   const overrideModule = getPCNodeModule(override.id, graph);
+    //   const matchesVariant =
+    //     !override.variantId || override.variantId == (variant && variant.id);
+    //   const overrideIsTarget =
+    //     last(override.targetIdPath) === inspectorNode.sourceNodeId;
 
-      if (matchesVariant && (overrideIsTarget || overrideTargetIsParent)) {
-        overrides.push(override);
-      }
-    }
+    //   const overrideTargetIsParent =
+    //     override.targetIdPath.length === 0 &&
+    //     getParentTreeNode(override.id, overrideModule).id === sourceNode.id;
+
+    //   if (matchesVariant && (overrideIsTarget || overrideTargetIsParent)) {
+    //     overrides.push(override);
+    //   }
+    // }
     return overrides;
   }
 );
