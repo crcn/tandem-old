@@ -72,6 +72,7 @@ import {
   ELEMENT_TYPE_CHANGED,
   CSS_PROPERTY_CHANGED,
   CSS_PROPERTY_CHANGE_COMPLETED,
+  CANVAS_TEXT_EDIT_CHANGE_BLURRED,
   ATTRIBUTE_CHANGED,
   CSSPropertyChanged,
   FRAME_MODE_CHANGE_COMPLETE,
@@ -532,7 +533,7 @@ export const rootReducer = (state: RootState, action: Action): RootState => {
       const { node } = action as FileNavigatorItemClicked;
       const uri = node.uri;
       state = setSelectedFileNodeIds(state, node.id);
-      state = setFileExpanded(node, true, state);
+      state = setFileExpanded(node, !node.expanded, state);
       if (!isDirectory(node)) {
         state = openFile(uri, true, false, state);
         return state;
@@ -2063,17 +2064,18 @@ export const canvasReducer = (state: RootState, action: Action) => {
 
       return state;
     }
-    case CSS_PROPERTY_CHANGED: {
-      const { name, value } = action as CSSPropertyChanged;
-      state = teeHistory(state);
-      state = { ...state, editMode: EditMode.PRIMARY };
-      return state.selectedInspectorNodes.reduce(
-        (state, node) =>
-          persistCSSProperty(name, value, node, state.selectedVariant, state),
-        state
-      );
-    }
+    // case CSS_PROPERTY_CHANGED: {
+    //   const { name, value } = action as CSSPropertyChanged;
+    //   state = teeHistory(state);
+    //   state = { ...state, editMode: EditMode.PRIMARY };
+    //   return state.selectedInspectorNodes.reduce(
+    //     (state, node) =>
+    //       persistCSSProperty(name, value, node, state.selectedVariant, state),
+    //     state
+    //   );
+    // }
     case CSS_PROPERTIES_CHANGE_COMPLETED: {
+      console.log("PROP");
       const { properties } = action as CSSPropertiesChanged;
       state = teeHistory(state);
       state = { ...state, editMode: EditMode.PRIMARY };
@@ -2116,8 +2118,11 @@ export const canvasReducer = (state: RootState, action: Action) => {
       return state;
     }
 
+    case CSS_PROPERTY_CHANGED:
     case CSS_PROPERTY_CHANGE_COMPLETED: {
       const { name, value } = action as CSSPropertyChanged;
+      // state = teeHistory(state);
+      // state = { ...state, editMode: EditMode.PRIMARY };
       state = persistRootState(state => {
         return state.selectedInspectorNodes.reduce(
           (state, node) =>
@@ -2269,6 +2274,11 @@ export const canvasReducer = (state: RootState, action: Action) => {
 
         return state;
       }, state);
+      state = { ...state, editMode: EditMode.PRIMARY };
+      return state;
+    }
+
+    case CANVAS_TEXT_EDIT_CHANGE_BLURRED: {
       state = { ...state, editMode: EditMode.PRIMARY };
       return state;
     }

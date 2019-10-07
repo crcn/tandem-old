@@ -15,7 +15,10 @@ import {
 } from "paperclip";
 import { Dispatch } from "redux";
 import { FocusComponent } from "../../../../../../../focus";
-import { canvasTextEditChangeComplete } from "../../../../../../../../actions";
+import {
+  canvasTextEditChangeComplete,
+  canvasTextEditBlurred
+} from "../../../../../../../../actions";
 
 export type Props = {
   rootInspectorNode: InspectorNode;
@@ -32,6 +35,9 @@ export default (Base: React.ComponentClass<BaseEditTextProps>) =>
     onChangeComplete = (value: string) => {
       this.props.dispatch(canvasTextEditChangeComplete(value));
     };
+    onBlur = () => {
+      this.props.dispatch(canvasTextEditBlurred());
+    };
     render() {
       const {
         selectedInspectorNode,
@@ -42,7 +48,7 @@ export default (Base: React.ComponentClass<BaseEditTextProps>) =>
         documents,
         ...rest
       } = this.props;
-      const { onChangeComplete } = this;
+      const { onChangeComplete, onBlur } = this;
 
       const sourceNode = getInspectorSourceNode(
         selectedInspectorNode,
@@ -81,6 +87,7 @@ export default (Base: React.ComponentClass<BaseEditTextProps>) =>
             style={style}
             value={selectedSyntheticNode.value}
             onChangeComplete={onChangeComplete}
+            onBlur={onBlur}
           />
         </FocusComponent>
       );

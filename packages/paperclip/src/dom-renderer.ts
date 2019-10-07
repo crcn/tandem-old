@@ -261,7 +261,6 @@ const patchStyleSheet = (
   map: SyntheticNativeCSSOMMap
 ): [SyntheticContentNode, SyntheticNativeCSSOMMap] => {
   let newContentNode = patchTreeNode(contentNode, [mutation]);
-  console.log(mutation);
 
   if (isStyleMutation(mutation)) {
     const oldTargetStyleRule = getValue(
@@ -276,7 +275,6 @@ const patchStyleSheet = (
     const nativeRule = map[newTargetStyleRule.id] as CSSStyleRule;
     const newStyle = keyValuePairToHash(newTargetStyleRule.style);
     const oldStyle = keyValuePairToHash(oldTargetStyleRule.style);
-    console.log(newTargetStyleRule);
 
     nativeRule.selectorText = newTargetStyleRule.selectorText;
     for (const key in newStyle) {
@@ -302,10 +300,6 @@ const patchStyleSheet = (
           mutation.index
         );
 
-        if (map[mutation.value.id]) {
-          console.log("ERROR IT IS", mutation.value.id, map[mutation.value.id]);
-        }
-
         map = {
           ...map,
           [mutation.value.id]: styleSheet.cssRules[mutation.index]
@@ -324,7 +318,6 @@ const patchStyleSheet = (
         const styleSheet = (targetRule as any) as CSSStyleSheet;
         const oldRule = contentNode.sheet.rules[mutation.index];
         styleSheet.deleteRule(mutation.index);
-        console.log("REMOVE", oldRule.id);
         map = {
           ...map,
           [oldRule.id]: undefined

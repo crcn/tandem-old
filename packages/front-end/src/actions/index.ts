@@ -295,6 +295,8 @@ export const CSS_INHERITED_FROM_LABEL_CLICKED =
 
 export const CANVAS_TEXT_EDIT_CHANGE_COMPLETE =
   "CANVAS_TEXT_EDIT_CHANGE_COMPLETE";
+export const CANVAS_TEXT_EDIT_CHANGE_BLURRED =
+  "CANVAS_TEXT_EDIT_CHANGE_BLURRED";
 
 export const ADD_VARIANT_TRIGGER_CLICKED = "ADD_VARIANT_TRIGGER_CLICKED";
 export const REMOVE_VARIANT_TRIGGER_CLICKED = "REMOVE_VARIANT_TRIGGER_CLICKED";
@@ -1121,6 +1123,10 @@ export const canvasTextEditChangeComplete = (
 ): CanvasTextEditChangeComplete => ({
   value,
   type: CANVAS_TEXT_EDIT_CHANGE_COMPLETE
+});
+
+export const canvasTextEditBlurred = (): Action => ({
+  type: CANVAS_TEXT_EDIT_CHANGE_BLURRED
 });
 
 export const cssInheritedFromLabelClicked = (

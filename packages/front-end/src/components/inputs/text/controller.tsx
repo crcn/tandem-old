@@ -9,6 +9,7 @@ export type WithInputHandlersProps = {
   onChange?: any;
   onChangeComplete?: any;
   disabled?: boolean;
+  onBlur?: any;
 } & BaseTextInputProps;
 
 type State = {
@@ -70,6 +71,8 @@ export const withPureInputHandlers = () => (
         if (onChange && oldState.value !== newValue) {
           onChange(newValue || undefined, nativeEvent);
         }
+
+        console.log(key, onChangeComplete);
 
         if ((key === "Enter" || key === "Tab") && onChangeComplete) {
           onChangeComplete(newValue || undefined);

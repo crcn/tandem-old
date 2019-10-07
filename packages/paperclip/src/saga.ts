@@ -24,7 +24,6 @@ import { DependencyGraph } from "./graph";
 import { Mutation } from "immutable-ot";
 import { PCEditorState, Frame, getSyntheticDocumentFrames } from "./edit";
 import {
-  SyntheticNode,
   getSyntheticNodeById,
   SyntheticDocument,
   SyntheticVisibleNode,

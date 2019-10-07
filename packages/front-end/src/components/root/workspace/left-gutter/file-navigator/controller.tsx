@@ -8,11 +8,8 @@ import {
   Directory,
   memoize,
   FSItemTagNames,
-  getNestedTreeNodeById,
   FSItem,
-  getParentTreeNode,
-  EMPTY_ARRAY,
-  getFileFromUri
+  EMPTY_ARRAY
 } from "tandem-common";
 import { Dispatch } from "redux";
 import { FileNavigatorContext, FileNavigatorContextProps } from "./contexts";

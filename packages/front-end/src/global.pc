@@ -116,7 +116,7 @@
       "id": "fe88bcb21388",
       "name": "variable",
       "value": "rgba(170, 96, 255, 1)",
-      "label": "purple 1",
+      "label": "all.purple 1",
       "type": "color",
       "children": [],
       "metadata": {}

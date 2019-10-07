@@ -5,11 +5,8 @@
   "name": "module",
   "children": [
     {
-      "id": "af5ef89f1594",
-      "label": "Workspace",
+      "label": "Workspace:v2",
       "is": "div",
-      "name": "element",
-      "attributes": [],
       "styles": [
         {
           "id": "af5ef89f1593",
@@ -34,16 +31,19 @@
           ]
         }
       ],
+      "attributes": [],
+      "id": "2185bd1a187",
+      "name": "component",
       "children": [
         {
-          "id": "2e45c22180",
+          "id": "2185bd1a174",
           "label": "left gutter",
           "is": "div",
           "name": "element",
           "attributes": [],
           "styles": [
             {
-              "id": "2e45c22181",
+              "id": "2185bd1a182",
               "parts": {},
               "properties": [
                 {
@@ -60,7 +60,7 @@
                 },
                 {
                   "key": "width",
-                  "value": "20%"
+                  "value": "200px"
                 },
                 {
                   "key": "height",
@@ -71,7 +71,7 @@
           ],
           "children": [
             {
-              "id": "34b91c08176",
+              "id": "2185bd1a175",
               "is": "cde8a778180",
               "label": "Pane 2",
               "name": "component-instance",
@@ -80,17 +80,17 @@
               "children": [
                 {
                   "slotId": "34b91c08157",
-                  "id": "34b91c08189",
+                  "id": "2185bd1a176",
                   "children": [
                     {
-                      "id": "34b91c08188",
+                      "id": "2185bd1a177",
                       "label": "Element",
                       "is": "div",
                       "name": "element",
                       "attributes": [],
                       "styles": [
                         {
-                          "id": "34b91c08187",
+                          "id": "2185bd1a181",
                           "parts": {},
                           "properties": [
                             {
@@ -114,12 +114,46 @@
                       ],
                       "children": [
                         {
-                          "id": "34b91c08192",
-                          "name": "text",
-                          "label": "Text",
-                          "value": "Layer",
-                          "styles": [],
-                          "children": [],
+                          "id": "2185bd1a178",
+                          "label": "Element",
+                          "is": "div",
+                          "name": "element",
+                          "attributes": [],
+                          "styles": [
+                            {
+                              "id": "2185bd1a180",
+                              "parts": {},
+                              "properties": [
+                                {
+                                  "key": "box-sizing",
+                                  "value": "border-box"
+                                },
+                                {
+                                  "key": "display",
+                                  "value": "block"
+                                },
+                                {
+                                  "key": "width",
+                                  "value": "100%"
+                                },
+                                {
+                                  "key": "height",
+                                  "value": "20px"
+                                }
+                              ]
+                            }
+                          ],
+                          "children": [
+                            {
+                              "id": "2185bd1a179",
+                              "name": "text",
+                              "label": "Text",
+                              "value": "Item",
+                              "styles": [],
+                              "children": [],
+                              "metadata": {}
+                            }
+                          ],
                           "metadata": {}
                         }
                       ],
@@ -156,14 +190,14 @@
           "metadata": {}
         },
         {
-          "id": "2e45c22184",
+          "id": "2185bd1a183",
           "label": "canvas",
           "is": "div",
           "name": "element",
           "attributes": [],
           "styles": [
             {
-              "id": "2e45c22183",
+              "id": "2185bd1a184",
               "parts": {},
               "properties": [
                 {
@@ -189,14 +223,14 @@
           "metadata": {}
         },
         {
-          "id": "2e45c22175",
+          "id": "2185bd1a185",
           "label": "right gutter",
           "is": "div",
           "name": "element",
           "attributes": [],
           "styles": [
             {
-              "id": "2e45c22174",
+              "id": "2185bd1a186",
               "parts": {},
               "properties": [
                 {
@@ -228,21 +262,27 @@
       ],
       "metadata": {
         "bounds": {
-          "left": 146,
-          "top": -411,
-          "right": 1297,
-          "bottom": 397
+          "left": 69,
+          "top": -572,
+          "right": 1093,
+          "bottom": -51
         }
-      }
+      },
+      "variant": {},
+      "overrides": []
     },
     {
-      "label": "Pane 2",
+      "label": "Pane:v2",
       "is": "div",
       "styles": [
         {
           "id": "cde8a778177",
           "parts": {},
           "properties": [
+            {
+              "key": "font-family",
+              "value": "Helvetica"
+            },
             {
               "key": "flex-direction",
               "value": "column"
@@ -256,8 +296,7 @@
               "value": "flex"
             },
             {
-              "key": "width",
-              "value": "100%"
+              "key": "width"
             },
             {
               "key": "height",
@@ -282,12 +321,16 @@
               "parts": {},
               "properties": [
                 {
+                  "key": "font-size",
+                  "value": "12px"
+                },
+                {
                   "key": "background-image",
                   "value": "linear-gradient(rgba(200, 200, 200, 1), rgba(200, 200, 200, 1))"
                 },
                 {
                   "key": "padding-bottom",
-                  "value": "12px"
+                  "value": "8px"
                 },
                 {
                   "key": "padding-right",
@@ -295,7 +338,7 @@
                 },
                 {
                   "key": "padding-top",
-                  "value": "12px"
+                  "value": "8px"
                 },
                 {
                   "key": "padding-left",
@@ -348,7 +391,18 @@
           "is": "div",
           "name": "element",
           "attributes": [],
-          "styles": [],
+          "styles": [
+            {
+              "id": "2185bd1a204",
+              "parts": {},
+              "properties": [
+                {
+                  "key": "display",
+                  "value": "block"
+                }
+              ]
+            }
+          ],
           "children": [
             {
               "id": "34b91c08157",
@@ -365,6 +419,22 @@
                       "parts": {},
                       "properties": [
                         {
+                          "key": "padding-bottom",
+                          "value": "12px"
+                        },
+                        {
+                          "key": "padding-right",
+                          "value": "12px"
+                        },
+                        {
+                          "key": "padding-top",
+                          "value": "12px"
+                        },
+                        {
+                          "key": "padding-left",
+                          "value": "12px"
+                        },
+                        {
                           "key": "box-sizing",
                           "value": "border-box"
                         },
@@ -373,12 +443,10 @@
                           "value": "block"
                         },
                         {
-                          "key": "width",
-                          "value": "100%"
+                          "key": "width"
                         },
                         {
-                          "key": "height",
-                          "value": "100%"
+                          "key": "height"
                         }
                       ]
                     }
@@ -407,10 +475,10 @@
       ],
       "metadata": {
         "bounds": {
-          "left": -137,
-          "top": -430,
-          "right": 23,
-          "bottom": -330
+          "left": -167,
+          "top": -571,
+          "right": -2,
+          "bottom": -463
         }
       },
       "variant": {},
