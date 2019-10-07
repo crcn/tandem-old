@@ -12,58 +12,6 @@
       "name": "component",
       "children": [
         {
-          "id": "65d1fb8f36900",
-          "is": "f657bb0949423",
-          "name": "component-instance",
-          "attributes": [],
-          "children": [],
-          "metadata": {
-            "bounds": {
-              "left": 885,
-              "top": 110,
-              "right": 1176.5113534536454,
-              "bottom": 453.1408602999202
-            }
-          },
-          "label": "instance pane",
-          "variant": {
-            "4b2435eb14293": false
-          },
-          "styles": [
-            {
-              "id": "6251914296.1566398145549",
-              "parts": {},
-              "properties": []
-            }
-          ],
-          "overrides": []
-        },
-        {
-          "id": "e7d086d513030",
-          "is": "9e4a45489771",
-          "label": "mixins pane",
-          "name": "component-instance",
-          "attributes": [],
-          "children": [],
-          "metadata": {
-            "bounds": {
-              "left": 768.3514179424635,
-              "top": 133.21180106740175,
-              "right": 1168.3514179424635,
-              "bottom": 433.2118010674018
-            }
-          },
-          "variant": {},
-          "styles": [
-            {
-              "id": "3525764472.1566398145549",
-              "parts": {},
-              "properties": []
-            }
-          ],
-          "overrides": []
-        },
-        {
           "id": "850332f711509",
           "name": "variant",
           "label": "inspector",
@@ -270,42 +218,6 @@
             }
           ],
           "overrides": []
-        },
-        {
-          "id": "f7a6123d11339",
-          "is": "850332f711267",
-          "label": "custom code pane",
-          "name": "component-instance",
-          "attributes": [],
-          "children": [],
-          "metadata": {
-            "bounds": {
-              "left": 979,
-              "top": -205,
-              "right": 1315,
-              "bottom": 335
-            }
-          },
-          "variant": {},
-          "styles": [
-            {
-              "id": "9513723129.1566398145549",
-              "parts": {},
-              "properties": []
-            }
-          ],
-          "overrides": [
-            {
-              "id": "f7a6123d11461",
-              "variantId": null,
-              "targetIdPath": [
-                "850332f711260"
-              ],
-              "value": "Custom CSS",
-              "children": [],
-              "type": "text"
-            }
-          ]
         }
       ],
       "metadata": {
@@ -567,42 +479,6 @@
             }
           ],
           "children": []
-        }
-      ]
-    },
-    {
-      "id": "9b2e6dec15285",
-      "is": "97a34b151010442",
-      "label": "Comment",
-      "name": "component-instance",
-      "attributes": [],
-      "children": [],
-      "metadata": {
-        "bounds": {
-          "left": 646,
-          "top": 1518,
-          "right": 864,
-          "bottom": 1719
-        }
-      },
-      "variant": {},
-      "styles": [
-        {
-          "id": "8328876960.1566398145549",
-          "parts": {},
-          "properties": []
-        }
-      ],
-      "overrides": [
-        {
-          "id": "9b2e6dec15293",
-          "variantId": null,
-          "targetIdPath": [
-            "97a34b151010441"
-          ],
-          "value": "additive sections here (anything with + button)",
-          "children": [],
-          "type": "text"
         }
       ]
     }

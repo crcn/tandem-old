@@ -433,6 +433,16 @@
           "metadata": {},
           "styles": [
             {
+              "id": "a88f260f134430",
+              "parts": {},
+              "properties": [
+                {
+                  "key": "display",
+                  "value": "block"
+                }
+              ]
+            },
+            {
               "id": "1101603532.1566398145561",
               "parts": {},
               "variantId": "ed9bceb07742",
@@ -470,40 +480,6 @@
           "name": "element",
           "attributes": [],
           "children": [
-            {
-              "id": "4e40c2b98547",
-              "is": "4e40c2b98546",
-              "label": "behavior",
-              "name": "component-instance",
-              "attributes": [],
-              "children": [],
-              "metadata": {},
-              "variant": {},
-              "styles": [
-                {
-                  "id": "2094738313.1566398145561",
-                  "parts": {},
-                  "variantId": "4e40c2b98540",
-                  "properties": [
-                    {
-                      "key": "display",
-                      "value": "block"
-                    }
-                  ]
-                },
-                {
-                  "id": "2616903438.1566398145561",
-                  "parts": {},
-                  "properties": [
-                    {
-                      "key": "display",
-                      "value": "none"
-                    }
-                  ]
-                }
-              ],
-              "overrides": []
-            },
             {
               "id": "45055e8e8",
               "variant": {},

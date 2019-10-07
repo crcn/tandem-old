@@ -49,14 +49,6 @@ export default (Base: React.ComponentClass<BaseElementStylerProps>) =>
       return (
         <Base
           {...rest}
-          instancePaneProps={{
-            computedStyleInfo,
-            selectedInspectorNodes,
-            rootInspectorNode,
-            dispatch,
-            graph,
-            selectedVariant
-          }}
           layoutPaneProps={{
             dispatch,
             graph,
@@ -77,12 +69,6 @@ export default (Base: React.ComponentClass<BaseElementStylerProps>) =>
           opacityPaneProps={{
             dispatch,
             computedStyleInfo
-          }}
-          mixinsPaneProps={{
-            dispatch,
-            selectedInspectorNodes,
-            graph,
-            projectOptions
           }}
           bordersPaneProps={{
             dispatch,
@@ -112,10 +98,6 @@ export default (Base: React.ComponentClass<BaseElementStylerProps>) =>
             documentColors,
             computedStyleInfo,
             globalVariables
-          }}
-          customCodePaneProps={{
-            dispatch,
-            computedStyleInfo
           }}
         />
       );
