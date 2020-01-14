@@ -2,6 +2,9 @@ template example:
 
 ```html
 
+<!-- can import components that affect global state such as styles -->
+<import src="./global.pc" />
+
 <!-- importing a component. ID is assigned to the import tag, but using
 it instantiates a new component instance -->
 <import id="custom-button" src="./path/to/custom-button.pc" />
@@ -21,6 +24,11 @@ it instantiates a new component instance -->
 
     /* styles can use block syntax */
     color: {{theme.primaryColor}};
+  }
+
+  /* global explicit via :global(*) */
+  :global(*) {
+    box-sizing: content-box;
   }
 </style>
 
