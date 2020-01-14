@@ -6,6 +6,9 @@ template example:
 it instantiates a new component instance -->
 <import id="custom-button" src="./path/to/custom-button.pc" />
 
+<!-- JSON files can also be imported as context -->
+<import id="theme" src="./path/to/theme.json" />
+
 <!-- controllers are higher-order-components that attach functionality to components -->
 <logic src="./my-controller.react.tsx" target="javascript" />
 <logic src="./my-controller.laravel.php" target="php" />
@@ -15,7 +18,9 @@ it instantiates a new component instance -->
 <!-- styles are scoped to this file -->
 <style>
   div {
-    
+
+    /* styles can use block syntax */
+    color: {{theme.primaryColor}};
   }
 </style>
 
@@ -97,3 +102,12 @@ Additionally, `.pc` files may have a corresponding `.[COMPONENT_NAME].tdc` (Tand
 #### Limitations
 
 - template
+
+#### TODO
+
+- Examples
+  - VueJS
+  - Svelte
+  - Larabel
+  - Ruby
+  - Python
