@@ -47,10 +47,13 @@ it instantiates a new component instance -->
 <span  {{boundAttributes}}> 
 </span>
 
-{{#if something}}
+<!-- logic in templates using builtin JS evaluator -->
+{{#if age > 10}}
   show something
-{{/else}}
+{{/else if age > 5}}
   show something else
+{{/else}}
+  nothing else
 {{/}}
 
 {{#repeat items as k, value}} 
