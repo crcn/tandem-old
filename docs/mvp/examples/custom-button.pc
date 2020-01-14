@@ -1,0 +1,11 @@
+<controller src="./custom-button.tsx" />
+
+<style>
+  div {
+    color: red;
+  }
+</style>
+
+<div>
+  hello {{message}}!!!
+</div>
