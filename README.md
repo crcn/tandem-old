@@ -1,2 +1,1 @@
-Tandem is a UI builder that integrates with your IDE. 
-
+#### Tandem is a VSCode extension that allows you to visually create web components.
