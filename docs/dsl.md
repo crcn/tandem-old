@@ -12,6 +12,9 @@ it instantiates a new component instance -->
 <!-- JSON files can also be imported as context -->
 <import id="theme" src="./path/to/theme.json" />
 
+<!-- import JSON files without ID to add them to _this_ context -->
+<import src="./path/to/context.json" />
+
 <!-- controllers are higher-order-components that attach functionality to components -->
 <logic src="./my-controller.react.tsx" target="javascript" />
 <logic src="./my-controller.laravel.php" target="php" />
@@ -119,8 +122,15 @@ Additionally, `.pc` files may have a corresponding `.[COMPONENT_NAME].tdc` (Tand
   - Larabel
   - Ruby
   - Python
+  - lambdas (see mustache)
 
 #### DX problems
 
 - inline JS is super helpful. E.g: https://svelte.dev/docs#if
+  - especially for default values (e.g: )
 - should support global CSS
+
+#### Features
+
+- Mini JS evaluator
+- type inferencing
