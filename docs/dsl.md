@@ -111,3 +111,7 @@ Additionally, `.pc` files may have a corresponding `.[COMPONENT_NAME].tdc` (Tand
   - Larabel
   - Ruby
   - Python
+
+#### DX problems
+
+- inline JS is super helpful. E.g: https://svelte.dev/docs#if
