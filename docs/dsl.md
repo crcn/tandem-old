@@ -115,3 +115,4 @@ Additionally, `.pc` files may have a corresponding `.[COMPONENT_NAME].tdc` (Tand
 #### DX problems
 
 - inline JS is super helpful. E.g: https://svelte.dev/docs#if
+- should support global CSS
