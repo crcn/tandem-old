@@ -44,7 +44,11 @@ it instantiates a new component instance -->
 </div>
 
 <!-- spread prop to elements -->
-<span  {{boundAttributes}}> 
+<span  {{...boundAttributes}}> 
+</span>
+
+<!-- properties passed into this component -->
+<span  {{...this.props}}> 
 </span>
 
 <!-- logic in templates using builtin JS evaluator -->
@@ -56,17 +60,24 @@ it instantiates a new component instance -->
   nothing else
 {{/}}
 
-{{#repeat items as k, value}} 
+{{#each items as value, k}} 
   Repeat some value
-{{/repeat}}
+{{/each}}
 
 <!-- listener example -->
 <span onClick={{handler}}>
 </span>
 
-<!-- -->
+
 <span class="some class {{moreClasses}}">
 </span>
+
+<!-- passing component as prop -->
+<some-component someProp={{
+  <div>
+    something something
+  </div>
+}}>
 ```
 
 controller (logic) example:
@@ -126,6 +137,9 @@ Additionally, `.pc` files may have a corresponding `.[COMPONENT_NAME].tdc` (Tand
   - Ruby
   - Python
   - lambdas (see mustache)
+- look into i18n
+- ability to call funcitons with fallback
+  - possibly use components for this
 
 #### DX problems
 
@@ -137,3 +151,43 @@ Additionally, `.pc` files may have a corresponding `.[COMPONENT_NAME].tdc` (Tand
 
 - Mini JS evaluator
 - type inferencing
+
+### i18n exmaple
+
+intl component:
+
+```html
+
+<!-- default text is children -->
+{{this.children}}
+```
+
+```html
+<intl id="greeting" values={{name: "John" }}>
+  Hello!
+</intl>
+```
+intl-logic.js:
+
+```javascript
+
+import {translate} from "some-i18n-library";
+
+const translations = {
+  en: {
+    greeting: "Hello!"
+  },
+  es: {
+    greeting: "Hola!"
+  }
+};
+
+export default Template => class extends React.Component {
+  render() {
+    const {id, values, children} = props;
+    const {locale} = this.context;
+    const translation = translate(translations[locale][id], values);
+    return translation || children;
+  }
+}
+```
