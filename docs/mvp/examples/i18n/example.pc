@@ -1,0 +1,10 @@
+
+<!-- i18n loadd paperclip-i18n node_modules directory -->
+<import id="text" src="paperclip-i18n" />
+
+<!-- id points to the locale -->
+<text id="message">
+
+  <!-- Default text to be displayed in preview -->
+  Default text here
+</text>

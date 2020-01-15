@@ -191,3 +191,35 @@ export default Template => class extends React.Component {
   }
 }
 ```
+
+#### Compiler
+
+config example:
+
+```javascript
+{
+
+  // path to root directories
+  "rootDirs": ["node_modules", "src/components"],
+
+  // target framework - expect `paperclip-[target]-compiler`
+  // target determines extension
+  "target": "react",
+
+  // glob for PC files
+  "filesGlob": ["./**/*.pc"],
+
+  // out directory. If omitted, out files are in directory where source files are
+  "outDir": "lib"
+}
+```
+
+> Config wouldn't be necessary to use in VSCode. Though functionality may be limited. 
+
+CLI examples:
+
+```
+paperclip --config path/to/config.json
+```
+
+

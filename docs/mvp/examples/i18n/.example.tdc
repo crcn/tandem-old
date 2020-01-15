@@ -1,0 +1,10 @@
+{
+  "previews": [
+    {
+      target: "mobile"
+    },
+    {
+      target: "desktop"
+    }
+  ]
+}
