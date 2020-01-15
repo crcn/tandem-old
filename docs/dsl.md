@@ -140,6 +140,8 @@ Additionally, `.pc` files may have a corresponding `.[COMPONENT_NAME].tdc` (Tand
 - look into i18n
 - ability to call funcitons with fallback
   - possibly use components for this
+- look into extending preview with modules
+  - would be nice for example to preview i18n strings
 
 #### DX problems
 

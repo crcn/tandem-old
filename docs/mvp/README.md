@@ -10,4 +10,3 @@ TODOS:
 - [ ] example apps
   - [ ] chat app
   - [ ] build tandem
-  
