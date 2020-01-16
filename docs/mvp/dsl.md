@@ -10,7 +10,8 @@ it instantiates a new component instance -->
 <import id="custom-button" src="./path/to/custom-button.pc" />
 
 <!-- JSON files can also be imported as context -->
-<import id="theme" src="./path/to/theme.json" />
+<!-- { primaryColor: "#FF6600" } -->
+<import id="theme" src="theme.json" /> 
 
 <!-- import JSON files without ID to add them to _this_ context -->
 <import src="./path/to/context.json" />
@@ -73,11 +74,10 @@ it instantiates a new component instance -->
 </span>
 
 <!-- passing component as prop -->
-<some-component someProp={{
-  <div>
+<some-component someProp={{ <div>
     something something
   </div>
-}}>
+}} />
 ```
 
 controller (logic) example:
@@ -142,6 +142,8 @@ Additionally, `.pc` files may have a corresponding `.[COMPONENT_NAME].tdc` (Tand
   - possibly use components for this
 - look into extending preview with modules
   - would be nice for example to preview i18n strings
+  - possibly using additional JS layer after evaluated VDOM tree
+- look into animations
 
 #### DX problems
 
@@ -165,7 +167,7 @@ intl component:
 ```
 
 ```html
-<intl id="greeting" values={{name: "John" }}>
+<intl id="greeting" values={{{name: "John"}}}>
   Hello!
 </intl>
 ```
@@ -225,3 +227,46 @@ paperclip --config path/to/config.json
 ```
 
 
+
+
+```html
+<text id="message">
+  Hello!
+</text>
+```
+
+```javascript
+{
+  en: {
+    message: "hello"
+  },
+  es: {
+    message: "Hola"
+  }
+}
+```
+
+
+Pane.pc:
+
+```html
+<style>
+  #header {}
+</style>
+<div>
+  <div id="header">
+    {{header}}
+  </div>
+  <div id="content">
+    {{content}}
+  </div>
+</div>
+```
+
+app.pc:
+
+```html
+<import id="pane" src="./pane.pc" />
+
+<pane header={{"something"}} content={{<div>hello world</div>}} />
+```

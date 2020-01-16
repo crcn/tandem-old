@@ -10,3 +10,7 @@ TODOS:
 - [ ] example apps
   - [ ] chat app
   - [ ] build tandem
+
+Existing apps:
+
+- https://marketplace.visualstudio.com/items?itemName=octref.vetur
