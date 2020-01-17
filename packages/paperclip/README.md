@@ -4,3 +4,4 @@ TODO:
 - [ ] need to figure out how to include plugins
   - [ ] i18n
   - rust + js basically
+- [ ] evaluator
