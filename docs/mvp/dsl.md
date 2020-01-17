@@ -69,7 +69,6 @@ it instantiates a new component instance -->
 <span onClick={{handler}}>
 </span>
 
-
 <span class="some class {{moreClasses}}">
 </span>
 
