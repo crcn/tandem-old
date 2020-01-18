@@ -5,5 +5,5 @@ mod parser;
 
 
 fn main() {
-    parser::test();
+    parser::parse("<div />");
 }

@@ -174,7 +174,7 @@ impl<'a> Tokenizer<'a> {
             self.forward(1);
             let is_number = |c| { matches!(c, b'0'..=b'9') };
 
-            if (!self.is_eof() && is_number(self.curr_char().unwrap())) {
+            if !self.is_eof() && is_number(self.curr_char().unwrap()) {
               let start = self.pos - 1;
               self.scan(is_number);
               Some(Token::Number(self.since(start)))
@@ -184,7 +184,7 @@ impl<'a> Tokenizer<'a> {
           }
         },
         b'{' => {
-          if (self.starts_with(b"{{")) {
+          if self.starts_with(b"{{") {
             self.forward(2);
             if self.starts_with(b"#") {
               self.forward(1);
@@ -201,7 +201,7 @@ impl<'a> Tokenizer<'a> {
           }
         },
         b'}' => {
-          if (self.starts_with(b"}}")) {
+          if self.starts_with(b"}}") {
             self.forward(2);
             Some(Token::SlotClose)
           } else {
@@ -221,6 +221,7 @@ impl<'a> Tokenizer<'a> {
           Some(Token::Number(self.since(start)))
         },
         b'"' => { self.forward(1); Some(Token::DoubleQuote) },
+        b'\'' => { self.forward(1); Some(Token::SingleQuote) },
         b'=' => { 
           if self.starts_with(b"===") {
             self.forward(3); 
@@ -247,10 +248,6 @@ impl<'a> Tokenizer<'a> {
   fn forward(&mut self, pos: usize) {
     self.pos += pos;
   }
-  fn prev_char(&mut self) -> Option<u8> {
-    self.pos -= 1;
-    Some(self.source[self.pos])
-  }
   fn curr_char(&mut self) -> Option<u8> {
     if self.is_eof() {
       None
@@ -271,7 +268,6 @@ impl<'a> Tokenizer<'a> {
   
   fn scan<FF>(&mut self, test: FF) where 
     FF: Fn(u8) -> bool {
-    let start = self.pos;
     while !self.is_eof() {
       let c = self.source[self.pos];
       self.pos += 1;
@@ -421,16 +417,16 @@ mod tests {
   }
 
   #[test]
-  fn can_tokenize_single_quote() {
-    let mut tokenizer = Tokenizer::new(".");
-    assert_eq!(tokenizer.next(), Some(Token::Dot));
+  fn can_tokenize_double_quote() {
+    let mut tokenizer = Tokenizer::new("\"");
+    assert_eq!(tokenizer.next(), Some(Token::DoubleQuote));
     assert_eq!(tokenizer.next(), None);
   }
 
   #[test]
-  fn can_tokenize_double_quote() {
-    let mut tokenizer = Tokenizer::new("\"");
-    assert_eq!(tokenizer.next(), Some(Token::DoubleQuote));
+  fn can_tokenize_single_quote() {
+    let mut tokenizer = Tokenizer::new("'");
+    assert_eq!(tokenizer.next(), Some(Token::SingleQuote));
     assert_eq!(tokenizer.next(), None);
   }
 
