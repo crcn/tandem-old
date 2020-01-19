@@ -5,5 +5,11 @@ mod parser;
 
 
 fn main() {
-    parser::parse("<div />");
+
+    let expr = parser::parse("
+        <import src='ok' style='color: blue;' />
+        {{a + 5}}
+    ").unwrap();
+
+    println!("{}", expr.to_string());
 }

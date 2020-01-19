@@ -10,14 +10,8 @@ fn parse_fragment<'a>(tok: &mut Tokenizer<'a>) -> Result<ast::Expression<'a>, &'
   let mut children: Vec<ast::Expression<'a>> = vec![];
 
   while !tok.is_eof() {
-    match parse_node(tok) {
-      Ok(child) => {
-        children.push(child);
-      }
-      Err(e) => {
-        return Err(e);
-      }
-    }
+    children.push(parse_node(tok)?);
+    tok.eat_whitespace();
   }
 
   if children.len() == 1 {
@@ -32,12 +26,20 @@ fn parse_fragment<'a>(tok: &mut Tokenizer<'a>) -> Result<ast::Expression<'a>, &'
 fn parse_node<'a>(tok: &mut Tokenizer<'a>) -> Result<ast::Expression<'a>, &'static str> {
   tok.eat_whitespace();
   let token = tok.next()?;
-  println!("{:?}", token);
   match token {
     Token::Word(text) => Ok(ast::Expression { item: ast::Grammar::Text(text) }),
+    Token::SlotOpen => parse_slot(tok),
     Token::LessThan => parse_element(tok),
     _ => Err("Unkown element")
   }
+}
+
+fn parse_slot<'a>(tok: &mut Tokenizer<'a>) -> Result<ast::Expression<'a>, &'static str> {
+  let script = get_buffer(tok, |token| { token != Token::SlotClose })?;
+  tok.next()?;
+  Ok(ast::Expression {
+    item: ast::Grammar::Slot(script)
+  })
 }
 
 fn parse_element<'a>(tok: &mut Tokenizer<'a>) -> Result<ast::Expression<'a>, &'static str> {
@@ -49,13 +51,12 @@ fn parse_element<'a>(tok: &mut Tokenizer<'a>) -> Result<ast::Expression<'a>, &'s
   
   match tok.next()? {
     Token::SelfCloseTag => {
-      println!("{}", tag_name);
-      println!("SELF CLOSE TAG");
     },
     Token::GreaterThan => {
       tok.eat_whitespace();
       while tok.peek()? != Token::CloseTag {
         children.push(parse_node(tok)?);
+        tok.eat_whitespace();
       }
 
       tok.next()?;
