@@ -1,9 +1,13 @@
 TODO:
 
 - [ ] styles
-- [ ] slots
-  - [ ] attributes
-  - [ ] attribute string
+- [ ] test large HTML page (copy paste TONS of divs till ~10mb)
+  - [ ] optimize (if still slow, then Rust isn't viable)
+- [ ] diff/patch
+
+Nice to haves:
+
+- [ ] @import in styles
 
 - [ ] load html from local file
 - [ ] virtual fs

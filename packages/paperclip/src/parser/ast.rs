@@ -1,4 +1,5 @@
 use std::fmt;
+use crate::css_parser::ast as css_ast;
 
 #[derive(Debug, PartialEq)]
 pub struct Element<'a> {
@@ -57,13 +58,13 @@ impl<'a> fmt::Display for Attribute<'a> {
 #[derive(Debug, PartialEq)]
 pub struct StyleElement<'a> {
   pub attributes: Vec<Expression<'a>>,
-  pub sheet: &'a str,
+  pub sheet: css_ast::Expression<'a>,
 }
 
 impl<'a> fmt::Display for StyleElement<'a> {
   fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
     fmt_start_tag("style", &self.attributes, f)?;
-    write!(f, "{}", self.sheet)?;
+    write!(f, "{}", self.sheet.to_string())?;
     fmt_end_tag("style", f)?;
     Ok(())
   }

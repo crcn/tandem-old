@@ -101,7 +101,6 @@ pub struct Tokenizer<'a> {
   pub pos: usize
 }
 
-
 impl<'a> Tokenizer<'a> {
 
   pub fn eat_whitespace(&mut self) {
