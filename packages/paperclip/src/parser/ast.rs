@@ -23,6 +23,7 @@ pub enum Grammar<'a> {
   Element(Element<'a>),
   Attribute(Attribute<'a>),
   Text(&'a str),
+  String(&'a str),
   Fragment(Fragment<'a>),
 }
 

@@ -107,6 +107,16 @@ pub struct Tokenizer<'a> {
 
 impl<'a> Tokenizer<'a> {
 
+  pub fn eat_whitespace(&mut self) {
+    if self.is_eof() {
+      return;
+    }
+    let is_whitepace = |c| -> bool { matches!(c, b' ' | b'\t' | b'\r' | b'\n') };
+    while !self.is_eof() && is_whitepace(self.curr_char().unwrap()) {
+      self.pos += 1;
+    }
+  }
+
   pub fn peek(&mut self) -> Result<Token<'a>, &'static str> {
     let pos = self.pos;
     let result = self.next();
