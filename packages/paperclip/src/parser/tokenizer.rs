@@ -39,7 +39,6 @@ pub enum Token<'a> {
   // {
   CurlyOpen,
 
-
   // }
   CurlyClose,
 
@@ -88,13 +87,11 @@ pub enum Token<'a> {
   // -->
   HtmlCommentClose,
 
-
   // div, blay
   Word(&'a str),
 
   // 5, .5, 0.5
   Number(&'a str),
-
 
   Byte(u8),
 }
@@ -117,9 +114,14 @@ impl<'a> Tokenizer<'a> {
     }
   }
 
-  pub fn peek(&mut self) -> Result<Token<'a>, &'static str> {
+  pub fn peek(&mut self, steps: u8) -> Result<Token<'a>, &'static str> {
     let pos = self.pos;
-    let result = self.next();
+    let mut i = 0;
+    let mut result = Err("step must be greater than 0");
+    while i < steps {
+      result = self.next();
+      i += 1;
+    }
     self.pos = pos;
     result
   }

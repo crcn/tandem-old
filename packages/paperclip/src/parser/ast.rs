@@ -7,22 +7,33 @@ pub struct Element<'a> {
   pub children: Vec<Expression<'a>>
 }
 
+pub fn fmt_attributes<'a>(attributes: &Vec<Expression<'a>>, f: &mut fmt::Formatter) -> fmt::Result {
+  for attribute in attributes {
+    write!(f, " {}", attribute.to_string())?;
+  }
+  Ok(())
+}
+
+pub fn fmt_start_tag<'a>(tag_name: &'a str, attributes: &Vec<Expression<'a>>, f: &mut fmt::Formatter) -> fmt::Result {
+  write!(f, "<{}", tag_name)?;
+  fmt_attributes(attributes, f)?;
+  write!(f, ">")?;
+  Ok(())
+}
+
+pub fn fmt_end_tag<'a>(tag_name: &'a str, f: &mut fmt::Formatter) -> fmt::Result {
+  write!(f, "</{}>", tag_name)?;
+  Ok(())
+}
+
 impl<'a> fmt::Display for Element<'a> {
   fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-    let mut curr = write!(f, "<{}", self.tag_name);
-    for attribute in &self.attributes {
-      curr = write!(f, " {}", attribute.to_string());
-    }
-
-    curr = write!(f, ">");
-
+    fmt_start_tag(&self.tag_name, &self.attributes, f);
     for child in &self.children {
-      curr = write!(f, "{} ", child.to_string());
+      write!(f, "{} ", child.to_string())?;
     }
-
-    curr = write!(f, "</{}>", self.tag_name);
-
-    curr
+    fmt_end_tag(&self.tag_name, f);
+    Ok(())
   }
 }
 
@@ -32,15 +43,29 @@ pub struct Attribute<'a> {
   pub value: Option<Box<Expression<'a>>>,
 }
 
-
 impl<'a> fmt::Display for Attribute<'a> {
   fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-    let mut curr = write!(f, "{}", self.name);
+    write!(f, "{}", self.name)?;
     if self.value == None {
-      return curr;
+      Ok(())
     } else {
-      return write!(f, "={}", self.value.as_ref().unwrap());
+      write!(f, "={}", self.value.as_ref().unwrap())
     }
+  }
+}
+
+#[derive(Debug, PartialEq)]
+pub struct StyleElement<'a> {
+  pub attributes: Vec<Expression<'a>>,
+  pub sheet: &'a str,
+}
+
+impl<'a> fmt::Display for StyleElement<'a> {
+  fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+    fmt_start_tag("style", &self.attributes, f)?;
+    write!(f, "{}", self.sheet)?;
+    fmt_end_tag("style", f)?;
+    Ok(())
   }
 }
 
@@ -51,25 +76,25 @@ pub struct Fragment<'a> {
 
 impl<'a> fmt::Display for Fragment<'a> {
   fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-    let mut curr = write!(f, "");
+    write!(f, "")?;
     for child in &self.children {
-      curr = write!(f, "{}", child.to_string())
+      write!(f, "{}", child.to_string())?;
     }
 
-    curr
+    Ok(())
   }
 }
 
 #[derive(Debug, PartialEq)]
 pub enum Grammar<'a> {
   Element(Element<'a>),
+  StyleElement(StyleElement<'a>),
   Attribute(Attribute<'a>),
   Text(&'a str),
   String(&'a str),
   Fragment(Fragment<'a>),
   Slot(&'a str),
 }
-
 
 #[derive(Debug, PartialEq)]
 pub struct Location {
@@ -87,6 +112,7 @@ impl<'a> fmt::Display for Expression<'a> {
   fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
     match &self.item {
       Grammar::Element(node) => write!(f, "{}", node.to_string()),
+      Grammar::StyleElement(node) => write!(f, "{}", node.to_string()),
       Grammar::Fragment(node) => write!(f, "{}", node.to_string()),
       Grammar::Attribute(attr) => write!(f, "{}", attr.to_string()),
       Grammar::Text(value) => write!(f, "{}", value),

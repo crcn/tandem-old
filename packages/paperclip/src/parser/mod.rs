@@ -35,7 +35,7 @@ fn parse_node<'a>(tok: &mut Tokenizer<'a>) -> Result<ast::Expression<'a>, &'stat
 }
 
 fn parse_slot<'a>(tok: &mut Tokenizer<'a>) -> Result<ast::Expression<'a>, &'static str> {
-  let script = get_buffer(tok, |token| { token != Token::SlotClose })?;
+  let script = get_buffer(tok, |tok| { Ok(tok.peek(1)? != Token::SlotClose) })?;
   tok.next()?;
   Ok(ast::Expression {
     item: ast::Grammar::Slot(script)
@@ -45,6 +45,15 @@ fn parse_slot<'a>(tok: &mut Tokenizer<'a>) -> Result<ast::Expression<'a>, &'stat
 fn parse_element<'a>(tok: &mut Tokenizer<'a>) -> Result<ast::Expression<'a>, &'static str> {
   let tag_name = parse_tag_name(tok)?;
   let attributes = parse_attributes(tok)?;
+
+  if tag_name == "style" {
+    parse_next_style_element_parts(attributes, tok)
+  } else {
+    parse_next_basic_element_parts(tag_name, attributes, tok)
+  }
+}
+
+fn parse_next_basic_element_parts<'a>(tag_name: &'a str, attributes: Vec<ast::Expression<'a>>, tok: &mut Tokenizer<'a>) -> Result<ast::Expression<'a>, &'static str> {
   let mut children: Vec<ast::Expression<'a>> = vec![];
 
   tok.eat_whitespace();
@@ -54,21 +63,19 @@ fn parse_element<'a>(tok: &mut Tokenizer<'a>) -> Result<ast::Expression<'a>, &'s
     },
     Token::GreaterThan => {
       tok.eat_whitespace();
-      while tok.peek()? != Token::CloseTag {
+      while tok.peek(1)? != Token::CloseTag {
         children.push(parse_node(tok)?);
         tok.eat_whitespace();
       }
 
       tok.next()?;
-      let end_tag_name = parse_tag_name(tok)?;
+      parse_tag_name(tok)?;
       tok.next()?; 
     },
     _ => {
       return Err("Unexpected token")
     }
   }
-
-  
 
   Ok(ast::Expression {
     item: ast::Grammar::Element(ast::Element {
@@ -79,15 +86,34 @@ fn parse_element<'a>(tok: &mut Tokenizer<'a>) -> Result<ast::Expression<'a>, &'s
   })
 }
 
+fn parse_next_style_element_parts<'a>(attributes: Vec<ast::Expression<'a>>, tok: &mut Tokenizer<'a>) -> Result<ast::Expression<'a>, &'static str> {
+  tok.next()?; // eat >
+  let inner = get_buffer(tok, |tok| {
+    Ok(tok.peek(1)? != Token::CloseTag && tok.peek(2)? != Token::Word("style"))
+  })?;
+
+  // TODO - assert tokens equal these
+  tok.next()?; // eat </
+  tok.next()?; // eat style
+  tok.next()?; // eat >
+
+  Ok(ast::Expression {
+    item: ast::Grammar::StyleElement(ast::StyleElement {
+      attributes,
+      sheet: &inner
+    })
+  })
+}
+
 
 fn get_buffer<'a, FF>(tok: &mut Tokenizer<'a>, until: FF) -> Result<&'a str, &'static str> where
-  FF: Fn(Token) -> bool {
+  FF: Fn(&mut Tokenizer) -> Result<bool, &'static str> {
   let start = tok.pos;
   let mut end = start;
   tok.next()?;
   while !tok.is_eof() {
     end = tok.pos;
-    if !until(tok.peek()?) {
+    if !until(tok)? {
       break;
     }
     tok.next()?;
@@ -97,7 +123,7 @@ fn get_buffer<'a, FF>(tok: &mut Tokenizer<'a>, until: FF) -> Result<&'a str, &'s
 }
 
 fn parse_tag_name<'a>(tok: &mut Tokenizer<'a>) -> Result<&'a str, &'static str> {
-  get_buffer(tok, |tok| -> bool { !matches!(tok, tokenizer::Token::Whitespace | tokenizer::Token::GreaterThan | tokenizer::Token::Equals) })
+  get_buffer(tok, |tok| { Ok(!matches!(tok.peek(1)?, tokenizer::Token::Whitespace | tokenizer::Token::GreaterThan | tokenizer::Token::Equals)) })
 }
 
 fn parse_attributes<'a>(tok: &mut Tokenizer<'a>) -> Result<Vec<ast::Expression<'a>>, &'static str> {
@@ -106,7 +132,7 @@ fn parse_attributes<'a>(tok: &mut Tokenizer<'a>) -> Result<Vec<ast::Expression<'
 
   loop {
     tok.eat_whitespace();
-    match tok.peek()? {
+    match tok.peek(1)? {
       Token::SelfCloseTag | Token::GreaterThan => break,
       _ => {
         attributes.push(parse_attribute(tok)?);
@@ -122,7 +148,7 @@ fn parse_attribute<'a>(tok: &mut Tokenizer<'a>) -> Result<ast::Expression<'a>, &
   let name = parse_tag_name(tok)?;
   let mut value = None;
 
-  if tok.peek()? == Token::Equals {
+  if tok.peek(1)? == Token::Equals {
     tok.next()?; // eat =
     value = Some(Box::new(parse_attribute_value(tok)?));
   }
@@ -136,7 +162,7 @@ fn parse_attribute<'a>(tok: &mut Tokenizer<'a>) -> Result<ast::Expression<'a>, &
 }
 
 fn parse_attribute_value<'a>(tok: &mut Tokenizer<'a>) -> Result<ast::Expression<'a>, &'static str> {
-  match tok.peek()? {
+  match tok.peek(1)? {
     Token::SingleQuote | Token::DoubleQuote => parse_string(tok),
     _ => Err("Unexpected token")
   }
@@ -144,7 +170,7 @@ fn parse_attribute_value<'a>(tok: &mut Tokenizer<'a>) -> Result<ast::Expression<
 
 fn parse_string<'a>(tok: &mut Tokenizer<'a>) -> Result<ast::Expression<'a>, &'static str> {
   let quote = tok.next()?;
-  let value = get_buffer(tok, |tok| -> bool { tok != quote })?;
+  let value = get_buffer(tok, |tok| { Ok(tok.peek(1)? != quote) })?;
   tok.next()?; // eat
   Ok(ast::Expression {
     item: ast::Grammar::String(value)
@@ -280,4 +306,15 @@ mod tests {
     assert_eq!(expr, eql);
   }
 
+  #[test]
+  fn can_parse_blocks() {
+    let expr = parse("{{block}}").unwrap();
+    assert_eq!(expr.to_string(), "{{block}}");
+  }
+
+  #[test]
+  fn can_parse_a_style() {
+    let expr = parse("<style>div { color: red; }</style>").unwrap();
+    assert_eq!(expr.to_string(), "<style>div { color: red; }</style>");
+  }
 }
