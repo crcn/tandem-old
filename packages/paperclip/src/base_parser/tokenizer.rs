@@ -75,6 +75,9 @@ pub enum Token<'a> {
   // :
   Colon,
 
+  // :
+  Semicolon,
+
   // /*
   ScriptCommentOpen,
 
@@ -189,6 +192,10 @@ impl<'a> Tokenizer<'a> {
         self.forward(1);
         Ok(Token::Colon)
       },
+      b';' => {
+        self.forward(1);
+        Ok(Token::Semicolon)
+      }
       b'.' => {
         if self.starts_with(b"...") {
           self.forward(3);

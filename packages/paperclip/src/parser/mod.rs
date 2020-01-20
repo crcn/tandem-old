@@ -1,5 +1,6 @@
 // mod base;
-use crate::base::tokenizer::*;
+use crate::base_parser::tokenizer::*;
+use crate::base_parser::*;
 use crate::css_parser::parse as parse_css;
 mod ast;
 use ast::*;
@@ -107,22 +108,6 @@ fn parse_next_style_element_parts<'a>(attributes: Vec<Expression<'a>>, tokenizer
   })
 }
 
-
-fn get_buffer<'a, FF>(tokenizer: &mut Tokenizer<'a>, until: FF) -> Result<&'a str, &'static str> where
-  FF: Fn(&mut Tokenizer) -> Result<bool, &'static str> {
-  let start = tokenizer.pos;
-  let mut end = start;
-  tokenizer.next()?;
-  while !tokenizer.is_eof() {
-    end = tokenizer.pos;
-    if !until(tokenizer)? {
-      break;
-    }
-    tokenizer.next()?;
-  }
-
-  Ok(std::str::from_utf8(&tokenizer.source[start..end]).unwrap())
-}
 
 fn parse_tag_name<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<&'a str, &'static str> {
   get_buffer(tokenizer, |tokenizer| { Ok(!matches!(tokenizer.peek(1)?, Token::Whitespace | Token::GreaterThan | Token::Equals)) })
@@ -317,6 +302,66 @@ mod tests {
   #[test]
   fn can_parse_a_style() {
     let expr = parse("<style>div { color: red; }</style>").unwrap();
-    assert_eq!(expr.to_string(), "<style>div { color: red; }</style>");
+    assert_eq!(expr.to_string(), "<style>div  {\n  color: red;\n}\n</style>");
+  }
+
+  #[test]
+  fn can_parse_various_nodes() {
+
+    let cases = [
+
+      // text blocks
+      "text",
+
+      // slots
+      "{{ok}}",
+
+      // elements
+      "<div></div>",
+      "<div a b></div>",
+      "<div a='b' c></div>",
+
+      "<div a='b' c='d'>
+        <span>
+          c {{block}} d {{block}}
+        </span>
+        <span>
+          color {{block}}
+        </span>
+      </div>",
+
+      // mixed elements
+
+      // styles
+      "
+      <style>
+        div  {
+          color: red;
+        }
+      </style>",
+
+      "
+        <style>
+          div > a {
+            color: red;
+          }
+          span {
+            color: orange;
+            background: a b c d;
+          }
+          block {
+            color: blue;
+            background: red;
+          }
+        </style>"
+    ];
+
+    for i in 0..cases.len() {
+      let case = cases[i];
+
+      // TODO - strip whitespace
+      let expr = parse(case).unwrap();
+      assert_eq!(expr.to_string().replace("\n", "").replace(" ", ""), case.replace("\n", "").replace(" ", ""));
+    }
   }
 }
