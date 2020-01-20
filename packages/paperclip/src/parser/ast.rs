@@ -4,7 +4,7 @@ use crate::css_parser::ast as css_ast;
 use crate::parser::virt;
 
 pub trait Executable<TRet> {
-  fn execute() -> Result<TRet, &'static str>;
+  fn execute(&self) -> Result<TRet, &'static str>;
 }
 
 #[derive(Debug, PartialEq)]
@@ -15,22 +15,22 @@ pub struct Element<'a> {
 }
 
 impl<'a> Executable<Option<virt::Element<'a>>> for Element<'a> {
-  fn execute(&self) {
+  fn execute(&self) -> Result<Option<virt::Element<'a>>, &'static str> {
 
-    let attributes = vec![];
-    let children = vec![];
+    // let attributes = vec![];
+    // let children = vec![];
 
-    for attr in self.attributes {
-      attributes.push(attr.execute()?);
-    }
+    // for attr in self.attributes {
+    //   // attributes.push(attr.execute()?);
+    // }
 
 
-
-    Ok(Some(virt::Element {
-      tag_name: self.tag_name,
-      attributes,
-      children
-    }))
+    return Ok(None);
+    // Ok(Some(virt::Element {
+    //   tag_name: self.tag_name,
+    //   attributes,
+    //   children
+    // }))
   }
 }
 
@@ -148,8 +148,3 @@ impl<'a> fmt::Display for Expression<'a> {
     }
   }
 }
-
-
-impl<'a> Executable<Option<virt::Element<'a>>> for Element<'a> {
-  fn execute(&self) {
-  }
