@@ -24,9 +24,9 @@ fn parse_sheet<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Expression<'a>, &'st
 fn parse_rule<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Expression<'a>, &'static str> {
   tokenizer.eat_whitespace();
   let condition = parse_condition(tokenizer)?;
-  tokenizer.next(); // eat {
+  tokenizer.next()?; // eat {
   let declarations = parse_declarations(tokenizer)?;
-  tokenizer.next(); // eat }
+  tokenizer.next()?; // eat }
   tokenizer.eat_whitespace();
   Ok(Expression {
     item: Grammar::Rule(Rule {
@@ -55,9 +55,9 @@ fn parse_declarations<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Vec<Expressio
 
 fn parse_declaration<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Expression<'a>, &'static str> {
   let name = get_buffer(tokenizer, |tokenizer| { Ok(tokenizer.peek(1)? != Token::Colon) })?;
-  tokenizer.next(); // eat :
+  tokenizer.next()?; // eat :
   let value = get_buffer(tokenizer, |tokenizer| { Ok(tokenizer.peek(1)? != Token::Semicolon) })?;
-  tokenizer.next(); // eat ;
+  tokenizer.next()?; // eat ;
   Ok(Expression {
     item: Grammar::Declaration(Declaration {
       name, 

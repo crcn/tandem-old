@@ -8,7 +8,7 @@ pub struct Declaration<'a> {
 
 impl<'a> fmt::Display for Declaration<'a> {
   fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-    writeln!(f, "{}:{};", &self.name, &self.value);
+    writeln!(f, "{}:{};", &self.name, &self.value)?;
     Ok(())
   }
 }
@@ -21,11 +21,11 @@ pub struct Rule<'a> {
 
 impl<'a> fmt::Display for Rule<'a> {
   fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-    writeln!(f, "{} {{", &self.condition);
+    writeln!(f, "{} {{", &self.condition)?;
     for decl in &self.declarations {
       write!(f, "  {}", &decl.to_string())?;
     }
-    writeln!(f, "}}");
+    writeln!(f, "}}")?;
 
     Ok(())
   }
