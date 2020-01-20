@@ -1,17 +1,17 @@
 
 pub struct Element<'a> {
-  tag_name: &'a str,
-  attributes: Vec<Attribute<'a>>,
-  children: Vec<Node<'a>>
+  pub tag_name: &'a str,
+  pub attributes: Vec<Attribute<'a>>,
+  pub children: Vec<Node<'a>>
 }
 
 pub struct Attribute<'a> {
-  name: &'a str,
-  value: &'a str
+  pub name: &'a str,
+  pub value: Option<&'a str>
 }
 
 pub struct Text<'a> {
-  value: &'a str
+  pub value: &'a str
 }
 
 pub enum Node<'a> {

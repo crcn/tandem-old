@@ -138,7 +138,7 @@ fn parse_attribute<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Expression<Attri
 
   if tokenizer.peek(1)? == Token::Equals {
     tokenizer.next()?; // eat =
-    value = Some(Box::new(parse_attribute_value(tokenizer)?));
+    value = Some(parse_attribute_value(tokenizer)?);
   }
 
   Ok(Expression {
@@ -223,9 +223,9 @@ mod tests {
           Expression {
             item: ast::Attribute {
               name: "a",
-              value: Some(Box::new(Expression {
+              value: Some(Expression {
                 item: AttributeValue::String(Str { value: "b" })
-              }))
+              })
             }
           }
         ],
@@ -246,9 +246,9 @@ mod tests {
           Expression {
             item: ast::Attribute {
               name: "a",
-              value: Some(Box::new(Expression {
+              value: Some(Expression {
                 item:  AttributeValue::String(Str { value: "b" })
-              }))
+              })
             }
           },
           Expression {
