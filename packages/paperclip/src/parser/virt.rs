@@ -1,5 +1,6 @@
 
 pub struct Element<'a> {
+  tag_name: &'a str,
   attributes: Vec<Attribute<'a>>,
   children: Vec<Node<'a>>
 }

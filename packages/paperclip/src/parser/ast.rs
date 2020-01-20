@@ -3,8 +3,8 @@ use std::fmt;
 use crate::css_parser::ast as css_ast;
 use crate::parser::virt;
 
-pub trait Executable {
-  fn execute();
+pub trait Executable<TRet> {
+  fn execute() -> Result<TRet, &'static str>;
 }
 
 #[derive(Debug, PartialEq)]
@@ -14,9 +14,23 @@ pub struct Element<'a> {
   pub children: Vec<Expression<'a>>
 }
 
-impl<'a> Executable for Element<'a> {
-  fn execute() {
+impl<'a> Executable<Option<virt::Element<'a>>> for Element<'a> {
+  fn execute(&self) {
 
+    let attributes = vec![];
+    let children = vec![];
+
+    for attr in self.attributes {
+      attributes.push(attr.execute()?);
+    }
+
+
+
+    Ok(Some(virt::Element {
+      tag_name: self.tag_name,
+      attributes,
+      children
+    }))
   }
 }
 
@@ -134,3 +148,8 @@ impl<'a> fmt::Display for Expression<'a> {
     }
   }
 }
+
+
+impl<'a> Executable<Option<virt::Element<'a>>> for Element<'a> {
+  fn execute(&self) {
+  }

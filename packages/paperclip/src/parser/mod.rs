@@ -1,9 +1,9 @@
 pub mod virt;
 pub mod ast;
-use crate::base_parser::tokenizer::*;
-use crate::base_parser::*;
-use crate::css_parser::parse as parse_css;
 use ast::*;
+use crate::base_parser::*;
+use crate::base_parser::tokenizer::*;
+use crate::css_parser::parse as parse_css;
 
 pub fn parse<'a>(str: &'a str) -> Result<Expression<'a>, &'static str> {
   parse_fragment(&mut Tokenizer::new(str))
