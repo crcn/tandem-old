@@ -1,11 +1,23 @@
+
 use std::fmt;
 use crate::css_parser::ast as css_ast;
+use crate::parser::virt;
+
+pub trait Executable {
+  fn execute();
+}
 
 #[derive(Debug, PartialEq)]
 pub struct Element<'a> {
   pub tag_name: &'a str,
   pub attributes: Vec<Expression<'a>>,
   pub children: Vec<Expression<'a>>
+}
+
+impl<'a> Executable for Element<'a> {
+  fn execute() {
+
+  }
 }
 
 pub fn fmt_attributes<'a>(attributes: &Vec<Expression<'a>>, f: &mut fmt::Formatter) -> fmt::Result {
