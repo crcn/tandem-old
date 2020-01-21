@@ -31,7 +31,7 @@ impl<'a> fmt::Display for Element<'a> {
         write!(f, " {}=\"{}\"", attribute.name, attribute.value.unwrap());
       }
     }
-    write!(f, "?");
+    write!(f, ">");
 
     for child in &self.children {
       write!(f, " {}", &child.to_string());
