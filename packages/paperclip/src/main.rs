@@ -41,7 +41,7 @@ fn main() {
     println!("micro seconds to parse: {}", now.elapsed().as_micros());
 
     let now = Instant::now();
-    let result = pc::evaluator::evaluate(&expr).unwrap().unwrap();
+    let result = pc::runtime::evaluate(&expr).unwrap().unwrap();
 
     println!("micro seconds to evaluate: {}", now.elapsed().as_micros());
     // println!("{}", result);

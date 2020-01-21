@@ -1,7 +1,7 @@
 
 use std::fmt;
 use crate::css::ast as css_ast;
-use super::virt;
+use crate::base::ast::{Expression};
 
 pub trait Executable<TRet> {
   fn execute(&self) -> Result<TRet, &'static str>;
@@ -122,13 +122,13 @@ impl<'a> fmt::Display for AttributeValue<'a> {
 #[derive(Debug, PartialEq)]
 pub struct StyleElement<'a> {
   pub attributes: Vec<Expression<Attribute<'a>>>,
-  pub sheet: css_ast::Expression<'a>,
+  pub sheet: Expression<css_ast::Sheet<'a>>,
 }
 
 impl<'a> fmt::Display for StyleElement<'a> {
   fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
     fmt_start_tag("style", &self.attributes, f)?;
-    write!(f, "{}", self.sheet.to_string())?;
+    write!(f, "{}", self.sheet.item.to_string())?;
     fmt_end_tag("style", f)?;
     Ok(())
   }
@@ -154,12 +154,6 @@ impl<'a> fmt::Display for Fragment<'a> {
 pub struct Location {
   start: usize,
   end: usize,
-}
-
-#[derive(Debug, PartialEq)]
-pub struct Expression<TItem> {
-  // location: Location,
-  pub item: TItem
 }
 
 impl<'a, TItem: std::string::ToString> fmt::Display for Expression<TItem> {

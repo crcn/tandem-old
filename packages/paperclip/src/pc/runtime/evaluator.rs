@@ -1,11 +1,12 @@
-use super::ast;
+use super::super::ast;
 use super::virt;
+use crate::base::ast::{Expression};
 
-pub fn evaluate<'a>(node_expr: &ast::Expression<ast::Node<'a>>) -> Result<Option<virt::Node<'a>>, &'static str>  {
+pub fn evaluate<'a>(node_expr: &Expression<ast::Node<'a>>) -> Result<Option<virt::Node<'a>>, &'static str>  {
   evaluate_node(node_expr)
 }
 
-fn evaluate_node<'a>(node_expr: &ast::Expression<ast::Node<'a>>) -> Result<Option<virt::Node<'a>>, &'static str> {
+fn evaluate_node<'a>(node_expr: &Expression<ast::Node<'a>>) -> Result<Option<virt::Node<'a>>, &'static str> {
   match &node_expr.item {
     ast::Node::Element(el) => {
       evaluate_element(&el)
@@ -78,7 +79,7 @@ fn evaluate_style_element<'a>(element: &ast::StyleElement<'a>) -> Result<Option<
 }
   
 
-fn evaluate_children<'a>(children_expr: &Vec<ast::Expression<ast::Node<'a>>>) -> Result<Vec<virt::Node<'a>>, &'static str> {
+fn evaluate_children<'a>(children_expr: &Vec<Expression<ast::Node<'a>>>) -> Result<Vec<virt::Node<'a>>, &'static str> {
   
   let mut children: Vec<virt::Node<'a>> = vec![];
 

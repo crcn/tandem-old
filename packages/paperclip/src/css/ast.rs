@@ -1,4 +1,5 @@
 use std::fmt;
+use crate::base::ast::{Expression};
 
 #[derive(Debug, PartialEq)]
 pub struct Declaration<'a> {
@@ -16,14 +17,14 @@ impl<'a> fmt::Display for Declaration<'a> {
 #[derive(Debug, PartialEq)]
 pub struct Rule<'a> {
   pub condition: &'a str,
-  pub declarations: Vec<Expression<'a>>
+  pub declarations: Vec<Expression<Declaration<'a>>>
 }
 
 impl<'a> fmt::Display for Rule<'a> {
   fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
     writeln!(f, "{} {{", &self.condition)?;
     for decl in &self.declarations {
-      write!(f, "  {}", &decl.to_string())?;
+      write!(f, "  {}", &decl.item.to_string())?;
     }
     writeln!(f, "}}")?;
 
@@ -33,38 +34,27 @@ impl<'a> fmt::Display for Rule<'a> {
 
 #[derive(Debug, PartialEq)]
 pub struct Sheet<'a> {
-  pub rules: Vec<Expression<'a>>
+  pub rules: Vec<Expression<Rule<'a>>>
 }
 
 impl<'a> fmt::Display for Sheet<'a> {
   fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-    for decl in &self.rules {
-      write!(f, "{}", &decl.to_string())?;
+    for rule in &self.rules {
+      write!(f, "{}", &rule.item.to_string())?;
     }
     Ok(())
   }
 }
 
-#[derive(Debug, PartialEq)]
-pub enum Grammar<'a> {
-  Sheet(Sheet<'a>),
-  Rule(Rule<'a>),
-  Declaration(Declaration<'a>)
-}
 
-#[derive(Debug, PartialEq)]
-pub struct Expression<'a> {
-  pub item: Grammar<'a>
-}
+// impl<'a> fmt::Display for Expression<'a> {
+//   fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+//     match &self.item {
+//       Grammar::Sheet(sheet) => write!(f, "{}", sheet.to_string())?,
+//       Grammar::Rule(rule) => write!(f, "{}", rule.to_string())?,
+//       Grammar::Declaration(decl) => write!(f, "{}", decl.to_string())?
+//     }
 
-impl<'a> fmt::Display for Expression<'a> {
-  fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-    match &self.item {
-      Grammar::Sheet(sheet) => write!(f, "{}", sheet.to_string())?,
-      Grammar::Rule(rule) => write!(f, "{}", rule.to_string())?,
-      Grammar::Declaration(decl) => write!(f, "{}", decl.to_string())?
-    }
-
-    Ok(())
-  }
-}
+//     Ok(())
+//   }
+// }
