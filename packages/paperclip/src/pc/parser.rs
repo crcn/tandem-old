@@ -26,12 +26,21 @@ fn parse_fragment<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Expression<Node<'
 
 fn parse_node<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Expression<Node<'a>>, &'static str> {
   tokenizer.eat_whitespace();
+  let pos = tokenizer.pos;
   let token = tokenizer.next()?;
   match token {
-    Token::Word(text) => Ok(Expression { item: Node::Text(text) }),
-    Token::SlotOpen => parse_slot(tokenizer),
-    Token::LessThan => parse_element(tokenizer),
-    _ => Err("Unkown element")
+    // Token::Word(text) => Ok(Expression { item: Node::Text(text) }),
+    Token::SlotOpen => { parse_slot(tokenizer) },
+    Token::LessThan => { parse_element(tokenizer) },
+    _ => {
+      tokenizer.pos = pos;
+      Ok(Expression {
+        item: Node::Text(get_buffer(tokenizer, |tokenizer| {
+          let tok = tokenizer.peek(1)?;
+          Ok(tok != Token::SlotOpen && tok != Token::LessThan && tok != Token::CloseTag)
+        })?)
+      })
+    }
   }
 }
 

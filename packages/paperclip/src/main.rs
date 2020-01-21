@@ -12,13 +12,15 @@ mod pc;
 
 fn main() {
 
-    let mut f = File::open("test.pc");
+    // let mut f = File::open("test.pc");
 
     let buffer = "
-        <div>
-            color {{message}}a
-        </div>
+    <div>
+        color {{message}}!!!
+    </div>
     ".to_string();
+
+    // let mut buffer = String::new();
     // // read the whole file
     // f.unwrap().read_to_string(&mut buffer);
 
