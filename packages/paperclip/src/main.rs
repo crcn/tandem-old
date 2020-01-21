@@ -1,14 +1,14 @@
 #[macro_use]
 extern crate matches;
 
-mod base_parser;
-mod css_parser;
-mod parser;
+mod base;
+mod css;
+mod pc;
 
 
 fn main() {
 
-    let expr = parser::parse("
+    let expr = pc::parser::parse("
         <import src='ok' style='color: blue;' />
         <div>
             something like this
@@ -24,5 +24,8 @@ fn main() {
         {{a + 5}}
     ").unwrap();
 
+    
     println!("{}", expr.to_string());
+    let result = pc::evaluator::evaluate(&expr).unwrap().unwrap();
+    println!("{}", result);
 }

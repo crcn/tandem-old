@@ -1,9 +1,7 @@
-pub mod virt;
-pub mod ast;
-use ast::*;
-use crate::base_parser::*;
-use crate::base_parser::tokenizer::*;
-use crate::css_parser::parse as parse_css;
+use super::ast::*;
+use crate::base::parser::*;
+use crate::base::tokenizer::*;
+use crate::css::parser::parse as parse_css;
 
 pub fn parse<'a>(str: &'a str) -> Result<Expression<Node<'a>>, &'static str> {
   parse_fragment(&mut Tokenizer::new(str))
@@ -21,7 +19,7 @@ fn parse_fragment<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Expression<Node<'
     Ok(children.pop().unwrap())
   } else {
     Ok(Expression {
-      item: Node::Fragment(ast::Fragment { children })
+      item: Node::Fragment(Fragment { children })
     })
   }
 }
@@ -56,6 +54,7 @@ fn parse_element<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Expression<Node<'a
   }
 }
 
+
 fn parse_next_basic_element_parts<'a>(tag_name: &'a str, attributes: Vec<Expression<Attribute<'a>>>, tokenizer: &mut Tokenizer<'a>) -> Result<Expression<Node<'a>>, &'static str> {
   let mut children: Vec<Expression<Node<'a>>> = vec![];
 
@@ -81,7 +80,7 @@ fn parse_next_basic_element_parts<'a>(tag_name: &'a str, attributes: Vec<Express
   }
 
   Ok(Expression {
-    item: Node::Element(ast::Element {
+    item: Node::Element(Element {
       tag_name,
       attributes,
       children
@@ -101,7 +100,7 @@ fn parse_next_style_element_parts<'a>(attributes: Vec<Expression<Attribute<'a>>>
   tokenizer.next()?; // eat >
 
   Ok(Expression {
-    item: Node::StyleElement(ast::StyleElement {
+    item: Node::StyleElement(StyleElement {
       attributes,
       sheet: parse_css(&sheet_source)?
     })
@@ -142,7 +141,7 @@ fn parse_attribute<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Expression<Attri
   }
 
   Ok(Expression {
-    item: ast::Attribute {
+    item: Attribute {
       name,
       value
     }
@@ -183,7 +182,7 @@ mod tests {
   fn can_parse_a_simple_self_closing_element() {
     let expr = parse("<div />").unwrap();
     let eql = Expression {
-      item: Node::Element(ast::Element {
+      item: Node::Element(Element {
         tag_name: "div",
         attributes: vec![],
         children: vec![]
@@ -197,11 +196,11 @@ mod tests {
   fn can_parse_an_element_with_an_attribute_name() {
     let expr = parse("<div a />").unwrap();
     let eql = Expression {
-      item: Node::Element(ast::Element {
+      item: Node::Element(Element {
         tag_name: "div",
         attributes: vec! [
           Expression {
-            item: ast::Attribute {
+            item: Attribute {
               name: "a",
               value: None
             }
@@ -217,11 +216,11 @@ mod tests {
   fn can_parse_an_element_with_an_attribute_value() {
     let expr = parse("<div a='b' />").unwrap();
     let eql = Expression {
-      item: Node::Element(ast::Element {
+      item: Node::Element(Element {
         tag_name: "div",
         attributes: vec! [
           Expression {
-            item: ast::Attribute {
+            item: Attribute {
               name: "a",
               value: Some(Expression {
                 item: AttributeValue::String(Str { value: "b" })
@@ -240,11 +239,11 @@ mod tests {
   fn can_parse_multiple_values() {
     let expr = parse("<div a='b' c d />").unwrap();
     let eql = Expression {
-      item: Node::Element(ast::Element {
+      item: Node::Element(Element {
         tag_name: "div",
         attributes: vec! [
           Expression {
-            item: ast::Attribute {
+            item: Attribute {
               name: "a",
               value: Some(Expression {
                 item:  AttributeValue::String(Str { value: "b" })
@@ -252,13 +251,13 @@ mod tests {
             }
           },
           Expression {
-            item: ast::Attribute {
+            item: Attribute {
               name: "c",
               value: None
             }
           },
           Expression {
-            item: ast::Attribute {
+            item: Attribute {
               name: "d",
               value: None
             }
@@ -276,12 +275,12 @@ mod tests {
   fn can_parse_children() {
     let expr = parse("<div> <span /></div>").unwrap();
     let eql = Expression {
-      item: Node::Element(ast::Element {
+      item: Node::Element(Element {
         tag_name: "div",
         attributes: vec! [],
         children: vec![
           Expression {
-            item: Node::Element(ast::Element {
+            item: Node::Element(Element {
               tag_name: "span",
               attributes: vec! [],
               children: vec![]

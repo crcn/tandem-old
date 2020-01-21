@@ -1,7 +1,7 @@
 
 use std::fmt;
-use crate::css_parser::ast as css_ast;
-use crate::parser::virt;
+use crate::css::ast as css_ast;
+use super::virt;
 
 pub trait Executable<TRet> {
   fn execute(&self) -> Result<TRet, &'static str>;
@@ -12,45 +12,6 @@ pub struct Element<'a> {
   pub tag_name: &'a str,
   pub attributes: Vec<Expression<Attribute<'a>>>,
   pub children: Vec<Expression<Node<'a>>>
-}
-
-impl<'a> Executable<Option<virt::Node<'a>>> for Element<'a> {
-  fn execute(&self) -> Result<Option<virt::Node<'a>>, &'static str> {
-
-    let mut attributes = vec![];
-    let mut children = vec![];
-
-    for attrExpr in &self.attributes {
-      let attr = &attrExpr.item;
-
-      let value;
-
-      if attr.value == None {
-        value = None;
-      } else {
-        value = attr.value.as_ref().unwrap().item.execute()?;
-      }
-      attributes.push(virt::Attribute {
-        name: attr.name, 
-        value,
-      });
-    }
-
-
-    for childExpr in &self.children {
-      let child = &childExpr.item;
-      match child.execute()? {
-        Some(c) => { children.push(c); },
-        None => { }
-      }
-    }
-
-    Ok(Some(virt::Node::Element(virt::Element {
-      tag_name: self.tag_name,
-      attributes,
-      children
-    })))
-  }
 }
 
 #[derive(Debug, PartialEq)]
@@ -70,17 +31,6 @@ impl<'a> fmt::Display for Node<'a> {
       Node::Fragment(node) => write!(f, "{}", node.to_string()),
       Node::Element(element) => write!(f, "{}", element.to_string()),
       Node::StyleElement(element) => write!(f, "{}", element.to_string()),
-    }
-  }
-}
-
-impl<'a> Executable<Option<virt::Node<'a>>> for Node<'a> {
-  fn execute(&self) -> Result<Option<virt::Node<'a>>, &'static str> {
-    match self {
-      Node::Text(value) => Ok(Some(virt::Node::Text(virt::Text { value }))),
-      Node::Slot(value) => Ok(Some(virt::Node::Text(virt::Text { value }))),
-      Node::Element(element) => element.execute(),
-      _ => Ok(None),
     }
   }
 }

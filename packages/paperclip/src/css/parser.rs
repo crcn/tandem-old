@@ -1,8 +1,6 @@
-use ast::*;
-use crate::base_parser::*;
-use crate::base_parser::tokenizer::*;
-
-pub mod ast;
+use super::ast::*;
+use crate::base::parser::*;
+use crate::base::tokenizer::*;
 
 pub fn parse<'a>(source: &'a str) -> Result<Expression<'a>, &'static str> {
   let mut tokenizer = Tokenizer::new(&source);
