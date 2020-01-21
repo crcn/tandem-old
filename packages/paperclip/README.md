@@ -1,8 +1,19 @@
+## Goals
+
+- Realtime editing. Biggest priority is to have a bundler that 
+- Interoperability. Paperclip should work with any web framework. 
+- Type safety. 
+- Visually editable. 
+
+## Non-goals
+
 TODO:
 
+- [ ] RPC client for front-end
 - [ ] scoped styles
 - [ ] diff/patch
 - [ ] vscode extension
+- [ ] plugin system using RPC
 
 Nice to haves:
 

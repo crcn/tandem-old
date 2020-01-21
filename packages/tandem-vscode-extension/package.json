@@ -1,0 +1,35 @@
+{
+  "name": "tandem-vscode-extension",
+  "version": "1.0.0",
+  "description": "",
+  "main": "lib/client/index.js",
+  "engines": {
+    "vscode": "^1.40.0"
+  },
+  "activationEvents": [
+    "*"
+  ],
+  "languages": [{
+    "id": "paperclip",
+    "extensions": [ ".pc" ],
+    "aliases": [ "Paperclip", "paperclip" ]
+  }],
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc",
+    "build:watch": "npm run build -- --watch",
+    "prepublishOnly": "npm run build"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^13.1.8",
+    "@types/vscode": "^1.41.0",
+    "typescript": "^3.7.5"
+  },
+  "dependencies": {
+    "vscode-languageclient": "^6.0.1",
+    "vscode-languageserver": "^6.0.1",
+    "vscode-languageserver-textdocument": "^1.0.0"
+  }
+}

@@ -74,8 +74,6 @@ fn parse_element<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Expression<pc_ast:
   }
 }
 
-
-
 fn parse_next_basic_element_parts<'a>(tag_name: &'a str, attributes: Vec<Expression<pc_ast::Attribute<'a>>>, tokenizer: &mut Tokenizer<'a>) -> Result<Expression<pc_ast::Node<'a>>, &'static str> {
   let mut children: Vec<Expression<pc_ast::Node<'a>>> = vec![];
 

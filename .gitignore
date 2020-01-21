@@ -1,3 +1,4 @@
 .vscode/
-lib
+lib/
 target/
+node_modules/

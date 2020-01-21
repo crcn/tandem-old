@@ -1,5 +1,13 @@
 use std::fmt;
 use serde::{Serialize};
+use base::ast::{Location};
+
+// TODO - include source expression path
+
+pub struct Source<'a> {
+  file_name: &'a str,
+  location: Location
+}
 
 #[derive(Debug, PartialEq, Serialize)]
 pub struct Fragment<'a> {
