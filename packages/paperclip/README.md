@@ -1,9 +1,8 @@
 TODO:
 
-- [ ] styles
-- [ ] test large HTML page (copy paste TONS of divs till ~10mb)
-  - [ ] optimize (if still slow, then Rust isn't viable)
+- [ ] scoped styles
 - [ ] diff/patch
+- [ ] vscode extension
 
 Nice to haves:
 

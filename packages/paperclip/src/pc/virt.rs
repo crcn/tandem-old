@@ -1,6 +1,7 @@
 use std::fmt;
+use serde::{Serialize};
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Serialize)]
 pub struct Fragment<'a> {
   pub children: Vec<Node<'a>>
 }
@@ -14,7 +15,7 @@ impl<'a> fmt::Display for Fragment<'a> {
   }
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Serialize)]
 pub struct Element<'a> {
   pub tag_name: &'a str,
   pub attributes: Vec<Attribute<'a>>,
@@ -44,18 +45,19 @@ impl<'a> fmt::Display for Element<'a> {
 }
 
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Serialize)]
 pub struct Attribute<'a> {
   pub name: &'a str,
   pub value: Option<&'a str>
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Serialize)]
 pub struct Text<'a> {
   pub value: &'a str
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Serialize)]
+#[serde(tag = "type")]
 pub enum Node<'a> {
   Element(Element<'a>),
   Text(Text<'a>),
