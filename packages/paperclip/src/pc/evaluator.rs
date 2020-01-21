@@ -22,6 +22,9 @@ fn evaluate_node<'a>(node_expr: &ast::Expression<ast::Node<'a>>) -> Result<Optio
     ast::Node::Fragment(el) => {
       evaluate_fragment(&el)
     },
+    ast::Node::Comment(el) => {
+      Ok(None)
+    },
     _ => {
       Err("Not found")
     }
@@ -38,8 +41,8 @@ fn evaluate_basic_element<'a>(element: &ast::Element<'a>) -> Result<Option<virt:
   
   let mut attributes = vec![];
 
-  for attrExpr in &element.attributes {
-    let attr = &attrExpr.item;
+  for attr_expr in &element.attributes {
+    let attr = &attr_expr.item;
 
     let value;
 

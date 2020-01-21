@@ -7,6 +7,21 @@ pub fn parse<'a>(source: &'a str) -> Result<Expression<'a>, &'static str> {
   parse_sheet(&mut tokenizer)
 }
 
+
+fn eat_comments<'a>(tokenizer: &mut Tokenizer<'a>, start: Token, end: Token) -> Result<(), &'static str> {
+  if tokenizer.is_eof() || tokenizer.peek(1)? != start {
+    return Ok(())
+  }
+  tokenizer.next()?; // eat <!--
+  while !tokenizer.is_eof() {
+    let curr = tokenizer.next()?;
+    if curr == end {
+      break;
+    }
+  }
+  Ok(())
+}
+
 fn parse_sheet<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Expression<'a>, &'static str> {
   let mut rules = vec![];
   while !&tokenizer.is_eof() {

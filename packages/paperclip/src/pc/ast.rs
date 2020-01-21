@@ -17,6 +17,7 @@ pub struct Element<'a> {
 #[derive(Debug, PartialEq)]
 pub enum Node<'a> {
   Text(&'a str),
+  Comment(&'a str),
   Element(Element<'a>),
   Fragment(Fragment<'a>),
   StyleElement(StyleElement<'a>),
@@ -28,6 +29,7 @@ impl<'a> fmt::Display for Node<'a> {
     match self {
       Node::Text(value) => write!(f, "{}", value),
       Node::Slot(value) => write!(f, "{{{{{}}}}}", value),
+      Node::Comment(value) => write!(f, "<!--{}-->", value),
       Node::Fragment(node) => write!(f, "{}", node.to_string()),
       Node::Element(element) => write!(f, "{}", element.to_string()),
       Node::StyleElement(element) => write!(f, "{}", element.to_string()),

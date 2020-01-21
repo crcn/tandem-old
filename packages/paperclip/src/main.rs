@@ -4,6 +4,7 @@ use std::io;
 use std::io::prelude::*;
 use std::fs::File;
 use std::time::{Duration, Instant};
+use serde_json;
 
 mod base;
 mod css;
@@ -14,6 +15,12 @@ fn main() {
     // let mut f = File::open("test.pc");
 
     let buffer = "
+    <style>
+        div {
+            color: red;
+        }
+    </style>
+    <!-- comment -->
     <div>
         color {{message}}!!!
     </div>
@@ -23,7 +30,6 @@ fn main() {
     // // read the whole file
     // f.unwrap().read_to_string(&mut buffer);
 
-    
     println!("---------------------------");
     println!("Input: ");
     println!("---------------------------");
@@ -39,4 +45,7 @@ fn main() {
 
     println!("micro seconds to evaluate: {}", now.elapsed().as_micros());
     // println!("{}", result);
+    let serialized = serde_json::to_string(&result).unwrap();
+
+    println!("json: {}", serialized);
 }

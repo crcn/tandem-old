@@ -32,12 +32,22 @@ fn parse_node<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Expression<Node<'a>>,
     // Token::Word(text) => Ok(Expression { item: Node::Text(text) }),
     Token::SlotOpen => { parse_slot(tokenizer) },
     Token::LessThan => { parse_element(tokenizer) },
+    Token::HtmlCommentOpen => { 
+      let buffer = get_buffer(tokenizer, |tokenizer| {
+        let tok = tokenizer.peek(1)?;
+        Ok(tok != Token::HtmlCommentClose)
+      })?;
+      tokenizer.next(); // eat -->
+      Ok(Expression {
+        item: Node::Comment(buffer)
+      })
+    },
     _ => {
       tokenizer.pos = pos;
       Ok(Expression {
         item: Node::Text(get_buffer(tokenizer, |tokenizer| {
           let tok = tokenizer.peek(1)?;
-          Ok(tok != Token::SlotOpen && tok != Token::LessThan && tok != Token::CloseTag)
+          Ok(tok != Token::SlotOpen && tok != Token::LessThan && tok != Token::CloseTag && tok != Token::HtmlCommentOpen)
         })?)
       })
     }
@@ -62,6 +72,7 @@ fn parse_element<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Expression<Node<'a
     parse_next_basic_element_parts(tag_name, attributes, tokenizer)
   }
 }
+
 
 
 fn parse_next_basic_element_parts<'a>(tag_name: &'a str, attributes: Vec<Expression<Attribute<'a>>>, tokenizer: &mut Tokenizer<'a>) -> Result<Expression<Node<'a>>, &'static str> {
@@ -322,6 +333,9 @@ mod tests {
       // text blocks
       "text",
 
+      // comments
+      "ab <!--cd-->",
+
       // slots
       "{{ok}}",
 
@@ -354,6 +368,8 @@ mod tests {
           div > a {
             color: red;
           }
+          /* ok */
+          // comment
           span {
             color: orange;
             background: a b c d;

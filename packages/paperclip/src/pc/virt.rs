@@ -44,7 +44,6 @@ impl<'a> fmt::Display for Element<'a> {
   }
 }
 
-
 #[derive(Debug, PartialEq, Serialize)]
 pub struct Attribute<'a> {
   pub name: &'a str,

@@ -87,6 +87,9 @@ pub enum Token<'a> {
   // -->
   HtmlCommentOpen,
 
+  // //
+  LineCommentOpen,
+
   // -->
   HtmlCommentClose,
 
@@ -138,7 +141,10 @@ impl<'a> Tokenizer<'a> {
 
     match c {
       b'/' => { 
-        if self.starts_with(b"/>") {
+        if self.starts_with(b"//") {
+          self.forward(2);
+          Ok(Token::LineCommentOpen)
+        } else if self.starts_with(b"/>") {
           self.forward(2);
           Ok(Token::SelfCloseTag)
         } else if self.starts_with(b"/*") {
