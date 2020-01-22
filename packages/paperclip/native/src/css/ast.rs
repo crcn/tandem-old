@@ -1,7 +1,8 @@
 use std::fmt;
 use crate::base::ast::{Expression};
+use serde::{Serialize};
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Serialize)]
 pub struct Declaration<'a> {
   pub name: &'a str,
   pub value: &'a str
@@ -14,7 +15,7 @@ impl<'a> fmt::Display for Declaration<'a> {
   }
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Serialize)]
 pub struct Rule<'a> {
   pub condition: &'a str,
   pub declarations: Vec<Expression<Declaration<'a>>>
@@ -32,7 +33,7 @@ impl<'a> fmt::Display for Rule<'a> {
   }
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Serialize)]
 pub struct Sheet<'a> {
   pub rules: Vec<Expression<Rule<'a>>>
 }

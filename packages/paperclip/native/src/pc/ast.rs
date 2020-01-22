@@ -2,34 +2,42 @@
 use std::fmt;
 use crate::css::ast as css_ast;
 use crate::base::ast::{Expression};
+use serde::{Serialize};
+
 
 pub trait Executable<TRet> {
   fn execute(&self) -> Result<TRet, &'static str>;
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Serialize)]
 pub struct Element<'a> {
   pub tag_name: &'a str,
   pub attributes: Vec<Expression<Attribute<'a>>>,
   pub children: Vec<Expression<Node<'a>>>
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Serialize)]
+pub struct ValueObject<'a> {
+  pub value: &'a str,
+}
+
+#[derive(Debug, PartialEq, Serialize)]
+#[serde(tag = "type")]
 pub enum Node<'a> {
-  Text(&'a str),
-  Comment(&'a str),
+  Text(ValueObject<'a>),
+  Comment(ValueObject<'a>),
   Element(Element<'a>),
   Fragment(Fragment<'a>),
   StyleElement(StyleElement<'a>),
-  Slot(&'a str),
+  Slot(ValueObject<'a>),
 }
 
 impl<'a> fmt::Display for Node<'a> {
   fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
     match self {
-      Node::Text(value) => write!(f, "{}", value),
-      Node::Slot(value) => write!(f, "{{{{{}}}}}", value),
-      Node::Comment(value) => write!(f, "<!--{}-->", value),
+      Node::Text(text) => write!(f, "{}", &text.value),
+      Node::Slot(slot) => write!(f, "{{{{{}}}}}", &slot.value),
+      Node::Comment(comment) => write!(f, "<!--{}-->", &comment.value),
       Node::Fragment(node) => write!(f, "{}", node.to_string()),
       Node::Element(element) => write!(f, "{}", element.to_string()),
       Node::StyleElement(element) => write!(f, "{}", element.to_string()),
@@ -37,7 +45,7 @@ impl<'a> fmt::Display for Node<'a> {
   }
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Serialize)]
 pub struct Str<'a> {
   pub value: &'a str
 }
@@ -78,7 +86,7 @@ impl<'a> fmt::Display for Element<'a> {
   }
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Serialize)]
 pub struct Attribute<'a> {
   pub name: &'a str,
   pub value: Option<Expression<AttributeValue<'a>>>,
@@ -96,7 +104,8 @@ impl<'a> fmt::Display for Attribute<'a> {
   }
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Serialize)]
+#[serde(tag = "type")]
 pub enum AttributeValue<'a> {
   String(Str<'a>)
 }
@@ -119,7 +128,7 @@ impl<'a> fmt::Display for AttributeValue<'a> {
   }
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Serialize)]
 pub struct StyleElement<'a> {
   pub attributes: Vec<Expression<Attribute<'a>>>,
   pub sheet: Expression<css_ast::Sheet<'a>>,
@@ -134,7 +143,7 @@ impl<'a> fmt::Display for StyleElement<'a> {
   }
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Serialize)]
 pub struct Fragment<'a> {
   pub children: Vec<Expression<Node<'a>>>
 }
@@ -150,7 +159,7 @@ impl<'a> fmt::Display for Fragment<'a> {
   }
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Serialize)]
 pub struct Location {
   start: usize,
   end: usize,

@@ -15,10 +15,10 @@ fn evaluate_node<'a>(node_expr: &Expression<ast::Node<'a>>) -> Result<Option<vir
       evaluate_style_element(&el)
     },
     ast::Node::Text(text) => {
-      Ok(Some(virt::Node::Text(virt::Text { value: &text })))
+      Ok(Some(virt::Node::Text(virt::Text { value: &text.value })))
     },
-    ast::Node::Slot(value) => {
-      Ok(Some(virt::Node::Text(virt::Text { value: &value })))
+    ast::Node::Slot(slot) => {
+      Ok(Some(virt::Node::Text(virt::Text { value: &slot.value })))
     },
     ast::Node::Fragment(el) => {
       evaluate_fragment(&el)

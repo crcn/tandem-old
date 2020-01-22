@@ -40,16 +40,18 @@ fn parse_node<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Expression<pc_ast::No
       })?;
       tokenizer.next(); // eat -->
       Ok(Expression {
-        item: pc_ast::Node::Comment(buffer)
+        item: pc_ast::Node::Comment(pc_ast::ValueObject { value: buffer })
       })
     },
     _ => {
       tokenizer.pos = pos;
       Ok(Expression {
-        item: pc_ast::Node::Text(get_buffer(tokenizer, |tokenizer| {
-          let tok = tokenizer.peek(1)?;
-          Ok(tok != Token::SlotOpen && tok != Token::LessThan && tok != Token::CloseTag && tok != Token::HtmlCommentOpen)
-        })?)
+        item: pc_ast::Node::Text(pc_ast::ValueObject { 
+          value: get_buffer(tokenizer, |tokenizer| {
+            let tok = tokenizer.peek(1)?;
+            Ok(tok != Token::SlotOpen && tok != Token::LessThan && tok != Token::CloseTag && tok != Token::HtmlCommentOpen)
+          })?
+        })
       })
     }
   }
@@ -59,7 +61,7 @@ fn parse_slot<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Expression<pc_ast::No
   let script = get_buffer(tokenizer, |tokenizer| { Ok(tokenizer.peek(1)? != Token::SlotClose) })?;
   tokenizer.next()?;
   Ok(Expression {
-    item: pc_ast::Node::Slot(script)
+    item: pc_ast::Node::Slot(pc_ast::ValueObject { value: script })
   })
 }
 
@@ -191,7 +193,7 @@ mod tests {
   fn can_parse_a_simple_text_node() {
     let expr = parse("abc").unwrap();
     let eql = Expression {
-      item: pc_ast::Node::Text("abc")
+      item: pc_ast::Node::Text(pc_ast::ValueObject { value: "abc" })
     };
 
     assert_eq!(expr, eql);
