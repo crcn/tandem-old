@@ -1,0 +1,33 @@
+{
+  "name": "tandem",
+  "version": "1.0.0",
+  "description": "",
+  "private": true,
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "devDependencies": {
+    "prettier": "1.19.1",
+    "pretty-quick": "^2.0.1",
+    "husky": "^4.2.0"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "pretty-quick --staged"
+    }
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/crcn/tandem.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/crcn/tandem/issues"
+  },
+  "homepage": "https://github.com/crcn/tandem#readme"
+}
