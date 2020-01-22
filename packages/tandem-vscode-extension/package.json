@@ -9,11 +9,18 @@
   "activationEvents": [
     "*"
   ],
-  "languages": [{
-    "id": "paperclip",
-    "extensions": [ ".pc" ],
-    "aliases": [ "Paperclip", "paperclip" ]
-  }],
+  "languages": [
+    {
+      "id": "paperclip",
+      "extensions": [
+        ".pc"
+      ],
+      "aliases": [
+        "Paperclip",
+        "paperclip"
+      ]
+    }
+  ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc",

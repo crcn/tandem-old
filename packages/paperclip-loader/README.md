@@ -36,9 +36,9 @@ Template:
 <!-- public props -->
 <property id="initialCount" scope="public" />
 
-<!-- private props -->
-<property id="onClick" scope="private" />
-<property id="currentCount" scope="private" />
+<!-- internal props -->
+<property id="onClick" scope="internal" />
+<property id="currentCount" scope="internal" />
 
 <logic src="./component.tsx" target="react" />
 
@@ -49,8 +49,8 @@ Component.tsx:
 
 ```typescript
 import * as React from "react";
-import {PublicProps, PrivateProps} from "./component.pc";
-export default (Template: React.ComponentClass<Props>) => class extends React.Component<PublicProps> {
+import {PublicProps, InternalProps} from "./component.pc";
+export default (Template: React.ComponentClass<InternalProps>) => class extends React.Component<PublicProps> {
   let state = { currentCount: this.props.count };
   render() {
     return <Template 
