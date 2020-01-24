@@ -9,7 +9,7 @@ while !tokenizer.is_eof() {
   if !until(tokenizer)? {
     break;
   }
-  let tok = tokenizer.next()?;
+  tokenizer.next()?;
   end = tokenizer.pos;
 }
 

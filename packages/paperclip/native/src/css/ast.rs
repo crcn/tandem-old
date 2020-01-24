@@ -3,12 +3,12 @@ use crate::base::ast::{Expression};
 use serde::{Serialize};
 
 #[derive(Debug, PartialEq, Serialize)]
-pub struct Declaration<'a> {
-  pub name: &'a str,
-  pub value: &'a str
+pub struct Declaration {
+  pub name: String,
+  pub value: String
 }
 
-impl<'a> fmt::Display for Declaration<'a> {
+impl fmt::Display for Declaration {
   fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
     writeln!(f, "{}:{};", &self.name, &self.value)?;
     Ok(())
@@ -16,12 +16,12 @@ impl<'a> fmt::Display for Declaration<'a> {
 }
 
 #[derive(Debug, PartialEq, Serialize)]
-pub struct Rule<'a> {
-  pub condition: &'a str,
-  pub declarations: Vec<Expression<Declaration<'a>>>
+pub struct Rule {
+  pub condition: String,
+  pub declarations: Vec<Expression<Declaration>>
 }
 
-impl<'a> fmt::Display for Rule<'a> {
+impl fmt::Display for Rule {
   fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
     writeln!(f, "{} {{", &self.condition)?;
     for decl in &self.declarations {
@@ -34,11 +34,11 @@ impl<'a> fmt::Display for Rule<'a> {
 }
 
 #[derive(Debug, PartialEq, Serialize)]
-pub struct Sheet<'a> {
-  pub rules: Vec<Expression<Rule<'a>>>
+pub struct Sheet {
+  pub rules: Vec<Expression<Rule>>
 }
 
-impl<'a> fmt::Display for Sheet<'a> {
+impl fmt::Display for Sheet {
   fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
     for rule in &self.rules {
       write!(f, "{}", &rule.item.to_string())?;
@@ -46,16 +46,3 @@ impl<'a> fmt::Display for Sheet<'a> {
     Ok(())
   }
 }
-
-
-// impl<'a> fmt::Display for Expression<'a> {
-//   fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-//     match &self.item {
-//       Grammar::Sheet(sheet) => write!(f, "{}", sheet.to_string())?,
-//       Grammar::Rule(rule) => write!(f, "{}", rule.to_string())?,
-//       Grammar::Declaration(decl) => write!(f, "{}", decl.to_string())?
-//     }
-
-//     Ok(())
-//   }
-// }

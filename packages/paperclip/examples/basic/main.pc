@@ -1,0 +1,3 @@
+<import id="butter" src="./butter.pc" />
+
+<butter tastes="good" />

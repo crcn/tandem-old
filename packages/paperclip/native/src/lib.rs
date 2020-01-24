@@ -1,25 +1,63 @@
 #[macro_use]
 extern crate matches;
+extern crate neon_serde;
 
 mod pc;
 mod css;
 mod base;
 mod js;
+mod engine;
 
 use neon::prelude::*;
-use neon::register_module;
+use neon::{declare_types, register_module};
+use engine::{Engine};
 
-use pc::*;
+declare_types! {
+  pub class JsPaperclipEngine as PaperclipEngine for Engine {
+    init(_) {
+      Ok(Engine::new())
+    }
 
-fn parse(mut cx: FunctionContext) -> JsResult<JsValue> {
+    method startRuntime(mut cx) {
+      let file_path: String = cx.argument::<JsString>(0)?.value();
+      let mut this = cx.this();
 
-  let source = cx.argument::<JsString>(0)?.value();
+      let result = cx.borrow_mut(&mut this, |mut engine| {
+        engine.start_runtime(file_path);
+        engine.runtimes.len()
+      });
+      
+      Ok(cx.undefined().upcast())
+    }
+    
+    method drainEvents(mut cx) {
 
-  let expr = pc::parser::parse(source.as_str()).unwrap();
+      let mut this = cx.this();
 
-  let js_value = neon_serde::to_value(&mut cx, &expr)?;
+      let events = cx.borrow_mut(&mut this, |mut engine| {
+        engine.drain_events()
+      });
 
-  Ok(js_value)
+      let js_events = JsArray::new(&mut cx, events.len() as u32);
+      for (i, value) in events.iter().enumerate() {
+        let js_value = neon_serde::to_value(&mut cx, &value).unwrap();
+        js_events.set(&mut cx, i as u32, js_value).unwrap();
+      }
+
+      // let file_path: String = cx.argument::<JsString>(0)?.value();
+      // let this = cx.this();
+      Ok(js_events.upcast())
+    }
+    method stopRuntime(mut cx)  {
+      // let file_path: String = cx.argument::<JsString>(0)?.value();
+      // let this = cx.this();
+      Ok(cx.boolean(true).upcast())
+    }
+
+    method panic(_) {
+      panic!("User.prototype.panic")
+    }
+  }
 }
 
-register_module!(mut m, { m.export_function("parse", parse) });
+register_module!(mut m, { m.export_class::<JsPaperclipEngine>("Engine") });

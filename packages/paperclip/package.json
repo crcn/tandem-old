@@ -10,6 +10,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "neon-cli": "0.3.2"
+    "neon-cli": "^0.3.2"
   }
 }

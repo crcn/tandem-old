@@ -3,7 +3,7 @@ use crate::base::parser::{get_buffer};
 use crate::base::tokenizer::{Token, Tokenizer};
 use crate::base::ast::{Expression};
 
-pub fn parse<'a>(source: &'a str) -> Result<Expression<Sheet<'a>>, &'static str> {
+pub fn parse<'a>(source: &'a str) -> Result<Expression<Sheet>, &'static str> {
   let mut tokenizer = Tokenizer::new(&source);
   parse_sheet(&mut tokenizer)
 }
@@ -23,7 +23,7 @@ fn eat_comments<'a>(tokenizer: &mut Tokenizer<'a>, start: Token, end: Token) -> 
   Ok(())
 }
 
-fn parse_sheet<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Expression<Sheet<'a>>, &'static str> {
+fn parse_sheet<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Expression<Sheet>, &'static str> {
   let mut rules = vec![];
   while !&tokenizer.is_eof() {
     rules.push(parse_rule(tokenizer)?);
@@ -35,11 +35,11 @@ fn parse_sheet<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Expression<Sheet<'a>
   })
 }
 
-fn parse_rule<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Expression<Rule<'a>>, &'static str> {
+fn parse_rule<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Expression<Rule>, &'static str> {
   tokenizer.eat_whitespace();
   eat_script_comments(tokenizer)?;
   tokenizer.eat_whitespace();
-  let condition = parse_condition(tokenizer)?;
+  let condition = parse_condition(tokenizer)?.to_string();
   tokenizer.next()?; // eat {
   let declarations = parse_declarations(tokenizer)?;
   tokenizer.next()?; // eat }
@@ -56,7 +56,7 @@ fn parse_condition<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<&'a str, &'stati
   get_buffer(tokenizer, |tokenizer| { Ok(tokenizer.peek(1)? != Token::CurlyOpen) })
 }
 
-fn parse_declarations<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Vec<Expression<Declaration<'a>>>, &'static str> {
+fn parse_declarations<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Vec<Expression<Declaration>>, &'static str> {
   let mut declarations = vec![];
   while !tokenizer.is_eof() {
     tokenizer.eat_whitespace();
@@ -73,11 +73,11 @@ fn eat_script_comments<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<(), &'static
   eat_comments(tokenizer, Token::ScriptCommentOpen, Token::ScriptCommentClose)
 }
 
-fn parse_declaration<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Expression<Declaration<'a>>, &'static str> {
-  let name = get_buffer(tokenizer, |tokenizer| { Ok(tokenizer.peek(1)? != Token::Colon) })?;
+fn parse_declaration<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Expression<Declaration>, &'static str> {
+  let name = get_buffer(tokenizer, |tokenizer| { Ok(tokenizer.peek(1)? != Token::Colon) })?.to_string();
   tokenizer.next()?; // eat :
   tokenizer.eat_whitespace();
-  let value = get_buffer(tokenizer, |tokenizer| { Ok(tokenizer.peek(1)? != Token::Semicolon) })?;
+  let value = get_buffer(tokenizer, |tokenizer| { Ok(tokenizer.peek(1)? != Token::Semicolon) })?.to_string();
   tokenizer.next()?; // eat ;
   Ok(Expression {
     item: Declaration {
@@ -101,12 +101,12 @@ mod tests {
         rules: vec![
           Expression {
             item: Rule {
-              condition: "div ",
+              condition: "div ".to_string(),
               declarations: vec![
                 Expression {
                   item: Declaration {
-                    name: "color",
-                    value: "red"
+                    name: "color".to_string(),
+                    value: "red".to_string()
                   }
                 }
               ]

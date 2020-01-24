@@ -1,9 +1,8 @@
 #[macro_use]
 extern crate matches;
-use std::io;
-use std::io::prelude::*;
-use std::fs::File;
-use std::time::{Duration, Instant};
+// use std::io;
+// use std::io::prelude::*;
+// use std::fs::File;
 use serde_json;
 
 mod base;
@@ -36,16 +35,16 @@ fn main() {
     println!("{}", buffer);
     println!("---------------------------");
 
-    let now = Instant::now();
-    let expr = pc::parser::parse(buffer.as_str()).unwrap();
-    println!("micro seconds to parse: {}", now.elapsed().as_micros());
+    // // let now = Instant::now();
+    // let expr = pc::parser::parse(buffer.as_str()).unwrap();
+    // // println!("micro seconds to parse: {}", now.elapsed().as_micros());
 
-    let now = Instant::now();
-    let result = pc::runtime::evaluate(&expr).unwrap().unwrap();
+    // // let now = Instant::now();
+    // let result = pc::runtime::evaluate(&expr).unwrap().unwrap();
 
-    println!("micro seconds to evaluate: {}", now.elapsed().as_micros());
-    // println!("{}", result);
-    let serialized = serde_json::to_string(&result).unwrap();
+    // // println!("micro seconds to evaluate: {}", now.elapsed().as_micros());
+    // // println!("{}", result);
+    // let serialized = serde_json::to_string(&result).unwrap();
 
-    println!("json: {}", serialized);
+    // println!("json: {}", serialized);
 }
