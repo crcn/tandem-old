@@ -1,6 +1,6 @@
 ### Realtime visual development
 
-Tandem allows you to visually develop your web application directly within VSCode. No more wasted time debugging HTML & CSS in the browser. 🙌🏻
+Tandem allows you to visually develop your web application directly within VSCode. No more wasted time waiting for code to compile & debugging HTML & CSS in the browser. 🙌🏻
 
 > All of your web component development & debugging in one spot.
 
