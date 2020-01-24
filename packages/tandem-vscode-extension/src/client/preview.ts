@@ -40,7 +40,7 @@ export const activate = ({ extensionPath }: ExtensionContext) => {
 
     const panel = window.createWebviewPanel(
       VIEW_TYPE,
-      "Realtime Preview ⚡️",
+      "Live Preview ⚡️",
       ViewColumn.Beside,
       {
         enableScripts: true,

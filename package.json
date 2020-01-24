@@ -29,5 +29,8 @@
   "bugs": {
     "url": "https://github.com/crcn/tandem/issues"
   },
-  "homepage": "https://github.com/crcn/tandem#readme"
+  "homepage": "https://github.com/crcn/tandem#readme",
+  "dependencies": {
+    "lerna": "^3.20.2"
+  }
 }

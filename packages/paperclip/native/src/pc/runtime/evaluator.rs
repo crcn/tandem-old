@@ -51,7 +51,6 @@ fn evaluate_element<'a>(element: &ast::Element, context: &'a Context) -> Result<
     "import" => evaluate_import_element(element, context),
     _ => {
       if context.import_ids.contains(&element.tag_name) {
-        println!("{}", "OK");
         evaluate_imported_component(element, context)
       } else {
         evaluate_basic_element(element, context)

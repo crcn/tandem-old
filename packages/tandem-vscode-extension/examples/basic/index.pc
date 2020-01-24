@@ -1,3 +1,9 @@
+<import id="my-button" src="./button.pc" />
+
+{{#if onlyWhenThisHappens}}
+  <my-button />
+{{/}}
+
 <style>
   .test {
     color: red;
@@ -5,7 +11,6 @@
     font-weight: 200;
     text-decoration: underline;
     display: flex;
-
   }
 
   .test > * {
@@ -14,9 +19,9 @@
 </style>
 
 <div class="test">
-  This is a t
+  
 
   <div>
-    blarg
+    blarg!!!!! {{}}
   </div>
 </div>
