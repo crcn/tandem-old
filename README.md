@@ -4,7 +4,7 @@ Tandem allows you to visually develop your web application directly within VSCod
 
 > All of your web component development & debugging in one spot.
 
-Tandem is built on top of [Paperclip](packages/paperclip), a super fast template language that compiles to React (more frameworks and languages will eventually be supported). 
+Tandem is built on top of [Paperclip](packages/paperclip), a super fast template language designed to compile to most languages and frameworks. Currently supporting React & static HTML.
 
 [GIF PREVIEW]
 
