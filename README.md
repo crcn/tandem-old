@@ -27,10 +27,19 @@ Productivity & development speed. Debugging HTML & CSS is a long process, especi
 - Linting
 
 
+### Goals
 
+- Compatibility with most languages and frameworks.
+- Ability to plug into your existing codebase.
+- Low barrier to entry. Should just be able to install the VSCode extension and start using immediately.
+- Simple template language features that cover _most_ UI cases. 
+- Debugging tools for HTML & CSS.
 
+### Non-goals
 
-
+- Extensive tooling. Tandem will only provide the template language. 
+- Turing-complete templates. Tandem will only allow you to create primitive UI behavior. 
+- Complex logic in templates. 
 
 ### What is Paperclip?
 
