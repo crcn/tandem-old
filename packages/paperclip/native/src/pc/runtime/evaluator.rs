@@ -77,24 +77,39 @@ fn evaluate_imported_component<'a>(element: &ast::Element, context: &'a Context)
 fn evaluate_basic_element<'a>(element: &ast::Element, context: &'a Context) -> Result<Option<virt::Node>, &'static str> {
   
   let mut attributes = vec![];
-
+  
 
   let tag_name = element.tag_name.clone();
-
+  let mut class_name_found = false;
 
   for attr_expr in &element.attributes {
     let attr = &attr_expr.item;
 
-    let value;
+    let mut value;
 
     if attr.value == None {
       value = None;
     } else {
       value = evaluate_attribute_value(&attr.value.as_ref().unwrap().item, context)?;
     }
+
+    if attr.name == "class" && value != None {
+      if let Some(original) = value {
+        class_name_found = true;
+        value = Some(format!("{} {}", original, context.scope));
+      }
+    }
+
     attributes.push(virt::Attribute {
       name: attr.name.clone(), 
       value,
+    });
+  }
+
+  if !class_name_found {
+    attributes.push(virt::Attribute {
+      name: "class".to_string(),
+      value: Some(context.scope.to_string())
     });
   }
 

@@ -5,6 +5,7 @@ Limitations:
 immediate TODO:
 
 - [ ] scoped styles
+  - [ ] selector parsing
 - [ ] JS context
 - [ ] {{#if}} blocks
 - [ ] {{#repeat }} blocks

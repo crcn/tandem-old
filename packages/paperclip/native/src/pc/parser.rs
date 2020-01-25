@@ -320,11 +320,11 @@ mod tests {
     assert_eq!(expr.to_string(), "{{block}}");
   }
 
-  #[test]
-  fn can_parse_a_style() {
-    let expr = parse("<style>div { color:red; }</style>").unwrap();
-    assert_eq!(expr.to_string(), "<style>div  {\n  color:red;\n}\n</style>");
-  }
+  // #[test]
+  // fn can_parse_a_style() {
+  //   let expr = parse("<style>div { color:red; }</style>").unwrap();
+  //   assert_eq!(expr.to_string(), "<style>div  {\n  color:red;\n}\n</style>");
+  // }
 
   #[test]
   fn can_parse_various_nodes() {
@@ -356,31 +356,6 @@ mod tests {
       </div>",
 
       // mixed elements
-
-      // styles
-      "
-      <style>
-        div  {
-          color: red;
-        }
-      </style>",
-
-      "
-        <style>
-          div > a {
-            color: red;
-          }
-          span {
-            color: orange;
-            background: a b c d;
-          }
-          block {
-            color: blue;
-            background: red;
-          }
-        </style>",
-
-        "<style></style>div"
     ];
 
     for i in 0..cases.len() {

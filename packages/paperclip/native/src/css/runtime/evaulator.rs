@@ -27,12 +27,20 @@ fn evaluate_style_rule(expr: &Expression<ast::Rule>, context: &Context) -> Resul
   for property in &expr.item.declarations {
     style.push(evaluate_style(&property)?);
   }
-  // let selectorText = format!("{}.{}")
-  let selectorText = expr.item.selector.to_string();
+  let selectorText = stringify_element_selector(&expr.item.selector, context)?;
+  println!("{:?}", &selectorText);
   Ok(virt::CSSRule::CSSStyleRule(virt::CSSStyleRule {
     selectorText,
     style
   }))
+}
+
+fn stringify_element_selector(selector: &ast::Selector, context: &Context) -> Result<String, &'static str> {
+  let value = match selector {
+    ast::Selector::Class(cls) => cls.to_string(),
+    ast::Selector::Element(el) => el.to_string(),
+  };
+  Ok(format!("{}.{}", value, context.scope).to_string())
 }
 
 fn evaluate_style<'a>(expr: &'a Expression<ast::Declaration>) -> Result<virt::CSSStyleProperty, &'static str> {

@@ -1,6 +1,7 @@
 import { stringifyCSSSheet } from "./stringify-sheet";
 
 export const createNativeNode = node => {
+  // return document.createTextNode(JSON.stringify(node));
   switch (node.type) {
     case "Text":
       return document.createTextNode(node.value);
@@ -14,6 +15,7 @@ export const createNativeNode = node => {
 };
 
 export const createNativeStyle = element => {
+  // return document.createTextNode(JSON.stringify(element));
   const nativeElement = document.createElement("style");
   nativeElement.textContent = stringifyCSSSheet(element.sheet);
   return nativeElement;
