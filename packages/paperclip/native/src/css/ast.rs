@@ -17,13 +17,13 @@ impl fmt::Display for Declaration {
 
 #[derive(Debug, PartialEq, Serialize)]
 pub struct Rule {
-  pub condition: String,
+  pub selector: String,
   pub declarations: Vec<Expression<Declaration>>
 }
 
 impl fmt::Display for Rule {
   fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-    writeln!(f, "{} {{", &self.condition)?;
+    writeln!(f, "{} {{", &self.selector)?;
     for decl in &self.declarations {
       write!(f, "  {}", &decl.item.to_string())?;
     }

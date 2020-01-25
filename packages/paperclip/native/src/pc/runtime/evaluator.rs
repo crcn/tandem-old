@@ -7,17 +7,19 @@ use super::graph::{DependencyGraph};
 use crate::css::runtime::evaulator::{evaluate as evaluate_css};
 
 #[derive(Debug)]
-pub struct Context<'a> {
+pub struct Context<'a, 'b> {
   graph: &'a DependencyGraph,
   file_path: &'a String,
-  import_ids: HashSet<&'a String>
+  import_ids: HashSet<&'a String>,
+  scope: &'b str
 }
 
 pub fn evaluate<'a>(node_expr: &Expression<ast::Node>, file_path: &String, graph: &'a DependencyGraph) -> Result<Option<virt::Node>, &'static str>  {
   let context = Context {
     graph,
     file_path,
-    import_ids: HashSet::from_iter(ast::get_import_ids(node_expr))
+    import_ids: HashSet::from_iter(ast::get_import_ids(node_expr)),
+    scope: "random"
   };
 
   evaluate_node(node_expr, &context)
@@ -114,7 +116,7 @@ fn evaluate_import_element<'a>(_element: &ast::Element, context: &'a Context) ->
 
 fn evaluate_style_element<'a>(element: &ast::StyleElement, context: &'a Context) -> Result<Option<virt::Node>, &'static str> {
   Ok(Some(virt::Node::StyleElement(virt::StyleElement {
-    sheet: evaluate_css(&element.sheet)?
+    sheet: evaluate_css(&element.sheet, &context.scope)?
   })))
 }
   
@@ -164,11 +166,5 @@ mod tests {
     let ast = parse(case).unwrap();
     let graph = DependencyGraph::new();
     let node = evaluate(&ast, &"something".to_string(), &graph).unwrap().unwrap();
-    // println!("{:?}", node);
-    // assert_eq!(&node, &virt::Node::Element(virt::Element {
-    //   tag_name: "div".to_string(),
-    //   attributes: vec![],
-    //   children: vec![]
-    // }));
   }
 }

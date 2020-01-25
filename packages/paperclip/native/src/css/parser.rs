@@ -39,20 +39,20 @@ fn parse_rule<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Expression<Rule>, &'s
   tokenizer.eat_whitespace();
   eat_script_comments(tokenizer)?;
   tokenizer.eat_whitespace();
-  let condition = parse_condition(tokenizer)?.to_string();
+  let selector = parse_selector(tokenizer)?.to_string();
   tokenizer.next()?; // eat {
   let declarations = parse_declarations(tokenizer)?;
   tokenizer.next()?; // eat }
   tokenizer.eat_whitespace();
   Ok(Expression {
     item: Rule {
-      condition,
+      selector,
       declarations,
     }
   })
 }
 
-fn parse_condition<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<&'a str, &'static str> {
+fn parse_selector<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<&'a str, &'static str> {
   get_buffer(tokenizer, |tokenizer| { Ok(tokenizer.peek(1)? != Token::CurlyOpen) })
 }
 
@@ -101,7 +101,7 @@ mod tests {
         rules: vec![
           Expression {
             item: Rule {
-              condition: "div ".to_string(),
+              selector: "div ".to_string(),
               declarations: vec![
                 Expression {
                   item: Declaration {

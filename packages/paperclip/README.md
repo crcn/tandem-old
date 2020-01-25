@@ -7,6 +7,7 @@
 
 immediate TODO:
 
+- [ ] render scoped styles at top of document
 - [ ] JS renderer
 - [ ] diff / patch
 - [ ] scoped styles
