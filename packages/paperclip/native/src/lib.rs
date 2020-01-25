@@ -54,14 +54,9 @@ declare_types! {
         let js_value = neon_serde::to_value(&mut cx, &value).unwrap();
         js_events.set(&mut cx, i as u32, js_value).unwrap();
       }
-
-      // let file_path: String = cx.argument::<JsString>(0)?.value();
-      // let this = cx.this();
       Ok(js_events.upcast())
     }
     method stopRuntime(mut cx)  {
-      // let file_path: String = cx.argument::<JsString>(0)?.value();
-      // let this = cx.this();
       Ok(cx.boolean(true).upcast())
     }
 

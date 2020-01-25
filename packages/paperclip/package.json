@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "install": "npm run build:node",
+    "build:watch": "echo 'nope'",
     "build:node": "neon build --release",
     "build:electron": "electron-build-env neon build --release"
   },

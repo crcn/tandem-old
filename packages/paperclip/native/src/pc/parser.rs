@@ -1,5 +1,5 @@
 use super::ast as pc_ast;
-use crate::base::parser::{get_buffer};
+use crate::base::parser::{get_buffer, expect_token};
 use crate::base::ast::{Expression};
 use crate::base::tokenizer::{Token, Tokenizer};
 use crate::css::parser::parse as parse_css;
@@ -116,9 +116,9 @@ fn parse_next_style_element_parts<'a>(attributes: Vec<Expression<pc_ast::Attribu
   })?;
 
   // TODO - assert tokens equal these
-  tokenizer.next()?; // eat </
-  tokenizer.next()?; // eat style
-  tokenizer.next()?; // eat >
+  expect_token(tokenizer.next()?, Token::CloseTag)?; // eat </
+  expect_token(tokenizer.next()?, Token::Word("style"))?; // eat style
+  expect_token(tokenizer.next()?, Token::GreaterThan)?; // eat >
 
   Ok(Expression {
     item: pc_ast::Node::StyleElement(pc_ast::StyleElement {
@@ -344,6 +344,7 @@ mod tests {
       "<div></div>",
       "<div a b></div>",
       "<div a=\"b\" c></div>",
+      "<div a=\"\"></div>",
 
       "<div a=\"b\" c=\"d\">
         <span>
@@ -377,7 +378,9 @@ mod tests {
             color: blue;
             background: red;
           }
-        </style>"
+        </style>",
+
+        "<style></style>div"
     ];
 
     for i in 0..cases.len() {
@@ -386,6 +389,7 @@ mod tests {
       // TODO - strip whitespace
       let expr = parse(case).unwrap();
       assert_eq!(expr.to_string().replace("\n", "").replace(" ", ""), case.replace("\n", "").replace(" ", ""));
+      println!("{}", case);
     }
   }
 }

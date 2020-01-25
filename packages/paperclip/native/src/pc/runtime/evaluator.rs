@@ -1,5 +1,3 @@
-use std::fmt;
-
 use super::super::ast;
 use super::virt;
 use std::collections::HashSet;
@@ -133,8 +131,12 @@ fn evaluate_children<'a>(children_expr: &Vec<Expression<ast::Node>>, context: &'
 }
 
 fn evaluate_fragment<'a>(fragment: &ast::Fragment, context: &'a Context) -> Result<Option<virt::Node>, &'static str> {
+  let mut children = evaluate_children(&fragment.children, context)?;
+  if children.len() == 1 {
+    return Ok(children.pop());
+  }
   Ok(Some(virt::Node::Fragment(virt::Fragment {
-    children: evaluate_children(&fragment.children, context)?
+    children
   })))
 }
 
@@ -143,5 +145,26 @@ fn evaluate_attribute_value<'a>(value: &ast::AttributeValue, context: &'a Contex
     ast::AttributeValue::String(st) => {
       Ok(Some(st.value.clone()))
     }
+  }
+}
+
+#[cfg(test)]
+mod tests {
+  use super::*;
+  use super::super::graph::*;
+  use super::super::super::parser::*;
+  use std::collections::*;
+
+  #[test]
+  fn can_evaluate_a_style() {
+    let case = "<style>div { color: red; }</style><div></div>";
+    let ast = parse(case).unwrap();
+    let graph = DependencyGraph::new();
+    let node = evaluate(&ast, &"something".to_string(), &graph).unwrap().unwrap();
+    assert_eq!(&node, &virt::Node::Element(virt::Element {
+      tag_name: "div".to_string(),
+      attributes: vec![],
+      children: vec![]
+    }));
   }
 }

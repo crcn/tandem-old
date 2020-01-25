@@ -26,10 +26,11 @@ impl VirtualFileSystem {
   }
 
   pub fn update(&mut self, file_path: &String, content: &String) -> io::Result<String> {
-    if self.contents.contains_key(file_path) {
-      return Ok(self.contents.insert(file_path.to_string(), content.to_string()).unwrap());
+    if !self.contents.contains_key(file_path) {
+      self.load(&file_path)?;
     }
-    return Ok("".to_string());
+
+    Ok(self.contents.insert(file_path.to_string(), content.to_string()).unwrap())
   }
 
   pub fn reload(&mut self, file_path: &String) -> io::Result<&String> {

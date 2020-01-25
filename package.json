@@ -18,7 +18,9 @@
     }
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "lerna run build",
+    "build:watch": "lerna run build:watch"
   },
   "repository": {
     "type": "git",

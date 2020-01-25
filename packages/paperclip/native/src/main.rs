@@ -3,7 +3,6 @@ extern crate matches;
 // use std::io;
 // use std::io::prelude::*;
 // use std::fs::File;
-use serde_json;
 
 mod base;
 mod css;
@@ -13,17 +12,7 @@ fn main() {
 
     // let mut f = File::open("test.pc");
 
-    let buffer = "
-    <style>
-        div {
-            color: red;
-        }
-    </style>
-    <!-- comment -->
-    <div>
-        color {{message}}!!!
-    </div>
-    ".to_string();
+    let buffer = "<style></ <div></div>".to_string();
 
     // let mut buffer = String::new();
     // // read the whole file
@@ -35,8 +24,11 @@ fn main() {
     println!("{}", buffer);
     println!("---------------------------");
 
+    println!("OKOK");
+
     // // let now = Instant::now();
-    // let expr = pc::parser::parse(buffer.as_str()).unwrap();
+    let result = pc::parser::parse(buffer.as_str());
+    println!("{:?}", &result);
     // // println!("micro seconds to parse: {}", now.elapsed().as_micros());
 
     // // let now = Instant::now();

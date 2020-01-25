@@ -17,6 +17,5 @@ matches = "0.1.8"
 serde = { version = "1.0.104", features = ["derive"] }
 serde_json = { version = "1.0.44" }
 neon = "0.3.3"
-num_cpus = "1.4.0"
 neon-serde = "0.3.0"
 

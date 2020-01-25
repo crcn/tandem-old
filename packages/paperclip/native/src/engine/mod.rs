@@ -1,13 +1,7 @@
-use std::fs;
-use std::io;
-use std::path::Path;
-use std::collections::HashMap;
-use crate::pc::{ast as pc_ast, parser, runtime};
-use crate::pc::runtime::graph::{Dependency, DependencyGraph};
+use crate::pc::{runtime};
+use crate::pc::runtime::graph::{DependencyGraph};
 use crate::pc::runtime::vfs::{VirtualFileSystem};
-use crate::base::ast::{Expression};
 use serde::{Serialize};
-
 
 pub struct Runtime {
   pub entry_file: String
@@ -48,29 +42,28 @@ impl Engine {
     }
   }
   
-  pub fn start_runtime(&mut self, file_path: String) {
+  pub fn start_runtime(&mut self, file_path: String) -> Result<(), &'static str> {
     let source = self.vfs.load(&file_path).unwrap().to_string();
-
-    let dependency = &self.dependency_graph.load_dependency(&file_path, &mut self.vfs);
-
-    self.evaluate(&file_path);
+    self.dependency_graph.load_dependency(&file_path, &mut self.vfs)?;
+    self.evaluate(&file_path)
   }
 
-  pub fn update_virtual_file_content(&mut self, file_path: String, content: String) {
+  pub fn update_virtual_file_content(&mut self, file_path: String, content: String) -> Result<(), &'static str> {
     self.vfs.update(&file_path, &content);
-    let dependency = &self.dependency_graph.reload_dependents(&file_path, &mut self.vfs);
-    self.evaluate(&file_path);
+    let dependency = &self.dependency_graph.reload_dependents(&file_path, &mut self.vfs)?;
+    self.evaluate(&file_path)
   }
 
-  fn evaluate(&mut self, file_path: &String) {
+  fn evaluate(&mut self, file_path: &String) -> Result<(), &'static str>  {
     let dependency = self.dependency_graph.dependencies.get(file_path).unwrap();
     self.events.push(EngineEvent::Evaluated(Evaluated {
       file_path: file_path.clone(),
-      node: runtime::evaluate(&dependency.expression, file_path, &self.dependency_graph).unwrap()
+      node: runtime::evaluate(&dependency.expression, file_path, &self.dependency_graph)?
     }));
     self.runtimes.push(Runtime {
       entry_file: file_path.to_string()
     });
+    Ok(())
   }
 
   pub fn drain_events(&mut self) -> Vec<EngineEvent> {

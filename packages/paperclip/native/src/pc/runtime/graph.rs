@@ -1,4 +1,4 @@
-use std::fmt;
+use std::fs;
 use std::path::Path;
 use super::vfs::{VirtualFileSystem};
 use crate::pc::{ast as pc_ast, parser};
@@ -14,33 +14,28 @@ impl DependencyGraph {
   pub fn new() -> DependencyGraph {
     DependencyGraph { dependencies: HashMap::new() }
   }
-  pub fn load_dependency<'a>(&mut self, file_path: &String, vfs: &mut VirtualFileSystem) -> &Dependency {
+  pub fn load_dependency<'a>(&mut self, file_path: &String, vfs: &mut VirtualFileSystem) -> Result<&Dependency, &'static str> {
     let source = vfs.load(&file_path).unwrap().to_string();
-    let dependency = Dependency::from_source(source, &file_path);
+    let dependency = Dependency::from_source(source, &file_path)?;
     for (id, dep_file_path) in &dependency.dependencies {
       if !self.dependencies.contains_key(&dep_file_path.to_string()) {
-        self.load_dependency(&dep_file_path, vfs);
+        self.load_dependency(&dep_file_path, vfs)?;
       }
     }
     
     self.dependencies.insert(file_path.to_string(), dependency);
   
-    return self.dependencies.get(&file_path.to_string()).unwrap();
+    return Ok(self.dependencies.get(&file_path.to_string()).unwrap());
   }
 
-  pub fn reload_dependents<'a>(&mut self, file_path: &String, vfs: &mut VirtualFileSystem) -> &Dependency {
+  pub fn reload_dependents<'a>(&mut self, file_path: &String, vfs: &mut VirtualFileSystem) -> Result<&Dependency, &'static str> {
     if !self.dependencies.contains_key(&file_path.to_string()) {
-      return self.load_dependency(file_path, vfs);
+      return self.load_dependency(file_path, vfs)
     }
     self.dependencies.remove(file_path);
     self.dependencies.retain(|dep_file_path, dep| {
       return !dep.dependencies.contains_key(file_path);
     });
-    // for (dep_file_path, dep) in &self.dependencies {
-    //   if dep.dependencies.contains_key(file_path) {
-    //     self.dependencies.remove(&dep_file_path.to_string());
-    //   }
-    // }
     self.load_dependency(file_path, vfs)
   }
 }
@@ -52,24 +47,25 @@ pub struct Dependency {
 }
 
 impl<'a> Dependency {
-  pub fn from_source(source: String, file_path: &String) -> Dependency {
-    let expression = parser::parse(source.as_str()).unwrap();
+  pub fn from_source(source: String, file_path: &String) -> Result<Dependency, &'static str> {
+    let expression = parser::parse(source.as_str())?;
+    
     let imports = pc_ast::get_imports(&expression);
     let source_path = Path::new(&file_path);
     let dir = source_path.parent().unwrap();
 
     let mut dependencies = HashMap::new();
     for import in &imports {
-      let src = dir.join(pc_ast::get_attribute_value("src", import).unwrap().as_str());
+      let src = fs::canonicalize(dir.join(pc_ast::get_attribute_value("src", import).unwrap().as_str())).unwrap();
       dependencies.insert(
         pc_ast::get_attribute_value("id", import).unwrap().as_str().to_string(),
         src.to_str().unwrap().to_string()
       );
     }
-    Dependency {
+    Ok(Dependency {
       expression,
       dependencies
-    }
+    })
   }
 }
 

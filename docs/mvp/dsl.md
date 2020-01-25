@@ -11,7 +11,7 @@ it instantiates a new component instance -->
 
 <!-- JSON files can also be imported as context -->
 <!-- { primaryColor: "#FF6600" } -->
-<import id="theme" src="theme.json" /> 
+<import id="theme" src="theme.json" />
 
 <!-- import JSON files without ID to add them to _this_ context -->
 <import src="./path/to/context.json" />
@@ -45,11 +45,11 @@ it instantiates a new component instance -->
 </div>
 
 <!-- spread prop to elements -->
-<span  {{...boundAttributes}}> 
+<span  {{...boundAttributes}}>
 </span>
 
 <!-- properties passed into this component -->
-<span  {{...this.props}}> 
+<span  {{...this.props}}>
 </span>
 
 <!-- logic in templates using builtin JS evaluator -->
@@ -61,7 +61,7 @@ it instantiates a new component instance -->
   nothing else
 {{/}}
 
-{{#each items as value, k}} 
+{{#each items as value, k}}
   Repeat some value
 {{/each}}
 
@@ -77,17 +77,21 @@ it instantiates a new component instance -->
     something something
   </div>
 }} />
+
+<!-- recursive render -->
+<self />
 ```
 
 controller (logic) example:
 
 ```javascript
 import * as React from "react";
-export default Template => class TemplateController extends React.Component {
-  render() {
-    return <Template />;
-  }
-}
+export default Template =>
+  class TemplateController extends React.Component {
+    render() {
+      return <Template />;
+    }
+  };
 ```
 
 Additionally, `.pc` files may have a corresponding `.[COMPONENT_NAME].tdc` (Tandem component file) which contains info to help visualize the component. Here's an example file:
@@ -160,7 +164,6 @@ Additionally, `.pc` files may have a corresponding `.[COMPONENT_NAME].tdc` (Tand
 intl component:
 
 ```html
-
 <!-- default text is children -->
 {{this.children}}
 ```
@@ -170,11 +173,11 @@ intl component:
   Hello!
 </intl>
 ```
+
 intl-logic.js:
 
 ```javascript
-
-import {translate} from "some-i18n-library";
+import { translate } from "some-i18n-library";
 
 const translations = {
   en: {
@@ -185,14 +188,15 @@ const translations = {
   }
 };
 
-export default Template => class extends React.Component {
-  render() {
-    const {id, values, children} = props;
-    const {locale} = this.context;
-    const translation = translate(translations[locale][id], values);
-    return translation || children;
-  }
-}
+export default Template =>
+  class extends React.Component {
+    render() {
+      const { id, values, children } = props;
+      const { locale } = this.context;
+      const translation = translate(translations[locale][id], values);
+      return translation || children;
+    }
+  };
 ```
 
 #### Compiler
@@ -217,16 +221,13 @@ config example:
 }
 ```
 
-> Config wouldn't be necessary to use in VSCode. Though functionality may be limited. 
+> Config wouldn't be necessary to use in VSCode. Though functionality may be limited.
 
 CLI examples:
 
 ```
 paperclip --config path/to/config.json
 ```
-
-
-
 
 ```html
 <text id="message">
@@ -245,12 +246,12 @@ paperclip --config path/to/config.json
 }
 ```
 
-
 Pane.pc:
 
 ```html
 <style>
-  #header {}
+  #header {
+  }
 </style>
 <div>
   <div id="header">
@@ -267,5 +268,7 @@ app.pc:
 ```html
 <import id="pane" src="./pane.pc" />
 
-<pane header={{"something"}} content={{<div>hello world</div>}} />
+<pane header={{"something"}} content={{
+<div>hello world</div>
+}} />
 ```
