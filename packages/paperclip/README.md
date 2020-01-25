@@ -11,6 +11,7 @@ immediate TODO:
 - [ ] diff / patch
 - [ ] scoped styles
 - [ ] DSL enhancements
+- [ ] :global selector
 
 Nice to haves:
 

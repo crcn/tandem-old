@@ -1,13 +1,6 @@
 use std::fmt;
 use serde::{Serialize};
-// use base::ast::{Location};
-
-// TODO - include source expression path
-
-// pub struct Source {
-//   file_name: &'a str,
-//   location: Location
-// }
+use crate::css::runtime::virt as css_virt;
 
 #[derive(Debug, PartialEq, Serialize)]
 pub struct Fragment {
@@ -28,6 +21,20 @@ pub struct Element {
   pub tag_name: String,
   pub attributes: Vec<Attribute>,
   pub children: Vec<Node>
+}
+
+#[derive(Debug, PartialEq, Serialize)]
+pub struct StyleElement {
+  pub sheet: css_virt::CSSSheet
+}
+
+impl fmt::Display for StyleElement {
+  fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+    write!(f, "<style>");
+    write!(f, "{}", self.sheet.to_string());
+    write!(f, "</style>");
+    Ok(())
+  }
 }
 
 impl fmt::Display for Element {
@@ -68,7 +75,8 @@ pub struct Text {
 pub enum Node {
   Element(Element),
   Text(Text),
-  Fragment(Fragment)
+  Fragment(Fragment),
+  StyleElement(StyleElement)
 }
 
 impl fmt::Display for Node {
@@ -76,6 +84,7 @@ impl fmt::Display for Node {
     match self {
       Node::Element(el) => { write!(f, "{}", el.to_string())},
       Node::Fragment(fragment) => { write!(f, "{}", fragment.to_string())},
+      Node::StyleElement(el) => { write!(f, "{}", el.to_string())},
       Node::Text(text) => { write!(f, "{}", text.value.to_string())}
     }
   }

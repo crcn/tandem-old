@@ -1,3 +1,10 @@
-<import id="butter" src="./butter.pc" />
 
-<butter tastes="good" />
+<style>
+  div {
+    color: red;
+  }
+</style>
+
+<div>
+  okay
+</div>

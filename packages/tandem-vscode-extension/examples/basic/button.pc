@@ -1,4 +1,11 @@
-<style></style>
-<div style="color: orange; font-size: 72px"> 
-  Something like this
+<style>
+  div {
+    color: orange;
+    font-size: 20px;
+    text-decoration: underline;
+    padding: 10px;
+  }
+</style>
+<div> 
+  some button
 </div>

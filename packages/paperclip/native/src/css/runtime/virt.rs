@@ -1,0 +1,54 @@
+use std::fmt;
+use serde::{Serialize};
+
+#[derive(Debug, PartialEq, Serialize)]
+pub struct CSSSheet {
+  pub rules: Vec<CSSRule>
+}
+
+impl fmt::Display for CSSSheet {
+  fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+    for rule in &self.rules {
+      write!(f, "{}", rule.to_string());
+    }
+    Ok(())
+  }
+}
+
+#[derive(Debug, PartialEq, Serialize)]
+#[serde(tag = "type")]
+pub enum CSSRule {
+  CSSStyleRule(CSSStyleRule)
+}
+
+impl fmt::Display for CSSRule {
+  fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+    match self {
+      CSSRule::CSSStyleRule(rule) => write!(f, "{}", rule.to_string())
+    };
+    Ok(())
+  }
+}
+
+#[derive(Debug, PartialEq, Serialize)]
+pub struct CSSStyleRule {
+  pub selectorText: String,
+  pub style: Vec<CSSStyleProperty>
+}
+
+impl fmt::Display for CSSStyleRule {
+  fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+    write!(f, " {} {{", &self.selectorText);
+    for property in &self.style {
+      write!(f, "{}: {};", &property.name, &property.value);
+    }
+    write!(f, "}}");
+    Ok(())
+  }
+}
+
+#[derive(Debug, PartialEq, Serialize)]
+pub struct CSSStyleProperty {
+  pub name: String,
+  pub value: String
+}
