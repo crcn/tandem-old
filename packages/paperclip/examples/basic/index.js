@@ -9,4 +9,4 @@ let now = Date.now();
 e.startRuntime(__dirname + "/main.pc");
 console.log(Date.now() - now);
 
-console.log(JSON.stringify(e.drainEvents(), null, 2));
+// console.log(JSON.stringify(e.drainEvents(), null, 2));

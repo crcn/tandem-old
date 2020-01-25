@@ -8,9 +8,8 @@
 immediate TODO:
 
 - [ ] JS renderer
-- [ ] update VFS
-- [ ] scoped styles
 - [ ] diff / patch
+- [ ] scoped styles
 - [ ] DSL enhancements
 
 Nice to haves:

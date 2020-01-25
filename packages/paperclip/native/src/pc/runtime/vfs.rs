@@ -25,6 +25,13 @@ impl VirtualFileSystem {
 
   }
 
+  pub fn update(&mut self, file_path: &String, content: &String) -> io::Result<String> {
+    if self.contents.contains_key(file_path) {
+      return Ok(self.contents.insert(file_path.to_string(), content.to_string()).unwrap());
+    }
+    return Ok("".to_string());
+  }
+
   pub fn reload(&mut self, file_path: &String) -> io::Result<&String> {
     let content = fs::read_to_string(&file_path)?;
     insert_file_path(file_path.to_string(), content, &mut self.contents);

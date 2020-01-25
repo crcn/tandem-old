@@ -4,12 +4,15 @@
   "description": "- Realtime editing. Biggest priority is to have a bundler that  - Interoperability. Paperclip should work with any web framework.  - Type safety.  - Visually editable.",
   "main": "index.js",
   "scripts": {
-    "install": "npm run build",
-    "build": "neon build --release"
+    "install": "npm run build:node",
+    "build:node": "neon build --release",
+    "build:electron": "electron-build-env neon build --release"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "electron": "6.1.6",
+    "electron-build-env": "^0.2.0",
     "neon-cli": "^0.3.2"
   }
 }

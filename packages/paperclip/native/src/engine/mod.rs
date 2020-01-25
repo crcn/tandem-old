@@ -54,10 +54,12 @@ impl Engine {
     let dependency = &self.dependency_graph.load_dependency(&file_path, &mut self.vfs);
 
     self.evaluate(&file_path);
+  }
 
-    self.runtimes.push(Runtime {
-      entry_file: file_path
-    });
+  pub fn update_virtual_file_content(&mut self, file_path: String, content: String) {
+    self.vfs.update(&file_path, &content);
+    let dependency = &self.dependency_graph.reload_dependents(&file_path, &mut self.vfs);
+    self.evaluate(&file_path);
   }
 
   fn evaluate(&mut self, file_path: &String) {
@@ -66,6 +68,9 @@ impl Engine {
       file_path: file_path.clone(),
       node: runtime::evaluate(&dependency.expression, file_path, &self.dependency_graph).unwrap()
     }));
+    self.runtimes.push(Runtime {
+      entry_file: file_path.to_string()
+    });
   }
 
   pub fn drain_events(&mut self) -> Vec<EngineEvent> {

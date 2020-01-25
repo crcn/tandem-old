@@ -1,25 +1,11 @@
-// interface vscode {
-//   postMessage(message: any): void;
-// }
-
-// declare namespace vscode {
-//   postMessage(message: any): void;
-// }
-
 declare var vscode: any;
 
-const openFile = (uri: string) => {
-  
-};
+document.body.innerHTML = "OKOKO";
 
-const updateFile = (uri: string, content: string) => {
-  document.body.innerHTML = content;
-};
-
-const onMessage = ({data: message}: MessageEvent) => {
-  switch(message.type) {
-    case "open": return openFile(message.uri);
-    case "updateFile": return updateFile(message.uri, message.content);
+const onMessage = ({ data: event }: MessageEvent) => {
+  console.log(event);
+  if (event.type === "Evaluated") {
+    document.body.innerHTML = JSON.stringify(event.node);
   }
 };
 

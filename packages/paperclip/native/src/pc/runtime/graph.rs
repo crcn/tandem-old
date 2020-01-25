@@ -27,6 +27,22 @@ impl DependencyGraph {
   
     return self.dependencies.get(&file_path.to_string()).unwrap();
   }
+
+  pub fn reload_dependents<'a>(&mut self, file_path: &String, vfs: &mut VirtualFileSystem) -> &Dependency {
+    if !self.dependencies.contains_key(&file_path.to_string()) {
+      return self.load_dependency(file_path, vfs);
+    }
+    self.dependencies.remove(file_path);
+    self.dependencies.retain(|dep_file_path, dep| {
+      return !dep.dependencies.contains_key(file_path);
+    });
+    // for (dep_file_path, dep) in &self.dependencies {
+    //   if dep.dependencies.contains_key(file_path) {
+    //     self.dependencies.remove(&dep_file_path.to_string());
+    //   }
+    // }
+    self.load_dependency(file_path, vfs)
+  }
 }
 
 #[derive(Debug)]

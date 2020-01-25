@@ -10,4 +10,7 @@ DX TODOs:
 - [ ] error messages
 - [ ] implicit type checking
 - [ ] when PC file is open, prompt for preview
- 
+
+other TODOS:
+
+- [ ] generalize code for other IDEs - move to separate package

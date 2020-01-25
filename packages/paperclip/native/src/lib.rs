@@ -22,9 +22,20 @@ declare_types! {
       let file_path: String = cx.argument::<JsString>(0)?.value();
       let mut this = cx.this();
 
-      let result = cx.borrow_mut(&mut this, |mut engine| {
+      cx.borrow_mut(&mut this, |mut engine| {
         engine.start_runtime(file_path);
-        engine.runtimes.len()
+      });
+      
+      Ok(cx.undefined().upcast())
+    }
+
+    method updateVirtualFileContent(mut cx) {
+      let file_path: String = cx.argument::<JsString>(0)?.value();
+      let content: String = cx.argument::<JsString>(1)?.value();
+      let mut this = cx.this();
+
+      cx.borrow_mut(&mut this, |mut engine| {
+        engine.update_virtual_file_content(file_path, content);
       });
       
       Ok(cx.undefined().upcast())
