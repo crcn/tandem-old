@@ -36,11 +36,13 @@ fn evaluate_style_rule(expr: &Expression<ast::Rule>, context: &Context) -> Resul
 }
 
 fn stringify_element_selector(selector: &ast::Selector, context: &Context) -> Result<String, &'static str> {
-  let value = match selector {
-    ast::Selector::Class(cls) => cls.to_string(),
-    ast::Selector::Element(el) => el.to_string(),
+  let scoped_selector_text = match selector {
+    ast::Selector::AllSelector => format!(".{}", context.scope),
+    ast::Selector::Class(selector) => format!("{}.{}", selector.class_name, context.scope),
+    ast::Selector::Element(selector) => format!("{}.{}", selector.tag_name, context.scope)
   };
-  Ok(format!("{}.{}", value, context.scope).to_string())
+  
+  Ok(scoped_selector_text.to_string())
 }
 
 fn evaluate_style<'a>(expr: &'a Expression<ast::Declaration>) -> Result<virt::CSSStyleProperty, &'static str> {

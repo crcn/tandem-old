@@ -1,10 +1,13 @@
 <style>
+  * {
+    box-sizing: content-box;
+    color: red;
+  }
   div {
-    color: blue;
     font-size: 20px;
     padding: 10px;
   }
 </style>
 <div> 
-  some button!!
+  some button
 </div>

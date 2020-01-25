@@ -56,6 +56,10 @@ fn parse_rule<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Expression<Rule>, &'s
 fn parse_element_selector<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Selector, &'static str> {
   let token = tokenizer.peek(1)?;
   let selector = match &token {
+    Token::Star => {
+      tokenizer.next()?; // eat *
+      Selector::AllSelector
+    }
     Token::Dot => {
       tokenizer.next()?;
       Selector::Class(ClassSelector {

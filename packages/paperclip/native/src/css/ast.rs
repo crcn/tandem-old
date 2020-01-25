@@ -36,7 +36,8 @@ impl fmt::Display for Rule {
 #[derive(Debug, PartialEq, Serialize)]
 pub enum Selector {
   Element(ElementSelector),
-  Class(ClassSelector)
+  Class(ClassSelector),
+  AllSelector
 }
 
 
@@ -44,7 +45,8 @@ impl fmt::Display for Selector {
   fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
     match self {
       Selector::Element(child) => write!(f, "{}", child.to_string()),
-      Selector::Class(child) => write!(f, "{}", child.to_string())
+      Selector::Class(child) => write!(f, "{}", child.to_string()),
+      Selector::AllSelector => write!(f, "*")
     }
   }
 }
