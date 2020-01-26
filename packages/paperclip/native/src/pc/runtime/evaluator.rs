@@ -7,30 +7,84 @@ use super::graph::{DependencyGraph};
 use crate::css::runtime::evaulator::{evaluate as evaluate_css};
 use crate::js::runtime::evaluator::{evaluate as evaluate_js};
 use crate::js::runtime::virt as js_virt;
+use crate::js::ast as js_ast;
+use crate::css::runtime::virt as css_virt;
 use crc::{crc32};
 
 #[derive(Debug)]
-pub struct Context<'a, 'b> {
+pub struct Context<'a> {
   graph: &'a DependencyGraph,
   file_path: &'a String,
   import_ids: HashSet<&'a String>,
-  scope: &'b str,
+  scope: String,
   data: &'a js_virt::JsObject,
 }
 
 pub fn evaluate<'a>(node_expr: &Expression<ast::Node>, file_path: &String, graph: &'a DependencyGraph, data: &js_virt::JsObject) -> Result<Option<virt::Node>, &'static str>  {
+  let context = create_context(node_expr, file_path, graph, data);
+  
+  let mut root_result = evaluate_node(node_expr, &context);
 
-  let file_hash = format!("_{:x}", crc32::checksum_ieee(file_path.as_bytes()));
+  // need to insert all styles into the root for efficiency
+  match root_result {
+    Ok(ref mut root_option) => {
+      match root_option {
+        Some(ref mut root) => {
+          let style = evaluate_jumbo_style(node_expr, file_path, graph)?;
+          root.prepend_child(style);
+        },
+        _ => { }
+      }
+    }
+    _ => { }
+  };
 
-  let context = Context {
+  root_result
+}
+
+
+pub fn evaluate_jumbo_style<'a>(entry_expr: &Expression<ast::Node>,  file_path: &String, graph: &'a DependencyGraph) -> Result<virt::Node, &'static str>  {
+
+  let mut sheet = css_virt::CSSSheet {
+    rules: vec![] 
+  };
+
+  for dep in graph.flatten(file_path) {
+    let children_option = ast::get_children(&dep.expression);
+    let scope = get_component_scope(&dep.file_path);
+    if let Some(children) = children_option {
+
+      // style elements are only allowed in root, so no need to traverse
+      for child in children {
+        if let ast::Node::StyleElement(styleElement) = &child.item {
+          sheet.extend(evaluate_css(&styleElement.sheet, &scope)?);
+        }
+      }
+    }
+  }
+  
+  Ok(virt::Node::StyleElement(virt::StyleElement {
+    sheet
+  }))
+}
+
+pub fn evaluate_component<'a>(node_expr: &Expression<ast::Node>, file_path: &String, graph: &'a DependencyGraph, data: &js_virt::JsObject) -> Result<Option<virt::Node>, &'static str>  {
+  evaluate_node(node_expr, &create_context(node_expr, file_path, graph, data))
+}
+
+
+fn create_context<'a>(node_expr: &'a Expression<ast::Node>, file_path: &'a String, graph: &'a DependencyGraph, data: &'a js_virt::JsObject) -> Context<'a> {
+  Context {
     graph,
     file_path,
     import_ids: HashSet::from_iter(ast::get_import_ids(node_expr)),
-    scope: file_hash.as_str(),
+    scope: get_component_scope(file_path),
     data
-  };
+  }
+}
 
-  evaluate_node(node_expr, &context)
+fn get_component_scope<'a>(file_path: &String) -> String {
+  format!("_{:x}", crc32::checksum_ieee(file_path.as_bytes())).to_string()
 }
 
 fn evaluate_node<'a>(node_expr: &Expression<ast::Node>, context: &'a Context) -> Result<Option<virt::Node>, &'static str> {
@@ -45,7 +99,7 @@ fn evaluate_node<'a>(node_expr: &Expression<ast::Node>, context: &'a Context) ->
       Ok(Some(virt::Node::Text(virt::Text { value: text.value.to_string() })))
     },
     ast::Node::Slot(slot) => {
-      Ok(Some(virt::Node::Text(virt::Text { value: evaluate_js(slot, &context.data)?.to_string() })))
+      evaluate_slot(&slot, context)
     },
     ast::Node::Fragment(el) => {
       evaluate_fragment(&el, context)
@@ -55,6 +109,7 @@ fn evaluate_node<'a>(node_expr: &Expression<ast::Node>, context: &'a Context) ->
     }
   }
 }
+
 fn evaluate_element<'a>(element: &ast::Element, context: &'a Context) -> Result<Option<virt::Node>, &'static str> {
   match element.tag_name.as_str() {
     "import" => evaluate_import_element(element, context),
@@ -68,10 +123,33 @@ fn evaluate_element<'a>(element: &ast::Element, context: &'a Context) -> Result<
   }
 }
 
+fn evaluate_slot<'a>(slot: &Expression<js_ast::Statement>, context: &'a Context) -> Result<Option<virt::Node>, &'static str> {
+  let mut js_value = evaluate_js(slot, &context.data)?;
+
+  // if array of values, then treat as document fragment
+  if let js_virt::JsValue::JsArray(ary) = &mut js_value {
+    let mut children = vec![];
+    for item in ary.values.drain(0..) {
+      if let js_virt::JsValue::JsNode(child) = item {
+        children.push(child);
+      } else {
+        children.push(virt::Node::Text(virt::Text {
+          value: item.to_string()
+        }))
+      }
+    }
+
+    return Ok(Some(virt::Node::Fragment(virt::Fragment {
+      children
+    })));
+  }
+
+  Ok(Some(virt::Node::Text(virt::Text { value: js_value.to_string() })))
+}
+
 fn evaluate_imported_component<'a>(element: &ast::Element, context: &'a Context) -> Result<Option<virt::Node>, &'static str> {
 
   // let attributes = vec![];
-  // let children = vec![];
   let selfDep  = &context.graph.dependencies.get(context.file_path).unwrap();
   let dep_file_path = &selfDep.dependencies.get(&element.tag_name).unwrap();
   let dep = &context.graph.dependencies.get(&dep_file_path.to_string()).unwrap();
@@ -87,9 +165,22 @@ fn evaluate_imported_component<'a>(element: &ast::Element, context: &'a Context)
       data.values.insert(attr.name.to_string(), js_virt::JsValue::JsString(value.unwrap().to_string()));
     }
   }
+  
+  let mut js_self = js_virt::JsObject::new();
+  let mut js_children = js_virt::JsArray::new();
+  let children: Vec<js_virt::JsValue> = evaluate_children(&element.children, &context)?.into_iter().map(|child| {
+    js_virt::JsValue::JsNode(child)
+  }).collect();
+
+  js_children.values.extend(children);
+
+  data.values.insert("children".to_string(), js_virt::JsValue::JsArray(js_children));
+
+  // TODO when
+  // data.values.insert("self".to_string(), js_virt::JsValue::JsObject(js_self));
 
   // TODO: if fragment, then wrap in span. If not, then copy these attributes to root element
-  evaluate(&dep.expression, dep_file_path, &context.graph, &data)
+  evaluate_component(&dep.expression, dep_file_path, &context.graph, &data)
 }
 
 fn evaluate_basic_element<'a>(element: &ast::Element, context: &'a Context) -> Result<Option<virt::Node>, &'static str> {
@@ -148,9 +239,10 @@ fn evaluate_import_element<'a>(_element: &ast::Element, context: &'a Context) ->
 }
 
 fn evaluate_style_element<'a>(element: &ast::StyleElement, context: &'a Context) -> Result<Option<virt::Node>, &'static str> {
-  Ok(Some(virt::Node::StyleElement(virt::StyleElement {
-    sheet: evaluate_css(&element.sheet, &context.scope)?
-  })))
+  Ok(None)
+  // Ok(Some(virt::Node::StyleElement(virt::StyleElement {
+  //   sheet: evaluate_css(&element.sheet, &context.scope)?
+  // })))
 }
   
 
@@ -191,7 +283,6 @@ mod tests {
   use super::*;
   use super::super::graph::*;
   use super::super::super::parser::*;
-  use std::collections::*;
 
   #[test]
   fn can_evaluate_a_style() {

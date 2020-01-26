@@ -7,6 +7,7 @@
 
 immediate TODO:
 
+- [ ] remove Expression { } - put directly on AST element
 - [ ] render scoped styles at top of document
 - [ ] JS renderer
 - [ ] diff / patch
@@ -30,3 +31,7 @@ Nice to haves:
   - [ ] i18n
   - rust + js basically
 * [ ] evaluator
+
+Linter TODOS:
+
+- [ ] style blocks can only happen at root

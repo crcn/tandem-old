@@ -4,15 +4,17 @@ Limitations:
 
 immediate TODO:
 
-- [ ] scoped styles
-  - [ ] selector parsing
-- [ ] JS context
-- [ ] {{#if}} blocks
-- [ ] {{#repeat }} blocks
-- [ ] JS evaluator (need arrays for `<component context={{['something', 'something']}} />`)
-- [ ] VSCode extension
-  - [ ] realtime preview should be explicit (add vscode button)
-  - [ ] realtime preview should be attached to loaded file
+- vscode extension polish
+  - explicitly open PC preview
+  - button for opening PC preview
+- ref.paths.for.js.engine
+- #if blocks
+- JS evaluator
+  - strings & numbers
+  - arrays
+- #repeat
+- attribute bindings
+- stress test
 
 Stress test:
 

@@ -1,19 +1,19 @@
 #[macro_use]
 extern crate matches;
-// use std::io;
-// use std::io::prelude::*;
-// use std::fs::File;
 
 mod base;
 mod css;
 mod pc;
 mod js;
 
+use pc::runtime::graph::{DependencyGraph};
+use js::runtime::virt::{JsObject};
+
 fn main() {
 
     // let mut f = File::open("test.pc");
 
-    let buffer = "<style></ <div></div>".to_string();
+    let buffer = "<style></style> <div></div>".to_string();
 
     // let mut buffer = String::new();
     // // read the whole file
@@ -28,12 +28,15 @@ fn main() {
     println!("OKOK");
 
     // // let now = Instant::now();
-    let result = pc::parser::parse(buffer.as_str());
-    println!("{:?}", &result);
+    let expr = pc::parser::parse(buffer.as_str()).unwrap();
+    println!("{:?}", &expr);
     // // println!("micro seconds to parse: {}", now.elapsed().as_micros());
 
+
     // // let now = Instant::now();
-    // let result = pc::runtime::evaluate(&expr).unwrap().unwrap();
+    let result = pc::runtime::evaluate(&expr, &"something".to_string(), &DependencyGraph::new(), &JsObject::new()).unwrap().unwrap();
+
+    println!("{:?}", result);
 
     // // println!("micro seconds to evaluate: {}", now.elapsed().as_micros());
     // // println!("{}", result);

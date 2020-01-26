@@ -1,12 +1,20 @@
-<style>
-  div {
-    color: red;
-  }
-</style>
 <import id="button" src="./button.pc" />
 
-<button firstName="craig condon " lastName />
+<style>
+  div {
+    color: orange;
+  }
+  span {
+    color: orange;
+  }
+</style>
 
-<div>
-  okay!!
+<div> 
+  something like this should work
 </div>
+
+<button label="click that">
+  <span>
+    color me this
+  </span>
+</button>

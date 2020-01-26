@@ -1,8 +1,13 @@
 <style>
   div {
-    color: blue;
+    color: white;
+    border-radius: 10px;
+    background: grey;
+    padding: 10px;
+    display: inline-block;
   }
 </style>
+
 <div>
-  {{firstName}} {{lastName}}
+  {{children}}
 </div>

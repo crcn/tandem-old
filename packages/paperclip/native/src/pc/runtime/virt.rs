@@ -2,7 +2,7 @@ use std::fmt;
 use serde::{Serialize};
 use crate::css::runtime::virt as css_virt;
 
-#[derive(Debug, PartialEq, Serialize)]
+#[derive(Debug, PartialEq, Serialize, Clone)]
 pub struct Fragment {
   pub children: Vec<Node>
 }
@@ -16,14 +16,14 @@ impl fmt::Display for Fragment {
   }
 }
 
-#[derive(Debug, PartialEq, Serialize)]
+#[derive(Debug, PartialEq, Serialize, Clone)]
 pub struct Element {
   pub tag_name: String,
   pub attributes: Vec<Attribute>,
   pub children: Vec<Node>
 }
 
-#[derive(Debug, PartialEq, Serialize)]
+#[derive(Debug, PartialEq, Serialize, Clone)]
 pub struct StyleElement {
   pub sheet: css_virt::CSSSheet
 }
@@ -59,18 +59,18 @@ impl fmt::Display for Element {
   }
 }
 
-#[derive(Debug, PartialEq, Serialize)]
+#[derive(Debug, PartialEq, Serialize, Clone)]
 pub struct Attribute {
   pub name: String,
   pub value: Option<String>
 }
 
-#[derive(Debug, PartialEq, Serialize)]
+#[derive(Debug, PartialEq, Serialize, Clone)]
 pub struct Text {
   pub value: String
 }
 
-#[derive(Debug, PartialEq, Serialize)]
+#[derive(Debug, PartialEq, Serialize, Clone)]
 #[serde(tag = "type")]
 pub enum Node {
   Element(Element),
@@ -86,6 +86,22 @@ impl fmt::Display for Node {
       Node::Fragment(fragment) => { write!(f, "{}", fragment.to_string())},
       Node::StyleElement(el) => { write!(f, "{}", el.to_string())},
       Node::Text(text) => { write!(f, "{}", text.value.to_string())}
+    }
+  }
+}
+
+impl Node {
+  pub fn prepend_child<'a>(&mut self, child: Node) {
+    match self {
+      Node::Element(ref mut element) => {
+        element.children.insert(0, child);
+      },
+      Node::Fragment(ref mut element) => {
+        element.children.insert(0, child);
+      },
+      _ => {
+        
+      }
     }
   }
 }

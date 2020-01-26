@@ -14,6 +14,15 @@ impl DependencyGraph {
   pub fn new() -> DependencyGraph {
     DependencyGraph { dependencies: HashMap::new() }
   }
+  pub fn flatten<'a>(&'a self, entry_file_path: &String) -> Vec<&Dependency> {
+    let mut deps = vec![];
+    let entry = self.dependencies.get(entry_file_path).unwrap();
+    deps.push(entry);
+    for (_, dep_file_path) in &entry.dependencies {
+      deps.extend(self.flatten(dep_file_path));
+    }
+    return deps;
+  }
   pub fn load_dependency<'a>(&mut self, file_path: &String, vfs: &mut VirtualFileSystem) -> Result<&Dependency, &'static str> {
     let source = vfs.load(&file_path).unwrap().to_string();
     let dependency = Dependency::from_source(source, &file_path)?;
@@ -40,8 +49,10 @@ impl DependencyGraph {
   }
 }
 
+
 #[derive(Debug)]
 pub struct Dependency {
+  pub file_path: String,
   pub dependencies: HashMap<String, String>,
   pub expression: Expression<pc_ast::Node>
 }
@@ -63,22 +74,9 @@ impl<'a> Dependency {
       );
     }
     Ok(Dependency {
+      file_path: file_path.to_string(),
       expression,
       dependencies
     })
   }
 }
-
-// pub fn load_dependency<'a>(file_path: &String, dependency_graph: &'a mut DependencyGraph, vfs: &mut VirtualFileSystem) -> &'a Dependency {
-//   let source = vfs.load(&file_path).unwrap().to_string();
-//   let dependency = Dependency::from_source(source, &file_path);
-//   for dep_file_path in &dependency.dependencies {
-//     if !dependency_graph.contains_key(&dep_file_path.to_string()) {
-//       load_dependency(&dep_file_path, dependency_graph, vfs);
-//     }
-//   }
-  
-//   dependency_graph.insert(file_path.to_string(), dependency);
-
-//   return dependency_graph.get(&file_path.to_string()).unwrap();
-// }

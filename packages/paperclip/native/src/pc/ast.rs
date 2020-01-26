@@ -46,6 +46,78 @@ impl fmt::Display for Node {
   }
 }
 
+impl Node {
+  pub fn traverse<FF>(&self, each: &FF) -> bool where FF: Fn(&Node) -> bool {
+    if !each(self) {
+      return false;
+    }
+    let children_option = match self {
+      Node::Element(element) => {
+        Some(&element.children)
+      },
+      Node::Fragment(fragment) => {
+        Some(&fragment.children)
+      },
+      _ => {
+        None
+      }
+    };
+
+    if let Some(children) = children_option {
+      for child in children {
+        if !child.item.traverse(each) {
+          return false;
+        }
+      }
+    }
+    return true;
+  }
+}
+
+
+// pub struct NodeIterator<'a> {
+//   curr: &'a Node,
+//   child_index: usize
+// }
+
+// impl<'a> Iterator for NodeIterator<'a> {
+//   type Item = &'a Node;
+//   fn next(&mut self) -> Option<&'a Node> {
+
+//     let children_option = match self {
+//       Node::Element(element) => {
+//         Some(&element.children)
+//       },
+//       Node::Fragment(fragment) => {
+//         Some(&fragment.children)
+//       },
+//       _ => {
+//         None
+//       }
+//     };
+
+//     if children_option.len() == 0 {
+//       return None;
+//     }
+
+//     let children = children_option.unwrap();
+
+//     let old_child_index = self.child_index;
+//     self.child_index += 1;
+  
+//     if old_child_index == -1 {
+//       return Some(self.curr);
+//     } else if (old_child_index < children.len() - 1) {
+//       return Some(children[old_child_index]);
+//     } else {
+//       self.curr = children[old_child_index];
+//       self.child_index = 0;
+//       return Some(self.curr);
+//     }
+//     None
+//   }
+// }
+
 #[derive(Debug, PartialEq, Serialize)]
 pub struct Str {
   pub value: String
@@ -172,14 +244,18 @@ impl<'a, TItem: std::string::ToString> fmt::Display for Expression<TItem> {
   }
 }
 
-pub fn get_imports<'a>(root_expr: &'a Expression<Node>) -> Vec<&'a Element> {
-  let mut imports = vec![];
-
-  let children = match &root_expr.item {
+pub fn get_children<'a>(expr: &'a Expression<Node>) -> Option<&'a Vec<Expression<Node>>> {
+  match &expr.item {
     Node::Element(root) => Some(&root.children),
     Node::Fragment(root) => Some(&root.children),
     _ => None
-  };
+  }
+}
+
+pub fn get_imports<'a>(root_expr: &'a Expression<Node>) -> Vec<&'a Element> {
+  let mut imports = vec![];
+
+  let children = get_children(root_expr);
 
   if children != None {
     for child in children.unwrap() {

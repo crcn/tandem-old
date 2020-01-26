@@ -1,9 +1,15 @@
 use std::fmt;
 use serde::{Serialize};
 
-#[derive(Debug, PartialEq, Serialize)]
+#[derive(Debug, PartialEq, Serialize, Clone)]
 pub struct CSSSheet {
-  pub rules: Vec<CSSRule>
+  pub rules: Vec<CSSRule>,
+}
+
+impl CSSSheet {
+  pub fn extend(&mut self, other: CSSSheet) {
+    self.rules.extend(other.rules);
+  }
 }
 
 impl fmt::Display for CSSSheet {
@@ -15,7 +21,7 @@ impl fmt::Display for CSSSheet {
   }
 }
 
-#[derive(Debug, PartialEq, Serialize)]
+#[derive(Debug, PartialEq, Serialize, Clone)]
 #[serde(tag = "type")]
 pub enum CSSRule {
   CSSStyleRule(CSSStyleRule)
@@ -30,7 +36,7 @@ impl fmt::Display for CSSRule {
   }
 }
 
-#[derive(Debug, PartialEq, Serialize)]
+#[derive(Debug, PartialEq, Serialize, Clone)]
 pub struct CSSStyleRule {
   pub selectorText: String,
   pub style: Vec<CSSStyleProperty>
@@ -47,7 +53,7 @@ impl fmt::Display for CSSStyleRule {
   }
 }
 
-#[derive(Debug, PartialEq, Serialize)]
+#[derive(Debug, PartialEq, Serialize, Clone)]
 pub struct CSSStyleProperty {
   pub name: String,
   pub value: String
