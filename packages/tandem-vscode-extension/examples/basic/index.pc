@@ -1,20 +1,13 @@
 <import id="button" src="./button.pc" />
 
 <style>
-  div {
-    color: orange;
-  }
   span {
-    color: orange;
+    color: #FFF;
+    font-size: 20px;
+    font-weight: 100;
   }
 </style>
 
-<div> 
-  something like this should work
-</div>
-
-<button label="click that">
-  <span>
-    color me this
-  </span>
+<button>
+  <span>Something</span>
 </button>

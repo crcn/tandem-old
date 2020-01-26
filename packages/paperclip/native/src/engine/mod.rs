@@ -4,10 +4,6 @@ use crate::pc::runtime::vfs::{VirtualFileSystem};
 use crate::js::runtime::virt as js_virt;
 use serde::{Serialize};
 
-pub struct Runtime {
-  pub entry_file: String
-}
-
 #[derive(Debug, PartialEq, Serialize)]
 pub struct Evaluated {
   pub file_path: String,
@@ -29,8 +25,7 @@ pub enum EngineEvent {
 pub struct Engine {
   events: Vec<EngineEvent>,
   pub vfs: VirtualFileSystem,
-  pub dependency_graph: DependencyGraph,
-  pub runtimes: Vec<Runtime>
+  pub dependency_graph: DependencyGraph
 }
 
 impl Engine {
@@ -38,7 +33,6 @@ impl Engine {
     Engine {
       vfs: VirtualFileSystem::new(),
       dependency_graph: DependencyGraph::new(),
-      runtimes: vec![],
       events: vec![]
     }
   }
@@ -52,7 +46,15 @@ impl Engine {
   pub fn update_virtual_file_content(&mut self, file_path: String, content: String) -> Result<(), &'static str> {
     self.vfs.update(&file_path, &content);
     let dependency = &self.dependency_graph.reload_dependents(&file_path, &mut self.vfs)?;
-    self.evaluate(&file_path)
+    let mut dep_file_paths: Vec<String> = self.dependency_graph.flatten_dependents(&file_path).into_iter().map(|dep| -> String {
+      dep.file_path.to_string()
+    }).collect();
+
+    for dep_file_path in dep_file_paths.drain(0..).into_iter() {
+      self.evaluate(&dep_file_path)?;
+    }
+
+    Ok(())
   }
 
   fn evaluate(&mut self, file_path: &String) -> Result<(), &'static str>  {
@@ -61,9 +63,6 @@ impl Engine {
       file_path: file_path.clone(),
       node: runtime::evaluate(&dependency.expression, file_path, &self.dependency_graph, &js_virt::JsObject::new())?
     }));
-    self.runtimes.push(Runtime {
-      entry_file: file_path.to_string()
-    });
     Ok(())
   }
 

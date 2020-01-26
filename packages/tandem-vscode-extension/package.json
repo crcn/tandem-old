@@ -22,6 +22,14 @@
       ]
     }
   ],
+  "contributes": {
+    "commands": [
+      {
+        "command": "tandem.openPreview",
+        "title": "Open Live Preview"
+      }
+    ]
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc",

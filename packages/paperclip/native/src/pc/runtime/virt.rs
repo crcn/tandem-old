@@ -30,9 +30,9 @@ pub struct StyleElement {
 
 impl fmt::Display for StyleElement {
   fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-    write!(f, "<style>");
-    write!(f, "{}", self.sheet.to_string());
-    write!(f, "</style>");
+    write!(f, "<style>")?;
+    write!(f, "{}", self.sheet.to_string())?;
+    write!(f, "</style>")?;
     Ok(())
   }
 }

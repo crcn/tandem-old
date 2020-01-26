@@ -23,6 +23,18 @@ impl DependencyGraph {
     }
     return deps;
   }
+  pub fn flatten_dependents<'a>(&'a self, entry_file_path: &String) -> Vec<&Dependency> {
+    let mut deps = vec![];
+    let entry = self.dependencies.get(entry_file_path).unwrap();
+    deps.push(entry);
+    for (dep_file_path, dep) in &self.dependencies {
+      if dep.dependencies.values().any(|file_path| { &file_path == &entry_file_path }) {
+        deps.extend(self.flatten_dependents(dep_file_path));
+      }
+    }
+    
+    return deps;
+  }
   pub fn load_dependency<'a>(&mut self, file_path: &String, vfs: &mut VirtualFileSystem) -> Result<&Dependency, &'static str> {
     let source = vfs.load(&file_path).unwrap().to_string();
     let dependency = Dependency::from_source(source, &file_path)?;
