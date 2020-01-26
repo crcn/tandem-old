@@ -1,8 +1,10 @@
 use super::ast as pc_ast;
 use crate::base::parser::{get_buffer, expect_token};
 use crate::base::ast::{Expression};
+use crate::js::parser::parse as parse_js;
 use crate::base::tokenizer::{Token, Tokenizer};
 use crate::css::parser::parse as parse_css;
+
 
 pub fn parse<'a>(source: &'a str) -> Result<Expression<pc_ast::Node>, &'static str> {
   parse_fragment(&mut Tokenizer::new(source))
@@ -61,7 +63,7 @@ fn parse_slot<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Expression<pc_ast::No
   let script = get_buffer(tokenizer, |tokenizer| { Ok(tokenizer.peek(1)? != Token::SlotClose) })?.to_string();
   tokenizer.next()?;
   Ok(Expression {
-    item: pc_ast::Node::Slot(pc_ast::ValueObject { value: script })
+    item: pc_ast::Node::Slot(parse_js(script.as_str())?)
   })
 }
 

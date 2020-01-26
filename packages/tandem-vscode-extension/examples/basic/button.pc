@@ -1,13 +1,8 @@
 <style>
-  * {
-    box-sizing: content-box;
-    color: red;
-  }
   div {
-    font-size: 20px;
-    padding: 10px;
+    color: blue;
   }
 </style>
-<div> 
-  some button
+<div>
+  {{firstName}} {{lastName}}
 </div>

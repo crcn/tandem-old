@@ -2,6 +2,7 @@
 use std::fmt;
 use crate::css::ast as css_ast;
 use crate::base::ast::{Expression};
+use crate::js::ast as js_ast;
 use serde::{Serialize};
 
 
@@ -29,14 +30,14 @@ pub enum Node {
   Element(Element),
   Fragment(Fragment),
   StyleElement(StyleElement),
-  Slot(ValueObject),
+  Slot(Expression<js_ast::Statement>),
 }
 
 impl fmt::Display for Node {
   fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
     match self {
       Node::Text(text) => write!(f, "{}", &text.value),
-      Node::Slot(slot) => write!(f, "{{{{{}}}}}", &slot.value),
+      Node::Slot(slot) => write!(f, "{{{{{}}}}}", &slot.item.to_string()),
       Node::Comment(comment) => write!(f, "<!--{}-->", &comment.value),
       Node::Fragment(node) => write!(f, "{}", node.to_string()),
       Node::Element(element) => write!(f, "{}", element.to_string()),

@@ -1,35 +1,12 @@
+<style>
+  div {
+    color: red;
+  }
+</style>
 <import id="button" src="./button.pc" />
 
-<button />
+<button firstName="craig condon " lastName />
 
 <div>
-  okoko
+  okay!!
 </div>
-
-<ol>
-  <li>Something like that</li>
-  <li>ok</li>
-  <li>ok</li>
-  <li>ok</li>
-  <li>ok</li>
-  <li>ok</li>
-  <li>ok</li>
-  <li>ok</li>
-  <li>ok</li>
-  <li>ok</li>
-  <li>ok</li>
-  <li>ok</li>
-  <li>ok</li>
-  <li>ok</li>
-  <li>ok</li>
-  <li>ok</li>
-  <li>ok</li>
-  <li>ok........ok...........ok...........ok...........ok...........ok...........ok...........ok...........ok...........ok...........ok...........ok...........ok...........ok...........ok...........ok...........ok...........ok...........</li>
-  <li>ok</li>
-  <li>ok</li>
-  <li>ok</li>
-  <li>ok</li>
-  <li>ok</li>
-  <li>ok</li>
-  <li>ok</li>
-</ol>

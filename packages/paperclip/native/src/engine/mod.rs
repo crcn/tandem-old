@@ -1,6 +1,7 @@
 use crate::pc::{runtime};
 use crate::pc::runtime::graph::{DependencyGraph};
 use crate::pc::runtime::vfs::{VirtualFileSystem};
+use crate::js::runtime::virt as js_virt;
 use serde::{Serialize};
 
 pub struct Runtime {
@@ -58,7 +59,7 @@ impl Engine {
     let dependency = self.dependency_graph.dependencies.get(file_path).unwrap();
     self.events.push(EngineEvent::Evaluated(Evaluated {
       file_path: file_path.clone(),
-      node: runtime::evaluate(&dependency.expression, file_path, &self.dependency_graph)?
+      node: runtime::evaluate(&dependency.expression, file_path, &self.dependency_graph, &js_virt::JsObject::new())?
     }));
     self.runtimes.push(Runtime {
       entry_file: file_path.to_string()

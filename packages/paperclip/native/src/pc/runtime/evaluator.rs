@@ -5,21 +5,29 @@ use std::iter::FromIterator;
 use crate::base::ast::{Expression};
 use super::graph::{DependencyGraph};
 use crate::css::runtime::evaulator::{evaluate as evaluate_css};
+use crate::js::runtime::evaluator::{evaluate as evaluate_js};
+use crate::js::runtime::virt as js_virt;
+use crc::{crc32};
 
 #[derive(Debug)]
 pub struct Context<'a, 'b> {
   graph: &'a DependencyGraph,
   file_path: &'a String,
   import_ids: HashSet<&'a String>,
-  scope: &'b str
+  scope: &'b str,
+  data: &'a js_virt::JsObject,
 }
 
-pub fn evaluate<'a>(node_expr: &Expression<ast::Node>, file_path: &String, graph: &'a DependencyGraph) -> Result<Option<virt::Node>, &'static str>  {
+pub fn evaluate<'a>(node_expr: &Expression<ast::Node>, file_path: &String, graph: &'a DependencyGraph, data: &js_virt::JsObject) -> Result<Option<virt::Node>, &'static str>  {
+
+  let file_hash = format!("_{:x}", crc32::checksum_ieee(file_path.as_bytes()));
+
   let context = Context {
     graph,
     file_path,
     import_ids: HashSet::from_iter(ast::get_import_ids(node_expr)),
-    scope: "random"
+    scope: file_hash.as_str(),
+    data
   };
 
   evaluate_node(node_expr, &context)
@@ -37,7 +45,7 @@ fn evaluate_node<'a>(node_expr: &Expression<ast::Node>, context: &'a Context) ->
       Ok(Some(virt::Node::Text(virt::Text { value: text.value.to_string() })))
     },
     ast::Node::Slot(slot) => {
-      Ok(Some(virt::Node::Text(virt::Text { value: slot.value.to_string() })))
+      Ok(Some(virt::Node::Text(virt::Text { value: evaluate_js(slot, &context.data)?.to_string() })))
     },
     ast::Node::Fragment(el) => {
       evaluate_fragment(&el, context)
@@ -65,13 +73,23 @@ fn evaluate_imported_component<'a>(element: &ast::Element, context: &'a Context)
   // let attributes = vec![];
   // let children = vec![];
   let selfDep  = &context.graph.dependencies.get(context.file_path).unwrap();
-
   let dep_file_path = &selfDep.dependencies.get(&element.tag_name).unwrap();
-
   let dep = &context.graph.dependencies.get(&dep_file_path.to_string()).unwrap();
+  let mut data = js_virt::JsObject::new();
+
+  for attr_expr in &element.attributes {
+    let attr = &attr_expr.item;
+    if attr.value == None {
+      data.values.insert(attr.name.to_string(), js_virt::JsValue::JsBoolean(true));
+    } else {
+      let value = evaluate_attribute_value(&attr.value.as_ref().unwrap().item, context)?;
+
+      data.values.insert(attr.name.to_string(), js_virt::JsValue::JsString(value.unwrap().to_string()));
+    }
+  }
 
   // TODO: if fragment, then wrap in span. If not, then copy these attributes to root element
-  evaluate(&dep.expression, dep_file_path, &context.graph)
+  evaluate(&dep.expression, dep_file_path, &context.graph, &data)
 }
 
 fn evaluate_basic_element<'a>(element: &ast::Element, context: &'a Context) -> Result<Option<virt::Node>, &'static str> {
@@ -180,6 +198,6 @@ mod tests {
     let case = "<style>div { color: red; }</style><div></div>";
     let ast = parse(case).unwrap();
     let graph = DependencyGraph::new();
-    let node = evaluate(&ast, &"something".to_string(), &graph).unwrap().unwrap();
+    let node = evaluate(&ast, &"something".to_string(), &graph, &js_virt::JsObject::new()).unwrap().unwrap();
   }
 }
