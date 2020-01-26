@@ -9,5 +9,7 @@
 </style>
 
 <div>
-  {{children}}!!!
+  {{children}}
 </div>
+
+<h1>this is a test</h1>

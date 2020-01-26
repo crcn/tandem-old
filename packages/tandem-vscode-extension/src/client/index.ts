@@ -9,6 +9,7 @@ import {
   ExtensionContext,
   ViewColumn
 } from "vscode";
+import * as vscode from "vscode";
 import { isPaperclipFile } from "./utils";
 import * as path from "path";
 import { EventEmitter } from "events";
@@ -17,11 +18,8 @@ const VIEW_TYPE = "preview";
 
 enum OpenLivePreviewOptions {
   Yes = "Yes",
-  No = "No",
-  DontAskMeAgain = "Don't Show Again"
+  No = "No"
 }
-
-type Config = {};
 
 type LivePreviewState = {
   targetFilePath: string;
@@ -29,22 +27,20 @@ type LivePreviewState = {
 
 export const activate = (context: ExtensionContext) => {
   const { extensionPath } = context;
-  // const config: Config = workspace.getConfiguration("tandem");
 
   let _previews: {
     [identifier: string]: LivePreview;
   } = {};
-  let _dontPromptAgain = false;
+  let _showedOpenLivePreviewPrompt = false;
 
   const engine = new Engine();
 
   const openLivePreview = async (editor: TextEditor) => {
     const paperclipUri = String(editor.document.uri);
 
-    // do not prompt is preview already open
-    if (_previews[paperclipUri]) {
-      return window.showErrorMessage(`A live preview is already open`);
-    }
+    // NOTE - don't get in the way of opening the live preview since
+    // there's really no way to tell whether an existing tab is open which will
+    // happen when the app loads with existing live preview tabs.
 
     const panel = window.createWebviewPanel(
       VIEW_TYPE,
@@ -69,32 +65,26 @@ export const activate = (context: ExtensionContext) => {
     });
   };
 
+  /**
+   * This really just provides a lower barrier to entry -- prompts once with
+   * info about the command, then disappear
+   */
+
   const askToDisplayLivePreview = async (editor: TextEditor) => {
-    // TODO - figure out whether it's possible to scan tabs for states. Or at least
-    // file paths associated with them. Or possible whether they're part of Tandem.
-
-    // There's the possibility that a preview window for this file is already open, but hidden.
-    // In that case it won't be deserialized and added to _previews, so we need to limit the behavior to
-    // ensure they're not asked again.
-    if (Object.keys(_previews).length) {
+    if (_showedOpenLivePreviewPrompt || Object.keys(_previews).length) {
       return;
     }
 
-    if (_dontPromptAgain) {
-      return;
-    }
+    _showedOpenLivePreviewPrompt = true;
 
     const option = await window.showInformationMessage(
       `Would you like to open a live preview? Command: "Open Live Preview" is also available. `,
       OpenLivePreviewOptions.Yes,
-      OpenLivePreviewOptions.No,
-      OpenLivePreviewOptions.DontAskMeAgain
+      OpenLivePreviewOptions.No
     );
 
     if (option === OpenLivePreviewOptions.Yes) {
       openLivePreview(editor);
-    } else if (option === OpenLivePreviewOptions.DontAskMeAgain) {
-      _dontPromptAgain = true;
     }
   };
 
@@ -195,7 +185,6 @@ class LivePreview {
     // TODO when live preview tools are available
   };
   private _onEngineEvent = (event: EngineEvent) => {
-    console.log(event);
     if (event.file_path !== stripFileProtocol(this.targetFilePath)) {
       return;
     }
