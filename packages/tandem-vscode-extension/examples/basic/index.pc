@@ -4,6 +4,6 @@
     color: blue;
   }
 </style>
-<button label="something else" clazz="test">
+<button class="test">
   <span class="test">this is a button</span>
 </button>

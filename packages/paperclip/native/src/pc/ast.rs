@@ -102,11 +102,11 @@ pub struct RepeatBlock {
 }
 
 #[derive(Debug, PartialEq, Serialize)]
-pub struct Str {
+pub struct AttributeStringValue {
   pub value: String
 }
 
-impl fmt::Display for Str {
+impl fmt::Display for AttributeStringValue {
   fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
     write!(f, "\"{}\"", self.value)
   }
@@ -143,13 +143,52 @@ impl fmt::Display for Element {
 }
 
 #[derive(Debug, PartialEq, Serialize)]
-pub struct Attribute {
+pub enum Attribute {
+  ShorthandAttribute(ShorthandAttribute),
+  KeyValueAttribute(KeyValueAttribute)
+}
+
+impl fmt::Display for Attribute {
+  fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+    match self {
+      Attribute::ShorthandAttribute(attr) => attr.fmt(f),
+      Attribute::KeyValueAttribute(attr) => attr.fmt(f),
+    }
+  }
+}
+
+#[derive(Debug, PartialEq, Serialize)]
+pub struct ShorthandAttribute {
+  pub reference: js_ast::Statement,
+}
+
+impl ShorthandAttribute {
+  pub fn get_name(&self) -> Result<&String, &'static str> {
+    match &self.reference {
+      js_ast::Statement::Reference(reference) => {
+        if reference.path.len() == 1 {
+          Ok(&reference.path[0])
+        } else {
+          Err("Unexpected Expression")
+        }
+      }
+    }
+  }
+}
+
+impl fmt::Display for ShorthandAttribute {
+  fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+    write!(f, "{{{}}}", self.reference.to_string())
+  }
+}
+
+#[derive(Debug, PartialEq, Serialize)]
+pub struct KeyValueAttribute {
   pub name: String,
   pub value: Option<AttributeValue>,
 }
 
-
-impl fmt::Display for Attribute {
+impl fmt::Display for KeyValueAttribute {
   fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
     write!(f, "{}", self.name)?;
     if self.value == None {
@@ -163,7 +202,7 @@ impl fmt::Display for Attribute {
 #[derive(Debug, PartialEq, Serialize)]
 #[serde(tag = "type")]
 pub enum AttributeValue {
-  String(Str),
+  String(AttributeStringValue),
   Slot(js_ast::Statement)
 }
 
@@ -241,19 +280,24 @@ pub fn get_imports<'a>(root_expr: &'a Node) -> Vec<&'a Element> {
 
 pub fn get_attribute<'a, 'b>(name: &'b str, element: &'a Element) -> Option<&'a Attribute> {
   for attribute in &element.attributes {
-    if attribute.name == name {
-      return Some(&attribute);
+    if let Attribute::KeyValueAttribute(attr) = attribute {
+      if attr.name == name {
+        return Some(&attribute);
+      }
     }
   }
   None
 }
 
+
 pub fn get_attribute_value<'a, 'b>(name: &'b str, element: &'a Element) -> Option<&'a String> {
   let attr = get_attribute(name, element);
   if let Some(att) = attr {
-    if let Some(expr) = &att.value {
-      if let AttributeValue::String(st) = &expr {
-        return Some(&st.value);
+    if let Attribute::KeyValueAttribute(kv_attribute) = att {
+      if let Some(expr) = &kv_attribute.value {
+        if let AttributeValue::String(st) = &expr {
+          return Some(&st.value);
+        }
       }
     }
   }

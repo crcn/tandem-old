@@ -158,14 +158,28 @@ fn evaluate_imported_component<'a>(element: &ast::Element, context: &'a Context)
 
   for attr_expr in &element.attributes {
     let attr = &attr_expr;
-    if attr.value == None {
-      data.values.insert(attr.name.to_string(), js_virt::JsValue::JsBoolean(true));
-    } else {
-      let value = evaluate_attribute_value(&attr.value.as_ref().unwrap(), context)?;
+    let (name, value) = match attr {
+      ast::Attribute::KeyValueAttribute(kv_attr) => {
+        if kv_attr.value == None {
+          (kv_attr.name.to_string(), js_virt::JsValue::JsBoolean(true))
+        } else {
+          let value = evaluate_attribute_value(&kv_attr.value.as_ref().unwrap(), context)?;
+          (
+            kv_attr.name.to_string(),
+            js_virt::JsValue::JsString(value.unwrap().to_string())
+          )
+        }
+      },
+      ast::Attribute::ShorthandAttribute(sh_attr) => {
+        let name = sh_attr.get_name()?;
 
-      data.values.insert(attr.name.to_string(), js_virt::JsValue::JsString(value.unwrap().to_string()));
-    }
+        (name.to_string(), evaluate_attribute_slot(&sh_attr.reference, context)?)
+      }
+    };
+
+    data.values.insert(name, value);
   }
+
   
   let mut js_children = js_virt::JsArray::new();
   let children: Vec<js_virt::JsValue> = evaluate_children(&element.children, &context)?.into_iter().map(|child| {
@@ -191,15 +205,25 @@ fn evaluate_basic_element<'a>(element: &ast::Element, context: &'a Context) -> R
   for attr_expr in &element.attributes {
     let attr = &attr_expr;
 
-    let mut value;
+    // let mut value = None;
 
-    if attr.value == None {
-      value = None;
-    } else {
-      value = evaluate_attribute_value(&attr.value.as_ref().unwrap(), context)?;
-    }
+    let (name, mut value) = match attr {
+      ast::Attribute::KeyValueAttribute(kv_attr) => {
+        if kv_attr.value == None {
+          (kv_attr.name.to_string(), None)
+        } else {
+          (kv_attr.name.to_string(), evaluate_attribute_value(&kv_attr.value.as_ref().unwrap(), context)?)
+        }
+      },
+      ast::Attribute::ShorthandAttribute(sh_attr) => {
+        let name = sh_attr.get_name()?;
+        let value = evaluate_attribute_slot(&sh_attr.reference, context)?;
+        (name.to_string(), Some(value.to_string()))
+      }
+    };
 
-    if attr.name == "class" && value != None {
+
+    if name == "class" && value != None {
       if let Some(original) = value {
         class_name_found = true;
         value = Some(format!("{} {}", original, context.scope));
@@ -207,7 +231,7 @@ fn evaluate_basic_element<'a>(element: &ast::Element, context: &'a Context) -> R
     }
 
     attributes.push(virt::Attribute {
-      name: attr.name.clone(), 
+      name, 
       value,
     });
   }

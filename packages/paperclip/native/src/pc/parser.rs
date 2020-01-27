@@ -272,6 +272,27 @@ fn parse_attributes<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Vec<pc_ast::Att
 
 
 fn parse_attribute<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::Attribute, &'static str> {
+
+  if tokenizer.peek(1)? == Token::SlotOpen {
+    tokenizer.next();
+    parse_shorthand_attribute(tokenizer)
+  } else {
+    parse_key_value_attribute(tokenizer)
+  }
+}
+
+fn parse_shorthand_attribute<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::Attribute, &'static str> {
+  let reference = parse_slot_script(tokenizer)?;
+
+  // TODO - expect script to be reference with path.length === 1
+
+  Ok(pc_ast::Attribute::ShorthandAttribute(pc_ast::ShorthandAttribute {
+    reference,
+  }))
+}
+
+fn parse_key_value_attribute<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::Attribute, &'static str> {
+  
   let name = parse_tag_name(tokenizer)?;
   let mut value = None;
 
@@ -280,10 +301,10 @@ fn parse_attribute<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::Attribut
     value = Some(parse_attribute_value(tokenizer)?);
   }
 
-  Ok(pc_ast::Attribute {
+  Ok(pc_ast::Attribute::KeyValueAttribute(pc_ast::KeyValueAttribute {
     name,
     value
-  })
+  }))
 }
 
 fn parse_attribute_value<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::AttributeValue, &'static str> {
@@ -305,114 +326,12 @@ fn parse_string<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::AttributeVa
   let quote = tokenizer.next()?;
   let value = get_buffer(tokenizer, |tokenizer| { Ok(tokenizer.peek(1)? != quote) })?.to_string();
   tokenizer.next()?; // eat
-  Ok(pc_ast::AttributeValue::String(pc_ast::Str { value }))
+  Ok(pc_ast::AttributeValue::String(pc_ast::AttributeStringValue { value }))
 }
 
 #[cfg(test)]
 mod tests {
   use super::*;
-
-  #[test]
-  fn can_parse_a_simple_text_node() {
-    let expr = parse("abc").unwrap();
-    let eql = pc_ast::Node::Text(pc_ast::ValueObject { value: "abc".to_string() });
-    assert_eq!(expr, eql);
-  }
-
-  #[test]
-  fn can_parse_a_simple_self_closing_element() {
-    let expr = parse("<div />").unwrap();
-    let eql = pc_ast::Node::Element(pc_ast::Element {
-      tag_name: "div".to_string(),
-      attributes: vec![],
-      children: vec![]
-    });
-
-    assert_eq!(expr, eql);
-  }
-
-  #[test]
-  fn can_parse_an_element_with_an_attribute_name() {
-    let expr = parse("<div a />").unwrap();
-    let eql = pc_ast::Node::Element(pc_ast::Element {
-      tag_name: "div".to_string(),
-      attributes: vec! [
-        pc_ast::Attribute {
-          name: "a".to_string(),
-          value: None
-        }
-      ],
-      children: vec![]
-    });
-
-    assert_eq!(expr, eql);
-  }
-  #[test]
-  fn can_parse_an_element_with_an_attribute_value() {
-    let expr = parse("<div a='b' />").unwrap();
-    let eql = pc_ast::Node::Element(pc_ast::Element {
-      tag_name: "div".to_string(),
-      attributes: vec! [
-        pc_ast::Attribute {
-          name: "a".to_string(),
-          value: Some(pc_ast::AttributeValue::String(pc_ast::Str { value: "b".to_string() }))
-        }
-      ],
-      children: vec![]
-    });
-
-    assert_eq!(expr, eql);
-  }
-
-  #[test]
-  fn can_parse_multiple_values() {
-    let expr = parse("<div a='b' c d />").unwrap();
-    let eql = pc_ast::Node::Element(pc_ast::Element {
-      tag_name: "div".to_string(),
-      attributes: vec! [
-        pc_ast::Attribute {
-          name: "a".to_string(),
-          value: Some(pc_ast::AttributeValue::String(pc_ast::Str { value: "b".to_string() }))
-        },
-        pc_ast::Attribute {
-          name: "c".to_string(),
-          value: None
-        },
-        pc_ast::Attribute {
-          name: "d".to_string(),
-          value: None
-        }
-      ],
-      children: vec![]
-    });
-
-    assert_eq!(expr, eql);
-  }
-
-
-  #[test]
-  fn can_parse_children() {
-    let expr = parse("<div> <span /></div>").unwrap();
-    let eql = pc_ast::Node::Element(pc_ast::Element {
-      tag_name: "div".to_string(),
-      attributes: vec! [],
-      children: vec![
-        pc_ast::Node::Element(pc_ast::Element {
-          tag_name: "span".to_string(),
-          attributes: vec! [],
-          children: vec![]
-        })
-      ]
-    });
-
-    assert_eq!(expr, eql);
-  }
-
-  #[test]
-  fn can_parse_slots() {
-    let expr = parse("{{block}}").unwrap();
-    assert_eq!(expr.to_string(), "{{block}}");
-  }
 
   #[test]
   fn can_parse_various_nodes() {

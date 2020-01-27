@@ -8,10 +8,10 @@
   }
 </style>
 
-<div class={{clazz}}>
+<div {{class}}>
   {{children}}
 </div>
-
+aa
 {{#if bb}}
   something something
 {{/else if b}}

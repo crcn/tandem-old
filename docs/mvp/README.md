@@ -4,10 +4,6 @@ Limitations:
 
 immediate TODO:
 
-- remove St expr
-- attribute binding
-  - <a {{onClick}} />
-  - <a onClick={{onClick}} />
 - JS evaluator
   - strings & numbers
   - arrays
