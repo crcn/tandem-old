@@ -8,7 +8,6 @@ immediate TODO:
   - strings & numbers
   - arrays
 - #repeat
-- attribute bindings
 - stress test
 
 Stress test:

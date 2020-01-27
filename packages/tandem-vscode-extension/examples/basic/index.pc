@@ -1,9 +1,12 @@
 <import id="button" src="./button.pc" />
 <style>
   .test {
-    color: blue;
+    color: white;
+    font-size: 20px;
+    font-weight: 200;
+    padding: 10px;
   }
 </style>
 <button class="test">
-  <span class="test">this is a button</span>
+  <span>this is a button</span>
 </button>

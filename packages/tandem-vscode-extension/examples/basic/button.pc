@@ -1,21 +1,20 @@
 <style>
-  .test {
+  div {
     color: white;
     border-radius: 10px;
     background: grey;
     padding: 10px;
     display: inline-block;
+    font-size: 20px;
+    font-weight: 200;
+    margin-right: 20px;
+  }
+
+  .test {
+    color: red;
   }
 </style>
 
 <div {{class}}>
   {{children}}
 </div>
-aa
-{{#if bb}}
-  something something
-{{/else if b}}
-  if b
-{{/else}}
-  something
-{{/}}
