@@ -47,7 +47,14 @@ fn parse_node<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::Node, &'stati
       Ok(pc_ast::Node::Text(pc_ast::ValueObject { 
         value: get_buffer(tokenizer, |tokenizer| {
           let tok = tokenizer.peek(1)?;
-          Ok(tok != Token::SlotOpen && tok != Token::LessThan && tok != Token::CloseTag && tok != Token::HtmlCommentOpen)
+          Ok(
+            tok != Token::SlotOpen && 
+            tok != Token::LessThan && 
+            tok != Token::CloseTag && 
+            tok != Token::HtmlCommentOpen && 
+            tok != Token::BlockOpen && 
+            tok != Token::BlockClose
+          )
         })?.to_string()
       }))
     }
@@ -103,7 +110,7 @@ fn parse_next_basic_element_parts<'a>(tag_name: String, attributes: Vec<pc_ast::
 }
 
 fn parse_block<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::Node, &'static str> {
-  let token = tokenizer.next()?;
+  let token = tokenizer.next()?; // eat {{# or {{/
   if let Token::Word(keyword) = token {
     match keyword {
       "if" => parse_if_block(tokenizer),
@@ -117,21 +124,103 @@ fn parse_block<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::Node, &'stat
 }
 
 fn parse_if_block<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::Node, &'static str> {
+  Ok(pc_ast::Node::Block(pc_ast::Block::Conditional(
+    parse_pass_fail_block(tokenizer)?
+  )))
+}
+
+fn parse_pass_fail_block<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::ConditionalBlock, &'static str> {
   tokenizer.eat_whitespace();
   let js_source = get_buffer(tokenizer, |tokenizer| { Ok(tokenizer.peek(1)? != Token::SlotClose) })?;
+  let condition = parse_js(js_source)?;
   expect_token(tokenizer.next()?, Token::SlotClose)?;
 
-  let condition = parse_js(js_source)?;
 
-  Ok(pc_ast::Node::Block(pc_ast::Block::Conditional(
-    pc_ast::ConditionalBlock::PassFailBlock(
-      pc_ast::PassFailBlock {
-        condition,
-        node: None,
-        fail: None,
+  let node = parse_block_children(tokenizer)?;
+  let fail = parse_else_block(tokenizer)?;
+
+  Ok(pc_ast::ConditionalBlock::PassFailBlock(
+    pc_ast::PassFailBlock {
+      condition,
+      node,
+      fail,
+    }
+  ))
+}
+
+fn parse_block_children<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Option<Box<pc_ast::Node>>, &'static str> {
+
+  let mut children = vec![];
+
+  // TODO - we don't really want this since whitespace technically renders. Though, right
+  // now it's not handled.
+  tokenizer.eat_whitespace();
+
+  while !tokenizer.is_eof() && tokenizer.peek(1)? != Token::BlockClose {
+    children.push(parse_node(tokenizer)?);
+    tokenizer.eat_whitespace();
+  }
+
+
+  let node = if children.len() == 0 {
+    None
+  } else if children.len() == 1 {
+    Some(Box::new(children.pop().unwrap()))
+  } else {
+    Some(Box::new(pc_ast::Node::Fragment(pc_ast::Fragment {
+      children
+    })))
+  };
+
+  Ok(node)
+}
+
+fn parse_else_block<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Option<Box<pc_ast::ConditionalBlock>>, &'static str> {
+  tokenizer.eat_whitespace();
+  expect_token(tokenizer.next()?, Token::BlockClose)?;
+  tokenizer.eat_whitespace();
+  match tokenizer.next()? {
+    Token::Word(value) => {
+      match value {
+        "else" => {
+          tokenizer.eat_whitespace();
+          match tokenizer.next()? {
+            Token::Word(value2) => {
+              if value2 == "if" {
+                Ok(Some(Box::new(parse_pass_fail_block(tokenizer)?)))
+              } else {
+                Err("Unexpected token")
+              }
+            },
+            Token::SlotClose => {
+              Ok(Some(Box::new(parse_final_condition_block(tokenizer)?)))
+            }
+            _ => {
+              Err("Unexpected token")
+            }
+          }
+        },
+        _ => {
+          Err("Unexpected token")
+        }
       }
-    )
-  )))
+    },
+    Token::SlotClose => {
+      Ok(None)
+    },
+    _ => {
+      Err("Unexpected token")
+    }
+  }
+}
+
+fn parse_final_condition_block<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::ConditionalBlock, &'static str> {
+  let node =  parse_block_children(tokenizer)?;
+  expect_token(tokenizer.next()?, Token::BlockClose);
+  expect_token(tokenizer.next()?, Token::SlotClose);
+  Ok(pc_ast::ConditionalBlock::FinalBlock(pc_ast::FinalBlock {
+    node
+  }))
 }
 
 fn parse_next_style_element_parts<'a>(attributes: Vec<pc_ast::Attribute>, tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::Node, &'static str> {

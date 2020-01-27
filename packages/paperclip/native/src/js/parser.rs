@@ -1,5 +1,3 @@
-
-use crate::base::parser::{expect_token};
 use crate::base::tokenizer::{Tokenizer, Token};
 use super::ast;
 

@@ -278,11 +278,33 @@ fn evaluate_block<'a>(block: &ast::Block, context: &'a Context) -> Result<Option
 fn evaluate_conditional<'a>(block: &ast::ConditionalBlock, context: &'a Context) -> Result<Option<virt::Node>, &'static str> {
   match block {
     ast::ConditionalBlock::PassFailBlock(pass_fail) => {
-      Ok(None)
+      evaluate_pass_fail_block(pass_fail, context)
     },
     ast::ConditionalBlock::FinalBlock(block) => {
+      if let Some(node) = &block.node {
+        evaluate_node(node, context)
+      } else {
+        Ok(None)
+      }
+    }
+  }
+}
+
+
+fn evaluate_pass_fail_block<'a>(block: &ast::PassFailBlock, context: &'a Context) -> Result<Option<virt::Node>, &'static str> {
+  let condition = evaluate_js(&block.condition, context.data)?;
+  if condition.truthy() {
+    if let Some(node) = &block.node {
+      evaluate_node(node, context)
+    } else if let Some(fail) = &block.fail {
+      evaluate_conditional(fail, context)
+    } else {
       Ok(None)
     }
+  } else if let Some(fail) = &block.fail {
+    evaluate_conditional(fail, context)
+  } else {
+    Ok(None)
   }
 }
 

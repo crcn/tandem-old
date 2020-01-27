@@ -16,6 +16,17 @@ pub enum JsValue {
   JsUndefined()
 }
 
+impl JsValue {
+  pub fn truthy(&self) -> bool {
+    match self {
+      JsValue::JsUndefined() => false,
+      JsValue::JsBoolean(value) => *value,
+      JsValue::JsNumber(value) => *value != 0 as f64,
+      JsValue::JsString(value) => value.len() != 0,
+      _ => true,
+    }
+  }
+}
 impl fmt::Display for JsValue {
   fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
     match self {

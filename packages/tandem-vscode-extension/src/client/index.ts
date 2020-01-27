@@ -9,7 +9,6 @@ import {
   ExtensionContext,
   ViewColumn
 } from "vscode";
-import * as vscode from "vscode";
 import { isPaperclipFile } from "./utils";
 import * as path from "path";
 import { EventEmitter } from "events";

@@ -11,3 +11,16 @@
 <div>
   {{children}}
 </div>
+
+aaaaa
+
+
+{{#if a}}
+  if a
+{{/else if b}}
+  if b
+{{/else}}
+  THENN
+{{/}}
+
+aaaaaaaa

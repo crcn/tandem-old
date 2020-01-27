@@ -4,7 +4,6 @@ Limitations:
 
 immediate TODO:
 
-- #if blocks
 - JS evaluator
   - strings & numbers
   - arrays

@@ -4,6 +4,6 @@
     color: orange;
   }
 </style>
-<button label="something else">
+<button label="something else" a>
   this is a button!!!
 </button>
