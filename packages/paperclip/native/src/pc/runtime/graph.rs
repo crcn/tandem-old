@@ -2,7 +2,6 @@ use std::fs;
 use std::path::Path;
 use super::vfs::{VirtualFileSystem};
 use crate::pc::{ast as pc_ast, parser};
-use crate::base::ast::{Expression};
 use std::collections::HashMap;
 
 #[derive(Debug)]
@@ -66,7 +65,7 @@ impl DependencyGraph {
 pub struct Dependency {
   pub file_path: String,
   pub dependencies: HashMap<String, String>,
-  pub expression: Expression<pc_ast::Node>
+  pub expression: pc_ast::Node
 }
 
 impl<'a> Dependency {

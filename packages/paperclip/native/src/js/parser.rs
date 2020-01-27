@@ -1,15 +1,14 @@
-use crate::base::ast::{Expression};
-// use crate::base::parser::{get_buffer};
+
 use crate::base::parser::{expect_token};
 use crate::base::tokenizer::{Tokenizer, Token};
 use super::ast;
 
-pub fn parse<'a>(source: &'a str) -> Result<Expression<ast::Statement>, &'static str> {
+pub fn parse<'a>(source: &'a str) -> Result<ast::Statement, &'static str> {
   let mut tokenizer = Tokenizer::new(source);
   parse_reference(&mut tokenizer)
 }
 
-fn parse_reference<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Expression<ast::Statement>, &'static str> {
+fn parse_reference<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<ast::Statement, &'static str> {
   // let name = tokenizer.next()?;
   if let Token::Word(name) = tokenizer.next()? {
     let mut path = vec![name.to_string()];
@@ -24,7 +23,7 @@ fn parse_reference<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Expression<ast::
         }
       }
     }
-    Ok(Expression { item: ast::Statement::Reference(ast::Reference { path: path }) })
+    Ok(ast::Statement::Reference(ast::Reference { path: path }))
   } else {
     Err("unexpected token")
   }

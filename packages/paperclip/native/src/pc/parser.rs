@@ -1,17 +1,16 @@
 use super::ast as pc_ast;
 use crate::base::parser::{get_buffer, expect_token};
-use crate::base::ast::{Expression};
 use crate::js::parser::parse as parse_js;
 use crate::base::tokenizer::{Token, Tokenizer};
 use crate::css::parser::parse as parse_css;
 
 
-pub fn parse<'a>(source: &'a str) -> Result<Expression<pc_ast::Node>, &'static str> {
+pub fn parse<'a>(source: &'a str) -> Result<pc_ast::Node, &'static str> {
   parse_fragment(&mut Tokenizer::new(source))
 }
 
-fn parse_fragment<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Expression<pc_ast::Node>, &'static str> {
-  let mut children: Vec<Expression<pc_ast::Node>> = vec![];
+fn parse_fragment<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::Node, &'static str> {
+  let mut children: Vec<pc_ast::Node> = vec![];
 
   while !tokenizer.is_eof() {
     children.push(parse_node(tokenizer)?);
@@ -21,18 +20,15 @@ fn parse_fragment<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Expression<pc_ast
   if children.len() == 1 {
     Ok(children.pop().unwrap())
   } else {
-    Ok(Expression {
-      item: pc_ast::Node::Fragment(pc_ast::Fragment { children })
-    })
+    Ok(pc_ast::Node::Fragment(pc_ast::Fragment { children }))
   }
 }
 
-fn parse_node<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Expression<pc_ast::Node>, &'static str> {
+fn parse_node<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::Node, &'static str> {
   tokenizer.eat_whitespace();
   let pos = tokenizer.pos;
   let token = tokenizer.next()?;
   match token {
-    // Token::Word(text) => Ok(Expression { item: pc_ast::Node::Text(text) }),
     Token::SlotOpen => { parse_slot(tokenizer) },
     Token::LessThan => { parse_element(tokenizer) },
     Token::HtmlCommentOpen => { 
@@ -41,33 +37,30 @@ fn parse_node<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Expression<pc_ast::No
         Ok(tok != Token::HtmlCommentClose)
       })?.to_string();
       tokenizer.next()?; // eat -->
-      Ok(Expression {
-        item: pc_ast::Node::Comment(pc_ast::ValueObject { value: buffer })
-      })
+      Ok(pc_ast::Node::Comment(pc_ast::ValueObject { value: buffer }))
     },
+    Token::BlockOpen => {
+      parse_block(tokenizer)
+    }
     _ => {
       tokenizer.pos = pos;
-      Ok(Expression {
-        item: pc_ast::Node::Text(pc_ast::ValueObject { 
-          value: get_buffer(tokenizer, |tokenizer| {
-            let tok = tokenizer.peek(1)?;
-            Ok(tok != Token::SlotOpen && tok != Token::LessThan && tok != Token::CloseTag && tok != Token::HtmlCommentOpen)
-          })?.to_string()
-        })
-      })
+      Ok(pc_ast::Node::Text(pc_ast::ValueObject { 
+        value: get_buffer(tokenizer, |tokenizer| {
+          let tok = tokenizer.peek(1)?;
+          Ok(tok != Token::SlotOpen && tok != Token::LessThan && tok != Token::CloseTag && tok != Token::HtmlCommentOpen)
+        })?.to_string()
+      }))
     }
   }
 }
 
-fn parse_slot<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Expression<pc_ast::Node>, &'static str> {
+fn parse_slot<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::Node, &'static str> {
   let script = get_buffer(tokenizer, |tokenizer| { Ok(tokenizer.peek(1)? != Token::SlotClose) })?.to_string();
   tokenizer.next()?;
-  Ok(Expression {
-    item: pc_ast::Node::Slot(parse_js(script.as_str())?)
-  })
+  Ok(pc_ast::Node::Slot(parse_js(script.as_str())?))
 }
 
-fn parse_element<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Expression<pc_ast::Node>, &'static str> {
+fn parse_element<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::Node, &'static str> {
   let tag_name = parse_tag_name(tokenizer)?;
   let attributes = parse_attributes(tokenizer)?;
 
@@ -78,8 +71,8 @@ fn parse_element<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Expression<pc_ast:
   }
 }
 
-fn parse_next_basic_element_parts<'a>(tag_name: String, attributes: Vec<Expression<pc_ast::Attribute>>, tokenizer: &mut Tokenizer<'a>) -> Result<Expression<pc_ast::Node>, &'static str> {
-  let mut children: Vec<Expression<pc_ast::Node>> = vec![];
+fn parse_next_basic_element_parts<'a>(tag_name: String, attributes: Vec<pc_ast::Attribute>, tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::Node, &'static str> {
+  let mut children: Vec<pc_ast::Node> = vec![];
 
   tokenizer.eat_whitespace();
   
@@ -102,16 +95,46 @@ fn parse_next_basic_element_parts<'a>(tag_name: String, attributes: Vec<Expressi
     }
   }
 
-  Ok(Expression {
-    item: pc_ast::Node::Element(pc_ast::Element {
-      tag_name,
-      attributes,
-      children
-    })
-  })
+  Ok(pc_ast::Node::Element(pc_ast::Element {
+    tag_name,
+    attributes,
+    children
+  }))
 }
 
-fn parse_next_style_element_parts<'a>(attributes: Vec<Expression<pc_ast::Attribute>>, tokenizer: &mut Tokenizer<'a>) -> Result<Expression<pc_ast::Node>, &'static str> {
+fn parse_block<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::Node, &'static str> {
+  let token = tokenizer.next()?;
+  if let Token::Word(keyword) = token {
+    match keyword {
+      "if" => parse_if_block(tokenizer),
+      _ => {
+        Err("Unexpected token")
+      }
+    }
+  } else {
+    Err("Unxpected token")
+  }
+}
+
+fn parse_if_block<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::Node, &'static str> {
+  tokenizer.eat_whitespace();
+  let js_source = get_buffer(tokenizer, |tokenizer| { Ok(tokenizer.peek(1)? != Token::SlotClose) })?;
+  expect_token(tokenizer.next()?, Token::SlotClose)?;
+
+  let condition = parse_js(js_source)?;
+
+  Ok(pc_ast::Node::Block(pc_ast::Block::Conditional(
+    pc_ast::ConditionalBlock::PassFailBlock(
+      pc_ast::PassFailBlock {
+        condition,
+        node: None,
+        fail: None,
+      }
+    )
+  )))
+}
+
+fn parse_next_style_element_parts<'a>(attributes: Vec<pc_ast::Attribute>, tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::Node, &'static str> {
   tokenizer.next()?; // eat >
   let sheet_source = get_buffer(tokenizer, |tokenizer| {
     Ok(tokenizer.peek(1)? != Token::CloseTag && tokenizer.peek(2)? != Token::Word("style"))
@@ -122,12 +145,10 @@ fn parse_next_style_element_parts<'a>(attributes: Vec<Expression<pc_ast::Attribu
   expect_token(tokenizer.next()?, Token::Word("style"))?; // eat style
   expect_token(tokenizer.next()?, Token::GreaterThan)?; // eat >
 
-  Ok(Expression {
-    item: pc_ast::Node::StyleElement(pc_ast::StyleElement {
-      attributes,
-      sheet: parse_css(&sheet_source)?
-    })
-  })
+  Ok(pc_ast::Node::StyleElement(pc_ast::StyleElement {
+    attributes,
+    sheet: parse_css(&sheet_source)?
+  }))
 }
 
 
@@ -135,9 +156,9 @@ fn parse_tag_name<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<String, &'static 
   Ok(get_buffer(tokenizer, |tokenizer| { Ok(!matches!(tokenizer.peek(1)?, Token::Whitespace | Token::GreaterThan | Token::Equals)) })?.to_string())
 }
 
-fn parse_attributes<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Vec<Expression<pc_ast::Attribute>>, &'static str> {
+fn parse_attributes<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Vec<pc_ast::Attribute>, &'static str> {
 
-  let mut attributes: Vec<Expression<pc_ast::Attribute>> = vec![];
+  let mut attributes: Vec<pc_ast::Attribute> = vec![];
 
   loop {
     tokenizer.eat_whitespace();
@@ -154,7 +175,7 @@ fn parse_attributes<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Vec<Expression<
 }
 
 
-fn parse_attribute<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Expression<pc_ast::Attribute>, &'static str> {
+fn parse_attribute<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::Attribute, &'static str> {
   let name = parse_tag_name(tokenizer)?;
   let mut value = None;
 
@@ -163,28 +184,24 @@ fn parse_attribute<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Expression<pc_as
     value = Some(parse_attribute_value(tokenizer)?);
   }
 
-  Ok(Expression {
-    item: pc_ast::Attribute {
-      name,
-      value
-    }
+  Ok(pc_ast::Attribute {
+    name,
+    value
   })
 }
 
-fn parse_attribute_value<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Expression<pc_ast::AttributeValue>, &'static str> {
+fn parse_attribute_value<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::AttributeValue, &'static str> {
   match tokenizer.peek(1)? {
     Token::SingleQuote | Token::DoubleQuote => parse_string(tokenizer),
     _ => Err("Unexpected token")
   }
 }
 
-fn parse_string<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Expression<pc_ast::AttributeValue>, &'static str> {
+fn parse_string<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::AttributeValue, &'static str> {
   let quote = tokenizer.next()?;
   let value = get_buffer(tokenizer, |tokenizer| { Ok(tokenizer.peek(1)? != quote) })?.to_string();
   tokenizer.next()?; // eat
-  Ok(Expression {
-    item: pc_ast::AttributeValue::String(pc_ast::Str { value })
-  })
+  Ok(pc_ast::AttributeValue::String(pc_ast::Str { value }))
 }
 
 #[cfg(test)]
@@ -194,23 +211,18 @@ mod tests {
   #[test]
   fn can_parse_a_simple_text_node() {
     let expr = parse("abc").unwrap();
-    let eql = Expression {
-      item: pc_ast::Node::Text(pc_ast::ValueObject { value: "abc".to_string() })
-    };
-
+    let eql = pc_ast::Node::Text(pc_ast::ValueObject { value: "abc".to_string() });
     assert_eq!(expr, eql);
   }
 
   #[test]
   fn can_parse_a_simple_self_closing_element() {
     let expr = parse("<div />").unwrap();
-    let eql = Expression {
-      item: pc_ast::Node::Element(pc_ast::Element {
-        tag_name: "div".to_string(),
-        attributes: vec![],
-        children: vec![]
-      })
-    };
+    let eql = pc_ast::Node::Element(pc_ast::Element {
+      tag_name: "div".to_string(),
+      attributes: vec![],
+      children: vec![]
+    });
 
     assert_eq!(expr, eql);
   }
@@ -218,42 +230,32 @@ mod tests {
   #[test]
   fn can_parse_an_element_with_an_attribute_name() {
     let expr = parse("<div a />").unwrap();
-    let eql = Expression {
-      item: pc_ast::Node::Element(pc_ast::Element {
-        tag_name: "div".to_string(),
-        attributes: vec! [
-          Expression {
-            item: pc_ast::Attribute {
-              name: "a".to_string(),
-              value: None
-            }
-          }
-        ],
-        children: vec![]
-      })
-    };
+    let eql = pc_ast::Node::Element(pc_ast::Element {
+      tag_name: "div".to_string(),
+      attributes: vec! [
+        pc_ast::Attribute {
+          name: "a".to_string(),
+          value: None
+        }
+      ],
+      children: vec![]
+    });
 
     assert_eq!(expr, eql);
   }
   #[test]
   fn can_parse_an_element_with_an_attribute_value() {
     let expr = parse("<div a='b' />").unwrap();
-    let eql = Expression {
-      item: pc_ast::Node::Element(pc_ast::Element {
-        tag_name: "div".to_string(),
-        attributes: vec! [
-          Expression {
-            item: pc_ast::Attribute {
-              name: "a".to_string(),
-              value: Some(Expression {
-                item: pc_ast::AttributeValue::String(pc_ast::Str { value: "b".to_string() })
-              })
-            }
-          }
-        ],
-        children: vec![]
-      })
-    };
+    let eql = pc_ast::Node::Element(pc_ast::Element {
+      tag_name: "div".to_string(),
+      attributes: vec! [
+        pc_ast::Attribute {
+          name: "a".to_string(),
+          value: Some(pc_ast::AttributeValue::String(pc_ast::Str { value: "b".to_string() }))
+        }
+      ],
+      children: vec![]
+    });
 
     assert_eq!(expr, eql);
   }
@@ -261,34 +263,24 @@ mod tests {
   #[test]
   fn can_parse_multiple_values() {
     let expr = parse("<div a='b' c d />").unwrap();
-    let eql = Expression {
-      item: pc_ast::Node::Element(pc_ast::Element {
-        tag_name: "div".to_string(),
-        attributes: vec! [
-          Expression {
-            item: pc_ast::Attribute {
-              name: "a".to_string(),
-              value: Some(Expression {
-                item:  pc_ast::AttributeValue::String(pc_ast::Str { value: "b".to_string() })
-              })
-            }
-          },
-          Expression {
-            item: pc_ast::Attribute {
-              name: "c".to_string(),
-              value: None
-            }
-          },
-          Expression {
-            item: pc_ast::Attribute {
-              name: "d".to_string(),
-              value: None
-            }
-          }
-        ],
-        children: vec![]
-      })
-    };
+    let eql = pc_ast::Node::Element(pc_ast::Element {
+      tag_name: "div".to_string(),
+      attributes: vec! [
+        pc_ast::Attribute {
+          name: "a".to_string(),
+          value: Some(pc_ast::AttributeValue::String(pc_ast::Str { value: "b".to_string() }))
+        },
+        pc_ast::Attribute {
+          name: "c".to_string(),
+          value: None
+        },
+        pc_ast::Attribute {
+          name: "d".to_string(),
+          value: None
+        }
+      ],
+      children: vec![]
+    });
 
     assert_eq!(expr, eql);
   }
@@ -297,36 +289,26 @@ mod tests {
   #[test]
   fn can_parse_children() {
     let expr = parse("<div> <span /></div>").unwrap();
-    let eql = Expression {
-      item: pc_ast::Node::Element(pc_ast::Element {
-        tag_name: "div".to_string(),
-        attributes: vec! [],
-        children: vec![
-          Expression {
-            item: pc_ast::Node::Element(pc_ast::Element {
-              tag_name: "span".to_string(),
-              attributes: vec! [],
-              children: vec![]
-            })
-          }
-        ]
-      })
-    };
+    let eql = pc_ast::Node::Element(pc_ast::Element {
+      tag_name: "div".to_string(),
+      attributes: vec! [],
+      children: vec![
+        pc_ast::Node::Element(pc_ast::Element {
+          tag_name: "span".to_string(),
+          attributes: vec! [],
+          children: vec![]
+        })
+      ]
+    });
 
     assert_eq!(expr, eql);
   }
 
   #[test]
-  fn can_parse_blocks() {
+  fn can_parse_slots() {
     let expr = parse("{{block}}").unwrap();
     assert_eq!(expr.to_string(), "{{block}}");
   }
-
-  // #[test]
-  // fn can_parse_a_style() {
-  //   let expr = parse("<style>div { color:red; }</style>").unwrap();
-  //   assert_eq!(expr.to_string(), "<style>div  {\n  color:red;\n}\n</style>");
-  // }
 
   #[test]
   fn can_parse_various_nodes() {

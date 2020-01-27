@@ -1,7 +1,6 @@
 
 use std::fmt;
 use crate::css::ast as css_ast;
-use crate::base::ast::{Expression};
 use crate::js::ast as js_ast;
 use serde::{Serialize};
 
@@ -13,8 +12,8 @@ pub trait Executable<TRet> {
 #[derive(Debug, PartialEq, Serialize)]
 pub struct Element {
   pub tag_name: String,
-  pub attributes: Vec<Expression<Attribute>>,
-  pub children: Vec<Expression<Node>>
+  pub attributes: Vec<Attribute>,
+  pub children: Vec<Node>
 }
 
 #[derive(Debug, PartialEq, Serialize)]
@@ -30,17 +29,19 @@ pub enum Node {
   Element(Element),
   Fragment(Fragment),
   StyleElement(StyleElement),
-  Slot(Expression<js_ast::Statement>),
+  Slot(js_ast::Statement),
+  Block(Block)
 }
 
 impl fmt::Display for Node {
   fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
     match self {
       Node::Text(text) => write!(f, "{}", &text.value),
-      Node::Slot(slot) => write!(f, "{{{{{}}}}}", &slot.item.to_string()),
+      Node::Slot(slot) => write!(f, "{{{{{}}}}}", &slot.to_string()),
       Node::Comment(comment) => write!(f, "<!--{}-->", &comment.value),
       Node::Fragment(node) => write!(f, "{}", node.to_string()),
       Node::Element(element) => write!(f, "{}", element.to_string()),
+      Node::Block(block) => write!(f, "[block]"),
       Node::StyleElement(element) => write!(f, "{}", element.to_string()),
     }
   }
@@ -65,7 +66,7 @@ impl Node {
 
     if let Some(children) = children_option {
       for child in children {
-        if !child.item.traverse(each) {
+        if !child.traverse(each) {
           return false;
         }
       }
@@ -74,49 +75,36 @@ impl Node {
   }
 }
 
+#[derive(Debug, PartialEq, Serialize)]
+pub enum Block {
+  Conditional(ConditionalBlock)
+  // Repeat(RepeatBlock)
+}
 
-// pub struct NodeIterator<'a> {
-//   curr: &'a Node,
-//   child_index: usize
-// }
+#[derive(Debug, PartialEq, Serialize)]
+pub enum ConditionalBlock {
+  PassFailBlock(PassFailBlock),
+  FinalBlock(FinalBlock)
+}
 
-// impl<'a> Iterator for NodeIterator<'a> {
-//   type Item = &'a Node;
-//   fn next(&mut self) -> Option<&'a Node> {
 
-//     let children_option = match self {
-//       Node::Element(element) => {
-//         Some(&element.children)
-//       },
-//       Node::Fragment(fragment) => {
-//         Some(&fragment.children)
-//       },
-//       _ => {
-//         None
-//       }
-//     };
+#[derive(Debug, PartialEq, Serialize)]
+pub struct PassFailBlock {
+  pub condition: js_ast::Statement,
+  pub node: Option<Box<Node>>,
+  pub fail: Option<Box<ConditionalBlock>>
+}
 
-//     if children_option.len() == 0 {
-//       return None;
-//     }
+#[derive(Debug, PartialEq, Serialize)]
+pub struct FinalBlock {
+  pub node: Option<Box<Node>>,
+}
 
-//     let children = children_option.unwrap();
-
-//     let old_child_index = self.child_index;
-//     self.child_index += 1;
-  
-//     if old_child_index == -1 {
-//       return Some(self.curr);
-//     } else if (old_child_index < children.len() - 1) {
-//       return Some(children[old_child_index]);
-//     } else {
-//       self.curr = children[old_child_index];
-//       self.child_index = 0;
-//       return Some(self.curr);
-//     }
-//     None
-//   }
-// }
+#[derive(Debug, PartialEq, Serialize)]
+pub struct RepeatBlock {
+  pub each_as: js_ast::Statement,
+  pub source: js_ast::Statement
+}
 
 #[derive(Debug, PartialEq, Serialize)]
 pub struct Str {
@@ -129,14 +117,14 @@ impl fmt::Display for Str {
   }
 }
 
-pub fn fmt_attributes(attributes: &Vec<Expression<Attribute>>, f: &mut fmt::Formatter) -> fmt::Result {
+pub fn fmt_attributes(attributes: &Vec<Attribute>, f: &mut fmt::Formatter) -> fmt::Result {
   for attribute in attributes {
-    write!(f, " {}", attribute.item.to_string())?;
+    write!(f, " {}", attribute.to_string())?;
   }
   Ok(())
 }
 
-pub fn fmt_start_tag<'a>(tag_name: &'a str, attributes: &Vec<Expression<Attribute>>, f: &mut fmt::Formatter) -> fmt::Result {
+pub fn fmt_start_tag<'a>(tag_name: &'a str, attributes: &Vec<Attribute>, f: &mut fmt::Formatter) -> fmt::Result {
   write!(f, "<{}", tag_name)?;
   fmt_attributes(attributes, f)?;
   write!(f, ">")?;
@@ -152,7 +140,7 @@ impl fmt::Display for Element {
   fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
     fmt_start_tag(&self.tag_name.as_str(), &self.attributes, f)?;
     for child in &self.children {
-      write!(f, "{} ", child.item.to_string())?;
+      write!(f, "{} ", child.to_string())?;
     }
     fmt_end_tag(&self.tag_name.as_str(), f)?;
     Ok(())
@@ -162,7 +150,7 @@ impl fmt::Display for Element {
 #[derive(Debug, PartialEq, Serialize)]
 pub struct Attribute {
   pub name: String,
-  pub value: Option<Expression<AttributeValue>>,
+  pub value: Option<AttributeValue>,
 }
 
 
@@ -172,7 +160,7 @@ impl fmt::Display for Attribute {
     if self.value == None {
       Ok(())
     } else {
-      write!(f, "={}", self.value.as_ref().unwrap().item.to_string())
+      write!(f, "={}", self.value.as_ref().unwrap().to_string())
     }
   }
 }
@@ -203,14 +191,14 @@ impl fmt::Display for AttributeValue {
 
 #[derive(Debug, PartialEq, Serialize)]
 pub struct StyleElement {
-  pub attributes: Vec<Expression<Attribute>>,
-  pub sheet: Expression<css_ast::Sheet>,
+  pub attributes: Vec<Attribute>,
+  pub sheet: css_ast::Sheet,
 }
 
 impl fmt::Display for StyleElement {
   fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
     fmt_start_tag("style", &self.attributes, f)?;
-    write!(f, "{}", self.sheet.item.to_string())?;
+    write!(f, "{}", self.sheet.to_string())?;
     fmt_end_tag("style", f)?;
     Ok(())
   }
@@ -218,14 +206,14 @@ impl fmt::Display for StyleElement {
 
 #[derive(Debug, PartialEq, Serialize)]
 pub struct Fragment {
-  pub children: Vec<Expression<Node>>
+  pub children: Vec<Node>
 }
 
 impl fmt::Display for Fragment {
   fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
     write!(f, "")?;
     for child in &self.children {
-      write!(f, "{}", child.item.to_string())?;
+      write!(f, "{}", child.to_string())?;
     }
 
     Ok(())
@@ -238,28 +226,22 @@ pub struct Location {
   end: usize,
 }
 
-impl<'a, TItem: std::string::ToString> fmt::Display for Expression<TItem> {
-  fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-    write!(f, "{}", self.item.to_string())
-  }
-}
-
-pub fn get_children<'a>(expr: &'a Expression<Node>) -> Option<&'a Vec<Expression<Node>>> {
-  match &expr.item {
+pub fn get_children<'a>(expr: &'a Node) -> Option<&'a Vec<Node>> {
+  match &expr {
     Node::Element(root) => Some(&root.children),
     Node::Fragment(root) => Some(&root.children),
     _ => None
   }
 }
 
-pub fn get_imports<'a>(root_expr: &'a Expression<Node>) -> Vec<&'a Element> {
+pub fn get_imports<'a>(root_expr: &'a Node) -> Vec<&'a Element> {
   let mut imports = vec![];
 
   let children = get_children(root_expr);
 
   if children != None {
     for child in children.unwrap() {
-      if let Node::Element(element) = &child.item {
+      if let Node::Element(element) = &child {
         if element.tag_name == "import" && get_attribute_value("src", element) != None {
           imports.push(element);
         }
@@ -272,8 +254,8 @@ pub fn get_imports<'a>(root_expr: &'a Expression<Node>) -> Vec<&'a Element> {
 
 pub fn get_attribute<'a, 'b>(name: &'b str, element: &'a Element) -> Option<&'a Attribute> {
   for attribute in &element.attributes {
-    if attribute.item.name == name {
-      return Some(&attribute.item);
+    if attribute.name == name {
+      return Some(&attribute);
     }
   }
   None
@@ -283,7 +265,7 @@ pub fn get_attribute_value<'a, 'b>(name: &'b str, element: &'a Element) -> Optio
   let attr = get_attribute(name, element);
   if let Some(att) = attr {
     if let Some(expr) = &att.value {
-      let AttributeValue::String(st) = &expr.item;
+      let AttributeValue::String(st) = &expr;
       return Some(&st.value);
     }
   }
@@ -291,7 +273,7 @@ pub fn get_attribute_value<'a, 'b>(name: &'b str, element: &'a Element) -> Optio
 }
 
 
-pub fn get_import_ids<'a>(root_expr: &'a Expression<Node>) -> Vec<&'a String> {
+pub fn get_import_ids<'a>(root_expr: &'a Node) -> Vec<&'a String> {
   let mut ids = vec![];
   for import in get_imports(root_expr) {
     if let Some(id) = get_attribute_value("id", &import) {
@@ -301,7 +283,7 @@ pub fn get_import_ids<'a>(root_expr: &'a Expression<Node>) -> Vec<&'a String> {
   ids
 }
 
-pub fn get_import<'a>(id1: &'a String, root_expr: &'a Expression<Node>) -> Option<&'a Element> {
+pub fn get_import<'a>(id1: &'a String, root_expr: &'a Node) -> Option<&'a Element> {
   for import in get_imports(root_expr) {
     if let Some(id) = get_attribute_value("id", &import) {
       if id1 == id {

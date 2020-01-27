@@ -23,3 +23,12 @@ pub fn expect_token(a: Token, b: Token) -> Result<(), &'static str> {
     Ok(())
   }
 }
+
+
+// pub fn expect_token2(a: Token, b: Token) -> Result<(), &'static str> {
+//   if a != b {
+//     Err("Unexpected token")
+//   } else {
+//     Ok(())
+//   }
+// }

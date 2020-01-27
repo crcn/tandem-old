@@ -4,12 +4,6 @@ Limitations:
 
 immediate TODO:
 
-- parser specific error
-  - include loc of expression
-- evaluator specific error
-  - include loc of expression
-- tokenizer.current instead of peek
-- ref.paths.for.js.engine
 - #if blocks
 - JS evaluator
   - strings & numbers

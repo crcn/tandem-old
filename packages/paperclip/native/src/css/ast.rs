@@ -1,5 +1,4 @@
 use std::fmt;
-use crate::base::ast::{Expression};
 use serde::{Serialize};
 
 #[derive(Debug, PartialEq, Serialize)]
@@ -18,14 +17,14 @@ impl fmt::Display for Declaration {
 #[derive(Debug, PartialEq, Serialize)]
 pub struct Rule {
   pub selector: Selector,
-  pub declarations: Vec<Expression<Declaration>>
+  pub declarations: Vec<Declaration>
 }
 
 impl fmt::Display for Rule {
   fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
     writeln!(f, "{} {{", &self.selector)?;
     for decl in &self.declarations {
-      write!(f, "  {}", &decl.item.to_string())?;
+      write!(f, "  {}", &decl.to_string())?;
     }
     writeln!(f, "}}")?;
 
@@ -39,7 +38,6 @@ pub enum Selector {
   Class(ClassSelector),
   AllSelector
 }
-
 
 impl fmt::Display for Selector {
   fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -79,13 +77,13 @@ impl fmt::Display for ClassSelector {
 
 #[derive(Debug, PartialEq, Serialize)]
 pub struct Sheet {
-  pub rules: Vec<Expression<Rule>>
+  pub rules: Vec<Rule>
 }
 
 impl fmt::Display for Sheet {
   fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
     for rule in &self.rules {
-      write!(f, "{}", &rule.item.to_string())?;
+      write!(f, "{}", &rule.to_string())?;
     }
     Ok(())
   }

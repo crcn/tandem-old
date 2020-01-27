@@ -9,6 +9,5 @@
 </style>
 
 <div>
-  {{label}} &nbsp;
   {{children}}
 </div>

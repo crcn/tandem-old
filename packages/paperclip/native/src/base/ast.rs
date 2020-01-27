@@ -6,9 +6,10 @@ pub struct Location {
   pub length: usize,
 }
 
+
+// TODO - change to trait
 #[derive(Debug, PartialEq, Serialize)]
 pub struct Expression<TItem> {
   // TODO - location: Location
   pub item: TItem
-
 }

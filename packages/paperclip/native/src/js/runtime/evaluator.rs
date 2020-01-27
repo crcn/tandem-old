@@ -1,4 +1,4 @@
-use crate::base::ast::{Expression};
+
 use super::super::ast;
 use super::virt;
 
@@ -6,9 +6,9 @@ pub struct Context<'a> {
   data: &'a virt::JsValue
 }
 
-pub fn evaluate<'a>(expr: &Expression<ast::Statement>, data: &'a virt::JsValue) -> Result<virt::JsValue, &'static str> {
+pub fn evaluate<'a>(expr: &ast::Statement, data: &'a virt::JsValue) -> Result<virt::JsValue, &'static str> {
   let context = Context { data };
-  evaluate_statement(&expr.item, &context)
+  evaluate_statement(&expr, &context)
 }
 fn evaluate_statement<'a>(statement: &ast::Statement, context: &'a Context) -> Result<virt::JsValue, &'static str> {
   match statement {
