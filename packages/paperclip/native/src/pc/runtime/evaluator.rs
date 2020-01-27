@@ -166,7 +166,6 @@ fn evaluate_imported_component<'a>(element: &ast::Element, context: &'a Context)
     }
   }
   
-  let mut js_self = js_virt::JsObject::new();
   let mut js_children = js_virt::JsArray::new();
   let children: Vec<js_virt::JsValue> = evaluate_children(&element.children, &context)?.into_iter().map(|child| {
     js_virt::JsValue::JsNode(child)
@@ -175,9 +174,6 @@ fn evaluate_imported_component<'a>(element: &ast::Element, context: &'a Context)
   js_children.values.extend(children);
 
   data.values.insert("children".to_string(), js_virt::JsValue::JsArray(js_children));
-
-  // TODO when
-  // data.values.insert("self".to_string(), js_virt::JsValue::JsObject(js_self));
 
   // TODO: if fragment, then wrap in span. If not, then copy these attributes to root element
   evaluate_component(&dep.expression, dep_file_path, &context.graph, &data)
