@@ -37,7 +37,7 @@ fn evaluate_style_rule(expr: &ast::Rule, context: &Context) -> Result<virt::CSSR
 fn stringify_element_selector(selector: &ast::Selector, context: &Context) -> Result<String, &'static str> {
   let scoped_selector_text = match selector {
     ast::Selector::AllSelector => format!(".{}", context.scope),
-    ast::Selector::Class(selector) => format!("{}.{}", selector.class_name, context.scope),
+    ast::Selector::Class(selector) => format!(".{}.{}", selector.class_name, context.scope),
     ast::Selector::Element(selector) => format!("{}.{}", selector.tag_name, context.scope)
   };
   

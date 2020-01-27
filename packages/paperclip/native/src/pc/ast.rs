@@ -4,11 +4,6 @@ use crate::css::ast as css_ast;
 use crate::js::ast as js_ast;
 use serde::{Serialize};
 
-
-pub trait Executable<TRet> {
-  fn execute(&self) -> Result<TRet, &'static str>;
-}
-
 #[derive(Debug, PartialEq, Serialize)]
 pub struct Element {
   pub tag_name: String,
@@ -168,23 +163,15 @@ impl fmt::Display for Attribute {
 #[derive(Debug, PartialEq, Serialize)]
 #[serde(tag = "type")]
 pub enum AttributeValue {
-  String(Str)
-}
-
-impl Executable<Option<String>> for AttributeValue {
-  fn execute(&self) -> Result<Option<String>, &'static str> {
-    match self {
-      AttributeValue::String(st) => {
-        Ok(Some(st.value.clone()))
-      }
-    }
-  }
+  String(Str),
+  Slot(js_ast::Statement)
 }
 
 impl fmt::Display for AttributeValue {
   fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
     match &self {
       AttributeValue::String(value) => { write!(f, "{}", value.to_string()) },
+      AttributeValue::Slot(script) => { write!(f, "{{{}}}", script.to_string()) },
     }
   }
 }
@@ -265,8 +252,9 @@ pub fn get_attribute_value<'a, 'b>(name: &'b str, element: &'a Element) -> Optio
   let attr = get_attribute(name, element);
   if let Some(att) = attr {
     if let Some(expr) = &att.value {
-      let AttributeValue::String(st) = &expr;
-      return Some(&st.value);
+      if let AttributeValue::String(st) = &expr {
+        return Some(&st.value);
+      }
     }
   }
   None

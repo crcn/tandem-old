@@ -1,6 +1,7 @@
 use super::ast as pc_ast;
 use crate::base::parser::{get_buffer, expect_token};
 use crate::js::parser::parse as parse_js;
+use crate::js::ast as js_ast;
 use crate::base::tokenizer::{Token, Tokenizer};
 use crate::css::parser::parse as parse_css;
 
@@ -62,9 +63,15 @@ fn parse_node<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::Node, &'stati
 }
 
 fn parse_slot<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::Node, &'static str> {
+  let script = parse_slot_script(tokenizer)?;
+  Ok(pc_ast::Node::Slot(script))
+}
+
+
+fn parse_slot_script<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<js_ast::Statement, &'static str> {
   let script = get_buffer(tokenizer, |tokenizer| { Ok(tokenizer.peek(1)? != Token::SlotClose) })?.to_string();
-  tokenizer.next()?;
-  Ok(pc_ast::Node::Slot(parse_js(script.as_str())?))
+  expect_token(tokenizer.next()?, Token::SlotClose)?;
+  parse_js(script.as_str())
 }
 
 fn parse_element<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::Node, &'static str> {
@@ -282,9 +289,17 @@ fn parse_attribute<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::Attribut
 fn parse_attribute_value<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::AttributeValue, &'static str> {
   match tokenizer.peek(1)? {
     Token::SingleQuote | Token::DoubleQuote => parse_string(tokenizer),
+    Token::SlotOpen => parse_attribute_slot(tokenizer),
     _ => Err("Unexpected token")
   }
 }
+
+fn parse_attribute_slot<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::AttributeValue, &'static str> {
+  expect_token(tokenizer.next()?, Token::SlotOpen);
+  let script = parse_slot_script(tokenizer)?;
+  Ok(pc_ast::AttributeValue::Slot(script))
+}
+
 
 fn parse_string<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::AttributeValue, &'static str> {
   let quote = tokenizer.next()?;

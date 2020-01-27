@@ -290,7 +290,6 @@ fn evaluate_conditional<'a>(block: &ast::ConditionalBlock, context: &'a Context)
   }
 }
 
-
 fn evaluate_pass_fail_block<'a>(block: &ast::PassFailBlock, context: &'a Context) -> Result<Option<virt::Node>, &'static str> {
   let condition = evaluate_js(&block.condition, context.data)?;
   if condition.truthy() {
@@ -313,7 +312,25 @@ fn evaluate_attribute_value<'a>(value: &ast::AttributeValue, context: &'a Contex
     ast::AttributeValue::String(st) => {
       Ok(Some(st.value.clone()))
     }
+    ast::AttributeValue::Slot(script) => {
+      Ok(Some(evaluate_attribute_slot(script, context)?.to_string()))
+    }
   }
+}
+
+fn evaluate_component_property<'a>(value: &ast::AttributeValue, context: &'a Context) -> Result<js_virt::JsValue, &'static str> {
+  match value {
+    ast::AttributeValue::String(st) => {
+      Ok(js_virt::JsValue::JsString(st.value.clone()))
+    }
+    ast::AttributeValue::Slot(script) => {
+      Ok(evaluate_attribute_slot(script, context)?)
+    }
+  }
+}
+
+fn evaluate_attribute_slot<'a>(script: &js_ast::Statement, context: &'a Context) -> Result<js_virt::JsValue, &'static str> {
+  evaluate_js(script, &context.data)
 }
 
 #[cfg(test)]

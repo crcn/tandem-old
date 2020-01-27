@@ -1,5 +1,5 @@
 <style>
-  div {
+  .test {
     color: white;
     border-radius: 10px;
     background: grey;
@@ -8,19 +8,14 @@
   }
 </style>
 
-<div>
+<div class={{clazz}}>
   {{children}}
 </div>
 
-aaaaa
-
-
-{{#if a}}
-  if a
+{{#if bb}}
+  something something
 {{/else if b}}
   if b
 {{/else}}
-  THENN
+  something
 {{/}}
-
-aaaaaaaa

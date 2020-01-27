@@ -1,9 +1,9 @@
 <import id="button" src="./button.pc" />
 <style>
-  span {
-    color: orange;
+  .test {
+    color: blue;
   }
 </style>
-<button label="something else" a>
-  this is a button!!!
+<button label="something else" clazz="test">
+  <span class="test">this is a button</span>
 </button>
