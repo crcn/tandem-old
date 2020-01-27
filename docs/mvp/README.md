@@ -4,9 +4,6 @@ Limitations:
 
 immediate TODO:
 
-- vscode extension polish
-  - explicitly open PC preview
-  - button for opening PC preview
 - ref.paths.for.js.engine
 - #if blocks
 - JS evaluator

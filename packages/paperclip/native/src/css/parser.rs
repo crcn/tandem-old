@@ -25,6 +25,7 @@ fn eat_comments<'a>(tokenizer: &mut Tokenizer<'a>, start: Token, end: Token) -> 
 
 fn parse_sheet<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Expression<Sheet>, &'static str> {
   let mut rules = vec![];
+  tokenizer.eat_whitespace();
   while !&tokenizer.is_eof() {
     rules.push(parse_rule(tokenizer)?);
   }
