@@ -15,6 +15,9 @@ Linter TODOS:
 
 - [ ] style blocks can only happen at root
 - [ ] error when http url is included
-- [ ] certain attributes cannot be dynamically bound
-  - import.id
-  - import.source
+- [ ] certain attributes cannot be dynamically
+
+bound
+
+- import.id
+- import.source

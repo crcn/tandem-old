@@ -4,9 +4,10 @@
     color: white;
     font-size: 20px;
     font-weight: 200;
-    padding: 10px;
   }
 </style>
 <button class="test">
-  <span>this is a button</span>
+  <span class="test">this is a button</span>
 </button>
+
+{{'one'}}

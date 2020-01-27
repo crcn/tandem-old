@@ -247,7 +247,6 @@ fn parse_next_style_element_parts<'a>(attributes: Vec<pc_ast::Attribute>, tokeni
   }))
 }
 
-
 fn parse_tag_name<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<String, &'static str> {
   Ok(get_buffer(tokenizer, |tokenizer| { Ok(!matches!(tokenizer.peek(1)?, Token::Whitespace | Token::GreaterThan | Token::Equals)) })?.to_string())
 }
@@ -267,12 +266,9 @@ fn parse_attributes<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Vec<pc_ast::Att
   }
 
   Ok(attributes)
-
 }
 
-
 fn parse_attribute<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::Attribute, &'static str> {
-
   if tokenizer.peek(1)? == Token::SlotOpen {
     tokenizer.next();
     parse_shorthand_attribute(tokenizer)

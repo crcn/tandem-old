@@ -5,21 +5,39 @@ Limitations:
 immediate TODO:
 
 - JS evaluator
-  - strings & numbers
+  - strings
+  - numbers
   - arrays
+  - objects
+  - groups
+  - operations
+    - or
+    - and
+    - +
+    - -
+    - %
+  - elements
 - #repeat
-- stress test
-
-Stress test:
-
-- [ ] render existing _large_ site (NYTimes, Webflow)
-
-TODOS:
-
-- [ ] example apps
-  - [ ] chat app
-  - [ ] build tandem
+- css selectors
+- stress test\*
+  - hackernews
+  - nytimes
+- examples
+  - chat app
+  - todo list
+- <logic /> element
+- optimizations
+  - diff / patch
+- compilers
+  - react
+- preview
+  - chrome-like inspector
+  - ability to change colors
+- linter
+  - syntax errors
+  - prevent bindings for imports
+  - prevent bindings for logic
 
 Existing apps:
 
-- https://marketplace.visualstudio.com/items?itemName=octref.vetur
+TODO
