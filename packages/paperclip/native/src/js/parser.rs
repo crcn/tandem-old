@@ -12,7 +12,19 @@ pub fn parse<'a>(source: &'a str) -> Result<Expression<ast::Statement>, &'static
 fn parse_reference<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Expression<ast::Statement>, &'static str> {
   // let name = tokenizer.next()?;
   if let Token::Word(name) = tokenizer.next()? {
-    Ok(Expression { item: ast::Statement::Reference(ast::Reference { name: name.to_string() }) })
+    let mut path = vec![name.to_string()];
+    while !tokenizer.is_eof() && tokenizer.peek(1)? == Token::Dot {
+      tokenizer.next()?; // eat .
+      match tokenizer.next()? {
+        Token::Word(part) => {
+          path.push(part.to_string());
+        }
+        _ => {
+          return Err("Unexpected token");
+        }
+      }
+    }
+    Ok(Expression { item: ast::Statement::Reference(ast::Reference { path: path }) })
   } else {
     Err("unexpected token")
   }

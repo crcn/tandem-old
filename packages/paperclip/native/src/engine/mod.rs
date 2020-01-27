@@ -61,7 +61,7 @@ impl Engine {
     let dependency = self.dependency_graph.dependencies.get(file_path).unwrap();
     self.events.push(EngineEvent::Evaluated(Evaluated {
       file_path: file_path.clone(),
-      node: runtime::evaluate(&dependency.expression, file_path, &self.dependency_graph, &js_virt::JsObject::new())?
+      node: runtime::evaluate(&dependency.expression, file_path, &self.dependency_graph, &js_virt::JsValue::JsObject(js_virt::JsObject::new()))?
     }));
     Ok(())
   }

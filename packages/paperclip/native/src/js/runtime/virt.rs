@@ -3,6 +3,8 @@ use std::collections::HashMap;
 use serde::{Serialize};
 use crate::pc::runtime::virt::{Node};
 
+// TODO - all js values here need to extend JsClass
+
 #[derive(Debug, PartialEq, Serialize, Clone)]
 pub enum JsValue {
   JsObject(JsObject),
@@ -55,6 +57,12 @@ impl JsArray {
   }
 }
 
+pub fn get_js_value_property<'a, 'b>(value: &'a JsValue, property_name: &'b str) -> Option<&'a JsValue> {
+  match value {
+    JsValue::JsObject(object) => object.values.get(property_name),
+    _ => None
+  }
+}
 
 // impl fmt::Display for JsObject {
 //   fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {

@@ -7,7 +7,7 @@ mod pc;
 mod js;
 
 use pc::runtime::graph::{DependencyGraph};
-use js::runtime::virt::{JsObject};
+use js::runtime::virt::{JsObject, JsValue};
 
 fn main() {
 
@@ -34,7 +34,7 @@ fn main() {
 
 
     // // let now = Instant::now();
-    let result = pc::runtime::evaluate(&expr, &"something".to_string(), &DependencyGraph::new(), &JsObject::new()).unwrap().unwrap();
+    let result = pc::runtime::evaluate(&expr, &"something".to_string(), &DependencyGraph::new(), &JsValue::JsObject(JsObject::new())).unwrap().unwrap();
 
     println!("{:?}", result);
 

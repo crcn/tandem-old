@@ -1,7 +1,9 @@
 <import id="button" src="./button.pc" />
 <style>
- 
+  span {
+    color: orange;
+  }
 </style>
-<button>
-  Something
+<button label="something">
+  <span>Okayaa</span>
 </button>

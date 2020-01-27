@@ -17,10 +17,10 @@ pub struct Context<'a> {
   file_path: &'a String,
   import_ids: HashSet<&'a String>,
   scope: String,
-  data: &'a js_virt::JsObject,
+  data: &'a js_virt::JsValue,
 }
 
-pub fn evaluate<'a>(node_expr: &Expression<ast::Node>, file_path: &String, graph: &'a DependencyGraph, data: &js_virt::JsObject) -> Result<Option<virt::Node>, &'static str>  {
+pub fn evaluate<'a>(node_expr: &Expression<ast::Node>, file_path: &String, graph: &'a DependencyGraph, data: &js_virt::JsValue) -> Result<Option<virt::Node>, &'static str>  {
   let context = create_context(node_expr, file_path, graph, data);
   
   let mut root_result = evaluate_node(node_expr, &context);
@@ -68,12 +68,11 @@ pub fn evaluate_jumbo_style<'a>(entry_expr: &Expression<ast::Node>,  file_path: 
   }))
 }
 
-pub fn evaluate_component<'a>(node_expr: &Expression<ast::Node>, file_path: &String, graph: &'a DependencyGraph, data: &js_virt::JsObject) -> Result<Option<virt::Node>, &'static str>  {
+pub fn evaluate_component<'a>(node_expr: &Expression<ast::Node>, file_path: &String, graph: &'a DependencyGraph, data: &js_virt::JsValue) -> Result<Option<virt::Node>, &'static str>  {
   evaluate_node(node_expr, &create_context(node_expr, file_path, graph, data))
 }
 
-
-fn create_context<'a>(node_expr: &'a Expression<ast::Node>, file_path: &'a String, graph: &'a DependencyGraph, data: &'a js_virt::JsObject) -> Context<'a> {
+fn create_context<'a>(node_expr: &'a Expression<ast::Node>, file_path: &'a String, graph: &'a DependencyGraph, data: &'a js_virt::JsValue) -> Context<'a> {
   Context {
     graph,
     file_path,
@@ -149,7 +148,6 @@ fn evaluate_slot<'a>(slot: &Expression<js_ast::Statement>, context: &'a Context)
 
 fn evaluate_imported_component<'a>(element: &ast::Element, context: &'a Context) -> Result<Option<virt::Node>, &'static str> {
 
-  // let attributes = vec![];
   let selfDep  = &context.graph.dependencies.get(context.file_path).unwrap();
   let dep_file_path = &selfDep.dependencies.get(&element.tag_name).unwrap();
   let dep = &context.graph.dependencies.get(&dep_file_path.to_string()).unwrap();
@@ -176,7 +174,7 @@ fn evaluate_imported_component<'a>(element: &ast::Element, context: &'a Context)
   data.values.insert("children".to_string(), js_virt::JsValue::JsArray(js_children));
 
   // TODO: if fragment, then wrap in span. If not, then copy these attributes to root element
-  evaluate_component(&dep.expression, dep_file_path, &context.graph, &data)
+  evaluate_component(&dep.expression, dep_file_path, &context.graph, &js_virt::JsValue::JsObject(data))
 }
 
 fn evaluate_basic_element<'a>(element: &ast::Element, context: &'a Context) -> Result<Option<virt::Node>, &'static str> {
@@ -285,6 +283,6 @@ mod tests {
     let case = "<style>div { color: red; }</style><div></div>";
     let ast = parse(case).unwrap();
     let graph = DependencyGraph::new();
-    let node = evaluate(&ast, &"something".to_string(), &graph, &js_virt::JsObject::new()).unwrap().unwrap();
+    let node = evaluate(&ast, &"something".to_string(), &graph, &js_virt::JsValue::JsObject(js_virt::JsObject::new())).unwrap().unwrap();
   }
 }
