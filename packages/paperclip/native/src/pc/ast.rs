@@ -36,37 +36,9 @@ impl fmt::Display for Node {
       Node::Comment(comment) => write!(f, "<!--{}-->", &comment.value),
       Node::Fragment(node) => write!(f, "{}", node.to_string()),
       Node::Element(element) => write!(f, "{}", element.to_string()),
-      Node::Block(block) => write!(f, "[block]"),
+      Node::Block(_block) => write!(f, "[block]"),
       Node::StyleElement(element) => write!(f, "{}", element.to_string()),
     }
-  }
-}
-
-impl Node {
-  pub fn traverse<FF>(&self, each: &FF) -> bool where FF: Fn(&Node) -> bool {
-    if !each(self) {
-      return false;
-    }
-    let children_option = match self {
-      Node::Element(element) => {
-        Some(&element.children)
-      },
-      Node::Fragment(fragment) => {
-        Some(&fragment.children)
-      },
-      _ => {
-        None
-      }
-    };
-
-    if let Some(children) = children_option {
-      for child in children {
-        if !child.traverse(each) {
-          return false;
-        }
-      }
-    }
-    return true;
   }
 }
 
@@ -313,15 +285,4 @@ pub fn get_import_ids<'a>(root_expr: &'a Node) -> Vec<&'a String> {
     }
   }
   ids
-}
-
-pub fn get_import<'a>(id1: &'a String, root_expr: &'a Node) -> Option<&'a Element> {
-  for import in get_imports(root_expr) {
-    if let Some(id) = get_attribute_value("id", &import) {
-      if id1 == id {
-        return Some(&import);
-      }
-    }
-  }
-  None
 }

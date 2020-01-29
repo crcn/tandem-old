@@ -1,8 +1,10 @@
-use std::fs;
+
 use std::io;
+use std::fs;
 use std::collections::HashMap;
 
 pub struct VirtualFileSystem {
+  http_path: Option<String>,
   pub contents: HashMap<String, String>
 }
 
@@ -10,9 +12,11 @@ fn insert_file_path(file_path: String, content: String, contents: &mut HashMap<S
   contents.insert(file_path, content);
 }
 
+#[allow(dead_code)]
 impl VirtualFileSystem {
-  pub fn new() -> VirtualFileSystem {
+  pub fn new(http_path: Option<String>) -> VirtualFileSystem {
     VirtualFileSystem {
+      http_path,
       contents: HashMap::new()
     }
   }
@@ -34,7 +38,13 @@ impl VirtualFileSystem {
   }
 
   pub fn reload(&mut self, file_path: &String) -> io::Result<&String> {
-    let content = fs::read_to_string(&file_path)?;
+    // let content = if let Some(http_path) = self.http_path {
+    //   let file_http_path = format!("{}{}", http_path, file_path).to_string();
+    // } else {
+    // };
+
+    let content =fs::read_to_string(&file_path)?;
+    
     insert_file_path(file_path.to_string(), content, &mut self.contents);
     Ok(self.contents.get(file_path).unwrap())
   }

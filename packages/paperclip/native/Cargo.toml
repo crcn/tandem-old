@@ -19,4 +19,7 @@ serde_json = { version = "1.0.44" }
 neon = "0.3.3"
 neon-serde = "0.3.0"
 crc = "1.8.1"
+jsonrpc-core = "14.0.5"
+jsonrpc-pubsub = "14.0.5"
+jsonrpc-ws-server = "14.0.5"
 

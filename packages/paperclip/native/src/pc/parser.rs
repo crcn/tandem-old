@@ -223,8 +223,8 @@ fn parse_else_block<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Option<Box<pc_a
 
 fn parse_final_condition_block<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::ConditionalBlock, &'static str> {
   let node =  parse_block_children(tokenizer)?;
-  expect_token(tokenizer.next()?, Token::BlockClose);
-  expect_token(tokenizer.next()?, Token::SlotClose);
+  expect_token(tokenizer.next()?, Token::BlockClose)?;
+  expect_token(tokenizer.next()?, Token::SlotClose)?;
   Ok(pc_ast::ConditionalBlock::FinalBlock(pc_ast::FinalBlock {
     node
   }))
@@ -270,7 +270,7 @@ fn parse_attributes<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Vec<pc_ast::Att
 
 fn parse_attribute<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::Attribute, &'static str> {
   if tokenizer.peek(1)? == Token::SlotOpen {
-    tokenizer.next();
+    tokenizer.next()?;
     parse_shorthand_attribute(tokenizer)
   } else {
     parse_key_value_attribute(tokenizer)
@@ -312,7 +312,7 @@ fn parse_attribute_value<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::At
 }
 
 fn parse_attribute_slot<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::AttributeValue, &'static str> {
-  expect_token(tokenizer.next()?, Token::SlotOpen);
+  expect_token(tokenizer.next()?, Token::SlotOpen)?;
   let script = parse_slot_script(tokenizer)?;
   Ok(pc_ast::AttributeValue::Slot(script))
 }

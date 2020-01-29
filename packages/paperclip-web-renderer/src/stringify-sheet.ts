@@ -9,8 +9,8 @@ const stringifyCSSRule = rule => {
   }
 };
 
-const stringifyCSSStyleRule = ({ selectorText, style }) => {
-  return `${selectorText} {
+const stringifyCSSStyleRule = ({ selector_text, style }) => {
+  return `${selector_text} {
     ${style.map(stringifyStyle).join("\n")}
   }`;
 };

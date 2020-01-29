@@ -5,6 +5,7 @@ use crate::pc::runtime::virt::{Node};
 
 // TODO - all js values here need to extend JsClass
 
+#[allow(dead_code)]
 #[derive(Debug, PartialEq, Serialize, Clone)]
 pub enum JsValue {
   JsObject(JsObject),
@@ -30,15 +31,14 @@ impl JsValue {
 impl fmt::Display for JsValue {
   fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
     match self {
-      JsValue::JsObject(object) => write!(f, "[Object object]"),
+      JsValue::JsObject(_object) => write!(f, "[Object object]"),
       JsValue::JsString(value) => write!(f, "{}", value),
       JsValue::JsBoolean(value) => write!(f, "{}", if *value { "true" } else { "false" }),
-      JsValue::JsNode(value) => write!(f, "[Object object]"),
+      JsValue::JsNode(_value) => write!(f, "[Object object]"),
       JsValue::JsNumber(value) => write!(f, "{}", value),
-      JsValue::JsArray(value) => write!(f, "[Object object]"),
+      JsValue::JsArray(_value) => write!(f, "[Object object]"),
       JsValue::JsUndefined() => write!(f, "undefined")
-    };
-    Ok(())
+    }
   }
 }
 

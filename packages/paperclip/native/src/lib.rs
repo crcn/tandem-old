@@ -14,8 +14,14 @@ use engine::{Engine};
 
 declare_types! {
   pub class JsPaperclipEngine as PaperclipEngine for Engine {
-    init(_) {
-      Ok(Engine::new())
+    init(mut cx) {
+      let options = cx.argument::<JsObject>(0)?;
+      
+      let files_protocol = options
+        .get(&mut cx, "httpPath")?
+        .downcast::<JsString>().unwrap().value();
+
+      Ok(Engine::new(Some(files_protocol)))
     }
 
     method startRuntime(mut cx) {
@@ -23,7 +29,7 @@ declare_types! {
       let mut this = cx.this();
 
       cx.borrow_mut(&mut this, |mut engine| {
-        engine.start_runtime(file_path);
+        engine.start_runtime(file_path).unwrap();
       });
       
       Ok(cx.undefined().upcast())
@@ -35,7 +41,7 @@ declare_types! {
       let mut this = cx.this();
 
       cx.borrow_mut(&mut this, |mut engine| {
-        engine.update_virtual_file_content(file_path, content);
+        engine.update_virtual_file_content(file_path, content).unwrap();
       });
       
       Ok(cx.undefined().upcast())

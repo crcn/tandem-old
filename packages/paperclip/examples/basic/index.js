@@ -1,8 +1,11 @@
 const { Engine } = require("../..");
-const e = new Engine();
-// e.onChange(() => {
-//   console.log("UP");
-// });
+const fs = require("fs");
+const e = new Engine({
+  httpPath: "http://oka"
+});
+e.onEvent(event => {
+  console.log(event);
+});
 
 let now = Date.now();
 // for (let i = 100; i--;)

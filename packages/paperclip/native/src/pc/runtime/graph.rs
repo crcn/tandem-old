@@ -9,6 +9,7 @@ pub struct DependencyGraph {
   pub dependencies: HashMap<String, Dependency>
 }
 
+#[allow(dead_code)]
 impl DependencyGraph {
   pub fn new() -> DependencyGraph {
     DependencyGraph { dependencies: HashMap::new() }
@@ -22,6 +23,7 @@ impl DependencyGraph {
     }
     return deps;
   }
+
   pub fn flatten_dependents<'a>(&'a self, entry_file_path: &String) -> Vec<&Dependency> {
     let mut deps = vec![];
     let entry = self.dependencies.get(entry_file_path).unwrap();
@@ -34,10 +36,11 @@ impl DependencyGraph {
     
     return deps;
   }
+
   pub fn load_dependency<'a>(&mut self, file_path: &String, vfs: &mut VirtualFileSystem) -> Result<&Dependency, &'static str> {
     let source = vfs.load(&file_path).unwrap().to_string();
     let dependency = Dependency::from_source(source, &file_path)?;
-    for (id, dep_file_path) in &dependency.dependencies {
+    for (_id, dep_file_path) in &dependency.dependencies {
       if !self.dependencies.contains_key(&dep_file_path.to_string()) {
         self.load_dependency(&dep_file_path, vfs)?;
       }
@@ -53,7 +56,7 @@ impl DependencyGraph {
       return self.load_dependency(file_path, vfs)
     }
     self.dependencies.remove(file_path);
-    self.dependencies.retain(|dep_file_path, dep| {
+    self.dependencies.retain(|_dep_file_path, dep| {
       return !dep.dependencies.contains_key(file_path);
     });
     self.load_dependency(file_path, vfs)

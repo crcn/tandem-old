@@ -4,6 +4,13 @@ Limitations:
 
 immediate TODO:
 
+- ditch Neon for RPC
+  - jayson for Node
+  - won't work for Websockets
+- paperclip JS tests
+  - ability to set VFS files
+- diff/patch algorithm
+
 - JS evaluator
   - strings
   - numbers
@@ -19,6 +26,10 @@ immediate TODO:
   - elements
 - #repeat
 - css selectors
+  - #
+  - TODO
+  - media queries
+  - keyframes
 - stress test\*
   - hackernews
   - nytimes
@@ -37,6 +48,9 @@ immediate TODO:
   - syntax errors
   - prevent bindings for imports
   - prevent bindings for logic
+- DSL
+  - ability to import .json files into scope
+  - ability to import .css files into scope
 
 Existing apps:
 

@@ -1,19 +1,11 @@
-<style>
-  div {
-    color: white;
-    border-radius: 10px;
-    background: grey;
-    padding: 10px 20px;
-    display: inline-block;
-    font-size: 20px;
-    font-weight: 200;
-  }
 
-  .test {
-    color: red;
+<style>
+
+  .variant1 {
+    background: blue;
   }
 </style>
 
-<div {{class}}>
-  {{children}}
+<div>
+fdsfdsfsd
 </div>

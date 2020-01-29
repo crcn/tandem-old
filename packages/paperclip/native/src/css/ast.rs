@@ -56,7 +56,7 @@ pub struct ElementSelector {
 
 impl fmt::Display for ElementSelector {
   fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-    write!(f, "{}", &self.tag_name);
+    write!(f, "{}", &self.tag_name)?;
     Ok(())
   }
 }
@@ -69,7 +69,7 @@ pub struct ClassSelector {
 
 impl fmt::Display for ClassSelector {
   fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-    write!(f, ".{}", &self.class_name);
+    write!(f, ".{}", &self.class_name)?;
     Ok(())
   }
 }

@@ -29,23 +29,21 @@ pub struct Engine {
 }
 
 impl Engine {
-  pub fn new() -> Engine {
+  pub fn new(http_path: Option<String>) -> Engine {
     Engine {
-      vfs: VirtualFileSystem::new(),
+      vfs: VirtualFileSystem::new(http_path),
       dependency_graph: DependencyGraph::new(),
       events: vec![]
     }
   }
   
   pub fn start_runtime(&mut self, file_path: String) -> Result<(), &'static str> {
-    let source = self.vfs.load(&file_path).unwrap().to_string();
     self.dependency_graph.load_dependency(&file_path, &mut self.vfs)?;
     self.evaluate(&file_path)
   }
 
   pub fn update_virtual_file_content(&mut self, file_path: String, content: String) -> Result<(), &'static str> {
-    self.vfs.update(&file_path, &content);
-    let dependency = &self.dependency_graph.reload_dependents(&file_path, &mut self.vfs)?;
+    self.vfs.update(&file_path, &content).unwrap();
     let mut dep_file_paths: Vec<String> = self.dependency_graph.flatten_dependents(&file_path).into_iter().map(|dep| -> String {
       dep.file_path.to_string()
     }).collect();
@@ -70,7 +68,7 @@ impl Engine {
     self.events.drain(0..).collect()
   }
 
-  pub fn stop_runtime(&mut self, file_path: String) {
+  pub fn stop_runtime(&mut self, _file_path: String) {
     // self.open_files.push(file_path);
   }
 }
