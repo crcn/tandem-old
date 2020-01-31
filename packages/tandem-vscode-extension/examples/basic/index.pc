@@ -1,0 +1,4 @@
+<import id="button" src="./button.pc" />
+<button>
+  <span>okayaa</span>!!!!!!!
+</button>

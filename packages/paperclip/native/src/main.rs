@@ -7,25 +7,76 @@ mod base;
 mod css;
 mod pc;
 mod js;
+mod engine;
 
-use std::sync::Arc;
-use std::{thread, time};
-
-use pc::runtime::graph::{DependencyGraph};
-use js::runtime::virt::{JsObject, JsValue};
+use serde::{Deserialize};
 use jsonrpc_core::*;
-use jsonrpc_ipc_server::ServerBuilder;
-use jsonrpc_ipc_server::jsonrpc_core::*;
+use std::sync::{Arc, Mutex};
+use jsonrpc_stdio_server::jsonrpc_core::*;
+use std::env;
+use std::{thread, time};
+use jsonrpc_tcp_server::*;
+use std::net::{IpAddr, Ipv4Addr, SocketAddr};
 
-use jsonrpc_core::futures::Future;
+use engine::{Engine};
+
+#[derive(Deserialize, Debug)]
+struct LoadParams {
+    file_path: String
+}
+
+#[derive(Deserialize, Debug)]
+struct UnloadParams {
+    file_path: String
+}
+
+#[derive(Deserialize, Debug)]
+struct UpdateVirtualFileContentParams {
+    file_path: String,
+    content: String
+}
 
 fn main() {
-	let mut io = IoHandler::new();
-	io.add_method("say_hello", |_params| {
-		Ok(Value::String("hello world".into()))
-	});
+    let args: Vec<String> = env::args().collect();
 
-	let builder = ServerBuilder::new(io);
-	let server = builder.start("/tmp/json-ipc-test.ipc").expect("Couldn't open socket");
-	server.wait();
+    let port: String = args[1].to_string();
+    let http_path: Option<String> = if args.len() > 2 { Some(args[2].to_string()) } else { None};
+
+    // TODO - http opts
+    let engine_mutex = Arc::new(Mutex::new(Engine::new(http_path)));
+
+    let mut io = IoHandler::new();
+    let load_engine_mutex = engine_mutex.clone();
+	io.add_method("load", move |params: Params| {
+        let parsed: LoadParams = params.parse().unwrap();
+        load_engine_mutex.lock().unwrap().load(parsed.file_path);
+		Ok(Value::String("ok".into()))
+    });
+
+
+    let unload_engine_mutex = engine_mutex.clone();
+	io.add_method("unload", move |params: Params| {
+		let parsed: UnloadParams = params.parse().unwrap();
+        unload_engine_mutex.lock().unwrap().unload(parsed.file_path);
+		Ok(Value::String("ok".into()))
+    });
+    
+    let update_virtual_file_content_engine_mutex = engine_mutex.clone();
+	io.add_method("update_virtual_file_content", move |params: Params| {
+        let parsed: UpdateVirtualFileContentParams = params.parse().unwrap();
+        update_virtual_file_content_engine_mutex.lock().unwrap().update_virtual_file_content(parsed.file_path, parsed.content);
+		Ok(Value::String("ok".into()))
+    });
+    
+    let drain_events_engine_mutex = engine_mutex.clone();
+	io.add_method("drain_events", move |_params| {
+        let events = drain_events_engine_mutex.lock().unwrap().drain_events();
+		Ok(Value::String(serde_json::to_string(&events).unwrap()))
+    });
+
+	let server = ServerBuilder::new(io)
+    .start(&format!("127.0.0.1:{}", port).parse().unwrap())
+    .expect("Server must start with no issues");
+
+    server.wait();
 }

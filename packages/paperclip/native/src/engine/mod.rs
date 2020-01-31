@@ -10,16 +10,16 @@ pub struct Evaluated {
   pub node: Option<runtime::virt::Node>
 }
 
-#[derive(Debug, PartialEq, Serialize)]
-pub struct Diffed {
-  // TODO
-}
+// #[derive(Debug, PartialEq, Serialize)]
+// pub struct Diffed {
+//   // TODO
+// }
 
 #[derive(Debug, PartialEq, Serialize)]
 #[serde(tag = "type")]
 pub enum EngineEvent {
   Evaluated(Evaluated),
-  Diffed(Diffed)
+  // Diffed(Diffed)
 }
 
 pub struct Engine {
@@ -37,7 +37,7 @@ impl Engine {
     }
   }
   
-  pub fn start_runtime(&mut self, file_path: String) -> Result<(), &'static str> {
+  pub fn load(&mut self, file_path: String) -> Result<(), &'static str> {
     self.dependency_graph.load_dependency(&file_path, &mut self.vfs)?;
     self.evaluate(&file_path)
   }
@@ -49,6 +49,7 @@ impl Engine {
     }).collect();
 
     for dep_file_path in dep_file_paths.drain(0..).into_iter() {
+      self.dependency_graph.load_dependency(&dep_file_path, &mut self.vfs)?;
       self.evaluate(&dep_file_path)?;
     }
 
@@ -68,7 +69,7 @@ impl Engine {
     self.events.drain(0..).collect()
   }
 
-  pub fn stop_runtime(&mut self, _file_path: String) {
+  pub fn unload(&mut self, _file_path: String) {
     // self.open_files.push(file_path);
   }
 }

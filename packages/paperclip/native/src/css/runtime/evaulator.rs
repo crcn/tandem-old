@@ -27,7 +27,6 @@ fn evaluate_style_rule(expr: &ast::Rule, context: &Context) -> Result<virt::CSSR
     style.push(evaluate_style(&property)?);
   }
   let selector_text = stringify_element_selector(&expr.selector, context)?;
-  println!("{:?}", &selector_text);
   Ok(virt::CSSRule::CSSStyleRule(virt::CSSStyleRule {
     selector_text,
     style

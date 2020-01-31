@@ -4,9 +4,6 @@ Limitations:
 
 immediate TODO:
 
-- ditch Neon for RPC
-  - jayson for Node
-  - won't work for Websockets
 - paperclip JS tests
   - ability to set VFS files
 - diff/patch algorithm

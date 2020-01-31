@@ -367,7 +367,6 @@ mod tests {
       // TODO - strip whitespace
       let expr = parse(case).unwrap();
       assert_eq!(expr.to_string().replace("\n", "").replace(" ", ""), case.replace("\n", "").replace(" ", ""));
-      println!("{}", case);
     }
   }
 }

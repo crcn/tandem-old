@@ -1,11 +1,9 @@
-
 <style>
-
-  .variant1 {
-    background: blue;
+  div {
+    color: red;
   }
 </style>
 
 <div>
-fdsfdsfsd
+  {{children}}
 </div>

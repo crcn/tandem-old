@@ -145,6 +145,7 @@ class LivePreview {
   ) {
     this._em = new EventEmitter();
     this.targetFilePath = targetFilePath;
+    console.log("ON EVENT");
     this._disposeEngineListener = this._engine.onEvent(this._onEngineEvent);
     this.panel.webview.onDidReceiveMessage(this._onMessage);
     this._render();
@@ -156,7 +157,7 @@ class LivePreview {
 
         // panel content is disposed of, so eliminate the extra work
       } else {
-        this._engine.stopRuntime(targetFilePath);
+        this._engine.unload(targetFilePath);
       }
     });
   }
@@ -168,7 +169,7 @@ class LivePreview {
   blink() {}
   private _render() {
     // calling startEngine multiple times by the way just restarts it
-    this._engine.startRuntime(this.targetFilePath);
+    this._engine.load(this.targetFilePath);
     this.panel.webview.html = this._getHTML();
   }
   private _onPanelDispose = () => {

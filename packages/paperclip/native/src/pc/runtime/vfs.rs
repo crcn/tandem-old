@@ -3,6 +3,7 @@ use std::io;
 use std::fs;
 use std::collections::HashMap;
 
+#[allow(dead_code)]
 pub struct VirtualFileSystem {
   http_path: Option<String>,
   pub contents: HashMap<String, String>

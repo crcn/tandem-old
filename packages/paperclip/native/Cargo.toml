@@ -5,10 +5,6 @@ build = "build.rs"
 authors = ["Craig Condon <craig.j.condon@gmail.com>"]
 edition = "2018"
 
-[lib]
-name = "paperclip"
-crate-type = ["cdylib"]
-
 [build-dependencies]
 neon-build = "0.3.1"
 
@@ -20,7 +16,7 @@ neon = "0.3.3"
 neon-serde = "0.3.0"
 crc = "1.8.1"
 jsonrpc-core = "14.0.5"
-jsonrpc-pubsub = "14.0.5"
-jsonrpc-ws-server = "14.0.5"
 jsonrpc-ipc-server = "14.0.6"
+jsonrpc-stdio-server = "14.0.5"
+jsonrpc-tcp-server = "14.0.5"
 
