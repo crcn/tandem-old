@@ -12,11 +12,8 @@ mod engine;
 use serde::{Deserialize};
 use jsonrpc_core::*;
 use std::sync::{Arc, Mutex};
-use jsonrpc_stdio_server::jsonrpc_core::*;
 use std::env;
-use std::{thread, time};
 use jsonrpc_tcp_server::*;
-use std::net::{IpAddr, Ipv4Addr, SocketAddr};
 
 use engine::{Engine};
 
@@ -49,7 +46,7 @@ fn main() {
     let load_engine_mutex = engine_mutex.clone();
 	io.add_method("load", move |params: Params| {
         let parsed: LoadParams = params.parse().unwrap();
-        load_engine_mutex.lock().unwrap().load(parsed.file_path);
+        load_engine_mutex.lock().unwrap().load(parsed.file_path).unwrap();
 		Ok(Value::String("ok".into()))
     });
 
@@ -64,7 +61,7 @@ fn main() {
     let update_virtual_file_content_engine_mutex = engine_mutex.clone();
 	io.add_method("update_virtual_file_content", move |params: Params| {
         let parsed: UpdateVirtualFileContentParams = params.parse().unwrap();
-        update_virtual_file_content_engine_mutex.lock().unwrap().update_virtual_file_content(parsed.file_path, parsed.content);
+        update_virtual_file_content_engine_mutex.lock().unwrap().update_virtual_file_content(parsed.file_path, parsed.content).unwrap();
 		Ok(Value::String("ok".into()))
     });
     

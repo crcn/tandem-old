@@ -18,7 +18,6 @@ pub enum Action {
   InsertChild(InsertChild<'a>),
   DeleteChild(InsertChild<'a>),
   SetAttribute(SetAttribute<'a>)
-  // SoureChange
 }
 
 pub enum Mutation<'a> {
