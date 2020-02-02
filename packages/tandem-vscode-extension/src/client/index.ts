@@ -145,7 +145,6 @@ class LivePreview {
   ) {
     this._em = new EventEmitter();
     this.targetFilePath = targetFilePath;
-    console.log("ON EVENT");
     this._disposeEngineListener = this._engine.onEvent(this._onEngineEvent);
     this.panel.webview.onDidReceiveMessage(this._onMessage);
     this._render();

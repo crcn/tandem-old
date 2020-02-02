@@ -37,29 +37,34 @@ impl DependencyGraph {
     return deps;
   }
 
-  pub fn load_dependency<'a>(&mut self, file_path: &String, vfs: &mut VirtualFileSystem) -> Result<&Dependency, &'static str> {
-    let source = vfs.load(&file_path).unwrap().to_string();
-    let dependency = Dependency::from_source(source, &file_path)?;
-    for (_id, dep_file_path) in &dependency.dependencies {
-      if !self.dependencies.contains_key(&dep_file_path.to_string()) {
-        self.load_dependency(&dep_file_path, vfs)?;
-      }
-    }
+  pub async fn load_dependency<'a>(&mut self, file_path: &String, vfs: &mut VirtualFileSystem) -> Result<&Dependency, &'static str> {
+
+    let mut to_load = vec![file_path.to_string()];
     
-    self.dependencies.insert(file_path.to_string(), dependency);
-  
-    return Ok(self.dependencies.get(&file_path.to_string()).unwrap());
+    while to_load.len() > 0 {
+      let curr_file_path = to_load.pop().unwrap();
+      let source = vfs.load(&curr_file_path).await?.to_string();
+      let dependency = Dependency::from_source(source, &curr_file_path)?;
+      for (_id, dep_file_path) in &dependency.dependencies {
+        if !self.dependencies.contains_key(&dep_file_path.to_string()) {
+          to_load.push(dep_file_path.to_string());
+        }
+      }
+      self.dependencies.insert(curr_file_path.to_string(), dependency);
+    }
+
+    Ok(self.dependencies.get(&file_path.to_string()).unwrap())
   }
 
-  pub fn reload_dependents<'a>(&mut self, file_path: &String, vfs: &mut VirtualFileSystem) -> Result<&Dependency, &'static str> {
+  pub async fn reload_dependents<'a>(&mut self, file_path: &String, vfs: &mut VirtualFileSystem) -> Result<&Dependency, &'static str> {
     if !self.dependencies.contains_key(&file_path.to_string()) {
-      return self.load_dependency(file_path, vfs)
+      return self.load_dependency(file_path, vfs).await;
     }
     self.dependencies.remove(file_path);
     self.dependencies.retain(|_dep_file_path, dep| {
       return !dep.dependencies.contains_key(file_path);
     });
-    self.load_dependency(file_path, vfs)
+    self.load_dependency(file_path, vfs).await
   }
 }
 

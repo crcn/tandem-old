@@ -82,7 +82,7 @@ fn create_context<'a>(node_expr: &'a ast::Node, file_path: &'a String, graph: &'
 }
 
 fn get_component_scope<'a>(file_path: &String) -> String {
-  format!("_{:x}", crc32::checksum_ieee(file_path.as_bytes())).to_string()
+  format!("{:x}", crc32::checksum_ieee(file_path.as_bytes())).to_string()
 }
 
 fn evaluate_node<'a>(node_expr: &ast::Node, context: &'a Context) -> Result<Option<virt::Node>, &'static str> {
@@ -200,7 +200,6 @@ fn evaluate_basic_element<'a>(element: &ast::Element, context: &'a Context) -> R
   
 
   let tag_name = element.tag_name.clone();
-  let mut class_name_found = false;
 
   for attr_expr in &element.attributes {
     let attr = &attr_expr;
@@ -223,28 +222,18 @@ fn evaluate_basic_element<'a>(element: &ast::Element, context: &'a Context) -> R
     };
 
 
-    if name == "class" && value != None {
-      if let Some(original) = value {
-        class_name_found = true;
-        value = Some(format!("{} {}", original, context.scope));
-      }
-    }
-
     attributes.push(virt::Attribute {
       name, 
       value,
     });
   }
 
-  if !class_name_found {
-    attributes.push(virt::Attribute {
-      name: "class".to_string(),
-      value: Some(context.scope.to_string())
-    });
-  }
+  attributes.push(virt::Attribute {
+    name: format!("data-pc-{}", context.scope.to_string()).to_string(),
+    value: None
+  });
 
   let children = evaluate_children(&element.children, context)?;
-
 
   Ok(Some(virt::Node::Element(virt::Element {
     tag_name: tag_name,

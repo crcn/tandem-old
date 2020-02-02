@@ -37,19 +37,20 @@ impl Engine {
     }
   }
   
-  pub fn load(&mut self, file_path: String) -> Result<(), &'static str> {
-    self.dependency_graph.load_dependency(&file_path, &mut self.vfs)?;
+  pub async fn load(&mut self, file_path: String) -> Result<(), &'static str> {
+    self.dependency_graph.load_dependency(&file_path, &mut self.vfs).await?;
     self.evaluate(&file_path)
   }
 
-  pub fn update_virtual_file_content(&mut self, file_path: String, content: String) -> Result<(), &'static str> {
-    self.vfs.update(&file_path, &content).unwrap();
+  pub async fn update_virtual_file_content(&mut self, file_path: String, content: String) -> Result<(), &'static str> {
+    self.vfs.update(&file_path, &content).await?;
+
     let mut dep_file_paths: Vec<String> = self.dependency_graph.flatten_dependents(&file_path).into_iter().map(|dep| -> String {
       dep.file_path.to_string()
     }).collect();
 
     for dep_file_path in dep_file_paths.drain(0..).into_iter() {
-      self.dependency_graph.load_dependency(&dep_file_path, &mut self.vfs)?;
+      self.dependency_graph.load_dependency(&dep_file_path, &mut self.vfs).await?;
       self.evaluate(&dep_file_path)?;
     }
 

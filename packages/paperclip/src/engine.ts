@@ -5,7 +5,7 @@ import * as path from "path";
 import * as getPort from "get-port";
 const jasyon = require("jayson");
 
-const DRAIN_TIMEOUT = 50;
+const DRAIN_TIMEOUT = 30;
 
 export type FileContent = {
   [identifier: string]: string;
@@ -13,20 +13,27 @@ export type FileContent = {
 
 export type EngineOptions = {
   httpFilePath?: string;
+  log?: boolean;
 };
 
 const noop = (...args) => {};
 
 export type EngineEventListener = (event: EngineEvent) => void;
 
+const ENGINE_LOADED_TIMEOUT = 50;
+
 export class Engine {
-  private _engine;
   private _listeners: Array<EngineEventListener>;
   private _process: ChildProcess;
   private _client;
   private _loaded: Promise<any>;
 
   constructor(options: EngineOptions = {}) {
+    this._listeners = [];
+    // Wait for child process to spawn. Problematic because of race conditions, but whatever.
+    this._loaded = new Promise(resolve =>
+      setTimeout(resolve, ENGINE_LOADED_TIMEOUT)
+    );
     this.init(options);
   }
   async init(options: EngineOptions) {
@@ -44,14 +51,15 @@ export class Engine {
       args
     );
 
-    this._process.stdout.on("data", data => {
-      console.log("Paperclip Engine:", String(data));
-    });
+    if (options.log !== false) {
+      this._process.stdout.on("data", data => {
+        console.log("Paperclip Engine:", String(data));
+      });
+      this._process.on("close", code => {
+        console.error(`ERR: ${code}`);
+      });
+    }
 
-    this._listeners = [];
-
-    // wait for child process to spawn. Problematic because of race conditions, but whatever.
-    this._loaded = new Promise(resolve => setTimeout(resolve, 500));
     this._watch();
   }
   onEvent(listener: EngineEventListener) {
@@ -89,6 +97,9 @@ export class Engine {
       { file_path: stripFileProtocol(filePath) },
       noop
     );
+  }
+  dispose() {
+    this._process.kill();
   }
   _watch() {
     const drainEvents = () => {

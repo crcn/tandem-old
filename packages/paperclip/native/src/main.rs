@@ -14,6 +14,7 @@ use jsonrpc_core::*;
 use std::sync::{Arc, Mutex};
 use std::env;
 use jsonrpc_tcp_server::*;
+use ::futures::executor::block_on;
 
 use engine::{Engine};
 
@@ -33,6 +34,7 @@ struct UpdateVirtualFileContentParams {
     content: String
 }
 
+
 fn main() {
     let args: Vec<String> = env::args().collect();
 
@@ -46,7 +48,7 @@ fn main() {
     let load_engine_mutex = engine_mutex.clone();
 	io.add_method("load", move |params: Params| {
         let parsed: LoadParams = params.parse().unwrap();
-        load_engine_mutex.lock().unwrap().load(parsed.file_path).unwrap();
+        block_on(load_engine_mutex.lock().unwrap().load(parsed.file_path));
 		Ok(Value::String("ok".into()))
     });
 
@@ -61,7 +63,7 @@ fn main() {
     let update_virtual_file_content_engine_mutex = engine_mutex.clone();
 	io.add_method("update_virtual_file_content", move |params: Params| {
         let parsed: UpdateVirtualFileContentParams = params.parse().unwrap();
-        update_virtual_file_content_engine_mutex.lock().unwrap().update_virtual_file_content(parsed.file_path, parsed.content).unwrap();
+        block_on(update_virtual_file_content_engine_mutex.lock().unwrap().update_virtual_file_content(parsed.file_path, parsed.content));
 		Ok(Value::String("ok".into()))
     });
     

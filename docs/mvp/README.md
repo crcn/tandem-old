@@ -7,6 +7,7 @@ immediate TODO:
 - paperclip JS tests
   - ability to set VFS files
 - diff/patch algorithm
+- component roots should set cascading CSS to initial
 
 - JS evaluator
   - strings
