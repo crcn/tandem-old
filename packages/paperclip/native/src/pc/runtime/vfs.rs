@@ -39,7 +39,6 @@ impl VirtualFileSystem {
   pub async fn reload(&mut self, file_path: &String) -> Result<&String, &'static str> {
     let content = if let Some(http_path) = &self.http_path {
       let file_http_path = format!("{}{}", http_path, file_path).to_string();
-      // println!("http get: {}", &file_http_path);
       let data = http_get(&file_http_path);
       data
     } else {

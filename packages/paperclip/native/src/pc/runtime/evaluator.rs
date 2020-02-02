@@ -204,9 +204,7 @@ fn evaluate_basic_element<'a>(element: &ast::Element, context: &'a Context) -> R
   for attr_expr in &element.attributes {
     let attr = &attr_expr;
 
-    // let mut value = None;
-
-    let (name, mut value) = match attr {
+    let (name, value) = match attr {
       ast::Attribute::KeyValueAttribute(kv_attr) => {
         if kv_attr.value == None {
           (kv_attr.name.to_string(), None)

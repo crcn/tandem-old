@@ -20,7 +20,7 @@ const noop = (...args) => {};
 
 export type EngineEventListener = (event: EngineEvent) => void;
 
-const ENGINE_LOADED_TIMEOUT = 50;
+const ENGINE_LOADED_TIMEOUT = 500;
 
 export class Engine {
   private _listeners: Array<EngineEventListener>;

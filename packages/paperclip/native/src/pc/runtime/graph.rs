@@ -1,8 +1,8 @@
-use std::fs;
 use std::path::Path;
 use super::vfs::{VirtualFileSystem};
 use crate::pc::{ast as pc_ast, parser};
 use std::collections::HashMap;
+use path_abs::{PathAbs};
 
 #[derive(Debug)]
 pub struct DependencyGraph {
@@ -86,7 +86,9 @@ impl<'a> Dependency {
 
     let mut dependencies = HashMap::new();
     for import in &imports {
-      let src = fs::canonicalize(dir.join(pc_ast::get_attribute_value("src", import).unwrap().as_str())).unwrap();
+      let d = dir.join(pc_ast::get_attribute_value("src", import).unwrap().as_str()).to_str().unwrap().to_string();
+      let ss = PathAbs::new(&d).unwrap();
+      let src = ss.as_path();
       dependencies.insert(
         pc_ast::get_attribute_value("id", import).unwrap().as_str().to_string(),
         src.to_str().unwrap().to_string()

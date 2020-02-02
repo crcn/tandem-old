@@ -12,7 +12,7 @@ describe(__filename + "#", () => {
 
   before(next => {
     server = http.createServer((req, res) => {
-      res.end(currentGraph[req.url]);
+      res.end(currentGraph[req.url.substr(1)]);
     });
     server.listen(TEST_SERVER_PORT);
     setTimeout(next, 500);
@@ -46,7 +46,7 @@ describe(__filename + "#", () => {
         "/entry.pc": `<span>more text</span>`
       },
       {},
-      `<span data-pc-ea61779e><style></style>more text</span>`
+      `<span data-pc-3402f12b><style></style>more text</span>`
     ],
 
     // styles
@@ -62,9 +62,9 @@ describe(__filename + "#", () => {
         `
       },
       {},
-      `<span data-pc-ea61779e>
+      `<span data-pc-3402f12b>
         <style>
-          span[data-pc-ea61779e] { 
+          span[data-pc-3402f12b] { 
             color:red;
           }
         </style>
@@ -81,21 +81,22 @@ describe(__filename + "#", () => {
               color: red;
             }
           </style>
-          <span>more text</span>
+          <span>{{children}}!</span>
+
         `,
         "/entry.pc": `
           <import id="something" src="./button.pc" />
-          <button>hello world</button>
+          <something>hello world</something>
         `
       },
       {},
-      `<span data-pc-ea61779e>
+      `<spandata-pc-4aa1ff40>
         <style>
-          span[data-pc-ea61779e] { 
+          span[data-pc-4aa1ff40] {
             color:red;
           }
         </style>
-        more text
+        hello world!
       </span>`
     ]
   ].forEach(([graph, context, expectedHTML]) => {
@@ -104,7 +105,7 @@ describe(__filename + "#", () => {
       const engine = new Engine({
         httpFilePath: `http://0.0.0.0:${TEST_SERVER_PORT}/`
       });
-      engine.load("entry.pc");
+      engine.load("/entry.pc");
       const event = await waitForEvaluated(engine);
       const nodeStr = stringifyVirtualNode(event.node);
       expect(nodeStr.replace(/[\r\n\t\s]+/g, "")).to.eql(

@@ -20,4 +20,5 @@ jsonrpc-tcp-server = "14.0.5"
 reqwest = "0.10.1"
 futures = "0.3.1"
 curl = "0.4.25"
+path_abs = "0.5.0"
 
