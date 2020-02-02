@@ -78,7 +78,15 @@ pub struct Dependency {
 
 impl<'a> Dependency {
   pub fn from_source(source: String, file_path: &String) -> Result<Dependency, &'static str> {
-    let expression = parser::parse(source.as_str())?;
+
+    let expression_result = parser::parse(source.as_str());
+
+    if let Err(err) = expression_result {
+      println!("Err: {}", err);
+      return Err(err);
+    }
+
+    let expression = expression_result.unwrap();
     
     let imports = pc_ast::get_imports(&expression);
     let source_path = Path::new(&file_path);

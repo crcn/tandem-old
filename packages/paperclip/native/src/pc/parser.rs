@@ -95,14 +95,14 @@ fn parse_next_basic_element_parts<'a>(tag_name: String, attributes: Vec<pc_ast::
     },
     Token::GreaterThan => {
       tokenizer.eat_whitespace();
-      while tokenizer.peek(1)? != Token::CloseTag {
+      while !tokenizer.is_eof() && tokenizer.peek(1)? != Token::CloseTag {
         children.push(parse_node(tokenizer)?);
         tokenizer.eat_whitespace();
       }
 
-      tokenizer.next()?;
+      expect_token(tokenizer.next()?, Token::CloseTag)?;
       parse_tag_name(tokenizer)?;
-      tokenizer.next()?; 
+      expect_token(tokenizer.next()?, Token::GreaterThan)?;
     },
     _ => {
       return Err("Unexpected token")

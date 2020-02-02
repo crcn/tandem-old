@@ -16,7 +16,6 @@ fn evaluate_statement<'a>(statement: &ast::Statement, context: &'a Context) -> R
   }
 }
 
-
 fn evaluate_reference<'a>(reference: &ast::Reference, context: &'a Context) -> Result<virt::JsValue, &'static str> {
   
   let mut curr = Some(context.data);

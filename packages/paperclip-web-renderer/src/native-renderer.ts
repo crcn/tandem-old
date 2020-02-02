@@ -4,7 +4,7 @@ import { Html5Entities } from "html-entities";
 const entities = new Html5Entities();
 
 export const createNativeNode = node => {
-  // return document.createTextNode(JSON.stringify(node));
+  // return document.createTextNode("OK");
   switch (node.type) {
     case "Text":
       return createNativeTextNode(node);

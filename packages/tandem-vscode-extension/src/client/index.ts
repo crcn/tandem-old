@@ -188,7 +188,7 @@ class LivePreview {
       return;
     }
 
-    this.panel.webview.postMessage(event);
+    this.panel.webview.postMessage(JSON.stringify(event));
   };
   private _getHTML() {
     const scriptPathOnDisk = Uri.file(

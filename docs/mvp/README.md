@@ -4,10 +4,8 @@ Limitations:
 
 immediate TODO:
 
-- paperclip JS tests
-  - ability to set VFS files
-- diff/patch algorithm
-- component roots should set cascading CSS to initial
+- stress test
+- JSX in JS evaluator {{ children || <span>something else</span> }}
 
 - JS evaluator
   - strings

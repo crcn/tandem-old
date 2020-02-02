@@ -4,7 +4,7 @@ const renderer = new Renderer();
 document.body.appendChild(renderer.mount);
 
 const onMessage = ({ data: event }: MessageEvent) => {
-  renderer.handleEngineEvent(event);
+  renderer.handleEngineEvent(JSON.parse(event));
 };
 
 window.onmessage = onMessage;

@@ -1,9 +1,13 @@
 <style>
   div {
-    color: blue;
+    color: orange;
   }
 </style>
 
+{{#if a}}
+do that
+{{/}}
+
 <div>
-  {{children}}aaaa
+  {{children}}
 </div>
