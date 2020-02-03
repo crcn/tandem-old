@@ -98,6 +98,98 @@ describe(__filename + "#", () => {
         </style>
         hello world!
       </span>`
+    ],
+
+    // basic css
+    [
+      {
+        "/button.pc": `
+          <style>
+            /* indivisual selectors */
+            .class { }
+            .class1.class2 {}
+            .class1 .class2 {}
+            #id {}
+            * {}
+            element {}
+            element.class {}
+            [attribute] {}
+            [attribute=value]  {}
+            [attribute="value"]  {}
+            [attribute='value']  {}
+            [attribute~='value']  {}
+            [attribute^='value']  {}
+            [attribute$='value']  {}
+            [attribute$='value']  {}
+            [attribute*='value']  {}
+            div[attr1][attr1]  {}
+            :active {}
+            ::active {}
+            element::active {}
+            ::after {}
+
+            /* functions */
+            ::lang(it) {}
+            p::lang(it) {}
+            :not(p) {}
+            :nth-child(5) {}
+            :placeholder {}
+
+            /* groups */
+            element1, element2 {}
+            element, .class, #id.class {}
+
+            /* descendent */
+            element1 element2 {}
+            element1.class element2[attr][attr2] {}
+            element1.class element2[attr], #id.group {}
+
+            /* children */
+            element1 > element2 {}
+            element1 > .child .descendent {}
+            element1 > .child .descendent, [group-attr="something"] {}
+
+            /* next sibling */
+            element1 + element2 {}
+
+            /* sibling */
+            element1 ~ element2 {}
+
+            /* media queries */
+            @media only screen and (max-width: 600px) {
+              div {
+                color: red;
+              }
+            }
+
+            /* keyframes */
+            @keyframes mymove {
+              from {top: 0px;}
+              to {top: 200px;}
+            }
+
+            @charset "UTF-8"; 
+            
+          </style>
+          <span>{{children}}!</span>
+
+        `,
+        "/entry.pc": `
+          <import id="something" src="./button.pc" />
+          <something>hello world</something>
+        `
+      },
+      {},
+      `<spandata-pc-4aa1ff40>
+        <style>
+          span[data-pc-4aa1ff40] {
+            color:red;
+          }
+        </style>
+        hello world!
+      </span>`
+
+      // TODO - import css
     ]
   ].forEach(([graph, context, expectedHTML]) => {
     it(`can render "${JSON.stringify(graph)}"`, async () => {
