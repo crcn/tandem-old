@@ -4,10 +4,19 @@ Limitations:
 
 immediate TODO:
 
+- handle void elements
+- handle script elements
+  - should have assoc lint warning
+- ability to load url files (handle css link ref)
 - stress test
-- JSX in JS evaluator {{ children || <span>something else</span> }}
+  - should be able to just copy & paste sites
+  - nytimes.com
+  - reddit.com
+  - webflow.com
 
-- JS evaluator
+* diff/patch
+
+* JS evaluator
   - strings
   - numbers
   - arrays
@@ -20,31 +29,31 @@ immediate TODO:
     - -
     - %
   - elements
-- #repeat
-- css selectors
+* #repeat
+* css selectors
   - #
   - TODO
   - media queries
   - keyframes
-- stress test\*
+* stress test\*
   - hackernews
   - nytimes
-- examples
+* examples
   - chat app
   - todo list
-- <logic /> element
-- optimizations
+* <logic /> element
+* optimizations
   - diff / patch
-- compilers
+* compilers
   - react
-- preview
+* preview
   - chrome-like inspector
   - ability to change colors
-- linter
+* linter
   - syntax errors
   - prevent bindings for imports
   - prevent bindings for logic
-- DSL
+* DSL
   - ability to import .json files into scope
   - ability to import .css files into scope
 

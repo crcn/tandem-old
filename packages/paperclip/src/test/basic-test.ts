@@ -15,7 +15,7 @@ describe(__filename + "#", () => {
       res.end(currentGraph[req.url.substr(1)]);
     });
     server.listen(TEST_SERVER_PORT);
-    setTimeout(next, 500);
+    setTimeout(next, 100);
   });
 
   after(() => {

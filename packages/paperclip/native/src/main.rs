@@ -77,5 +77,7 @@ fn main() {
     .start(&format!("127.0.0.1:{}", port).parse().unwrap())
     .expect("Server must start with no issues");
 
+    println!("--READY--");
+
     server.wait();
 }

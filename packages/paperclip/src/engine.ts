@@ -20,8 +20,6 @@ const noop = (...args) => {};
 
 export type EngineEventListener = (event: EngineEvent) => void;
 
-const ENGINE_LOADED_TIMEOUT = 500;
-
 export class Engine {
   private _listeners: Array<EngineEventListener>;
   private _process: ChildProcess;
@@ -30,11 +28,7 @@ export class Engine {
 
   constructor(options: EngineOptions = {}) {
     this._listeners = [];
-    // Wait for child process to spawn. Problematic because of race conditions, but whatever.
-    this._loaded = new Promise(resolve =>
-      setTimeout(resolve, ENGINE_LOADED_TIMEOUT)
-    );
-    this.init(options);
+    this._loaded = this.init(options);
   }
   async init(options: EngineOptions) {
     const port = await getPort();
@@ -59,6 +53,15 @@ export class Engine {
         console.error(`ERR: ${code}`);
       });
     }
+
+    await new Promise(resolve => {
+      this._process.stdout.once("data", data => {
+        // crude, but works.
+        if (String(data).indexOf("--READY--") !== -1) {
+          resolve();
+        }
+      });
+    });
 
     this._watch();
   }
