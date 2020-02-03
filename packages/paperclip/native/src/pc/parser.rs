@@ -54,12 +54,12 @@ fn parse_fragment<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::Node, &'s
 
 fn parse_node<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::Node, &'static str> {
   tokenizer.eat_whitespace();
-  let pos = tokenizer.pos;
-  let token = tokenizer.next()?;
+  let token = tokenizer.peek(1)?;
   match token {
     Token::SlotOpen => { parse_slot(tokenizer) },
     Token::LessThan => { parse_element(tokenizer) },
     Token::HtmlCommentOpen => { 
+      tokenizer.next()?; // eat HTML comment open
       let buffer = get_buffer(tokenizer, |tokenizer| {
         let tok = tokenizer.peek(1)?;
         Ok(tok != Token::HtmlCommentClose)
@@ -71,7 +71,6 @@ fn parse_node<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::Node, &'stati
       parse_block(tokenizer)
     }
     _ => {
-      tokenizer.pos = pos;
       Ok(pc_ast::Node::Text(pc_ast::ValueObject { 
         value: get_buffer(tokenizer, |tokenizer| {
           let tok = tokenizer.peek(1)?;
@@ -96,12 +95,14 @@ fn parse_slot<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::Node, &'stati
 
 
 fn parse_slot_script<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<js_ast::Statement, &'static str> {
+  expect_token(tokenizer.next()?, Token::SlotOpen)?;
   let script = get_buffer(tokenizer, |tokenizer| { Ok(tokenizer.peek(1)? != Token::SlotClose) })?.to_string();
   expect_token(tokenizer.next()?, Token::SlotClose)?;
   parse_js(script.as_str())
 }
 
 fn parse_element<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::Node, &'static str> {
+  expect_token(tokenizer.next()?, Token::LessThan)?;
   let tag_name = parse_tag_name(tokenizer)?;
   let attributes = parse_attributes(tokenizer)?;
 
@@ -144,6 +145,7 @@ fn parse_next_basic_element_parts<'a>(tag_name: String, attributes: Vec<pc_ast::
 }
 
 fn parse_block<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::Node, &'static str> {
+  expect_token(tokenizer.next()?, Token::BlockOpen)?;
   let token = tokenizer.next()?; // eat {{# or {{/
   if let Token::Word(keyword) = token {
     match keyword {
@@ -168,8 +170,6 @@ fn parse_pass_fail_block<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::Co
   let js_source = get_buffer(tokenizer, |tokenizer| { Ok(tokenizer.peek(1)? != Token::SlotClose) })?;
   let condition = parse_js(js_source)?;
   expect_token(tokenizer.next()?, Token::SlotClose)?;
-
-
   let node = parse_block_children(tokenizer)?;
   let fail = parse_else_block(tokenizer)?;
 
@@ -297,7 +297,6 @@ fn parse_attributes<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Vec<pc_ast::Att
 
 fn parse_attribute<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::Attribute, &'static str> {
   if tokenizer.peek(1)? == Token::SlotOpen {
-    tokenizer.next()?;
     parse_shorthand_attribute(tokenizer)
   } else {
     parse_key_value_attribute(tokenizer)
