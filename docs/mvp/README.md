@@ -4,6 +4,8 @@ Limitations:
 
 immediate TODO:
 
+- child parsers should take existing tokenizer
+- tokens should be stringifiable
 - handle void elements
 - handle script elements
   - should have assoc lint warning
