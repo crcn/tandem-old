@@ -5,6 +5,33 @@ use crate::js::ast as js_ast;
 use crate::base::tokenizer::{Token, Tokenizer};
 use crate::css::parser::parse as parse_css;
 
+/*
+
+void elements: [ 'area',
+  'base',
+  'basefont',
+  'bgsound',
+  'br',
+  'col',
+  'command',
+  'embed',
+  'frame',
+  'hr',
+  'image',
+  'img',
+  'input',
+  'isindex',
+  'keygen',
+  'link',
+  'menuitem',
+  'meta',
+  'nextid',
+  'param',
+  'source',
+  'track',
+  'wbr' ]
+*/
+
 
 pub fn parse<'a>(source: &'a str) -> Result<pc_ast::Node, &'static str> {
   parse_fragment(&mut Tokenizer::new(source))
