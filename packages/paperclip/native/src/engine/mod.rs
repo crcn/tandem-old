@@ -1,6 +1,7 @@
 use crate::pc::{runtime};
 use crate::pc::runtime::graph::{DependencyGraph};
 use crate::pc::runtime::vfs::{VirtualFileSystem};
+use crate::base::parser::{ParseError};
 use crate::js::runtime::virt as js_virt;
 use serde::{Serialize};
 
@@ -37,13 +38,21 @@ impl Engine {
     }
   }
   
-  pub async fn load(&mut self, file_path: String) -> Result<(), &'static str> {
-    self.dependency_graph.load_dependency(&file_path, &mut self.vfs).await?;
-    self.evaluate(&file_path)
+  pub async fn load(&mut self, file_path: String) -> Result<(), ParseError> {
+    let result = self.dependency_graph.load_dependency(&file_path, &mut self.vfs).await;
+    match result {
+      Ok(_) => {
+        self.evaluate(&file_path);
+      }
+      Err(err) => {
+        return Err(err)
+      }
+    };
+    Ok(())
   }
 
-  pub async fn update_virtual_file_content(&mut self, file_path: String, content: String) -> Result<(), &'static str> {
-    self.vfs.update(&file_path, &content).await?;
+  pub async fn update_virtual_file_content(&mut self, file_path: String, content: String) -> Result<(), ParseError> {
+    self.vfs.update(&file_path, &content).await;
 
     let mut dep_file_paths: Vec<String> = self.dependency_graph.flatten_dependents(&file_path).into_iter().map(|dep| -> String {
       dep.file_path.to_string()
@@ -51,7 +60,7 @@ impl Engine {
 
     for dep_file_path in dep_file_paths.drain(0..).into_iter() {
       self.dependency_graph.load_dependency(&dep_file_path, &mut self.vfs).await?;
-      self.evaluate(&dep_file_path)?;
+      self.evaluate(&dep_file_path);
     }
 
     Ok(())

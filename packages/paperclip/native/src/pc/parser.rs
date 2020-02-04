@@ -1,5 +1,5 @@
 use super::ast as pc_ast;
-use crate::base::parser::{get_buffer, expect_token};
+use crate::base::parser::{get_buffer, ParseError};
 use crate::js::parser::parse_with_tokenizer as parse_js_with_tokenizer;
 use crate::js::ast as js_ast;
 use crate::base::tokenizer::{Token, Tokenizer};
@@ -32,12 +32,11 @@ void elements: [ 'area',
   'wbr' ]
 */
 
-
-pub fn parse<'a>(source: &'a str) -> Result<pc_ast::Node, &'static str> {
+pub fn parse<'a>(source: &'a str) -> Result<pc_ast::Node, ParseError> {
   parse_fragment(&mut Tokenizer::new(source))
 }
 
-fn parse_fragment<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::Node, &'static str> {
+fn parse_fragment<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::Node, ParseError> {
   let mut children: Vec<pc_ast::Node> = vec![];
 
   while !tokenizer.is_eof() {
@@ -52,7 +51,7 @@ fn parse_fragment<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::Node, &'s
   }
 }
 
-fn parse_node<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::Node, &'static str> {
+fn parse_node<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::Node, ParseError> {
   tokenizer.eat_whitespace();
   let token = tokenizer.peek(1)?;
   match token {
@@ -88,24 +87,24 @@ fn parse_node<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::Node, &'stati
   }
 }
 
-fn parse_slot<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::Node, &'static str> {
+fn parse_slot<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::Node, ParseError> {
   let script = parse_slot_script(tokenizer)?;
   Ok(pc_ast::Node::Slot(script))
 }
 
-fn parse_slot_script<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<js_ast::Statement, &'static str> {
-  expect_token(tokenizer.next()?, Token::SlotOpen)?;
+fn parse_slot_script<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<js_ast::Statement, ParseError> {
+  tokenizer.next_expect(Token::SlotOpen)?;
   let script_result = parse_js_with_tokenizer(tokenizer, |token| {
     token != Token::SlotClose
   });
   
-  expect_token(tokenizer.next()?, Token::SlotClose)?;
+  tokenizer.next_expect(Token::SlotClose)?;
 
   script_result
 }
 
-fn parse_element<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::Node, &'static str> {
-  expect_token(tokenizer.next()?, Token::LessThan)?;
+fn parse_element<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::Node, ParseError> {
+  tokenizer.next_expect(Token::LessThan)?;
   let tag_name = parse_tag_name(tokenizer)?;
   let attributes = parse_attributes(tokenizer)?;
 
@@ -116,11 +115,11 @@ fn parse_element<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::Node, &'st
   }
 }
 
-fn parse_next_basic_element_parts<'a>(tag_name: String, attributes: Vec<pc_ast::Attribute>, tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::Node, &'static str> {
+fn parse_next_basic_element_parts<'a>(tag_name: String, attributes: Vec<pc_ast::Attribute>, tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::Node, ParseError> {
   let mut children: Vec<pc_ast::Node> = vec![];
 
   tokenizer.eat_whitespace();
-  
+  let pos = tokenizer.pos;
   match tokenizer.next()? {
     Token::SelfCloseTag => {
     },
@@ -131,12 +130,12 @@ fn parse_next_basic_element_parts<'a>(tag_name: String, attributes: Vec<pc_ast::
         tokenizer.eat_whitespace();
       }
 
-      expect_token(tokenizer.next()?, Token::CloseTag)?;
+      tokenizer.next_expect(Token::CloseTag)?;
       parse_tag_name(tokenizer)?;
-      expect_token(tokenizer.next()?, Token::GreaterThan)?;
+      tokenizer.next_expect(Token::GreaterThan)?;
     },
     _ => {
-      return Err("Unexpected token")
+      return Err(ParseError::unexpected_token(pos))
     }
   }
 
@@ -147,33 +146,34 @@ fn parse_next_basic_element_parts<'a>(tag_name: String, attributes: Vec<pc_ast::
   }))
 }
 
-fn parse_block<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::Node, &'static str> {
-  expect_token(tokenizer.next()?, Token::BlockOpen)?;
+fn parse_block<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::Node, ParseError> {
+  tokenizer.next_expect(Token::BlockOpen)?;
+  let pos = tokenizer.pos;
   let token = tokenizer.next()?; // eat {{# or {{/
   if let Token::Word(keyword) = token {
     match keyword {
       "if" => parse_if_block(tokenizer),
       _ => {
-        Err("Unexpected token")
+        Err(ParseError::unexpected_token(pos))
       }
     }
   } else {
-    Err("Unxpected token")
+    Err(ParseError::unexpected_token(pos))
   }
 }
 
-fn parse_if_block<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::Node, &'static str> {
+fn parse_if_block<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::Node, ParseError> {
   Ok(pc_ast::Node::Block(pc_ast::Block::Conditional(
     parse_pass_fail_block(tokenizer)?
   )))
 }
 
-fn parse_pass_fail_block<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::ConditionalBlock, &'static str> {
+fn parse_pass_fail_block<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::ConditionalBlock, ParseError> {
   tokenizer.eat_whitespace();
   let condition = parse_js_with_tokenizer(tokenizer, |token| {
     token != Token::SlotClose
   })?;
-  expect_token(tokenizer.next()?, Token::SlotClose)?;
+  tokenizer.next_expect(Token::SlotClose)?;
   let node = parse_block_children(tokenizer)?;
   let fail = parse_else_block(tokenizer)?;
 
@@ -186,7 +186,7 @@ fn parse_pass_fail_block<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::Co
   ))
 }
 
-fn parse_block_children<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Option<Box<pc_ast::Node>>, &'static str> {
+fn parse_block_children<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Option<Box<pc_ast::Node>>, ParseError> {
 
   let mut children = vec![];
 
@@ -213,33 +213,35 @@ fn parse_block_children<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Option<Box<
   Ok(node)
 }
 
-fn parse_else_block<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Option<Box<pc_ast::ConditionalBlock>>, &'static str> {
+fn parse_else_block<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Option<Box<pc_ast::ConditionalBlock>>, ParseError> {
   tokenizer.eat_whitespace();
-  expect_token(tokenizer.next()?, Token::BlockClose)?;
+  tokenizer.next_expect(Token::BlockClose)?;
   tokenizer.eat_whitespace();
+  let pos = tokenizer.pos;
   match tokenizer.next()? {
     Token::Word(value) => {
       match value {
         "else" => {
           tokenizer.eat_whitespace();
+          let pos = tokenizer.pos;
           match tokenizer.next()? {
             Token::Word(value2) => {
               if value2 == "if" {
                 Ok(Some(Box::new(parse_pass_fail_block(tokenizer)?)))
               } else {
-                Err("Unexpected token")
+                Err(ParseError::unexpected_token(pos))
               }
             },
             Token::SlotClose => {
               Ok(Some(Box::new(parse_final_condition_block(tokenizer)?)))
             }
             _ => {
-              Err("Unexpected token")
+              Err(ParseError::unexpected_token(pos))
             }
           }
         },
         _ => {
-          Err("Unexpected token")
+          Err(ParseError::unexpected_token(pos))
         }
       }
     },
@@ -247,21 +249,21 @@ fn parse_else_block<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Option<Box<pc_a
       Ok(None)
     },
     _ => {
-      Err("Unexpected token")
+      Err(ParseError::unexpected_token(pos))
     }
   }
 }
 
-fn parse_final_condition_block<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::ConditionalBlock, &'static str> {
+fn parse_final_condition_block<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::ConditionalBlock, ParseError> {
   let node =  parse_block_children(tokenizer)?;
-  expect_token(tokenizer.next()?, Token::BlockClose)?;
-  expect_token(tokenizer.next()?, Token::SlotClose)?;
+  tokenizer.next_expect(Token::BlockClose)?;
+  tokenizer.next_expect(Token::SlotClose)?;
   Ok(pc_ast::ConditionalBlock::FinalBlock(pc_ast::FinalBlock {
     node
   }))
 }
 
-fn parse_next_style_element_parts<'a>(attributes: Vec<pc_ast::Attribute>, tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::Node, &'static str> {
+fn parse_next_style_element_parts<'a>(attributes: Vec<pc_ast::Attribute>, tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::Node, ParseError> {
   tokenizer.next()?; // eat >
 
   let sheet = parse_css_with_tokenizer(tokenizer, |token| {
@@ -275,9 +277,9 @@ fn parse_next_style_element_parts<'a>(attributes: Vec<pc_ast::Attribute>, tokeni
   // })?;
 
   // TODO - assert tokens equal these
-  expect_token(tokenizer.next()?, Token::CloseTag)?; // eat </
-  expect_token(tokenizer.next()?, Token::Word("style"))?; // eat style
-  expect_token(tokenizer.next()?, Token::GreaterThan)?; // eat >
+  tokenizer.next_expect(Token::CloseTag)?; // eat </
+  tokenizer.next_expect(Token::Word("style"))?; // eat style
+  tokenizer.next_expect(Token::GreaterThan)?; // eat >
 
   Ok(pc_ast::Node::StyleElement(pc_ast::StyleElement {
     attributes,
@@ -285,11 +287,11 @@ fn parse_next_style_element_parts<'a>(attributes: Vec<pc_ast::Attribute>, tokeni
   }))
 }
 
-fn parse_tag_name<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<String, &'static str> {
+fn parse_tag_name<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<String, ParseError> {
   Ok(get_buffer(tokenizer, |tokenizer| { Ok(!matches!(tokenizer.peek(1)?, Token::Whitespace | Token::GreaterThan | Token::Equals)) })?.to_string())
 }
 
-fn parse_attributes<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Vec<pc_ast::Attribute>, &'static str> {
+fn parse_attributes<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Vec<pc_ast::Attribute>, ParseError> {
 
   let mut attributes: Vec<pc_ast::Attribute> = vec![];
 
@@ -306,7 +308,7 @@ fn parse_attributes<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Vec<pc_ast::Att
   Ok(attributes)
 }
 
-fn parse_attribute<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::Attribute, &'static str> {
+fn parse_attribute<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::Attribute, ParseError> {
   if tokenizer.peek(1)? == Token::SlotOpen {
     parse_shorthand_attribute(tokenizer)
   } else {
@@ -314,7 +316,7 @@ fn parse_attribute<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::Attribut
   }
 }
 
-fn parse_shorthand_attribute<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::Attribute, &'static str> {
+fn parse_shorthand_attribute<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::Attribute, ParseError> {
   let reference = parse_slot_script(tokenizer)?;
 
   // TODO - expect script to be reference with path.length === 1
@@ -324,7 +326,7 @@ fn parse_shorthand_attribute<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast
   }))
 }
 
-fn parse_key_value_attribute<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::Attribute, &'static str> {
+fn parse_key_value_attribute<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::Attribute, ParseError> {
   
   let name = parse_tag_name(tokenizer)?;
   let mut value = None;
@@ -340,22 +342,23 @@ fn parse_key_value_attribute<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast
   }))
 }
 
-fn parse_attribute_value<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::AttributeValue, &'static str> {
+fn parse_attribute_value<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::AttributeValue, ParseError> {
+  let pos = tokenizer.pos;
   match tokenizer.peek(1)? {
     Token::SingleQuote | Token::DoubleQuote => parse_string(tokenizer),
     Token::SlotOpen => parse_attribute_slot(tokenizer),
-    _ => Err("Unexpected token")
+    _ => Err(ParseError::unexpected_token(pos))
   }
 }
 
-fn parse_attribute_slot<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::AttributeValue, &'static str> {
-  expect_token(tokenizer.next()?, Token::SlotOpen)?;
+fn parse_attribute_slot<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::AttributeValue, ParseError> {
+  tokenizer.next_expect(Token::SlotOpen)?;
   let script = parse_slot_script(tokenizer)?;
   Ok(pc_ast::AttributeValue::Slot(script))
 }
 
 
-fn parse_string<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::AttributeValue, &'static str> {
+fn parse_string<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::AttributeValue, ParseError> {
   let quote = tokenizer.next()?;
   let value = get_buffer(tokenizer, |tokenizer| { Ok(tokenizer.peek(1)? != quote) })?.to_string();
   tokenizer.next()?; // eat

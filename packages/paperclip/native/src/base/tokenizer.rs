@@ -1,3 +1,4 @@
+use super::parser::{ParseError};
 
 
 #[derive(PartialEq, Debug)]
@@ -119,10 +120,10 @@ impl<'a> Tokenizer<'a> {
     }
   }
 
-  pub fn peek(&mut self, steps: u8) -> Result<Token<'a>, &'static str> {
+  pub fn peek(&mut self, steps: u8) -> Result<Token<'a>, ParseError> {
     let pos = self.pos;
     let mut i = 0;
-    let mut result = Err("step must be greater than 0");
+    let mut result = Err(ParseError::unknown());
     while i < steps {
       result = self.next();
       i += 1;
@@ -131,10 +132,20 @@ impl<'a> Tokenizer<'a> {
     result
   }
 
-  pub fn next(&mut self) -> Result<Token<'a>, &'static str> {
+  pub fn next_expect(&mut self, expected_token: Token) -> Result<Token<'a>, ParseError> {
+    let pos = self.pos;
+    let token = self.next()?;
+    if token == expected_token {
+      return Ok(token);
+    } else {
+      return Err(ParseError::unexpected_token(pos));
+    }
+  }
+
+  pub fn next(&mut self) -> Result<Token<'a>, ParseError> {
 
     if self.is_eof() {
-      return Err("Unexpected eof");
+      return Err(ParseError::eof());
     }
 
     let c = self.curr_char()?;
@@ -283,9 +294,9 @@ impl<'a> Tokenizer<'a> {
   fn forward(&mut self, pos: usize) {
     self.pos += pos;
   }
-  fn curr_char(&mut self) -> Result<u8, &'static str> {
+  fn curr_char(&mut self) -> Result<u8, ParseError> {
     if self.is_eof() {
-      Err("unexpected eof")
+      Err(ParseError::eof())
     } else {
       Ok(self.source[self.pos])
     }

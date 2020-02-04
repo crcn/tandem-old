@@ -1,7 +1,40 @@
 use super::tokenizer::*;
 
-pub fn get_buffer<'a, FF>(tokenizer: &mut Tokenizer<'a>, until: FF) -> Result<&'a str, &'static str> where
-FF: Fn(&mut Tokenizer) -> Result<bool, &'static str> {
+#[derive(Debug, PartialEq)]
+pub enum ParseErrorKind {
+  EndOfFile,
+  Unknown,
+  Unexpected,
+}
+
+#[derive(Debug, PartialEq)]
+pub struct ParseError {
+  pub kind: ParseErrorKind,
+  pub message: String,
+  pub pos: usize
+}
+
+impl ParseError {
+  pub fn new(kind: ParseErrorKind, message: String, pos: usize) -> ParseError {
+    ParseError {
+      kind,
+      message,
+      pos
+    }
+  }
+  pub fn unexpected_token(pos: usize) -> ParseError {
+    ParseError::new(ParseErrorKind::Unexpected, "Unexpected token".to_string(), pos)
+  }
+  pub fn eof() -> ParseError {
+    ParseError::new(ParseErrorKind::EndOfFile, "End of file".to_string(), 0)
+  }
+  pub fn unknown() -> ParseError {
+    ParseError::new(ParseErrorKind::Unknown, "An unknown error has occurred".to_string(), 0)
+  }
+}
+
+pub fn get_buffer<'a, FF>(tokenizer: &mut Tokenizer<'a>, until: FF) -> Result<&'a str, ParseError> where
+FF: Fn(&mut Tokenizer) -> Result<bool, ParseError> {
   let start = tokenizer.pos;
   let mut end = start;
 
@@ -16,13 +49,13 @@ FF: Fn(&mut Tokenizer) -> Result<bool, &'static str> {
   Ok(std::str::from_utf8(&tokenizer.source[start..end]).unwrap())
 }
 
-pub fn expect_token(a: Token, b: Token) -> Result<(), &'static str> {
-  if a != b {
-    Err("Unexpected token")
-  } else {
-    Ok(())
-  }
-}
+// pub fn expect_token(a: Token, b: Token) -> Result<(), ParseError<'a>> {
+//   if a != b {
+//     Err("Unexpected token")
+//   } else {
+//     Ok(())
+//   }
+// }
 
 
 // pub fn expect_token2(a: Token, b: Token) -> Result<(), &'static str> {

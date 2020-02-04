@@ -1,6 +1,7 @@
 use std::path::Path;
 use super::vfs::{VirtualFileSystem};
 use crate::pc::{ast as pc_ast, parser};
+use crate::base::parser::{ParseError};
 use std::collections::HashMap;
 use path_abs::{PathAbs};
 
@@ -37,13 +38,13 @@ impl DependencyGraph {
     return deps;
   }
 
-  pub async fn load_dependency<'a>(&mut self, file_path: &String, vfs: &mut VirtualFileSystem) -> Result<&Dependency, &'static str> {
+  pub async fn load_dependency<'a>(&mut self, file_path: &String, vfs: &mut VirtualFileSystem) -> Result<&Dependency, ParseError> {
 
     let mut to_load = vec![file_path.to_string()];
     
     while to_load.len() > 0 {
       let curr_file_path = to_load.pop().unwrap();
-      let source = vfs.load(&curr_file_path).await?.to_string();
+      let source = vfs.load(&curr_file_path).await.unwrap().to_string();
       let dependency = Dependency::from_source(source, &curr_file_path)?;
       for (_id, dep_file_path) in &dependency.dependencies {
         if !self.dependencies.contains_key(&dep_file_path.to_string()) {
@@ -56,7 +57,7 @@ impl DependencyGraph {
     Ok(self.dependencies.get(&file_path.to_string()).unwrap())
   }
 
-  pub async fn reload_dependents<'a>(&mut self, file_path: &String, vfs: &mut VirtualFileSystem) -> Result<&Dependency, &'static str> {
+  pub async fn reload_dependents<'a>(&mut self, file_path: &String, vfs: &mut VirtualFileSystem) -> Result<&Dependency, ParseError> {
     if !self.dependencies.contains_key(&file_path.to_string()) {
       return self.load_dependency(file_path, vfs).await;
     }
@@ -77,12 +78,12 @@ pub struct Dependency {
 }
 
 impl<'a> Dependency {
-  pub fn from_source(source: String, file_path: &String) -> Result<Dependency, &'static str> {
+  pub fn from_source(source: String, file_path: &String) -> Result<Dependency, ParseError> {
 
     let expression_result = parser::parse(source.as_str());
 
     if let Err(err) = expression_result {
-      println!("Err: {}", err);
+      println!("Err: {:?}", err);
       return Err(err);
     }
 
