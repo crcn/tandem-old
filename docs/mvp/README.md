@@ -10,8 +10,6 @@ immediate TODO:
 - @media
 - @keyframes
 - css value parser
-- handle script elements
-  - should have assoc lint warning
 - ability to load url files (handle css link ref)
 - stress test
   - should be able to just copy & paste sites

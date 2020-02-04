@@ -51,6 +51,12 @@ pub enum Token<'a> {
 
   // ]
   SquareClose,
+
+  // (
+  ParenOpen,
+
+  // )
+  ParenClose,
   
 
   // "
@@ -286,6 +292,8 @@ impl<'a> Tokenizer<'a> {
       },
       b'[' => { self.forward(1); Ok(Token::SquareOpen) },
       b']' => { self.forward(1); Ok(Token::SquareClose) },
+      b'(' => { self.forward(1); Ok(Token::ParenOpen) },
+      b')' => { self.forward(1); Ok(Token::ParenClose) },
       b'#' => { self.forward(1); Ok(Token::Hash) },
       b'"' => { self.forward(1); Ok(Token::DoubleQuote) },
       b'\'' => { self.forward(1); Ok(Token::SingleQuote) },

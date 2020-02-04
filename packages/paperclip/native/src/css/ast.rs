@@ -37,6 +37,9 @@ pub enum Selector {
   Group(GroupSelector),
   Combo(ComboSelector),
   Descendent(DescendentSelector),
+  PseudoElement(PseudoElementSelector),
+  PseudoParamElement(PseudoParamElementSelector),
+  Not(Box<Selector>),
   Child(ChildSelector),
   Adjacent(AdjacentSelector),
   Sibling(SiblingSelector),
@@ -54,7 +57,10 @@ impl fmt::Display for Selector {
       Selector::Combo(selector) => write!(f, "{}", selector.to_string()),
       Selector::Element(selector) => write!(f, "{}", selector.to_string()),
       Selector::Descendent(selector) => write!(f, "{}", selector.to_string()),
+      Selector::Not(selector) => write!(f, ":not({})", selector.to_string()),
       Selector::Adjacent(selector) => write!(f, "{}", selector.to_string()),
+      Selector::PseudoElement(selector) => write!(f, "{}", selector.to_string()),
+      Selector::PseudoParamElement(selector) => write!(f, "{}", selector.to_string()),
       Selector::Sibling(selector) => write!(f, "{}", selector.to_string()),
       Selector::Child(selector) => write!(f, "{}", selector.to_string()),
       Selector::Class(selector) => write!(f, "{}", selector.to_string()),
@@ -146,6 +152,33 @@ pub struct SiblingSelector {
 impl fmt::Display for SiblingSelector {
   fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
     write!(f, "{} ~ {}", self.selector.to_string(), self.sibling_selector.to_string())
+  }
+}
+
+// div:before, div::after { }
+#[derive(Debug, PartialEq, Serialize)]
+pub struct PseudoElementSelector {
+  pub name: String
+}
+
+impl fmt::Display for PseudoElementSelector {
+  fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+    write!(f, ":{}", &self.name)?;
+    Ok(())
+  }
+}
+
+// :nth-of-type(div) { }
+#[derive(Debug, PartialEq, Serialize)]
+pub struct PseudoParamElementSelector {
+  pub name: String,
+  pub param: String
+}
+
+impl fmt::Display for PseudoParamElementSelector {
+  fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+    write!(f, ":{}({})", &self.name, &self.param)?;
+    Ok(())
   }
 }
 

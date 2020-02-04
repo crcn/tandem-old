@@ -200,6 +200,9 @@ fn parse_element_selector<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Selector,
         class_name: parse_selector_name(tokenizer)?.to_string()
       })
     }
+    Token::Colon => {
+      parse_psuedo_element_selector(tokenizer)?
+    }
     Token::Hash => {
       tokenizer.next()?;
       Selector::Id(IdSelector {
@@ -219,6 +222,37 @@ fn parse_element_selector<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Selector,
       return Err(ParseError::unexpected_token(pos));
     }
   };
+  Ok(selector)
+}
+fn parse_psuedo_element_selector<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Selector, ParseError> { 
+  tokenizer.next()?;
+  if tokenizer.peek(1)? == Token::Colon {
+    tokenizer.next()?;
+  }
+  let name = parse_selector_name(tokenizer)?.to_string();
+  let selector: Selector = if tokenizer.peek(1)? == Token::ParenOpen {
+    tokenizer.next()?;
+    let selector = if name == "not" {
+      Selector::Not(Box::new(parse_pair_selector(tokenizer)?))
+    } else {
+      let param = get_buffer(tokenizer, |tokenizer| {
+        Ok(tokenizer.peek(1)? != Token::ParenClose)
+      })?.to_string();
+
+      Selector::PseudoParamElement(PseudoParamElementSelector {
+        name,
+        param
+      })
+    };
+
+    tokenizer.next_expect(Token::ParenClose)?;
+    selector
+  } else {
+    Selector::PseudoElement(PseudoElementSelector {
+      name
+    })
+  };
+
   Ok(selector)
 }
 
@@ -261,8 +295,8 @@ fn parse_selector_name<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<&'a str, Par
   get_buffer(tokenizer, |tokenizer| {
     let tok = tokenizer.peek(1)?;
     Ok(match tok {
-      Token::Word(_) => true,
-      Token::Byte(c) => c == b'-' || c == b'_' || c == b'$',
+      Token::Word(_) | Token::Minus => true,
+      Token::Byte(c) =>  c == b'_' || c == b'$',
       _ => false
     })
   })
@@ -326,6 +360,16 @@ mod tests {
     a ~ b {}
     a + b {}
     a + b, c, d[e=f] {}
+    :before {}
+    ::after {}
+    :not(:after) {}
+    :not(.a.b > c ~ d + e) {}
+    :nth-child(1) {}
+    ::nth-last-child(1) {}
+    :nth-last-of-type(1) {}
+    :nth-last-of-type(div) {}
+    :nth-of-type(div) {}
+    :dir(div) {}
     ";
 
     let result = parse(source).unwrap();
