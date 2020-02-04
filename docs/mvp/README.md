@@ -4,9 +4,12 @@ Limitations:
 
 immediate TODO:
 
-- better parse errors
 - css selectors
-- handle void elements
+- ::pseudo && :pseudo
+- :pseudo(params)
+- @media
+- @keyframes
+- css value parser
 - handle script elements
   - should have assoc lint warning
 - ability to load url files (handle css link ref)

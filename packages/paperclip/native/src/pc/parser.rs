@@ -110,8 +110,39 @@ fn parse_element<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::Node, Pars
 
   if tag_name == "style" {
     parse_next_style_element_parts(attributes, tokenizer)
+  } else if tag_name == "script" {
+    parse_next_script_element_parts(attributes, tokenizer)
   } else {
     parse_next_basic_element_parts(tag_name, attributes, tokenizer)
+  }
+}
+
+fn is_void_tag_name<'a>(tag_name: &'a str) -> bool {
+  match tag_name {
+    "area" | 
+    "base" | 
+    "basefont" | 
+    "bgsound" | 
+    "br" | 
+    "col" | 
+    "command" | 
+    "embed" | 
+    "frame" |
+    "hr" |
+    "image" |
+    "img" |
+    "input" |
+    "isindex" |
+    "keygen" |
+    "link" |
+    "menuitem" |
+    "meta" |
+    "nextid" |
+    "param" |
+    "source" |
+    "track" |
+    "wbr" => true,
+    _ => false,
   }
 }
 
@@ -122,17 +153,22 @@ fn parse_next_basic_element_parts<'a>(tag_name: String, attributes: Vec<pc_ast::
   let pos = tokenizer.pos;
   match tokenizer.next()? {
     Token::SelfCloseTag => {
+      if is_void_tag_name(tag_name.as_str()) {
+        return Err(ParseError::unexpected_token(pos));
+      }
     },
     Token::GreaterThan => {
-      tokenizer.eat_whitespace();
-      while !tokenizer.is_eof() && tokenizer.peek(1)? != Token::CloseTag {
-        children.push(parse_node(tokenizer)?);
+      if !is_void_tag_name(tag_name.as_str()) {
         tokenizer.eat_whitespace();
-      }
+        while !tokenizer.is_eof() && tokenizer.peek(1)? != Token::CloseTag {
+          children.push(parse_node(tokenizer)?);
+          tokenizer.eat_whitespace();
+        }
 
-      tokenizer.next_expect(Token::CloseTag)?;
-      parse_tag_name(tokenizer)?;
-      tokenizer.next_expect(Token::GreaterThan)?;
+        tokenizer.next_expect(Token::CloseTag)?;
+        parse_tag_name(tokenizer)?;
+        tokenizer.next_expect(Token::GreaterThan)?;
+      }
     },
     _ => {
       return Err(ParseError::unexpected_token(pos))
@@ -270,12 +306,6 @@ fn parse_next_style_element_parts<'a>(attributes: Vec<pc_ast::Attribute>, tokeni
     token != Token::CloseTag
   })?;
 
-  println!("TOK {:?}", tokenizer.peek(1)?);
-  
-  // let sheet_source = get_buffer(tokenizer, |tokenizer| {
-  //   Ok(tokenizer.peek(1)? != Token::CloseTag && tokenizer.peek(2)? != Token::Word("style"))
-  // })?;
-
   // TODO - assert tokens equal these
   tokenizer.next_expect(Token::CloseTag)?; // eat </
   tokenizer.next_expect(Token::Word("style"))?; // eat style
@@ -284,6 +314,25 @@ fn parse_next_style_element_parts<'a>(attributes: Vec<pc_ast::Attribute>, tokeni
   Ok(pc_ast::Node::StyleElement(pc_ast::StyleElement {
     attributes,
     sheet,
+  }))
+}
+
+fn parse_next_script_element_parts<'a>(attributes: Vec<pc_ast::Attribute>, tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::Node, ParseError> {
+  tokenizer.next()?; // eat >
+
+  let content = get_buffer(tokenizer, |tokenizer| {
+    Ok(tokenizer.peek(1)? != Token::CloseTag)
+  })?;
+
+  // TODO - assert tokens equal these
+  tokenizer.next_expect(Token::CloseTag)?; // eat </
+  tokenizer.next_expect(Token::Word("script"))?; // eat style
+  tokenizer.next_expect(Token::GreaterThan)?; // eat >
+
+  Ok(pc_ast::Node::Element(pc_ast::Element {
+    tag_name: "script".to_string(),
+    attributes,
+    children: vec![],
   }))
 }
 

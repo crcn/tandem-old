@@ -17,6 +17,10 @@ impl DependencyGraph {
   }
   pub fn flatten<'a>(&'a self, entry_file_path: &String) -> Vec<&Dependency> {
     let mut deps = vec![];
+    if !self.dependencies.contains_key(entry_file_path) {
+      return deps;
+    }
+
     let entry = self.dependencies.get(entry_file_path).unwrap();
     deps.push(entry);
     for (_, dep_file_path) in &entry.dependencies {

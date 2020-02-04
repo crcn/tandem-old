@@ -90,6 +90,9 @@ fn evaluate_node<'a>(node_expr: &ast::Node, context: &'a Context) -> Result<Opti
     ast::Node::Element(el) => {
       evaluate_element(&el, context)
     },
+    ast::Node::VoidElement(el) => {
+      evaluate_element(&el, context)
+    },
     ast::Node::StyleElement(el) => {
       evaluate_style_element(&el, context)
     },
@@ -112,6 +115,20 @@ fn evaluate_node<'a>(node_expr: &ast::Node, context: &'a Context) -> Result<Opti
 }
 
 fn evaluate_element<'a>(element: &ast::Element, context: &'a Context) -> Result<Option<virt::Node>, &'static str> {
+  match element.tag_name.as_str() {
+    "import" => evaluate_import_element(element, context),
+    "script" => Ok(None),
+    _ => {
+      if context.import_ids.contains(&element.tag_name) {
+        evaluate_imported_component(element, context)
+      } else {
+        evaluate_basic_element(element, context)
+      }
+    }
+  }
+}
+
+fn evaluate_void_element<'a>(element: &ast::Element, context: &'a Context) -> Result<Option<virt::Node>, &'static str> {
   match element.tag_name.as_str() {
     "import" => evaluate_import_element(element, context),
     _ => {
@@ -241,16 +258,11 @@ fn evaluate_basic_element<'a>(element: &ast::Element, context: &'a Context) -> R
 }
 
 fn evaluate_import_element<'a>(_element: &ast::Element, _context: &'a Context) -> Result<Option<virt::Node>, &'static str> {
-
-  // TODO - import into context
   Ok(None)
 }
 
 fn evaluate_style_element<'a>(_element: &ast::StyleElement, _context: &'a Context) -> Result<Option<virt::Node>, &'static str> {
   Ok(None)
-  // Ok(Some(virt::Node::StyleElement(virt::StyleElement {
-  //   sheet: evaluate_css(&element.sheet, &context.scope)?
-  // })))
 }
   
 
@@ -328,17 +340,6 @@ fn evaluate_attribute_value<'a>(value: &ast::AttributeValue, context: &'a Contex
     }
   }
 }
-
-// fn evaluate_component_property<'a>(value: &ast::AttributeValue, context: &'a Context) -> Result<js_virt::JsValue, &'static str> {
-//   match value {
-//     ast::AttributeValue::String(st) => {
-//       Ok(js_virt::JsValue::JsString(st.value.clone()))
-//     }
-//     ast::AttributeValue::Slot(script) => {
-//       Ok(evaluate_attribute_slot(script, context)?)
-//     }
-//   }
-// }
 
 fn evaluate_attribute_slot<'a>(script: &js_ast::Statement, context: &'a Context) -> Result<js_virt::JsValue, &'static str> {
   evaluate_js(script, &context.data)

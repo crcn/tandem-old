@@ -16,6 +16,9 @@ pub enum Token<'a> {
   // +
   Plus,
 
+  // ~
+  Squiggle,
+
   // >
   GreaterThan,
 
@@ -43,6 +46,13 @@ pub enum Token<'a> {
   // }
   CurlyClose,
 
+  // [
+  SquareOpen,
+
+  // ]
+  SquareClose,
+  
+
   // "
   DoubleQuote,
 
@@ -69,6 +79,9 @@ pub enum Token<'a> {
 
   // .
   Dot,
+
+  // #
+  Hash,
 
   // ,
   Comma,
@@ -201,6 +214,10 @@ impl<'a> Tokenizer<'a> {
         self.forward(1);
         Ok(Token::Plus)
       },
+      b'~' => {
+        self.forward(1);
+        Ok(Token::Squiggle)
+      },
       b',' => {
         self.forward(1);
         Ok(Token::Comma)
@@ -267,6 +284,9 @@ impl<'a> Tokenizer<'a> {
 
         Ok(Token::Number(self.since(start)))
       },
+      b'[' => { self.forward(1); Ok(Token::SquareOpen) },
+      b']' => { self.forward(1); Ok(Token::SquareClose) },
+      b'#' => { self.forward(1); Ok(Token::Hash) },
       b'"' => { self.forward(1); Ok(Token::DoubleQuote) },
       b'\'' => { self.forward(1); Ok(Token::SingleQuote) },
       b'=' => { 

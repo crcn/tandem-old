@@ -26,21 +26,42 @@ fn evaluate_style_rule(expr: &ast::Rule, context: &Context) -> Result<virt::CSSR
   for property in &expr.declarations {
     style.push(evaluate_style(&property)?);
   }
-  let selector_text = stringify_element_selector(&expr.selector, context)?;
+  let selector_text = stringify_element_selector(&expr.selector, context);
   Ok(virt::CSSRule::CSSStyleRule(virt::CSSStyleRule {
     selector_text,
     style
   }))
 }
 
-fn stringify_element_selector(selector: &ast::Selector, context: &Context) -> Result<String, &'static str> {
+fn stringify_element_selector(selector: &ast::Selector, context: &Context) -> String {
+
+  let scope_selector = format!("[data-pc-{}]", context.scope);
+
   let scoped_selector_text = match selector {
-    ast::Selector::AllSelector => format!(".{}", context.scope),
-    ast::Selector::Class(selector) => format!(".{}[data-pc-{}]", selector.class_name, context.scope),
-    ast::Selector::Element(selector) => format!("{}[data-pc-{}]", selector.tag_name, context.scope)
+    ast::Selector::AllSelector => format!("{}", scope_selector),
+    ast::Selector::Class(selector) => format!(".{}{}", selector.class_name, scope_selector),
+    ast::Selector::Id(selector) => format!("#{}{}", selector.id, scope_selector),
+    ast::Selector::Element(selector) => format!("{}{}", selector.tag_name, scope_selector),
+    ast::Selector::Attribute(selector) => format!("{}{}", selector.to_string(), scope_selector),
+    ast::Selector::Descendent(selector) => format!("{} {}", stringify_element_selector(&selector.parent, context), stringify_element_selector(&selector.descendent, context)),
+    ast::Selector::Child(selector) => format!("{} > {}", stringify_element_selector(&selector.parent, context), stringify_element_selector(&selector.child, context)),
+    ast::Selector::Adjacent(selector) => format!("{} + {}", stringify_element_selector(&selector.selector, context), stringify_element_selector(&selector.next_sibling_selector, context)),
+    ast::Selector::Sibling(selector) => format!("{} ~ {}", stringify_element_selector(&selector.selector, context), stringify_element_selector(&selector.sibling_selector, context)),
+    ast::Selector::Group(selector) => {
+      let text: Vec<String> = (&selector.selectors).into_iter().map(|child| {
+        stringify_element_selector(child, context)
+      }).collect();
+      text.join(", ")
+    },
+    ast::Selector::Combo(selector) => {
+      let text: Vec<String> = (&selector.selectors).into_iter().map(|child| {
+        child.to_string()
+      }).collect();
+      format!("{}{}", text.join(""), scope_selector)
+    }
   };
   
-  Ok(scoped_selector_text.to_string())
+  scoped_selector_text.to_string()
 }
 
 fn evaluate_style<'a>(expr: &'a ast::Declaration) -> Result<virt::CSSStyleProperty, &'static str> {
