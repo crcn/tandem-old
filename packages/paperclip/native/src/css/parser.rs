@@ -374,7 +374,46 @@ mod tests {
 
     let result = parse(source).unwrap();
 
-    println!("{:?}", result);
-    panic!("OK");
+    // println!("{:?}", result);
+    // panic!("OK");
+  }
+
+  #[test]
+  fn can_smoke_parse_various_at_rules() {
+
+    let source = "
+    @charset \"utf-8\";
+    @document domain(hello.com) {
+      div {
+        color: red;
+      }
+    }
+    @font-face {
+      font-family: 'abcd';
+    }
+    @import 'abcd.css';
+    @keyframes abc {
+      0% {
+        color: red;
+      }
+    }
+    @media print {
+
+    }
+    @namespace svg \"http://google.com\";
+    @page :first {
+
+    }
+    @supports (display: flex) {
+      .el {
+        display: flex;
+      }
+    }
+    ";
+
+    let result = parse(source).unwrap();
+
+    // println!("{:?}", result);
+    // panic!("OK");
   }
 }

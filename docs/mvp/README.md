@@ -4,9 +4,7 @@ Limitations:
 
 immediate TODO:
 
-- css selectors
-- ::pseudo && :pseudo
-- :pseudo(params)
+- @at-rules
 - @media
 - @keyframes
 - css value parser
