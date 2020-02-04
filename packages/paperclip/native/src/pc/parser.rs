@@ -1,9 +1,9 @@
 use super::ast as pc_ast;
 use crate::base::parser::{get_buffer, expect_token};
-use crate::js::parser::parse as parse_js;
+use crate::js::parser::parse_with_tokenizer as parse_js_with_tokenizer;
 use crate::js::ast as js_ast;
 use crate::base::tokenizer::{Token, Tokenizer};
-use crate::css::parser::parse as parse_css;
+use crate::css::parser::parse_with_tokenizer as parse_css_with_tokenizer;
 
 /*
 
@@ -93,12 +93,15 @@ fn parse_slot<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::Node, &'stati
   Ok(pc_ast::Node::Slot(script))
 }
 
-
 fn parse_slot_script<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<js_ast::Statement, &'static str> {
   expect_token(tokenizer.next()?, Token::SlotOpen)?;
-  let script = get_buffer(tokenizer, |tokenizer| { Ok(tokenizer.peek(1)? != Token::SlotClose) })?.to_string();
+  let script_result = parse_js_with_tokenizer(tokenizer, |token| {
+    token != Token::SlotClose
+  });
+  
   expect_token(tokenizer.next()?, Token::SlotClose)?;
-  parse_js(script.as_str())
+
+  script_result
 }
 
 fn parse_element<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::Node, &'static str> {
@@ -167,8 +170,9 @@ fn parse_if_block<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::Node, &'s
 
 fn parse_pass_fail_block<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::ConditionalBlock, &'static str> {
   tokenizer.eat_whitespace();
-  let js_source = get_buffer(tokenizer, |tokenizer| { Ok(tokenizer.peek(1)? != Token::SlotClose) })?;
-  let condition = parse_js(js_source)?;
+  let condition = parse_js_with_tokenizer(tokenizer, |token| {
+    token != Token::SlotClose
+  })?;
   expect_token(tokenizer.next()?, Token::SlotClose)?;
   let node = parse_block_children(tokenizer)?;
   let fail = parse_else_block(tokenizer)?;
@@ -259,9 +263,16 @@ fn parse_final_condition_block<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_a
 
 fn parse_next_style_element_parts<'a>(attributes: Vec<pc_ast::Attribute>, tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::Node, &'static str> {
   tokenizer.next()?; // eat >
-  let sheet_source = get_buffer(tokenizer, |tokenizer| {
-    Ok(tokenizer.peek(1)? != Token::CloseTag && tokenizer.peek(2)? != Token::Word("style"))
+
+  let sheet = parse_css_with_tokenizer(tokenizer, |token| {
+    token != Token::CloseTag
   })?;
+
+  println!("TOK {:?}", tokenizer.peek(1)?);
+  
+  // let sheet_source = get_buffer(tokenizer, |tokenizer| {
+  //   Ok(tokenizer.peek(1)? != Token::CloseTag && tokenizer.peek(2)? != Token::Word("style"))
+  // })?;
 
   // TODO - assert tokens equal these
   expect_token(tokenizer.next()?, Token::CloseTag)?; // eat </
@@ -270,7 +281,7 @@ fn parse_next_style_element_parts<'a>(attributes: Vec<pc_ast::Attribute>, tokeni
 
   Ok(pc_ast::Node::StyleElement(pc_ast::StyleElement {
     attributes,
-    sheet: parse_css(&sheet_source)?
+    sheet,
   }))
 }
 

@@ -4,10 +4,10 @@
   }
 </style>
 
-{{#if a}}
-do that
-{{/}}
-
 <div>
   {{children}}
 </div>
+
+{{#if a}}
+  kool
+{{/}}

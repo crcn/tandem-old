@@ -1,4 +1,5 @@
 <import id="button" src="./button.pc" />
+
 <button>
-  something else
+  something like this
 </button>

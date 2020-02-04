@@ -4,21 +4,25 @@
 // https://www.w3schools.com/cssref/pr_charset_rule.asp
 
 use super::ast::*;
-use crate::base::parser::{get_buffer};
+use crate::base::parser::{get_buffer, expect_token};
 use crate::base::tokenizer::{Token, Tokenizer};
 
 pub fn parse<'a>(source: &'a str) -> Result<Sheet, &'static str> {
   let mut tokenizer = Tokenizer::new(&source);
-  parse_sheet(&mut tokenizer)
+  parse_with_tokenizer(&mut tokenizer, |_token| { true })
 }
 
+pub fn parse_with_tokenizer<'a, FWhere>(tokenizer: &mut Tokenizer<'a>, until: FWhere) -> Result<Sheet, &'static str> where
+FWhere: Fn(Token) -> bool {
+  parse_sheet(tokenizer, until)
+}
 
 fn eat_comments<'a>(tokenizer: &mut Tokenizer<'a>, start: Token, end: Token) -> Result<(), &'static str> {
   if tokenizer.is_eof() || tokenizer.peek(1)? != start {
     return Ok(())
   }
   tokenizer.next()?; // eat <!--
-  while !tokenizer.is_eof() {
+  while !tokenizer.is_eof()  {
     let curr = tokenizer.next()?;
     if curr == end {
       break;
@@ -27,10 +31,11 @@ fn eat_comments<'a>(tokenizer: &mut Tokenizer<'a>, start: Token, end: Token) -> 
   Ok(())
 }
 
-fn parse_sheet<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Sheet, &'static str> {
+fn parse_sheet<'a, FWhere>(tokenizer: &mut Tokenizer<'a>, until: FWhere) -> Result<Sheet, &'static str> where
+FWhere: Fn(Token) -> bool {
   let mut rules = vec![];
   tokenizer.eat_whitespace();
-  while !&tokenizer.is_eof() {
+  while !&tokenizer.is_eof() && until(tokenizer.peek(1)?) {
     rules.push(parse_rule(tokenizer)?);
   }
   Ok(Sheet {
@@ -44,9 +49,9 @@ fn parse_rule<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Rule, &'static str> {
   tokenizer.eat_whitespace();
   let selector = parse_element_selector(tokenizer)?;
   tokenizer.eat_whitespace();
-  tokenizer.next()?; // eat {
+  expect_token(tokenizer.next()?, Token::CurlyOpen); // eat {
   let declarations = parse_declarations(tokenizer)?;
-  tokenizer.next()?; // eat }
+  expect_token(tokenizer.next()?, Token::CurlyClose); // eat }
   tokenizer.eat_whitespace();
   Ok(Rule {
     selector,
