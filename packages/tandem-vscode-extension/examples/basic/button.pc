@@ -1,13 +1,25 @@
 <style>
-  div {
-    color: orange;
+  .button {
+    color: white;
+    display: inline-block;
+    padding: 10px;
+    border-radius: 4px;
+    background: orange;
+  }
+
+  .message {
+    margin: 10px;
   }
 </style>
 
-<div>
+<div class="button">
   {{children}}
 </div>
 
-{{#if a}}
-  kool
+<div class="message">
+{{#if something}} 
+  something happened 🔥
+{{/else}}
+  something else
 {{/}}
+</div>

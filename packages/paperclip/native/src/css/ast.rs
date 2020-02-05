@@ -18,9 +18,12 @@ impl fmt::Display for Declaration {
 pub enum Rule {
   Style(StyleRule),
   Charset(String),
+  Namespace(String),
   FontFamily(FontFamilyRule),
   Media(ConditionRule),
   Supports(ConditionRule),
+  Page(ConditionRule),
+  Document(ConditionRule),
   Keyframes(KeyframesRule)
 }
 
@@ -28,11 +31,14 @@ impl fmt::Display for Rule {
   fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
     match self {
       Rule::Style(rule) => write!(f, "{}", rule.to_string()),
-      Rule::Charset(value) => write!(f, "@{}", value),
+      Rule::Charset(value) => write!(f, "@charset {}", value),
+      Rule::Namespace(value) => write!(f, "@namespace {}", value),
       Rule::FontFamily(rule) => write!(f, "{}", rule.to_string()),
       Rule::Media(rule) => write!(f, "{}", rule.to_string()),
       Rule::Supports(rule) => write!(f, "{}", rule.to_string()),
-      Rule::Keyframes(rule) => write!(f, "{}", rule.to_string())
+      Rule::Keyframes(rule) => write!(f, "{}", rule.to_string()),
+      Rule::Document(rule) => write!(f, "{}", rule.to_string()),
+      Rule::Page(rule) => write!(f, "{}", rule.to_string())
     }
   }
 }

@@ -132,6 +132,7 @@ fn is_void_tag_name<'a>(tag_name: &'a str) -> bool {
     "frame" |
     "hr" |
     "image" |
+    "import" |
     "img" |
     "input" |
     "isindex" |
@@ -177,11 +178,12 @@ fn parse_next_basic_element_parts<'a>(tag_name: String, attributes: Vec<pc_ast::
     }
   }
 
-  Ok(pc_ast::Node::Element(pc_ast::Element {
+  let el = pc_ast::Element {
     tag_name,
     attributes,
     children
-  }))
+  };
+  Ok(pc_ast::Node::Element(el))
 }
 
 fn parse_block<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::Node, ParseError> {

@@ -27,10 +27,13 @@ impl fmt::Display for CSSSheet {
 pub enum CSSRule {
   CSSStyleRule(CSSStyleRule),
   CSSCharset(String),
+  CSSNamespace(String),
   FontFamily(FontFamilyRule),
   Media(ConditionRule),
   Supports(ConditionRule),
-  Keyframes(KeyframesRule)
+  Page(ConditionRule),
+  Document(ConditionRule),
+  Keyframes(KeyframesRule),
 }
 
 impl fmt::Display for CSSRule {
@@ -38,8 +41,11 @@ impl fmt::Display for CSSRule {
     match self {
       CSSRule::CSSStyleRule(rule) => write!(f, "{}", rule.to_string()),
       CSSRule::CSSCharset(value) => write!(f, "@charset {};", value),
+      CSSRule::CSSNamespace(value) => write!(f, "@namespace {};", value),
       CSSRule::FontFamily(rule) => write!(f, "{}", rule.to_string()),
       CSSRule::Media(rule) => write!(f, "{}", rule.to_string()),
+      CSSRule::Document(rule) => write!(f, "{}", rule.to_string()),
+      CSSRule::Page(rule) => write!(f, "{}", rule.to_string()),
       CSSRule::Supports(rule) => write!(f, "{}", rule.to_string()),
       CSSRule::Keyframes(rule) => write!(f, "{}", rule.to_string()),
     }

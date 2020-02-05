@@ -45,6 +45,7 @@ FWhere: Fn(Token) -> bool {
   tokenizer.eat_whitespace();
   while !&tokenizer.is_eof() && until(tokenizer.peek(1)?) {
     rules.push(parse_rule(tokenizer)?);
+    tokenizer.eat_whitespace();
   }
   Ok(rules)
 }
@@ -79,9 +80,9 @@ fn parse_style_rule2<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<StyleRule, Par
 
 fn parse_declaration_body<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Vec<Declaration>, ParseError> {
   tokenizer.eat_whitespace();
-  tokenizer.next_expect(Token::CurlyOpen); // eat {
+  tokenizer.next_expect(Token::CurlyOpen)?; // eat {
   let declarations = parse_declarations(tokenizer)?;
-  tokenizer.next_expect(Token::CurlyClose); // eat }
+  tokenizer.next_expect(Token::CurlyClose)?; // eat }
   tokenizer.eat_whitespace();
   Ok(declarations)
 }
@@ -89,21 +90,37 @@ fn parse_declaration_body<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Vec<Decla
 fn parse_at_rule<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Rule, ParseError> {
   tokenizer.next_expect(Token::At)?;
   let name = parse_selector_name(tokenizer)?;
+  tokenizer.eat_whitespace();
   match name {
     "charset" => {
-      tokenizer.eat_whitespace();
       let value = parse_string(tokenizer)?;
-      tokenizer.next_expect(Token::Semicolon);
+      tokenizer.next_expect(Token::Semicolon)?;
       Ok(Rule::Charset(value.to_string()))
     },
+    "namespace" => {
+      let value = get_buffer(tokenizer, |tokenizer| {
+        Ok(tokenizer.peek(1)? != Token::Semicolon)
+      })?;
+      tokenizer.next_expect(Token::Semicolon)?;
+      Ok(Rule::Namespace(value.to_string()))
+    },
     "supports" => {
-      Ok(Rule::Supports(parse_condition_rule("supports".to_string(), tokenizer)?))
+      Ok(Rule::Supports(parse_condition_rule(name.to_string(), tokenizer)?))
     },
     "media" => {
-      Ok(Rule::Supports(parse_condition_rule("media".to_string(), tokenizer)?))
+      Ok(Rule::Media(parse_condition_rule(name.to_string(), tokenizer)?))
     },
     "keyframes" => {
       Ok(Rule::Keyframes(parse_keyframes_rule(tokenizer)?))
+    },
+    "font-face" => {
+      Ok(Rule::FontFamily(parse_font_face_rule(tokenizer)?))
+    },
+    "document" => {
+      Ok(Rule::Document(parse_condition_rule(name.to_string(), tokenizer)?))
+    },
+    "page" => {
+      Ok(Rule::Page(parse_condition_rule(name.to_string(), tokenizer)?))
     },
     _ => {
       Err(ParseError::unexpected_token(tokenizer.pos))
@@ -115,12 +132,16 @@ fn parse_condition_rule<'a>(name: String, tokenizer: &mut Tokenizer<'a>) -> Resu
   let condition_text = get_buffer(tokenizer, |tokenizer| {
     Ok(tokenizer.peek(1)? != Token::CurlyOpen)
   })?.to_string();
+  
+  tokenizer.next_expect(Token::CurlyOpen)?;
+  tokenizer.eat_whitespace();
 
   let mut rules = vec![];
 
   while tokenizer.peek(1)? != Token::CurlyClose {
     rules.push(parse_style_rule2(tokenizer)?);
   }
+  tokenizer.next_expect(Token::CurlyClose)?;
 
   Ok(ConditionRule {
     name,
@@ -129,6 +150,14 @@ fn parse_condition_rule<'a>(name: String, tokenizer: &mut Tokenizer<'a>) -> Resu
   })
 }
 
+fn parse_font_face_rule<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<FontFamilyRule, ParseError> {
+  
+  Ok(FontFamilyRule {
+    declarations: parse_declaration_body(tokenizer)?
+  })
+}
+
+
 fn parse_keyframes_rule<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<KeyframesRule, ParseError> {
   let name = get_buffer(tokenizer, |tokenizer| {
     Ok(tokenizer.peek(1)? != Token::CurlyOpen)
@@ -136,9 +165,13 @@ fn parse_keyframes_rule<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<KeyframesRu
 
   let mut rules = vec![];
 
+  tokenizer.eat_whitespace();
+
   while tokenizer.peek(1)? != Token::CurlyClose {
     rules.push(parse_keyframe_rule(tokenizer)?);
   }
+
+  tokenizer.next_expect(Token::CurlyClose)?;
 
   Ok(KeyframesRule {
     name,
@@ -170,7 +203,7 @@ fn parse_group_selector<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Selector, P
     selectors.push(parse_pair_selector(tokenizer)?);
     tokenizer.eat_whitespace();
     if tokenizer.peek(1)? == Token::Comma {
-      tokenizer.next(); // eat ,
+      tokenizer.next()?; // eat ,
     } else {
       break;
     }
@@ -485,39 +518,39 @@ mod tests {
   #[test]
   fn can_smoke_parse_various_at_rules() {
 
+
     let source = "
-    @charset \"utf-8\";
-    @document domain(hello.com) {
-      div {
-        color: red;
+      @charset \"utf-8\";
+      @namespace svg \"http://google.com\";
+      @font-face {
+        font-family: 'abcd';
       }
-    }
-    @font-face {
-      font-family: 'abcd';
-    }
-    @import 'abcd.css';
-    @keyframes abc {
-      0% {
-        color: red;
+      @keyframes abc {
+        0% {
+          color: red;
+        }
+        100% {
+          color: red;
+        }
       }
-    }
-    @media print {
-
-    }
-    @namespace svg \"http://google.com\";
-    @page :first {
-
-    }
-    @supports (display: flex) {
-      .el {
-        display: flex;
+      @media print {
+        div {
+          color: red;
+        }
+        .span {
+          color: blue;
+        }
       }
-    }
+      @page :first {
+  
+      }
+      @supports (display: flex) {
+        .el {
+          display: flex;
+        }
+      }
     ";
 
     let result = parse(source).unwrap();
-
-    // println!("{:?}", result);
-    // panic!("OK");
   }
 }

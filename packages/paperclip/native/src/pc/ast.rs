@@ -23,7 +23,6 @@ pub enum Node {
   Text(ValueObject),
   Comment(ValueObject),
   Element(Element),
-  VoidElement(Element),
   Fragment(Fragment),
   StyleElement(StyleElement),
   Slot(js_ast::Statement),
@@ -38,7 +37,6 @@ impl fmt::Display for Node {
       Node::Comment(comment) => write!(f, "<!--{}-->", &comment.value),
       Node::Fragment(node) => write!(f, "{}", node.to_string()),
       Node::Element(element) => write!(f, "{}", element.to_string()),
-      Node::VoidElement(element) => write!(f, "{}", element.to_string()),
       Node::Block(_block) => write!(f, "[block]"),
       Node::StyleElement(element) => write!(f, "{}", element.to_string()),
     }

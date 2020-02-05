@@ -1,5 +1,12 @@
-<import id="button" src="./button.pc" />
+<import id="button" src="./button.pc">
+
+
+<style>
+  div {
+    color: red;
+  }
+</style>
 
 <button>
-  something like this
+  this is a test alalfdsnfksnfsd
 </button>

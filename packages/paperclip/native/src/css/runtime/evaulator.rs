@@ -20,11 +20,14 @@ pub fn evaluate<'a>(expr: &ast::Sheet, scope: &'a str) -> Result<virt::CSSSheet,
 fn evaluate_rule(rule: &ast::Rule, context: &Context) -> Result<virt::CSSRule, &'static str> {
   match rule {
     ast::Rule::Charset(charset) => Ok(virt::CSSRule::CSSCharset(charset.to_string())),
+    ast::Rule::Namespace(namespace) => Ok(virt::CSSRule::CSSNamespace(namespace.to_string())),
     ast::Rule::FontFamily(rule) => evaluate_font_family_rule(rule, context),
     ast::Rule::Media(rule) => evaluate_media_rule(rule, context),
     ast::Rule::Style(rule) => evaluate_style_rule(rule, context),
     ast::Rule::Keyframes(rule) => evaluate_keyframes_rule(rule, context),
     ast::Rule::Supports(rule) => evaluate_supports_rule(rule, context),
+    ast::Rule::Document(rule) => evaluate_document_rule(rule, context),
+    ast::Rule::Page(rule) => evaluate_page_rule(rule, context),
   }
 }
 
@@ -43,19 +46,27 @@ fn evaluate_font_family_rule(font_family: &ast::FontFamilyRule, context: &Contex
 }
 
 fn evaluate_media_rule(rule: &ast::ConditionRule, context: &Context) -> Result<virt::CSSRule, &'static str> {
-  Ok(virt::CSSRule::Media(virt::ConditionRule {
-    name: rule.name.to_string(),
-    condition_text: rule.condition_text.to_string(),
-    rules: evaluate_style_rules(&rule.rules, context)?
-  }))
+  Ok(virt::CSSRule::Media(evaluate_condition_rule(rule, context)?))
 }
 
 fn evaluate_supports_rule(rule: &ast::ConditionRule, context: &Context) -> Result<virt::CSSRule, &'static str> {
-  Ok(virt::CSSRule::Supports(virt::ConditionRule {
+  Ok(virt::CSSRule::Supports(evaluate_condition_rule(rule, context)?))
+
+}
+fn evaluate_page_rule(rule: &ast::ConditionRule, context: &Context) -> Result<virt::CSSRule, &'static str> {
+  Ok(virt::CSSRule::Page(evaluate_condition_rule(rule, context)?))
+}
+
+fn evaluate_document_rule(rule: &ast::ConditionRule, context: &Context) -> Result<virt::CSSRule, &'static str> {
+  Ok(virt::CSSRule::Document(evaluate_condition_rule(rule, context)?))
+}
+
+fn evaluate_condition_rule(rule: &ast::ConditionRule, context: &Context) -> Result<virt::ConditionRule, &'static str> {
+  Ok(virt::ConditionRule {
     name: rule.name.to_string(),
     condition_text: rule.condition_text.to_string(),
     rules: evaluate_style_rules(&rule.rules, context)?
-  }))
+  })
 }
 
 fn evaluate_keyframes_rule(rule: &ast::KeyframesRule, context: &Context) -> Result<virt::CSSRule, &'static str> {

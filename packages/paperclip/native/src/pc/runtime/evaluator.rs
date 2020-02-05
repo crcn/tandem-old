@@ -90,9 +90,6 @@ fn evaluate_node<'a>(node_expr: &ast::Node, context: &'a Context) -> Result<Opti
     ast::Node::Element(el) => {
       evaluate_element(&el, context)
     },
-    ast::Node::VoidElement(el) => {
-      evaluate_element(&el, context)
-    },
     ast::Node::StyleElement(el) => {
       evaluate_style_element(&el, context)
     },
