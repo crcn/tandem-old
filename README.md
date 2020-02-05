@@ -46,24 +46,40 @@ Productivity & development speed. Debugging HTML & CSS is a long process, especi
 
 ### What is Paperclip?
 
-Paperclip is the super fast language used to create dynamic user interfaces. Here's an example:
+Paperclip is a template language that compiles to React code (more targets planned). Here's an example:
+
+
+`hello.pc`:
 
 ```html
+<style>
+  .message {
+    background: grey;
+    border-radius: 3px;
+    color: white;
+  }
+</style>
 
-<!-- import a a tabs component -->
-<import id="tabs" src="common/tabs.pc" />
+<div class="message">
+  {{message}}
+</div>
 
-<tabs>
-  <div aria-label="Tab 1">
-      some content
-  </div>
-  <div aria-label="Tab 2">
-      more content
-  </div>
-  <div aria-label="Tab 2">
-      more content
-  </div>
-</tabs>
+<!-- conditions -->
+{{#if temperature > 90}}
+  It's super hot! 🔥
+{{/else if temperature > 80}}
+  It's hot! 
+{{/else}}
+  It's a good temp. 👍
+{{/}}
+
+<ul>
+{{#each items as item, index}}
+  <li>{{item}}</li>
+{{/}}
+</ul>
+
+  
 ```
 
 > You can explore the code around this example here: [LINK TODO]
