@@ -1,10 +1,10 @@
 ### Realtime visual development
 
-Tandem allows you to visually develop your web application directly within VSCode. No more wasted time waiting for code to compile & debugging HTML & CSS in the browser. 🙌🏻
+Tandem provides you with a live preview of your web app directly in VSCode. 
 
-> All of your web component development & debugging in one spot.
+<!-- All of your web component development & debugging in one spot. -->
 
-Tandem is built on top of [Paperclip](packages/paperclip), a super fast template language designed to compile to most languages and frameworks. Currently supporting React & static HTML.
+Tandem uses [Paperclip](packages/paperclip), a super fast template language designed to compile to most languages and frameworks. Currently supporting React & static HTML.
 
 [GIF PREVIEW]
 
