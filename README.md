@@ -1,12 +1,15 @@
+⚠️ Currently WIP ⚠️
+
 ### Realtime visual development
 
-Tandem allows you to visually develop your web application directly within VSCode. No more wasted time waiting for code to compile & debugging HTML & CSS in the browser. 🙌🏻
-
-> All of your web component development & debugging in one spot.
-
-Tandem is built on top of [Paperclip](packages/paperclip), a super fast template language designed to compile to most languages and frameworks. Currently supporting React & static HTML.
+Tandem provides you with a live preview of your web app directly in VSCode. 
 
 [GIF PREVIEW]
+
+<!-- All of your web component development & debugging in one spot. -->
+
+Tandem uses [Paperclip](packages/paperclip), a super fast template language designed to compile to most languages and frameworks. Currently supporting React & static HTML.
+
 
 ### Why?
 
@@ -43,25 +46,37 @@ Productivity & development speed. Debugging HTML & CSS is a long process, especi
 
 ### What is Paperclip?
 
-Paperclip is the super fast language used to create dynamic user interfaces. Here's an example:
+Paperclip is a template language that compiles to React code (more targets planned). Here's an example:
+
+
+`hello.pc`:
 
 ```html
+<style>
+  .message {
+    background: grey;
+    border-radius: 3px;
+    color: white;
+  }
+</style>
 
-<!-- import a a tabs component -->
-<import id="tabs" src="common/tabs.pc" />
+<div class="message">
+  {{message}}
+</div>
 
-<tabs>
-  <div aria-label="Tab 1">
-      some content
-  </div>
-  <div aria-label="Tab 2">
-      more content
-  </div>
-  <div aria-label="Tab 2">
-      more content
-  </div>
-</tabs>
+<!-- conditions -->
+{{#if temperature > 90}}
+  It's super hot! 🔥
+{{/else if temperature > 80}}
+  It's hot! 
+{{/else}}
+  It's a good temp. 👍
+{{/}}
+
+<ul>
+{{#each items as item, index}}
+  <li>{{item}}</li>
+{{/}}
+</ul>
 ```
-
-> You can explore the code around this example here: [LINK TODO]
 
