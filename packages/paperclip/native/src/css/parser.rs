@@ -33,14 +33,20 @@ fn eat_comments<'a>(tokenizer: &mut Tokenizer<'a>, start: Token, end: Token) -> 
 
 fn parse_sheet<'a, FWhere>(tokenizer: &mut Tokenizer<'a>, until: FWhere) -> Result<Sheet, ParseError> where
 FWhere: Fn(Token) -> bool {
+  Ok(Sheet {
+    rules: parse_rules(tokenizer, until)?
+  })
+}
+
+
+fn parse_rules<'a, FWhere>(tokenizer: &mut Tokenizer<'a>, until: FWhere) -> Result<Vec<Rule>, ParseError> where
+FWhere: Fn(Token) -> bool {
   let mut rules = vec![];
   tokenizer.eat_whitespace();
   while !&tokenizer.is_eof() && until(tokenizer.peek(1)?) {
     rules.push(parse_rule(tokenizer)?);
   }
-  Ok(Sheet {
-    rules,
-  })
+  Ok(rules)
 }
 
 fn parse_rule<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Rule, ParseError> {
@@ -58,16 +64,26 @@ fn parse_rule<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Rule, ParseError> {
 }
 
 fn parse_style_rule<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Rule, ParseError> {
+  Ok(Rule::Style(parse_style_rule2(tokenizer)?))
+}
+
+fn parse_style_rule2<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<StyleRule, ParseError> {
   let selector = parse_selector(tokenizer)?;
+  let declarations = parse_declaration_body(tokenizer)?;
+  Ok(StyleRule {
+    selector,
+    declarations,
+  })
+}
+
+
+fn parse_declaration_body<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Vec<Declaration>, ParseError> {
   tokenizer.eat_whitespace();
   tokenizer.next_expect(Token::CurlyOpen); // eat {
   let declarations = parse_declarations(tokenizer)?;
   tokenizer.next_expect(Token::CurlyClose); // eat }
   tokenizer.eat_whitespace();
-  Ok(Rule::Style(StyleRule {
-    selector,
-    declarations,
-  }))
+  Ok(declarations)
 }
 
 fn parse_at_rule<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Rule, ParseError> {
@@ -80,11 +96,66 @@ fn parse_at_rule<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Rule, ParseError> 
       tokenizer.next_expect(Token::Semicolon);
       Ok(Rule::Charset(value.to_string()))
     },
+    "supports" => {
+      Ok(Rule::Supports(parse_condition_rule("supports".to_string(), tokenizer)?))
+    },
+    "media" => {
+      Ok(Rule::Supports(parse_condition_rule("media".to_string(), tokenizer)?))
+    },
+    "keyframes" => {
+      Ok(Rule::Keyframes(parse_keyframes_rule(tokenizer)?))
+    },
     _ => {
       Err(ParseError::unexpected_token(tokenizer.pos))
     }
   }
-  
+}
+
+fn parse_condition_rule<'a>(name: String, tokenizer: &mut Tokenizer<'a>) -> Result<ConditionRule, ParseError> {
+  let condition_text = get_buffer(tokenizer, |tokenizer| {
+    Ok(tokenizer.peek(1)? != Token::CurlyOpen)
+  })?.to_string();
+
+  let mut rules = vec![];
+
+  while tokenizer.peek(1)? != Token::CurlyClose {
+    rules.push(parse_style_rule2(tokenizer)?);
+  }
+
+  Ok(ConditionRule {
+    name,
+    condition_text,
+    rules,
+  })
+}
+
+fn parse_keyframes_rule<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<KeyframesRule, ParseError> {
+  let name = get_buffer(tokenizer, |tokenizer| {
+    Ok(tokenizer.peek(1)? != Token::CurlyOpen)
+  })?.to_string();
+
+  let mut rules = vec![];
+
+  while tokenizer.peek(1)? != Token::CurlyClose {
+    rules.push(parse_keyframe_rule(tokenizer)?);
+  }
+
+  Ok(KeyframesRule {
+    name,
+    rules,
+  })
+}
+
+fn parse_keyframe_rule<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<KeyframeRule, ParseError> {
+  let key = get_buffer(tokenizer, |tokenizer| {
+    Ok(tokenizer.peek(1)? != Token::CurlyOpen)
+  })?.to_string();
+
+
+  Ok(KeyframeRule {
+    key,
+    declarations: parse_declaration_body(tokenizer)?
+  })
 }
 
 fn parse_selector<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Selector, ParseError> {

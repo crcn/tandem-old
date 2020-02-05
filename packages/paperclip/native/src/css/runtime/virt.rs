@@ -28,8 +28,8 @@ pub enum CSSRule {
   CSSStyleRule(CSSStyleRule),
   CSSCharset(String),
   FontFamily(FontFamilyRule),
-  Media(base::ConditionRule<CSSStyleRule>),
-  Supports(base::ConditionRule<CSSStyleRule>),
+  Media(ConditionRule),
+  Supports(ConditionRule),
   Keyframes(KeyframesRule)
 }
 
@@ -39,6 +39,9 @@ impl fmt::Display for CSSRule {
       CSSRule::CSSStyleRule(rule) => write!(f, "{}", rule.to_string()),
       CSSRule::CSSCharset(value) => write!(f, "@charset {};", value),
       CSSRule::FontFamily(rule) => write!(f, "{}", rule.to_string()),
+      CSSRule::Media(rule) => write!(f, "{}", rule.to_string()),
+      CSSRule::Supports(rule) => write!(f, "{}", rule.to_string()),
+      CSSRule::Keyframes(rule) => write!(f, "{}", rule.to_string()),
     }
   }
 }
@@ -58,6 +61,62 @@ impl fmt::Display for FontFamilyRule {
     Ok(())
   }
 }
+#[derive(Debug, PartialEq, Serialize, Clone)]
+pub struct ConditionRule {
+  pub name: String,
+  pub condition_text: String,
+  pub rules: Vec<CSSStyleRule>
+}
+
+impl fmt::Display for ConditionRule {
+  fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+    writeln!(f, "@{} {} {{", &self.name, &self.condition_text)?;
+    for rule in &self.rules {
+      write!(f, "{}\n", &rule.to_string())?;
+    }
+    writeln!(f, "}}")?;
+
+    Ok(())
+  }
+}
+
+
+#[derive(Debug, PartialEq, Serialize, Clone)]
+pub struct KeyframesRule {
+  pub name: String,
+  pub rules: Vec<KeyframeRule>
+}
+
+impl fmt::Display for KeyframesRule {
+  fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+    writeln!(f, "@keyframes {} {{", &self.name)?;
+    for rule in &self.rules {
+      write!(f, "{}\n", &rule.to_string())?;
+    }
+    writeln!(f, "}}")?;
+
+    Ok(())
+  }
+}
+
+#[derive(Debug, PartialEq, Serialize, Clone)]
+pub struct KeyframeRule {
+  pub key: String,
+  pub style: Vec<CSSStyleProperty>
+}
+
+impl fmt::Display for KeyframeRule {
+  fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+    writeln!(f, "{} {{", &self.key)?;
+    for property in &self.style {
+      write!(f, "{}: {};", &property.name, &property.value)?;
+    }
+    writeln!(f, "}}")?;
+
+    Ok(())
+  }
+}
+
 
 #[derive(Debug, PartialEq, Serialize, Clone)]
 pub struct CSSStyleRule {
