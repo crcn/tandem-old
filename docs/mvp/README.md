@@ -4,18 +4,16 @@ Limitations:
 
 immediate TODO:
 
-- @at-rules
-- @media
-- @keyframes
-- css value parser
-- ability to load url files (handle css link ref)
+- basic large test
+
+* diff/patch
+
 - stress test
   - should be able to just copy & paste sites
   - nytimes.com
   - reddit.com
   - webflow.com
-
-* diff/patch
+- React compiler
 
 * JS evaluator
   - strings
