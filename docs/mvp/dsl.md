@@ -24,6 +24,8 @@ it instantiates a new component instance -->
 
 <!-- styles are scoped to this file -->
 <style>
+
+  /* custom style exported to js */
   div {
 
     /* styles can use block syntax */
@@ -147,6 +149,8 @@ Additionally, `.pc` files may have a corresponding `.[COMPONENT_NAME].tdc` (Tand
   - would be nice for example to preview i18n strings
   - possibly using additional JS layer after evaluated VDOM tree
 - look into animations
+- **need to figure out how to do css-in-js**
+  - probably just exporting class names
 
 #### DX problems
 

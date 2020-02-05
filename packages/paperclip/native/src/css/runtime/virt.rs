@@ -1,5 +1,6 @@
 use std::fmt;
 use serde::{Serialize};
+use crate::css::base;
 
 #[derive(Debug, PartialEq, Serialize, Clone)]
 pub struct CSSSheet {
@@ -24,14 +25,37 @@ impl fmt::Display for CSSSheet {
 #[derive(Debug, PartialEq, Serialize, Clone)]
 #[serde(tag = "type")]
 pub enum CSSRule {
-  CSSStyleRule(CSSStyleRule)
+  CSSStyleRule(CSSStyleRule),
+  CSSCharset(String),
+  FontFamily(FontFamilyRule),
+  Media(base::ConditionRule<CSSStyleRule>),
+  Supports(base::ConditionRule<CSSStyleRule>),
+  Keyframes(KeyframesRule)
 }
 
 impl fmt::Display for CSSRule {
   fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
     match self {
-      CSSRule::CSSStyleRule(rule) => write!(f, "{}", rule.to_string())
+      CSSRule::CSSStyleRule(rule) => write!(f, "{}", rule.to_string()),
+      CSSRule::CSSCharset(value) => write!(f, "@charset {};", value),
+      CSSRule::FontFamily(rule) => write!(f, "{}", rule.to_string()),
     }
+  }
+}
+
+#[derive(Debug, PartialEq, Serialize, Clone)]
+pub struct FontFamilyRule {
+  pub style: Vec<CSSStyleProperty>
+}
+
+impl fmt::Display for FontFamilyRule {
+  fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+    write!(f, "@font-family {{")?;
+    for property in &self.style {
+      write!(f, "{}: {};", &property.name, &property.value)?;
+    }
+    write!(f, "}}")?;
+    Ok(())
   }
 }
 

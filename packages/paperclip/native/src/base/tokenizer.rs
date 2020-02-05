@@ -19,6 +19,9 @@ pub enum Token<'a> {
   // ~
   Squiggle,
 
+  // @
+  At,
+
   // >
   GreaterThan,
 
@@ -223,6 +226,10 @@ impl<'a> Tokenizer<'a> {
       b'~' => {
         self.forward(1);
         Ok(Token::Squiggle)
+      },
+      b'@' => {
+        self.forward(1);
+        Ok(Token::At)
       },
       b',' => {
         self.forward(1);

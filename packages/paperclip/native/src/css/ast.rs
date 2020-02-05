@@ -15,16 +15,114 @@ impl fmt::Display for Declaration {
 }
 
 #[derive(Debug, PartialEq, Serialize)]
-pub struct Rule {
-  pub selector: Selector,
-  pub declarations: Vec<Declaration>
+pub enum Rule {
+  Style(StyleRule),
+  Charset(String),
+  FontFamily(FontFamilyRule),
+  Media(ConditionRule),
+  Supports(ConditionRule),
+  Keyframes(KeyframesRule)
 }
 
 impl fmt::Display for Rule {
   fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+    match self {
+      Rule::Style(rule) => write!(f, "{}", rule.to_string()),
+      Rule::Charset(value) => write!(f, "@{}", value),
+      Rule::FontFamily(rule) => write!(f, "{}", rule.to_string()),
+      Rule::Media(rule) => write!(f, "{}", rule.to_string()),
+      Rule::Supports(rule) => write!(f, "{}", rule.to_string()),
+      Rule::Keyframes(rule) => write!(f, "{}", rule.to_string())
+    }
+  }
+}
+
+#[derive(Debug, PartialEq, Serialize)]
+pub struct StyleRule {
+  pub selector: Selector,
+  pub declarations: Vec<Declaration>
+}
+
+impl fmt::Display for StyleRule {
+  fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
     writeln!(f, "{} {{", &self.selector)?;
     for decl in &self.declarations {
       write!(f, "  {}", &decl.to_string())?;
+    }
+    writeln!(f, "}}")?;
+
+    Ok(())
+  }
+}
+
+
+#[derive(Debug, PartialEq, Serialize)]
+pub struct FontFamilyRule {
+  pub declarations: Vec<Declaration>
+}
+
+impl fmt::Display for FontFamilyRule {
+  fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+    writeln!(f, "@font-family {{")?;
+    for decl in &self.declarations {
+      write!(f, "  {}", &decl.to_string())?;
+    }
+    writeln!(f, "}}")?;
+
+    Ok(())
+  }
+}
+
+#[derive(Debug, PartialEq, Serialize)]
+pub struct ConditionRule {
+  pub name: String,
+  pub condition_text: String,
+  pub rules: Vec<StyleRule>
+}
+
+impl fmt::Display for ConditionRule {
+  fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+    writeln!(f, "@{} {} {{", &self.name, &self.condition_text)?;
+    for rule in &self.rules {
+      write!(f, "{}\n", &rule.to_string())?;
+    }
+    writeln!(f, "}}")?;
+
+    Ok(())
+  }
+}
+
+#[derive(Debug, PartialEq, Serialize)]
+pub struct KeyframesRule {
+  pub name: String,
+  pub rules: Vec<KeyframeRule>
+}
+
+impl fmt::Display for KeyframesRule {
+  fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+    writeln!(f, "@keyframes {} {{", &self.name)?;
+    for rule in &self.rules {
+      write!(f, "{}\n", &rule.to_string())?;
+    }
+    writeln!(f, "}}")?;
+
+    Ok(())
+  }
+}
+
+
+
+#[derive(Debug, PartialEq, Serialize)]
+pub struct KeyframeRule {
+  pub key: String,
+  pub declarations: Vec<Declaration>
+}
+
+impl fmt::Display for KeyframeRule {
+  fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+    writeln!(f, "{} {{", &self.key)?;
+    for decl in &self.declarations {
+      write!(f, " {}", &decl.to_string())?;
     }
     writeln!(f, "}}")?;
 

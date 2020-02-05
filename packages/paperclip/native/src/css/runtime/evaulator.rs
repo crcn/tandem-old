@@ -17,15 +17,35 @@ pub fn evaluate<'a>(expr: &ast::Sheet, scope: &'a str) -> Result<virt::CSSSheet,
   })
 }
 
-fn evaluate_rule(expr: &ast::Rule, context: &Context) -> Result<virt::CSSRule, &'static str> {
-  evaluate_style_rule(expr, context)
+fn evaluate_rule(rule: &ast::Rule, context: &Context) -> Result<virt::CSSRule, &'static str> {
+  match rule {
+    ast::Rule::Charset(charset) => {
+      Ok(virt::CSSRule::CSSCharset(charset.to_string()))
+    },
+    ast::Rule::FontFamily(rule) => {
+      evaluate_font_family(rule, context)
+    },
+    ast::Rule::Style(rule) => {
+      evaluate_style_rule(rule, context)
+    }
+  }
+}
+fn evaluate_font_family(font_family: &ast::FontFamilyRule, context: &Context) -> Result<virt::CSSRule, &'static str> {
+  Ok(virt::CSSRule::FontFamily(virt::FontFamilyRule {
+    style: evaluate_style_declarations(&font_family.declarations)?
+  }))
 }
 
-fn evaluate_style_rule(expr: &ast::Rule, context: &Context) -> Result<virt::CSSRule, &'static str> {
+fn evaluate_style_declarations(declarations: &Vec<ast::Declaration>) -> Result<Vec<virt::CSSStyleProperty>, &'static str> {
   let mut style = vec![];
-  for property in &expr.declarations {
+  for property in declarations {
     style.push(evaluate_style(&property)?);
   }
+  Ok(style)
+}
+
+fn evaluate_style_rule(expr: &ast::StyleRule, context: &Context) -> Result<virt::CSSRule, &'static str> {
+  let mut style = evaluate_style_declarations(&expr.declarations)?;
   let selector_text = stringify_element_selector(&expr.selector, context);
   Ok(virt::CSSRule::CSSStyleRule(virt::CSSStyleRule {
     selector_text,

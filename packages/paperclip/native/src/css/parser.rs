@@ -47,17 +47,46 @@ fn parse_rule<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Rule, ParseError> {
   tokenizer.eat_whitespace();
   eat_script_comments(tokenizer)?;
   tokenizer.eat_whitespace();
+  match tokenizer.peek(1)? {
+    Token::At => {
+      parse_at_rule(tokenizer)
+    }
+    _ => {
+      parse_style_rule(tokenizer)
+    }
+  }
+}
+
+fn parse_style_rule<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Rule, ParseError> {
   let selector = parse_selector(tokenizer)?;
   tokenizer.eat_whitespace();
   tokenizer.next_expect(Token::CurlyOpen); // eat {
   let declarations = parse_declarations(tokenizer)?;
   tokenizer.next_expect(Token::CurlyClose); // eat }
   tokenizer.eat_whitespace();
-  Ok(Rule {
+  Ok(Rule::Style(StyleRule {
     selector,
     declarations,
-  })
+  }))
 }
+
+fn parse_at_rule<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Rule, ParseError> {
+  tokenizer.next_expect(Token::At)?;
+  let name = parse_selector_name(tokenizer)?;
+  match name {
+    "charset" => {
+      tokenizer.eat_whitespace();
+      let value = parse_string(tokenizer)?;
+      tokenizer.next_expect(Token::Semicolon);
+      Ok(Rule::Charset(value.to_string()))
+    },
+    _ => {
+      Err(ParseError::unexpected_token(tokenizer.pos))
+    }
+  }
+  
+}
+
 fn parse_selector<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Selector, ParseError> {
   parse_group_selector(tokenizer)
 }
@@ -272,16 +301,20 @@ fn parse_attribute_selector<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Selecto
   }))
 }
 
+fn parse_string<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<&'a str, ParseError> {
+  let initial = tokenizer.next()?; // eat quote
+  let buffer = get_buffer(tokenizer, |tokenizer| {
+    Ok(tokenizer.peek(1)? != initial)
+  });
+  tokenizer.next_expect(initial); // eat quote
+  buffer
+}
+
 fn parse_attribute_selector_value<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<&'a str, ParseError> {
 
   let initial = tokenizer.peek(1)?;
   let value = if initial == Token::SingleQuote || initial == Token::DoubleQuote {
-    tokenizer.next()?; // eat quote
-    let buffer = get_buffer(tokenizer, |tokenizer| {
-      Ok(tokenizer.peek(1)? != initial)
-    })?;
-    tokenizer.next()?; // eat quote
-    buffer
+    parse_string(tokenizer)?
   } else {
     get_buffer(tokenizer, |tokenizer| {
       Ok(tokenizer.peek(1)? != Token::SquareClose)
