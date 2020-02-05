@@ -78,9 +78,5 @@ Paperclip is a template language that compiles to React code (more targets plann
   <li>{{item}}</li>
 {{/}}
 </ul>
-
-  
 ```
-
-> You can explore the code around this example here: [LINK TODO]
 
