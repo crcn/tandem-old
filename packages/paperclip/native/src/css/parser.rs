@@ -379,7 +379,7 @@ fn parse_psuedo_element_selector<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Se
 }
 
 fn parse_attribute_selector<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Selector, ParseError> {
-  let name = parse_selector_name(tokenizer)?.to_string();
+  let name = parse_attribute_name(tokenizer)?.to_string();
   let mut value = None;
   if tokenizer.peek(1)? == Token::Equals {
     tokenizer.next()?; // eat =
@@ -426,6 +426,32 @@ fn parse_selector_name<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<&'a str, Par
       Token::Colon | 
       Token::ParenOpen | 
       Token::ParenClose | 
+      Token::SingleQuote | 
+      Token::DoubleQuote | 
+      Token::Dot | 
+      Token::Hash | 
+      Token::Squiggle | 
+      Token::GreaterThan | 
+      Token::CurlyOpen | 
+      Token::SquareOpen |
+      Token::SquareClose => false,
+      _ => true
+    })
+  })
+}
+
+fn parse_attribute_name<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<&'a str, ParseError> {
+  get_buffer(tokenizer, |tokenizer| {
+    let tok = tokenizer.peek(1)?;
+    Ok(match tok {
+      Token::Whitespace | 
+      Token::Comma | 
+      Token::Colon | 
+      Token::ParenOpen | 
+      Token::ParenClose | 
+      Token::Equals | 
+      Token::SingleQuote | 
+      Token::DoubleQuote | 
       Token::Dot | 
       Token::Hash | 
       Token::Squiggle | 
@@ -519,6 +545,8 @@ mod tests {
     ._3LS4zudUBagjFS7HjWJYxo{margin:0 4px}
     ._abcd{white-space:pre;word-break:normal;/**/padding:0 4px}
     .md-spoiler-text:not([data-revealed])>*{opacity:0}
+    img[src='s.gif'][width='40'] { width: 12px; }
+    ._aff=aadd { width: 12px; }
     /*comment*/
     ";
 
