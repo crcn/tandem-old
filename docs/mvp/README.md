@@ -4,16 +4,9 @@ Limitations:
 
 immediate TODO:
 
-- smoke test for pc
-- basic large test
-
-* diff/patch
-
-- stress test
-  - should be able to just copy & paste sites
-  - nytimes.com
-  - reddit.com
-  - webflow.com
+- diff/patch
+- Syntax highlighter
+- Error highlighting
 - React compiler
 
 - DX enhancements
