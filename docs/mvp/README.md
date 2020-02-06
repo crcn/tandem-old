@@ -4,15 +4,16 @@ Limitations:
 
 immediate TODO:
 
-- diff/patch
 - Syntax highlighter
-- Error highlighting
-- React compiler
+- language server
 
-- DX enhancements
-  - syntax highlighting
-  - parser error
-  - linter
+  - Error highlighting
+  - linter - written in JS
+    - use config
+
+- React compiler
+- web preview for non-vscode users
+- pretty terminal compiler output
 
 * JS evaluator
   - strings
@@ -28,14 +29,9 @@ immediate TODO:
     - %
   - elements
 * #repeat
-* css selectors
-  - #
-  - TODO
-  - media queries
-  - keyframes
-* stress test\*
-  - hackernews
-  - nytimes
+
+- diff/patch
+
 * examples
   - chat app
   - todo list
