@@ -4,7 +4,7 @@
     display: inline-block;
     padding: 10px;
     border-radius: 4px;
-    background: orange;
+    background: grey;
   }
 
   .message {
@@ -13,13 +13,13 @@
 </style>
 
 <div class="button">
-  {{children}}
+  {children}
 </div>
 
 <div class="message">
-{{#if something}} 
+{#if something}
   something happened 🔥
-{{/else}}
+{/else}
   something else
-{{/}}
+{/}
 </div>
