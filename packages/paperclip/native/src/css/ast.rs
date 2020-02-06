@@ -19,7 +19,7 @@ pub enum Rule {
   Style(StyleRule),
   Charset(String),
   Namespace(String),
-  FontFamily(FontFamilyRule),
+  FontFace(FontFaceRule),
   Media(ConditionRule),
   Supports(ConditionRule),
   Page(ConditionRule),
@@ -33,7 +33,7 @@ impl fmt::Display for Rule {
       Rule::Style(rule) => write!(f, "{}", rule.to_string()),
       Rule::Charset(value) => write!(f, "@charset {}", value),
       Rule::Namespace(value) => write!(f, "@namespace {}", value),
-      Rule::FontFamily(rule) => write!(f, "{}", rule.to_string()),
+      Rule::FontFace(rule) => write!(f, "{}", rule.to_string()),
       Rule::Media(rule) => write!(f, "{}", rule.to_string()),
       Rule::Supports(rule) => write!(f, "{}", rule.to_string()),
       Rule::Keyframes(rule) => write!(f, "{}", rule.to_string()),
@@ -63,11 +63,11 @@ impl fmt::Display for StyleRule {
 
 
 #[derive(Debug, PartialEq, Serialize)]
-pub struct FontFamilyRule {
+pub struct FontFaceRule {
   pub declarations: Vec<Declaration>
 }
 
-impl fmt::Display for FontFamilyRule {
+impl fmt::Display for FontFaceRule {
   fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
     writeln!(f, "@font-family {{")?;
     for decl in &self.declarations {

@@ -114,7 +114,7 @@ fn parse_at_rule<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Rule, ParseError> 
       Ok(Rule::Keyframes(parse_keyframes_rule(tokenizer)?))
     },
     "font-face" => {
-      Ok(Rule::FontFamily(parse_font_face_rule(tokenizer)?))
+      Ok(Rule::FontFace(parse_font_face_rule(tokenizer)?))
     },
     "document" => {
       Ok(Rule::Document(parse_condition_rule(name.to_string(), tokenizer)?))
@@ -150,9 +150,9 @@ fn parse_condition_rule<'a>(name: String, tokenizer: &mut Tokenizer<'a>) -> Resu
   })
 }
 
-fn parse_font_face_rule<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<FontFamilyRule, ParseError> {
+fn parse_font_face_rule<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<FontFaceRule, ParseError> {
   
-  Ok(FontFamilyRule {
+  Ok(FontFaceRule {
     declarations: parse_declaration_body(tokenizer)?
   })
 }

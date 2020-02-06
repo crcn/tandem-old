@@ -1,10 +1,9 @@
 use std::fmt;
 use serde::{Serialize};
-use crate::css::base;
 
 #[derive(Debug, PartialEq, Serialize, Clone)]
 pub struct CSSSheet {
-  pub rules: Vec<CSSRule>,
+  pub rules: Vec<Rule>,
 }
 
 impl CSSSheet {
@@ -24,11 +23,11 @@ impl fmt::Display for CSSSheet {
 
 #[derive(Debug, PartialEq, Serialize, Clone)]
 #[serde(tag = "type")]
-pub enum CSSRule {
-  CSSStyleRule(CSSStyleRule),
-  CSSCharset(String),
-  CSSNamespace(String),
-  FontFamily(FontFamilyRule),
+pub enum Rule {
+  Style(StyleRule),
+  Charset(String),
+  Namespace(String),
+  FontFace(FontFaceRule),
   Media(ConditionRule),
   Supports(ConditionRule),
   Page(ConditionRule),
@@ -36,28 +35,28 @@ pub enum CSSRule {
   Keyframes(KeyframesRule),
 }
 
-impl fmt::Display for CSSRule {
+impl fmt::Display for Rule {
   fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
     match self {
-      CSSRule::CSSStyleRule(rule) => write!(f, "{}", rule.to_string()),
-      CSSRule::CSSCharset(value) => write!(f, "@charset {};", value),
-      CSSRule::CSSNamespace(value) => write!(f, "@namespace {};", value),
-      CSSRule::FontFamily(rule) => write!(f, "{}", rule.to_string()),
-      CSSRule::Media(rule) => write!(f, "{}", rule.to_string()),
-      CSSRule::Document(rule) => write!(f, "{}", rule.to_string()),
-      CSSRule::Page(rule) => write!(f, "{}", rule.to_string()),
-      CSSRule::Supports(rule) => write!(f, "{}", rule.to_string()),
-      CSSRule::Keyframes(rule) => write!(f, "{}", rule.to_string()),
+      Rule::Style(rule) => write!(f, "{}", rule.to_string()),
+      Rule::Charset(value) => write!(f, "@charset {};", value),
+      Rule::Namespace(value) => write!(f, "@namespace {};", value),
+      Rule::FontFace(rule) => write!(f, "{}", rule.to_string()),
+      Rule::Media(rule) => write!(f, "{}", rule.to_string()),
+      Rule::Document(rule) => write!(f, "{}", rule.to_string()),
+      Rule::Page(rule) => write!(f, "{}", rule.to_string()),
+      Rule::Supports(rule) => write!(f, "{}", rule.to_string()),
+      Rule::Keyframes(rule) => write!(f, "{}", rule.to_string()),
     }
   }
 }
 
 #[derive(Debug, PartialEq, Serialize, Clone)]
-pub struct FontFamilyRule {
+pub struct FontFaceRule {
   pub style: Vec<CSSStyleProperty>
 }
 
-impl fmt::Display for FontFamilyRule {
+impl fmt::Display for FontFaceRule {
   fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
     write!(f, "@font-family {{")?;
     for property in &self.style {
@@ -71,7 +70,7 @@ impl fmt::Display for FontFamilyRule {
 pub struct ConditionRule {
   pub name: String,
   pub condition_text: String,
-  pub rules: Vec<CSSStyleRule>
+  pub rules: Vec<StyleRule>
 }
 
 impl fmt::Display for ConditionRule {
@@ -125,12 +124,12 @@ impl fmt::Display for KeyframeRule {
 
 
 #[derive(Debug, PartialEq, Serialize, Clone)]
-pub struct CSSStyleRule {
+pub struct StyleRule {
   pub selector_text: String,
   pub style: Vec<CSSStyleProperty>
 }
 
-impl fmt::Display for CSSStyleRule {
+impl fmt::Display for StyleRule {
   fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
     write!(f, " {} {{", &self.selector_text)?;
     for property in &self.style {

@@ -17,11 +17,11 @@ pub fn evaluate<'a>(expr: &ast::Sheet, scope: &'a str) -> Result<virt::CSSSheet,
   })
 }
 
-fn evaluate_rule(rule: &ast::Rule, context: &Context) -> Result<virt::CSSRule, &'static str> {
+fn evaluate_rule(rule: &ast::Rule, context: &Context) -> Result<virt::Rule, &'static str> {
   match rule {
-    ast::Rule::Charset(charset) => Ok(virt::CSSRule::CSSCharset(charset.to_string())),
-    ast::Rule::Namespace(namespace) => Ok(virt::CSSRule::CSSNamespace(namespace.to_string())),
-    ast::Rule::FontFamily(rule) => evaluate_font_family_rule(rule, context),
+    ast::Rule::Charset(charset) => Ok(virt::Rule::Charset(charset.to_string())),
+    ast::Rule::Namespace(namespace) => Ok(virt::Rule::Namespace(namespace.to_string())),
+    ast::Rule::FontFace(rule) => evaluate_font_family_rule(rule, context),
     ast::Rule::Media(rule) => evaluate_media_rule(rule, context),
     ast::Rule::Style(rule) => evaluate_style_rule(rule, context),
     ast::Rule::Keyframes(rule) => evaluate_keyframes_rule(rule, context),
@@ -31,7 +31,7 @@ fn evaluate_rule(rule: &ast::Rule, context: &Context) -> Result<virt::CSSRule, &
   }
 }
 
-pub fn evaluate_style_rules<'a>(rules: &Vec<ast::StyleRule>, context: &Context) -> Result<Vec<virt::CSSStyleRule>, &'static str> {
+pub fn evaluate_style_rules<'a>(rules: &Vec<ast::StyleRule>, context: &Context) -> Result<Vec<virt::StyleRule>, &'static str> {
   let mut css_rules = vec![];
   for rule in rules {
     css_rules.push(evaluate_style_rule2(&rule, &context)?);
@@ -39,26 +39,26 @@ pub fn evaluate_style_rules<'a>(rules: &Vec<ast::StyleRule>, context: &Context) 
   Ok(css_rules)
 }
 
-fn evaluate_font_family_rule(font_family: &ast::FontFamilyRule, context: &Context) -> Result<virt::CSSRule, &'static str> {
-  Ok(virt::CSSRule::FontFamily(virt::FontFamilyRule {
+fn evaluate_font_family_rule(font_family: &ast::FontFaceRule, context: &Context) -> Result<virt::Rule, &'static str> {
+  Ok(virt::Rule::FontFace(virt::FontFaceRule {
     style: evaluate_style_declarations(&font_family.declarations)?
   }))
 }
 
-fn evaluate_media_rule(rule: &ast::ConditionRule, context: &Context) -> Result<virt::CSSRule, &'static str> {
-  Ok(virt::CSSRule::Media(evaluate_condition_rule(rule, context)?))
+fn evaluate_media_rule(rule: &ast::ConditionRule, context: &Context) -> Result<virt::Rule, &'static str> {
+  Ok(virt::Rule::Media(evaluate_condition_rule(rule, context)?))
 }
 
-fn evaluate_supports_rule(rule: &ast::ConditionRule, context: &Context) -> Result<virt::CSSRule, &'static str> {
-  Ok(virt::CSSRule::Supports(evaluate_condition_rule(rule, context)?))
+fn evaluate_supports_rule(rule: &ast::ConditionRule, context: &Context) -> Result<virt::Rule, &'static str> {
+  Ok(virt::Rule::Supports(evaluate_condition_rule(rule, context)?))
 
 }
-fn evaluate_page_rule(rule: &ast::ConditionRule, context: &Context) -> Result<virt::CSSRule, &'static str> {
-  Ok(virt::CSSRule::Page(evaluate_condition_rule(rule, context)?))
+fn evaluate_page_rule(rule: &ast::ConditionRule, context: &Context) -> Result<virt::Rule, &'static str> {
+  Ok(virt::Rule::Page(evaluate_condition_rule(rule, context)?))
 }
 
-fn evaluate_document_rule(rule: &ast::ConditionRule, context: &Context) -> Result<virt::CSSRule, &'static str> {
-  Ok(virt::CSSRule::Document(evaluate_condition_rule(rule, context)?))
+fn evaluate_document_rule(rule: &ast::ConditionRule, context: &Context) -> Result<virt::Rule, &'static str> {
+  Ok(virt::Rule::Document(evaluate_condition_rule(rule, context)?))
 }
 
 fn evaluate_condition_rule(rule: &ast::ConditionRule, context: &Context) -> Result<virt::ConditionRule, &'static str> {
@@ -69,7 +69,7 @@ fn evaluate_condition_rule(rule: &ast::ConditionRule, context: &Context) -> Resu
   })
 }
 
-fn evaluate_keyframes_rule(rule: &ast::KeyframesRule, context: &Context) -> Result<virt::CSSRule, &'static str> {
+fn evaluate_keyframes_rule(rule: &ast::KeyframesRule, context: &Context) -> Result<virt::Rule, &'static str> {
 
   let mut rules = vec![];
 
@@ -77,7 +77,7 @@ fn evaluate_keyframes_rule(rule: &ast::KeyframesRule, context: &Context) -> Resu
     rules.push(evaluate_keyframe_rule(rule, context)?);
   }
   
-  Ok(virt::CSSRule::Keyframes(virt::KeyframesRule {
+  Ok(virt::Rule::Keyframes(virt::KeyframesRule {
     name: rule.name.to_string(),
     rules,
   }))
@@ -107,14 +107,14 @@ fn evaluate_style_declarations(declarations: &Vec<ast::Declaration>) -> Result<V
   Ok(style)
 }
 
-fn evaluate_style_rule(expr: &ast::StyleRule, context: &Context) -> Result<virt::CSSRule, &'static str> {
-  Ok(virt::CSSRule::CSSStyleRule(evaluate_style_rule2(expr, context)?))
+fn evaluate_style_rule(expr: &ast::StyleRule, context: &Context) -> Result<virt::Rule, &'static str> {
+  Ok(virt::Rule::Style(evaluate_style_rule2(expr, context)?))
 }
 
-fn evaluate_style_rule2(expr: &ast::StyleRule, context: &Context) -> Result<virt::CSSStyleRule, &'static str> {
+fn evaluate_style_rule2(expr: &ast::StyleRule, context: &Context) -> Result<virt::StyleRule, &'static str> {
   let mut style = evaluate_style_declarations(&expr.declarations)?;
   let selector_text = stringify_element_selector(&expr.selector, context);
-  Ok(virt::CSSStyleRule {
+  Ok(virt::StyleRule {
     selector_text,
     style
   })
