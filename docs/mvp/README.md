@@ -16,6 +16,11 @@ immediate TODO:
   - webflow.com
 - React compiler
 
+- DX enhancements
+  - syntax highlighting
+  - parser error
+  - linter
+
 * JS evaluator
   - strings
   - numbers

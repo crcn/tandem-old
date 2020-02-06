@@ -216,7 +216,8 @@ pre { max-width: 900px; }
                     <tr>
                         <td colspan="2"></td>
                         <td class="subtext">
-                            <span class="score" id="score_22247292">962 points</span> by <a href="user?id=krithix" class="hnuser">krithix</a> <span class="age"><a href="item?id=22247292">8 hours ago</a></span> <span id="unv_22247292"></span> | <a href="hide?id=22247292&amp;goto=news">hide</a> | <a href="item?id=22247292">253&nbsp;comments</a> </td>
+                            <span class="score" id="score_22247292">962 points</span> by <a href="user?id=krithix" class="hnuser">krithix</a> <span class="age"><a href="item?id=22247292">8 hours ago</a></span> <span id="unv_22247292"></span> | <a href="hide?id=22247292&amp;goto=news">hide</a> | <a href="item?id=22247292">253&nbsp;comments</a> 
+                        </td>
                     </tr>
                     <tr class="spacer" style="height:5px"></tr>
                     <tr class='athing' id='22251079'>
@@ -390,7 +391,7 @@ pre { max-width: 900px; }
                                 </a>
                             </center>
                         </td>
-                        <td class="title"><a href="https://mushino.com/" class="storylink">The world's first Bitcoin-settled index futures</a><span class="sitebit comhead"> (<a href="from?site=mushino.com"><span class="sitestr">mushino.com</span></a>)</span>
+                        <td class="title"><a href="https://mushino.com/" class="storylink">The world's first Bitcoin thing enabled index futures</a><span class="sitebit comhead"> (<a href="from?site=mushino.com"><span class="sitestr">mushino.com</span></a>)</span>
                         </td>
                     </tr>
                     <tr>
