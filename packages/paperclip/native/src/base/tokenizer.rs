@@ -31,16 +31,10 @@ pub enum Token<'a> {
   // </
   CloseTag,
 
-  // {{
-  SlotOpen,
-
-  // }}
-  SlotClose,
-
-  // {{#
+  // {#
   BlockOpen,
 
-  // {{/
+  // {/
   BlockClose,
 
   // {
@@ -261,30 +255,20 @@ impl<'a> Tokenizer<'a> {
         }
       },
       b'{' => {
-        if self.starts_with(b"{{") {
-          self.forward(2);
-          if self.starts_with(b"#") {
-            self.forward(1);
-            Ok(Token::BlockOpen)
-          } else if self.starts_with(b"/") {
-            self.forward(1);
-            Ok(Token::BlockClose)
-          } else {
-            Ok(Token::SlotOpen)
-          }
-        } else {
+        self.forward(1);
+        if self.starts_with(b"#") {
           self.forward(1);
+          Ok(Token::BlockOpen)
+        } else if self.starts_with(b"/") {
+          self.forward(1);
+          Ok(Token::BlockClose)
+        } else {
           Ok(Token::CurlyOpen)
         }
       },
       b'}' => {
-        if self.starts_with(b"}}") {
-          self.forward(2);
-          Ok(Token::SlotClose)
-        } else {
-          self.forward(1);
-          Ok(Token::CurlyClose)
-        }
+        self.forward(1);
+        Ok(Token::CurlyClose)
       },
       b'0'..=b'9' => {
         let start = self.pos;
@@ -432,25 +416,12 @@ mod tests {
   }
 
   #[test]
-  fn can_tokenize_open_slot() {
-    let mut tokenizer = Tokenizer::new("{{");
-    assert_eq!(tokenizer.next(), Ok(Token::SlotOpen));
-    
-  }
-
-  #[test]
   fn can_tokenize_curly_open() {
     let mut tokenizer = Tokenizer::new("{");
     assert_eq!(tokenizer.next(), Ok(Token::CurlyOpen));
     
   }
 
-  #[test]
-  fn can_tokenize_close_slot() {
-    let mut tokenizer = Tokenizer::new("}}");
-    assert_eq!(tokenizer.next(), Ok(Token::SlotClose));
-    
-  }
 
   #[test]
   fn can_tokenize_curly_close() {
@@ -533,13 +504,13 @@ mod tests {
 
   #[test]
   fn can_tokenize_open_block() {
-    let mut tokenizer = Tokenizer::new("{{#");
+    let mut tokenizer = Tokenizer::new("{#");
     assert_eq!(tokenizer.next(), Ok(Token::BlockOpen));
   }
 
   #[test]
   fn can_tokenize_close_block() {
-    let mut tokenizer = Tokenizer::new("{{/");
+    let mut tokenizer = Tokenizer::new("{/");
     assert_eq!(tokenizer.next(), Ok(Token::BlockClose));
   }
 

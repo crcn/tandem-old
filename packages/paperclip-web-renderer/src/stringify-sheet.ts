@@ -18,13 +18,13 @@ const stringifyCSSRule = rule => {
 const stringifyConditionRule = ({ name, condition_text, rules }) => {
   return `@${name} ${condition_text} {
     ${rules.map(stringifyStyleRule).join("\n")}
-  `;
+  }`;
 };
 
-const stringifyFontFaceRule = ({ name, condition_text, rules }) => {
-  return `@${name} ${condition_text} {
-    ${rules.map(stringifyStyleRule).join("\n")}
-  `;
+const stringifyFontFaceRule = ({ style }) => {
+  return `@font-face {
+    ${style.map(stringifyStyle).join("\n")}
+  }`;
 };
 
 const stringifyStyleRule = ({ selector_text, style }) => {

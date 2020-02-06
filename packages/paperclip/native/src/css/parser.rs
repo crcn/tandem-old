@@ -42,18 +42,31 @@ FWhere: Fn(Token) -> bool {
 fn parse_rules<'a, FWhere>(tokenizer: &mut Tokenizer<'a>, until: FWhere) -> Result<Vec<Rule>, ParseError> where
 FWhere: Fn(Token) -> bool {
   let mut rules = vec![];
-  tokenizer.eat_whitespace();
+  eat_superfluous(tokenizer);
   while !&tokenizer.is_eof() && until(tokenizer.peek(1)?) {
     rules.push(parse_rule(tokenizer)?);
-    tokenizer.eat_whitespace();
+    eat_superfluous(tokenizer);
   }
   Ok(rules)
 }
 
+fn eat_superfluous<'a>(tokenizer: &mut Tokenizer<'a>) {
+  while !tokenizer.is_eof() {
+    let tok = tokenizer.peek(1).unwrap();
+    if tok == Token::Whitespace {
+      tokenizer.next();
+    } else if tok == Token::ScriptCommentOpen {
+      eat_script_comments(tokenizer);
+    } else {
+      break;
+    }
+  }
+}
+
 fn parse_rule<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Rule, ParseError> {
-  tokenizer.eat_whitespace();
+  eat_superfluous(tokenizer);
   eat_script_comments(tokenizer)?;
-  tokenizer.eat_whitespace();
+  eat_superfluous(tokenizer);
   match tokenizer.peek(1)? {
     Token::At => {
       parse_at_rule(tokenizer)
@@ -79,18 +92,18 @@ fn parse_style_rule2<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<StyleRule, Par
 
 
 fn parse_declaration_body<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Vec<Declaration>, ParseError> {
-  tokenizer.eat_whitespace();
+  eat_superfluous(tokenizer);
   tokenizer.next_expect(Token::CurlyOpen)?; // eat {
   let declarations = parse_declarations(tokenizer)?;
   tokenizer.next_expect(Token::CurlyClose)?; // eat }
-  tokenizer.eat_whitespace();
+  eat_superfluous(tokenizer);
   Ok(declarations)
 }
 
 fn parse_at_rule<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Rule, ParseError> {
   tokenizer.next_expect(Token::At)?;
   let name = parse_selector_name(tokenizer)?;
-  tokenizer.eat_whitespace();
+  eat_superfluous(tokenizer);
   match name {
     "charset" => {
       let value = parse_string(tokenizer)?;
@@ -134,7 +147,7 @@ fn parse_condition_rule<'a>(name: String, tokenizer: &mut Tokenizer<'a>) -> Resu
   })?.to_string();
   
   tokenizer.next_expect(Token::CurlyOpen)?;
-  tokenizer.eat_whitespace();
+  eat_superfluous(tokenizer);
 
   let mut rules = vec![];
 
@@ -164,8 +177,7 @@ fn parse_keyframes_rule<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<KeyframesRu
   })?.to_string();
 
   let mut rules = vec![];
-
-  tokenizer.eat_whitespace();
+  eat_superfluous(tokenizer);
 
   while tokenizer.peek(1)? != Token::CurlyClose {
     rules.push(parse_keyframe_rule(tokenizer)?);
@@ -199,9 +211,9 @@ fn parse_selector<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Selector, ParseEr
 fn parse_group_selector<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Selector, ParseError> {
   let mut selectors: Vec<Selector> = vec![];
   loop {
-    tokenizer.eat_whitespace();
+    eat_superfluous(tokenizer);
     selectors.push(parse_pair_selector(tokenizer)?);
-    tokenizer.eat_whitespace();
+    eat_superfluous(tokenizer);
     if tokenizer.peek(1)? == Token::Comma {
       tokenizer.next()?; // eat ,
     } else {
@@ -220,12 +232,12 @@ fn parse_group_selector<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Selector, P
 // // parent > child
 fn parse_pair_selector<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Selector, ParseError> {
   let selector = parse_combo_selector(tokenizer)?;
-  tokenizer.eat_whitespace(); 
+  eat_superfluous(tokenizer);
   let delim = tokenizer.peek(1)?;
   match delim {
     Token::GreaterThan => {
       tokenizer.next()?; // eat >
-      tokenizer.eat_whitespace();
+      eat_superfluous(tokenizer);
       let child = parse_pair_selector(tokenizer)?;
       Ok(Selector::Child(ChildSelector {
         parent: Box::new(selector),
@@ -234,7 +246,7 @@ fn parse_pair_selector<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Selector, Pa
     }
     Token::Plus => {
       tokenizer.next()?; // eat +
-      tokenizer.eat_whitespace();
+      eat_superfluous(tokenizer);
       let sibling = parse_pair_selector(tokenizer)?;
       Ok(Selector::Adjacent(AdjacentSelector {
         selector: Box::new(selector),
@@ -244,7 +256,7 @@ fn parse_pair_selector<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Selector, Pa
     }
     Token::Squiggle => {
       tokenizer.next()?; // eat ~
-      tokenizer.eat_whitespace();
+      eat_superfluous(tokenizer);
       let sibling = parse_pair_selector(tokenizer)?;
       Ok(Selector::Sibling(SiblingSelector {
         selector: Box::new(selector),
@@ -256,10 +268,8 @@ fn parse_pair_selector<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Selector, Pa
     }
     _ => {
       // try parsing child
-
       let descendent_result = parse_pair_selector(tokenizer);
       if let Ok(descendent) = descendent_result {
-
         Ok(Selector::Descendent(DescendentSelector {
           parent: Box::new(selector),
           descendent: Box::new(descendent)
@@ -269,28 +279,6 @@ fn parse_pair_selector<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Selector, Pa
       }
     }
   }
-  // if delim == Token::GreaterThan {
-  //   tokenizer.next()?; // eat >
-  //   tokenizer.eat_whitespace();
-  //   let child = parse_pair_selector(tokenizer)?;
-  //   Ok(Selector::Child(ChildSelector {
-  //     parent: Box::new(parent),
-  //     child: Box::new(child)
-  //   }))
-  // } else if delim != Token::CurlyOpen {
-  //   let descendent_result = parse_combo_selector(tokenizer);
-  //   if let Ok(descendent) = descendent_result {
-
-  //     Ok(Selector::Descendent(DescendentSelector {
-  //       parent: Box::new(parent),
-  //       descendent: Box::new(descendent)
-  //     }))
-  //   } else {
-  //     Ok(parent)
-  //   }
-  // } else {
-  //   Ok(parent)
-  // }
 }
 
 
@@ -366,7 +354,8 @@ fn parse_psuedo_element_selector<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Se
   let selector: Selector = if tokenizer.peek(1)? == Token::ParenOpen {
     tokenizer.next()?;
     let selector = if name == "not" {
-      Selector::Not(Box::new(parse_pair_selector(tokenizer)?))
+      let sel = parse_pair_selector(tokenizer)?;
+      Selector::Not(Box::new(sel))
     } else {
       let param = get_buffer(tokenizer, |tokenizer| {
         Ok(tokenizer.peek(1)? != Token::ParenClose)
@@ -410,7 +399,7 @@ fn parse_string<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<&'a str, ParseError
   let buffer = get_buffer(tokenizer, |tokenizer| {
     Ok(tokenizer.peek(1)? != initial)
   });
-  tokenizer.next_expect(initial); // eat quote
+  tokenizer.next_expect(initial)?; // eat quote
   buffer
 }
 
@@ -431,14 +420,17 @@ fn parse_attribute_selector_value<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<&
 fn parse_selector_name<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<&'a str, ParseError> {
   get_buffer(tokenizer, |tokenizer| {
     let tok = tokenizer.peek(1)?;
-    // println!("{:?}", tok);
     Ok(match tok {
       Token::Whitespace | 
       Token::Comma | 
       Token::Colon | 
+      Token::ParenOpen | 
+      Token::ParenClose | 
+      Token::Dot | 
       Token::Hash | 
       Token::Squiggle | 
       Token::GreaterThan | 
+      Token::CurlyOpen | 
       Token::SquareOpen |
       Token::SquareClose => false,
       _ => true
@@ -450,7 +442,7 @@ fn parse_selector_name<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<&'a str, Par
 fn parse_declarations<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Vec<Declaration>, ParseError> {
   let mut declarations = vec![];
   while !tokenizer.is_eof() {
-    tokenizer.eat_whitespace();
+    eat_superfluous(tokenizer);
     if tokenizer.peek(1)? == Token::CurlyClose {
       break
     }
@@ -467,9 +459,15 @@ fn eat_script_comments<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<(), ParseErr
 fn parse_declaration<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Declaration, ParseError> {
   let name = get_buffer(tokenizer, |tokenizer| { Ok(tokenizer.peek(1)? != Token::Colon) })?.to_string();
   tokenizer.next()?; // eat :
-  tokenizer.eat_whitespace();
-  let value = get_buffer(tokenizer, |tokenizer| { Ok(tokenizer.peek(1)? != Token::Semicolon) })?.to_string();
-  tokenizer.next()?; // eat ;
+  eat_superfluous(tokenizer);
+  let value = get_buffer(tokenizer, |tokenizer| { 
+    let tok = tokenizer.peek(1)?;
+    Ok(tok != Token::Semicolon && tok != Token::CurlyClose) 
+  })?.to_string();
+  
+  if tokenizer.peek(1)? == Token::Semicolon {
+    tokenizer.next()?; // eat ;
+  }
   Ok(Declaration {
     name, 
     value
@@ -509,13 +507,19 @@ mod tests {
     :not(:after) {}
     :not(.a.b > c ~ d + e) {}
     :nth-child(1) {}
-    ::nth-last-child(1) {}
+    /**/
+    ::nth-last-child(1) { /**/ }
     :nth-last-of-type(1) {}
     :nth-last-of-type(div) {}
     :nth-of-type(div) {}
     :dir(div) {}
-    .c5a, .ca a:link, .ca a:visited { color:#5a5a5a; }
+    /*comment*/.c5a, .ca a:link, .ca a:visited { /**/color:#5a5a5a; } /**/
 
+    .c5a, .ca a:link, .ca a:visited { a: b; }
+    ._3LS4zudUBagjFS7HjWJYxo{margin:0 4px}
+    ._abcd{white-space:pre;word-break:normal;/**/padding:0 4px}
+    .md-spoiler-text:not([data-revealed])>*{opacity:0}
+    /*comment*/
     ";
 
     let result = parse(source).unwrap();
@@ -542,6 +546,7 @@ mod tests {
           color: red;
         }
       }
+      @media (max-width:640px){._3nRJIwLuth2pKYrXnr2jPN{width:360px } }
       @media print {
         div {
           color: red;
@@ -558,6 +563,8 @@ mod tests {
           display: flex;
         }
       }
+
+      @media ab {._a{a:b;}}
     ";
 
     let result = parse(source).unwrap();

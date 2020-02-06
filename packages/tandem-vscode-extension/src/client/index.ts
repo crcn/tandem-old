@@ -205,6 +205,12 @@ class LivePreview {
     return `<!DOCTYPE html>
     <html lang="en">
     <head>
+      <style>
+        html, body { 
+          margin: 0;
+          padding: 0;
+        }
+      </style>
     </head>
     <body>
       <script>

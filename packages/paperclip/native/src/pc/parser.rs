@@ -57,7 +57,7 @@ fn parse_node<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::Node, ParseEr
   tokenizer.eat_whitespace();
   let token = tokenizer.peek(1)?;
   match token {
-    Token::SlotOpen => { parse_slot(tokenizer) },
+    Token::CurlyOpen => { parse_slot(tokenizer) },
     Token::LessThan => { parse_element(tokenizer) },
     Token::HtmlCommentOpen => { 
       tokenizer.next()?; // eat HTML comment open
@@ -76,7 +76,7 @@ fn parse_node<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::Node, ParseEr
         value: get_buffer(tokenizer, |tokenizer| {
           let tok = tokenizer.peek(1)?;
           Ok(
-            tok != Token::SlotOpen && 
+            tok != Token::CurlyOpen && 
             tok != Token::LessThan && 
             tok != Token::CloseTag && 
             tok != Token::HtmlCommentOpen && 
@@ -95,12 +95,12 @@ fn parse_slot<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::Node, ParseEr
 }
 
 fn parse_slot_script<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<js_ast::Statement, ParseError> {
-  tokenizer.next_expect(Token::SlotOpen)?;
+  tokenizer.next_expect(Token::CurlyOpen)?;
   let script_result = parse_js_with_tokenizer(tokenizer, |token| {
-    token != Token::SlotClose
+    token != Token::CurlyClose
   });
   
-  tokenizer.next_expect(Token::SlotClose)?;
+  tokenizer.next_expect(Token::CurlyClose)?;
 
   script_result
 }
@@ -156,9 +156,6 @@ fn parse_next_basic_element_parts<'a>(tag_name: String, attributes: Vec<pc_ast::
   let pos = tokenizer.pos;
   match tokenizer.next()? {
     Token::SelfCloseTag => {
-      if is_void_tag_name(tag_name.as_str()) {
-        return Err(ParseError::unexpected_token(pos));
-      }
     },
     Token::GreaterThan => {
       if !is_void_tag_name(tag_name.as_str()) {
@@ -189,7 +186,7 @@ fn parse_next_basic_element_parts<'a>(tag_name: String, attributes: Vec<pc_ast::
 fn parse_block<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::Node, ParseError> {
   tokenizer.next_expect(Token::BlockOpen)?;
   let pos = tokenizer.pos;
-  let token = tokenizer.next()?; // eat {{# or {{/
+  let token = tokenizer.next()?; // eat {# or {/
   if let Token::Word(keyword) = token {
     match keyword {
       "if" => parse_if_block(tokenizer),
@@ -211,9 +208,9 @@ fn parse_if_block<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::Node, Par
 fn parse_pass_fail_block<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::ConditionalBlock, ParseError> {
   tokenizer.eat_whitespace();
   let condition = parse_js_with_tokenizer(tokenizer, |token| {
-    token != Token::SlotClose
+    token != Token::CurlyClose
   })?;
-  tokenizer.next_expect(Token::SlotClose)?;
+  tokenizer.next_expect(Token::CurlyClose)?;
   let node = parse_block_children(tokenizer)?;
   let fail = parse_else_block(tokenizer)?;
 
@@ -272,7 +269,7 @@ fn parse_else_block<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Option<Box<pc_a
                 Err(ParseError::unexpected_token(pos))
               }
             },
-            Token::SlotClose => {
+            Token::CurlyClose => {
               Ok(Some(Box::new(parse_final_condition_block(tokenizer)?)))
             }
             _ => {
@@ -285,7 +282,7 @@ fn parse_else_block<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Option<Box<pc_a
         }
       }
     },
-    Token::SlotClose => {
+    Token::CurlyClose => {
       Ok(None)
     },
     _ => {
@@ -297,7 +294,7 @@ fn parse_else_block<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Option<Box<pc_a
 fn parse_final_condition_block<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::ConditionalBlock, ParseError> {
   let node =  parse_block_children(tokenizer)?;
   tokenizer.next_expect(Token::BlockClose)?;
-  tokenizer.next_expect(Token::SlotClose)?;
+  tokenizer.next_expect(Token::CurlyClose)?;
   Ok(pc_ast::ConditionalBlock::FinalBlock(pc_ast::FinalBlock {
     node
   }))
@@ -341,7 +338,7 @@ fn parse_next_script_element_parts<'a>(attributes: Vec<pc_ast::Attribute>, token
 }
 
 fn parse_tag_name<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<String, ParseError> {
-  Ok(get_buffer(tokenizer, |tokenizer| { Ok(!matches!(tokenizer.peek(1)?, Token::Whitespace | Token::GreaterThan | Token::Equals)) })?.to_string())
+  Ok(get_buffer(tokenizer, |tokenizer| { Ok(!matches!(tokenizer.peek(1)?, Token::Whitespace | Token::GreaterThan | Token::Equals | Token::SelfCloseTag)) })?.to_string())
 }
 
 fn parse_attributes<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Vec<pc_ast::Attribute>, ParseError> {
@@ -362,7 +359,7 @@ fn parse_attributes<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Vec<pc_ast::Att
 }
 
 fn parse_attribute<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::Attribute, ParseError> {
-  if tokenizer.peek(1)? == Token::SlotOpen {
+  if tokenizer.peek(1)? == Token::CurlyOpen {
     parse_shorthand_attribute(tokenizer)
   } else {
     parse_key_value_attribute(tokenizer)
@@ -399,13 +396,13 @@ fn parse_attribute_value<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::At
   let pos = tokenizer.pos;
   match tokenizer.peek(1)? {
     Token::SingleQuote | Token::DoubleQuote => parse_string(tokenizer),
-    Token::SlotOpen => parse_attribute_slot(tokenizer),
+    Token::CurlyOpen => parse_attribute_slot(tokenizer),
     _ => Err(ParseError::unexpected_token(pos))
   }
 }
 
 fn parse_attribute_slot<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::AttributeValue, ParseError> {
-  tokenizer.next_expect(Token::SlotOpen)?;
+  tokenizer.next_expect(Token::CurlyClose)?;
   let script = parse_slot_script(tokenizer)?;
   Ok(pc_ast::AttributeValue::Slot(script))
 }
@@ -437,21 +434,27 @@ mod tests {
       <br>
       <import>
 
-      {{block}}
+      {block}
       
-      {{#if block}}
-      {{/}}
+      {#if block}
+      {/}
 
-      {{#if someting}}
+      {#if someting}
         something 
         <div />
-      {{/else if somethingElse}} 
+      {/else if somethingElse} 
         else if
-      {{/}}
+      {/}
 
-      {{#if something}}{{/else}}{{/}}
+      {#if something}{/else}{/}
 
-      {{#if something}}a{{/else if somethingelse}}b{{/else}}c{{/}}
+      {#if something}a{/else if somethingelse}b{/else}c{/}
+
+      <!-- historically broken stuff -->
+      <meta charSet=\"utf-8\" />\n   
+      <form action=\"/search/\" autoComplete=\"off\" method=\"get\" role=\"search\">
+        <input type=\"search\" id=\"header-search-bar\" name=\"q\" class=\"_2xQx4j6lBnDGQ8QsRnJEJa\" placeholder=\"Search\" value=\"\" />
+      </form>\n 
     ";
 
     parse(source).unwrap();
@@ -470,7 +473,7 @@ mod tests {
       "ab <!--cd-->",
 
       // slots
-      "{{ok}}",
+      "{ok}",
 
       // elements
       "<div></div>",
@@ -480,10 +483,10 @@ mod tests {
 
       "<div a=\"b\" c=\"d\">
         <span>
-          c {{block}} d {{block}}
+          c {block} d {block}
         </span>
         <span>
-          color {{block}}
+          color {block}
         </span>
       </div>",
 

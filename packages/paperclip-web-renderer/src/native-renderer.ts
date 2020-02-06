@@ -4,16 +4,19 @@ import { Html5Entities } from "html-entities";
 const entities = new Html5Entities();
 
 export const createNativeNode = node => {
-  // return document.createTextNode("OK");
-  switch (node.type) {
-    case "Text":
-      return createNativeTextNode(node);
-    case "Element":
-      return createNativeElement(node);
-    case "StyleElement":
-      return createNativeStyle(node);
-    case "Fragment":
-      return createNativeFragment(node);
+  try {
+    switch (node.type) {
+      case "Text":
+        return createNativeTextNode(node);
+      case "Element":
+        return createNativeElement(node);
+      case "StyleElement":
+        return createNativeStyle(node);
+      case "Fragment":
+        return createNativeFragment(node);
+    }
+  } catch (e) {
+    return document.createTextNode(String(e.stack));
   }
 };
 
@@ -22,6 +25,7 @@ const createNativeTextNode = node => {
 };
 const createNativeStyle = element => {
   // return document.createTextNode(JSON.stringify(element));
+  // return document.createTextNode(stringifyCSSSheet(element.sheet));
   const nativeElement = document.createElement("style");
   nativeElement.textContent = stringifyCSSSheet(element.sheet);
   return nativeElement;

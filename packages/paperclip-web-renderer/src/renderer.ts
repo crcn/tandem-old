@@ -18,7 +18,11 @@ export class Renderer {
           this.mount.removeChild(this.mount.childNodes[0]);
         }
         this._scopeFilePath = event.file_path;
-        this.mount.appendChild(createNativeNode(event.node));
+        const node = createNativeNode(event.node);
+        // this.mount.appendChild(document.createTextNode(Array.from(node.children).map(child => {
+        //   return child.outerHTML;
+        // }).join("")));
+        this.mount.appendChild(node);
       }
       case "Diffed": {
         // TODO
