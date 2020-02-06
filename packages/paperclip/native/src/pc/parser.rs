@@ -423,6 +423,42 @@ mod tests {
   use super::*;
 
   #[test]
+  fn can_smoke_parse_various_nodes() {
+
+    let source = "
+      text
+      <!-- comment -->
+      <element></element>
+      <self-closing-element />
+      <element with-attribute />
+      <element data-and-an-attribute=\"value\" />
+      
+      <!-- void tags -->
+      <br>
+      <import>
+
+      {{block}}
+      
+      {{#if block}}
+      {{/}}
+
+      {{#if someting}}
+        something 
+        <div />
+      {{/else if somethingElse}} 
+        else if
+      {{/}}
+
+      {{#if something}}{{/else}}{{/}}
+
+      {{#if something}}a{{/else if somethingelse}}b{{/else}}c{{/}}
+    ";
+
+    parse(source).unwrap();
+  }
+
+
+  #[test]
   fn can_parse_various_nodes() {
 
     let cases = [

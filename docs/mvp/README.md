@@ -4,6 +4,7 @@ Limitations:
 
 immediate TODO:
 
+- smoke test for pc
 - basic large test
 
 * diff/patch
