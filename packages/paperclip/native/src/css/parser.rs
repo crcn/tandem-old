@@ -431,10 +431,17 @@ fn parse_attribute_selector_value<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<&
 fn parse_selector_name<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<&'a str, ParseError> {
   get_buffer(tokenizer, |tokenizer| {
     let tok = tokenizer.peek(1)?;
+    // println!("{:?}", tok);
     Ok(match tok {
-      Token::Word(_) | Token::Minus => true,
-      Token::Byte(c) =>  c == b'_' || c == b'$',
-      _ => false
+      Token::Whitespace | 
+      Token::Comma | 
+      Token::Colon | 
+      Token::Hash | 
+      Token::Squiggle | 
+      Token::GreaterThan | 
+      Token::SquareOpen |
+      Token::SquareClose => false,
+      _ => true
     })
   })
 }
@@ -489,7 +496,7 @@ mod tests {
     a#id {}
     a[attr] {}
     a[attr][ab] {}
-    a, b, c, d {}
+    a5d, b, c, d {}
     a.b, c[d][e], [f], g, .h {}
     a > b {}
     a > b[attr] {}
@@ -507,6 +514,8 @@ mod tests {
     :nth-last-of-type(div) {}
     :nth-of-type(div) {}
     :dir(div) {}
+    .c5a, .ca a:link, .ca a:visited { color:#5a5a5a; }
+
     ";
 
     let result = parse(source).unwrap();

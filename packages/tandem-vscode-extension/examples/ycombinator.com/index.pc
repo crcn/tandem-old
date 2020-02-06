@@ -1,0 +1,777 @@
+<style>
+body  { font-family:Verdana, Geneva, sans-serif; font-size:10pt; color:#828282; }
+td    { font-family:Verdana, Geneva, sans-serif; font-size:10pt; color:#828282; }
+
+.admin td   { font-family:Verdana, Geneva, sans-serif; font-size:8.5pt; color:#000000; }
+.subtext td { font-family:Verdana, Geneva, sans-serif; font-size:  7pt; color:#828282; }
+
+input    { font-family:monospace; font-size:10pt; }
+input[type=\"submit\"] { font-family:Verdana, Geneva, sans-serif; }
+textarea { font-family:monospace; font-size:10pt; }
+
+a:link    { color:#000000; text-decoration:none; }
+a:visited { color:#828282; text-decoration:none; }
+
+.default { font-family:Verdana, Geneva, sans-serif; font-size: 10pt; color:#828282; }
+.admin   { font-family:Verdana, Geneva, sans-serif; font-size:8.5pt; color:#000000; }
+.title   { font-family:Verdana, Geneva, sans-serif; font-size: 10pt; color:#828282; }
+.subtext { font-family:Verdana, Geneva, sans-serif; font-size:  7pt; color:#828282; }
+.yclinks { font-family:Verdana, Geneva, sans-serif; font-size:  8pt; color:#828282; }
+.pagetop { font-family:Verdana, Geneva, sans-serif; font-size: 10pt; color:#222222; }
+.comhead { font-family:Verdana, Geneva, sans-serif; font-size:  8pt; color:#828282; }
+.comment { font-family:Verdana, Geneva, sans-serif; font-size:  9pt; }
+.hnname  { margin-right: 5px; }
+
+.comment a:link, .comment a:visited { text-decoration: underline; }
+.noshow { display: none; }
+.nosee { visibility: hidden; pointer-events: none; cursor: default }
+
+.c00, .c00 a:link { color:#000000; }
+.c5a, .c5a a:link, .c5a a:visited { color:#5a5a5a; }
+.c73, .c73 a:link, .c73 a:visited { color:#737373; }
+.c82, .c82 a:link, .c82 a:visited { color:#828282; }
+.c88, .c88 a:link, .c88 a:visited { color:#888888; }
+.c9c, .c9c a:link, .c9c a:visited { color:#9c9c9c; }
+.cae, .cae a:link, .cae a:visited { color:#aeaeae; }
+.cbe, .cbe a:link, .cbe a:visited { color:#bebebe; }
+.cce, .cce a:link, .cce a:visited { color:#cecece; }
+.cdd, .cdd a:link, .cdd a:visited { color:#dddddd; }
+
+.pagetop a:visited { color:#000000;}
+.topsel a:link, .topsel a:visited { color:#ffffff; }
+
+.subtext a:link, .subtext a:visited { color:#828282; }
+.subtext a:hover { text-decoration:underline; }
+
+.comhead a:link, .subtext a:visited { color:#828282; }
+.comhead a:hover { text-decoration:underline; }
+
+.hnmore a:link, a:visited { color:#828282; }
+.hnmore { text-decoration:underline; }
+
+.default p { margin-top: 8px; margin-bottom: 0px; }
+
+.pagebreak {page-break-before:always}
+
+pre { overflow: auto; padding: 2px; }
+pre:hover { overflow:auto }
+
+.votearrow {
+  width:      10px;
+  height:     10px;
+  border:     0px;
+  margin:     3px 2px 6px;
+  background: url("grayarrow.gif")
+  no-repeat;
+}
+
+.votelinks.nosee div.votearrow.rotate180 {
+  display: none;
+}
+
+@media only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (min-device-pixel-ratio: 2) {
+  .votearrow { background-size: 10px; background-image: url("grayarrow2x.gif"); }
+}
+
+.rotate180 {
+  -webkit-transform: rotate(180deg);  /* Chrome and other webkit browsers */
+  -moz-transform:    rotate(180deg);  /* FF */
+  -o-transform:      rotate(180deg);  /* Opera */
+  -ms-transform:     rotate(180deg);  /* IE9 */
+  transform:         rotate(180deg);  /* W3C complaint browsers */
+
+  /* IE8 and below */
+  -ms-filter: "progid:DXImageTransform.Microsoft.Matrix(M11=-1, M12=0, M21=0, M22=-1, DX=0, DY=0, SizingMethod='auto expand')";
+}
+
+/* mobile device */
+@media only screen
+and (min-width : 300px)
+and (max-width : 750px) {
+  #hnmain { width: 100%; }
+  body { padding: 0; margin: 0; width: 100%; -webkit-text-size-adjust: none; }
+  td { height: inherit !important; }
+  .title, .comment { font-size: inherit;  }
+  span.pagetop { display: block; margin: 3px 5px; font-size: 12px; }
+  span.pagetop b { display: block; font-size: 15px; }
+  table.comment-tree .comment a { display: inline-block; max-width: 200px; overflow: hidden; white-space: nowrap;
+    text-overflow: ellipsis; vertical-align:top; }
+  img[src='s.gif'][width='40'] { width: 12px; }
+  img[src='s.gif'][width='80'] { width: 24px; }
+  img[src='s.gif'][width='120'] { width: 36px; }
+  img[src='s.gif'][width='160'] { width: 48px; }
+  img[src='s.gif'][width='200'] { width: 60px; }
+  img[src='s.gif'][width='240'] { width: 72px; }
+  img[src='s.gif'][width='280'] { width: 84px; }
+  img[src='s.gif'][width='320'] { width: 96px; }
+  img[src='s.gif'][width='360'] { width: 108px; }
+  img[src='s.gif'][width='400'] { width: 120px; }
+  img[src='s.gif'][width='440'] { width: 132px; }
+  img[src='s.gif'][width='480'] { width: 144px; }
+  img[src='s.gif'][width='520'] { width: 156px; }
+  img[src='s.gif'][width='560'] { width: 168px; }
+  img[src='s.gif'][width='600'] { width: 180px; }
+  img[src='s.gif'][width='640'] { width: 192px; }
+  img[src='s.gif'][width='680'] { width: 204px; }
+  img[src='s.gif'][width='720'] { width: 216px; }
+  img[src='s.gif'][width='760'] { width: 228px; }
+  img[src='s.gif'][width='800'] { width: 240px; }
+  img[src='s.gif'][width='840'] { width: 252px; }
+  .title { font-size: 11pt; line-height: 14pt;  }
+  .subtext { font-size: 9pt; }
+  .itemlist { padding-right: 5px;}
+  .votearrow { transform: scale(1.3,1.3); margin-right: 6px; }
+  .votearrow.rotate180 {
+    -webkit-transform: rotate(180deg) scale(1.3,1.3);  /* Chrome and other webkit browsers */
+    -moz-transform:    rotate(180deg) scale(1.3,1.3);  /* FF */
+    -o-transform:      rotate(180deg) scale(1.3,1.3);  /* Opera */
+    -ms-transform:     rotate(180deg) scale(1.3,1.3);  /* IE9 */
+    transform:         rotate(180deg) scale(1.3,1.3);  /* W3C complaint browsers */
+  }
+  .votelinks { min-width: 18px; }
+  .votelinks a { display: block; margin-bottom: 9px; }
+  input[type='text'], input[type='number'], textarea { font-size: 16px; width: 90%; }
+}
+
+.comment { max-width: 1215px; overflow: hidden }
+pre { max-width: 900px; }
+
+@media only screen and (min-width : 300px) and (max-width : 389px) {
+  .comment { max-width: 270px; overflow: hidden }
+  pre { max-width: 200px; }
+}
+@media only screen and (min-width : 390px) and (max-width : 509px) {
+  .comment { max-width: 350px; overflow: hidden }
+  pre { max-width: 260px; }
+}
+@media only screen and (min-width : 510px) and (max-width : 599px) {
+  .comment { max-width: 460px; overflow: hidden }
+  pre { max-width: 340px; }
+}
+@media only screen and (min-width : 600px) and (max-width : 689px) {
+  .comment { max-width: 540px; overflow: hidden }
+  pre { max-width: 400px; }
+}
+@media only screen and (min-width : 690px) and (max-width : 809px) {
+  .comment { max-width: 620px; overflow: hidden }
+  pre { max-width: 460px; }
+}
+@media only screen and (min-width : 810px) and (max-width : 899px) {
+  .comment { max-width: 730px; overflow: hidden }
+  pre { max-width: 540px; }
+}
+@media only screen and (min-width : 900px) and (max-width : 1079px) {
+  .comment { max-width: 810px; overflow: hidden }
+  pre { max-width: 600px; }
+}
+@media only screen and (min-width : 1080px) and (max-width : 1169px) {
+  .comment { max-width: 970px; overflow: hidden }
+  pre { max-width: 720px; }
+}
+@media only screen and (min-width : 1170px) and (max-width : 1259px) {
+  .comment { max-width: 1050px; overflow: hidden }
+  pre { max-width: 780px; }
+}
+@media only screen and (min-width : 1260px) and (max-width : 1349px) {
+  .comment { max-width: 1130px; overflow: hidden }
+  pre { max-width: 840px; }
+}
+
+</style>
+<link rel="stylesheet" type="text/css" href="news.css?5Yopo2uwYsLAbgocbF3L">
+<center>
+    <table id="hnmain" border="0" cellpadding="0" cellspacing="0" width="85%" bgcolor="#f6f6ef">
+        <tr>
+            <td bgcolor="#ff6600">
+                <table border="0" cellpadding="0" cellspacing="0" width="100%" style="padding:2px">
+                    <tr>
+                        <td style="width:18px;padding-right:4px">
+                            <a href="https://news.ycombinator.com"><img src="y18.gif" width="18" height="18" style="border:1px white solid;"></a>
+                        </td>
+                        <td style="line-height:12pt; height:10px;"><span class="pagetop"><b class="hnname"><a href="news">Hacker News</a></b>
+              <a href="newest">new</a> | <a href="front">past</a> | <a href="newcomments">comments</a> | <a href="ask">ask</a> | <a href="show">show</a> | <a href="jobs">jobs</a> | <a href="submit">submit</a>            </span></td>
+                        <td style="text-align:right;padding-right:4px;"><span class="pagetop">
+                              <a href="login?goto=news">login</a>
+                          </span></td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr id="pagespace" title="" style="height:10px"></tr>
+        <tr>
+            <td>
+                <table border="0" cellpadding="0" cellspacing="0" class="itemlist">
+                    <tr class='athing' id='22247292'>
+                        <td align="right" valign="top" class="title"><span class="rank">1.</span></td>
+                        <td valign="top" class="votelinks">
+                            <center>
+                                <a id='up_22247292' href='vote?id=22247292&amp;how=up&amp;goto=news'>
+                                    <div class='votearrow' title='upvote'></div>
+                                </a>
+                            </center>
+                        </td>
+                        <td class="title"><a href="https://robertheaton.com/2020/02/05/wacom-drawing-tablets-track-name-of-every-application-you-open/" class="storylink">Wacom tracks every app you open</a><span class="sitebit comhead"> (<a href="from?site=robertheaton.com"><span class="sitestr">robertheaton.com</span></a>)</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"></td>
+                        <td class="subtext">
+                            <span class="score" id="score_22247292">962 points</span> by <a href="user?id=krithix" class="hnuser">krithix</a> <span class="age"><a href="item?id=22247292">8 hours ago</a></span> <span id="unv_22247292"></span> | <a href="hide?id=22247292&amp;goto=news">hide</a> | <a href="item?id=22247292">253&nbsp;comments</a> </td>
+                    </tr>
+                    <tr class="spacer" style="height:5px"></tr>
+                    <tr class='athing' id='22251079'>
+                        <td align="right" valign="top" class="title"><span class="rank">2.</span></td>
+                        <td valign="top" class="votelinks">
+                            <center>
+                                <a id='up_22251079' href='vote?id=22251079&amp;how=up&amp;goto=news'>
+                                    <div class='votearrow' title='upvote'></div>
+                                </a>
+                            </center>
+                        </td>
+                        <td class="title"><a href="https://www.nature.com/articles/d41586-020-00309-9" class="storylink">Nature will publish peer review reports as a trial</a><span class="sitebit comhead"> (<a href="from?site=nature.com"><span class="sitestr">nature.com</span></a>)</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"></td>
+                        <td class="subtext">
+                            <span class="score" id="score_22251079">86 points</span> by <a href="user?id=aaavl2821" class="hnuser">aaavl2821</a> <span class="age"><a href="item?id=22251079">2 hours ago</a></span> <span id="unv_22251079"></span> | <a href="hide?id=22251079&amp;goto=news">hide</a> | <a href="item?id=22251079">19&nbsp;comments</a> </td>
+                    </tr>
+                    <tr class="spacer" style="height:5px"></tr>
+                    <tr class='athing' id='22251259'>
+                        <td align="right" valign="top" class="title"><span class="rank">3.</span></td>
+                        <td valign="top" class="votelinks">
+                            <center>
+                                <a id='up_22251259' href='vote?id=22251259&amp;how=up&amp;goto=news'>
+                                    <div class='votearrow' title='upvote'></div>
+                                </a>
+                            </center>
+                        </td>
+                        <td class="title"><a href="https://www.zdnet.com/article/the-mysterious-disappearance-of-googles-click-metric/" class="storylink">The mysterious disappearance of Google's click metric</a><span class="sitebit comhead"> (<a href="from?site=zdnet.com"><span class="sitestr">zdnet.com</span></a>)</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"></td>
+                        <td class="subtext">
+                            <span class="score" id="score_22251259">62 points</span> by <a href="user?id=PolandKid" class="hnuser">PolandKid</a> <span class="age"><a href="item?id=22251259">1 hour ago</a></span> <span id="unv_22251259"></span> | <a href="hide?id=22251259&amp;goto=news">hide</a> | <a href="item?id=22251259">14&nbsp;comments</a> </td>
+                    </tr>
+                    <tr class="spacer" style="height:5px"></tr>
+                    <tr class='athing' id='22247301'>
+                        <td align="right" valign="top" class="title"><span class="rank">4.</span></td>
+                        <td valign="top" class="votelinks">
+                            <center>
+                                <a id='up_22247301' href='vote?id=22247301&amp;how=up&amp;goto=news'>
+                                    <div class='votearrow' title='upvote'></div>
+                                </a>
+                            </center>
+                        </td>
+                        <td class="title"><a href="https://brave.com/wp-content/uploads/2020/02/Surveillance-on-UK-council-websites_compressed_version.pdf" class="storylink">Surveillance on UK council websites [pdf]</a><span class="sitebit comhead"> (<a href="from?site=brave.com"><span class="sitestr">brave.com</span></a>)</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"></td>
+                        <td class="subtext">
+                            <span class="score" id="score_22247301">484 points</span> by <a href="user?id=pier25" class="hnuser">pier25</a> <span class="age"><a href="item?id=22247301">8 hours ago</a></span> <span id="unv_22247301"></span> | <a href="hide?id=22247301&amp;goto=news">hide</a> | <a href="item?id=22247301">125&nbsp;comments</a> </td>
+                    </tr>
+                    <tr class="spacer" style="height:5px"></tr>
+                    <tr class='athing' id='22233074'>
+                        <td align="right" valign="top" class="title"><span class="rank">5.</span></td>
+                        <td valign="top" class="votelinks">
+                            <center>
+                                <a id='up_22233074' href='vote?id=22233074&amp;how=up&amp;goto=news'>
+                                    <div class='votearrow' title='upvote'></div>
+                                </a>
+                            </center>
+                        </td>
+                        <td class="title"><a href="https://www.zdnet.com/article/twitter-says-an-attacker-used-its-api-to-match-usernames-to-phone-numbers/" class="storylink">Twitter says an attacker used its API to match usernames to phone numbers</a><span class="sitebit comhead"> (<a href="from?site=zdnet.com"><span class="sitestr">zdnet.com</span></a>)</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"></td>
+                        <td class="subtext">
+                            <span class="score" id="score_22233074">210 points</span> by <a href="user?id=spzx" class="hnuser">spzx</a> <span class="age"><a href="item?id=22233074">6 hours ago</a></span> <span id="unv_22233074"></span> | <a href="hide?id=22233074&amp;goto=news">hide</a> | <a href="item?id=22233074">153&nbsp;comments</a> </td>
+                    </tr>
+                    <tr class="spacer" style="height:5px"></tr>
+                    <tr class='athing' id='22250614'>
+                        <td align="right" valign="top" class="title"><span class="rank">6.</span></td>
+                        <td valign="top" class="votelinks">
+                            <center>
+                                <a id='up_22250614' href='vote?id=22250614&amp;how=up&amp;goto=news'>
+                                    <div class='votearrow' title='upvote'></div>
+                                </a>
+                            </center>
+                        </td>
+                        <td class="title"><a href="https://netflixtechblog.com/netflix-now-streaming-av1-on-android-d5264a515202" class="storylink">Netflix Now Streaming AV1 on Android</a><span class="sitebit comhead"> (<a href="from?site=netflixtechblog.com"><span class="sitestr">netflixtechblog.com</span></a>)</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"></td>
+                        <td class="subtext">
+                            <span class="score" id="score_22250614">87 points</span> by <a href="user?id=discreditable" class="hnuser">discreditable</a> <span class="age"><a href="item?id=22250614">3 hours ago</a></span> <span id="unv_22250614"></span> | <a href="hide?id=22250614&amp;goto=news">hide</a> | <a href="item?id=22250614">36&nbsp;comments</a> </td>
+                    </tr>
+                    <tr class="spacer" style="height:5px"></tr>
+                    <tr class='athing' id='22248325'>
+                        <td align="right" valign="top" class="title"><span class="rank">7.</span></td>
+                        <td valign="top" class="votelinks">
+                            <center>
+                                <a id='up_22248325' href='vote?id=22248325&amp;how=up&amp;goto=news'>
+                                    <div class='votearrow' title='upvote'></div>
+                                </a>
+                            </center>
+                        </td>
+                        <td class="title"><a href="https://alexpareto.com/scalability/systems/2020/02/03/scaling-100k.html" class="storylink">Scaling to 100k Users</a><span class="sitebit comhead"> (<a href="from?site=alexpareto.com"><span class="sitestr">alexpareto.com</span></a>)</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"></td>
+                        <td class="subtext">
+                            <span class="score" id="score_22248325">307 points</span> by <a href="user?id=sckwishy" class="hnuser">sckwishy</a> <span class="age"><a href="item?id=22248325">7 hours ago</a></span> <span id="unv_22248325"></span> | <a href="hide?id=22248325&amp;goto=news">hide</a> | <a href="item?id=22248325">90&nbsp;comments</a> </td>
+                    </tr>
+                    <tr class="spacer" style="height:5px"></tr>
+                    <tr class='athing' id='22251329'>
+                        <td align="right" valign="top" class="title"><span class="rank">8.</span></td>
+                        <td valign="top" class="votelinks">
+                            <center>
+                                <a id='up_22251329' href='vote?id=22251329&amp;how=up&amp;goto=news'>
+                                    <div class='votearrow' title='upvote'></div>
+                                </a>
+                            </center>
+                        </td>
+                        <td class="title"><a href="https://habr.com/en/post/486856/" class="storylink">0day vulnerability in firmware for HiSilicon-based DVRs, NVRs and IP cameras</a><span class="sitebit comhead"> (<a href="from?site=habr.com"><span class="sitestr">habr.com</span></a>)</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"></td>
+                        <td class="subtext">
+                            <span class="score" id="score_22251329">261 points</span> by <a href="user?id=mcsoft" class="hnuser">mcsoft</a> <span class="age"><a href="item?id=22251329">1 hour ago</a></span> <span id="unv_22251329"></span> | <a href="hide?id=22251329&amp;goto=news">hide</a> | <a href="item?id=22251329">68&nbsp;comments</a> </td>
+                    </tr>
+                    <tr class="spacer" style="height:5px"></tr>
+                    <tr class='athing' id='22250962'>
+                        <td align="right" valign="top" class="title"><span class="rank">9.</span></td>
+                        <td valign="top" class="votelinks">
+                            <center>
+                                <a id='up_22250962' href='vote?id=22250962&amp;how=up&amp;goto=news'>
+                                    <div class='votearrow' title='upvote'></div>
+                                </a>
+                            </center>
+                        </td>
+                        <td class="title"><a href="https://bail-app.netlify.com/" class="storylink">Show HN: Bail – Get out of your plans, guilt free</a><span class="sitebit comhead"> (<a href="from?site=bail-app.netlify.com"><span class="sitestr">bail-app.netlify.com</span></a>)</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"></td>
+                        <td class="subtext">
+                            <span class="score" id="score_22250962">62 points</span> by <a href="user?id=chris140957" class="hnuser">chris140957</a> <span class="age"><a href="item?id=22250962">2 hours ago</a></span> <span id="unv_22250962"></span> | <a href="hide?id=22250962&amp;goto=news">hide</a> | <a href="item?id=22250962">94&nbsp;comments</a> </td>
+                    </tr>
+                    <tr class="spacer" style="height:5px"></tr>
+                    <tr class='athing' id='22250733'>
+                        <td align="right" valign="top" class="title"><span class="rank">10.</span></td>
+                        <td valign="top" class="votelinks">
+                            <center>
+                                <a id='up_22250733' href='vote?id=22250733&amp;how=up&amp;goto=news'>
+                                    <div class='votearrow' title='upvote'></div>
+                                </a>
+                            </center>
+                        </td>
+                        <td class="title"><a href="https://www.bbc.com/news/health-51391151" class="storylink">More than a thousand scientists have built the most detailed picture of cancer</a><span class="sitebit comhead"> (<a href="from?site=bbc.com"><span class="sitestr">bbc.com</span></a>)</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"></td>
+                        <td class="subtext">
+                            <span class="score" id="score_22250733">59 points</span> by <a href="user?id=hhs" class="hnuser">hhs</a> <span class="age"><a href="item?id=22250733">3 hours ago</a></span> <span id="unv_22250733"></span> | <a href="hide?id=22250733&amp;goto=news">hide</a> | <a href="item?id=22250733">6&nbsp;comments</a> </td>
+                    </tr>
+                    <tr class="spacer" style="height:5px"></tr>
+                    <tr class='athing' id='22251876'>
+                        <td align="right" valign="top" class="title"><span class="rank">11.</span></td>
+                        <td valign="top" class="votelinks">
+                            <center>
+                                <a id='up_22251876' href='vote?id=22251876&amp;how=up&amp;goto=news'>
+                                    <div class='votearrow' title='upvote'></div>
+                                </a>
+                            </center>
+                        </td>
+                        <td class="title"><a href="https://mushino.com/" class="storylink">The world's first Bitcoin-settled index futures</a><span class="sitebit comhead"> (<a href="from?site=mushino.com"><span class="sitestr">mushino.com</span></a>)</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"></td>
+                        <td class="subtext">
+                            <span class="score" id="score_22251876">7 points</span> by <a href="user?id=andrew_m" class="hnuser">andrew_m</a> <span class="age"><a href="item?id=22251876">34 minutes ago</a></span> <span id="unv_22251876"></span> | <a href="hide?id=22251876&amp;goto=news">hide</a> | <a href="item?id=22251876">1&nbsp;comment</a> </td>
+                    </tr>
+                    <tr class="spacer" style="height:5px"></tr>
+                    <tr class='athing' id='22251852'>
+                        <td align="right" valign="top" class="title"><span class="rank">12.</span></td>
+                        <td valign="top" class="votelinks">
+                            <center>
+                                <a id='up_22251852' href='vote?id=22251852&amp;how=up&amp;goto=news'>
+                                    <div class='votearrow' title='upvote'></div>
+                                </a>
+                            </center>
+                        </td>
+                        <td class="title"><a href="https://www.reuters.com/article/us-usa-nuclear-pentagon/us-deploys-more-survivable-submarine-launched-low-yield-nuclear-weapon-idUSKBN1ZY2EQ" class="storylink" rel="nofollow">U.S. deploys 'more survivable' submarine-launched low-yield nuclear weapon</a><span class="sitebit comhead"> (<a href="from?site=reuters.com"><span class="sitestr">reuters.com</span></a>)</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"></td>
+                        <td class="subtext">
+                            <span class="score" id="score_22251852">5 points</span> by <a href="user?id=avonmach" class="hnuser">avonmach</a> <span class="age"><a href="item?id=22251852">38 minutes ago</a></span> <span id="unv_22251852"></span> | <a href="hide?id=22251852&amp;goto=news">hide</a> | <a href="item?id=22251852">1&nbsp;comment</a> </td>
+                    </tr>
+                    <tr class="spacer" style="height:5px"></tr>
+                    <tr class='athing' id='22250847'>
+                        <td align="right" valign="top" class="title"><span class="rank">13.</span></td>
+                        <td valign="top" class="votelinks">
+                            <center>
+                                <a id='up_22250847' href='vote?id=22250847&amp;how=up&amp;goto=news'>
+                                    <div class='votearrow' title='upvote'></div>
+                                </a>
+                            </center>
+                        </td>
+                        <td class="title"><a href="https://dougseven.com/2014/04/17/knightmare-a-devops-cautionary-tale/" class="storylink">Knightmare: A DevOps Cautionary Tale (2014)</a><span class="sitebit comhead"> (<a href="from?site=dougseven.com"><span class="sitestr">dougseven.com</span></a>)</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"></td>
+                        <td class="subtext">
+                            <span class="score" id="score_22250847">34 points</span> by <a href="user?id=redredhathat" class="hnuser">redredhathat</a> <span class="age"><a href="item?id=22250847">2 hours ago</a></span> <span id="unv_22250847"></span> | <a href="hide?id=22250847&amp;goto=news">hide</a> | <a href="item?id=22250847">13&nbsp;comments</a> </td>
+                    </tr>
+                    <tr class="spacer" style="height:5px"></tr>
+                    <tr class='athing' id='22251719'>
+                        <td align="right" valign="top" class="title"><span class="rank">14.</span></td>
+                        <td valign="top" class="votelinks">
+                            <center>
+                                <a id='up_22251719' href='vote?id=22251719&amp;how=up&amp;goto=news'>
+                                    <div class='votearrow' title='upvote'></div>
+                                </a>
+                            </center>
+                        </td>
+                        <td class="title"><a href="https://www.nhs.uk/news/food-and-diet/red-meat-and-processed-food-not-back-on-the-menu-according-to-new-review/" class="storylink">Red meat and processed food 'not back on the menu' according to new review</a><span class="sitebit comhead"> (<a href="from?site=nhs.uk"><span class="sitestr">nhs.uk</span></a>)</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"></td>
+                        <td class="subtext">
+                            <span class="score" id="score_22251719">20 points</span> by <a href="user?id=open-source-ux" class="hnuser">open-source-ux</a> <span class="age"><a href="item?id=22251719">1 hour ago</a></span> <span id="unv_22251719"></span> | <a href="hide?id=22251719&amp;goto=news">hide</a> | <a href="item?id=22251719">19&nbsp;comments</a> </td>
+                    </tr>
+                    <tr class="spacer" style="height:5px"></tr>
+                    <tr class='athing' id='22248456'>
+                        <td align="right" valign="top" class="title"><span class="rank">15.</span></td>
+                        <td valign="top" class="votelinks">
+                            <center>
+                                <a id='up_22248456' href='vote?id=22248456&amp;how=up&amp;goto=news'>
+                                    <div class='votearrow' title='upvote'></div>
+                                </a>
+                            </center>
+                        </td>
+                        <td class="title"><a href="https://coreos.com/os/eol/" class="storylink">End-of-Life Announcement for CoreOS Container Linux</a><span class="sitebit comhead"> (<a href="from?site=coreos.com"><span class="sitestr">coreos.com</span></a>)</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"></td>
+                        <td class="subtext">
+                            <span class="score" id="score_22248456">128 points</span> by <a href="user?id=thebeardisred" class="hnuser">thebeardisred</a> <span class="age"><a href="item?id=22248456">7 hours ago</a></span> <span id="unv_22248456"></span> | <a href="hide?id=22248456&amp;goto=news">hide</a> | <a href="item?id=22248456">52&nbsp;comments</a> </td>
+                    </tr>
+                    <tr class="spacer" style="height:5px"></tr>
+                    <tr class='athing' id='22249329'>
+                        <td align="right" valign="top" class="title"><span class="rank">16.</span></td>
+                        <td valign="top" class="votelinks">
+                            <center>
+                                <a id='up_22249329' href='vote?id=22249329&amp;how=up&amp;goto=news'>
+                                    <div class='votearrow' title='upvote'></div>
+                                </a>
+                            </center>
+                        </td>
+                        <td class="title"><a href="https://www.quantamagazine.org/the-grand-unified-theory-of-rogue-waves-20200205/" class="storylink">The Grand Unified Theory of Rogue Waves</a><span class="sitebit comhead"> (<a href="from?site=quantamagazine.org"><span class="sitestr">quantamagazine.org</span></a>)</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"></td>
+                        <td class="subtext">
+                            <span class="score" id="score_22249329">79 points</span> by <a href="user?id=theafh" class="hnuser">theafh</a> <span class="age"><a href="item?id=22249329">5 hours ago</a></span> <span id="unv_22249329"></span> | <a href="hide?id=22249329&amp;goto=news">hide</a> | <a href="item?id=22249329">23&nbsp;comments</a> </td>
+                    </tr>
+                    <tr class="spacer" style="height:5px"></tr>
+                    <tr class='athing' id='22250350'>
+                        <td align="right" valign="top" class="title"><span class="rank">17.</span></td>
+                        <td valign="top" class="votelinks">
+                            <center>
+                                <a id='up_22250350' href='vote?id=22250350&amp;how=up&amp;goto=news'>
+                                    <div class='votearrow' title='upvote'></div>
+                                </a>
+                            </center>
+                        </td>
+                        <td class="title"><a href="https://citylabs.net/products/" class="storylink">NanoTritium 20-Year Betavoltaic Battery</a><span class="sitebit comhead"> (<a href="from?site=citylabs.net"><span class="sitestr">citylabs.net</span></a>)</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"></td>
+                        <td class="subtext">
+                            <span class="score" id="score_22250350">81 points</span> by <a href="user?id=peter_d_sherman" class="hnuser">peter_d_sherman</a> <span class="age"><a href="item?id=22250350">4 hours ago</a></span> <span id="unv_22250350"></span> | <a href="hide?id=22250350&amp;goto=news">hide</a> | <a href="item?id=22250350">59&nbsp;comments</a> </td>
+                    </tr>
+                    <tr class="spacer" style="height:5px"></tr>
+                    <tr class='athing' id='22249759'>
+                        <td align="right" valign="top" class="title"><span class="rank">18.</span></td>
+                        <td valign="top" class="votelinks">
+                            <center>
+                                <a id='up_22249759' href='vote?id=22249759&amp;how=up&amp;goto=news'>
+                                    <div class='votearrow' title='upvote'></div>
+                                </a>
+                            </center>
+                        </td>
+                        <td class="title"><a href="https://www.nybooks.com/articles/2020/02/13/how-big-law-makes-big-money/" class="storylink">How ‘big law’ makes big money</a><span class="sitebit comhead"> (<a href="from?site=nybooks.com"><span class="sitestr">nybooks.com</span></a>)</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"></td>
+                        <td class="subtext">
+                            <span class="score" id="score_22249759">63 points</span> by <a href="user?id=prostoalex" class="hnuser">prostoalex</a> <span class="age"><a href="item?id=22249759">5 hours ago</a></span> <span id="unv_22249759"></span> | <a href="hide?id=22249759&amp;goto=news">hide</a> | <a href="item?id=22249759">34&nbsp;comments</a> </td>
+                    </tr>
+                    <tr class="spacer" style="height:5px"></tr>
+                    <tr class='athing' id='22248329'>
+                        <td align="right" valign="top" class="title"><span class="rank">19.</span></td>
+                        <td valign="top" class="votelinks">
+                            <center>
+                                <a id='up_22248329' href='vote?id=22248329&amp;how=up&amp;goto=news'>
+                                    <div class='votearrow' title='upvote'></div>
+                                </a>
+                            </center>
+                        </td>
+                        <td class="title"><a href="https://ai.facebook.com/blog/using-radioactive-data-to-detect-if-a-data-set-was-used-for-training/" class="storylink">Using ‘radioactive data’ to detect if a data set was used for training</a><span class="sitebit comhead"> (<a href="from?site=facebook.com"><span class="sitestr">facebook.com</span></a>)</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"></td>
+                        <td class="subtext">
+                            <span class="score" id="score_22248329">106 points</span> by <a href="user?id=olibaw" class="hnuser">olibaw</a> <span class="age"><a href="item?id=22248329">7 hours ago</a></span> <span id="unv_22248329"></span> | <a href="hide?id=22248329&amp;goto=news">hide</a> | <a href="item?id=22248329">15&nbsp;comments</a> </td>
+                    </tr>
+                    <tr class="spacer" style="height:5px"></tr>
+                    <tr class='athing' id='22249875'>
+                        <td align="right" valign="top" class="title"><span class="rank">20.</span></td>
+                        <td valign="top" class="votelinks">
+                            <center>
+                                <a id='up_22249875' href='vote?id=22249875&amp;how=up&amp;goto=news'>
+                                    <div class='votearrow' title='upvote'></div>
+                                </a>
+                            </center>
+                        </td>
+                        <td class="title"><a href="https://en.wikipedia.org/wiki/Bose%E2%80%93Einstein_condensate" class="storylink">Bose–Einstein Condensate</a><span class="sitebit comhead"> (<a href="from?site=wikipedia.org"><span class="sitestr">wikipedia.org</span></a>)</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"></td>
+                        <td class="subtext">
+                            <span class="score" id="score_22249875">43 points</span> by <a href="user?id=sarego" class="hnuser">sarego</a> <span class="age"><a href="item?id=22249875">4 hours ago</a></span> <span id="unv_22249875"></span> | <a href="hide?id=22249875&amp;goto=news">hide</a> | <a href="item?id=22249875">11&nbsp;comments</a> </td>
+                    </tr>
+                    <tr class="spacer" style="height:5px"></tr>
+                    <tr class='athing' id='22248239'>
+                        <td align="right" valign="top" class="title"><span class="rank">21.</span></td>
+                        <td valign="top" class="votelinks">
+                            <center>
+                                <a id='up_22248239' href='vote?id=22248239&amp;how=up&amp;goto=news'>
+                                    <div class='votearrow' title='upvote'></div>
+                                </a>
+                            </center>
+                        </td>
+                        <td class="title"><a href="http://algorithmicbotany.org/papers/abop/abop.pdf" class="storylink">The Algorithmic Beauty of Plants (1990) [pdf]</a><span class="sitebit comhead"> (<a href="from?site=algorithmicbotany.org"><span class="sitestr">algorithmicbotany.org</span></a>)</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"></td>
+                        <td class="subtext">
+                            <span class="score" id="score_22248239">74 points</span> by <a href="user?id=mpiedrav" class="hnuser">mpiedrav</a> <span class="age"><a href="item?id=22248239">6 hours ago</a></span> <span id="unv_22248239"></span> | <a href="hide?id=22248239&amp;goto=news">hide</a> | <a href="item?id=22248239">8&nbsp;comments</a> </td>
+                    </tr>
+                    <tr class="spacer" style="height:5px"></tr>
+                    <tr class='athing' id='22235355'>
+                        <td align="right" valign="top" class="title"><span class="rank">22.</span></td>
+                        <td valign="top" class="votelinks">
+                            <center>
+                                <a id='up_22235355' href='vote?id=22235355&amp;how=up&amp;goto=news'>
+                                    <div class='votearrow' title='upvote'></div>
+                                </a>
+                            </center>
+                        </td>
+                        <td class="title"><a href="https://vector.org.uk/the-doctor-and-the-doc/" class="storylink">The Doctor and the Doc</a><span class="sitebit comhead"> (<a href="from?site=vector.org.uk"><span class="sitestr">vector.org.uk</span></a>)</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"></td>
+                        <td class="subtext">
+                            <span class="score" id="score_22235355">11 points</span> by <a href="user?id=lelf" class="hnuser">lelf</a> <span class="age"><a href="item?id=22235355">3 hours ago</a></span> <span id="unv_22235355"></span> | <a href="hide?id=22235355&amp;goto=news">hide</a> | <a href="item?id=22235355">2&nbsp;comments</a> </td>
+                    </tr>
+                    <tr class="spacer" style="height:5px"></tr>
+                    <tr class='athing' id='22249843'>
+                        <td align="right" valign="top" class="title"><span class="rank">23.</span></td>
+                        <td valign="top" class="votelinks">
+                            <center>
+                                <a id='up_22249843' href='vote?id=22249843&amp;how=up&amp;goto=news'>
+                                    <div class='votearrow' title='upvote'></div>
+                                </a>
+                            </center>
+                        </td>
+                        <td class="title"><a href="https://en.wikipedia.org/wiki/Emu_War#The_%22War%22" class="storylink">The Emu War</a><span class="sitebit comhead"> (<a href="from?site=wikipedia.org"><span class="sitestr">wikipedia.org</span></a>)</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"></td>
+                        <td class="subtext">
+                            <span class="score" id="score_22249843">44 points</span> by <a href="user?id=areoform" class="hnuser">areoform</a> <span class="age"><a href="item?id=22249843">5 hours ago</a></span> <span id="unv_22249843"></span> | <a href="hide?id=22249843&amp;goto=news">hide</a> | <a href="item?id=22249843">15&nbsp;comments</a> </td>
+                    </tr>
+                    <tr class="spacer" style="height:5px"></tr>
+                    <tr class='athing' id='22246542'>
+                        <td align="right" valign="top" class="title"><span class="rank">24.</span></td>
+                        <td valign="top" class="votelinks">
+                            <center>
+                                <a id='up_22246542' href='vote?id=22246542&amp;how=up&amp;goto=news'>
+                                    <div class='votearrow' title='upvote'></div>
+                                </a>
+                            </center>
+                        </td>
+                        <td class="title"><a href="https://www.facebook.com/story.php?story_fbid=10156577899252143&amp;id=722677142" class="storylink">Sometimes, requiring explanability is counterproductive</a><span class="sitebit comhead"> (<a href="from?site=facebook.com"><span class="sitestr">facebook.com</span></a>)</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"></td>
+                        <td class="subtext">
+                            <span class="score" id="score_22246542">101 points</span> by <a href="user?id=metahost" class="hnuser">metahost</a> <span class="age"><a href="item?id=22246542">10 hours ago</a></span> <span id="unv_22246542"></span> | <a href="hide?id=22246542&amp;goto=news">hide</a> | <a href="item?id=22246542">61&nbsp;comments</a> </td>
+                    </tr>
+                    <tr class="spacer" style="height:5px"></tr>
+                    <tr class='athing' id='22246334'>
+                        <td align="right" valign="top" class="title"><span class="rank">25.</span></td>
+                        <td valign="top" class="votelinks">
+                            <center>
+                                <a id='up_22246334' href='vote?id=22246334&amp;how=up&amp;goto=news'>
+                                    <div class='votearrow' title='upvote'></div>
+                                </a>
+                            </center>
+                        </td>
+                        <td class="title"><a href="http://www.mlton.org/References.attachments/Shipman02.pdf" class="storylink">Unix System Programming with Standard ML (2001) [pdf]</a><span class="sitebit comhead"> (<a href="from?site=mlton.org"><span class="sitestr">mlton.org</span></a>)</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"></td>
+                        <td class="subtext">
+                            <span class="score" id="score_22246334">115 points</span> by <a href="user?id=vector_spaces" class="hnuser">vector_spaces</a> <span class="age"><a href="item?id=22246334">10 hours ago</a></span> <span id="unv_22246334"></span> | <a href="hide?id=22246334&amp;goto=news">hide</a> | <a href="item?id=22246334">36&nbsp;comments</a> </td>
+                    </tr>
+                    <tr class="spacer" style="height:5px"></tr>
+                    <tr class='athing' id='22242942'>
+                        <td align="right" valign="top" class="title"><span class="rank">26.</span></td>
+                        <td valign="top" class="votelinks">
+                            <center>
+                                <a id='up_22242942' href='vote?id=22242942&amp;how=up&amp;goto=news'>
+                                    <div class='votearrow' title='upvote'></div>
+                                </a>
+                            </center>
+                        </td>
+                        <td class="title"><a href="https://filmthreat.com/uncategorized/the-bootleg-files-trance-and-dance-in-bali/" class="storylink">The Bootleg Files: Dance and Trance in Bali (2014)</a><span class="sitebit comhead"> (<a href="from?site=filmthreat.com"><span class="sitestr">filmthreat.com</span></a>)</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"></td>
+                        <td class="subtext">
+                            <span class="score" id="score_22242942">6 points</span> by <a href="user?id=tintinnabula" class="hnuser">tintinnabula</a> <span class="age"><a href="item?id=22242942">1 hour ago</a></span> <span id="unv_22242942"></span> | <a href="hide?id=22242942&amp;goto=news">hide</a> | <a href="item?id=22242942">discuss</a> </td>
+                    </tr>
+                    <tr class="spacer" style="height:5px"></tr>
+                    <tr class='athing' id='22246732'>
+                        <td align="right" valign="top" class="title"><span class="rank">27.</span></td>
+                        <td valign="top" class="votelinks">
+                            <center>
+                                <a id='up_22246732' href='vote?id=22246732&amp;how=up&amp;goto=news'>
+                                    <div class='votearrow' title='upvote'></div>
+                                </a>
+                            </center>
+                        </td>
+                        <td class="title"><a href="https://yacy.net" class="storylink">YaCy: Decentralized Web Search</a><span class="sitebit comhead"> (<a href="from?site=yacy.net"><span class="sitestr">yacy.net</span></a>)</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"></td>
+                        <td class="subtext">
+                            <span class="score" id="score_22246732">108 points</span> by <a href="user?id=okasaki" class="hnuser">okasaki</a> <span class="age"><a href="item?id=22246732">9 hours ago</a></span> <span id="unv_22246732"></span> | <a href="hide?id=22246732&amp;goto=news">hide</a> | <a href="item?id=22246732">24&nbsp;comments</a> </td>
+                    </tr>
+                    <tr class="spacer" style="height:5px"></tr>
+                    <tr class='athing' id='22247499'>
+                        <td align="right" valign="top" class="title"><span class="rank">28.</span></td>
+                        <td valign="top" class="votelinks">
+                            <center>
+                                <a id='up_22247499' href='vote?id=22247499&amp;how=up&amp;goto=news'>
+                                    <div class='votearrow' title='upvote'></div>
+                                </a>
+                            </center>
+                        </td>
+                        <td class="title"><a href="https://github.com/twinkle-labs/twinkle-notes" class="storylink">Twinkle Notes: Cross-platform encrypted notes app</a><span class="sitebit comhead"> (<a href="from?site=github.com"><span class="sitestr">github.com</span></a>)</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"></td>
+                        <td class="subtext">
+                            <span class="score" id="score_22247499">84 points</span> by <a href="user?id=twknotes" class="hnuser">twknotes</a> <span class="age"><a href="item?id=22247499">8 hours ago</a></span> <span id="unv_22247499"></span> | <a href="hide?id=22247499&amp;goto=news">hide</a> | <a href="item?id=22247499">40&nbsp;comments</a> </td>
+                    </tr>
+                    <tr class="spacer" style="height:5px"></tr>
+                    <tr class='athing' id='22245409'>
+                        <td align="right" valign="top" class="title"><span class="rank">29.</span></td>
+                        <td valign="top" class="votelinks">
+                            <center>
+                                <a id='up_22245409' href='vote?id=22245409&amp;how=up&amp;goto=news'>
+                                    <div class='votearrow' title='upvote'></div>
+                                </a>
+                            </center>
+                        </td>
+                        <td class="title"><a href="https://github.com/aep/zz" class="storylink">ZZ is a modern formally provable dialect of C</a><span class="sitebit comhead"> (<a href="from?site=github.com"><span class="sitestr">github.com</span></a>)</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"></td>
+                        <td class="subtext">
+                            <span class="score" id="score_22245409">223 points</span> by <a href="user?id=the_duke" class="hnuser">the_duke</a> <span class="age"><a href="item?id=22245409">13 hours ago</a></span> <span id="unv_22245409"></span> | <a href="hide?id=22245409&amp;goto=news">hide</a> | <a href="item?id=22245409">137&nbsp;comments</a> </td>
+                    </tr>
+                    <tr class="spacer" style="height:5px"></tr>
+                    <tr class='athing' id='22250745'>
+                        <td align="right" valign="top" class="title"><span class="rank">30.</span></td>
+                        <td></td>
+                        <td class="title"><a href="item?id=22250745" class="storylink">Athelas (YC S16) is hiring fullstack engineers to help change health care</a></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"></td>
+                        <td class="subtext">
+                            <span class="age"><a href="item?id=22250745">3 hours ago</a></span> | <a href="hide?id=22250745&amp;goto=news">hide</a> </td>
+                    </tr>
+                    <tr class="spacer" style="height:5px"></tr>
+                    <tr class="morespace" style="height:10px"></tr>
+                    <tr>
+                        <td colspan="2"></td>
+                        <td class="title"><a href="news?p=2" class="morelink" rel="next">More</a></td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td><img src="s.gif" height="10" width="0">
+                <table width="100%" cellspacing="0" cellpadding="1">
+                    <tr>
+                        <td bgcolor="#ff6600"></td>
+                    </tr>
+                </table>
+                <br>
+                <center><a href="https://www.ycombinator.com/apply/">
+        Applications are open for YC Summer 2020
+      </a></center>
+                <br>
+                <center><span class="yclinks"><a href="newsguidelines.html">Guidelines</a>
+        | <a href="newsfaq.html">FAQ</a>
+        | <a href="mailto:hn@ycombinator.com">Support</a>
+        | <a href="https://github.com/HackerNews/API">API</a>
+        | <a href="security.html">Security</a>
+        | <a href="lists">Lists</a>
+        | <a href="bookmarklet.html" rel="nofollow">Bookmarklet</a>
+        | <a href="http://www.ycombinator.com/legal/">Legal</a>
+        | <a href="http://www.ycombinator.com/apply/">Apply to YC</a>
+        | <a href="mailto:hn@ycombinator.com">Contact</a></span>
+                    <br>
+                    <br>
+                    <form method="get" action="//hn.algolia.com/">Search:
+                        <input type="text" name="q" value="" size="17" autocorrect="off" spellcheck="false" autocapitalize="off" autocomplete="false">
+                    </form>
+                </center>
+            </td>
+        </tr>
+    </table>
+</center>
+<script type='text/javascript' src='hn.js?5Yopo2uwYsLAbgocbF3L'></script>
