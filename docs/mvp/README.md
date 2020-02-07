@@ -4,7 +4,6 @@ Limitations:
 
 immediate TODO:
 
-- Syntax highlighter
 - language server
 
   - Error highlighting

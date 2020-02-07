@@ -14,12 +14,7 @@
 
 <div class='button'>
   {children}
-</div>
-
-<div class="message">
-{#if something}
-  something happened 🔥
-{/else}
-  something else
-{/}
+  {#if alt}
+    🔥
+  {/}
 </div>

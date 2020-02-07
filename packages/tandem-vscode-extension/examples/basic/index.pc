@@ -7,11 +7,6 @@
   }
 </style>
 
-<button>
+<button alt>
   This is another test
 </button>
-
-
-{#if a}
-oaky
-{/}

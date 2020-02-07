@@ -4,13 +4,14 @@
 <!-- commment -->
 <meta {a} abcde={afsdfsfsdfs} cd="fg">
 
-<div b="d" style="color: red;">
+<div b="d" style="color: red;" value='single quote' onclick={doSomething}>
 
 </div>
 
 <style>
   div {
     color: red;
+    background: rgba(0,0,0,10);
   }
 </style>
 
@@ -35,7 +36,7 @@
 {/}
 
 
-{#each items as item}
+{#each /* comment */ items as item}
 
   empty -> 
   {}
