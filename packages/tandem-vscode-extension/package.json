@@ -30,14 +30,18 @@
         "extensions": [
           ".pc"
         ],
-        "configuration": "./language-configuration.json"
+        "configuration": "./languages/paperclip-html-language-configuration.json"
       }
     ],
     "grammars": [
       {
         "language": "paperclip",
-        "scopeName": "source.paperclip",
-        "path": "./syntaxes/paperclip.tmLanguage.json"
+        "scopeName": "text.html.paperclip-html",
+        "path": "./syntaxes/paperclip-html.tmLanguage.json",
+        "embeddedLanguages": {
+          "source.css": "css",
+          "source.js": "javascript"
+        }
       }
     ]
   },

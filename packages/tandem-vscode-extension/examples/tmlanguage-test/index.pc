@@ -1,0 +1,43 @@
+<div>
+</div>
+
+<!-- commment -->
+<meta {a} abcde={afsdfsfsdfs} cd="fg">
+
+<div b="d" style="color: red;">
+
+</div>
+
+<style>
+  div {
+    color: red;
+  }
+</style>
+
+{block}
+
+&quote;
+
+&amp; something
+
+{#if items}
+  <div>
+  </div>
+{/else if abcd}
+  {block}
+{/else if someting}
+  something like this
+{/else}
+  <div>
+    okay thi sis a test
+    "this should not be colorized"
+  </div>
+{/}
+
+
+{#each items as item}
+
+  empty -> 
+  {}
+  something
+{/}

@@ -14,7 +14,7 @@
       "patterns": [
         {
           "name": "keyword.control.paperclip",
-          "match": "\\b(if|while|for|return)\\b"
+          "match": "\\b(if|each)\\b"
         }
       ]
     },

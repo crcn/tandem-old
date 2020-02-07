@@ -1,0 +1,336 @@
+{
+  "repository": {
+    "entities": {
+      "patterns": [
+        {
+          "match": "(&)([^;]+?)(;)",
+          "captures": {
+            "3": {
+              "name": "punctuation.definition.entity.html"
+            },
+            "2": {
+              "name": "constant.character.entity.named.$2.html"
+            },
+            "1": {
+              "name": "punctuation.definition.entity.html"
+            }
+          }
+        }
+      ]
+    },
+    "attribute": {
+      "patterns": [
+        {
+          "end": "(?=\\s*+[^=\\s])",
+          "begin": "([^={]+)",
+          "beginCaptures": {
+            "1": {
+              "name": "entity.other.attribute-name.html"
+            }
+          },
+          "patterns": [
+            {
+              "include": "#attributes-interior"
+            }
+          ]
+        },
+        {
+          "include": "#slots"
+        }
+      ]
+    },
+    "slots": {
+      "patterns": [
+        {
+          "end": "(})",
+          "endCaptures": {
+            "1": {
+              "name": "punctuation"
+            }
+          },
+          "begin": "({(?!#|/))",
+          "beginCaptures": {
+            "1": {
+              "name": "punctuation"
+            }
+          },
+          "patterns": [
+            {
+              "include": "source.js"
+            }
+          ]
+        }
+      ]
+    },
+    "blocks": {
+      "patterns": [
+        {
+          "end": "(})",
+          "endCaptures": {
+            "1": {
+              "name": "punctuation"
+            }
+          },
+          "begin": "({\\#)",
+          "beginCaptures": {
+            "1": {
+              "name": "punctuation"
+            }
+          },
+          "patterns": [
+            {
+              "include": "#block-interior"
+            }
+          ]
+        },
+        {
+          "match": "({/})",
+          "name": "punctuation"
+        },
+        {
+          "end": "(})",
+          "endCaptures": {
+            "1": {
+              "name": "punctuation"
+            }
+          },
+          "begin": "(({/)(else)\\s)",
+          "beginCaptures": {
+            "3": {
+              "name": "keyword.control"
+            },
+            "2": {
+              "name": "punctuation"
+            }
+          },
+          "patterns": [
+            {
+              "include": "#block-interior"
+            }
+          ]
+        },
+        {
+          "match": "({/)(else)(})",
+          "name": "string.quoted.double",
+          "captures": {
+            "3": {
+              "name": "punctuation"
+            },
+            "2": {
+              "name": "keyword.control"
+            },
+            "1": {
+              "name": "punctuation"
+            }
+          }
+        }
+      ]
+    },
+    "comments": {
+      "patterns": [
+        {
+          "end": "(-->)",
+          "endCaptures": {
+            "1": {
+              "name": "punctuation.definition.comment.html"
+            }
+          },
+          "begin": "(<!--)",
+          "name": "comment.block.html",
+          "beginCaptures": {
+            "1": {
+              "name": "punctuation.definition.comment.html"
+            }
+          }
+        }
+      ]
+    },
+    "attributes-interior": {
+      "patterns": [
+        {
+          "end": "(?<=[^\\s=])(?!\\s*=)|(?=/?>)",
+          "begin": "(=)",
+          "beginCaptures": {
+            "1": {
+              "name": "punctuation.separator.key-value.html"
+            }
+          },
+          "patterns": [
+            {
+              "include": "#strings"
+            },
+            {
+              "include": "#slots"
+            }
+          ]
+        },
+        {
+          "include": "#slots"
+        }
+      ]
+    },
+    "block-interior": {
+      "patterns": [
+        {
+          "end": "(?=})",
+          "name": "punctuation.definition.comment.html",
+          "begin": "(if|each)",
+          "beginCaptures": {
+            "1": {
+              "name": "keyword.control"
+            }
+          },
+          "patterns": [
+            {
+              "include": "source.js"
+            }
+          ]
+        }
+      ]
+    },
+    "strings": {
+      "patterns": [
+        {
+          "end": "\"",
+          "name": "string.quoted.double",
+          "begin": "\""
+        },
+        {
+          "end": "'",
+          "name": "string.quoted.single",
+          "begin": "'"
+        }
+      ]
+    },
+    "nodes": {
+      "patterns": [
+        {
+          "include": "#elements"
+        },
+        {
+          "include": "#slots"
+        },
+        {
+          "include": "#blocks"
+        },
+        {
+          "include": "#comments"
+        },
+        {
+          "include": "#entities"
+        }
+      ]
+    },
+    "elements": {
+      "patterns": [
+        {
+          "match": "(<)(meta|import|input)([^>]*)(>)",
+          "captures": {
+            "4": {
+              "name": "punctuation.definition.tag.end.html"
+            },
+            "3": {
+              "patterns": [
+                {
+                  "include": "#attribute"
+                }
+              ]
+            },
+            "2": {
+              "name": "entity.name.tag.html"
+            },
+            "1": {
+              "name": "punctuation.definition.tag.begin.html"
+            }
+          }
+        },
+        {
+          "begin": "(<)(style)([^>]*)(>)",
+          "beginCaptures": {
+            "4": {
+              "name": "punctuation.definition.tag.end.html"
+            },
+            "3": {
+              "patterns": [
+                {
+                  "include": "#attribute"
+                }
+              ]
+            },
+            "2": {
+              "name": "entity.name.tag.html"
+            },
+            "1": {
+              "name": "punctuation.definition.tag.begin.html"
+            }
+          },
+          "patterns": [
+            {
+              "include": "source.css"
+            }
+          ],
+          "end": "(</)(style)(?:\\s*)(>)",
+          "endCaptures": {
+            "3": {
+              "name": "punctuation.definition.tag.end.html"
+            },
+            "2": {
+              "name": "entity.name.tag.html"
+            },
+            "1": {
+              "name": "punctuation.definition.tag.end.html"
+            }
+          },
+          "contentName": "source.css"
+        },
+        {
+          "end": "(</)(\\w+)(>)",
+          "endCaptures": {
+            "3": {
+              "name": "punctuation.definition.tag.end.html"
+            },
+            "2": {
+              "name": "entity.name.tag.html"
+            },
+            "1": {
+              "name": "punctuation.definition.tag.end.html"
+            }
+          },
+          "begin": "(<)([\\w\\-:]+)([^>]*)(>)",
+          "beginCaptures": {
+            "4": {
+              "name": "punctuation.definition.tag.end.html"
+            },
+            "3": {
+              "patterns": [
+                {
+                  "include": "#attribute"
+                }
+              ]
+            },
+            "2": {
+              "name": "entity.name.tag.html"
+            },
+            "1": {
+              "name": "punctuation.definition.tag.begin.html"
+            }
+          },
+          "patterns": [
+            {
+              "include": "#nodes"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "scopeName": "text.html.paperclip-html",
+  "patterns": [
+    {
+      "include": "#nodes"
+    }
+  ],
+  "fileTypes": [],
+  "name": "Paperclip Template",
+  "uuid": "3e3ce414-c385-42ea-a2ba-451a37ca6fd1"
+}

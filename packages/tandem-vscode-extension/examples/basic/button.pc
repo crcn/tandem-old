@@ -12,7 +12,7 @@
   }
 </style>
 
-<div class="button">
+<div class='button'>
   {children}
 </div>
 
