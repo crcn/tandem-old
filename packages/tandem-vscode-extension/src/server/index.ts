@@ -5,7 +5,9 @@ import {
   InitializeParams,
   InitializedParams,
   Connection,
-  TextDocumentSyncKind
+  TextDocumentSyncKind,
+  TextDocumentPositionParams,
+  CompletionParams
 } from "vscode-languageserver";
 
 import { TextDocument } from "vscode-languageserver-textdocument";
@@ -76,3 +78,7 @@ connection.onInitialized((params: InitializedParams) => {
 
 documents.listen(connection);
 connection.listen();
+
+connection.onCompletion((_textDocumentPosition: TextDocumentPositionParams) => {
+  return [];
+});

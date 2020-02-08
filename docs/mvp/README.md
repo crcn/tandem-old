@@ -27,7 +27,6 @@ immediate TODO:
 
 - language server
 
-  - move engine to server
   - Error handling
     - <import not found>
     - tips about how to fix
