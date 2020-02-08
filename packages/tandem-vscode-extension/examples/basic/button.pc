@@ -4,17 +4,19 @@
     display: inline-block;
     padding: 10px;
     border-radius: 4px;
-    background: grey;
+    background: orange;
+    font-size: 30px;
   }
-
   .message {
     margin: 10px;
   }
 </style>
 
 <div class='button'>
-  {children}
+  <span>{children}</span>
   {#if alt}
     🔥
+  {/else}
+    😭
   {/}
 </div>

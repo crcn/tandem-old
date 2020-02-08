@@ -6,6 +6,7 @@ import * as getPort from "get-port";
 const jasyon = require("jayson");
 
 const DRAIN_TIMEOUT = 30;
+const DRAIN_CALM_TIMEOUT = 1000;
 
 export type FileContent = {
   [identifier: string]: string;
@@ -53,6 +54,12 @@ export class Engine {
         console.error(`ERR: ${code}`);
       });
     }
+
+    this._process.once("close", () => {
+      console.warn(`PC Engine closed`);
+      this._process = undefined;
+      this.init(options);
+    });
 
     await new Promise(resolve => {
       this._process.stdout.once("data", data => {
@@ -107,6 +114,11 @@ export class Engine {
   _watch() {
     const drainEvents = () => {
       this._client.request("drain_events", [], (err, response) => {
+        if (err) {
+          console.warn(err);
+          return setTimeout(drainEvents, DRAIN_CALM_TIMEOUT);
+        }
+
         const events = JSON.parse(response.result);
         for (const event of events) {
           for (const listener of this._listeners) {

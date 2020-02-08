@@ -8,5 +8,5 @@
 </style>
 
 <button alt>
-  This is another test
+  this is a test
 </button>
