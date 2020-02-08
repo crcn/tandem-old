@@ -6,9 +6,15 @@ use crate::js::runtime::virt as js_virt;
 use serde::{Serialize};
 
 #[derive(Debug, PartialEq, Serialize)]
-pub struct Evaluated {
+pub struct EvaluatedEvent {
   pub file_path: String,
   pub node: Option<runtime::virt::Node>
+}
+
+#[derive(Debug, PartialEq, Serialize)]
+pub struct ParseErrorEvent {
+  pub file_path: String,
+  pub error: ParseError
 }
 
 // #[derive(Debug, PartialEq, Serialize)]
@@ -19,7 +25,8 @@ pub struct Evaluated {
 #[derive(Debug, PartialEq, Serialize)]
 #[serde(tag = "type")]
 pub enum EngineEvent {
-  Evaluated(Evaluated),
+  Evaluated(EvaluatedEvent),
+  ParseError(ParseErrorEvent)
   // Diffed(Diffed)
 }
 
@@ -58,9 +65,18 @@ impl Engine {
       dep.file_path.to_string()
     }).collect();
 
+
     for dep_file_path in dep_file_paths.drain(0..).into_iter() {
-      self.dependency_graph.load_dependency(&dep_file_path, &mut self.vfs).await?;
-      self.evaluate(&dep_file_path);
+      let load_result = self.dependency_graph.load_dependency(&dep_file_path, &mut self.vfs).await;
+      if let Err(error) = load_result {
+        self.events.push(EngineEvent::ParseError(ParseErrorEvent {
+          file_path: dep_file_path.to_string(),
+          error: error.clone(),
+        }));
+        return Err(error);
+      } else {
+        self.evaluate(&dep_file_path);
+      }
     }
 
     Ok(())
@@ -68,7 +84,7 @@ impl Engine {
 
   fn evaluate(&mut self, file_path: &String) -> Result<(), &'static str>  {
     let dependency = self.dependency_graph.dependencies.get(file_path).unwrap();
-    self.events.push(EngineEvent::Evaluated(Evaluated {
+    self.events.push(EngineEvent::Evaluated(EvaluatedEvent {
       file_path: file_path.clone(),
       node: runtime::evaluate(&dependency.expression, file_path, &self.dependency_graph, &js_virt::JsValue::JsObject(js_virt::JsObject::new()))?
     }));

@@ -1,7 +1,12 @@
 import { VirtualNode } from "./virt";
 
 export enum EngineEventType {
-  Evaluated = "Evaluated"
+  Evaluated = "Evaluated",
+  ParseError = "ParseError"
+}
+
+export enum ParseErrorKind {
+  EndOfFile = "EndOfFile"
 }
 
 type BaseEngineEvent<TType extends EngineEventType> = {
@@ -13,4 +18,15 @@ export type EvaluatedEvent = {
   node: VirtualNode;
 } & BaseEngineEvent<EngineEventType.Evaluated>;
 
-export type EngineEvent = EvaluatedEvent;
+export type ParseError = {
+  kind: ParseErrorKind;
+  message: String;
+  pos: number;
+};
+
+export type ParseErrorEvent = {
+  file_path: string;
+  error: ParseError;
+} & BaseEngineEvent<EngineEventType.ParseError>;
+
+export type EngineEvent = EvaluatedEvent | ParseErrorEvent;

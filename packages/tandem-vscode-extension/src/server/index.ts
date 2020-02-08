@@ -5,20 +5,27 @@ import {
   InitializeParams,
   InitializedParams,
   Connection,
+  Diagnostic,
   TextDocumentSyncKind,
   TextDocumentPositionParams,
-  CompletionParams
+  CompletionParams,
+  DiagnosticSeverity
 } from "vscode-languageserver";
 
 import { TextDocument } from "vscode-languageserver-textdocument";
-import { Engine, EngineEvent } from "paperclip";
+import {
+  Engine,
+  EngineEvent,
+  EngineEventType,
+  ParseErrorEvent
+} from "paperclip";
 import {
   NotificationType,
   LoadParams,
   UpdateVirtualFileContentsParams,
   EngineEventNotification
 } from "../common/notifications";
-import { TextDocumentChangeEvent } from "vscode";
+import { TextDocumentChangeEvent, workspace, Range } from "vscode";
 
 const connection = createConnection(ProposedFeatures.all);
 
@@ -41,10 +48,39 @@ const initEngine = async (
   documents: TextDocuments<TextDocument>
 ) => {
   const engine = new Engine();
+
+  const handleParseErrorEvent = ({
+    file_path: filePath,
+    error
+  }: ParseErrorEvent) => {
+    const textDocument = documents.get(`file://${filePath}`);
+
+    const diagnostics: Diagnostic[] = [
+      {
+        severity: DiagnosticSeverity.Error,
+        range: {
+          start: textDocument.positionAt(error.pos),
+          end: textDocument.positionAt(error.pos + 1)
+        },
+        message: `${error.message}`,
+        source: "ex"
+      }
+    ];
+
+    connection.sendDiagnostics({
+      uri: textDocument.uri,
+      diagnostics
+    });
+  };
+
   engine.onEvent((event: EngineEvent) => {
-    connection.sendNotification(
-      ...new EngineEventNotification(event).getArgs()
-    );
+    if (event.type == EngineEventType.ParseError) {
+      handleParseErrorEvent(event);
+    } else {
+      connection.sendNotification(
+        ...new EngineEventNotification(event).getArgs()
+      );
+    }
   });
   connection.onNotification(
     NotificationType.LOAD,
@@ -67,7 +103,6 @@ const initEngine = async (
 
   documents.onDidChangeContent(event => {
     const doc: TextDocument = event.document;
-    engine.load(doc.uri);
     engine.updateVirtualFileContent(doc.uri, doc.getText());
   });
 };

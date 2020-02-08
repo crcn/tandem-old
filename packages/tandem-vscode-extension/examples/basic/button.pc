@@ -7,8 +7,8 @@
     background: orange;
     font-size: 30px;
   }
-  .message {
-    margin: 10px;
+  span {
+    margin-right: 8px;
   }
 </style>
 

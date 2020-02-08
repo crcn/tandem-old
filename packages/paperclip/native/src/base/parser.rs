@@ -1,13 +1,14 @@
 use super::tokenizer::*;
+use serde::{Serialize};
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Serialize, Clone)]
 pub enum ParseErrorKind {
   EndOfFile,
   Unknown,
   Unexpected,
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Serialize, Clone)]
 pub struct ParseError {
   pub kind: ParseErrorKind,
   pub message: String,

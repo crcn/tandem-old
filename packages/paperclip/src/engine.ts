@@ -37,6 +37,7 @@ export class Engine {
     if (options.httpFilePath) {
       args.push(options.httpFilePath);
     }
+
     this._client = jasyon.client.tcp({
       port
     } as any);
@@ -87,6 +88,11 @@ export class Engine {
   async updateVirtualFileContent(filePath: string, content: string) {
     await this._loaded;
     this._client.request(
+      "load",
+      { file_path: stripFileProtocol(filePath) },
+      noop
+    );
+    this._client.request(
       "update_virtual_file_content",
       { file_path: stripFileProtocol(filePath), content },
       noop
@@ -116,7 +122,7 @@ export class Engine {
       this._client.request("drain_events", [], (err, response) => {
         if (err) {
           console.warn(err);
-          return setTimeout(drainEvents, DRAIN_CALM_TIMEOUT);
+          return;
         }
 
         const events = JSON.parse(response.result);

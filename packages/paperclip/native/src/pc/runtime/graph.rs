@@ -31,8 +31,13 @@ impl DependencyGraph {
 
   pub fn flatten_dependents<'a>(&'a self, entry_file_path: &String) -> Vec<&Dependency> {
     let mut deps = vec![];
-    let entry = self.dependencies.get(entry_file_path).unwrap();
-    deps.push(entry);
+    let entry_option = self.dependencies.get(entry_file_path);
+
+    if let None = entry_option {
+      return deps;
+    }
+
+    deps.push(entry_option.unwrap());
     for (dep_file_path, dep) in &self.dependencies {
       if dep.dependencies.values().any(|file_path| { &file_path == &entry_file_path }) {
         deps.extend(self.flatten_dependents(dep_file_path));
@@ -87,7 +92,6 @@ impl<'a> Dependency {
     let expression_result = parser::parse(source.as_str());
 
     if let Err(err) = expression_result {
-      println!("Err: {:?}", err);
       return Err(err);
     }
 
