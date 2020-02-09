@@ -46,16 +46,17 @@ impl Engine {
   }
   
   pub async fn load(&mut self, file_path: String) -> Result<(), ParseError> {
-    let result = self.dependency_graph.load_dependency(&file_path, &mut self.vfs).await;
-    match result {
-      Ok(_) => {
-        self.evaluate(&file_path);
-      }
-      Err(err) => {
-        return Err(err)
-      }
-    };
-    Ok(())
+    let load_result = self.dependency_graph.load_dependency(&file_path, &mut self.vfs).await;
+    if let Err(error) = load_result {
+      self.events.push(EngineEvent::ParseError(ParseErrorEvent {
+        file_path: file_path.to_string(),
+        error: error.clone(),
+      }));
+      Err(error)
+    } else {
+      self.evaluate(&file_path);
+      Ok(())
+    }
   }
 
   pub async fn update_virtual_file_content(&mut self, file_path: String, content: String) -> Result<(), ParseError> {
@@ -67,16 +68,17 @@ impl Engine {
 
 
     for dep_file_path in dep_file_paths.drain(0..).into_iter() {
-      let load_result = self.dependency_graph.load_dependency(&dep_file_path, &mut self.vfs).await;
-      if let Err(error) = load_result {
-        self.events.push(EngineEvent::ParseError(ParseErrorEvent {
-          file_path: dep_file_path.to_string(),
-          error: error.clone(),
-        }));
-        return Err(error);
-      } else {
-        self.evaluate(&dep_file_path);
-      }
+      self.load(dep_file_path);
+      // let load_result = self.dependency_graph.load_dependency(&dep_file_path, &mut self.vfs).await;
+      // if let Err(error) = load_result {
+      //   self.events.push(EngineEvent::ParseError(ParseErrorEvent {
+      //     file_path: dep_file_path.to_string(),
+      //     error: error.clone(),
+      //   }));
+      //   return Err(error);
+      // } else {
+      //   self.evaluate(&dep_file_path);
+      // }
     }
 
     Ok(())

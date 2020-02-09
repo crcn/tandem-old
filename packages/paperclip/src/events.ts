@@ -22,6 +22,7 @@ export type ParseError = {
   kind: ParseErrorKind;
   message: String;
   pos: number;
+  len: number;
 };
 
 export type ParseErrorEvent = {

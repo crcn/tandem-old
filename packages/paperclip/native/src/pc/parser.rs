@@ -106,6 +106,8 @@ fn parse_slot_script<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<js_ast::Statem
 }
 
 fn parse_element<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::Node, ParseError> {
+  let start = tokenizer.pos;
+
   tokenizer.next_expect(Token::LessThan)?;
   let tag_name = parse_tag_name(tokenizer)?;
   let attributes = parse_attributes(tokenizer)?;
@@ -115,7 +117,7 @@ fn parse_element<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::Node, Pars
   } else if tag_name == "script" {
     parse_next_script_element_parts(attributes, tokenizer)
   } else {
-    parse_next_basic_element_parts(tag_name, attributes, tokenizer)
+    parse_next_basic_element_parts(tag_name, attributes, tokenizer, start)
   }
 }
 
@@ -149,7 +151,7 @@ fn is_void_tag_name<'a>(tag_name: &'a str) -> bool {
   }
 }
 
-fn parse_next_basic_element_parts<'a>(tag_name: String, attributes: Vec<pc_ast::Attribute>, tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::Node, ParseError> {
+fn parse_next_basic_element_parts<'a>(tag_name: String, attributes: Vec<pc_ast::Attribute>, tokenizer: &mut Tokenizer<'a>, start: usize) -> Result<pc_ast::Node, ParseError> {
   let mut children: Vec<pc_ast::Node> = vec![];
 
   tokenizer.eat_whitespace();
@@ -165,9 +167,11 @@ fn parse_next_basic_element_parts<'a>(tag_name: String, attributes: Vec<pc_ast::
           tokenizer.eat_whitespace();
         }
 
-        tokenizer.next_expect(Token::CloseTag)?;
-        parse_tag_name(tokenizer)?;
-        tokenizer.next_expect(Token::GreaterThan)?;
+        tokenizer
+        .next_expect(Token::CloseTag)
+        .and(parse_tag_name(tokenizer))
+        .and(tokenizer.next_expect(Token::GreaterThan))
+        .or(Err(ParseError::incomplete("Tag isn't closed properly.".to_string(), start, pos - start + 1)))?;
       }
     },
     _ => {

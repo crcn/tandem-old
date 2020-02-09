@@ -60,7 +60,7 @@ const initEngine = async (
         severity: DiagnosticSeverity.Error,
         range: {
           start: textDocument.positionAt(error.pos),
-          end: textDocument.positionAt(error.pos + 1)
+          end: textDocument.positionAt(error.pos + error.len)
         },
         message: `${error.message}`,
         source: "ex"
@@ -74,6 +74,7 @@ const initEngine = async (
   };
 
   engine.onEvent((event: EngineEvent) => {
+    console.log(event);
     if (event.type == EngineEventType.ParseError) {
       handleParseErrorEvent(event);
     } else {
