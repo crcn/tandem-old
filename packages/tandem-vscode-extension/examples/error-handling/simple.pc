@@ -2,12 +2,11 @@
   div {
     color: red;
   }
-  span {
-    font-size: 20px;
-  }
 </style>
+
+<script>
+</script>
+
 <div>
-  <span>
-    color me this
-  </span>
+  Something like this should work
 </div>

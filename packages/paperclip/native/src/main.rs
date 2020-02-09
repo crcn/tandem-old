@@ -48,7 +48,7 @@ fn main() {
     let load_engine_mutex = engine_mutex.clone();
 	io.add_method("load", move |params: Params| {
         let parsed: LoadParams = params.parse().unwrap();
-        block_on(load_engine_mutex.lock().unwrap().load(parsed.file_path));
+        block_on(load_engine_mutex.lock().unwrap().load(&parsed.file_path));
 		Ok(Value::String("ok".into()))
     });
 
@@ -63,7 +63,7 @@ fn main() {
     let update_virtual_file_content_engine_mutex = engine_mutex.clone();
 	io.add_method("update_virtual_file_content", move |params: Params| {
         let parsed: UpdateVirtualFileContentParams = params.parse().unwrap();
-        block_on(update_virtual_file_content_engine_mutex.lock().unwrap().update_virtual_file_content(parsed.file_path, parsed.content));
+        block_on(update_virtual_file_content_engine_mutex.lock().unwrap().update_virtual_file_content(&parsed.file_path, &parsed.content));
 		Ok(Value::String("ok".into()))
     });
     

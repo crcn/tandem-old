@@ -37,9 +37,9 @@ impl DependencyGraph {
       return deps;
     }
 
-    deps.push(entry_option.unwrap());
     for (dep_file_path, dep) in &self.dependencies {
       if dep.dependencies.values().any(|file_path| { &file_path == &entry_file_path }) {
+        deps.push(dep);
         deps.extend(self.flatten_dependents(dep_file_path));
       }
     }

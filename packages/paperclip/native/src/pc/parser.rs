@@ -4,7 +4,6 @@ use super::ast as pc_ast;
 use crate::base::parser::{get_buffer, ParseError};
 use crate::js::parser::parse_with_tokenizer as parse_js_with_tokenizer;
 use crate::js::ast as js_ast;
-use std::cmp;
 use crate::base::tokenizer::{Token, Tokenizer};
 use crate::css::parser::parse_with_tokenizer as parse_css_with_tokenizer;
 
@@ -117,9 +116,9 @@ fn parse_element<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::Node, Pars
   let attributes = parse_attributes(tokenizer)?;
 
   if tag_name == "style" {
-    parse_next_style_element_parts(attributes, tokenizer)
+    parse_next_style_element_parts(attributes, tokenizer, start)
   } else if tag_name == "script" {
-    parse_next_script_element_parts(attributes, tokenizer)
+    parse_next_script_element_parts(attributes, tokenizer, start)
   } else {
     parse_next_basic_element_parts(tag_name, attributes, tokenizer, start)
   }
@@ -159,11 +158,14 @@ fn parse_next_basic_element_parts<'a>(tag_name: String, attributes: Vec<pc_ast::
   let mut children: Vec<pc_ast::Node> = vec![];
 
   tokenizer.eat_whitespace();
-  let pos = tokenizer.pos;
-  match tokenizer.next()? {
+  
+  match tokenizer.peek(1)? {
     Token::SelfCloseTag => {
+      tokenizer.next()?;
     },
     Token::GreaterThan => {
+      tokenizer.next()?;
+      let end = tokenizer.pos;
       if !is_void_tag_name(tag_name.as_str()) {
         tokenizer.eat_whitespace();
         while !tokenizer.is_eof() && tokenizer.peek(1)? != Token::CloseTag {
@@ -171,15 +173,11 @@ fn parse_next_basic_element_parts<'a>(tag_name: String, attributes: Vec<pc_ast::
           tokenizer.eat_whitespace();
         }
 
-        tokenizer
-        .next_expect(Token::CloseTag)
-        .and(parse_tag_name(tokenizer))
-        .and(tokenizer.next_expect(Token::GreaterThan))
-        .or(Err(ParseError::unterminated("Unterminated element.".to_string(), start, pos)))?;
+        parse_close_tag(&tag_name.as_str(), tokenizer, start, end)?;
       }
     },
     _ => {
-      return Err(ParseError::unexpected_token(pos))
+      return Err(ParseError::unexpected_token(tokenizer.pos))
     }
   }
 
@@ -244,7 +242,6 @@ fn parse_block_children<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Option<Box<
     tokenizer.eat_whitespace();
   }
 
-
   let node = if children.len() == 0 {
     None
   } else if children.len() == 1 {
@@ -308,17 +305,16 @@ fn parse_final_condition_block<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_a
   }))
 }
 
-fn parse_next_style_element_parts<'a>(attributes: Vec<pc_ast::Attribute>, tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::Node, ParseError> {
-  tokenizer.next()?; // eat >
+fn parse_next_style_element_parts<'a>(attributes: Vec<pc_ast::Attribute>, tokenizer: &mut Tokenizer<'a>, start: usize) -> Result<pc_ast::Node, ParseError> {
+  tokenizer.next_expect(Token::GreaterThan)?; // eat >
+  let end = tokenizer.pos;
 
   let sheet = parse_css_with_tokenizer(tokenizer, |token| {
     token != Token::CloseTag
   })?;
 
   // TODO - assert tokens equal these
-  tokenizer.next_expect(Token::CloseTag)?; // eat </
-  tokenizer.next_expect(Token::Word("style"))?; // eat style
-  tokenizer.next_expect(Token::GreaterThan)?; // eat >
+  parse_close_tag("style", tokenizer, start, end)?;
 
   Ok(pc_ast::Node::StyleElement(pc_ast::StyleElement {
     attributes,
@@ -326,17 +322,42 @@ fn parse_next_style_element_parts<'a>(attributes: Vec<pc_ast::Attribute>, tokeni
   }))
 }
 
-fn parse_next_script_element_parts<'a>(attributes: Vec<pc_ast::Attribute>, tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::Node, ParseError> {
-  tokenizer.next()?; // eat >
+fn parse_close_tag<'a, 'b>(tag_name: &'a str, tokenizer: &mut Tokenizer<'b>, start: usize, end: usize) -> Result<(), ParseError> {
+
+  let end_tag_name_start = tokenizer.pos;
+  
+  tokenizer
+  .next_expect(Token::CloseTag)
+  .or(Err(ParseError::unterminated("Unterminated element.".to_string(), start, end)))?;
+
+
+  parse_tag_name(tokenizer)
+  // TODO - assert tag name
+  .and_then(|end_tag_name| {
+    if tag_name != end_tag_name {
+      Err(ParseError::unterminated(format!("Incorrect closing tag. This should be </{}>.", tag_name), end_tag_name_start, tokenizer.pos))
+    } else {
+      Ok(())
+    }
+  })?;
+
+  tokenizer
+  .next_expect(Token::GreaterThan)
+  .or(Err(ParseError::unterminated("Unterminated element.".to_string(), start, end)))?;
+
+  Ok(())
+}
+
+fn parse_next_script_element_parts<'a>(attributes: Vec<pc_ast::Attribute>, tokenizer: &mut Tokenizer<'a>, start: usize) -> Result<pc_ast::Node, ParseError> {
+  tokenizer.next_expect(Token::GreaterThan)?; // eat >
+  let end = tokenizer.pos;
 
   get_buffer(tokenizer, |tokenizer| {
     Ok(tokenizer.peek(1)? != Token::CloseTag)
   })?;
 
-  // TODO - assert tokens equal these
-  tokenizer.next_expect(Token::CloseTag)?; // eat </
-  tokenizer.next_expect(Token::Word("script"))?; // eat style
-  tokenizer.next_expect(Token::GreaterThan)?; // eat >
+
+  parse_close_tag("script", tokenizer, start, end)?;
 
   Ok(pc_ast::Node::Element(pc_ast::Element {
     tag_name: "script".to_string(),
@@ -426,7 +447,7 @@ fn parse_string<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::AttributeVa
     tokenizer.next_expect(quote)?;
     Ok(value)
   })
-  .or(Err(ParseError::unterminated("Unterminated string literal.".to_string(), start, cmp::min(tokenizer.pos, start + 5))))
+  .or(Err(ParseError::unterminated("Unterminated string literal.".to_string(), start, tokenizer.pos)))
   .and_then(|value| {
     Ok(pc_ast::AttributeValue::String(pc_ast::AttributeStringValue { value: value.to_string() }))
   })
@@ -517,5 +538,40 @@ mod tests {
       let expr = parse(case).unwrap();
       assert_eq!(expr.to_string().replace("\n", "").replace(" ", ""), case.replace("\n", "").replace(" ", ""));
     }
+  }
+
+  /// 
+  /// Error handling
+  /// 
+
+  #[test]
+  fn displays_error_for_unterminated_element() {
+    assert_eq!(parse("<div>"), Err(ParseError::unterminated("Unterminated element.".to_string(), 0, 5)));
+  }
+
+  #[test]
+  fn displays_error_for_unterminated_style_element() {
+    assert_eq!(parse("<style>"), Err(ParseError::unterminated("Unterminated element.".to_string(), 0, 7)));
+  }
+
+  #[test]
+  fn displays_error_for_unterminated_script_element() {
+    assert_eq!(parse("<script>"), Err(ParseError::unterminated("Unterminated element.".to_string(), 0, 8)));
+  }
+
+
+  #[test]
+  fn displays_error_for_incorrect_close_tag() {
+    assert_eq!(parse("<style></script>"), Err(ParseError::unterminated("Incorrect closing tag. This should be </style>.".to_string(), 7, 15)));
+  }
+
+  #[test]
+  fn displays_error_for_unterminated_attribute_string() {
+    assert_eq!(parse("<div a=\"b>"), Err(ParseError::unterminated("Unterminated string literal.".to_string(), 7, 10)));
+  }
+
+  #[test]
+  fn displays_error_for_unterminated_slot() {
+    assert_eq!(parse("{ab"), Err(ParseError::unterminated("Unterminated slot.".to_string(), 0, 3)));
   }
 }

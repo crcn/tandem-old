@@ -20,12 +20,11 @@ import {
   ParseErrorEvent
 } from "paperclip";
 import {
-  NotificationType,
   LoadParams,
-  UpdateVirtualFileContentsParams,
-  EngineEventNotification
+  NotificationType,
+  EngineEventNotification,
+  UpdateVirtualFileContentsParams
 } from "../common/notifications";
-import { TextDocumentChangeEvent, workspace, Range } from "vscode";
 
 const connection = createConnection(ProposedFeatures.all);
 
@@ -74,7 +73,6 @@ const initEngine = async (
   };
 
   engine.onEvent((event: EngineEvent) => {
-    console.log(event);
     if (event.type == EngineEventType.ParseError) {
       handleParseErrorEvent(event);
     } else {
@@ -102,12 +100,6 @@ const initEngine = async (
     NotificationType.UNLOAD,
     ({ filePath }: LoadParams) => {
       engine.unload(filePath);
-    }
-  );
-  connection.onNotification(
-    NotificationType.UPDATE_VIRTUAL_FILE_CONTENTS,
-    ({ filePath, content }: UpdateVirtualFileContentsParams) => {
-      engine.updateVirtualFileContent(filePath, content);
     }
   );
 
