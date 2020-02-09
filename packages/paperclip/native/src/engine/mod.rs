@@ -17,17 +17,11 @@ pub struct ParseErrorEvent {
   pub error: ParseError
 }
 
-// #[derive(Debug, PartialEq, Serialize)]
-// pub struct Diffed {
-//   // TODO
-// }
-
 #[derive(Debug, PartialEq, Serialize)]
 #[serde(tag = "type")]
 pub enum EngineEvent {
   Evaluated(EvaluatedEvent),
   ParseError(ParseErrorEvent)
-  // Diffed(Diffed)
 }
 
 pub struct Engine {
@@ -69,16 +63,6 @@ impl Engine {
 
     for dep_file_path in dep_file_paths.drain(0..).into_iter() {
       self.load(dep_file_path);
-      // let load_result = self.dependency_graph.load_dependency(&dep_file_path, &mut self.vfs).await;
-      // if let Err(error) = load_result {
-      //   self.events.push(EngineEvent::ParseError(ParseErrorEvent {
-      //     file_path: dep_file_path.to_string(),
-      //     error: error.clone(),
-      //   }));
-      //   return Err(error);
-      // } else {
-      //   self.evaluate(&dep_file_path);
-      // }
     }
 
     Ok(())

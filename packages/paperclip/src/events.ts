@@ -21,8 +21,8 @@ export type EvaluatedEvent = {
 export type ParseError = {
   kind: ParseErrorKind;
   message: String;
-  pos: number;
-  len: number;
+  start: number;
+  end: number;
 };
 
 export type ParseErrorEvent = {

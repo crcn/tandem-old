@@ -59,8 +59,8 @@ const initEngine = async (
       {
         severity: DiagnosticSeverity.Error,
         range: {
-          start: textDocument.positionAt(error.pos),
-          end: textDocument.positionAt(error.pos + error.len)
+          start: textDocument.positionAt(error.start),
+          end: textDocument.positionAt(error.end)
         },
         message: `${error.message}`,
         source: "ex"
@@ -78,6 +78,15 @@ const initEngine = async (
     if (event.type == EngineEventType.ParseError) {
       handleParseErrorEvent(event);
     } else {
+      // reset diagnostics
+      if (event.type === EngineEventType.Evaluated) {
+        const textDocument = documents.get(`file://${event.file_path}`);
+        connection.sendDiagnostics({
+          uri: textDocument.uri,
+          diagnostics: []
+        });
+      }
+
       connection.sendNotification(
         ...new EngineEventNotification(event).getArgs()
       );

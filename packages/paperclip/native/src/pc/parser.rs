@@ -4,6 +4,7 @@ use super::ast as pc_ast;
 use crate::base::parser::{get_buffer, ParseError};
 use crate::js::parser::parse_with_tokenizer as parse_js_with_tokenizer;
 use crate::js::ast as js_ast;
+use std::cmp;
 use crate::base::tokenizer::{Token, Tokenizer};
 use crate::css::parser::parse_with_tokenizer as parse_css_with_tokenizer;
 
@@ -95,14 +96,16 @@ fn parse_slot<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::Node, ParseEr
 }
 
 fn parse_slot_script<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<js_ast::Statement, ParseError> {
+  let start = tokenizer.pos;
   tokenizer.next_expect(Token::CurlyOpen)?;
-  let script_result = parse_js_with_tokenizer(tokenizer, |token| {
+  parse_js_with_tokenizer(tokenizer, |token| {
     token != Token::CurlyClose
-  });
-  
-  tokenizer.next_expect(Token::CurlyClose)?;
-
-  script_result
+  })
+  .and_then(|script| {
+    tokenizer.next_expect(Token::CurlyClose)?;
+    Ok(script)
+  })
+  .or(Err(ParseError::unterminated("Unterminated slot.".to_string(), start, tokenizer.pos)))
 }
 
 fn parse_element<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::Node, ParseError> {
@@ -110,6 +113,7 @@ fn parse_element<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::Node, Pars
 
   tokenizer.next_expect(Token::LessThan)?;
   let tag_name = parse_tag_name(tokenizer)?;
+
   let attributes = parse_attributes(tokenizer)?;
 
   if tag_name == "style" {
@@ -171,7 +175,7 @@ fn parse_next_basic_element_parts<'a>(tag_name: String, attributes: Vec<pc_ast::
         .next_expect(Token::CloseTag)
         .and(parse_tag_name(tokenizer))
         .and(tokenizer.next_expect(Token::GreaterThan))
-        .or(Err(ParseError::incomplete("Tag isn't closed properly.".to_string(), start, pos - start + 1)))?;
+        .or(Err(ParseError::unterminated("Unterminated element.".to_string(), start, pos)))?;
       }
     },
     _ => {
@@ -325,7 +329,7 @@ fn parse_next_style_element_parts<'a>(attributes: Vec<pc_ast::Attribute>, tokeni
 fn parse_next_script_element_parts<'a>(attributes: Vec<pc_ast::Attribute>, tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::Node, ParseError> {
   tokenizer.next()?; // eat >
 
-  let content = get_buffer(tokenizer, |tokenizer| {
+  get_buffer(tokenizer, |tokenizer| {
     Ok(tokenizer.peek(1)? != Token::CloseTag)
   })?;
 
@@ -413,10 +417,19 @@ fn parse_attribute_slot<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::Att
 
 
 fn parse_string<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::AttributeValue, ParseError> {
+  let start = tokenizer.pos;
   let quote = tokenizer.next()?;
-  let value = get_buffer(tokenizer, |tokenizer| { Ok(tokenizer.peek(1)? != quote) })?.to_string();
-  tokenizer.next()?; // eat
-  Ok(pc_ast::AttributeValue::String(pc_ast::AttributeStringValue { value }))
+
+
+  get_buffer(tokenizer, |tokenizer| { Ok(tokenizer.peek(1)? != quote) })
+  .and_then(|value| {
+    tokenizer.next_expect(quote)?;
+    Ok(value)
+  })
+  .or(Err(ParseError::unterminated("Unterminated string literal.".to_string(), start, cmp::min(tokenizer.pos, start + 5))))
+  .and_then(|value| {
+    Ok(pc_ast::AttributeValue::String(pc_ast::AttributeStringValue { value: value.to_string() }))
+  })
 }
 
 #[cfg(test)]

@@ -6,31 +6,31 @@ pub enum ParseErrorKind {
   EndOfFile,
   Unknown,
   Unexpected,
-  Incomplete,
+  Unterminated,
 }
 
 #[derive(Debug, PartialEq, Serialize, Clone)]
 pub struct ParseError {
   pub kind: ParseErrorKind,
   pub message: String,
-  pub pos: usize,
-  pub len: usize
+  pub start: usize,
+  pub end: usize
 }
 
 impl ParseError {
-  pub fn new(kind: ParseErrorKind, message: String, pos: usize, len: usize) -> ParseError {
+  pub fn new(kind: ParseErrorKind, message: String, start: usize, end: usize) -> ParseError {
     ParseError {
       kind,
       message,
-      pos,
-      len
+      start,
+      end
     }
   }
-  pub fn unexpected_token(pos: usize) -> ParseError {
-    ParseError::new(ParseErrorKind::Unexpected, "Unexpected token".to_string(), pos, 1)
+  pub fn unexpected_token(start: usize) -> ParseError {
+    ParseError::new(ParseErrorKind::Unexpected, "Unexpected token".to_string(), start, start + 1)
   }
-  pub fn incomplete(message: String, pos: usize, len: usize) -> ParseError {
-    ParseError::new(ParseErrorKind::Incomplete, message, pos, len)
+  pub fn unterminated(message: String, start: usize, end: usize) -> ParseError {
+    ParseError::new(ParseErrorKind::Unterminated, message, start, end)
   }
   pub fn eof() -> ParseError {
     ParseError::new(ParseErrorKind::EndOfFile, "End of file".to_string(), 0, 1)
