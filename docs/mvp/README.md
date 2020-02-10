@@ -25,27 +25,29 @@ Limitations:
 
 immediate TODO:
 
-- language server
+- <import not found>
+- React compiler
+
+* language server
   - error linter
-    - <import not found>
-    - prohibit <script /> tags
     - prohibit function calls
   - warn linter (should have config so that user can turn on & off)
+    - prohibit <script /> tags
     - warn when CSS selector tag isn't used
     - warn if <property /> tag isn't present
   - DX enhancements
     - jump to definition
-- React compiler
-- web preview for non-vscode users
-- pretty terminal compiler output
+* web preview for non-vscode users
+* pretty terminal compiler output
+* DSL
 
-- Language enhancements
+* Language enhancements
 
   - Nestable
 
-- testing tools
+* testing tools
 
-* JS evaluator
+- JS evaluator
   - strings
   - numbers
   - arrays
@@ -58,31 +60,31 @@ immediate TODO:
     - -
     - %
   - elements
-* #each
+- #each
 
-- diff/patch
+* diff/patch
 
-* examples
+- examples
   - chat app
   - todo list
-* <logic /> element
-* optimizations
+- <logic /> element
+- optimizations
   - diff / patch
-* compilers
+- compilers
   - react
-* preview
+- preview
   - chrome-like inspector
   - ability to change colors
-* linter
+- linter
   - syntax errors
   - prevent bindings for imports
   - prevent bindings for logic
-* DSL
+- DSL
 
   - ability to import .json files into scope
   - ability to import .css files into scope
 
-*
+-
 
 Existing apps:
 

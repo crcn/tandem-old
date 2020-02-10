@@ -11,5 +11,5 @@
 </a>
 
 <div>
-  Something like that
+  Something like this
 </div>

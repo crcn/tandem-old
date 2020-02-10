@@ -16,6 +16,8 @@
   <span>{children}</span>
   {#if alt}
     🔥
+  {/else if pleedy}
+    🥺
   {/else}
     😭
   {/}

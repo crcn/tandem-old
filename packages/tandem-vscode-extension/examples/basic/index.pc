@@ -1,12 +1,12 @@
 <import id="button" src="./button.pc">
 
-
 <style>
   div {
-    color: red;
+    color: blue;
+    display: inline-block;
   }
 </style>
 
 <button alt>
-  some button
+  <div>some button</div>
 </button>
