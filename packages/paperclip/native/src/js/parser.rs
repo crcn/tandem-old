@@ -2,7 +2,7 @@ use crate::base::tokenizer::{Tokenizer, Token};
 use crate::base::parser::{ParseError};
 use super::ast;
 
-pub fn parse<'a>(source: &'a str) -> Result<ast::Statement, ParseError> {
+fn _parse<'a>(source: &'a str) -> Result<ast::Statement, ParseError> {
   let mut tokenizer = Tokenizer::new(source);
   parse_with_tokenizer(&mut tokenizer, |_token| { true })
 }

@@ -26,24 +26,15 @@ Limitations:
 immediate TODO:
 
 - language server
-
-  - Error handling
-    - <import not found>
-    - tips about how to fix
   - error linter
-
+    - <import not found>
     - prohibit <script /> tags
     - prohibit function calls
-
   - warn linter (should have config so that user can turn on & off)
     - warn when CSS selector tag isn't used
     - warn if <property /> tag isn't present
   - DX enhancements
-
-    - alt + click import for definition file
-
-  - jump to definition
-
+    - jump to definition
 - React compiler
 - web preview for non-vscode users
 - pretty terminal compiler output

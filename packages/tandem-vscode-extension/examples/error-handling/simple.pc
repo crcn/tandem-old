@@ -4,9 +4,12 @@
   }
 </style>
 
-<script>
-</script>
+<meta>
+
+<a href="#">
+  abcde
+</a>
 
 <div>
-  Something like this should work
+  Something like that
 </div>

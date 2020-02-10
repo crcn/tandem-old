@@ -7,23 +7,41 @@ use super::ast::*;
 use crate::base::parser::{get_buffer, ParseError};
 use crate::base::tokenizer::{Token, Tokenizer};
 
-fn parse<'a>(source: &'a str) -> Result<Sheet, ParseError> {
+type FUntil<'a> = for<'r> fn(&mut Tokenizer<'a>) -> Result<bool, ParseError>;
+
+pub struct Context<'a, 'b> {
+  tokenizer: &'b mut Tokenizer<'a>,
+  until: FUntil<'a>
+}
+
+impl<'a, 'b> Context<'a, 'b> {
+  pub fn ended(&mut self) -> Result<bool, ParseError> {
+    Ok(self.tokenizer.is_eof() || (self.until)(self.tokenizer)?)
+  }
+}
+
+fn _parse<'a>(source: &'a str) -> Result<Sheet, ParseError> {
   let mut tokenizer = Tokenizer::new(&source);
-  parse_with_tokenizer(&mut tokenizer, |_token| { true })
+  parse_with_tokenizer(&mut tokenizer, |_token| { Ok(false) })
 }
 
-pub fn parse_with_tokenizer<'a, FWhere>(tokenizer: &mut Tokenizer<'a>, until: FWhere) -> Result<Sheet, ParseError> where
-FWhere: Fn(Token) -> bool {
-  parse_sheet(tokenizer, until)
+pub fn parse_with_tokenizer<'a>(tokenizer: &mut Tokenizer<'a>, until: FUntil<'a>) -> Result<Sheet, ParseError> {
+
+  let mut context = Context {
+    tokenizer,
+    until
+  };
+
+  parse_sheet(&mut context)
 }
 
-fn eat_comments<'a>(tokenizer: &mut Tokenizer<'a>, start: Token, end: Token) -> Result<(), ParseError> {
-  if tokenizer.is_eof() || tokenizer.peek(1)? != start {
+fn eat_comments<'a, 'b>(context: &mut Context<'a, 'b>, start: Token, end: Token) -> Result<(), ParseError> {
+  if context.ended()? || context.tokenizer.peek(1)? != start {
     return Ok(())
   }
-  tokenizer.next()?; // eat <!--
-  while !tokenizer.is_eof()  {
-    let curr = tokenizer.next()?;
+  context.tokenizer.next()?; // eat <!--
+  while !context.tokenizer.is_eof() {
+    let curr = context.tokenizer.next()?;
     if curr == end {
       break;
     }
@@ -31,59 +49,56 @@ fn eat_comments<'a>(tokenizer: &mut Tokenizer<'a>, start: Token, end: Token) -> 
   Ok(())
 }
 
-fn parse_sheet<'a, FWhere>(tokenizer: &mut Tokenizer<'a>, until: FWhere) -> Result<Sheet, ParseError> where
-FWhere: Fn(Token) -> bool {
+fn parse_sheet<'a, 'b>(context: &mut Context<'a, 'b>) -> Result<Sheet, ParseError> {
   Ok(Sheet {
-    rules: parse_rules(tokenizer, until)?
+    rules: parse_rules(context)?
   })
 }
 
 
-fn parse_rules<'a, FWhere>(tokenizer: &mut Tokenizer<'a>, until: FWhere) -> Result<Vec<Rule>, ParseError> where
-FWhere: Fn(Token) -> bool {
+fn parse_rules<'a, 'b>(context: &mut Context<'a, 'b>) -> Result<Vec<Rule>, ParseError> {
   let mut rules = vec![];
-  eat_superfluous(tokenizer);
-  while !&tokenizer.is_eof() && until(tokenizer.peek(1)?) {
-    rules.push(parse_rule(tokenizer)?);
-    eat_superfluous(tokenizer);
+  eat_superfluous(context)?;
+  while !context.ended()? {
+    rules.push(parse_rule(context)?);
+    eat_superfluous(context)?;
   }
   Ok(rules)
 }
 
-fn eat_superfluous<'a>(tokenizer: &mut Tokenizer<'a>) {
-  while !tokenizer.is_eof() {
-    let tok = tokenizer.peek(1).unwrap();
+fn eat_superfluous<'a, 'b>(context: &mut Context<'a, 'b>) -> Result<(), ParseError> {
+  while !context.ended()? {
+    let tok = context.tokenizer.peek(1).unwrap();
     if tok == Token::Whitespace {
-      tokenizer.next();
+      context.tokenizer.next()?;
     } else if tok == Token::ScriptCommentOpen {
-      eat_script_comments(tokenizer);
+      eat_script_comments(context)?;
     } else {
       break;
     }
   }
+  Ok(())
 }
 
-fn parse_rule<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Rule, ParseError> {
-  eat_superfluous(tokenizer);
-  eat_script_comments(tokenizer)?;
-  eat_superfluous(tokenizer);
-  match tokenizer.peek(1)? {
+fn parse_rule<'a, 'b>(context: &mut Context<'a, 'b>) -> Result<Rule, ParseError> {
+  eat_superfluous(context)?;
+  match context.tokenizer.peek(1)? {
     Token::At => {
-      parse_at_rule(tokenizer)
+      parse_at_rule(context)
     }
     _ => {
-      parse_style_rule(tokenizer)
+      parse_style_rule(context)
     }
   }
 }
 
-fn parse_style_rule<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Rule, ParseError> {
-  Ok(Rule::Style(parse_style_rule2(tokenizer)?))
+fn parse_style_rule<'a, 'b>(context: &mut Context<'a, 'b>) -> Result<Rule, ParseError> {
+  Ok(Rule::Style(parse_style_rule2(context)?))
 }
 
-fn parse_style_rule2<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<StyleRule, ParseError> {
-  let selector = parse_selector(tokenizer)?;
-  let declarations = parse_declaration_body(tokenizer)?;
+fn parse_style_rule2<'a, 'b>(context: &mut Context<'a, 'b>) -> Result<StyleRule, ParseError> {
+  let selector = parse_selector(context)?;
+  let declarations = parse_declaration_body(context)?;
   Ok(StyleRule {
     selector,
     declarations,
@@ -91,70 +106,75 @@ fn parse_style_rule2<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<StyleRule, Par
 }
 
 
-fn parse_declaration_body<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Vec<Declaration>, ParseError> {
-  eat_superfluous(tokenizer);
-  tokenizer.next_expect(Token::CurlyOpen)?; // eat {
-  let declarations = parse_declarations(tokenizer)?;
-  tokenizer.next_expect(Token::CurlyClose)?; // eat }
-  eat_superfluous(tokenizer);
+fn parse_declaration_body<'a, 'b>(context: &mut Context<'a, 'b>) -> Result<Vec<Declaration>, ParseError> {
+  eat_superfluous(context)?;
+  let block_start = context.tokenizer.pos;
+  context.tokenizer.next_expect(Token::CurlyOpen)?; // eat {
+  let declarations = parse_declarations(context)?;
+  eat_superfluous(context)?;
+  context.tokenizer
+  .next_expect(Token::CurlyClose)
+  .or(Err(ParseError::unterminated("Unterminated bracket.".to_string(), block_start, context.tokenizer.pos)))?;
+
+  eat_superfluous(context)?;
   Ok(declarations)
 }
 
-fn parse_at_rule<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Rule, ParseError> {
-  tokenizer.next_expect(Token::At)?;
-  let name = parse_selector_name(tokenizer)?;
-  eat_superfluous(tokenizer);
+fn parse_at_rule<'a, 'b>(context: &mut Context<'a, 'b>) -> Result<Rule, ParseError> {
+  context.tokenizer.next_expect(Token::At)?;
+  let name = parse_selector_name(context)?;
+  eat_superfluous(context)?;
   match name {
     "charset" => {
-      let value = parse_string(tokenizer)?;
-      tokenizer.next_expect(Token::Semicolon)?;
+      let value = parse_string(context)?;
+      context.tokenizer.next_expect(Token::Semicolon)?;
       Ok(Rule::Charset(value.to_string()))
     },
     "namespace" => {
-      let value = get_buffer(tokenizer, |tokenizer| {
+      let value = get_buffer(context.tokenizer, |tokenizer| {
         Ok(tokenizer.peek(1)? != Token::Semicolon)
       })?;
-      tokenizer.next_expect(Token::Semicolon)?;
+      context.tokenizer.next_expect(Token::Semicolon)?;
       Ok(Rule::Namespace(value.to_string()))
     },
     "supports" => {
-      Ok(Rule::Supports(parse_condition_rule(name.to_string(), tokenizer)?))
+      Ok(Rule::Supports(parse_condition_rule(name.to_string(), context)?))
     },
     "media" => {
-      Ok(Rule::Media(parse_condition_rule(name.to_string(), tokenizer)?))
+      Ok(Rule::Media(parse_condition_rule(name.to_string(), context)?))
     },
     "keyframes" => {
-      Ok(Rule::Keyframes(parse_keyframes_rule(tokenizer)?))
+      Ok(Rule::Keyframes(parse_keyframes_rule(context)?))
     },
     "font-face" => {
-      Ok(Rule::FontFace(parse_font_face_rule(tokenizer)?))
+      Ok(Rule::FontFace(parse_font_face_rule(context)?))
     },
     "document" => {
-      Ok(Rule::Document(parse_condition_rule(name.to_string(), tokenizer)?))
+      Ok(Rule::Document(parse_condition_rule(name.to_string(), context)?))
     },
     "page" => {
-      Ok(Rule::Page(parse_condition_rule(name.to_string(), tokenizer)?))
+      Ok(Rule::Page(parse_condition_rule(name.to_string(), context)?))
     },
     _ => {
-      Err(ParseError::unexpected_token(tokenizer.pos))
+      Err(ParseError::unexpected_token(context.tokenizer.pos))
     }
   }
 }
 
-fn parse_condition_rule<'a>(name: String, tokenizer: &mut Tokenizer<'a>) -> Result<ConditionRule, ParseError> {
-  let condition_text = get_buffer(tokenizer, |tokenizer| {
+fn parse_condition_rule<'a, 'b>(name: String, context: &mut Context<'a, 'b>) -> Result<ConditionRule, ParseError> {
+  let condition_text = get_buffer(context.tokenizer, |tokenizer| {
     Ok(tokenizer.peek(1)? != Token::CurlyOpen)
   })?.to_string();
   
-  tokenizer.next_expect(Token::CurlyOpen)?;
-  eat_superfluous(tokenizer);
+  context.tokenizer.next_expect(Token::CurlyOpen)?;
+  eat_superfluous(context)?;
 
   let mut rules = vec![];
 
-  while tokenizer.peek(1)? != Token::CurlyClose {
-    rules.push(parse_style_rule2(tokenizer)?);
+  while context.tokenizer.peek(1)? != Token::CurlyClose {
+    rules.push(parse_style_rule2(context)?);
   }
-  tokenizer.next_expect(Token::CurlyClose)?;
+  context.tokenizer.next_expect(Token::CurlyClose)?;
 
   Ok(ConditionRule {
     name,
@@ -163,27 +183,26 @@ fn parse_condition_rule<'a>(name: String, tokenizer: &mut Tokenizer<'a>) -> Resu
   })
 }
 
-fn parse_font_face_rule<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<FontFaceRule, ParseError> {
+fn parse_font_face_rule<'a, 'b>(context: &mut Context<'a, 'b>) -> Result<FontFaceRule, ParseError> {
   
   Ok(FontFaceRule {
-    declarations: parse_declaration_body(tokenizer)?
+    declarations: parse_declaration_body(context)?
   })
 }
 
 
-fn parse_keyframes_rule<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<KeyframesRule, ParseError> {
-  let name = get_buffer(tokenizer, |tokenizer| {
-    Ok(tokenizer.peek(1)? != Token::CurlyOpen)
-  })?.to_string();
-
+fn parse_keyframes_rule<'a, 'b>(context: &mut Context<'a, 'b>) -> Result<KeyframesRule, ParseError> {
+  let name = parse_selector_name(context)?.to_string();
+  
   let mut rules = vec![];
-  eat_superfluous(tokenizer);
+  eat_superfluous(context)?;
+  context.tokenizer.next_expect(Token::CurlyOpen)?;
 
-  while tokenizer.peek(1)? != Token::CurlyClose {
-    rules.push(parse_keyframe_rule(tokenizer)?);
+  while context.tokenizer.peek(1)? != Token::CurlyClose {
+    rules.push(parse_keyframe_rule(context)?);
   }
 
-  tokenizer.next_expect(Token::CurlyClose)?;
+  context.tokenizer.next_expect(Token::CurlyClose)?;
 
   Ok(KeyframesRule {
     name,
@@ -191,31 +210,28 @@ fn parse_keyframes_rule<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<KeyframesRu
   })
 }
 
-fn parse_keyframe_rule<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<KeyframeRule, ParseError> {
-  let key = get_buffer(tokenizer, |tokenizer| {
-    Ok(tokenizer.peek(1)? != Token::CurlyOpen)
-  })?.to_string();
-
-
+fn parse_keyframe_rule<'a, 'b>(context: &mut Context<'a, 'b>) -> Result<KeyframeRule, ParseError> {
+  let key = parse_selector_name(context)?.to_string();
+  
   Ok(KeyframeRule {
     key,
-    declarations: parse_declaration_body(tokenizer)?
+    declarations: parse_declaration_body(context)?
   })
 }
 
-fn parse_selector<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Selector, ParseError> {
-  parse_group_selector(tokenizer)
+fn parse_selector<'a, 'b>(context: &mut Context<'a, 'b>) -> Result<Selector, ParseError> {
+  parse_group_selector(context)
 }
 
 // select, select, select
-fn parse_group_selector<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Selector, ParseError> {
+fn parse_group_selector<'a, 'b>(context: &mut Context<'a, 'b>) -> Result<Selector, ParseError> {
   let mut selectors: Vec<Selector> = vec![];
   loop {
-    eat_superfluous(tokenizer);
-    selectors.push(parse_pair_selector(tokenizer)?);
-    eat_superfluous(tokenizer);
-    if tokenizer.peek(1)? == Token::Comma {
-      tokenizer.next()?; // eat ,
+    eat_superfluous(context)?;
+    selectors.push(parse_pair_selector(context)?);
+    eat_superfluous(context)?;
+    if context.tokenizer.peek(1)? == Token::Comma {
+      context.tokenizer.next()?; // eat ,
     } else {
       break;
     }
@@ -230,24 +246,24 @@ fn parse_group_selector<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Selector, P
 }
 
 // // parent > child
-fn parse_pair_selector<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Selector, ParseError> {
-  let selector = parse_combo_selector(tokenizer)?;
-  eat_superfluous(tokenizer);
-  let delim = tokenizer.peek(1)?;
+fn parse_pair_selector<'a, 'b>(context: &mut Context<'a, 'b>) -> Result<Selector, ParseError> {
+  let selector = parse_combo_selector(context)?;
+  eat_superfluous(context)?;
+  let delim = context.tokenizer.peek(1)?;
   match delim {
     Token::GreaterThan => {
-      tokenizer.next()?; // eat >
-      eat_superfluous(tokenizer);
-      let child = parse_pair_selector(tokenizer)?;
+      context.tokenizer.next()?; // eat >
+      eat_superfluous(context)?;
+      let child = parse_pair_selector(context)?;
       Ok(Selector::Child(ChildSelector {
         parent: Box::new(selector),
         child: Box::new(child)
       }))
     }
     Token::Plus => {
-      tokenizer.next()?; // eat +
-      eat_superfluous(tokenizer);
-      let sibling = parse_pair_selector(tokenizer)?;
+      context.tokenizer.next()?; // eat +
+      eat_superfluous(context)?;
+      let sibling = parse_pair_selector(context)?;
       Ok(Selector::Adjacent(AdjacentSelector {
         selector: Box::new(selector),
         next_sibling_selector: Box::new(sibling)
@@ -255,9 +271,9 @@ fn parse_pair_selector<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Selector, Pa
 
     }
     Token::Squiggle => {
-      tokenizer.next()?; // eat ~
-      eat_superfluous(tokenizer);
-      let sibling = parse_pair_selector(tokenizer)?;
+      context.tokenizer.next()?; // eat ~
+      eat_superfluous(context)?;
+      let sibling = parse_pair_selector(context)?;
       Ok(Selector::Sibling(SiblingSelector {
         selector: Box::new(selector),
         sibling_selector: Box::new(sibling)
@@ -268,7 +284,7 @@ fn parse_pair_selector<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Selector, Pa
     }
     _ => {
       // try parsing child
-      let descendent_result = parse_pair_selector(tokenizer);
+      let descendent_result = parse_pair_selector(context);
       if let Ok(descendent) = descendent_result {
         Ok(Selector::Descendent(DescendentSelector {
           parent: Box::new(selector),
@@ -283,11 +299,11 @@ fn parse_pair_selector<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Selector, Pa
 
 
 // div.combo[attr][another]
-fn parse_combo_selector<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Selector, ParseError> {
-  let pos = tokenizer.pos;
+fn parse_combo_selector<'a, 'b>(context: &mut Context<'a, 'b>) -> Result<Selector, ParseError> {
+  let pos = context.tokenizer.pos;
   let mut selectors = vec![];
   loop {
-    let result = parse_element_selector(tokenizer);
+    let result = parse_element_selector(context);
     if let Ok(child_selector) = result {
       selectors.push(child_selector);
     } else {
@@ -307,36 +323,36 @@ fn parse_combo_selector<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Selector, P
   }
 }
 
-fn parse_element_selector<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Selector, ParseError> {
-  let pos = tokenizer.pos;
-  let token = tokenizer.peek(1)?;
+fn parse_element_selector<'a, 'b>(context: &mut Context<'a, 'b>) -> Result<Selector, ParseError> {
+  let pos = context.tokenizer.pos;
+  let token = context.tokenizer.peek(1)?;
   let selector: Selector = match token {
     Token::Star => {
-      tokenizer.next()?; // eat *
+      context.tokenizer.next()?; // eat *
       Selector::AllSelector
     }
     Token::Dot => {
-      tokenizer.next()?;
+      context.tokenizer.next()?;
       Selector::Class(ClassSelector {
-        class_name: parse_selector_name(tokenizer)?.to_string()
+        class_name: parse_selector_name(context)?.to_string()
       })
     }
     Token::Colon => {
-      parse_psuedo_element_selector(tokenizer)?
+      parse_psuedo_element_selector(context)?
     }
     Token::Hash => {
-      tokenizer.next()?;
+      context.tokenizer.next()?;
       Selector::Id(IdSelector {
-        id: parse_selector_name(tokenizer)?.to_string()
+        id: parse_selector_name(context)?.to_string()
       })
     }
     Token::SquareOpen => {
-      tokenizer.next()?;
-      parse_attribute_selector(tokenizer)?
+      context.tokenizer.next()?;
+      parse_attribute_selector(context)?
     }
     Token::Word(_) => {
       Selector::Element(ElementSelector {
-        tag_name: parse_selector_name(tokenizer)?.to_string()
+        tag_name: parse_selector_name(context)?.to_string()
       })
     }
     _ => {
@@ -345,19 +361,19 @@ fn parse_element_selector<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Selector,
   };
   Ok(selector)
 }
-fn parse_psuedo_element_selector<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Selector, ParseError> { 
-  tokenizer.next()?;
-  if tokenizer.peek(1)? == Token::Colon {
-    tokenizer.next()?;
+fn parse_psuedo_element_selector<'a, 'b>(context: &mut Context<'a, 'b>) -> Result<Selector, ParseError> { 
+  context.tokenizer.next()?;
+  if context.tokenizer.peek(1)? == Token::Colon {
+    context.tokenizer.next()?;
   }
-  let name = parse_selector_name(tokenizer)?.to_string();
-  let selector: Selector = if tokenizer.peek(1)? == Token::ParenOpen {
-    tokenizer.next()?;
+  let name = parse_selector_name(context)?.to_string();
+  let selector: Selector = if context.tokenizer.peek(1)? == Token::ParenOpen {
+    context.tokenizer.next()?;
     let selector = if name == "not" {
-      let sel = parse_pair_selector(tokenizer)?;
+      let sel = parse_pair_selector(context)?;
       Selector::Not(Box::new(sel))
     } else {
-      let param = get_buffer(tokenizer, |tokenizer| {
+      let param = get_buffer(context.tokenizer, |tokenizer| {
         Ok(tokenizer.peek(1)? != Token::ParenClose)
       })?.to_string();
 
@@ -367,7 +383,7 @@ fn parse_psuedo_element_selector<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Se
       })
     };
 
-    tokenizer.next_expect(Token::ParenClose)?;
+    context.tokenizer.next_expect(Token::ParenClose)?;
     selector
   } else {
     Selector::PseudoElement(PseudoElementSelector {
@@ -378,15 +394,15 @@ fn parse_psuedo_element_selector<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Se
   Ok(selector)
 }
 
-fn parse_attribute_selector<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Selector, ParseError> {
-  let name = parse_attribute_name(tokenizer)?.to_string();
+fn parse_attribute_selector<'a, 'b>(context: &mut Context<'a, 'b>) -> Result<Selector, ParseError> {
+  let name = parse_attribute_name(context)?.to_string();
   let mut value = None;
-  if tokenizer.peek(1)? == Token::Equals {
-    tokenizer.next()?; // eat =
-    value = Some(parse_attribute_selector_value(tokenizer)?.to_string());
+  if context.tokenizer.peek(1)? == Token::Equals {
+    context.tokenizer.next()?; // eat =
+    value = Some(parse_attribute_selector_value(context)?.to_string());
   }
 
-  tokenizer.next_expect(Token::SquareClose)?;
+  context.tokenizer.next_expect(Token::SquareClose)?;
 
   Ok(Selector::Attribute(AttributeSelector {
     name, 
@@ -394,22 +410,21 @@ fn parse_attribute_selector<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Selecto
   }))
 }
 
-fn parse_string<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<&'a str, ParseError> {
-  let initial = tokenizer.next()?; // eat quote
-  let buffer = get_buffer(tokenizer, |tokenizer| {
+fn parse_string<'a, 'b>(context: &mut Context<'a, 'b>) -> Result<&'a str, ParseError> {
+  let initial = context.tokenizer.next()?; // eat quote
+  let buffer = get_buffer(context.tokenizer, |tokenizer| {
     Ok(tokenizer.peek(1)? != initial)
   });
-  tokenizer.next_expect(initial)?; // eat quote
+  context.tokenizer.next_expect(initial)?; // eat quote
   buffer
 }
 
-fn parse_attribute_selector_value<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<&'a str, ParseError> {
-
-  let initial = tokenizer.peek(1)?;
+fn parse_attribute_selector_value<'a, 'b>(context: &mut Context<'a, 'b>) -> Result<&'a str, ParseError> {
+  let initial = context.tokenizer.peek(1)?;
   let value = if initial == Token::SingleQuote || initial == Token::DoubleQuote {
-    parse_string(tokenizer)?
+    parse_string(context)?
   } else {
-    get_buffer(tokenizer, |tokenizer| {
+    get_buffer(context.tokenizer, |tokenizer| {
       Ok(tokenizer.peek(1)? != Token::SquareClose)
     })?
   };
@@ -417,8 +432,9 @@ fn parse_attribute_selector_value<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<&
   Ok(value)
 }
 
-fn parse_selector_name<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<&'a str, ParseError> {
-  get_buffer(tokenizer, |tokenizer| {
+fn parse_selector_name<'a, 'b>(context: &mut Context<'a, 'b>) -> Result<&'a str, ParseError> {
+  eat_superfluous(context)?;
+  get_buffer(context.tokenizer, |tokenizer| {
     let tok = tokenizer.peek(1)?;
     Ok(match tok {
       Token::Whitespace | 
@@ -440,8 +456,8 @@ fn parse_selector_name<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<&'a str, Par
   })
 }
 
-fn parse_attribute_name<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<&'a str, ParseError> {
-  get_buffer(tokenizer, |tokenizer| {
+fn parse_attribute_name<'a, 'b>(context: &mut Context<'a, 'b>) -> Result<&'a str, ParseError> {
+  get_buffer(context.tokenizer, |tokenizer| {
     let tok = tokenizer.peek(1)?;
     Ok(match tok {
       Token::Whitespace | 
@@ -465,35 +481,40 @@ fn parse_attribute_name<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<&'a str, Pa
 }
 
 
-fn parse_declarations<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Vec<Declaration>, ParseError> {
+fn parse_declarations<'a, 'b>(context: &mut Context<'a, 'b>) -> Result<Vec<Declaration>, ParseError> {
   let mut declarations = vec![];
-  while !tokenizer.is_eof() {
-    eat_superfluous(tokenizer);
-    if tokenizer.peek(1)? == Token::CurlyClose {
+  eat_superfluous(context)?;
+  while !context.ended()? {
+    if context.tokenizer.peek(1)? == Token::CurlyClose {
       break
     }
-    declarations.push(parse_declaration(tokenizer)?);
+    declarations.push(parse_declaration(context)?);
+    eat_superfluous(context)?;
   }
 
   Ok(declarations)
 }
 
-fn eat_script_comments<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<(), ParseError> {
-  eat_comments(tokenizer, Token::ScriptCommentOpen, Token::ScriptCommentClose)
+fn eat_script_comments<'a, 'b>(context: &mut Context<'a, 'b>) -> Result<(), ParseError> {
+  eat_comments(context, Token::ScriptCommentOpen, Token::ScriptCommentClose)
 }
 
-fn parse_declaration<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Declaration, ParseError> {
-  let name = get_buffer(tokenizer, |tokenizer| { Ok(tokenizer.peek(1)? != Token::Colon) })?.to_string();
-  tokenizer.next()?; // eat :
-  eat_superfluous(tokenizer);
-  let value = get_buffer(tokenizer, |tokenizer| { 
+fn parse_declaration<'a, 'b>(context: &mut Context<'a, 'b>) -> Result<Declaration, ParseError> {
+  let name = parse_selector_name(context)?.to_string();
+  context.tokenizer.next_expect(Token::Colon)?; // eat :
+  eat_superfluous(context)?;
+
+  let value = get_buffer(context.tokenizer, |tokenizer| { 
     let tok = tokenizer.peek(1)?;
     Ok(tok != Token::Semicolon && tok != Token::CurlyClose) 
   })?.to_string();
-  
-  if tokenizer.peek(1)? == Token::Semicolon {
-    tokenizer.next()?; // eat ;
+
+  if context.tokenizer.peek(1)? == Token::Semicolon {
+    context.tokenizer.next()?; // eat ;
   }
+
+  eat_superfluous(context)?;
+
   Ok(Declaration {
     name, 
     value
@@ -550,7 +571,7 @@ mod tests {
     /*comment*/
     ";
 
-    let result = parse(source).unwrap();
+    _parse(source).unwrap();
 
     // println!("{:?}", result);
     // panic!("OK");
@@ -595,6 +616,16 @@ mod tests {
       @media ab {._a{a:b;}}
     ";
 
-    let result = parse(source).unwrap();
+    _parse(source).unwrap();
   }
+
+  /// 
+  /// Error handling
+  /// 
+
+  #[test]
+  fn displays_an_error_for_unterminated_curly_bracket() {
+    assert_eq!(_parse("div { "), Err(ParseError::unterminated("Unterminated bracket.".to_string(), 4, 6)));
+  }
+
 }

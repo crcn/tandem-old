@@ -125,20 +125,6 @@ fn evaluate_element<'a>(element: &ast::Element, context: &'a Context) -> Result<
   }
 }
 
-fn evaluate_void_element<'a>(element: &ast::Element, context: &'a Context) -> Result<Option<virt::Node>, &'static str> {
-  match element.tag_name.as_str() {
-    "import" => evaluate_import_element(element, context),
-    _ => {
-      if context.import_ids.contains(&element.tag_name) {
-        evaluate_imported_component(element, context)
-      } else {
-        evaluate_basic_element(element, context)
-      }
-    }
-  }
-}
-
-
 fn evaluate_slot<'a>(slot: &js_ast::Statement, context: &'a Context) -> Result<Option<virt::Node>, &'static str> {
   let mut js_value = evaluate_js(slot, &context.data)?;
 

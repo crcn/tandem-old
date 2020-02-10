@@ -39,7 +39,7 @@ pub fn evaluate_style_rules<'a>(rules: &Vec<ast::StyleRule>, context: &Context) 
   Ok(css_rules)
 }
 
-fn evaluate_font_family_rule(font_family: &ast::FontFaceRule, context: &Context) -> Result<virt::Rule, &'static str> {
+fn evaluate_font_family_rule(font_family: &ast::FontFaceRule, _context: &Context) -> Result<virt::Rule, &'static str> {
   Ok(virt::Rule::FontFace(virt::FontFaceRule {
     style: evaluate_style_declarations(&font_family.declarations)?
   }))
@@ -83,7 +83,7 @@ fn evaluate_keyframes_rule(rule: &ast::KeyframesRule, context: &Context) -> Resu
   }))
 }
 
-fn evaluate_keyframe_rule(rule: &ast::KeyframeRule, context: &Context) -> Result<virt::KeyframeRule, &'static str> {
+fn evaluate_keyframe_rule(rule: &ast::KeyframeRule, _context: &Context) -> Result<virt::KeyframeRule, &'static str> {
 
   let mut style = vec![];
   for decl in &rule.declarations {
@@ -112,7 +112,7 @@ fn evaluate_style_rule(expr: &ast::StyleRule, context: &Context) -> Result<virt:
 }
 
 fn evaluate_style_rule2(expr: &ast::StyleRule, context: &Context) -> Result<virt::StyleRule, &'static str> {
-  let mut style = evaluate_style_declarations(&expr.declarations)?;
+  let style = evaluate_style_declarations(&expr.declarations)?;
   let selector_text = stringify_element_selector(&expr.selector, context);
   Ok(virt::StyleRule {
     selector_text,

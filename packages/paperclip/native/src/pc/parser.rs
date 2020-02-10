@@ -71,20 +71,40 @@ fn parse_node<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::Node, ParseEr
     Token::BlockOpen => {
       parse_block(tokenizer)
     }
+    Token::CloseTag => {
+      let start = tokenizer.pos;
+      tokenizer.next_expect(Token::CloseTag)?;
+      let tag_name = parse_tag_name(tokenizer)?;
+      tokenizer.next_expect(Token::GreaterThan)?;
+
+      let message = if is_void_tag_name(tag_name.as_str()) { 
+        "Void tag's shouldn't be closed."
+      } else {
+        "Closing tag doesn't have an open tag."
+      };
+
+      Err(ParseError::unexpected(message.to_string(), start, tokenizer.pos))
+    }
     _ => {
-      Ok(pc_ast::Node::Text(pc_ast::ValueObject { 
-        value: get_buffer(tokenizer, |tokenizer| {
-          let tok = tokenizer.peek(1)?;
-          Ok(
-            tok != Token::CurlyOpen && 
-            tok != Token::LessThan && 
-            tok != Token::CloseTag && 
-            tok != Token::HtmlCommentOpen && 
-            tok != Token::BlockOpen && 
-            tok != Token::BlockClose
-          )
-        })?.to_string()
-      }))
+      let value =  get_buffer(tokenizer, |tokenizer| {
+        let tok = tokenizer.peek(1)?;
+        Ok(
+          tok != Token::CurlyOpen && 
+          tok != Token::LessThan && 
+          tok != Token::CloseTag && 
+          tok != Token::HtmlCommentOpen && 
+          tok != Token::BlockOpen && 
+          tok != Token::BlockClose
+        )
+      })?.to_string();
+
+      if value.len() == 0 {
+        Err(ParseError::unexpected_token(tokenizer.pos))
+      } else {
+        Ok(pc_ast::Node::Text(pc_ast::ValueObject { 
+          value
+        }))
+      }
     }
   }
 }
@@ -309,8 +329,8 @@ fn parse_next_style_element_parts<'a>(attributes: Vec<pc_ast::Attribute>, tokeni
   tokenizer.next_expect(Token::GreaterThan)?; // eat >
   let end = tokenizer.pos;
 
-  let sheet = parse_css_with_tokenizer(tokenizer, |token| {
-    token != Token::CloseTag
+  let sheet = parse_css_with_tokenizer(tokenizer, |tokenizer| -> Result<bool, ParseError> {
+    Ok(tokenizer.peek(1)? == Token::CloseTag)
   })?;
 
   // TODO - assert tokens equal these
@@ -573,5 +593,21 @@ mod tests {
   #[test]
   fn displays_error_for_unterminated_slot() {
     assert_eq!(parse("{ab"), Err(ParseError::unterminated("Unterminated slot.".to_string(), 0, 3)));
+  }
+
+  #[test]
+  fn displays_css_errors() {
+    assert_eq!(parse("<style>div { color: red; </style>"), Err(ParseError::unterminated("Unterminated bracket.".to_string(), 11, 27)));
+  }
+
+  #[test]
+  fn display_error_for_close_tag_without_open() {
+    assert_eq!(parse("</div>"), Err(ParseError::unexpected("Closing tag doesn't have an open tag.".to_string(), 0, 6)));
+  }
+
+
+  #[test]
+  fn displays_error_if_void_close_tag_present() {
+    assert_eq!(parse("</meta>"), Err(ParseError::unexpected("Void tag's shouldn't be closed.".to_string(), 0, 7)));
   }
 }

@@ -71,7 +71,6 @@ impl Engine {
 
   fn evaluate(&mut self, file_path: &String) -> Result<(), &'static str>  {
     let dependency = self.dependency_graph.dependencies.get(file_path).unwrap();
-    println!("EVAL {}", file_path);
     self.events.push(EngineEvent::Evaluated(EvaluatedEvent {
       file_path: file_path.clone(),
       node: runtime::evaluate(&dependency.expression, file_path, &self.dependency_graph, &js_virt::JsValue::JsObject(js_virt::JsObject::new()))?

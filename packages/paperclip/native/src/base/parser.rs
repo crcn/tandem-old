@@ -29,6 +29,9 @@ impl ParseError {
   pub fn unexpected_token(start: usize) -> ParseError {
     ParseError::new(ParseErrorKind::Unexpected, "Unexpected token".to_string(), start, start + 1)
   }
+  pub fn unexpected(message: String, start: usize, end: usize) -> ParseError {
+    ParseError::new(ParseErrorKind::Unexpected, message, start, end)
+  }
   pub fn unterminated(message: String, start: usize, end: usize) -> ParseError {
     ParseError::new(ParseErrorKind::Unterminated, message, start, end)
   }
