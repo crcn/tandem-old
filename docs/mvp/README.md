@@ -9,6 +9,9 @@ Why would anyone want to use Tandem & Paperclip?
 - automatic visual regression testing
   - possibly terminal tool for this
 - excellent error messaging
+- wow-factor is preview - should add some features around that
+  - meta-click to reveal source
+  - measurement tools
 
 What problems does Paperclip + Tandem introduce?
 
@@ -27,6 +30,10 @@ immediate TODO:
 
 - <import not found>
 - React compiler
+- type inferencing
+- style inspector (in paperclip)
+  - color picker
+- examples
 
 * language server
   - error linter

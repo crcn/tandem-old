@@ -4,6 +4,14 @@ use crate::pc::{ast as pc_ast, parser};
 use crate::base::parser::{ParseError};
 use std::collections::HashMap;
 use path_abs::{PathAbs};
+use serde::{Serialize};
+use super::errors::RuntimeError;
+
+#[derive(Debug, PartialEq, Serialize, Copy, Clone)]
+pub struct GraphError {
+  origin_file_path: String,
+  error: RuntimeError
+}
 
 #[derive(Debug)]
 pub struct DependencyGraph {
@@ -47,14 +55,20 @@ impl DependencyGraph {
     return deps;
   }
 
-  pub async fn load_dependency<'a>(&mut self, file_path: &String, vfs: &mut VirtualFileSystem) -> Result<&Dependency, ParseError> {
+  pub async fn load_dependency<'a>(&mut self, file_path: &String, vfs: &mut VirtualFileSystem) -> Result<&Dependency, GraphError> {
 
-    let mut to_load = vec![file_path.to_string()];
+    let mut to_load: Vec<(String, pc_ast::Element)> = vec![file_path.to_string()];
     
     while to_load.len() > 0 {
-      let curr_file_path = to_load.pop().unwrap();
+      let (curr_file_path, import) = to_load.pop().unwrap();
       let source = vfs.load(&curr_file_path).await.unwrap().to_string();
-      let dependency = Dependency::from_source(source, &curr_file_path)?;
+      let dependency = Dependency::from_source(source, &curr_file_path).map_err(|error| {
+        Err(GraphError {
+          origin_file_path: curr_file_path.to_string(),
+          error: RuntimeError::Syntax(error)
+        })
+      })?;
+
       for (_id, dep_file_path) in &dependency.dependencies {
         if !self.dependencies.contains_key(&dep_file_path.to_string()) {
           to_load.push(dep_file_path.to_string());
@@ -66,7 +80,7 @@ impl DependencyGraph {
     Ok(self.dependencies.get(&file_path.to_string()).unwrap())
   }
 
-  pub async fn reload_dependents<'a>(&mut self, file_path: &String, vfs: &mut VirtualFileSystem) -> Result<&Dependency, ParseError> {
+  pub async fn reload_dependents<'a>(&mut self, file_path: &String, vfs: &mut VirtualFileSystem) -> Result<&Dependency, GraphError> {
     if !self.dependencies.contains_key(&file_path.to_string()) {
       return self.load_dependency(file_path, vfs).await;
     }

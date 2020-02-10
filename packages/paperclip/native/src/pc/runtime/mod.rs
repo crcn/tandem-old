@@ -2,6 +2,7 @@ pub mod evaluator;
 pub mod virt;
 pub mod graph;
 pub mod vfs;
+pub mod errors;
 use super::ast as pc_ast;
 use graph::{DependencyGraph};
 use crate::js::runtime::virt as js_virt;
