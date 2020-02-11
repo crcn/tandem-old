@@ -1,6 +1,6 @@
 ⚠️ Currently WIP ⚠️
 
-### Realtime visual development
+### Visualize your code in realtime
 
 Tandem provides you with a live preview of your web app directly in VSCode. 
 
