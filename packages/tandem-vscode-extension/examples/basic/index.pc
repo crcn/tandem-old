@@ -11,4 +11,3 @@
   <div>some button</div>
 </button>
 
-<import id="ab" src="fsdfs.pc">
