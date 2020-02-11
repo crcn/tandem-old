@@ -85,6 +85,32 @@ export class Engine {
       }
     };
   }
+  async parseFile(filePath: string) {
+    await this._loaded;
+    return new Promise((resolve, reject) => {
+      this._client.request(
+        "parse_file",
+        { file_path: stripFileProtocol(filePath) },
+        (err, response) => {
+          if (err) return reject(err);
+          const result = JSON.parse(response.result);
+          if (result.error) return reject(result.error);
+          resolve(result);
+        }
+      );
+    });
+  }
+  async parseContent(content: string) {
+    await this._loaded;
+    return new Promise((resolve, reject) => {
+      this._client.request("parse_content", { content }, (err, response) => {
+        if (err) return reject(err);
+        const result = JSON.parse(response.result);
+        if (result.error) return reject(result.error);
+        resolve(result);
+      });
+    });
+  }
   async updateVirtualFileContent(filePath: string, content: string) {
     await this._loaded;
     this._client.request(

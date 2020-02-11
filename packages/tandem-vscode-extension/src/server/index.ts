@@ -80,7 +80,6 @@ const initEngine = async (
   };
 
   engine.onEvent((event: EngineEvent) => {
-    console.log(event);
     if (event.kind == EngineEventKind.Error) {
       handleEngineError(event);
     } else {

@@ -1,4 +1,7 @@
 use crate::pc::{runtime};
+use crate::pc::parser::{parse as parse_pc};
+use crate::base::parser::{ParseError};
+use crate::pc::ast as pc_ast;
 use crate::pc::runtime::graph::{DependencyGraph};
 use crate::pc::runtime::vfs::{VirtualFileSystem};
 use crate::js::runtime::virt as js_virt;
@@ -48,6 +51,15 @@ impl Engine {
       self.evaluate(file_path);
       Ok(())
     }
+  }
+
+  pub async fn parse_file(&mut self, file_path: &String) -> Result<pc_ast::Node, ParseError> {
+    let content = self.vfs.load(file_path).await.unwrap();
+    parse_pc(content)
+  }
+
+  pub async fn parse_content(&mut self, content: &String) -> Result<pc_ast::Node, ParseError> {
+    parse_pc(content)
   }
 
   pub async fn update_virtual_file_content(&mut self, file_path: &String, content: &String) -> Result<(), GraphError> {

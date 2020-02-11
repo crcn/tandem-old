@@ -29,11 +29,20 @@ struct UnloadParams {
 }
 
 #[derive(Deserialize, Debug)]
+struct ParseFileParams {
+    file_path: String
+}
+
+#[derive(Deserialize, Debug)]
+struct ParseContentParams {
+    content: String
+}
+
+#[derive(Deserialize, Debug)]
 struct UpdateVirtualFileContentParams {
     file_path: String,
     content: String
 }
-
 
 fn main() {
     let args: Vec<String> = env::args().collect();
@@ -58,6 +67,28 @@ fn main() {
 		let parsed: UnloadParams = params.parse().unwrap();
         unload_engine_mutex.lock().unwrap().unload(parsed.file_path);
 		Ok(Value::String("ok".into()))
+    });
+
+    let parse_file_engine_mutex = engine_mutex.clone();
+	io.add_method("parse_file", move |params: Params| {
+        let params: ParseFileParams = params.parse().unwrap();
+        let result = block_on(parse_file_engine_mutex.lock().unwrap().parse_file(&params.file_path));
+        let json = match result {
+            Ok(node) => serde_json::to_string(&node).unwrap(),
+            Err(error) => format!("{{\"error\":{}}}", serde_json::to_string(&error).unwrap())
+        };
+		Ok(Value::String(json.into()))
+    });
+
+    let parse_content_engine_mutex = engine_mutex.clone();
+	io.add_method("parse_content", move |params: Params| {
+        let params: ParseContentParams = params.parse().unwrap();
+        let result = block_on(parse_content_engine_mutex.lock().unwrap().parse_content(&params.content));
+        let json = match result {
+            Ok(node) => serde_json::to_string(&node).unwrap(),
+            Err(error) => format!("{{\"error\":{}}}", serde_json::to_string(&error).unwrap())
+        };
+		Ok(Value::String(json.into()))
     });
     
     let update_virtual_file_content_engine_mutex = engine_mutex.clone();

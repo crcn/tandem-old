@@ -28,7 +28,6 @@ Limitations:
 
 immediate TODO:
 
-- <import not found>
 - React compiler
 - type inferencing
 - style inspector (in paperclip)
