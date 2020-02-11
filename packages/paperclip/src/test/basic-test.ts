@@ -1,7 +1,7 @@
 import { Engine } from "../engine";
 import { expect } from "chai";
 import * as http from "http";
-import { EngineEventType, EvaluatedEvent } from "../events";
+import { EngineEventKind, EvaluatedEvent } from "../events";
 import { stringifyVirtualNode } from "../stringify-virt-node";
 
 const TEST_SERVER_PORT = 8999;
@@ -25,7 +25,7 @@ describe(__filename + "#", () => {
   const waitForEvaluated = async (engine: Engine): Promise<EvaluatedEvent> => {
     return new Promise(resolve => {
       engine.onEvent(event => {
-        if (event.type === EngineEventType.Evaluated) {
+        if (event.kind === EngineEventKind.Evaluated) {
           resolve(event);
         }
       });

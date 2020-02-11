@@ -1,5 +1,5 @@
 // export const stringifyNode = (node) => {
-//   switch(node.type) {
+//   switch(node.kind) {
 //     case "StyleElement": return stringifyStyleElement(node);
 //   }
 // };

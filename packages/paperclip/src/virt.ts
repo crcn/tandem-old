@@ -1,11 +1,11 @@
-export enum VirtualNodeType {
+export enum VirtualNodeKind {
   Element = "Element",
   Text = "Text",
   Fragment = "Fragment"
 }
 
-type VirtualBaseNode<TType extends VirtualNodeType> = {
-  type: TType;
+type VirtualBaseNode<KKind extends VirtualNodeKind> = {
+  kind: KKind;
 };
 
 export type VirtualAttribute = {
@@ -15,10 +15,10 @@ export type VirtualAttribute = {
 export type VirtualElement = {
   attributes: VirtualAttribute[];
   children: VirtualNode;
-} & VirtualBaseNode<VirtualNodeType.Element>;
+} & VirtualBaseNode<VirtualNodeKind.Element>;
 
 export type VirtualText = {
   value: string;
-} & VirtualBaseNode<VirtualNodeType.Element>;
+} & VirtualBaseNode<VirtualNodeKind.Element>;
 
 export type VirtualNode = VirtualElement | VirtualText;

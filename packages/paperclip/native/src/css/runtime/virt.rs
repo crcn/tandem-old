@@ -22,7 +22,7 @@ impl fmt::Display for CSSSheet {
 }
 
 #[derive(Debug, PartialEq, Serialize, Clone)]
-#[serde(tag = "type")]
+#[serde(tag = "kind")]
 pub enum Rule {
   Style(StyleRule),
   Charset(String),

@@ -71,7 +71,7 @@ pub struct Text {
 }
 
 #[derive(Debug, PartialEq, Serialize, Clone)]
-#[serde(tag = "type")]
+#[serde(tag = "kind")]
 pub enum Node {
   Element(Element),
   Text(Text),

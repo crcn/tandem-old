@@ -3,7 +3,7 @@ export const stringifyCSSSheet = sheet => {
 };
 
 const stringifyCSSRule = rule => {
-  switch (rule.type) {
+  switch (rule.kind) {
     case "Style":
       return stringifyStyleRule(rule);
     case "Page":

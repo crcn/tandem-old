@@ -2,15 +2,34 @@ use std::path::Path;
 use super::vfs::{VirtualFileSystem};
 use crate::pc::{ast as pc_ast, parser};
 use crate::base::parser::{ParseError};
+use crate::base::ast::{Location};
 use std::collections::HashMap;
 use path_abs::{PathAbs};
 use serde::{Serialize};
-use super::errors::RuntimeError;
 
-#[derive(Debug, PartialEq, Serialize, Copy, Clone)]
+#[derive(Debug, PartialEq, Serialize, Clone)]
+#[serde(tag = "kind")]
+pub enum GraphErrorInfo {
+
+  // <import />, <img />, <logic />
+  IncludeNotFound(IncludeNodeFoundError),
+
+  Syntax(ParseError),
+
+  NotFound
+}
+
+#[derive(Debug, PartialEq, Serialize, Clone)]
+pub struct IncludeNodeFoundError {
+  pub file_path: String,
+  pub location: Location,
+  pub message: String
+}
+
+#[derive(Debug, PartialEq, Serialize, Clone)]
 pub struct GraphError {
-  origin_file_path: String,
-  error: RuntimeError
+  file_path: String,
+  info: GraphErrorInfo
 }
 
 #[derive(Debug)]
@@ -57,24 +76,56 @@ impl DependencyGraph {
 
   pub async fn load_dependency<'a>(&mut self, file_path: &String, vfs: &mut VirtualFileSystem) -> Result<&Dependency, GraphError> {
 
-    let mut to_load: Vec<(String, pc_ast::Element)> = vec![file_path.to_string()];
+    let mut to_load: Vec<(String, Option<(String, String)>)> = vec![(file_path.to_string(), None)];
     
     while to_load.len() > 0 {
       let (curr_file_path, import) = to_load.pop().unwrap();
-      let source = vfs.load(&curr_file_path).await.unwrap().to_string();
-      let dependency = Dependency::from_source(source, &curr_file_path).map_err(|error| {
+      let source = vfs.load(&curr_file_path).await
+      .or_else(|_| {
+        let err: GraphError = match import {
+          Some((origin_file_path, import_id)) => {
+            let origin_dep = self.dependencies.get(&origin_file_path).unwrap();
+            let import = pc_ast::get_import(&origin_dep.expression, &import_id).unwrap();
+            let info = GraphErrorInfo::IncludeNotFound(IncludeNodeFoundError {
+              message: "import not found".to_string(),
+              file_path: curr_file_path.to_string(),
+              location: import.open_tag_location.clone(),
+            });
+
+            GraphError {
+              file_path: origin_file_path.to_string(),
+              info,
+            }
+          },
+          None => {
+            GraphError { 
+              file_path: curr_file_path.to_string(),
+              info: GraphErrorInfo::NotFound
+            }
+          }
+        };
+
+        Err(err)
+      })?.to_string();
+      
+      let dependency = Dependency::from_source(source, &curr_file_path).or_else(|error| {
         Err(GraphError {
-          origin_file_path: curr_file_path.to_string(),
-          error: RuntimeError::Syntax(error)
+          file_path: curr_file_path.to_string(),
+          info: GraphErrorInfo::Syntax(error)
         })
       })?;
 
       for (_id, dep_file_path) in &dependency.dependencies {
         if !self.dependencies.contains_key(&dep_file_path.to_string()) {
-          to_load.push(dep_file_path.to_string());
+          to_load.push((
+            dep_file_path.to_string(),
+            Some((curr_file_path.to_string(), _id.to_string()))
+          ));
         }
       }
+
       self.dependencies.insert(curr_file_path.to_string(), dependency);
+
     }
 
     Ok(self.dependencies.get(&file_path.to_string()).unwrap())

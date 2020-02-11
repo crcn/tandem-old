@@ -1,5 +1,6 @@
 use super::tokenizer::*;
 use serde::{Serialize};
+use crate::base::ast::{Location};
 
 #[derive(Debug, PartialEq, Serialize, Clone)]
 pub enum ParseErrorKind {
@@ -13,8 +14,7 @@ pub enum ParseErrorKind {
 pub struct ParseError {
   pub kind: ParseErrorKind,
   pub message: String,
-  pub start: usize,
-  pub end: usize
+  pub location: Location,
 }
 
 impl ParseError {
@@ -22,8 +22,7 @@ impl ParseError {
     ParseError {
       kind,
       message,
-      start,
-      end
+      location: Location { start, end }
     }
   }
   pub fn unexpected_token(start: usize) -> ParseError {

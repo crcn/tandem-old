@@ -2,6 +2,7 @@
 
 use super::ast as pc_ast;
 use crate::base::parser::{get_buffer, ParseError};
+use crate::base::ast::{Location};
 use crate::js::parser::parse_with_tokenizer as parse_js_with_tokenizer;
 use crate::js::ast as js_ast;
 use crate::base::tokenizer::{Token, Tokenizer};
@@ -178,14 +179,16 @@ fn parse_next_basic_element_parts<'a>(tag_name: String, attributes: Vec<pc_ast::
   let mut children: Vec<pc_ast::Node> = vec![];
 
   tokenizer.eat_whitespace();
+  let mut end = tokenizer.pos;
   
   match tokenizer.peek(1)? {
     Token::SelfCloseTag => {
       tokenizer.next()?;
+      end = tokenizer.pos;
     },
     Token::GreaterThan => {
       tokenizer.next()?;
-      let end = tokenizer.pos;
+      end = tokenizer.pos;
       if !is_void_tag_name(tag_name.as_str()) {
         tokenizer.eat_whitespace();
         while !tokenizer.is_eof() && tokenizer.peek(1)? != Token::CloseTag {
@@ -202,6 +205,10 @@ fn parse_next_basic_element_parts<'a>(tag_name: String, attributes: Vec<pc_ast::
   }
 
   let el = pc_ast::Element {
+    open_tag_location: Location {
+      start,
+      end
+    },
     tag_name,
     attributes,
     children
@@ -377,9 +384,14 @@ fn parse_next_script_element_parts<'a>(attributes: Vec<pc_ast::Attribute>, token
   })?;
 
 
+
   parse_close_tag("script", tokenizer, start, end)?;
 
   Ok(pc_ast::Node::Element(pc_ast::Element {
+    open_tag_location: Location {
+      start,
+      end
+    },
     tag_name: "script".to_string(),
     attributes,
     children: vec![],

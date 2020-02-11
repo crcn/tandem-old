@@ -1,33 +1,64 @@
 import { VirtualNode } from "./virt";
 
-export enum EngineEventType {
+export enum EngineEventKind {
   Evaluated = "Evaluated",
-  ParseError = "ParseError"
+  Error = "Error"
+}
+
+export enum EngineErrorKind {
+  Graph = "Graph"
 }
 
 export enum ParseErrorKind {
   EndOfFile = "EndOfFile"
 }
 
-type BaseEngineEvent<TType extends EngineEventType> = {
-  type: TType;
+type BaseEngineEvent<KKind extends EngineEventKind> = {
+  kind: KKind;
 };
 
-export type EvaluatedEvent = {
-  file_path: String;
-  node: VirtualNode;
-} & BaseEngineEvent<EngineEventType.Evaluated>;
-
-export type ParseError = {
-  kind: ParseErrorKind;
-  message: String;
+export type SourceLocation = {
   start: number;
   end: number;
 };
 
-export type ParseErrorEvent = {
+export type EvaluatedEvent = {
   file_path: string;
-  error: ParseError;
-} & BaseEngineEvent<EngineEventType.ParseError>;
+  node: VirtualNode;
+} & BaseEngineEvent<EngineEventKind.Evaluated>;
 
-export type EngineEvent = EvaluatedEvent | ParseErrorEvent;
+export type BaseEngineErrorEvent<TErrorType extends EngineErrorKind> = {
+  file_path: string;
+  error_kind: TErrorType;
+} & BaseEngineEvent<EngineEventKind.Error>;
+
+export enum GraphErrorInfoType {
+  Syntax = "Syntax",
+  IncludeNotFound = "IncludeNotFound",
+  NotFound = "NotFound"
+}
+
+type BaseGraphErrorInfo<KKind extends GraphErrorInfoType> = {
+  kind: KKind;
+};
+
+export type SyntaxGraphErrorInfo = {
+  kind: ParseErrorKind;
+  message: string;
+  location: SourceLocation;
+} & BaseGraphErrorInfo<GraphErrorInfoType.Syntax>;
+
+export type IncludNotFoundErrorInfo = {
+  file_path: string;
+  message: string;
+  location: SourceLocation;
+} & BaseGraphErrorInfo<GraphErrorInfoType.IncludeNotFound>;
+
+export type GraphErrorInfo = SyntaxGraphErrorInfo | IncludNotFoundErrorInfo;
+
+export type GraphErrorEvent = {
+  info: GraphErrorInfo;
+} & BaseEngineErrorEvent<EngineErrorKind.Graph>;
+
+export type EngineErrorEvent = GraphErrorEvent;
+export type EngineEvent = EvaluatedEvent | EngineErrorEvent;

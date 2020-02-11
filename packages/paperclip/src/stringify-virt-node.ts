@@ -1,7 +1,7 @@
 import { stringifyCSSSheet } from "./stringify-sheet";
 
 export const stringifyVirtualNode = node => {
-  switch (node.type) {
+  switch (node.kind) {
     case "Fragment":
       return stringifyChildren(node);
     case "Element": {
@@ -23,7 +23,7 @@ export const stringifyVirtualNode = node => {
       return node.value;
     }
     default: {
-      throw new Error(`can't handle ${node.type}`);
+      throw new Error(`can't handle ${node.kind}`);
     }
   }
 };

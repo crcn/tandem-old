@@ -1,9 +1,9 @@
 use serde::{Serialize};
 
-#[derive(Debug, PartialEq, Serialize)]
+#[derive(Debug, PartialEq, Serialize, Clone)]
 pub struct Location {
   pub start: usize,
-  pub length: usize,
+  pub end: usize,
 }
 
 

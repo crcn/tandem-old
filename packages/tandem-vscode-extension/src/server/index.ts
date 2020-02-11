@@ -16,8 +16,11 @@ import { TextDocument } from "vscode-languageserver-textdocument";
 import {
   Engine,
   EngineEvent,
-  EngineEventType,
-  ParseErrorEvent
+  EngineEventKind,
+  SyntaxGraphErrorInfo,
+  EngineErrorEvent,
+  EngineErrorKind,
+  GraphErrorEvent
 } from "paperclip";
 import {
   LoadParams,
@@ -48,20 +51,17 @@ const initEngine = async (
 ) => {
   const engine = new Engine();
 
-  const handleParseErrorEvent = ({
-    file_path: filePath,
-    error
-  }: ParseErrorEvent) => {
+  const handleGraphError = ({ file_path: filePath, info }: GraphErrorEvent) => {
     const textDocument = documents.get(`file://${filePath}`);
 
     const diagnostics: Diagnostic[] = [
       {
         severity: DiagnosticSeverity.Error,
         range: {
-          start: textDocument.positionAt(error.start),
-          end: textDocument.positionAt(error.end)
+          start: textDocument.positionAt(info.location.start),
+          end: textDocument.positionAt(info.location.end)
         },
-        message: `${error.message}`,
+        message: `${info.message}`,
         source: "ex"
       }
     ];
@@ -72,12 +72,20 @@ const initEngine = async (
     });
   };
 
+  const handleEngineError = (event: EngineErrorEvent) => {
+    switch (event.error_kind) {
+      case EngineErrorKind.Graph:
+        return handleGraphError(event);
+    }
+  };
+
   engine.onEvent((event: EngineEvent) => {
-    if (event.type == EngineEventType.ParseError) {
-      handleParseErrorEvent(event);
+    console.log(event);
+    if (event.kind == EngineEventKind.Error) {
+      handleEngineError(event);
     } else {
       // reset diagnostics
-      if (event.type === EngineEventType.Evaluated) {
+      if (event.kind === EngineEventKind.Evaluated) {
         const textDocument = documents.get(`file://${event.file_path}`);
         connection.sendDiagnostics({
           uri: textDocument.uri,

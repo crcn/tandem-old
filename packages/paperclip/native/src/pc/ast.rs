@@ -1,16 +1,17 @@
 
 use std::fmt;
+use crate::base::ast::{Location};
 use crate::css::ast as css_ast;
 use crate::js::ast as js_ast;
 use serde::{Serialize};
 
 #[derive(Debug, PartialEq, Serialize)]
 pub struct Element {
+  pub open_tag_location: Location,
   pub tag_name: String,
   pub attributes: Vec<Attribute>,
   pub children: Vec<Node>
 }
-
 
 #[derive(Debug, PartialEq, Serialize)]
 pub struct ValueObject {
@@ -18,7 +19,7 @@ pub struct ValueObject {
 }
 
 #[derive(Debug, PartialEq, Serialize)]
-#[serde(tag = "type")]
+#[serde(tag = "kind")]
 pub enum Node {
   Text(ValueObject),
   Comment(ValueObject),
@@ -173,7 +174,7 @@ impl fmt::Display for KeyValueAttribute {
 }
 
 #[derive(Debug, PartialEq, Serialize)]
-#[serde(tag = "type")]
+#[serde(tag = "kind")]
 pub enum AttributeValue {
   String(AttributeStringValue),
   Slot(js_ast::Statement)
@@ -218,13 +219,6 @@ impl fmt::Display for Fragment {
     Ok(())
   }
 }
-
-#[derive(Debug, PartialEq, Serialize)]
-pub struct Location {
-  start: usize,
-  end: usize,
-}
-
 pub fn get_children<'a>(expr: &'a Node) -> Option<&'a Vec<Node>> {
   match &expr {
     Node::Element(root) => Some(&root.children),
@@ -249,6 +243,15 @@ pub fn get_imports<'a>(root_expr: &'a Node) -> Vec<&'a Element> {
   }
 
   imports
+}
+
+pub fn get_import<'a>(root_expr: &'a Node, id: &String) -> Option<&'a Element> {
+  for import in get_imports(root_expr).iter() {
+    if get_attribute_value("id", import) == Some(id) {
+      return Some(import);
+    }
+  }
+  None
 }
 
 pub fn get_attribute<'a, 'b>(name: &'b str, element: &'a Element) -> Option<&'a Attribute> {

@@ -5,7 +5,7 @@ const entities = new Html5Entities();
 
 export const createNativeNode = node => {
   try {
-    switch (node.type) {
+    switch (node.kind) {
       case "Text":
         return createNativeTextNode(node);
       case "Element":

@@ -9,10 +9,10 @@ export class Renderer {
 
   handleEngineEvent(event) {
     // only accept events scoped to current file path
-    if (event.type !== "Evaluated" && event.file_path !== this._scopeFilePath) {
+    if (event.kind !== "Evaluated" && event.file_path !== this._scopeFilePath) {
       return;
     }
-    switch (event.type) {
+    switch (event.kind) {
       case "Evaluated": {
         while (this.mount.childNodes.length) {
           this.mount.removeChild(this.mount.childNodes[0]);

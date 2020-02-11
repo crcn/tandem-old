@@ -1,10 +1,8 @@
 use crate::pc::{runtime};
 use crate::pc::runtime::graph::{DependencyGraph};
 use crate::pc::runtime::vfs::{VirtualFileSystem};
-use crate::base::parser::{ParseError};
 use crate::js::runtime::virt as js_virt;
 use serde::{Serialize};
-use crate::pc::runtime::errors::{RuntimeError};
 use crate::pc::runtime::graph::{GraphError};
 
 #[derive(Debug, PartialEq, Serialize)]
@@ -14,16 +12,16 @@ pub struct EvaluatedEvent {
 }
 
 #[derive(Debug, PartialEq, Serialize)]
-pub struct EngineError {
-  pub file_path: String,
-  pub error: ParseError
+#[serde(tag = "error_kind")]
+pub enum EngineError {
+  Graph(GraphError)
 }
 
 #[derive(Debug, PartialEq, Serialize)]
-#[serde(tag = "type")]
+#[serde(tag = "kind")]
 pub enum EngineEvent {
   Evaluated(EvaluatedEvent),
-  Error(GraphError)
+  Error(EngineError)
 }
 
 pub struct Engine {
@@ -44,7 +42,7 @@ impl Engine {
   pub async fn load(&mut self, file_path: &String) -> Result<(), GraphError> {
     let load_result = self.dependency_graph.load_dependency(file_path, &mut self.vfs).await;
     if let Err(error) = load_result {
-      self.events.push(EngineEvent::Error(error.clone()));
+      self.events.push(EngineEvent::Error(EngineError::Graph(error.clone())));
       Err(error)
     } else {
       self.evaluate(file_path);
