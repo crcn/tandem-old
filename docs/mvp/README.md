@@ -43,15 +43,18 @@ immediate TODO:
   - color picker
 - examples
 
-* language server
-  - error linter
-    - prohibit function calls
-  - warn linter (should have config so that user can turn on & off)
-    - prohibit <script /> tags
-    - warn when CSS selector tag isn't used
-    - warn if <property /> tag isn't present
-  - DX enhancements
-    - jump to definition
+- linter
+
+  - error with multiple IDs
+  - warn for script tags
+  - warn when CSS selector tag isn't used
+  - prohibit dynamic attr bindings for
+    - all import attrs
+    - all meta attrs
+
+- DX enhancements
+  - jump to definition
+
 * web preview for non-vscode users
 * pretty terminal compiler output
 * DSL

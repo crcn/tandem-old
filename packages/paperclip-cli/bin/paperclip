@@ -14,38 +14,45 @@ const argv = require("yargs")
 
 
 const compiler = argv.compiler;
-// const sourceFile = path.resolve(process.cwd(), argv._[0]);
 const filesGlob = argv._[0];
 
-try {
-  const compilerModulePath = resolve2(compiler);
-  const compile = require(compilerModulePath).compile;
-  init(process.cwd(), filesGlob, compile, argv.watch);
-  
-} catch(e) {
-  console.error(e);
+const compilerModulePath = resolve2(compiler);
+if (!compilerModulePath) {
   console.error("Compiler \"%s\" couldn't be found", compiler);
+  process.exit();
+}
+const compileModule = require(compilerModulePath);
+
+if (!compileModule || !compileModule.compile) {
+  console.error("Compiler \"%s\" does not export compile function", compiler);
+  process.exit();
 }
 
+const compile = compileModule.compile;
+init(process.cwd(), filesGlob, compile, argv.watch);
 
 function resolve2(module) {
   try {
     return resolve.sync(compiler, { basedir: process.cwd() });
   } catch(e) {
-    return require.resolve(module);
+    try {
+      return require.resolve(module);
+    } catch(e) {
+      return null;
+    }
   }
 }
 
 function init(cwd, filesGlob, compile, shouldWatch) {
-  
   
   const pcEngine = new Engine();
 
   async function compileFile(relativePath) {
     const fullPath = path.resolve(process.cwd(), relativePath);
     try {
+      console.log("Compiling %s", relativePath);
       const ast = await pcEngine.parseFile(fullPath);
-      const result = compile(ast);
+      const result = compile(ast, fullPath);
       console.log(result);
     } catch(e) {
       console.error(e);
