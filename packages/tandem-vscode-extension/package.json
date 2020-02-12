@@ -81,5 +81,6 @@
     "vscode-languageclient": "^6.0.1",
     "vscode-languageserver": "^6.0.1",
     "vscode-languageserver-textdocument": "^1.0.0"
-  }
+  },
+  "gitHead": "2a7e61f6174c5914237ade624f09f879176db11e"
 }

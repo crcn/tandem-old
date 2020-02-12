@@ -60,6 +60,7 @@ export class Engine {
     this._process.once("close", () => {
       console.warn(`PC Engine closed`);
       this._process = undefined;
+      if (this._disposed) return;
       this.init(options);
     });
 

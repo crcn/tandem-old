@@ -1,3 +1,5 @@
-import * as javascript from "./javascript";
-import * as typedDefinition from "./typed-definition";
-export { javascript, typedDefinition };
+import { Node } from "paperclip";
+
+export const compile = (ast: Node) => {
+  console.log(ast);
+};

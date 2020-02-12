@@ -33,8 +33,8 @@ Limitations:
 
 immediate TODO:
 
-- type inferencing
-  -
+- react compiler
+- ## type inferencing
 - quick guide to setup Tandem
 - React compiler
   - webpack loader

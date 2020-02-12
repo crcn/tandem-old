@@ -16,5 +16,6 @@
     "build:watch": "tsc --watch"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "gitHead": "2a7e61f6174c5914237ade624f09f879176db11e"
 }

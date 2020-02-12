@@ -54,7 +54,7 @@ impl Engine {
   }
 
   pub async fn parse_file(&mut self, file_path: &String) -> Result<pc_ast::Node, ParseError> {
-    let content = self.vfs.load(file_path).await.unwrap();
+    let content = self.vfs.reload(file_path).await.unwrap();
     parse_pc(content)
   }
 
