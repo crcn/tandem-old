@@ -7,6 +7,10 @@
     background: orange;
     font-size: 30px;
   }
+
+  .button.primary {
+    background: red;
+  }
   span {
     margin-right: 8px;
   }

@@ -32,7 +32,7 @@ const createNativeStyle = element => {
 };
 
 const createNativeElement = element => {
-  const nativeElement = document.createElement(element.tag_name);
+  const nativeElement = document.createElement(element.tagName);
   for (const { name, value } of element.attributes) {
     nativeElement.setAttribute(name, value);
   }

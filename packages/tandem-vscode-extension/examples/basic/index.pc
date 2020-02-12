@@ -7,6 +7,9 @@
   }
 </style>
 
-<button alt>
-  <div>fdsfsfsf rkkkkkk</div>
+<button alt primary>
+  <div>hello world</div>
 </button>
+
+<div>
+</div>

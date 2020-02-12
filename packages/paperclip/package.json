@@ -7,7 +7,7 @@
     "test": "mocha ./lib/test",
     "install": "npm run build:node",
     "build": "npm run build:node && npm run build:native",
-    "build:watch": "tsc --watch",
+    "build:watch": "tsc --watch & (cd native && cargo watch -x 'build --release')",
     "build:node": "tsc",
     "build:native": "cd native && cargo build --release",
     "build:electron": "cd native && electron-build-env cargo build --release"

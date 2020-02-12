@@ -5,7 +5,7 @@ export const stringifyVirtualNode = node => {
     case "Fragment":
       return stringifyChildren(node);
     case "Element": {
-      let buffer = `<${node.tag_name}`;
+      let buffer = `<${node.tagName}`;
       for (const attr of node.attributes) {
         if (attr.value) {
           buffer += ` ${attr.name}="${attr.value}"`;
@@ -13,7 +13,7 @@ export const stringifyVirtualNode = node => {
           buffer += ` ${attr.name}`;
         }
       }
-      buffer += `>${stringifyChildren(node)}</${node.tag_name}>`;
+      buffer += `>${stringifyChildren(node)}</${node.tagName}>`;
       return buffer;
     }
     case "StyleElement": {

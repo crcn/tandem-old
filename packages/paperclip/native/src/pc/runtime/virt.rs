@@ -18,6 +18,8 @@ impl fmt::Display for Fragment {
 
 #[derive(Debug, PartialEq, Serialize, Clone)]
 pub struct Element {
+
+  #[serde(rename = "tagName")]
   pub tag_name: String,
   pub attributes: Vec<Attribute>,
   pub children: Vec<Node>

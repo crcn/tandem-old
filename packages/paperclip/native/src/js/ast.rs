@@ -2,6 +2,7 @@ use std::fmt;
 use serde::{Serialize};
 
 #[derive(Debug, PartialEq, Serialize)]
+#[serde(tag = "jsKind")]
 pub enum Statement {
   Reference(Reference)
 }

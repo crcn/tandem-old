@@ -24,12 +24,21 @@ Tandem pain points?
 - What if they don't have VSCode?
   - Should be able to start Tandem web server
 
+Design Problems:
+
+- Need to figure out how to pass props from parent controllers to child controllers (like event handlers)
+  - maybe prohibit nested components in compiled output - treat everything as parts.
+
 Limitations:
 
 immediate TODO:
 
-- React compiler
 - type inferencing
+  -
+- quick guide to setup Tandem
+- React compiler
+  - webpack loader
+- browser preview (VSCode escape hatch)
 - style inspector (in paperclip)
   - color picker
 - examples

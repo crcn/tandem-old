@@ -25,6 +25,7 @@ export class Engine {
   private _listeners: Array<EngineEventListener>;
   private _process: ChildProcess;
   private _client;
+  private _disposed: boolean;
   private _loaded: Promise<any>;
 
   constructor(options: EngineOptions = {}) {
@@ -136,10 +137,12 @@ export class Engine {
     );
   }
   dispose() {
+    this._disposed = true;
     this._process.kill();
   }
   _watch() {
     const drainEvents = () => {
+      if (this._disposed) return;
       this._client.request("drain_events", [], (err, response) => {
         if (err) {
           console.warn(err);
