@@ -1,6 +1,6 @@
 ⚠️ Currently WIP ⚠️
 
-### Realtime visual development
+### Visualize your code in realtime
 
 Tandem provides you with a live preview of your web app directly in VSCode. 
 
@@ -80,3 +80,28 @@ Paperclip is a template language that compiles to React code (more targets plann
 </ul>
 ```
 
+## Development  
+
+Prerequisites:
+
+- VSCode
+- NodeJS
+- Cargo
+
+To get started with this repository, first run:
+
+```bash
+git pull git@github.com:crcn/tandem.git
+cd tandem
+npm install
+npm run build
+```
+
+After that, run:
+
+```bash
+cd packages/tandem-vscode-extension
+code .
+```
+
+Then run the VSCode debugger. 
