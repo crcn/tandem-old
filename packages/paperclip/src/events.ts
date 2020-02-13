@@ -6,7 +6,8 @@ export enum EngineEventKind {
 }
 
 export enum EngineErrorKind {
-  Graph = "Graph"
+  Graph = "Graph",
+  Runtime = "Runtime"
 }
 
 export enum ParseErrorKind {
@@ -60,5 +61,10 @@ export type GraphErrorEvent = {
   info: GraphErrorInfo;
 } & BaseEngineErrorEvent<EngineErrorKind.Graph>;
 
-export type EngineErrorEvent = GraphErrorEvent;
+export type RuntimeErrorEvent = {
+  message: string;
+  location: SourceLocation;
+} & BaseEngineErrorEvent<EngineErrorKind.Runtime>;
+
+export type EngineErrorEvent = GraphErrorEvent | RuntimeErrorEvent;
 export type EngineEvent = EvaluatedEvent | EngineErrorEvent;

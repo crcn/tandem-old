@@ -17,9 +17,11 @@ import {
   Engine,
   EngineEvent,
   EngineEventKind,
+  SourceLocation,
   EngineErrorEvent,
   EngineErrorKind,
-  GraphErrorEvent
+  GraphErrorEvent,
+  RuntimeErrorEvent
 } from "paperclip";
 import {
   LoadParams,
@@ -77,10 +79,26 @@ const initEngine = async (
     });
   };
 
+  const handleRuntimeError = (event: RuntimeErrorEvent) => {};
+
+  const createErrorDiagnostic = (message: string, location: SourceLocation) => {
+    return {
+      severity: DiagnosticSeverity.Error,
+      range: {
+        start: textDocument.positionAt(info.location.start),
+        end: textDocument.positionAt(info.location.end)
+      },
+      message: `${info.message}`,
+      source: "ex"
+    };
+  };
+
   const handleEngineError = (event: EngineErrorEvent) => {
     switch (event.error_kind) {
       case EngineErrorKind.Graph:
         return handleGraphError(event);
+      case EngineErrorKind.Runtime:
+        return handleRuntimeError(event);
     }
   };
 

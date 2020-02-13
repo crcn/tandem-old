@@ -6,6 +6,7 @@ use crate::pc::ast as pc_ast;
 use crate::pc::runtime::graph::{DependencyGraph};
 use crate::pc::runtime::vfs::{VirtualFileSystem};
 use crate::js::runtime::virt as js_virt;
+use crate::base::runtime::{RuntimeError};
 use serde::{Serialize};
 use crate::pc::runtime::graph::{GraphError};
 
@@ -18,7 +19,8 @@ pub struct EvaluatedEvent {
 #[derive(Debug, PartialEq, Serialize)]
 #[serde(tag = "error_kind")]
 pub enum EngineError {
-  Graph(GraphError)
+  Graph(GraphError),
+  Runtime(RuntimeError)
 }
 
 #[derive(Debug, PartialEq, Serialize)]
@@ -96,9 +98,10 @@ impl Engine {
     Ok(())
   }
 
-  fn evaluate(&mut self, file_path: &String) -> Result<(), &'static str>  {
+  fn evaluate(&mut self, file_path: &String) {
     let dependency = self.dependency_graph.dependencies.get(file_path).unwrap();
-    let node = runtime::evaluate(
+
+    let node_result = runtime::evaluate(
       &dependency.expression, 
       file_path, 
       &self.dependency_graph, 
@@ -106,13 +109,16 @@ impl Engine {
       self.load_options.get(file_path).and_then(|options| {
         options.part.clone()
       })
-    )?;
+    );
 
-    self.events.push(EngineEvent::Evaluated(EvaluatedEvent {
-      file_path: file_path.clone(),
-      node,
-    }));
-    Ok(())
+    if let Ok(node) = node_result {
+      self.events.push(EngineEvent::Evaluated(EvaluatedEvent {
+        file_path: file_path.clone(),
+        node,
+      }));
+    } else if let Err(runtime_error) = node_result {
+      self.events.push(EngineEvent::Error(EngineError::Runtime(runtime_error)));
+    }
   }
 
   pub fn drain_events(&mut self) -> Vec<EngineEvent> {
