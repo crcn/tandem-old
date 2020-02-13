@@ -17,7 +17,6 @@ import {
   Engine,
   EngineEvent,
   EngineEventKind,
-  SyntaxGraphErrorInfo,
   EngineErrorEvent,
   EngineErrorKind,
   GraphErrorEvent
@@ -25,9 +24,10 @@ import {
 import {
   LoadParams,
   NotificationType,
-  EngineEventNotification,
-  UpdateVirtualFileContentsParams
+  EngineEventNotification
 } from "../common/notifications";
+
+const PAPERCLIP_RENDER_PART = "tandem:preview";
 
 const connection = createConnection(ProposedFeatures.all);
 
@@ -49,10 +49,15 @@ const initEngine = async (
   connection: Connection,
   documents: TextDocuments<TextDocument>
 ) => {
-  const engine = new Engine();
+  const engine = new Engine({
+    renderPart: PAPERCLIP_RENDER_PART
+  });
 
   const handleGraphError = ({ file_path: filePath, info }: GraphErrorEvent) => {
     const textDocument = documents.get(`file://${filePath}`);
+    if (!textDocument) {
+      return;
+    }
 
     const diagnostics: Diagnostic[] = [
       {
@@ -85,9 +90,8 @@ const initEngine = async (
     } else {
       // reset diagnostics
       if (event.kind === EngineEventKind.Evaluated) {
-        const textDocument = documents.get(`file://${event.file_path}`);
         connection.sendDiagnostics({
-          uri: textDocument.uri,
+          uri: `file://${event.file_path}`,
           diagnostics: []
         });
       }

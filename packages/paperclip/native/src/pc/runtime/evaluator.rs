@@ -19,10 +19,24 @@ pub struct Context<'a> {
   data: &'a js_virt::JsValue,
 }
 
-pub fn evaluate<'a>(node_expr: &ast::Node, file_path: &String, graph: &'a DependencyGraph, data: &js_virt::JsValue) -> Result<Option<virt::Node>, &'static str>  {
+pub fn evaluate<'a>(node_expr: &ast::Node, file_path: &String, graph: &'a DependencyGraph, data: &js_virt::JsValue, part_option: Option<String>) -> Result<Option<virt::Node>, &'static str>  {
   let context = create_context(node_expr, file_path, graph, data);
+
+  let target_node = if let Some(part) = part_option {
+    ast::get_children(node_expr).and_then(|children| {
+      children.iter().find(|node| {
+        if let ast::Node::Element(element) = node {
+          element.tag_name == "part" && ast::get_attribute_value("id", element) == Some(&part)
+        } else {
+          false
+        }
+      })
+    }).or(Some(node_expr)).unwrap()
+  } else {
+    node_expr
+  };
   
-  let mut root_result = evaluate_node(node_expr, &context);
+  let mut root_result = evaluate_node(target_node, true, &context);
 
   // need to insert all styles into the root for efficiency
   match root_result {
@@ -67,8 +81,8 @@ pub fn evaluate_jumbo_style<'a>(_entry_expr: &ast::Node,  file_path: &String, gr
   }))
 }
 
-pub fn evaluate_component<'a>(node_expr: &ast::Node, file_path: &String, graph: &'a DependencyGraph, data: &js_virt::JsValue) -> Result<Option<virt::Node>, &'static str>  {
-  evaluate_node(node_expr, &create_context(node_expr, file_path, graph, data))
+pub fn evaluate_isolated_node<'a>(node_expr: &ast::Node, file_path: &String, graph: &'a DependencyGraph, data: &js_virt::JsValue) -> Result<Option<virt::Node>, &'static str>  {
+  evaluate_node(node_expr, false, &create_context(node_expr, file_path, graph, data))
 }
 
 fn create_context<'a>(node_expr: &'a ast::Node, file_path: &'a String, graph: &'a DependencyGraph, data: &'a js_virt::JsValue) -> Context<'a> {
@@ -85,10 +99,10 @@ fn get_component_scope<'a>(file_path: &String) -> String {
   format!("{:x}", crc32::checksum_ieee(file_path.as_bytes())).to_string()
 }
 
-fn evaluate_node<'a>(node_expr: &ast::Node, context: &'a Context) -> Result<Option<virt::Node>, &'static str> {
+fn evaluate_node<'a>(node_expr: &ast::Node, is_root: bool, context: &'a Context) -> Result<Option<virt::Node>, &'static str> {
   match &node_expr {
     ast::Node::Element(el) => {
-      evaluate_element(&el, context)
+      evaluate_element(&el, is_root, context)
     },
     ast::Node::StyleElement(el) => {
       evaluate_style_element(&el, context)
@@ -111,9 +125,11 @@ fn evaluate_node<'a>(node_expr: &ast::Node, context: &'a Context) -> Result<Opti
   }
 }
 
-fn evaluate_element<'a>(element: &ast::Element, context: &'a Context) -> Result<Option<virt::Node>, &'static str> {
+fn evaluate_element<'a>(element: &ast::Element, is_root: bool, context: &'a Context) -> Result<Option<virt::Node>, &'static str> {
   match element.tag_name.as_str() {
     "import" => evaluate_import_element(element, context),
+    "self" => evaluate_self_element(element, context),
+    "part" => evaluate_part_element(element, is_root, context),
     "script" => Ok(None),
     _ => {
       if context.import_ids.contains(&element.tag_name) {
@@ -150,9 +166,13 @@ fn evaluate_slot<'a>(slot: &js_ast::Statement, context: &'a Context) -> Result<O
 }
 
 fn evaluate_imported_component<'a>(element: &ast::Element, context: &'a Context) -> Result<Option<virt::Node>, &'static str> {
-
   let self_dep  = &context.graph.dependencies.get(context.file_path).unwrap();
   let dep_file_path = &self_dep.dependencies.get(&element.tag_name).unwrap();
+  evaluate_component(element, dep_file_path, context)
+}
+
+fn evaluate_component<'a>(element: &ast::Element, dep_file_path: &String, context: &'a Context) -> Result<Option<virt::Node>, &'static str> {
+
   let dep = &context.graph.dependencies.get(&dep_file_path.to_string()).unwrap();
   let mut data = js_virt::JsObject::new();
 
@@ -191,7 +211,7 @@ fn evaluate_imported_component<'a>(element: &ast::Element, context: &'a Context)
   data.values.insert("children".to_string(), js_virt::JsValue::JsArray(js_children));
 
   // TODO: if fragment, then wrap in span. If not, then copy these attributes to root element
-  evaluate_component(&dep.expression, dep_file_path, &context.graph, &js_virt::JsValue::JsObject(data))
+  evaluate_isolated_node(&dep.expression, dep_file_path, &context.graph, &js_virt::JsValue::JsObject(data))
 }
 
 fn evaluate_basic_element<'a>(element: &ast::Element, context: &'a Context) -> Result<Option<virt::Node>, &'static str> {
@@ -244,6 +264,18 @@ fn evaluate_import_element<'a>(_element: &ast::Element, _context: &'a Context) -
   Ok(None)
 }
 
+fn evaluate_self_element<'a>(element: &ast::Element, context: &'a Context) -> Result<Option<virt::Node>, &'static str> {
+  evaluate_component(element, context.file_path, context)
+}
+
+
+fn evaluate_part_element<'a>(element: &ast::Element, is_root: bool, context: &'a Context) -> Result<Option<virt::Node>, &'static str> {
+  if !is_root {
+    return Ok(None)
+  }
+  evaluate_children_as_fragment(&element.children, context)
+}
+
 fn evaluate_style_element<'a>(_element: &ast::StyleElement, _context: &'a Context) -> Result<Option<virt::Node>, &'static str> {
   Ok(None)
 }
@@ -254,7 +286,7 @@ fn evaluate_children<'a>(children_expr: &Vec<ast::Node>, context: &'a Context) -
   let mut children: Vec<virt::Node> = vec![];
 
   for child_expr in children_expr {
-    match evaluate_node(child_expr, context)? {
+    match evaluate_node(child_expr, false, context)? {
       Some(c) => { children.push(c); },
       None => { }
     }
@@ -264,7 +296,11 @@ fn evaluate_children<'a>(children_expr: &Vec<ast::Node>, context: &'a Context) -
 }
 
 fn evaluate_fragment<'a>(fragment: &ast::Fragment, context: &'a Context) -> Result<Option<virt::Node>, &'static str> {
-  let mut children = evaluate_children(&fragment.children, context)?;
+  evaluate_children_as_fragment(&fragment.children, context)
+}
+
+fn evaluate_children_as_fragment<'a>(children: &Vec<ast::Node>, context: &'a Context) -> Result<Option<virt::Node>, &'static str> {
+  let mut children = evaluate_children(&children, context)?;
   if children.len() == 1 {
     return Ok(children.pop());
   }
@@ -288,7 +324,7 @@ fn evaluate_conditional<'a>(block: &ast::ConditionalBlock, context: &'a Context)
     },
     ast::ConditionalBlock::FinalBlock(block) => {
       if let Some(node) = &block.node {
-        evaluate_node(node, context)
+        evaluate_node(node, false, context)
       } else {
         Ok(None)
       }
@@ -300,7 +336,7 @@ fn evaluate_pass_fail_block<'a>(block: &ast::PassFailBlock, context: &'a Context
   let condition = evaluate_js(&block.condition, context.data)?;
   if condition.truthy() {
     if let Some(node) = &block.node {
-      evaluate_node(node, context)
+      evaluate_node(node, false, context)
     } else if let Some(fail) = &block.fail {
       evaluate_conditional(fail, context)
     } else {
@@ -339,6 +375,6 @@ mod tests {
     let case = "<style>div { color: red; }</style><div></div>";
     let ast = parse(case).unwrap();
     let graph = DependencyGraph::new();
-    let _node = evaluate(&ast, &"something".to_string(), &graph, &js_virt::JsValue::JsObject(js_virt::JsObject::new())).unwrap().unwrap();
+    let _node = evaluate(&ast, &"something".to_string(), &graph, &js_virt::JsValue::JsObject(js_virt::JsObject::new()), None).unwrap().unwrap();
   }
 }

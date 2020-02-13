@@ -20,7 +20,8 @@ use engine::{Engine};
 
 #[derive(Deserialize, Debug)]
 struct LoadParams {
-    file_path: String
+    file_path: String,
+    part: Option<String>
 }
 
 #[derive(Deserialize, Debug)]
@@ -56,16 +57,16 @@ fn main() {
     let mut io = IoHandler::new();
     let load_engine_mutex = engine_mutex.clone();
 	io.add_method("load", move |params: Params| {
-        let parsed: LoadParams = params.parse().unwrap();
-        block_on(load_engine_mutex.lock().unwrap().load(&parsed.file_path));
+        let params: LoadParams = params.parse().unwrap();
+        block_on(load_engine_mutex.lock().unwrap().load(&params.file_path, params.part));
 		Ok(Value::String("ok".into()))
     });
 
 
     let unload_engine_mutex = engine_mutex.clone();
 	io.add_method("unload", move |params: Params| {
-		let parsed: UnloadParams = params.parse().unwrap();
-        unload_engine_mutex.lock().unwrap().unload(parsed.file_path);
+		let params: UnloadParams = params.parse().unwrap();
+        unload_engine_mutex.lock().unwrap().unload(params.file_path);
 		Ok(Value::String("ok".into()))
     });
 
@@ -93,8 +94,8 @@ fn main() {
     
     let update_virtual_file_content_engine_mutex = engine_mutex.clone();
 	io.add_method("update_virtual_file_content", move |params: Params| {
-        let parsed: UpdateVirtualFileContentParams = params.parse().unwrap();
-        block_on(update_virtual_file_content_engine_mutex.lock().unwrap().update_virtual_file_content(&parsed.file_path, &parsed.content));
+        let params: UpdateVirtualFileContentParams = params.parse().unwrap();
+        block_on(update_virtual_file_content_engine_mutex.lock().unwrap().update_virtual_file_content(&params.file_path, &params.content));
 		Ok(Value::String("ok".into()))
     });
     

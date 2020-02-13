@@ -8,8 +8,12 @@
 </style>
 
 <button alt primary>
-  <div>hello world</div>
+  <div>{children}</div>
 </button>
 
-<div>
-</div>
+
+<part id="tandem:preview">
+  <self>
+    okay okay
+  </self>
+</part>

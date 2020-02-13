@@ -15,6 +15,7 @@ export type FileContent = {
 export type EngineOptions = {
   httpFilePath?: string;
   log?: boolean;
+  renderPart?: string;
 };
 
 const noop = (...args) => {};
@@ -28,9 +29,9 @@ export class Engine {
   private _disposed: boolean;
   private _loaded: Promise<any>;
 
-  constructor(options: EngineOptions = {}) {
+  constructor(private _options: EngineOptions = {}) {
     this._listeners = [];
-    this._loaded = this.init(options);
+    this._loaded = this.init(_options);
   }
   async init(options: EngineOptions) {
     const port = await getPort();
@@ -125,7 +126,10 @@ export class Engine {
     await this._loaded;
     this._client.request(
       "load",
-      { file_path: stripFileProtocol(filePath) },
+      {
+        file_path: stripFileProtocol(filePath),
+        part: this._options.renderPart
+      },
       noop
     );
   }

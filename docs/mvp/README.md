@@ -33,8 +33,16 @@ Limitations:
 
 immediate TODO:
 
+- render parts
+  - within main template
+  - import:part
+- prohibit <self /> in certain cases
+- deprecate {#block}
+
 - react compiler
-- ## type inferencing
+  - just get slots to work, maybe parts
+  - webpack loader
+- type inferencing
 - quick guide to setup Tandem
 - React compiler
   - webpack loader

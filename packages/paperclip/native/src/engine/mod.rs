@@ -1,3 +1,4 @@
+use std::collections::HashMap;
 use crate::pc::{runtime};
 use crate::pc::parser::{parse as parse_pc};
 use crate::base::parser::{ParseError};
@@ -27,10 +28,16 @@ pub enum EngineEvent {
   Error(EngineError)
 }
 
+pub struct EvalOptions {
+  part: Option<String>
+}
+
+
 pub struct Engine {
   events: Vec<EngineEvent>,
   pub vfs: VirtualFileSystem,
-  pub dependency_graph: DependencyGraph
+  pub dependency_graph: DependencyGraph,
+  pub load_options: HashMap<String, EvalOptions>
 }
 
 impl Engine {
@@ -38,11 +45,23 @@ impl Engine {
     Engine {
       vfs: VirtualFileSystem::new(http_path),
       dependency_graph: DependencyGraph::new(),
-      events: vec![]
+      events: vec![],
+      load_options: HashMap::new()
     }
   }
   
-  pub async fn load(&mut self, file_path: &String) -> Result<(), GraphError> {
+  pub async fn load(&mut self, file_path: &String, part: Option<String>) -> Result<(), GraphError> {
+    self.load_options.insert(file_path.to_string(), EvalOptions {
+      part
+    });
+
+    self
+    .reload(file_path)
+    .await
+  }
+
+
+  pub async fn reload(&mut self, file_path: &String) -> Result<(), GraphError> {
     let load_result = self.dependency_graph.load_dependency(file_path, &mut self.vfs).await;
     if let Err(error) = load_result {
       self.events.push(EngineEvent::Error(EngineError::Graph(error.clone())));
@@ -63,16 +82,15 @@ impl Engine {
   }
 
   pub async fn update_virtual_file_content(&mut self, file_path: &String, content: &String) -> Result<(), GraphError> {
-
     self.vfs.update(file_path, content).await;
-    self.load(file_path).await?;
+    self.reload(file_path).await?;
 
     let mut dep_file_paths: Vec<String> = self.dependency_graph.flatten_dependents(file_path).into_iter().map(|dep| -> String {
       dep.file_path.to_string()
     }).collect();
 
     for dep_file_path in dep_file_paths.drain(0..).into_iter() {
-      self.load(&dep_file_path).await?;
+      self.reload(&dep_file_path).await?;
     }
 
     Ok(())
@@ -80,9 +98,19 @@ impl Engine {
 
   fn evaluate(&mut self, file_path: &String) -> Result<(), &'static str>  {
     let dependency = self.dependency_graph.dependencies.get(file_path).unwrap();
+    let node = runtime::evaluate(
+      &dependency.expression, 
+      file_path, 
+      &self.dependency_graph, 
+      &js_virt::JsValue::JsObject(js_virt::JsObject::new()),
+      self.load_options.get(file_path).and_then(|options| {
+        options.part.clone()
+      })
+    )?;
+
     self.events.push(EngineEvent::Evaluated(EvaluatedEvent {
       file_path: file_path.clone(),
-      node: runtime::evaluate(&dependency.expression, file_path, &self.dependency_graph, &js_virt::JsValue::JsObject(js_virt::JsObject::new()))?
+      node,
     }));
     Ok(())
   }
