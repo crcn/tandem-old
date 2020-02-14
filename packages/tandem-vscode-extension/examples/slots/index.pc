@@ -1,0 +1,21 @@
+Something!!!
+
+<part id="preview">
+  okay oka
+  <self>
+    <item />
+    <item />
+    <item />
+    <item />
+    <item />
+    <item />
+    <item />
+    <item />
+  </self>
+</part>
+
+<part id="item">
+  something
+</part>
+
+{children} <item />

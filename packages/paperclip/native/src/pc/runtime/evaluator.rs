@@ -21,10 +21,11 @@ pub struct Context<'a> {
   scope: String,
   data: &'a js_virt::JsValue,
   in_part: bool,
+  from_main: bool,
 }
 
 pub fn evaluate<'a>(node_expr: &ast::Node, file_path: &String, graph: &'a DependencyGraph, data: &js_virt::JsValue, part: Option<String>) -> Result<Option<virt::Node>, RuntimeError>  {
-  let context = create_context(node_expr, file_path, graph, data);
+  let context = create_context(node_expr, file_path, graph, data, None);
   let mut root_result = evaluate_instance_node(node_expr, &context, part);
 
   // need to insert all styles into the root for efficiency
@@ -72,6 +73,8 @@ pub fn evaluate_jumbo_style<'a>(_entry_expr: &ast::Node,  file_path: &String, gr
 
 pub fn evaluate_instance_node<'a>(node_expr: &ast::Node, context: &'a Context, part_option: Option<String>) -> Result<Option<virt::Node>, RuntimeError>  {
 
+  let mut context = context.clone();
+
   let target_node = if let Some(part) = part_option {
     ast::get_children(node_expr).and_then(|children| {
       children.iter().find(|node| {
@@ -85,11 +88,22 @@ pub fn evaluate_instance_node<'a>(node_expr: &ast::Node, context: &'a Context, p
   } else {
     node_expr
   };
+
+  if target_node == node_expr {
+    context.from_main = true;
+  }
   
-  evaluate_node(target_node, true, context)
+  evaluate_node(target_node, true, &context)
 }
 
-fn create_context<'a>(node_expr: &'a ast::Node, file_path: &'a String, graph: &'a DependencyGraph, data: &'a js_virt::JsValue) -> Context<'a> {
+fn create_context<'a>(node_expr: &'a ast::Node, file_path: &'a String, graph: &'a DependencyGraph, data: &'a js_virt::JsValue, parent_option: Option<&'a Context>) -> Context<'a> {
+
+  let from_main = if let Some(parent) = parent_option {
+    (parent.from_main)
+  } else {
+    (false)
+  };
+
   Context {
     graph,
     file_path,
@@ -97,7 +111,8 @@ fn create_context<'a>(node_expr: &'a ast::Node, file_path: &'a String, graph: &'
     part_ids: HashSet::from_iter(ast::get_part_ids(node_expr)),
     scope: get_component_scope(file_path),
     data,
-    in_part: false
+    in_part: false,
+    from_main,
   }
 }
 
@@ -183,7 +198,7 @@ fn evaluate_part_instance_element<'a>(element: &ast::Element, context: &'a Conte
   let self_dep  = &context.graph.dependencies.get(context.file_path).unwrap();
   let part = ast::get_part_by_id(&element.tag_name, &self_dep.expression).unwrap();
   let data = create_component_instance_data(element, context)?;
-  evaluate_element(part, true, &create_context(&self_dep.expression, &self_dep.file_path, context.graph, &data))
+  evaluate_element(part, true, &create_context(&self_dep.expression, &self_dep.file_path, context.graph, &data, Some(context)))
 }
 
 fn create_component_instance_data<'a>(instance_element: &ast::Element, context: &'a Context) -> Result<js_virt::JsValue, RuntimeError> {
@@ -245,7 +260,7 @@ fn evaluate_component_instance<'a>(instance_element: &ast::Element, dep_file_pat
   let dep = &context.graph.dependencies.get(&dep_file_path.to_string()).unwrap();
   let data = create_component_instance_data(instance_element, context)?;
 
-  let context = &create_context(&dep.expression, dep_file_path, context.graph, &data);
+  let context = &create_context(&dep.expression, dep_file_path, context.graph, &data, None);
 
   // TODO: if fragment, then wrap in span. If not, then copy these attributes to root element
   evaluate_instance_node(&dep.expression, &context, namespace)
@@ -310,13 +325,15 @@ fn evaluate_import_element<'a>(_element: &ast::Element, _context: &'a Context) -
 }
 
 fn evaluate_self_element<'a>(element: &ast::Element, context: &'a Context) -> Result<Option<virt::Node>, RuntimeError> {
-  if !context.in_part {
+  
+  if context.from_main {
     return Err(RuntimeError { 
       file_path: context.file_path.to_string(), 
-      message: "Can't use <self /> tag in main body. This causes an infinite loop!".to_string(), 
+      message: "Can't call <self /> here since this causes an infinite loop!".to_string(), 
       location: element.open_tag_location.clone() 
     });
   }
+
   evaluate_component_instance(element, context.file_path, context)
 }
 
