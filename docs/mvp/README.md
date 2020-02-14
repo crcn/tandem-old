@@ -33,10 +33,12 @@ Limitations:
 
 immediate TODO:
 
+- update syntax color to support namespaces
 - render parts
 
   - within main template
   - import:part
+  - HTML in slots {<div />}
 
 - react compiler
   - just get slots to work, maybe parts

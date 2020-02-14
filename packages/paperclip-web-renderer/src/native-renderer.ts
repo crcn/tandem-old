@@ -4,6 +4,9 @@ import { Html5Entities } from "html-entities";
 const entities = new Html5Entities();
 
 export const createNativeNode = node => {
+  if (!node) {
+    return document.createTextNode("");
+  }
   try {
     switch (node.kind) {
       case "Text":

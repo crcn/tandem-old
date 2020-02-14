@@ -25,7 +25,7 @@ export type SourceLocation = {
 
 export type EvaluatedEvent = {
   filePath: string;
-  node: VirtualNode;
+  node?: VirtualNode;
 } & BaseEngineEvent<EngineEventKind.Evaluated>;
 
 export type BaseEngineErrorEvent<TErrorType extends EngineErrorKind> = {

@@ -1,21 +1,29 @@
+<style>
+  li {
+    color: red;
+  }
+</style>
 
 <part id="item">
   <li>{children}</li>
 </part>
 
-<ul>
+<ol>
   {children}
-</ul>
+</ol>
 
 <part id="preview">
   <self>
-    <item>item 1</item>
-    <item>item 2</item>
-    <item>item 3</item>
-    <item>item 4</item>
-    <item>item 5</item>
-    <item>item 6</item>
-    <item>item 7</item>
+    <item>item</item>
+    <item>item</item>
+    <item>item</item>
+    <item>item</item>
+    <item>item</item>
+    <item>item</item>
+    <item>item</item>
+    <item>item</item>
+    <item>item</item>
+    <item>item</item>
   </self>
 </part>
 

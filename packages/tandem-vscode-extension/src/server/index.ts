@@ -148,7 +148,7 @@ const initEngine = async (
   });
 };
 
-connection.onInitialized((params: InitializedParams) => {
+connection.onInitialized((_params: InitializedParams) => {
   initEngine(connection, documents);
 });
 

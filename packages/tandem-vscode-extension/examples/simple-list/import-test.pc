@@ -1,0 +1,9 @@
+<import id="something" src="./index.pc" />
+
+{children}
+
+<part id="preview">
+  <self>
+    <something:preview />
+  </self>
+</part>
