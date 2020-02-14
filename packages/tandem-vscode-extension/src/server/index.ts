@@ -29,7 +29,7 @@ import {
   EngineEventNotification
 } from "../common/notifications";
 
-const PAPERCLIP_RENDER_PART = "tandem:preview";
+const PAPERCLIP_RENDER_PART = "preview";
 
 const connection = createConnection(ProposedFeatures.all);
 
@@ -55,22 +55,30 @@ const initEngine = async (
     renderPart: PAPERCLIP_RENDER_PART
   });
 
-  const handleGraphError = ({ file_path: filePath, info }: GraphErrorEvent) => {
+  const handleGraphError = ({ filePath, info }: GraphErrorEvent) => {
+    sendError(filePath, info.message, info.location);
+  };
+
+  const handleRuntimeError = ({
+    filePath,
+    message,
+    location
+  }: RuntimeErrorEvent) => {
+    sendError(filePath, message, location);
+  };
+
+  const sendError = (
+    filePath: string,
+    message: string,
+    location: SourceLocation
+  ) => {
     const textDocument = documents.get(`file://${filePath}`);
     if (!textDocument) {
       return;
     }
 
     const diagnostics: Diagnostic[] = [
-      {
-        severity: DiagnosticSeverity.Error,
-        range: {
-          start: textDocument.positionAt(info.location.start),
-          end: textDocument.positionAt(info.location.end)
-        },
-        message: `${info.message}`,
-        source: "ex"
-      }
+      createErrorDiagnostic(message, textDocument, location)
     ];
 
     connection.sendDiagnostics({
@@ -79,22 +87,24 @@ const initEngine = async (
     });
   };
 
-  const handleRuntimeError = (event: RuntimeErrorEvent) => {};
-
-  const createErrorDiagnostic = (message: string, location: SourceLocation) => {
+  const createErrorDiagnostic = (
+    message: string,
+    textDocument: TextDocument,
+    location: SourceLocation
+  ) => {
     return {
       severity: DiagnosticSeverity.Error,
       range: {
-        start: textDocument.positionAt(info.location.start),
-        end: textDocument.positionAt(info.location.end)
+        start: textDocument.positionAt(location.start),
+        end: textDocument.positionAt(location.end)
       },
-      message: `${info.message}`,
+      message: `${message}`,
       source: "ex"
     };
   };
 
   const handleEngineError = (event: EngineErrorEvent) => {
-    switch (event.error_kind) {
+    switch (event.errorKind) {
       case EngineErrorKind.Graph:
         return handleGraphError(event);
       case EngineErrorKind.Runtime:
@@ -109,7 +119,7 @@ const initEngine = async (
       // reset diagnostics
       if (event.kind === EngineEventKind.Evaluated) {
         connection.sendDiagnostics({
-          uri: `file://${event.file_path}`,
+          uri: `file://${event.filePath}`,
           diagnostics: []
         });
       }

@@ -193,7 +193,7 @@ class LivePreview {
     // TODO when live preview tools are available
   };
   public $$handleEngineEvent(event: EngineEvent) {
-    if (event.file_path !== stripFileProtocol(this.targetFilePath)) {
+    if (event.filePath !== stripFileProtocol(this.targetFilePath)) {
       return;
     }
 

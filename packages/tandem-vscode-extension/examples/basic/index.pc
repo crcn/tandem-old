@@ -11,9 +11,8 @@
   <div>{children}</div>
 </button>
 
-
-<part id="tandem:preview">
+<part id="preview">
   <self>
-    something
+    Something like this
   </self>
 </part>

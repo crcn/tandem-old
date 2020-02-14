@@ -6,11 +6,12 @@ use crate::base::ast::{Location};
 
 
 pub struct Context<'a> {
+  file_path: &'a String,
   data: &'a virt::JsValue
 }
 
-pub fn evaluate<'a>(expr: &ast::Statement, data: &'a virt::JsValue) -> Result<virt::JsValue, RuntimeError> {
-  let context = Context { data };
+pub fn evaluate<'a>(expr: &ast::Statement, file_path: &'a String, data: &'a virt::JsValue) -> Result<virt::JsValue, RuntimeError> {
+  let context = Context { data, file_path };
   evaluate_statement(&expr, &context)
 }
 fn evaluate_statement<'a>(statement: &ast::Statement, context: &'a Context) -> Result<virt::JsValue, RuntimeError> {
@@ -28,6 +29,7 @@ fn evaluate_reference<'a>(reference: &ast::Reference, context: &'a Context) -> R
       curr = virt::get_js_value_property(&object, property_name);
     } else {
       return Err(RuntimeError {
+        file_path: context.file_path.to_string(),
         message: "Cannot access property of undefined".to_string(), 
         location: Location {
           start: 0,

@@ -146,7 +146,7 @@ fn evaluate_element<'a>(element: &ast::Element, is_root: bool, context: &'a Cont
 }
 
 fn evaluate_slot<'a>(slot: &js_ast::Statement, context: &'a Context) -> Result<Option<virt::Node>, RuntimeError> {
-  let mut js_value = evaluate_js(slot, &context.data)?;
+  let mut js_value = evaluate_js(slot, &context.file_path, &context.data)?;
 
   // if array of values, then treat as document fragment
   if let js_virt::JsValue::JsArray(ary) = &mut js_value {
@@ -200,6 +200,7 @@ fn evaluate_component<'a>(element: &ast::Element, dep_file_path: &String, contex
       ast::Attribute::ShorthandAttribute(sh_attr) => {
         let name = sh_attr.get_name().map_err(|message| {
           RuntimeError {
+            file_path: context.file_path.to_string(),
             message: message.to_string(),
             location: Location { 
               start: 0,
@@ -250,6 +251,7 @@ fn evaluate_basic_element<'a>(element: &ast::Element, context: &'a Context) -> R
       ast::Attribute::ShorthandAttribute(sh_attr) => {
         let name = sh_attr.get_name().map_err(|message| {
           RuntimeError {
+            file_path: context.file_path.to_string(),
             message: message.to_string(),
             location: Location { 
               start: 0,
@@ -289,7 +291,11 @@ fn evaluate_import_element<'a>(_element: &ast::Element, _context: &'a Context) -
 
 fn evaluate_self_element<'a>(element: &ast::Element, context: &'a Context) -> Result<Option<virt::Node>, RuntimeError> {
   if !context.in_part {
-    return Err(RuntimeError { message: "<self /> can only be used in part".to_string(), location: element.open_tag_location.clone() });
+    return Err(RuntimeError { 
+      file_path: context.file_path.to_string(), 
+      message: "Can't use <self /> tag in main body. This causes an infinite loop!".to_string(), 
+      location: element.open_tag_location.clone() 
+    });
   }
   evaluate_component(element, context.file_path, context)
 }
@@ -363,7 +369,7 @@ fn evaluate_conditional<'a>(block: &ast::ConditionalBlock, context: &'a Context)
 }
 
 fn evaluate_pass_fail_block<'a>(block: &ast::PassFailBlock, context: &'a Context) -> Result<Option<virt::Node>, RuntimeError> {
-  let condition = evaluate_js(&block.condition, context.data)?;
+  let condition = evaluate_js(&block.condition, &context.file_path, context.data)?;
   if condition.truthy() {
     if let Some(node) = &block.node {
       evaluate_node(node, false, context)
@@ -391,7 +397,7 @@ fn evaluate_attribute_value<'a>(value: &ast::AttributeValue, context: &'a Contex
 }
 
 fn evaluate_attribute_slot<'a>(script: &js_ast::Statement, context: &'a Context) -> Result<js_virt::JsValue, RuntimeError> {
-  evaluate_js(script, &context.data)
+  evaluate_js(script, &context.file_path, &context.data)
 }
 
 #[cfg(test)]

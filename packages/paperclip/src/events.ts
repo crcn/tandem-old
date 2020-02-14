@@ -24,13 +24,13 @@ export type SourceLocation = {
 };
 
 export type EvaluatedEvent = {
-  file_path: string;
+  filePath: string;
   node: VirtualNode;
 } & BaseEngineEvent<EngineEventKind.Evaluated>;
 
 export type BaseEngineErrorEvent<TErrorType extends EngineErrorKind> = {
-  file_path: string;
-  error_kind: TErrorType;
+  filePath: string;
+  errorKind: TErrorType;
 } & BaseEngineEvent<EngineEventKind.Error>;
 
 export enum GraphErrorInfoType {
@@ -50,7 +50,7 @@ export type SyntaxGraphErrorInfo = {
 } & BaseGraphErrorInfo<GraphErrorInfoType.Syntax>;
 
 export type IncludNotFoundErrorInfo = {
-  file_path: string;
+  filePath: string;
   message: string;
   location: SourceLocation;
 } & BaseGraphErrorInfo<GraphErrorInfoType.IncludeNotFound>;
@@ -62,6 +62,7 @@ export type GraphErrorEvent = {
 } & BaseEngineErrorEvent<EngineErrorKind.Graph>;
 
 export type RuntimeErrorEvent = {
+  filePath: string;
   message: string;
   location: SourceLocation;
 } & BaseEngineErrorEvent<EngineErrorKind.Runtime>;

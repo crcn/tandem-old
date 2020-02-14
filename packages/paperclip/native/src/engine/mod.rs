@@ -12,12 +12,14 @@ use crate::pc::runtime::graph::{GraphError};
 
 #[derive(Debug, PartialEq, Serialize)]
 pub struct EvaluatedEvent {
+  
+  #[serde(rename = "filePath")]
   pub file_path: String,
   pub node: Option<runtime::virt::Node>
 }
 
 #[derive(Debug, PartialEq, Serialize)]
-#[serde(tag = "error_kind")]
+#[serde(tag = "errorKind")]
 pub enum EngineError {
   Graph(GraphError),
   Runtime(RuntimeError)

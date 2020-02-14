@@ -21,6 +21,8 @@ pub enum GraphErrorInfo {
 
 #[derive(Debug, PartialEq, Serialize, Clone)]
 pub struct IncludeNodeFoundError {
+
+  #[serde(rename = "filePath")]
   pub file_path: String,
   pub location: Location,
   pub message: String
@@ -28,6 +30,8 @@ pub struct IncludeNodeFoundError {
 
 #[derive(Debug, PartialEq, Serialize, Clone)]
 pub struct GraphError {
+  
+  #[serde(rename = "filePath")]
   file_path: String,
   info: GraphErrorInfo
 }
