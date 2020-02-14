@@ -1,0 +1,21 @@
+
+<part id="item">
+  <li>{children}</li>
+</part>
+
+<ul>
+  {children}
+</ul>
+
+<part id="preview">
+  <self>
+    <item>item 1</item>
+    <item>item 2</item>
+    <item>item 3</item>
+    <item>item 4</item>
+    <item>item 5</item>
+    <item>item 6</item>
+    <item>item 7</item>
+  </self>
+</part>
+

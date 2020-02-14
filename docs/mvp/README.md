@@ -34,10 +34,9 @@ Limitations:
 immediate TODO:
 
 - render parts
+
   - within main template
   - import:part
-- prohibit <self /> in certain cases
-- deprecate {#block}
 
 - react compiler
   - just get slots to work, maybe parts

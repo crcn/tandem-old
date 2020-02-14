@@ -2,8 +2,12 @@
 
 <style>
   div {
-    color: blue;
+    color: white;
     display: inline-block;
+  }
+
+  span {
+    color: black;
   }
 </style>
 
@@ -13,6 +17,6 @@
 
 <part id="preview">
   <self>
-    Something like this
+    <span>something</span>
   </self>
 </part>

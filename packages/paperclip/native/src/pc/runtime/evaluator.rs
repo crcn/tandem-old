@@ -17,6 +17,7 @@ pub struct Context<'a> {
   graph: &'a DependencyGraph,
   file_path: &'a String,
   import_ids: HashSet<&'a String>,
+  part_ids: HashSet<&'a String>,
   scope: String,
   data: &'a js_virt::JsValue,
   in_part: bool,
@@ -93,6 +94,7 @@ fn create_context<'a>(node_expr: &'a ast::Node, file_path: &'a String, graph: &'
     graph,
     file_path,
     import_ids: HashSet::from_iter(ast::get_import_ids(node_expr)),
+    part_ids: HashSet::from_iter(ast::get_part_ids(node_expr)),
     scope: get_component_scope(file_path),
     data,
     in_part: false
@@ -138,6 +140,8 @@ fn evaluate_element<'a>(element: &ast::Element, is_root: bool, context: &'a Cont
     _ => {
       if context.import_ids.contains(&element.tag_name) {
         evaluate_imported_component(element, context)
+      } else if context.part_ids.contains(&element.tag_name) {
+        evaluate_part_instance_element(element, context)
       } else {
         evaluate_basic_element(element, context)
       }
@@ -175,15 +179,20 @@ fn evaluate_imported_component<'a>(element: &ast::Element, context: &'a Context)
   evaluate_component(element, dep_file_path, context)
 }
 
-fn evaluate_component<'a>(element: &ast::Element, dep_file_path: &String, context: &'a Context) -> Result<Option<virt::Node>, RuntimeError> {
+fn evaluate_part_instance_element<'a>(element: &ast::Element, context: &'a Context) -> Result<Option<virt::Node>, RuntimeError> {
+  let self_dep  = &context.graph.dependencies.get(context.file_path).unwrap();
+  let part = ast::get_part_by_id(&element.tag_name, &self_dep.expression).unwrap();
+  let data = create_component_instance_data(element, context)?;
+  evaluate_element(part, true, &create_context(&self_dep.expression, &self_dep.file_path, context.graph, &data))
+}
 
+fn create_component_instance_data<'a>(instance_element: &ast::Element, context: &'a Context) -> Result<js_virt::JsValue, RuntimeError> {
   let mut context = context.clone();
   context.in_part = false;
 
-  let dep = &context.graph.dependencies.get(&dep_file_path.to_string()).unwrap();
   let mut data = js_virt::JsObject::new();
 
-  for attr_expr in &element.attributes {
+  for attr_expr in &instance_element.attributes {
     let attr = &attr_expr;
     let (name, value) = match attr {
       ast::Attribute::KeyValueAttribute(kv_attr) => {
@@ -218,7 +227,7 @@ fn evaluate_component<'a>(element: &ast::Element, dep_file_path: &String, contex
 
   
   let mut js_children = js_virt::JsArray::new();
-  let children: Vec<js_virt::JsValue> = evaluate_children(&element.children, &context)?.into_iter().map(|child| {
+  let children: Vec<js_virt::JsValue> = evaluate_children(&instance_element.children, &context)?.into_iter().map(|child| {
     js_virt::JsValue::JsNode(child)
   }).collect();
 
@@ -226,8 +235,16 @@ fn evaluate_component<'a>(element: &ast::Element, dep_file_path: &String, contex
 
   data.values.insert("children".to_string(), js_virt::JsValue::JsArray(js_children));
 
+  Ok(js_virt::JsValue::JsObject(data))
+}
+
+fn evaluate_component<'a>(instance_element: &ast::Element, dep_file_path: &String, context: &'a Context) -> Result<Option<virt::Node>, RuntimeError> {
+
+  let dep = &context.graph.dependencies.get(&dep_file_path.to_string()).unwrap();
+  let data = create_component_instance_data(instance_element, context)?;
+
   // TODO: if fragment, then wrap in span. If not, then copy these attributes to root element
-  evaluate_isolated_node(&dep.expression, dep_file_path, &context.graph, &js_virt::JsValue::JsObject(data))
+  evaluate_isolated_node(&dep.expression, dep_file_path, &context.graph, &data)
 }
 
 fn evaluate_basic_element<'a>(element: &ast::Element, context: &'a Context) -> Result<Option<virt::Node>, RuntimeError> {

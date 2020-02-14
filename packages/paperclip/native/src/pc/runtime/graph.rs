@@ -89,7 +89,7 @@ impl DependencyGraph {
         let err: GraphError = match import {
           Some((origin_file_path, import_id)) => {
             let origin_dep = self.dependencies.get(&origin_file_path).unwrap();
-            let import = pc_ast::get_import(&origin_dep.expression, &import_id).unwrap();
+            let import = pc_ast::get_import_by_id(&import_id, &origin_dep.expression).unwrap();
             let info = GraphErrorInfo::IncludeNotFound(IncludeNodeFoundError {
               message: "import not found".to_string(),
               file_path: curr_file_path.to_string(),

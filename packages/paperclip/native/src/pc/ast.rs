@@ -252,7 +252,33 @@ pub fn get_imports<'a>(root_expr: &'a Node) -> Vec<&'a Element> {
   imports
 }
 
-pub fn get_import<'a>(root_expr: &'a Node, id: &String) -> Option<&'a Element> {
+pub fn get_parts<'a>(root_expr: &'a Node) -> Vec<&'a Element> {
+  let mut parts = vec![];
+
+  let children = get_children(root_expr);
+
+  if children != None {
+    for child in children.unwrap() {
+      if let Node::Element(element) = &child {
+        if element.tag_name == "part" {
+          parts.push(element);
+        }
+      }
+    }
+  }
+
+  parts
+}
+
+pub fn get_part_by_id<'a>(id: &String, root_expr: &'a Node) -> Option<&'a Element> {
+  get_parts(root_expr).iter().find(|element| {
+    get_attribute_value("id", element) == Some(id)
+  }).map(|element| {
+    *element
+  })
+}
+
+pub fn get_import_by_id<'a>(id: &String, root_expr: &'a Node) -> Option<&'a Element> {
   for import in get_imports(root_expr).iter() {
     if get_attribute_value("id", import) == Some(id) {
       return Some(import);
@@ -292,6 +318,16 @@ pub fn get_import_ids<'a>(root_expr: &'a Node) -> Vec<&'a String> {
   let mut ids = vec![];
   for import in get_imports(root_expr) {
     if let Some(id) = get_attribute_value("id", &import) {
+      ids.push(id);
+    }
+  }
+  ids
+}
+
+pub fn get_part_ids<'a>(root_expr: &'a Node) -> Vec<&'a String> {
+  let mut ids = vec![];
+  for part in get_parts(root_expr) {
+    if let Some(id) = get_attribute_value("id", &part) {
       ids.push(id);
     }
   }

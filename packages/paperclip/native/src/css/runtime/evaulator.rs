@@ -1,7 +1,6 @@
 use super::super::ast;
 use super::virt;
 use crate::base::runtime::{RuntimeError};
-use crate::base::ast::{Location};
 
 #[derive(Debug)]
 pub struct Context<'a> {
