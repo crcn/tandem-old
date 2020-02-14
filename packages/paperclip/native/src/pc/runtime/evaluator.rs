@@ -165,7 +165,7 @@ fn evaluate_element<'a>(element: &ast::Element, is_root: bool, context: &'a Cont
 }
 
 fn evaluate_slot<'a>(slot: &js_ast::Statement, context: &'a Context) -> Result<Option<virt::Node>, RuntimeError> {
-  let mut js_value = evaluate_js(slot, &context.file_path, &context.data)?;
+  let mut js_value = evaluate_js(slot, &context.file_path, &context.graph, &context.data)?;
 
   // if array of values, then treat as document fragment
   if let js_virt::JsValue::JsArray(ary) = &mut js_value {
@@ -406,7 +406,7 @@ fn evaluate_conditional<'a>(block: &ast::ConditionalBlock, context: &'a Context)
 }
 
 fn evaluate_pass_fail_block<'a>(block: &ast::PassFailBlock, context: &'a Context) -> Result<Option<virt::Node>, RuntimeError> {
-  let condition = evaluate_js(&block.condition, &context.file_path, context.data)?;
+  let condition = evaluate_js(&block.condition, &context.file_path, &context.graph, context.data)?;
   if condition.truthy() {
     if let Some(node) = &block.node {
       evaluate_node(node, false, context)
@@ -434,7 +434,7 @@ fn evaluate_attribute_value<'a>(value: &ast::AttributeValue, context: &'a Contex
 }
 
 fn evaluate_attribute_slot<'a>(script: &js_ast::Statement, context: &'a Context) -> Result<js_virt::JsValue, RuntimeError> {
-  evaluate_js(script, &context.file_path, &context.data)
+  evaluate_js(script, &context.file_path, &context.graph, &context.data)
 }
 
 #[cfg(test)]

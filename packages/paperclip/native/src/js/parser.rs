@@ -1,6 +1,7 @@
 use crate::base::tokenizer::{Tokenizer, Token};
 use crate::base::parser::{ParseError};
 use super::ast;
+use crate::pc::parser::parse_element;
 
 fn _parse<'a>(source: &'a str) -> Result<ast::Statement, ParseError> {
   let mut tokenizer = Tokenizer::new(source);
@@ -9,8 +10,16 @@ fn _parse<'a>(source: &'a str) -> Result<ast::Statement, ParseError> {
 
 pub fn parse_with_tokenizer<'a, FUntil>(tokenizer: &mut Tokenizer<'a>, _until: FUntil) -> Result<ast::Statement, ParseError> where
 FUntil: Fn(Token) -> bool {
-  parse_reference(tokenizer)
+  match tokenizer.peek(1)? {
+    Token::LessThan => parse_node(tokenizer),
+    _ => parse_reference(tokenizer)
+  }
 }
+
+fn parse_node<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<ast::Statement, ParseError> {
+  Ok(ast::Statement::Node(Box::new(parse_element(tokenizer)?)))
+}
+
 
 fn parse_reference<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<ast::Statement, ParseError> {
   let pos = tokenizer.pos;

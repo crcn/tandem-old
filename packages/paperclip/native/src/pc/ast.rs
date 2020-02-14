@@ -153,6 +153,9 @@ impl ShorthandAttribute {
           Err("Unexpected Expression")
         }
       }
+      _ => {
+        Err("Unexpected Expression")
+      }
     }
   }
 }

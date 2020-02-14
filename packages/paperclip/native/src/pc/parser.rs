@@ -128,7 +128,7 @@ fn parse_slot_script<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<js_ast::Statem
   .or(Err(ParseError::unterminated("Unterminated slot.".to_string(), start, tokenizer.pos)))
 }
 
-fn parse_element<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::Node, ParseError> {
+pub fn parse_element<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::Node, ParseError> {
   let start = tokenizer.pos;
 
   tokenizer.next_expect(Token::LessThan)?;

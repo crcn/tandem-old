@@ -1,16 +1,19 @@
 use std::fmt;
 use serde::{Serialize};
+use crate::pc::ast as pc_ast;
 
 #[derive(Debug, PartialEq, Serialize)]
 #[serde(tag = "jsKind")]
 pub enum Statement {
-  Reference(Reference)
+  Reference(Reference),
+  Node(Box<pc_ast::Node>)
 }
 
 impl fmt::Display for Statement {
   fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
     match self {
-      Statement::Reference(reference) => write!(f, "{}", reference.to_string())
+      Statement::Reference(reference) => write!(f, "{}", reference.to_string()),
+      Statement::Node(node) => write!(f, "{}", node.to_string())
     }
   }
 }

@@ -1,4 +1,5 @@
 // see https://github.com/paritytech/jsonrpc/blob/master/pubsub/more-examples/examples/pubsub_ws.rs
+// #![recursion_limit="1024"]
 
 #[macro_use]
 extern crate matches;
@@ -9,7 +10,7 @@ mod pc;
 mod js;
 mod engine;
 
-use serde::{Deserialize};
+use serde::{Deserialize, Serialize};
 use jsonrpc_core::*;
 use std::sync::{Arc, Mutex};
 use std::env;
@@ -18,28 +19,28 @@ use ::futures::executor::block_on;
 
 use engine::{Engine};
 
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize, Debug, Serialize)]
 struct LoadParams {
     file_path: String,
     part: Option<String>
 }
 
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize, Debug, Serialize)]
 struct UnloadParams {
     file_path: String
 }
 
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize, Debug, Serialize)]
 struct ParseFileParams {
     file_path: String
 }
 
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize, Debug, Serialize)]
 struct ParseContentParams {
     content: String
 }
 
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize, Debug, Serialize)]
 struct UpdateVirtualFileContentParams {
     file_path: String,
     content: String
@@ -74,11 +75,12 @@ fn main() {
 	io.add_method("parse_file", move |params: Params| {
         let params: ParseFileParams = params.parse().unwrap();
         let result = block_on(parse_file_engine_mutex.lock().unwrap().parse_file(&params.file_path));
-        let json = match result {
-            Ok(node) => serde_json::to_string(&node).unwrap(),
-            Err(error) => format!("{{\"error\":{}}}", serde_json::to_string(&error).unwrap())
-        };
-		Ok(Value::String(json.into()))
+        // let json = match result {
+        //     Ok(node) => serde_json::to_string(&node).unwrap(),
+        //     Err(error) => format!("{{\"error\":{}}}", serde_json::to_string(&error).unwrap())
+        // };
+        Ok(Value::String("ok".into()))
+		// Ok(Value::String(json.to_string()))
     });
 
     let parse_content_engine_mutex = engine_mutex.clone();
@@ -86,7 +88,7 @@ fn main() {
         let params: ParseContentParams = params.parse().unwrap();
         let result = block_on(parse_content_engine_mutex.lock().unwrap().parse_content(&params.content));
         let json = match result {
-            Ok(node) => serde_json::to_string(&node).unwrap(),
+            Ok(node) => serde_json::to_string(&vec![node]).unwrap(),
             Err(error) => format!("{{\"error\":{}}}", serde_json::to_string(&error).unwrap())
         };
 		Ok(Value::String(json.into()))
