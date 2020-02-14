@@ -164,8 +164,9 @@ fn evaluate_element<'a>(element: &ast::Element, is_root: bool, context: &'a Cont
   }
 }
 
-fn evaluate_slot<'a>(slot: &js_ast::Statement, context: &'a Context) -> Result<Option<virt::Node>, RuntimeError> {
-  let mut js_value = evaluate_js(slot, &context.file_path, &context.graph, &context.data)?;
+fn evaluate_slot<'a>(slot: &ast::Slot, context: &'a Context) -> Result<Option<virt::Node>, RuntimeError> {
+  let script = &slot.script;
+  let mut js_value = evaluate_js(script, &context.file_path, &context.graph, &context.data)?;
 
   // if array of values, then treat as document fragment
   if let js_virt::JsValue::JsArray(ary) = &mut js_value {
@@ -183,6 +184,8 @@ fn evaluate_slot<'a>(slot: &js_ast::Statement, context: &'a Context) -> Result<O
     return Ok(Some(virt::Node::Fragment(virt::Fragment {
       children
     })));
+  } else if let js_virt::JsValue::JsNode(node)  = js_value {
+    return Ok(Some(node));
   }
 
   Ok(Some(virt::Node::Text(virt::Text { value: js_value.to_string() })))
@@ -217,7 +220,7 @@ fn create_component_instance_data<'a>(instance_element: &ast::Element, context: 
           let value = evaluate_attribute_value(&kv_attr.value.as_ref().unwrap(), &context)?;
           (
             kv_attr.name.to_string(),
-            js_virt::JsValue::JsString(value.unwrap().to_string())
+            value
           )
         }
       },
@@ -280,7 +283,7 @@ fn evaluate_basic_element<'a>(element: &ast::Element, context: &'a Context) -> R
         if kv_attr.value == None {
           (kv_attr.name.to_string(), None)
         } else {
-          (kv_attr.name.to_string(), evaluate_attribute_value(&kv_attr.value.as_ref().unwrap(), context)?)
+          (kv_attr.name.to_string(), Some(evaluate_attribute_value(&kv_attr.value.as_ref().unwrap(), context)?.to_string()))
         }
       },
       ast::Attribute::ShorthandAttribute(sh_attr) => {
@@ -422,13 +425,13 @@ fn evaluate_pass_fail_block<'a>(block: &ast::PassFailBlock, context: &'a Context
   }
 }
 
-fn evaluate_attribute_value<'a>(value: &ast::AttributeValue, context: &'a Context) -> Result<Option<String>, RuntimeError> {
+fn evaluate_attribute_value<'a>(value: &ast::AttributeValue, context: &'a Context) -> Result<js_virt::JsValue, RuntimeError> {
   match value {
     ast::AttributeValue::String(st) => {
-      Ok(Some(st.value.clone()))
+      Ok(js_virt::JsValue::JsString(st.value.clone()))
     }
     ast::AttributeValue::Slot(script) => {
-      Ok(Some(evaluate_attribute_slot(script, context)?.to_string()))
+      evaluate_attribute_slot(script, context)
     }
   }
 }

@@ -10,10 +10,15 @@ fn _parse<'a>(source: &'a str) -> Result<ast::Statement, ParseError> {
 
 pub fn parse_with_tokenizer<'a, FUntil>(tokenizer: &mut Tokenizer<'a>, _until: FUntil) -> Result<ast::Statement, ParseError> where
 FUntil: Fn(Token) -> bool {
-  match tokenizer.peek(1)? {
+  tokenizer.eat_whitespace();
+  let result = match tokenizer.peek(1)? {
     Token::LessThan => parse_node(tokenizer),
     _ => parse_reference(tokenizer)
-  }
+  };
+
+  tokenizer.eat_whitespace();
+
+  return result;
 }
 
 fn parse_node<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<ast::Statement, ParseError> {

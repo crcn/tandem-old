@@ -26,7 +26,7 @@
           },
           "patterns": [
             {
-              "include": "source.js"
+              "include": "#nodes"
             }
           ]
         }
@@ -59,7 +59,7 @@
     "attribute": {
       "patterns": [
         {
-          "begin": "([^={]+)",
+          "begin": "([^={/>]+)",
           "beginCaptures": {
             "1": {
               "name": "entity.other.attribute-name.html"
@@ -293,42 +293,40 @@
           }
         },
         {
-          "begin": "(<)([\\w\\-:]+)([^>]*)(>)",
+          "begin": "(<)([\\w\\-:]+)",
           "beginCaptures": {
-            "3": {
-              "patterns": [
-                {
-                  "include": "#attribute"
-                }
-              ]
-            },
             "2": {
               "name": "entity.name.tag.html"
             },
             "1": {
               "name": "punctuation.definition.tag.begin.html"
-            },
-            "4": {
-              "name": "punctuation.definition.tag.end.html"
             }
           },
-          "end": "(</)([\\w\\-:]+)(>)",
+          "end": "(/?>)",
           "endCaptures": {
-            "3": {
-              "name": "punctuation.definition.tag.end.html"
-            },
-            "2": {
-              "name": "entity.name.tag.html"
-            },
             "1": {
               "name": "punctuation.definition.tag.end.html"
             }
           },
           "patterns": [
             {
-              "include": "#nodes"
+              "include": "#attribute"
             }
           ]
+        },
+        {
+          "match": "(</)([\\w\\-:]+)(>)",
+          "captures": {
+            "3": {
+              "name": "punctuation.definition.tag.end.html"
+            },
+            "2": {
+              "name": "entity.name.tag.html"
+            },
+            "1": {
+              "name": "punctuation.definition.tag.end.html"
+            }
+          }
         }
       ]
     }

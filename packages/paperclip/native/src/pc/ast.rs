@@ -30,15 +30,20 @@ pub enum Node {
   Element(Element),
   Fragment(Fragment),
   StyleElement(StyleElement),
-  Slot(js_ast::Statement),
+  Slot(Slot),
   Block(Block)
+}
+
+#[derive(Debug, PartialEq, Serialize)]
+pub struct Slot {
+  pub script: js_ast::Statement
 }
 
 impl fmt::Display for Node {
   fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
     match self {
       Node::Text(text) => write!(f, "{}", &text.value),
-      Node::Slot(slot) => write!(f, "{{{}}}", &slot.to_string()),
+      Node::Slot(slot) => write!(f, "{{{}}}", &slot.script.to_string()),
       Node::Comment(comment) => write!(f, "<!--{}-->", &comment.value),
       Node::Fragment(node) => write!(f, "{}", node.to_string()),
       Node::Element(element) => write!(f, "{}", element.to_string()),
@@ -51,7 +56,7 @@ impl fmt::Display for Node {
 #[derive(Debug, PartialEq, Serialize)]
 pub enum Block {
   Conditional(ConditionalBlock)
-  // Repeat(RepeatBlock)
+  // Repeat(RepeatBlock)ode 
 }
 
 #[derive(Debug, PartialEq, Serialize)]

@@ -33,7 +33,7 @@ Limitations:
 
 immediate TODO:
 
-- HTML in slots {<div />}
+- syntax highlighter
 
 - react compiler
   - just get slots to work, maybe parts

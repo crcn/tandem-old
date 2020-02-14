@@ -47,28 +47,29 @@ repository:
         patterns:
           - include: "source.css"
 
-      # Elements with children
-      - begin: (<)([\w\-:]+)([^>]*)(>)
+      # open tag name
+      - begin: (<)([\w\-:]+)
         beginCaptures:
           "1": { name: punctuation.definition.tag.begin.html }
           "2": { name: entity.name.tag.html }
-          "3":
-            patterns:
-              - include: "#attribute"
-          "4": { name: punctuation.definition.tag.end.html }
-        end: (</)([\w\-:]+)(>)
+        end: (/?>)
         endCaptures:
+          "1": { name: punctuation.definition.tag.end.html }
+        patterns:
+          - include: "#attribute"
+
+      # end tag name
+      - match: (</)([\w\-:]+)(>)
+        captures:
           "1": { name: punctuation.definition.tag.end.html }
           "2": { name: entity.name.tag.html }
           "3": { name: punctuation.definition.tag.end.html }
-        patterns:
-          - include: "#nodes"
 
   # HTML Attribute
   attribute:
     # attribute="value"
     patterns:
-      - begin: ([^={]+)
+      - begin: ([^={/>]+)
         beginCaptures:
           "1": { name: entity.other.attribute-name.html }
         end: (?=\s*+[^=\s])
@@ -118,7 +119,7 @@ repository:
         endCaptures:
           "1": { name: punctuation }
         patterns:
-          - include: "source.js"
+          - include: "#nodes"
   blocks:
     patterns:
       # {#if}something{/}

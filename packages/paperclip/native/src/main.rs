@@ -88,7 +88,7 @@ fn main() {
         let params: ParseContentParams = params.parse().unwrap();
         let result = block_on(parse_content_engine_mutex.lock().unwrap().parse_content(&params.content));
         let json = match result {
-            Ok(node) => serde_json::to_string(&vec![node]).unwrap(),
+            Ok(node) => serde_json::to_string(&node).unwrap(),
             Err(error) => format!("{{\"error\":{}}}", serde_json::to_string(&error).unwrap())
         };
 		Ok(Value::String(json.into()))
