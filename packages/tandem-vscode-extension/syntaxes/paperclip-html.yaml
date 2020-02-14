@@ -56,7 +56,7 @@ repository:
             patterns:
               - include: "#attribute"
           "4": { name: punctuation.definition.tag.end.html }
-        end: (</)(\w+)(>)
+        end: (</)([\w\-:]+)(>)
         endCaptures:
           "1": { name: punctuation.definition.tag.end.html }
           "2": { name: entity.name.tag.html }

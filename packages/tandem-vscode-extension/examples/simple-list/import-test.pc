@@ -4,6 +4,7 @@
 
 <part id="preview">
   <self>
-    <something:preview />
+    <something:preview>
+    </something:preview>
   </self>
 </part>
