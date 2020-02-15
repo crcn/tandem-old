@@ -4,7 +4,7 @@ use crate::base::ast::{Location};
 use super::virt;
 use std::collections::HashSet;
 use std::iter::FromIterator;
-use super::graph::{DependencyGraph};
+use super::graph::{DependencyGraph, DependencyContent};
 use crate::css::runtime::evaulator::{evaluate as evaluate_css};
 use crate::js::runtime::evaluator::{evaluate as evaluate_js};
 use crate::js::runtime::virt as js_virt;
@@ -50,7 +50,7 @@ pub fn evaluate_document_styles<'a>(node_expr: &ast::Node, file_path: &String) -
     rules: vec![] 
   };
   let children_option = ast::get_children(&node_expr);
-  let scope = get_component_scope(file_path);
+  let scope = get_document_scope(file_path);
   if let Some(children) = children_option {
     // style elements are only allowed in root, so no need to traverse
     for child in children {
@@ -69,8 +69,23 @@ pub fn evaluate_jumbo_style<'a>(_entry_expr: &ast::Node,  file_path: &String, gr
     rules: vec![] 
   };
 
-  for dep in graph.flatten(file_path) {
-    sheet.extend(evaluate_document_styles(&dep.expression, &dep.file_path)?);
+  for (dependency, dependent_option) in graph.flatten(file_path) {
+    let dep_sheet = match &dependency.content {
+      DependencyContent::Node(node) => {
+        evaluate_document_styles(node, &dependency.file_path)?
+      },
+      DependencyContent::StyleSheet(sheet) => {
+        let scope = if let Some(dependent) = dependent_option {
+          get_document_scope(&dependent.file_path)
+        } else {
+          get_document_scope(&dependency.file_path)
+        };
+        
+        evaluate_css(&sheet, &scope)?
+      }
+    };
+
+    sheet.extend(dep_sheet);
   }
 
   
@@ -117,14 +132,14 @@ fn create_context<'a>(node_expr: &'a ast::Node, file_path: &'a String, graph: &'
     file_path,
     import_ids: HashSet::from_iter(ast::get_import_ids(node_expr)),
     part_ids: HashSet::from_iter(ast::get_part_ids(node_expr)),
-    scope: get_component_scope(file_path),
+    scope: get_document_scope(file_path),
     data,
     in_part: false,
     from_main,
   }
 }
 
-fn get_component_scope<'a>(file_path: &String) -> String {
+fn get_document_scope<'a>(file_path: &String) -> String {
   format!("{:x}", crc32::checksum_ieee(file_path.as_bytes())).to_string()
 }
 
@@ -207,9 +222,16 @@ fn evaluate_imported_component<'a>(element: &ast::Element, context: &'a Context)
 
 fn evaluate_part_instance_element<'a>(element: &ast::Element, context: &'a Context) -> Result<Option<virt::Node>, RuntimeError> {
   let self_dep  = &context.graph.dependencies.get(context.file_path).unwrap();
-  let part = ast::get_part_by_id(&element.tag_name, &self_dep.expression).unwrap();
-  let data = create_component_instance_data(element, context)?;
-  evaluate_element(part, true, &create_context(&self_dep.expression, &self_dep.file_path, context.graph, &data, Some(context)))
+
+  if let DependencyContent::Node(root_node) = &self_dep.content {
+    let part = ast::get_part_by_id(&element.tag_name, root_node).unwrap();
+    let data = create_component_instance_data(element, context)?;
+    evaluate_element(part, true, &create_context(root_node, &self_dep.file_path, context.graph, &data, Some(context)))
+  } else {
+
+    // This should _never_ happen
+    Err(RuntimeError::unknown(context.file_path))
+  }
 }
 
 fn create_component_instance_data<'a>(instance_element: &ast::Element, context: &'a Context) -> Result<js_virt::JsValue, RuntimeError> {
@@ -270,11 +292,16 @@ fn evaluate_component_instance<'a>(instance_element: &ast::Element, dep_file_pat
 
   let dep = &context.graph.dependencies.get(&dep_file_path.to_string()).unwrap();
   let data = create_component_instance_data(instance_element, context)?;
+  
+  if let DependencyContent::Node(node) = &dep.content {
 
-  let context = &create_context(&dep.expression, dep_file_path, context.graph, &data, None);
+    let context = &create_context(&node, dep_file_path, context.graph, &data, None);
 
-  // TODO: if fragment, then wrap in span. If not, then copy these attributes to root element
-  evaluate_instance_node(&dep.expression, &context, namespace)
+    // TODO: if fragment, then wrap in span. If not, then copy these attributes to root element
+    evaluate_instance_node(&node, &context, namespace)
+  } else {
+    Err(RuntimeError::unknown(context.file_path))
+  }
 }
 
 fn evaluate_basic_element<'a>(element: &ast::Element, context: &'a Context) -> Result<Option<virt::Node>, RuntimeError> {

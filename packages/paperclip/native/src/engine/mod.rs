@@ -3,9 +3,9 @@ use crate::pc::{runtime};
 use crate::pc::parser::{parse as parse_pc};
 use crate::base::parser::{ParseError};
 use crate::pc::ast as pc_ast;
-use crate::pc::runtime::graph::{DependencyGraph};
+use crate::pc::runtime::graph::{DependencyGraph, DependencyContent};
 use crate::pc::runtime::vfs::{VirtualFileSystem};
-use crate::pc::runtime::evaluator::{evaluate_document_styles};
+use crate::pc::runtime::evaluator::{evaluate_document_styles, evaluate as evaluate_pc};
 use crate::js::runtime::virt as js_virt;
 use crate::base::runtime::{RuntimeError};
 use serde::{Serialize};
@@ -118,6 +118,9 @@ impl Engine {
       dep.file_path.to_string()
     }).collect();
 
+    println!("UPDATE {}", file_path);
+    println!("deps {:?}", dep_file_paths);
+
     for dep_file_path in dep_file_paths.drain(0..).into_iter() {
       self.reload(&dep_file_path).await?;
     }
@@ -128,23 +131,31 @@ impl Engine {
   fn evaluate(&mut self, file_path: &String) {
     let dependency = self.dependency_graph.dependencies.get(file_path).unwrap();
 
-    let node_result = runtime::evaluate(
-      &dependency.expression, 
-      file_path, 
-      &self.dependency_graph, 
-      &js_virt::JsValue::JsObject(js_virt::JsObject::new()),
-      self.load_options.get(file_path).and_then(|options| {
-        options.part.clone()
-      })
-    );
+    let event_option = match &dependency.content {
+      DependencyContent::Node(node) => {
+        let node_result = evaluate_pc(
+          node, 
+          file_path, 
+          &self.dependency_graph, 
+          &js_virt::JsValue::JsObject(js_virt::JsObject::new()),
+          self.load_options.get(file_path).and_then(|options| {
+            options.part.clone()
+          })
+        );
 
-    if let Ok(node) = node_result {
-      self.events.push(EngineEvent::Evaluated(EvaluatedEvent {
-        file_path: file_path.clone(),
-        node,
-      }));
-    } else if let Err(runtime_error) = node_result {
-      self.events.push(EngineEvent::Error(EngineError::Runtime(runtime_error)));
+        match node_result {
+          Ok(node) => Some(EngineEvent::Evaluated(EvaluatedEvent {
+            file_path: file_path.clone(),
+            node,
+          })),
+          Err(err) => Some(EngineEvent::Error(EngineError::Runtime(err)))
+        }
+      },
+      _ => None
+    };
+
+    if let Some(event) = event_option {
+      self.events.push(event);
     }
   }
 

@@ -20,7 +20,7 @@ impl<'a, 'b> Context<'a, 'b> {
   }
 }
 
-fn _parse<'a>(source: &'a str) -> Result<Sheet, ParseError> {
+pub fn parse<'a>(source: &'a str) -> Result<Sheet, ParseError> {
   let mut tokenizer = Tokenizer::new(&source);
   parse_with_tokenizer(&mut tokenizer, |_token| { Ok(false) })
 }
@@ -571,7 +571,7 @@ mod tests {
     /*comment*/
     ";
 
-    _parse(source).unwrap();
+    parse(source).unwrap();
 
     // println!("{:?}", result);
     // panic!("OK");
@@ -616,7 +616,7 @@ mod tests {
       @media ab {._a{a:b;}}
     ";
 
-    _parse(source).unwrap();
+    parse(source).unwrap();
   }
 
   /// 
@@ -625,7 +625,7 @@ mod tests {
 
   #[test]
   fn displays_an_error_for_unterminated_curly_bracket() {
-    assert_eq!(_parse("div { "), Err(ParseError::unterminated("Unterminated bracket.".to_string(), 4, 6)));
+    assert_eq!(parse("div { "), Err(ParseError::unterminated("Unterminated bracket.".to_string(), 4, 6)));
   }
 
 }

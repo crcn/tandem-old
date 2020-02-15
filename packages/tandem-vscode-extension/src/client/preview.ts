@@ -3,7 +3,6 @@ import {
   Uri,
   window,
   commands,
-  workspace,
   TextEditor,
   WebviewPanel,
   ExtensionContext,
@@ -20,7 +19,7 @@ import {
   UpdateVirtualFileContents
 } from "../common/notifications";
 
-const VIEW_TYPE = "preview";
+const VIEW_TYPE = "paperclip-preview";
 
 enum OpenLivePreviewOptions {
   Yes = "Yes",

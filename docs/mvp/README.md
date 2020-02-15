@@ -33,17 +33,21 @@ Limitations:
 
 immediate TODO:
 
-- pc config
-- pc modules
+- color picker in VSCode (like CSS sheet)
+- load css
 - :root selector
+- pc modules (via config)
 - ability to load local images
 - ability to load local files
 - ability to load local CSS Urls
+- meta click element to reveal source
+  - needed anyways for style inspector
 - style inspector (in paperclip)
   - list all selectors that apply to element
   - ability to change colors
 - browser preview (VSCode escape hatch)
 - quick guide to setup Tandem
+- handle circular dependencies
 
 - linter
 

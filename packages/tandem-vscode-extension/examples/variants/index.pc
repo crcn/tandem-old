@@ -20,5 +20,5 @@
 
 <!-- TODO - need to spread this -->
 <span {primary} {secondary}>
-  <div>hello world</div>
+  <div>hello </div>
 </span>

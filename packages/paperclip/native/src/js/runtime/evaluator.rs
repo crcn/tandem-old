@@ -3,7 +3,7 @@ use super::super::ast;
 use super::virt;
 use crate::base::runtime::{RuntimeError};
 use crate::base::ast::{Location};
-use crate::pc::runtime::evaluate as evaluate_pc;
+use crate::pc::runtime::evaluator::evaluate as evaluate_pc;
 use crate::pc::runtime::graph::{DependencyGraph};
 use crate::pc::ast as pc_ast;
 

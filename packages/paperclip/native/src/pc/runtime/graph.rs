@@ -1,6 +1,7 @@
 use std::path::Path;
 use super::vfs::{VirtualFileSystem};
-use crate::pc::{ast as pc_ast, parser};
+use crate::pc::{ast as pc_ast, parser as pc_parser};
+use crate::css::{ast as css_ast, parser as css_parser};
 use crate::base::parser::{ParseError};
 use crate::base::ast::{Location};
 use std::collections::HashMap;
@@ -46,16 +47,24 @@ impl DependencyGraph {
   pub fn new() -> DependencyGraph {
     DependencyGraph { dependencies: HashMap::new() }
   }
-  pub fn flatten<'a>(&'a self, entry_file_path: &String) -> Vec<&Dependency> {
-    let mut deps = vec![];
+  pub fn flatten<'a>(&'a self, entry_file_path: &String) -> Vec<(&Dependency, Option<&Dependency>)> {
+    let mut deps: Vec<(&Dependency, Option<&Dependency>)> = vec![];
     if !self.dependencies.contains_key(entry_file_path) {
       return deps;
     }
 
     let entry = self.dependencies.get(entry_file_path).unwrap();
-    deps.push(entry);
-    for (_, dep_file_path) in &entry.dependencies {
-      deps.extend(self.flatten(dep_file_path));
+    deps.push((entry, None));
+    
+    let mut dependents = vec![entry];
+
+    while dependents.len() > 0 {
+      let dependent = dependents.pop().unwrap();
+      for (_, dep_file_path) in &dependent.dependencies {
+        let dep = self.dependencies.get(dep_file_path).unwrap();
+        deps.push((dep, Some(dependent)));
+        dependents.push(dep);
+      }
     }
     return deps;
   }
@@ -89,11 +98,21 @@ impl DependencyGraph {
         let err: GraphError = match import {
           Some((origin_file_path, import_id)) => {
             let origin_dep = self.dependencies.get(&origin_file_path).unwrap();
-            let import = pc_ast::get_import_by_id(&import_id, &origin_dep.expression).unwrap();
+
+            let location = match &origin_dep.content {
+              DependencyContent::Node(node) => {
+                pc_ast::get_import_by_id(&import_id, node).unwrap().open_tag_location.clone()
+              }
+              DependencyContent::StyleSheet(_) => {
+                // TODO once imports are working in CSS sheets
+                Location { start: 0, end: 0 }
+              }
+            };
+
             let info = GraphErrorInfo::IncludeNotFound(IncludeNodeFoundError {
               message: "import not found".to_string(),
               file_path: curr_file_path.to_string(),
-              location: import.open_tag_location.clone(),
+              location,
             });
 
             GraphError {
@@ -148,16 +167,44 @@ impl DependencyGraph {
 }
 
 #[derive(Debug)]
+pub enum DependencyContent {
+  Node(pc_ast::Node),
+  StyleSheet(css_ast::Sheet)
+}
+
+#[derive(Debug)]
 pub struct Dependency {
   pub file_path: String,
   pub dependencies: HashMap<String, String>,
-  pub expression: pc_ast::Node
+  pub content: DependencyContent
 }
 
 impl<'a> Dependency {
   pub fn from_source(source: String, file_path: &String) -> Result<Dependency, ParseError> {
+    if file_path.ends_with(".css") {
+      Dependency::from_css_source(source, file_path)
+    } else {
+      Dependency::from_pc_source(source, file_path)
+    }
+  }
 
-    let expression_result = parser::parse(source.as_str());
+  fn from_css_source(source: String, file_path: &String) -> Result<Dependency, ParseError> {
+    let expression_result = css_parser::parse(source.as_str());
+    if let Err(err) = expression_result {
+      return Err(err);
+    }
+    let expression = expression_result.unwrap();
+
+    Ok(Dependency {
+      file_path: file_path.to_string(),
+      content: DependencyContent::StyleSheet(expression),
+      dependencies: HashMap::new()
+    })
+  }
+
+  fn from_pc_source(source: String, file_path: &String) -> Result<Dependency, ParseError> {
+
+    let expression_result = pc_parser::parse(source.as_str());
 
     if let Err(err) = expression_result {
       return Err(err);
@@ -175,13 +222,14 @@ impl<'a> Dependency {
       let ss = PathAbs::new(&d).unwrap();
       let src = ss.as_path();
       dependencies.insert(
-        pc_ast::get_attribute_value("id", import).unwrap().as_str().to_string(),
+        pc_ast::get_import_identifier(import).unwrap().as_str().to_string(),
         src.to_str().unwrap().to_string()
       );
     }
+
     Ok(Dependency {
       file_path: file_path.to_string(),
-      expression,
+      content: DependencyContent::Node(expression),
       dependencies
     })
   }

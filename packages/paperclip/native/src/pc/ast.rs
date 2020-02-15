@@ -323,7 +323,6 @@ pub fn get_attribute<'a, 'b>(name: &'b str, element: &'a Element) -> Option<&'a 
   None
 }
 
-
 pub fn get_attribute_value<'a, 'b>(name: &'b str, element: &'a Element) -> Option<&'a String> {
   let attr = get_attribute(name, element);
   if let Some(att) = attr {
@@ -338,7 +337,6 @@ pub fn get_attribute_value<'a, 'b>(name: &'b str, element: &'a Element) -> Optio
   None
 }
 
-
 pub fn get_import_ids<'a>(root_expr: &'a Node) -> Vec<&'a String> {
   let mut ids = vec![];
   for import in get_imports(root_expr) {
@@ -347,6 +345,16 @@ pub fn get_import_ids<'a>(root_expr: &'a Node) -> Vec<&'a String> {
     }
   }
   ids
+}
+
+pub fn get_import_identifier<'a>(import: &'a Element) -> Option<&'a String> {
+  if let Some(id) = get_attribute_value("id", &import) {
+    return Some(id);
+  }
+  if let Some(src) = get_attribute_value("src", &import) {
+    return Some(src);
+  }
+  return None;
 }
 
 pub fn get_part_ids<'a>(root_expr: &'a Node) -> Vec<&'a String> {
