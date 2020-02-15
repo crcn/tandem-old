@@ -1,3 +1,5 @@
+// ref: https://github.com/microsoft/vscode-css-languageservice
+
 import {
   createConnection,
   TextDocuments,
@@ -6,10 +8,11 @@ import {
   InitializedParams,
   Connection,
   Diagnostic,
+  ColorPresentation,
   TextDocumentSyncKind,
   TextDocumentPositionParams,
-  CompletionParams,
-  DiagnosticSeverity
+  DiagnosticSeverity,
+  ColorPresentationRequest
 } from "vscode-languageserver";
 
 import { TextDocument } from "vscode-languageserver-textdocument";
@@ -134,6 +137,7 @@ const initEngine = async (
       engine.load(filePath);
     }
   );
+
   connection.onNotification(
     NotificationType.UNLOAD,
     ({ filePath }: LoadParams) => {

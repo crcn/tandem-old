@@ -1,5 +1,33 @@
 <import src="./style.css">
 
-<div>
-  hello world!
-</div>
+<style>
+  div {
+    text-decoration: underline;
+    color: red;
+  }
+  ol {
+    padding: 0;
+    margin: 0;
+  }
+  li {
+    font-size: 18px;
+    padding: 0;
+  }
+</style>
+
+<ol>
+  {children}
+</ol>
+
+<part id="item">
+  <li>{children}</li>
+</part>
+
+<part id="preview">
+  <self>
+    <item>item 1</item>
+    <item>item 2</item>
+    <item>item 3</item>
+    <item>item 4</item>
+  </self>
+</part>

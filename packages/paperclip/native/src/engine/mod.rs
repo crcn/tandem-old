@@ -118,9 +118,6 @@ impl Engine {
       dep.file_path.to_string()
     }).collect();
 
-    println!("UPDATE {}", file_path);
-    println!("deps {:?}", dep_file_paths);
-
     for dep_file_path in dep_file_paths.drain(0..).into_iter() {
       self.reload(&dep_file_path).await?;
     }

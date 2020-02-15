@@ -6,7 +6,8 @@ import {
   TextEditor,
   WebviewPanel,
   ExtensionContext,
-  ViewColumn
+  ViewColumn,
+  workspace
 } from "vscode";
 import { isPaperclipFile } from "./utils";
 import * as path from "path";
@@ -41,6 +42,7 @@ export const activate = (client: LanguageClient, context: ExtensionContext) => {
 
   const openLivePreview = async (editor: TextEditor) => {
     const paperclipUri = String(editor.document.uri);
+    console.log(workspace.rootPath);
 
     // NOTE - don't get in the way of opening the live preview since
     // there's really no way to tell whether an existing tab is open which will
@@ -52,7 +54,10 @@ export const activate = (client: LanguageClient, context: ExtensionContext) => {
       ViewColumn.Beside,
       {
         enableScripts: true,
-        localResourceRoots: [Uri.file(path.join(extensionPath))]
+        localResourceRoots: [
+          Uri.file(extensionPath),
+          Uri.file(workspace.rootPath)
+        ]
       }
     );
 

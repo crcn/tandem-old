@@ -1,14 +1,17 @@
 use super::super::ast;
 use super::virt;
 use crate::base::runtime::{RuntimeError};
+use regex::Regex;
+use crate::base::utils;
 
 #[derive(Debug)]
 pub struct Context<'a> {
-  scope: &'a str
+  scope: &'a str,
+  file_path: &'a String,
 }
 
-pub fn evaluate<'a>(expr: &ast::Sheet, scope: &'a str) -> Result<virt::CSSSheet, RuntimeError> {
-  let context = Context { scope };
+pub fn evaluate<'a>(expr: &ast::Sheet, file_path: &'a String, scope: &'a str) -> Result<virt::CSSSheet, RuntimeError> {
+  let context = Context { scope, file_path };
   let mut rules = vec![];
   for rule in &expr.rules {
     rules.push(evaluate_rule(&rule, &context)?);
@@ -40,9 +43,9 @@ pub fn evaluate_style_rules<'a>(rules: &Vec<ast::StyleRule>, context: &Context) 
   Ok(css_rules)
 }
 
-fn evaluate_font_family_rule(font_family: &ast::FontFaceRule, _context: &Context) -> Result<virt::Rule, RuntimeError> {
+fn evaluate_font_family_rule(font_family: &ast::FontFaceRule, context: &Context) -> Result<virt::Rule, RuntimeError> {
   Ok(virt::Rule::FontFace(virt::FontFaceRule {
-    style: evaluate_style_declarations(&font_family.declarations)?
+    style: evaluate_style_declarations(&font_family.declarations, context)?
   }))
 }
 
@@ -100,10 +103,10 @@ fn evaluate_keyframe_rule(rule: &ast::KeyframeRule, _context: &Context) -> Resul
   })
 }
 
-fn evaluate_style_declarations(declarations: &Vec<ast::Declaration>) -> Result<Vec<virt::CSSStyleProperty>, RuntimeError> {
+fn evaluate_style_declarations(declarations: &Vec<ast::Declaration>, context: &Context) -> Result<Vec<virt::CSSStyleProperty>, RuntimeError> {
   let mut style = vec![];
   for property in declarations {
-    style.push(evaluate_style(&property)?);
+    style.push(evaluate_style_declaration(&property, context)?);
   }
   Ok(style)
 }
@@ -113,7 +116,7 @@ fn evaluate_style_rule(expr: &ast::StyleRule, context: &Context) -> Result<virt:
 }
 
 fn evaluate_style_rule2(expr: &ast::StyleRule, context: &Context) -> Result<virt::StyleRule, RuntimeError> {
-  let style = evaluate_style_declarations(&expr.declarations)?;
+  let style = evaluate_style_declarations(&expr.declarations, context)?;
   let selector_text = stringify_element_selector(&expr.selector, context);
   Ok(virt::StyleRule {
     selector_text,
@@ -163,9 +166,32 @@ fn stringify_element_selector(selector: &ast::Selector, context: &Context) -> St
   scoped_selector_text.to_string()
 }
 
-fn evaluate_style<'a>(expr: &'a ast::Declaration) -> Result<virt::CSSStyleProperty, RuntimeError> {
+fn evaluate_style_declaration<'a>(expr: &'a ast::Declaration, context: &Context) -> Result<virt::CSSStyleProperty, RuntimeError> {
+
+  let mut value = expr.value.to_string();
+
+  let url_re = Regex::new(r"url\((.*?)\)").unwrap();
+
+  // a bit crude, but works for now. Need to eventually consider HTTP paths
+  if url_re.is_match(value.clone().as_str()) {
+    let protocol_re = Regex::new(r"^\w+:").unwrap();
+    for caps in url_re.captures_iter(value.to_string().as_str()) {
+      let url_fn = caps.get(0).unwrap().as_str();
+
+      let relative_path = caps.get(1).unwrap().as_str();
+
+      // skil values with protocol
+      if protocol_re.is_match(relative_path) {
+        continue;
+      }
+      let full_path = format!("file://{}", utils::resolve(context.file_path, &relative_path.to_string()));
+
+      value = url_re.replace(url_fn, format!("url({})", full_path).as_str()).to_string();
+    }
+  }
+
   Ok(virt::CSSStyleProperty {
     name: expr.name.to_string(),
-    value: expr.value.to_string()
+    value,
   })
 }

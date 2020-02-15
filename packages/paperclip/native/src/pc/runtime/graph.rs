@@ -1,12 +1,11 @@
-use std::path::Path;
 use super::vfs::{VirtualFileSystem};
 use crate::pc::{ast as pc_ast, parser as pc_parser};
 use crate::css::{ast as css_ast, parser as css_parser};
 use crate::base::parser::{ParseError};
 use crate::base::ast::{Location};
 use std::collections::HashMap;
-use path_abs::{PathAbs};
 use serde::{Serialize};
+use crate::base::utils;
 
 #[derive(Debug, PartialEq, Serialize, Clone)]
 #[serde(tag = "kind")]
@@ -213,17 +212,12 @@ impl<'a> Dependency {
     let expression = expression_result.unwrap();
     
     let imports = pc_ast::get_imports(&expression);
-    let source_path = Path::new(&file_path);
-    let dir = source_path.parent().unwrap();
 
     let mut dependencies = HashMap::new();
     for import in &imports {
-      let d = dir.join(pc_ast::get_attribute_value("src", import).unwrap().as_str()).to_str().unwrap().to_string();
-      let ss = PathAbs::new(&d).unwrap();
-      let src = ss.as_path();
       dependencies.insert(
         pc_ast::get_import_identifier(import).unwrap().as_str().to_string(),
-        src.to_str().unwrap().to_string()
+        utils::resolve(file_path, pc_ast::get_attribute_value("src", import).unwrap())
       );
     }
 

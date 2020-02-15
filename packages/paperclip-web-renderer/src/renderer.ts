@@ -3,7 +3,7 @@ import { createNativeNode } from "./native-renderer";
 export class Renderer {
   private _scopeFilePath: string;
   readonly mount: HTMLDivElement;
-  constructor() {
+  constructor(readonly protocol: string) {
     this.mount = document.createElement("div");
   }
 
@@ -18,10 +18,7 @@ export class Renderer {
           this.mount.removeChild(this.mount.childNodes[0]);
         }
         this._scopeFilePath = event.file_path;
-        const node = createNativeNode(event.node);
-        // this.mount.appendChild(document.createTextNode(Array.from(node.children).map(child => {
-        //   return child.outerHTML;
-        // }).join("")));
+        const node = createNativeNode(event.node, this.protocol);
         this.mount.appendChild(node);
       }
       case "Diffed": {

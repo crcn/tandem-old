@@ -11,6 +11,7 @@ use crate::js::runtime::virt as js_virt;
 use crate::js::ast as js_ast;
 use crate::css::runtime::virt as css_virt;
 use crc::{crc32};
+use crate::base::utils;
 
 #[derive(Debug, Clone)]
 pub struct Context<'a> {
@@ -55,7 +56,7 @@ pub fn evaluate_document_styles<'a>(node_expr: &ast::Node, file_path: &String) -
     // style elements are only allowed in root, so no need to traverse
     for child in children {
       if let ast::Node::StyleElement(style_element) = &child {
-        sheet.extend(evaluate_css(&style_element.sheet, &scope)?);
+        sheet.extend(evaluate_css(&style_element.sheet, file_path, &scope)?);
       }
     }
   }
@@ -81,7 +82,7 @@ pub fn evaluate_jumbo_style<'a>(_entry_expr: &ast::Node,  file_path: &String, gr
           get_document_scope(&dependency.file_path)
         };
         
-        evaluate_css(&sheet, &scope)?
+        evaluate_css(&sheet, &dependency.file_path, &scope)?
       }
     };
 
@@ -315,15 +316,24 @@ fn evaluate_basic_element<'a>(element: &ast::Element, context: &'a Context) -> R
 
     match attr {
       ast::Attribute::KeyValueAttribute(kv_attr) => {
-        let (name, value) = if kv_attr.value == None {
+        let (name, mut value_option) = if kv_attr.value == None {
           (kv_attr.name.to_string(), None)
         } else {
           (kv_attr.name.to_string(), Some(evaluate_attribute_value(&kv_attr.value.as_ref().unwrap(), context)?.to_string()))
         };
 
+        if name == "src" {
+          if let Some(value) = value_option {
+            let full_path = format!("file://{}", utils::resolve(context.file_path, &value)).to_string();
+            value_option = Some(full_path);
+          }
+        }
+
+        println!("img src {:?}", value_option);
+
         attributes.push(virt::Attribute {
           name,
-          value,
+          value: value_option,
         });
       },
       ast::Attribute::ShorthandAttribute(sh_attr) => {

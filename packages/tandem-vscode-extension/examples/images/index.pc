@@ -1,0 +1,13 @@
+<style>
+  div {
+    color: red;
+    background: url(./long-cat.jpg);
+
+    width: 100px;
+    height: 100px;
+  }
+</style>
+
+<div>hello world</div>
+
+<img src="./happy-cat.jpg">

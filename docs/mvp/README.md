@@ -33,67 +33,64 @@ Limitations:
 
 immediate TODO:
 
-- color picker in VSCode (like CSS sheet)
-- load css
-- :root selector
-- pc modules (via config)
-- ability to load local images
-- ability to load local files
-- ability to load local CSS Urls
-- meta click element to reveal source
-  - needed anyways for style inspector
-- style inspector (in paperclip)
-  - list all selectors that apply to element
-  - ability to change colors
-- browser preview (VSCode escape hatch)
-- quick guide to setup Tandem
-- handle circular dependencies
+- local resource roots - vscode extension
 
-- linter
+- language server
 
-  - error with multiple IDs
-  - warn for script tags
-  - warn when CSS selector tag isn't used
-  - prohibit dynamic attr bindings for
-    - all import attrs
-    - all meta attrs
+  - color picker
+  - meta click tag names
+  - meta click sources
+  - meta click var()
 
-- DX enhancements
-  - jump to definition
+- DSL
+
+  - pc modules
+  - handle circular dependencies
+  - linter
+    - error with multiple IDs
+    - warn for script tags
+    - warn when CSS selector tag isn't used
+    - prohibit dynamic attr bindings for
+      - all import attrs
+      - all meta attrs
+
+- CLI
+
+  - pretty error output
+
+- preview
+
+  - meta click element to reveal source
+  - measuring between elements
+
+- examples
+
+  - chat app
+
+- polish
+
+  - look into WASM instead
+  - can't have process hanging
+  - maybe move back to neon
+
+- documentation draft
+
+  - what is Tandem
+  - getting started with VSCode
+  - alternative without VSCode (use HMR)
+  - testing
+
+- ask friends to play with app
+
+- site
 
 * web preview for non-vscode users
 * pretty terminal compiler output
 * DSL
 
 * Language enhancements
-
   - Nestable
 
-* testing tools
-
-- JS evaluator
-  - strings
-  - numbers
-  - arrays
-  - objects
-  - groups
-  - operations
-    - or
-    - and
-    - +
-    - -
-    - %
-  - elements
-- #each
-
-* diff/patch
-
-- examples
-  - chat app
-  - todo list
-- <logic /> element
-- optimizations
-  - diff / patch
 - compilers
   - react
 - preview
