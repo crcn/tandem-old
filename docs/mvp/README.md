@@ -33,19 +33,17 @@ Limitations:
 
 immediate TODO:
 
-- react compiler
-  - just get slots to work, maybe parts
-  - webpack loader
-  - take compiler flags
-- static site generator
-- type inferencing
-- quick guide to setup Tandem
-- React compiler
-  - webpack loader
-- browser preview (VSCode escape hatch)
+- pc config
+- pc modules
+- :root selector
+- ability to load local images
+- ability to load local files
+- ability to load local CSS Urls
 - style inspector (in paperclip)
-  - color picker
-- examples
+  - list all selectors that apply to element
+  - ability to change colors
+- browser preview (VSCode escape hatch)
+- quick guide to setup Tandem
 
 - linter
 
