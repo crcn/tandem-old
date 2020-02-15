@@ -2,6 +2,9 @@
   li {
     color: red;
   }
+  .secondary {
+    color: green;
+  }
 </style>
 
 <ol>

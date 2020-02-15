@@ -43,6 +43,7 @@ export const compile = (
 const translateRoot = (ast: Node, sheet: any, context: TranslateContext) => {
   context = translateImports(ast, context);
   context = translateStyleSheet(sheet, context);
+  context = translateUtils(ast, context);
   context = translateParts(ast, context);
   context = translateMainTemplate(ast, context);
   return context;
@@ -62,6 +63,31 @@ const translateStyleSheet = (sheet: any, context) => {
   context = addBuffer(`document.body.appendChild(style);\n`, context);
   context = endBlock(context);
   context = addBuffer("}\n\n", context);
+  return context;
+};
+
+const translateUtils = (ast: Node, context: TranslateContext) => {
+  context = translateStyledUtil(ast, context);
+  return context;
+};
+
+const translateStyledUtil = (ast: Node, context: TranslateContext) => {
+  context = addBuffer(
+    `const styled = function(tagName, defaultProps) {\n`,
+    context
+  );
+  context = startBlock(context);
+  context = addBuffer(`return function(props) {\n`, context);
+  context = startBlock(context);
+  context = addBuffer(
+    `return React.createElement(tagName, Object.assign({ "data-pc-${context.scope}": true }, defaultProps || {}, props));\n`,
+    context
+  );
+  context = endBlock(context);
+  context = addBuffer(`};\n`, context);
+  context = endBlock(context);
+  context = addBuffer("};\n\n", context);
+  context = addBuffer("exports.styled = styled;\n\n", context);
   return context;
 };
 
