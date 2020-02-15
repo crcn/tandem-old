@@ -39,7 +39,11 @@ fn evaluate_reference<'a>(reference: &ast::Reference, context: &'a Context) -> R
 
   for property_name in &reference.path {
     if let Some(object) = &curr {
-      curr = virt::get_js_value_property(&object, property_name);
+      curr = if property_name == "ctx" {
+        Some(object)
+      } else {
+        virt::get_js_value_property(&object, property_name)
+      };
     } else {
       return Err(RuntimeError {
         file_path: context.file_path.to_string(),

@@ -278,13 +278,18 @@ fn evaluate_basic_element<'a>(element: &ast::Element, context: &'a Context) -> R
   for attr_expr in &element.attributes {
     let attr = &attr_expr;
 
-    let (name, value) = match attr {
+    match attr {
       ast::Attribute::KeyValueAttribute(kv_attr) => {
-        if kv_attr.value == None {
+        let (name, value) = if kv_attr.value == None {
           (kv_attr.name.to_string(), None)
         } else {
           (kv_attr.name.to_string(), Some(evaluate_attribute_value(&kv_attr.value.as_ref().unwrap(), context)?.to_string()))
-        }
+        };
+
+        attributes.push(virt::Attribute {
+          name,
+          value,
+        });
       },
       ast::Attribute::ShorthandAttribute(sh_attr) => {
         let name = sh_attr.get_name().map_err(|message| {
@@ -297,16 +302,17 @@ fn evaluate_basic_element<'a>(element: &ast::Element, context: &'a Context) -> R
             }
           }
         })?;
-        let value = evaluate_attribute_slot(&sh_attr.reference, context)?;
-        (name.to_string(), Some(value.to_string()))
+        let js_value = evaluate_attribute_slot(&sh_attr.reference, context)?;
+
+        if js_value != js_virt::JsValue::JsUndefined() {
+          attributes.push(virt::Attribute {
+            name: name.to_string(),
+            value: Some(js_value.to_string()),
+          });
+        }
       }
     };
 
-
-    attributes.push(virt::Attribute {
-      name, 
-      value,
-    });
   }
 
   attributes.push(virt::Attribute {

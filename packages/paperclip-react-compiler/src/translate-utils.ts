@@ -4,14 +4,17 @@ export type TranslateContext = {
   lineNumber: number;
   isNewLine: boolean;
   indent: string;
+  importIds: string[];
 };
 
 export const createTranslateContext = (
   filePath: string,
+  importIds: string[],
   indent: string = "  "
 ): TranslateContext => ({
   buffer: "",
   filePath,
+  importIds,
   isNewLine: true,
   lineNumber: 0,
   indent

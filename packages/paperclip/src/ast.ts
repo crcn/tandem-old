@@ -1,3 +1,5 @@
+import { Statement } from "./js-ast";
+
 export enum NodeKind {
   Fragment = "Fragment",
   Text = "Text",
@@ -20,10 +22,25 @@ export type Element = {
   children: Node[];
 } & BaseNode<NodeKind.Element>;
 
-export type Attribute = {
+export enum AttributeKind {
+  ShorthandAttribute = "ShorthandAttribute",
+  KeyValueAttribute = "KeyValueAttribute"
+}
+
+type BaseAttribute<TKind extends AttributeKind> = {
+  kind: TKind;
+};
+
+type ShorthandAttribute = {
+  reference: Statement;
+} & BaseAttribute<AttributeKind.ShorthandAttribute>;
+
+type KeyValueAttribute = {
   name: string;
   value?: AttributeValue;
-};
+} & BaseAttribute<AttributeKind.KeyValueAttribute>;
+
+export type Attribute = ShorthandAttribute | KeyValueAttribute;
 
 export enum AttributeValueKind {
   String = "String",
@@ -38,9 +55,8 @@ export type StringAttributeValue = {
   value: string;
 } & BaseAttributeValue<AttributeValueKind.String>;
 
-export type SlotAttributeValue = {} & BaseAttributeValue<
-  AttributeValueKind.Slot
->;
+export type SlotAttributeValue = Statement &
+  BaseAttributeValue<AttributeValueKind.Slot>;
 
 export type AttributeValue = StringAttributeValue | SlotAttributeValue;
 
@@ -50,8 +66,7 @@ export type Fragment = {
 } & BaseNode<NodeKind.Fragment>;
 
 export type Slot = {
-  value: string;
-  children: Node[];
+  script: Statement;
 } & BaseNode<NodeKind.Slot>;
 
 export type Node = Text | Element | Fragment | Slot;
@@ -60,6 +75,11 @@ export const getImports = (ast: Node): Element[] =>
   getChildrenByTagName("import", ast).filter(child => {
     return hasAttribute("src", child);
   });
+
+export const getImportIds = (ast: Node): string[] =>
+  getImports(ast)
+    .map(node => getAttributeStringValue("id", node))
+    .filter(Boolean) as string[];
 
 export const getChildren = (ast: Node): Node[] => {
   if (ast.kind === NodeKind.Element || ast.kind === NodeKind.Fragment) {
@@ -86,8 +106,8 @@ export const getMetaValue = (name: string, root: Node) => {
 
 export const getAttribute = (name: string, element: Element) =>
   element.attributes.find(attr => {
-    return attr.name === name;
-  });
+    return attr.kind === AttributeKind.KeyValueAttribute && attr.name === name;
+  }) as KeyValueAttribute;
 
 export const getAttributeValue = (name: string, element: Element) => {
   const attr = getAttribute(name, element);
@@ -103,7 +123,7 @@ export const getStyleElements = (ast: Node): Element[] =>
   getChildrenByTagName("style", ast);
 
 export const isVisibleElement = (ast: Element): boolean => {
-  return !/^(import|logic|meta|style)$/.test(ast.tagName);
+  return !/^(import|logic|meta|style|part)$/.test(ast.tagName);
 };
 
 export const getVisibleChildNodes = (ast: Node): Node[] =>
@@ -113,6 +133,11 @@ export const getVisibleChildNodes = (ast: Node): Node[] =>
       child.kind === NodeKind.Fragment ||
       (child.kind === NodeKind.Element && isVisibleElement(child))
     );
+  });
+
+export const getParts = (ast: Node): Node[] =>
+  getChildren(ast).filter(child => {
+    return child.kind === NodeKind.Element && child.tagName === "part";
   });
 
 export const hasAttribute = (name: string, element: Element) =>

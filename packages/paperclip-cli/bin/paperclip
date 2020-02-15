@@ -50,11 +50,12 @@ function init(cwd, filesGlob, compile, shouldWatch) {
   async function compileFile(relativePath) {
     const fullPath = path.resolve(process.cwd(), relativePath);
     try {
-      console.log("Compiling %s", relativePath);
       const ast = await pcEngine.parseFile(fullPath);
+      console.log("Compiling %s", relativePath);
       const result = compile(ast, fullPath);
       console.log(result);
     } catch(e) {
+      console.log("Err %s", relativePath);
       console.error(e);
     }
   }

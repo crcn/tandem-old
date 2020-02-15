@@ -27,17 +27,16 @@ Tandem pain points?
 Design Problems:
 
 - Need to figure out how to pass props from parent controllers to child controllers (like event handlers)
-  - maybe prohibit nested components in compiled output - treat everything as parts.
+  - maybe prohibit nested components in compiled output - treat evkkerything as parts.
 
 Limitations:
 
 immediate TODO:
 
-- syntax highlighter
-
 - react compiler
   - just get slots to work, maybe parts
   - webpack loader
+  - take compiler flags
 - type inferencing
 - quick guide to setup Tandem
 - React compiler

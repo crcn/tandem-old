@@ -25,7 +25,6 @@ fn parse_node<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<ast::Statement, Parse
   Ok(ast::Statement::Node(Box::new(parse_element(tokenizer)?)))
 }
 
-
 fn parse_reference<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<ast::Statement, ParseError> {
   let pos = tokenizer.pos;
   if let Token::Word(name) = tokenizer.next()? {

@@ -2,8 +2,17 @@ import {
   Node,
   getImports,
   NodeKind,
+  Attribute,
+  Reference,
+  Statement,
+  StatementKind,
   getAttributeStringValue,
   getMetaValue,
+  Slot,
+  AttributeValue,
+  AttributeKind,
+  AttributeValueKind,
+  getImportIds,
   getVisibleChildNodes
 } from "paperclip";
 import {
@@ -15,9 +24,10 @@ import {
   addBuffer
 } from "./translate-utils";
 import { pascalCase } from "./utils";
+import { camelCase } from "lodash";
 
 export const compile = (ast: Node, filePath: string) => {
-  let context = createTranslateContext(filePath);
+  let context = createTranslateContext(filePath, getImportIds(ast));
   context = translateRoot(ast, context);
   return context.buffer;
 };
@@ -77,18 +87,95 @@ const translateJSXRoot = (node: Node, context: TranslateContext) => {
   if (visibleNodes.length === 1) {
     return translateJSXNode(visibleNodes[0], context);
   } else {
+    context = translateFragment(visibleNodes, context);
   }
 
   return context;
 };
 
 const translateJSXNode = (node: Node, context: TranslateContext) => {
-  if (node.kind === NodeKind.Element) {
-    context = addLine(`React.createElement("${node.tagName}", {})`, context);
+  if (node.kind === NodeKind.Fragment) {
+    context = translateFragment(node.children, context);
+  } else if (node.kind === NodeKind.Element) {
+    const tag =
+      context.importIds.indexOf(node.tagName) !== -1
+        ? pascalCase(node.tagName)
+        : JSON.stringify(node.tagName);
+    context = startBlock(`React.createElement(${tag}, {`, context);
+    for (const attr of node.attributes) {
+      context = translateAttribute(attr, context);
+    }
+    context = endBlock(`}, `, context);
+    context = translateChildren(node.children, context);
+    context = addBuffer(`)`, context);
   } else if (node.kind === NodeKind.Text) {
     context = addLine(`${JSON.stringify(node.value)}`, context);
   } else if (node.kind === NodeKind.Slot) {
-    context = addLine(`${JSON.stringify(node.value)}`, context);
+    context = translateSlot(node, context);
+  } else {
+    console.log("NOT");
+  }
+
+  return context;
+};
+
+const translateFragment = (children: Node[], context: TranslateContext) => {
+  context = startBlock(`React.createElement(Fragment, `, context);
+  context = translateChildren(children, context);
+  context = endBlock(`)`, context);
+  return context;
+};
+
+const translateChildren = (children: Node[], context: TranslateContext) => {
+  return children.reduce((newContext, child) => {
+    newContext = translateJSXNode(child, newContext);
+    newContext = addBuffer(",", newContext);
+    return newContext;
+  }, context);
+};
+
+const translateAttribute = (attr: Attribute, context: TranslateContext) => {
+  if (attr.kind === AttributeKind.KeyValueAttribute) {
+    context = addBuffer(`${JSON.stringify(attr.name)}:`, context);
+    context = translateAttributeValue(attr.value, context);
+    context = addLine(`, `, context);
+  } else if (attr.kind === AttributeKind.ShorthandAttribute) {
+    const keyValue = (attr.reference as Reference).path[0];
+    context = addBuffer(
+      `${JSON.stringify(keyValue)}: props.${camelCase(keyValue)}`,
+      context
+    );
+    context = addLine(`, `, context);
+  }
+
+  return context;
+};
+
+const translateAttributeValue = (
+  value: AttributeValue,
+  context: TranslateContext
+) => {
+  if (!value) {
+    return addBuffer("true", context);
+  }
+  if (value.kind === AttributeValueKind.Slot) {
+    return translateStatment((value as any) as Statement, context);
+  } else if (value.kind === AttributeValueKind.String) {
+    return addBuffer(JSON.stringify(value.value), context);
+  }
+
+  return context;
+};
+
+const translateSlot = (slot: Slot, context: TranslateContext) => {
+  return translateStatment(slot.script, context);
+};
+
+const translateStatment = (statement: Statement, context: TranslateContext) => {
+  if (statement.jsKind === StatementKind.Reference) {
+    return addBuffer(`props.${statement.path.join(".")}`, context);
+  } else if (statement.jsKind === StatementKind.Node) {
+    return translateJSXNode((statement as any) as Node, context);
   }
 
   return context;

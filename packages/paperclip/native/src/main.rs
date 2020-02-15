@@ -75,12 +75,11 @@ fn main() {
 	io.add_method("parse_file", move |params: Params| {
         let params: ParseFileParams = params.parse().unwrap();
         let result = block_on(parse_file_engine_mutex.lock().unwrap().parse_file(&params.file_path));
-        // let json = match result {
-        //     Ok(node) => serde_json::to_string(&node).unwrap(),
-        //     Err(error) => format!("{{\"error\":{}}}", serde_json::to_string(&error).unwrap())
-        // };
-        Ok(Value::String("ok".into()))
-		// Ok(Value::String(json.to_string()))
+        let json = match result {
+            Ok(node) => serde_json::to_string(&node).unwrap(),
+            Err(error) => format!("{{\"error\":{}}}", serde_json::to_string(&error).unwrap())
+        };
+		Ok(Value::String(json.to_string()))
     });
 
     let parse_content_engine_mutex = engine_mutex.clone();
