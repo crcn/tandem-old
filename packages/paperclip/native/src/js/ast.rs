@@ -2,7 +2,7 @@ use std::fmt;
 use serde::{Serialize};
 use crate::pc::ast as pc_ast;
 
-#[derive(Debug, PartialEq, Serialize)]
+#[derive(Debug, PartialEq, Serialize, Clone)]
 #[serde(tag = "jsKind")]
 pub enum Statement {
   Reference(Reference),
@@ -18,7 +18,7 @@ impl fmt::Display for Statement {
   }
 }
 
-#[derive(Debug, PartialEq, Serialize)]
+#[derive(Debug, PartialEq, Serialize, Clone)]
 pub struct Reference {
   pub path: Vec<String>
 }

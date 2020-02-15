@@ -144,7 +144,7 @@ fn stringify_element_selector(selector: &ast::Selector, context: &Context) -> St
       format!("{}:{}({})", scope_selector, selector.name, selector.param)
     },
     ast::Selector::Attribute(selector) => format!("{}{}", selector.to_string(), scope_selector),
-    ast::Selector::Not(selector) => format!("{}:not({})", scope_selector, stringify_element_selector(selector, context)),
+    ast::Selector::Not(selector) => format!("{}:not({})", scope_selector, stringify_element_selector(&selector.selector, context)),
     ast::Selector::Descendent(selector) => format!("{} {}", stringify_element_selector(&selector.parent, context), stringify_element_selector(&selector.descendent, context)),
     ast::Selector::Child(selector) => format!("{} > {}", stringify_element_selector(&selector.parent, context), stringify_element_selector(&selector.child, context)),
     ast::Selector::Adjacent(selector) => format!("{} + {}", stringify_element_selector(&selector.selector, context), stringify_element_selector(&selector.next_sibling_selector, context)),

@@ -1,8 +1,11 @@
 import { VirtualNode } from "./virt";
+import { Node } from "./ast";
+import { SourceLocation } from "./base-ast";
 
 export enum EngineEventKind {
   Evaluated = "Evaluated",
-  Error = "Error"
+  Error = "Error",
+  NodeParsed = "NodeParsed"
 }
 
 export enum EngineErrorKind {
@@ -18,15 +21,15 @@ type BaseEngineEvent<KKind extends EngineEventKind> = {
   kind: KKind;
 };
 
-export type SourceLocation = {
-  start: number;
-  end: number;
-};
-
 export type EvaluatedEvent = {
   filePath: string;
   node?: VirtualNode;
 } & BaseEngineEvent<EngineEventKind.Evaluated>;
+
+export type NodeParsedEvent = {
+  filePath: string;
+  node?: Node;
+} & BaseEngineEvent<EngineEventKind.NodeParsed>;
 
 export type BaseEngineErrorEvent<TErrorType extends EngineErrorKind> = {
   filePath: string;
@@ -68,4 +71,4 @@ export type RuntimeErrorEvent = {
 } & BaseEngineErrorEvent<EngineErrorKind.Runtime>;
 
 export type EngineErrorEvent = GraphErrorEvent | RuntimeErrorEvent;
-export type EngineEvent = EvaluatedEvent | EngineErrorEvent;
+export type EngineEvent = EvaluatedEvent | EngineErrorEvent | NodeParsedEvent;

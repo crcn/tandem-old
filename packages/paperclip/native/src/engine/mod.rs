@@ -21,6 +21,14 @@ pub struct EvaluatedEvent {
 }
 
 #[derive(Debug, PartialEq, Serialize)]
+pub struct NodeParsedEvent {
+  
+  #[serde(rename = "filePath")]
+  pub file_path: String,
+  pub node: pc_ast::Node
+}
+
+#[derive(Debug, PartialEq, Serialize)]
 #[serde(tag = "errorKind")]
 pub enum EngineError {
   Graph(GraphError),
@@ -32,6 +40,7 @@ pub enum EngineError {
 #[serde(tag = "kind")]
 pub enum EngineEvent {
   Evaluated(EvaluatedEvent),
+  NodeParsed(NodeParsedEvent),
   Error(EngineError)
 }
 
@@ -83,12 +92,28 @@ impl Engine {
 
   pub async fn reload(&mut self, file_path: &String) -> Result<(), GraphError> {
     let load_result = self.dependency_graph.load_dependency(file_path, &mut self.vfs).await;
-    if let Err(error) = load_result {
-      self.events.push(EngineEvent::Error(EngineError::Graph(error.clone())));
-      Err(error)
-    } else {
-      self.evaluate(file_path);
-      Ok(())
+
+    match load_result {
+      Ok(dep) => {
+        
+        match &dep.content {
+          DependencyContent::Node(node) => {
+            self.events.push(EngineEvent::NodeParsed(NodeParsedEvent {
+              file_path: dep.file_path.to_string(),
+              node: node.clone()
+            }));
+          },
+          _ => {
+            // TODO - CSS 
+          }
+        };
+        self.evaluate(file_path);
+        Ok(())
+      },
+      Err(error) => {
+        self.events.push(EngineEvent::Error(EngineError::Graph(error.clone())));
+        Err(error)
+      }
     }
   }
 

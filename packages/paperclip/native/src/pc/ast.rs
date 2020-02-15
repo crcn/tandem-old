@@ -5,7 +5,7 @@ use crate::css::ast as css_ast;
 use crate::js::ast as js_ast;
 use serde::{Serialize};
 
-#[derive(Debug, PartialEq, Serialize)]
+#[derive(Debug, PartialEq, Serialize, Clone)]
 pub struct Element {
 
   #[serde(rename = "openTagLocation")]
@@ -17,12 +17,12 @@ pub struct Element {
   pub children: Vec<Node>
 }
 
-#[derive(Debug, PartialEq, Serialize)]
+#[derive(Debug, PartialEq, Serialize, Clone)]
 pub struct ValueObject {
   pub value: String,
 }
 
-#[derive(Debug, PartialEq, Serialize)]
+#[derive(Debug, PartialEq, Serialize, Clone)]
 #[serde(tag = "kind")]
 pub enum Node {
   Text(ValueObject),
@@ -34,7 +34,7 @@ pub enum Node {
   Block(Block)
 }
 
-#[derive(Debug, PartialEq, Serialize)]
+#[derive(Debug, PartialEq, Serialize, Clone)]
 pub struct Slot {
   pub script: js_ast::Statement
 }
@@ -53,32 +53,32 @@ impl fmt::Display for Node {
   }
 }
 
-#[derive(Debug, PartialEq, Serialize)]
+#[derive(Debug, PartialEq, Serialize, Clone)]
 pub enum Block {
   Conditional(ConditionalBlock)
   // Repeat(RepeatBlock)ode 
 }
 
-#[derive(Debug, PartialEq, Serialize)]
+#[derive(Debug, PartialEq, Serialize, Clone)]
 pub enum ConditionalBlock {
   PassFailBlock(PassFailBlock),
   FinalBlock(FinalBlock)
 }
 
 
-#[derive(Debug, PartialEq, Serialize)]
+#[derive(Debug, PartialEq, Serialize, Clone)]
 pub struct PassFailBlock {
   pub condition: js_ast::Statement,
   pub node: Option<Box<Node>>,
   pub fail: Option<Box<ConditionalBlock>>
 }
 
-#[derive(Debug, PartialEq, Serialize)]
+#[derive(Debug, PartialEq, Serialize, Clone)]
 pub struct FinalBlock {
   pub node: Option<Box<Node>>,
 }
 
-#[derive(Debug, PartialEq, Serialize)]
+#[derive(Debug, PartialEq, Serialize, Clone)]
 pub struct RepeatBlock {
 
   #[serde(rename = "eachAs")]
@@ -86,7 +86,7 @@ pub struct RepeatBlock {
   pub source: js_ast::Statement
 }
 
-#[derive(Debug, PartialEq, Serialize)]
+#[derive(Debug, PartialEq, Serialize, Clone)]
 pub struct AttributeStringValue {
   pub value: String
 }
@@ -127,7 +127,7 @@ impl fmt::Display for Element {
   }
 }
 
-#[derive(Debug, PartialEq, Serialize)]
+#[derive(Debug, PartialEq, Serialize, Clone)]
 #[serde(tag = "kind")]
 pub enum Attribute {
   ShorthandAttribute(ShorthandAttribute),
@@ -143,7 +143,7 @@ impl fmt::Display for Attribute {
   }
 }
 
-#[derive(Debug, PartialEq, Serialize)]
+#[derive(Debug, PartialEq, Serialize, Clone)]
 pub struct ShorthandAttribute {
   pub reference: js_ast::Statement,
 }
@@ -171,7 +171,7 @@ impl fmt::Display for ShorthandAttribute {
   }
 }
 
-#[derive(Debug, PartialEq, Serialize)]
+#[derive(Debug, PartialEq, Serialize, Clone)]
 pub struct KeyValueAttribute {
   pub name: String,
   pub value: Option<AttributeValue>,
@@ -188,7 +188,7 @@ impl fmt::Display for KeyValueAttribute {
   }
 }
 
-#[derive(Debug, PartialEq, Serialize)]
+#[derive(Debug, PartialEq, Serialize, Clone)]
 #[serde(tag = "attrKind")]
 pub enum AttributeValue {
   String(AttributeStringValue),
@@ -204,7 +204,7 @@ impl fmt::Display for AttributeValue {
   }
 }
 
-#[derive(Debug, PartialEq, Serialize)]
+#[derive(Debug, PartialEq, Serialize, Clone)]
 pub struct StyleElement {
   pub attributes: Vec<Attribute>,
   pub sheet: css_ast::Sheet,
@@ -219,7 +219,7 @@ impl fmt::Display for StyleElement {
   }
 }
 
-#[derive(Debug, PartialEq, Serialize)]
+#[derive(Debug, PartialEq, Serialize, Clone)]
 pub struct Fragment {
   pub children: Vec<Node>
 }

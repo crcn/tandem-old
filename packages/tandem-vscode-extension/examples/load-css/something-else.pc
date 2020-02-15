@@ -8,11 +8,12 @@
   #container {
     margin: 8px;
   }
+  
   .items {
-    border: 1px solid var(--main-color);
+    border: 1px solid rgba(105, 189, 147, 0.699);
     display: inline-block;
     padding: 30px;
-    border-radius: 8px;
+    border-radius: 8px; 
   }
 </style>
 
@@ -28,7 +29,7 @@
 <part id="preview">
   <self title="Groceries">
     <list>
-      <list:item>cans of stuff</list:item>
+      <list:item>cans of</list:item>
       <list:item>tuna</list:item>
       <list:item>rice crispy treatzzz</list:item>
       <list:item>cat food</list:item>

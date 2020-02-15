@@ -5,6 +5,7 @@
 
 use super::ast::*;
 use crate::base::parser::{get_buffer, ParseError};
+use crate::base::ast::{Location};
 use crate::base::tokenizer::{Token, Tokenizer};
 
 type FUntil<'a> = for<'r> fn(&mut Tokenizer<'a>) -> Result<bool, ParseError>;
@@ -371,7 +372,7 @@ fn parse_psuedo_element_selector<'a, 'b>(context: &mut Context<'a, 'b>) -> Resul
     context.tokenizer.next()?;
     let selector = if name == "not" {
       let sel = parse_pair_selector(context)?;
-      Selector::Not(Box::new(sel))
+      Selector::Not(NotSelector { selector: Box::new(sel) })
     } else {
       let param = get_buffer(context.tokenizer, |tokenizer| {
         Ok(tokenizer.peek(1)? != Token::ParenClose)
@@ -500,24 +501,42 @@ fn eat_script_comments<'a, 'b>(context: &mut Context<'a, 'b>) -> Result<(), Pars
 }
 
 fn parse_declaration<'a, 'b>(context: &mut Context<'a, 'b>) -> Result<Declaration, ParseError> {
+  let start = context.tokenizer.pos;
   let name = parse_selector_name(context)?.to_string();
+  let name_end = context.tokenizer.pos;
   context.tokenizer.next_expect(Token::Colon)?; // eat :
   eat_superfluous(context)?;
 
+  let value_start = context.tokenizer.pos;
   let value = get_buffer(context.tokenizer, |tokenizer| { 
     let tok = tokenizer.peek(1)?;
     Ok(tok != Token::Semicolon && tok != Token::CurlyClose) 
   })?.to_string();
+  let value_end = context.tokenizer.pos;
 
   if context.tokenizer.peek(1)? == Token::Semicolon {
     context.tokenizer.next()?; // eat ;
   }
 
+  let end = context.tokenizer.pos;
+
   eat_superfluous(context)?;
 
   Ok(Declaration {
     name, 
-    value
+    value,
+    location: Location {
+      start,
+      end
+    },
+    name_location: Location {
+      start,
+      end: name_end
+    },
+    value_location: Location {
+      start: value_start,
+      end: value_end
+    }
   })
 }
 

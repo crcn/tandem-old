@@ -1,10 +1,18 @@
 use std::fmt;
 use serde::{Serialize};
+use crate::base::ast::{Location};
 
-#[derive(Debug, PartialEq, Serialize)]
+#[derive(Debug, PartialEq, Serialize, Clone)]
 pub struct Declaration {
   pub name: String,
-  pub value: String
+  pub value: String,
+  pub location: Location,
+
+  #[serde(rename = "nameLocation")]
+  pub name_location: Location,
+  
+  #[serde(rename = "valueLocation")]
+  pub value_location: Location
 }
 
 impl fmt::Display for Declaration {
@@ -14,7 +22,8 @@ impl fmt::Display for Declaration {
   }
 }
 
-#[derive(Debug, PartialEq, Serialize)]
+#[derive(Debug, PartialEq, Serialize, Clone)]
+#[serde(tag = "kind")]
 pub enum Rule {
   Style(StyleRule),
   Charset(String),
@@ -43,7 +52,7 @@ impl fmt::Display for Rule {
   }
 }
 
-#[derive(Debug, PartialEq, Serialize)]
+#[derive(Debug, PartialEq, Serialize, Clone)]
 pub struct StyleRule {
   pub selector: Selector,
   pub declarations: Vec<Declaration>
@@ -62,7 +71,7 @@ impl fmt::Display for StyleRule {
 }
 
 
-#[derive(Debug, PartialEq, Serialize)]
+#[derive(Debug, PartialEq, Serialize, Clone)]
 pub struct FontFaceRule {
   pub declarations: Vec<Declaration>
 }
@@ -79,7 +88,7 @@ impl fmt::Display for FontFaceRule {
   }
 }
 
-#[derive(Debug, PartialEq, Serialize)]
+#[derive(Debug, PartialEq, Serialize, Clone)]
 pub struct ConditionRule {
   pub name: String,
   pub condition_text: String,
@@ -98,7 +107,7 @@ impl fmt::Display for ConditionRule {
   }
 }
 
-#[derive(Debug, PartialEq, Serialize)]
+#[derive(Debug, PartialEq, Serialize, Clone)]
 pub struct KeyframesRule {
   pub name: String,
   pub rules: Vec<KeyframeRule>
@@ -118,7 +127,7 @@ impl fmt::Display for KeyframesRule {
 
 
 
-#[derive(Debug, PartialEq, Serialize)]
+#[derive(Debug, PartialEq, Serialize, Clone)]
 pub struct KeyframeRule {
   pub key: String,
   pub declarations: Vec<Declaration>
@@ -136,14 +145,15 @@ impl fmt::Display for KeyframeRule {
   }
 }
 
-#[derive(Debug, PartialEq, Serialize)]
+#[derive(Debug, PartialEq, Serialize, Clone)]
+#[serde(tag = "kind")]
 pub enum Selector {
   Group(GroupSelector),
   Combo(ComboSelector),
   Descendent(DescendentSelector),
   PseudoElement(PseudoElementSelector),
   PseudoParamElement(PseudoParamElementSelector),
-  Not(Box<Selector>),
+  Not(NotSelector),
   Child(ChildSelector),
   Adjacent(AdjacentSelector),
   Sibling(SiblingSelector),
@@ -161,7 +171,7 @@ impl fmt::Display for Selector {
       Selector::Combo(selector) => write!(f, "{}", selector.to_string()),
       Selector::Element(selector) => write!(f, "{}", selector.to_string()),
       Selector::Descendent(selector) => write!(f, "{}", selector.to_string()),
-      Selector::Not(selector) => write!(f, ":not({})", selector.to_string()),
+      Selector::Not(selector) => write!(f, "{}", selector.to_string()),
       Selector::Adjacent(selector) => write!(f, "{}", selector.to_string()),
       Selector::PseudoElement(selector) => write!(f, "{}", selector.to_string()),
       Selector::PseudoParamElement(selector) => write!(f, "{}", selector.to_string()),
@@ -176,7 +186,7 @@ impl fmt::Display for Selector {
 }
 
 // a, b, h1, h2 { }
-#[derive(Debug, PartialEq, Serialize)]
+#[derive(Debug, PartialEq, Serialize, Clone)]
 pub struct GroupSelector {
   pub selectors: Vec<Selector>
 }
@@ -192,7 +202,7 @@ impl fmt::Display for GroupSelector {
 }
 
 // a.b[c=d] {}
-#[derive(Debug, PartialEq, Serialize)]
+#[derive(Debug, PartialEq, Serialize, Clone)]
 pub struct ComboSelector {
   pub selectors: Vec<Selector>
 }
@@ -208,7 +218,7 @@ impl fmt::Display for ComboSelector {
 }
 
 // a b {}
-#[derive(Debug, PartialEq, Serialize)]
+#[derive(Debug, PartialEq, Serialize, Clone)]
 pub struct DescendentSelector {
   pub parent: Box<Selector>,
   pub descendent: Box<Selector>
@@ -221,10 +231,20 @@ impl fmt::Display for DescendentSelector {
 }
 
 // a > b {}
-#[derive(Debug, PartialEq, Serialize)]
+#[derive(Debug, PartialEq, Serialize, Clone)]
 pub struct ChildSelector {
   pub parent: Box<Selector>,
   pub child: Box<Selector>
+}
+#[derive(Debug, PartialEq, Serialize, Clone)]
+pub struct NotSelector {
+  pub selector: Box<Selector>
+}
+
+impl fmt::Display for NotSelector {
+  fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+    write!(f, ":not({})", self.selector.to_string())
+  }
 }
 
 impl fmt::Display for ChildSelector {
@@ -234,7 +254,7 @@ impl fmt::Display for ChildSelector {
 }
 
 // a + b {}
-#[derive(Debug, PartialEq, Serialize)]
+#[derive(Debug, PartialEq, Serialize, Clone)]
 pub struct AdjacentSelector {
   pub selector: Box<Selector>,
   pub next_sibling_selector: Box<Selector>
@@ -247,7 +267,7 @@ impl fmt::Display for AdjacentSelector {
 }
 
 // a ~ b {}
-#[derive(Debug, PartialEq, Serialize)]
+#[derive(Debug, PartialEq, Serialize, Clone)]
 pub struct SiblingSelector {
   pub selector: Box<Selector>,
   pub sibling_selector: Box<Selector>
@@ -260,7 +280,7 @@ impl fmt::Display for SiblingSelector {
 }
 
 // div:before, div::after { }
-#[derive(Debug, PartialEq, Serialize)]
+#[derive(Debug, PartialEq, Serialize, Clone)]
 pub struct PseudoElementSelector {
   pub name: String
 }
@@ -273,7 +293,7 @@ impl fmt::Display for PseudoElementSelector {
 }
 
 // :nth-of-type(div) { }
-#[derive(Debug, PartialEq, Serialize)]
+#[derive(Debug, PartialEq, Serialize, Clone)]
 pub struct PseudoParamElementSelector {
   pub name: String,
   pub param: String
@@ -287,7 +307,7 @@ impl fmt::Display for PseudoParamElementSelector {
 }
 
 // div { }
-#[derive(Debug, PartialEq, Serialize)]
+#[derive(Debug, PartialEq, Serialize, Clone)]
 pub struct ElementSelector {
   pub tag_name: String
 }
@@ -300,7 +320,7 @@ impl fmt::Display for ElementSelector {
 }
 
 // .div { }
-#[derive(Debug, PartialEq, Serialize)]
+#[derive(Debug, PartialEq, Serialize, Clone)]
 pub struct ClassSelector {
   pub class_name: String
 }
@@ -314,7 +334,7 @@ impl fmt::Display for ClassSelector {
 }
 
 // #div { }
-#[derive(Debug, PartialEq, Serialize)]
+#[derive(Debug, PartialEq, Serialize, Clone)]
 pub struct IdSelector {
   pub id: String
 }
@@ -328,7 +348,7 @@ impl fmt::Display for IdSelector {
 }
 
 // #div { }
-#[derive(Debug, PartialEq, Serialize)]
+#[derive(Debug, PartialEq, Serialize, Clone)]
 pub struct AttributeSelector {
   pub name: String,
   pub value: Option<String>
@@ -347,7 +367,7 @@ impl fmt::Display for AttributeSelector {
 }
 
 
-#[derive(Debug, PartialEq, Serialize)]
+#[derive(Debug, PartialEq, Serialize, Clone)]
 pub struct Sheet {
   pub rules: Vec<Rule>
 }

@@ -1,0 +1,46 @@
+<style>
+
+  h1 {
+    color: rgb(161, 161, 161);  
+    font-weight: 400;
+    text-decoration: underline;
+  }
+  ol {
+    color: rgb(147, 124, 252);
+    font-size: 18px;
+    padding: 0;
+    margin: 0;
+  }
+
+  #container {
+    padding: 10px;
+  }
+</style>
+
+<div id="container">
+  <h1>{title}:</h1>
+  <ol>
+    {children}
+  </ol>
+</div>
+
+<part id="item">
+  <li>{children}</li>
+</part>
+
+<part id="preview">
+  <self title="Groceries">
+    <item>something</item>
+    <item>something</item>
+    <item>something</item>
+    <item>something</item>
+    <item>something</item>
+    <item>something</item>
+    <item>something</item>
+    <item>something</item>
+    <item>something</item>
+    <item>something</item>
+    <item>something</item>
+    <item>something</item>
+  </self>
+</part>

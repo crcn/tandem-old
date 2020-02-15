@@ -35,8 +35,11 @@ immediate TODO:
 
 - local resource roots - vscode extension
 
+- switch to WASM or Neon (needs to be synchronous)
+
 - language server
 
+  - wait for parser
   - color picker
   - meta click tag names
   - meta click sources

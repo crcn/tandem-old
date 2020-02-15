@@ -42,7 +42,6 @@ export const activate = (client: LanguageClient, context: ExtensionContext) => {
 
   const openLivePreview = async (editor: TextEditor) => {
     const paperclipUri = String(editor.document.uri);
-    console.log(workspace.rootPath);
 
     // NOTE - don't get in the way of opening the live preview since
     // there's really no way to tell whether an existing tab is open which will

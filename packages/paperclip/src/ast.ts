@@ -1,4 +1,5 @@
 import { Statement } from "./js-ast";
+import { Sheet } from "./css-ast";
 
 export enum NodeKind {
   Fragment = "Fragment",
@@ -24,7 +25,7 @@ export type Element = {
 } & BaseNode<NodeKind.Element>;
 
 export type StyleElement = {
-  sheet: any;
+  sheet: Sheet;
 } & BaseNode<NodeKind.StyleElement>;
 
 export enum AttributeKind {

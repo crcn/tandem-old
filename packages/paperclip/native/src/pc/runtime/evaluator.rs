@@ -329,8 +329,6 @@ fn evaluate_basic_element<'a>(element: &ast::Element, context: &'a Context) -> R
           }
         }
 
-        println!("img src {:?}", value_option);
-
         attributes.push(virt::Attribute {
           name,
           value: value_option,

@@ -7,11 +7,12 @@ import {
   InitializeParams,
   InitializedParams,
   Connection,
+  ColorInformation,
   Diagnostic,
-  ColorPresentation,
   TextDocumentSyncKind,
   TextDocumentPositionParams,
   DiagnosticSeverity,
+  DocumentColorRequest,
   ColorPresentationRequest
 } from "vscode-languageserver";
 
@@ -31,6 +32,14 @@ import {
   NotificationType,
   EngineEventNotification
 } from "../common/notifications";
+import * as parseColor from "color";
+import { createFacade as createServiceFacade } from "./services/facade";
+import {
+  LanguageServiceEvent,
+  LanguageServiceEventType,
+  ColorInfoEvent
+} from "./services/base";
+import { getColorPresentations } from "./services/css";
 
 const PAPERCLIP_RENDER_PART = "preview";
 
@@ -45,10 +54,59 @@ connection.onInitialize((params: InitializeParams) => {
       // Tell the client that the server supports code completion
       completionProvider: {
         resolveProvider: true
-      }
+      },
+      colorProvider: true
     }
   };
 });
+
+const initService = (engine: Engine, connection: Connection) => {
+  const service = createServiceFacade(engine);
+  let _colorInfo: any = {};
+
+  service.onEvent((event: LanguageServiceEvent) => {
+    if (event.type === LanguageServiceEventType.ColorInformation) {
+      handleColorInfoEvent(event);
+    }
+  });
+  const handleColorInfoEvent = ({ filePath, payload }: ColorInfoEvent) => {
+    const document: TextDocument = documents.get(`file://${filePath}`);
+
+    const info: ColorInformation[] = payload
+      .map(({ color, location }) => {
+        try {
+          const {
+            color: [red, green, blue],
+            valpha: alpha
+          } = parseColor(color);
+          return {
+            range: {
+              start: document.positionAt(location.start),
+              end: document.positionAt(location.end)
+            },
+            color: { red, green, blue, alpha }
+          };
+        } catch (e) {
+          console.warn(e);
+        }
+      })
+      .filter(Boolean);
+
+    _colorInfo[document.uri.toString()] = info;
+  };
+
+  connection.onRequest(DocumentColorRequest.type, params => {
+    let document = documents.get(params.textDocument.uri);
+    if (document) {
+      return _colorInfo[document.uri.toString()] || [];
+    }
+    return [];
+  });
+
+  connection.onRequest(ColorPresentationRequest.type, params => {
+    return getColorPresentations(params.color, params.range);
+  });
+};
 
 const initEngine = async (
   connection: Connection,
@@ -57,6 +115,8 @@ const initEngine = async (
   const engine = new Engine({
     renderPart: PAPERCLIP_RENDER_PART
   });
+
+  initService(engine, connection);
 
   const handleGraphError = ({ filePath, info }: GraphErrorEvent) => {
     sendError(filePath, info.message, info.location);

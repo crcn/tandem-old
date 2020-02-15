@@ -1,6 +1,7 @@
 div {
   color: rgba(219, 24, 210, 0.493);
   font-size: 100px;
+  border: 1px solid red;
 }
 
 li {
