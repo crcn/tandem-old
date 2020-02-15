@@ -189,7 +189,7 @@ impl fmt::Display for KeyValueAttribute {
 }
 
 #[derive(Debug, PartialEq, Serialize)]
-#[serde(tag = "kind")]
+#[serde(tag = "attrKind")]
 pub enum AttributeValue {
   String(AttributeStringValue),
   Slot(js_ast::Statement)

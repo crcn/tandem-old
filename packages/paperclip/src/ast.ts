@@ -48,7 +48,7 @@ export enum AttributeValueKind {
 }
 
 export type BaseAttributeValue<TKind extends AttributeValueKind> = {
-  kind: TKind;
+  attrKind: TKind;
 };
 
 export type StringAttributeValue = {
@@ -116,7 +116,7 @@ export const getAttributeValue = (name: string, element: Element) => {
 
 export const getAttributeStringValue = (name: string, element: Element) => {
   const value = getAttributeValue(name, element);
-  return value && value.kind === AttributeValueKind.String && value.value;
+  return value && value.attrKind === AttributeValueKind.String && value.value;
 };
 
 export const getStyleElements = (ast: Node): Element[] =>
@@ -125,15 +125,13 @@ export const getStyleElements = (ast: Node): Element[] =>
 export const isVisibleElement = (ast: Element): boolean => {
   return !/^(import|logic|meta|style|part)$/.test(ast.tagName);
 };
+export const isVisibleNode = (node: Node): boolean =>
+  node.kind === NodeKind.Text ||
+  node.kind === NodeKind.Fragment ||
+  (node.kind === NodeKind.Element && isVisibleElement(node));
 
 export const getVisibleChildNodes = (ast: Node): Node[] =>
-  getChildren(ast).filter(child => {
-    return (
-      child.kind === NodeKind.Text ||
-      child.kind === NodeKind.Fragment ||
-      (child.kind === NodeKind.Element && isVisibleElement(child))
-    );
-  });
+  getChildren(ast).filter(isVisibleNode);
 
 export const getParts = (ast: Node): Node[] =>
   getChildren(ast).filter(child => {

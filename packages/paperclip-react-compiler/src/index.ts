@@ -12,13 +12,14 @@ import {
   AttributeValue,
   AttributeKind,
   AttributeValueKind,
+  isVisibleNode,
   getImportIds,
+  isVisibleElement,
   getVisibleChildNodes
 } from "paperclip";
 import {
   createTranslateContext,
   TranslateContext,
-  addLine,
   startBlock,
   endBlock,
   addBuffer
@@ -39,7 +40,7 @@ const translateRoot = (ast: Node, context: TranslateContext) => {
 };
 
 const translateImports = (ast: Node, context: TranslateContext) => {
-  context = addLine(`const React = require("react");`, context);
+  context = addBuffer(`const React = require("react");\n`, context);
 
   const imports = getImports(ast);
   for (const imp of imports) {
@@ -50,9 +51,12 @@ const translateImports = (ast: Node, context: TranslateContext) => {
       continue;
     }
 
-    context = addLine(`const ${pascalCase(id)} = require("${src}");`, context);
+    context = addBuffer(
+      `const ${pascalCase(id)} = require("${src}");\n`,
+      context
+    );
   }
-  context = addLine("", context);
+  context = addBuffer("\n", context);
   return context;
 };
 
@@ -60,92 +64,118 @@ const translateComponent = (root: Node, context: TranslateContext) => {
   const baseComponentName = getBaseComponentName(root);
   const enhancedComponentName = getComponentName(root);
 
-  context = startBlock(`let ${baseComponentName} = function(props) {`, context);
+  context = startBlock(
+    addBuffer(`let ${baseComponentName} = function(props) {\n`, context)
+  );
   context = addBuffer(`return `, context);
   context = translateJSXRoot(root, context);
-  // context = addLine(`;`, context);
-  context = endBlock(`}`, context);
+  context = endBlock(context);
+  context = addBuffer(`}\n`, context);
 
-  context = addLine("\n", context);
+  context = addBuffer("\n\n", context);
 
   // TODO - check if logic controller
   if (/* has logic controller */ false) {
   } else {
-    context = addLine(
-      `let ${enhancedComponentName} = ${baseComponentName};`,
+    context = addBuffer(
+      `let ${enhancedComponentName} = ${baseComponentName};\n`,
       context
     );
-    context = addLine(`module.exports = ${enhancedComponentName};`, context);
+    context = addBuffer(
+      `module.exports = ${enhancedComponentName};\n`,
+      context
+    );
   }
 
   return context;
 };
 
 const translateJSXRoot = (node: Node, context: TranslateContext) => {
-  const visibleNodes = getVisibleChildNodes(node);
+  return translateJSXNode(node, context);
+  // const visibleNodes = getVisibleChildNodes(node);
 
-  if (visibleNodes.length === 1) {
-    return translateJSXNode(visibleNodes[0], context);
-  } else {
-    context = translateFragment(visibleNodes, context);
-  }
+  // if (visibleNodes.length === 1) {
+  //   return translateJSXNode(visibleNodes[0], context);
+  // } else {
+  //   context = translateFragment(visibleNodes, context);
+  // }
 
-  return context;
+  // return context;
 };
 
 const translateJSXNode = (node: Node, context: TranslateContext) => {
   if (node.kind === NodeKind.Fragment) {
     context = translateFragment(node.children, context);
-  } else if (node.kind === NodeKind.Element) {
+  } else if (node.kind === NodeKind.Element && isVisibleElement(node)) {
     const tag =
       context.importIds.indexOf(node.tagName) !== -1
         ? pascalCase(node.tagName)
         : JSON.stringify(node.tagName);
-    context = startBlock(`React.createElement(${tag}, {`, context);
+
+    context = addBuffer(`React.createElement(${tag}, {`, context);
+    context = addBuffer("\n", context);
+    context = startBlock(context);
+    context = startBlock(context);
+    context = addBuffer(`"data-pc-id": "OK"\n`, context);
     for (const attr of node.attributes) {
       context = translateAttribute(attr, context);
     }
-    context = endBlock(`}, `, context);
-    context = translateChildren(node.children, context);
+    context = endBlock(context);
+    context = addBuffer(`}`, context);
+    context = endBlock(context);
+    if (node.children.length) {
+      context = addBuffer(`,\n`, context);
+      context = translateChildren(node.children, context);
+    }
     context = addBuffer(`)`, context);
   } else if (node.kind === NodeKind.Text) {
-    context = addLine(`${JSON.stringify(node.value)}`, context);
+    context = addBuffer(`${JSON.stringify(node.value)}`, context);
   } else if (node.kind === NodeKind.Slot) {
     context = translateSlot(node, context);
-  } else {
-    console.log("NOT");
   }
 
   return context;
 };
 
 const translateFragment = (children: Node[], context: TranslateContext) => {
-  context = startBlock(`React.createElement(Fragment, `, context);
+  context = addBuffer(`React.createElement(Fragment,\n`, context);
   context = translateChildren(children, context);
-  context = endBlock(`)`, context);
+  context = addBuffer(`)\n`, context);
   return context;
 };
 
 const translateChildren = (children: Node[], context: TranslateContext) => {
-  return children.reduce((newContext, child) => {
-    newContext = translateJSXNode(child, newContext);
-    newContext = addBuffer(",", newContext);
-    return newContext;
-  }, context);
+  context = startBlock(context);
+
+  context = children
+    .filter(isVisibleNode)
+    .reduce((newContext, child, index, children) => {
+      newContext = translateJSXNode(child, newContext);
+      if (index < children.length - 1) {
+        newContext = addBuffer(",\n", newContext);
+      }
+      return newContext;
+    }, context);
+  context = endBlock(context);
+
+  if (children.length) {
+    context = addBuffer("\n", context);
+  }
+  return context;
 };
 
 const translateAttribute = (attr: Attribute, context: TranslateContext) => {
   if (attr.kind === AttributeKind.KeyValueAttribute) {
-    context = addBuffer(`${JSON.stringify(attr.name)}:`, context);
+    context = addBuffer(`${JSON.stringify(attr.name)}: `, context);
     context = translateAttributeValue(attr.value, context);
-    context = addLine(`, `, context);
+    context = addBuffer(`,\n`, context);
   } else if (attr.kind === AttributeKind.ShorthandAttribute) {
     const keyValue = (attr.reference as Reference).path[0];
     context = addBuffer(
       `${JSON.stringify(keyValue)}: props.${camelCase(keyValue)}`,
       context
     );
-    context = addLine(`, `, context);
+    context = addBuffer(`,\n`, context);
   }
 
   return context;
@@ -158,9 +188,9 @@ const translateAttributeValue = (
   if (!value) {
     return addBuffer("true", context);
   }
-  if (value.kind === AttributeValueKind.Slot) {
+  if (value.attrKind === AttributeValueKind.Slot) {
     return translateStatment((value as any) as Statement, context);
-  } else if (value.kind === AttributeValueKind.String) {
+  } else if (value.attrKind === AttributeValueKind.String) {
     return addBuffer(JSON.stringify(value.value), context);
   }
 

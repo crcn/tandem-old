@@ -20,27 +20,21 @@ export const createTranslateContext = (
   indent
 });
 
-export const addLine = (line: string, context: TranslateContext) => ({
-  ...addBuffer(line + "\n", context),
-  isNewLine: true
-});
-
 export const addBuffer = (buffer: string, context: TranslateContext) => ({
   ...context,
   buffer:
     context.buffer +
     (context.isNewLine ? context.indent.repeat(context.lineNumber) : "") +
     buffer,
-  isNewLine: false
+  isNewLine: buffer.indexOf("\n") === buffer.length - 1
 });
 
-export const startBlock = (line: string, context: TranslateContext) => ({
-  ...addLine(line, context),
+export const startBlock = (context: TranslateContext) => ({
+  ...context,
   lineNumber: context.lineNumber + 1
 });
 
-export const endBlock = (line: string, context: TranslateContext) =>
-  addLine(line, {
-    ...context,
-    lineNumber: context.lineNumber - 1
-  });
+export const endBlock = (context: TranslateContext) => ({
+  ...context,
+  lineNumber: context.lineNumber - 1
+});
