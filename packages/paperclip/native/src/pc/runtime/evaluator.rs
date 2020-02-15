@@ -45,6 +45,23 @@ pub fn evaluate<'a>(node_expr: &ast::Node, file_path: &String, graph: &'a Depend
   root_result
 }
 
+pub fn evaluate_document_styles<'a>(node_expr: &ast::Node, file_path: &String) -> Result<css_virt::CSSSheet, RuntimeError>  {
+  let mut sheet = css_virt::CSSSheet {
+    rules: vec![] 
+  };
+  let children_option = ast::get_children(&node_expr);
+  let scope = get_component_scope(file_path);
+  if let Some(children) = children_option {
+    // style elements are only allowed in root, so no need to traverse
+    for child in children {
+      if let ast::Node::StyleElement(style_element) = &child {
+        sheet.extend(evaluate_css(&style_element.sheet, &scope)?);
+      }
+    }
+  }
+
+  Ok(sheet)
+}
 
 pub fn evaluate_jumbo_style<'a>(_entry_expr: &ast::Node,  file_path: &String, graph: &'a DependencyGraph) -> Result<virt::Node, RuntimeError>  {
 
@@ -53,18 +70,9 @@ pub fn evaluate_jumbo_style<'a>(_entry_expr: &ast::Node,  file_path: &String, gr
   };
 
   for dep in graph.flatten(file_path) {
-    let children_option = ast::get_children(&dep.expression);
-    let scope = get_component_scope(&dep.file_path);
-    if let Some(children) = children_option {
-
-      // style elements are only allowed in root, so no need to traverse
-      for child in children {
-        if let ast::Node::StyleElement(style_element) = &child {
-          sheet.extend(evaluate_css(&style_element.sheet, &scope)?);
-        }
-      }
-    }
+    sheet.extend(evaluate_document_styles(&dep.expression, &dep.file_path)?);
   }
+
   
   Ok(virt::Node::StyleElement(virt::StyleElement {
     sheet

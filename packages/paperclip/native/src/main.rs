@@ -41,6 +41,17 @@ struct ParseContentParams {
 }
 
 #[derive(Deserialize, Debug, Serialize)]
+struct EvaluateFileStylesParams {
+    file_path: String
+}
+
+#[derive(Deserialize, Debug, Serialize)]
+struct EvaluateContentStylesParams {
+    content: String,
+    file_path: String
+}
+
+#[derive(Deserialize, Debug, Serialize)]
 struct UpdateVirtualFileContentParams {
     file_path: String,
     content: String
@@ -62,7 +73,6 @@ fn main() {
         block_on(load_engine_mutex.lock().unwrap().load(&params.file_path, params.part));
 		Ok(Value::String("ok".into()))
     });
-
 
     let unload_engine_mutex = engine_mutex.clone();
 	io.add_method("unload", move |params: Params| {
@@ -88,6 +98,30 @@ fn main() {
         let result = block_on(parse_content_engine_mutex.lock().unwrap().parse_content(&params.content));
         let json = match result {
             Ok(node) => serde_json::to_string(&node).unwrap(),
+            Err(error) => format!("{{\"error\":{}}}", serde_json::to_string(&error).unwrap())
+        };
+		Ok(Value::String(json.into()))
+    });
+
+
+    let evaluate_file_styles_mutex = engine_mutex.clone();
+	io.add_method("evaluate_file_styles", move |params: Params| {
+        let params: EvaluateFileStylesParams = params.parse().unwrap();
+        let result = block_on(evaluate_file_styles_mutex.lock().unwrap().evaluate_file_styles(&params.file_path));
+        let json = match result {
+            Ok(sheet) => serde_json::to_string(&sheet).unwrap(),
+            Err(error) => format!("{{\"error\":{}}}", serde_json::to_string(&error).unwrap())
+        };
+		Ok(Value::String(json.into()))
+    });
+    
+
+    let evaluate_file_styles_mutex = engine_mutex.clone();
+	io.add_method("evaluate_content_styles", move |params: Params| {
+        let params: EvaluateContentStylesParams = params.parse().unwrap();
+        let result = block_on(evaluate_file_styles_mutex.lock().unwrap().evaluate_content_styles(&params.content, &params.file_path));
+        let json = match result {
+            Ok(sheet) => serde_json::to_string(&sheet).unwrap(),
             Err(error) => format!("{{\"error\":{}}}", serde_json::to_string(&error).unwrap())
         };
 		Ok(Value::String(json.into()))

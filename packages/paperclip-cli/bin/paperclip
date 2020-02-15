@@ -51,8 +51,9 @@ function init(cwd, filesGlob, compile, shouldWatch) {
     const fullPath = path.resolve(process.cwd(), relativePath);
     try {
       const ast = await pcEngine.parseFile(fullPath);
+      const sheet = await pcEngine.evaluateFileStyles(fullPath);
       console.log("Compiling %s", relativePath);
-      const result = compile(ast, fullPath);
+      const result = compile({ ast, sheet }, fullPath);
       console.log(result);
     } catch(e) {
       console.log("Err %s", relativePath);

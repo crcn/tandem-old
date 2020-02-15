@@ -4,6 +4,7 @@ export enum NodeKind {
   Fragment = "Fragment",
   Text = "Text",
   Element = "Element",
+  StyleElement = "StyleElement",
   Slot = "Slot"
 }
 
@@ -21,6 +22,10 @@ export type Element = {
   value: string;
   children: Node[];
 } & BaseNode<NodeKind.Element>;
+
+export type StyleElement = {
+  sheet: any;
+} & BaseNode<NodeKind.StyleElement>;
 
 export enum AttributeKind {
   ShorthandAttribute = "ShorthandAttribute",
@@ -69,7 +74,7 @@ export type Slot = {
   script: Statement;
 } & BaseNode<NodeKind.Slot>;
 
-export type Node = Text | Element | Fragment | Slot;
+export type Node = Text | Element | StyleElement | Fragment | Slot;
 
 export const getImports = (ast: Node): Element[] =>
   getChildrenByTagName("import", ast).filter(child => {
@@ -119,8 +124,10 @@ export const getAttributeStringValue = (name: string, element: Element) => {
   return value && value.attrKind === AttributeValueKind.String && value.value;
 };
 
-export const getStyleElements = (ast: Node): Element[] =>
-  getChildrenByTagName("style", ast);
+export const getStyleElements = (ast: Node): StyleElement[] =>
+  getChildren(ast).filter(
+    child => child.kind === NodeKind.StyleElement
+  ) as StyleElement[];
 
 export const isVisibleElement = (ast: Element): boolean => {
   return !/^(import|logic|meta|style|part)$/.test(ast.tagName);
@@ -128,15 +135,20 @@ export const isVisibleElement = (ast: Element): boolean => {
 export const isVisibleNode = (node: Node): boolean =>
   node.kind === NodeKind.Text ||
   node.kind === NodeKind.Fragment ||
+  node.kind === NodeKind.Slot ||
   (node.kind === NodeKind.Element && isVisibleElement(node));
 
 export const getVisibleChildNodes = (ast: Node): Node[] =>
   getChildren(ast).filter(isVisibleNode);
 
-export const getParts = (ast: Node): Node[] =>
+export const getParts = (ast: Node): Element[] =>
   getChildren(ast).filter(child => {
-    return child.kind === NodeKind.Element && child.tagName === "part";
-  });
+    return (
+      child.kind === NodeKind.Element &&
+      child.tagName === "part" &&
+      hasAttribute("id", child)
+    );
+  }) as Element[];
 
 export const hasAttribute = (name: string, element: Element) =>
   getAttribute(name, element) != null;

@@ -9,6 +9,7 @@
   "dependencies": {
     "lodash": "^4.17.15",
     "paperclip": "^11.0.3",
+    "paperclip-styles-compiler": "^11.0.3",
     "typescript": "^3.7.5"
   },
   "scripts": {
@@ -18,5 +19,5 @@
   },
   "author": "",
   "license": "ISC",
-  "gitHead": "2a7e61f6174c5914237ade624f09f879176db11e"
+  "gitHead": "02c551ba2a2d5ec9ee9ee4e59b0a9e918646d248"
 }

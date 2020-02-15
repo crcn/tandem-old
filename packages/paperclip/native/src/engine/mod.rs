@@ -5,10 +5,12 @@ use crate::base::parser::{ParseError};
 use crate::pc::ast as pc_ast;
 use crate::pc::runtime::graph::{DependencyGraph};
 use crate::pc::runtime::vfs::{VirtualFileSystem};
+use crate::pc::runtime::evaluator::{evaluate_document_styles};
 use crate::js::runtime::virt as js_virt;
 use crate::base::runtime::{RuntimeError};
 use serde::{Serialize};
 use crate::pc::runtime::graph::{GraphError};
+use crate::css::runtime::virt as css_vrt;
 
 #[derive(Debug, PartialEq, Serialize)]
 pub struct EvaluatedEvent {
@@ -22,6 +24,7 @@ pub struct EvaluatedEvent {
 #[serde(tag = "errorKind")]
 pub enum EngineError {
   Graph(GraphError),
+  Parser(ParseError),
   Runtime(RuntimeError)
 }
 
@@ -36,6 +39,18 @@ pub struct EvalOptions {
   part: Option<String>
 }
 
+async fn evaluate_content_styles(content: &String, file_path: &String) -> Result<css_vrt::CSSSheet, EngineError> {
+  parse_pc(content)
+  .map_err(|err| {
+    EngineError::Parser(err)
+  })
+  .and_then(|node_ast| {
+    evaluate_document_styles(&node_ast, file_path)
+    .map_err(|err| {
+      EngineError::Runtime(err)
+    })
+  })
+}
 
 pub struct Engine {
   events: Vec<EngineEvent>,
@@ -43,6 +58,7 @@ pub struct Engine {
   pub dependency_graph: DependencyGraph,
   pub load_options: HashMap<String, EvalOptions>
 }
+
 
 impl Engine {
   pub fn new(http_path: Option<String>) -> Engine {
@@ -83,6 +99,15 @@ impl Engine {
 
   pub async fn parse_content(&mut self, content: &String) -> Result<pc_ast::Node, ParseError> {
     parse_pc(content)
+  }
+
+  pub async fn evaluate_file_styles(&mut self, file_path: &String) -> Result<css_vrt::CSSSheet, EngineError> {
+    let content = self.vfs.reload(file_path).await.unwrap();
+    evaluate_content_styles(content, file_path).await
+  }
+
+  pub async fn evaluate_content_styles(&mut self, content: &String, file_path: &String) -> Result<css_vrt::CSSSheet, EngineError> {
+    evaluate_content_styles(content, file_path).await
   }
 
   pub async fn update_virtual_file_content(&mut self, file_path: &String, content: &String) -> Result<(), GraphError> {

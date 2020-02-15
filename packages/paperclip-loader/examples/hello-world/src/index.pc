@@ -1,0 +1,13 @@
+<style> 
+  li {
+    color: red;
+  }
+</style>
+
+<ol>
+  {children}
+</ol>
+
+<part id="item">
+  <li>{children}</li>
+</part>

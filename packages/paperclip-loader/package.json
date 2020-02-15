@@ -4,9 +4,21 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "tsc",
+    "build:watch": "tsc --watch"
   },
   "author": "",
   "license": "ISC",
-  "gitHead": "2a7e61f6174c5914237ade624f09f879176db11e"
+  "gitHead": "02c551ba2a2d5ec9ee9ee4e59b0a9e918646d248",
+  "dependencies": {
+    "loader-utils": "^1.2.3",
+    "paperclip": "^11.0.2",
+    "paperclip-react-compiler": "^10.1.38",
+    "react": "^16.12.0",
+    "resolve": "^1.15.1",
+    "webpack": "^4.41.6"
+  },
+  "devDependencies": {
+    "webpack-cli": "^3.3.11"
+  }
 }

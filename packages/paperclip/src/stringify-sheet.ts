@@ -4,12 +4,30 @@ export const stringifyCSSSheet = sheet => {
 
 const stringifyCSSRule = rule => {
   switch (rule.kind) {
-    case "CSSStyleRule":
-      return stringifyCSSStyleRule(rule);
+    case "Style":
+      return stringifyStyleRule(rule);
+    case "Page":
+    case "Supports":
+    case "Media":
+      return stringifyConditionRule(rule);
+    case "FontFace":
+      return stringifyFontFaceRule(rule);
   }
 };
 
-const stringifyCSSStyleRule = ({ selector_text, style }) => {
+const stringifyConditionRule = ({ name, condition_text, rules }) => {
+  return `@${name} ${condition_text} {
+    ${rules.map(stringifyStyleRule).join("\n")}
+  }`;
+};
+
+const stringifyFontFaceRule = ({ style }) => {
+  return `@font-face {
+    ${style.map(stringifyStyle).join("\n")}
+  }`;
+};
+
+const stringifyStyleRule = ({ selector_text, style }) => {
   return `${selector_text} {
     ${style.map(stringifyStyle).join("\n")}
   }`;

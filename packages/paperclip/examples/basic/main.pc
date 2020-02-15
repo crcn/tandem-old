@@ -1,13 +1,19 @@
-<meta>
-
 <div>
-  <span primary a={okay} {okay}>
-    <div>okay</div>
-    <div>okay</div>
-    <div>okay</div>
-    <div>okay</div>
+  <span {primary} secondary>
+    {something}
   </span>
 </div>
 
+<part id="something">
+  okay
+</part>
+
 <style>
+  div {
+    color: red;
+  }
+
+  div > color {
+    color: blue;
+  }
 </style>

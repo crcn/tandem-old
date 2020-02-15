@@ -37,6 +37,7 @@ immediate TODO:
   - just get slots to work, maybe parts
   - webpack loader
   - take compiler flags
+- static site generator
 - type inferencing
 - quick guide to setup Tandem
 - React compiler

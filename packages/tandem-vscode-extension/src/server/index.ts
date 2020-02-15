@@ -123,7 +123,6 @@ const initEngine = async (
           diagnostics: []
         });
       }
-
       connection.sendNotification(
         ...new EngineEventNotification(event).getArgs()
       );

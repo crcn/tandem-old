@@ -1,5 +1,5 @@
-import { stringifyCSSSheet } from "./stringify-sheet";
 import { Html5Entities } from "html-entities";
+import { stringifyCSSSheet } from "paperclip/src/stringify-sheet";
 
 const entities = new Html5Entities();
 
@@ -27,8 +27,6 @@ const createNativeTextNode = node => {
   return document.createTextNode(entities.decode(node.value));
 };
 const createNativeStyle = element => {
-  // return document.createTextNode(JSON.stringify(element));
-  // return document.createTextNode(stringifyCSSSheet(element.sheet));
   const nativeElement = document.createElement("style");
   nativeElement.textContent = stringifyCSSSheet(element.sheet);
   return nativeElement;

@@ -147,7 +147,6 @@ impl DependencyGraph {
   }
 }
 
-
 #[derive(Debug)]
 pub struct Dependency {
   pub file_path: String,

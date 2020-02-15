@@ -25,6 +25,7 @@ export type EngineEventListener = (event: EngineEvent) => void;
 export class Engine {
   private _listeners: Array<EngineEventListener>;
   private _process: ChildProcess;
+  private _watching: boolean;
   private _client;
   private _disposed: boolean;
   private _loaded: Promise<any>;
@@ -73,8 +74,6 @@ export class Engine {
         }
       });
     });
-
-    this._watch();
   }
   onEvent(listener: EngineEventListener) {
     if (listener == null) {
@@ -89,30 +88,34 @@ export class Engine {
     };
   }
   async parseFile(filePath: string) {
-    await this._loaded;
-    return new Promise((resolve, reject) => {
-      this._client.request(
-        "parse_file",
-        { file_path: stripFileProtocol(filePath) },
-        (err, response) => {
-          if (err) return reject(err);
-          const result = JSON.parse(response.result);
-          if (result.error) return reject(result.error);
-          resolve(result);
-        }
-      );
+    return this._request("parse_file", {
+      file_path: stripFileProtocol(filePath)
     });
   }
-  async parseContent(content: string) {
+  async _request(command: string, params: any) {
     await this._loaded;
     return new Promise((resolve, reject) => {
-      this._client.request("parse_content", { content }, (err, response) => {
+      this._client.request(command, params, (err, response) => {
         if (err) return reject(err);
         const result = JSON.parse(response.result);
         if (result.error) return reject(result.error);
         resolve(result);
       });
     });
+  }
+  evaluateFileStyles(filePath: string) {
+    return this._request("evaluate_file_styles", {
+      file_path: stripFileProtocol(filePath)
+    });
+  }
+  evaluateContentStyles(content: string, filePath: string) {
+    return this._request("evaluate_content_styles", {
+      content,
+      file_path: stripFileProtocol(filePath)
+    });
+  }
+  parseContent(content: string) {
+    return this._request("parse_content", { content });
   }
   async updateVirtualFileContent(filePath: string, content: string) {
     await this._loaded;
@@ -124,6 +127,7 @@ export class Engine {
   }
   async load(filePath: string) {
     await this._loaded;
+    this._watch();
     this._client.request(
       "load",
       {
@@ -146,6 +150,10 @@ export class Engine {
     this._process.kill();
   }
   _watch() {
+    if (this._watching) {
+      return;
+    }
+    this._watching = true;
     const drainEvents = () => {
       if (this._disposed) return;
       this._client.request("drain_events", [], (err, response) => {
@@ -153,7 +161,6 @@ export class Engine {
           console.warn(err);
           return;
         }
-
         const events = JSON.parse(response.result);
         for (const event of events) {
           for (const listener of this._listeners) {

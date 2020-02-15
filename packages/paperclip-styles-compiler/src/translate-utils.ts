@@ -1,24 +1,17 @@
-import * as crc32 from "crc32";
-
 export type TranslateContext = {
   filePath: string;
   buffer: string;
   lineNumber: number;
   isNewLine: boolean;
-  scope: string;
   indent: string;
-  importIds: string[];
 };
 
 export const createTranslateContext = (
   filePath: string,
-  importIds: string[],
   indent: string = "  "
 ): TranslateContext => ({
   buffer: "",
   filePath,
-  importIds,
-  scope: crc32(filePath),
   isNewLine: true,
   lineNumber: 0,
   indent

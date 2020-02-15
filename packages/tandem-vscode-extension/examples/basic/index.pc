@@ -2,7 +2,7 @@
 
 <style>
   div {
-    color: white;
+    color: black;
     display: inline-block;
   }
 
@@ -17,6 +17,6 @@
 
 <part id="preview">
   <self>
-    <span>something</span>
+    something lika
   </self>
 </part>
