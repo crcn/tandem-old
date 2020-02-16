@@ -7,5 +7,5 @@ type Params = {
 };
 
 export const compile = ({ sheet }: Params, filePath: string) => {
-  return stringifyCSSSheet(sheet);
+  return stringifyCSSSheet(sheet, null);
 };

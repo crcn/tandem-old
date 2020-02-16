@@ -20,7 +20,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "lerna run build",
-    "build:watch": "lerna run build:watch --parallel"
+    "build:watch": "lerna run build:watch --parallel",
+    "postinstall": "lerna bootstrap"
   },
   "repository": {
     "type": "git",

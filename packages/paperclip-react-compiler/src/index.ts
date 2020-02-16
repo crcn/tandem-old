@@ -57,7 +57,7 @@ const translateStyleSheet = (sheet: any, context) => {
     context
   );
   context = addBuffer(
-    `style.textContent = ${JSON.stringify(stringifyCSSSheet(sheet))};\n`,
+    `style.textContent = ${JSON.stringify(stringifyCSSSheet(sheet, null))};\n`,
     context
   );
   context = addBuffer(`document.body.appendChild(style);\n`, context);

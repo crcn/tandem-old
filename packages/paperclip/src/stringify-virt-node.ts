@@ -17,7 +17,7 @@ export const stringifyVirtualNode = node => {
       return buffer;
     }
     case "StyleElement": {
-      return `<style>${stringifyCSSSheet(node.sheet)}</style>`;
+      return `<style>${stringifyCSSSheet(node.sheet, null)}</style>`;
     }
     case "Text": {
       return node.value;
