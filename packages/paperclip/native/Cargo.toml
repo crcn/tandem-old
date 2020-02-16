@@ -4,16 +4,21 @@ version = "0.1.0"
 build = "build.rs"
 authors = ["Craig Condon <craig.j.condon@gmail.com>"]
 edition = "2018"
+exclude = ["artifacts.json", "index.node"]
+
+[lib]
+name = "paperclip"
+crate-type = ["cdylib"]
 
 [build-dependencies]
-neon-build = "0.3.1"
+neon-build = "0.4.0"
+
 
 [dependencies]
 matches = "0.1.8"
 serde = { version = "1.0.104", features = ["derive"] }
 serde_json = { version = "1.0.44" }
-neon = "0.3.3"
-neon-serde = "0.3.0"
+neon = "0.4.0"
 crc = "1.8.1"
 jsonrpc-core = "14.0.5"
 jsonrpc-tcp-server = "14.0.5"

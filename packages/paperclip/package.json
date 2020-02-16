@@ -9,7 +9,8 @@
     "build": "npm run build:node && npm run build:native",
     "build:watch": "tsc --watch & (cd native && cargo watch -x 'build --release')",
     "build:node": "tsc",
-    "build:native": "cd native && cargo build --release"
+    "build:native": "cd native && cargo build --release",
+    "build:neon": "neon build --release"
   },
   "author": "",
   "license": "ISC",
@@ -19,7 +20,11 @@
     "get-port": "^5.1.1",
     "jayson": "^3.2.0",
     "mocha": "^7.0.1",
+    "neon": "^2.0.0",
     "typescript": "^3.7.5"
   },
-  "gitHead": "02c551ba2a2d5ec9ee9ee4e59b0a9e918646d248"
+  "gitHead": "02c551ba2a2d5ec9ee9ee4e59b0a9e918646d248",
+  "devDependencies": {
+    "neon-cli": "^0.3.3"
+  }
 }

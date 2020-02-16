@@ -67,41 +67,41 @@ fn main() {
     let engine_mutex = Arc::new(Mutex::new(Engine::new(http_path)));
 
     let mut io = IoHandler::new();
-    let load_engine_mutex = engine_mutex.clone();
-	io.add_method("load", move |params: Params| {
-        let params: LoadParams = params.parse().unwrap();
-        block_on(load_engine_mutex.lock().unwrap().load(&params.file_path, params.part));
-		Ok(Value::String("ok".into()))
-    });
+    // let load_engine_mutex = engine_mutex.clone();
+	// io.add_method("load", move |params: Params| {
+    //     let params: LoadParams = params.parse().unwrap();
+    //     block_on(load_engine_mutex.lock().unwrap().load(&params.file_path, params.part));
+	// 	Ok(Value::String("ok".into()))
+    // });
 
-    let unload_engine_mutex = engine_mutex.clone();
-	io.add_method("unload", move |params: Params| {
-		let params: UnloadParams = params.parse().unwrap();
-        unload_engine_mutex.lock().unwrap().unload(params.file_path);
-		Ok(Value::String("ok".into()))
-    });
+    // let unload_engine_mutex = engine_mutex.clone();
+	// io.add_method("unload", move |params: Params| {
+	// 	let params: UnloadParams = params.parse().unwrap();
+    //     unload_engine_mutex.lock().unwrap().unload(params.file_path);
+	// 	Ok(Value::String("ok".into()))
+    // });
 
-    let parse_file_engine_mutex = engine_mutex.clone();
-	io.add_method("parse_file", move |params: Params| {
-        let params: ParseFileParams = params.parse().unwrap();
-        let result = block_on(parse_file_engine_mutex.lock().unwrap().parse_file(&params.file_path));
-        let json = match result {
-            Ok(node) => serde_json::to_string(&node).unwrap(),
-            Err(error) => format!("{{\"error\":{}}}", serde_json::to_string(&error).unwrap())
-        };
-		Ok(Value::String(json.to_string()))
-    });
+    // let parse_file_engine_mutex = engine_mutex.clone();
+	// io.add_method("parse_file", move |params: Params| {
+    //     let params: ParseFileParams = params.parse().unwrap();
+    //     let result = block_on(parse_file_engine_mutex.lock().unwrap().parse_file(&params.file_path));
+    //     let json = match result {
+    //         Ok(node) => serde_json::to_string(&node).unwrap(),
+    //         Err(error) => format!("{{\"error\":{}}}", serde_json::to_string(&error).unwrap())
+    //     };
+	// 	Ok(Value::String(json.to_string()))
+    // });
 
-    let parse_content_engine_mutex = engine_mutex.clone();
-	io.add_method("parse_content", move |params: Params| {
-        let params: ParseContentParams = params.parse().unwrap();
-        let result = block_on(parse_content_engine_mutex.lock().unwrap().parse_content(&params.content));
-        let json = match result {
-            Ok(node) => serde_json::to_string(&node).unwrap(),
-            Err(error) => format!("{{\"error\":{}}}", serde_json::to_string(&error).unwrap())
-        };
-		Ok(Value::String(json.into()))
-    });
+    // let parse_content_engine_mutex = engine_mutex.clone();
+	// io.add_method("parse_content", move |params: Params| {
+    //     let params: ParseContentParams = params.parse().unwrap();
+    //     let result = block_on(parse_content_engine_mutex.lock().unwrap().parse_content(&params.content));
+    //     let json = match result {
+    //         Ok(node) => serde_json::to_string(&node).unwrap(),
+    //         Err(error) => format!("{{\"error\":{}}}", serde_json::to_string(&error).unwrap())
+    //     };
+	// 	Ok(Value::String(json.into()))
+    // });
 
 
     let evaluate_file_styles_mutex = engine_mutex.clone();
