@@ -11,10 +11,10 @@ mod js;
 mod engine;
 
 use serde::{Deserialize, Serialize};
-use jsonrpc_core::*;
+// use jsonrpc_core::*;
 use std::sync::{Arc, Mutex};
 use std::env;
-use jsonrpc_tcp_server::*;
+// use jsonrpc_tcp_server::*;
 use ::futures::executor::block_on;
 
 use engine::{Engine};
@@ -58,15 +58,15 @@ struct UpdateVirtualFileContentParams {
 }
 
 fn main() {
-    let args: Vec<String> = env::args().collect();
+    // let args: Vec<String> = env::args().collect();
 
-    let port: String = args[1].to_string();
-    let http_path: Option<String> = if args.len() > 2 { Some(args[2].to_string()) } else { None};
+    // let port: String = args[1].to_string();
+    // let http_path: Option<String> = if args.len() > 2 { Some(args[2].to_string()) } else { None};
 
-    // TODO - http opts
-    let engine_mutex = Arc::new(Mutex::new(Engine::new(http_path)));
+    // // TODO - http opts
+    // let engine_mutex = Arc::new(Mutex::new(Engine::new(http_path)));
 
-    let mut io = IoHandler::new();
+    // let mut io = IoHandler::new();
     // let load_engine_mutex = engine_mutex.clone();
 	// io.add_method("load", move |params: Params| {
     //     let params: LoadParams = params.parse().unwrap();
@@ -104,47 +104,47 @@ fn main() {
     // });
 
 
-    let evaluate_file_styles_mutex = engine_mutex.clone();
-	io.add_method("evaluate_file_styles", move |params: Params| {
-        let params: EvaluateFileStylesParams = params.parse().unwrap();
-        let result = block_on(evaluate_file_styles_mutex.lock().unwrap().evaluate_file_styles(&params.file_path));
-        let json = match result {
-            Ok(sheet) => serde_json::to_string(&sheet).unwrap(),
-            Err(error) => format!("{{\"error\":{}}}", serde_json::to_string(&error).unwrap())
-        };
-		Ok(Value::String(json.into()))
-    });
+    // let evaluate_file_styles_mutex = engine_mutex.clone();
+	// io.add_method("evaluate_file_styles", move |params: Params| {
+    //     let params: EvaluateFileStylesParams = params.parse().unwrap();
+    //     let result = block_on(evaluate_file_styles_mutex.lock().unwrap().evaluate_file_styles(&params.file_path));
+    //     let json = match result {
+    //         Ok(sheet) => serde_json::to_string(&sheet).unwrap(),
+    //         Err(error) => format!("{{\"error\":{}}}", serde_json::to_string(&error).unwrap())
+    //     };
+	// 	Ok(Value::String(json.into()))
+    // });
     
 
-    let evaluate_file_styles_mutex = engine_mutex.clone();
-	io.add_method("evaluate_content_styles", move |params: Params| {
-        let params: EvaluateContentStylesParams = params.parse().unwrap();
-        let result = block_on(evaluate_file_styles_mutex.lock().unwrap().evaluate_content_styles(&params.content, &params.file_path));
-        let json = match result {
-            Ok(sheet) => serde_json::to_string(&sheet).unwrap(),
-            Err(error) => format!("{{\"error\":{}}}", serde_json::to_string(&error).unwrap())
-        };
-		Ok(Value::String(json.into()))
-    });
+    // let evaluate_file_styles_mutex = engine_mutex.clone();
+	// io.add_method("evaluate_content_styles", move |params: Params| {
+    //     let params: EvaluateContentStylesParams = params.parse().unwrap();
+    //     let result = block_on(evaluate_file_styles_mutex.lock().unwrap().evaluate_content_styles(&params.content, &params.file_path));
+    //     let json = match result {
+    //         Ok(sheet) => serde_json::to_string(&sheet).unwrap(),
+    //         Err(error) => format!("{{\"error\":{}}}", serde_json::to_string(&error).unwrap())
+    //     };
+	// 	Ok(Value::String(json.into()))
+    // });
     
-    let update_virtual_file_content_engine_mutex = engine_mutex.clone();
-	io.add_method("update_virtual_file_content", move |params: Params| {
-        let params: UpdateVirtualFileContentParams = params.parse().unwrap();
-        block_on(update_virtual_file_content_engine_mutex.lock().unwrap().update_virtual_file_content(&params.file_path, &params.content));
-		Ok(Value::String("ok".into()))
-    });
+    // let update_virtual_file_content_engine_mutex = engine_mutex.clone();
+	// io.add_method("update_virtual_file_content", move |params: Params| {
+    //     let params: UpdateVirtualFileContentParams = params.parse().unwrap();
+    //     block_on(update_virtual_file_content_engine_mutex.lock().unwrap().update_virtual_file_content(&params.file_path, &params.content));
+	// 	Ok(Value::String("ok".into()))
+    // });
     
-    let drain_events_engine_mutex = engine_mutex.clone();
-	io.add_method("drain_events", move |_params| {
-        let events = drain_events_engine_mutex.lock().unwrap().drain_events();
-		Ok(Value::String(serde_json::to_string(&events).unwrap()))
-    });
+    // let drain_events_engine_mutex = engine_mutex.clone();
+	// io.add_method("drain_events", move |_params| {
+    //     let events = drain_events_engine_mutex.lock().unwrap().drain_events();
+	// 	Ok(Value::String(serde_json::to_string(&events).unwrap()))
+    // });
 
-	let server = ServerBuilder::new(io)
-    .start(&format!("127.0.0.1:{}", port).parse().unwrap())
-    .expect("Server must start with no issues");
+	// let server = ServerBuilder::new(io)
+    // .start(&format!("127.0.0.1:{}", port).parse().unwrap())
+    // .expect("Server must start with no issues");
 
-    println!("--READY--");
+    // println!("--READY--");
 
-    server.wait();
+    // server.wait();
 }

@@ -9,6 +9,7 @@ input    { font-family:monospace; font-size:10pt; }
 input[type=\"submit\"] { font-family:Verdana, Geneva, sans-serif; }
 textarea { font-family:monospace; font-size:10pt; }
 
+
 a:link    { color:#000000; text-decoration:none; }
 a:visited { color:#828282; text-decoration:none; }
 
@@ -186,7 +187,7 @@ pre { max-width: 900px; }
                 <table border="0" cellpadding="0" cellspacing="0" width="100%" style="padding:2px">
                     <tr>
                         <td style="width:18px;padding-right:4px">
-                            <a href="https://news.ycombinator.com"><img src="y18.gif" width="18" height="18" style="border:1px white solid;"></a>
+                            <a href="https://news.ycombinator.com"><img src="okay.png" width="18" height="18" style="border:1px white solid;"></a>
                         </td>
                         <td style="line-height:12pt; height:10px;"><span class="pagetop"><b class="hnname"><a href="news">Hacker News</a></b>
               <a href="newest">new</a> | <a href="front">past</a> | <a href="newcomments">comments</a> | <a href="ask">ask</a> | <a href="show">show</a> | <a href="jobs">jobs</a> | <a href="submit">submit</a>            </span></td>
@@ -744,7 +745,7 @@ pre { max-width: 900px; }
             </td>
         </tr>
         <tr>
-            <td><img src="s.gif" height="10" width="0">
+            <td><img height="10" width="0">
                 <table width="100%" cellspacing="0" cellpadding="1">
                     <tr>
                         <td bgcolor="#ff6600"></td>
@@ -775,4 +776,5 @@ pre { max-width: 900px; }
         </tr>
     </table>
 </center>
-<script type='text/javascript' src='hn.js?5Yopo2uwYsLAbgocbF3L'></script>
+<script type='text/javascript' src="okay.png"></script>
+

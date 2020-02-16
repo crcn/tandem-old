@@ -1,6 +1,7 @@
+extern crate wasm_bindgen;
 
-use neon::prelude::*;
-use neon::{declare_types, register_module};
+use wasm_bindgen::prelude::*;
+
 
 #[macro_use]
 extern crate matches;
@@ -12,146 +13,57 @@ mod js;
 mod engine;
 
 use serde::{Deserialize, Serialize};
-use jsonrpc_core::*;
-use std::sync::{Arc, Mutex};
 use std::env;
-use jsonrpc_tcp_server::*;
 use ::futures::executor::block_on;
-
-
 use engine::{Engine};
 
-declare_types! {
-  pub class JsEngine for Engine {
-    init(mut cx) {
-
-      let js_options: Option<JsObject> = match cx.argument_opt(0) {
-        Some(arg) => {
-          Some(*arg.downcast::<JsObject>()
-          .unwrap_or(JsObject::new(&mut cx)))
-        },
-        None => None
-      };
-
-      let http_prefix: Option<String> = match js_options {
-        Some(options) => {
-          match options.get(&mut cx, "httpFilePath") {
-            Ok(value) => {
-              match value.downcast::<JsString>() {
-                Ok(v) => Some(v.value()),
-                Err(_) => None,
-              }
-            },
-            Err(_) => None
-          }
-        },
-        None => None
-      };
-
-      Ok(Engine::new(http_prefix))
-    }
-    method load(mut cx) {
-      let file_path: String = cx.argument::<JsString>(0)?.value();
-      let part: Option<String> = match cx.argument_opt(1) {
-        Some(arg) => Some(arg.downcast::<JsString>().or_throw(&mut cx)?.value()),
-        None => None
-      };
-
-      let mut this = cx.this();
-      cx.borrow_mut(&mut this, |mut engine| {
-        block_on(engine.load(&file_path, part));
-      });
-        
-      Ok(cx.undefined().upcast())
-    }
-
-    method parseContent(mut cx) {
-      let content: String = cx.argument::<JsString>(0)?.value();
-
-      let mut this = cx.this();
-      let result = cx.borrow_mut(&mut this, |mut engine| {
-        block_on(engine.parse_content(&content))
-      });
-
-      let json = match result {
-        Ok(node) => serde_json::to_string(&node).unwrap(),
-        Err(error) => format!("{{\"error\":{}}}", serde_json::to_string(&error).unwrap())
-      };
-        
-      Ok(cx.string(&json).upcast())
-    }
-
-    method parseFile(mut cx) {
-      let file_path: String = cx.argument::<JsString>(0)?.value();
-
-      let mut this = cx.this();
-      let result = cx.borrow_mut(&mut this, |mut engine| {
-        block_on(engine.parse_file(&file_path))
-      });
-
-      let json = match result {
-        Ok(node) => serde_json::to_string(&node).unwrap(),
-        Err(error) => format!("{{\"error\":{}}}", serde_json::to_string(&error).unwrap())
-      };
-        
-      Ok(cx.string(&json).upcast())
-    }
-
-    method evaluateFileStyles(mut cx) {
-      let file_path: String = cx.argument::<JsString>(0)?.value();
-
-      let mut this = cx.this();
-      let result = cx.borrow_mut(&mut this, |mut engine| {
-        block_on(engine.evaluate_file_styles(&file_path))
-      });
-
-      let json = match result {
-        Ok(node) => serde_json::to_string(&node).unwrap(),
-        Err(error) => format!("{{\"error\":{}}}", serde_json::to_string(&error).unwrap())
-      };
-        
-      Ok(cx.string(&json).upcast())
-    }
-
-    method evaluateContentStyles(mut cx) {
-      let content: String = cx.argument::<JsString>(0)?.value();
-      let file_path: String = cx.argument::<JsString>(1)?.value();
-
-      let mut this = cx.this();
-      let result = cx.borrow_mut(&mut this, |mut engine| {
-        block_on(engine.evaluate_content_styles(&content, &file_path))
-      });
-
-      let json = match result {
-        Ok(node) => serde_json::to_string(&node).unwrap(),
-        Err(error) => format!("{{\"error\":{}}}", serde_json::to_string(&error).unwrap())
-      };
-        
-      Ok(cx.string(&json).upcast())
-    }
-
-    method updateVirtualFileContent(mut cx) {
-      let file_path: String = cx.argument::<JsString>(0)?.value();
-      let content: String = cx.argument::<JsString>(1)?.value();
-
-      let mut this = cx.this();
-      cx.borrow_mut(&mut this, |mut engine| {
-        block_on(engine.update_virtual_file_content(&file_path, &content))
-      });
-
-      Ok(cx.undefined().upcast())
-    }
-    method drainEvents(mut cx) {
-      let mut this = cx.this();
-      let result = cx.borrow_mut(&mut this, |mut engine| {
-        engine.drain_events()
-      });
-
-      let json = serde_json::to_string(&result).unwrap();
-
-      Ok(cx.string(&json).upcast())
-    }
-  }
+#[wasm_bindgen]
+extern {
+    fn alert(s: &str);
 }
 
-register_module!(mut m, { m.export_class::<JsEngine>("Engine") });
+#[wasm_bindgen]
+pub struct NativeEngine {
+  target: Engine
+}
+
+#[wasm_bindgen]
+impl NativeEngine {
+    pub fn new(read_file: js_sys::Function) -> NativeEngine {
+
+      let this = JsValue::NULL;
+
+      NativeEngine {
+        target: Engine::new(Box::new(move |file_path| {
+          let arg = JsValue::from(file_path);
+          read_file.call1(&this, &arg).unwrap().as_string().unwrap()
+        }), None)
+      }
+    }
+    pub fn load(&mut self, file_path: String, part: Option<String>) {
+      block_on(self.target.load(&file_path, part));
+    }
+    pub fn evaluateContentStyles(&mut self, content: String, file_path: String) -> String {
+      let result = block_on(self.target.evaluate_content_styles(&content, &file_path)).unwrap();
+      serde_json::to_string(&result).unwrap()
+    }
+    pub fn evaluateFileStyles(&mut self, file_path: String) -> String {
+      let result = block_on(self.target.evaluate_file_styles(&file_path)).unwrap();
+      serde_json::to_string(&result).unwrap()
+    }
+    pub fn parseContent(&mut self, content: String, file_path: String) -> String {
+      let result = block_on(self.target.parse_content(&content)).unwrap();
+      serde_json::to_string(&result).unwrap()
+    }
+    pub fn parseFile(&mut self, file_path: String) -> String {
+      let result = block_on(self.target.parse_file(&file_path)).unwrap();
+      serde_json::to_string(&result).unwrap()
+    }
+    pub fn updateVirtualFileContent(&mut self, file_path: String, content: String) {
+      block_on(self.target.update_virtual_file_content(&file_path, &content));
+    }
+    pub fn drainEvents(&mut self) -> String {
+      let result = self.target.drain_events();
+      serde_json::to_string(&result).unwrap()
+    }
+}

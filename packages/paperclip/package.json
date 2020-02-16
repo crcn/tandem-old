@@ -10,7 +10,9 @@
     "build:watch": "tsc --watch & (cd native && cargo watch -x 'build --release')",
     "build:node": "tsc",
     "build:native": "cd native && cargo build --release",
-    "build:neon": "neon build --release"
+    "build:neon": "neon build --release",
+    "build:electron": "electron-build-env neon build --release",
+    "build:wasm:node": "wasm-pack build --target nodejs"
   },
   "author": "",
   "license": "ISC",
@@ -25,6 +27,8 @@
   },
   "gitHead": "02c551ba2a2d5ec9ee9ee4e59b0a9e918646d248",
   "devDependencies": {
+    "electron": "^6.1.7",
+    "electron-build-env": "^0.2.0",
     "neon-cli": "^0.3.3"
   }
 }

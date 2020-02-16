@@ -5,7 +5,11 @@ import * as fs from "fs";
 import * as path from "path";
 import * as getPort from "get-port";
 const jasyon = require("jayson");
-import { NativeEngine } from "../native/pkg/paperclip";
+
+// const { Engine: NativeEngine } = require("../native/pkg/paperclip");
+const WASM_PATH = __dirname + "/../native/pkg/paperclip_bg.wasm";
+const buf = fs.readFileSync(WASM_PATH);
+
 
 const DRAIN_TIMEOUT = 30;
 const DRAIN_CALM_TIMEOUT = 1000;
@@ -35,11 +39,8 @@ export class Engine {
 
   constructor(private _options: EngineOptions = {}) {
     this._listeners = [];
-    this._native = NativeEngine.new(filePath => {
-      console.log("read file", filePath);
-      return fs.readFileSync(filePath.replace("file://", ""), "utf8");
-    });
-    this._watch();
+    this._native = new NativeEngine(_options);
+    // this._loaded = this.init(_options);
   }
   // async init(options: EngineOptions) {
   //   const port = await getPort();
@@ -94,7 +95,7 @@ export class Engine {
       }
     };
   }
-  parseFile(filePath: string) {
+  async parseFile(filePath: string) {
     return JSON.parse(this._native.parseFile(filePath));
     // return this._request("parse_file", {
     //   file_path: stripFileProtocol(filePath)
@@ -112,23 +113,41 @@ export class Engine {
   //   });
   // }
   evaluateFileStyles(filePath: string) {
-    return JSON.parse(
-      this._native.evaluateFileStyles(stripFileProtocol(filePath))
-    );
+    return JSON.parse(this._native.evaluateFileStyles(filePath));
+    // return this._request("evaluate_file_styles", {
+    //   file_path: stripFileProtocol(filePath)
+    // });
   }
   evaluateContentStyles(content: string, filePath: string) {
-    return JSON.parse(
-      this._native.evaluateContentStyles(content, stripFileProtocol(filePath))
-    );
+    return JSON.parse(this._native.evaluateContentStyles(content, filePath));
+    // return this._request("evaluate_content_styles", {
+    //   content,
+    //   file_path: stripFileProtocol(filePath)
+    // });
   }
   parseContent(content: string) {
     return JSON.parse(this._native.parseContent(content));
   }
-  updateVirtualFileContent(filePath: string, content: string) {
-    this._native.updateVirtualFileContent(stripFileProtocol(filePath), content);
+  async updateVirtualFileContent(filePath: string, content: string) {
+    this._native.updateVirtualFileContent(filePath, content);
+    // this._client.request(
+    //   "update_virtual_file_content",
+    //   { file_path: stripFileProtocol(filePath), content },
+    //   noop
+    // );
   }
   load(filePath: string) {
-    this._native.load(stripFileProtocol(filePath), this._options.renderPart);
+    this._native.load(filePath, this._options.renderPart);
+    // await this._loaded;
+    // this._watch();
+    // this._client.request(
+    //   "load",
+    //   {
+    //     file_path: stripFileProtocol(filePath),
+    //     part: this._options.renderPart
+    //   },
+    //   noop
+    // );
   }
   unload(filePath: string) {
     // TODO
@@ -156,8 +175,9 @@ export class Engine {
   }
 }
 
-// const e = new Engine();
-// const result = e.parseFile(
-//   "/Users/crcn/Developer/work/tandem/public/packages/paperclip/examples/basic/main.pc"
-// );
-// console.log(result);
+const e = new Engine();
+const result = e.evaluateContentStyles(
+  "<style> div { color: red; } </style> test",
+  "ok"
+);
+console.log(result);

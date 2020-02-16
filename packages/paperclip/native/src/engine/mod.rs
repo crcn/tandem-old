@@ -4,7 +4,7 @@ use crate::pc::parser::{parse as parse_pc};
 use crate::base::parser::{ParseError};
 use crate::pc::ast as pc_ast;
 use crate::pc::runtime::graph::{DependencyGraph, DependencyContent};
-use crate::pc::runtime::vfs::{VirtualFileSystem};
+use crate::pc::runtime::vfs::{VirtualFileSystem, FileReaderFn};
 use crate::pc::runtime::evaluator::{evaluate_document_styles, evaluate as evaluate_pc};
 use crate::js::runtime::virt as js_virt;
 use crate::base::runtime::{RuntimeError};
@@ -70,9 +70,9 @@ pub struct Engine {
 
 
 impl Engine {
-  pub fn new(http_path: Option<String>) -> Engine {
+  pub fn new(read_file: Box<FileReaderFn>, http_path: Option<String>) -> Engine {
     Engine {
-      vfs: VirtualFileSystem::new(http_path),
+      vfs: VirtualFileSystem::new(read_file, http_path),
       dependency_graph: DependencyGraph::new(),
       events: vec![],
       load_options: HashMap::new()

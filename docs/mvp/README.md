@@ -33,8 +33,9 @@ Limitations:
 
 immediate TODO:
 
+- fix path normalizing
+- cleanup colorizer
 - local resource roots - vscode extension
-
 - switch to WASM or Neon (needs to be synchronous)
 
 - language server

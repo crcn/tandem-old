@@ -11,7 +11,8 @@ import {
   Sheet,
   NodeParsedEvent,
   getStyleElements,
-  Rule
+  Rule,
+  RuleKind
 } from "paperclip";
 import { PCCSSLanguageService } from "../css";
 import * as Color from "color";
@@ -42,7 +43,9 @@ export class PCHTMLLanguageService extends BaseEngineLanguageService {
 
   private _handleRules(rules: Rule[], filePath: string) {
     for (const rule of rules) {
-      this._handleRule(rule, filePath);
+      if (rule.kind === RuleKind.Style) {
+        this._handleRule(rule, filePath);
+      }
     }
   }
   private _handleRule(rule: Rule, filePath: string) {

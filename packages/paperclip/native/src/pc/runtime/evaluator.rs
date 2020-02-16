@@ -324,7 +324,7 @@ fn evaluate_basic_element<'a>(element: &ast::Element, context: &'a Context) -> R
 
         if name == "src" {
           if let Some(value) = value_option {
-            let full_path = format!("file://{}", utils::resolve(context.file_path, &value)).to_string();
+            let full_path = format!("file://{}", utils::resolve(&"/a/b/c".to_string(), &value)).to_string();
             value_option = Some(full_path);
           }
         }

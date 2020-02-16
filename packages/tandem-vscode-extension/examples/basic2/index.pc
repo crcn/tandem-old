@@ -29,7 +29,7 @@
 </part>
 
 <part id="preview">
-  <self title="Groceries">
+  <self title="Something">
     <item>something</item>
     <item>something</item>
     <item>something</item>

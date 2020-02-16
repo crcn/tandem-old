@@ -1,12 +1,16 @@
 use std::fs;
 use std::collections::HashMap;
-use curl::easy::Easy;
+// use curl::easy::Easy;
+
+pub type FileReaderFn = Fn(&String) -> String;
 
 #[allow(dead_code)]
 pub struct VirtualFileSystem {
+  read_file: Box<FileReaderFn>,
   http_path: Option<String>,
   pub contents: HashMap<String, String>
 }
+
 
 fn insert_file_path(file_path: String, content: String, contents: &mut HashMap<String, String>) {
   contents.insert(file_path, content);
@@ -14,8 +18,9 @@ fn insert_file_path(file_path: String, content: String, contents: &mut HashMap<S
 
 #[allow(dead_code)]
 impl VirtualFileSystem {
-  pub fn new(http_path: Option<String>) -> VirtualFileSystem {
+  pub fn new(read_file: Box<FileReaderFn>, http_path: Option<String>) -> VirtualFileSystem {
     VirtualFileSystem {
+      read_file,
       http_path,
       contents: HashMap::new()
     }
@@ -37,13 +42,15 @@ impl VirtualFileSystem {
   }
 
   pub async fn reload(&mut self, file_path: &String) -> Result<&String, &'static str> {
-    let content = if let Some(http_path) = &self.http_path {
-      let file_http_path = format!("{}{}", http_path, file_path).to_string();
-      let data = http_get(&file_http_path);
-      data
-    } else {
-      fs::read_to_string(&file_path).or(Err("Unable to fetch text"))?
-    };
+    // let content = if let Some(http_path) = &self.http_path {
+    //   let file_http_path = format!("{}{}", http_path, file_path).to_string();
+    //   let data = http_get(&file_http_path);
+    //   data
+    // } else {
+    //   fs::read_to_string(&file_path).or(Err("Unable to fetch text"))?
+    // };
+    let content = (self.read_file)(file_path);
+    // let content = fs::read_to_string(&file_path).or(Err("Unable to fetch text"))?;
     
     insert_file_path(file_path.to_string(), content, &mut self.contents);
     Ok(self.contents.get(file_path).unwrap())
@@ -51,17 +58,17 @@ impl VirtualFileSystem {
 }
 
 
-fn http_get(url: &String) -> String {
-  let mut buffer = Vec::new();
-  let mut handle = Easy::new();
-  handle.url(url).unwrap();
-  {
-      let mut transfer = handle.transfer();
-      transfer.write_function(|data| {
-          buffer.extend_from_slice(data);
-          Ok(data.len())
-      }).unwrap();
-      transfer.perform().unwrap();
-  }
-  String::from_utf8(buffer.to_vec()).unwrap()
-}
+// fn http_get(url: &String) -> String {
+//   let mut buffer = Vec::new();
+//   let mut handle = Easy::new();
+//   handle.url(url).unwrap();
+//   {
+//       let mut transfer = handle.transfer();
+//       transfer.write_function(|data| {
+//           buffer.extend_from_slice(data);
+//           Ok(data.len())
+//       }).unwrap();
+//       transfer.perform().unwrap();
+//   }
+//   String::from_utf8(buffer.to_vec()).unwrap()
+// }

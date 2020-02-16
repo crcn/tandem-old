@@ -184,7 +184,8 @@ fn evaluate_style_declaration<'a>(expr: &'a ast::Declaration, context: &Context)
       if protocol_re.is_match(relative_path) {
         continue;
       }
-      let full_path = format!("file://{}", utils::resolve(context.file_path, &relative_path.to_string()));
+      let full_path = relative_path.to_string();
+      // let full_path = format!("file://{}", utils::resolve(context.file_path, &relative_path.to_string()));
 
       value = url_re.replace(url_fn, format!("url({})", full_path).as_str()).to_string();
     }
