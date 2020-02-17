@@ -147,7 +147,7 @@ export class PCHTMLLanguageService extends BaseEngineLanguageService<Node> {
   private _handleElement(element: Element, context: HandleContext) {
     const tagParts = element.tagName.split(":");
     const namespace = tagParts[0];
-    const name = tagParts.pop();
+    const name = tagParts[tagParts.length - 1];
     if (context.importIds.indexOf(namespace) !== -1) {
       const imp = getImports(context.root).find(imp => {
         return getAttributeStringValue("id", imp) === namespace;
