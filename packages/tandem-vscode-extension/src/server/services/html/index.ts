@@ -14,12 +14,15 @@ import {
   Rule,
   RuleKind
 } from "paperclip";
-import { PCCSSLanguageService } from "../css";
-import * as Color from "color";
+import CSS_COLOR_NAMES from "./css-color-names";
+const CSS_COLOR_NAME_LIST = Object.keys(CSS_COLOR_NAMES);
+const CSS_COLOR_NAME_REGEXP = new RegExp(
+  `\\b(${CSS_COLOR_NAME_LIST.join("|")})\\b`,
+  "g"
+);
+console.log(CSS_COLOR_NAME_REGEXP);
 
 export class PCHTMLLanguageService extends BaseEngineLanguageService {
-  // TODO - use language handler for style elements
-  private _cssLanguageService: PCCSSLanguageService;
   constructor(engine: Engine) {
     super(engine);
   }
@@ -28,33 +31,37 @@ export class PCHTMLLanguageService extends BaseEngineLanguageService {
       this._handleNodeParsedEvent(event);
     }
   }
-  private _handleNodeParsedEvent({ node, filePath }: NodeParsedEvent) {
-    this._handleStyles(node, filePath);
+  private _handleNodeParsedEvent({ node, uri }: NodeParsedEvent) {
+    this._handleStyles(node, uri);
   }
-  private _handleStyles(node: Node, filePath: string) {
+  private _handleStyles(node: Node, uri: string) {
     const styleElements = getStyleElements(node);
     for (const { sheet } of styleElements) {
-      this._handleSheet(sheet, filePath);
+      this._handleSheet(sheet, uri);
     }
   }
-  private _handleSheet(sheet: Sheet, filePath: string) {
-    this._handleRules(sheet.rules, filePath);
+  private _handleSheet(sheet: Sheet, uri: string) {
+    this._handleRules(sheet.rules, uri);
   }
 
-  private _handleRules(rules: Rule[], filePath: string) {
+  private _handleRules(rules: Rule[], uri: string) {
     for (const rule of rules) {
       if (rule.kind === RuleKind.Style) {
-        this._handleRule(rule, filePath);
+        this._handleRule(rule, uri);
       }
     }
   }
-  private _handleRule(rule: Rule, filePath: string) {
+  private _handleRule(rule: Rule, uri: string) {
     const colorInfo: ColorInfo[] = [];
     for (const declaration of rule.declarations) {
-      for (const color of declaration.value.match(
-        /\#[^\s]+|(rgba|rgb|hsl|hsla)\(.*?\)/g
-      ) || []) {
+      const colors =
+        declaration.value.match(/\#[^\s]+|(rgba|rgb|hsl|hsla)\(.*?\)/g) ||
+        declaration.value.match(CSS_COLOR_NAME_REGEXP) ||
+        [];
+
+      for (const color of colors) {
         const colorIndex = declaration.value.indexOf(color);
+
         // Color(color)
         // const {color: [r, g, b], valpha: a } = Color(color);
         const colorStart = declaration.valueLocation.start + colorIndex;
@@ -68,7 +75,7 @@ export class PCHTMLLanguageService extends BaseEngineLanguageService {
 
     this.dispatch({
       type: LanguageServiceEventType.ColorInformation,
-      filePath,
+      uri,
       payload: colorInfo
     });
   }

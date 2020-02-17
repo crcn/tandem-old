@@ -15,7 +15,7 @@ export enum NotificationType {
 }
 
 export type UpdateVirtualFileContentsParams = {
-  filePath: string;
+  uri: string;
   content: string;
 };
 
@@ -29,7 +29,7 @@ export class UpdateVirtualFileContents extends BaseNotification<
 }
 
 export type LoadParams = {
-  filePath: string;
+  uri: string;
 };
 
 export class Load extends BaseNotification<NotificationType.LOAD, LoadParams> {

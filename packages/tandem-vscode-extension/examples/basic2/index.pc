@@ -6,7 +6,7 @@
     color: blue;
   }
   h1 {
-    color: rgb(201, 40, 40);
+    color: rgb(145, 22, 22);
     font-weight: 400;
   }
 </style>
@@ -22,11 +22,9 @@
 </part>
 
 <part id="preview">
-  <self title="Groceries">
+  <self title="Hello world">
     <item>aaa</item>
     <item>ffsd</item>
-    <item>aaa</item>
-    <item>aaa</item>
     <item>aaa</item>
     <item>aaa</item>
   </self>

@@ -6,8 +6,6 @@ use wasm_bindgen::prelude::*;
 #[macro_use]
 extern crate matches;
 
-#[macro_use]
-extern crate serde_derive;
 
 mod base;
 mod css;
@@ -15,8 +13,6 @@ mod pc;
 mod js;
 mod engine;
 
-use serde::{Deserialize, Serialize};
-use std::env;
 use ::futures::executor::block_on;
 use engine::{Engine};
 
@@ -33,12 +29,10 @@ pub struct NativeEngine {
 #[wasm_bindgen]
 impl NativeEngine {
     pub fn new(read_file: js_sys::Function, resolve_file: js_sys::Function) -> NativeEngine {
-
-
       NativeEngine {
-        target: Engine::new(Box::new(move |file_path| {
+        target: Engine::new(Box::new(move |uri| {
           let this = JsValue::NULL;
-          let arg = JsValue::from(file_path);
+          let arg = JsValue::from(uri);
           read_file.call1(&this, &arg).unwrap().as_string().unwrap()
         }), Box::new(move |from_path, relative_path| {
           let this = JsValue::NULL;
@@ -48,33 +42,33 @@ impl NativeEngine {
         }), None)
       }
     }
-    pub fn load(&mut self, file_path: String, part: Option<String>) {
-      block_on(self.target.load(&file_path, part));
+    pub fn load(&mut self, uri: String, part: Option<String>) {
+      block_on(self.target.load(&uri, part));
     }
-    pub fn addListener(&mut self, listener: js_sys::Function) {
-      self.target.addListener(Box::new(move |event| {
+    pub fn add_listener(&mut self, listener: js_sys::Function) {
+      self.target.add_listener(Box::new(move |event| {
         let this = JsValue::NULL;
         let arg = JsValue::from_serde(&event).unwrap();
         listener.call1(&this, &arg).unwrap();
       }));
     }
-    pub fn evaluateContentStyles(&mut self, content: String, file_path: String) -> JsValue {
-      let result = block_on(self.target.evaluate_content_styles(&content, &file_path)).unwrap();
+    pub fn evaluate_content_styles(&mut self, content: String, uri: String) -> JsValue {
+      let result = block_on(self.target.evaluate_content_styles(&content, &uri)).unwrap();
       JsValue::from_serde(&result).unwrap()
     }
-    pub fn evaluateFileStyles(&mut self, file_path: String) -> JsValue {
-      let result = block_on(self.target.evaluate_file_styles(&file_path)).unwrap();
+    pub fn evaluate_file_styles(&mut self, uri: String) -> JsValue {
+      let result = block_on(self.target.evaluate_file_styles(&uri)).unwrap();
       JsValue::from_serde(&result).unwrap()
     }
-    pub fn parseContent(&mut self, content: String, file_path: String) -> JsValue {
+    pub fn parse_content(&mut self, content: String) -> JsValue {
       let result = block_on(self.target.parse_content(&content)).unwrap();
       JsValue::from_serde(&result).unwrap()
     }
-    pub fn parseFile(&mut self, file_path: String) -> JsValue {
-      let result = block_on(self.target.parse_file(&file_path)).unwrap();
+    pub fn parse_file(&mut self, uri: String) -> JsValue {
+      let result = block_on(self.target.parse_file(&uri)).unwrap();
       JsValue::from_serde(&result).unwrap()
     }
-    pub fn updateVirtualFileContent(&mut self, file_path: String, content: String) {
-      block_on(self.target.update_virtual_file_content(&file_path, &content));
+    pub fn update_virtual_file_content(&mut self, uri: String, content: String) {
+      block_on(self.target.update_virtual_file_content(&uri, &content));
     }
 }

@@ -2,7 +2,7 @@
 
 <style> 
   div {
-    color: red;
+    color: rgba(255, 102, 0);
   }
 </style>
 

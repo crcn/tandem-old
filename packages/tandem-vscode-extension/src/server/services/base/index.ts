@@ -11,7 +11,7 @@ export type ColorInfo = {
 };
 
 export type BaseLanguageServiceEvent<TType extends LanguageServiceEventType> = {
-  filePath: string;
+  uri: string;
   type: TType;
 };
 

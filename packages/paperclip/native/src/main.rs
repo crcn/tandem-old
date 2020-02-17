@@ -12,27 +12,27 @@ mod engine;
 
 use serde::{Deserialize, Serialize};
 // use jsonrpc_core::*;
-use std::sync::{Arc, Mutex};
-use std::env;
+// use std::sync::{Arc, Mutex};
+// use std::env;
 // use jsonrpc_tcp_server::*;
-use ::futures::executor::block_on;
+// use ::futures::executor::block_on;
 
-use engine::{Engine};
+// use engine::{Engine};
 
 #[derive(Deserialize, Debug, Serialize)]
 struct LoadParams {
-    file_path: String,
+    uri: String,
     part: Option<String>
 }
 
 #[derive(Deserialize, Debug, Serialize)]
 struct UnloadParams {
-    file_path: String
+    uri: String
 }
 
 #[derive(Deserialize, Debug, Serialize)]
 struct ParseFileParams {
-    file_path: String
+    uri: String
 }
 
 #[derive(Deserialize, Debug, Serialize)]
@@ -42,18 +42,18 @@ struct ParseContentParams {
 
 #[derive(Deserialize, Debug, Serialize)]
 struct EvaluateFileStylesParams {
-    file_path: String
+    uri: String
 }
 
 #[derive(Deserialize, Debug, Serialize)]
 struct EvaluateContentStylesParams {
     content: String,
-    file_path: String
+    uri: String
 }
 
 #[derive(Deserialize, Debug, Serialize)]
 struct UpdateVirtualFileContentParams {
-    file_path: String,
+    uri: String,
     content: String
 }
 
@@ -70,21 +70,21 @@ fn main() {
     // let load_engine_mutex = engine_mutex.clone();
 	// io.add_method("load", move |params: Params| {
     //     let params: LoadParams = params.parse().unwrap();
-    //     block_on(load_engine_mutex.lock().unwrap().load(&params.file_path, params.part));
+    //     block_on(load_engine_mutex.lock().unwrap().load(&params.uri, params.part));
 	// 	Ok(Value::String("ok".into()))
     // });
 
     // let unload_engine_mutex = engine_mutex.clone();
 	// io.add_method("unload", move |params: Params| {
 	// 	let params: UnloadParams = params.parse().unwrap();
-    //     unload_engine_mutex.lock().unwrap().unload(params.file_path);
+    //     unload_engine_mutex.lock().unwrap().unload(params.uri);
 	// 	Ok(Value::String("ok".into()))
     // });
 
     // let parse_file_engine_mutex = engine_mutex.clone();
 	// io.add_method("parse_file", move |params: Params| {
     //     let params: ParseFileParams = params.parse().unwrap();
-    //     let result = block_on(parse_file_engine_mutex.lock().unwrap().parse_file(&params.file_path));
+    //     let result = block_on(parse_file_engine_mutex.lock().unwrap().parse_file(&params.uri));
     //     let json = match result {
     //         Ok(node) => serde_json::to_string(&node).unwrap(),
     //         Err(error) => format!("{{\"error\":{}}}", serde_json::to_string(&error).unwrap())
@@ -107,7 +107,7 @@ fn main() {
     // let evaluate_file_styles_mutex = engine_mutex.clone();
 	// io.add_method("evaluate_file_styles", move |params: Params| {
     //     let params: EvaluateFileStylesParams = params.parse().unwrap();
-    //     let result = block_on(evaluate_file_styles_mutex.lock().unwrap().evaluate_file_styles(&params.file_path));
+    //     let result = block_on(evaluate_file_styles_mutex.lock().unwrap().evaluate_file_styles(&params.uri));
     //     let json = match result {
     //         Ok(sheet) => serde_json::to_string(&sheet).unwrap(),
     //         Err(error) => format!("{{\"error\":{}}}", serde_json::to_string(&error).unwrap())
@@ -119,7 +119,7 @@ fn main() {
     // let evaluate_file_styles_mutex = engine_mutex.clone();
 	// io.add_method("evaluate_content_styles", move |params: Params| {
     //     let params: EvaluateContentStylesParams = params.parse().unwrap();
-    //     let result = block_on(evaluate_file_styles_mutex.lock().unwrap().evaluate_content_styles(&params.content, &params.file_path));
+    //     let result = block_on(evaluate_file_styles_mutex.lock().unwrap().evaluate_content_styles(&params.content, &params.uri));
     //     let json = match result {
     //         Ok(sheet) => serde_json::to_string(&sheet).unwrap(),
     //         Err(error) => format!("{{\"error\":{}}}", serde_json::to_string(&error).unwrap())
@@ -130,7 +130,7 @@ fn main() {
     // let update_virtual_file_content_engine_mutex = engine_mutex.clone();
 	// io.add_method("update_virtual_file_content", move |params: Params| {
     //     let params: UpdateVirtualFileContentParams = params.parse().unwrap();
-    //     block_on(update_virtual_file_content_engine_mutex.lock().unwrap().update_virtual_file_content(&params.file_path, &params.content));
+    //     block_on(update_virtual_file_content_engine_mutex.lock().unwrap().update_virtual_file_content(&params.uri, &params.content));
 	// 	Ok(Value::String("ok".into()))
     // });
     

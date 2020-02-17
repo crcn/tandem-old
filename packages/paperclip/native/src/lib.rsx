@@ -51,7 +51,7 @@ declare_types! {
       Ok(Engine::new(http_prefix))
     }
     method load(mut cx) {
-      let file_path: String = cx.argument::<JsString>(0)?.value();
+      let uri: String = cx.argument::<JsString>(0)?.value();
       let part: Option<String> = match cx.argument_opt(1) {
         Some(arg) => Some(arg.downcast::<JsString>().or_throw(&mut cx)?.value()),
         None => None
@@ -59,7 +59,7 @@ declare_types! {
 
       let mut this = cx.this();
       cx.borrow_mut(&mut this, |mut engine| {
-        block_on(engine.load(&file_path, part));
+        block_on(engine.load(&uri, part));
       });
         
       Ok(cx.undefined().upcast())
@@ -82,11 +82,11 @@ declare_types! {
     }
 
     method parseFile(mut cx) {
-      let file_path: String = cx.argument::<JsString>(0)?.value();
+      let uri: String = cx.argument::<JsString>(0)?.value();
 
       let mut this = cx.this();
       let result = cx.borrow_mut(&mut this, |mut engine| {
-        block_on(engine.parse_file(&file_path))
+        block_on(engine.parse_file(&uri))
       });
 
       let json = match result {
@@ -98,11 +98,11 @@ declare_types! {
     }
 
     method evaluateFileStyles(mut cx) {
-      let file_path: String = cx.argument::<JsString>(0)?.value();
+      let uri: String = cx.argument::<JsString>(0)?.value();
 
       let mut this = cx.this();
       let result = cx.borrow_mut(&mut this, |mut engine| {
-        block_on(engine.evaluate_file_styles(&file_path))
+        block_on(engine.evaluate_file_styles(&uri))
       }
 
       let json = match result {
@@ -115,11 +115,11 @@ declare_types! {
 
     method evaluateContentStyles(mut cx) {
       let content: String = cx.argument::<JsString>(0)?.value();
-      let file_path: String = cx.argument::<JsString>(1)?.value();
+      let uri: String = cx.argument::<JsString>(1)?.value();
 
       let mut this = cx.this();
       let result = cx.borrow_mut(&mut this, |mut engine| {
-        block_on(engine.evaluate_content_styles(&content, &file_path))
+        block_on(engine.evaluate_content_styles(&content, &uri))
       });
 
       let json = match result {
@@ -131,12 +131,12 @@ declare_types! {
     }
 
     method updateVirtualFileContent(mut cx) {
-      let file_path: String = cx.argument::<JsString>(0)?.value();
+      let uri: String = cx.argument::<JsString>(0)?.value();
       let content: String = cx.argument::<JsString>(1)?.value();
 
       let mut this = cx.this();
       cx.borrow_mut(&mut this, |mut engine| {
-        block_on(engine.update_virtual_file_content(&file_path, &content))
+        block_on(engine.update_virtual_file_content(&uri, &content))
       });
 
       Ok(cx.undefined().upcast())

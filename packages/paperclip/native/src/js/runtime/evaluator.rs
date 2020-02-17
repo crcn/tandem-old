@@ -9,14 +9,14 @@ use crate::pc::runtime::vfs::{VirtualFileSystem};
 use crate::pc::ast as pc_ast;
 
 pub struct Context<'a> {
-  file_path: &'a String,
+  uri: &'a String,
   graph: &'a DependencyGraph,
   vfs: &'a VirtualFileSystem,
   data: &'a virt::JsValue
 }
 
-pub fn evaluate<'a>(expr: &ast::Statement, file_path: &'a String, graph: &'a DependencyGraph, vfs: &'a VirtualFileSystem, data: &'a virt::JsValue) -> Result<virt::JsValue, RuntimeError> {
-  let context = Context { data, graph, vfs, file_path };
+pub fn evaluate<'a>(expr: &ast::Statement, uri: &'a String, graph: &'a DependencyGraph, vfs: &'a VirtualFileSystem, data: &'a virt::JsValue) -> Result<virt::JsValue, RuntimeError> {
+  let context = Context { data, graph, vfs, uri };
   evaluate_statement(&expr, &context)
 }
 fn evaluate_statement<'a>(statement: &ast::Statement, context: &'a Context) -> Result<virt::JsValue, RuntimeError> {
@@ -27,7 +27,7 @@ fn evaluate_statement<'a>(statement: &ast::Statement, context: &'a Context) -> R
 }
 
 fn evaluate_node<'a>(node: &Box<pc_ast::Node>, context: &'a Context) -> Result<virt::JsValue, RuntimeError> {
-  let node_option = evaluate_pc(node, context.file_path, &context.graph, &context.vfs, &context.data, None)?;
+  let node_option = evaluate_pc(node, context.uri, &context.graph, &context.vfs, &context.data, None)?;
   if let Some(node) = node_option {
     Ok(virt::JsValue::JsNode(node))
   } else {
@@ -48,7 +48,7 @@ fn evaluate_reference<'a>(reference: &ast::Reference, context: &'a Context) -> R
       };
     } else {
       return Err(RuntimeError {
-        file_path: context.file_path.to_string(),
+        uri: context.uri.to_string(),
         message: "Cannot access property of undefined".to_string(), 
         location: Location {
           start: 0,

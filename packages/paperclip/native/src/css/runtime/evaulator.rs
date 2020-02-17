@@ -7,11 +7,11 @@ use regex::Regex;
 pub struct Context<'a> {
   scope: &'a str,
   vfs: &'a VirtualFileSystem,
-  file_path: &'a String,
+  uri: &'a String,
 }
 
-pub fn evaluate<'a>(expr: &ast::Sheet, file_path: &'a String, scope: &'a str, vfs: &'a VirtualFileSystem) -> Result<virt::CSSSheet, RuntimeError> {
-  let context = Context { scope, file_path, vfs };
+pub fn evaluate<'a>(expr: &ast::Sheet, uri: &'a String, scope: &'a str, vfs: &'a VirtualFileSystem) -> Result<virt::CSSSheet, RuntimeError> {
+  let context = Context { scope, uri, vfs };
   let mut rules = vec![];
   for rule in &expr.rules {
     rules.push(evaluate_rule(&rule, &context)?);
@@ -184,8 +184,7 @@ fn evaluate_style_declaration<'a>(expr: &'a ast::Declaration, context: &Context)
       if protocol_re.is_match(relative_path) {
         continue;
       }
-      let full_path = relative_path.to_string();
-      let full_path = format!("file://{}", context.vfs.resolve(context.file_path, &relative_path.to_string()));
+      let full_path = context.vfs.resolve(context.uri, &relative_path.to_string());
 
       value = url_re.replace(url_fn, format!("url({})", full_path).as_str()).to_string();
     }

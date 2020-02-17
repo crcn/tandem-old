@@ -17,7 +17,7 @@ use crc::{crc32};
 pub struct Context<'a> {
   graph: &'a DependencyGraph,
   vfs: &'a VirtualFileSystem,
-  file_path: &'a String,  
+  uri: &'a String,  
   import_ids: HashSet<&'a String>,
   part_ids: HashSet<&'a String>,
   scope: String,
@@ -26,8 +26,8 @@ pub struct Context<'a> {
   from_main: bool,
 }
 
-pub fn evaluate<'a>(node_expr: &ast::Node, file_path: &String, graph: &'a DependencyGraph, vfs: &'a VirtualFileSystem, data: &js_virt::JsValue, part: Option<String>) -> Result<Option<virt::Node>, RuntimeError>  {
-  let context = create_context(node_expr, file_path, graph, vfs, data, None);
+pub fn evaluate<'a>(node_expr: &ast::Node, uri: &String, graph: &'a DependencyGraph, vfs: &'a VirtualFileSystem, data: &js_virt::JsValue, part: Option<String>) -> Result<Option<virt::Node>, RuntimeError>  {
+  let context = create_context(node_expr, uri, graph, vfs, data, None);
   let mut root_result = evaluate_instance_node(node_expr, &context, part);
 
   // need to insert all styles into the root for efficiency
@@ -35,7 +35,7 @@ pub fn evaluate<'a>(node_expr: &ast::Node, file_path: &String, graph: &'a Depend
     Ok(ref mut root_option) => {
       match root_option {
         Some(ref mut root) => {
-          let style = evaluate_jumbo_style(node_expr, file_path, graph, vfs)?;
+          let style = evaluate_jumbo_style(node_expr, uri, graph, vfs)?;
           root.prepend_child(style);
         },
         _ => { }
@@ -47,17 +47,17 @@ pub fn evaluate<'a>(node_expr: &ast::Node, file_path: &String, graph: &'a Depend
   root_result
 }
 
-pub fn evaluate_document_styles<'a>(node_expr: &ast::Node, file_path: &String, vfs: &'a VirtualFileSystem) -> Result<css_virt::CSSSheet, RuntimeError>  {
+pub fn evaluate_document_styles<'a>(node_expr: &ast::Node, uri: &String, vfs: &'a VirtualFileSystem) -> Result<css_virt::CSSSheet, RuntimeError>  {
   let mut sheet = css_virt::CSSSheet {
     rules: vec![] 
   };
   let children_option = ast::get_children(&node_expr);
-  let scope = get_document_scope(file_path);
+  let scope = get_document_scope(uri);
   if let Some(children) = children_option {
     // style elements are only allowed in root, so no need to traverse
     for child in children {
       if let ast::Node::StyleElement(style_element) = &child {
-        sheet.extend(evaluate_css(&style_element.sheet, file_path, &scope, vfs)?);
+        sheet.extend(evaluate_css(&style_element.sheet, uri, &scope, vfs)?);
       }
     }
   }
@@ -65,25 +65,25 @@ pub fn evaluate_document_styles<'a>(node_expr: &ast::Node, file_path: &String, v
   Ok(sheet)
 }
 
-pub fn evaluate_jumbo_style<'a>(_entry_expr: &ast::Node,  file_path: &String, graph: &'a DependencyGraph, vfs: &'a VirtualFileSystem) -> Result<virt::Node, RuntimeError>  {
+pub fn evaluate_jumbo_style<'a>(_entry_expr: &ast::Node,  uri: &String, graph: &'a DependencyGraph, vfs: &'a VirtualFileSystem) -> Result<virt::Node, RuntimeError>  {
 
   let mut sheet = css_virt::CSSSheet {
     rules: vec![] 
   };
 
-  for (dependency, dependent_option) in graph.flatten(file_path) {
+  for (dependency, dependent_option) in graph.flatten(uri) {
     let dep_sheet = match &dependency.content {
       DependencyContent::Node(node) => {
-        evaluate_document_styles(node, &dependency.file_path, vfs)?
+        evaluate_document_styles(node, &dependency.uri, vfs)?
       },
       DependencyContent::StyleSheet(sheet) => {
         let scope = if let Some(dependent) = dependent_option {
-          get_document_scope(&dependent.file_path)
+          get_document_scope(&dependent.uri)
         } else {
-          get_document_scope(&dependency.file_path)
+          get_document_scope(&dependency.uri)
         };
         
-        evaluate_css(&sheet, &dependency.file_path, &scope, vfs)?
+        evaluate_css(&sheet, &dependency.uri, &scope, vfs)?
       }
     };
 
@@ -121,7 +121,7 @@ pub fn evaluate_instance_node<'a>(node_expr: &ast::Node, context: &'a Context, p
   evaluate_node(target_node, true, &context)
 }
 
-fn create_context<'a>(node_expr: &'a ast::Node, file_path: &'a String, graph: &'a DependencyGraph, vfs: &'a VirtualFileSystem, data: &'a js_virt::JsValue, parent_option: Option<&'a Context>) -> Context<'a> {
+fn create_context<'a>(node_expr: &'a ast::Node, uri: &'a String, graph: &'a DependencyGraph, vfs: &'a VirtualFileSystem, data: &'a js_virt::JsValue, parent_option: Option<&'a Context>) -> Context<'a> {
 
   let from_main = if let Some(parent) = parent_option {
     (parent.from_main)
@@ -131,19 +131,19 @@ fn create_context<'a>(node_expr: &'a ast::Node, file_path: &'a String, graph: &'
 
   Context {
     graph,
-    file_path,
+    uri,
     vfs,
     import_ids: HashSet::from_iter(ast::get_import_ids(node_expr)),
     part_ids: HashSet::from_iter(ast::get_part_ids(node_expr)),
-    scope: get_document_scope(file_path),
+    scope: get_document_scope(uri),
     data,
     in_part: false,
     from_main,
   }
 }
 
-fn get_document_scope<'a>(file_path: &String) -> String {
-  format!("{:x}", crc32::checksum_ieee(file_path.as_bytes())).to_string()
+fn get_document_scope<'a>(uri: &String) -> String {
+  format!("{:x}", crc32::checksum_ieee(uri.as_bytes())).to_string()
 }
 
 fn evaluate_node<'a>(node_expr: &ast::Node, is_root: bool, context: &'a Context) -> Result<Option<virt::Node>, RuntimeError> {
@@ -192,7 +192,7 @@ fn evaluate_element<'a>(element: &ast::Element, is_root: bool, context: &'a Cont
 
 fn evaluate_slot<'a>(slot: &ast::Slot, context: &'a Context) -> Result<Option<virt::Node>, RuntimeError> {
   let script = &slot.script;
-  let mut js_value = evaluate_js(script, &context.file_path, &context.graph, &context.vfs, &context.data)?;
+  let mut js_value = evaluate_js(script, &context.uri, &context.graph, &context.vfs, &context.data)?;
 
   // if array of values, then treat as document fragment
   if let js_virt::JsValue::JsArray(ary) = &mut js_value {
@@ -218,22 +218,22 @@ fn evaluate_slot<'a>(slot: &ast::Slot, context: &'a Context) -> Result<Option<vi
 }
 
 fn evaluate_imported_component<'a>(element: &ast::Element, context: &'a Context) -> Result<Option<virt::Node>, RuntimeError> {
-  let self_dep  = &context.graph.dependencies.get(context.file_path).unwrap();
-  let dep_file_path = &self_dep.dependencies.get(&ast::get_tag_name(element)).unwrap();
-  evaluate_component_instance(element, dep_file_path, context)
+  let self_dep  = &context.graph.dependencies.get(context.uri).unwrap();
+  let dep_uri = &self_dep.dependencies.get(&ast::get_tag_name(element)).unwrap();
+  evaluate_component_instance(element, dep_uri, context)
 }
 
 fn evaluate_part_instance_element<'a>(element: &ast::Element, context: &'a Context) -> Result<Option<virt::Node>, RuntimeError> {
-  let self_dep  = &context.graph.dependencies.get(context.file_path).unwrap();
+  let self_dep  = &context.graph.dependencies.get(context.uri).unwrap();
 
   if let DependencyContent::Node(root_node) = &self_dep.content {
     let part = ast::get_part_by_id(&element.tag_name, root_node).unwrap();
     let data = create_component_instance_data(element, context)?;
-    evaluate_element(part, true, &create_context(root_node, &self_dep.file_path, context.graph, context.vfs, &data, Some(context)))
+    evaluate_element(part, true, &create_context(root_node, &self_dep.uri, context.graph, context.vfs, &data, Some(context)))
   } else {
 
     // This should _never_ happen
-    Err(RuntimeError::unknown(context.file_path))
+    Err(RuntimeError::unknown(context.uri))
   }
 }
 
@@ -260,7 +260,7 @@ fn create_component_instance_data<'a>(instance_element: &ast::Element, context: 
       ast::Attribute::ShorthandAttribute(sh_attr) => {
         let name = sh_attr.get_name().map_err(|message| {
           RuntimeError {
-            file_path: context.file_path.to_string(),
+            uri: context.uri.to_string(),
             message: message.to_string(),
             location: Location { 
               start: 0,
@@ -289,21 +289,21 @@ fn create_component_instance_data<'a>(instance_element: &ast::Element, context: 
   Ok(js_virt::JsValue::JsObject(data))
 }
 
-fn evaluate_component_instance<'a>(instance_element: &ast::Element, dep_file_path: &String, context: &'a Context) -> Result<Option<virt::Node>, RuntimeError> {
+fn evaluate_component_instance<'a>(instance_element: &ast::Element, dep_uri: &String, context: &'a Context) -> Result<Option<virt::Node>, RuntimeError> {
 
   let namespace = ast::get_tag_namespace(instance_element);
 
-  let dep = &context.graph.dependencies.get(&dep_file_path.to_string()).unwrap();
+  let dep = &context.graph.dependencies.get(&dep_uri.to_string()).unwrap();
   let data = create_component_instance_data(instance_element, context)?;
   
   if let DependencyContent::Node(node) = &dep.content {
 
-    let context = &create_context(&node, dep_file_path, context.graph, context.vfs, &data, None);
+    let context = &create_context(&node, dep_uri, context.graph, context.vfs, &data, None);
 
     // TODO: if fragment, then wrap in span. If not, then copy these attributes to root element
     evaluate_instance_node(&node, &context, namespace)
   } else {
-    Err(RuntimeError::unknown(context.file_path))
+    Err(RuntimeError::unknown(context.uri))
   }
 }
 
@@ -326,7 +326,7 @@ fn evaluate_basic_element<'a>(element: &ast::Element, context: &'a Context) -> R
 
         if name == "src" {
           if let Some(value) = value_option {
-            let full_path = format!("file://{}", context.vfs.resolve(context.file_path, &value)).to_string();
+            let full_path = context.vfs.resolve(context.uri, &value);
             value_option = Some(full_path);
           }
         }
@@ -339,7 +339,7 @@ fn evaluate_basic_element<'a>(element: &ast::Element, context: &'a Context) -> R
       ast::Attribute::ShorthandAttribute(sh_attr) => {
         let name = sh_attr.get_name().map_err(|message| {
           RuntimeError {
-            file_path: context.file_path.to_string(),
+            uri: context.uri.to_string(),
             message: message.to_string(),
             location: Location { 
               start: 0,
@@ -382,13 +382,13 @@ fn evaluate_self_element<'a>(element: &ast::Element, context: &'a Context) -> Re
   
   if context.from_main {
     return Err(RuntimeError { 
-      file_path: context.file_path.to_string(), 
+      uri: context.uri.to_string(), 
       message: "Can't call <self /> here since this causes an infinite loop!".to_string(), 
       location: element.open_tag_location.clone() 
     });
   }
 
-  evaluate_component_instance(element, context.file_path, context)
+  evaluate_component_instance(element, context.uri, context)
 }
 
 
@@ -460,7 +460,7 @@ fn evaluate_conditional<'a>(block: &ast::ConditionalBlock, context: &'a Context)
 }
 
 fn evaluate_pass_fail_block<'a>(block: &ast::PassFailBlock, context: &'a Context) -> Result<Option<virt::Node>, RuntimeError> {
-  let condition = evaluate_js(&block.condition, &context.file_path, &context.graph, &context.vfs, context.data)?;
+  let condition = evaluate_js(&block.condition, &context.uri, &context.graph, &context.vfs, context.data)?;
   if condition.truthy() {
     if let Some(node) = &block.node {
       evaluate_node(node, false, context)
@@ -488,13 +488,12 @@ fn evaluate_attribute_value<'a>(value: &ast::AttributeValue, context: &'a Contex
 }
 
 fn evaluate_attribute_slot<'a>(script: &js_ast::Statement, context: &'a Context) -> Result<js_virt::JsValue, RuntimeError> {
-  evaluate_js(script, &context.file_path, &context.graph, &context.vfs, &context.data)
+  evaluate_js(script, &context.uri, &context.graph, &context.vfs, &context.data)
 }
 
 #[cfg(test)]
 mod tests {
   use super::*;
-  use super::super::graph::*;
   use super::super::super::parser::*;
 
   #[test]
@@ -502,6 +501,7 @@ mod tests {
     let case = "<style>div { color: red; }</style><div></div>";
     let ast = parse(case).unwrap();
     let graph = DependencyGraph::new();
-    let _node = evaluate(&ast, &"something".to_string(), &graph, &js_virt::JsValue::JsObject(js_virt::JsObject::new()), None).unwrap().unwrap();
+    let vfs = VirtualFileSystem::new(Box::new(|_| "".to_string()), Box::new(|_,_| "".to_string()), None);
+    let _node = evaluate(&ast, &"something".to_string(), &graph, &vfs, &js_virt::JsValue::JsObject(js_virt::JsObject::new()), None).unwrap().unwrap();
   }
 }

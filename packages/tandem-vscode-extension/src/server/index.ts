@@ -39,7 +39,7 @@ import {
   LanguageServiceEventType,
   ColorInfoEvent
 } from "./services/base";
-import { getColorPresentations } from "./services/css";
+import { VSCServiceBridge, getColorPresentations } from "./services/bridge";
 
 const PAPERCLIP_RENDER_PART = "preview";
 
@@ -60,52 +60,14 @@ connection.onInitialize((params: InitializeParams) => {
   };
 });
 
-const initService = (engine: Engine, connection: Connection) => {
+const initService = (
+  engine: Engine,
+  connection: Connection,
+  documents: TextDocuments<TextDocument>
+) => {
   const service = createServiceFacade(engine);
-  let _colorInfo: any = {};
-
-  service.onEvent((event: LanguageServiceEvent) => {
-    if (event.type === LanguageServiceEventType.ColorInformation) {
-      handleColorInfoEvent(event);
-    }
-  });
-  const handleColorInfoEvent = ({ filePath, payload }: ColorInfoEvent) => {
-    const document: TextDocument = documents.get(`file://${filePath}`);
-
-    const info: ColorInformation[] = payload
-      .map(({ color, location }) => {
-        try {
-          const {
-            color: [red, green, blue],
-            valpha: alpha
-          } = parseColor(color);
-          return {
-            range: {
-              start: document.positionAt(location.start),
-              end: document.positionAt(location.end)
-            },
-            color: { red, green, blue, alpha }
-          };
-        } catch (e) {
-          // console.warn(e);
-        }
-      })
-      .filter(Boolean);
-
-    _colorInfo[document.uri.toString()] = info;
-  };
-
-  connection.onRequest(DocumentColorRequest.type, params => {
-    let document = documents.get(params.textDocument.uri);
-    if (document) {
-      return _colorInfo[document.uri.toString()] || [];
-    }
-    return [];
-  });
-
-  connection.onRequest(ColorPresentationRequest.type, params => {
-    return getColorPresentations(params.color, params.range);
-  });
+  new VSCServiceBridge(engine, service, connection, documents);
+  let _colorInfo = {};
 };
 
 const initEngine = async (
@@ -116,26 +78,26 @@ const initEngine = async (
     renderPart: PAPERCLIP_RENDER_PART
   });
 
-  initService(engine, connection);
+  initService(engine, connection, documents);
 
-  const handleGraphError = ({ filePath, info }: GraphErrorEvent) => {
-    sendError(filePath, info.message, info.location);
+  const handleGraphError = ({ uri, info }: GraphErrorEvent) => {
+    sendError(uri, info.message, info.location);
   };
 
   const handleRuntimeError = ({
-    filePath,
+    uri,
     message,
     location
   }: RuntimeErrorEvent) => {
-    sendError(filePath, message, location);
+    sendError(uri, message, location);
   };
 
   const sendError = (
-    filePath: string,
+    uri: string,
     message: string,
     location: SourceLocation
   ) => {
-    const textDocument = documents.get(`file://${filePath}`);
+    const textDocument = documents.get(uri);
     if (!textDocument) {
       return;
     }
@@ -182,7 +144,7 @@ const initEngine = async (
       // reset diagnostics
       if (event.kind === EngineEventKind.Evaluated) {
         connection.sendDiagnostics({
-          uri: `file://${event.filePath}`,
+          uri: event.uri,
           diagnostics: []
         });
       }
@@ -191,25 +153,18 @@ const initEngine = async (
       );
     }
   });
-  connection.onNotification(
-    NotificationType.LOAD,
-    ({ filePath }: LoadParams) => {
-      engine.load(filePath);
-    }
-  );
+  connection.onNotification(NotificationType.LOAD, ({ uri }: LoadParams) => {
+    engine.load(uri);
+  });
 
-  connection.onNotification(
-    NotificationType.UNLOAD,
-    ({ filePath }: LoadParams) => {
-      engine.unload(filePath);
-    }
-  );
+  connection.onNotification(NotificationType.UNLOAD, ({ uri }: LoadParams) => {
+    // TODO
+    // engine.unload(uri);
+  });
 
   documents.onDidChangeContent(event => {
     const doc: TextDocument = event.document;
-    const now = Date.now();
     engine.updateVirtualFileContent(doc.uri, doc.getText());
-    console.log("update time", Date.now() - now);
   });
 };
 

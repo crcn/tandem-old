@@ -13,12 +13,7 @@ import { isPaperclipFile } from "./utils";
 import * as path from "path";
 import { EventEmitter } from "events";
 import { LanguageClient } from "vscode-languageclient";
-import {
-  NotificationType,
-  Load,
-  Unload,
-  UpdateVirtualFileContents
-} from "../common/notifications";
+import { NotificationType, Load, Unload } from "../common/notifications";
 
 const VIEW_TYPE = "paperclip-preview";
 
@@ -28,7 +23,7 @@ enum OpenLivePreviewOptions {
 }
 
 type LivePreviewState = {
-  targetFilePath: string;
+  targetUri: string;
 };
 
 export const activate = (client: LanguageClient, context: ExtensionContext) => {
@@ -66,9 +61,9 @@ export const activate = (client: LanguageClient, context: ExtensionContext) => {
   };
 
   const registerLivePreview = (preview: LivePreview) => {
-    _previews[preview.targetFilePath] = preview;
+    _previews[preview.targetUri] = preview;
     let disposeListener = preview.onDidDispose(() => {
-      delete _previews[preview.targetFilePath];
+      delete _previews[preview.targetUri];
       disposeListener();
     });
   };
@@ -106,10 +101,10 @@ export const activate = (client: LanguageClient, context: ExtensionContext) => {
   window.registerWebviewPanelSerializer(VIEW_TYPE, {
     async deserializeWebviewPanel(
       panel: WebviewPanel,
-      { targetFilePath }: LivePreviewState
+      { targetUri }: LivePreviewState
     ) {
       registerLivePreview(
-        new LivePreview(client, panel, extensionPath, targetFilePath)
+        new LivePreview(client, panel, extensionPath, targetUri)
       );
     }
   });
@@ -144,16 +139,16 @@ export const activate = (client: LanguageClient, context: ExtensionContext) => {
 class LivePreview {
   private _em: EventEmitter;
   private _disposeEngineListener: () => void;
-  public readonly targetFilePath: string;
+  public readonly targetUri: string;
 
   constructor(
     private _client: LanguageClient,
     readonly panel: WebviewPanel,
     private readonly _extensionPath: string,
-    targetFilePath: string
+    targetUri: string
   ) {
     this._em = new EventEmitter();
-    this.targetFilePath = targetFilePath;
+    this.targetUri = targetUri;
     this.panel.webview.onDidReceiveMessage(this._onMessage);
     this._render();
     panel.onDidDispose(this._onPanelDispose);
@@ -165,21 +160,21 @@ class LivePreview {
         // panel content is disposed of, so eliminate the extra work
       } else {
         this._client.sendNotification(
-          ...new Unload({ filePath: targetFilePath }).getArgs()
+          ...new Unload({ uri: targetUri }).getArgs()
         );
       }
     });
   }
   getState(): LivePreviewState {
     return {
-      targetFilePath: this.targetFilePath
+      targetUri: this.targetUri
     };
   }
   blink() {}
   private _render() {
     // Calling startEngine multiple times by the way just restarts it
     this._client.sendNotification(
-      ...new Load({ filePath: this.targetFilePath }).getArgs()
+      ...new Load({ uri: this.targetUri }).getArgs()
     );
     this.panel.webview.html = this._getHTML();
   }
@@ -196,7 +191,7 @@ class LivePreview {
     // TODO when live preview tools are available
   };
   public $$handleEngineEvent(event: EngineEvent) {
-    if (event.filePath !== stripFileProtocol(this.targetFilePath)) {
+    if (event.uri !== this.targetUri) {
       return;
     }
 
@@ -239,5 +234,3 @@ class LivePreview {
     this._em.emit("didDispose");
   }
 }
-
-const stripFileProtocol = (filePath: string) => filePath.replace("file://", "");

@@ -1,9 +1,8 @@
-use std::fs;
 use std::collections::HashMap;
 // use curl::easy::Easy;
 
-pub type FileReaderFn = Fn(&String) -> String;
-pub type FileResolverFn = Fn(&String, &String) -> String;
+pub type FileReaderFn = dyn Fn(&String) -> String;
+pub type FileResolverFn = dyn Fn(&String, &String) -> String;
 
 #[allow(dead_code)]
 pub struct VirtualFileSystem {
@@ -13,9 +12,8 @@ pub struct VirtualFileSystem {
   pub contents: HashMap<String, String>
 }
 
-
-fn insert_file_path(file_path: String, content: String, contents: &mut HashMap<String, String>) {
-  contents.insert(file_path, content);
+fn insert_content(uri: String, content: String, contents: &mut HashMap<String, String>) {
+  contents.insert(uri, content);
 }
 
 #[allow(dead_code)]
@@ -28,11 +26,11 @@ impl VirtualFileSystem {
       contents: HashMap::new()
     }
   }
-  pub async fn load(&mut self, file_path: &String) -> Result<&String, &'static str> {
-    if self.contents.contains_key(file_path) {
-      Ok(self.contents.get(file_path).unwrap())
+  pub async fn load(&mut self, uri: &String) -> Result<&String, &'static str> {
+    if self.contents.contains_key(uri) {
+      Ok(self.contents.get(uri).unwrap())
     } else {
-      self.reload(file_path).await
+      self.reload(uri).await
     }
   }
 
@@ -40,26 +38,26 @@ impl VirtualFileSystem {
     (self.resolve_file)(from_path, relative_path)
   }
 
-  pub async fn update(&mut self, file_path: &String, content: &String) -> Result<String, &'static str> {
-    if !self.contents.contains_key(file_path) {
-      self.load(&file_path).await?;
+  pub async fn update(&mut self, uri: &String, content: &String) -> Result<String, &'static str> {
+    if !self.contents.contains_key(uri) {
+      self.load(&uri).await?;
     }
 
-    Ok(self.contents.insert(file_path.to_string(), content.to_string()).unwrap())
+    Ok(self.contents.insert(uri.to_string(), content.to_string()).unwrap())
   }
 
-  pub async fn reload(&mut self, file_path: &String) -> Result<&String, &'static str> {
+  pub async fn reload(&mut self, uri: &String) -> Result<&String, &'static str> {
     // let content = if let Some(http_path) = &self.http_path {
-    //   let file_http_path = format!("{}{}", http_path, file_path).to_string();
+    //   let file_http_path = format!("{}{}", http_path, uri).to_string();
     //   let data = http_get(&file_http_path);
     //   data
     // } else {
-    //   fs::read_to_string(&file_path).or(Err("Unable to fetch text"))?
+    //   fs::read_to_string(&uri).or(Err("Unable to fetch text"))?
     // };
-    let content = (self.read_file)(file_path);
-    // let content = fs::read_to_string(&file_path).or(Err("Unable to fetch text"))?;
+    let content = (self.read_file)(uri);
+    // let content = fs::read_to_string(&uri).or(Err("Unable to fetch text"))?;
     
-    insert_file_path(file_path.to_string(), content, &mut self.contents);
-    Ok(self.contents.get(file_path).unwrap())
+    insert_content(uri.to_string(), content, &mut self.contents);
+    Ok(self.contents.get(uri).unwrap())
   }
 }

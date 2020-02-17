@@ -3,6 +3,8 @@ import { Node } from "./ast";
 import { SourceLocation } from "./base-ast";
 
 export enum EngineEventKind {
+  Loading = "Loading",
+  Updating = "Updating",
   Evaluated = "Evaluated",
   Error = "Error",
   NodeParsed = "NodeParsed"
@@ -22,17 +24,17 @@ type BaseEngineEvent<KKind extends EngineEventKind> = {
 };
 
 export type EvaluatedEvent = {
-  filePath: string;
+  uri: string;
   node?: VirtualNode;
 } & BaseEngineEvent<EngineEventKind.Evaluated>;
 
 export type NodeParsedEvent = {
-  filePath: string;
+  uri: string;
   node?: Node;
 } & BaseEngineEvent<EngineEventKind.NodeParsed>;
 
 export type BaseEngineErrorEvent<TErrorType extends EngineErrorKind> = {
-  filePath: string;
+  uri: string;
   errorKind: TErrorType;
 } & BaseEngineEvent<EngineEventKind.Error>;
 
@@ -53,7 +55,7 @@ export type SyntaxGraphErrorInfo = {
 } & BaseGraphErrorInfo<GraphErrorInfoType.Syntax>;
 
 export type IncludNotFoundErrorInfo = {
-  filePath: string;
+  uri: string;
   message: string;
   location: SourceLocation;
 } & BaseGraphErrorInfo<GraphErrorInfoType.IncludeNotFound>;
@@ -65,10 +67,22 @@ export type GraphErrorEvent = {
 } & BaseEngineErrorEvent<EngineErrorKind.Graph>;
 
 export type RuntimeErrorEvent = {
-  filePath: string;
+  uri: string;
   message: string;
   location: SourceLocation;
 } & BaseEngineErrorEvent<EngineErrorKind.Runtime>;
 
+export type LoadingEvent = {
+  uri: string;
+} & BaseEngineEvent<EngineEventKind.Loading>;
+export type UpdatingEvent = {
+  uri: string;
+} & BaseEngineEvent<EngineEventKind.Updating>;
+
 export type EngineErrorEvent = GraphErrorEvent | RuntimeErrorEvent;
-export type EngineEvent = EvaluatedEvent | EngineErrorEvent | NodeParsedEvent;
+export type EngineEvent =
+  | EvaluatedEvent
+  | EngineErrorEvent
+  | NodeParsedEvent
+  | LoadingEvent
+  | UpdatingEvent;

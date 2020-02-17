@@ -1,5 +1,5 @@
 import { stripFileProtocol } from "./utils";
-import { EngineEvent } from "./events";
+import { EngineEvent, EngineEventKind } from "./events";
 import { ChildProcess } from "child_process";
 import * as fs from "fs";
 import * as path from "path";
@@ -12,7 +12,7 @@ export type FileContent = {
 };
 
 export type EngineOptions = {
-  httpFilePath?: string;
+  httpuri?: string;
   log?: boolean;
   renderPart?: string;
 };
@@ -21,54 +21,68 @@ export type EngineEventListener = (event: EngineEvent) => void;
 
 export class Engine {
   private _native: any;
+  private _listeners: EngineEventListener[] = [];
 
   constructor(private _options: EngineOptions = {}) {
     this._native = NativeEngine.new(
-      filePath => {
-        return fs.readFileSync(filePath.replace("file://", ""), "utf8");
+      uri => {
+        return fs.readFileSync(uri.replace("file://", ""), "utf8");
       },
       (fromPath, relativePath) => {
         // TODO - resolve from config
-        return path.normalize(path.join(path.dirname(fromPath), relativePath));
+        return (
+          "file://" +
+          path.normalize(
+            path.join(stripFileProtocol(path.dirname(fromPath)), relativePath)
+          )
+        );
       }
     );
+
+    // only one native listener to for buffer performance
+    this._native.add_listener(this._dispatch);
   }
   onEvent(listener: EngineEventListener) {
     if (listener == null) {
       throw new Error(`listener cannot be undefined`);
     }
-    this._native.addListener(event => listener(event));
+    this._listeners.push(listener);
     return () => {
-      throw new Error("Cannot dispose listeners yet");
-      // let i = this._listeners.indexOf(listener);
-      // if (i !== -1) {
-      //   this._listeners.splice(i, 1);
-      // }
+      let i = this._listeners.indexOf(listener);
+      if (i !== -1) {
+        this._listeners.splice(i, 1);
+      }
     };
   }
-  parseFile(filePath: string) {
-    return this._native.parseFile(filePath);
+  parseFile(uri: string) {
+    return this._native.parse_file(uri);
   }
-  evaluateFileStyles(filePath: string) {
-    return JSON.parse(
-      this._native.evaluateFileStyles(stripFileProtocol(filePath))
-    );
+  evaluateFileStyles(uri: string) {
+    return JSON.parse(this._native.evailate_file_styles(uri));
   }
-  evaluateContentStyles(content: string, filePath: string) {
-    return JSON.parse(
-      this._native.evaluateContentStyles(content, stripFileProtocol(filePath))
-    );
+  evaluateContentStyles(content: string, uri: string) {
+    return JSON.parse(this._native.evaluate_content_files(content, uri));
   }
   parseContent(content: string) {
-    return this._native.parseContent(content);
+    return this._native.parse_content(content);
   }
-  updateVirtualFileContent(filePath: string, content: string) {
-    this._native.updateVirtualFileContent(stripFileProtocol(filePath), content);
+  updateVirtualFileContent(uri: string, content: string) {
+    this._dispatch({ kind: EngineEventKind.Updating, uri });
+    this._native.update_virtual_file_content(uri, content);
   }
-  load(filePath: string) {
-    this._native.load(stripFileProtocol(filePath), this._options.renderPart);
+  load(uri: string) {
+    this._dispatch({ kind: EngineEventKind.Loading, uri });
+    this._native.load(uri, this._options.renderPart);
   }
-  unload(filePath: string) {
-    // TODO
-  }
+  private _dispatch = (event: EngineEvent) => {
+    // try-catch since engine will throw opaque error.
+    try {
+      for (const listener of this._listeners) {
+        listener(event);
+      }
+    } catch (e) {
+      console.error(e);
+      throw e;
+    }
+  };
 }

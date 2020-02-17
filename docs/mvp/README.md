@@ -31,6 +31,12 @@ Design Problems:
 
 Limitations:
 
+#### Development Phases
+
+- Develop + validate
+- Design + writing
+- Documentation
+
 immediate TODO:
 
 - vscode extension
@@ -39,7 +45,10 @@ immediate TODO:
     - tag names
     - src attributes
   - cleanup color presentation
-  -
+  - other enhancements
+    - parse color keywords (red|blue|green|darkgrey)
+
+- typed definition generation
 
 - DSL
 
