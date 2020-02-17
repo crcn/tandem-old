@@ -10,7 +10,7 @@
   }
   
   .items {
-    border: 1px solid rgba(105, 189, 147, 0.699);
+    border: 1px solid rgba(143, 143, 143, 0.699);
     display: inline-block;
     padding: 30px;
     border-radius: 8px; 

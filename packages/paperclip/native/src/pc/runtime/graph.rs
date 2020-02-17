@@ -5,7 +5,7 @@ use crate::base::parser::{ParseError};
 use crate::base::ast::{Location};
 use std::collections::HashMap;
 use serde::{Serialize};
-use crate::base::utils;
+
 
 #[derive(Debug, PartialEq, Serialize, Clone)]
 #[serde(tag = "kind")]
@@ -36,15 +36,16 @@ pub struct GraphError {
   info: GraphErrorInfo
 }
 
-#[derive(Debug)]
 pub struct DependencyGraph {
-  pub dependencies: HashMap<String, Dependency>
+  pub dependencies: HashMap<String, Dependency>,
 }
 
 #[allow(dead_code)]
 impl DependencyGraph {
   pub fn new() -> DependencyGraph {
-    DependencyGraph { dependencies: HashMap::new() }
+    DependencyGraph { 
+      dependencies: HashMap::new() 
+    }
   }
   pub fn flatten<'a>(&'a self, entry_file_path: &String) -> Vec<(&Dependency, Option<&Dependency>)> {
     let mut deps: Vec<(&Dependency, Option<&Dependency>)> = vec![];
@@ -130,7 +131,7 @@ impl DependencyGraph {
         Err(err)
       })?.to_string();
       
-      let dependency = Dependency::from_source(source, &curr_file_path).or_else(|error| {
+      let dependency = Dependency::from_source(source, &curr_file_path, vfs).or_else(|error| {
         Err(GraphError {
           file_path: curr_file_path.to_string(),
           info: GraphErrorInfo::Syntax(error)
@@ -179,11 +180,11 @@ pub struct Dependency {
 }
 
 impl<'a> Dependency {
-  pub fn from_source(source: String, file_path: &String) -> Result<Dependency, ParseError> {
+  pub fn from_source(source: String, file_path: &String, vfs: &VirtualFileSystem) -> Result<Dependency, ParseError> {
     if file_path.ends_with(".css") {
       Dependency::from_css_source(source, file_path)
     } else {
-      Dependency::from_pc_source(source, file_path)
+      Dependency::from_pc_source(source, file_path, vfs)
     }
   }
 
@@ -201,7 +202,7 @@ impl<'a> Dependency {
     })
   }
 
-  fn from_pc_source(source: String, file_path: &String) -> Result<Dependency, ParseError> {
+  fn from_pc_source(source: String, file_path: &String, vfs: &VirtualFileSystem) -> Result<Dependency, ParseError> {
 
     let expression_result = pc_parser::parse(source.as_str());
 
@@ -217,7 +218,7 @@ impl<'a> Dependency {
     for import in &imports {
       dependencies.insert(
         pc_ast::get_import_identifier(import).unwrap().as_str().to_string(),
-        utils::resolve(file_path, pc_ast::get_attribute_value("src", import).unwrap())
+        vfs.resolve(file_path, pc_ast::get_attribute_value("src", import).unwrap())
       );
     }
 

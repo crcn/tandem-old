@@ -38,6 +38,10 @@ immediate TODO:
 - local resource roots - vscode extension
 - switch to WASM or Neon (needs to be synchronous)
 
+- cleanup
+
+  - VirtualFileSystem & Graph to runtime/ directory
+
 - language server
 
   - wait for parser

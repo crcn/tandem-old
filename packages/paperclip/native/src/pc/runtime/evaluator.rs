@@ -5,18 +5,19 @@ use super::virt;
 use std::collections::HashSet;
 use std::iter::FromIterator;
 use super::graph::{DependencyGraph, DependencyContent};
+use super::vfs::{VirtualFileSystem};
 use crate::css::runtime::evaulator::{evaluate as evaluate_css};
 use crate::js::runtime::evaluator::{evaluate as evaluate_js};
 use crate::js::runtime::virt as js_virt;
 use crate::js::ast as js_ast;
 use crate::css::runtime::virt as css_virt;
 use crc::{crc32};
-use crate::base::utils;
 
-#[derive(Debug, Clone)]
+#[derive(Clone)]
 pub struct Context<'a> {
   graph: &'a DependencyGraph,
-  file_path: &'a String,
+  vfs: &'a VirtualFileSystem,
+  file_path: &'a String,  
   import_ids: HashSet<&'a String>,
   part_ids: HashSet<&'a String>,
   scope: String,
@@ -25,8 +26,8 @@ pub struct Context<'a> {
   from_main: bool,
 }
 
-pub fn evaluate<'a>(node_expr: &ast::Node, file_path: &String, graph: &'a DependencyGraph, data: &js_virt::JsValue, part: Option<String>) -> Result<Option<virt::Node>, RuntimeError>  {
-  let context = create_context(node_expr, file_path, graph, data, None);
+pub fn evaluate<'a>(node_expr: &ast::Node, file_path: &String, graph: &'a DependencyGraph, vfs: &'a VirtualFileSystem, data: &js_virt::JsValue, part: Option<String>) -> Result<Option<virt::Node>, RuntimeError>  {
+  let context = create_context(node_expr, file_path, graph, vfs, data, None);
   let mut root_result = evaluate_instance_node(node_expr, &context, part);
 
   // need to insert all styles into the root for efficiency
@@ -34,7 +35,7 @@ pub fn evaluate<'a>(node_expr: &ast::Node, file_path: &String, graph: &'a Depend
     Ok(ref mut root_option) => {
       match root_option {
         Some(ref mut root) => {
-          let style = evaluate_jumbo_style(node_expr, file_path, graph)?;
+          let style = evaluate_jumbo_style(node_expr, file_path, graph, vfs)?;
           root.prepend_child(style);
         },
         _ => { }
@@ -46,7 +47,7 @@ pub fn evaluate<'a>(node_expr: &ast::Node, file_path: &String, graph: &'a Depend
   root_result
 }
 
-pub fn evaluate_document_styles<'a>(node_expr: &ast::Node, file_path: &String) -> Result<css_virt::CSSSheet, RuntimeError>  {
+pub fn evaluate_document_styles<'a>(node_expr: &ast::Node, file_path: &String, vfs: &'a VirtualFileSystem) -> Result<css_virt::CSSSheet, RuntimeError>  {
   let mut sheet = css_virt::CSSSheet {
     rules: vec![] 
   };
@@ -56,7 +57,7 @@ pub fn evaluate_document_styles<'a>(node_expr: &ast::Node, file_path: &String) -
     // style elements are only allowed in root, so no need to traverse
     for child in children {
       if let ast::Node::StyleElement(style_element) = &child {
-        sheet.extend(evaluate_css(&style_element.sheet, file_path, &scope)?);
+        sheet.extend(evaluate_css(&style_element.sheet, file_path, &scope, vfs)?);
       }
     }
   }
@@ -64,7 +65,7 @@ pub fn evaluate_document_styles<'a>(node_expr: &ast::Node, file_path: &String) -
   Ok(sheet)
 }
 
-pub fn evaluate_jumbo_style<'a>(_entry_expr: &ast::Node,  file_path: &String, graph: &'a DependencyGraph) -> Result<virt::Node, RuntimeError>  {
+pub fn evaluate_jumbo_style<'a>(_entry_expr: &ast::Node,  file_path: &String, graph: &'a DependencyGraph, vfs: &'a VirtualFileSystem) -> Result<virt::Node, RuntimeError>  {
 
   let mut sheet = css_virt::CSSSheet {
     rules: vec![] 
@@ -73,7 +74,7 @@ pub fn evaluate_jumbo_style<'a>(_entry_expr: &ast::Node,  file_path: &String, gr
   for (dependency, dependent_option) in graph.flatten(file_path) {
     let dep_sheet = match &dependency.content {
       DependencyContent::Node(node) => {
-        evaluate_document_styles(node, &dependency.file_path)?
+        evaluate_document_styles(node, &dependency.file_path, vfs)?
       },
       DependencyContent::StyleSheet(sheet) => {
         let scope = if let Some(dependent) = dependent_option {
@@ -82,7 +83,7 @@ pub fn evaluate_jumbo_style<'a>(_entry_expr: &ast::Node,  file_path: &String, gr
           get_document_scope(&dependency.file_path)
         };
         
-        evaluate_css(&sheet, &dependency.file_path, &scope)?
+        evaluate_css(&sheet, &dependency.file_path, &scope, vfs)?
       }
     };
 
@@ -120,7 +121,7 @@ pub fn evaluate_instance_node<'a>(node_expr: &ast::Node, context: &'a Context, p
   evaluate_node(target_node, true, &context)
 }
 
-fn create_context<'a>(node_expr: &'a ast::Node, file_path: &'a String, graph: &'a DependencyGraph, data: &'a js_virt::JsValue, parent_option: Option<&'a Context>) -> Context<'a> {
+fn create_context<'a>(node_expr: &'a ast::Node, file_path: &'a String, graph: &'a DependencyGraph, vfs: &'a VirtualFileSystem, data: &'a js_virt::JsValue, parent_option: Option<&'a Context>) -> Context<'a> {
 
   let from_main = if let Some(parent) = parent_option {
     (parent.from_main)
@@ -131,6 +132,7 @@ fn create_context<'a>(node_expr: &'a ast::Node, file_path: &'a String, graph: &'
   Context {
     graph,
     file_path,
+    vfs,
     import_ids: HashSet::from_iter(ast::get_import_ids(node_expr)),
     part_ids: HashSet::from_iter(ast::get_part_ids(node_expr)),
     scope: get_document_scope(file_path),
@@ -190,7 +192,7 @@ fn evaluate_element<'a>(element: &ast::Element, is_root: bool, context: &'a Cont
 
 fn evaluate_slot<'a>(slot: &ast::Slot, context: &'a Context) -> Result<Option<virt::Node>, RuntimeError> {
   let script = &slot.script;
-  let mut js_value = evaluate_js(script, &context.file_path, &context.graph, &context.data)?;
+  let mut js_value = evaluate_js(script, &context.file_path, &context.graph, &context.vfs, &context.data)?;
 
   // if array of values, then treat as document fragment
   if let js_virt::JsValue::JsArray(ary) = &mut js_value {
@@ -227,7 +229,7 @@ fn evaluate_part_instance_element<'a>(element: &ast::Element, context: &'a Conte
   if let DependencyContent::Node(root_node) = &self_dep.content {
     let part = ast::get_part_by_id(&element.tag_name, root_node).unwrap();
     let data = create_component_instance_data(element, context)?;
-    evaluate_element(part, true, &create_context(root_node, &self_dep.file_path, context.graph, &data, Some(context)))
+    evaluate_element(part, true, &create_context(root_node, &self_dep.file_path, context.graph, context.vfs, &data, Some(context)))
   } else {
 
     // This should _never_ happen
@@ -296,7 +298,7 @@ fn evaluate_component_instance<'a>(instance_element: &ast::Element, dep_file_pat
   
   if let DependencyContent::Node(node) = &dep.content {
 
-    let context = &create_context(&node, dep_file_path, context.graph, &data, None);
+    let context = &create_context(&node, dep_file_path, context.graph, context.vfs, &data, None);
 
     // TODO: if fragment, then wrap in span. If not, then copy these attributes to root element
     evaluate_instance_node(&node, &context, namespace)
@@ -324,7 +326,7 @@ fn evaluate_basic_element<'a>(element: &ast::Element, context: &'a Context) -> R
 
         if name == "src" {
           if let Some(value) = value_option {
-            let full_path = format!("file://{}", utils::resolve(&"/a/b/c".to_string(), &value)).to_string();
+            let full_path = format!("file://{}", context.vfs.resolve(context.file_path, &value)).to_string();
             value_option = Some(full_path);
           }
         }
@@ -458,7 +460,7 @@ fn evaluate_conditional<'a>(block: &ast::ConditionalBlock, context: &'a Context)
 }
 
 fn evaluate_pass_fail_block<'a>(block: &ast::PassFailBlock, context: &'a Context) -> Result<Option<virt::Node>, RuntimeError> {
-  let condition = evaluate_js(&block.condition, &context.file_path, &context.graph, context.data)?;
+  let condition = evaluate_js(&block.condition, &context.file_path, &context.graph, &context.vfs, context.data)?;
   if condition.truthy() {
     if let Some(node) = &block.node {
       evaluate_node(node, false, context)
@@ -486,7 +488,7 @@ fn evaluate_attribute_value<'a>(value: &ast::AttributeValue, context: &'a Contex
 }
 
 fn evaluate_attribute_slot<'a>(script: &js_ast::Statement, context: &'a Context) -> Result<js_virt::JsValue, RuntimeError> {
-  evaluate_js(script, &context.file_path, &context.graph, &context.data)
+  evaluate_js(script, &context.file_path, &context.graph, &context.vfs, &context.data)
 }
 
 #[cfg(test)]

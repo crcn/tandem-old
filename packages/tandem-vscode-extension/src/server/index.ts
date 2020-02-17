@@ -87,7 +87,7 @@ const initService = (engine: Engine, connection: Connection) => {
             color: { red, green, blue, alpha }
           };
         } catch (e) {
-          console.warn(e);
+          // console.warn(e);
         }
       })
       .filter(Boolean);
@@ -207,7 +207,9 @@ const initEngine = async (
 
   documents.onDidChangeContent(event => {
     const doc: TextDocument = event.document;
+    const now = Date.now();
     engine.updateVirtualFileContent(doc.uri, doc.getText());
+    console.log("update time", Date.now() - now);
   });
 };
 

@@ -3,10 +3,12 @@ use std::collections::HashMap;
 // use curl::easy::Easy;
 
 pub type FileReaderFn = Fn(&String) -> String;
+pub type FileResolverFn = Fn(&String, &String) -> String;
 
 #[allow(dead_code)]
 pub struct VirtualFileSystem {
   read_file: Box<FileReaderFn>,
+  resolve_file: Box<FileResolverFn>,
   http_path: Option<String>,
   pub contents: HashMap<String, String>
 }
@@ -18,10 +20,11 @@ fn insert_file_path(file_path: String, content: String, contents: &mut HashMap<S
 
 #[allow(dead_code)]
 impl VirtualFileSystem {
-  pub fn new(read_file: Box<FileReaderFn>, http_path: Option<String>) -> VirtualFileSystem {
+  pub fn new(read_file: Box<FileReaderFn>, resolve_file: Box<FileResolverFn>, http_path: Option<String>) -> VirtualFileSystem {
     VirtualFileSystem {
       read_file,
       http_path,
+      resolve_file,
       contents: HashMap::new()
     }
   }
@@ -31,6 +34,10 @@ impl VirtualFileSystem {
     } else {
       self.reload(file_path).await
     }
+  }
+
+  pub fn resolve(&self, from_path: &String, relative_path: &String) -> String {
+    (self.resolve_file)(from_path, relative_path)
   }
 
   pub async fn update(&mut self, file_path: &String, content: &String) -> Result<String, &'static str> {
@@ -56,19 +63,3 @@ impl VirtualFileSystem {
     Ok(self.contents.get(file_path).unwrap())
   }
 }
-
-
-// fn http_get(url: &String) -> String {
-//   let mut buffer = Vec::new();
-//   let mut handle = Easy::new();
-//   handle.url(url).unwrap();
-//   {
-//       let mut transfer = handle.transfer();
-//       transfer.write_function(|data| {
-//           buffer.extend_from_slice(data);
-//           Ok(data.len())
-//       }).unwrap();
-//       transfer.perform().unwrap();
-//   }
-//   String::from_utf8(buffer.to_vec()).unwrap()
-// }

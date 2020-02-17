@@ -3,13 +3,12 @@ use crate::pc::{runtime};
 use crate::pc::parser::{parse as parse_pc};
 use crate::base::parser::{ParseError};
 use crate::pc::ast as pc_ast;
-use crate::pc::runtime::graph::{DependencyGraph, DependencyContent};
-use crate::pc::runtime::vfs::{VirtualFileSystem, FileReaderFn};
+use crate::pc::runtime::graph::{DependencyGraph, DependencyContent, GraphError};
+use crate::pc::runtime::vfs::{VirtualFileSystem, FileReaderFn, FileResolverFn};
 use crate::pc::runtime::evaluator::{evaluate_document_styles, evaluate as evaluate_pc};
 use crate::js::runtime::virt as js_virt;
 use crate::base::runtime::{RuntimeError};
 use serde::{Serialize};
-use crate::pc::runtime::graph::{GraphError};
 use crate::css::runtime::virt as css_vrt;
 
 #[derive(Debug, PartialEq, Serialize)]
@@ -27,6 +26,7 @@ pub struct NodeParsedEvent {
   pub file_path: String,
   pub node: pc_ast::Node
 }
+
 
 #[derive(Debug, PartialEq, Serialize)]
 #[serde(tag = "errorKind")]
@@ -48,33 +48,34 @@ pub struct EvalOptions {
   part: Option<String>
 }
 
-async fn evaluate_content_styles(content: &String, file_path: &String) -> Result<css_vrt::CSSSheet, EngineError> {
+async fn evaluate_content_styles(content: &String, file_path: &String, vfs: &VirtualFileSystem) -> Result<css_vrt::CSSSheet, EngineError> {
   parse_pc(content)
   .map_err(|err| {
     EngineError::Parser(err)
   })
   .and_then(|node_ast| {
-    evaluate_document_styles(&node_ast, file_path)
+    evaluate_document_styles(&node_ast, file_path, vfs)
     .map_err(|err| {
       EngineError::Runtime(err)
     })
   })
 }
 
+type EngineEventListener = Fn(&EngineEvent);
+
 pub struct Engine {
-  events: Vec<EngineEvent>,
+  listeners: Vec<Box<EngineEventListener>>,
   pub vfs: VirtualFileSystem,
   pub dependency_graph: DependencyGraph,
   pub load_options: HashMap<String, EvalOptions>
 }
 
-
 impl Engine {
-  pub fn new(read_file: Box<FileReaderFn>, http_path: Option<String>) -> Engine {
+  pub fn new(read_file: Box<FileReaderFn>, resolve_file: Box<FileResolverFn>, http_path: Option<String>) -> Engine {
     Engine {
-      vfs: VirtualFileSystem::new(read_file, http_path),
+      listeners: vec![],
+      vfs: VirtualFileSystem::new(read_file, resolve_file, http_path),
       dependency_graph: DependencyGraph::new(),
-      events: vec![],
       load_options: HashMap::new()
     }
   }
@@ -89,6 +90,15 @@ impl Engine {
     .await
   }
 
+  pub fn addListener(&mut self, listener: Box<EngineEventListener>) {
+    self.listeners.push(listener);
+  }
+
+  fn dispatch(&self, event: EngineEvent) {
+    for listener in &self.listeners {
+      (listener)(&event);
+    }
+  }
 
   pub async fn reload(&mut self, file_path: &String) -> Result<(), GraphError> {
     let load_result = self.dependency_graph.load_dependency(file_path, &mut self.vfs).await;
@@ -96,22 +106,27 @@ impl Engine {
     match load_result {
       Ok(dep) => {
         
-        match &dep.content {
+        let event_option = match &dep.content {
           DependencyContent::Node(node) => {
-            self.events.push(EngineEvent::NodeParsed(NodeParsedEvent {
+            Some(EngineEvent::NodeParsed(NodeParsedEvent {
               file_path: dep.file_path.to_string(),
               node: node.clone()
-            }));
+            }))
           },
           _ => {
             // TODO - CSS 
+            None
           }
         };
+        if let Some(event) = event_option {
+          self.dispatch(event);
+        }
+
         self.evaluate(file_path);
         Ok(())
       },
       Err(error) => {
-        self.events.push(EngineEvent::Error(EngineError::Graph(error.clone())));
+        self.dispatch(EngineEvent::Error(EngineError::Graph(error.clone())));
         Err(error)
       }
     }
@@ -127,12 +142,12 @@ impl Engine {
   }
 
   pub async fn evaluate_file_styles(&mut self, file_path: &String) -> Result<css_vrt::CSSSheet, EngineError> {
-    let content = self.vfs.reload(file_path).await.unwrap();
-    evaluate_content_styles(content, file_path).await
+    let content = self.vfs.reload(file_path).await.unwrap().to_string();
+    evaluate_content_styles(&content, file_path, &self.vfs).await
   }
 
   pub async fn evaluate_content_styles(&mut self, content: &String, file_path: &String) -> Result<css_vrt::CSSSheet, EngineError> {
-    evaluate_content_styles(content, file_path).await
+    evaluate_content_styles(content, file_path, &self.vfs).await
   }
 
   pub async fn update_virtual_file_content(&mut self, file_path: &String, content: &String) -> Result<(), GraphError> {
@@ -159,6 +174,7 @@ impl Engine {
           node, 
           file_path, 
           &self.dependency_graph, 
+          &self.vfs,
           &js_virt::JsValue::JsObject(js_virt::JsObject::new()),
           self.load_options.get(file_path).and_then(|options| {
             options.part.clone()
@@ -177,12 +193,8 @@ impl Engine {
     };
 
     if let Some(event) = event_option {
-      self.events.push(event);
+      self.dispatch(event);
     }
-  }
-
-  pub fn drain_events(&mut self) -> Vec<EngineEvent> {
-    self.events.drain(0..).collect()
   }
 
   pub fn unload(&mut self, _file_path: String) {

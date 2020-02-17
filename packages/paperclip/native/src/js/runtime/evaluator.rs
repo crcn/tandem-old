@@ -5,16 +5,18 @@ use crate::base::runtime::{RuntimeError};
 use crate::base::ast::{Location};
 use crate::pc::runtime::evaluator::evaluate as evaluate_pc;
 use crate::pc::runtime::graph::{DependencyGraph};
+use crate::pc::runtime::vfs::{VirtualFileSystem};
 use crate::pc::ast as pc_ast;
 
 pub struct Context<'a> {
   file_path: &'a String,
   graph: &'a DependencyGraph,
+  vfs: &'a VirtualFileSystem,
   data: &'a virt::JsValue
 }
 
-pub fn evaluate<'a>(expr: &ast::Statement, file_path: &'a String, graph: &'a DependencyGraph, data: &'a virt::JsValue) -> Result<virt::JsValue, RuntimeError> {
-  let context = Context { data, graph, file_path };
+pub fn evaluate<'a>(expr: &ast::Statement, file_path: &'a String, graph: &'a DependencyGraph, vfs: &'a VirtualFileSystem, data: &'a virt::JsValue) -> Result<virt::JsValue, RuntimeError> {
+  let context = Context { data, graph, vfs, file_path };
   evaluate_statement(&expr, &context)
 }
 fn evaluate_statement<'a>(statement: &ast::Statement, context: &'a Context) -> Result<virt::JsValue, RuntimeError> {
@@ -25,7 +27,7 @@ fn evaluate_statement<'a>(statement: &ast::Statement, context: &'a Context) -> R
 }
 
 fn evaluate_node<'a>(node: &Box<pc_ast::Node>, context: &'a Context) -> Result<virt::JsValue, RuntimeError> {
-  let node_option = evaluate_pc(node, context.file_path, &context.graph, &context.data, None)?;
+  let node_option = evaluate_pc(node, context.file_path, &context.graph, &context.vfs, &context.data, None)?;
   if let Some(node) = node_option {
     Ok(virt::JsValue::JsNode(node))
   } else {

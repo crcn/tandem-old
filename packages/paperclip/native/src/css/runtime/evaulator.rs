@@ -1,17 +1,17 @@
 use super::super::ast;
 use super::virt;
 use crate::base::runtime::{RuntimeError};
+use crate::pc::runtime::vfs::{VirtualFileSystem};
 use regex::Regex;
-use crate::base::utils;
 
-#[derive(Debug)]
 pub struct Context<'a> {
   scope: &'a str,
+  vfs: &'a VirtualFileSystem,
   file_path: &'a String,
 }
 
-pub fn evaluate<'a>(expr: &ast::Sheet, file_path: &'a String, scope: &'a str) -> Result<virt::CSSSheet, RuntimeError> {
-  let context = Context { scope, file_path };
+pub fn evaluate<'a>(expr: &ast::Sheet, file_path: &'a String, scope: &'a str, vfs: &'a VirtualFileSystem) -> Result<virt::CSSSheet, RuntimeError> {
+  let context = Context { scope, file_path, vfs };
   let mut rules = vec![];
   for rule in &expr.rules {
     rules.push(evaluate_rule(&rule, &context)?);
@@ -185,7 +185,7 @@ fn evaluate_style_declaration<'a>(expr: &'a ast::Declaration, context: &Context)
         continue;
       }
       let full_path = relative_path.to_string();
-      // let full_path = format!("file://{}", utils::resolve(context.file_path, &relative_path.to_string()));
+      let full_path = format!("file://{}", context.vfs.resolve(context.file_path, &relative_path.to_string()));
 
       value = url_re.replace(url_fn, format!("url({})", full_path).as_str()).to_string();
     }
