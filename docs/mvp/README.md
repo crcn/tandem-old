@@ -33,22 +33,13 @@ Limitations:
 
 immediate TODO:
 
-- fix path normalizing
-- cleanup colorizer
-- local resource roots - vscode extension
-- switch to WASM or Neon (needs to be synchronous)
+- vscode extension
 
-- cleanup
-
-  - VirtualFileSystem & Graph to runtime/ directory
-
-- language server
-
-  - wait for parser
-  - color picker
-  - meta click tag names
-  - meta click sources
-  - meta click var()
+  - jump to definition
+    - tag names
+    - src attributes
+  - cleanup color presentation
+  -
 
 - DSL
 
