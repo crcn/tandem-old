@@ -11,6 +11,9 @@ pub struct Element {
   #[serde(rename = "openTagLocation")]
   pub open_tag_location: Location,
 
+  #[serde(rename = "tagNameLocation")]
+  pub tag_name_location: Location,
+
   #[serde(rename = "tagName")]
   pub tag_name: String,
   pub attributes: Vec<Attribute>,

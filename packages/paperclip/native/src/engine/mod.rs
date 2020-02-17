@@ -44,6 +44,11 @@ pub struct EvalOptions {
   part: Option<String>
 }
 
+// #[derive(Debug, PartialEq, Serialize)]
+// pub struct LoadData {
+//   expressions: HashMap<String, pc_ast::Node>
+// }
+
 async fn evaluate_content_styles(content: &String, uri: &String, vfs: &VirtualFileSystem) -> Result<css_vrt::CSSSheet, EngineError> {
   parse_pc(content)
   .map_err(|err| {
@@ -100,22 +105,26 @@ impl Engine {
     let load_result = self.dependency_graph.load_dependency(uri, &mut self.vfs).await;
 
     match load_result {
-      Ok(dep) => {
+      Ok(loaded_uris) => {
         
-        let event_option = match &dep.content {
-          DependencyContent::Node(node) => {
-            Some(EngineEvent::NodeParsed(NodeParsedEvent {
-              uri: dep.uri.to_string(),
-              node: node.clone()
-            }))
-          },
-          _ => {
-            // TODO - CSS 
-            None
+        for uri in loaded_uris.iter() {
+          let dep = self.dependency_graph.dependencies.get(uri).unwrap();
+          
+          let event_option = match &dep.content {
+            DependencyContent::Node(node) => {
+              Some(EngineEvent::NodeParsed(NodeParsedEvent {
+                uri: dep.uri.to_string(),
+                node: node.clone()
+              }))
+            },
+            _ => {
+              // TODO - CSS 
+              None
+            }
+          };
+          if let Some(event) = event_option {
+            self.dispatch(event);
           }
-        };
-        if let Some(event) = event_option {
-          self.dispatch(event);
         }
 
         self.evaluate(uri);
@@ -155,7 +164,7 @@ impl Engine {
     }).collect();
 
     for dep_uri in dep_uris.drain(0..).into_iter() {
-      self.reload(&dep_uri).await?;
+      self.evaluate(&dep_uri);
     }
 
     Ok(())

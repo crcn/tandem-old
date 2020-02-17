@@ -11,7 +11,7 @@ import {
 
 import { TextDocument } from "vscode-languageserver-textdocument";
 import { Engine } from "paperclip";
-import { createFacade as createServiceFacade } from "./services/facade";
+import { createServices } from "./services";
 import { VSCServiceBridge } from "./bridge";
 
 const PAPERCLIP_RENDER_PART = "preview";
@@ -31,7 +31,8 @@ connection.onInitialize(() => {
       documentLinkProvider: {
         resolveProvider: true
       },
-      colorProvider: true
+      colorProvider: true,
+      definitionProvider: true
     }
   };
 });
@@ -47,10 +48,10 @@ const init = async (
 
   // Language service for handling information about the document such as colors, references,
   // etc
-  const service = createServiceFacade(engine);
+  const services = createServices(engine);
 
   // Bridges language services to VSCode
-  new VSCServiceBridge(engine, service, connection, documents);
+  new VSCServiceBridge(engine, services, connection, documents);
 };
 
 connection.onInitialized((_params: InitializedParams) => {

@@ -3,7 +3,7 @@ use crate::pc::{ast as pc_ast, parser as pc_parser};
 use crate::css::{ast as css_ast, parser as css_parser};
 use crate::base::parser::{ParseError};
 use crate::base::ast::{Location};
-use std::collections::HashMap;
+use std::collections::{HashMap};
 use serde::{Serialize};
 
 
@@ -83,7 +83,10 @@ impl DependencyGraph {
     return deps;
   }
 
-  pub async fn load_dependency<'a>(&mut self, uri: &String, vfs: &mut VirtualFileSystem) -> Result<&Dependency, GraphError> {
+  pub async fn load_dependency<'a>(&mut self, uri: &String, vfs: &mut VirtualFileSystem) -> Result<Vec<String>, GraphError> {
+
+    let mut loaded_deps = vec![];
+    loaded_deps.push(uri.to_string());
 
     let mut to_load: Vec<(String, Option<(String, String)>)> = vec![(uri.to_string(), None)];
     
@@ -126,13 +129,16 @@ impl DependencyGraph {
 
         Err(err)
       })?.to_string();
-      
+
+      // TODO - check if content matches old content.
       let dependency = Dependency::from_source(source, &curr_uri, vfs).or_else(|error| {
         Err(GraphError {
           uri: curr_uri.to_string(),
           info: GraphErrorInfo::Syntax(error)
         })
       })?;
+
+      loaded_deps.push(curr_uri.to_string());
 
       for (_id, dep_uri) in &dependency.dependencies {
         if !self.dependencies.contains_key(&dep_uri.to_string()) {
@@ -147,19 +153,20 @@ impl DependencyGraph {
 
     }
 
-    Ok(self.dependencies.get(&uri.to_string()).unwrap())
+    // Ok(self.dependencies.get(&uri.to_string()).unwrap())
+    Ok(loaded_deps)
   }
 
-  pub async fn reload_dependents<'a>(&mut self, uri: &String, vfs: &mut VirtualFileSystem) -> Result<&Dependency, GraphError> {
-    if !self.dependencies.contains_key(&uri.to_string()) {
-      return self.load_dependency(uri, vfs).await;
-    }
-    self.dependencies.remove(uri);
-    self.dependencies.retain(|_dep_uri, dep| {
-      return !dep.dependencies.contains_key(uri);
-    });
-    self.load_dependency(uri, vfs).await
-  }
+  // pub async fn reload_dependents<'a>(&mut self, uri: &String, vfs: &mut VirtualFileSystem) -> Result<&Dependency, GraphError> {
+  //   if !self.dependencies.contains_key(&uri.to_string()) {
+  //     return self.load_dependency(uri, vfs).await;
+  //   }
+  //   self.dependencies.remove(uri);
+  //   self.dependencies.retain(|_dep_uri, dep| {
+  //     return !dep.dependencies.contains_key(uri);
+  //   });
+  //   self.load_dependency(uri, vfs).await
+  // }
 }
 
 #[derive(Debug)]

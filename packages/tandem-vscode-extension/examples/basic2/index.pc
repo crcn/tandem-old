@@ -1,6 +1,6 @@
 <style>
   ul {
-    color: red
+    color: rgb(112, 56, 56)(209, 103, 103)
   }
   div {
     color: blue;

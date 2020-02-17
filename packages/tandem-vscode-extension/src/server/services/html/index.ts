@@ -1,14 +1,10 @@
-import {
-  ColorInfo,
-  BaseEngineLanguageService,
-  LanguageServiceEventType,
-  DocumentLinkInfo
-} from "../base";
+import { BaseEngineLanguageService, ASTInfo } from "../base";
 import {
   EngineEvent,
   Engine,
   EngineEventKind,
   Node,
+  Element,
   Sheet,
   NodeParsedEvent,
   getStyleElements,
@@ -16,7 +12,13 @@ import {
   RuleKind,
   getImports,
   getAttributeValue,
-  AttributeValueKind
+  AttributeValueKind,
+  EvaluatedEvent,
+  getVisibleChildNodes,
+  NodeKind,
+  getImportIds,
+  getAttributeStringValue,
+  getParts
 } from "paperclip";
 import * as path from "path";
 
@@ -31,48 +33,66 @@ const CSS_COLOR_NAME_REGEXP = new RegExp(
  * Main HTML language service. Contains everything for now.
  */
 
-export class PCHTMLLanguageService extends BaseEngineLanguageService {
-  private _colorInfo: ColorInfo[];
-  private _documentLinkInfo: DocumentLinkInfo[];
-  constructor(engine: Engine) {
-    super(engine);
+type HandleContext = {
+  root: Node;
+  uri: string;
+  importIds: string[];
+  info: ASTInfo;
+};
+
+export class PCHTMLLanguageService extends BaseEngineLanguageService<Node> {
+  supports(uri: string) {
+    return /\.pc$/.test(uri);
   }
   protected _handleEngineEvent(event: EngineEvent) {
     if (event.kind === EngineEventKind.NodeParsed) {
       this._handleNodeParsedEvent(event);
+    } else if (event.kind === EngineEventKind.Evaluated) {
+      this._handleEvaluatedEvent(event);
     }
   }
+
   private _handleNodeParsedEvent({ node, uri }: NodeParsedEvent) {
-    this._colorInfo = [];
-    this._documentLinkInfo = [];
-    this._handleStyles(node);
-    this._handleDocument(node, uri);
-
-    this.dispatch({
-      type: LanguageServiceEventType.Information,
-      uri,
-      colors: this._colorInfo,
-      links: this._documentLinkInfo
-    });
+    this._addAST(node, uri);
   }
-  private _handleStyles(node: Node) {
-    const styleElements = getStyleElements(node);
+  protected _createASTInfo(root: Node, uri: string) {
+    const context: HandleContext = {
+      root,
+      uri,
+      importIds: getImportIds(root),
+      info: {
+        colors: [],
+        links: [],
+        definitions: []
+      }
+    };
+
+    this._handleStyles(context);
+    this._handleDocument(context);
+
+    return context.info;
+  }
+
+  private _handleEvaluatedEvent(event: EvaluatedEvent) {}
+
+  private _handleStyles(context: HandleContext) {
+    const styleElements = getStyleElements(context.root);
     for (const { sheet } of styleElements) {
-      this._handleSheet(sheet);
+      this._handleSheet(sheet, context);
     }
   }
-  private _handleSheet(sheet: Sheet) {
-    this._handleRules(sheet.rules);
+  private _handleSheet(sheet: Sheet, context: HandleContext) {
+    this._handleRules(sheet.rules, context);
   }
 
-  private _handleRules(rules: Rule[]) {
+  private _handleRules(rules: Rule[], context: HandleContext) {
     for (const rule of rules) {
       if (rule.kind === RuleKind.Style) {
-        this._handleRule(rule);
+        this._handleRule(rule, context);
       }
     }
   }
-  private _handleRule(rule: Rule) {
+  private _handleRule(rule: Rule, context: HandleContext) {
     for (const declaration of rule.declarations) {
       const colors =
         declaration.value.match(/\#[^\s]+|(rgba|rgb|hsl|hsla)\(.*?\)/g) ||
@@ -86,7 +106,7 @@ export class PCHTMLLanguageService extends BaseEngineLanguageService {
         // const {color: [r, g, b], valpha: a } = Color(color);
         const colorStart = declaration.valueLocation.start + colorIndex;
 
-        this._colorInfo.push({
+        context.info.colors.push({
           color,
           location: { start: colorStart, end: colorStart + color.length }
         });
@@ -94,18 +114,76 @@ export class PCHTMLLanguageService extends BaseEngineLanguageService {
     }
   }
 
-  private _handleDocument(node: Node, uri: string) {
-    this._handleImports(node, uri);
+  private _handleDocument(context: HandleContext) {
+    this._handleImports(context);
+    this._handleMainTemplate(context);
   }
-  private _handleImports(node: Node, uri: string) {
+  private _handleImports(context: HandleContext) {
+    const { root: node, uri } = context;
     const imports = getImports(node);
     for (const imp of imports) {
       const srcAttr = getAttributeValue("src", imp);
       if (srcAttr.attrKind === AttributeValueKind.String) {
-        this._documentLinkInfo.push({
+        context.info.links.push({
           uri: resolveUri(uri, srcAttr.value),
           location: srcAttr.location
         });
+      }
+    }
+  }
+  private _handleMainTemplate(context: HandleContext) {
+    for (const child of getVisibleChildNodes(context.root)) {
+      this._handleVisibleNode(child, context);
+    }
+  }
+  private _handleVisibleNode(node: Node, context: HandleContext) {
+    if (node.kind === NodeKind.Element) {
+      this._handleElement(node, context);
+    }
+    for (const child of getVisibleChildNodes(node)) {
+      this._handleVisibleNode(child, context);
+    }
+  }
+  private _handleElement(element: Element, context: HandleContext) {
+    const tagParts = element.tagName.split(":");
+    const namespace = tagParts[0];
+    const name = tagParts.pop();
+    if (context.importIds.indexOf(namespace) !== -1) {
+      const imp = getImports(context.root).find(imp => {
+        return getAttributeStringValue("id", imp) === namespace;
+      });
+
+      const impUri = resolveUri(
+        context.uri,
+        getAttributeStringValue("src", imp)
+      );
+
+      const impAst = this._getAST(impUri);
+
+      if (impAst) {
+        if (tagParts.length === 2) {
+          const part = getParts(impAst).find(part => {
+            return getAttributeStringValue("id", part) === name;
+          });
+
+          if (part) {
+            context.info.definitions.push({
+              sourceUri: impUri,
+              sourceLocation: part.openTagLocation,
+              instanceLocation: element.tagNameLocation
+            });
+          }
+        } else {
+          const firstVisibleNode = getVisibleChildNodes(impAst)[0];
+
+          context.info.definitions.push({
+            sourceUri: impUri,
+            sourceLocation: (firstVisibleNode &&
+              firstVisibleNode.kind === NodeKind.Element &&
+              firstVisibleNode.openTagLocation) || { start: 0, end: 0 },
+            instanceLocation: element.tagNameLocation
+          });
+        }
       }
     }
   }

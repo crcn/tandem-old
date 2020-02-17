@@ -6,12 +6,17 @@ import {
   DocumentColorRequest,
   DocumentColorParams,
   DocumentLinkRequest,
-  DocumentLinkParams
+  DocumentLink,
+  DocumentLinkParams,
+  DeclarationLink,
+  DefinitionRequest,
+  DefinitionLink,
+  DefinitionParams,
+  DeclarationParams,
+  DeclarationRequest
 } from "vscode-languageserver";
 import {
   BaseLanguageService,
-  LanguageServiceEvent,
-  LanguageServiceEventType,
   ColorInfo,
   DocumentLinkInfo
 } from "./services/base";
@@ -28,6 +33,7 @@ import {
 } from "paperclip";
 
 import * as parseColor from "color";
+import * as fs from "fs";
 import {
   TextDocument,
   Color,
@@ -38,24 +44,24 @@ import {
   TextEdit,
   Diagnostic
 } from "vscode-languageserver";
-import { Deferred } from "./services/utils";
 import {
   EngineEventNotification,
   NotificationType,
   LoadParams
 } from "../common/notifications";
-import { DocumentLink } from "vscode";
+import { LanguageServices } from "./services";
+import { Position } from "vscode";
 
 export class VSCServiceBridge {
-  private _textDocumentInfo: TextDocumentInfoDictionary;
+  // private _textDocumentInfo: TextDocumentInfoDictionary;
 
   constructor(
     engine: Engine,
-    service: BaseLanguageService,
+    private _service: LanguageServices,
     readonly connection: Connection,
     readonly documents: TextDocuments<TextDocument>
   ) {
-    this._textDocumentInfo = new TextDocumentInfoDictionary(engine, service);
+    // this._textDocumentInfo = new TextDocumentInfoDictionary(engine, service);
     engine.onEvent(this._onEngineEvent);
     connection.onRequest(
       ColorPresentationRequest.type,
@@ -65,6 +71,7 @@ export class VSCServiceBridge {
       DocumentColorRequest.type,
       this._onDocumentColorRequest
     );
+    connection.onRequest(DefinitionRequest.type, this._onDefinitionRequest);
     connection.onRequest(DocumentLinkRequest.type, this._onDocumentLinkRequest);
 
     connection.onNotification(NotificationType.LOAD, ({ uri }: LoadParams) => {
@@ -87,51 +94,101 @@ export class VSCServiceBridge {
 
   private _onDocumentLinkRequest = (params: DocumentLinkParams) => {
     const document = this.documents.get(params.textDocument.uri);
-    return this._textDocumentInfo
-      .getTextDocumentInfo(document.uri)
-      .getDocumentLinkInfo()
-      .then(links => {
-        return links.map(({ uri, location: { start, end } }) => ({
+    const service = this._service.getService(document.uri);
+    return (
+      service &&
+      (service
+        .getLinks(document.uri)
+        .map(({ uri, location: { start, end } }) => ({
           target: uri,
           range: {
             start: document.positionAt(start),
             end: document.positionAt(end)
           }
-        }));
-      });
+        })) as DocumentLink[])
+    );
+  };
+
+  private _onDefinitionRequest = (params: DefinitionParams) => {
+    const document = this.documents.get(params.textDocument.uri);
+    const service = this._service.getService(document.uri);
+    const info =
+      service &&
+      (service
+        .getDefinitions(document.uri)
+        .filter(info => {
+          const offset = document.offsetAt(params.position);
+          return (
+            offset >= info.instanceLocation.start &&
+            offset <= info.instanceLocation.end
+          );
+        })
+        .map(
+          ({
+            sourceUri,
+            instanceLocation: { start: instanceStart, end: instanceEnd },
+            sourceLocation: { start: sourceStart, end: sourceEnd }
+          }) => {
+            const sourceDocument =
+              this.documents.get(sourceUri) ||
+              TextDocument.create(
+                sourceUri,
+                "paperclip",
+                null,
+                fs.readFileSync(sourceUri.replace("file://", ""), "utf8")
+              );
+
+            return {
+              targetUri: sourceDocument.uri,
+              targetRange: {
+                start: sourceDocument.positionAt(sourceStart),
+                end: sourceDocument.positionAt(sourceEnd)
+              },
+              targetSelectionRange: {
+                start: sourceDocument.positionAt(sourceStart),
+                end: sourceDocument.positionAt(sourceEnd)
+              },
+              originSelectionRange: {
+                start: document.positionAt(instanceStart),
+                end: document.positionAt(instanceEnd)
+              }
+            };
+          }
+        ) as DefinitionLink[]);
+    return info;
   };
 
   private _onDocumentColorRequest = (params: DocumentColorParams) => {
     const document = this.documents.get(params.textDocument.uri);
-    return this._textDocumentInfo
-      .getTextDocumentInfo(params.textDocument.uri)
-      .getColorInfo()
-      .then(info => {
-        return info
-          .map(({ color, location }) => {
-            try {
-              const {
-                color: [red, green, blue],
-                valpha: alpha
-              } = parseColor(color);
-              return {
-                range: {
-                  start: document.positionAt(location.start),
-                  end: document.positionAt(location.end)
-                },
-                color: {
-                  red: red / 255,
-                  green: green / 255,
-                  blue: blue / 255,
-                  alpha
-                }
-              };
-            } catch (e) {
-              console.error(e.stack);
-            }
-          })
-          .filter(Boolean) as ColorInformation[];
-      });
+    const service = this._service.getService(document.uri);
+    return (
+      service &&
+      (service
+        .getColors(document.uri)
+        .map(({ color, location }) => {
+          try {
+            const {
+              color: [red, green, blue],
+              valpha: alpha
+            } = parseColor(color);
+            return {
+              range: {
+                start: document.positionAt(location.start),
+                end: document.positionAt(location.end)
+              },
+              color: {
+                red: red / 255,
+                green: green / 255,
+                blue: blue / 255,
+                alpha
+              }
+            };
+          } catch (e) {
+            console.error(e.stack);
+          }
+        })
+        .filter(Boolean) as ColorInformation[])
+    );
   };
 
   private _onColorPresentationRequest = (params: ColorPresentationParams) => {
@@ -200,62 +257,6 @@ export class VSCServiceBridge {
       uri: textDocument.uri,
       diagnostics
     });
-  }
-}
-
-class TextDocumentInfoDictionary {
-  private _documents: {
-    [identifier: string]: TextDocumentInfo;
-  } = {};
-  constructor(private _engine: Engine, private _service: BaseLanguageService) {
-    _engine.onEvent(this._onEngineEvent);
-    _service.onEvent(this._onServiceEvent);
-  }
-
-  private _onEngineEvent = (event: EngineEvent) => {
-    if (
-      event.kind === EngineEventKind.Loading ||
-      event.kind === EngineEventKind.Updating
-    ) {
-      this.getTextDocumentInfo(event.uri).clear();
-    }
-  };
-
-  private _onServiceEvent = (event: LanguageServiceEvent) => {
-    this.getTextDocumentInfo(event.uri).$$handleServiceEvent(event);
-  };
-
-  getTextDocumentInfo(uri: string) {
-    return (
-      this._documents[uri] || (this._documents[uri] = new TextDocumentInfo(uri))
-    );
-  }
-}
-
-class TextDocumentInfo {
-  private _colorInfo: Deferred<ColorInfo[]>;
-  private _documentLinkInfo: Deferred<DocumentLinkInfo[]>;
-
-  constructor(readonly uri: string) {
-    this.clear();
-  }
-  clear() {
-    this._colorInfo = new Deferred();
-    this._documentLinkInfo = new Deferred();
-  }
-
-  $$handleServiceEvent(event: LanguageServiceEvent) {
-    if (event.type === LanguageServiceEventType.Information) {
-      this._colorInfo.resolve(event.colors);
-      this._documentLinkInfo.resolve(event.links);
-    }
-  }
-
-  getColorInfo() {
-    return this._colorInfo.promise;
-  }
-  getDocumentLinkInfo() {
-    return this._documentLinkInfo.promise;
   }
 }
 

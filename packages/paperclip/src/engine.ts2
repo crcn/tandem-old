@@ -174,10 +174,3 @@ export class Engine {
     drainEvents();
   }
 }
-
-const e = new Engine();
-const result = e.evaluateContentStyles(
-  "<style> div { color: red; } </style> test",
-  "ok"
-);
-console.log(result);

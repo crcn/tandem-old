@@ -1,9 +1,4 @@
-import { Engine, EngineEvent } from "paperclip";
-import { SourceLocation } from "paperclip/src/base-ast";
-
-export enum LanguageServiceEventType {
-  Information = "Information"
-}
+import { Engine, EngineEvent, SourceLocation } from "paperclip";
 
 export type ColorInfo = {
   color: string;
@@ -15,51 +10,70 @@ export type DocumentLinkInfo = {
   location: SourceLocation;
 };
 
-export type BaseLanguageServiceEvent<TType extends LanguageServiceEventType> = {
-  uri: string;
-  type: TType;
+export type DefinitionInfo = {
+  sourceUri: string;
+  instanceLocation: SourceLocation;
+  sourceLocation: SourceLocation;
 };
 
-export type InformationEvent = {
-  colors: ColorInfo[];
-  links: DocumentLinkInfo[];
-} & BaseLanguageServiceEvent<LanguageServiceEventType.Information>;
-
-export type LanguageServiceEvent = InformationEvent;
-
-type Listener = (event: LanguageServiceEvent) => void;
-
-export abstract class BaseLanguageService {
-  private _listeners: Listener[];
-  constructor() {
-    this._listeners = [];
-  }
-  onEvent(listener: Listener) {
-    this._listeners.push(listener);
-    return {
-      dispose: () => {
-        const i = this._listeners.indexOf(listener);
-        if (i !== -1) {
-          this._listeners.splice(i, 1);
-        }
-      }
-    };
-  }
-
-  protected dispatch(event: LanguageServiceEvent) {
-    for (const listener of this._listeners) {
-      listener(event);
-    }
-  }
+export interface BaseLanguageService {
+  supports(uri: string): boolean;
+  getColors(uri: string): ColorInfo[];
+  getDefinitions(uri: string): DefinitionInfo[];
+  getLinks(uri: string): DocumentLinkInfo[];
 }
 
-export abstract class BaseEngineLanguageService extends BaseLanguageService {
+export type ASTInfo = {
+  colors: ColorInfo[];
+  links: DocumentLinkInfo[];
+  definitions: DefinitionInfo[];
+};
+
+export abstract class BaseEngineLanguageService<TAst>
+  implements BaseLanguageService {
+  protected _asts: {
+    [identifier: string]: TAst;
+  };
+  protected _astInfo: {
+    [identifier: string]: ASTInfo;
+  };
+
   constructor(protected _engine: Engine) {
-    super();
+    this._asts = {};
+    this._astInfo = {};
     _engine.onEvent(this._onEngineEvent);
   }
+  abstract supports(uri: string): boolean;
   private _onEngineEvent = (event: EngineEvent) => {
     this._handleEngineEvent(event);
   };
   protected abstract _handleEngineEvent(event: EngineEvent): void;
+  protected _addAST(ast: TAst, uri: string) {
+    this._asts[uri] = ast;
+    this._astInfo[uri] = undefined;
+  }
+
+  protected _getAST(uri: string) {
+    return this._asts[uri];
+  }
+
+  getColors(uri: string) {
+    return this._getASTInfo(uri).colors;
+  }
+
+  getLinks(uri: string) {
+    return this._getASTInfo(uri).links;
+  }
+  getDefinitions(uri: string) {
+    return this._getASTInfo(uri).definitions;
+  }
+
+  private _getASTInfo(uri: string) {
+    return (
+      this._astInfo[uri] ||
+      (this._astInfo[uri] = this._createASTInfo(this._asts[uri], uri))
+    );
+  }
+
+  protected abstract _createASTInfo(ast: TAst, uri: string): ASTInfo;
 }

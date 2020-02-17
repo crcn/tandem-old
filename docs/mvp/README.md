@@ -39,21 +39,16 @@ Limitations:
 
 immediate TODO:
 
-- vscode extension
-
-  - jump to definition
-    - tag names
-    - src attributes
-  - cleanup color presentation
-  - other enhancements
-    - parse color keywords (red|blue|green|darkgrey)
-
-- typed definition generation
-
-- DSL
-
-  - pc modules
-  - handle circular dependencies
+- PC config
+  - moduleDirectories
+- typed definition file generation
+- jump to src
+  - img
+- BUGS
+  - engine cache must be cleared for closed documents
+- CLI (needed for webpack output)
+  - pretty error output
+- handle circular dependencies
   - linter
     - error with multiple IDs
     - warn for script tags
@@ -61,60 +56,14 @@ immediate TODO:
     - prohibit dynamic attr bindings for
       - all import attrs
       - all meta attrs
-
-- CLI
-
-  - pretty error output
-
-- preview
-
-  - meta click element to reveal source
-  - measuring between elements
-
 - examples
-
   - chat app
-
-- polish
-
-  - look into WASM instead
-  - can't have process hanging
-  - maybe move back to neon
-
-- documentation draft
-
+- docs
   - what is Tandem
-  - getting started with VSCode
+  - getting started
+    - with VSCode
+    - without VSCode
   - alternative without VSCode (use HMR)
   - testing
-
 - ask friends to play with app
-
 - site
-
-* web preview for non-vscode users
-* pretty terminal compiler output
-* DSL
-
-* Language enhancements
-  - Nestable
-
-- compilers
-  - react
-- preview
-  - chrome-like inspector
-  - ability to change colors
-- linter
-  - syntax errors
-  - prevent bindings for imports
-  - prevent bindings for logic
-- DSL
-
-  - ability to import .json files into scope
-  - ability to import .css files into scope
-
--
-
-Existing apps:
-
-TODO

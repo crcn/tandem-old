@@ -205,6 +205,10 @@ fn parse_next_basic_element_parts<'a>(tag_name: String, attributes: Vec<pc_ast::
   }
 
   let el = pc_ast::Element {
+    tag_name_location: Location {
+      start: start + 1,
+      end: start + 1 + tag_name.len(),
+    },
     open_tag_location: Location {
       start,
       end
@@ -388,6 +392,10 @@ fn parse_next_script_element_parts<'a>(attributes: Vec<pc_ast::Attribute>, token
   parse_close_tag("script", tokenizer, start, end)?;
 
   Ok(pc_ast::Node::Element(pc_ast::Element {
+    tag_name_location: Location {
+      start: start + 1,
+      end: start + 7
+    },
     open_tag_location: Location {
       start,
       end
