@@ -1,46 +1,33 @@
 <style>
-
+  ul {
+    color: red
+  }
+  div {
+    color: blue;
+  }
   h1 {
-    color: rgb(161, 161, 161);  
+    color: rgb(201, 40, 40);
     font-weight: 400;
-    text-decoration: underline;
-  }
-  ol {
-    color: rgb(147, 124, 252);
-    font-size: 18px;
-    padding: 0;
-    margin: 0;
-  }
-
-  #container {
-    padding: 10px;
   }
 </style>
 
-<div id="container">
-  <h1>{title}:</h1>
-  <ol>
-    {children}
-  </ol>
-</div>
+<h1>{title}</h1>
+
+<ol>
+  {children}
+</ol>
 
 <part id="item">
   <li>{children}</li>
 </part>
 
 <part id="preview">
-  <self title="Something">
-    <item>something</item>
-    <item>something</item>
-    <item>something</item>
-    <item>something</item>
-    <item>something</item>
-    <item>something</item>
-    <item>something</item>
-    <item>something</item>
-    <item>something</item>
-    <item>something</item>
-    <item>something</item>
-    <item>something</item>
+  <self title="Groceries">
+    <item>aaa</item>
+    <item>ffsd</item>
+    <item>aaa</item>
+    <item>aaa</item>
+    <item>aaa</item>
+    <item>aaa</item>
   </self>
 </part>

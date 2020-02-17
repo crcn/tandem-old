@@ -1,0 +1,14 @@
+<import id="list" src="./index.pc">
+
+<style> 
+  div {
+    color: red;
+  }
+</style>
+
+<list title="Something">
+  <list:item><div>Hello</div></list:item>
+  <list:item>Hello</list:item>
+  <list:item>Hello</list:item>
+  <list:item>Hello</list:item>
+</list>
