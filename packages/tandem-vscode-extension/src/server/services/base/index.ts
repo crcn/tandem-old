@@ -2,11 +2,16 @@ import { Engine, EngineEvent } from "paperclip";
 import { SourceLocation } from "paperclip/src/base-ast";
 
 export enum LanguageServiceEventType {
-  ColorInformation = "ColorInformation"
+  Information = "Information"
 }
 
 export type ColorInfo = {
   color: string;
+  location: SourceLocation;
+};
+
+export type DocumentLinkInfo = {
+  uri: string;
   location: SourceLocation;
 };
 
@@ -15,11 +20,12 @@ export type BaseLanguageServiceEvent<TType extends LanguageServiceEventType> = {
   type: TType;
 };
 
-export type ColorInfoEvent = {
-  payload: ColorInfo[];
-} & BaseLanguageServiceEvent<LanguageServiceEventType.ColorInformation>;
+export type InformationEvent = {
+  colors: ColorInfo[];
+  links: DocumentLinkInfo[];
+} & BaseLanguageServiceEvent<LanguageServiceEventType.Information>;
 
-export type LanguageServiceEvent = ColorInfoEvent;
+export type LanguageServiceEvent = InformationEvent;
 
 type Listener = (event: LanguageServiceEvent) => void;
 

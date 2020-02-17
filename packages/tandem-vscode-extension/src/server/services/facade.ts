@@ -1,7 +1,10 @@
-import { TextDocument } from "vscode-languageserver-textdocument";
 import { Engine } from "paperclip";
-import { BaseLanguageService, BaseEngineLanguageService } from "./base";
+import { BaseLanguageService } from "./base";
 import { PCHTMLLanguageService } from "./html";
+
+/**
+ * Generic service facade for handling Paperclip ASTs
+ */
 
 class LanguageServiceFacade extends BaseLanguageService {
   constructor(private _services: BaseLanguageService[]) {
@@ -15,6 +18,7 @@ class LanguageServiceFacade extends BaseLanguageService {
 export const createFacade = (engine: Engine) => {
   return new LanguageServiceFacade([
     // new PCCSSLanguageService(engine),
+    // new PCJSLanguageService(engine),
     new PCHTMLLanguageService(engine)
   ]);
 };

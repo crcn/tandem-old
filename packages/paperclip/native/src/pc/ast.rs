@@ -88,7 +88,8 @@ pub struct RepeatBlock {
 
 #[derive(Debug, PartialEq, Serialize, Clone)]
 pub struct AttributeStringValue {
-  pub value: String
+  pub value: String,
+  pub location: Location
 }
 
 impl fmt::Display for AttributeStringValue {

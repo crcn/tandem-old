@@ -480,7 +480,10 @@ fn parse_string<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::AttributeVa
   })
   .or(Err(ParseError::unterminated("Unterminated string literal.".to_string(), start, tokenizer.pos)))
   .and_then(|value| {
-    Ok(pc_ast::AttributeValue::String(pc_ast::AttributeStringValue { value: value.to_string() }))
+    Ok(pc_ast::AttributeValue::String(pc_ast::AttributeStringValue { 
+      value: value.to_string(),
+      location: Location::new(start + 1, tokenizer.pos - 1)
+    }))
   })
 }
 

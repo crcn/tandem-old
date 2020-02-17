@@ -1,11 +1,8 @@
 import { stripFileProtocol } from "./utils";
 import { EngineEvent, EngineEventKind } from "./events";
-import { ChildProcess } from "child_process";
 import * as fs from "fs";
 import * as path from "path";
 import { NativeEngine } from "../native/pkg/paperclip";
-
-const DRAIN_TIMEOUT = 30;
 
 export type FileContent = {
   [identifier: string]: string;

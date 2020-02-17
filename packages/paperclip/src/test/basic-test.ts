@@ -195,7 +195,7 @@ describe(__filename + "#", () => {
     it(`can render "${JSON.stringify(graph)}"`, async () => {
       currentGraph = graph;
       const engine = new Engine({
-        httpFilePath: `http://0.0.0.0:${TEST_SERVER_PORT}/`
+        // httpFilePath: `http://0.0.0.0:${TEST_SERVER_PORT}/`
       });
       engine.load("/entry.pc");
       const event = await waitForEvaluated(engine);

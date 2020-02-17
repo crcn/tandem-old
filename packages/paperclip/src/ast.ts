@@ -1,5 +1,6 @@
 import { Statement } from "./js-ast";
 import { Sheet } from "./css-ast";
+import { SourceLocation } from "./base-ast";
 
 export enum NodeKind {
   Fragment = "Fragment",
@@ -59,6 +60,7 @@ export type BaseAttributeValue<TKind extends AttributeValueKind> = {
 
 export type StringAttributeValue = {
   value: string;
+  location: SourceLocation;
 } & BaseAttributeValue<AttributeValueKind.String>;
 
 export type SlotAttributeValue = Statement &

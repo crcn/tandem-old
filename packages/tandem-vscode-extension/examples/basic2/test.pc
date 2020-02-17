@@ -7,7 +7,7 @@
 </style>
 
 <list title="Something">
-  <list:item><div>Hello</div></list:item>
+  <list:item><div>Hello something</div></list:item>
   <list:item>Hello</list:item>
   <list:item>Hello</list:item>
   <list:item>Hello</list:item>

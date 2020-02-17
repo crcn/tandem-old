@@ -1,7 +1,8 @@
 import {
   ColorInfo,
   BaseEngineLanguageService,
-  LanguageServiceEventType
+  LanguageServiceEventType,
+  DocumentLinkInfo
 } from "../base";
 import {
   EngineEvent,
@@ -12,17 +13,27 @@ import {
   NodeParsedEvent,
   getStyleElements,
   Rule,
-  RuleKind
+  RuleKind,
+  getImports,
+  getAttributeValue,
+  AttributeValueKind
 } from "paperclip";
+import * as path from "path";
+
 import CSS_COLOR_NAMES from "./css-color-names";
 const CSS_COLOR_NAME_LIST = Object.keys(CSS_COLOR_NAMES);
 const CSS_COLOR_NAME_REGEXP = new RegExp(
   `\\b(${CSS_COLOR_NAME_LIST.join("|")})\\b`,
   "g"
 );
-console.log(CSS_COLOR_NAME_REGEXP);
+
+/**
+ * Main HTML language service. Contains everything for now.
+ */
 
 export class PCHTMLLanguageService extends BaseEngineLanguageService {
+  private _colorInfo: ColorInfo[];
+  private _documentLinkInfo: DocumentLinkInfo[];
   constructor(engine: Engine) {
     super(engine);
   }
@@ -32,27 +43,36 @@ export class PCHTMLLanguageService extends BaseEngineLanguageService {
     }
   }
   private _handleNodeParsedEvent({ node, uri }: NodeParsedEvent) {
-    this._handleStyles(node, uri);
+    this._colorInfo = [];
+    this._documentLinkInfo = [];
+    this._handleStyles(node);
+    this._handleDocument(node, uri);
+
+    this.dispatch({
+      type: LanguageServiceEventType.Information,
+      uri,
+      colors: this._colorInfo,
+      links: this._documentLinkInfo
+    });
   }
-  private _handleStyles(node: Node, uri: string) {
+  private _handleStyles(node: Node) {
     const styleElements = getStyleElements(node);
     for (const { sheet } of styleElements) {
-      this._handleSheet(sheet, uri);
+      this._handleSheet(sheet);
     }
   }
-  private _handleSheet(sheet: Sheet, uri: string) {
-    this._handleRules(sheet.rules, uri);
+  private _handleSheet(sheet: Sheet) {
+    this._handleRules(sheet.rules);
   }
 
-  private _handleRules(rules: Rule[], uri: string) {
+  private _handleRules(rules: Rule[]) {
     for (const rule of rules) {
       if (rule.kind === RuleKind.Style) {
-        this._handleRule(rule, uri);
+        this._handleRule(rule);
       }
     }
   }
-  private _handleRule(rule: Rule, uri: string) {
-    const colorInfo: ColorInfo[] = [];
+  private _handleRule(rule: Rule) {
     for (const declaration of rule.declarations) {
       const colors =
         declaration.value.match(/\#[^\s]+|(rgba|rgb|hsl|hsla)\(.*?\)/g) ||
@@ -66,17 +86,36 @@ export class PCHTMLLanguageService extends BaseEngineLanguageService {
         // const {color: [r, g, b], valpha: a } = Color(color);
         const colorStart = declaration.valueLocation.start + colorIndex;
 
-        colorInfo.push({
+        this._colorInfo.push({
           color,
           location: { start: colorStart, end: colorStart + color.length }
         });
       }
     }
+  }
 
-    this.dispatch({
-      type: LanguageServiceEventType.ColorInformation,
-      uri,
-      payload: colorInfo
-    });
+  private _handleDocument(node: Node, uri: string) {
+    this._handleImports(node, uri);
+  }
+  private _handleImports(node: Node, uri: string) {
+    const imports = getImports(node);
+    for (const imp of imports) {
+      const srcAttr = getAttributeValue("src", imp);
+      if (srcAttr.attrKind === AttributeValueKind.String) {
+        this._documentLinkInfo.push({
+          uri: resolveUri(uri, srcAttr.value),
+          location: srcAttr.location
+        });
+      }
+    }
   }
 }
+
+const resolveUri = (fromUri: string, relativePath: string) => {
+  return (
+    "file://" +
+    path.normalize(
+      path.join(path.dirname(fromUri.replace("file://", "")), relativePath)
+    )
+  );
+};

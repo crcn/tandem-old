@@ -6,6 +6,15 @@ pub struct Location {
   pub end: usize,
 }
 
+impl Location {
+  pub fn new(start: usize, end: usize) -> Location {
+    Location {
+      start,
+      end
+    }
+  }
+}
+
 
 // TODO - change to trait
 #[derive(Debug, PartialEq, Serialize)]
