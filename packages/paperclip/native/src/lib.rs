@@ -6,6 +6,9 @@ use wasm_bindgen::prelude::*;
 #[macro_use]
 extern crate matches;
 
+#[macro_use]
+extern crate serde_derive;
+
 mod base;
 mod css;
 mod pc;
@@ -51,26 +54,25 @@ impl NativeEngine {
     pub fn addListener(&mut self, listener: js_sys::Function) {
       self.target.addListener(Box::new(move |event| {
         let this = JsValue::NULL;
-        let json = serde_json::to_string(&event).unwrap();
-        let arg = JsValue::from(json);
+        let arg = JsValue::from_serde(&event).unwrap();
         listener.call1(&this, &arg).unwrap();
       }));
     }
-    pub fn evaluateContentStyles(&mut self, content: String, file_path: String) -> String {
+    pub fn evaluateContentStyles(&mut self, content: String, file_path: String) -> JsValue {
       let result = block_on(self.target.evaluate_content_styles(&content, &file_path)).unwrap();
-      serde_json::to_string(&result).unwrap()
+      JsValue::from_serde(&result).unwrap()
     }
-    pub fn evaluateFileStyles(&mut self, file_path: String) -> String {
+    pub fn evaluateFileStyles(&mut self, file_path: String) -> JsValue {
       let result = block_on(self.target.evaluate_file_styles(&file_path)).unwrap();
-      serde_json::to_string(&result).unwrap()
+      JsValue::from_serde(&result).unwrap()
     }
-    pub fn parseContent(&mut self, content: String, file_path: String) -> String {
+    pub fn parseContent(&mut self, content: String, file_path: String) -> JsValue {
       let result = block_on(self.target.parse_content(&content)).unwrap();
-      serde_json::to_string(&result).unwrap()
+      JsValue::from_serde(&result).unwrap()
     }
-    pub fn parseFile(&mut self, file_path: String) -> String {
+    pub fn parseFile(&mut self, file_path: String) -> JsValue {
       let result = block_on(self.target.parse_file(&file_path)).unwrap();
-      serde_json::to_string(&result).unwrap()
+      JsValue::from_serde(&result).unwrap()
     }
     pub fn updateVirtualFileContent(&mut self, file_path: String, content: String) {
       block_on(self.target.update_virtual_file_content(&file_path, &content));

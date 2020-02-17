@@ -37,7 +37,7 @@ export class Engine {
     if (listener == null) {
       throw new Error(`listener cannot be undefined`);
     }
-    this._native.addListener(event => listener(JSON.parse(event)));
+    this._native.addListener(event => listener(event));
     return () => {
       throw new Error("Cannot dispose listeners yet");
       // let i = this._listeners.indexOf(listener);
@@ -47,7 +47,7 @@ export class Engine {
     };
   }
   parseFile(filePath: string) {
-    return JSON.parse(this._native.parseFile(filePath));
+    return this._native.parseFile(filePath);
   }
   evaluateFileStyles(filePath: string) {
     return JSON.parse(
@@ -60,7 +60,7 @@ export class Engine {
     );
   }
   parseContent(content: string) {
-    return JSON.parse(this._native.parseContent(content));
+    return this._native.parseContent(content);
   }
   updateVirtualFileContent(filePath: string, content: string) {
     this._native.updateVirtualFileContent(stripFileProtocol(filePath), content);

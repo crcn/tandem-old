@@ -10,7 +10,7 @@
   }
   
   .items {
-    border: 1px solid rgba(143, 143, 143, 0.699);
+    border: 1px solid rgba(163, 50, 50, 0.699);
     display: inline-block;
     padding: 30px;
     border-radius: 8px; 
@@ -29,7 +29,7 @@
 <part id="preview">
   <self title="Groceries">
     <list>
-      <list:item>cans of</list:item>
+      <list:item>Cans of tuna</list:item>
       <list:item>tuna</list:item>
       <list:item>rice crispy treatzzz</list:item>
       <list:item>cat food</list:item>
