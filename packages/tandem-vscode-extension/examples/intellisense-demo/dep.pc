@@ -3,9 +3,10 @@
 </part>
 
 <div>
-  something
+  something like this
 </div>
 
 <part id="preview">
   <item />
+  <self />
 </part>

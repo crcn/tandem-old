@@ -127,7 +127,11 @@ export class VSCServiceBridge {
           ({
             sourceUri,
             instanceLocation: { start: instanceStart, end: instanceEnd },
-            sourceLocation: { start: sourceStart, end: sourceEnd }
+            sourceLocation: { start: sourceStart, end: sourceEnd },
+            sourceDefinitionLocation: {
+              start: definitionStart,
+              end: definitionEnd
+            }
           }) => {
             const sourceDocument =
               this.documents.get(sourceUri) ||
@@ -141,8 +145,8 @@ export class VSCServiceBridge {
             return {
               targetUri: sourceDocument.uri,
               targetRange: {
-                start: sourceDocument.positionAt(sourceStart),
-                end: sourceDocument.positionAt(sourceEnd)
+                start: sourceDocument.positionAt(definitionStart),
+                end: sourceDocument.positionAt(definitionEnd)
               },
               targetSelectionRange: {
                 start: sourceDocument.positionAt(sourceStart),

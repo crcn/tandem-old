@@ -1,6 +1,7 @@
 use std::fmt;
 use serde::{Serialize};
 use crate::css::runtime::virt as css_virt;
+use crate::base::ast::{Location};
 
 #[derive(Debug, PartialEq, Serialize, Clone)]
 pub struct Fragment {
@@ -18,6 +19,10 @@ impl fmt::Display for Fragment {
 
 #[derive(Debug, PartialEq, Serialize, Clone)]
 pub struct Element {
+  
+  pub id: String,
+
+  pub source_location: Location,
 
   #[serde(rename = "tagName")]
   pub tag_name: String,
@@ -27,6 +32,7 @@ pub struct Element {
 
 #[derive(Debug, PartialEq, Serialize, Clone)]
 pub struct StyleElement {
+  pub id: String,
   pub sheet: css_virt::CSSSheet
 }
 
@@ -63,12 +69,14 @@ impl fmt::Display for Element {
 
 #[derive(Debug, PartialEq, Serialize, Clone)]
 pub struct Attribute {
+  pub id: String,
   pub name: String,
   pub value: Option<String>
 }
 
 #[derive(Debug, PartialEq, Serialize, Clone)]
 pub struct Text {
+  pub id: String,
   pub value: String
 }
 

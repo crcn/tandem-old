@@ -23,19 +23,28 @@ pub struct Context<'a> {
   scope: String,
   data: &'a js_virt::JsValue,
   in_part: bool,
+  id_seed: String,
   from_main: bool,
+  id_count: i32
+}
+
+impl<'a> Context<'a> {
+  pub fn get_next_id(&mut self) -> String {
+    self.id_count += 1;
+    format!("{}-{}", self.id_seed, self.id_count)
+  }
 }
 
 pub fn evaluate<'a>(node_expr: &ast::Node, uri: &String, graph: &'a DependencyGraph, vfs: &'a VirtualFileSystem, data: &js_virt::JsValue, part: Option<String>) -> Result<Option<virt::Node>, RuntimeError>  {
-  let context = create_context(node_expr, uri, graph, vfs, data, None);
-  let mut root_result = evaluate_instance_node(node_expr, &context, part);
+  let mut context = create_context(node_expr, uri, graph, vfs, data, None);
+  let mut root_result = evaluate_instance_node(node_expr, &mut context, part);
 
   // need to insert all styles into the root for efficiency
   match root_result {
     Ok(ref mut root_option) => {
       match root_option {
         Some(ref mut root) => {
-          let style = evaluate_jumbo_style(node_expr, uri, graph, vfs)?;
+          let style = evaluate_jumbo_style(node_expr, uri, &mut context)?;
           root.prepend_child(style);
         },
         _ => { }
@@ -65,16 +74,16 @@ pub fn evaluate_document_styles<'a>(node_expr: &ast::Node, uri: &String, vfs: &'
   Ok(sheet)
 }
 
-pub fn evaluate_jumbo_style<'a>(_entry_expr: &ast::Node,  uri: &String, graph: &'a DependencyGraph, vfs: &'a VirtualFileSystem) -> Result<virt::Node, RuntimeError>  {
+pub fn evaluate_jumbo_style<'a>(_entry_expr: &ast::Node,  uri: &String, context: &'a mut Context) -> Result<virt::Node, RuntimeError>  {
 
   let mut sheet = css_virt::CSSSheet {
     rules: vec![] 
   };
 
-  for (dependency, dependent_option) in graph.flatten(uri) {
+  for (dependency, dependent_option) in context.graph.flatten(uri) {
     let dep_sheet = match &dependency.content {
       DependencyContent::Node(node) => {
-        evaluate_document_styles(node, &dependency.uri, vfs)?
+        evaluate_document_styles(node, &dependency.uri, context.vfs)?
       },
       DependencyContent::StyleSheet(sheet) => {
         let scope = if let Some(dependent) = dependent_option {
@@ -83,7 +92,7 @@ pub fn evaluate_jumbo_style<'a>(_entry_expr: &ast::Node,  uri: &String, graph: &
           get_document_scope(&dependency.uri)
         };
         
-        evaluate_css(&sheet, &dependency.uri, &scope, vfs)?
+        evaluate_css(&sheet, &dependency.uri, &scope, context.vfs)?
       }
     };
 
@@ -92,13 +101,12 @@ pub fn evaluate_jumbo_style<'a>(_entry_expr: &ast::Node,  uri: &String, graph: &
 
   
   Ok(virt::Node::StyleElement(virt::StyleElement {
+    id: context.get_next_id(),
     sheet
   }))
 }
 
-pub fn evaluate_instance_node<'a>(node_expr: &ast::Node, context: &'a Context, part_option: Option<String>) -> Result<Option<virt::Node>, RuntimeError>  {
-
-  let mut context = context.clone();
+pub fn evaluate_instance_node<'a>(node_expr: &ast::Node, context: &'a mut Context, part_option: Option<String>) -> Result<Option<virt::Node>, RuntimeError>  {
 
   let target_node = if let Some(part) = part_option {
     ast::get_children(node_expr).and_then(|children| {
@@ -114,20 +122,26 @@ pub fn evaluate_instance_node<'a>(node_expr: &ast::Node, context: &'a Context, p
     node_expr
   };
 
+  let old_from_main = context.from_main;
   if target_node == node_expr {
-    context.from_main = true;
+    context.from_main = old_from_main;
   }
   
-  evaluate_node(target_node, true, &context)
+  let result = evaluate_node(target_node, true, context);
+  context.from_main = old_from_main;
+  result
 }
 
-fn create_context<'a>(node_expr: &'a ast::Node, uri: &'a String, graph: &'a DependencyGraph, vfs: &'a VirtualFileSystem, data: &'a js_virt::JsValue, parent_option: Option<&'a Context>) -> Context<'a> {
+fn create_context<'a>(node_expr: &'a ast::Node, uri: &'a String, graph: &'a DependencyGraph, vfs: &'a VirtualFileSystem, data: &'a js_virt::JsValue,  parent_option: Option<&'a Context>) -> Context<'a> {
 
-  let from_main = if let Some(parent) = parent_option {
-    (parent.from_main)
+  let (from_main, curr_id_count) = if let Some(parent) = parent_option {
+    (parent.from_main, parent.id_count)
   } else {
-    (false)
+    (false, 0)
   };
+
+  let scope = get_document_scope(uri);
+  let id_seed = format!("{:x}", crc32::checksum_ieee(format!("{}-{}", uri, curr_id_count).as_bytes())).to_string();
 
   Context {
     graph,
@@ -139,6 +153,8 @@ fn create_context<'a>(node_expr: &'a ast::Node, uri: &'a String, graph: &'a Depe
     data,
     in_part: false,
     from_main,
+    id_seed,
+    id_count: 0
   }
 }
 
@@ -146,7 +162,7 @@ fn get_document_scope<'a>(uri: &String) -> String {
   format!("{:x}", crc32::checksum_ieee(uri.as_bytes())).to_string()
 }
 
-fn evaluate_node<'a>(node_expr: &ast::Node, is_root: bool, context: &'a Context) -> Result<Option<virt::Node>, RuntimeError> {
+fn evaluate_node<'a>(node_expr: &ast::Node, is_root: bool, context: &'a mut Context) -> Result<Option<virt::Node>, RuntimeError> {
   match &node_expr {
     ast::Node::Element(el) => {
       evaluate_element(&el, is_root, context)
@@ -155,7 +171,10 @@ fn evaluate_node<'a>(node_expr: &ast::Node, is_root: bool, context: &'a Context)
       evaluate_style_element(&el, context)
     },
     ast::Node::Text(text) => {
-      Ok(Some(virt::Node::Text(virt::Text { value: text.value.to_string() })))
+      Ok(Some(virt::Node::Text(virt::Text { 
+        id: context.get_next_id(),
+        value: text.value.to_string()
+      })))
     },
     ast::Node::Slot(slot) => {
       evaluate_slot(&slot, context)
@@ -172,7 +191,7 @@ fn evaluate_node<'a>(node_expr: &ast::Node, is_root: bool, context: &'a Context)
   }
 }
 
-fn evaluate_element<'a>(element: &ast::Element, is_root: bool, context: &'a Context) -> Result<Option<virt::Node>, RuntimeError> {
+fn evaluate_element<'a>(element: &ast::Element, is_root: bool, context: &'a mut Context) -> Result<Option<virt::Node>, RuntimeError> {
   match element.tag_name.as_str() {
     "import" => evaluate_import_element(element, context),
     "self" => evaluate_self_element(element, context),
@@ -190,7 +209,7 @@ fn evaluate_element<'a>(element: &ast::Element, is_root: bool, context: &'a Cont
   }
 }
 
-fn evaluate_slot<'a>(slot: &ast::Slot, context: &'a Context) -> Result<Option<virt::Node>, RuntimeError> {
+fn evaluate_slot<'a>(slot: &ast::Slot, context: &'a mut Context) -> Result<Option<virt::Node>, RuntimeError> {
   let script = &slot.script;
   let mut js_value = evaluate_js(script, &context.uri, &context.graph, &context.vfs, &context.data)?;
 
@@ -202,6 +221,7 @@ fn evaluate_slot<'a>(slot: &ast::Slot, context: &'a Context) -> Result<Option<vi
         children.push(child);
       } else {
         children.push(virt::Node::Text(virt::Text {
+          id: context.get_next_id(),
           value:item.to_string()
         }))
       }
@@ -214,22 +234,27 @@ fn evaluate_slot<'a>(slot: &ast::Slot, context: &'a Context) -> Result<Option<vi
     return Ok(Some(node));
   }
 
-  Ok(Some(virt::Node::Text(virt::Text { value: js_value.to_string() })))
+  Ok(Some(virt::Node::Text(virt::Text { 
+    id: context.get_next_id(),
+    value: js_value.to_string() 
+  })))
 }
 
-fn evaluate_imported_component<'a>(element: &ast::Element, context: &'a Context) -> Result<Option<virt::Node>, RuntimeError> {
+fn evaluate_imported_component<'a>(element: &ast::Element, context: &'a mut Context) -> Result<Option<virt::Node>, RuntimeError> {
   let self_dep  = &context.graph.dependencies.get(context.uri).unwrap();
   let dep_uri = &self_dep.dependencies.get(&ast::get_tag_name(element)).unwrap();
   evaluate_component_instance(element, dep_uri, context)
 }
 
-fn evaluate_part_instance_element<'a>(element: &ast::Element, context: &'a Context) -> Result<Option<virt::Node>, RuntimeError> {
+fn evaluate_part_instance_element<'a>(element: &ast::Element, context: &'a mut Context) -> Result<Option<virt::Node>, RuntimeError> {
   let self_dep  = &context.graph.dependencies.get(context.uri).unwrap();
 
   if let DependencyContent::Node(root_node) = &self_dep.content {
     let part = ast::get_part_by_id(&element.tag_name, root_node).unwrap();
     let data = create_component_instance_data(element, context)?;
-    evaluate_element(part, true, &create_context(root_node, &self_dep.uri, context.graph, context.vfs, &data, Some(context)))
+    let mut new_context = create_context(root_node, &self_dep.uri, context.graph, context.vfs, &data, Some(context));
+
+    evaluate_element(part, true, &mut new_context)
   } else {
 
     // This should _never_ happen
@@ -237,8 +262,8 @@ fn evaluate_part_instance_element<'a>(element: &ast::Element, context: &'a Conte
   }
 }
 
-fn create_component_instance_data<'a>(instance_element: &ast::Element, context: &'a Context) -> Result<js_virt::JsValue, RuntimeError> {
-  let mut context = context.clone();
+fn create_component_instance_data<'a>(instance_element: &ast::Element, context: &'a mut Context) -> Result<js_virt::JsValue, RuntimeError> {
+  let old_in_part = context.in_part;
   context.in_part = false;
 
   let mut data = js_virt::JsObject::new();
@@ -250,7 +275,7 @@ fn create_component_instance_data<'a>(instance_element: &ast::Element, context: 
         if kv_attr.value == None {
           (kv_attr.name.to_string(), js_virt::JsValue::JsBoolean(true))
         } else {
-          let value = evaluate_attribute_value(&kv_attr.value.as_ref().unwrap(), &context)?;
+          let value = evaluate_attribute_value(&kv_attr.value.as_ref().unwrap(), context)?;
           (
             kv_attr.name.to_string(),
             value
@@ -269,7 +294,7 @@ fn create_component_instance_data<'a>(instance_element: &ast::Element, context: 
           }
         })?;
 
-        (name.to_string(), evaluate_attribute_slot(&sh_attr.reference, &context)?)
+        (name.to_string(), evaluate_attribute_slot(&sh_attr.reference, context)?)
       }
     };
 
@@ -278,7 +303,7 @@ fn create_component_instance_data<'a>(instance_element: &ast::Element, context: 
 
   
   let mut js_children = js_virt::JsArray::new();
-  let children: Vec<js_virt::JsValue> = evaluate_children(&instance_element.children, &context)?.into_iter().map(|child| {
+  let children: Vec<js_virt::JsValue> = evaluate_children(&instance_element.children, context)?.into_iter().map(|child| {
     js_virt::JsValue::JsNode(child)
   }).collect();
 
@@ -286,10 +311,12 @@ fn create_component_instance_data<'a>(instance_element: &ast::Element, context: 
 
   data.values.insert("children".to_string(), js_virt::JsValue::JsArray(js_children));
 
+  context.in_part = old_in_part;
+
   Ok(js_virt::JsValue::JsObject(data))
 }
 
-fn evaluate_component_instance<'a>(instance_element: &ast::Element, dep_uri: &String, context: &'a Context) -> Result<Option<virt::Node>, RuntimeError> {
+fn evaluate_component_instance<'a>(instance_element: &ast::Element, dep_uri: &String, context: &'a mut Context) -> Result<Option<virt::Node>, RuntimeError> {
 
   let namespace = ast::get_tag_namespace(instance_element);
 
@@ -298,16 +325,20 @@ fn evaluate_component_instance<'a>(instance_element: &ast::Element, dep_uri: &St
   
   if let DependencyContent::Node(node) = &dep.content {
 
-    let context = &create_context(&node, dep_uri, context.graph, context.vfs, &data, None);
+    let mut instance_parent_context = context.clone();
+    instance_parent_context.from_main = false;
+
+
+    let mut instance_context = create_context(&node, dep_uri, context.graph, context.vfs, &data, Some(&instance_parent_context));
 
     // TODO: if fragment, then wrap in span. If not, then copy these attributes to root element
-    evaluate_instance_node(&node, &context, namespace)
+    evaluate_instance_node(&node, &mut instance_context, namespace)
   } else {
     Err(RuntimeError::unknown(context.uri))
   }
 }
 
-fn evaluate_basic_element<'a>(element: &ast::Element, context: &'a Context) -> Result<Option<virt::Node>, RuntimeError> {
+fn evaluate_basic_element<'a>(element: &ast::Element, context: &'a mut Context) -> Result<Option<virt::Node>, RuntimeError> {
 
   let mut attributes = vec![];
 
@@ -332,6 +363,7 @@ fn evaluate_basic_element<'a>(element: &ast::Element, context: &'a Context) -> R
         }
 
         attributes.push(virt::Attribute {
+          id: context.get_next_id(),
           name,
           value: value_option,
         });
@@ -351,6 +383,7 @@ fn evaluate_basic_element<'a>(element: &ast::Element, context: &'a Context) -> R
 
         if js_value != js_virt::JsValue::JsUndefined() {
           attributes.push(virt::Attribute {
+            id: context.get_next_id(),
             name: name.to_string(),
             value: Some(js_value.to_string()),
           });
@@ -361,6 +394,7 @@ fn evaluate_basic_element<'a>(element: &ast::Element, context: &'a Context) -> R
   }
 
   attributes.push(virt::Attribute {
+    id: context.get_next_id(),
     name: format!("data-pc-{}", context.scope.to_string()).to_string(),
     value: None
   });
@@ -368,17 +402,19 @@ fn evaluate_basic_element<'a>(element: &ast::Element, context: &'a Context) -> R
   let children = evaluate_children(&element.children, context)?;
 
   Ok(Some(virt::Node::Element(virt::Element {
+    id: context.get_next_id(),
+    source_location: element.location.clone(),
     tag_name: tag_name,
     attributes,
     children
   })))
 }
 
-fn evaluate_import_element<'a>(_element: &ast::Element, _context: &'a Context) -> Result<Option<virt::Node>, RuntimeError> {
+fn evaluate_import_element<'a>(_element: &ast::Element, _context: &'a mut Context) -> Result<Option<virt::Node>, RuntimeError> {
   Ok(None)
 }
 
-fn evaluate_self_element<'a>(element: &ast::Element, context: &'a Context) -> Result<Option<virt::Node>, RuntimeError> {
+fn evaluate_self_element<'a>(element: &ast::Element, context: &'a mut Context) -> Result<Option<virt::Node>, RuntimeError> {
   
   if context.from_main {
     return Err(RuntimeError { 
@@ -392,23 +428,25 @@ fn evaluate_self_element<'a>(element: &ast::Element, context: &'a Context) -> Re
 }
 
 
-fn evaluate_part_element<'a>(element: &ast::Element, is_root: bool, context: &'a Context) -> Result<Option<virt::Node>, RuntimeError> {
+fn evaluate_part_element<'a>(element: &ast::Element, is_root: bool, context: &'a mut Context) -> Result<Option<virt::Node>, RuntimeError> {
   if !is_root {
     return Ok(None)
   }
 
-  let mut context = context.clone();
+  let old_in_part = context.in_part;
   context.in_part = true;
   
-  evaluate_children_as_fragment(&element.children, &context)
+  let result = evaluate_children_as_fragment(&element.children, context);
+  context.in_part = old_in_part;
+  result
 }
 
-fn evaluate_style_element<'a>(_element: &ast::StyleElement, _context: &'a Context) -> Result<Option<virt::Node>, RuntimeError> {
+fn evaluate_style_element<'a>(_element: &ast::StyleElement, _context: &'a mut Context) -> Result<Option<virt::Node>, RuntimeError> {
   Ok(None)
 }
   
 
-fn evaluate_children<'a>(children_expr: &Vec<ast::Node>, context: &'a Context) -> Result<Vec<virt::Node>, RuntimeError> {
+fn evaluate_children<'a>(children_expr: &Vec<ast::Node>, context: &'a mut Context) -> Result<Vec<virt::Node>, RuntimeError> {
   
   let mut children: Vec<virt::Node> = vec![];
 
@@ -422,11 +460,11 @@ fn evaluate_children<'a>(children_expr: &Vec<ast::Node>, context: &'a Context) -
   Ok(children)
 }
 
-fn evaluate_fragment<'a>(fragment: &ast::Fragment, context: &'a Context) -> Result<Option<virt::Node>, RuntimeError> {
+fn evaluate_fragment<'a>(fragment: &ast::Fragment, context: &'a mut Context) -> Result<Option<virt::Node>, RuntimeError> {
   evaluate_children_as_fragment(&fragment.children, context)
 }
 
-fn evaluate_children_as_fragment<'a>(children: &Vec<ast::Node>, context: &'a Context) -> Result<Option<virt::Node>, RuntimeError> {
+fn evaluate_children_as_fragment<'a>(children: &Vec<ast::Node>, context: &'a mut Context) -> Result<Option<virt::Node>, RuntimeError> {
   let mut children = evaluate_children(&children, context)?;
   if children.len() == 1 {
     return Ok(children.pop());
@@ -436,7 +474,7 @@ fn evaluate_children_as_fragment<'a>(children: &Vec<ast::Node>, context: &'a Con
   })))
 }
 
-fn evaluate_block<'a>(block: &ast::Block, context: &'a Context) -> Result<Option<virt::Node>, RuntimeError> {
+fn evaluate_block<'a>(block: &ast::Block, context: &'a mut Context) -> Result<Option<virt::Node>, RuntimeError> {
   match block {
     ast::Block::Conditional(conditional) => {
       evaluate_conditional(conditional, context)
@@ -444,7 +482,7 @@ fn evaluate_block<'a>(block: &ast::Block, context: &'a Context) -> Result<Option
   }
 }
 
-fn evaluate_conditional<'a>(block: &ast::ConditionalBlock, context: &'a Context) -> Result<Option<virt::Node>, RuntimeError> {
+fn evaluate_conditional<'a>(block: &ast::ConditionalBlock, context: &'a mut Context) -> Result<Option<virt::Node>, RuntimeError> {
   match block {
     ast::ConditionalBlock::PassFailBlock(pass_fail) => {
       evaluate_pass_fail_block(pass_fail, context)
@@ -459,7 +497,7 @@ fn evaluate_conditional<'a>(block: &ast::ConditionalBlock, context: &'a Context)
   }
 }
 
-fn evaluate_pass_fail_block<'a>(block: &ast::PassFailBlock, context: &'a Context) -> Result<Option<virt::Node>, RuntimeError> {
+fn evaluate_pass_fail_block<'a>(block: &ast::PassFailBlock, context: &'a mut Context) -> Result<Option<virt::Node>, RuntimeError> {
   let condition = evaluate_js(&block.condition, &context.uri, &context.graph, &context.vfs, context.data)?;
   if condition.truthy() {
     if let Some(node) = &block.node {
@@ -476,7 +514,7 @@ fn evaluate_pass_fail_block<'a>(block: &ast::PassFailBlock, context: &'a Context
   }
 }
 
-fn evaluate_attribute_value<'a>(value: &ast::AttributeValue, context: &'a Context) -> Result<js_virt::JsValue, RuntimeError> {
+fn evaluate_attribute_value<'a>(value: &ast::AttributeValue, context: &mut Context) -> Result<js_virt::JsValue, RuntimeError> {
   match value {
     ast::AttributeValue::String(st) => {
       Ok(js_virt::JsValue::JsString(st.value.clone()))
@@ -487,7 +525,7 @@ fn evaluate_attribute_value<'a>(value: &ast::AttributeValue, context: &'a Contex
   }
 }
 
-fn evaluate_attribute_slot<'a>(script: &js_ast::Statement, context: &'a Context) -> Result<js_virt::JsValue, RuntimeError> {
+fn evaluate_attribute_slot<'a>(script: &js_ast::Statement, context: &'a mut Context) -> Result<js_virt::JsValue, RuntimeError> {
   evaluate_js(script, &context.uri, &context.graph, &context.vfs, &context.data)
 }
 

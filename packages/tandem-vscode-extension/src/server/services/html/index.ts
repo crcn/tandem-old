@@ -198,6 +198,9 @@ export class PCHTMLLanguageService extends BaseEngineLanguageService<Node> {
             sourceLocation: (firstVisibleNode &&
               firstVisibleNode.kind === NodeKind.Element &&
               firstVisibleNode.openTagLocation) || { start: 0, end: 0 },
+            sourceDefinitionLocation: (firstVisibleNode &&
+              firstVisibleNode.kind === NodeKind.Element &&
+              firstVisibleNode.location) || { start: 0, end: 0 },
             instanceLocation: element.tagNameLocation
           });
         }
@@ -234,6 +237,7 @@ export class PCHTMLLanguageService extends BaseEngineLanguageService<Node> {
       context.info.definitions.push({
         sourceUri,
         sourceLocation: part.openTagLocation,
+        sourceDefinitionLocation: part.location,
         instanceLocation: element.tagNameLocation
       });
     }

@@ -1,3 +1,4 @@
+use std::fmt;
 use serde::{Serialize};
 
 #[derive(Debug, PartialEq, Serialize, Clone)]
@@ -12,6 +13,12 @@ impl Location {
       start,
       end
     }
+  }
+}
+
+impl fmt::Display for Location {
+  fn fmt(&self, _f: &mut fmt::Formatter) -> fmt::Result {
+    Ok(())
   }
 }
 

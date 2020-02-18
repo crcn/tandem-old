@@ -2,7 +2,7 @@
 body  { font-family:Verdana, Geneva, sans-serif; font-size:10pt; color:#828282; }
 td    { font-family:Verdana, Geneva, sans-serif; font-size:10pt; color:#828282; }
 
-.admin td   { font-family:Verdana, Geneva, sans-serif; font-size:8.5pt; color:#000000; }
+.admin td   { font-family:Verdana, Geneva, sans-serif; font-size:8.5pt; color:rgb(158, 43, 43); }
 .subtext td { font-family:Verdana, Geneva, sans-serif; font-size:  7pt; color:#828282; }
 
 input    { font-family:monospace; font-size:10pt; }
@@ -10,10 +10,10 @@ input[type=\"submit\"] { font-family:Verdana, Geneva, sans-serif; }
 textarea { font-family:monospace; font-size:10pt; }
 
 
-a:link    { color:#000000; text-decoration:none; }
-a:visited { color:#828282; text-decoration:none; }
+a:link    { color:rgb(31, 84, 231); text-decoration:none; }
+a:visited { color:rgb(75, 224, 212); text-decoration:none; }
 
-.default { font-family:Verdana, Geneva, sans-serif; font-size: 10pt; color:#828282; }
+.default { font-family:Verdana, Geneva, sans-serif; font-size: 10pt; color:rgb(73, 136, 65); }
 .admin   { font-family:Verdana, Geneva, sans-serif; font-size:8.5pt; color:#000000; }
 .title   { font-family:Verdana, Geneva, sans-serif; font-size: 10pt; color:#828282; }
 .subtext { font-family:Verdana, Geneva, sans-serif; font-size:  7pt; color:#828282; }

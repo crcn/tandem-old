@@ -221,6 +221,10 @@ fn parse_next_basic_element_parts<'a>(tag_name: String, attributes: Vec<pc_ast::
       start,
       end
     },
+    location: Location {
+      start,
+      end: tokenizer.pos
+    },
     tag_name,
     attributes,
     children
@@ -408,6 +412,10 @@ fn parse_next_script_element_parts<'a>(attributes: Vec<pc_ast::Attribute>, token
     open_tag_location: Location {
       start,
       end
+    },
+    location: Location {
+      start,
+      end: tokenizer.pos
     },
     tag_name: "script".to_string(),
     attributes,

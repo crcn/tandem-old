@@ -8,6 +8,8 @@ use serde::{Serialize};
 #[derive(Debug, PartialEq, Serialize, Clone)]
 pub struct Element {
 
+  pub location: Location,
+
   #[serde(rename = "openTagLocation")]
   pub open_tag_location: Location,
 

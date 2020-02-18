@@ -14,6 +14,7 @@ export type DefinitionInfo = {
   sourceUri: string;
   instanceLocation: SourceLocation;
   sourceLocation: SourceLocation;
+  sourceDefinitionLocation: SourceLocation;
 };
 
 export interface BaseLanguageService {

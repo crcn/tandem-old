@@ -7,6 +7,7 @@ const renderer = new Renderer(
     .split(":")
     .shift() + ":"
 );
+
 document.body.appendChild(renderer.mount);
 
 const onMessage = ({ data: event }: MessageEvent) => {

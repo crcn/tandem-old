@@ -39,6 +39,7 @@ Limitations:
 
 immediate TODO:
 
+- fix scrolling in preview (check ycombinator)
 - jump to definition from preview
   - data-source attribute on each element
   - web-renderer listen for node listen - dispatch meta click
@@ -73,5 +74,4 @@ immediate TODO:
 - ask friends to play with app
 - site
 
-- enhancements
-  -
+- ## enhancements

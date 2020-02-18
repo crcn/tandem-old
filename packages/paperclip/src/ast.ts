@@ -19,6 +19,7 @@ export type Text = {
 } & BaseNode<NodeKind.Text>;
 
 export type Element = {
+  location: SourceLocation;
   openTagLocation: SourceLocation;
   tagNameLocation: SourceLocation;
   tagName: string;

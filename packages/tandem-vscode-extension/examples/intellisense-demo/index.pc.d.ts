@@ -9,22 +9,16 @@ export type styled = (
     | null
 ) => ReactNode;
 
-type PreviewProps = {
-  something: String | boolean | Number | ReactNode;
-  somethingElse: String | boolean | Number | ReactNode;
-  value: String | boolean | Number | ReactNode;
-  doSomething: Function;
-  onClick: String | boolean | Number | ReactNode;
-};
+type ItemProps = {};
+
+export { ItemProps };
+
+type PreviewProps = {};
 
 export { PreviewProps };
 
 type ComponentProps = {
-  something: String | boolean | Number | ReactNode;
-  somethingElse: String | boolean | Number | ReactNode;
-  value: String | boolean | Number | ReactNode;
-  doSomething: Function;
-  onClick: String | boolean | Number | ReactNode;
+  children: String | boolean | Number | ReactNode;
 };
 
 export default ComponentProps;
