@@ -210,13 +210,19 @@ export class PCHTMLLanguageService extends BaseEngineLanguageService<Node> {
 
   private _handleAttributes(element: Element, context: HandleContext) {
     for (const attr of element.attributes) {
-      if (
-        attr.kind === AttributeKind.KeyValueAttribute &&
-        attr.value &&
-        attr.value.attrValueKind === AttributeValueKind.Slot
-      ) {
-        if (attr.value.jsKind === StatementKind.Node) {
-          this._handleVisibleNode((attr.value as any) as Node, context);
+      if (attr.kind === AttributeKind.KeyValueAttribute && attr.value) {
+        if (attr.value.attrValueKind === AttributeValueKind.Slot) {
+          if (attr.value.jsKind === StatementKind.Node) {
+            this._handleVisibleNode((attr.value as any) as Node, context);
+          }
+        } else if (
+          (attr.value.attrValueKind === AttributeValueKind.String,
+          attr.name === "src")
+        ) {
+          context.info.links.push({
+            uri: resolveUri(context.uri, attr.value.value),
+            location: attr.value.location
+          });
         }
       }
     }

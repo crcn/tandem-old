@@ -1,0 +1,7 @@
+{
+  "compilerOptions": {
+    "name": "/Users/crcn/Developer/work/tandem/public/packages/paperclip-react-compiler",
+    "omitParts": ["preview"]
+  },
+  "filesGlob": "/Users/crcn/Developer/work/tandem/public/packages/tandem-vscode-extension/examples/intellisense-demo/dep.pc"
+}

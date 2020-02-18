@@ -10,8 +10,8 @@ export type FileContent = {
 
 export type EngineOptions = {
   httpuri?: string;
-  log?: boolean;
   renderPart?: string;
+  moduleDirectories?: string[];
 };
 
 export type EngineEventListener = (event: EngineEvent) => void;

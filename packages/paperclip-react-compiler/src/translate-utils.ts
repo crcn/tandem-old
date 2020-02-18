@@ -28,7 +28,10 @@ export const createTranslateContext = (
   indent,
   args,
   omitParts:
-    (args.omitParts && Array.from(args.omitParts.split(/\s*,\s*/))) || []
+    (args.omitParts &&
+      !Array.isArray(args.omitParts) &&
+      Array.from(args.omitParts.split(/\s*,\s*/))) ||
+    []
 });
 
 export const addBuffer = (buffer: string, context: TranslateContext) => ({

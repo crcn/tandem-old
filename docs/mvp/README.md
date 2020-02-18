@@ -39,16 +39,9 @@ Limitations:
 
 immediate TODO:
 
-- fix scrolling in preview (check ycombinator)
-- jump to definition from preview
-  - data-source attribute on each element
-  - web-renderer listen for node listen - dispatch meta click
-  - vscode receive uri & location
-  - outline nodes
+- loader add resources
 - PC config
   - moduleDirectories
-- jump to src
-  - img
 - BUGS
   - bad import src breaks engine
   - need to be aware of reserved props

@@ -1,25 +1,10 @@
 import {
   Node,
-  getImports,
-  NodeKind,
-  Attribute,
-  Reference,
-  Statement,
-  StatementKind,
   getAttributeStringValue,
-  getVisibleChildNodes,
-  Slot,
-  AttributeValue,
-  AttributeKind,
-  AttributeValueKind,
-  isVisibleNode,
   getImportIds,
   Element,
-  getAttribute,
   getNestedReferences,
-  getParts,
-  isVisibleElement,
-  stringifyCSSSheet
+  getParts
 } from "paperclip";
 import {
   createTranslateContext,
@@ -28,14 +13,7 @@ import {
   endBlock,
   addBuffer
 } from "./translate-utils";
-import {
-  pascalCase,
-  Options,
-  getBaseComponentName,
-  getComponentName,
-  getPartClassName
-} from "./utils";
-import { camelCase } from "lodash";
+import { Options, getComponentName, getPartClassName } from "./utils";
 
 export const compile = (
   { ast }: { ast: Node },
@@ -79,19 +57,20 @@ const translatePart = (part: Element, context: TranslateContext) => {
     return context;
   }
   const componentName = getPartClassName(part);
-  context = translateComponent(part, componentName, context);
-  context = addBuffer(`export {${componentName}Props}\n\n`, context);
+  context = translateComponent(part, componentName + "Props", context);
+  context = addBuffer(
+    `export type ${componentName} = (props: ${componentName}Props) => ReactNode;\n\n`,
+    context
+  );
   return context;
 };
 
 const translateComponent = (
   node: Node,
-  componentName: string,
+  componentPropsName: string,
   context: TranslateContext
 ) => {
-  const componentPropsName = `${componentName}Props`;
-
-  context = addBuffer(`type ${componentPropsName} = {\n`, context);
+  context = addBuffer(`export type ${componentPropsName} = {\n`, context);
   context = startBlock(context);
   for (const [reference, attrName] of getNestedReferences(node)) {
     // just be relaxed for now about types
@@ -117,7 +96,11 @@ const translateComponent = (
 
 const translateMainTemplate = (ast: Node, context: TranslateContext) => {
   const componentName = getComponentName(ast);
-  context = translateComponent(ast, componentName, context);
-  context = addBuffer(`export default ${componentName}Props\n\n`, context);
+  context = translateComponent(ast, "Props", context);
+  context = addBuffer(
+    `type ${componentName} = (props: Props) => ReactNode;\n`,
+    context
+  );
+  context = addBuffer(`export default ${componentName};\n`, context);
   return context;
 };

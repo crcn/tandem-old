@@ -20,3 +20,5 @@
     something lika
   </self>
 </part>
+
+<img src="./test.png" />

@@ -78,10 +78,7 @@ const translateUtils = (ast: Node, context: TranslateContext) => {
 };
 
 const translateStyledUtil = (ast: Node, context: TranslateContext) => {
-  context = addBuffer(
-    `const styled = function(tagName, defaultProps) {\n`,
-    context
-  );
+  context = addBuffer(`function styled(tagName, defaultProps) {\n`, context);
   context = startBlock(context);
   context = addBuffer(`return function(props) {\n`, context);
   context = startBlock(context);
@@ -92,13 +89,13 @@ const translateStyledUtil = (ast: Node, context: TranslateContext) => {
   context = endBlock(context);
   context = addBuffer(`};\n`, context);
   context = endBlock(context);
-  context = addBuffer("};\n\n", context);
+  context = addBuffer("}\n\n", context);
   context = addBuffer("exports.styled = styled;\n\n", context);
   return context;
 };
 
 const translateImports = (ast: Node, context: TranslateContext) => {
-  context = addBuffer(`const React = require("react");\n`, context);
+  context = addBuffer(`var React = require("react");\n`, context);
 
   const imports = getImports(ast);
   for (const imp of imports) {
@@ -157,7 +154,7 @@ const translateMainTemplate = (root: Node, context: TranslateContext) => {
   context = addBuffer(`};\n\n`, context);
   // TODO - check if logic controller
   context = addBuffer(
-    `let ${enhancedComponentName} = ${baseComponentName};\n`,
+    `var ${enhancedComponentName} = ${baseComponentName};\n`,
     context
   );
   context = addBuffer(`exports.default = ${enhancedComponentName};\n`, context);
