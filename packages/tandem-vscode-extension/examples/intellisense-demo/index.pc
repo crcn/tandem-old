@@ -1,0 +1,34 @@
+
+<!-- Should be able to meta click element -->
+<import id="dep" src="./dep.pc">
+
+<style>
+  div {
+
+    /* hover hover these colors */
+    
+    color: blue;
+    background: #F60;
+    border: 1px solid blue;
+
+    display: inline-block; 
+  }
+</style>
+
+<!-- meta click this element to visit part -->
+<dep />
+
+<!-- meta click this too -->
+<dep:item />
+
+<!-- meta click the dep here -->
+<div>
+  okay okay
+</div>
+
+<!-- meta click the dep:item here -->
+<div content={<dep:item />} />
+
+<part id="preview">
+  <self />
+</part>

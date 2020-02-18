@@ -124,6 +124,14 @@ fn evaluate_style_rule2(expr: &ast::StyleRule, context: &Context) -> Result<virt
   })
 }
 
+fn stringify_optional_selector(selector: &Option<Box<ast::Selector>>, context: &Context) -> String {
+  if let Some(target) = &selector {
+    stringify_element_selector(target, context)
+  } else {
+    "".to_string()
+  }
+}
+
 fn stringify_element_selector(selector: &ast::Selector, context: &Context) -> String {
 
   let scope_selector = format!("[data-pc-{}]", context.scope);
@@ -137,11 +145,11 @@ fn stringify_element_selector(selector: &ast::Selector, context: &Context) -> St
       if selector.name == "root" {
         format!(":{}", selector.name)
       } else {
-        format!("{}:{}", scope_selector, selector.name)
+        format!("{}:{}", stringify_optional_selector(&selector.target, context), selector.name)
       }
     },
     ast::Selector::PseudoParamElement(selector) => {
-      format!("{}:{}({})", scope_selector, selector.name, selector.param)
+      format!("{}:{}({})", stringify_optional_selector(&selector.target, context), selector.name, selector.param)
     },
     ast::Selector::Attribute(selector) => format!("{}{}", selector.to_string(), scope_selector),
     ast::Selector::Not(selector) => format!("{}:not({})", scope_selector, stringify_element_selector(&selector.selector, context)),

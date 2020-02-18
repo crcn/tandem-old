@@ -44,7 +44,6 @@ fn parse_fragment<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::Node, Par
 
   while !tokenizer.is_eof() {
     children.push(parse_node(tokenizer)?);
-    tokenizer.eat_whitespace();
   }
 
   if children.len() == 1 {
@@ -55,8 +54,15 @@ fn parse_fragment<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::Node, Par
 }
 
 fn parse_node<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::Node, ParseError> {
+  let start = tokenizer.pos;
   tokenizer.eat_whitespace();
-  let token = tokenizer.peek(1)?;
+
+  // Kinda ick, but cover case where last node is whitespace.
+  let token = tokenizer.peek_eat_whitespace(1).or_else(|_| {
+    tokenizer.pos = start;
+    tokenizer.peek(1)
+  })?;
+
   match token {
     Token::CurlyOpen => { parse_slot(tokenizer) },
     Token::LessThan => { parse_element(tokenizer) },
@@ -87,6 +93,9 @@ fn parse_node<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::Node, ParseEr
       Err(ParseError::unexpected(message.to_string(), start, tokenizer.pos))
     }
     _ => {
+
+      // reset pos to ensure text doesn't get chopped (e.g: `{children} text`)
+      tokenizer.pos = start;
       let value =  get_buffer(tokenizer, |tokenizer| {
         let tok = tokenizer.peek(1)?;
         Ok(
@@ -191,9 +200,8 @@ fn parse_next_basic_element_parts<'a>(tag_name: String, attributes: Vec<pc_ast::
       end = tokenizer.pos;
       if !is_void_tag_name(tag_name.as_str()) {
         tokenizer.eat_whitespace();
-        while !tokenizer.is_eof() && tokenizer.peek(1)? != Token::CloseTag {
+        while !tokenizer.is_eof() && tokenizer.peek_eat_whitespace(1)? != Token::CloseTag {
           children.push(parse_node(tokenizer)?);
-          tokenizer.eat_whitespace();
         }
 
         parse_close_tag(&tag_name.as_str(), tokenizer, start, end)?;
@@ -270,7 +278,6 @@ fn parse_block_children<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Option<Box<
 
   while !tokenizer.is_eof() && tokenizer.peek(1)? != Token::BlockClose {
     children.push(parse_node(tokenizer)?);
-    tokenizer.eat_whitespace();
   }
 
   let node = if children.len() == 0 {
@@ -356,6 +363,8 @@ fn parse_next_style_element_parts<'a>(attributes: Vec<pc_ast::Attribute>, tokeni
 fn parse_close_tag<'a, 'b>(tag_name: &'a str, tokenizer: &mut Tokenizer<'b>, start: usize, end: usize) -> Result<(), ParseError> {
 
   let end_tag_name_start = tokenizer.pos;
+
+  tokenizer.eat_whitespace();
   
   tokenizer
   .next_expect(Token::CloseTag)
@@ -516,24 +525,11 @@ mod tests {
 
       {block}
       
-      {#if block}
-      {/}
-
-      {#if someting}
-        something 
-        <div />
-      {/else if somethingElse} 
-        else if
-      {/}
-
-      {#if something}{/else}{/}
-
-      {#if something}a{/else if somethingelse}b{/else}c{/}
 
       <!-- historically broken stuff -->
       <meta charSet=\"utf-8\" />\n   
       <form action=\"/search/\" autoComplete=\"off\" method=\"get\" role=\"search\">
-        <input type=\"search\" id=\"header-search-bar\" name=\"q\" class=\"_2xQx4j6lBnDGQ8QsRnJEJa\" placeholder=\"Search\" value=\"\" />
+        <!--input type=\"search\" id=\"header-search-bar\" name=\"q\" class=\"_2xQx4j6lBnDGQ8QsRnJEJa\" placeholder=\"Search\" value=\"\" /-->
       </form>\n 
     ";
 

@@ -1,0 +1,11 @@
+<part id="item">
+  something
+</part>
+
+<div>
+  something
+</div>
+
+<part id="preview">
+  <item />
+</part>

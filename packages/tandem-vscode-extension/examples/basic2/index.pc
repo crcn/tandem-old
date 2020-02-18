@@ -1,29 +1,33 @@
 <style>
   ul {
-    color: rgb(112, 56, 56)(209, 103, 103)
+    color: rgb(153, 87, 87)
   }
   div {
     color: blue;
   }
   h1 {
-    color: rgb(145, 22, 22);
+    color: rgb(13, 243, 212);
     font-weight: 400;
+  }
+
+  li {
+    color: rgb(13, 134, 19);
   }
 </style>
 
 <h1>{title}</h1>
 
 <ol>
-  {children}
+  {children}!!
 </ol>
 
 <part id="item">
-  <li>{children}</li>
+  <li>{children} something something</li>
 </part>
 
 <part id="preview">
-  <self title="Hello world">
-    <item>aaa</item>
+  <self title="Something like this">
+    <item>aaa ffsd</item>
     <item>ffsd</item>
     <item>aaa</item>
     <item>aaa</item>

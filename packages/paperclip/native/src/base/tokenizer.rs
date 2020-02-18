@@ -147,6 +147,18 @@ impl<'a> Tokenizer<'a> {
     self.pos = pos;
     result
   }
+  pub fn peek_eat_whitespace(&mut self, steps: u8) -> Result<Token<'a>, ParseError> {
+    let pos = self.pos;
+    let mut i = 0;
+    let mut result = Err(ParseError::unknown());
+    while i < steps {
+      self.eat_whitespace();
+      result = self.next();
+      i += 1;
+    }
+    self.pos = pos;
+    result
+  }
 
   pub fn next_expect(&mut self, expected_token: Token) -> Result<Token<'a>, ParseError> {
     let pos = self.pos;

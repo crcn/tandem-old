@@ -248,7 +248,7 @@ fn parse_group_selector<'a, 'b>(context: &mut Context<'a, 'b>) -> Result<Selecto
 
 // // parent > child
 fn parse_pair_selector<'a, 'b>(context: &mut Context<'a, 'b>) -> Result<Selector, ParseError> {
-  let selector = parse_combo_selector(context)?;
+  let selector = parse_psuedo_element_selector(context)?;
   eat_superfluous(context)?;
   let delim = context.tokenizer.peek(1)?;
   match delim {
@@ -324,6 +324,56 @@ fn parse_combo_selector<'a, 'b>(context: &mut Context<'a, 'b>) -> Result<Selecto
   }
 }
 
+fn parse_psuedo_element_selector<'a, 'b>(context: &mut Context<'a, 'b>) -> Result<Selector, ParseError> { 
+  
+  let target: Option<Box<Selector>> = if context.tokenizer.peek(1)? != Token::Colon {
+    Some(Box::new(parse_combo_selector(context)?))
+  } else {
+    None
+  };
+  
+  if context.tokenizer.peek(1)? != Token::Colon {
+    if let Some(selector) = target {
+      return Ok(*selector);
+    } else {
+      return Err(ParseError::unexpected_token(context.tokenizer.pos));
+    }
+  }
+
+  context.tokenizer.next()?;
+  if context.tokenizer.peek(1)? == Token::Colon {
+    context.tokenizer.next()?;
+  }
+  let name = parse_selector_name(context)?.to_string();
+  let selector: Selector = if context.tokenizer.peek(1)? == Token::ParenOpen {
+    context.tokenizer.next()?;
+    let selector = if name == "not" {
+      let sel = parse_pair_selector(context)?;
+      Selector::Not(NotSelector { selector: Box::new(sel) })
+    } else {
+      let param = get_buffer(context.tokenizer, |tokenizer| {
+        Ok(tokenizer.peek(1)? != Token::ParenClose)
+      })?.to_string();
+
+      Selector::PseudoParamElement(PseudoParamElementSelector {
+        target,
+        name,
+        param
+      })
+    };
+
+    context.tokenizer.next_expect(Token::ParenClose)?;
+    selector
+  } else {
+    Selector::PseudoElement(PseudoElementSelector {
+      target,
+      name
+    })
+  };
+
+  Ok(selector)
+}
+
 fn parse_element_selector<'a, 'b>(context: &mut Context<'a, 'b>) -> Result<Selector, ParseError> {
   let pos = context.tokenizer.pos;
   let token = context.tokenizer.peek(1)?;
@@ -337,9 +387,6 @@ fn parse_element_selector<'a, 'b>(context: &mut Context<'a, 'b>) -> Result<Selec
       Selector::Class(ClassSelector {
         class_name: parse_selector_name(context)?.to_string()
       })
-    }
-    Token::Colon => {
-      parse_psuedo_element_selector(context)?
     }
     Token::Hash => {
       context.tokenizer.next()?;
@@ -360,38 +407,6 @@ fn parse_element_selector<'a, 'b>(context: &mut Context<'a, 'b>) -> Result<Selec
       return Err(ParseError::unexpected_token(pos));
     }
   };
-  Ok(selector)
-}
-fn parse_psuedo_element_selector<'a, 'b>(context: &mut Context<'a, 'b>) -> Result<Selector, ParseError> { 
-  context.tokenizer.next()?;
-  if context.tokenizer.peek(1)? == Token::Colon {
-    context.tokenizer.next()?;
-  }
-  let name = parse_selector_name(context)?.to_string();
-  let selector: Selector = if context.tokenizer.peek(1)? == Token::ParenOpen {
-    context.tokenizer.next()?;
-    let selector = if name == "not" {
-      let sel = parse_pair_selector(context)?;
-      Selector::Not(NotSelector { selector: Box::new(sel) })
-    } else {
-      let param = get_buffer(context.tokenizer, |tokenizer| {
-        Ok(tokenizer.peek(1)? != Token::ParenClose)
-      })?.to_string();
-
-      Selector::PseudoParamElement(PseudoParamElementSelector {
-        name,
-        param
-      })
-    };
-
-    context.tokenizer.next_expect(Token::ParenClose)?;
-    selector
-  } else {
-    Selector::PseudoElement(PseudoElementSelector {
-      name
-    })
-  };
-
   Ok(selector)
 }
 
@@ -579,6 +594,7 @@ mod tests {
     :nth-last-of-type(div) {}
     :nth-of-type(div) {}
     :dir(div) {}
+    div:before {}
     /*comment*/.c5a, .ca a:link, .ca a:visited { /**/color:#5a5a5a; } /**/
 
     .c5a, .ca a:link, .ca a:visited { a: b; }

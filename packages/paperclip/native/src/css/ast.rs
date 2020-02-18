@@ -236,6 +236,7 @@ pub struct ChildSelector {
   pub parent: Box<Selector>,
   pub child: Box<Selector>
 }
+
 #[derive(Debug, PartialEq, Serialize, Clone)]
 pub struct NotSelector {
   pub selector: Box<Selector>
@@ -282,12 +283,21 @@ impl fmt::Display for SiblingSelector {
 // div:before, div::after { }
 #[derive(Debug, PartialEq, Serialize, Clone)]
 pub struct PseudoElementSelector {
+  pub target: Option<Box<Selector>>,
   pub name: String
+}
+
+fn stringify_optional_selector(selector: &Option<Box<Selector>>) -> String {
+  if let Some(item) = selector {
+    item.to_string()
+  } else {
+    "".to_string()
+  }
 }
 
 impl fmt::Display for PseudoElementSelector {
   fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-    write!(f, ":{}", &self.name)?;
+    write!(f, "{}:{}", stringify_optional_selector(&self.target), &self.name)?;
     Ok(())
   }
 }
@@ -295,13 +305,14 @@ impl fmt::Display for PseudoElementSelector {
 // :nth-of-type(div) { }
 #[derive(Debug, PartialEq, Serialize, Clone)]
 pub struct PseudoParamElementSelector {
+  pub target: Option<Box<Selector>>,
   pub name: String,
   pub param: String
 }
 
 impl fmt::Display for PseudoParamElementSelector {
   fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-    write!(f, ":{}({})", &self.name, &self.param)?;
+    write!(f, "{}:{}({})", stringify_optional_selector(&self.target), &self.name, &self.param)?;
     Ok(())
   }
 }

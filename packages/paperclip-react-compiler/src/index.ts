@@ -282,9 +282,9 @@ const translateAttributeValue = (
   if (!value) {
     return addBuffer("true", context);
   }
-  if (value.attrKind === AttributeValueKind.Slot) {
+  if (value.attrValueKind === AttributeValueKind.Slot) {
     return translateStatment((value as any) as Statement, context);
-  } else if (value.attrKind === AttributeValueKind.String) {
+  } else if (value.attrValueKind === AttributeValueKind.String) {
     return addBuffer(JSON.stringify(value.value), context);
   }
 

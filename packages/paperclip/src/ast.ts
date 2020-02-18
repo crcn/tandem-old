@@ -57,7 +57,7 @@ export enum AttributeValueKind {
 }
 
 export type BaseAttributeValue<TKind extends AttributeValueKind> = {
-  attrKind: TKind;
+  attrValueKind: TKind;
 };
 
 export type StringAttributeValue = {
@@ -126,7 +126,9 @@ export const getAttributeValue = (name: string, element: Element) => {
 
 export const getAttributeStringValue = (name: string, element: Element) => {
   const value = getAttributeValue(name, element);
-  return value && value.attrKind === AttributeValueKind.String && value.value;
+  return (
+    value && value.attrValueKind === AttributeValueKind.String && value.value
+  );
 };
 
 export const getStyleElements = (ast: Node): StyleElement[] =>

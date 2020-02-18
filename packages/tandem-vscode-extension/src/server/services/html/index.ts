@@ -1,24 +1,25 @@
 import { BaseEngineLanguageService, ASTInfo } from "../base";
 import {
-  EngineEvent,
-  Engine,
-  EngineEventKind,
-  Node,
-  Element,
-  Sheet,
-  NodeParsedEvent,
-  getStyleElements,
   Rule,
+  Node,
+  Sheet,
+  Element,
+  NodeKind,
+  getParts,
   RuleKind,
   getImports,
+  EngineEvent,
+  getImportIds,
+  EvaluatedEvent,
+  EngineEventKind,
+  NodeParsedEvent,
+  getStyleElements,
   getAttributeValue,
   AttributeValueKind,
-  EvaluatedEvent,
   getVisibleChildNodes,
-  NodeKind,
-  getImportIds,
   getAttributeStringValue,
-  getParts
+  AttributeKind,
+  StatementKind
 } from "paperclip";
 import * as path from "path";
 
@@ -37,6 +38,7 @@ type HandleContext = {
   root: Node;
   uri: string;
   importIds: string[];
+  partIds: string[];
   info: ASTInfo;
 };
 
@@ -60,6 +62,9 @@ export class PCHTMLLanguageService extends BaseEngineLanguageService<Node> {
       root,
       uri,
       importIds: getImportIds(root),
+      partIds: getParts(root)
+        .map(part => getAttributeStringValue("id", part))
+        .filter(Boolean),
       info: {
         colors: [],
         links: [],
@@ -81,6 +86,7 @@ export class PCHTMLLanguageService extends BaseEngineLanguageService<Node> {
       this._handleSheet(sheet, context);
     }
   }
+
   private _handleSheet(sheet: Sheet, context: HandleContext) {
     this._handleRules(sheet.rules, context);
   }
@@ -92,6 +98,7 @@ export class PCHTMLLanguageService extends BaseEngineLanguageService<Node> {
       }
     }
   }
+
   private _handleRule(rule: Rule, context: HandleContext) {
     for (const declaration of rule.declarations) {
       const colors =
@@ -117,13 +124,15 @@ export class PCHTMLLanguageService extends BaseEngineLanguageService<Node> {
   private _handleDocument(context: HandleContext) {
     this._handleImports(context);
     this._handleMainTemplate(context);
+    this._handleParts(context);
   }
+
   private _handleImports(context: HandleContext) {
     const { root: node, uri } = context;
     const imports = getImports(node);
     for (const imp of imports) {
       const srcAttr = getAttributeValue("src", imp);
-      if (srcAttr.attrKind === AttributeValueKind.String) {
+      if (srcAttr.attrValueKind === AttributeValueKind.String) {
         context.info.links.push({
           uri: resolveUri(uri, srcAttr.value),
           location: srcAttr.location
@@ -131,11 +140,19 @@ export class PCHTMLLanguageService extends BaseEngineLanguageService<Node> {
       }
     }
   }
+
   private _handleMainTemplate(context: HandleContext) {
     for (const child of getVisibleChildNodes(context.root)) {
       this._handleVisibleNode(child, context);
     }
   }
+
+  private _handleParts(context: HandleContext) {
+    for (const child of getParts(context.root)) {
+      this._handleVisibleNode(child, context);
+    }
+  }
+
   private _handleVisibleNode(node: Node, context: HandleContext) {
     if (node.kind === NodeKind.Element) {
       this._handleElement(node, context);
@@ -144,11 +161,21 @@ export class PCHTMLLanguageService extends BaseEngineLanguageService<Node> {
       this._handleVisibleNode(child, context);
     }
   }
+
   private _handleElement(element: Element, context: HandleContext) {
     const tagParts = element.tagName.split(":");
     const namespace = tagParts[0];
     const name = tagParts[tagParts.length - 1];
-    if (context.importIds.indexOf(namespace) !== -1) {
+    this._handleAttributes(element, context);
+    if (context.partIds.indexOf(namespace) !== -1) {
+      this._handlePartInstance(
+        element,
+        namespace,
+        context.root,
+        context.uri,
+        context
+      );
+    } else if (context.importIds.indexOf(namespace) !== -1) {
       const imp = getImports(context.root).find(imp => {
         return getAttributeStringValue("id", imp) === namespace;
       });
@@ -162,17 +189,7 @@ export class PCHTMLLanguageService extends BaseEngineLanguageService<Node> {
 
       if (impAst) {
         if (tagParts.length === 2) {
-          const part = getParts(impAst).find(part => {
-            return getAttributeStringValue("id", part) === name;
-          });
-
-          if (part) {
-            context.info.definitions.push({
-              sourceUri: impUri,
-              sourceLocation: part.openTagLocation,
-              instanceLocation: element.tagNameLocation
-            });
-          }
+          this._handlePartInstance(element, name, impAst, impUri, context);
         } else {
           const firstVisibleNode = getVisibleChildNodes(impAst)[0];
 
@@ -185,6 +202,40 @@ export class PCHTMLLanguageService extends BaseEngineLanguageService<Node> {
           });
         }
       }
+    }
+  }
+
+  private _handleAttributes(element: Element, context: HandleContext) {
+    for (const attr of element.attributes) {
+      if (
+        attr.kind === AttributeKind.KeyValueAttribute &&
+        attr.value &&
+        attr.value.attrValueKind === AttributeValueKind.Slot
+      ) {
+        if (attr.value.jsKind === StatementKind.Node) {
+          this._handleVisibleNode((attr.value as any) as Node, context);
+        }
+      }
+    }
+  }
+
+  private _handlePartInstance(
+    element: Element,
+    name: string,
+    sourceRoot: Node,
+    sourceUri: string,
+    context: HandleContext
+  ) {
+    const part = getParts(sourceRoot).find(part => {
+      return getAttributeStringValue("id", part) === name;
+    });
+
+    if (part) {
+      context.info.definitions.push({
+        sourceUri,
+        sourceLocation: part.openTagLocation,
+        instanceLocation: element.tagNameLocation
+      });
     }
   }
 }

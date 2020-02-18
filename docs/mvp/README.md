@@ -39,13 +39,18 @@ Limitations:
 
 immediate TODO:
 
+- jump to definition from preview
+  - data-source attribute on each element
+  - web-renderer listen for node listen - dispatch meta click
+  - vscode receive uri & location
+  - outline nodes
 - PC config
   - moduleDirectories
 - typed definition file generation
 - jump to src
   - img
 - BUGS
-  - engine cache must be cleared for closed documents
+  - bad import src breaks engine
 - CLI (needed for webpack output)
   - pretty error output
 - handle circular dependencies

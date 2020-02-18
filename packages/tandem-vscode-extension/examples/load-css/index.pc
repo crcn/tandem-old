@@ -3,7 +3,6 @@
 <style>
   div {
     text-decoration: underline;
-    color: red;
   }
   ol {
     padding: 0;
@@ -14,6 +13,10 @@
     padding: 0;
   }
 </style>
+
+<div>
+  okay
+</div>
 
 <ol>
   {children}
