@@ -1,5 +1,5 @@
 import { EngineEvent } from "paperclip";
-import {
+import vscode, {
   Uri,
   window,
   commands,
@@ -196,12 +196,15 @@ class LivePreview {
   };
   private async _handleElementMetaClicked({ sourceLocation, sourceUri }) {
     // TODO - no globals here
-    console.log(sourceUri);
 
     const textDocument =
       workspace.textDocuments.find(doc => String(doc.uri) === sourceUri) ||
       (await workspace.openTextDocument(sourceUri.replace("file://", "")));
-    const editor = await window.showTextDocument(textDocument);
+
+    const editor =
+      window.visibleTextEditors.find(
+        editor => editor.document && String(editor.document.uri) === sourceUri
+      ) || (await window.showTextDocument(textDocument, ViewColumn.One));
     editor.selection = new Selection(
       textDocument.positionAt(sourceLocation.start),
       textDocument.positionAt(sourceLocation.end)

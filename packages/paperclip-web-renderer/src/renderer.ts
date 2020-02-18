@@ -75,7 +75,7 @@ export class Renderer {
     event.stopImmediatePropagation();
     const element = event.target as Element;
     const targetId = this._nativeNodeMap.get(element);
-    if (element.nodeType !== 1 || !targetId) return;
+    if (element.nodeType !== 1 || !targetId || !event.metaKey) return;
     const virtNode = findVirtNodeById(targetId, this._virtualRootNode);
     if (!virtNode) return;
     this._em.emit(RenderEventTypes.META_CLICK, virtNode);
@@ -88,8 +88,8 @@ export class Renderer {
     const rect = element.getBoundingClientRect();
     Object.assign(this._hoverOverlay.style, {
       display: "block",
-      left: `${rect.left}px`,
-      top: `${rect.top}px`,
+      left: `${window.scrollX + rect.left}px`,
+      top: `${window.scrollY + rect.top}px`,
       width: `${rect.width}px`,
       height: `${rect.height}px`
     });
