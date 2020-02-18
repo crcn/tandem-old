@@ -55,10 +55,10 @@ export class Engine {
     return this._native.parse_file(uri);
   }
   evaluateFileStyles(uri: string) {
-    return JSON.parse(this._native.evailate_file_styles(uri));
+    return this._native.evaluate_file_styles(uri);
   }
   evaluateContentStyles(content: string, uri: string) {
-    return JSON.parse(this._native.evaluate_content_files(content, uri));
+    return this._native.evaluate_content_files(content, uri);
   }
   parseContent(content: string) {
     return this._native.parse_content(content);

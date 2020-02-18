@@ -8,7 +8,7 @@
     /* hover hover these colors */
     
     color: blue;
-    background: #F60;
+    background: rgb(133, 71, 31)184, 105, 53);
     border: 1px solid blue;
 
     display: inline-block; 
@@ -30,5 +30,9 @@
 <div content={<dep:item />} />
 
 <part id="preview">
-  <self />
+  {something}
+  <self {somethingElse} key={value} />
+  <div onClick={doSomething} />
+  <div {onClick} />
+  something like this
 </part>

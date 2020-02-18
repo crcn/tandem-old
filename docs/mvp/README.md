@@ -46,11 +46,11 @@ immediate TODO:
   - outline nodes
 - PC config
   - moduleDirectories
-- typed definition file generation
 - jump to src
   - img
 - BUGS
   - bad import src breaks engine
+  - need to be aware of reserved props
 - CLI (needed for webpack output)
   - pretty error output
 - handle circular dependencies
@@ -72,3 +72,6 @@ immediate TODO:
   - testing
 - ask friends to play with app
 - site
+
+- enhancements
+  -

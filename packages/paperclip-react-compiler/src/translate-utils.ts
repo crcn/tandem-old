@@ -1,4 +1,5 @@
 import * as crc32 from "crc32";
+import { Options } from "./utils";
 
 export type TranslateContext = {
   filePath: string;
@@ -8,11 +9,14 @@ export type TranslateContext = {
   scope: string;
   indent: string;
   importIds: string[];
+  args: Options;
+  omitParts: string[];
 };
 
 export const createTranslateContext = (
   filePath: string,
   importIds: string[],
+  args: Options,
   indent: string = "  "
 ): TranslateContext => ({
   buffer: "",
@@ -21,7 +25,10 @@ export const createTranslateContext = (
   scope: crc32(filePath),
   isNewLine: true,
   lineNumber: 0,
-  indent
+  indent,
+  args,
+  omitParts:
+    (args.omitParts && Array.from(args.omitParts.split(/\s*,\s*/))) || []
 });
 
 export const addBuffer = (buffer: string, context: TranslateContext) => ({

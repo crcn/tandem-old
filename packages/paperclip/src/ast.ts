@@ -1,4 +1,4 @@
-import { Statement } from "./js-ast";
+import { Statement, StatementKind, Reference } from "./js-ast";
 import { Sheet } from "./css-ast";
 import { SourceLocation } from "./base-ast";
 
@@ -159,3 +159,40 @@ export const getParts = (ast: Node): Element[] =>
 
 export const hasAttribute = (name: string, element: Element) =>
   getAttribute(name, element) != null;
+
+export const getNestedReferences = (
+  node: Node,
+  _statements: [Reference, string][] = []
+): [Reference, string][] => {
+  if (node.kind === NodeKind.Slot) {
+    if (node.script.jsKind === StatementKind.Reference) {
+      _statements.push([node.script, null]);
+    }
+  } else {
+    if (node.kind === NodeKind.Element) {
+      for (const attr of node.attributes) {
+        if (
+          attr.kind == AttributeKind.KeyValueAttribute &&
+          attr.value &&
+          attr.value.attrValueKind === AttributeValueKind.Slot
+        ) {
+          if (attr.value.jsKind === StatementKind.Node) {
+            getNestedReferences((attr.value as any) as Node, _statements);
+          } else if (attr.value.jsKind === StatementKind.Reference) {
+            _statements.push([attr.value, attr.name]);
+          }
+        } else if (
+          attr.kind === AttributeKind.ShorthandAttribute &&
+          attr.reference.jsKind === StatementKind.Reference
+        ) {
+          _statements.push([attr.reference, attr.reference[0]]);
+        }
+      }
+    }
+
+    for (const child of getChildren(node)) {
+      getNestedReferences(child, _statements);
+    }
+  }
+  return _statements;
+};

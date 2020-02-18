@@ -4,10 +4,14 @@ const resolve = require("resolve");
 const chokidar = require("chokidar");
 const glob = require("glob");
 const {Engine} = require("paperclip");
+const fs = require("fs");
 
 const argv = require("yargs")
 .option("compiler", {
   describe: "Language compiler target",
+})
+.option("write", {
+  describe: "Write compiled file",
 })
 .option("watch", {
 }).argv;
@@ -28,7 +32,7 @@ if (!compileModule || !compileModule.compile) {
   process.exit();
 }
 
-const compile = compileModule.compile;
+const {compile, getOutputFilePath} = compileModule;
 init(process.cwd(), filesGlob, compile, argv.watch);
 
 function resolve2(module) {
@@ -50,11 +54,17 @@ function init(cwd, filesGlob, compile, shouldWatch) {
   async function compileFile(relativePath) {
     const fullPath = path.resolve(process.cwd(), relativePath);
     try {
-      const ast = await pcEngine.parseFile(fullPath);
-      const sheet = await pcEngine.evaluateFileStyles(fullPath);
-      console.log("Compiling %s", relativePath);
-      const result = compile({ ast, sheet }, fullPath);
-      console.log(result);
+      const ast = pcEngine.parseFile(fullPath);
+      const sheet = pcEngine.evaluateFileStyles(fullPath);
+      const result = compile({ ast, sheet }, fullPath, argv);
+      if (argv.write) {
+        const outputFilePath = getOutputFilePath(fullPath, argv);
+        console.log("Writing %s", outputFilePath);
+        fs.writeFileSync(outputFilePath, result);
+      } else {
+        console.log("Compiling %s", relativePath);
+        console.log(result);
+      }
     } catch(e) {
       console.log("Err %s", relativePath);
       console.error(e);
@@ -63,10 +73,7 @@ function init(cwd, filesGlob, compile, shouldWatch) {
   glob(filesGlob, {
     cwd: cwd
   }, async function(err, filePaths) {
-    await Promise.all(filePaths.map(compileFile));
-    if (!shouldWatch) {
-      pcEngine.dispose();
-    }
+    filePaths.map(compileFile);
   });
 
   if (shouldWatch) {
@@ -74,9 +81,7 @@ function init(cwd, filesGlob, compile, shouldWatch) {
   }
 }
 
-
 function watch(cwd, filesGlob, compileFile) {
-
   const watcher = chokidar.watch(filesGlob, {
     cwd: cwd
   });
