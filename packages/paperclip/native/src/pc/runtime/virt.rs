@@ -21,7 +21,11 @@ impl fmt::Display for Fragment {
 pub struct Element {
   
   pub id: String,
+  
+  #[serde(rename = "sourceUri")]
+  pub source_uri: String,
 
+  #[serde(rename = "sourceLocation")]
   pub source_location: Location,
 
   #[serde(rename = "tagName")]

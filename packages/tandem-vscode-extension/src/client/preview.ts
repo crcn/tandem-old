@@ -7,7 +7,8 @@ import {
   WebviewPanel,
   ExtensionContext,
   ViewColumn,
-  workspace
+  workspace,
+  Selection
 } from "vscode";
 import { isPaperclipFile } from "./utils";
 import * as path from "path";
@@ -164,6 +165,7 @@ class LivePreview {
         );
       }
     });
+    this.panel.webview.onDidReceiveMessage(this._onPreviewMessage);
   }
   getState(): LivePreviewState {
     return {
@@ -186,6 +188,26 @@ class LivePreview {
     return () => {
       this._em.removeListener("didDispose", listener);
     };
+  }
+  private _onPreviewMessage = event => {
+    if (event.type === "metaElementClicked") {
+      this._handleElementMetaClicked(event);
+    }
+  };
+  private async _handleElementMetaClicked({ sourceLocation, sourceUri }) {
+    // TODO - no globals here
+    console.log(sourceUri);
+
+    const textDocument =
+      workspace.textDocuments.find(doc => String(doc.uri) === sourceUri) ||
+      (await workspace.openTextDocument(sourceUri.replace("file://", "")));
+    const editor = await window.showTextDocument(textDocument);
+    editor.selection = new Selection(
+      textDocument.positionAt(sourceLocation.start),
+      textDocument.positionAt(sourceLocation.end)
+    );
+    editor.revealRange(editor.selection);
+    // textDocument.get
   }
   private _onMessage = () => {
     // TODO when live preview tools are available

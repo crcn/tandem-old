@@ -1,5 +1,6 @@
 import { Html5Entities } from "html-entities";
 import { stringifyCSSSheet } from "paperclip/lib/stringify-sheet";
+import { preventDefault } from "./utils";
 
 const entities = new Html5Entities();
 
@@ -10,9 +11,7 @@ export const createNativeNode = (
   protocol: string | null,
   map: DOMNodeMap = new Map()
 ) => {
-  // if (!node || true) {
   // return document.createTextNode(JSON.stringify(node));
-  // }
   try {
     switch (node.kind) {
       case "Text": {
@@ -55,6 +54,13 @@ const createNativeElement = (element, protocol: string, map: DOMNodeMap) => {
   }
   for (const child of element.children) {
     nativeElement.appendChild(createNativeNode(child, protocol, map));
+  }
+
+  // prevent redirects & vscode from asking to redirect.
+  if (element.tagName === "a") {
+    nativeElement.onclick = preventDefault;
+    nativeElement.onmouseup = preventDefault;
+    nativeElement.onmousedown = preventDefault;
   }
   map.set(nativeElement, element.id);
   return nativeElement;

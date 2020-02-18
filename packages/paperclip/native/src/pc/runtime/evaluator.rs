@@ -403,6 +403,7 @@ fn evaluate_basic_element<'a>(element: &ast::Element, context: &'a mut Context) 
 
   Ok(Some(virt::Node::Element(virt::Element {
     id: context.get_next_id(),
+    source_uri: context.uri.to_string(),
     source_location: element.location.clone(),
     tag_name: tag_name,
     attributes,

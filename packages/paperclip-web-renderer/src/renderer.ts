@@ -1,6 +1,7 @@
 import { createNativeNode, DOMNodeMap } from "./native-renderer";
 // import { Node as VirtNode } from "paperclip";
 import { EventEmitter } from "events";
+import { preventDefault } from "./utils";
 
 enum RenderEventTypes {
   META_CLICK = "META_CLICK"
@@ -33,9 +34,10 @@ export class Renderer {
     this.mount = document.createElement("div");
     this.mount.appendChild(this._stage);
     this.mount.appendChild(this._hoverOverlay);
-    this._stage.onclick = this._onStageClick;
-    this._stage.onmouseover = this._onStageMouseOver;
-    this._stage.onmouseout = this._onStageMouseOut;
+    this._stage.addEventListener("mousedown", this._onStageMouseDown, true);
+    this._stage.addEventListener("mouseup", preventDefault, true);
+    this._stage.addEventListener("mouseover", this._onStageMouseOver);
+    this._stage.addEventListener("mouseout", this._onStageMouseOut);
   }
 
   onMetaClick = (listener: (element: any) => void) => {
@@ -50,7 +52,7 @@ export class Renderer {
     switch (event.kind) {
       case "Evaluated": {
         while (this._stage.childNodes.length) {
-          this._stage.removeChild(this.mount.childNodes[0]);
+          this._stage.removeChild(this._stage.childNodes[0]);
         }
         this._scopeFilePath = event.file_path;
         this._virtualRootNode = event.node;
@@ -68,7 +70,9 @@ export class Renderer {
     }
   }
 
-  private _onStageClick = (event: MouseEvent) => {
+  private _onStageMouseDown = (event: MouseEvent) => {
+    event.preventDefault();
+    event.stopImmediatePropagation();
     const element = event.target as Element;
     const targetId = this._nativeNodeMap.get(element);
     if (element.nodeType !== 1 || !targetId) return;

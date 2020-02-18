@@ -1,12 +1,33 @@
+<style>
+.button {
+  color: black;
+}
+  [secondary] .button {
+    background: blue;
+  }
+
+  [primary] .button {
+    background: rgb(190, 88, 88);
+  }
+</style>
+
+<div {primary} {secondary}>
+  <div class="button">
+    something
+  </div>
+</div>
+
 <part id="item">
   something
 </part>
 
-<div>
-  something like this
-</div>
+
+<part id="list">
+  <ol>{children}</ol>
+</part>
+<item />
 
 <part id="preview">
-  <item />
-  <self />
+  <self primary />
+  <self secondary />
 </part>
