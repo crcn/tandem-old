@@ -37,9 +37,7 @@ module.exports = {
         loader: "paperclip-loader",
         include: [path.resolve(__dirname, "src")],
         exclude: [/node_modules/],
-        options: {
-          compiler: "paperclip-react-compiler"
-        }
+        options: require("./pcconfig.json")
       }
     ]
   },

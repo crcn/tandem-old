@@ -62,7 +62,7 @@ export class Engine {
     return mapResult(this._native.evaluate_file_styles(uri));
   }
   evaluateContentStyles(content: string, uri: string) {
-    return mapResult(this._native.evaluate_content_files(content, uri));
+    return mapResult(this._native.evaluate_content_styles(content, uri));
   }
   parseContent(content: string) {
     return mapResult(this._native.parse_content(content));
