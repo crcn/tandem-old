@@ -4,7 +4,7 @@ use crate::pc::parser::{parse as parse_pc};
 use crate::base::parser::{ParseError};
 use crate::pc::ast as pc_ast;
 use crate::pc::runtime::graph::{DependencyGraph, DependencyContent, GraphError};
-use crate::pc::runtime::vfs::{VirtualFileSystem, FileReaderFn, FileResolverFn};
+use crate::pc::runtime::vfs::{VirtualFileSystem, FileExistsFn, FileReaderFn, FileResolverFn};
 use crate::pc::runtime::evaluator::{evaluate_document_styles, evaluate as evaluate_pc};
 use crate::js::runtime::virt as js_virt;
 use crate::base::runtime::{RuntimeError};
@@ -72,10 +72,10 @@ pub struct Engine {
 }
 
 impl Engine {
-  pub fn new(read_file: Box<FileReaderFn>, resolve_file: Box<FileResolverFn>, http_path: Option<String>) -> Engine {
+  pub fn new(read_file: Box<FileReaderFn>, file_exists: Box<FileExistsFn>, resolve_file: Box<FileResolverFn>) -> Engine {
     Engine {
       listeners: vec![],
-      vfs: VirtualFileSystem::new(read_file, resolve_file, http_path),
+      vfs: VirtualFileSystem::new(read_file, file_exists, resolve_file),
       dependency_graph: DependencyGraph::new(),
       load_options: HashMap::new()
     }

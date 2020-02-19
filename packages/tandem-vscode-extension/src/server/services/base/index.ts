@@ -69,7 +69,14 @@ export abstract class BaseEngineLanguageService<TAst>
     return this._getASTInfo(uri).definitions;
   }
 
-  private _getASTInfo(uri: string) {
+  private _getASTInfo(uri: string): ASTInfo {
+    if (!this._asts[uri]) {
+      return {
+        colors: [],
+        links: [],
+        definitions: []
+      };
+    }
     return (
       this._astInfo[uri] ||
       (this._astInfo[uri] = this._createASTInfo(this._asts[uri], uri))

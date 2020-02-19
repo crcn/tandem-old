@@ -7,9 +7,8 @@
 
     /* hover hover these colors */
     
-    color: blue;
-    background: rgb(133, 71, 31)184, 105, 53);
-    border: 1px solid blue;
+    color: rgb(91, 214, 33);
+    font-size: 42px;
 
     display: inline-block; 
   }

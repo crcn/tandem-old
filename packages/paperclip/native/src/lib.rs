@@ -28,18 +28,22 @@ pub struct NativeEngine {
 
 #[wasm_bindgen]
 impl NativeEngine {
-    pub fn new(read_file: js_sys::Function, resolve_file: js_sys::Function) -> NativeEngine {
+    pub fn new(read_file: js_sys::Function, file_exists: js_sys::Function, resolve_file: js_sys::Function) -> NativeEngine {
       NativeEngine {
         target: Engine::new(Box::new(move |uri| {
           let this = JsValue::NULL;
           let arg = JsValue::from(uri);
           read_file.call1(&this, &arg).unwrap().as_string().unwrap()
+        }), Box::new(move |uri| {
+          let this = JsValue::NULL;
+          let arg = JsValue::from(uri);
+          file_exists.call1(&this, &arg).unwrap().as_bool().unwrap()
         }), Box::new(move |from_path, relative_path| {
           let this = JsValue::NULL;
           let arg = JsValue::from(from_path);
           let arg2 = JsValue::from(relative_path);
           resolve_file.call2(&this, &arg, &arg2).unwrap().as_string().unwrap()
-        }), None)
+        }))
       }
     }
     pub fn load(&mut self, uri: String, part: Option<String>) {

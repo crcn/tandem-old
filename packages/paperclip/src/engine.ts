@@ -3,6 +3,8 @@ import { EngineEvent, EngineEventKind } from "./events";
 import * as fs from "fs";
 import * as path from "path";
 import { NativeEngine } from "../native/pkg/paperclip";
+import { PC_CONFIG_FILE_NAME } from "./constants";
+import { PaperclipConfig } from "./config";
 
 export type FileContent = {
   [identifier: string]: string;
@@ -11,7 +13,6 @@ export type FileContent = {
 export type EngineOptions = {
   httpuri?: string;
   renderPart?: string;
-  moduleDirectories?: string[];
 };
 
 export type EngineEventListener = (event: EngineEvent) => void;
@@ -25,15 +26,10 @@ export class Engine {
       uri => {
         return fs.readFileSync(uri.replace("file://", ""), "utf8");
       },
-      (fromPath, relativePath) => {
-        // TODO - resolve from config
-        return (
-          "file://" +
-          path.normalize(
-            path.join(stripFileProtocol(path.dirname(fromPath)), relativePath)
-          )
-        );
-      }
+      uri => {
+        return fs.existsSync(uri.replace("file://", ""));
+      },
+      resolveImportFile
     );
 
     // only one native listener to for buffer performance
@@ -82,4 +78,57 @@ export class Engine {
       throw e;
     }
   };
+}
+
+export function resolveImportFile(fromPath: string, toPath: string) {
+  if (/\w+:\/\//.test(toPath)) {
+    return toPath;
+  }
+
+  if (toPath.charAt(0) !== ".") {
+    return resolveModule(fromPath, toPath) || toPath;
+  }
+
+  return (
+    "file://" +
+    path.normalize(path.join(stripFileProtocol(path.dirname(fromPath)), toPath))
+  );
+}
+
+function resolveModule(fromPath: string, moduleRelativePath: string) {
+  const configPath = findPCConfigPath(fromPath);
+  if (!configPath) return null;
+  const config = require(configPath);
+  if (!config.moduleDirectories) return null;
+  const configPathDir = path.dirname(configPath);
+  for (const moduleDirectory of config.moduleDirectories) {
+    const moduleFilePath = path.normalize(
+      path.join(configPathDir, moduleDirectory, moduleRelativePath)
+    );
+    if (fs.existsSync(moduleFilePath)) {
+      return moduleFilePath;
+    }
+  }
+  return null;
+}
+
+const _triedDirectories = {};
+
+function findPCConfigPath(fromPath: string): string | null {
+  let cdir: string = path.dirname(fromPath.replace("file://", ""));
+  do {
+    const configPath = _triedDirectories[cdir];
+
+    if (configPath == null) {
+      _triedDirectories[cdir] = false;
+      const configPath = path.join(cdir, PC_CONFIG_FILE_NAME);
+      if (fs.existsSync(configPath)) {
+        return (_triedDirectories[cdir] = configPath);
+      }
+    } else if (configPath) {
+      return configPath;
+    }
+    cdir = path.dirname(cdir);
+  } while (cdir !== "/" && cdir !== ".");
+  return null;
 }

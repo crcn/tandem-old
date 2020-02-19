@@ -2,13 +2,6 @@
 .button {
   color: black;
 }
-  [secondary] .button {
-    background: blue;
-  }
-
-  [primary] .button {
-    background: rgb(190, 88, 88);
-  }
 </style>
 
 <div {primary} {secondary}>

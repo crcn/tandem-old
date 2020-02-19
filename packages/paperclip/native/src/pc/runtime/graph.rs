@@ -153,20 +153,9 @@ impl DependencyGraph {
 
     }
 
-    // Ok(self.dependencies.get(&uri.to_string()).unwrap())
     Ok(loaded_deps)
   }
 
-  // pub async fn reload_dependents<'a>(&mut self, uri: &String, vfs: &mut VirtualFileSystem) -> Result<&Dependency, GraphError> {
-  //   if !self.dependencies.contains_key(&uri.to_string()) {
-  //     return self.load_dependency(uri, vfs).await;
-  //   }
-  //   self.dependencies.remove(uri);
-  //   self.dependencies.retain(|_dep_uri, dep| {
-  //     return !dep.dependencies.contains_key(uri);
-  //   });
-  //   self.load_dependency(uri, vfs).await
-  // }
 }
 
 #[derive(Debug)]

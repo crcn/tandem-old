@@ -8,18 +8,10 @@ import {
   DocumentLinkRequest,
   DocumentLink,
   DocumentLinkParams,
-  DeclarationLink,
   DefinitionRequest,
   DefinitionLink,
-  DefinitionParams,
-  DeclarationParams,
-  DeclarationRequest
+  DefinitionParams
 } from "vscode-languageserver";
-import {
-  BaseLanguageService,
-  ColorInfo,
-  DocumentLinkInfo
-} from "./services/base";
 import {
   Engine,
   EngineEvent,

@@ -210,7 +210,6 @@ class LivePreview {
       textDocument.positionAt(sourceLocation.end)
     );
     editor.revealRange(editor.selection);
-    // textDocument.get
   }
   private _onMessage = () => {
     // TODO when live preview tools are available

@@ -1,0 +1,11 @@
+<import id="a" src="global.css">
+
+<style> 
+  div {
+    color: var(--text-color);
+  }
+</style>
+
+<div>
+  Elementaa
+</div>

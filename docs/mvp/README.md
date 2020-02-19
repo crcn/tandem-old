@@ -45,6 +45,7 @@ immediate TODO:
 - BUGS
   - bad import src breaks engine
   - need to be aware of reserved props
+  - need to handle cases where files are moved around, especially for moduleDirectory files
 - CLI (needed for webpack output)
   - pretty error output
 - handle circular dependencies
@@ -56,6 +57,7 @@ immediate TODO:
       - all import attrs
       - all meta attrs
 - examples
+  - clean up current\*\*
   - chat app
 - docs
   - what is Tandem

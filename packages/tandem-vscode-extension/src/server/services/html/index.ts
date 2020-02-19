@@ -19,7 +19,8 @@ import {
   getVisibleChildNodes,
   getAttributeStringValue,
   AttributeKind,
-  StatementKind
+  StatementKind,
+  resolveImportFile
 } from "paperclip";
 import * as path from "path";
 
@@ -71,7 +72,6 @@ export class PCHTMLLanguageService extends BaseEngineLanguageService<Node> {
         definitions: []
       }
     };
-
     this._handleStyles(context);
     this._handleDocument(context);
 
@@ -134,7 +134,7 @@ export class PCHTMLLanguageService extends BaseEngineLanguageService<Node> {
       const srcAttr = getAttributeValue("src", imp);
       if (srcAttr.attrValueKind === AttributeValueKind.String) {
         context.info.links.push({
-          uri: resolveUri(uri, srcAttr.value),
+          uri: resolveImportFile(uri, srcAttr.value),
           location: srcAttr.location
         });
       }

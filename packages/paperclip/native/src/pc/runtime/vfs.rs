@@ -2,26 +2,23 @@ use std::collections::HashMap;
 // use curl::easy::Easy;
 
 pub type FileReaderFn = dyn Fn(&String) -> String;
+pub type FileExistsFn = dyn Fn(&String) -> bool;
 pub type FileResolverFn = dyn Fn(&String, &String) -> String;
 
 #[allow(dead_code)]
 pub struct VirtualFileSystem {
   read_file: Box<FileReaderFn>,
   resolve_file: Box<FileResolverFn>,
-  http_path: Option<String>,
+  file_exists: Box<FileExistsFn>,
   pub contents: HashMap<String, String>
-}
-
-fn insert_content(uri: String, content: String, contents: &mut HashMap<String, String>) {
-  contents.insert(uri, content);
 }
 
 #[allow(dead_code)]
 impl VirtualFileSystem {
-  pub fn new(read_file: Box<FileReaderFn>, resolve_file: Box<FileResolverFn>, http_path: Option<String>) -> VirtualFileSystem {
+  pub fn new(read_file: Box<FileReaderFn>, file_exists: Box<FileExistsFn>, resolve_file: Box<FileResolverFn>) -> VirtualFileSystem {
     VirtualFileSystem {
       read_file,
-      http_path,
+      file_exists,
       resolve_file,
       contents: HashMap::new()
     }
@@ -38,26 +35,19 @@ impl VirtualFileSystem {
     (self.resolve_file)(from_path, relative_path)
   }
 
-  pub async fn update(&mut self, uri: &String, content: &String) -> Result<String, &'static str> {
-    if !self.contents.contains_key(uri) {
-      self.load(&uri).await?;
-    }
-
-    Ok(self.contents.insert(uri.to_string(), content.to_string()).unwrap())
+  pub async fn update(&mut self, uri: &String, content: &String) -> Result<&String, &'static str> {
+    self.contents.insert(uri.to_string(), content.to_string());
+    Ok(self.contents.get(uri).unwrap())
   }
 
   pub async fn reload(&mut self, uri: &String) -> Result<&String, &'static str> {
-    // let content = if let Some(http_path) = &self.http_path {
-    //   let file_http_path = format!("{}{}", http_path, uri).to_string();
-    //   let data = http_get(&file_http_path);
-    //   data
-    // } else {
-    //   fs::read_to_string(&uri).or(Err("Unable to fetch text"))?
-    // };
+
+    if !(self.file_exists)(uri) {
+      return Err("File does not exist");
+    }
     let content = (self.read_file)(uri);
-    // let content = fs::read_to_string(&uri).or(Err("Unable to fetch text"))?;
     
-    insert_content(uri.to_string(), content, &mut self.contents);
+    self.contents.insert(uri.to_string(), content);
     Ok(self.contents.get(uri).unwrap())
   }
 }
