@@ -8,7 +8,7 @@
   },
   "author": "",
   "license": "ISC",
-  "gitHead": "0ba8a62f552bae870031bbd06120d1738e1fa03a",
+  "gitHead": "d4cda8fbc18102de46a8ec0b7b027e563d474294",
   "dependencies": {
     "chokidar": "^3.3.1",
     "glob": "^7.1.6",

@@ -40,13 +40,6 @@ Limitations:
 immediate TODO:
 
 - loader add resources
-- BUGS
-  - bad import src breaks engine
-  - need to be aware of reserved props
-  - need to handle cases where files are moved around, especially for moduleDirectory files
-- CLI (needed for webpack output)
-  - pretty error output
-- handle circular dependencies
   - linter
     - error with multiple IDs
     - warn for script tags
@@ -66,5 +59,10 @@ immediate TODO:
   - testing
 - ask friends to play with app
 - site
+- BUGS
+
+  - handle circular dependencies
+  - need to be aware of reserved props
+  - need to handle cases where files are moved around, especially for moduleDirectory files
 
 - ## enhancements
