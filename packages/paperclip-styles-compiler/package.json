@@ -1,6 +1,6 @@
 {
   "name": "paperclip-styles-compiler",
-  "version": "11.0.6",
+  "version": "11.0.7",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -11,7 +11,7 @@
   "license": "ISC",
   "dependencies": {
     "crc32": "^0.2.2",
-    "paperclip": "^11.0.6",
+    "paperclip": "^11.0.7",
     "typescript": "^3.7.5"
   },
   "gitHead": "d4cda8fbc18102de46a8ec0b7b027e563d474294"
