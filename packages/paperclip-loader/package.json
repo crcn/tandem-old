@@ -1,6 +1,6 @@
 {
   "name": "paperclip-loader",
-  "version": "11.0.7",
+  "version": "11.0.8",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -9,10 +9,10 @@
   },
   "author": "",
   "license": "ISC",
-  "gitHead": "d4cda8fbc18102de46a8ec0b7b027e563d474294",
+  "gitHead": "844da419ffe8317ba246fc4ee1947a3074445a38",
   "dependencies": {
     "loader-utils": "^1.2.3",
-    "paperclip": "^11.0.7",
+    "paperclip": "^11.0.8",
     "paperclip-react-compiler": "^10.1.38",
     "react": "^16.12.0",
     "resolve": "^1.15.1",
