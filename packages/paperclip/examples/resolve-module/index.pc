@@ -3,9 +3,10 @@
 <style> 
   div {
     color: var(--text-color);
+    font-size: 24px;
   }
 </style>
 
 <div>
-  Elementaa
+  Element
 </div>

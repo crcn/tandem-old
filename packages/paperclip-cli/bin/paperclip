@@ -3,7 +3,7 @@ const path = require("path");
 const resolve = require("resolve");
 const chokidar = require("chokidar");
 const glob = require("glob");
-const {Engine} = require("paperclip");
+const {Engine, getPrettyMessage} = require("paperclip");
 const fs = require("fs");
 
 const argv = require("yargs")
@@ -72,12 +72,20 @@ function init(cwd, filesGlob, compile, shouldWatch) {
   
   const pcEngine = new Engine();
 
+  function handleError(error, filePath) {
+    console.error(getPrettyMessage(error, fs.readFileSync(filePath, "utf8"), filePath));
+  }
+
   async function compileFile(relativePath) {
     const fullPath = path.resolve(process.cwd(), relativePath);
 
     const compilerOptions = Object.assign({}, argvConfig.compilerOptions, config.compilerOptions);
     try {
       const ast = pcEngine.parseFile(fullPath);
+
+      if (ast.error) {
+        return handleError(ast.error, fullPath);
+      }
       const sheet = pcEngine.evaluateFileStyles(fullPath);
       const result = compile({ ast, sheet }, fullPath, compilerOptions);
       if (argv.write) {

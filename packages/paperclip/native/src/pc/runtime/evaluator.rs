@@ -540,7 +540,7 @@ mod tests {
     let case = "<style>div { color: red; }</style><div></div>";
     let ast = parse(case).unwrap();
     let graph = DependencyGraph::new();
-    let vfs = VirtualFileSystem::new(Box::new(|_| "".to_string()), Box::new(|_| true), Box::new(|_,_| "".to_string()), None);
+    let vfs = VirtualFileSystem::new(Box::new(|_| "".to_string()), Box::new(|_| true), Box::new(|_,_| "".to_string()));
     let _node = evaluate(&ast, &"something".to_string(), &graph, &vfs, &js_virt::JsValue::JsObject(js_virt::JsObject::new()), None).unwrap().unwrap();
   }
 }

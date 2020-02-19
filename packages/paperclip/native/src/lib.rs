@@ -57,19 +57,19 @@ impl NativeEngine {
       }));
     }
     pub fn evaluate_content_styles(&mut self, content: String, uri: String) -> JsValue {
-      let result = block_on(self.target.evaluate_content_styles(&content, &uri)).unwrap();
+      let result = block_on(self.target.evaluate_content_styles(&content, &uri));
       JsValue::from_serde(&result).unwrap()
     }
     pub fn evaluate_file_styles(&mut self, uri: String) -> JsValue {
-      let result = block_on(self.target.evaluate_file_styles(&uri)).unwrap();
+      let result = block_on(self.target.evaluate_file_styles(&uri));
       JsValue::from_serde(&result).unwrap()
     }
     pub fn parse_content(&mut self, content: String) -> JsValue {
-      let result = block_on(self.target.parse_content(&content)).unwrap();
+      let result = block_on(self.target.parse_content(&content));
       JsValue::from_serde(&result).unwrap()
     }
     pub fn parse_file(&mut self, uri: String) -> JsValue {
-      let result = block_on(self.target.parse_file(&uri)).unwrap();
+      let result = block_on(self.target.parse_file(&uri));
       JsValue::from_serde(&result).unwrap()
     }
     pub fn update_virtual_file_content(&mut self, uri: String, content: String) {

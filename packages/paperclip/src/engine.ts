@@ -15,6 +15,14 @@ export type EngineOptions = {
   renderPart?: string;
 };
 
+const mapResult = result => {
+  if (result.Ok) {
+    return result.Ok;
+  } else {
+    return { error: result.Err };
+  }
+};
+
 export type EngineEventListener = (event: EngineEvent) => void;
 
 export class Engine {
@@ -48,24 +56,24 @@ export class Engine {
     };
   }
   parseFile(uri: string) {
-    return this._native.parse_file(uri);
+    return mapResult(this._native.parse_file(uri));
   }
   evaluateFileStyles(uri: string) {
-    return this._native.evaluate_file_styles(uri);
+    return mapResult(this._native.evaluate_file_styles(uri));
   }
   evaluateContentStyles(content: string, uri: string) {
-    return this._native.evaluate_content_files(content, uri);
+    return mapResult(this._native.evaluate_content_files(content, uri));
   }
   parseContent(content: string) {
-    return this._native.parse_content(content);
+    return mapResult(this._native.parse_content(content));
   }
   updateVirtualFileContent(uri: string, content: string) {
     this._dispatch({ kind: EngineEventKind.Updating, uri });
-    this._native.update_virtual_file_content(uri, content);
+    return mapResult(this._native.update_virtual_file_content(uri, content));
   }
   load(uri: string) {
     this._dispatch({ kind: EngineEventKind.Loading, uri });
-    this._native.load(uri, this._options.renderPart);
+    return mapResult(this._native.load(uri, this._options.renderPart));
   }
   private _dispatch = (event: EngineEvent) => {
     // try-catch since engine will throw opaque error.

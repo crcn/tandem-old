@@ -39,7 +39,6 @@ Limitations:
 
 immediate TODO:
 
-- pretty output PC errors
 - loader add resources
 - BUGS
   - bad import src breaks engine
