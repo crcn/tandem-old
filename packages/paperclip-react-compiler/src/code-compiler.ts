@@ -78,7 +78,10 @@ const translateUtils = (ast: Node, context: TranslateContext) => {
 };
 
 const translateStyledUtil = (ast: Node, context: TranslateContext) => {
-  context = addBuffer(`function styled(tagName, defaultProps) {\n`, context);
+  context = addBuffer(
+    `export const styled = (tagName, defaultProps) => {\n`,
+    context
+  );
   context = startBlock(context);
   context = addBuffer(`return function(props) {\n`, context);
   context = startBlock(context);
@@ -90,7 +93,7 @@ const translateStyledUtil = (ast: Node, context: TranslateContext) => {
   context = addBuffer(`};\n`, context);
   context = endBlock(context);
   context = addBuffer("}\n\n", context);
-  context = addBuffer("exports.styled = styled;\n\n", context);
+  // context = addBuffer("exports.styled = styled;\n\n", context);
   return context;
 };
 
@@ -125,7 +128,10 @@ const translateParts = (root: Node, context: TranslateContext) => {
 
 const translatePart = (part: Element, context: TranslateContext) => {
   const componentName = getPartClassName(part);
-  context = addBuffer(`var ${componentName} = function(props) {\n`, context);
+  context = addBuffer(
+    `export const ${componentName} = (props) => {\n`,
+    context
+  );
   context = startBlock(context);
   context = addBuffer("return ", context);
   context = translateFragment(part.children, true, context);
@@ -133,19 +139,18 @@ const translatePart = (part: Element, context: TranslateContext) => {
   context = endBlock(context);
   context = addBuffer("};\n\n", context);
   context = addBuffer("", context);
-  context = addBuffer(
-    `exports.${componentName} = ${componentName};\n\n`,
-    context
-  );
+  // context = addBuffer(
+  //   `exports.${componentName} = ${componentName};\n\n`,
+  //   context
+  // );
   return context;
 };
 
 const translateMainTemplate = (root: Node, context: TranslateContext) => {
-  const baseComponentName = getBaseComponentName(root);
-  const enhancedComponentName = getComponentName(root);
+  const componentName = getComponentName(root);
 
   context = startBlock(
-    addBuffer(`var ${baseComponentName} = function(props) {\n`, context)
+    addBuffer(`const ${componentName} = (props) => {\n`, context)
   );
   context = addBuffer(`return `, context);
   context = translateJSXRoot(root, context);
@@ -153,11 +158,11 @@ const translateMainTemplate = (root: Node, context: TranslateContext) => {
   context = addBuffer(";\n", context);
   context = addBuffer(`};\n\n`, context);
   // TODO - check if logic controller
-  context = addBuffer(
-    `var ${enhancedComponentName} = ${baseComponentName};\n`,
-    context
-  );
-  context = addBuffer(`exports.default = ${enhancedComponentName};\n`, context);
+  // context = addBuffer(
+  //   `export const ${enhancedComponentName} = ${baseComponentName};\n`,
+  //   context
+  // );
+  context = addBuffer(`export default ${componentName};\n`, context);
 
   return context;
 };

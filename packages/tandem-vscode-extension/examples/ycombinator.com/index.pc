@@ -1,4 +1,8 @@
 <style>
+
+* {
+    font-size: 12px;
+}
 body  { font-family:Verdana, Geneva, sans-serif; font-size:10pt; color:#828282; }
 td    { font-family:Verdana, Geneva, sans-serif; font-size:10pt; color:#828282; }
 
@@ -10,7 +14,7 @@ input[type=\"submit\"] { font-family:Verdana, Geneva, sans-serif; }
 textarea { font-family:monospace; font-size:10pt; }
 
 
-a:link    { color:rgb(90, 14, 196))); text-decoration:none; }
+a:link    { color:rgb(29, 12, 182); text-decoration:none; }
 a:visited { color:rgb(55, 155, 77); text-decoration:none; }
 
 .default { font-family:Verdana, Geneva, sans-serif; font-size: 10pt; color:rgb(73, 136, 65); }
@@ -189,7 +193,7 @@ pre { max-width: 900px; }
                         <td style="width:18px;padding-right:4px">
                             <a href="https://news.ycombinator.com"><img src="okay.png" width="18" height="18" style="border:1px white solid;"></a>
                         </td>
-                        <td style="line-height:12pt; height:10px;"><span class="pagetop"><b class="hnname"><a href="news">Hacker Blews</a></b>
+                        <td style="line-height:12pt; height:10px;"><span class="pagetop"><b class="hnname"><a href="news">Hacker world</a></b>
               <a href="newest">new</a> | <a href="front">past</a> | <a href="newcomments">comments</a> | <a href="ask">ask</a> | <a href="show">show</a> | <a href="jobs">jobs</a> | <a href="submit">submit</a>            </span></td>
                         <td style="text-align:right;padding-right:4px;"><span class="pagetop">
                               <a href="login?goto=news">login</a>
@@ -302,7 +306,7 @@ pre { max-width: 900px; }
                                 </a>
                             </center>
                         </td>
-                        <td class="title"><a href="https://netflixtechblog.com/netflix-now-streaming-av1-on-android-d5264a515202" class="storylink">Netflix Now Streaming AV1 on Android</a><span class="sitebit comhead"> (<a href="from?site=netflixtechblog.com"><span class="sitestr">netflixtechblog.com</span></a>)</span>
+                        <td class="title"><a href="https://netflixtechblog.com/netflix-now-streaming-av1-on-android-d5264a515202" class="storylink">Blarg blarg gggg Streaming AV1 on Android</a><span class="sitebit comhead"> (<a href="from?site=netflixtechblog.com"><span class="sitestr">netflixtechblog.com</span></a>)</span>
                         </td>
                     </tr>
                     <tr>

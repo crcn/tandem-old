@@ -3,5 +3,6 @@
     "name": "paperclip-react-compiler",
     "omitParts": ["preview"]
   },
-  "moduleDirectories": ["./src"]
+  "moduleDirectories": ["./src"],
+  "filesGlob": "./src/**/*.pc"
 }

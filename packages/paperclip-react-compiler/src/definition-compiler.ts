@@ -27,7 +27,11 @@ export const compile = (
 
 const translateRoot = (ast: Node, context: TranslateContext) => {
   context = addBuffer(
-    `import {ReactNode, InputHTMLAttributes, ClassAttributes} from "react";\n\n`,
+    `import {ReactNode, ReactHTML, Factory, InputHTMLAttributes, ClassAttributes} from "react";\n\n`,
+    context
+  );
+  context = addBuffer(
+    `type BaseProps = InputHTMLAttributes<HTMLInputElement> & ClassAttributes<HTMLInputElement>;\n\n`,
     context
   );
   context = translateUtils(ast, context);
@@ -36,9 +40,9 @@ const translateRoot = (ast: Node, context: TranslateContext) => {
   return context;
 };
 
-const translateUtils = (ast: Node, context: TranslateContext) => {
+const translateUtils = (_ast: Node, context: TranslateContext) => {
   context = addBuffer(
-    `export type styled = (tagName: string) => (props: InputHTMLAttributes<HTMLInputElement> & ClassAttributes<HTMLInputElement> | null) => ReactNode;\n\n`,
+    `export declare const styled: (tag: keyof ReactHTML | Factory<BaseProps>, defaultProps?: BaseProps) => Factory<BaseProps>;\n\n`,
     context
   );
   return context;
@@ -59,10 +63,18 @@ const translatePart = (part: Element, context: TranslateContext) => {
   const componentName = getPartClassName(part);
   context = translateComponent(part, componentName + "Props", context);
   context = addBuffer(
-    `export type ${componentName} = (props: ${componentName}Props) => ReactNode;\n\n`,
+    `export declare const ${componentName}: Factory<${componentName}Props>;\n\n`,
     context
   );
   return context;
+};
+
+const BLACK_LIST_PROPS = {
+  className: true
+};
+
+const RENAME_PROPS = {
+  class: "className"
 };
 
 const translateComponent = (
@@ -72,6 +84,7 @@ const translateComponent = (
 ) => {
   context = addBuffer(`export type ${componentPropsName} = {\n`, context);
   context = startBlock(context);
+  let _defined = {};
   for (const [reference, attrName] of getNestedReferences(node)) {
     // just be relaxed for now about types
     let paramType: String = `String | boolean | Number | ReactNode`;
@@ -84,12 +97,16 @@ const translateComponent = (
     }
 
     const referenceName = reference.path[0];
-
-    context = addBuffer(`${referenceName}: ${paramType}, \n`, context);
+    const propName = RENAME_PROPS[referenceName] || referenceName;
+    if (BLACK_LIST_PROPS[propName] || _defined[propName]) {
+      continue;
+    }
+    _defined[propName] = 1;
+    context = addBuffer(`${propName}: ${paramType}, \n`, context);
   }
 
   context = endBlock(context);
-  context = addBuffer(`};\n\n`, context);
+  context = addBuffer(`} & BaseProps\n\n`, context);
 
   return context;
 };
@@ -98,7 +115,7 @@ const translateMainTemplate = (ast: Node, context: TranslateContext) => {
   const componentName = getComponentName(ast);
   context = translateComponent(ast, "Props", context);
   context = addBuffer(
-    `type ${componentName} = (props: Props) => ReactNode;\n`,
+    `declare const ${componentName}: Factory<Props>;\n`,
     context
   );
   context = addBuffer(`export default ${componentName};\n`, context);
