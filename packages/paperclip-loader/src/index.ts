@@ -8,9 +8,7 @@ const getEngine = ({ moduleDirectories }: PaperclipConfig): Engine => {
   if (_engine) {
     return _engine;
   }
-  return (_engine = new Engine({
-    moduleDirectories
-  }));
+  return (_engine = new Engine());
 };
 
 module.exports = async function(source: string) {

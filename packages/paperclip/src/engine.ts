@@ -16,6 +16,9 @@ export type EngineOptions = {
 };
 
 const mapResult = result => {
+  if (!result) {
+    return result;
+  }
   if (result.Ok) {
     return result.Ok;
   } else {
