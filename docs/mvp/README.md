@@ -39,9 +39,8 @@ Limitations:
 
 immediate TODO:
 
+- pretty output PC errors
 - loader add resources
-- PC config
-  - moduleDirectories
 - BUGS
   - bad import src breaks engine
   - need to be aware of reserved props

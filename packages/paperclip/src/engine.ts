@@ -106,7 +106,7 @@ function resolveModule(fromPath: string, moduleRelativePath: string) {
       path.join(configPathDir, moduleDirectory, moduleRelativePath)
     );
     if (fs.existsSync(moduleFilePath)) {
-      return moduleFilePath;
+      return "file://" + moduleFilePath;
     }
   }
   return null;
