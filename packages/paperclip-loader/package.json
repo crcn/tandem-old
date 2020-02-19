@@ -9,7 +9,7 @@
   },
   "author": "",
   "license": "ISC",
-  "gitHead": "78c72331e23f4bdf58f7cd514a7db82f6c13f20b",
+  "gitHead": "22c1787cb7219bf96fbf04010213d1643b7c0064",
   "dependencies": {
     "loader-utils": "^1.2.3",
     "paperclip": "^11.0.9",
