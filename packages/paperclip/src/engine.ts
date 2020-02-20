@@ -91,6 +91,10 @@ export class Engine {
   };
 }
 
+export function resolveImportUri(fromPath: string, toPath: string) {
+  return "file:// " + resolveImportFile(fromPath, toPath);
+}
+
 export function resolveImportFile(fromPath: string, toPath: string) {
   if (/\w+:\/\//.test(toPath)) {
     return toPath;

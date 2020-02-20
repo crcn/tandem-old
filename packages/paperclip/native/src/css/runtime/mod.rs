@@ -1,2 +1,2 @@
-pub mod evaulator;
+pub mod evaluator;
 pub mod virt;

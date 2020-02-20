@@ -104,14 +104,14 @@ export const getChildren = (ast: Node): Node[] => {
 export const getStyleScopes = (ast: Node, filePath: string): string[] => {
   const scopes: string[] = [];
   if (getStyleElements(ast).length > 0) {
-    scopes.push(crc32(filePath));
+    scopes.push(crc32("file://" + filePath));
   }
 
   for (const imp of getImports(ast)) {
     const src = getAttributeStringValue("src", imp);
     if (/\.css$/.test(src)) {
       const cssFilePath = resolveImportFile(filePath, src);
-      scopes.push(crc32(cssFilePath));
+      scopes.push(crc32("file://" + cssFilePath));
     }
   }
 

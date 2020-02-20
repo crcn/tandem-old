@@ -3,16 +3,19 @@
 <style> 
   li {
     color: red;
+    background: url(./nedm-cat.jpg);
   }
   .secondary {
     color: green;
   }
 </style>
 
-<ol>
+<ol class="container">
   {children}
 </ol>
 
 <part id="item">
-  <li>{children}</li>
+  <li>
+  {children}
+  </li>
 </part>

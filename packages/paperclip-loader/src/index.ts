@@ -1,17 +1,17 @@
 // Some inspiration from https://github.com/sveltejs/svelte-loader/blob/master/index.js
 // License: https://github.com/sveltejs/svelte-loader#license
-
 import {
   Engine,
   PaperclipConfig,
   stringifyCSSSheet,
-  PC_CONFIG_FILE_NAME
+  getImports,
+  getAttributeStringValue,
+  resolveImportFile
 } from "paperclip";
 import * as loaderUtils from "loader-utils";
 import * as resolve from "resolve";
 import * as VirtualModules from "webpack-virtual-modules";
 import * as path from "path";
-import * as crc32 from "crc32";
 
 let _engine: Engine;
 
@@ -29,6 +29,8 @@ const getEngine = (): Engine => {
 
 const virtualModuleInstances = new Map();
 
+const _loadedStyleFiles = {};
+
 module.exports = async function(source: string) {
   if (this._compiler && !virtualModuleInstances.has(this._compiler)) {
     const modules = activatePlugin(new VirtualModules(), this._compiler);
@@ -41,7 +43,7 @@ module.exports = async function(source: string) {
   const callback = this.async();
   const resourcePath = this.resourcePath;
 
-  const { config, emitCss }: Options = loaderUtils.getOptions(this) || {};
+  const { config }: Options = loaderUtils.getOptions(this) || {};
 
   if (!config) {
     throw new Error(`Config is missing`);
@@ -51,35 +53,36 @@ module.exports = async function(source: string) {
   const compiler = require(resolve.sync(config.compilerOptions.name, {
     basedir: process.cwd()
   }));
-  const ast = await engine.parseContent(source);
-
+  const ast = engine.parseContent(source);
   let code = compiler.compile({ ast }, resourcePath, config.compilerOptions);
 
-  const virtSheet = await engine.evaluateContentStyles(source, resourcePath);
-  const sheetCode = stringifyCSSSheet(virtSheet, null);
+  const sheetCode = stringifyCSSSheet(
+    engine.evaluateContentStyles(source, resourcePath),
+    null
+  );
 
-  if (emitCss) {
-    const cssFileName = `${resourcePath}.css`;
-    const sheetFilePath = path.join(path.dirname(resourcePath), cssFileName);
-    virtualModules.writeModule(sheetFilePath, sheetCode);
-    code = `require("${sheetFilePath}");\n${code}`;
-  } else {
-    code = injectSheet(sheetCode, code);
+  const imports = getImports(ast);
+  for (const imp of imports) {
+    const src = getAttributeStringValue("src", imp);
+    if (/\.css$/.test(src)) {
+      const cssFilePath = resolveImportFile(resourcePath, src);
+      if (!_loadedStyleFiles[cssFilePath]) {
+        _loadedStyleFiles[cssFilePath] = 1;
+        const importedSheetCode = stringifyCSSSheet(
+          engine.evaluateFileStyles("file://" + cssFilePath),
+          null
+        );
+        virtualModules.writeModule(cssFilePath, importedSheetCode);
+      }
+    }
   }
 
+  const cssFileName = `${resourcePath}.css`;
+  const sheetFilePath = path.join(path.dirname(resourcePath), cssFileName);
+  virtualModules.writeModule(sheetFilePath, sheetCode);
+  code = `require("./${cssFileName}");\n${code}`;
+
   callback(null, code);
-};
-
-const injectSheet = (sheetText: string, code: string) => {
-  return `
-    if (typeof document !== "undefined") {
-      const sheet = document.createElement("style");
-      sheet.textContent = ${JSON.stringify(sheetText)};
-      document.head.appendChild(sheet);
-    }
-
-    ${code}
-  `;
 };
 
 const activatePlugin = (plugin, compiler) => {

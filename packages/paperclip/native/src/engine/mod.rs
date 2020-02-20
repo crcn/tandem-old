@@ -1,15 +1,18 @@
 use std::collections::HashMap;
 use crate::pc::{runtime};
 use crate::pc::parser::{parse as parse_pc};
+use crate::css::parser::{parse as parse_css};
 use crate::base::parser::{ParseError};
 use crate::pc::ast as pc_ast;
 use crate::pc::runtime::graph::{DependencyGraph, DependencyContent, GraphError};
 use crate::pc::runtime::vfs::{VirtualFileSystem, FileExistsFn, FileReaderFn, FileResolverFn};
 use crate::pc::runtime::evaluator::{evaluate_document_styles, evaluate as evaluate_pc};
+use crate::css::runtime::evaluator::{evaluate as evaluate_css};
 use crate::js::runtime::virt as js_virt;
 use crate::base::runtime::{RuntimeError};
 use serde::{Serialize};
 use crate::css::runtime::virt as css_vrt;
+use crate::base::utils::{get_document_style_scope};
 
 #[derive(Debug, PartialEq, Serialize)]
 pub struct EvaluatedEvent {
@@ -44,22 +47,31 @@ pub struct EvalOptions {
   part: Option<String>
 }
 
-// #[derive(Debug, PartialEq, Serialize)]
-// pub struct LoadData {
-//   expressions: HashMap<String, pc_ast::Node>
-// }
-
 async fn evaluate_content_styles(content: &String, uri: &String, vfs: &VirtualFileSystem) -> Result<css_vrt::CSSSheet, EngineError> {
-  parse_pc(content)
-  .map_err(|err| {
-    EngineError::Parser(err)
-  })
-  .and_then(|node_ast| {
-    evaluate_document_styles(&node_ast, uri, vfs)
+  if uri.ends_with(".css") {
+    parse_css(content)
     .map_err(|err| {
-      EngineError::Runtime(err)
+      EngineError::Parser(err)
     })
-  })
+    .and_then(|css_ast| {
+      let scope = get_document_style_scope(uri);
+      evaluate_css(&css_ast, uri, &scope, vfs)
+      .map_err(|err| {
+        EngineError::Runtime(err)
+      })
+    })
+  } else {
+    parse_pc(content)
+    .map_err(|err| {
+      EngineError::Parser(err)
+    })
+    .and_then(|node_ast| {
+      evaluate_document_styles(&node_ast, uri, vfs)
+      .map_err(|err| {
+        EngineError::Runtime(err)
+      })
+    })
+  }
 }
 
 type EngineEventListener = dyn Fn(&EngineEvent);

@@ -7,6 +7,6 @@
   }
 </style>
 
-<div>
+<div class="container">
   Hello world
 </div>

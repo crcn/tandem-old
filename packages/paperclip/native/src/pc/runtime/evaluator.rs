@@ -6,11 +6,12 @@ use std::collections::HashSet;
 use std::iter::FromIterator;
 use super::graph::{DependencyGraph, DependencyContent};
 use super::vfs::{VirtualFileSystem};
-use crate::css::runtime::evaulator::{evaluate as evaluate_css};
+use crate::css::runtime::evaluator::{evaluate as evaluate_css};
 use crate::js::runtime::evaluator::{evaluate as evaluate_js};
 use crate::js::runtime::virt as js_virt;
 use crate::js::ast as js_ast;
 use crate::css::runtime::virt as css_virt;
+use crate::base::utils::{get_document_style_scope};
 use crc::{crc32};
 
 #[derive(Clone)]
@@ -61,7 +62,7 @@ pub fn evaluate_document_styles<'a>(node_expr: &ast::Node, uri: &String, vfs: &'
     rules: vec![] 
   };
   let children_option = ast::get_children(&node_expr);
-  let scope = get_document_scope(uri);
+  let scope = get_document_style_scope(uri);
   if let Some(children) = children_option {
     // style elements are only allowed in root, so no need to traverse
     for child in children {
@@ -87,9 +88,9 @@ pub fn evaluate_jumbo_style<'a>(_entry_expr: &ast::Node,  uri: &String, context:
       },
       DependencyContent::StyleSheet(sheet) => {
         let scope = if let Some(dependent) = dependent_option {
-          get_document_scope(&dependent.uri)
+          get_document_style_scope(&dependent.uri)
         } else {
-          get_document_scope(&dependency.uri)
+          get_document_style_scope(&dependency.uri)
         };
         
         evaluate_css(&sheet, &dependency.uri, &scope, context.vfs)?
@@ -140,7 +141,7 @@ fn create_context<'a>(node_expr: &'a ast::Node, uri: &'a String, graph: &'a Depe
     (false, 0)
   };
 
-  let scope = get_document_scope(uri);
+  let scope = get_document_style_scope(uri);
   let id_seed = format!("{:x}", crc32::checksum_ieee(format!("{}-{}", uri, curr_id_count).as_bytes())).to_string();
 
   Context {
@@ -149,17 +150,13 @@ fn create_context<'a>(node_expr: &'a ast::Node, uri: &'a String, graph: &'a Depe
     vfs,
     import_ids: HashSet::from_iter(ast::get_import_ids(node_expr)),
     part_ids: HashSet::from_iter(ast::get_part_ids(node_expr)),
-    scope: get_document_scope(uri),
+    scope: get_document_style_scope(uri),
     data,
     in_part: false,
     from_main,
     id_seed,
     id_count: 0
   }
-}
-
-fn get_document_scope<'a>(uri: &String) -> String {
-  format!("{:x}", crc32::checksum_ieee(uri.as_bytes())).to_string()
 }
 
 fn evaluate_node<'a>(node_expr: &ast::Node, is_root: bool, context: &'a mut Context) -> Result<Option<virt::Node>, RuntimeError> {

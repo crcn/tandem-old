@@ -38,13 +38,20 @@ module.exports = {
         include: [path.resolve(__dirname, "src")],
         exclude: [/node_modules/],
         options: {
-          config: require("./pcconfig.json"),
-          emitCss: true
+          config: require("./pcconfig.json")
         }
       },
       {
         test: /\.css$/,
         use: ["style-loader", "css-loader"]
+      },
+      {
+        test: /\.(png|jpe?g|gif)$/i,
+        use: [
+          {
+            loader: "file-loader"
+          }
+        ]
       }
     ]
   },

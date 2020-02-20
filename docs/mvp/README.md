@@ -39,16 +39,6 @@ Limitations:
 
 immediate TODO:
 
-- nodes should be scoped based on css file hash
-  - allows for better code splitting
-- loader add resources
-  - linter
-    - error with multiple IDs
-    - warn for script tags
-    - warn when CSS selector tag isn't used
-    - prohibit dynamic attr bindings for
-      - all import attrs
-      - all meta attrs
 - examples
   - clean up current\*\*
   - chat app
@@ -62,9 +52,16 @@ immediate TODO:
 - ask friends to play with app
 - site
 - BUGS
-
   - handle circular dependencies
   - need to be aware of reserved props
   - need to handle cases where files are moved around, especially for moduleDirectory files
+- linter
+
+  - error with multiple IDs
+  - warn for script tags
+  - warn when CSS selector tag isn't used
+  - prohibit dynamic attr bindings for
+    - all import attrs
+    - all meta attrs
 
 - ## enhancements

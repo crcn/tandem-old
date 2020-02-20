@@ -105,9 +105,12 @@ const translateStyledUtil = (ast: Node, context: TranslateContext) => {
   context = startBlock(context);
   context = addBuffer(`return function(props) {\n`, context);
   context = startBlock(context);
-  context = addBuffer(`return React.createElement(tagName, { `, context);
+  context = addBuffer(
+    `return React.createElement(tagName, Object.assign({ `,
+    context
+  );
   context = translateStyleScopeAttributes(context, " ");
-  context = addBuffer(`}, defaultProps || {}, props));\n`, context);
+  context = addBuffer(`}, defaultProps, props));\n`, context);
   context = endBlock(context);
   context = addBuffer(`};\n`, context);
   context = endBlock(context);
@@ -168,10 +171,6 @@ const translatePart = (part: Element, context: TranslateContext) => {
   context = endBlock(context);
   context = addBuffer("};\n\n", context);
   context = addBuffer("", context);
-  // context = addBuffer(
-  //   `exports.${componentName} = ${componentName};\n\n`,
-  //   context
-  // );
   return context;
 };
 
@@ -186,11 +185,6 @@ const translateMainTemplate = (root: Node, context: TranslateContext) => {
   context = endBlock(context);
   context = addBuffer(";\n", context);
   context = addBuffer(`};\n\n`, context);
-  // TODO - check if logic controller
-  // context = addBuffer(
-  //   `export const ${enhancedComponentName} = ${baseComponentName};\n`,
-  //   context
-  // );
   context = addBuffer(`export default ${componentName};\n`, context);
 
   return context;
@@ -224,22 +218,29 @@ const translateJSXNode = (
         ? pascalCase(node.tagName)
         : JSON.stringify(node.tagName);
 
-    context = addBuffer(`React.createElement(${tag}, {`, context);
-    context = addBuffer("\n", context);
+    context = addBuffer(`React.createElement(${tag}, `, context);
+    if (isRoot) {
+      context = addBuffer(`Object.assign(`, context);
+    }
+    context = addBuffer(`{\n`, context);
     context = startBlock(context);
     context = startBlock(context);
     context = translateStyleScopeAttributes(context, "\n");
-    // context = addBuffer(`"data-pc-${context.scope}": true,\n`, context);
     context = addBuffer(`"key": ${context.keyCount++},\n`, context);
     for (const attr of node.attributes) {
       context = translateAttribute(attr, context);
     }
     context = endBlock(context);
     context = addBuffer(`}`, context);
+    if (isRoot) {
+      context = addBuffer(`, props)`, context);
+    }
     context = endBlock(context);
     if (node.children.length) {
       context = addBuffer(`,\n`, context);
       context = translateChildren(node.children, context);
+    } else {
+      context = addBuffer(`\n`, context);
     }
     context = addBuffer(`)`, context);
   } else if (node.kind === NodeKind.Text) {
@@ -292,6 +293,7 @@ const translateChildren = (children: Node[], context: TranslateContext) => {
 const translateAttribute = (attr: Attribute, context: TranslateContext) => {
   if (attr.kind === AttributeKind.KeyValueAttribute) {
     let name = RENAME_PROPS[attr.name] || attr.name;
+    let value = attr.value;
 
     if (name === "string") {
       console.warn("Can't handle style tag for now");
@@ -300,7 +302,7 @@ const translateAttribute = (attr: Attribute, context: TranslateContext) => {
     // can't handle for now
     if (name !== "style") {
       context = addBuffer(`${JSON.stringify(name)}: `, context);
-      context = translateAttributeValue(attr.value, context);
+      context = translateAttributeValue(name, value, context);
       context = addBuffer(`,\n`, context);
     }
   } else if (attr.kind === AttributeKind.ShorthandAttribute) {
@@ -316,6 +318,7 @@ const translateAttribute = (attr: Attribute, context: TranslateContext) => {
 };
 
 const translateAttributeValue = (
+  name: string,
   value: AttributeValue,
   context: TranslateContext
 ) => {
@@ -323,23 +326,31 @@ const translateAttributeValue = (
     return addBuffer("true", context);
   }
   if (value.attrValueKind === AttributeValueKind.Slot) {
-    return translateStatment((value as any) as Statement, context);
+    return translateStatment((value as any) as Statement, false, context);
   } else if (value.attrValueKind === AttributeValueKind.String) {
-    return addBuffer(JSON.stringify(value.value), context);
+    let strValue = JSON.stringify(value.value);
+    if (name === "src") {
+      strValue = `require(${strValue}).default`;
+    }
+    return addBuffer(strValue, context);
   }
 
   return context;
 };
 
 const translateSlot = (slot: Slot, context: TranslateContext) => {
-  return translateStatment(slot.script, context);
+  return translateStatment(slot.script, true, context);
 };
 
-const translateStatment = (statement: Statement, context: TranslateContext) => {
+const translateStatment = (
+  statement: Statement,
+  isRoot: boolean,
+  context: TranslateContext
+) => {
   if (statement.jsKind === StatementKind.Reference) {
     return addBuffer(`props.${statement.path.join(".")}`, context);
   } else if (statement.jsKind === StatementKind.Node) {
-    return translateJSXNode((statement as any) as Node, false, context);
+    return translateJSXNode((statement as any) as Node, isRoot, context);
   }
 
   return context;
