@@ -25,7 +25,12 @@ export const compile = (
   filePath: string,
   options: Options = {}
 ) => {
-  let context = createTranslateContext(filePath, getImportIds(ast), options);
+  let context = createTranslateContext(
+    filePath,
+    getImportIds(ast),
+    [],
+    options
+  );
   context = translateRoot(ast, context);
   return context.buffer;
 };

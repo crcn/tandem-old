@@ -14,15 +14,11 @@ export declare const styled: (
   defaultProps?: BaseProps
 ) => Factory<BaseProps>;
 
-export type ItemProps = {
-  children: String | boolean | Number | ReactNode;
-} & BaseProps;
+export type ItemProps = {} & BaseProps;
 
 export declare const Item: Factory<ItemProps>;
 
-export type Props = {
-  children: String | boolean | Number | ReactNode;
-} & BaseProps;
+export type Props = {} & BaseProps;
 
 declare const Template: Factory<Props>;
 export default Template;

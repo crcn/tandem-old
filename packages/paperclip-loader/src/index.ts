@@ -66,7 +66,6 @@ module.exports = async function(source: string) {
   } else {
     code = injectSheet(sheetCode, code);
   }
-  console.log(code);
 
   callback(null, code);
 };

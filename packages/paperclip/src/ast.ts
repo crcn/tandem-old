@@ -1,6 +1,8 @@
 import { Statement, StatementKind, Reference } from "./js-ast";
 import { Sheet } from "./css-ast";
 import { SourceLocation } from "./base-ast";
+import * as crc32 from "crc32";
+import { resolveImportFile } from "./engine";
 
 export enum NodeKind {
   Fragment = "Fragment",
@@ -97,6 +99,23 @@ export const getChildren = (ast: Node): Node[] => {
     return ast.children;
   }
   return [];
+};
+
+export const getStyleScopes = (ast: Node, filePath: string): string[] => {
+  const scopes: string[] = [];
+  if (getStyleElements(ast).length > 0) {
+    scopes.push(crc32(filePath));
+  }
+
+  for (const imp of getImports(ast)) {
+    const src = getAttributeStringValue("src", imp);
+    if (/\.css$/.test(src)) {
+      const cssFilePath = resolveImportFile(filePath, src);
+      scopes.push(crc32(cssFilePath));
+    }
+  }
+
+  return scopes;
 };
 
 export const getChildrenByTagName = (tagName: string, parent: Node) =>

@@ -134,7 +134,7 @@ export class PCHTMLLanguageService extends BaseEngineLanguageService<Node> {
       const srcAttr = getAttributeValue("src", imp);
       if (srcAttr.attrValueKind === AttributeValueKind.String) {
         context.info.links.push({
-          uri: resolveImportFile(uri, srcAttr.value),
+          uri: "file:// " + resolveImportFile(uri, srcAttr.value),
           location: srcAttr.location
         });
       }

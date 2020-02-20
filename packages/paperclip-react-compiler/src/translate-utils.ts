@@ -6,7 +6,7 @@ export type TranslateContext = {
   buffer: string;
   lineNumber: number;
   isNewLine: boolean;
-  scope: string;
+  styleScopes: string[];
   indent: string;
   importIds: string[];
   args: Options;
@@ -17,13 +17,14 @@ export type TranslateContext = {
 export const createTranslateContext = (
   filePath: string,
   importIds: string[],
+  styleScopes: string[],
   args: Options,
   indent: string = "  "
 ): TranslateContext => ({
   buffer: "",
   filePath,
   importIds,
-  scope: crc32(filePath),
+  styleScopes,
   isNewLine: true,
   lineNumber: 0,
   indent,

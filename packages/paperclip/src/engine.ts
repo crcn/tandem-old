@@ -40,7 +40,7 @@ export class Engine {
       uri => {
         return fs.existsSync(uri.replace("file://", ""));
       },
-      resolveImportFile
+      (fromPath, toPath) => "file://" + resolveImportFile(fromPath, toPath)
     );
 
     // only one native listener to for buffer performance
@@ -100,9 +100,8 @@ export function resolveImportFile(fromPath: string, toPath: string) {
     return resolveModule(fromPath, toPath) || toPath;
   }
 
-  return (
-    "file://" +
-    path.normalize(path.join(stripFileProtocol(path.dirname(fromPath)), toPath))
+  return path.normalize(
+    path.join(stripFileProtocol(path.dirname(fromPath)), toPath)
   );
 }
 
@@ -117,7 +116,7 @@ function resolveModule(fromPath: string, moduleRelativePath: string) {
       path.join(configPathDir, moduleDirectory, moduleRelativePath)
     );
     if (fs.existsSync(moduleFilePath)) {
-      return "file://" + moduleFilePath;
+      return moduleFilePath;
     }
   }
   return null;

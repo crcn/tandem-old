@@ -30,19 +30,25 @@ import {
 import {
   pascalCase,
   Options,
-  getBaseComponentName,
   getComponentName,
   getPartClassName,
   RENAME_PROPS
 } from "./utils";
 import { camelCase } from "lodash";
+import { getStyleScopes, resolveImportFile } from "paperclip";
+import * as path from "path";
 
 export const compile = (
   { ast, sheet }: { ast: Node; sheet?: any },
   filePath: string,
   options: Options = {}
 ) => {
-  let context = createTranslateContext(filePath, getImportIds(ast), options);
+  let context = createTranslateContext(
+    filePath,
+    getImportIds(ast),
+    getStyleScopes(ast, filePath),
+    options
+  );
   context = translateRoot(ast, sheet, context);
   return context.buffer;
 };
@@ -80,6 +86,17 @@ const translateUtils = (ast: Node, context: TranslateContext) => {
   return context;
 };
 
+const translateStyleScopeAttributes = (
+  context: TranslateContext,
+  newLine: string = ""
+) => {
+  for (let i = 0, { length } = context.styleScopes; i < length; i++) {
+    const scope = context.styleScopes[i];
+    context = addBuffer(`"data-pc-${scope}": true,${newLine}`, context);
+  }
+  return context;
+};
+
 const translateStyledUtil = (ast: Node, context: TranslateContext) => {
   context = addBuffer(
     `export const styled = (tagName, defaultProps) => {\n`,
@@ -88,15 +105,13 @@ const translateStyledUtil = (ast: Node, context: TranslateContext) => {
   context = startBlock(context);
   context = addBuffer(`return function(props) {\n`, context);
   context = startBlock(context);
-  context = addBuffer(
-    `return React.createElement(tagName, Object.assign({ "data-pc-${context.scope}": true }, defaultProps || {}, props));\n`,
-    context
-  );
+  context = addBuffer(`return React.createElement(tagName, { `, context);
+  context = translateStyleScopeAttributes(context, " ");
+  context = addBuffer(`}, defaultProps || {}, props));\n`, context);
   context = endBlock(context);
   context = addBuffer(`};\n`, context);
   context = endBlock(context);
   context = addBuffer("}\n\n", context);
-  // context = addBuffer("exports.styled = styled;\n\n", context);
   return context;
 };
 
@@ -108,14 +123,25 @@ const translateImports = (ast: Node, context: TranslateContext) => {
     const id = getAttributeStringValue("id", imp);
     const src = getAttributeStringValue("src", imp);
 
-    if (!id || !src) {
+    if (!src) {
       continue;
     }
 
-    context = addBuffer(
-      `const ${pascalCase(id)} = require("${src}");\n`,
-      context
+    let relativePath = path.relative(
+      path.dirname(context.filePath),
+      resolveImportFile(context.filePath, src)
     );
+    if (relativePath.charAt(0) !== ".") {
+      relativePath = `./${relativePath}`;
+    }
+
+    const importStr = `require("${relativePath}");`;
+
+    if (id) {
+      context = addBuffer(`const ${pascalCase(id)} = ${importStr}\n`, context);
+    } else {
+      context = addBuffer(`${importStr}\n`, context);
+    }
   }
   context = addBuffer("\n", context);
   return context;
@@ -202,8 +228,9 @@ const translateJSXNode = (
     context = addBuffer("\n", context);
     context = startBlock(context);
     context = startBlock(context);
-    context = addBuffer(`"data-pc-${context.scope}": true,\n`, context);
-    context = addBuffer(`key: ${context.keyCount++},\n`, context);
+    context = translateStyleScopeAttributes(context, "\n");
+    // context = addBuffer(`"data-pc-${context.scope}": true,\n`, context);
+    context = addBuffer(`"key": ${context.keyCount++},\n`, context);
     for (const attr of node.attributes) {
       context = translateAttribute(attr, context);
     }
