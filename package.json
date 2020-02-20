@@ -34,7 +34,6 @@
   },
   "homepage": "https://github.com/crcn/tandem#readme",
   "dependencies": {
-    "lerna": "^3.20.2",
-    "paperclip-react-compiler": "^10.1.38"
+    "lerna": "^3.20.2"
   }
 }

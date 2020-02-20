@@ -36,6 +36,7 @@ const createNativeTextNode = node => {
 };
 
 const createNativeStyle = (element, protocol: string, map: DOMNodeMap) => {
+  // return document.createTextNode(JSON.stringify(element.sheet, null, 2));
   // return document.createTextNode(stringifyCSSSheet(element.sheet, protocol));
   const nativeElement = document.createElement("style");
   nativeElement.textContent = stringifyCSSSheet(element.sheet, protocol);

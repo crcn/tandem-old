@@ -20,7 +20,7 @@ const stringifyConditionRule = (
   protocol?: string
 ) => {
   return `@${name} ${condition_text} {
-    ${rules.map(style => stringifyStyle(style, protocol)).join("\n")}
+    ${rules.map(style => stringifyStyleRule(style, protocol)).join("\n")}
   }`;
 };
 

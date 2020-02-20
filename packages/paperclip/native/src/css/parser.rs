@@ -560,15 +560,15 @@ fn parse_declaration_value<'a, 'b>(context: &mut Context<'a, 'b>) -> Result<Stri
   let mut buffer = String::new();
   while !context.tokenizer.is_eof() {
     match context.tokenizer.peek(1)? {
-      Token::Semicolon => {
+      Token::Semicolon | Token::CurlyClose => {
         break;
       },
       Token::SingleQuote | Token::DoubleQuote => {
-        buffer.extend(parse_string(context));
-      }
+        buffer.push_str(parse_string(context)?);
+      },
       _ => {
-        context.tokenizer.next()?;
         buffer.push(context.tokenizer.curr_char()? as char);
+        context.tokenizer.pos += 1;
       }
     };
   }
