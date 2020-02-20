@@ -140,7 +140,7 @@ impl DependencyGraph {
 
       loaded_deps.push(curr_uri.to_string());
 
-      for (relative_uri, dep_uri) in &dependency.dependencies {
+      for (relative_uri, dep_uri) in &dependency.dependency_uri_maps {
         if !self.dependencies.contains_key(&dep_uri.to_string()) {
           to_load.push((
             dep_uri.to_string(),
@@ -168,6 +168,7 @@ pub enum DependencyContent {
 pub struct Dependency {
   pub uri: String,
   pub dependencies: HashMap<String, String>,
+  pub dependency_uri_maps: HashMap<String, String>,
   pub content: DependencyContent
 }
 
@@ -190,7 +191,8 @@ impl<'a> Dependency {
     Ok(Dependency {
       uri: uri.to_string(),
       content: DependencyContent::StyleSheet(expression),
-      dependencies: HashMap::new()
+      dependencies: HashMap::new(),
+      dependency_uri_maps: HashMap::new()
     })
   }
 
@@ -207,11 +209,16 @@ impl<'a> Dependency {
     let imports = pc_ast::get_imports(&expression);
 
     let mut dependencies = HashMap::new();
+    let mut dependency_uri_maps = HashMap::new();
     for import in &imports {
       let src = pc_ast::get_attribute_value("src", import).unwrap();
       dependencies.insert(
+        pc_ast::get_import_identifier(import).unwrap().as_str().to_string(),
+        vfs.resolve(uri, &src)
+      );
+
+      dependency_uri_maps.insert(
         src.to_string(),
-        // pc_ast::get_import_identifier(import).unwrap().as_str().to_string(),
         vfs.resolve(uri, &src)
       );
     }
@@ -219,7 +226,8 @@ impl<'a> Dependency {
     Ok(Dependency {
       uri: uri.to_string(),
       content: DependencyContent::Node(expression),
-      dependencies
+      dependencies,
+      dependency_uri_maps
     })
   }
 }

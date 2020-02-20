@@ -1,60 +1,201 @@
-<import src="./styles/main.css">
-<import src="./styles/base.css">
+<import src="./styles/global.css">
 <import id="item" src="./item.pc">
 <import id="todo-footer" src="./footer.pc">
+<import id="learn" src="./learn.pc">
+
+<style>
 
 
-<div id="app">
-    <div class="learn-bar">
-        <aside class="learn">
-            <header>
-                <h3>Paperclip</h3> <span class="source-links">   <h5>Example</h5> <a href="https://github.com/tastejs/todomvc/tree/gh-pages/examples/vue">Source</a>   </span> </header>
-            <hr>
-            <blockquote class="quote speech-bubble">
-                <p>
-                    Paperclip is a tiny language that's optimized
-                    for visual development, and compiles directly to React code.
-                </p>
-                <footer> <a href="http://paperclip.dev">Paperclip.js</a> </footer>
-            </blockquote>
-            <hr>
-            <h4>Official Resources</h4>
-            <ul>
-                <li> <a href="http://paperclip.dev/guide/">Documentation</a> </li>
-                <li> <a href="http://paperclip.dev/api/">API Reference</a> </li>
-                <li> <a href="http://tandemcode.com/examples/">Examples</a> </li>
-                <li> <a href="https://github.com/crcn/paperclip">Paperclip.js on GitHub</a> </li>
-            </ul>
-            <h4>Community</h4>
-            <ul>
-                <li> <a href="https://github.com/crcn/paperclip/issues">Discussions on GitHub</a> </li>
-            </ul>
-            <footer>
-                <hr> <em>If you have other helpful links to share, or find any of the links above no longer work, please <a href="https://github.com/tastejs/todomvc/issues">let us know</a>.</em> </footer>
-        </aside>
-    </div>
-    <section class="todoapp">
-        <header class="header">
-            <h1>todos</h1>
-            <input autofocus="autofocus" autocomplete="off" placeholder="What needs to be done?" class="new-todo">
-        </header>
+#app-container {
+  background: #f5f5f5;
+  width: 100vw;
+  height: 100vh;
+  position: absolute;
+  top: 0;
+  
+}
 
-        <!-- TODO - to hide -->
-        <section class="main">
-            <input id="toggle-all" type="checkbox" class="toggle-all">
-            <label for="toggle-all">Mark all as complete</label>
-            <ul class="todo-list">
-                <item text="something" />
-                <item text="something" completed />
-            </ul>
+#app {
+  font: 14px "Helvetica Neue", Helvetica, Arial, sans-serif;
+  line-height: 1.4em;
+  background: #f5f5f5;
+  color: #4d4d4d;
+  min-width: 230px;
+  max-width: 550px;
+  margin: 0 auto;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-weight: 300;
+}
+
+.todoapp {
+  background: #fff;
+  margin: 130px 0 40px 0;
+  position: relative;
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2), 0 25px 50px 0 rgba(0, 0, 0, 0.1);
+}
+
+input::-webkit-input-placeholder {
+  font-style: italic;
+  font-weight: 300;
+  color: #e6e6e6;
+}
+
+input::-moz-placeholder {
+  font-style: italic;
+  font-weight: 300;
+  color: #e6e6e6;
+}
+
+input::input-placeholder {
+  font-style: italic;
+  font-weight: 300;
+  color: #e6e6e6;
+}
+
+h1 {
+  position: absolute;
+  top: -155px;
+  width: 100%;
+  font-size: 100px;
+  font-weight: 100;
+  text-align: center;
+  color: rgba(175, 47, 47, 0.15);
+  -webkit-text-rendering: optimizeLegibility;
+  -moz-text-rendering: optimizeLegibility;
+  text-rendering: optimizeLegibility;
+}
+
+.new-todo {
+  position: relative;
+  margin: 0;
+  width: 100%;
+  font-size: 24px;
+  font-family: inherit;
+  font-weight: inherit;
+  line-height: 1.4em;
+  border: 0;
+  color: inherit;
+  padding: 6px;
+  border: 1px solid #999;
+  box-shadow: inset 0 -1px 5px 0 rgba(0, 0, 0, 0.2);
+  box-sizing: border-box;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+    
+.new-todo {
+  padding: 16px 16px 16px 60px;
+  border: none;
+  background: rgba(0, 0, 0, 0.003);
+  box-shadow: inset 0 -2px 1px rgba(0, 0, 0, 0.03);
+}
+
+.toggle-all {
+  text-align: center;
+  border: none; /* Mobile Safari */
+  opacity: 0;
+  position: absolute;
+}
+
+.toggle-all + label {
+  width: 60px;
+  height: 34px;
+  font-size: 0;
+  position: absolute;
+  top: -52px;
+  left: -13px;
+  -webkit-transform: rotate(90deg);
+  transform: rotate(90deg);
+}
+
+.toggle-all + label:before {
+  content: "❯";
+  font-size: 22px;
+  color: #e6e6e6;
+  padding: 10px 27px 10px 27px;
+}
+
+.toggle-all:checked + label:before {
+  color: #737373;
+}
+
+
+.info {
+  margin: 65px auto 0;
+  color: #bfbfbf;
+  font-size: 10px;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+  text-align: center;
+}
+
+.info p {
+  line-height: 1;
+}
+
+.info a {
+  color: inherit;
+  text-decoration: none;
+  font-weight: 400;
+}
+
+.info a:hover {
+  text-decoration: underline;
+}
+
+.todo-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.main {
+  position: relative;
+  z-index: 2;
+  border-top: 1px solid #e6e6e6;
+}
+
+
+
+/*
+	Hack to remove background from Mobile Safari.
+	Can't use it globally since it destroys checkboxes in Firefox
+*/
+@media screen and (-webkit-min-device-pixel-ratio: 0) {
+  .toggle-all {
+    background: none;
+  }
+}
+
+</style>
+
+<div id="app-container">
+    <div id="app">
+        <learn:preview />
+        <section class="todoapp">
+            <header class="header">
+                <h1>todos</h1>
+                <input autofocus="autofocus" autocomplete="off" placeholder="What needs to be done?" class="new-todo">
+            </header>
+
+            <!-- TODO - to hide -->
+            <section class="main">
+                <input id="toggle-all" type="checkbox" class="toggle-all">
+                <label for="toggle-all">Mark all as complete</label>
+                <ul class="todo-list">
+                    <item label="something" />
+                    <item label="something else" completed />
+                    <item label="something" editing />
+                </ul>
+            </section>
+
+            <!-- TODO - to hide -->
+            <todo-footer:preview />
         </section>
-
-        <!-- TODO - to hide -->
-        <todo-footer />
-    </section>
-    <footer class="info">
-        <p>Double-click to edit a todo</p>
-        <p>Written by <a href="http://github.com/crcn">Craig Condon</a></p>
-        <p>Part of <a href="http://todomvc.com">TodoMVC</a></p>
-    </footer>
+        <footer class="info">
+            <p>Double-click to edit a todo</p>
+            <p>Written by <a href="http://github.com/crcn">Craig Condon</a></p>
+            <p>Part of <a href="http://todomvc.com">TodoMVC</a></p>
+        </footer>
+    </div>
 </div>

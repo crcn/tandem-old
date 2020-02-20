@@ -77,13 +77,21 @@ pub fn evaluate_document_styles<'a>(node_expr: &ast::Node, uri: &String, vfs: &'
   Ok(sheet)
 }
 
-pub fn evaluate_jumbo_style<'a>(_entry_expr: &ast::Node,  uri: &String, context: &'a mut Context) -> Result<virt::Node, RuntimeError>  {
+pub fn evaluate_jumbo_style<'a>(entry_expr: &ast::Node,  uri: &String, context: &'a mut Context) -> Result<virt::Node, RuntimeError>  {
 
   let mut sheet = css_virt::CSSSheet {
     rules: vec![] 
   };
 
+  let deps =  context.graph.flatten(uri);
+
   for (dependency, dependent_option) in context.graph.flatten(uri) {
+
+    // skip if self -- styles get evaluated after all imports. Note
+    // that this is incorrect if style is declared before import, but whatever.
+    if &dependency.uri == uri {
+      continue;
+    }
     let dep_sheet = match &dependency.content {
       DependencyContent::Node(node) => {
         evaluate_document_styles(node, &dependency.uri, context.vfs)?
@@ -101,6 +109,9 @@ pub fn evaluate_jumbo_style<'a>(_entry_expr: &ast::Node,  uri: &String, context:
 
     sheet.extend(dep_sheet);
   }
+
+  // this element styles always get priority.
+  sheet.extend(evaluate_document_styles(&entry_expr, &uri, context.vfs)?);
 
   
   Ok(virt::Node::StyleElement(virt::StyleElement {

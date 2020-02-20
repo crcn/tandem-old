@@ -60,7 +60,7 @@
   border-color: rgba(175, 47, 47, 0.1);
 }
 
-.filters li a.selected {
+.filters li a[selected] {
   border-color: rgba(175, 47, 47, 0.2);
 }
 
@@ -88,18 +88,28 @@
   }
 }
 
-
-
 </style>
+
+<part id="filter-button">
+  <li><a {href} {selected}>{children}</a></li>
+</part>
+
 <footer class="footer">
-  <span class="todo-count"><strong>0</strong> items left
-                    </span>
-            <ul class="filters">
-                <li><a href="#/all" class="selected">All</a></li>
-                <li><a href="#/active" class="">Active</a></li>
-                <li><a href="#/completed" class="">Completed</a></li>
-            </ul>
-            <button class="clear-completed">
-                Clear completed
-            </button>
-        </footer>
+  <span class="todo-count">
+    {itemCountLabel}
+  </span>
+  <ul class="filters">
+    {children}
+  </ul>
+  <button class="clear-completed">
+      Clear completed
+  </button>
+</footer>
+
+<part id="preview">
+  <self itemCountLabel={<span><strong>1</strong> item left</span>}>
+    <filter-button selected>All</filter-button>
+    <filter-button>Active</filter-button>
+    <filter-button>Completed</filter-button>
+  </self>
+</part>
