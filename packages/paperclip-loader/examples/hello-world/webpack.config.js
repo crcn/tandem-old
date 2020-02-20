@@ -37,7 +37,14 @@ module.exports = {
         loader: "paperclip-loader",
         include: [path.resolve(__dirname, "src")],
         exclude: [/node_modules/],
-        options: require("./pcconfig.json")
+        options: {
+          config: require("./pcconfig.json"),
+          emitCss: true
+        }
+      },
+      {
+        test: /\.css$/,
+        use: ["style-loader", "css-loader"]
       }
     ]
   },

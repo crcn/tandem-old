@@ -6,6 +6,10 @@ import {
   getAttributeStringValue
 } from "paperclip";
 
+export const RENAME_PROPS = {
+  class: "className"
+};
+
 export type Options = {
   definition?: boolean;
   omitParts?: string;

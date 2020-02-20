@@ -11,6 +11,7 @@ export type TranslateContext = {
   importIds: string[];
   args: Options;
   omitParts: string[];
+  keyCount: number;
 };
 
 export const createTranslateContext = (
@@ -27,6 +28,7 @@ export const createTranslateContext = (
   lineNumber: 0,
   indent,
   args,
+  keyCount: 0,
   omitParts:
     (args.omitParts &&
       !Array.isArray(args.omitParts) &&

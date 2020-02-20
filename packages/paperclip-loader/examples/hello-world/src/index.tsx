@@ -4,6 +4,7 @@ import Main, { Item, styled } from "./index.pc";
 
 const Li = styled("li", { className: "secondary" });
 const Li2 = styled(Li);
+console.log(Main, Item);
 
 React.createElement("form", {});
 class App extends React.Component {

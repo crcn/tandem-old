@@ -32,12 +32,13 @@ import {
   Options,
   getBaseComponentName,
   getComponentName,
-  getPartClassName
+  getPartClassName,
+  RENAME_PROPS
 } from "./utils";
 import { camelCase } from "lodash";
 
 export const compile = (
-  { ast, sheet }: { ast: Node; sheet: any },
+  { ast, sheet }: { ast: Node; sheet?: any },
   filePath: string,
   options: Options = {}
 ) => {
@@ -48,7 +49,9 @@ export const compile = (
 
 const translateRoot = (ast: Node, sheet: any, context: TranslateContext) => {
   context = translateImports(ast, context);
-  context = translateStyleSheet(sheet, context);
+  if (sheet) {
+    context = translateStyleSheet(sheet, context);
+  }
   context = translateUtils(ast, context);
   context = translateParts(ast, context);
   context = translateMainTemplate(ast, context);
@@ -200,6 +203,7 @@ const translateJSXNode = (
     context = startBlock(context);
     context = startBlock(context);
     context = addBuffer(`"data-pc-${context.scope}": true,\n`, context);
+    context = addBuffer(`key: ${context.keyCount++},\n`, context);
     for (const attr of node.attributes) {
       context = translateAttribute(attr, context);
     }
@@ -232,9 +236,9 @@ const translateFragment = (
   if (children.length === 1) {
     return translateJSXNode(children[0], isRoot, context);
   }
-  context = addBuffer(`React.createElement(React.Fragment,\n`, context);
+  context = addBuffer(`[\n`, context);
   context = translateChildren(children, context);
-  context = addBuffer(`)`, context);
+  context = addBuffer(`]`, context);
   return context;
 };
 
@@ -260,9 +264,10 @@ const translateChildren = (children: Node[], context: TranslateContext) => {
 
 const translateAttribute = (attr: Attribute, context: TranslateContext) => {
   if (attr.kind === AttributeKind.KeyValueAttribute) {
-    let name = attr.name;
-    if (name === "class") {
-      name = "className";
+    let name = RENAME_PROPS[attr.name] || attr.name;
+
+    if (name === "string") {
+      console.warn("Can't handle style tag for now");
     }
 
     // can't handle for now

@@ -5,18 +5,22 @@
   "main": "index.js",
   "scripts": {
     "build": "tsc",
-    "build:watch": "tsc --watch"
+    "build:watch": "tsc --watch",
+    "create:symlinks": "ln -s `pwd` examples/hello-world/node_modules/paperclip-loader"
   },
   "author": "",
   "license": "ISC",
   "gitHead": "22c1787cb7219bf96fbf04010213d1643b7c0064",
   "dependencies": {
+    "constants": "0.0.2",
+    "crc32": "^0.2.2",
     "loader-utils": "^1.2.3",
     "paperclip": "^11.0.9",
     "paperclip-react-compiler": "^10.1.38",
     "react": "^16.12.0",
     "resolve": "^1.15.1",
-    "webpack": "^4.41.6"
+    "webpack": "^4.41.6",
+    "webpack-virtual-modules": "0.2.1"
   },
   "devDependencies": {
     "webpack-cli": "^3.3.11"

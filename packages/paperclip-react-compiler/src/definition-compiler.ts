@@ -13,7 +13,12 @@ import {
   endBlock,
   addBuffer
 } from "./translate-utils";
-import { Options, getComponentName, getPartClassName } from "./utils";
+import {
+  Options,
+  getComponentName,
+  getPartClassName,
+  RENAME_PROPS
+} from "./utils";
 
 export const compile = (
   { ast }: { ast: Node },
@@ -70,11 +75,8 @@ const translatePart = (part: Element, context: TranslateContext) => {
 };
 
 const BLACK_LIST_PROPS = {
-  className: true
-};
-
-const RENAME_PROPS = {
-  class: "className"
+  className: true,
+  children: true
 };
 
 const translateComponent = (

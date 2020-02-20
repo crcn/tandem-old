@@ -6,3 +6,4 @@ dist/
 *.node
 *.artifacts
 tmp/
+*.pc.d.ts

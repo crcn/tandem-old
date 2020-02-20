@@ -39,6 +39,9 @@ Limitations:
 
 immediate TODO:
 
+- nodes should be scoped based on css file hash
+  - allows for better code splitting
+- virtual loader - https://github.com/sveltejs/svelte-loader/blob/master/index.js
 - loader add resources
   - linter
     - error with multiple IDs

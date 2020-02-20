@@ -15,7 +15,7 @@ export const getOutputFilePath = (filePath: string, options: Options = {}) => {
 };
 
 export const compile = (
-  info: { ast: Node; sheet: any },
+  info: { ast: Node; sheet?: any },
   filePath: string,
   options: Options = {}
 ) => {

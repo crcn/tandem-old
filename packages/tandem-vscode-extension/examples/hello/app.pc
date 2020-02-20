@@ -1,0 +1,7 @@
+<import id="timer" src="./timer.pc">
+
+{timer}
+
+<part id="preview">
+  <self timer={<timer />} />
+</part>
