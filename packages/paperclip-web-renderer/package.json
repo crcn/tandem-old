@@ -1,6 +1,6 @@
 {
   "name": "paperclip-web-renderer",
-  "version": "11.0.14",
+  "version": "11.0.18",
   "description": "My webpack project",
   "main": "index.js",
   "scripts": {
@@ -14,7 +14,7 @@
   "license": "ISC",
   "dependencies": {
     "html-entities": "^1.2.1",
-    "paperclip": "^11.0.14"
+    "paperclip": "^11.0.18"
   },
   "devDependencies": {
     "babel-plugin-syntax-dynamic-import": "^6.18.0",
@@ -25,5 +25,5 @@
     "webpack-cli": "^3.3.10",
     "webpack-dev-server": "^3.10.1"
   },
-  "gitHead": "1b47b9652082d124614c4bba9fcef1b3f86e0be9"
+  "gitHead": "a806c369027f30cd387f25901984ec4e05774569"
 }

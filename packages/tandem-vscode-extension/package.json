@@ -1,6 +1,6 @@
 {
   "name": "tandem-vscode-extension",
-  "version": "11.0.14",
+  "version": "11.0.18",
   "electronVersion": "7.1.10",
   "description": "",
   "main": "lib/client/index.js",
@@ -74,11 +74,11 @@
   "dependencies": {
     "@types/react": "^16.9.20",
     "color": "^3.1.2",
-    "paperclip": "^11.0.14",
-    "paperclip-web-renderer": "^11.0.14",
+    "paperclip": "^11.0.18",
+    "paperclip-web-renderer": "^11.0.18",
     "vscode-languageclient": "^6.0.1",
     "vscode-languageserver": "^6.0.1",
     "vscode-languageserver-textdocument": "^1.0.0"
   },
-  "gitHead": "1b47b9652082d124614c4bba9fcef1b3f86e0be9"
+  "gitHead": "a806c369027f30cd387f25901984ec4e05774569"
 }

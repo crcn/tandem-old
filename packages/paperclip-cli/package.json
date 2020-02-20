@@ -1,6 +1,6 @@
 {
   "name": "paperclip-cli",
-  "version": "11.0.14",
+  "version": "11.0.18",
   "description": "Examples:",
   "main": "index.js",
   "bin": {
@@ -8,11 +8,11 @@
   },
   "author": "",
   "license": "ISC",
-  "gitHead": "1b47b9652082d124614c4bba9fcef1b3f86e0be9",
+  "gitHead": "a806c369027f30cd387f25901984ec4e05774569",
   "dependencies": {
     "chokidar": "^3.3.1",
     "glob": "^7.1.6",
-    "paperclip": "^11.0.14",
+    "paperclip": "^11.0.18",
     "resolve": "^1.15.1",
     "yargs": "^15.1.0"
   },
