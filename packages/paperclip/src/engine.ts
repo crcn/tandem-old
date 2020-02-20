@@ -40,7 +40,7 @@ export class Engine {
       uri => {
         return fs.existsSync(uri.replace("file://", ""));
       },
-      (fromPath, toPath) => "file://" + resolveImportFile(fromPath, toPath)
+      resolveImportUri
     );
 
     // only one native listener to for buffer performance
@@ -92,7 +92,8 @@ export class Engine {
 }
 
 export function resolveImportUri(fromPath: string, toPath: string) {
-  return "file:// " + resolveImportFile(fromPath, toPath);
+  const filePath = resolveImportFile(fromPath, toPath);
+  return filePath && "file://" + filePath;
 }
 
 export function resolveImportFile(fromPath: string, toPath: string) {

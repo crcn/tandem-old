@@ -143,9 +143,9 @@ fn stringify_element_selector(selector: &ast::Selector, context: &Context) -> St
     ast::Selector::Element(selector) => format!("{}{}", selector.tag_name, scope_selector),
     ast::Selector::PseudoElement(selector) => {
       if selector.name == "root" {
-        format!(":{}", selector.name)
+        format!("{}{}", selector.separator, selector.name)
       } else {
-        format!("{}::{}", stringify_optional_selector(&selector.target, context), selector.name)
+        format!("{}{}{}", stringify_optional_selector(&selector.target, context), selector.separator, selector.name)
       }
     },
     ast::Selector::PseudoParamElement(selector) => {

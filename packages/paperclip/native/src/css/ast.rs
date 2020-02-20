@@ -283,6 +283,7 @@ impl fmt::Display for SiblingSelector {
 // div:before, div::after { }
 #[derive(Debug, PartialEq, Serialize, Clone)]
 pub struct PseudoElementSelector {
+  pub separator: String, // : or ::
   pub target: Option<Box<Selector>>,
   pub name: String
 }
@@ -297,7 +298,7 @@ fn stringify_optional_selector(selector: &Option<Box<Selector>>) -> String {
 
 impl fmt::Display for PseudoElementSelector {
   fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-    write!(f, "{}:{}", stringify_optional_selector(&self.target), &self.name)?;
+    write!(f, "{}{}{}", stringify_optional_selector(&self.target), &self.separator, &self.name)?;
     Ok(())
   }
 }

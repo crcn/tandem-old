@@ -326,6 +326,8 @@ fn parse_combo_selector<'a, 'b>(context: &mut Context<'a, 'b>) -> Result<Selecto
 
 fn parse_psuedo_element_selector<'a, 'b>(context: &mut Context<'a, 'b>) -> Result<Selector, ParseError> { 
   
+  let mut colon_count = 1;
+  
   let target: Option<Box<Selector>> = if context.tokenizer.peek(1)? != Token::Colon {
     Some(Box::new(parse_combo_selector(context)?))
   } else {
@@ -342,6 +344,7 @@ fn parse_psuedo_element_selector<'a, 'b>(context: &mut Context<'a, 'b>) -> Resul
 
   context.tokenizer.next()?;
   if context.tokenizer.peek(1)? == Token::Colon {
+    colon_count += 1;
     context.tokenizer.next()?;
   }
   let name = parse_selector_name(context)?.to_string();
@@ -366,6 +369,7 @@ fn parse_psuedo_element_selector<'a, 'b>(context: &mut Context<'a, 'b>) -> Resul
     selector
   } else {
     Selector::PseudoElement(PseudoElementSelector {
+      separator: ":".to_string().repeat(colon_count),
       target,
       name
     })
@@ -523,10 +527,6 @@ fn parse_declaration<'a, 'b>(context: &mut Context<'a, 'b>) -> Result<Declaratio
   eat_superfluous(context)?;
 
   let value_start = context.tokenizer.pos;
-  // let value = get_buffer(context.tokenizer, |tokenizer| { 
-  //   let tok = tokenizer.peek(1)?;
-  //   Ok(tok != Token::Semicolon && tok != Token::CurlyClose) 
-  // })?.to_string();
   let value = parse_declaration_value(context)?;
   let value_end = context.tokenizer.pos;
 

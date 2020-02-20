@@ -1,10 +1,11 @@
-<import src="./styles/main.css">
+
+
 <import src="./styles/base.css">
-<import id="item" src="./item.pc">
-<import id="todo-footer" src="./footer.pc">
 
+<style>
+  
+</style>
 
-<div id="app">
     <div class="learn-bar">
         <aside class="learn">
             <header>
@@ -33,28 +34,3 @@
                 <hr> <em>If you have other helpful links to share, or find any of the links above no longer work, please <a href="https://github.com/tastejs/todomvc/issues">let us know</a>.</em> </footer>
         </aside>
     </div>
-    <section class="todoapp">
-        <header class="header">
-            <h1>todos</h1>
-            <input autofocus="autofocus" autocomplete="off" placeholder="What needs to be done?" class="new-todo">
-        </header>
-
-        <!-- TODO - to hide -->
-        <section class="main">
-            <input id="toggle-all" type="checkbox" class="toggle-all">
-            <label for="toggle-all">Mark all as complete</label>
-            <ul class="todo-list">
-                <item text="something" />
-                <item text="something" completed />
-            </ul>
-        </section>
-
-        <!-- TODO - to hide -->
-        <todo-footer />
-    </section>
-    <footer class="info">
-        <p>Double-click to edit a todo</p>
-        <p>Written by <a href="http://github.com/crcn">Craig Condon</a></p>
-        <p>Part of <a href="http://todomvc.com">TodoMVC</a></p>
-    </footer>
-</div>

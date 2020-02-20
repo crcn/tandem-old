@@ -95,12 +95,12 @@ impl DependencyGraph {
       let source = vfs.load(&curr_uri).await
       .or_else(|_| {
         let err: GraphError = match import {
-          Some((origin_uri, import_id)) => {
+          Some((origin_uri, relative_uri)) => {
             let origin_dep = self.dependencies.get(&origin_uri).unwrap();
 
             let location = match &origin_dep.content {
               DependencyContent::Node(node) => {
-                pc_ast::get_import_by_id(&import_id, node).unwrap().open_tag_location.clone()
+                pc_ast::get_import_by_src(&relative_uri, node).unwrap().open_tag_location.clone()
               }
               DependencyContent::StyleSheet(_) => {
                 // TODO once imports are working in CSS sheets
@@ -140,11 +140,11 @@ impl DependencyGraph {
 
       loaded_deps.push(curr_uri.to_string());
 
-      for (_id, dep_uri) in &dependency.dependencies {
+      for (relative_uri, dep_uri) in &dependency.dependencies {
         if !self.dependencies.contains_key(&dep_uri.to_string()) {
           to_load.push((
             dep_uri.to_string(),
-            Some((curr_uri.to_string(), _id.to_string()))
+            Some((curr_uri.to_string(), relative_uri.to_string()))
           ));
         }
       }
@@ -208,9 +208,11 @@ impl<'a> Dependency {
 
     let mut dependencies = HashMap::new();
     for import in &imports {
+      let src = pc_ast::get_attribute_value("src", import).unwrap();
       dependencies.insert(
-        pc_ast::get_import_identifier(import).unwrap().as_str().to_string(),
-        vfs.resolve(uri, pc_ast::get_attribute_value("src", import).unwrap())
+        src.to_string(),
+        // pc_ast::get_import_identifier(import).unwrap().as_str().to_string(),
+        vfs.resolve(uri, &src)
       );
     }
 

@@ -318,6 +318,15 @@ pub fn get_import_by_id<'a>(id: &String, root_expr: &'a Node) -> Option<&'a Elem
   None
 }
 
+pub fn get_import_by_src<'a>(src: &String, root_expr: &'a Node) -> Option<&'a Element> {
+  for import in get_imports(root_expr).iter() {
+    if get_attribute_value("src", import) == Some(src) {
+      return Some(import);
+    }
+  }
+  None
+}
+
 pub fn get_attribute<'a, 'b>(name: &'b str, element: &'a Element) -> Option<&'a Attribute> {
   for attribute in &element.attributes {
     if let Attribute::KeyValueAttribute(attr) = attribute {

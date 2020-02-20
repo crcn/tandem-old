@@ -36,6 +36,9 @@ impl VirtualFileSystem {
   }
 
   pub async fn update(&mut self, uri: &String, content: &String) -> Result<&String, &'static str> {
+    if !(self.file_exists)(uri) {
+      return Err("File does not exist");
+    }
     self.contents.insert(uri.to_string(), content.to_string());
     Ok(self.contents.get(uri).unwrap())
   }

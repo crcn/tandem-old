@@ -103,7 +103,7 @@ export class PCHTMLLanguageService extends BaseEngineLanguageService<Node> {
   private _handleRule(rule: Rule, context: HandleContext) {
     for (const declaration of rule.declarations) {
       const colors =
-        declaration.value.match(/\#[^\s]+|(rgba|rgb|hsl|hsla)\(.*?\)/g) ||
+        declaration.value.match(/\#[^\s,;]+|(rgba|rgb|hsl|hsla)\(.*?\)/g) ||
         declaration.value.match(CSS_COLOR_NAME_REGEXP) ||
         [];
 
