@@ -325,7 +325,7 @@ impl<'a> Tokenizer<'a> {
   fn forward(&mut self, pos: usize) {
     self.pos += pos;
   }
-  fn curr_char(&mut self) -> Result<u8, ParseError> {
+  pub fn curr_char(&mut self) -> Result<u8, ParseError> {
     if self.is_eof() {
       Err(ParseError::eof())
     } else {

@@ -20,7 +20,8 @@ import {
   getAttributeStringValue,
   AttributeKind,
   StatementKind,
-  resolveImportFile
+  resolveImportFile,
+  resolveImportUri
 } from "paperclip";
 import * as path from "path";
 
@@ -134,7 +135,7 @@ export class PCHTMLLanguageService extends BaseEngineLanguageService<Node> {
       const srcAttr = getAttributeValue("src", imp);
       if (srcAttr.attrValueKind === AttributeValueKind.String) {
         context.info.links.push({
-          uri: "file:// " + resolveImportFile(uri, srcAttr.value),
+          uri: resolveImportUri(uri, srcAttr.value),
           location: srcAttr.location
         });
       }

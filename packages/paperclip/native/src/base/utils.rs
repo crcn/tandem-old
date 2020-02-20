@@ -1,4 +1,5 @@
 use crc::{crc32};
+use regex::Regex;
 
 pub fn get_document_style_scope<'a>(uri: &String) -> String {
 
@@ -9,4 +10,9 @@ pub fn get_document_style_scope<'a>(uri: &String) -> String {
   }
 
   format!("{:x}", crc32::checksum_ieee(buff.as_bytes())).to_string()
+}
+
+pub fn is_relative_path(path: &String) -> bool {
+  let url_re = Regex::new(r"(https?|data):").unwrap();
+  return !url_re.is_match(path.clone().as_str());
 }

@@ -11,8 +11,10 @@ use crate::js::runtime::evaluator::{evaluate as evaluate_js};
 use crate::js::runtime::virt as js_virt;
 use crate::js::ast as js_ast;
 use crate::css::runtime::virt as css_virt;
-use crate::base::utils::{get_document_style_scope};
+use crate::base::utils::{get_document_style_scope, is_relative_path};
 use crc::{crc32};
+use regex::Regex;
+
 
 #[derive(Clone)]
 pub struct Context<'a> {
@@ -354,8 +356,12 @@ fn evaluate_basic_element<'a>(element: &ast::Element, context: &'a mut Context) 
 
         if name == "src" {
           if let Some(value) = value_option {
-            let full_path = context.vfs.resolve(context.uri, &value);
-            value_option = Some(full_path);
+            if is_relative_path(&value) {
+              let full_path = context.vfs.resolve(context.uri, &value);
+              value_option = Some(full_path);
+            } else {
+              value_option = None;
+            }
           }
         }
 

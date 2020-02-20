@@ -178,7 +178,7 @@ fn evaluate_style_declaration<'a>(expr: &'a ast::Declaration, context: &Context)
 
   let mut value = expr.value.to_string();
 
-  let url_re = Regex::new(r"url\((.*?)\)").unwrap();
+  let url_re = Regex::new(r#"url\((?:['"]?)(.*?)(?:['"]?)\)"#).unwrap();
 
   // a bit crude, but works for now. Need to eventually consider HTTP paths
   if url_re.is_match(value.clone().as_str()) {

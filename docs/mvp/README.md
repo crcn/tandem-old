@@ -37,11 +37,14 @@ Limitations:
 - Design + writing
 - Documentation
 
-immediate TODO:
+## Alpha
+
+Goal is to validate the idea & polish it up
+
+#### Todos
 
 - examples
-  - clean up current\*\*
-  - chat app
+  - todomvc
 - docs
   - what is Tandem
   - getting started
@@ -51,17 +54,22 @@ immediate TODO:
   - testing
 - ask friends to play with app
 - site
-- BUGS
-  - handle circular dependencies
-  - need to be aware of reserved props
-  - need to handle cases where files are moved around, especially for moduleDirectory files
-- linter
 
+## Beta
+
+#### Todos
+
+- tests (companies won't use otherwise)
+- a11y
+  - img tags
+- linter
   - error with multiple IDs
   - warn for script tags
   - warn when CSS selector tag isn't used
   - prohibit dynamic attr bindings for
     - all import attrs
     - all meta attrs
-
-- ## enhancements
+- BUGS
+  - handle circular dependencies
+  - need to be aware of reserved props
+  - need to handle cases where files are moved around, especially for moduleDirectory files

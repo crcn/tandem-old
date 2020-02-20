@@ -523,10 +523,11 @@ fn parse_declaration<'a, 'b>(context: &mut Context<'a, 'b>) -> Result<Declaratio
   eat_superfluous(context)?;
 
   let value_start = context.tokenizer.pos;
-  let value = get_buffer(context.tokenizer, |tokenizer| { 
-    let tok = tokenizer.peek(1)?;
-    Ok(tok != Token::Semicolon && tok != Token::CurlyClose) 
-  })?.to_string();
+  // let value = get_buffer(context.tokenizer, |tokenizer| { 
+  //   let tok = tokenizer.peek(1)?;
+  //   Ok(tok != Token::Semicolon && tok != Token::CurlyClose) 
+  // })?.to_string();
+  let value = parse_declaration_value(context)?;
   let value_end = context.tokenizer.pos;
 
   if context.tokenizer.peek(1)? == Token::Semicolon {
@@ -553,6 +554,25 @@ fn parse_declaration<'a, 'b>(context: &mut Context<'a, 'b>) -> Result<Declaratio
       end: value_end
     }
   })
+}
+
+fn parse_declaration_value<'a, 'b>(context: &mut Context<'a, 'b>) -> Result<String, ParseError> { 
+  let mut buffer = String::new();
+  while !context.tokenizer.is_eof() {
+    match context.tokenizer.peek(1)? {
+      Token::Semicolon => {
+        break;
+      },
+      Token::SingleQuote | Token::DoubleQuote => {
+        buffer.extend(parse_string(context));
+      }
+      _ => {
+        context.tokenizer.next()?;
+        buffer.push(context.tokenizer.curr_char()? as char);
+      }
+    };
+  }
+  Ok(buffer)
 }
 
 #[cfg(test)]
@@ -649,6 +669,10 @@ mod tests {
       }
 
       @media ab {._a{a:b;}}
+
+      .test {
+        background: url(';');
+      }
     ";
 
     parse(source).unwrap();
