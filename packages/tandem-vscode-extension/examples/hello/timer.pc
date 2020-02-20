@@ -1,5 +1,0 @@
-<div>
-  {currentTimeLabel}
-  <button>start</button>
-  <button>stop</button>
-</div>

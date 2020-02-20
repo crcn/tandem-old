@@ -2,10 +2,15 @@
   "name": "tandem-vscode-extension",
   "version": "11.0.18",
   "electronVersion": "7.1.10",
+  "publisher": "crcn",
   "description": "",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/crcn/tandem.git"
+  },
   "main": "lib/client/index.js",
   "engines": {
-    "vscode": "^1.40.0"
+    "vscode": "^1.41.0"
   },
   "activationEvents": [
     "onLanguage:paperclip",
@@ -62,7 +67,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc",
     "build:watch": "npm run build -- --watch",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build",
+    "publish:marketplace": "vsce package && vsce publish"
   },
   "author": "",
   "license": "ISC",
