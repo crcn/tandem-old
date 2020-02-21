@@ -1,8 +1,6 @@
 <import src="./styles/global.css">
 
 <style>
-
-
 .edit {
   position: relative;
   margin: 0;
@@ -155,10 +153,20 @@ li[editing]:last-child {
   {children}
 </li>
 
+{#if a}
+  hello
+{/}
+
 <part id="preview">
     <ul>
-        <self label="item" />
-        <self label="item 2" completed />
-        <self label="item 3" editing />
+        <self label="item">
+          <label-input />
+        </self>
+        <self label="item 2">
+          <view label="something" />
+        </self>
+        <self label="item 2">
+          <view label="something someting" />
+        </self>
     </ul>
 </part>

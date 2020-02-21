@@ -1,4 +1,4 @@
-import React, { useState, ChangeEvent, KeyboardEvent } from "react";
+import React, { useState, KeyboardEvent } from "react";
 import BaseItem, { View, LabelInput } from "./item.pc";
 import { Item } from "./data";
 
