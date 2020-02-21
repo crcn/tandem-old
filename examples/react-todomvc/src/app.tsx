@@ -1,5 +1,5 @@
 import React, { useState, ChangeEvent } from "react";
-import App from "./app.pc";
+import { Main } from "./app.pc";
 import ListItem from "./item";
 import Controls from "./controls";
 import { Item } from "./data";
@@ -21,7 +21,7 @@ export default () => {
   };
 
   return (
-    <App
+    <Main
       items={items.map(item => (
         <ListItem item={item} onChange={onItemChange} />
       ))}

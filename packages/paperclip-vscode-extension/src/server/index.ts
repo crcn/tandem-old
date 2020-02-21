@@ -14,8 +14,6 @@ import { Engine } from "paperclip";
 import { createServices } from "./services";
 import { VSCServiceBridge } from "./bridge";
 
-const PAPERCLIP_RENDER_PART = "preview";
-
 const connection = createConnection(ProposedFeatures.all);
 
 const documents: TextDocuments<any> = new TextDocuments(TextDocument);
@@ -42,9 +40,7 @@ const init = async (
   documents: TextDocuments<TextDocument>
 ) => {
   // Paperclip engine for parsing & evaluating documents
-  const engine = new Engine({
-    renderPart: PAPERCLIP_RENDER_PART
-  });
+  const engine = new Engine();
 
   // Language service for handling information about the document such as colors, references,
   // etc

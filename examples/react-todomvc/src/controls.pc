@@ -87,14 +87,13 @@
     bottom: 10px;
   }
 }
-
 </style>
 
 <part id="filter-button">
   <li><a {href} {selected}>{children}</a></li>
 </part>
 
-<part id="default">
+<part id="main">
   <footer class="footer">
     <span class="todo-count">
       {itemCountLabel}
@@ -108,10 +107,8 @@
   </footer>
 </part>
 
-<part id="preview">
-  <default itemCountLabel={<span><strong>1</strong> item left</span>}>
-    <filter-button >All</filter-button>
-    <filter-button selected>Active</filter-button>
-    <filter-button>Completed</filter-button>
-  </default>
-</part>
+<main itemCountLabel={<span><strong>1</strong> item left</span>}>
+  <filter-button >All</filter-button>
+  <filter-button selected>Active</filter-button>
+  <filter-button>Completed</filter-button>
+</main>

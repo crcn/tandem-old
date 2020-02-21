@@ -204,7 +204,6 @@ fn evaluate_node<'a>(node_expr: &ast::Node, is_root: bool, context: &'a mut Cont
 fn evaluate_element<'a>(element: &ast::Element, is_root: bool, context: &'a mut Context) -> Result<Option<virt::Node>, RuntimeError> {
   match element.tag_name.as_str() {
     "import" => evaluate_import_element(element, context),
-    "self" => evaluate_self_element(element, context),
     "part" => evaluate_part_element(element, is_root, context),
     "script" => Ok(None),
     _ => {
@@ -428,20 +427,6 @@ fn evaluate_basic_element<'a>(element: &ast::Element, context: &'a mut Context) 
 fn evaluate_import_element<'a>(_element: &ast::Element, _context: &'a mut Context) -> Result<Option<virt::Node>, RuntimeError> {
   Ok(None)
 }
-
-fn evaluate_self_element<'a>(element: &ast::Element, context: &'a mut Context) -> Result<Option<virt::Node>, RuntimeError> {
-  
-  if context.from_main {
-    return Err(RuntimeError { 
-      uri: context.uri.to_string(), 
-      message: "Can't call <self /> here since this causes an infinite loop!".to_string(), 
-      location: element.open_tag_location.clone() 
-    });
-  }
-
-  evaluate_component_instance(element, context.uri, context)
-}
-
 
 fn evaluate_part_element<'a>(element: &ast::Element, is_root: bool, context: &'a mut Context) -> Result<Option<virt::Node>, RuntimeError> {
   if !is_root {

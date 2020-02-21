@@ -43,6 +43,10 @@ Goal is to validate the idea & polish it up
 
 #### Todos
 
+- look into slots
+- deprecate <self />
+- <default /> part
+- deprecate preview part
 - Can't include components
 - Change all to Paperclip
 - examples
