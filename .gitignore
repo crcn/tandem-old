@@ -6,4 +6,4 @@ dist/
 *.artifacts
 tmp/
 *.pc.d.ts
-.vsix
+*.vsix
