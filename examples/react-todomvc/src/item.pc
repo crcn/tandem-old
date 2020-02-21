@@ -41,14 +41,11 @@ li[editing] {
   border-bottom: none;
   padding: 0;
 }
-li[editing] .edit {
+.edit {
   display: block;
   width: 506px;
   padding: 12px 16px;
   margin: 0 0 0 43px;
-}
-li[editing] .view {
-  display: none;
 }
 li .toggle {
   text-align: center;
@@ -122,10 +119,6 @@ li:hover .destroy {
   display: block;
 }
 
-li .edit {
-  display: none;
-}
-
 li[editing]:last-child {
   margin-bottom: -1px;
 }
@@ -146,13 +139,20 @@ li[editing]:last-child {
 
 </style>
 
-<li class="todo" {completed} {editing}>
-    <div class="view">
+<part id="view">
+  <div class="view">
         <input type="checkbox" class="toggle">
         <label>{label}</label> 
         <button class="destroy"></button>
     </div> 
-    <input type="text" class="edit">
+</part>
+
+<part id="label-input">
+  <input type="text" class="edit">
+</part>
+
+<li class="todo" {completed}>
+  {children}
 </li>
 
 <part id="preview">

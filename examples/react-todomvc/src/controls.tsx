@@ -3,14 +3,16 @@ import BaseControls, { styled } from "./controls.pc";
 
 const Strong = styled("strong");
 
-export type Props = {};
+export type Props = {
+  numItemsLeft: number;
+};
 
-export default (_props: Props) => {
+export default ({ numItemsLeft }: Props) => {
   return (
     <BaseControls
       itemCountLabel={
         <span>
-          <Strong>1</Strong> items left
+          <Strong>{numItemsLeft}</Strong> items left
         </span>
       }
     />
