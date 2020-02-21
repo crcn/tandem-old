@@ -169,37 +169,39 @@ h1 {
 
 </style>
 
-<div id="app-container">
-    <div id="app">
-        <learn />
-        <section class="todoapp">
-            <header class="header">
-                <h1>todos</h1>
-                <input autofocus="autofocus" autocomplete="off" placeholder="What needs to be done?" class="new-todo">
-            </header>
+<part id="default">
+  <div id="app-container">
+      <div id="app">
+          <learn />
+          <section class="todoapp">
+              <header class="header">
+                  <h1>todos</h1>
+                  <input autofocus="autofocus" autocomplete="off" placeholder="What needs to be done?" class="new-todo">
+              </header>
 
-            <!-- TODO - to hide -->
-            <section class="main">
-                <input id="toggle-all" type="checkbox" class="toggle-all">
-                <label for="toggle-all">Mark all as complete</label>
-                <ul class="todo-list">
-                    {items}
-                </ul>
-            </section>
+              <!-- TODO - to hide -->
+              <section class="main">
+                  <input id="toggle-all" type="checkbox" class="toggle-all">
+                  <label for="toggle-all">Mark all as complete</label>
+                  <ul class="todo-list">
+                      {items}
+                  </ul>
+              </section>
 
-            <!-- TODO - to hide -->
-            {controls}
-        </section>
-        <footer class="info">
-            <p>Double-click to edit a todo</p>
-            <p>Written by <a href="http://github.com/crcn">Craig Condon</a></p>
-            <p>Part of <a href="http://todomvc.com">TodoMVC</a></p>
-        </footer>
-    </div>
-</div>
+              <!-- TODO - to hide -->
+              {controls}
+          </section>
+          <footer class="info">
+              <p>Double-click to edit a todo</p>
+              <p>Written by <a href="http://github.com/crcn">Craig Condon</a></p>
+              <p>Part of <a href="http://todomvc.com">TodoMVC</a></p>
+          </footer>
+      </div>
+  </div>
+</part>
 
 <part id="preview">
-  <self
+  <default
     controls={
       <controls:preview />
     }

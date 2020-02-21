@@ -19,8 +19,6 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-
-
 ul {
   margin: 0;
   padding: 0;
@@ -137,6 +135,12 @@ li[editing]:last-child {
 
 </style>
 
+<part id="default">
+  <li class="todo" {completed}>
+    {children}
+  </li>
+</part>
+
 <part id="view">
   <div class="view">
         <input type="checkbox" class="toggle">
@@ -149,24 +153,16 @@ li[editing]:last-child {
   <input type="text" class="edit">
 </part>
 
-<li class="todo" {completed}>
-  {children}
-</li>
-
-{#if a}
-  hello
-{/}
-
 <part id="preview">
     <ul>
-        <self label="item">
+        <default label="item">
           <label-input />
-        </self>
-        <self label="item 2">
+        </default>
+        <default label="item 2">
           <view label="something" />
-        </self>
-        <self label="item 2">
-          <view label="something someting" />
-        </self>
+        </default>
+        <default label="item 2" completed>
+          <view label="something like this" />
+        </default>
     </ul>
 </part>

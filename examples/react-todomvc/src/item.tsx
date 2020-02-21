@@ -25,7 +25,11 @@ export default ({ item, onChange }: Props) => {
     }
   };
   return (
-    <BaseItem completed={item.completed} onClick={onClick} onBlur={onBlur}>
+    <BaseItem
+      completed={item.completed && String(item.completed)}
+      onClick={onClick}
+      onBlur={onBlur}
+    >
       {editing ? (
         <LabelInput onKeyPress={onLabelInputKeyPress} />
       ) : (
