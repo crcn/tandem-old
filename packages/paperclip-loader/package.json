@@ -16,7 +16,6 @@
     "crc32": "^0.2.2",
     "loader-utils": "^1.2.3",
     "paperclip": "^11.0.20",
-    "paperclip-react-compiler": "^10.1.38",
     "react": "^16.12.0",
     "resolve": "^1.15.1",
     "webpack": "^4.41.6",

@@ -18,17 +18,17 @@ use regex::Regex;
 
 #[derive(Clone)]
 pub struct Context<'a> {
-  graph: &'a DependencyGraph,
-  vfs: &'a VirtualFileSystem,
-  uri: &'a String,  
-  import_ids: HashSet<&'a String>,
-  part_ids: HashSet<&'a String>,
-  scope: String,
-  data: &'a js_virt::JsValue,
-  in_part: bool,
-  id_seed: String,
-  from_main: bool,
-  id_count: i32
+  pub graph: &'a DependencyGraph,
+  pub vfs: &'a VirtualFileSystem,
+  pub uri: &'a String,  
+  pub import_ids: HashSet<&'a String>,
+  pub part_ids: HashSet<&'a String>,
+  pub scope: String,
+  pub data: &'a js_virt::JsValue,
+  pub in_part: bool,
+  pub id_seed: String,
+  pub from_main: bool,
+  pub id_count: i32
 }
 
 impl<'a> Context<'a> {
@@ -221,7 +221,7 @@ fn evaluate_element<'a>(element: &ast::Element, is_root: bool, context: &'a mut 
 
 fn evaluate_slot<'a>(slot: &ast::Slot, context: &'a mut Context) -> Result<Option<virt::Node>, RuntimeError> {
   let script = &slot.script;
-  let mut js_value = evaluate_js(script, &context.uri, &context.graph, &context.vfs, &context.data)?;
+  let mut js_value = evaluate_js(script, context)?;
 
   // if array of values, then treat as document fragment
   if let js_virt::JsValue::JsArray(ary) = &mut js_value {
@@ -513,7 +513,7 @@ fn evaluate_conditional<'a>(block: &ast::ConditionalBlock, context: &'a mut Cont
 }
 
 fn evaluate_pass_fail_block<'a>(block: &ast::PassFailBlock, context: &'a mut Context) -> Result<Option<virt::Node>, RuntimeError> {
-  let condition = evaluate_js(&block.condition, &context.uri, &context.graph, &context.vfs, context.data)?;
+  let condition = evaluate_js(&block.condition, context)?;
   if condition.truthy() {
     if let Some(node) = &block.node {
       evaluate_node(node, false, context)
@@ -541,7 +541,7 @@ fn evaluate_attribute_value<'a>(value: &ast::AttributeValue, context: &mut Conte
 }
 
 fn evaluate_attribute_slot<'a>(script: &js_ast::Statement, context: &'a mut Context) -> Result<js_virt::JsValue, RuntimeError> {
-  evaluate_js(script, &context.uri, &context.graph, &context.vfs, &context.data)
+  evaluate_js(script, context)
 }
 
 #[cfg(test)]

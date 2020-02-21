@@ -3,31 +3,23 @@ use super::super::ast;
 use super::virt;
 use crate::base::runtime::{RuntimeError};
 use crate::base::ast::{Location};
-use crate::pc::runtime::evaluator::evaluate as evaluate_pc;
+use crate::pc::runtime::evaluator::{evaluate_instance_node, Context as PCContext};
 use crate::pc::runtime::graph::{DependencyGraph};
 use crate::pc::runtime::vfs::{VirtualFileSystem};
 use crate::pc::ast as pc_ast;
 
-pub struct Context<'a> {
-  uri: &'a String,
-  graph: &'a DependencyGraph,
-  vfs: &'a VirtualFileSystem,
-  data: &'a virt::JsValue
+pub fn evaluate<'a>(expr: &ast::Statement, context: &'a mut PCContext) -> Result<virt::JsValue, RuntimeError> {
+  evaluate_statement(&expr, context)
 }
-
-pub fn evaluate<'a>(expr: &ast::Statement, uri: &'a String, graph: &'a DependencyGraph, vfs: &'a VirtualFileSystem, data: &'a virt::JsValue) -> Result<virt::JsValue, RuntimeError> {
-  let context = Context { data, graph, vfs, uri };
-  evaluate_statement(&expr, &context)
-}
-fn evaluate_statement<'a>(statement: &ast::Statement, context: &'a Context) -> Result<virt::JsValue, RuntimeError> {
+fn evaluate_statement<'a>(statement: &ast::Statement, context: &'a mut PCContext) -> Result<virt::JsValue, RuntimeError> {
   match statement {
     ast::Statement::Reference(reference) => evaluate_reference(reference, context),
     ast::Statement::Node(node) => evaluate_node(node, context)
   }
 }
 
-fn evaluate_node<'a>(node: &Box<pc_ast::Node>, context: &'a Context) -> Result<virt::JsValue, RuntimeError> {
-  let node_option = evaluate_pc(node, context.uri, &context.graph, &context.vfs, &context.data, None)?;
+fn evaluate_node<'a>(node: &Box<pc_ast::Node>, context: &'a mut PCContext) -> Result<virt::JsValue, RuntimeError> {
+  let node_option = evaluate_instance_node(node, context, None)?;
   if let Some(node) = node_option {
     Ok(virt::JsValue::JsNode(node))
   } else {
@@ -35,7 +27,7 @@ fn evaluate_node<'a>(node: &Box<pc_ast::Node>, context: &'a Context) -> Result<v
   }
 }
 
-fn evaluate_reference<'a>(reference: &ast::Reference, context: &'a Context) -> Result<virt::JsValue, RuntimeError> {
+fn evaluate_reference<'a>(reference: &ast::Reference, context: &'a mut PCContext) -> Result<virt::JsValue, RuntimeError> {
   
   let mut curr = Some(context.data);
 

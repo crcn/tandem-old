@@ -211,6 +211,9 @@ export const getNestedReferences = (
     }
 
     for (const child of getChildren(node)) {
+      if (child.kind === NodeKind.Element && child.tagName === "part") {
+        continue;
+      }
       getNestedReferences(child, _statements);
     }
   }

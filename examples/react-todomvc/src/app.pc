@@ -1,6 +1,6 @@
 <import src="./styles/global.css">
 <import id="item" src="./item.pc">
-<import id="todo-footer" src="./footer.pc">
+<import id="controls" src="./controls.pc">
 <import id="learn" src="./learn.pc">
 
 <style>
@@ -171,7 +171,7 @@ h1 {
 
 <div id="app-container">
     <div id="app">
-        <learn:preview />
+        <learn />
         <section class="todoapp">
             <header class="header">
                 <h1>todos</h1>
@@ -183,14 +183,12 @@ h1 {
                 <input id="toggle-all" type="checkbox" class="toggle-all">
                 <label for="toggle-all">Mark all as complete</label>
                 <ul class="todo-list">
-                    <item label="something" />
-                    <item label="something else" completed />
-                    <item label="something" editing />
+                    {items}
                 </ul>
             </section>
 
             <!-- TODO - to hide -->
-            <todo-footer:preview />
+            {controls}
         </section>
         <footer class="info">
             <p>Double-click to edit a todo</p>
@@ -199,3 +197,14 @@ h1 {
         </footer>
     </div>
 </div>
+
+<part id="preview">
+  <self
+    controls={
+      <controls:preview />
+    }
+    items={
+      <item:preview />
+    }
+   />
+</part>
