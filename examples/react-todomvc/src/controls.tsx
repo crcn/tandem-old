@@ -1,6 +1,18 @@
 import React from "react";
-import BaseControls from "./controls.pc";
+import BaseControls, { styled } from "./controls.pc";
 
-export default props => {
-  return <BaseControls />;
+const Strong = styled("strong");
+
+export type Props = {};
+
+export default (_props: Props) => {
+  return (
+    <BaseControls
+      itemCountLabel={
+        <span>
+          <Strong>1</Strong> items left
+        </span>
+      }
+    />
+  );
 };

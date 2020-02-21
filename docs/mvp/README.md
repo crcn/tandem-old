@@ -43,6 +43,7 @@ Goal is to validate the idea & polish it up
 
 #### Todos
 
+- Can't include components
 - Change all to Paperclip
 - examples
   - todomvc
