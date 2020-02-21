@@ -1,6 +1,6 @@
 {
   "name": "paperclip-vscode-extension",
-  "version": "11.0.21",
+  "version": "11.0.23",
   "electronVersion": "7.1.10",
   "publisher": "crcn",
   "description": "",
@@ -80,8 +80,8 @@
   "dependencies": {
     "@types/react": "^16.9.20",
     "color": "^3.1.2",
-    "paperclip": "^11.0.21",
-    "paperclip-web-renderer": "^11.0.21",
+    "paperclip": "^11.0.23",
+    "paperclip-web-renderer": "^11.0.23",
     "vscode-languageclient": "^6.0.1",
     "vscode-languageserver": "^6.0.1",
     "vscode-languageserver-textdocument": "^1.0.0"
