@@ -205,6 +205,11 @@ const translateJSXRoot = (node: Node, context: TranslateContext) => {
   return context;
 };
 
+const getImportTagName = (tagName: string) => {
+  const parts = tagName.split(".").map(pascalCase);
+  return parts.length > 1 ? `${parts[0]}.default` : parts.join(".");
+};
+
 const translateJSXNode = (
   node: Node,
   isRoot: boolean,
@@ -215,7 +220,7 @@ const translateJSXNode = (
   } else if (node.kind === NodeKind.Element && isVisibleElement(node)) {
     const tag =
       context.importIds.indexOf(node.tagName) !== -1
-        ? pascalCase(node.tagName)
+        ? getImportTagName(node.tagName)
         : JSON.stringify(node.tagName);
 
     context = addBuffer(`React.createElement(${tag}, `, context);
