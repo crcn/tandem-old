@@ -630,13 +630,20 @@ mod tests {
       "{#if true}do something{/}",
       "{#if false}do something{/else}something else{/}",
       "
-      {#each [0, false, 1, true] as item}
-        {#if item}
-          pass: {item}
-        {/else}
-          fail: {item}
+      <span>
+        {#each [0, false, 1, true] as item}
+          {#if item}
+            pass: {item}
+          {/else}
+            fail: {item}
+          {/}
         {/}
-      {/}
+      </span>
+      {#each [1, 2, 3] as item}
+  okay
+{/}
+
+    {\"a\"}
         
       "
     ];

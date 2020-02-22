@@ -1,4 +1,8 @@
-<import id="item" src="../item.pc">
+okay
+aaaa
+{"a"}
+
+<!--<import id="item" src="../item.pc">
 
 <style>
   ul {
@@ -13,3 +17,4 @@
   <item editing />
   <item label="okay" completed />
 </ul>
+-->
