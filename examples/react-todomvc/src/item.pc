@@ -140,12 +140,18 @@
   }
 </style>
 
+<property id="onChange" />
+<property id="onInputKeyPress" internal />
+
+<!-- <fdsfsfdfsd src="./item.tsx"> -->
+<logic src="./item.tsx">
+
 <li class="todo" {completed}>
   {#if editing}
     <input type="text" class="edit">
   {/else}
     <div class="view">
-      <input type="checkbox" class="toggle">
+      <input type="checkbox" onKeyPress={onInputKeyPress} class="toggle">
       <label>{label}</label> 
       <button class="destroy"></button>
     </div> 

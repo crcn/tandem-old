@@ -78,9 +78,9 @@ fn parse_node<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::Node, ParseEr
     Token::BlockOpen => {
       parse_block(tokenizer)
     }
-    Token::CloseTag => {
+    Token::TagClose => {
       let start = tokenizer.pos;
-      tokenizer.next_expect(Token::CloseTag)?;
+      tokenizer.next_expect(Token::TagClose)?;
       let tag_name = parse_tag_name(tokenizer)?;
       tokenizer.next_expect(Token::GreaterThan)?;
 
@@ -101,7 +101,7 @@ fn parse_node<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::Node, ParseEr
         Ok(
           tok != Token::CurlyOpen && 
           tok != Token::LessThan && 
-          tok != Token::CloseTag && 
+          tok != Token::TagClose && 
           tok != Token::HtmlCommentOpen && 
           tok != Token::BlockOpen && 
           tok != Token::BlockClose
@@ -175,6 +175,8 @@ fn is_void_tag_name<'a>(tag_name: &'a str) -> bool {
     "link" |
     "menuitem" |
     "meta" |
+    "property" |
+    "logic" |
     "nextid" |
     "param" |
     "source" |
@@ -191,7 +193,7 @@ fn parse_next_basic_element_parts<'a>(tag_name: String, attributes: Vec<pc_ast::
   let mut end = tokenizer.pos;
   
   match tokenizer.peek(1)? {
-    Token::SelfCloseTag => {
+    Token::SelfTagClose => {
       tokenizer.next()?;
       end = tokenizer.pos;
     },
@@ -200,7 +202,7 @@ fn parse_next_basic_element_parts<'a>(tag_name: String, attributes: Vec<pc_ast::
       end = tokenizer.pos;
       if !is_void_tag_name(tag_name.as_str()) {
         tokenizer.eat_whitespace();
-        while !tokenizer.is_eof() && tokenizer.peek_eat_whitespace(1)? != Token::CloseTag {
+        while !tokenizer.is_eof() && tokenizer.peek_eat_whitespace(1)? != Token::TagClose {
           children.push(parse_node(tokenizer)?);
         }
 
@@ -239,6 +241,7 @@ fn parse_block<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::Node, ParseE
   if let Token::Word(keyword) = token {
     match keyword {
       "if" => parse_if_block(tokenizer),
+      "each" => parse_each_block(tokenizer),
       _ => {
         Err(ParseError::unexpected_token(pos))
       }
@@ -347,12 +350,47 @@ fn parse_final_condition_block<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_a
   }))
 }
 
+fn parse_each_block<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::Node, ParseError> {
+
+  
+  tokenizer.next_expect(Token::Whitespace)?;
+  let source = parse_js_with_tokenizer(tokenizer, |token| {
+    token != Token::Word("as")
+  })?;
+  tokenizer.next_expect(Token::Word("as"))?;
+  tokenizer.eat_whitespace();
+
+  let value_name = tokenizer.next_word_value()?;
+
+  tokenizer.eat_whitespace();
+
+  let key_name = if let Token::Comma = tokenizer.peek(1)? {
+    tokenizer.next()?;
+    tokenizer.eat_whitespace();
+    Some(tokenizer.next_word_value()?)
+  } else {
+    None
+  };
+  tokenizer.eat_whitespace();
+  tokenizer.next_expect(Token::CurlyClose)?;
+  let body = parse_block_children(tokenizer)?;
+  tokenizer.next_expect(Token::BlockClose)?;
+  tokenizer.next_expect(Token::CurlyClose)?;
+
+  Ok(pc_ast::Node::Block(pc_ast::Block::Each(pc_ast::EachBlock {
+    source,
+    value_name,
+    key_name,
+    body
+  })))
+}
+
 fn parse_next_style_element_parts<'a>(attributes: Vec<pc_ast::Attribute>, tokenizer: &mut Tokenizer<'a>, start: usize) -> Result<pc_ast::Node, ParseError> {
   tokenizer.next_expect(Token::GreaterThan)?; // eat >
   let end = tokenizer.pos;
 
   let sheet = parse_css_with_tokenizer(tokenizer, |tokenizer| -> Result<bool, ParseError> {
-    Ok(tokenizer.peek(1)? == Token::CloseTag)
+    Ok(tokenizer.peek(1)? == Token::TagClose)
   })?;
 
   // TODO - assert tokens equal these
@@ -371,7 +409,7 @@ fn parse_close_tag<'a, 'b>(tag_name: &'a str, tokenizer: &mut Tokenizer<'b>, sta
   tokenizer.eat_whitespace();
   
   tokenizer
-  .next_expect(Token::CloseTag)
+  .next_expect(Token::TagClose)
   .or(Err(ParseError::unterminated("Unterminated element.".to_string(), start, end)))?;
 
 
@@ -397,7 +435,7 @@ fn parse_next_script_element_parts<'a>(attributes: Vec<pc_ast::Attribute>, token
   let end = tokenizer.pos;
 
   get_buffer(tokenizer, |tokenizer| {
-    Ok(tokenizer.peek(1)? != Token::CloseTag)
+    Ok(tokenizer.peek(1)? != Token::TagClose)
   })?;
 
 
@@ -424,7 +462,7 @@ fn parse_next_script_element_parts<'a>(attributes: Vec<pc_ast::Attribute>, token
 }
 
 fn parse_tag_name<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<String, ParseError> {
-  Ok(get_buffer(tokenizer, |tokenizer| { Ok(!matches!(tokenizer.peek(1)?, Token::Whitespace | Token::GreaterThan | Token::Equals | Token::SelfCloseTag)) })?.to_string())
+  Ok(get_buffer(tokenizer, |tokenizer| { Ok(!matches!(tokenizer.peek(1)?, Token::Whitespace | Token::GreaterThan | Token::Equals | Token::SelfTagClose)) })?.to_string())
 }
 
 fn parse_attributes<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Vec<pc_ast::Attribute>, ParseError> {
@@ -434,7 +472,7 @@ fn parse_attributes<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Vec<pc_ast::Att
   loop {
     tokenizer.eat_whitespace();
     match tokenizer.peek(1)? {
-      Token::SelfCloseTag | Token::GreaterThan => break,
+      Token::SelfTagClose | Token::GreaterThan => break,
       _ => {
         attributes.push(parse_attribute(tokenizer)?);
       }
@@ -530,8 +568,18 @@ mod tests {
       <!-- void tags -->
       <br>
       <import>
+      <logic>
 
       {block}
+
+      <!-- condition blocks -->
+      {#if a}do{/}
+      {#if a}{/else if b}b{/}
+      {#if b}{/else}{/}
+
+      <!-- repeat blocks -->
+      {#each items as item}{/}
+      {#each items as item, i}{/}
       
 
       <!-- historically broken stuff -->

@@ -26,10 +26,10 @@ pub enum Token<'a> {
   GreaterThan,
 
   // />
-  SelfCloseTag,
+  SelfTagClose,
 
   // </
-  CloseTag,
+  TagClose,
 
   // {#
   BlockOpen,
@@ -90,6 +90,7 @@ pub enum Token<'a> {
   Comma,
 
   // :
+
   Colon,
 
   // :
@@ -170,6 +171,15 @@ impl<'a> Tokenizer<'a> {
     }
   }
 
+  pub fn next_word_value(&mut self) -> Result<String, ParseError> {
+    let pos = self.pos;
+    if let Token::Word(value) = self.next()? {
+      Ok(value.to_string())
+    } else {
+      Err(ParseError::unexpected_token(pos))
+    }
+  }
+
   pub fn next(&mut self) -> Result<Token<'a>, ParseError> {
 
     if self.is_eof() {
@@ -185,7 +195,7 @@ impl<'a> Tokenizer<'a> {
           Ok(Token::LineCommentOpen)
         } else if self.starts_with(b"/>") {
           self.forward(2);
-          Ok(Token::SelfCloseTag)
+          Ok(Token::SelfTagClose)
         } else if self.starts_with(b"/*") {
           self.forward(2);
           Ok(Token::ScriptCommentOpen)
@@ -198,7 +208,7 @@ impl<'a> Tokenizer<'a> {
       b'<' => {
         if self.starts_with(b"</") {
           self.forward(2);
-          Ok(Token::CloseTag)
+          Ok(Token::TagClose)
         } else if self.starts_with(b"<!--") {
           self.forward(4);
           Ok(Token::HtmlCommentOpen)
@@ -389,14 +399,14 @@ mod tests {
   #[test]
   fn can_tokenize_a_self_close_tag() {
     let mut tokenizer = Tokenizer::new("</");
-    assert_eq!(tokenizer.next(), Ok(Token::CloseTag));
+    assert_eq!(tokenizer.next(), Ok(Token::TagClose));
     
   }
 
   #[test]
   fn can_tokenize_a_self_closing_tag() {
     let mut tokenizer = Tokenizer::new("/>");
-    assert_eq!(tokenizer.next(), Ok(Token::SelfCloseTag));
+    assert_eq!(tokenizer.next(), Ok(Token::SelfTagClose));
     
   }
 
@@ -408,7 +418,7 @@ mod tests {
     assert_eq!(tokenizer.next(), Ok(Token::Minus));
     assert_eq!(tokenizer.next(), Ok(Token::Word("div")));
     assert_eq!(tokenizer.next(), Ok(Token::Whitespace));
-    assert_eq!(tokenizer.next(), Ok(Token::SelfCloseTag));
+    assert_eq!(tokenizer.next(), Ok(Token::SelfTagClose));
     
   }
   #[test]
@@ -420,8 +430,8 @@ mod tests {
     assert_eq!(tokenizer.next(), Ok(Token::LessThan));
     assert_eq!(tokenizer.next(), Ok(Token::Word("span")));
     assert_eq!(tokenizer.next(), Ok(Token::Whitespace));
-    assert_eq!(tokenizer.next(), Ok(Token::SelfCloseTag));
-    assert_eq!(tokenizer.next(), Ok(Token::CloseTag));
+    assert_eq!(tokenizer.next(), Ok(Token::SelfTagClose));
+    assert_eq!(tokenizer.next(), Ok(Token::TagClose));
     assert_eq!(tokenizer.next(), Ok(Token::Word("div")));
     assert_eq!(tokenizer.next(), Ok(Token::GreaterThan));
     

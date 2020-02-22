@@ -60,8 +60,8 @@ impl fmt::Display for Node {
 
 #[derive(Debug, PartialEq, Serialize, Clone)]
 pub enum Block {
-  Conditional(ConditionalBlock)
-  // Repeat(RepeatBlock)ode 
+  Conditional(ConditionalBlock),
+  Each(EachBlock)
 }
 
 #[derive(Debug, PartialEq, Serialize, Clone)]
@@ -84,11 +84,17 @@ pub struct FinalBlock {
 }
 
 #[derive(Debug, PartialEq, Serialize, Clone)]
-pub struct RepeatBlock {
+pub struct EachBlock {
+  
+  #[serde(rename = "source")]
+  pub source: js_ast::Statement,
 
-  #[serde(rename = "eachAs")]
-  pub each_as: js_ast::Statement,
-  pub source: js_ast::Statement
+  #[serde(rename = "valueName")]
+  pub value_name: String,
+
+  #[serde(rename = "keyName")]
+  pub key_name: Option<String>,
+  pub body: Option<Box<Node>>,
 }
 
 #[derive(Debug, PartialEq, Serialize, Clone)]

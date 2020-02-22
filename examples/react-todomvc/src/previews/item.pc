@@ -1,4 +1,4 @@
-<import id="item" src="./item.pc">
+<import id="item" src="../item.pc">
 
 <style>
   ul {

@@ -4,8 +4,6 @@ use super::virt;
 use crate::base::runtime::{RuntimeError};
 use crate::base::ast::{Location};
 use crate::pc::runtime::evaluator::{evaluate_instance_node, Context as PCContext};
-use crate::pc::runtime::graph::{DependencyGraph};
-use crate::pc::runtime::vfs::{VirtualFileSystem};
 use crate::pc::ast as pc_ast;
 
 pub fn evaluate<'a>(expr: &ast::Statement, context: &'a mut PCContext) -> Result<virt::JsValue, RuntimeError> {
@@ -14,7 +12,12 @@ pub fn evaluate<'a>(expr: &ast::Statement, context: &'a mut PCContext) -> Result
 fn evaluate_statement<'a>(statement: &ast::Statement, context: &'a mut PCContext) -> Result<virt::JsValue, RuntimeError> {
   match statement {
     ast::Statement::Reference(reference) => evaluate_reference(reference, context),
-    ast::Statement::Node(node) => evaluate_node(node, context)
+    ast::Statement::Node(node) => evaluate_node(node, context),
+    ast::Statement::String(value) => evaluate_string(value, context),
+    ast::Statement::Boolean(value) => evaluate_boolean(value, context),
+    ast::Statement::Number(value) => evaluate_number(value, context),
+    ast::Statement::Array(value) => evaluate_array(value, context),
+    ast::Statement::Object(value) => evaluate_object(value, context)
   }
 }
 
@@ -25,6 +28,35 @@ fn evaluate_node<'a>(node: &Box<pc_ast::Node>, context: &'a mut PCContext) -> Re
   } else {
     Ok(virt::JsValue::JsUndefined())
   }
+}
+
+fn evaluate_string<'a>(value: &String, context: &'a mut PCContext) -> Result<virt::JsValue, RuntimeError> {
+  Ok(virt::JsValue::JsString(value.to_string()))
+}
+
+fn evaluate_boolean<'a>(value: &bool, context: &'a mut PCContext) -> Result<virt::JsValue, RuntimeError> {
+  Ok(virt::JsValue::JsBoolean(*value))
+}
+
+fn evaluate_number<'a>(value: &String, context: &'a mut PCContext) -> Result<virt::JsValue, RuntimeError> {
+  Ok(virt::JsValue::JsNumber(value.parse::<f64>().unwrap()))
+}
+
+fn evaluate_array<'a>(ary: &ast::Array, context: &'a mut PCContext) -> Result<virt::JsValue, RuntimeError> {
+  let mut js_array = virt::JsArray::new();
+  for value in &ary.values {
+    js_array.values.push(evaluate_statement(&value, context)?);
+  }
+  Ok(virt::JsValue::JsArray(js_array))
+}
+
+
+fn evaluate_object<'a>(obj: &ast::Object, context: &'a mut PCContext) -> Result<virt::JsValue, RuntimeError> {
+  let mut js_object = virt::JsObject::new();
+  for property in &obj.properties {
+    js_object.values.insert(property.key.to_string(), evaluate_statement(&property.value, context)?);
+  }
+  Ok(virt::JsValue::JsObject(js_object))
 }
 
 fn evaluate_reference<'a>(reference: &ast::Reference, context: &'a mut PCContext) -> Result<virt::JsValue, RuntimeError> {
@@ -56,4 +88,3 @@ fn evaluate_reference<'a>(reference: &ast::Reference, context: &'a mut PCContext
     Ok(virt::JsValue::JsUndefined())
   }
 }
-
