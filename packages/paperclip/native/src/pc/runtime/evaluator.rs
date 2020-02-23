@@ -504,7 +504,7 @@ fn evaluate_conditional_block<'a>(block: &ast::ConditionalBlock, context: &'a mu
       evaluate_pass_fail_block(pass_fail, context)
     },
     ast::ConditionalBlock::FinalBlock(block) => {
-      if let Some(node) = &block.node {
+      if let Some(node) = &block.body {
         evaluate_node(node, false, context)
       } else {
         Ok(None)
@@ -516,7 +516,7 @@ fn evaluate_conditional_block<'a>(block: &ast::ConditionalBlock, context: &'a mu
 fn evaluate_pass_fail_block<'a>(block: &ast::PassFailBlock, context: &'a mut Context) -> Result<Option<virt::Node>, RuntimeError> {
   let condition = evaluate_js(&block.condition, context)?;
   if condition.truthy() {
-    if let Some(node) = &block.node {
+    if let Some(node) = &block.body {
       evaluate_node(node, false, context)
     } else if let Some(fail) = &block.fail {
       evaluate_conditional_block(fail, context)

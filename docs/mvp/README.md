@@ -43,10 +43,8 @@ Goal is to validate the idea & polish it up
 
 #### Todos
 
-- look into slots
-- deprecate <self />
-- <default /> part
-- deprecate preview part
+- paperclip-react-compiler tests
+- start building out Tandem UI
 - Can't include components
 - Change all to Paperclip
 - examples

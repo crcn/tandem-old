@@ -263,13 +263,13 @@ fn parse_pass_fail_block<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::Co
     token != Token::CurlyClose
   })?;
   tokenizer.next_expect(Token::CurlyClose)?;
-  let node = parse_block_children(tokenizer)?;
+  let body = parse_block_children(tokenizer)?;
   let fail = parse_else_block(tokenizer)?;
 
   Ok(pc_ast::ConditionalBlock::PassFailBlock(
     pc_ast::PassFailBlock {
       condition,
-      node,
+      body,
       fail,
     }
   ))
@@ -342,11 +342,11 @@ fn parse_else_block<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<Option<Box<pc_a
 }
 
 fn parse_final_condition_block<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::ConditionalBlock, ParseError> {
-  let node =  parse_block_children(tokenizer)?;
+  let body = parse_block_children(tokenizer)?;
   tokenizer.next_expect(Token::BlockClose)?;
   tokenizer.next_expect(Token::CurlyClose)?;
   Ok(pc_ast::ConditionalBlock::FinalBlock(pc_ast::FinalBlock {
-    node
+    body
   }))
 }
 

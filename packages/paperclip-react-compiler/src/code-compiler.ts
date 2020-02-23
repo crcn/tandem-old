@@ -5,10 +5,15 @@ import {
   Attribute,
   Reference,
   Statement,
+  BlockKind,
+  ConditionalBlockKind,
   StatementKind,
   getAttributeStringValue,
   getVisibleChildNodes,
   Slot,
+  Block,
+  ConditionalBlock,
+  EachBlock,
   AttributeValue,
   AttributeKind,
   AttributeValueKind,
@@ -120,6 +125,7 @@ const translateStyledUtil = (ast: Node, context: TranslateContext) => {
 
 const translateImports = (ast: Node, context: TranslateContext) => {
   context = addBuffer(`var React = require("react");\n`, context);
+  console.log(JSON.stringify(ast, null, 2));
 
   const imports = getImports(ast);
   for (const imp of imports) {
@@ -218,36 +224,9 @@ const translateJSXNode = (
   if (node.kind === NodeKind.Fragment) {
     context = translateFragment(node.children, isRoot, context);
   } else if (node.kind === NodeKind.Element && isVisibleElement(node)) {
-    const tag =
-      context.importIds.indexOf(node.tagName) !== -1
-        ? getImportTagName(node.tagName)
-        : JSON.stringify(node.tagName);
-
-    context = addBuffer(`React.createElement(${tag}, `, context);
-    if (isRoot) {
-      context = addBuffer(`Object.assign(`, context);
-    }
-    context = addBuffer(`{\n`, context);
-    context = startBlock(context);
-    context = startBlock(context);
-    context = translateStyleScopeAttributes(context, "\n");
-    context = addBuffer(`"key": ${context.keyCount++},\n`, context);
-    for (const attr of node.attributes) {
-      context = translateAttribute(attr, context);
-    }
-    context = endBlock(context);
-    context = addBuffer(`}`, context);
-    if (isRoot) {
-      context = addBuffer(`, props)`, context);
-    }
-    context = endBlock(context);
-    if (node.children.length) {
-      context = addBuffer(`,\n`, context);
-      context = translateChildren(node.children, context);
-    } else {
-      context = addBuffer(`\n`, context);
-    }
-    context = addBuffer(`)`, context);
+    context = translateElement(node, isRoot, context);
+  } else if (node.kind === NodeKind.Block) {
+    context = translateBlock(node, isRoot, context);
   } else if (node.kind === NodeKind.Text) {
     let buffer = `${JSON.stringify(node.value)}`;
     if (isRoot) {
@@ -259,6 +238,91 @@ const translateJSXNode = (
   }
 
   return context;
+};
+
+const translateElement = (
+  element: Element,
+  isRoot: boolean,
+  context: TranslateContext
+) => {
+  const tag =
+    context.importIds.indexOf(element.tagName) !== -1
+      ? getImportTagName(element.tagName)
+      : JSON.stringify(element.tagName);
+
+  context = addBuffer(`React.createElement(${tag}, `, context);
+  if (isRoot) {
+    context = addBuffer(`Object.assign(`, context);
+  }
+  context = addBuffer(`{\n`, context);
+  context = startBlock(context);
+  context = startBlock(context);
+  context = translateStyleScopeAttributes(context, "\n");
+  context = addBuffer(`"key": ${context.keyCount++},\n`, context);
+  for (const attr of element.attributes) {
+    context = translateAttribute(attr, context);
+  }
+  context = endBlock(context);
+  context = addBuffer(`}`, context);
+  if (isRoot) {
+    context = addBuffer(`, props)`, context);
+  }
+  context = endBlock(context);
+  if (element.children.length) {
+    context = addBuffer(`,\n`, context);
+    context = translateChildren(element.children, context);
+  } else {
+    context = addBuffer(`\n`, context);
+  }
+  context = addBuffer(`)`, context);
+  return context;
+};
+
+const translateBlock = (
+  node: Block,
+  isRoot: boolean,
+  context: TranslateContext
+) => {
+  switch (node.blockKind) {
+    case BlockKind.Each:
+      return translateEachBlock(node, context);
+    case BlockKind.Conditional:
+      return translateConditionalBlock(node, context);
+  }
+};
+
+const translateEachBlock = (
+  { source, body, keyName, valueName }: EachBlock,
+  context: TranslateContext
+) => {
+  context = addBuffer(`(`, context);
+  context = translateStatment(source, false, context);
+  context = addBuffer(`).map(function(${keyName}, ${valueName}) {\n`, context);
+  context = startBlock(context);
+  context = addBuffer(`return `, context);
+  context = translateJSXNode(body, false, context);
+  context = addBuffer(`;\n`, context);
+  context = endBlock(context);
+  context = addBuffer(`})`, context);
+  return context;
+};
+
+const translateConditionalBlock = (
+  node: ConditionalBlock,
+  context: TranslateContext
+) => {
+  if (node.conditionalBlockKind === ConditionalBlockKind.PassFailBlock) {
+    context = addBuffer(`(`, context);
+    context = translateStatment(node.condition, false, context);
+    context = addBuffer(` ? `, context);
+    context = translateJSXNode(node.body, false, context);
+    context = addBuffer(` : `, context);
+    context = translateConditionalBlock(node.fail, context);
+    context = addBuffer(`)`, context);
+    return context;
+  } else {
+    return translateJSXNode(node.body, false, context);
+  }
 };
 
 const translateFragment = (

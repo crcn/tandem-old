@@ -1,0 +1,17 @@
+{#each items as item, index}
+  Hello index: {item}
+{/}
+
+{#if something}
+  <span>  
+    <div>hello</div>
+  </span>
+{/else if somethingElse}
+  <div>
+    blah
+  </div>
+{/else}
+  C
+{/}
+
+<div {onClick} a={b} />

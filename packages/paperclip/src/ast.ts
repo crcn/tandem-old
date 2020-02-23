@@ -9,7 +9,8 @@ export enum NodeKind {
   Text = "Text",
   Element = "Element",
   StyleElement = "StyleElement",
-  Slot = "Slot"
+  Slot = "Slot",
+  Block = "Block"
 }
 
 export type BaseNode<TKind extends NodeKind> = {
@@ -82,7 +83,47 @@ export type Slot = {
   script: Statement;
 } & BaseNode<NodeKind.Slot>;
 
-export type Node = Text | Element | StyleElement | Fragment | Slot;
+export enum BlockKind {
+  Each = "Each",
+  Conditional = "Conditional"
+}
+
+export type BaseBlock<TBlockKind extends BlockKind> = {
+  blockKind: TBlockKind;
+  body: Node;
+} & BaseNode<NodeKind.Block>;
+
+export type EachBlock = {
+  source: Statement;
+  valueName: string;
+  keyName: string;
+} & BaseBlock<BlockKind.Each>;
+
+export enum ConditionalBlockKind {
+  PassFailBlock = "PassFailBlock",
+  FinalBlock = "FinalBlock"
+}
+
+export type BaseConditionalBlock<
+  TConditionalBlockKind extends ConditionalBlockKind
+> = {
+  conditionalBlockKind: TConditionalBlockKind;
+} & BaseBlock<BlockKind.Conditional>;
+
+export type PassFailBlock = {
+  condition: Statement;
+  fail: ConditionalBlock;
+} & BaseConditionalBlock<ConditionalBlockKind.PassFailBlock>;
+
+export type FinalBlock = {} & BaseConditionalBlock<
+  ConditionalBlockKind.FinalBlock
+>;
+
+export type ConditionalBlock = PassFailBlock | FinalBlock;
+
+export type Block = EachBlock | ConditionalBlock;
+
+export type Node = Text | Element | StyleElement | Fragment | Slot | Block;
 
 export const getImports = (ast: Node): Element[] =>
   getChildrenByTagName("import", ast).filter(child => {
@@ -163,6 +204,7 @@ export const isVisibleNode = (node: Node): boolean =>
   node.kind === NodeKind.Text ||
   node.kind === NodeKind.Fragment ||
   node.kind === NodeKind.Slot ||
+  node.kind === NodeKind.Block ||
   (node.kind === NodeKind.Element && isVisibleElement(node));
 
 export const getVisibleChildNodes = (ast: Node): Node[] =>

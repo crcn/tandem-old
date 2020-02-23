@@ -59,12 +59,14 @@ impl fmt::Display for Node {
 }
 
 #[derive(Debug, PartialEq, Serialize, Clone)]
+#[serde(tag = "blockKind")]
 pub enum Block {
   Conditional(ConditionalBlock),
   Each(EachBlock)
 }
 
 #[derive(Debug, PartialEq, Serialize, Clone)]
+#[serde(tag = "conditionalBlockKind")]
 pub enum ConditionalBlock {
   PassFailBlock(PassFailBlock),
   FinalBlock(FinalBlock)
@@ -74,13 +76,13 @@ pub enum ConditionalBlock {
 #[derive(Debug, PartialEq, Serialize, Clone)]
 pub struct PassFailBlock {
   pub condition: js_ast::Statement,
-  pub node: Option<Box<Node>>,
+  pub body: Option<Box<Node>>,
   pub fail: Option<Box<ConditionalBlock>>
 }
 
 #[derive(Debug, PartialEq, Serialize, Clone)]
 pub struct FinalBlock {
-  pub node: Option<Box<Node>>,
+  pub body: Option<Box<Node>>,
 }
 
 #[derive(Debug, PartialEq, Serialize, Clone)]
