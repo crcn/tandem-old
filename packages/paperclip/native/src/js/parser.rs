@@ -49,7 +49,7 @@ fn parse_number<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<ast::Statement, Par
     }
   };
 
-  Ok(ast::Statement::Number(buffer))
+  Ok(ast::Statement::Number(ast::Number { value: buffer }))
 }
 
 fn parse_string<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<ast::Statement, ParseError> {
@@ -58,7 +58,7 @@ fn parse_string<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<ast::Statement, Par
     Ok(tokenizer.peek(1)? != start)
   })?.to_string();
   tokenizer.next_expect(start)?;
-  Ok(ast::Statement::String(value))
+  Ok(ast::Statement::String(ast::Str { value }))
 }
 
 fn parse_array<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<ast::Statement, ParseError> {
@@ -121,7 +121,7 @@ fn parse_word<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<ast::Statement, Parse
   if let Token::Word(name) = tokenizer.next()? {
 
     if name == "true" || name == "false" {
-      return Ok(ast::Statement::Boolean(name == "true"));
+      return Ok(ast::Statement::Boolean(ast::Boolean { value: name == "true" }));
     }
 
     let mut path = vec![name.to_string()];

@@ -4,8 +4,16 @@ import {
   getImportIds,
   Element,
   getNestedReferences,
-  getParts
+  getLogicElement,
+  getParts,
+  flattenNodes,
+  isComponentInstance,
+  NodeKind,
+  getImports,
+  getRelativeFilePath,
+  isVisibleElement
 } from "paperclip";
+import { camelCase } from "lodash";
 import {
   createTranslateContext,
   TranslateContext,
@@ -17,7 +25,8 @@ import {
   Options,
   getComponentName,
   getPartClassName,
-  RENAME_PROPS
+  RENAME_PROPS,
+  pascalCase
 } from "./utils";
 
 export const compile = (
@@ -29,6 +38,7 @@ export const compile = (
     filePath,
     getImportIds(ast),
     [],
+    Boolean(getLogicElement(ast)),
     options
   );
   context = translateRoot(ast, context);
@@ -40,40 +50,51 @@ const translateRoot = (ast: Node, context: TranslateContext) => {
     `import {ReactNode, ReactHTML, Factory, InputHTMLAttributes, ClassAttributes} from "react";\n\n`,
     context
   );
+
+  const allImports = getImports(ast);
+
+  for (const imp of allImports) {
+    const id = getAttributeStringValue("id", imp);
+    const src = getAttributeStringValue("src", imp);
+    if (!id || !src) {
+      continue;
+    }
+    const relativePath = getRelativeFilePath(context.filePath, src);
+    context = addBuffer(
+      `import {$$Props as ${pascalCase(
+        getInstancePropsName(imp)
+      )}} from "${relativePath}";\n`,
+      context
+    );
+  }
+
+  context = addBuffer(`\n`, context);
+
+  const logicElement = getLogicElement(ast);
+  if (logicElement) {
+    const src = getAttributeStringValue("src", logicElement);
+    if (src) {
+      const logicRelativePath = getRelativeFilePath(context.filePath, src);
+      context = addBuffer(
+        `import {Props as LogicProps} from "${logicRelativePath}";\n`,
+        context
+      );
+    }
+  }
+
   context = addBuffer(
-    `type BaseProps = InputHTMLAttributes<HTMLInputElement> & ClassAttributes<HTMLInputElement>;\n\n`,
+    `type ElementProps = InputHTMLAttributes<HTMLInputElement> & ClassAttributes<HTMLInputElement>;\n\n`,
     context
   );
+
   context = translateUtils(ast, context);
-  context = translateParts(ast, context);
-  context = translateMainTemplate(ast, context);
+  context = translateMainView(ast, context);
   return context;
 };
 
 const translateUtils = (_ast: Node, context: TranslateContext) => {
   context = addBuffer(
-    `export declare const styled: (tag: keyof ReactHTML | Factory<BaseProps>, defaultProps?: BaseProps) => Factory<BaseProps>;\n\n`,
-    context
-  );
-  return context;
-};
-
-const translateParts = (ast: Node, context: TranslateContext) => {
-  const parts = getParts(ast);
-  for (const part of parts) {
-    context = translatePart(part, context);
-  }
-  return context;
-};
-
-const translatePart = (part: Element, context: TranslateContext) => {
-  if (context.omitParts.indexOf(getAttributeStringValue("id", part)) !== -1) {
-    return context;
-  }
-  const componentName = getPartClassName(part);
-  context = translateComponent(part, componentName + "Props", context);
-  context = addBuffer(
-    `export declare const ${componentName}: Factory<${componentName}Props>;\n\n`,
+    `export declare const styled: (tag: keyof ReactHTML | Factory<ElementProps>, defaultProps?: ElementProps) => Factory<ElementProps>;\n\n`,
     context
   );
   return context;
@@ -112,19 +133,59 @@ const translateComponent = (
     context = addBuffer(`${propName}: ${paramType}, \n`, context);
   }
 
+  const allElements = flattenNodes(node).filter(
+    node => node.kind === NodeKind.Element && isVisibleElement(node)
+  ) as Element[];
+
+  for (const element of allElements) {
+    if (isComponentInstance(element, context.importIds)) {
+      context = addBuffer(
+        `${getInstancePropsName(element)}: ${getInstancePropsTypeName(
+          element
+        )},\n`,
+        context
+      );
+    } else {
+      const id = getAttributeStringValue("id", element);
+      if (id) {
+        context = addBuffer(`${camelCase(id)}?: ElementProps,\n`, context);
+      }
+    }
+  }
+
   context = endBlock(context);
-  context = addBuffer(`} & BaseProps\n\n`, context);
+  context = addBuffer(`} & ElementProps;\n\n`, context);
 
   return context;
 };
 
-const translateMainTemplate = (ast: Node, context: TranslateContext) => {
+const getInstancePropsName = (element: Element) => {
+  return `${camelCase(
+    getAttributeStringValue("id", element) || element.tagName
+  )}Props`;
+};
+
+const getInstancePropsTypeName = (element: Element) => {
+  return `${pascalCase(element.tagName)}Props`;
+};
+
+const translateMainView = (ast: Node, context: TranslateContext) => {
   const componentName = getComponentName(ast);
   context = translateComponent(ast, "Props", context);
   context = addBuffer(
     `declare const ${componentName}: Factory<Props>;\n`,
     context
   );
-  context = addBuffer(`export default ${componentName};\n`, context);
+  if (context.hasLogicFile) {
+    context = addBuffer(
+      `declare const Enhanced${componentName}: Factory<LogicProps>;\n`,
+      context
+    );
+    context = addBuffer(`export type $$Props = LogicProps;\n`, context);
+    context = addBuffer(`export default Enhanced${componentName};\n`, context);
+  } else {
+    context = addBuffer(`export type $$Props = Props;\n`, context);
+    context = addBuffer(`export default ${componentName};\n`, context);
+  }
   return context;
 };

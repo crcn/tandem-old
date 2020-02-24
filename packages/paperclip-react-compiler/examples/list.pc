@@ -1,0 +1,14 @@
+
+<import id="list-item" src="./list-item.pc">
+<import id="list-item2" src="./list-item.pc">
+
+<ul>
+  {#each items as item, i} 
+    {#each item.values as value}
+      <list-item {value} />
+    {/}
+  {/}
+</ul>
+
+
+<list-item2 id="okay" />

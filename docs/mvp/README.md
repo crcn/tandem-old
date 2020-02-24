@@ -43,6 +43,8 @@ Goal is to validate the idea & polish it up
 
 #### Todos
 
+- figure out how to transform props
+  - e.g: mapping label from: <item item={item}>
 - paperclip-react-compiler tests
 - start building out Tandem UI
 - Can't include components
@@ -73,6 +75,7 @@ Goal is to validate the idea & polish it up
   - prohibit dynamic attr bindings for
     - all import attrs
     - all meta attrs
+  - prohibit listeners - force prop injection
 - BUGS
   - handle circular dependencies
   - need to be aware of reserved props

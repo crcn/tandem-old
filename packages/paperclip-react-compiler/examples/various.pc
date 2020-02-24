@@ -1,3 +1,5 @@
+<logic src="./various.tsx">
+
 {#each items as item, index}
   Hello index: {item}
 {/}
@@ -14,4 +16,4 @@
   C
 {/}
 
-<div {onClick} a={b} />
+<div a={b} />

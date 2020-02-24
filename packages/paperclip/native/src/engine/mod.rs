@@ -13,6 +13,7 @@ use crate::base::runtime::{RuntimeError};
 use serde::{Serialize};
 use crate::css::runtime::virt as css_vrt;
 use crate::base::utils::{get_document_style_scope};
+use ::futures::executor::block_on;
 
 #[derive(Debug, PartialEq, Serialize)]
 pub struct EvaluatedEvent {
@@ -212,5 +213,27 @@ impl Engine {
     if let Some(event) = event_option {
       self.dispatch(event);
     }
+  }
+}
+
+
+#[cfg(test)]
+mod tests {
+  use super::*;
+
+  #[test]
+  fn can_smoke_parse_various_nodes() {
+    //       let vfs = VirtualFileSystem::new(Box::new(|_| "".to_string()), Box::new(|_| true), Box::new(|_,_| "".to_string()));
+
+    let mut engine = Engine::new(
+      Box::new(|_| "".to_string()),
+      Box::new(|_| true), 
+      Box::new(|_,_| "".to_string())
+    );
+
+    let result = block_on(engine.parse_content(&"{'a'}".to_string())).unwrap();
+    // println!("{:?}", result);
+    // panic!("maybay");
+  
   }
 }

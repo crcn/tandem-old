@@ -150,7 +150,7 @@ fn create_context<'a>(node_expr: &'a ast::Node, uri: &'a String, graph: &'a Depe
   };
 
   let scope = get_document_style_scope(uri);
-  let id_seed = format!("{:x}", crc32::checksum_ieee(format!("{}-{}", uri, curr_id_count).as_bytes())).to_string();
+  let id_seed = create_id_seed(uri, curr_id_count);
 
   Context {
     graph,
@@ -165,6 +165,10 @@ fn create_context<'a>(node_expr: &'a ast::Node, uri: &'a String, graph: &'a Depe
     id_seed,
     id_count: 0
   }
+}
+
+fn create_id_seed(uri: &String, curr_id_count: i32) -> String{
+  format!("{:x}", crc32::checksum_ieee(format!("{}-{}", uri, curr_id_count).as_bytes())).to_string()
 }
 
 fn evaluate_node<'a>(node_expr: &ast::Node, is_root: bool, context: &'a mut Context) -> Result<Option<virt::Node>, RuntimeError> {
@@ -550,7 +554,7 @@ fn evaluate_each_block<'a>(block: &ast::EachBlock, context: &'a mut Context) -> 
     }
 
   } else {
-    return Err(RuntimeError::unknown(context.uri));
+
   }
 
   Ok(Some(virt::Node::Fragment(virt::Fragment {
@@ -572,7 +576,12 @@ fn evaluate_each_block_child<'a>(body: &ast::Node, item: &js_virt::JsValue, inde
     _ => { }
   }  
   context.id_count += 1;
-  let mut child_context = create_context(body, context.uri, context.graph, context.vfs, &data, Some(context));
+  // let mut child_context = create_context(contex, context.uri, context.graph, context.vfs, &data, Some(context));
+  let mut child_context = context.clone();
+  child_context.id_count = 0;
+  child_context.id_seed = create_id_seed(context.uri, context.id_count);
+  child_context.data = &data;
+
   evaluate_node(body, false, &mut child_context)
 }
 
@@ -655,8 +664,7 @@ mod tests {
 
       let data = js_virt::JsValue::JsObject(js_virt::JsObject::new());
       let _node = evaluate(&ast, &"some-file.pc".to_string(), &graph, &vfs, &data, None).unwrap().unwrap();
-      // println!("{:?}", _node);
+      println!("{:?}", _node);
     }
-    // panic!("mayday");
   }
 }

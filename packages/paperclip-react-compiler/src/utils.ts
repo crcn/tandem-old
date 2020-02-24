@@ -25,7 +25,7 @@ export const getBaseComponentName = (root: Node) => {
 };
 
 export const getComponentName = (root: Node) => {
-  return getMetaValue("react-class", root) || "Template";
+  return getMetaValue("react-class", root) || "View";
 };
 
 export const getPartClassName = (part: Element) => {

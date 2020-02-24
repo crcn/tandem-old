@@ -6,11 +6,10 @@
   "scripts": {
     "test": "mocha ./lib/test",
     "build": "npm run build:wasm:node && npm run build:node",
-    "build:watch": "tsc --watch & (cd native && cargo watch -i .gitignore -i \"pkg/*\" -s 'wasm-pack build --target nodejs')",
+    "build:watch": "tsc --watch & (cd native && cargo watch -i .gitignore -i \"pkg/*\" -s 'wasm-pack build --release --target nodejs')",
     "build:node": "tsc",
     "build:native": "cd native && cargo build --release",
-    "build:electron": "electron-build-env neon build --release",
-    "build:wasm:node": "cd native && wasm-pack build --target nodejs"
+    "build:wasm:node": "cd native && wasm-pack build --release --target nodejs"
   },
   "author": "",
   "license": "ISC",

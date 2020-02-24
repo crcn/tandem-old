@@ -4,9 +4,10 @@ import {
   NodeKind,
   Attribute,
   Reference,
+  getLogicElement,
   Statement,
   BlockKind,
-  ConditionalBlockKind,
+  ConditionalKind,
   StatementKind,
   getAttributeStringValue,
   getVisibleChildNodes,
@@ -20,8 +21,12 @@ import {
   isVisibleNode,
   getImportIds,
   Element,
-  getAttribute,
-  getParts,
+  getStyleScopes,
+  resolveImportFile,
+  getRelativeFilePath,
+  Sheet,
+  PassFailConditional,
+  FinalConditional,
   isVisibleElement,
   stringifyCSSSheet
 } from "paperclip";
@@ -40,7 +45,6 @@ import {
   RENAME_PROPS
 } from "./utils";
 import { camelCase } from "lodash";
-import { getStyleScopes, resolveImportFile } from "paperclip";
 import * as path from "path";
 
 export const compile = (
@@ -52,6 +56,7 @@ export const compile = (
     filePath,
     getImportIds(ast),
     getStyleScopes(ast, filePath),
+    Boolean(getLogicElement(ast)),
     options
   );
   context = translateRoot(ast, sheet, context);
@@ -63,17 +68,34 @@ const translateRoot = (ast: Node, sheet: any, context: TranslateContext) => {
   if (sheet) {
     context = translateStyleSheet(sheet, context);
   }
+  const logicElement = getLogicElement(ast);
+  if (logicElement) {
+    const src = getAttributeStringValue("src", logicElement);
+    if (src) {
+      const logicRelativePath = getRelativeFilePath(context.filePath, src);
+      context = addBuffer(
+        `const logic = require("${logicRelativePath}");\n`,
+        context
+      );
+      context = addBuffer(
+        `const enhanceView = logic.default || logic;\n\n`,
+        context
+      );
+    }
+  }
   context = translateUtils(ast, context);
-  context = translateParts(ast, context);
-  context = translateMainTemplate(ast, context);
+  context = translateView(ast, context);
   return context;
 };
 
-const translateStyleSheet = (sheet: any, context) => {
+const translateStyleSheet = (sheet: Sheet, context: TranslateContext) => {
+  if (!sheet.rules.length) {
+    return context;
+  }
   context = addBuffer(`if (typeof document !== "undefined") {\n`, context);
   context = startBlock(context);
   context = addBuffer(
-    `var style = document.createElement("style");\n`,
+    `const style = document.createElement("style");\n`,
     context
   );
   context = addBuffer(
@@ -124,8 +146,7 @@ const translateStyledUtil = (ast: Node, context: TranslateContext) => {
 };
 
 const translateImports = (ast: Node, context: TranslateContext) => {
-  context = addBuffer(`var React = require("react");\n`, context);
-  console.log(JSON.stringify(ast, null, 2));
+  context = addBuffer(`const React = require("react");\n`, context);
 
   const imports = getImports(ast);
   for (const imp of imports) {
@@ -156,41 +177,23 @@ const translateImports = (ast: Node, context: TranslateContext) => {
   return context;
 };
 
-const translateParts = (root: Node, context: TranslateContext) => {
-  context = getParts(root).reduce(
-    (context, part) => translatePart(part, context),
-    context
-  );
-  return context;
-};
-
-const translatePart = (part: Element, context: TranslateContext) => {
-  const componentName = getPartClassName(part);
-  context = addBuffer(
-    `export const ${componentName} = (props) => {\n`,
-    context
-  );
-  context = startBlock(context);
-  context = addBuffer("return ", context);
-  context = translateFragment(part.children, true, context);
-  context = addBuffer(";\n", context);
-  context = endBlock(context);
-  context = addBuffer("};\n\n", context);
-  context = addBuffer("", context);
-  return context;
-};
-
-const translateMainTemplate = (root: Node, context: TranslateContext) => {
+const translateView = (root: Node, context: TranslateContext) => {
   const componentName = getComponentName(root);
 
   context = startBlock(
-    addBuffer(`const ${componentName} = (props) => {\n`, context)
+    addBuffer(`let ${componentName} = (props) => {\n`, context)
   );
   context = addBuffer(`return `, context);
   context = translateJSXRoot(root, context);
   context = endBlock(context);
   context = addBuffer(";\n", context);
   context = addBuffer(`};\n\n`, context);
+  if (context.hasLogicFile) {
+    context = addBuffer(
+      `${componentName} = enhanceView(${componentName});\n`,
+      context
+    );
+  }
   context = addBuffer(`export default ${componentName};\n`, context);
 
   return context;
@@ -245,13 +248,19 @@ const translateElement = (
   isRoot: boolean,
   context: TranslateContext
 ) => {
-  const tag =
-    context.importIds.indexOf(element.tagName) !== -1
-      ? getImportTagName(element.tagName)
-      : JSON.stringify(element.tagName);
+  const isComponentInstance = context.importIds.indexOf(element.tagName) !== -1;
+  const id = getAttributeStringValue("id", element);
+  const propsName = id
+    ? `props.${camelCase(id)}Props`
+    : isComponentInstance
+    ? `props.${camelCase(element.tagName)}Props`
+    : null;
+  const tag = isComponentInstance
+    ? getImportTagName(element.tagName)
+    : JSON.stringify(element.tagName);
 
   context = addBuffer(`React.createElement(${tag}, `, context);
-  if (isRoot) {
+  if (isRoot || propsName) {
     context = addBuffer(`Object.assign(`, context);
   }
   context = addBuffer(`{\n`, context);
@@ -266,6 +275,9 @@ const translateElement = (
   context = addBuffer(`}`, context);
   if (isRoot) {
     context = addBuffer(`, props)`, context);
+  }
+  if (propsName) {
+    context = addBuffer(`, ${propsName})`, context);
   }
   context = endBlock(context);
   if (element.children.length) {
@@ -297,10 +309,16 @@ const translateEachBlock = (
 ) => {
   context = addBuffer(`(`, context);
   context = translateStatment(source, false, context);
-  context = addBuffer(`).map(function(${keyName}, ${valueName}) {\n`, context);
+  context = addBuffer(
+    `).map(function(${keyName}, ${valueName}, ${keyName || "$$index"}) {\n`,
+    context
+  );
   context = startBlock(context);
   context = addBuffer(`return `, context);
-  context = translateJSXNode(body, false, context);
+  context = translateJSXNode(body, false, {
+    ...context,
+    outOfPropsScope: true
+  });
   context = addBuffer(`;\n`, context);
   context = endBlock(context);
   context = addBuffer(`})`, context);
@@ -308,16 +326,20 @@ const translateEachBlock = (
 };
 
 const translateConditionalBlock = (
-  node: ConditionalBlock,
+  node: PassFailConditional | FinalConditional,
   context: TranslateContext
 ) => {
-  if (node.conditionalBlockKind === ConditionalBlockKind.PassFailBlock) {
+  if (node.conditionalKind === ConditionalKind.PassFailBlock) {
     context = addBuffer(`(`, context);
     context = translateStatment(node.condition, false, context);
     context = addBuffer(` ? `, context);
     context = translateJSXNode(node.body, false, context);
     context = addBuffer(` : `, context);
-    context = translateConditionalBlock(node.fail, context);
+    if (node.fail) {
+      context = translateConditionalBlock(node.fail, context);
+    } else {
+      context = addBuffer("null", context);
+    }
     context = addBuffer(`)`, context);
     return context;
   } else {
@@ -377,7 +399,9 @@ const translateAttribute = (attr: Attribute, context: TranslateContext) => {
   } else if (attr.kind === AttributeKind.ShorthandAttribute) {
     const keyValue = (attr.reference as Reference).path[0];
     context = addBuffer(
-      `${JSON.stringify(keyValue)}: props.${camelCase(keyValue)}`,
+      `${JSON.stringify(keyValue)}: ${
+        context.outOfPropsScope ? "" : "props."
+      }${camelCase(keyValue)}`,
       context
     );
     context = addBuffer(`,\n`, context);
@@ -417,7 +441,10 @@ const translateStatment = (
   context: TranslateContext
 ) => {
   if (statement.jsKind === StatementKind.Reference) {
-    return addBuffer(`props.${statement.path.join(".")}`, context);
+    return addBuffer(
+      `${context.outOfPropsScope ? "" : "props."}${statement.path.join(".")}`,
+      context
+    );
   } else if (statement.jsKind === StatementKind.Node) {
     return translateJSXNode((statement as any) as Node, isRoot, context);
   }

@@ -6,12 +6,27 @@ use crate::pc::ast as pc_ast;
 #[serde(tag = "jsKind")]
 pub enum Statement {
   Reference(Reference),
-  Boolean(bool),
-  String(String),
-  Number(String),
+  Boolean(Boolean),
+  String(Str),
+  Number(Number),
   Array(Array),
   Object(Object),
   Node(Box<pc_ast::Node>)
+}
+
+#[derive(Debug, PartialEq, Serialize, Clone)]
+pub struct Str {
+  pub value: String
+}
+
+#[derive(Debug, PartialEq, Serialize, Clone)]
+pub struct Number {
+  pub value: String
+}
+
+#[derive(Debug, PartialEq, Serialize, Clone)]
+pub struct Boolean {
+  pub value: bool
 }
 
 impl fmt::Display for Statement {
@@ -19,9 +34,9 @@ impl fmt::Display for Statement {
     match self {
       Statement::Reference(reference) => write!(f, "{}", reference.to_string()),
       Statement::Node(node) => write!(f, "{}", node.to_string()),
-      Statement::String(value) => write!(f, "\"{}\"", value.to_string()),
-      Statement::Boolean(value) => write!(f, "{}", value),
-      Statement::Number(value) => write!(f, "{}", value.to_string()),
+      Statement::String(value) => write!(f, "\"{}\"", value.value.to_string()),
+      Statement::Boolean(value) => write!(f, "{}", value.value.to_string()),
+      Statement::Number(value) => write!(f, "{}", value.value.to_string()),
       Statement::Array(value) => write!(f, "{}", value.to_string()),
       Statement::Object(value) => value.fmt(f)
     }

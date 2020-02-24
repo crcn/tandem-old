@@ -152,7 +152,7 @@
   {/else}
     <div class="view">
       <input type="checkbox" onKeyPress={onInputKeyPress} class="toggle">
-      <label>{label}</label> 
+      <label>{item.label}</label> 
       <button class="destroy"></button>
     </div> 
   {/}

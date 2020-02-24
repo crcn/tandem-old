@@ -31,6 +31,8 @@ const virtualModuleInstances = new Map();
 
 const _loadedStyleFiles = {};
 
+console.log("OKOKOK");
+
 module.exports = async function(source: string) {
   if (this._compiler && !virtualModuleInstances.has(this._compiler)) {
     const modules = activatePlugin(new VirtualModules(), this._compiler);

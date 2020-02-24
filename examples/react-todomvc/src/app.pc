@@ -1,5 +1,5 @@
 <import src="./styles/global.css">
-<import id="item" src="./item.pc">
+<import id="list-item" src="./item.pc">
 <import id="controls" src="./controls.pc">
 <import id="learn" src="./learn.pc">
 
@@ -185,12 +185,11 @@ h1 {
               <input id="toggle-all" type="checkbox" class="toggle-all">
               <label for="toggle-all">Mark all as complete</label>
 
+      {a}
               <ul class="todo-list">
-              sssssss
-              aaaaa
-                <!--{#each items as item}
-                  <item item={item} />
-                {/}-->
+                {#each items as item}
+                  <list-item item={item} />
+                {/}
               </ul>
           </section>
 

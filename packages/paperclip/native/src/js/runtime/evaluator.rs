@@ -13,9 +13,9 @@ fn evaluate_statement<'a>(statement: &ast::Statement, context: &'a mut PCContext
   match statement {
     ast::Statement::Reference(reference) => evaluate_reference(reference, context),
     ast::Statement::Node(node) => evaluate_node(node, context),
-    ast::Statement::String(value) => evaluate_string(value, context),
-    ast::Statement::Boolean(value) => evaluate_boolean(value, context),
-    ast::Statement::Number(value) => evaluate_number(value, context),
+    ast::Statement::String(value) => evaluate_string(&value.value, context),
+    ast::Statement::Boolean(value) => evaluate_boolean(&value.value, context),
+    ast::Statement::Number(value) => evaluate_number(&value.value, context),
     ast::Statement::Array(value) => evaluate_array(value, context),
     ast::Statement::Object(value) => evaluate_object(value, context)
   }

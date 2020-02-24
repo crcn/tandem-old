@@ -3,6 +3,7 @@ import { Sheet } from "./css-ast";
 import { SourceLocation } from "./base-ast";
 import * as crc32 from "crc32";
 import { resolveImportFile } from "./engine";
+import * as path from "path";
 
 export enum NodeKind {
   Fragment = "Fragment",
@@ -99,27 +100,27 @@ export type EachBlock = {
   keyName: string;
 } & BaseBlock<BlockKind.Each>;
 
-export enum ConditionalBlockKind {
+export enum ConditionalKind {
   PassFailBlock = "PassFailBlock",
   FinalBlock = "FinalBlock"
 }
 
-export type BaseConditionalBlock<
-  TConditionalBlockKind extends ConditionalBlockKind
-> = {
-  conditionalBlockKind: TConditionalBlockKind;
-} & BaseBlock<BlockKind.Conditional>;
+export type BaseConditional<TConditionalKind extends ConditionalKind> = {
+  conditionalKind: TConditionalKind;
+  body: Node;
+};
 
-export type PassFailBlock = {
+export type PassFailConditional = {
   condition: Statement;
-  fail: ConditionalBlock;
-} & BaseConditionalBlock<ConditionalBlockKind.PassFailBlock>;
+  fail?: Conditional;
+} & BaseConditional<ConditionalKind.PassFailBlock>;
 
-export type FinalBlock = {} & BaseConditionalBlock<
-  ConditionalBlockKind.FinalBlock
->;
+export type FinalConditional = {} & BaseConditional<ConditionalKind.FinalBlock>;
 
-export type ConditionalBlock = PassFailBlock | FinalBlock;
+export type Conditional = PassFailConditional | FinalConditional;
+
+export type ConditionalBlock = PassFailConditional &
+  BaseBlock<BlockKind.Conditional>;
 
 export type Block = EachBlock | ConditionalBlock;
 
@@ -130,6 +131,17 @@ export const getImports = (ast: Node): Element[] =>
     return hasAttribute("src", child);
   });
 
+export const getRelativeFilePath = (
+  fromFilePath: string,
+  importFilePath: string
+) => {
+  const logicPath = resolveImportFile(fromFilePath, importFilePath);
+  let relativePath = path.relative(path.dirname(fromFilePath), logicPath);
+  if (relativePath.charAt(0) !== ".") {
+    relativePath = `./${relativePath}`;
+  }
+  return relativePath;
+};
 export const getImportIds = (ast: Node): string[] =>
   getImports(ast)
     .map(node => getAttributeStringValue("id", node))
@@ -219,8 +231,65 @@ export const getParts = (ast: Node): Element[] =>
     );
   }) as Element[];
 
+export const getLogicElement = (ast: Node): Element | null => {
+  return getChildren(ast).find(
+    child => child.kind === NodeKind.Element && child.tagName === "logic"
+  ) as Element;
+};
+
 export const hasAttribute = (name: string, element: Element) =>
   getAttribute(name, element) != null;
+
+export const flattenNodes = (node: Node, _allNodes: Node[] = []): Node[] => {
+  _allNodes.push(node);
+  if (node.kind === NodeKind.Element) {
+    for (const attr of node.attributes) {
+      if (attr.kind === AttributeKind.KeyValueAttribute && attr.value) {
+        if (attr.value.attrValueKind === AttributeValueKind.Slot) {
+          if (attr.value.jsKind === StatementKind.Node) {
+            flattenNodes(attr.value, _allNodes);
+          }
+        }
+      }
+    }
+  }
+  if (node.kind === NodeKind.Block) {
+    if (node.blockKind === BlockKind.Each) {
+      flattenNodes(node.body, _allNodes);
+    } else if (node.blockKind === BlockKind.Conditional) {
+      flattenConditional(node, _allNodes);
+    }
+  }
+
+  for (const child of getChildren(node)) {
+    flattenNodes(child, _allNodes);
+  }
+
+  return _allNodes;
+};
+
+const flattenConditional = (
+  conditional: Conditional,
+  _allNodes: Node[]
+): Node[] => {
+  flattenNodes(conditional.body, _allNodes);
+  if (conditional.conditionalKind === ConditionalKind.PassFailBlock) {
+    if (conditional.fail) {
+      flattenConditional(conditional.fail, _allNodes);
+    }
+  }
+  return _allNodes;
+};
+
+export const isComponentInstance = (
+  node: Node,
+  importIds: string[]
+): node is Element => {
+  return (
+    node.kind === NodeKind.Element &&
+    importIds.indexOf(node.tagName.split(".").shift()) !== -1
+  );
+};
 
 export const getNestedReferences = (
   node: Node,
@@ -239,7 +308,7 @@ export const getNestedReferences = (
           attr.value.attrValueKind === AttributeValueKind.Slot
         ) {
           if (attr.value.jsKind === StatementKind.Node) {
-            getNestedReferences((attr.value as any) as Node, _statements);
+            getNestedReferences(attr.value, _statements);
           } else if (attr.value.jsKind === StatementKind.Reference) {
             _statements.push([attr.value, attr.name]);
           }

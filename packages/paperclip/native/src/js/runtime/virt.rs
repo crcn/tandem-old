@@ -74,15 +74,3 @@ pub fn get_js_value_property<'a, 'b>(value: &'a JsValue, property_name: &'b str)
     _ => None
   }
 }
-
-// impl fmt::Display for JsObject {
-//   fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-//     write!(f, "{{");
-//     for (key, value) in &self.values {
-//       write!(f, "{}: {},", key.to_string(), value.to_string());
-//     }
-//     write!(f, "}}");
-//     Ok(())
-//   }
-// }
-

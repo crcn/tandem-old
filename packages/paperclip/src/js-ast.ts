@@ -1,4 +1,4 @@
-import {} from "./ast";
+import { Node } from "./ast";
 
 export enum StatementKind {
   Node = "Node",
@@ -9,7 +9,7 @@ type BaseStatement<TKind extends StatementKind> = {
   jsKind: TKind;
 };
 
-export type JsNode = BaseStatement<StatementKind.Node> & Node;
+export type JsNode = Node & BaseStatement<StatementKind.Node>;
 export type Reference = {
   path: string[];
 } & BaseStatement<StatementKind.Reference>;

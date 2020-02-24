@@ -5,4 +5,9 @@
 TODO:
 
 -->
-<app items="something like this" />
+<app a={{a: 1}} items={[
+  1,
+  { label: "b" },
+  { label: "c" },
+  { label: "d" }
+]} />

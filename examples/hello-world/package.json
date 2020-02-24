@@ -1,5 +1,6 @@
 {
   "version": "1.0.0",
+  "private": true,
   "description": "My webpack project",
   "scripts": {
     "build": "npm run build:dts && webpack",

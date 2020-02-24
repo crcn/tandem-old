@@ -5,6 +5,7 @@ use wasm_bindgen::prelude::*;
 
 #[macro_use]
 extern crate matches;
+extern crate console_error_panic_hook;
 
 
 mod base;
@@ -15,6 +16,9 @@ mod engine;
 
 use ::futures::executor::block_on;
 use engine::{Engine};
+
+extern crate web_sys;
+
 
 #[wasm_bindgen]
 extern {
@@ -57,22 +61,27 @@ impl NativeEngine {
       }));
     }
     pub fn evaluate_content_styles(&mut self, content: String, uri: String) -> JsValue {
+      console_error_panic_hook::set_once();
       let result = block_on(self.target.evaluate_content_styles(&content, &uri));
       JsValue::from_serde(&result).unwrap()
     }
     pub fn evaluate_file_styles(&mut self, uri: String) -> JsValue {
+      console_error_panic_hook::set_once();
       let result = block_on(self.target.evaluate_file_styles(&uri));
       JsValue::from_serde(&result).unwrap()
     }
     pub fn parse_content(&mut self, content: String) -> JsValue {
+      console_error_panic_hook::set_once();
       let result = block_on(self.target.parse_content(&content));
       JsValue::from_serde(&result).unwrap()
     }
     pub fn parse_file(&mut self, uri: String) -> JsValue {
+      console_error_panic_hook::set_once();
       let result = block_on(self.target.parse_file(&uri));
       JsValue::from_serde(&result).unwrap()
     }
     pub fn update_virtual_file_content(&mut self, uri: String, content: String) {
+      console_error_panic_hook::set_once();
       block_on(self.target.update_virtual_file_content(&uri, &content));
     }
 }
