@@ -30,6 +30,7 @@ fn evaluate_node<'a>(node: &Box<pc_ast::Node>, context: &'a mut PCContext) -> Re
   }
 }
 
+
 fn evaluate_string<'a>(value: &String, context: &'a mut PCContext) -> Result<virt::JsValue, RuntimeError> {
   Ok(virt::JsValue::JsString(value.to_string()))
 }
@@ -37,6 +38,7 @@ fn evaluate_string<'a>(value: &String, context: &'a mut PCContext) -> Result<vir
 fn evaluate_boolean<'a>(value: &bool, context: &'a mut PCContext) -> Result<virt::JsValue, RuntimeError> {
   Ok(virt::JsValue::JsBoolean(*value))
 }
+
 
 fn evaluate_number<'a>(value: &String, context: &'a mut PCContext) -> Result<virt::JsValue, RuntimeError> {
   Ok(virt::JsValue::JsNumber(value.parse::<f64>().unwrap()))
@@ -65,11 +67,7 @@ fn evaluate_reference<'a>(reference: &ast::Reference, context: &'a mut PCContext
 
   for property_name in &reference.path {
     if let Some(object) = &curr {
-      curr = if property_name == "ctx" {
-        Some(object)
-      } else {
-        virt::get_js_value_property(&object, property_name)
-      };
+      curr = virt::get_js_value_property(&object, property_name);
     } else {
       return Err(RuntimeError {
         uri: context.uri.to_string(),

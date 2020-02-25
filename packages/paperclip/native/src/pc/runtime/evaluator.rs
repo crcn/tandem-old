@@ -227,6 +227,7 @@ fn evaluate_slot<'a>(slot: &ast::Slot, context: &'a mut Context) -> Result<Optio
   let script = &slot.script;
   let mut js_value = evaluate_js(script, context)?;
 
+
   // if array of values, then treat as document fragment
   if let js_virt::JsValue::JsArray(ary) = &mut js_value {
     let mut children = vec![];
@@ -250,6 +251,7 @@ fn evaluate_slot<'a>(slot: &ast::Slot, context: &'a mut Context) -> Result<Optio
 
   Ok(Some(virt::Node::Text(virt::Text { 
     id: context.get_next_id(),
+    // value: format!("{:?}", context.data)
     value: js_value.to_string() 
   })))
 }
@@ -298,17 +300,30 @@ fn create_component_instance_data<'a>(instance_element: &ast::Element, context: 
 
   for attr_expr in &instance_element.attributes {
     let attr = &attr_expr;
-    let (name, value) = match attr {
+    match attr {
       ast::Attribute::KeyValueAttribute(kv_attr) => {
         if kv_attr.value == None {
-          (kv_attr.name.to_string(), js_virt::JsValue::JsBoolean(true))
+          data.values.insert(kv_attr.name.to_string(), js_virt::JsValue::JsBoolean(true));
         } else {
           let value = evaluate_attribute_value(&kv_attr.value.as_ref().unwrap(), context)?;
-          (
+          data.values.insert(
             kv_attr.name.to_string(),
             value
-          )
+          );
         }
+      },
+      ast::Attribute::SpreadAttribute(attr) => {
+        let attr_data = evaluate_js(&attr.script, context)?;
+        match attr_data {
+          js_virt::JsValue::JsObject(mut object) => {
+            for (key, value) in object.values.drain() {
+              data.values.insert(key.to_string(), value);
+            }
+          },
+          _ => {
+            return Err(RuntimeError::new("Spread value must be an object.".to_string(), context.uri, &instance_element.location));
+          }
+        };
       },
       ast::Attribute::ShorthandAttribute(sh_attr) => {
         let name = sh_attr.get_name().map_err(|message| {
@@ -322,11 +337,39 @@ fn create_component_instance_data<'a>(instance_element: &ast::Element, context: 
           }
         })?;
 
-        (name.to_string(), evaluate_attribute_slot(&sh_attr.reference, context)?)
+        data.values.insert(name.to_string(), evaluate_attribute_slot(&sh_attr.reference, context)?);
       }
     };
+    
+    // let (name, value) = match attr {
+    //   ast::Attribute::KeyValueAttribute(kv_attr) => {
+    //     if kv_attr.value == None {
+    //       (kv_attr.name.to_string(), js_virt::JsValue::JsBoolean(true))
+    //     } else {
+    //       let value = evaluate_attribute_value(&kv_attr.value.as_ref().unwrap(), context)?;
+    //       (
+    //         kv_attr.name.to_string(),
+    //         value
+    //       )
+    //     }
+    //   },
+    //   ast::Attribute::ShorthandAttribute(sh_attr) => {
+    //     let name = sh_attr.get_name().map_err(|message| {
+    //       RuntimeError {
+    //         uri: context.uri.to_string(),
+    //         message: message.to_string(),
+    //         location: Location { 
+    //           start: 0,
+    //           end: 0
+    //         }
+    //       }
+    //     })?;
 
-    data.values.insert(name, value);
+    //     (name.to_string(), evaluate_attribute_slot(&sh_attr.reference, context)?)
+    //   }
+    // };
+
+    // data.values.insert(name, value);
   }
 
   
@@ -397,6 +440,24 @@ fn evaluate_basic_element<'a>(element: &ast::Element, context: &'a mut Context) 
           name,
           value: value_option,
         });
+      },
+      ast::Attribute::SpreadAttribute(attr) => {
+        let attr_data = evaluate_js(&attr.script, context)?;
+        match attr_data {
+          js_virt::JsValue::JsObject(mut object) => {
+            for (key, value) in object.values.drain() {
+              // data.values.insert(key.to_string(), value);
+              attributes.push(virt::Attribute {
+                id: context.get_next_id(),
+                name: key.to_string(),
+                value: Some(value.to_string()),
+              });
+            }
+          },
+          _ => {
+            return Err(RuntimeError::new("Spread value must be an object.".to_string(), context.uri, &element.location));
+          }
+        };
       },
       ast::Attribute::ShorthandAttribute(sh_attr) => {
         let name = sh_attr.get_name().map_err(|message| {
@@ -547,7 +608,7 @@ fn evaluate_each_block<'a>(block: &ast::EachBlock, context: &'a mut Context) -> 
 
   if let js_virt::JsValue::JsArray(items) = source {
     for (index, item) in items.values.iter().enumerate() {
-      let child_option = evaluate_each_block_child(&body, item, index, &block.value_name, &block.key_name, context)?;
+      let child_option = evaluate_each_block_body(&body, item, index, &block.value_name, &block.key_name, context)?;
       if let Some(child) = child_option {
         children.push(child);
       }
@@ -562,7 +623,7 @@ fn evaluate_each_block<'a>(block: &ast::EachBlock, context: &'a mut Context) -> 
   })))
 }
 
-fn evaluate_each_block_child<'a>(body: &ast::Node, item: &js_virt::JsValue, index: usize, item_name: &String, key_name: &Option<String>, context: &'a mut Context) -> Result<Option<virt::Node>, RuntimeError> {
+fn evaluate_each_block_body<'a>(body: &ast::Node, item: &js_virt::JsValue, index: usize, item_name: &String, key_name: &Option<String>, context: &'a mut Context) -> Result<Option<virt::Node>, RuntimeError> {
 
   let mut data = context.data.clone();
   match data {
@@ -649,12 +710,13 @@ mod tests {
         {/}
       </span>
       {#each [1, 2, 3] as item}
-  okay
-{/}
+        okay
+      {/}
+    ",
 
-    {\"a\"}
-        
-      "
+    "{true}",
+    "{'false'}"
+    // "<span {...props} />"
     ];
     
     for code in cases.iter() {

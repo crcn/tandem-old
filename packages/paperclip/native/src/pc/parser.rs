@@ -120,13 +120,13 @@ fn parse_node<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::Node, ParseEr
 }
 
 fn parse_slot<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::Node, ParseError> {
+  tokenizer.next_expect(Token::CurlyOpen)?;
   let script = parse_slot_script(tokenizer)?;
   Ok(pc_ast::Node::Slot(pc_ast::Slot { script }))
 }
 
 fn parse_slot_script<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<js_ast::Statement, ParseError> {
   let start = tokenizer.pos;
-  tokenizer.next_expect(Token::CurlyOpen)?;
   parse_js_with_tokenizer(tokenizer, |token| {
     token != Token::CurlyClose
   })
@@ -421,6 +421,7 @@ fn parse_close_tag<'a, 'b>(tag_name: &'a str, tokenizer: &mut Tokenizer<'b>, sta
     } else {
       Ok(())
     }
+
   })?;
 
   tokenizer
@@ -491,13 +492,20 @@ fn parse_attribute<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::Attribut
 }
 
 fn parse_shorthand_attribute<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::Attribute, ParseError> {
-  let reference = parse_slot_script(tokenizer)?;
-
-  // TODO - expect script to be reference with path.length === 1
-
-  Ok(pc_ast::Attribute::ShorthandAttribute(pc_ast::ShorthandAttribute {
-    reference,
-  }))
+  tokenizer.next_expect(Token::CurlyOpen)?;
+  if tokenizer.peek(1)? == Token::Spread {
+    tokenizer.next_expect(Token::Spread)?;
+    let script = parse_slot_script(tokenizer)?;
+    Ok(pc_ast::Attribute::SpreadAttribute(pc_ast::SpreadAttribute {
+      script,
+    }))
+    
+  } else {
+    let reference = parse_slot_script(tokenizer)?;
+    Ok(pc_ast::Attribute::ShorthandAttribute(pc_ast::ShorthandAttribute {
+      reference,
+    }))
+  }
 }
 
 fn parse_key_value_attribute<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::Attribute, ParseError> {
@@ -526,6 +534,7 @@ fn parse_attribute_value<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::At
 }
 
 fn parse_attribute_slot<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::AttributeValue, ParseError> {
+  tokenizer.next_expect(Token::CurlyOpen)?;
   let script = parse_slot_script(tokenizer)?;
   Ok(pc_ast::AttributeValue::Slot(script))
 }

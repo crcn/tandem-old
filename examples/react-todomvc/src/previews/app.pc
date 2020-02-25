@@ -1,13 +1,7 @@
 <import id="app"  src="../app.pc">
 
-<!-- 
-
-TODO:
-
--->
 <app a={{a: 1}} items={[
-  1,
-  { label: "b" },
-  { label: "c" },
-  { label: "d" }
+  { a: 1, b: 1, viewProps: { label: "Afdsfs"}  },
+  { label: "c", viewProps: { label: "Cfdsfs", editing: true}},
+  { label: "d", viewProps: { label: "Dfdsfsd", completed: true } }
 ]} />

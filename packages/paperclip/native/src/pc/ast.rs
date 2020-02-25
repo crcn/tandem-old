@@ -145,6 +145,7 @@ impl fmt::Display for Element {
 #[serde(tag = "kind")]
 pub enum Attribute {
   ShorthandAttribute(ShorthandAttribute),
+  SpreadAttribute(SpreadAttribute),
   KeyValueAttribute(KeyValueAttribute)
 }
 
@@ -153,9 +154,22 @@ impl fmt::Display for Attribute {
     match self {
       Attribute::ShorthandAttribute(attr) => attr.fmt(f),
       Attribute::KeyValueAttribute(attr) => attr.fmt(f),
+      Attribute::SpreadAttribute(attr) => attr.fmt(f),
     }
   }
 }
+
+#[derive(Debug, PartialEq, Serialize, Clone)]
+pub struct SpreadAttribute {
+  pub script: js_ast::Statement,
+}
+
+impl fmt::Display for SpreadAttribute {
+  fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+    write!(f, "{{...{}}}", self.script.to_string())
+  }
+}
+
 
 #[derive(Debug, PartialEq, Serialize, Clone)]
 pub struct ShorthandAttribute {

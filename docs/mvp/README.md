@@ -43,10 +43,9 @@ Goal is to validate the idea & polish it up
 
 #### Todos
 
-- `*prop` operator
+- cannot alt-click each element
+- `!{}` operator
 - `listProps: Function` for mapping props
-- figure out how to transform props
-  - e.g: mapping label from: <item item={item}>
 - paperclip-react-compiler tests
 - start building out Tandem UI
 - Can't include components

@@ -262,6 +262,8 @@ The `people` collection consumed in paperclip _alone_ is `{ fullName: string }[]
 {/}
 ```
 
+> If we want, we could also just do `<addres-book-entry !{...person} />`.
+
 `!` seems a bit more clear here. We could also re-use this operator for other code we'd like to omit from compilation (like `!{<div />}`). This operator is also nice since it's used for macros in ther languages. Now for the React code, we could do something like this:
 
 ```javascript

@@ -2,6 +2,7 @@ use crate::base::tokenizer::{Tokenizer, Token};
 use crate::base::parser::{get_buffer, ParseError};
 use super::ast;
 use crate::pc::parser::parse_element;
+use std::collections::{HashMap};
 
 pub fn _parse<'a>(source: &'a str) -> Result<ast::Statement, ParseError> {
   let mut tokenizer = Tokenizer::new(source);
@@ -67,7 +68,7 @@ fn parse_array<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<ast::Statement, Pars
   tokenizer.next_expect(Token::SquareOpen)?;
   let mut values = vec![];
 
-  while !tokenizer.is_eof() && tokenizer.peek(1)? != Token::SquareClose {
+  while !tokenizer.is_eof() && tokenizer.peek_eat_whitespace(1)? != Token::SquareClose {
 
     values.push(parse_statement(tokenizer)?);
     if tokenizer.peek(1)? == Token::SquareClose {
@@ -75,7 +76,8 @@ fn parse_array<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<ast::Statement, Pars
     } 
     tokenizer.next_expect(Token::Comma)?;
   }
-  
+
+  tokenizer.eat_whitespace();
   tokenizer.next_expect(Token::SquareClose)?;
 
   Ok(ast::Statement::Array(ast::Array {
@@ -86,9 +88,9 @@ fn parse_array<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<ast::Statement, Pars
 fn parse_object<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<ast::Statement, ParseError> {
 
   tokenizer.next_expect(Token::CurlyOpen)?;
-  let mut values = vec![];
+  let mut properties = vec![];
 
-  while !tokenizer.is_eof() && tokenizer.peek(1)? != Token::CurlyOpen {
+  while !tokenizer.is_eof() && tokenizer.peek_eat_whitespace(1)? != Token::CurlyClose {
 
     let key = parse_statement(tokenizer)?;
 
@@ -101,6 +103,8 @@ fn parse_object<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<ast::Statement, Par
       key.clone()
     };
 
+    properties.push(ast::Property { key, value });
+
 
     tokenizer.eat_whitespace();
     if tokenizer.peek(1)? == Token::CurlyClose {
@@ -109,10 +113,11 @@ fn parse_object<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<ast::Statement, Par
     tokenizer.next_expect(Token::Comma)?;
   }
   
+  tokenizer.eat_whitespace();
   tokenizer.next_expect(Token::CurlyClose)?;
 
-  Ok(ast::Statement::Array(ast::Array {
-    values
+  Ok(ast::Statement::Object(ast::Object {
+    properties
   }))
 }
 
@@ -151,6 +156,7 @@ mod tests {
   #[test]
   fn can_smoke_parse_various_statements() {
     let cases = vec![
+      "[{a:1}]",
       "someReference",
       "some.nested.reference",
 
@@ -170,14 +176,16 @@ mod tests {
 
       // objects,
       "{ a: 1, b: 2, d: {e, f, g: 5}}",
-      "[[1, {a, g, f, g: 1}], 2]"
+      "[[1, {a, g, f, g: 1}], 2]",
+      "[]",
+      "{}",
+      "[ ]",
+      "{ }"
     ];
 
     for case in cases {
       let _ast = _parse(case).unwrap();
-      // println!("{:?}", ast);
+      println!("{:?}", _ast);
     }
-
   }
-
 }

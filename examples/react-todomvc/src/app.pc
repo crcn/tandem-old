@@ -184,11 +184,9 @@ h1 {
           <section class="main">
               <input id="toggle-all" type="checkbox" class="toggle-all">
               <label for="toggle-all">Mark all as complete</label>
-
-      {a}
               <ul class="todo-list">
                 {#each items as item}
-                  <list-item item={item} />
+                  <list-item {...item.viewProps} />
                 {/}
               </ul>
           </section>

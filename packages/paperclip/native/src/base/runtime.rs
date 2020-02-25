@@ -9,15 +9,15 @@ pub struct RuntimeError {
 }
 
 impl RuntimeError {
-  pub fn new(message: &String, uri: &String, location: &ast::Location) -> RuntimeError {
+  pub fn new(message: String, uri: &String, location: &ast::Location) -> RuntimeError {
     RuntimeError {
-      message: message.to_string(),
+      message: message,
       uri: uri.to_string(),
       location: location.clone()
     }
   }
   pub fn unknown(uri: &String) -> RuntimeError {
-    RuntimeError::new(&"An unknown error has occurred.".to_string(), uri, &ast::Location {
+    RuntimeError::new("An unknown error has occurred.".to_string(), uri, &ast::Location {
       start: 0,
       end: 1
     })
