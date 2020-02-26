@@ -28,7 +28,7 @@ export const createTranslateContext = (
   buffer: "",
   filePath,
   importIds,
-  outOfPropsScope: false,
+  outOfPropsScope: {},
   hasLogicFile,
   styleScopes,
   isNewLine: true,

@@ -43,7 +43,7 @@ Goal is to validate the idea & polish it up
 
 #### Todos
 
-- ability to compile dash-attrs (need to test default-value)
+- get filter routing to work
 - better type inferencing
 - gotcha trying to add props to View that is fragment
 - need a better way of identifying where instances of components are

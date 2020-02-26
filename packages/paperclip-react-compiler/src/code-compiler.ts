@@ -299,7 +299,7 @@ const translateElement = (
   context = endBlock(context);
   if (element.children.length) {
     context = addBuffer(`,\n`, context);
-    context = translateChildren(element.children, context);
+    context = translateChildren(element.children, false, context);
   } else {
     context = addBuffer(`\n`, context);
   }
@@ -376,18 +376,25 @@ const translateFragment = (
     return translateJSXNode(children[0], isRoot, context);
   }
   context = addBuffer(`[\n`, context);
-  context = translateChildren(children, context);
+
+  // want to pass root here in case root _is_ fragment. In that case we'll want to pass props
+  // to all root children of this fragment
+  context = translateChildren(children, isRoot, context);
   context = addBuffer(`]`, context);
   return context;
 };
 
-const translateChildren = (children: Node[], context: TranslateContext) => {
+const translateChildren = (
+  children: Node[],
+  isRoot: boolean,
+  context: TranslateContext
+) => {
   context = startBlock(context);
 
   context = children
     .filter(isVisibleNode)
     .reduce((newContext, child, index, children) => {
-      newContext = translateJSXNode(child, false, newContext);
+      newContext = translateJSXNode(child, isRoot, newContext);
       if (index < children.length - 1) {
         newContext = addBuffer(",\n", newContext);
       }
