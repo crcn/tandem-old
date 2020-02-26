@@ -1,5 +1,8 @@
 <import src="./styles/global.css">
 
+<!-- <fdsfsfdfsd src="./item.tsx"> -->
+<logic src="./item.tsx">
+
 <style>
   .edit {
     position: relative;
@@ -139,9 +142,6 @@
     }
   }
 </style>
-
-<!-- <fdsfsfdfsd src="./item.tsx"> -->
-<logic src="./item.tsx">
 
 <li class="todo" completed={completed}>
   {#if editing}

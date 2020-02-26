@@ -21,6 +21,7 @@ import {
   NodeParsedEvent,
   getStyleElements,
   getAttributeValue,
+  getChildren,
   AttributeValueKind,
   getVisibleChildNodes,
   getAttributeStringValue,
@@ -148,33 +149,33 @@ export class PCHTMLLanguageService extends BaseEngineLanguageService<Node> {
   }
 
   private _handleMainTemplate(context: HandleContext) {
-    for (const child of getVisibleChildNodes(context.root)) {
-      this._handleVisibleNode(child, context);
+    for (const child of getChildren(context.root)) {
+      this._handleNode(child, context);
     }
   }
 
   private _handleParts(context: HandleContext) {
     for (const child of getParts(context.root)) {
-      this._handleVisibleNode(child, context);
+      this._handleNode(child, context);
     }
   }
 
-  private _handleVisibleNode(node: Node, context: HandleContext) {
+  private _handleNode(node: Node, context: HandleContext) {
     if (node.kind === NodeKind.Element) {
       this._handleElement(node, context);
     }
     if (node.kind === NodeKind.Block) {
       this._handleBlock(node, context);
     }
-    for (const child of getVisibleChildNodes(node)) {
-      this._handleVisibleNode(child, context);
+    for (const child of getChildren(node)) {
+      this._handleNode(child, context);
     }
   }
 
   private _handleBlock(block: Block, context: HandleContext) {
     if (block.blockKind === BlockKind.Each) {
       if (block.body) {
-        this._handleVisibleNode(block.body, context);
+        this._handleNode(block.body, context);
       }
     } else if (block.blockKind === BlockKind.Conditional) {
       this._handleConditional(block, context);
@@ -183,7 +184,7 @@ export class PCHTMLLanguageService extends BaseEngineLanguageService<Node> {
 
   private _handleConditional(block: Conditional, context: HandleContext) {
     if (block.body) {
-      this._handleVisibleNode(block.body, context);
+      this._handleNode(block.body, context);
     }
     if (block.conditionalBlockKind === ConditionalBlockKind.PassFailBlock) {
       if (block.fail) {
@@ -221,7 +222,7 @@ export class PCHTMLLanguageService extends BaseEngineLanguageService<Node> {
         if (tagParts.length === 2) {
           this._handlePartInstance(element, name, impAst, impUri, context);
         } else {
-          const firstVisibleNode = getVisibleChildNodes(impAst)[0];
+          const firstVisibleNode = getChildren(impAst)[0];
 
           context.info.definitions.push({
             sourceUri: impUri,
@@ -243,7 +244,7 @@ export class PCHTMLLanguageService extends BaseEngineLanguageService<Node> {
       if (attr.kind === AttributeKind.KeyValueAttribute && attr.value) {
         if (attr.value.attrValueKind === AttributeValueKind.Slot) {
           if (attr.value.jsKind === StatementKind.Node) {
-            this._handleVisibleNode((attr.value as any) as Node, context);
+            this._handleNode((attr.value as any) as Node, context);
           }
         } else if (
           (attr.value.attrValueKind === AttributeValueKind.String,
