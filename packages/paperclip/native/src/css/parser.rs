@@ -627,9 +627,6 @@ mod tests {
     ";
 
     parse(source).unwrap();
-
-    // println!("{:?}", result);
-    // panic!("OK");
   }
 
   #[test]

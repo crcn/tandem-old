@@ -31,6 +31,9 @@ pub enum Token<'a> {
   // </
   TagClose,
 
+  // !
+  Bang,
+
   // {#
   BlockOpen,
 
@@ -137,6 +140,10 @@ impl<'a> Tokenizer<'a> {
     }
   }
 
+  pub fn utf8_pos() {
+
+  }
+
   pub fn peek(&mut self, steps: u8) -> Result<Token<'a>, ParseError> {
     let pos = self.pos;
     let mut i = 0;
@@ -234,6 +241,10 @@ impl<'a> Tokenizer<'a> {
           self.forward(1);
           Ok(Token::Star)
         }
+      },
+      b'!' => {
+        self.forward(1);
+        Ok(Token::Bang)
       },
       b'+' => {
         self.forward(1);

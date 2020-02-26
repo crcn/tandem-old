@@ -43,8 +43,27 @@ impl<'a> Context<'a> {
 }
 
 pub fn evaluate<'a>(node_expr: &ast::Node, uri: &String, graph: &'a DependencyGraph, vfs: &'a VirtualFileSystem, data: &js_virt::JsValue, part: Option<String>) -> Result<Option<virt::Node>, RuntimeError>  {
+
+  let preview_node_option = match ast::get_children(node_expr) {
+    Some(children) => children.iter().find(|child| {
+      if let ast::Node::Element(element) = child {
+        if element.tag_name == "preview" {
+          return true;
+        }
+      } 
+      false
+    }),
+    None => None
+  };
+
+  let target_node = if let Some(preview_node) = preview_node_option {
+    preview_node
+  } else {
+    node_expr
+  };
+
   let mut context = create_context(node_expr, uri, graph, vfs, data, None);
-  let mut root_option = evaluate_instance_node(node_expr, &mut context, part)?;
+  let mut root_option = evaluate_instance_node(target_node, &mut context, part)?;
 
   match root_option {
     Some(ref mut root) => {
@@ -220,7 +239,11 @@ fn evaluate_element<'a>(element: &ast::Element, is_root: bool, context: &'a mut 
 }
 
 fn evaluate_preview_element<'a>(element: &ast::Element, is_root: bool, context: &'a mut Context) -> Result<Option<virt::Node>, RuntimeError> {
-  Ok(None)
+  if is_root {
+    evaluate_children_as_fragment(&element.children, context)
+  } else {
+    Ok(None)
+  }
 }
 
 fn evaluate_slot<'a>(slot: &ast::Slot, context: &'a mut Context) -> Result<Option<virt::Node>, RuntimeError> {

@@ -43,7 +43,6 @@ Goal is to validate the idea & polish it up
 
 #### Todos
 
-- `completed: false` shows as completed (false probably not looked at as falsy)
 - <preview /> special element
   - used to render instance -- lives in instance file
 - compile spread operator

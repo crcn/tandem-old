@@ -41,6 +41,10 @@ pub enum Node {
 
 #[derive(Debug, PartialEq, Serialize, Clone)]
 pub struct Slot {
+
+  // !{slot}
+  #[serde(rename = "omitFromCompilation")]
+  pub omit_from_compilation: bool,
   pub script: js_ast::Statement
 }
 
@@ -161,6 +165,10 @@ impl fmt::Display for Attribute {
 
 #[derive(Debug, PartialEq, Serialize, Clone)]
 pub struct SpreadAttribute {
+
+  // !{...slot}
+  #[serde(rename = "omitFromCompilation")]
+  pub omit_from_compilation: bool,
   pub script: js_ast::Statement,
 }
 

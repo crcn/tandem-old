@@ -120,9 +120,10 @@ fn parse_node<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::Node, ParseEr
 }
 
 fn parse_slot<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::Node, ParseError> {
+  let omit_from_compilation = parse_omit_from_compilation(tokenizer)?;
   tokenizer.next_expect(Token::CurlyOpen)?;
   let script = parse_slot_script(tokenizer)?;
-  Ok(pc_ast::Node::Slot(pc_ast::Slot { script }))
+  Ok(pc_ast::Node::Slot(pc_ast::Slot { omit_from_compilation, script }))
 }
 
 fn parse_slot_script<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<js_ast::Statement, ParseError> {
@@ -491,12 +492,25 @@ fn parse_attribute<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::Attribut
   }
 }
 
+fn parse_omit_from_compilation<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<bool, ParseError> {
+  Ok(if tokenizer.peek(1)? == Token::Bang {
+    tokenizer.next()?;
+    true
+  } else {
+    false
+  })
+}
+
 fn parse_shorthand_attribute<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::Attribute, ParseError> {
+
+  let omit_from_compilation = parse_omit_from_compilation(tokenizer)?;
+
   tokenizer.next_expect(Token::CurlyOpen)?;
   if tokenizer.peek(1)? == Token::Spread {
     tokenizer.next_expect(Token::Spread)?;
     let script = parse_slot_script(tokenizer)?;
     Ok(pc_ast::Attribute::SpreadAttribute(pc_ast::SpreadAttribute {
+      omit_from_compilation,
       script,
     }))
     
