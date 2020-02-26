@@ -45,6 +45,7 @@ const createNativeStyle = (element, protocol: string, map: DOMNodeMap) => {
 };
 
 const createNativeElement = (element, protocol: string, map: DOMNodeMap) => {
+  // return document.createTextNode(JSON.stringify(element, null, 2));
   const nativeElement = document.createElement(element.tagName);
   for (let { name, value } of element.attributes) {
     if (name === "src" && protocol) {

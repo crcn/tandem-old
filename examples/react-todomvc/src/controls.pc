@@ -89,26 +89,28 @@
 }
 </style>
 
-<part id="filter-button">
-  <li><a {href} {selected}>{children}</a></li>
-</part>
+<footer class="footer">
+  <span class="todo-count">
+    {itemsLeftLabel}
+  </span>
+  <ul class="filters">
+    {#each filters as filter} 
+      <li><a {href} selected={filter.active}>{filter.label}</a></li>
+    {/}
+    {children}
+  </ul>
+  <button class="clear-completed">
+      Clear completed
+  </button>
+</footer>
 
-<part id="main">
-  <footer class="footer">
-    <span class="todo-count">
-      {itemCountLabel}
-    </span>
-    <ul class="filters">
-      {children}
-    </ul>
-    <button class="clear-completed">
-        Clear completed
-    </button>
-  </footer>
-</part>
-
-<main itemCountLabel={<span><strong>1</strong> item left</span>}>
-  <filter-button >All</filter-button>
-  <filter-button selected>Active</filter-button>
-  <filter-button>Completed</filter-button>
-</main>
+<preview>
+  <self
+    itemsLeftLabel={<span><strong>1</strong> item left</span>}
+    filters={[
+      { label: "Active", active: false },
+      { label: "Completed", active: true },
+      { label: "Incomplete", active: false }
+    ]}
+  />
+</preview>

@@ -22,14 +22,13 @@ fn evaluate_statement<'a>(statement: &ast::Statement, context: &'a mut PCContext
 }
 
 fn evaluate_node<'a>(node: &Box<pc_ast::Node>, context: &'a mut PCContext) -> Result<virt::JsValue, RuntimeError> {
-  let node_option = evaluate_instance_node(node, context, None)?;
+  let node_option = evaluate_instance_node(node, context, true)?;
   if let Some(node) = node_option {
     Ok(virt::JsValue::JsNode(node))
   } else {
     Ok(virt::JsValue::JsUndefined())
   }
 }
-
 
 fn evaluate_string<'a>(value: &String, context: &'a mut PCContext) -> Result<virt::JsValue, RuntimeError> {
   Ok(virt::JsValue::JsString(value.to_string()))

@@ -44,26 +44,8 @@ impl<'a> Context<'a> {
 
 pub fn evaluate<'a>(node_expr: &ast::Node, uri: &String, graph: &'a DependencyGraph, vfs: &'a VirtualFileSystem, data: &js_virt::JsValue, part: Option<String>) -> Result<Option<virt::Node>, RuntimeError>  {
 
-  let preview_node_option = match ast::get_children(node_expr) {
-    Some(children) => children.iter().find(|child| {
-      if let ast::Node::Element(element) = child {
-        if element.tag_name == "preview" {
-          return true;
-        }
-      } 
-      false
-    }),
-    None => None
-  };
-
-  let target_node = if let Some(preview_node) = preview_node_option {
-    preview_node
-  } else {
-    node_expr
-  };
-
   let mut context = create_context(node_expr, uri, graph, vfs, data, None);
-  let mut root_option = evaluate_instance_node(target_node, &mut context, part)?;
+  let mut root_option = evaluate_instance_node(node_expr, &mut context, true)?;
 
   match root_option {
     Some(ref mut root) => {
@@ -75,22 +57,25 @@ pub fn evaluate<'a>(node_expr: &ast::Node, uri: &String, graph: &'a DependencyGr
 
   Ok(root_option)
 }
-pub fn evaluate_previews<'a>(previews: Vec<&ast::Node>, context: &'a mut Context) -> Result<Option<virt::Node>, RuntimeError>  {
-  let mut children  = vec![];
-  for preview in previews {
-    if let ast::Node::Element(element) = preview {
-      let child_option = evaluate_component_instance(element, context.uri, context)?;
-      if let Some(child) = child_option {
-        children.push(child);
-      }
-    }
-  }
-  if children.len() == 1 {
-    Ok(children.pop())
+
+
+pub fn get_instance_target_node<'a>(node_expr: &ast::Node) -> &ast::Node {
+ let preview_node_option = match ast::get_children(node_expr) {
+    Some(children) => children.iter().find(|child| {
+      if let ast::Node::Element(element) = child {
+        if element.tag_name == "preview" {
+          return true;
+        }
+      } 
+      false
+    }),
+    None => None
+  };
+
+  if let Some(preview_node) = preview_node_option {
+    preview_node
   } else {
-    Ok(Some(virt::Node::Fragment(virt::Fragment {
-      children
-    })))
+    node_expr
   }
 }
 
@@ -156,8 +141,12 @@ pub fn evaluate_jumbo_style<'a>(entry_expr: &ast::Node, context: &'a mut Context
   }))
 }
 
-pub fn evaluate_instance_node<'a>(node_expr: &ast::Node, context: &'a mut Context, part_option: Option<String>) -> Result<Option<virt::Node>, RuntimeError>  {
-  evaluate_node(node_expr, true, context)
+pub fn evaluate_instance_node<'a>(node_expr: &ast::Node, context: &'a mut Context, render_preview: bool) -> Result<Option<virt::Node>, RuntimeError>  {
+  evaluate_node(if render_preview {
+    get_instance_target_node(node_expr)
+  } else {
+    node_expr
+  }, true, context)
 }
 
 fn create_context<'a>(node_expr: &'a ast::Node, uri: &'a String, graph: &'a DependencyGraph, vfs: &'a VirtualFileSystem, data: &'a js_virt::JsValue,  parent_option: Option<&'a Context>) -> Context<'a> {
@@ -282,7 +271,7 @@ fn evaluate_slot<'a>(slot: &ast::Slot, context: &'a mut Context) -> Result<Optio
 fn evaluate_imported_component<'a>(element: &ast::Element, context: &'a mut Context) -> Result<Option<virt::Node>, RuntimeError> {
   let self_dep  = &context.graph.dependencies.get(context.uri).unwrap();
   let dep_uri = &self_dep.dependencies.get(&ast::get_tag_name(element)).unwrap();
-  evaluate_component_instance(element, dep_uri, context)
+  evaluate_component_instance(element, true, dep_uri, context)
 }
 
 
@@ -296,7 +285,7 @@ fn evaluate_self_element<'a>(element: &ast::Element, context: &'a mut Context) -
     });
   }
 
-  evaluate_component_instance(element, context.uri, context)
+  evaluate_component_instance(element, false, context.uri, context)
 }
 
 fn evaluate_part_instance_element<'a>(element: &ast::Element, context: &'a mut Context) -> Result<Option<virt::Node>, RuntimeError> {
@@ -380,7 +369,7 @@ fn create_component_instance_data<'a>(instance_element: &ast::Element, context: 
   Ok(js_virt::JsValue::JsObject(data))
 }
 
-fn evaluate_component_instance<'a>(instance_element: &ast::Element, dep_uri: &String, context: &'a mut Context) -> Result<Option<virt::Node>, RuntimeError> {
+fn evaluate_component_instance<'a>(instance_element: &ast::Element, render_preview: bool, dep_uri: &String, context: &'a mut Context) -> Result<Option<virt::Node>, RuntimeError> {
 
   let dep = &context.graph.dependencies.get(&dep_uri.to_string()).unwrap();
   let data = create_component_instance_data(instance_element, context)?;
@@ -394,7 +383,7 @@ fn evaluate_component_instance<'a>(instance_element: &ast::Element, dep_uri: &St
     let mut instance_context = create_context(&node, dep_uri, context.graph, context.vfs, &data, Some(&instance_parent_context));
 
     // TODO: if fragment, then wrap in span. If not, then copy these attributes to root element
-    evaluate_instance_node(&node, &mut instance_context, None)
+    evaluate_instance_node(&node, &mut instance_context, render_preview)
   } else {
     Err(RuntimeError::unknown(context.uri))
   }
@@ -414,7 +403,15 @@ fn evaluate_basic_element<'a>(element: &ast::Element, context: &'a mut Context) 
         let (name, mut value_option) = if kv_attr.value == None {
           (kv_attr.name.to_string(), None)
         } else {
-          (kv_attr.name.to_string(), Some(evaluate_attribute_value(&kv_attr.value.as_ref().unwrap(), context)?.to_string()))
+          let value = evaluate_attribute_value(&kv_attr.value.as_ref().unwrap(), context)?;
+          if value == js_virt::JsValue::JsBoolean(false) {
+            continue;
+          }
+          (kv_attr.name.to_string(), if value.truthy() {
+            Some(value.to_string())
+          } else {
+            None
+          })
         };
 
         if name == "src" {
@@ -576,8 +573,6 @@ fn evaluate_pass_fail_block<'a>(block: &ast::PassFailBlock, context: &'a mut Con
   if condition.truthy() {
     if let Some(node) = &block.body {
       evaluate_node(node, false, context)
-    } else if let Some(fail) = &block.fail {
-      evaluate_conditional_block(fail, context)
     } else {
       Ok(None)
     }

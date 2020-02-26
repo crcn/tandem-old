@@ -5,7 +5,6 @@
 
 <style>
 
-
 #app-container {
   background: #f5f5f5;
   width: 100vw;
@@ -187,7 +186,7 @@ h1 {
               <label for="toggle-all">Mark all as complete</label>
               <ul class="todo-list">
                 {#each items as item}
-                  <list-item {...item.viewProps} />
+                  <list-item item={item} />
                 {/}
               </ul>
           </section>
@@ -205,12 +204,12 @@ h1 {
 
 <preview>
   <self a={{a: 1}} items={[
-    { a: 1, b: 1, viewProps: { label: "Afdsfs"}  },
-    { label: "c", viewProps: { label: "Cfdsfs", editing: true}},
-    { label: "c", viewProps: { label: "Cfdsfs", editing: true}},
-    { label: "c", viewProps: { label: "Cfdsfs", editing: false}},
-    { label: "c", viewProps: { label: "Cfdsfs", editing: false}},
-    { label: "c", viewProps: { label: "hello Julio", completed: false, editing: false}},
-    { label: "d", viewProps: { label: "Dfdsfsd", completed: true } }
+    { a: 1, b: 1, previewProps: { label: "Afdsfs"}  },
+    { label: "c", previewProps: { label: "Cfdsfs", editing: true}},
+    { label: "c", previewProps: { label: "Cfdsfs", editing: true}},
+    { label: "c", previewProps: { label: "Cfdsfs", editing: false}},
+    { label: "c", previewProps: { label: "Cfdsfs", editing: false}},
+    { label: "c", previewProps: { label: "hello Julio", completed: false, editing: false}},
+    { label: "d", previewProps: { label: "Dfdsfsd", completed: true } }
   ]} />
 </preview>

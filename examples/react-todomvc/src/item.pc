@@ -158,10 +158,11 @@
   {/}
 </li>
 
-
 <preview>
+  {#if item} 
+    <self {...item.previewProps} />
+  {/else}
   <ul>
-
     {#each [
       { label: "something" },
       { label: "something else", editing: true },
@@ -171,4 +172,5 @@
     <self {...props} />
     {/}
   </ul>
+  {/}
 </preview>
