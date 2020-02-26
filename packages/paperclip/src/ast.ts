@@ -91,7 +91,7 @@ export enum BlockKind {
 
 export type BaseBlock<TBlockKind extends BlockKind> = {
   blockKind: TBlockKind;
-  body: Node;
+  body?: Node;
 } & BaseNode<NodeKind.Block>;
 
 export type EachBlock = {
@@ -100,22 +100,26 @@ export type EachBlock = {
   keyName: string;
 } & BaseBlock<BlockKind.Each>;
 
-export enum ConditionalKind {
+export enum ConditionalBlockKind {
   PassFailBlock = "PassFailBlock",
   FinalBlock = "FinalBlock"
 }
 
-export type BaseConditional<TConditionalKind extends ConditionalKind> = {
-  conditionalKind: TConditionalKind;
+export type BaseConditional<
+  TconditionalBlockKind extends ConditionalBlockKind
+> = {
+  conditionalBlockKind: TconditionalBlockKind;
   body: Node;
 };
 
 export type PassFailConditional = {
   condition: Statement;
   fail?: Conditional;
-} & BaseConditional<ConditionalKind.PassFailBlock>;
+} & BaseConditional<ConditionalBlockKind.PassFailBlock>;
 
-export type FinalConditional = {} & BaseConditional<ConditionalKind.FinalBlock>;
+export type FinalConditional = {} & BaseConditional<
+  ConditionalBlockKind.FinalBlock
+>;
 
 export type Conditional = PassFailConditional | FinalConditional;
 
@@ -255,7 +259,9 @@ export const flattenNodes = (node: Node, _allNodes: Node[] = []): Node[] => {
   }
   if (node.kind === NodeKind.Block) {
     if (node.blockKind === BlockKind.Each) {
-      flattenNodes(node.body, _allNodes);
+      if (node.body) {
+        flattenNodes(node.body, _allNodes);
+      }
     } else if (node.blockKind === BlockKind.Conditional) {
       flattenConditional(node, _allNodes);
     }
@@ -272,8 +278,10 @@ const flattenConditional = (
   conditional: Conditional,
   _allNodes: Node[]
 ): Node[] => {
-  flattenNodes(conditional.body, _allNodes);
-  if (conditional.conditionalKind === ConditionalKind.PassFailBlock) {
+  if (conditional.body) {
+    flattenNodes(conditional.body, _allNodes);
+  }
+  if (conditional.conditionalBlockKind === ConditionalBlockKind.PassFailBlock) {
     if (conditional.fail) {
       flattenConditional(conditional.fail, _allNodes);
     }

@@ -14,11 +14,7 @@ import { Engine } from "paperclip";
 import { createServices } from "./services";
 import { VSCServiceBridge } from "./bridge";
 
-console.log(require.resolve("paperclip"));
-
 const connection = createConnection(ProposedFeatures.all);
-
-console.log("OKOKO");
 
 const documents: TextDocuments<any> = new TextDocuments(TextDocument);
 

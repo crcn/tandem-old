@@ -340,36 +340,6 @@ fn create_component_instance_data<'a>(instance_element: &ast::Element, context: 
         data.values.insert(name.to_string(), evaluate_attribute_slot(&sh_attr.reference, context)?);
       }
     };
-    
-    // let (name, value) = match attr {
-    //   ast::Attribute::KeyValueAttribute(kv_attr) => {
-    //     if kv_attr.value == None {
-    //       (kv_attr.name.to_string(), js_virt::JsValue::JsBoolean(true))
-    //     } else {
-    //       let value = evaluate_attribute_value(&kv_attr.value.as_ref().unwrap(), context)?;
-    //       (
-    //         kv_attr.name.to_string(),
-    //         value
-    //       )
-    //     }
-    //   },
-    //   ast::Attribute::ShorthandAttribute(sh_attr) => {
-    //     let name = sh_attr.get_name().map_err(|message| {
-    //       RuntimeError {
-    //         uri: context.uri.to_string(),
-    //         message: message.to_string(),
-    //         location: Location { 
-    //           start: 0,
-    //           end: 0
-    //         }
-    //       }
-    //     })?;
-
-    //     (name.to_string(), evaluate_attribute_slot(&sh_attr.reference, context)?)
-    //   }
-    // };
-
-    // data.values.insert(name, value);
   }
 
   
@@ -472,7 +442,7 @@ fn evaluate_basic_element<'a>(element: &ast::Element, context: &'a mut Context) 
         })?;
         let js_value = evaluate_attribute_slot(&sh_attr.reference, context)?;
 
-        if js_value != js_virt::JsValue::JsUndefined() {
+        if js_value.truthy() {
           attributes.push(virt::Attribute {
             id: context.get_next_id(),
             name: name.to_string(),

@@ -7,7 +7,7 @@ import {
   getLogicElement,
   Statement,
   BlockKind,
-  ConditionalKind,
+  ConditionalBlockKind,
   StatementKind,
   getAttributeStringValue,
   getVisibleChildNodes,
@@ -329,7 +329,7 @@ const translateConditionalBlock = (
   node: PassFailConditional | FinalConditional,
   context: TranslateContext
 ) => {
-  if (node.conditionalKind === ConditionalKind.PassFailBlock) {
+  if (node.conditionalBlockKind === ConditionalBlockKind.PassFailBlock) {
     context = addBuffer(`(`, context);
     context = translateStatment(node.condition, false, context);
     context = addBuffer(` ? `, context);

@@ -169,6 +169,7 @@ h1 {
 
 </style>
 
+<list-item />
 <logic src="./app.tsx">
 
 <div id="app-container">

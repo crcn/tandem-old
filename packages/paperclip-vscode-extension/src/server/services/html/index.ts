@@ -8,6 +8,12 @@ import {
   getParts,
   RuleKind,
   getImports,
+  Block,
+  EachBlock,
+  Conditional,
+  ConditionalBlock,
+  BlockKind,
+  ConditionalBlockKind,
   EngineEvent,
   getImportIds,
   EvaluatedEvent,
@@ -20,7 +26,6 @@ import {
   getAttributeStringValue,
   AttributeKind,
   StatementKind,
-  resolveImportFile,
   resolveImportUri
 } from "paperclip";
 import * as path from "path";
@@ -158,8 +163,32 @@ export class PCHTMLLanguageService extends BaseEngineLanguageService<Node> {
     if (node.kind === NodeKind.Element) {
       this._handleElement(node, context);
     }
+    if (node.kind === NodeKind.Block) {
+      this._handleBlock(node, context);
+    }
     for (const child of getVisibleChildNodes(node)) {
       this._handleVisibleNode(child, context);
+    }
+  }
+
+  private _handleBlock(block: Block, context: HandleContext) {
+    if (block.blockKind === BlockKind.Each) {
+      if (block.body) {
+        this._handleVisibleNode(block.body, context);
+      }
+    } else if (block.blockKind === BlockKind.Conditional) {
+      this._handleConditional(block, context);
+    }
+  }
+
+  private _handleConditional(block: Conditional, context: HandleContext) {
+    if (block.body) {
+      this._handleVisibleNode(block.body, context);
+    }
+    if (block.conditionalBlockKind === ConditionalBlockKind.PassFailBlock) {
+      if (block.fail) {
+        this._handleConditional(block.fail, context);
+      }
     }
   }
 

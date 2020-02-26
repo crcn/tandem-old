@@ -675,7 +675,7 @@ mod tests {
 
   #[test]
   fn displays_error_for_unterminated_slot() {
-    assert_eq!(parse("{ab"), Err(ParseError::unterminated("Unterminated slot.".to_string(), 0, 3)));
+    assert_eq!(parse("{ab"), Err(ParseError::unterminated("Unterminated slot.".to_string(), 1, 3)));
   }
 
   #[test]
