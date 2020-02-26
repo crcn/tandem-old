@@ -7,7 +7,10 @@ import {
 } from "paperclip";
 
 export const RENAME_PROPS = {
-  class: "className"
+  class: "className",
+  autofocus: "autoFocus",
+  autocomplete: "autoComplete",
+  for: "htmlFor"
 };
 
 export type Options = {

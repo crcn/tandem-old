@@ -14,7 +14,6 @@ import {
   getVisibleChildNodes,
   Slot,
   Block,
-  ConditionalBlock,
   EachBlock,
   AttributeValue,
   AttributeKind,
@@ -38,13 +37,7 @@ import {
   endBlock,
   addBuffer
 } from "./translate-utils";
-import {
-  pascalCase,
-  Options,
-  getComponentName,
-  getPartClassName,
-  RENAME_PROPS
-} from "./utils";
+import { pascalCase, Options, getComponentName, RENAME_PROPS } from "./utils";
 import { camelCase } from "lodash";
 import * as path from "path";
 
@@ -293,7 +286,7 @@ const translateElement = (
   context = translateStyleScopeAttributes(context, "\n");
   context = addBuffer(`"key": ${context.keyCount++},\n`, context);
   for (const attr of element.attributes) {
-    context = translateAttribute(attr, context);
+    context = translateAttribute(attr, isComponentInstance, context);
   }
   context = endBlock(context);
   context = addBuffer(`}`, context);
@@ -332,7 +325,7 @@ const translateEachBlock = (
   context: TranslateContext
 ) => {
   context = addBuffer(`(`, context);
-  context = translateStatment(source, false, context);
+  context = translateStatment(source, false, false, context);
   context = addBuffer(
     `).map(function(${valueName}, ${keyName || "$$index"}) {\n`,
     context
@@ -358,7 +351,7 @@ const translateConditionalBlock = (
 ) => {
   if (node.conditionalBlockKind === ConditionalBlockKind.PassFailBlock) {
     context = addBuffer(`(`, context);
-    context = translateStatment(node.condition, false, context);
+    context = translateStatment(node.condition, false, false, context);
     context = addBuffer(` ? `, context);
     context = translateJSXNode(node.body, false, context);
     context = addBuffer(` : `, context);
@@ -408,7 +401,13 @@ const translateChildren = (children: Node[], context: TranslateContext) => {
   return context;
 };
 
-const translateAttribute = (attr: Attribute, context: TranslateContext) => {
+const isFunctionPropName = (name: string) => /^on/.test(name);
+
+const translateAttribute = (
+  attr: Attribute,
+  isComponentInstance: boolean,
+  context: TranslateContext
+) => {
   if (attr.kind === AttributeKind.KeyValueAttribute) {
     let name = RENAME_PROPS[attr.name] || attr.name;
     let value = attr.value;
@@ -420,21 +419,31 @@ const translateAttribute = (attr: Attribute, context: TranslateContext) => {
     // can't handle for now
     if (name !== "style") {
       context = addBuffer(`${JSON.stringify(camelCase(name))}: `, context);
-      context = translateAttributeValue(name, value, context);
+      context = translateAttributeValue(
+        name,
+        value,
+        !isComponentInstance,
+        context
+      );
       context = addBuffer(`,\n`, context);
     }
   } else if (attr.kind === AttributeKind.ShorthandAttribute) {
     const keyValue = (attr.reference as Reference).path[0];
-    context = addBuffer(
-      `${JSON.stringify(keyValue)}: ${
-        context.outOfPropsScope[keyValue] ? "" : "props."
-      }${camelCase(keyValue)}`,
-      context
-    );
+
+    let value = `${
+      context.outOfPropsScope[keyValue] ? "" : "props."
+    }${camelCase(keyValue)}`;
+
+    if (!isComponentInstance && !isFunctionPropName(keyValue)) {
+      // everything must be a string
+      value = `${value} ? String(${value}) : null`;
+    }
+
+    context = addBuffer(`${JSON.stringify(keyValue)}: ${value}`, context);
     context = addBuffer(`,\n`, context);
   } else if (attr.kind === AttributeKind.SpreadAttribute) {
     context = addBuffer(`...(`, context);
-    context = translateStatment(attr.script, false, context);
+    context = translateStatment(attr.script, false, false, context);
     context = addBuffer(`)`, context);
 
     context = addBuffer(`,\n`, context);
@@ -446,13 +455,19 @@ const translateAttribute = (attr: Attribute, context: TranslateContext) => {
 const translateAttributeValue = (
   name: string,
   value: AttributeValue,
+  isPropOnNativeElement: boolean,
   context: TranslateContext
 ) => {
   if (!value) {
     return addBuffer("true", context);
   }
   if (value.attrValueKind === AttributeValueKind.Slot) {
-    return translateStatment((value as any) as Statement, false, context);
+    return translateStatment(
+      (value as any) as Statement,
+      false,
+      isPropOnNativeElement && !isFunctionPropName(name),
+      context
+    );
   } else if (value.attrValueKind === AttributeValueKind.String) {
     let strValue = JSON.stringify(value.value);
     if (name === "src") {
@@ -465,28 +480,40 @@ const translateAttributeValue = (
 };
 
 const translateSlot = (slot: Slot, context: TranslateContext) => {
-  return translateStatment(slot.script, true, context);
+  return translateStatment(slot.script, true, false, context);
 };
 
 const translateStatment = (
   statement: Statement,
   isRoot: boolean,
+  shouldStringifyProp: boolean,
   context: TranslateContext
 ) => {
   if (statement.jsKind === StatementKind.Reference) {
-    return addBuffer(
+    if (shouldStringifyProp) {
+      context = translateStatment(statement, isRoot, false, context);
+      context = addBuffer(" ? String(", context);
+    }
+
+    context = addBuffer(
       `${
         context.outOfPropsScope[statement.path[0]] ? "" : "props."
       }${statement.path.join(".")}`,
       context
     );
+
+    if (shouldStringifyProp) {
+      context = addBuffer(") : null", context);
+    }
+
+    return context;
   } else if (statement.jsKind === StatementKind.Node) {
     return translateJSXNode((statement as any) as Node, isRoot, context);
   } else if (statement.jsKind === StatementKind.Array) {
     context = addBuffer(`[\n`, context);
     context = startBlock(context);
     for (const value of statement.values) {
-      context = translateStatment(value, false, context);
+      context = translateStatment(value, false, false, context);
       context = addBuffer(`,\n`, context);
     }
     context = endBlock(context);
@@ -496,7 +523,7 @@ const translateStatment = (
     context = startBlock(context);
     for (const { key, value } of statement.properties) {
       context = addBuffer(`${JSON.stringify(key)}:`, context);
-      context = translateStatment(value, false, context);
+      context = translateStatment(value, false, false, context);
       context = addBuffer(`,\n`, context);
     }
     context = endBlock(context);

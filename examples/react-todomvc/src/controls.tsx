@@ -9,7 +9,7 @@ export type Props = {
 // todo: Strong = styled('strong')
 
 export default (View: React.Factory<ViewProps>) => ({ items }: Props) => {
-  const numItemsLeft = items.filter(item => item.completed).length;
+  const numItemsLeft = items.filter(item => !item.completed).length;
   return (
     <View
       itemsLeftLabel={

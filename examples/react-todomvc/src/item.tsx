@@ -41,8 +41,8 @@ export default (View: React.Factory<ViewProps>) => ({
     <View
       label={item.label}
       onLabelClick={onClick}
-      completed={item.completed && String(item.completed)}
-      editing={editing && String(editing)}
+      completed={item.completed}
+      editing={editing}
       completeCheckboxProps={{
         onClick: toggleCompleted
       }}
@@ -53,35 +53,3 @@ export default (View: React.Factory<ViewProps>) => ({
     />
   );
 };
-
-// export default ({ item, onChange }: Props) => {
-//   const [editing, setEditing] = useState(false);
-//   const onClick = () => {
-//     setEditing(true);
-//   };
-//   const onBlur = () => {
-//     setEditing(false);
-//   };
-//   const onLabelInputKeyPress = (event: KeyboardEvent<HTMLInputElement>) => {
-//     if (event.key === "Enter") {
-//       onChange({
-//         ...item,
-//         label: (event.target as HTMLInputElement).value
-//       });
-//       setEditing(false);
-//     }
-//   };
-//   return (
-//     <BaseItem
-//       completed={item.completed && String(item.completed)}
-//       onClick={onClick}
-//       onBlur={onBlur}
-//     >
-//       {editing ? (
-//         <LabelInput onKeyPress={onLabelInputKeyPress} />
-//       ) : (
-//         <View label={item.label} />
-//       )}
-//     </BaseItem>
-//   );
-// };

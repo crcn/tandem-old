@@ -143,7 +143,7 @@
 <!-- <fdsfsfdfsd src="./item.tsx"> -->
 <logic src="./item.tsx">
 
-<li class="todo" {completed}>
+<li class="todo" completed={completed}>
   {#if editing}
     <input id="label-input" default-value={label} type="text" class="edit" autofocus="autofocus">
   {/else}
