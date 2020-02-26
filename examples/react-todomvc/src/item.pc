@@ -157,3 +157,18 @@
     </div> 
   {/}
 </li>
+
+
+<preview>
+  <ul>
+
+    {#each [
+      { label: "something" },
+      { label: "something else", editing: true },
+      { label: "something blarg", completed: true }
+    ] as props} 
+
+    <self {...props} />
+    {/}
+  </ul>
+</preview>
