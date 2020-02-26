@@ -1,5 +1,0 @@
-<logic src="./something.tsx">
-
-<preview>
-  <self clickCount={2} />
-</preview>

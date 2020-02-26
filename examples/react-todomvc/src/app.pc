@@ -2,7 +2,6 @@
 <import id="list-item" src="./item.pc">
 <import id="controls" src="./controls.pc">
 <import id="learn" src="./learn.pc">
-<import id="click-counter" src="./something.pc">
 
 <logic src="./app.tsx">
 
@@ -177,7 +176,6 @@ h1 {
       <section class="todoapp">
           <header class="header">
               <h1>todo</h1>
-              <click-counter />
               <input id="new-todo-input" autofocus="autofocus" autocomplete="off" placeholder="What needs to be done?" class="new-todo">
           </header>
 

@@ -43,6 +43,8 @@ Goal is to validate the idea & polish it up
 
 #### Todos
 
+- better type inferencing
+- gotcha trying to add props to View that is fragment
 - need a better way of identifying where instances of components are
 - infer types (needed for {#each source})
 - <preview /> special element
