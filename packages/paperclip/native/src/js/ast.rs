@@ -74,7 +74,7 @@ impl fmt::Display for Object {
 
 #[derive(Debug, PartialEq, Serialize, Clone)]
 pub struct Property {
-  pub key: Statement,
+  pub key: String,
   pub value: Statement
 }
 

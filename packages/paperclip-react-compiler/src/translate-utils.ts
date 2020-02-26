@@ -5,14 +5,15 @@ export type TranslateContext = {
   filePath: string;
   buffer: string;
   lineNumber: number;
-  outOfPropsScope: boolean;
+  outOfPropsScope: {
+    [identifier: string]: boolean;
+  };
   isNewLine: boolean;
   hasLogicFile: boolean;
   styleScopes: string[];
   indent: string;
   importIds: string[];
   args: Options;
-  omitParts: string[];
   keyCount: number;
 };
 
@@ -34,12 +35,7 @@ export const createTranslateContext = (
   lineNumber: 0,
   indent,
   args,
-  keyCount: 0,
-  omitParts:
-    (args.omitParts &&
-      !Array.isArray(args.omitParts) &&
-      Array.from(args.omitParts.split(/\s*,\s*/))) ||
-    []
+  keyCount: 0
 });
 
 export const addBuffer = (buffer: string, context: TranslateContext) => ({

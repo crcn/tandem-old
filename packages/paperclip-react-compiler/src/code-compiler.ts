@@ -7,6 +7,7 @@ import {
   getLogicElement,
   Statement,
   BlockKind,
+  PREVIEW_TAG_NAME,
   ConditionalBlockKind,
   StatementKind,
   getAttributeStringValue,
@@ -110,6 +111,7 @@ const translateStyleSheet = (sheet: Sheet, context: TranslateContext) => {
 
 const translateUtils = (ast: Node, context: TranslateContext) => {
   context = translateStyledUtil(ast, context);
+  context = translateExtendsPropsUtil(ast, context);
   return context;
 };
 
@@ -121,6 +123,22 @@ const translateStyleScopeAttributes = (
     const scope = context.styleScopes[i];
     context = addBuffer(`"data-pc-${scope}": true,${newLine}`, context);
   }
+  return context;
+};
+const translateExtendsPropsUtil = (ast: Node, context: TranslateContext) => {
+  context = addBuffer(
+    `const extendProps = (defaultProps, extender) => {\n`,
+    context
+  );
+  context = startBlock(context);
+
+  context = addBuffer(
+    `return typeof extender === 'function' ? extender(defaultProps) : Object.assign(defaultProps, extender);\n`,
+    context
+  );
+  context = endBlock(context);
+
+  context = addBuffer(`};\n\n`, context);
   return context;
 };
 
@@ -141,7 +159,7 @@ const translateStyledUtil = (ast: Node, context: TranslateContext) => {
   context = endBlock(context);
   context = addBuffer(`};\n`, context);
   context = endBlock(context);
-  context = addBuffer("}\n\n", context);
+  context = addBuffer("};\n\n", context);
   return context;
 };
 
@@ -161,16 +179,18 @@ const translateImports = (ast: Node, context: TranslateContext) => {
       path.dirname(context.filePath),
       resolveImportFile(context.filePath, src)
     );
+
     if (relativePath.charAt(0) !== ".") {
       relativePath = `./${relativePath}`;
     }
 
-    const importStr = `require("${relativePath}");`;
-
     if (id) {
-      context = addBuffer(`const ${pascalCase(id)} = ${importStr}\n`, context);
+      context = addBuffer(
+        `import ${pascalCase(id)} from "${relativePath}";\n`,
+        context
+      );
     } else {
-      context = addBuffer(`${importStr}\n`, context);
+      context = addBuffer(`import "${relativePath}";\n`, context);
     }
   }
   context = addBuffer("\n", context);
@@ -248,6 +268,9 @@ const translateElement = (
   isRoot: boolean,
   context: TranslateContext
 ) => {
+  if (element.tagName === PREVIEW_TAG_NAME) {
+    return context;
+  }
   const isComponentInstance = context.importIds.indexOf(element.tagName) !== -1;
   const id = getAttributeStringValue("id", element);
   const propsName = id
@@ -260,8 +283,9 @@ const translateElement = (
     : JSON.stringify(element.tagName);
 
   context = addBuffer(`React.createElement(${tag}, `, context);
+
   if (isRoot || propsName) {
-    context = addBuffer(`Object.assign(`, context);
+    context = addBuffer(`extendProps(`, context);
   }
   context = addBuffer(`{\n`, context);
   context = startBlock(context);
@@ -310,14 +334,17 @@ const translateEachBlock = (
   context = addBuffer(`(`, context);
   context = translateStatment(source, false, context);
   context = addBuffer(
-    `).map(function(${keyName}, ${valueName}, ${keyName || "$$index"}) {\n`,
+    `).map(function(${valueName}, ${keyName || "$$index"}) {\n`,
     context
   );
   context = startBlock(context);
   context = addBuffer(`return `, context);
   context = translateJSXNode(body, false, {
     ...context,
-    outOfPropsScope: true
+    outOfPropsScope: {
+      ...context.outOfPropsScope,
+      [valueName]: true
+    }
   });
   context = addBuffer(`;\n`, context);
   context = endBlock(context);
@@ -392,7 +419,7 @@ const translateAttribute = (attr: Attribute, context: TranslateContext) => {
 
     // can't handle for now
     if (name !== "style") {
-      context = addBuffer(`${JSON.stringify(name)}: `, context);
+      context = addBuffer(`${JSON.stringify(camelCase(name))}: `, context);
       context = translateAttributeValue(name, value, context);
       context = addBuffer(`,\n`, context);
     }
@@ -400,10 +427,16 @@ const translateAttribute = (attr: Attribute, context: TranslateContext) => {
     const keyValue = (attr.reference as Reference).path[0];
     context = addBuffer(
       `${JSON.stringify(keyValue)}: ${
-        context.outOfPropsScope ? "" : "props."
+        context.outOfPropsScope[keyValue] ? "" : "props."
       }${camelCase(keyValue)}`,
       context
     );
+    context = addBuffer(`,\n`, context);
+  } else if (attr.kind === AttributeKind.SpreadAttribute) {
+    context = addBuffer(`...(`, context);
+    context = translateStatment(attr.script, false, context);
+    context = addBuffer(`)`, context);
+
     context = addBuffer(`,\n`, context);
   }
 
@@ -442,11 +475,38 @@ const translateStatment = (
 ) => {
   if (statement.jsKind === StatementKind.Reference) {
     return addBuffer(
-      `${context.outOfPropsScope ? "" : "props."}${statement.path.join(".")}`,
+      `${
+        context.outOfPropsScope[statement.path[0]] ? "" : "props."
+      }${statement.path.join(".")}`,
       context
     );
   } else if (statement.jsKind === StatementKind.Node) {
     return translateJSXNode((statement as any) as Node, isRoot, context);
+  } else if (statement.jsKind === StatementKind.Array) {
+    context = addBuffer(`[\n`, context);
+    context = startBlock(context);
+    for (const value of statement.values) {
+      context = translateStatment(value, false, context);
+      context = addBuffer(`,\n`, context);
+    }
+    context = endBlock(context);
+    context = addBuffer(`]`, context);
+  } else if (statement.jsKind === StatementKind.Object) {
+    context = addBuffer(`{\n`, context);
+    context = startBlock(context);
+    for (const { key, value } of statement.properties) {
+      context = addBuffer(`${JSON.stringify(key)}:`, context);
+      context = translateStatment(value, false, context);
+      context = addBuffer(`,\n`, context);
+    }
+    context = endBlock(context);
+    context = addBuffer(`}`, context);
+  } else if (
+    statement.jsKind === StatementKind.Number ||
+    statement.jsKind === StatementKind.String ||
+    statement.jsKind === StatementKind.Boolean
+  ) {
+    return addBuffer(String(statement.value), context);
   }
 
   return context;

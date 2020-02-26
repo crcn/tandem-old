@@ -103,7 +103,7 @@ fn parse_object<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<ast::Statement, Par
       key.clone()
     };
 
-    properties.push(ast::Property { key, value });
+    properties.push(ast::Property { key: key.to_string(), value });
 
 
     tokenizer.eat_whitespace();

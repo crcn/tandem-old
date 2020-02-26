@@ -23,10 +23,7 @@ The easiest way to get setup is to first define a `pcconfig.json` file:
   "compilerOptions": {
 
     // Code compiler to use
-    "name": "paperclip-react-compiler",
-
-    // Parts of template to omit from compilation
-    "omitParts": ["preview"]
+    "name": "paperclip-react-compiler"
   },
 
   //

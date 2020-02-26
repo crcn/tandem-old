@@ -43,6 +43,8 @@ Goal is to validate the idea & polish it up
 
 #### Todos
 
+- need a better way of identifying where instances of components are
+- infer types (needed for {#each source})
 - <preview /> special element
   - used to render instance -- lives in instance file
 - compile spread operator

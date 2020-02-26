@@ -1,20 +1,27 @@
 import React from "react";
-import BaseControls, { styled } from "./controls.pc";
-
-const Strong = styled("strong");
+import { Props as ViewProps } from "./controls.pc";
+import { Item } from "./data";
 
 export type Props = {
-  numItemsLeft: number;
+  items: Item[];
 };
 
-export default ({ numItemsLeft }: Props) => {
+// todo: Strong = styled('strong')
+
+export default (View: React.Factory<ViewProps>) => ({ items }: Props) => {
+  const numItemsLeft = items.filter(item => item.completed).length;
   return (
-    <BaseControls
-      itemCountLabel={
+    <View
+      itemsLeftLabel={
         <span>
-          <Strong>{numItemsLeft}</Strong> items left
+          <strong>{numItemsLeft}</strong> items left
         </span>
       }
+      filters={[
+        { label: "Active" },
+        { label: "Incomplete" },
+        { label: "Complete" }
+      ]}
     />
   );
 };

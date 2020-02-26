@@ -1,5 +1,7 @@
 <import src="./styles/global.css">
 
+<logic src="./controls.tsx">
+
 <style>
 
 .footer {
@@ -95,7 +97,7 @@
   </span>
   <ul class="filters">
     {#each filters as filter} 
-      <li><a {href} selected={filter.active}>{filter.label}</a></li>
+      <li><a href={filter.href} selected={filter.active}>{filter.label}</a></li>
     {/}
     {children}
   </ul>
@@ -108,8 +110,8 @@
   <self
     itemsLeftLabel={<span><strong>1</strong> item left</span>}
     filters={[
-      { label: "Active", active: false },
-      { label: "Completed", active: true },
+      { label: "Active", active: true },
+      { label: "Completed", active: false },
       { label: "Incomplete", active: false }
     ]}
   />

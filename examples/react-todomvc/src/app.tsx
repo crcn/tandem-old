@@ -1,15 +1,16 @@
-import React, { useState, ChangeEvent } from "react";
-import { Main } from "./app.pc";
-import ListItem from "./item";
-import Controls from "./controls";
+import React, { useState } from "react";
+import { Props as ViewProps } from "./app.pc";
 import { Item } from "./data";
+import { identity } from "lodash";
 
 const DEFAULT_ITEMS: Item[] = [
   { id: 1, label: "Walk dog" },
   { id: 2, label: "take out trash" }
 ];
 
-export default () => {
+export type Props = {};
+
+export default (View: React.Factory<ViewProps>) => (props: Props) => {
   const [items, setItems] = useState(DEFAULT_ITEMS);
 
   const onItemChange = (newItem: Item) => {
@@ -20,19 +21,32 @@ export default () => {
     );
   };
 
+  const onNewTodoInputKeyPress = (event: React.KeyboardEvent) => {
+    if (event.key === "Enter") {
+      setItems([
+        ...items,
+        { id: Date.now(), label: (event.target as any).value }
+      ]);
+      (event.target as any).value = "";
+    }
+  };
+
   return (
-    <Main
-      items={items.map(item => (
-        <ListItem item={item} onChange={onItemChange} />
-      ))}
-      controls={
-        <Controls
-          numItemsLeft={items.reduce(
-            (left, item) => (!item.completed ? left + 1 : left),
-            0
-          )}
-        />
-      }
+    <View
+      newTodoInputProps={{ onKeyPress: onNewTodoInputKeyPress }}
+      toggleAllProps={identity}
+      items={items}
+      listItemProps={props => {
+        return {
+          ...props,
+          onChange: onItemChange
+        };
+      }}
+      learnProps={identity}
+      controlsProps={props => ({
+        ...props,
+        items
+      })}
     />
   );
 };

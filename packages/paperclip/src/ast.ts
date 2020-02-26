@@ -4,6 +4,7 @@ import { SourceLocation } from "./base-ast";
 import * as crc32 from "crc32";
 import { resolveImportFile } from "./engine";
 import * as path from "path";
+import { PREVIEW_TAG_NAME } from "./constants";
 
 export enum NodeKind {
   Fragment = "Fragment",
@@ -38,7 +39,8 @@ export type StyleElement = {
 
 export enum AttributeKind {
   ShorthandAttribute = "ShorthandAttribute",
-  KeyValueAttribute = "KeyValueAttribute"
+  KeyValueAttribute = "KeyValueAttribute",
+  SpreadAttribute = "SpreadAttribute"
 }
 
 type BaseAttribute<TKind extends AttributeKind> = {
@@ -49,12 +51,19 @@ type ShorthandAttribute = {
   reference: Statement;
 } & BaseAttribute<AttributeKind.ShorthandAttribute>;
 
+type SpreadAttribute = {
+  script: Statement;
+} & BaseAttribute<AttributeKind.SpreadAttribute>;
+
 type KeyValueAttribute = {
   name: string;
   value?: AttributeValue;
 } & BaseAttribute<AttributeKind.KeyValueAttribute>;
 
-export type Attribute = ShorthandAttribute | KeyValueAttribute;
+export type Attribute =
+  | ShorthandAttribute
+  | SpreadAttribute
+  | KeyValueAttribute;
 
 export enum AttributeValueKind {
   String = "String",
@@ -299,13 +308,44 @@ export const isComponentInstance = (
   );
 };
 
+const maybeAddReference = (
+  stmt: Statement,
+  _statements: [Reference, string][] = []
+) => {
+  if (stmt.jsKind === StatementKind.Reference) {
+    _statements.push([stmt, null]);
+  }
+};
+
 export const getNestedReferences = (
   node: Node,
   _statements: [Reference, string][] = []
 ): [Reference, string][] => {
   if (node.kind === NodeKind.Slot) {
-    if (node.script.jsKind === StatementKind.Reference) {
-      _statements.push([node.script, null]);
+    maybeAddReference(node.script, _statements);
+  } else if (node.kind === NodeKind.Block) {
+    if (node.blockKind === BlockKind.Each) {
+      // if (node.body) {
+      //   getNestedReferences(node.body, _statements);
+      // }
+      maybeAddReference(node.source, _statements);
+    } else if (node.blockKind === BlockKind.Conditional) {
+      let current: Conditional = node;
+
+      while (current) {
+        if (current.body) {
+          getNestedReferences(current.body, _statements);
+        }
+        if (
+          current.conditionalBlockKind === ConditionalBlockKind.PassFailBlock
+        ) {
+          maybeAddReference(current.condition, _statements);
+          current = current.fail;
+        } else {
+          // final block
+          break;
+        }
+      }
     }
   } else {
     if (node.kind === NodeKind.Element) {
@@ -325,12 +365,20 @@ export const getNestedReferences = (
           attr.reference.jsKind === StatementKind.Reference
         ) {
           _statements.push([attr.reference, attr.reference[0]]);
+        } else if (
+          attr.kind === AttributeKind.SpreadAttribute &&
+          attr.script.jsKind === StatementKind.Reference
+        ) {
+          _statements.push([attr.script, attr.script[0]]);
         }
       }
     }
 
     for (const child of getChildren(node)) {
-      if (child.kind === NodeKind.Element && child.tagName === "part") {
+      if (
+        child.kind === NodeKind.Element &&
+        child.tagName === PREVIEW_TAG_NAME
+      ) {
         continue;
       }
       getNestedReferences(child, _statements);

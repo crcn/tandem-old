@@ -12,7 +12,6 @@ export const RENAME_PROPS = {
 
 export type Options = {
   definition?: boolean;
-  omitParts?: string;
 };
 
 export const pascalCase = (value: string) => {

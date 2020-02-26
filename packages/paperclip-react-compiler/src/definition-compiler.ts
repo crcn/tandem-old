@@ -5,7 +5,6 @@ import {
   Element,
   getNestedReferences,
   getLogicElement,
-  getParts,
   flattenNodes,
   isComponentInstance,
   NodeKind,
@@ -21,13 +20,7 @@ import {
   endBlock,
   addBuffer
 } from "./translate-utils";
-import {
-  Options,
-  getComponentName,
-  getPartClassName,
-  RENAME_PROPS,
-  pascalCase
-} from "./utils";
+import { Options, getComponentName, RENAME_PROPS, pascalCase } from "./utils";
 
 export const compile = (
   { ast }: { ast: Node },
@@ -61,7 +54,7 @@ const translateRoot = (ast: Node, context: TranslateContext) => {
     }
     const relativePath = getRelativeFilePath(context.filePath, src);
     context = addBuffer(
-      `import {$$Props as ${pascalCase(
+      `import {EnhancedProps as ${pascalCase(
         getInstancePropsName(imp)
       )}} from "${relativePath}";\n`,
       context
@@ -76,7 +69,10 @@ const translateRoot = (ast: Node, context: TranslateContext) => {
     if (src) {
       const logicRelativePath = getRelativeFilePath(context.filePath, src);
       context = addBuffer(
-        `import {Props as LogicProps} from "${logicRelativePath}";\n`,
+        `import {Props as LogicProps} from "${logicRelativePath.replace(
+          /\.tsx?$/,
+          ""
+        )}";\n`,
         context
       );
     }
@@ -84,6 +80,11 @@ const translateRoot = (ast: Node, context: TranslateContext) => {
 
   context = addBuffer(
     `type ElementProps = InputHTMLAttributes<HTMLInputElement> & ClassAttributes<HTMLInputElement>;\n\n`,
+    context
+  );
+
+  context = addBuffer(
+    `type PropsFactory<TProps> = (props: Partial<TProps>) => TProps;\n\n`,
     context
   );
 
@@ -112,10 +113,12 @@ const translateComponent = (
 ) => {
   context = addBuffer(`export type ${componentPropsName} = {\n`, context);
   context = startBlock(context);
-  let _defined = {};
+
+  const props = {};
+
   for (const [reference, attrName] of getNestedReferences(node)) {
     // just be relaxed for now about types
-    let paramType: String = `String | boolean | Number | ReactNode`;
+    let paramType: String = `String | boolean | Number | Object | ReactNode`;
 
     if (attrName) {
       // onClick, onMouseMove, etc
@@ -126,11 +129,10 @@ const translateComponent = (
 
     const referenceName = reference.path[0];
     const propName = RENAME_PROPS[referenceName] || referenceName;
-    if (BLACK_LIST_PROPS[propName] || _defined[propName]) {
+    if (BLACK_LIST_PROPS[propName]) {
       continue;
     }
-    _defined[propName] = 1;
-    context = addBuffer(`${propName}: ${paramType}, \n`, context);
+    props[propName] = [paramType, false];
   }
 
   const allElements = flattenNodes(node).filter(
@@ -139,18 +141,28 @@ const translateComponent = (
 
   for (const element of allElements) {
     if (isComponentInstance(element, context.importIds)) {
-      context = addBuffer(
-        `${getInstancePropsName(element)}: ${getInstancePropsTypeName(
-          element
-        )},\n`,
-        context
-      );
+      const valueType = getInstancePropsTypeName(element);
+
+      props[getInstancePropsName(element)] = [
+        `${valueType} | PropsFactory<${valueType}>`,
+        false
+      ];
     } else {
       const id = getAttributeStringValue("id", element);
       if (id) {
-        context = addBuffer(`${camelCase(id)}?: ElementProps,\n`, context);
+        props[`${camelCase(id)}Props`] = [
+          `ElementProps | PropsFactory<ElementProps>`
+        ];
       }
     }
+  }
+
+  for (const key in props) {
+    const [valueType, optional] = props[key];
+    context = addBuffer(
+      `${key}${optional ? "?" : ""}: ${valueType},\n`,
+      context
+    );
   }
 
   context = endBlock(context);
@@ -181,10 +193,10 @@ const translateMainView = (ast: Node, context: TranslateContext) => {
       `declare const Enhanced${componentName}: Factory<LogicProps>;\n`,
       context
     );
-    context = addBuffer(`export type $$Props = LogicProps;\n`, context);
+    context = addBuffer(`export type EnhancedProps = LogicProps;\n`, context);
     context = addBuffer(`export default Enhanced${componentName};\n`, context);
   } else {
-    context = addBuffer(`export type $$Props = Props;\n`, context);
+    context = addBuffer(`export type EnhancedProps = Props;\n`, context);
     context = addBuffer(`export default ${componentName};\n`, context);
   }
   return context;
