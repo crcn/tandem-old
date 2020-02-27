@@ -9,15 +9,15 @@ Here's a basic example of the language:
   Additional behavior can be attached to views using the this tag.
 -->
 
-<logic src="./todos.tsx">
-  <input type="text" onKeyPress="{onNewInputKeyPress}" />
+<logic src="./todos.tsx" />
 
-  <ul>
-    {#each todos as todo}
-    <li>{todo.label}</li>
-    {/}
-  </ul></logic
->
+<input type="text" onKeyPress={onNewInputKeyPress} />
+
+<ul>
+  {#each todos as todo}
+  <li>{todo.label}</li>
+  {/}
+</ul>
 ```
 
 Assuming we're using `React` to power our UI, the code for that might look something like:
