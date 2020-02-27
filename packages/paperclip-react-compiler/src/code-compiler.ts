@@ -134,7 +134,6 @@ const translateExtendsPropsUtil = (ast: Node, context: TranslateContext) => {
   context = addBuffer(`};\n\n`, context);
   return context;
 };
-
 const translateStyledUtil = (ast: Node, context: TranslateContext) => {
   context = addBuffer(
     `export const styled = (tagName, defaultProps) => {\n`,
@@ -277,7 +276,7 @@ const translateElement = (
 
   context = addBuffer(`React.createElement(${tag}, `, context);
 
-  if (isRoot || propsName) {
+  if (propsName) {
     context = addBuffer(`extendProps(`, context);
   }
   context = addBuffer(`{\n`, context);
@@ -290,9 +289,9 @@ const translateElement = (
   }
   context = endBlock(context);
   context = addBuffer(`}`, context);
-  if (isRoot) {
-    context = addBuffer(`, props)`, context);
-  }
+  // if (isRoot) {
+  //   context = addBuffer(`, props)`, context);
+  // }
   if (propsName) {
     context = addBuffer(`, ${propsName})`, context);
   }

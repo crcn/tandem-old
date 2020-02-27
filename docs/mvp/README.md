@@ -44,6 +44,7 @@ Goal is to validate the idea & polish it up
 #### Todos
 
 - start building out Tandem UI
+  - just the style panel
 - gotcha trying to add props to View that is fragment
 - need a better way of identifying where instances of components are
   - used to render instance -- lives in instance file

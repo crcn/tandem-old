@@ -220,7 +220,7 @@ const translateComponent = (
   }
 
   context = endBlock(context);
-  context = addBuffer(`} & ElementProps;\n\n`, context);
+  context = addBuffer(`};\n\n`, context);
 
   return context;
 };
