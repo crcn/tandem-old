@@ -5,9 +5,15 @@ import {
   Element,
   getNestedReferences,
   getLogicElement,
+  infer,
   flattenNodes,
   isComponentInstance,
   NodeKind,
+  InferenceKind,
+  AnyInference,
+  ShapeInference,
+  ArrayInference,
+  Inference,
   getImports,
   getRelativeFilePath,
   isVisibleElement
@@ -106,6 +112,38 @@ const BLACK_LIST_PROPS = {
   children: true
 };
 
+const DEFAULT_PARAM_TYPE = `String | boolean | Number | Object | ReactNode`;
+
+const translateInference = (
+  inference: Inference,
+  property: string,
+  context: TranslateContext
+): TranslateContext => {
+  if (inference.kind === InferenceKind.Any) {
+    return addBuffer(
+      /^on\w+/.test(property) ? `Function` : DEFAULT_PARAM_TYPE,
+      context
+    );
+  }
+  if (inference.kind === InferenceKind.Array) {
+    context = addBuffer(`Array<`, context);
+    context = translateInference(inference.value, property, context);
+    context = addBuffer(`>`, context);
+  }
+  if (inference.kind === InferenceKind.Shape) {
+    context = addBuffer(`{\n`, context);
+    context = startBlock(context);
+    for (const key in inference.properties) {
+      context = addBuffer(`${key}: `, context);
+      context = translateInference(inference.properties[key], key, context);
+      context = addBuffer(`,\n`, context);
+    }
+    context = endBlock(context);
+    context = addBuffer(`}`, context);
+  }
+  return context;
+};
+
 const translateComponent = (
   node: Node,
   componentPropsName: string,
@@ -115,6 +153,21 @@ const translateComponent = (
   context = startBlock(context);
 
   const props = {};
+
+  const inference = infer(node);
+
+  for (const key in inference.properties) {
+    const propName = RENAME_PROPS[key] || key;
+    if (BLACK_LIST_PROPS[propName]) {
+      continue;
+    }
+
+    context = addBuffer(`${key}: `, context);
+    context = translateInference(inference.properties[key], key, context);
+    context = addBuffer(`,\n`, context);
+
+    props[key] = [null];
+  }
 
   for (const [reference, attrName] of getNestedReferences(node)) {
     // just be relaxed for now about types
@@ -132,7 +185,7 @@ const translateComponent = (
     if (BLACK_LIST_PROPS[propName]) {
       continue;
     }
-    props[propName] = [paramType, false];
+    // props[propName] = [paramType, false];
   }
 
   const allElements = flattenNodes(node).filter(
@@ -159,6 +212,7 @@ const translateComponent = (
 
   for (const key in props) {
     const [valueType, optional] = props[key];
+    if (!valueType) continue;
     context = addBuffer(
       `${key}${optional ? "?" : ""}: ${valueType},\n`,
       context

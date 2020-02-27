@@ -89,12 +89,14 @@ const createArrayInference = (value: Inference): ArrayInference => ({
   value
 });
 const createAnyInference = (): AnyInference => ({ kind: InferenceKind.Any });
-const createInference = (kind: InferenceKind.Any | InferenceKind.Shape) => {
+const createInference = (kind: InferenceKind) => {
   switch (kind) {
     case InferenceKind.Any:
       return createAnyInference();
     case InferenceKind.Shape:
       return createShapeInference();
+    case InferenceKind.Array:
+      return createArrayInference(createAnyInference());
   }
 };
 
@@ -165,7 +167,7 @@ const addInferenceProperty = (
   if (inference.kind === InferenceKind.Array) {
     inference = {
       ...inference,
-      value: addInferenceProperty(path, value, inference.value, _index + 1)
+      value: addInferenceProperty(path, value, inference.value, _index)
     };
   }
 
@@ -227,11 +229,11 @@ const setScope = (
   }
 });
 
-export const infer = (ast: Node): Inference => {
+export const infer = (ast: Node): ShapeInference => {
   return inferNode(ast, {
     scope: {},
     inference: createShapeInference()
-  }).inference;
+  }).inference as ShapeInference;
 };
 
 const inferNode = (ast: Node, context: Context): Context => {
@@ -259,7 +261,7 @@ const inferBlock = (block: Block, context: Context): Context => {
 };
 
 const inferEachBlock = (block: EachBlock, context: Context): Context => {
-  context = inferStatement(block.source, context);
+  context = inferStatement(block.source, context, InferenceKind.Array);
   if (block.body) {
     const scopePath =
       block.source.jsKind === StatementKind.Reference ? block.source.path : [];
@@ -335,7 +337,7 @@ const inferChildren = (children: Node[], context: Context) =>
 const inferStatement = (
   statement: Statement,
   context: Context,
-  kind: InferenceKind.Shape | InferenceKind.Any = InferenceKind.Any
+  kind: InferenceKind = InferenceKind.Any
 ) => {
   switch (statement.jsKind) {
     case StatementKind.Reference: {

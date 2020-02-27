@@ -89,7 +89,10 @@ describe(__filename + "#", () => {
         kind: 0,
         properties: {
           items: {
-            kind: 2
+            kind: 1,
+            value: {
+              kind: 2
+            }
           }
         }
       }
@@ -100,10 +103,13 @@ describe(__filename + "#", () => {
         kind: 0,
         properties: {
           items: {
-            kind: 0,
-            properties: {
-              name: {
-                kind: 2
+            kind: 1,
+            value: {
+              kind: 0,
+              properties: {
+                name: {
+                  kind: 2
+                }
               }
             }
           }
@@ -116,13 +122,16 @@ describe(__filename + "#", () => {
         kind: 0,
         properties: {
           items: {
-            kind: 0,
-            properties: {
-              a: {
-                kind: 2
-              },
-              b: {
-                kind: 2
+            kind: 1,
+            value: {
+              kind: 0,
+              properties: {
+                a: {
+                  kind: 2
+                },
+                b: {
+                  kind: 2
+                }
               }
             }
           }
@@ -142,13 +151,19 @@ describe(__filename + "#", () => {
         kind: 0,
         properties: {
           people: {
-            kind: 0,
-            properties: {
-              friends: {
-                kind: 0,
-                properties: {
-                  name: {
-                    kind: 2
+            kind: 1,
+            value: {
+              kind: 0,
+              properties: {
+                friends: {
+                  kind: 1,
+                  value: {
+                    kind: 0,
+                    properties: {
+                      name: {
+                        kind: 2
+                      }
+                    }
                   }
                 }
               }
@@ -206,7 +221,6 @@ describe(__filename + "#", () => {
   for (const [source, inference] of cases) {
     it(`can infer ${source}`, () => {
       const ast = engine.parseContent(String(source));
-      // console.log(JSON.stringify(infer(ast), null, 2));
       expect(infer(ast)).to.eql(inference);
     });
   }
