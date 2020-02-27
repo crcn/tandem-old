@@ -43,7 +43,7 @@ Goal is to validate the idea & polish it up
 
 #### Todos
 
-- get filter routing to work
+- start building out Tandem UI
 - better type inferencing
 - gotcha trying to add props to View that is fragment
 - need a better way of identifying where instances of components are
@@ -52,10 +52,6 @@ Goal is to validate the idea & polish it up
   - used to render instance -- lives in instance file
 - compile spread operator
 - cannot alt-click each element
-- `!{}` operator
-- `listProps: Function` for mapping props
-- paperclip-react-compiler tests
-- start building out Tandem UI
 - Can't include components
 - Change all to Paperclip
 - examples
