@@ -236,7 +236,7 @@ const getInstancePropsTypeName = (element: Element) => {
 };
 
 const translateMainView = (ast: Node, context: TranslateContext) => {
-  const componentName = getComponentName(ast);
+  const componentName = `View`;
   context = translateComponent(ast, "Props", context);
   context = addBuffer(
     `declare const ${componentName}: Factory<Props>;\n`,

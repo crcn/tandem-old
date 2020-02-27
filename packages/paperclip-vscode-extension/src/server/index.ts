@@ -1,11 +1,11 @@
 // ref: https://github.com/microsoft/vscode-css-languageservice
 
 import {
-  createConnection,
+  Connection,
   TextDocuments,
+  createConnection,
   ProposedFeatures,
   InitializedParams,
-  Connection,
   TextDocumentSyncKind
 } from "vscode-languageserver";
 

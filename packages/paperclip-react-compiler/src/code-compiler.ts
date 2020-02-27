@@ -190,7 +190,7 @@ const translateImports = (ast: Node, context: TranslateContext) => {
 };
 
 const translateView = (root: Node, context: TranslateContext) => {
-  const componentName = getComponentName(root);
+  const componentName = getComponentName(root, context.filePath);
 
   context = startBlock(
     addBuffer(`let ${componentName} = (props) => {\n`, context)
@@ -283,15 +283,17 @@ const translateElement = (
   context = startBlock(context);
   context = startBlock(context);
   context = translateStyleScopeAttributes(context, "\n");
-  context = addBuffer(`"key": ${context.keyCount++},\n`, context);
+  context = addBuffer(
+    `"key": ${JSON.stringify(String(context.keyCount++))}${
+      context.currentIndexKey ? ` + ${context.currentIndexKey}` : ""
+    },\n`,
+    context
+  );
   for (const attr of element.attributes) {
     context = translateAttribute(attr, isComponentInstance, context);
   }
   context = endBlock(context);
   context = addBuffer(`}`, context);
-  // if (isRoot) {
-  //   context = addBuffer(`, props)`, context);
-  // }
   if (propsName) {
     context = addBuffer(`, ${propsName})`, context);
   }
@@ -325,19 +327,19 @@ const translateEachBlock = (
 ) => {
   context = addBuffer(`(`, context);
   context = translateStatment(source, false, false, context);
-  context = addBuffer(
-    `).map(function(${valueName}, ${keyName || "$$index"}) {\n`,
-    context
-  );
+  const key = String(keyName || `$$index${context.keyCount++}`);
+  context = addBuffer(`).map(function(${valueName}, ${key}) {\n`, context);
   context = startBlock(context);
   context = addBuffer(`return `, context);
   context = translateJSXNode(body, false, {
     ...context,
+    currentIndexKey: key,
     scopes: {
       ...context.scopes,
       [valueName]: true
     }
   });
+  context = { ...context, currentIndexKey: null };
   context = addBuffer(`;\n`, context);
   context = endBlock(context);
   context = addBuffer(`})`, context);
@@ -376,9 +378,7 @@ const translateFragment = (
   }
   context = addBuffer(`[\n`, context);
 
-  // want to pass root here in case root _is_ fragment. In that case we'll want to pass props
-  // to all root children of this fragment
-  context = translateChildren(children, isRoot, context);
+  context = translateChildren(children, false, context);
   context = addBuffer(`]`, context);
   return context;
 };
@@ -407,7 +407,8 @@ const translateChildren = (
   return context;
 };
 
-const isFunctionPropName = (name: string) => /^on/.test(name);
+const isSpecialPropName = (name: string) =>
+  /^on/.test(name) || name === "checked";
 
 const translateAttribute = (
   attr: Attribute,
@@ -440,7 +441,7 @@ const translateAttribute = (
       keyValue
     )}`;
 
-    if (!isComponentInstance && !isFunctionPropName(keyValue)) {
+    if (!isComponentInstance && !isSpecialPropName(keyValue)) {
       // everything must be a string
       value = `${value} ? String(${value}) : null`;
     }
@@ -471,7 +472,7 @@ const translateAttributeValue = (
     return translateStatment(
       (value as any) as Statement,
       false,
-      isPropOnNativeElement && !isFunctionPropName(name),
+      isPropOnNativeElement && !isSpecialPropName(name),
       context
     );
   } else if (value.attrValueKind === AttributeValueKind.String) {

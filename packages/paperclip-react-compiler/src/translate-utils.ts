@@ -5,6 +5,7 @@ export type TranslateContext = {
   filePath: string;
   buffer: string;
   lineNumber: number;
+  currentIndexKey?: string;
   scopes: {
     [identifier: string]: boolean;
   };
