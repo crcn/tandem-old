@@ -174,7 +174,7 @@
       <learn />
       <section class="todoapp">
           <header class="header">
-              <h1>todo</h1>
+              <h1>Todos</h1>
               <input id="new-todo-input" autofocus="autofocus" autocomplete="off" placeholder="What needs to be done?" class="new-todo">
           </header>
 
