@@ -44,18 +44,9 @@ Goal is to validate the idea & polish it up
 #### Todos
 
 - start building out Tandem UI
-- better type inferencing
 - gotcha trying to add props to View that is fragment
 - need a better way of identifying where instances of components are
-- infer types (needed for {#each source})
-- <preview /> special element
   - used to render instance -- lives in instance file
-- compile spread operator
-- cannot alt-click each element
-- Can't include components
-- Change all to Paperclip
-- examples
-  - todomvc
 - docs
   - what is Tandem
   - getting started
