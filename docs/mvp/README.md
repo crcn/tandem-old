@@ -43,42 +43,26 @@ Goal is to validate the idea & polish it up
 
 #### Todos
 
+- 'open preview' command must only work with pc files
+  - change to `Paperclip: open preview`
+- prettier ignore markdown
 - vsce docs
-- online docs
-- website
-- get feedback
-
-- start building out Tandem UI
-  - just the style panel
-- gotcha trying to add props to View that is fragment
-- need a better way of identifying where instances of components are
-  - used to render instance -- lives in instance file
-- docs
-  - what is Tandem
+- online docs (single page)
+  - Links at top
+  - what it is
   - getting started
-    - with VSCode
-    - without VSCode
-  - alternative without VSCode (use HMR)
-  - testing
-- ask friends to play with app
-- site
-
-## Beta
-
-#### Todos
-
-- tests (companies won't use otherwise)
-- a11y
-  - img tags
-- linter
-  - error with multiple IDs
-  - warn for script tags
-  - warn when CSS selector tag isn't used
-  - prohibit dynamic attr bindings for
-    - all import attrs
-    - all meta attrs
-  - prohibit listeners - force prop injection
-- BUGS
-  - handle circular dependencies
-  - need to be aware of reserved props
-  - need to handle cases where files are moved around, especially for moduleDirectory files
+  - syntax
+    - preview
+    - json
+    - each
+    - if
+    - slots
+    - spreads
+  - integrations
+    - react code
+      - typed definition files
+    - webpack
+- examples
+  - simpler todos (from README)
+  - counter
+- get feedback

@@ -35,7 +35,22 @@
     "commands": [
       {
         "command": "tandem.openPreview",
-        "title": "Open Live Preview"
+        "title": "Paperclip: Open Live Preview"
+      }
+    ],
+    "menus": {
+      "commandPalette": [
+        {
+          "command": "tandem.openPreview",
+          "when": "editorLangId == paperclip"
+        }
+      ]
+    },
+    "keybindings": [
+      {
+        "command": "tandem.openPreview",
+        "key": "shift+cmd+v",
+        "when": "editorLangId == paperclip"
       }
     ],
     "languages": [
