@@ -148,7 +148,7 @@
     <input id="label-input" default-value={label} type="text" class="edit" autofocus="autofocus">
   {/else}
     <div class="view">
-      <input id="complete-checkbox" type="checkbox" class="toggle">
+      <input id="complete-checkbox" type="checkbox" class="toggle" checked={completed}>
       <label onClick={onLabelClick}>{label}</label> 
       <button class="destroy"></button>
     </div> 

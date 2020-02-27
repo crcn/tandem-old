@@ -41,7 +41,7 @@ export default (View: React.Factory<ViewProps>) => ({
     <View
       label={item.label}
       onLabelClick={onClick}
-      completed={item.completed}
+      completed={item.completed && String(item.completed)}
       editing={editing}
       completeCheckboxProps={{
         onClick: toggleCompleted

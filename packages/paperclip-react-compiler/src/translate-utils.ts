@@ -5,7 +5,7 @@ export type TranslateContext = {
   filePath: string;
   buffer: string;
   lineNumber: number;
-  outOfPropsScope: {
+  scopes: {
     [identifier: string]: boolean;
   };
   isNewLine: boolean;
@@ -28,7 +28,7 @@ export const createTranslateContext = (
   buffer: "",
   filePath,
   importIds,
-  outOfPropsScope: {},
+  scopes: {},
   hasLogicFile,
   styleScopes,
   isNewLine: true,

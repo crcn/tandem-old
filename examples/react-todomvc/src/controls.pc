@@ -62,7 +62,7 @@
   border-color: rgba(155, 15, 15, 0.1);
 }
 
-.filters li a[selected] {
+.filters li a[select] {
   border-color: rgba(175, 47, 47, 0.2);
 }
 
@@ -97,11 +97,11 @@
   </span>
   <ul class="filters">
     {#each filters as filter} 
-      <li><a href={filter.href} selected={filter.active}>{filter.label}</a></li>
+      <li><a href={filter.href} select={filter.active}>{filter.label}</a></li>
     {/}
     {children}
   </ul>
-  <button class="clear-completed">
+  <button id="clear-completed-button" class="clear-completed">
       Clear completed
   </button>
 </footer>

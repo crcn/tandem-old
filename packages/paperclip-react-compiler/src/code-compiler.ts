@@ -334,8 +334,8 @@ const translateEachBlock = (
   context = addBuffer(`return `, context);
   context = translateJSXNode(body, false, {
     ...context,
-    outOfPropsScope: {
-      ...context.outOfPropsScope,
+    scopes: {
+      ...context.scopes,
       [valueName]: true
     }
   });
@@ -437,9 +437,9 @@ const translateAttribute = (
   } else if (attr.kind === AttributeKind.ShorthandAttribute) {
     const keyValue = (attr.reference as Reference).path[0];
 
-    let value = `${
-      context.outOfPropsScope[keyValue] ? "" : "props."
-    }${camelCase(keyValue)}`;
+    let value = `${context.scopes[keyValue] ? "" : "props."}${camelCase(
+      keyValue
+    )}`;
 
     if (!isComponentInstance && !isFunctionPropName(keyValue)) {
       // everything must be a string
@@ -504,7 +504,7 @@ const translateStatment = (
 
     context = addBuffer(
       `${
-        context.outOfPropsScope[statement.path[0]] ? "" : "props."
+        context.scopes[statement.path[0]] ? "" : "props."
       }${statement.path.join(".")}`,
       context
     );
