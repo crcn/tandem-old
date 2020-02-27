@@ -9,3 +9,4 @@ export * from "./base-ast";
 export * from "./config";
 export * from "./constants";
 export * from "./errors";
+export * from "./infer";

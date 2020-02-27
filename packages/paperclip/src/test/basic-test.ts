@@ -6,7 +6,7 @@ import { stringifyVirtualNode } from "../stringify-virt-node";
 
 const TEST_SERVER_PORT = 8999;
 
-describe(__filename + "#", () => {
+xdescribe(__filename + "#", () => {
   let server: http.Server;
   let currentGraph = {};
 
