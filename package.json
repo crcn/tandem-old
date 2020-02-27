@@ -1,7 +1,8 @@
 {
   "name": "paperclip",
   "version": "1.0.0",
-  "description": "",
+  "displayName": "Paperclip",
+  "description": "Paperclip tooling for VS Code",
   "private": true,
   "main": "index.js",
   "directories": {
@@ -25,14 +26,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/crcn/tandem.git"
+    "url": "git+https://github.com/crcn/paperclip.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/crcn/tandem/issues"
+    "url": "https://github.com/crcn/paperclip/issues"
   },
-  "homepage": "https://github.com/crcn/tandem#readme",
+  "homepage": "https://github.com/crcn/paperclip#readme",
   "dependencies": {
     "lerna": "^3.20.2"
   }

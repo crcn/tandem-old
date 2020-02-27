@@ -43,6 +43,11 @@ Goal is to validate the idea & polish it up
 
 #### Todos
 
+- vsce docs
+- online docs
+- website
+- get feedback
+
 - start building out Tandem UI
   - just the style panel
 - gotcha trying to add props to View that is fragment
