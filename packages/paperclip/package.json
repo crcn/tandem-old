@@ -20,7 +20,7 @@
     "get-port": "^5.1.1",
     "jayson": "^3.2.0",
     "mocha": "^7.0.1",
-    "typescript": "^3.7.5"
+    "typescript": "^3.8.2"
   },
   "gitHead": "a806c369027f30cd387f25901984ec4e05774569",
   "devDependencies": {

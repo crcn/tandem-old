@@ -1,63 +1,85 @@
-#### Paperclip is a UI language designed for live development.
+#### Paperclip is a UI 
 
 ![VSCode Demo](https://user-images.githubusercontent.com/757408/75412579-f0965200-58f0-11ea-8043-76a0b0ec1a08.gif)
 
 Here's a basic example of the language:
 
 ```html
-<!-- 
-  Additional behavior can be attached to views using the this tag.
--->
+<!-- list.pc -->
+<!-- styles are only applied to the elements in this document -->
+<style>
+  ul {
+    margin: 0;
+    padding: 0;
+  }
+</style>
 
-<logic src="./todos.tsx" />
+<!-- Parts describe you're component building blocks -->
+<part id="TodoItem">
+  <li>{label}</li>
+</part>
 
-<input type="text" onKeyPress={onNewInputKeyPress} />
+<!-- "default" part is exported as the default component -->
+<part id="default">
+  <input type="text" placeholder="Add a new todo..." onKeyPress={onNewInputKeyPress} />
+  <ul>
+    {todoItems}
+  </ul>
+</part>
 
-<ul>
-  {#each todos as todo}
-  <li>{todo.label}</li>
-  {/}
-</ul>
+<!-- Preview elements allow you to preview your component & its various states. This -->
+<preview>
+  <default>
+    <TodoItem label="clean car" />
+    <TodoItem label="walk dog" />
+  </default>
+</preview>
 ```
 
 Assuming we're using `React` to power our UI, the code for that might look something like:
 
 ```typescript
+// list.tsx
+
+
+import ListView, { TodoItem } from "./list.pc";
 import React, { useState } from "react";
 
-export default View =>
-  function Todos(props) {
-    const [todos, setTodos] = useState([
-      { label: "wash car" },
-      { label: "feed cat" }
-    ]);
+export default () => {
+  const [todos, setTodos] = useState([
+    createTodo("Wash car"),
+    createTodo("Groceries"),
+  ]);
 
-    const onNewInputKeyPress = event => {
-      if (event.key === "Enter" && event.target.value) {
-        setTodos([...todos, { label: event.target.value }]);
-        event.target.value = "";
-      }
-    };
-
-    return <View todos={todos} onNewInputKeyPress={onNewInputKeyPress} />;
+  const onNewInputKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    const target = event.target as HTMLInputElement;
+    const value = target.value.trim();
+    if (event.key === "Enter" && value) {
+      setTodos([...todos, createTodo(value)]);
+      target.value = "";
+    }
   };
-```
 
-Then after that, all we need to do is simply use our Paperclip file:
+  return <ListView
+    onNewInputKeyPress={onNewInputKeyPress}
+    todoItems={todos.map(todo => {
+      return <TodoItem label={todo.label} key={todo.id}  />;
+    })}
+  />;
+};
 
-```typescript
-import React from "react";
-import ReactDOM from "react-dom";
-import Todos from "./todos.pc";
-
-ReactDOM.render(document.querySelector("#app"), <Todos />);
+let _idCount = 0;
+const createTodo = (label: string) => ({
+  label,
+  id: _idCount++
+});
 ```
 
 ## Features
 
 - See a live preview of your UI as you're writing code
 - Compiles directly to strongly typed code (currently just React)
-- Primitive behavior
+- Only supports primitive behavior.
 
 ## Planned Features
 

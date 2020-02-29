@@ -12,12 +12,14 @@
   "license": "ISC",
   "gitHead": "a806c369027f30cd387f25901984ec4e05774569",
   "dependencies": {
+    "@types/node": "^13.7.7",
     "constants": "0.0.2",
     "crc32": "^0.2.2",
     "loader-utils": "^1.2.3",
     "paperclip": "^11.0.25",
     "react": "^16.12.0",
     "resolve": "^1.15.1",
+    "typescript": "^3.8.3",
     "webpack": "^4.41.6",
     "webpack-virtual-modules": "0.2.1"
   },

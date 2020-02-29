@@ -1,0 +1,28 @@
+<!-- styles are only applied to the elements in this document -->
+<style>
+  ul {
+    margin: 0;
+    padding: 0;
+  }
+</style>
+
+<!-- Parts describe you're component building blocks -->
+<part id="TodoItem">
+  <li>{label}</li>
+</part>
+
+<!-- "default" part is exported as the default component -->
+<part id="default">
+  <input type="text" placeholder="Add a new todo..." onKeyPress={onNewInputKeyPress} />
+  <ul>
+    {todoItems}
+  </ul>
+</part>
+
+<!-- Preview elements allow you to preview your component & its various states. This -->
+<preview>
+  <default>
+    <TodoItem label="clean car" />
+    <TodoItem label="walk dog" />
+  </default>
+</preview>
