@@ -82,7 +82,7 @@ export const activate = (client: LanguageClient, context: ExtensionContext) => {
     _showedOpenLivePreviewPrompt = true;
 
     const option = await window.showInformationMessage(
-      `Would you like to open a live preview? Command: "Open Live Preview" is also available. `,
+      `Would you like to open a live preview? Command: "Paperclip: Open Live Preview" is also available. `,
       OpenLivePreviewOptions.Yes,
       OpenLivePreviewOptions.No
     );

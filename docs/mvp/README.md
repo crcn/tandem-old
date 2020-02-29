@@ -4,25 +4,11 @@ Sticky points:
 
 Why would anyone want to use Tandem & Paperclip?
 
-- fast compile times
-- type safety
-- automatic visual regression testing
-  - possibly terminal tool for this
-- excellent error messaging
-- wow-factor is preview - should add some features around that
-  - meta-click to reveal source
-  - measurement tools
-
 What problems does Paperclip + Tandem introduce?
 
 - another language to learn
 - Not as flexible
   - should be offset by visual tooling & fast compile times
-
-Tandem pain points?
-
-- What if they don't have VSCode?
-  - Should be able to start Tandem web server
 
 Design Problems:
 
@@ -43,9 +29,19 @@ Goal is to validate the idea & polish it up
 
 #### Todos
 
-- 'open preview' command must only work with pc files
-  - change to `Paperclip: open preview`
-- prettier ignore markdown
+- public / protected parts
+- fix recursion with parts
+- export default part
+
+- get parts to work again
+  - compiled to react code
+  - fix recursion errors
+  - *maybe* add scopes (protected [for export only], )
+    - or expose just previews, and have variants of those
+    - prohibit preview elements from being rendered anywhere outside of previews
+- new react-todomvc example using just parts
+
+
 - vsce docs
 - online docs (single page)
   - Links at top

@@ -30,22 +30,27 @@ pub struct Context<'a> {
   pub id_count: i32
 }
 
+pub enum RenderStrategy {
+  Instance,
+  Part(String),
+  Preview
+}
+
 impl<'a> Context<'a> {
   pub fn get_next_id(&mut self) -> String {
     self.id_count += 1;
     format!("{}-{}", self.id_seed, self.id_count)
   }
-
-  // pub fn run_with_new_data<FF, TRet>(&mut self, data: &'a js_virt::JsValue, run: FF) -> TRet 
-  // where FF: Fn() -> TRet {
-
-  // }
 }
 
-pub fn evaluate<'a>(node_expr: &ast::Node, uri: &String, graph: &'a DependencyGraph, vfs: &'a VirtualFileSystem, data: &js_virt::JsValue, part: Option<String>) -> Result<Option<virt::Node>, RuntimeError>  {
+pub fn evaluate<'a>(node_expr: &ast::Node, uri: &String, graph: &'a DependencyGraph, vfs: &'a VirtualFileSystem, data: &js_virt::JsValue, part_option: Option<String>) -> Result<Option<virt::Node>, RuntimeError>  {
 
   let mut context = create_context(node_expr, uri, graph, vfs, data, None);
-  let mut root_option = evaluate_instance_node(node_expr, &mut context, true)?;
+  let mut root_option = evaluate_instance_node(node_expr, &mut context, if let Some(part) = part_option {
+    RenderStrategy::Part(part)
+  } else {
+    RenderStrategy::Preview
+  })?;
 
   match root_option {
     Some(ref mut root) => {
@@ -59,23 +64,37 @@ pub fn evaluate<'a>(node_expr: &ast::Node, uri: &String, graph: &'a DependencyGr
 }
 
 
-pub fn get_instance_target_node<'a>(node_expr: &ast::Node) -> &ast::Node {
- let preview_node_option = match ast::get_children(node_expr) {
+pub fn get_instance_target_node<'a>(node_expr: &ast::Node, render_strategy: RenderStrategy) -> &ast::Node {
+
+  let target_node_option = match render_strategy {
+    RenderStrategy::Instance => Some(node_expr),
+    RenderStrategy::Part(id) => find_child(node_expr, |child|  {
+      child.tag_name == "part" && ast::get_attribute_value("id", child) == Some(&id)
+    }),
+    RenderStrategy::Preview => find_child(node_expr, |child|  {
+      child.tag_name == "preview"
+    })
+  };
+
+  if let Some(target_node) = target_node_option {
+    target_node
+  } else {
+    node_expr
+  }
+}
+
+fn find_child<TTest>(parent: &ast::Node, test: TTest) -> Option<&ast::Node> 
+where TTest: Fn(&ast::Element) -> bool {
+  match ast::get_children(parent) {
     Some(children) => children.iter().find(|child| {
       if let ast::Node::Element(element) = child {
-        if element.tag_name == "preview" {
+        if test(element) {
           return true;
         }
       } 
       false
     }),
     None => None
-  };
-
-  if let Some(preview_node) = preview_node_option {
-    preview_node
-  } else {
-    node_expr
   }
 }
 
@@ -141,12 +160,8 @@ pub fn evaluate_jumbo_style<'a>(entry_expr: &ast::Node, context: &'a mut Context
   }))
 }
 
-pub fn evaluate_instance_node<'a>(node_expr: &ast::Node, context: &'a mut Context, render_preview: bool) -> Result<Option<virt::Node>, RuntimeError>  {
-  evaluate_node(if render_preview {
-    get_instance_target_node(node_expr)
-  } else {
-    node_expr
-  }, true, context)
+pub fn evaluate_instance_node<'a>(node_expr: &ast::Node, context: &'a mut Context, render_strategy: RenderStrategy) -> Result<Option<virt::Node>, RuntimeError>  {
+  evaluate_node(get_instance_target_node(node_expr, render_strategy), true, context)
 }
 
 fn create_context<'a>(node_expr: &'a ast::Node, uri: &'a String, graph: &'a DependencyGraph, vfs: &'a VirtualFileSystem, data: &'a js_virt::JsValue,  parent_option: Option<&'a Context>) -> Context<'a> {
@@ -268,10 +283,15 @@ fn evaluate_slot<'a>(slot: &ast::Slot, context: &'a mut Context) -> Result<Optio
   })))
 }
 
-fn evaluate_imported_component<'a>(element: &ast::Element, context: &'a mut Context) -> Result<Option<virt::Node>, RuntimeError> {
+pub fn evaluate_imported_component<'a>(element: &ast::Element, context: &'a mut Context) -> Result<Option<virt::Node>, RuntimeError> {
   let self_dep  = &context.graph.dependencies.get(context.uri).unwrap();
   let dep_uri = &self_dep.dependencies.get(&ast::get_tag_name(element)).unwrap();
-  evaluate_component_instance(element, true, dep_uri, context)
+  let namespace_option = ast::get_tag_namespace(element);
+  evaluate_component_instance(element, if let Some(part) = namespace_option {
+    RenderStrategy::Part(part)
+  }  else {
+    RenderStrategy::Instance
+  }, dep_uri, context)
 }
 
 
@@ -285,7 +305,7 @@ fn evaluate_self_element<'a>(element: &ast::Element, context: &'a mut Context) -
     });
   }
 
-  evaluate_component_instance(element, false, context.uri, context)
+  evaluate_component_instance(element, RenderStrategy::Instance, context.uri, context)
 }
 
 fn evaluate_part_instance_element<'a>(element: &ast::Element, context: &'a mut Context) -> Result<Option<virt::Node>, RuntimeError> {
@@ -369,7 +389,7 @@ fn create_component_instance_data<'a>(instance_element: &ast::Element, context: 
   Ok(js_virt::JsValue::JsObject(data))
 }
 
-fn evaluate_component_instance<'a>(instance_element: &ast::Element, render_preview: bool, dep_uri: &String, context: &'a mut Context) -> Result<Option<virt::Node>, RuntimeError> {
+fn evaluate_component_instance<'a>(instance_element: &ast::Element, render_strategy: RenderStrategy, dep_uri: &String, context: &'a mut Context) -> Result<Option<virt::Node>, RuntimeError> {
 
   let dep = &context.graph.dependencies.get(&dep_uri.to_string()).unwrap();
   let data = create_component_instance_data(instance_element, context)?;
@@ -383,7 +403,7 @@ fn evaluate_component_instance<'a>(instance_element: &ast::Element, render_previ
     let mut instance_context = create_context(&node, dep_uri, context.graph, context.vfs, &data, Some(&instance_parent_context));
 
     // TODO: if fragment, then wrap in span. If not, then copy these attributes to root element
-    evaluate_instance_node(&node, &mut instance_context, render_preview)
+    evaluate_instance_node(&node, &mut instance_context, render_strategy)
   } else {
     Err(RuntimeError::unknown(context.uri))
   }
@@ -404,14 +424,10 @@ fn evaluate_basic_element<'a>(element: &ast::Element, context: &'a mut Context) 
           (kv_attr.name.to_string(), None)
         } else {
           let value = evaluate_attribute_value(&kv_attr.value.as_ref().unwrap(), context)?;
-          if value == js_virt::JsValue::JsBoolean(false) {
+          if !value.truthy() {
             continue;
           }
-          (kv_attr.name.to_string(), if value.truthy() {
-            Some(value.to_string())
-          } else {
-            None
-          })
+          (kv_attr.name.to_string(), Some(value.to_string()))
         };
 
         if name == "src" {

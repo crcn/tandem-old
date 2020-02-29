@@ -55,15 +55,28 @@ ReactDOM.render(document.querySelector("#app"), <Todos />);
 
 ## Features
 
-- See a live preview of your UI as you're writing code.
-- Compiles directly to strongly typed code (currently just React).
+- See a live preview of your UI as you're writing code
+- Compiles directly to strongly typed code (currently just React)
 - Primitive behavior
 
 ## Planned Features
 
-- Additional compile targets (PHP, Ruby, Vue, etc.).
+- Additional compile targets (PHP, Ruby, Vue, etc.)
+- Visual regression testing tools
 - More UI tooling
+  - Browser-like style inspector that writes to code
+- State charts
+- Browserling / Browserstack integration for live development preview
+- A11y
 
 ## Motivation
 
-TODO
+Speed & Safety around visual 
+
+## Getting Started
+
+- download vscode extension
+- alternative if vscode extension doesn't exist 
+  - HMR + Webpack
+
+## Syntax
