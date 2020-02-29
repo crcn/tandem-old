@@ -6,6 +6,7 @@ Here's a basic example of the language:
 
 ```html
 <!-- list.pc -->
+
 <!-- styles are only applied to the elements in this document -->
 <style>
   ul {
@@ -29,10 +30,10 @@ Here's a basic example of the language:
 
 <!-- Preview elements allow you to preview your component & its various states. This -->
 <preview>
-  <default>
-    <TodoItem label="clean car" />
+  <default todoItems={[
+    <TodoItem label="clean car" />,
     <TodoItem label="walk dog" />
-  </default>
+  ]} />
 </preview>
 ```
 
@@ -74,6 +75,8 @@ const createTodo = (label: string) => ({
   id: _idCount++
 });
 ```
+
+> You can check out the source code for this example here: https://github.com/crcn/paperclip/tree/master/examples/simple-todo-list
 
 ## Features
 

@@ -2,7 +2,7 @@
   "version": "0.1.0",
   "configurations": [
     {
-      "name": "Tandem",
+      "name": "Paperclip",
       "type": "extensionHost",
       "request": "launch",
       "runtimeExecutable": "${execPath}",

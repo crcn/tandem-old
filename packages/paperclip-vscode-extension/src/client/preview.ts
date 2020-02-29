@@ -240,6 +240,9 @@ class LivePreview {
         html, body { 
           margin: 0;
           padding: 0;
+
+          // white because the browser BG is white
+          background: white;
         }
       </style>
     </head>

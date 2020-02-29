@@ -6,7 +6,7 @@
   "description": "",
   "repository": {
     "type": "git",
-    "url": "https://github.com/crcn/tandem.git"
+    "url": "https://github.com/crcn/paperclip.git"
   },
   "main": "lib/client/index.js",
   "engines": {
@@ -34,21 +34,21 @@
   "contributes": {
     "commands": [
       {
-        "command": "tandem.openPreview",
+        "command": "paperclip.openPreview",
         "title": "Paperclip: Open Live Preview"
       }
     ],
     "menus": {
       "commandPalette": [
         {
-          "command": "tandem.openPreview",
+          "command": "paperclip.openPreview",
           "when": "editorLangId == paperclip"
         }
       ]
     },
     "keybindings": [
       {
-        "command": "tandem.openPreview",
+        "command": "paperclip.openPreview",
         "key": "shift+cmd+v",
         "when": "editorLangId == paperclip"
       }

@@ -29,13 +29,7 @@ Goal is to validate the idea & polish it up
 
 #### Todos
 
-- should be able to render parts
-- React code compiler needs to work again
-- i18n example
 - **DOCS**
-- EXPERIMENTAL warning
-  - <logic />
-  - {#each}, {#if}
 - expand namespaced instances
 - inferencing in Rust
   - require all props to be defined in preview
