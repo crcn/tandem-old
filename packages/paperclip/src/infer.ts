@@ -59,6 +59,7 @@ type BaseInference<TInferenceKind extends InferenceKind> = {
 };
 
 export type ShapeInference = {
+  fromSpread: boolean;
   properties: {
     [identifier: string]: Inference;
   };
@@ -82,8 +83,9 @@ export type Context = {
 const createShapeInference = (
   properties: {
     [identifier: string]: Inference;
-  } = {}
-): ShapeInference => ({ kind: InferenceKind.Shape, properties });
+  } = {},
+  fromSpread = false
+): ShapeInference => ({ kind: InferenceKind.Shape, fromSpread, properties });
 const createArrayInference = (value: Inference): ArrayInference => ({
   kind: InferenceKind.Array,
   value
@@ -101,6 +103,9 @@ const createInference = (kind: InferenceKind) => {
 };
 
 const ANY_INFERENCE = createAnyInference();
+const SPREADED_SHAPE_INFERENCE = createShapeInference({}, true);
+const SHAPE_INFERENCE = createShapeInference({});
+const ARRAY_INFERENCE = createArrayInference(createAnyInference());
 
 const addShapeInferenceProperty = (
   name: string,
@@ -261,7 +266,7 @@ const inferBlock = (block: Block, context: Context): Context => {
 };
 
 const inferEachBlock = (block: EachBlock, context: Context): Context => {
-  context = inferStatement(block.source, context, InferenceKind.Array);
+  context = inferStatement(block.source, context, ARRAY_INFERENCE);
   if (block.body) {
     const scopePath =
       block.source.jsKind === StatementKind.Reference ? block.source.path : [];
@@ -316,7 +321,11 @@ const inferAttribute = (attribute: Attribute, context: Context) => {
       break;
     }
     case AttributeKind.SpreadAttribute: {
-      context = inferStatement(attribute.script, context, InferenceKind.Shape);
+      context = inferStatement(
+        attribute.script,
+        context,
+        SPREADED_SHAPE_INFERENCE
+      );
       break;
     }
   }
@@ -337,13 +346,13 @@ const inferChildren = (children: Node[], context: Context) =>
 const inferStatement = (
   statement: Statement,
   context: Context,
-  kind: InferenceKind = InferenceKind.Any
+  defaultInference: Inference = ANY_INFERENCE
 ) => {
   switch (statement.jsKind) {
     case StatementKind.Reference: {
       context = addContextInferenceProperty(
         statement.path,
-        createInference(kind),
+        defaultInference,
         context
       );
       break;

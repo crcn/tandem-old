@@ -3,10 +3,6 @@
 <import id="controls" src="./controls.pc">
 <import id="learn" src="./learn.pc">
 
-<logic src="./app.tsx">
-
-ss
-
 <style>
 
   .app-container {
@@ -169,15 +165,15 @@ ss
 
 </style>
 
-<logic src="./app.tsx">
-
 <div class="app-container">
   <div class="app">
+
+      <!-- more non-preview code. -->
       <learn />
       <section class="todoapp">
           <header class="header">
               <h1>Todos</h1>
-              <input id="new-todo-input" autofocus="autofocus" autocomplete="off" placeholder="What needs to be done?" class="new-todo">
+              <input onKeyPress={onNewTodoKeyPress} id="new-todo-input" autofocus="autofocus" autocomplete="off" placeholder="What needs to be done?" class="new-todo">
           </header>
 
           <!-- TODO - to hide -->
@@ -185,14 +181,12 @@ ss
               <input id="toggle-all" type="checkbox" class="toggle-all">
               <label for="toggle-all">Mark all as complete</label>
               <ul class="todo-list">
-                {#each items as item}
-                  <list-item item={item} />
-                {/}
+                {items}
               </ul>
           </section>
 
-          <!-- TODO - to hide -->
-          <controls />
+          <!-- taking in the non-preview code -->
+          {controls}
       </section>
       <footer class="info">
           <p>Double-click to edit a todo</p>
@@ -201,12 +195,14 @@ ss
       </footer>
   </div>
 </div>
-
 <preview>
-  <self items={[
-    { a: 1, b: 1, previewProps: { label: "something"}  },
-    { label: "c", previewProps: { label: "Something else", editing: true}},
-    { label: "c", previewProps: { label: "blarg", completed: false, editing: false}},
-    { label: "d", previewProps: { label: "Dfdsfsd", completed: true } }
-  ]} />
+  <self 
+    learn={<learn  />} 
+    items={[
+      <list-item:default-preview label="walk dog" completed />,
+      <list-item:default-preview label="clean car" />,
+      <list-item:editing-preview label="something else" />
+    ]} 
+    controls={<controls:default-preview />} 
+  />
 </preview>

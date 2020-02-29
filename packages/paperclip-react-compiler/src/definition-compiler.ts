@@ -3,20 +3,15 @@ import {
   getAttributeStringValue,
   getImportIds,
   Element,
-  getNestedReferences,
   getLogicElement,
   infer,
-  flattenNodes,
-  isComponentInstance,
   NodeKind,
+  DEFAULT_PART_ID,
+  NO_COMPILE_TAG_NAME,
   InferenceKind,
-  AnyInference,
-  ShapeInference,
-  ArrayInference,
+  getParts,
   Inference,
-  getImports,
-  getRelativeFilePath,
-  isVisibleElement
+  hasAttribute
 } from "paperclip";
 import { camelCase } from "lodash";
 import {
@@ -50,51 +45,56 @@ const translateRoot = (ast: Node, context: TranslateContext) => {
     context
   );
 
-  const allImports = getImports(ast);
+  // KEEP ME: logic taken out, but keep if it's re-added
+  // later kn
+  // const allImports = getImports(ast);
 
-  for (const imp of allImports) {
-    const id = getAttributeStringValue("id", imp);
-    const src = getAttributeStringValue("src", imp);
-    if (!id || !src) {
-      continue;
-    }
-    const relativePath = getRelativeFilePath(context.filePath, src);
-    context = addBuffer(
-      `import {EnhancedProps as ${pascalCase(
-        getInstancePropsName(imp)
-      )}} from "${relativePath}";\n`,
-      context
-    );
-  }
+  // for (const imp of allImports) {
+  //   const id = getAttributeStringValue("id", imp);
+  //   const src = getAttributeStringValue("src", imp);
+  //   if (!id || !src) {
+  //     continue;
+  //   }
+  //   const relativePath = getRelativeFilePath(context.filePath, src);
+  //   context = addBuffer(
+  //     `import {EnhancedProps as ${pascalCase(
+  //       getInstancePropsName(imp)
+  //     )}} from "${relativePath}";\n`,
+  //     context
+  //   );
+  // }
 
-  context = addBuffer(`\n`, context);
+  // context = addBuffer(`\n`, context);
 
-  const logicElement = getLogicElement(ast);
-  if (logicElement) {
-    const src = getAttributeStringValue("src", logicElement);
-    if (src) {
-      const logicRelativePath = getRelativeFilePath(context.filePath, src);
-      context = addBuffer(
-        `import {Props as LogicProps} from "${logicRelativePath.replace(
-          /\.tsx?$/,
-          ""
-        )}";\n`,
-        context
-      );
-    }
-  }
+  // TODO: keep for logic
+  // const logicElement = getLogicElement(ast);
+  // if (logicElement) {
+  //   const src = getAttributeStringValue("src", logicElement);
+  //   if (src) {
+  //     const logicRelativePath = getRelativeFilePath(context.filePath, src);
+  //     context = addBuffer(
+  //       `import {Props as LogicProps} from "${logicRelativePath.replace(
+  //         /\.tsx?$/,
+  //         ""
+  //       )}";\n`,
+  //       context
+  //     );
+  //   }
+  // }
 
   context = addBuffer(
     `type ElementProps = InputHTMLAttributes<HTMLInputElement> & ClassAttributes<HTMLInputElement>;\n\n`,
     context
   );
 
-  context = addBuffer(
-    `type PropsFactory<TProps> = (props: Partial<TProps>) => TProps;\n\n`,
-    context
-  );
+  // KEEP ME: needed for logic
+  // context = addBuffer(
+  //   `type PropsFactory<TProps> = (props: Partial<TProps>) => TProps;\n\n`,
+  //   context
+  // );
 
   context = translateUtils(ast, context);
+  context = translateParts(ast, context);
   context = translateMainView(ast, context);
   return context;
 };
@@ -108,8 +108,8 @@ const translateUtils = (_ast: Node, context: TranslateContext) => {
 };
 
 const BLACK_LIST_PROPS = {
-  className: true,
-  children: true
+  // className: true,
+  // children: true
 };
 
 const DEFAULT_PARAM_TYPE = `String | boolean | Number | Object | ReactNode`;
@@ -140,6 +140,9 @@ const translateInference = (
     }
     context = endBlock(context);
     context = addBuffer(`}`, context);
+    if (inference.fromSpread) {
+      context = addBuffer(" & ElementProps", context);
+    }
   }
   return context;
 };
@@ -149,7 +152,10 @@ const translateComponent = (
   componentPropsName: string,
   context: TranslateContext
 ) => {
-  context = addBuffer(`export type ${componentPropsName} = {\n`, context);
+  context = addBuffer(
+    `${context.hasLogicFile ? "export " : ""}type ${componentPropsName} = {\n`,
+    context
+  );
   context = startBlock(context);
 
   const props = {};
@@ -169,46 +175,28 @@ const translateComponent = (
     props[key] = [null];
   }
 
-  for (const [reference, attrName] of getNestedReferences(node)) {
-    // just be relaxed for now about types
-    let paramType: String = `String | boolean | Number | Object | ReactNode`;
+  // KEEP ME: needed for logic.
+  // const allElements = flattenNodes(node).filter(
+  //   node => node.kind === NodeKind.Element && isVisibleElement(node)
+  // ) as Element[];
 
-    if (attrName) {
-      // onClick, onMouseMove, etc
-      if (/^on\w+/.test(attrName)) {
-        paramType = `Function`;
-      }
-    }
+  // for (const element of allElements) {
+  //   if (isComponentInstance(element, context.importIds)) {
+  //     const valueType = getInstancePropsTypeName(element);
 
-    const referenceName = reference.path[0];
-    const propName = RENAME_PROPS[referenceName] || referenceName;
-    if (BLACK_LIST_PROPS[propName]) {
-      continue;
-    }
-    // props[propName] = [paramType, false];
-  }
-
-  const allElements = flattenNodes(node).filter(
-    node => node.kind === NodeKind.Element && isVisibleElement(node)
-  ) as Element[];
-
-  for (const element of allElements) {
-    if (isComponentInstance(element, context.importIds)) {
-      const valueType = getInstancePropsTypeName(element);
-
-      props[getInstancePropsName(element)] = [
-        `${valueType} | PropsFactory<${valueType}>`,
-        false
-      ];
-    } else {
-      const id = getAttributeStringValue("id", element);
-      if (id) {
-        props[`${camelCase(id)}Props`] = [
-          `ElementProps | PropsFactory<ElementProps>`
-        ];
-      }
-    }
-  }
+  //     props[getInstancePropsName(element)] = [
+  //       `${valueType} | PropsFactory<${valueType}>`,
+  //       false
+  //     ];
+  //   } else {
+  //     const id = getAttributeStringValue("id", element);
+  //     if (id) {
+  //       props[`${camelCase(id)}Props`] = [
+  //         `ElementProps | PropsFactory<ElementProps>`
+  //       ];
+  //     }
+  //   }
+  // }
 
   for (const key in props) {
     const [valueType, optional] = props[key];
@@ -225,33 +213,71 @@ const translateComponent = (
   return context;
 };
 
-const getInstancePropsName = (element: Element) => {
-  return `${camelCase(
-    getAttributeStringValue("id", element) || element.tagName
-  )}Props`;
-};
+// const getInstancePropsName = (element: Element) => {
+//   return `${camelCase(
+//     getAttributeStringValue("id", element) || element.tagName
+//   )}Props`;
+// };
 
 const getInstancePropsTypeName = (element: Element) => {
   return `${pascalCase(element.tagName)}Props`;
 };
 
+const translateParts = (ast: Node, context: TranslateContext) => {
+  for (const part of getParts(ast)) {
+    // already translated, so skip.
+    if (getAttributeStringValue("id", part) === DEFAULT_PART_ID) {
+      continue;
+    }
+
+    if (hasAttribute(NO_COMPILE_TAG_NAME, part)) {
+      continue;
+    }
+
+    context = translatePart(part, context);
+  }
+  return context;
+};
+
+const translatePart = (part: Element, context: TranslateContext) => {
+  const componentName = pascalCase(getAttributeStringValue("id", part));
+  const propsName = `${componentName}Props`;
+  context = translateComponent(part, propsName, context);
+  context = addBuffer(
+    `export const ${componentName}: Factory<${propsName}>;\n\n`,
+    context
+  );
+  return context;
+};
+
 const translateMainView = (ast: Node, context: TranslateContext) => {
+  const target =
+    getParts(ast).find(
+      part => getAttributeStringValue("id", part) === DEFAULT_PART_ID
+    ) || ast;
+
   const componentName = `View`;
-  context = translateComponent(ast, "Props", context);
+  context = translateComponent(target, "Props", context);
   context = addBuffer(
     `declare const ${componentName}: Factory<Props>;\n`,
     context
   );
-  if (context.hasLogicFile) {
-    context = addBuffer(
-      `declare const Enhanced${componentName}: Factory<LogicProps>;\n`,
-      context
-    );
-    context = addBuffer(`export type EnhancedProps = LogicProps;\n`, context);
-    context = addBuffer(`export default Enhanced${componentName};\n`, context);
-  } else {
-    context = addBuffer(`export type EnhancedProps = Props;\n`, context);
-    context = addBuffer(`export default ${componentName};\n`, context);
-  }
+
+  // context = addBuffer(`export type EnhancedProps = Props;\n`, context);
+  context = addBuffer(`export default ${componentName};\n`, context);
+
+  // KEEP ME: logic has been taken out, but may
+  // be re-added later on.
+  // if (context.hasLogicFile) {
+  //   context = addBuffer(
+  //     `declare const Enhanced${componentName}: Factory<LogicProps>;\n`,
+  //     context
+  //   );
+  //   context = addBuffer(`export type EnhancedProps = LogicProps;\n`, context);
+  //   context = addBuffer(`export default Enhanced${componentName};\n`, context);
+  // } else {
+  //   context = addBuffer(`export type EnhancedProps = Props;\n`, context);
+  //   context = addBuffer(`export default ${componentName};\n`, context);
+  // }
   return context;
 };

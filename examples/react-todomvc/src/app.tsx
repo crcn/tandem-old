@@ -1,8 +1,11 @@
-import React, { useState } from "react";
-import { Props as ViewProps } from "./app.pc";
+import React from "react";
+import View from "./app.pc";
+import ItemComponent from "./item";
 import { Item } from "./data";
-import { identity } from "lodash";
 import useLocation from "./hooks/useLocation";
+import { useState } from "react";
+import Controls from "./controls";
+type Props = {};
 
 const DEFAULT_ITEMS: Item[] = [
   { id: 1, label: "Walk dog" },
@@ -18,9 +21,7 @@ const ITEM_FILTERS: {
   complete: (item: Item) => item.completed
 };
 
-export type Props = {};
-
-export default (View: React.Factory<ViewProps>) => (props: Props) => {
+export default (props: Props) => {
   const [items, setItems] = useState(DEFAULT_ITEMS);
   const currentLocation = useLocation("active");
   const itemFilter = ITEM_FILTERS[currentLocation] || ITEM_FILTERS.active;
@@ -49,21 +50,16 @@ export default (View: React.Factory<ViewProps>) => (props: Props) => {
 
   return (
     <View
-      newTodoInputProps={{ onKeyPress: onNewTodoInputKeyPress }}
-      toggleAllProps={identity}
-      items={items.filter(itemFilter)}
-      listItemProps={props => {
-        return {
-          ...props,
-          onChange: onItemChange
-        };
-      }}
-      learnProps={identity}
-      controlsProps={props => ({
-        ...props,
-        onClearCompletedClicked,
-        items
-      })}
+      onNewTodoKeyPress={onNewTodoInputKeyPress}
+      controls={
+        <Controls
+          items={items}
+          onClearCompletedClicked={onClearCompletedClicked}
+        />
+      }
+      items={items.filter(itemFilter).map((item, id) => (
+        <ItemComponent onChange={onItemChange} item={item} key={id} />
+      ))}
     />
   );
 };

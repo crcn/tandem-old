@@ -1,8 +1,5 @@
 <import src="./styles/global.css">
 
-<!-- <fdsfsfdfsd src="./item.tsx"> -->
-<logic src="./item.tsx">
-
 <style>
   .edit {
     position: relative;
@@ -143,31 +140,44 @@
   }
 </style>
 
-<li class="todo" completed={completed}>
-  {#if editing}
-    <input id="label-input" default-value={label} type="text" class="edit" autofocus="autofocus">
-  {/else}
-    <div class="view">
-      <input id="complete-checkbox" type="checkbox" class="toggle" checked={completed}>
-      <label onClick={onLabelClick}>{label}</label> 
-      <button class="destroy"></button>
-    </div> 
-  {/}
-</li>
+<part protected id="label-input">
+  <input {onKeyPress} {onBlur} default-value={label} type="text" class="edit" autofocus="autofocus">
+</part>
 
+<part protected id="todo-label">
+  <div class="view">
+    <input type="checkbox" class="toggle" onChange={onCheckChange} checked={completed}>
+    <label onClick={onLabelClick}>{label}</label> 
+    <button class="destroy"></button>
+  </div> 
+</part>
+
+<part public id="default">
+  <!-- main template -->
+  <li class="todo" {completed}>
+    {children}
+  </li>
+</part>
+
+<!-- variant previews -->
+<part no-compile id="default-preview">
+  <default {completed}>
+    <todo-label {label} {completed} />
+  </default>
+</part>
+
+<part no-compile id="editing-preview">
+  <default {completed}>
+    <label-input />
+  </default>
+</part>
+
+<!-- main preview -->
 <preview>
-  {#if item} 
-    <self {...item.previewProps} />
-  {/else}
   <ul>
-    {#each [
-      { label: "something" },
-      { label: "something else", editing: true },
-      { label: "something blarg", completed: true }
-    ] as props} 
-
-    <self {...props} />
-    {/}
+    <default-preview label="something" completed />
+    <default-preview label="something else" completed />
+    <default-preview label="to be continued" />
+    <edting-preview />
   </ul>
-  {/}
 </preview>

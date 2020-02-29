@@ -1,48 +1,46 @@
 import React from "react";
-import { Props as ViewProps } from "./controls.pc";
 import { Item } from "./data";
 import useLocation from "./hooks/useLocation";
+import View, { Filter, styled } from "./controls.pc";
 
-export type Props = {
+const Strong = styled("strong");
+
+type Props = {
   items: Item[];
   onClearCompletedClicked: () => void;
 };
 
-// todo: Strong = styled('strong')
-
-export default (View: React.Factory<ViewProps>) => ({
-  items,
-  onClearCompletedClicked
-}: Props) => {
+export default ({ items, onClearCompletedClicked }: Props) => {
   const numItemsLeft = items.filter(item => !item.completed).length;
   const currentLocation = useLocation("active");
   return (
     <View
-      clearCompletedButtonProps={{
-        onClick: onClearCompletedClicked
-      }}
+      onClearCompletedClicked={onClearCompletedClicked}
       itemsLeftLabel={
         <span>
-          <strong>{numItemsLeft}</strong> items left
+          <Strong>{numItemsLeft}</Strong> {numItemsLeft > 1 ? "items" : "item"}{" "}
+          left
         </span>
       }
-      filters={[
-        {
-          label: "Active",
-          href: "#active",
-          active: currentLocation === "active"
-        },
-        {
-          label: "Incomplete",
-          href: "#incomplete",
-          active: currentLocation === "incomplete"
-        },
-        {
-          label: "Complete",
-          href: "#complete",
-          active: currentLocation === "complete"
-        }
-      ]}
+      filters={
+        <>
+          <Filter
+            href="#active"
+            label="Active"
+            active={currentLocation === "active"}
+          />
+          <Filter
+            href="#complete"
+            label="Completed"
+            active={currentLocation === "complete"}
+          />
+          <Filter
+            href="#incomplete"
+            label="Incomplete"
+            active={currentLocation === "incomplete"}
+          />
+        </>
+      }
     />
   );
 };

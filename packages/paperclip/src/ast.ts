@@ -4,7 +4,12 @@ import { SourceLocation } from "./base-ast";
 import * as crc32 from "crc32";
 import { resolveImportFile } from "./engine";
 import * as path from "path";
-import { PREVIEW_TAG_NAME } from "./constants";
+import {
+  PREVIEW_TAG_NAME,
+  PART_TAG_NAME,
+  LOGIC_TAG_NAME,
+  DEFAULT_PART_ID
+} from "./constants";
 
 export enum NodeKind {
   Fragment = "Fragment",
@@ -223,7 +228,7 @@ export const getStyleElements = (ast: Node): StyleElement[] =>
   ) as StyleElement[];
 
 export const isVisibleElement = (ast: Element): boolean => {
-  return !/^(import|logic|meta|style|part)$/.test(ast.tagName);
+  return !/^(import|logic|meta|style|part|preview)$/.test(ast.tagName);
 };
 export const isVisibleNode = (node: Node): boolean =>
   node.kind === NodeKind.Text ||
@@ -239,14 +244,19 @@ export const getParts = (ast: Node): Element[] =>
   getChildren(ast).filter(child => {
     return (
       child.kind === NodeKind.Element &&
-      child.tagName === "part" &&
+      child.tagName === PART_TAG_NAME &&
       hasAttribute("id", child)
     );
   }) as Element[];
 
+export const getDefaultPart = (ast: Node): Element =>
+  getParts(ast).find(
+    part => getAttributeStringValue("id", part) === DEFAULT_PART_ID
+  );
+
 export const getLogicElement = (ast: Node): Element | null => {
   return getChildren(ast).find(
-    child => child.kind === NodeKind.Element && child.tagName === "logic"
+    child => child.kind === NodeKind.Element && child.tagName === LOGIC_TAG_NAME
   ) as Element;
 };
 

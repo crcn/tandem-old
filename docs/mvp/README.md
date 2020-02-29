@@ -29,7 +29,9 @@ Goal is to validate the idea & polish it up
 
 #### Todos
 
+- should be able to render parts
 - React code compiler needs to work again
+- i18n example
 - **DOCS**
 - EXPERIMENTAL warning
   - <logic />

@@ -4,8 +4,12 @@ import {
   NodeKind,
   Attribute,
   Reference,
+  DEFAULT_PART_ID,
+  getDefaultPart,
   getLogicElement,
   Statement,
+  PART_TAG_NAME,
+  NO_COMPILE_TAG_NAME,
   BlockKind,
   PREVIEW_TAG_NAME,
   ConditionalBlockKind,
@@ -25,6 +29,8 @@ import {
   resolveImportFile,
   getRelativeFilePath,
   Sheet,
+  getParts,
+  hasAttribute,
   PassFailConditional,
   FinalConditional,
   isVisibleElement,
@@ -78,7 +84,8 @@ const translateRoot = (ast: Node, sheet: any, context: TranslateContext) => {
     }
   }
   context = translateUtils(ast, context);
-  context = translateView(ast, context);
+  context = translateParts(ast, context);
+  context = translateDefaultView(ast, context);
   return context;
 };
 
@@ -104,7 +111,9 @@ const translateStyleSheet = (sheet: Sheet, context: TranslateContext) => {
 
 const translateUtils = (ast: Node, context: TranslateContext) => {
   context = translateStyledUtil(ast, context);
-  context = translateExtendsPropsUtil(ast, context);
+
+  // KEEP ME: for logic
+  // context = translateExtendsPropsUtil(ast, context);
   return context;
 };
 
@@ -136,7 +145,7 @@ const translateExtendsPropsUtil = (ast: Node, context: TranslateContext) => {
 };
 const translateStyledUtil = (ast: Node, context: TranslateContext) => {
   context = addBuffer(
-    `export const styled = (tagName, defaultProps) => {\n`,
+    `export function styled(tagName, defaultProps) {\n`,
     context
   );
   context = startBlock(context);
@@ -151,7 +160,7 @@ const translateStyledUtil = (ast: Node, context: TranslateContext) => {
   context = endBlock(context);
   context = addBuffer(`};\n`, context);
   context = endBlock(context);
-  context = addBuffer("};\n\n", context);
+  context = addBuffer("}\n\n", context);
   return context;
 };
 
@@ -189,23 +198,65 @@ const translateImports = (ast: Node, context: TranslateContext) => {
   return context;
 };
 
-const translateView = (root: Node, context: TranslateContext) => {
-  const componentName = getComponentName(root, context.filePath);
+const translateParts = (root: Node, context: TranslateContext) => {
+  for (const part of getParts(root)) {
+    if (hasAttribute(NO_COMPILE_TAG_NAME, part)) {
+      continue;
+    }
 
+    // already compiled
+    if (getAttributeStringValue("id", part) === DEFAULT_PART_ID) {
+      continue;
+    }
+    context = translatePart(part, context);
+  }
+  return context;
+};
+
+const translatePart = (part: Element, context: TranslateContext) => {
+  const componentName = pascalCase(getAttributeStringValue("id", part));
+  context = translateComponent(componentName, part, true, context);
+  return context;
+};
+
+const translateComponent = (
+  componentName: string,
+  node: Node,
+  shouldExport: boolean,
+  context: TranslateContext
+) => {
   context = startBlock(
-    addBuffer(`let ${componentName} = (props) => {\n`, context)
+    addBuffer(
+      `${shouldExport ? "export " : ""}function ${componentName}(props) {\n`,
+      context
+    )
   );
   context = addBuffer(`return `, context);
-  context = translateJSXRoot(root, context);
+  context = translateJSXRoot(node, context);
   context = endBlock(context);
   context = addBuffer(";\n", context);
-  context = addBuffer(`};\n\n`, context);
-  if (context.hasLogicFile) {
-    context = addBuffer(
-      `${componentName} = enhanceView(${componentName});\n`,
-      context
-    );
+  context = addBuffer(`}\n\n`, context);
+  return context;
+};
+
+const translateDefaultView = (root: Node, context: TranslateContext) => {
+  const target = getDefaultPart(root) || root;
+
+  const visibleChildren = getVisibleChildNodes(target);
+  if (!visibleChildren.length) {
+    return context;
   }
+
+  const componentName = getComponentName(root, context.filePath);
+  context = translateComponent(componentName, target, false, context);
+
+  // KEEP ME: needed for logic
+  // if (context.hasLogicFile) {
+  //   context = addBuffer(
+  //     `${componentName} = enhanceView(${componentName});\n`,
+  //     context
+  //   );
+  // }
   context = addBuffer(`export default ${componentName};\n`, context);
 
   return context;
@@ -213,7 +264,11 @@ const translateView = (root: Node, context: TranslateContext) => {
 
 const translateJSXRoot = (node: Node, context: TranslateContext) => {
   if (node.kind !== NodeKind.Fragment) {
-    return translateJSXNode(node, true, context);
+    if (node.kind === NodeKind.Element && node.tagName === PART_TAG_NAME) {
+      return translateFragment(getVisibleChildNodes(node), true, context);
+    } else {
+      return translateJSXNode(node, true, context);
+    }
   }
   const visibleNodes = getVisibleChildNodes(node);
 
@@ -260,16 +315,16 @@ const translateElement = (
   isRoot: boolean,
   context: TranslateContext
 ) => {
-  if (element.tagName === PREVIEW_TAG_NAME) {
-    return context;
-  }
   const isComponentInstance = context.importIds.indexOf(element.tagName) !== -1;
   const id = getAttributeStringValue("id", element);
-  const propsName = id
-    ? `props.${camelCase(id)}Props`
-    : isComponentInstance
-    ? `props.${camelCase(element.tagName)}Props`
-    : null;
+  const propsName = null;
+
+  // KEEP ME: for logic
+  // const propsName = id
+  //   ? `props.${camelCase(id)}Props`
+  //   : isComponentInstance
+  //   ? `props.${camelCase(element.tagName)}Props`
+  //   : null;
   const tag = isComponentInstance
     ? getImportTagName(element.tagName)
     : JSON.stringify(element.tagName);

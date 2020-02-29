@@ -101,13 +101,13 @@
     <ul class="filters">
       {filters}
     </ul>
-    <button id="clear-completed-button" class="clear-completed">
+    <button onClick={onClearCompletedClicked} class="clear-completed">
         Clear completed
     </button>
   </footer>
 </part>
 
-<part id="default-preview">
+<part no-compile id="default-preview">
   <default
     itemsLeftLabel={<span><strong>1</strong> item left</span>}
     filters={[
