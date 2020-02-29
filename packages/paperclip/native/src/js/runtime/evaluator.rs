@@ -3,7 +3,7 @@ use super::super::ast;
 use super::virt;
 use crate::base::runtime::{RuntimeError};
 use crate::base::ast::{Location};
-use crate::pc::runtime::evaluator::{evaluate_instance_node, RenderStrategy, Context as PCContext};
+use crate::pc::runtime::evaluator::{evaluate_node as evaluate_pc_node, Context as PCContext};
 use crate::pc::ast as pc_ast;
 
 pub fn evaluate<'a>(expr: &ast::Statement, context: &'a mut PCContext) -> Result<virt::JsValue, RuntimeError> {
@@ -22,7 +22,7 @@ fn evaluate_statement<'a>(statement: &ast::Statement, context: &'a mut PCContext
 }
 
 fn evaluate_node<'a>(node: &Box<pc_ast::Node>, context: &'a mut PCContext) -> Result<virt::JsValue, RuntimeError> {
-  let node_option = evaluate_instance_node(node, context, RenderStrategy::Instance)?;
+  let node_option = evaluate_pc_node(node, false, context)?;
   if let Some(node) = node_option {
     Ok(virt::JsValue::JsNode(node))
   } else {

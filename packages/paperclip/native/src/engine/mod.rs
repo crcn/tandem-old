@@ -189,7 +189,6 @@ impl Engine {
     let event_option = match &dependency.content {
       DependencyContent::Node(node) => {
         let node_result = evaluate_pc(
-          node, 
           uri, 
           &self.dependency_graph, 
           &self.vfs,

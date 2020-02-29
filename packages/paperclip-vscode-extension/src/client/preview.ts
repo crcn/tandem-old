@@ -117,7 +117,7 @@ export const activate = (client: LanguageClient, context: ExtensionContext) => {
     }
   }, 500);
 
-  commands.registerCommand("tandem.openPreview", () => {
+  commands.registerCommand("paperclip.openPreview", () => {
     if (window.activeTextEditor) {
       if (isPaperclipFile(String(window.activeTextEditor.document.uri))) {
         openLivePreview(window.activeTextEditor);
@@ -196,7 +196,6 @@ class LivePreview {
   };
   private async _handleElementMetaClicked({ sourceLocation, sourceUri }) {
     // TODO - no globals here
-
     const textDocument =
       workspace.textDocuments.find(doc => String(doc.uri) === sourceUri) ||
       (await workspace.openTextDocument(sourceUri.replace("file://", "")));
@@ -240,8 +239,12 @@ class LivePreview {
         html, body { 
           margin: 0;
           padding: 0;
-
-          // white because the browser BG is white
+          width: 100vw;
+          height: 100vh;
+          overflow: hidden;
+        }
+        body {
+          /* ensure that bg is white, even for themes */
           background: white;
         }
       </style>

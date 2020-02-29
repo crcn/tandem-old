@@ -80,6 +80,11 @@ pub struct Attribute {
 
 #[derive(Debug, PartialEq, Serialize, Clone)]
 pub struct Text {
+  // #[serde(rename = "sourceUri")]
+  // pub source_uri: String,
+
+  // #[serde(rename = "sourceLocation")]
+  // pub source_location: Location,
   pub id: String,
   pub value: String
 }

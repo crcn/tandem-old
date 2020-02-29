@@ -73,7 +73,10 @@ fn parse_node<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::Node, ParseEr
         Ok(tok != Token::HtmlCommentClose)
       })?.to_string();
       tokenizer.next()?; // eat -->
-      Ok(pc_ast::Node::Comment(pc_ast::ValueObject { value: buffer }))
+      Ok(pc_ast::Node::Comment(pc_ast::ValueObject { value: buffer.clone(), location: Location {
+        start,
+        end: start + &buffer.len()
+      } }))
     },
     Token::BlockOpen => {
       parse_block(tokenizer)
@@ -112,7 +115,11 @@ fn parse_node<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::Node, ParseEr
         Err(ParseError::unexpected_token(tokenizer.pos))
       } else {
         Ok(pc_ast::Node::Text(pc_ast::ValueObject { 
-          value
+          value: value.clone(),
+          location: Location {
+            start: start,
+            end: start + &value.len()
+          }
         }))
       }
     }

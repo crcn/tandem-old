@@ -1,4 +1,4 @@
-#### Paperclip is a UI 
+#### Paperclip is a tiny UI language 
 
 ![VSCode Demo](https://user-images.githubusercontent.com/757408/75412579-f0965200-58f0-11ea-8043-76a0b0ec1a08.gif)
 

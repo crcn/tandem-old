@@ -4,7 +4,7 @@ use crate::base::ast::{Location};
 use super::virt;
 use std::collections::HashSet;
 use std::iter::FromIterator;
-use super::graph::{DependencyGraph, DependencyContent};
+use super::graph::{DependencyGraph, DependencyContent, Dependency};
 use super::vfs::{VirtualFileSystem};
 use crate::css::runtime::evaluator::{evaluate as evaluate_css};
 use crate::js::runtime::evaluator::{evaluate as evaluate_js};
@@ -24,12 +24,12 @@ pub struct Context<'a> {
   pub part_ids: HashSet<&'a String>,
   pub scope: String,
   pub data: &'a js_virt::JsValue,
-  pub in_part: bool,
+  pub render_call_stack: Vec<(String, RenderStrategy)>,
   pub id_seed: String,
-  pub from_main: bool,
   pub id_count: i32
 }
 
+#[derive(Clone, PartialEq, Debug)] 
 pub enum RenderStrategy {
   Instance,
   Part(String),
@@ -43,24 +43,30 @@ impl<'a> Context<'a> {
   }
 }
 
-pub fn evaluate<'a>(node_expr: &ast::Node, uri: &String, graph: &'a DependencyGraph, vfs: &'a VirtualFileSystem, data: &js_virt::JsValue, part_option: Option<String>) -> Result<Option<virt::Node>, RuntimeError>  {
+pub fn evaluate<'a>(uri: &String, graph: &'a DependencyGraph, vfs: &'a VirtualFileSystem, data: &js_virt::JsValue, part_option: Option<String>) -> Result<Option<virt::Node>, RuntimeError>  {
 
-  let mut context = create_context(node_expr, uri, graph, vfs, data, None);
-  let mut root_option = evaluate_instance_node(node_expr, &mut context, if let Some(part) = part_option {
-    RenderStrategy::Part(part)
+  let dep = graph.dependencies.get(uri).unwrap();
+  if let DependencyContent::Node(node_expr) = &dep.content {
+
+    let mut context = create_context(node_expr, uri, graph, vfs, data, None);
+    let mut root_option = evaluate_instance_node(node_expr, &mut context, if let Some(part) = part_option {
+      RenderStrategy::Part(part)
+    } else {
+      RenderStrategy::Preview
+    })?;
+
+    match root_option {
+      Some(ref mut root) => {
+        let style = evaluate_jumbo_style(node_expr, &mut context)?;
+        root.prepend_child(style);
+      },
+      _ => { }
+    }
+
+    Ok(root_option)
   } else {
-    RenderStrategy::Preview
-  })?;
-
-  match root_option {
-    Some(ref mut root) => {
-      let style = evaluate_jumbo_style(node_expr, &mut context)?;
-      root.prepend_child(style);
-    },
-    _ => { }
+    Err(RuntimeError::new("Incorrect file type".to_string(), uri, &Location { start: 0, end: 0 }))
   }
-
-  Ok(root_option)
 }
 
 
@@ -165,15 +171,16 @@ pub fn evaluate_jumbo_style<'a>(entry_expr: &ast::Node, context: &'a mut Context
 }
 
 pub fn evaluate_instance_node<'a>(node_expr: &ast::Node, context: &'a mut Context, render_strategy: RenderStrategy) -> Result<Option<virt::Node>, RuntimeError>  {
+  context.render_call_stack.push((context.uri.to_string(), render_strategy.clone()));
   evaluate_node(get_instance_target_node(node_expr, render_strategy), true, context)
 }
 
 fn create_context<'a>(node_expr: &'a ast::Node, uri: &'a String, graph: &'a DependencyGraph, vfs: &'a VirtualFileSystem, data: &'a js_virt::JsValue,  parent_option: Option<&'a Context>) -> Context<'a> {
 
-  let (from_main, curr_id_count) = if let Some(parent) = parent_option {
-    (parent.from_main, parent.id_count)
+  let (render_call_stack, curr_id_count) = if let Some(parent) = parent_option {
+    (parent.render_call_stack.clone(), parent.id_count)
   } else {
-    (false, 0)
+    (vec![], 0)
   };
 
   let scope = get_document_style_scope(uri);
@@ -183,12 +190,11 @@ fn create_context<'a>(node_expr: &'a ast::Node, uri: &'a String, graph: &'a Depe
     graph,
     uri,
     vfs,
+    render_call_stack,
     import_ids: HashSet::from_iter(ast::get_import_ids(node_expr)),
     part_ids: HashSet::from_iter(ast::get_part_ids(node_expr)),
     scope,
     data,
-    in_part: false,
-    from_main,
     id_seed,
     id_count: 0
   }
@@ -198,7 +204,7 @@ fn create_id_seed(uri: &String, curr_id_count: i32) -> String{
   format!("{:x}", crc32::checksum_ieee(format!("{}-{}", uri, curr_id_count).as_bytes())).to_string()
 }
 
-fn evaluate_node<'a>(node_expr: &ast::Node, is_root: bool, context: &'a mut Context) -> Result<Option<virt::Node>, RuntimeError> {
+pub fn evaluate_node<'a>(node_expr: &ast::Node, is_root: bool, context: &'a mut Context) -> Result<Option<virt::Node>, RuntimeError> {
   match &node_expr {
     ast::Node::Element(el) => {
       evaluate_element(&el, is_root, context)
@@ -208,6 +214,8 @@ fn evaluate_node<'a>(node_expr: &ast::Node, is_root: bool, context: &'a mut Cont
     },
     ast::Node::Text(text) => {
       Ok(Some(virt::Node::Text(virt::Text { 
+        // source_uri: context.uri.to_string(),
+        // source_location: text.location.clone(),
         id: context.get_next_id(),
         value: text.value.to_string()
       })))
@@ -267,6 +275,8 @@ fn evaluate_slot<'a>(slot: &ast::Slot, context: &'a mut Context) -> Result<Optio
         children.push(child);
       } else {
         children.push(virt::Node::Text(virt::Text {
+          // location: item.location.clone(),
+          // source_location: item.source_location.clone(),
           id: context.get_next_id(),
           value:item.to_string()
         }))
@@ -298,29 +308,44 @@ pub fn evaluate_imported_component<'a>(element: &ast::Element, context: &'a mut 
   }, dep_uri, context)
 }
 
+fn in_render_stack<'a>(strategy: &RenderStrategy, context: &'a mut Context) -> bool {
+  context.render_call_stack.iter().any(|(uri, part)| uri == context.uri && part == strategy)
+}
 
-fn evaluate_self_element<'a>(element: &ast::Element, context: &'a mut Context) -> Result<Option<virt::Node>, RuntimeError> {
+fn check_instance_loop<'a>(strategy: &RenderStrategy, element: &ast::Element, context: &'a mut Context) -> Result<(), RuntimeError> {
+  let tag = match strategy {
+    RenderStrategy::Instance => "self".to_string(),
+    RenderStrategy::Part(id) => id.to_string(),
+    RenderStrategy::Preview => "preview".to_string(),
+  };
   
-  if context.from_main {
+  if in_render_stack(strategy, context) {
     return Err(RuntimeError { 
       uri: context.uri.to_string(), 
-      message: "Can't call <self /> here since this causes an infinite loop!".to_string(), 
+      message: format!("Can't call <{} /> here since this causes an infinite loop!", tag).to_string(), 
       location: element.open_tag_location.clone() 
     });
+  } else {
+    Ok(())
   }
+}
 
+fn evaluate_self_element<'a>(element: &ast::Element, context: &'a mut Context) -> Result<Option<virt::Node>, RuntimeError> {
   evaluate_component_instance(element, RenderStrategy::Instance, context.uri, context)
 }
 
 fn evaluate_part_instance_element<'a>(element: &ast::Element, context: &'a mut Context) -> Result<Option<virt::Node>, RuntimeError> {
   let self_dep  = &context.graph.dependencies.get(context.uri).unwrap();
 
-  if let DependencyContent::Node(root_node) = &self_dep.content {
-    let part = ast::get_part_by_id(&element.tag_name, root_node).unwrap();
-    let data = create_component_instance_data(element, context)?;
-    let mut new_context = create_context(root_node, &self_dep.uri, context.graph, context.vfs, &data, Some(context));
+  if let DependencyContent::Node(_root_node) = &self_dep.content {
+    // let part = ast::get_part_by_id(&element.tag_name, root_node).unwrap();
+    // let data = create_component_instance_data(element, context)?;
+    // let mut new_context = create_context(root_node, &self_dep.uri, context.graph, context.vfs, &data, Some(context));
+    // new_context.render_call_stack.push(RenderStrategy::Part(part.to_string()));
 
-    evaluate_element(part, true, &mut new_context)
+    evaluate_component_instance(element, RenderStrategy::Part(element.tag_name.to_string()), context.uri, context)
+    // evaluate_instance_node()
+    // evaluate_element(part, false, &mut new_context)
   } else {
 
     // This should _never_ happen
@@ -329,9 +354,6 @@ fn evaluate_part_instance_element<'a>(element: &ast::Element, context: &'a mut C
 }
 
 fn create_component_instance_data<'a>(instance_element: &ast::Element, context: &'a mut Context) -> Result<js_virt::JsValue, RuntimeError> {
-  let old_in_part = context.in_part;
-  context.in_part = false;
-
   let mut data = js_virt::JsObject::new();
 
   for attr_expr in &instance_element.attributes {
@@ -388,8 +410,6 @@ fn create_component_instance_data<'a>(instance_element: &ast::Element, context: 
 
   data.values.insert("children".to_string(), js_virt::JsValue::JsArray(js_children));
 
-  context.in_part = old_in_part;
-
   Ok(js_virt::JsValue::JsObject(data))
 }
 
@@ -399,12 +419,8 @@ fn evaluate_component_instance<'a>(instance_element: &ast::Element, render_strat
   let data = create_component_instance_data(instance_element, context)?;
   
   if let DependencyContent::Node(node) = &dep.content {
-
-    let mut instance_parent_context = context.clone();
-    instance_parent_context.from_main = false;
-
-
-    let mut instance_context = create_context(&node, dep_uri, context.graph, context.vfs, &data, Some(&instance_parent_context));
+    let mut instance_context = create_context(&node, dep_uri, context.graph, context.vfs, &data, Some(&context));
+    check_instance_loop(&render_strategy, instance_element, &mut instance_context)?;
 
     // TODO: if fragment, then wrap in span. If not, then copy these attributes to root element
     evaluate_instance_node(&node, &mut instance_context, render_strategy)
@@ -516,17 +532,14 @@ fn evaluate_import_element<'a>(_element: &ast::Element, _context: &'a mut Contex
   Ok(None)
 }
 
+
 fn evaluate_part_element<'a>(element: &ast::Element, is_root: bool, context: &'a mut Context) -> Result<Option<virt::Node>, RuntimeError> {
   if !is_root {
     return Ok(None)
   }
 
-  let old_in_part = context.in_part;
-  context.in_part = true;
-  
-  let result = evaluate_children_as_fragment(&element.children, context);
-  context.in_part = old_in_part;
-  result
+  // check_instance_loop(&RenderStrategy::Part(ast::get_attribute_value("id", element).unwrap().to_string()), element, context)?;    
+  evaluate_children_as_fragment(&element.children, context)
 }
 
 fn evaluate_style_element<'a>(_element: &ast::StyleElement, _context: &'a mut Context) -> Result<Option<virt::Node>, RuntimeError> {
@@ -645,7 +658,6 @@ fn evaluate_each_block_body<'a>(body: &ast::Node, item: &js_virt::JsValue, index
     _ => { }
   }  
   context.id_count += 1;
-  // let mut child_context = create_context(contex, context.uri, context.graph, context.vfs, &data, Some(context));
   let mut child_context = context.clone();
   child_context.id_count = 0;
   child_context.id_seed = create_id_seed(context.uri, context.id_count);
@@ -680,7 +692,7 @@ mod tests {
     let ast = parse(case).unwrap();
     let graph = DependencyGraph::new();
     let vfs = VirtualFileSystem::new(Box::new(|_| "".to_string()), Box::new(|_| true), Box::new(|_,_| "".to_string()));
-    let _node = evaluate(&ast, &"something".to_string(), &graph, &vfs, &js_virt::JsValue::JsObject(js_virt::JsObject::new()), None).unwrap().unwrap();
+    let _node = evaluate_source(case);
   }
 
   #[test]
@@ -697,7 +709,7 @@ mod tests {
     items.values.push(js_virt::JsValue::JsString("c".to_string()));
     object.values.insert("items".to_string(), js_virt::JsValue::JsArray(items));
     let data = js_virt::JsValue::JsObject(object);
-    let _node = evaluate(&ast, &"some-file.pc".to_string(), &graph, &vfs, &data, None).unwrap().unwrap();
+    let _node = evaluate_source(code);
   }
 
   #[test]
@@ -728,13 +740,82 @@ mod tests {
     ];
     
     for code in cases.iter() {
-      let ast = parse(code).unwrap();
-      let graph = DependencyGraph::new();
-      let vfs = VirtualFileSystem::new(Box::new(|_| "".to_string()), Box::new(|_| true), Box::new(|_,_| "".to_string()));
-
-      let data = js_virt::JsValue::JsObject(js_virt::JsObject::new());
-      let _node = evaluate(&ast, &"some-file.pc".to_string(), &graph, &vfs, &data, None).unwrap().unwrap();
-      println!("{:?}", _node);
+      let _node = evaluate_source(code);
     }
+  }
+  #[test]
+  fn catches_infinite_part_loop() {
+    let result = evaluate_source("
+      <part id='test'>
+        <div>
+          <test a />          
+        </div>
+      </part>
+      <preview>
+        <test />
+      </preview>
+    ");
+    
+    assert_eq!(result, Err(RuntimeError::new("Can't call <test /> here since this causes an infinite loop!".to_string(), &"some-file.pc".to_string(), &Location {
+      start: 48,
+      end: 58
+    })));
+  }
+
+  #[test]
+  fn catches_recursion_in_multiple_parts() {
+    let result = evaluate_source("
+      <part id='test2'>
+        <div>
+          <test />
+        </div>
+      </part>
+      <part id='test'>
+        <div>
+          <test2 />          
+        </div>
+      </part>
+      <preview>
+        <test />
+      </preview>
+    ");
+    
+    assert_eq!(result, Err(RuntimeError::new("Can't call <test /> here since this causes an infinite loop!".to_string(), &"some-file.pc".to_string(), &Location {
+      start: 49,
+      end: 57
+    })))
+  }
+
+  #[test]
+  fn catches_recursion_for_self_element() {
+    let result = evaluate_source("
+      Hello world
+      <self />
+    ");
+    
+    assert_eq!(result, Err(RuntimeError::new("Can't call <self /> here since this causes an infinite loop!".to_string(), &"some-file.pc".to_string(), &Location {
+      start: 25,
+      end: 33
+    })))
+  }
+
+  #[test]
+  fn allows_self_to_be_called_in_preview() {
+    evaluate_source("
+      Hello
+      <preview>
+        <self />
+      </preview>
+    ").unwrap();
+  }
+
+  fn evaluate_source<'a>(code: &'a str) -> Result<Option<virt::Node>, RuntimeError>{
+    let mut graph = DependencyGraph::new(); 
+    let uri = "some-file.pc".to_string();
+    let vfs = VirtualFileSystem::new(Box::new(|_| "".to_string()), Box::new(|_| true), Box::new(|_,uri| uri.to_string()));
+    graph.dependencies.insert(uri.clone(), Dependency::from_source(code.to_string(), &uri, &vfs).unwrap());
+
+    let data = js_virt::JsValue::JsObject(js_virt::JsObject::new());
+    evaluate(&uri, &graph, &vfs, &data, None)
   }
 }

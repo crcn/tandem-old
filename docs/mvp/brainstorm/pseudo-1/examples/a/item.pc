@@ -1,9 +1,0 @@
-<li>
-  {#each items as item}
-    {#if editing}
-      <input id="edit-label-input">
-    {/else}
-      <span id="label">{label}</span>
-    {/}
-  {/}
-</li>

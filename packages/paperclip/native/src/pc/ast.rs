@@ -24,6 +24,7 @@ pub struct Element {
 
 #[derive(Debug, PartialEq, Serialize, Clone)]
 pub struct ValueObject {
+  pub location: Location,
   pub value: String,
 }
 

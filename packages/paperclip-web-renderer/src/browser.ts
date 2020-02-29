@@ -23,7 +23,19 @@ renderer.onMetaClick(element => {
   );
 });
 
-document.body.appendChild(renderer.mount);
+// need in iframe to ensure that styles are isolated
+const iframe = document.createElement("iframe");
+Object.assign(iframe.style, {
+  width: "100%",
+  height: "100%",
+  border: "none"
+});
+
+iframe.onload = () => {
+  iframe.contentWindow.document.body.appendChild(renderer.mount);
+};
+
+document.body.appendChild(iframe);
 
 const onMessage = ({ data: event }: MessageEvent) => {
   renderer.handleEngineEvent(JSON.parse(event));
