@@ -29,6 +29,14 @@ Goal is to validate the idea & polish it up
 
 #### Todos
 
+- React code compiler needs to work again
+- **DOCS**
+- EXPERIMENTAL warning
+  - <logic />
+  - {#each}, {#if}
+- expand namespaced instances
+- inferencing in Rust
+  - require all props to be defined in preview
 - public / protected parts
 - fix recursion with parts
 - export default part

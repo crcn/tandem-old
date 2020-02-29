@@ -66,8 +66,12 @@ pub fn evaluate<'a>(node_expr: &ast::Node, uri: &String, graph: &'a DependencyGr
 
 pub fn get_instance_target_node<'a>(node_expr: &ast::Node, render_strategy: RenderStrategy) -> &ast::Node {
 
+  let default_part = "default".to_string();
+
   let target_node_option = match render_strategy {
-    RenderStrategy::Instance => Some(node_expr),
+    RenderStrategy::Instance => find_child(node_expr, |child|  {
+      child.tag_name == "part" && ast::get_attribute_value("id", child) == Some(&default_part)
+    }),
     RenderStrategy::Part(id) => find_child(node_expr, |child|  {
       child.tag_name == "part" && ast::get_attribute_value("id", child) == Some(&id)
     }),

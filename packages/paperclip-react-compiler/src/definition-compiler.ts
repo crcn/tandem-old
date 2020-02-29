@@ -26,7 +26,7 @@ import {
   endBlock,
   addBuffer
 } from "./translate-utils";
-import { Options, getComponentName, RENAME_PROPS, pascalCase } from "./utils";
+import { Options, RENAME_PROPS, pascalCase } from "./utils";
 
 export const compile = (
   { ast }: { ast: Node },
