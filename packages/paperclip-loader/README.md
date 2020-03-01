@@ -1,62 +1,48 @@
-Webpack loader for paperclip
-
-TODOS:
-
-- [ ] scan for compilers `paperclip-react-compiler`, `paperclip-paperclip-compiler`
-
-## Example
-
-Webpack config: 
+This loader allows you use Paperclip files (`*.pc`) in your application code. Here's a basic Webpack exmaple:
 
 ```
+const path = require("path");
+const webpack = require("webpack");
+
+const HtmlWebpackPlugin = require("html-webpack-plugin");
+
 module.exports = {
+  entry: "./src/index.js",
+  output: {
+    filename: "[name].js",
+    path: path.resolve(__dirname, "dist")
+  },
   module: {
     rules: [
       {
         test: /\.pc$/,
+        loader: "paperclip-loader",
+        include: [path.resolve(__dirname, "src")],
+        exclude: [/node_modules/]
+      },
+      {
+        test: /\.css$/,
+        use: ["style-loader", "css-loader"]
+      },
+      {
+        test: /\.(png|jpe?g|gif)$/i,
         use: [
-          // paperclip-loader
           {
-            loader: 'paperclip-loader',
-            options: {
-              target: "react"
-            }
+            loader: "file-loader"
           }
         ]
       }
     ]
+  },
+
+  resolve: {
+    extensions: [".tsx", ".ts", ".js"]
   }
 };
+
 ```
 
-Template:
+TODO:
 
-```html
+- [ ] setup PC config
 
-<!-- public props -->
-<property id="initialCount" scope="public" />
-
-<!-- internal props -->
-<property id="onClick" scope="internal" />
-<property id="currentCount" scope="internal" />
-
-<logic src="./component.tsx" target="react" />
-
-{{currentCount}} <div {{onClick}} />
-```
-
-Component.tsx: 
-
-```typescript
-import * as React from "react";
-import {PublicProps, InternalProps} from "./component.pc";
-export default (Template: React.ComponentClass<InternalProps>) => class extends React.Component<PublicProps> {
-  let state = { currentCount: this.props.count };
-  render() {
-    return <Template 
-      currentCount={this.state.currentCount} 
-      onClick={{this.onClick}} 
-    />;
-  }
-}
-```
