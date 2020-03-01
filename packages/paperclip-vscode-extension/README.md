@@ -8,12 +8,9 @@
 - CSS color picker in Paperclip files.
 - `⌘ click` preview elements to reveal their source code.
 
-####  Getting Started
 
-1. Download VS Code extension
-1. Create new `hello-world.pc`.
-1. Open command `⇧ ⌘ P` and select `Paperclip: Open Live Preview` command.
-1. Start writing HTML in your `hello-world.pc` file! 🎉
+#### Useful Resources
 
-> For further documentation around syntax, and code integration, you can [check out the main repository](http://github.com/crcn/paperclip). 
-
+- [Getting Started](https://github.com/crcn/paperclip/tree/master/documentation/1.%20Getting%20Started)
+- [Paperclip Syntax](https://github.com/crcn/paperclip/tree/master/documentation/2.%20GSyntax)
+- [Integrations](https://github.com/crcn/paperclip/tree/master/documentation/1.%20Integrationsd)
