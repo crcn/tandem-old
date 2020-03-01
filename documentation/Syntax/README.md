@@ -100,6 +100,52 @@ Shorthand bindings are an easier of defining props that share the same name:
 ```
 
 ### <part />
+
+Parts allow you to split your UI into chunks to use in app code. For example:
+
+```html
+<!-- todo-item.pc -->
+<part id="LabelInput">
+  <input type="text" onChange={onChange} />
+</part>
+
+<part id="TodoLabel">
+  <div>
+    <input type="checkbox" checked={completed}>
+    <label onClick={onLabelClick}>{label}</label>
+  </div>
+</part>
+
+<part id="default">
+  <li>
+    {children}
+  </li>
+</part>
+```
+
+In your app code, you might have something like:
+
+```javascript
+// todo-item.tsx
+import TodoItem, {TodoLabel, LabelInput} from "./todo-item.pc";
+import {useState} from "react";
+export ({item, onChange}) => {
+  const [editing, setEditing] = useState(false);
+  const onBlur = () = setEditing(false);
+  const onLabelClick = () => setEditing(true);
+
+  return <TodoItem>
+    {editing ? <LabelInput onChange={onChange} onBlur={onBlur} /> : <TodoLabel onLabelClick={onLabelClick} label={label} completed={item.completed} />}
+  </TodoItem>
+}
+```
+
 ### <import />
+
+Imports a component into the template:
+
+
 ### <preview />
+
+
 ### <self />

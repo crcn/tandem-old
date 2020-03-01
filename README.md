@@ -4,7 +4,7 @@
 
 #### What is it exactly?
 
-Paperclip provides a UI language that runs while you're writing in it, so you can see what you're building in realtime. Here's an example:
+Paperclip provides a UI language that runs while you're writing in it, so you can see what you're building in _realtime_. Here's an example:
 
 ```html
 <style>
@@ -30,25 +30,10 @@ export default () => {
 };
 ```
 
-#### Why use Paperclip?
-
-Slow.
-
-#### What does the language look like?
-
-Here's how you might use the template file in React code:
-
-
-> You can check out the source code for this example here: https://github.com/crcn/paperclip/tree/master/examples/counter
-
 ## Features
 
 - See a live preview of your UI as you're writing code
 - Compiles directly to strongly typed code (currently just React)
-
-## Motivation
-
-Development speed. I find that a lot of my time is spent
 
 ## Resources
 
