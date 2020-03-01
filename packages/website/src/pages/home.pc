@@ -15,5 +15,3 @@
     Paperclip is a tool for creating web UIs in realtime.
   </div>
 </div>
-
-fsdfsdfsdfsd
