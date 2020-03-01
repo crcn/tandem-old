@@ -8,10 +8,12 @@
 - CSS color picker in Paperclip files.
 - `⌘ click` preview elements to reveal their source code.
 
+#### Getting Started
+
+You can check out the documentation here: https://github.com/crcn/paperclip/tree/master/documentation/Getting%20Started
 
 #### Useful Resources
 
-- [Getting Started](https://github.com/crcn/paperclip/tree/master/documentation/Getting%20Started)
 - [Paperclip Syntax](https://github.com/crcn/paperclip/tree/master/documentation/Syntax)
 - Integrations
   - [React](https://github.com/crcn/paperclip/tree/master/documentation/Integrations/React)
