@@ -172,10 +172,12 @@
 
 <!-- main preview -->
 <preview>
-  <ul>
-    <default-preview label="something" completed />
-    <default-preview label="something else" completed />
-    <default-preview label="to be continued" />
-    <edting-preview />
-  </ul>
+  <div class="app">
+    <ul>
+      <default-preview label="something" completed />
+      <default-preview label="something else" />
+      <default-preview label="to be continued" />
+      <edting-preview />
+    </ul>
+  </div>
 </preview>

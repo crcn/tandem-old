@@ -2,7 +2,13 @@
   span {
     font-family: Comic Sans MS;
     cursor: pointer;
+    color: rgb(37, 15, 228);
+    font-size: 30px;
   }
 </style>
 
 <span {onClick}>Count: {currentCount}</span>
+
+<preview> 
+  <self currentCount={} />
+</preview>

@@ -11,7 +11,9 @@ export const createNativeNode = (
   protocol: string | null,
   map: DOMNodeMap = new Map()
 ) => {
-  // return document.createTextNode(JSON.stringify(node));
+  if (!node) {
+    return document.createTextNode("");
+  }
   try {
     switch (node.kind) {
       case "Text": {

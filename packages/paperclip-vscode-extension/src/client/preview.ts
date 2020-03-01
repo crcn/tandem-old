@@ -221,6 +221,7 @@ class LivePreview {
     this.panel.webview.postMessage(JSON.stringify(event));
   }
   private _getHTML() {
+    console.log("PREVIEW");
     const scriptPathOnDisk = Uri.file(
       path.join(
         this._extensionPath,
