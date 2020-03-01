@@ -65,7 +65,7 @@ fn parse_node<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::Node, ParseEr
 
   match token {
     Token::CurlyOpen => { parse_slot(tokenizer) },
-    Token::LessThan => { parse_element(tokenizer) },
+    Token::LessThan => { parse_tag(tokenizer) },
     Token::HtmlCommentOpen => { 
       tokenizer.next()?; // eat HTML comment open
       let buffer = get_buffer(tokenizer, |tokenizer| {
@@ -145,10 +145,38 @@ fn parse_slot_script<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<js_ast::Statem
   .or(Err(ParseError::unterminated("Unterminated slot.".to_string(), start, tokenizer.pos)))
 }
 
-pub fn parse_element<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::Node, ParseError> {
+pub fn parse_tag<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::Node, ParseError> {
   let start = tokenizer.pos;
 
   tokenizer.next_expect(Token::LessThan)?;
+  if tokenizer.peek(1)? == Token::GreaterThan {
+    parse_fragment_tag(tokenizer)
+  } else {
+    parse_element(tokenizer, start)
+  } 
+}
+
+pub fn parse_fragment_tag<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<pc_ast::Node, ParseError> {
+  tokenizer.next_expect(Token::GreaterThan)?;
+
+  let mut children = vec![];
+  
+  while !tokenizer.is_eof() && tokenizer.peek_eat_whitespace(1)? != Token::TagClose {
+    children.push(parse_node(tokenizer)?);
+  }
+
+  tokenizer.eat_whitespace();
+
+  tokenizer.next_expect(Token::TagClose)?;
+  tokenizer.next_expect(Token::GreaterThan)?;
+
+  Ok(pc_ast::Node::Fragment(pc_ast::Fragment {
+    children
+  }))
+}
+
+
+fn parse_element<'a>(tokenizer: &mut Tokenizer<'a>, start: usize) -> Result<pc_ast::Node, ParseError> {
   let tag_name = parse_tag_name(tokenizer)?;
 
   let attributes = parse_attributes(tokenizer)?;
@@ -713,5 +741,20 @@ mod tests {
   #[test]
   fn displays_error_if_void_close_tag_present() {
     assert_eq!(parse("</meta>"), Err(ParseError::unexpected("Void tag's shouldn't be closed.".to_string(), 0, 7)));
+  }
+
+  #[test]
+  fn can_parse_fragments() {
+    parse("<><div /></>").unwrap();
+    // assert_eq!(parse("<><div /></>"), Err(ParseError::unexpected("Void tag's shouldn't be closed.".to_string(), 0, 7)));
+  }
+
+  #[test]
+  fn can_parse_slot_fragments() {
+    parse("<div a={<>
+      <div />
+      <div />
+    </>} />").unwrap();
+    // assert_eq!(parse("<><div /></>"), Err(ParseError::unexpected("Void tag's shouldn't be closed.".to_string(), 0, 7)));
   }
 }

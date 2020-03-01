@@ -30,10 +30,10 @@ Here's a basic example of the language:
 
 <!-- Preview elements allow you to preview your component & its various states. This -->
 <preview>
-  <default todoItems={[
-    <TodoItem label="clean car" />,
+  <default todoItems={<>
+    <TodoItem label="clean car" />
     <TodoItem label="walk dog" />
-  ]} />
+  </>} />
 </preview>
 ```
 

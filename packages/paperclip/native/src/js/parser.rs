@@ -1,7 +1,7 @@
 use crate::base::tokenizer::{Tokenizer, Token};
 use crate::base::parser::{get_buffer, ParseError};
 use super::ast;
-use crate::pc::parser::parse_element;
+use crate::pc::parser::parse_tag;
 use std::collections::{HashMap};
 
 pub fn _parse<'a>(source: &'a str) -> Result<ast::Statement, ParseError> {
@@ -32,7 +32,7 @@ fn parse_statement<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<ast::Statement, 
 }
 
 fn parse_node<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<ast::Statement, ParseError> {
-  Ok(ast::Statement::Node(Box::new(parse_element(tokenizer)?)))
+  Ok(ast::Statement::Node(Box::new(parse_tag(tokenizer)?)))
 }
 
 fn parse_number<'a>(tokenizer: &mut Tokenizer<'a>) -> Result<ast::Statement, ParseError> {

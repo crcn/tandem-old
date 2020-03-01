@@ -1,10 +1,8 @@
-This loader allows you use Paperclip files (`*.pc`) in your application code. Here's a basic Webpack exmaple:
+This loader allows you use Paperclip files (`*.pc`) in your application code. Here's a basic Webpack example:
 
-```
+```javascript
 const path = require("path");
 const webpack = require("webpack");
-
-const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 module.exports = {
   entry: "./src/index.js",
@@ -16,21 +14,18 @@ module.exports = {
     rules: [
       {
         test: /\.pc$/,
-        loader: "paperclip-loader",
-        include: [path.resolve(__dirname, "src")],
-        exclude: [/node_modules/]
+        loader: "paperclip-loader"
       },
+
+      // Required since paperclip-loader emits
+      // CSS files
       {
         test: /\.css$/,
         use: ["style-loader", "css-loader"]
       },
       {
         test: /\.(png|jpe?g|gif)$/i,
-        use: [
-          {
-            loader: "file-loader"
-          }
-        ]
+        use: ["file-loader"]
       }
     ]
   },
@@ -42,7 +37,10 @@ module.exports = {
 
 ```
 
-TODO:
+Next, you'll need to setup a `pcconfig.json`:
 
-- [ ] setup PC config
 
+
+#### Useful Resources
+
+- [Integrations](../../documentation/Integrations)

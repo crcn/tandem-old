@@ -195,13 +195,14 @@
       </footer>
   </div>
 </div>
+
 <preview>
   <self 
-    items={[
-      <list-item:default-preview label="walk dog" completed />,
-      <list-item:default-preview label="clean car" />,
+    items={<>
+      <list-item:default-preview label="walk dog" completed />
+      <list-item:default-preview label="clean car" />
       <list-item:editing-preview label="something else" />
-    ]} 
+    </>} 
     controls={<controls:default-preview />} 
   />
 </preview>

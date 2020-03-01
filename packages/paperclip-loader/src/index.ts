@@ -6,7 +6,8 @@ import {
   stringifyCSSSheet,
   getImports,
   getAttributeStringValue,
-  resolveImportFile
+  resolveImportFile,
+  PC_CONFIG_FILE_NAME
 } from "paperclip";
 import * as loaderUtils from "loader-utils";
 import * as resolve from "resolve";
@@ -16,7 +17,7 @@ import * as path from "path";
 let _engine: Engine;
 
 type Options = {
-  config: PaperclipConfig;
+  configFile: string;
   emitCss?: boolean;
 };
 
@@ -43,10 +44,16 @@ module.exports = async function(source: string) {
   const callback = this.async();
   const resourcePath = this.resourcePath;
 
-  const { config }: Options = loaderUtils.getOptions(this) || {};
+  const { configFile = PC_CONFIG_FILE_NAME }: Options =
+    loaderUtils.getOptions(this) || {};
 
-  if (!config) {
-    throw new Error(`Config is missing`);
+  let config: PaperclipConfig;
+  const configFilePath = path.join(process.cwd(), configFile);
+
+  try {
+    config = require(configFilePath);
+  } catch (e) {
+    throw new Error(`Config file could not be loaded: ${configFilePath}`);
   }
 
   const engine = getEngine();
