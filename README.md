@@ -4,13 +4,7 @@
 
 #### What is it exactly?
 
-Paperclip provides a UI language that runs while you're writing in it, so you can see what you're building in realtime. It's designed to be lean & limited in features, so 
-
-#### Why?
-
-UI de
-
-#### What does the language look like?
+Paperclip provides a UI language that runs while you're writing in it, so you can see what you're building in realtime. Here's an example:
 
 ```html
 <style>
@@ -23,7 +17,7 @@ UI de
 <span {onClick}>Count: {currentCount}</span>
 ```
 
-Here's how you might use the template file in React code:
+Paperclip UIs compile down to vanilla code - no runtime necessary. Currently React is the only option, here's example:
 
 ```javascript
 import BaseCounter from "./counter.pc";
@@ -35,6 +29,15 @@ export default () => {
   return <BaseCounter onClick={onClick} currentCount={currentCount} />
 };
 ```
+
+#### Why use Paperclip?
+
+Slow.
+
+#### What does the language look like?
+
+Here's how you might use the template file in React code:
+
 
 > You can check out the source code for this example here: https://github.com/crcn/paperclip/tree/master/examples/counter
 
