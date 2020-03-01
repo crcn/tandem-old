@@ -1,5 +1,0 @@
-<logic src="./list-item.tsx">
-
-<li>
-  {item.label}
-</li>
