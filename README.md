@@ -1,76 +1,40 @@
-#### Paperclip is a tiny UI language 
+#### Paperclip is a tool for building UIs quickly ⚡️
 
 ![VSCode Demo](https://user-images.githubusercontent.com/757408/75412579-f0965200-58f0-11ea-8043-76a0b0ec1a08.gif)
 
-Here's a basic example of the language:
+#### What is it exactly?
+
+Paperclip provides a UI language that runs while you're writing in it, so you can see what you're building in realtime. It's designed to be lean & limited in features, so 
+
+#### Why?
+
+#### What does the language look like?
 
 ```html
-<!-- list.pc -->
-
-<!-- styles are only applied to the elements in this document -->
 <style>
-  ul {
-    margin: 0;
-    padding: 0;
+  span {
+    font-family: Comic Sans MS;
+    cursor: pointer;
   }
 </style>
 
-<!-- Parts describe you're component building blocks -->
-<part id="TodoItem">
-  <li>{label}</li>
-</part>
-
-<!-- "default" part is exported as the default component -->
-<part id="default">
-  <input type="text" placeholder="Add a new todo..." onKeyPress={onNewInputKeyPress} />
-  <ul>
-    {todoItems}
-  </ul>
-</part>
-
-<!-- Preview elements allow you to preview your component & its various states. This -->
-<preview>
-  <default todoItems={<>
-    <TodoItem label="clean car" />
-    <TodoItem label="walk dog" />
-  </>} />
-</preview>
+<span {onClick}>Count: {currentCount}</span>
 ```
 
-Assuming we're using `React` to power our UI, the code for that might look something like:
+Here's how you might use the template file in React code:
 
 ```javascript
-// list.jsx
-
-// Parts are compiled to individual components
-import ListView, { TodoItem } from "./list.pc";
+import BaseCounter from "./counter.pc";
 import React, { useState } from "react";
 
 export default () => {
-  const [todos, setTodos] = useState([
-    { label: "Wash car" },
-    { label: "Groceries" } 
-  ]);
-
-  const onNewInputKeyPress = (event) => {
-    const label = event.target.value.trim();
-    if (event.key === "Enter" && label) {
-      setTodos([...todos, { label }]);
-      event.target.value = "";
-    }
-  };
-
-  // Use parts like regular components
-  return <ListView
-    onNewInputKeyPress={onNewInputKeyPress}
-    todoItems={todos.map(todo => {
-      return <TodoItem label={todo.label} key={todo.id}  />;
-    })}
-  />;
+  const [currentCount, setCount] = useState(0);
+  const onClick = () => setCount(currentCount + 1);
+  return <BaseCounter onClick={onClick} currentCount={currentCount} />
 };
 ```
 
-> You can check out the source code for this example here: https://github.com/crcn/paperclip/tree/master/examples/simple-todo-list
+> You can check out the source code for this example here: https://github.com/crcn/paperclip/tree/master/examples/counter
 
 ## Features
 

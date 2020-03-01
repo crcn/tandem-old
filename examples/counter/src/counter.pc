@@ -1,0 +1,8 @@
+<style>
+  span {
+    font-family: Comic Sans MS;
+    cursor: pointer;
+  }
+</style>
+
+<span {onClick}>Count: {currentCount}</span>

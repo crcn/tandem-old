@@ -1,19 +1,17 @@
-<logic src="./various.tsx">
+<style>
+  div[variant=red] {
+    color: red;
+  }
+  div[variant=blue] {
+    color: blue;
+  }
+</style>
 
-{#each items as item, index}
-  Hello index: {item}
-{/}
+<div {variant}> 
+  Some text
+</div>
 
-{#if something}
-  <span>  
-    <div>hello</div>
-  </span>
-{/else if somethingElse}
-  <div>
-    blah
-  </div>
-{/else}
-  C
-{/}
-
-<div a={b} />
+<preview>
+  <self variant="red" />
+  <self variant="blue" />
+</preview>

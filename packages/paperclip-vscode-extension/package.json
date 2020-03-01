@@ -1,5 +1,6 @@
 {
   "name": "paperclip-vscode-extension",
+  "displayName": "Paperclip",
   "version": "11.0.29",
   "electronVersion": "7.1.10",
   "publisher": "crcn",

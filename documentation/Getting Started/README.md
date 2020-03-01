@@ -1,1 +1,1 @@
-TODO
+To get started using Tandem, download the [VS Code extension](https://marketplace.visualstudio.com/items?itemName=crcn.paperclip-vscode-extension). 
