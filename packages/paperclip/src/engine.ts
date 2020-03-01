@@ -38,7 +38,8 @@ export class Engine {
         return fs.readFileSync(uri.replace("file://", ""), "utf8");
       },
       uri => {
-        return fs.existsSync(uri.replace("file://", ""));
+        const filePath = uri.replace("file://", "");
+        return fs.existsSync(filePath) && fs.lstatSync(filePath).isFile();
       },
       resolveImportUri
     );

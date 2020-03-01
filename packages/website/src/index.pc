@@ -1,2 +1,12 @@
-<style>
-</style>
+<import id="home-page" src="./pages/home.pc">
+
+<div class="website">
+  <div class="navigation">
+    NAV
+  </div>
+  {page}
+</div>
+
+<preview>
+  <self page={<home-page />} />
+</preview>
