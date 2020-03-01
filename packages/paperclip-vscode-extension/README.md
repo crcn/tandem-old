@@ -13,4 +13,5 @@
 
 - [Getting Started](https://github.com/crcn/paperclip/tree/master/documentation/Getting%20Started)
 - [Paperclip Syntax](https://github.com/crcn/paperclip/tree/master/documentation/Syntax)
-- [Integrations](https://github.com/crcn/paperclip/tree/master/documentation/Integrations)
+- Integrations
+  - [React](https://github.com/crcn/paperclip/tree/master/documentation/Integrations/React)
