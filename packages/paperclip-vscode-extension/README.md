@@ -11,6 +11,6 @@
 
 #### Useful Resources
 
-- [Getting Started](https://github.com/crcn/paperclip/tree/master/documentation/1.%20Getting%20Started)
-- [Paperclip Syntax](https://github.com/crcn/paperclip/tree/master/documentation/2.%20GSyntax)
-- [Integrations](https://github.com/crcn/paperclip/tree/master/documentation/1.%20Integrationsd)
+- [Getting Started](https://github.com/crcn/paperclip/tree/master/documentation/Getting%20Started)
+- [Paperclip Syntax](https://github.com/crcn/paperclip/tree/master/documentation/Syntax)
+- [Integrations](https://github.com/crcn/paperclip/tree/master/documentation/Integrations)
