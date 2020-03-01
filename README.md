@@ -42,6 +42,7 @@ Assuming we're using `React` to power our UI, the code for that might look somet
 ```javascript
 // list.jsx
 
+// Parts are compiled to individual components
 import ListView, { TodoItem } from "./list.pc";
 import React, { useState } from "react";
 
@@ -59,6 +60,7 @@ export default () => {
     }
   };
 
+  // Use parts like regular components
   return <ListView
     onNewInputKeyPress={onNewInputKeyPress}
     todoItems={todos.map(todo => {
@@ -74,26 +76,14 @@ export default () => {
 
 - See a live preview of your UI as you're writing code
 - Compiles directly to strongly typed code (currently just React)
-- Only supports primitive behavior.
-
-## Planned Features
-
-- Additional compile targets (PHP, Ruby, Vue, etc.)
-- Visual regression testing tools
-- More UI tooling
-  - Browser-like style inspector that writes to code
-- State charts
-- Browserling / Browserstack integration for live development preview
-- A11y
 
 ## Motivation
 
-Speed & Safety around visual 
+Development speed. I find that a lot of my time is spent
 
-## Getting Started
+## Resources
 
-- download vscode extension
-- alternative if vscode extension doesn't exist 
-  - HMR + Webpack
-
-## Syntax
+- [Getting Started](./documentation/Getting&20Started)
+- [Syntax](./documentation/Syntax)
+- [Integrations](./documentation/Integrations)
+- [Contributing](./documentation/Contributing)
