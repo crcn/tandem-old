@@ -39,25 +39,23 @@ Here's a basic example of the language:
 
 Assuming we're using `React` to power our UI, the code for that might look something like:
 
-```typescript
-// list.tsx
-
+```javascript
+// list.jsx
 
 import ListView, { TodoItem } from "./list.pc";
 import React, { useState } from "react";
 
 export default () => {
   const [todos, setTodos] = useState([
-    createTodo("Wash car"),
-    createTodo("Groceries"),
+    { label: "Wash car" },
+    { label: "Groceries" } 
   ]);
 
-  const onNewInputKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    const target = event.target as HTMLInputElement;
-    const value = target.value.trim();
-    if (event.key === "Enter" && value) {
-      setTodos([...todos, createTodo(value)]);
-      target.value = "";
+  const onNewInputKeyPress = (event) => {
+    const label = event.target.value.trim();
+    if (event.key === "Enter" && label) {
+      setTodos([...todos, { label }]);
+      event.target.value = "";
     }
   };
 
@@ -68,12 +66,6 @@ export default () => {
     })}
   />;
 };
-
-let _idCount = 0;
-const createTodo = (label: string) => ({
-  label,
-  id: _idCount++
-});
 ```
 
 > You can check out the source code for this example here: https://github.com/crcn/paperclip/tree/master/examples/simple-todo-list
