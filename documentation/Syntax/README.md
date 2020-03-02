@@ -46,9 +46,9 @@ Here's a kitchen sink example of most syntaxes:
 </preview>
 ```
 
-## Syntax
+# Syntax
 
-### slots
+## slots
 
 Slots are areas of your template where you can add nodes. For example:
 
@@ -66,7 +66,7 @@ Hello {message}!
 </preview>
 ```
 
-### attribute bindings
+## Attribute bindings
 
 Example:
 
@@ -99,7 +99,34 @@ Shorthand bindings are an easier of defining props that share the same name:
 <div {onClick}></div>
 ```
 
-### <part />
+
+## `<import />`
+
+Imports a component into a template. For exmaple:
+
+```html
+<!-- todo-item.pc -->
+
+<li>{label}</li>
+```
+
+```html
+<!-- todo-list.pc -->
+<import id="todo-item" src="./todo-item.pc">
+
+<ul>
+  {todoItems}
+</ul>
+
+<preview>
+  <self>  
+    <todo-item label="wash car" />
+    <todo-item label="feed dog" />
+  </self>
+</preview>
+```
+
+## `<part />`
 
 Parts allow you to split your UI into chunks to use in app code. For example:
 
@@ -140,12 +167,116 @@ export ({item, onChange}) => {
 }
 ```
 
-### <import />
+#### `no-compile` parameter
 
-Imports a component into the template:
+The `no-compile` parameter for `part` elements tells the compiler to omit it. 
 
+#### `id="default"`
 
-### <preview />
+Assigning `<part id="default">...</part>` makes the part the _default_ export. For example:
 
+```html
+<!-- hello.pc -->
+<part id="default">
+  Hello {message}!
+</part>
+```
 
-### <self />
+Can be used in other components as:
+
+```html
+<!-- app.pc -->
+<import id="hello" src="./hello.pc">
+
+<!-- Render: Hello World! -->
+<hello message="World" />
+```
+
+#### Importing other parts 
+
+## `<preview />`
+
+This is where you setup your components to see what they look like.
+
+```html
+
+<part id="label-input">
+  <input {onKeyPress} {onBlur} default-value={label} type="text" class="edit" autofocus="autofocus">
+</part>
+
+<part id="todo-label">
+  <div class="view">
+    <input type="checkbox" class="toggle" onChange={onCheckChange} checked={completed}>
+    <label onClick={onLabelClick}>{label}</label> 
+    <button class="destroy"></button>
+  </div> 
+</part>
+
+<part id="default">
+  <li class="todo" {completed}>
+    {children}
+  </li>
+</part>
+
+<!-- variant previews -->
+<part no-compile id="default-preview">
+  <default {completed}>
+    <todo-label {label} {completed} />
+  </default>
+</part>
+
+<part no-compile id="editing-preview">
+  <default {completed}>
+    <label-input />
+  </default>
+</part>
+
+<!-- main preview -->
+<preview>
+  <div class="app">
+    <ul>
+      <default-preview label="something" completed />
+      <default-preview label="something else" />
+      <default-preview label="to be continued" />
+      <edting-preview />
+    </ul>
+  </div>
+</preview>
+```
+
+### `<self />`
+
+Renders the `root` children. 
+
+```html
+
+<part id="bolder">
+  <strong>{children}</strong>
+</part>
+
+Hello {message}!
+
+<preview>
+
+  <!-- renders: Hello <strong>World!</strong>! -->
+  <self message={<bolder>World</bolder>} /> 
+</preview>
+```
+
+### Fragments (`<></>`)
+
+Fragments are useful if you're looking to render a collection of elements in a slot. For example:
+
+```html
+<part id="default">
+  {listItems}
+</part>
+
+<preview>
+  <default listItems={<>
+    <li>feed fish</li>
+    <li>feed cat</li>
+    <li>feed me</li>
+  </>} />
+</preview>
+```
