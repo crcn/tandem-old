@@ -1,0 +1,16 @@
+<style>
+  span {
+    font-family: Helvetica;
+  }
+</style>
+
+<!-- Default HTML goes into your default part -->
+<part id="default">
+  <span>Hello {message}!</span>
+</part>
+
+<!-- Preview is where you preview all of parts & states
+put together -->
+<preview>
+  <default message="World" />
+</preview>

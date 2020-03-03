@@ -177,7 +177,7 @@ As you can see, all we're doing is importing the `parts` that the Paperclip temp
 <!-- 
 As you might have noticed, Paperclip just exports building blocks for your component. All of the logic remains in your application code, so you don't have to worry about  -->
 
-## Strongly Typed 🦺
+## Strongly Typed
 
 Templates compile down to strongly typed code, so you don't have to guess about what your templates need. Here's a generated TypesScript definition of our React app above:
 
@@ -228,7 +228,7 @@ This is just the beginning! Here are just a few planned features:
 The goal for Paperclip is to eliminiate bottlenecks around HTML & CSS development, and provide tooling that helps you ship UI features quicker. More specifically:
 
 - Eliminiate the lag time between writing code & seeing UI.
-- Bring more design tooling into web development. 
+- Shorten the gap between design -> code by bringing more design tooling into web development.
 - Provide better safety around building UIs with easier to use cross-browser testing tools. 
 
 # Resources
