@@ -2,7 +2,7 @@
 
 # Resources
 
-- [Getting Started](./documentation/Getting&20Started)
+- [Getting Started](./documentation/Getting%20Started)
 - [Syntax](./documentation/Syntax)
 - [Integrations](./documentation/Integrations)
 - [Contributing](./documentation/Contributing)
