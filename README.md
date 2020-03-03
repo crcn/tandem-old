@@ -108,10 +108,12 @@ Here's what you see in VS Code as your typing away:
 ![Simple todo preview](https://user-images.githubusercontent.com/757408/75791302-ff866580-5d31-11ea-8da9-1c43631f0626.gif)
 
 
-## How do I use Paperclip with code? 
 
+☝🏻This example uses just about all of the features that Paperclip has to offer. No logic, just syntax for describing how your UI looks. 
 
-Templates compile directly to highly optimized code. Using our list example above, here's how you might use it in React code:
+## How do I add logic? 
+
+Templates compile directly to highly optimized code. Using our list example above, here's how you might use it in a React app:
 
 ```javascript
 
@@ -169,12 +171,15 @@ export default () => {
 > The code for this example is also here: https://github.com/crcn/paperclip/tree/master/examples/simple-todo-list
 
 > More compiler targets are planned for other languages and frameworks. React is just a starting point ✌🏻.
+
+As you can see, all we're doing is importing the `parts` that the Paperclip template exposes, then combining the `parts` with logic to create a functional component.
+
 <!-- 
 As you might have noticed, Paperclip just exports building blocks for your component. All of the logic remains in your application code, so you don't have to worry about  -->
 
 ## Strongly Typed 🦺
 
-Templates compile down to strongly typed code, so you don't have to play guesswork about what your templates need. Here's a generated React TypesScript definition of our TODO template above:
+Templates compile down to strongly typed code, so you don't have to guess about what your templates need. Here's a generated TypesScript definition of our React app above:
 
 ```typescript
 import {ReactNode, ReactHTML, Factory, InputHTMLAttributes, ClassAttributes} from "react";
@@ -201,43 +206,32 @@ export const TodoList: Factory<TodoListProps>;
 
 ## Features ✨
 
-- Paperclip previews are powered by a low-level runtime, so your changes appear instantly, and won't slow down as your project scales.
-- Ability to generate strongly typed code.
-- Integrates with your existing React codebase.
-- Works out of the box. Just download the [VS Code extension](https://marketplace.visualstudio.com/items?itemName=crcn.paperclip-vscode-extension) and start coding away. 
 
-## Planned features 
+- Works out of the box. Just download the [VS Code extension](https://marketplace.visualstudio.com/items?itemName=crcn.paperclip-vscode-extension) and start typing away. 
+- Previews are powered by a low-level runtime, so your changes appear instantly, and won't slow down as your project scales.
+- Templates can be compiled to strongly typed code.
+- Templates Integrate with your existing React application (more languages & frameworks soon).
+- Integrates with Webpack. 
 
-This is just the beginning!
+## Roadmap
+
+This is just the beginning! Here are just a few planned features:
 
 - Zero-setup automated visual regression testing. Just plug in your Paperclip files.
 - More compiler targets: Ruby, PHP, VueJS, AngularJS, and others.
-- Ability to make changes in the preview.
+- More code editor integrations: Sublime, Atom.
+- More visual tooling in the preview, so you can make visual changes directly.
+- Preview against different browsers directly within your code editor.
 
-### Doesn't HMR exist? Why do I need this?
+## Goals
 
-<!-- Developer tooling and efficiency is important, and Paperclip aims to eliminate the bottleneck around coding  -->
+The goal for Paperclip is to eliminiate bottlenecks around HTML & CSS development, and provide tooling that helps you ship UI features quicker. More specifically:
 
-Maybe you don't! But personally I find the whole process of switching between the browser & code to be _terribly_ inneficient, especially as projects grow. That 5 seconds you're waiting on the browser to reload really adds up over time. 
+- Eliminiate the lag time between writing code & seeing UI.
+- Bring more design tooling into web development. 
+- Provide better safety around building UIs with easier to use cross-browser testing tools. 
 
-Paperclip was designed to give you an _instant_ preview of your UIs as you're writing them, and maintain that level of performance as your project scales. So, if you feel bottlenecked by using the browser to write HTML & CSS, then give Paperclip a shot!
-
-<!-- 
-The ethos of Paperclip is to optimize the feedback loop around writing UI code, and debugging it.  -->
-
-<!-- Paperclip was created to shorten the gap between writing code & seeing the result. -->
-
-
-<!-- So, Paperclip was designed to live in an environment that's decoupled from application code, so won't get weighed down as the application codebase grows.  -->
-
-<!-- I've found that developer tooling doesn't scale as projects grow, and the process of switching between my code editor & web browser for debugging UIs to be  -->
-
-## Planned features
-
-- [Visual regression testing](https://github.com/crcn/paperclip/issues/752)
-- [Cross-browser rendering](https://github.com/crcn/paperclip/issues/753)
-
-## Resources
+# Resources
 
 - [Getting Started](./documentation/Getting&20Started)
 - [Syntax](./documentation/Syntax)
