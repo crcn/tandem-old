@@ -7,7 +7,9 @@ Notes:
 
 #### Paperclip is a language for building UIs in realtime ⚡️
 
-Write your UIs and see a live preview of them directly within your IDE. Paperclip templates also compile to React code, so you can use them in your React app. 
+Paperclip code runs while you're writing it, so you never have to leave the IDE. UI files also compile down directly to React code.
+
+<!-- Write your UIs and see a live preview of them directly within your IDE. Paperclip templates also compile to React code, so you can use them in your React app.  -->
 
 <!-- Paperclip runs while you're writing it, so you never have to leave the IDE. UI files also compile down directly to React code.  -->
 
@@ -35,7 +37,7 @@ _See_ UIs that you're creating in realtime, directly within your code editor. Pa
 
 ### Simple
 
-Paperclip is designed just to cover the look and feel of your app. Here's an example UI file:
+Paperclip just covers HTML & CSS, not logic. Here's an example:
 
 <!-- Paperclip comes with its own runtime written in Rust, so you can expect realtime UI development even as your project scales. The langage also just comes with a few basic features.  -->
 
@@ -119,6 +121,8 @@ export default () => {
 
 ### Doesn't HMR exist? Why do I need this?
 
+<!-- Developer tooling and efficiency is important, and Paperclip aims to eliminate the bottleneck around coding  -->
+
 Maybe you don't! But personally I find the whole process of switching between the browser & code to be _terribly_ inneficient, especially as projects grow. That 5 seconds you're waiting on the browser to reload really adds up over time. 
 
 Paperclip was designed to give you an _instant_ preview of your UIs as you're writing them, and maintain that level of performance as your project scales. So, if you feel bottlenecked by using the browser to write HTML & CSS, then give Paperclip a shot!
@@ -138,7 +142,12 @@ The ethos of Paperclip is to optimize the feedback loop around writing UI code, 
 - Live preview of your app 🏎
 - Integrates with React (more frameworks & languages are planned).
 - `d.ts` file generation for type safety.
-- 
+- Some visual 
+
+## Planned features
+
+- [Visual regression testing](https://github.com/crcn/paperclip/issues/752)
+- [Cross-browser rendering](https://github.com/crcn/paperclip/issues/753)
 
 ## Resources
 
