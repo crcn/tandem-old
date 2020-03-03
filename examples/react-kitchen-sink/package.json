@@ -1,5 +1,6 @@
 {
-  "name": "react-starter-kit",
+  "name": "paperclip-react-kitchen-sink",
+  "private": true,
   "version": "11.0.31",
   "description": "",
   "main": "index.js",
@@ -28,5 +29,6 @@
   "dependencies": {
     "react": "^16.13.0",
     "react-dom": "^16.13.0"
-  }
+  },
+  "gitHead": "1a49097529d77c131660bcd36d2b2317ae0ee026"
 }
