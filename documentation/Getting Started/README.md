@@ -117,7 +117,7 @@ If you'd like to see more on how to use Paperclip with React, you can check out 
 - [React TodoMVC](../../examples/react-todomvc) - Basic TODO app
 - [React Kitchen Sink](../../examples/react-kitchen-sink) - Kitchen sink example using _all_ of Paperclip's features
 
-## Using the Preview
+## Using the VS Code Extension
 
 TODO:
 
