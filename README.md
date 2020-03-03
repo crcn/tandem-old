@@ -5,9 +5,20 @@ Notes:
 - need to express that it's lightweight
 -->
 
-#### Paperclip is a language for building UIs in realtime ⚡️
+#### Build UIs in realtime ⚡️
 
-Paperclip code runs while you're writing it, so you never have to leave the IDE. UI files also compile down directly to React code.
+<!-- No more juggling between the coding & debugging in the browser. Paperclip provides tooling that allows  -->
+
+Paperclip is a template language that's designed for visual development. See what you're creating in realtime, directly within VS Code.
+
+<!-- Tooling is provided that brings a realtime preview of your application directly into your code editor. -->
+
+<!-- Paperclip is a template language that runs while you're writing in it, so you can see a preview of exactly what you're creating in realtime. -->
+
+<!-- No more wasted time juggling between the browser & code! -->
+
+
+<!-- Paperclip code runs while you're writing it, so you never have to leave the IDE. UI files also compile down directly to React code. -->
 
 <!-- Write your UIs and see a live preview of them directly within your IDE. Paperclip templates also compile to React code, so you can use them in your React app.  -->
 
@@ -34,6 +45,10 @@ _See_ UIs that you're creating in realtime, directly within your code editor. Pa
 <!--  that runs _while_ you write in it, and compiles down to application code in the framework of your choice. -->
 
 ![VSCode Demo](https://user-images.githubusercontent.com/757408/75412579-f0965200-58f0-11ea-8043-76a0b0ec1a08.gif)
+
+### Integrates with your codebase
+
+Templates compile down to vanilla code. 
 
 ### Simple
 

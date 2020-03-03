@@ -100,7 +100,9 @@ const translateStyleSheet = (sheet: Sheet, context: TranslateContext) => {
     context
   );
   context = addBuffer(
-    `style.textContent = ${JSON.stringify(stringifyCSSSheet(sheet, null))};\n`,
+    `style.textContent = ${JSON.stringify(
+      stringifyCSSSheet(sheet, null).replace(/[\s\r\n\t]+/g, " ")
+    )};\n`,
     context
   );
   context = addBuffer(`document.body.appendChild(style);\n`, context);
