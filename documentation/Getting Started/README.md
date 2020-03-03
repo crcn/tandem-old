@@ -17,6 +17,15 @@ TODOS:
 
 For _now_ you can use Webpack + HMR. For this initial Alpha version though, Paperclip's live preview functionality only works in VS Code. 
 
+## Using the VS Code Extension
+
+TODO:
+
+- meta clicking
+- side-by-side comparison
+- 
+
+
 ## Setting up Webpack + React
 
 For this step you'll need to be familiar with Webpack and React
@@ -116,14 +125,6 @@ If you'd like to see more on how to use Paperclip with React, you can check out 
 
 - [React TodoMVC](../../examples/react-todomvc) - Basic TODO app
 - [React Kitchen Sink](../../examples/react-kitchen-sink) - Kitchen sink example using _all_ of Paperclip's features
-
-## Using the VS Code Extension
-
-TODO:
-
-- meta clicking
-- side-by-side comparison
-- 
 
 # More Resources
 
