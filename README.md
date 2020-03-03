@@ -48,7 +48,7 @@ _See_ UIs that you're creating in realtime, directly within your code editor. Pa
 
 ### Integrates with your codebase
 
-Templates compile down to vanilla code. 
+Paperclip compiles to highly optimized 
 
 ### Simple
 
