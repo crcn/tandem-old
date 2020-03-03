@@ -46,64 +46,43 @@ _See_ UIs that you're creating in realtime, directly within your code editor. Pa
 
 ![VSCode Demo](https://user-images.githubusercontent.com/757408/75412579-f0965200-58f0-11ea-8043-76a0b0ec1a08.gif)
 
-### Features
+### What is Paperclip example?
 
-- Templates compile directly to highly optimized code (currently just React). 
-- 
-
-### Integrates with your codebase
-
-Paperclip compiles to highly optimized 
-
-### Simple
-
-Paperclip just covers HTML & CSS, not logic. Here's an example:
-
-<!-- Paperclip comes with its own runtime written in Rust, so you can expect realtime UI development even as your project scales. The langage also just comes with a few basic features.  -->
-
-<!-- Paperclip isn't designed to replace code it's -->
-
-<!-- 
-This means that:
-✔ You can use Paperclip with your existing code! <br />
-✔  -->
-
+Paperclip is a _tiny_ DSL that just covers basic HTML, CSS, and syntax around defining _dumb_ components. For example:
 
 ```html
-<!-- styles are scoped to this file -->
 <style>
   * {
     font-family: Helvetica;
-    font-size: 12px;
   }
-
-  #new-todo-input {
-    margin-bottom: 4px;
-    border-radius: 4px;
-    border: 1px solid rgb(119, 119, 119);
+  
+  li[completed] {
+    text-decoration: linethrough;
   }
 </style>
 
-<!-- Parts describe you're component building blocks -->
 <part id="TodoItem">
-  <li>{label}</li>
+  <li {completed}>
+    <input type="checkmark" checked={completed}>
+    {label}
+  </li>
 </part>
 
 <part id="TodoList">
-  <input id="new-todo-input" type="text" placeholder="Add a new todo..." onKeyPress={onNewInputKeyPress} />
-  <ul class="todo-items">
+  <h1>Todos:</h1>
+  <input type="text" onKeyPress={onNewTodoKeyPress}>
+  <ul>
     {todoItems}
   </ul>
 </part>
 
-<!-- preview's allow you to see how everything is put together. -->
 <preview>
   <TodoList todoItems={<>
-    <TodoItem label="clean car" />
-    <TodoItem label="walk dog" />
+    <TodoItem label="Feed cat" completed />
   </>} />
 </preview>
 ```
+
 
 > <part /> Elements allow you to slice up your UI to use in app code.
 

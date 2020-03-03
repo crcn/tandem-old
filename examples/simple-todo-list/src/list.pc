@@ -1,39 +1,38 @@
-<!-- styles are only applied to the elements in this document -->
 <style>
-  ul {
-    margin: 0px;
-    padding-left: 16px;
-  }
-
   * {
     font-family: Helvetica;
-    font-size: 12px;
   }
 
-  #new-todo-input {
-    margin-bottom: 4px;
-    border-radius: 4px;
-    border: 1px solid rgb(119, 119, 119);
+  ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+  }
+  
+  li[done] {
+    text-decoration: line-through;
   }
 </style>
 
-<!-- Parts describe you're component building blocks -->
 <part id="TodoItem">
-  <li>{label}</li>
+  <li {done}>
+    <input type="checkbox" checked={done} onClick={onDoneClick}>
+    {label}
+  </li>
 </part>
 
-<!-- "default" part is exported as the default component -->
-<part id="default">
-  <input id="new-todo-input" type="text" placeholder="Add a new todo..." onKeyPress={onNewInputKeyPress} />
-  <ul class="todo-items">
+<part id="TodoList">
+  <h1>Todos:</h1>
+  <input type="text" onKeyPress={onNewTodoKeyPress} placeholder="Add a new todo..." >
+  <ul>
     {todoItems}
   </ul>
 </part>
 
-<!-- Preview elements allow you to preview your component & its various states. This -->
 <preview>
-  <default todoItems={[
-    <TodoItem label="clean car" />,
-    <TodoItem label="walk dog" />
-  ]} />
+  <TodoList todoItems={<>
+    <TodoItem label="Feed cat" done />
+    <TodoItem label="Take out trash" />
+    <TodoItem label="Walk dog" done />
+  </>} />
 </preview>
