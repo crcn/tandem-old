@@ -7,6 +7,7 @@ TODOS:
 - moduleDirectories
 
 -->
+## Initial Setup
 
 1. First download the [VS Code extension](https://marketplace.visualstudio.com/items?itemName=crcn.paperclip-vscode-extension). 
 1. Open any project, and create a Paperclip file (something like `hello-world.pc`).
