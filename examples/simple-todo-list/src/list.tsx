@@ -1,5 +1,5 @@
 import { TodoList, TodoItem } from "./list.pc";
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 
 type Todo = {
   done: boolean;
@@ -22,18 +22,21 @@ export default () => {
     }
   };
 
-  const onDoneClick = (todo: Todo) => {
-    setTodos(
-      todos.map(oldTodo => {
-        return oldTodo.id === todo.id
-          ? {
-              ...oldTodo,
-              done: !oldTodo.done
-            }
-          : oldTodo;
-      })
-    );
-  };
+  const onDoneClick = useCallback(
+    (todo: Todo) => () => {
+      setTodos(todos =>
+        todos.map(oldTodo => {
+          return oldTodo.id === todo.id
+            ? {
+                ...oldTodo,
+                done: !oldTodo.done
+              }
+            : oldTodo;
+        })
+      );
+    },
+    []
+  );
 
   return (
     <TodoList
@@ -42,7 +45,7 @@ export default () => {
         return (
           <TodoItem
             done={todo.done}
-            onDoneClick={() => onDoneClick(todo)}
+            onDoneClick={onDoneClick(todo)}
             label={todo.label}
             key={todo.id}
           />

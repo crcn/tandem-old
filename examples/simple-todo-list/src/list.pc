@@ -8,10 +8,23 @@
     margin: 0;
     padding: 0;
   }
-  
+
+  h1 {
+    font-weight: 100;
+    margin-bottom: 12px;
+  }
+
+  #new-todo-input {
+    margin-bottom: 12px;
+    border-radius: 6px;
+    border: 1px solid rgb(117, 117, 117);
+    padding: 6px 12px;
+  }
+
   li[done] {
     text-decoration: line-through;
   }
+  
 </style>
 
 <part id="TodoItem">
@@ -23,7 +36,7 @@
 
 <part id="TodoList">
   <h1>Todos:</h1>
-  <input type="text" onKeyPress={onNewTodoKeyPress} placeholder="Add a new todo..." >
+  <input type="text" id="new-todo-input" onKeyPress={onNewTodoKeyPress} placeholder="Add a new todo..." >
   <ul>
     {todoItems}
   </ul>

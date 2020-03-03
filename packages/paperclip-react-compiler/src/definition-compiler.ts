@@ -7,6 +7,7 @@ import {
   infer,
   NodeKind,
   DEFAULT_PART_ID,
+  getVisibleChildNodes,
   NO_COMPILE_TAG_NAME,
   InferenceKind,
   getParts,
@@ -251,6 +252,11 @@ const translatePart = (part: Element, context: TranslateContext) => {
 };
 
 const translateMainView = (ast: Node, context: TranslateContext) => {
+  const children = getVisibleChildNodes(ast);
+  if (!children.length) {
+    return context;
+  }
+
   const target =
     getParts(ast).find(
       part => getAttributeStringValue("id", part) === DEFAULT_PART_ID

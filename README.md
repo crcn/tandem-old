@@ -46,77 +46,168 @@ _See_ UIs that you're creating in realtime, directly within your code editor. Pa
 
 ![VSCode Demo](https://user-images.githubusercontent.com/757408/75412579-f0965200-58f0-11ea-8043-76a0b0ec1a08.gif)
 
-### What is Paperclip example?
+## What is Paperclip exactly?
 
-Paperclip is a _tiny_ DSL that just covers basic HTML, CSS, and syntax around defining _dumb_ components. For example:
+Paperclip just covers basic HTML, CSS, and syntax for defining _dumb_ components. Here's an example:
 
 ```html
+<!-- todo-list.pc -->
+
+<!--
+Styles are scoped to this file, so you don't have to worry about them leaking out.
+-->
+
 <style>
   * {
     font-family: Helvetica;
   }
+
+  ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+  }
   
-  li[completed] {
-    text-decoration: linethrough;
+  li[done] {
+    text-decoration: line-through;
   }
 </style>
 
+<!-- Parts are building blocks that are individually used in application code (more information below). -->
 <part id="TodoItem">
-  <li {completed}>
-    <input type="checkmark" checked={completed}>
+
+  <!-- You can assign attribute bindings. -->
+  <li {done}>
+    <input type="checkbox" checked={done} onClick={onDoneClick}>
+
+    <!-- You can also define slots where text & elements are inserted into. -->
     {label}
   </li>
 </part>
 
 <part id="TodoList">
   <h1>Todos:</h1>
-  <input type="text" onKeyPress={onNewTodoKeyPress}>
+  <input type="text" onKeyPress={onNewTodoKeyPress} placeholder="Add a new todo..." >
   <ul>
     {todoItems}
   </ul>
 </part>
 
+<!-- Preview is a special tag for development that allows you to see how all of your parts look when put together in their varying states. -->
 <preview>
   <TodoList todoItems={<>
-    <TodoItem label="Feed cat" completed />
+    <TodoItem label="Feed cat" done />
+    <TodoItem label="Take out trash" />
+    <TodoItem label="Walk dog" done />
   </>} />
 </preview>
 ```
 
+Here's what you see in VS Code as your typing away:
 
-> <part /> Elements allow you to slice up your UI to use in app code.
+![Simple todo preview](https://user-images.githubusercontent.com/757408/75791302-ff866580-5d31-11ea-8da9-1c43631f0626.gif)
 
-Behavior of the UI might look something like this:
+
+## How do I use Paperclip with code?
+
+
+Templates compile directly to highly optimized code. Using our list example above, here's how you might use it in React code:
 
 ```javascript
-// Import the parts into the component file to build them back up.
-import React, { useState } from "react";
+
+// <part /> elements are exposed as React components.
 import { TodoList, TodoItem } from "./list.pc";
+import React, { useState } from "react";
 
 export default () => {
   const [todos, setTodos] = useState([
-    { label: "Wash car" },
-    { label: "Groceries" },
+    { label: "Clean car" },
+    { label: "Eat food", done: true },
+    { label: "Sell car" }
   ]);
 
   const onNewInputKeyPress = (event) => {
-    const label = event.target.value.trim();
     if (event.key === "Enter" && value) {
-      setTodos([...todos, { label }]);
+      setTodos([...todos, { label: event.target.value }]);
       event.target.value = "";
     }
   };
 
-  return <ListView
-    onNewInputKeyPress={onNewInputKeyPress}
-    todoItems={todos.map(todo => {
-      return <TodoItem label={todo.label} key={todo.id}  />;
-    })}
-  />;
+  const onDoneClick = (todo: Todo) => {
+    setTodos(
+      todos.map(oldTodo => {
+        return oldTodo.id === todo.id
+          ? {
+              ...oldTodo,
+              done: !oldTodo.done
+            }
+          : oldTodo;
+      })
+    );
+  };
+
+  // The attribute bindings & slots that were defined are
+  // exposed as props for each <part /> component.
+  return (
+    <TodoList
+      onNewTodoKeyPress={onNewInputKeyPress}
+      todoItems={todos.map(todo => {
+        return (
+          <TodoItem
+            done={todo.done}
+            onDoneClick={() => onDoneClick(todo)}
+            label={todo.label}
+            key={todo.id}
+          />
+        );
+      })}
+    />
+  );
 };
 ```
 
-> This is Vanilla JavaScript. Paperclip's React compiler also allows you to generate typed definition files so that you have more safety around using the templates.
+> The code for this example is also here: https://github.com/crcn/paperclip/tree/master/examples/simple-todo-list
+
+> More compiler targets are planned for other languages and frameworks. React is just a starting point ✌🏻.
+
+## Strongly Typed 
+
+Templates compile down to strongly typed code. For example, here:
+
+```typescript
+import {ReactNode, ReactHTML, Factory, InputHTMLAttributes, ClassAttributes} from "react";
+
+type ElementProps = InputHTMLAttributes<HTMLInputElement> & ClassAttributes<HTMLInputElement>;
+
+export declare const styled: (tag: keyof ReactHTML | Factory<ElementProps>, defaultProps?: ElementProps) => Factory<ElementProps>;
+
+type TodoItemProps = {
+  done: String | boolean | Number | Object | ReactNode,
+  onDoneClick: Function,
+  label: String | boolean | Number | Object | ReactNode,
+};
+
+export const TodoItem: Factory<TodoItemProps>;
+
+type TodoListProps = {
+  onNewTodoKeyPress: Function,
+  todoItems: String | boolean | Number | Object | ReactNode,
+};
+
+export const TodoList: Factory<TodoListProps>;
+
+type Props = {
+  done: String | boolean | Number | Object | ReactNode,
+  onDoneClick: Function,
+  label: String | boolean | Number | Object | ReactNode,
+  onNewTodoKeyPress: Function,
+  todoItems: String | boolean | Number | Object | ReactNode,
+};
+
+declare const View: Factory<Props>;
+export default View;
+```
+
 
 ### Doesn't HMR exist? Why do I need this?
 

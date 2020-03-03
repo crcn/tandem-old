@@ -29,7 +29,7 @@ import {
   JsObject,
   JsObjectProperty
 } from "./js-ast";
-import { PREVIEW_TAG_NAME } from "./constants";
+import { PREVIEW_TAG_NAME, PART_TAG_NAME } from "./constants";
 
 // TODO - this should be built in rust
 
@@ -235,16 +235,16 @@ const setScope = (
 });
 
 export const infer = (ast: Node): ShapeInference => {
-  return inferNode(ast, {
+  return inferNode(ast, true, {
     scope: {},
     inference: createShapeInference()
   }).inference as ShapeInference;
 };
 
-const inferNode = (ast: Node, context: Context): Context => {
+const inferNode = (ast: Node, isRoot: boolean, context: Context): Context => {
   switch (ast.kind) {
     case NodeKind.Element:
-      return inferElement(ast, context);
+      return inferElement(ast, isRoot, context);
     case NodeKind.Slot:
       return inferSlot(ast, context);
     case NodeKind.Fragment:
@@ -273,7 +273,7 @@ const inferEachBlock = (block: EachBlock, context: Context): Context => {
 
     context = setScope(block.valueName, scopePath, context);
     context = setScope(block.keyName, [], context);
-    context = inferNode(block.body, context);
+    context = inferNode(block.body, false, context);
     context = setScope(block.valueName, null, context);
     context = setScope(block.keyName, null, context);
   }
@@ -289,13 +289,16 @@ const inferConditionBlock = (block: Conditional, context: Context): Context => {
     }
   }
   if (block.body) {
-    context = inferNode(block.body, context);
+    context = inferNode(block.body, false, context);
   }
   return context;
 };
 
-const inferElement = (element: Element, context: Context) => {
-  if (element.tagName === PREVIEW_TAG_NAME) {
+const inferElement = (element: Element, isRoot: boolean, context: Context) => {
+  if (
+    element.tagName === PREVIEW_TAG_NAME ||
+    (element.tagName === PART_TAG_NAME && !isRoot)
+  ) {
     return context;
   }
   for (const atttribute of element.attributes) {
@@ -341,7 +344,10 @@ const inferFragment = (fragment: Fragment, context: Context) => {
 };
 
 const inferChildren = (children: Node[], context: Context) =>
-  children.reduce((context, child) => inferNode(child, context), context);
+  children.reduce(
+    (context, child) => inferNode(child, false, context),
+    context
+  );
 
 const inferStatement = (
   statement: Statement,
