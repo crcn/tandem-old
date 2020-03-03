@@ -108,7 +108,7 @@ Here's what you see in VS Code as your typing away:
 ![Simple todo preview](https://user-images.githubusercontent.com/757408/75791302-ff866580-5d31-11ea-8da9-1c43631f0626.gif)
 
 
-## How do I use Paperclip with code?
+## How do I use Paperclip with code? 
 
 
 Templates compile directly to highly optimized code. Using our list example above, here's how you might use it in React code:
@@ -169,10 +169,12 @@ export default () => {
 > The code for this example is also here: https://github.com/crcn/paperclip/tree/master/examples/simple-todo-list
 
 > More compiler targets are planned for other languages and frameworks. React is just a starting point ✌🏻.
+<!-- 
+As you might have noticed, Paperclip just exports building blocks for your component. All of the logic remains in your application code, so you don't have to worry about  -->
 
-## Strongly Typed 
+## Strongly Typed 🦺
 
-Templates compile down to strongly typed code. For example, here:
+Templates compile down to strongly typed code, so you don't have to play guesswork about what your templates need. Here's a generated React TypesScript definition of our TODO template above:
 
 ```typescript
 import {ReactNode, ReactHTML, Factory, InputHTMLAttributes, ClassAttributes} from "react";
@@ -195,19 +197,22 @@ type TodoListProps = {
 };
 
 export const TodoList: Factory<TodoListProps>;
-
-type Props = {
-  done: String | boolean | Number | Object | ReactNode,
-  onDoneClick: Function,
-  label: String | boolean | Number | Object | ReactNode,
-  onNewTodoKeyPress: Function,
-  todoItems: String | boolean | Number | Object | ReactNode,
-};
-
-declare const View: Factory<Props>;
-export default View;
 ```
 
+## Features ✨
+
+- Paperclip previews are powered by a low-level runtime, so your changes appear instantly, and won't slow down as your project scales.
+- Ability to generate strongly typed code.
+- Integrates with your existing React codebase.
+- Works out of the box. Just download the [VS Code extension](https://marketplace.visualstudio.com/items?itemName=crcn.paperclip-vscode-extension) and start coding away. 
+
+## Planned features 
+
+This is just the beginning!
+
+- Zero-setup automated visual regression testing. Just plug in your Paperclip files.
+- More compiler targets: Ruby, PHP, VueJS, AngularJS, and others.
+- Ability to make changes in the preview.
 
 ### Doesn't HMR exist? Why do I need this?
 
@@ -226,13 +231,6 @@ The ethos of Paperclip is to optimize the feedback loop around writing UI code, 
 <!-- So, Paperclip was designed to live in an environment that's decoupled from application code, so won't get weighed down as the application codebase grows.  -->
 
 <!-- I've found that developer tooling doesn't scale as projects grow, and the process of switching between my code editor & web browser for debugging UIs to be  -->
-
-## Features
-
-- Live preview of your app 🏎
-- Integrates with React (more frameworks & languages are planned).
-- `d.ts` file generation for type safety.
-- Some visual 
 
 ## Planned features
 

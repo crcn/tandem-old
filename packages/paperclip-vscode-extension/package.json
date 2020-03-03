@@ -1,6 +1,6 @@
 {
   "name": "paperclip-vscode-extension",
-  "displayName": "Paperclip",
+  "displayName": "Paperclip Realtime Development Tools",
   "version": "11.0.30",
   "electronVersion": "7.1.10",
   "publisher": "crcn",
