@@ -62,7 +62,7 @@ module.exports = {
 
 #### Generating Typed Definition Files
 
-If you're using TypeScript, then you'll probably want additional type safety around Paperclip files. To do that, you'll need to CLI tools: `yarn add paperclip-cli --dev`. You'll also need to install a compiler -- for now the only option you have is React, so add that: `yarn add paperclip-react-compiler --dev`. After that, you can generate typed definition files like so:
+If you're using TypeScript, then you'll probably want additional type safety around Paperclip files. To do that, you'll need to CLI tools: `yarn add paperclip-cli --dev`. You'll also need to install a compiler. For now, the only option you have is React, so add that: `yarn add paperclip-react-compiler --dev`. After that, you can generate typed definition files like so:
 
 ```
 ./node_modules/.bin/paperclip --compiler=paperclip-react-compiler --definition --write
@@ -75,11 +75,7 @@ If you're using TypeScript, then you'll probably want additional type safety aro
 
 > ✨ I also recommend that you include `*.pc.d.ts` in your `.gitignore` file so to keep the typed definition files out of GIT. 
 
-To make this command a bit easier to use, you can add it to your `package.json` file:
-
-After all that you can start writing Paperclip templates! 
-
-TODO - build kitchen sink example
+After installing all of the required dependencies & setting up Webpack, you can start writing Paperclip templates! Here's a basic `hello-world.pc` example:
 
 ```html
 <style>
@@ -89,11 +85,9 @@ TODO - build kitchen sink example
   }
 </style>
 
-<part id="TodoItem">
-
 <!-- this gets exported as the default part -->
-<part id="TodoList">
-  <input type="">
+<part id="default">
+  <span>Hello {message}!</span>
 </part>
 
 <preview>
@@ -101,7 +95,9 @@ TODO - build kitchen sink example
 </preview>
 ```
 
-After that, create a corresponding `hello-world.jsx` file, and type in:
+> For more documentation on syntax, you can [check out this document](../Syntax).
+
+After that creating your first Paperclip file, go ahead and create a corresponding `hello-world.jsx` file, and type in:
 
 ```javascript
 import React from "react";
@@ -111,20 +107,16 @@ export default function HelloWorld() {
 }
 ```
 
-> For simplicity, I typically create a JSX file for each PC file. The PC file contains most of the UI code, and the JSX file contains the logic. 
+That's all you need! At this point you can start using your Paperclip component. 
 
-Then in your application _entry_ point, type in:
+> ✨For templates that need logic, I generally just add a corresponding JSX file with the same name. For example, If I have a `this-is-a-component.pc` file, I'd _also_ have a `this-is-a-component.jsx` file. 
 
-```javascript
-import React from "react";
-import ReactDOM from "react-dom";
-import HelloWorld from "./hello-world.pc";
-const mount = document.createElement("div");
-document.body.appendChild(mount);
-ReactDOM.render(<HelloWorld />, mount);
-```
+If you'd like to see more on how to use Paperclip with React, you can check out these examples:
 
-That's it! 
+- [React TodoMVC](../../examples/react-todomvc) - Basic TODO app
+- [React Kitchen Sink](../../examples/react-kitchen-sink) - Kitchen sink example using _all_ of Paperclip's features
 
+# More Resources
 
-#### Writing Paperclip Templates
+- [Paperclip Syntax](../Syntax)
+- [`pcconfig.json` documentation](../Paperclip%20Config)

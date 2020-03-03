@@ -53,17 +53,18 @@ Here's a kitchen sink example of most syntaxes:
 Slots are areas of your template where you can add nodes. For example:
 
 ```html
+<!-- hello.pc -->
 Hello {message}!
 ```
 
-Combinding the `<preview />`, and `<self />` tags, you might have something like:
+If you're using React & Webpack, you can import this template like so:
 
-```html
-Hello {message}!
-
-<preview>
-  <self message="World" />
-</preview>
+```javascript
+import HelloView from "./hello.pc";
+export function Hello() {
+  // return <HelloView message="World" />
+  return <HelloView message={<strong>World</strong>} />;
+}
 ```
 
 ## Attribute bindings
@@ -93,22 +94,35 @@ Example:
 <!-- #### spreads -->
 #### shorthand
 
-Shorthand bindings are an easier of defining props that share the same name:
+To make things easier, you can shorten how you bind to attributes. For example:
 
 ```html
 <div {onClick}></div>
 ```
 
+☝🏻 This is equivalent to:
+
+```html
+<div onClick={onClick}></div>
+```
 
 ## `<import />`
 
-Imports a component into a template. For exmaple:
+> For a good example of this, check out the [React TodoMVC example](./../examples/react-todomvc).
+
+`<import />` allows you to import templates & CSS into your component files. 
+
+#### Importing components
+
+Suppose you have a simple todo item:
 
 ```html
 <!-- todo-item.pc -->
 
 <li>{label}</li>
 ```
+
+You can import that item like so:
 
 ```html
 <!-- todo-list.pc -->
@@ -125,6 +139,19 @@ Imports a component into a template. For exmaple:
   </self>
 </preview>
 ```
+
+TODO:
+
+- Using different parts
+- When to use parts in previews
+- importing CSS
+
+#### Using different parts
+
+#### Importing CSS
+
+- how this works
+- when this is useful
 
 ## `<part />`
 

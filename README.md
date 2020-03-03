@@ -14,11 +14,11 @@ Notes:
 - need to express that it's lightweight
 -->
 
-# Build UIs in realtime ⚡️
+# Build UIs in real-time ⚡️
 
 <!-- No more juggling between the coding & debugging in the browser. Paperclip provides tooling that allows  -->
 
-Paperclip is a template language that's designed for visual development. See what you're creating in realtime, directly within VS Code.
+Paperclip is a template language that's designed for visual development. See what you're creating in real-time, directly within VS Code.
 
 <!-- Tooling is provided that brings a realtime preview of your application directly into your code editor. -->
 
@@ -234,9 +234,9 @@ This is just the beginning! Here are just a few planned features:
 
 ## Goals
 
-The goal for Paperclip is to eliminiate bottlenecks around HTML & CSS development, and provide tooling that helps you ship UI features quicker. More specifically:
+The goal for Paperclip is to eliminate bottlenecks around HTML & CSS development, and provide tooling that helps you ship UI features quicker. More specifically:
 
-- Eliminiate the lag time between writing code & seeing UI.
+- Eliminate the lag time between writing code & seeing UI.
 - Shorten the gap between design -> code by bringing more design tooling into web development.
 - Provide better safety around building UIs with easier to use cross-browser testing tools. 
 

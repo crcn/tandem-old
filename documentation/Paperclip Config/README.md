@@ -1,4 +1,4 @@
-The Paperclip Config (`pcconfig.json`) contains configuratin information for the compile & runtime. Here's a breakdown of the options you can use:
+The Paperclip Config (`pcconfig.json`) contains configuration information for the compile & runtime. Here's a breakdown of the options you can use:
 
 ```javascript
 {
