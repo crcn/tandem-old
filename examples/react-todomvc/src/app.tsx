@@ -1,11 +1,10 @@
-import React from "react";
+import React, { useCallback, useReducer } from "react";
 import View from "./app.pc";
 import ItemComponent from "./item";
 import { Item } from "./data";
 import useLocation from "./hooks/useLocation";
 import { useState } from "react";
 import Controls from "./controls";
-type Props = {};
 
 const DEFAULT_ITEMS: Item[] = [
   { id: 1, label: "Walk dog" },
@@ -21,18 +20,20 @@ const ITEM_FILTERS: {
   complete: (item: Item) => item.completed
 };
 
-export default (props: Props) => {
+useReducer;
+
+export default () => {
   const [items, setItems] = useState(DEFAULT_ITEMS);
   const currentLocation = useLocation("active");
   const itemFilter = ITEM_FILTERS[currentLocation] || ITEM_FILTERS.active;
 
-  const onItemChange = (newItem: Item) => {
-    setItems(
+  const onItemChange = useCallback((newItem: Item) => {
+    setItems(items =>
       items.map(item => {
         return item.id === newItem.id ? newItem : item;
       })
     );
-  };
+  }, []);
 
   const onNewTodoInputKeyPress = (event: React.KeyboardEvent) => {
     if (event.key === "Enter") {

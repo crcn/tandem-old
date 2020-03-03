@@ -229,15 +229,19 @@ const translateComponent = (
 ) => {
   context = startBlock(
     addBuffer(
-      `${shouldExport ? "export " : ""}function ${componentName}(props) {\n`,
+      `${
+        shouldExport ? "export " : ""
+      }const ${componentName} = React.memo(function ${componentName}(props) {\n`,
       context
     )
   );
+
+  context = addBuffer(`console.log('render ${componentName}');\n `, context);
   context = addBuffer(`return `, context);
   context = translateJSXRoot(node, context);
   context = endBlock(context);
   context = addBuffer(";\n", context);
-  context = addBuffer(`}\n\n`, context);
+  context = addBuffer(`});\n\n`, context);
   return context;
 };
 
