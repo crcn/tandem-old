@@ -1,7 +1,7 @@
 {
-  "name": "react-starter-kit",
+  "name": "paperclip-react-starter-kit",
   "private": true,
-  "version": "1.0.0",
+  "version": "11.0.30",
   "description": "",
   "main": "index.js",
   "scripts": {
