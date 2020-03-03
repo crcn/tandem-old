@@ -7,7 +7,11 @@ Notes:
 
 #### Paperclip is a language for building UIs in realtime ⚡️
 
-Paperclip code runs while you're writing it, so you can build features more quickly. UIs also compile down to application code, so you can use Paperclip in your existing codebase (currently React).
+Write your UIs and see a live preview of them directly within your IDE. Paperclip templates also compile to React code, so you can use them in your React app. 
+
+<!-- Paperclip runs while you're writing it, so you never have to leave the IDE. UI files also compile down directly to React code.  -->
+
+<!-- Paperclip code runs while you're writing it, so you can build features more quickly. UIs also compile down to application code, so you can use Paperclip in your existing codebase (currently React). -->
 
 
 <!-- _See_ UIs that you're creating in realtime, directly within your code editor. Designed to integrate with your existing codebase (currently just React for now). -->
@@ -29,10 +33,19 @@ _See_ UIs that you're creating in realtime, directly within your code editor. Pa
 
 ![VSCode Demo](https://user-images.githubusercontent.com/757408/75412579-f0965200-58f0-11ea-8043-76a0b0ec1a08.gif)
 
+### Simple
 
-Paperclip's syntax allows yo for _slicing up_ your UIs to use in your application code. For example:
+Paperclip is designed just to cover the look and feel of your app. Here's an example UI file:
 
-Paperclip's syntax provides you with a lightweight approach to creating _most_ of your UIs, and slicing them up to use in your application code. Here's an example:
+<!-- Paperclip comes with its own runtime written in Rust, so you can expect realtime UI development even as your project scales. The langage also just comes with a few basic features.  -->
+
+<!-- Paperclip isn't designed to replace code it's -->
+
+<!-- 
+This means that:
+✔ You can use Paperclip with your existing code! <br />
+✔  -->
+
 
 ```html
 <!-- styles are scoped to this file -->
@@ -70,12 +83,14 @@ Paperclip's syntax provides you with a lightweight approach to creating _most_ o
 </preview>
 ```
 
-Assuming you're building a `React` application, here's how you might use the paperclip file:
+> <part /> Elements allow you to slice up your UI to use in app code.
+
+Behavior of the UI might look something like this:
 
 ```javascript
 // Import the parts into the component file to build them back up.
-import { TodoList, TodoItem } from "./list.pc";
 import React, { useState } from "react";
+import { TodoList, TodoItem } from "./list.pc";
 
 export default () => {
   const [todos, setTodos] = useState([
@@ -100,10 +115,30 @@ export default () => {
 };
 ```
 
-### What is Paperclip exactly?
+> This is Vanilla JavaScript. Paperclip's React compiler also allows you to generate typed definition files so that you have more safety around using the templates.
+
+### Doesn't HMR exist? Why do I need this?
+
+Maybe you don't! But personally I find the whole process of switching between the browser & code to be _terribly_ inneficient, especially as projects grow. That 5 seconds you're waiting on the browser to reload really adds up over time. 
+
+Paperclip was designed to give you an _instant_ preview of your UIs as you're writing them, and maintain that level of performance as your project scales. So, if you feel bottlenecked by using the browser to write HTML & CSS, then give Paperclip a shot!
+
+<!-- 
+The ethos of Paperclip is to optimize the feedback loop around writing UI code, and debugging it.  -->
+
+<!-- Paperclip was created to shorten the gap between writing code & seeing the result. -->
+
+
+<!-- So, Paperclip was designed to live in an environment that's decoupled from application code, so won't get weighed down as the application codebase grows.  -->
+
+<!-- I've found that developer tooling doesn't scale as projects grow, and the process of switching between my code editor & web browser for debugging UIs to be  -->
 
 ## Features
 
+- Live preview of your app 🏎
+- Integrates with React (more frameworks & languages are planned).
+- `d.ts` file generation for type safety.
+- 
 
 ## Resources
 
