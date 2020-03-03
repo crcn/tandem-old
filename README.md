@@ -168,11 +168,11 @@ export default () => {
 };
 ```
 
-> The code for this example is also here: https://github.com/crcn/paperclip/tree/master/examples/simple-todo-list
+> The code for this example is also [here](https://github.com/crcn/paperclip/tree/master/examples/simple-todo-list).
 
 > More compiler targets are planned for other languages and frameworks. React is just a starting point ✌🏻.
 
-As you can see, all we're doing is importing the `parts` that the Paperclip template exposes, then combining the `parts` with logic to create a functional component.
+As you can see, `<part />` elements are exported as _dumb_ components that React can use. From there we can combine all parts with logic to create a functional component. That's the gist of Paperclip!
 
 <!-- 
 As you might have noticed, Paperclip just exports building blocks for your component. All of the logic remains in your application code, so you don't have to worry about  -->
