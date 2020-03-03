@@ -1,3 +1,12 @@
+<!-- most important stuff up top -->
+
+# Resources
+
+- [Getting Started](./documentation/Getting&20Started)
+- [Syntax](./documentation/Syntax)
+- [Integrations](./documentation/Integrations)
+- [Contributing](./documentation/Contributing)
+
 <!--
 
 Notes:
@@ -5,7 +14,7 @@ Notes:
 - need to express that it's lightweight
 -->
 
-#### Build UIs in realtime ⚡️
+# Build UIs in realtime ⚡️
 
 <!-- No more juggling between the coding & debugging in the browser. Paperclip provides tooling that allows  -->
 
@@ -230,13 +239,6 @@ The goal for Paperclip is to eliminiate bottlenecks around HTML & CSS developmen
 - Eliminiate the lag time between writing code & seeing UI.
 - Shorten the gap between design -> code by bringing more design tooling into web development.
 - Provide better safety around building UIs with easier to use cross-browser testing tools. 
-
-# Resources
-
-- [Getting Started](./documentation/Getting&20Started)
-- [Syntax](./documentation/Syntax)
-- [Integrations](./documentation/Integrations)
-- [Contributing](./documentation/Contributing)
 
 <!-- ### What makes Paperclip special?
 
