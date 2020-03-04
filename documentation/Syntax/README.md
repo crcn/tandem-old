@@ -56,7 +56,7 @@ Here's a kitchen sink example of most syntaxes:
 
 ## slots
 
-Slots are areas of your template where you can add nodes. For example:
+Slots are areas of your template where you can add content. For example:
 
 ```html
 <!-- hello.pc -->
@@ -171,7 +171,14 @@ export ({item, onChange}) => {
   const onLabelClick = () => setEditing(true);
 
   return <TodoItem>
-    {editing ? <LabelInput onChange={onChange} onBlur={onBlur} /> : <TodoLabel onLabelClick={onLabelClick} label={label} completed={item.completed} />}
+    {
+      editing ? 
+        <LabelInput onChange={onChange} onBlur={onBlur} /> : <TodoLabel 
+          onLabelClick={onLabelClick} 
+          label={label} 
+          completed={item.completed} 
+        />
+    }
   </TodoItem>
 }
 ```

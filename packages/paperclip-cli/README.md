@@ -67,7 +67,7 @@ paperclip --definition --write --watch
   "scripts": {
     "build": "npm run build:definitions && build:dist",
     "build:dist": "webpack",
-    "build:watch": "np run build:definitions -- --watch & npm run build:dist -- --watch",
+    "build:watch": "npm run build:definitions -- --watch & npm run build:dist -- --watch",
     "build:definitions": "paperclip --definition --write",
   }
 }
