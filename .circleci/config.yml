@@ -13,12 +13,12 @@ jobs:
           name: Install WASM Pack
           command: "source $HOME/.cargo/env && curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh -s -- -y"
       - run:
-          name: update-npm
+          name: Update NPM
           command: "sudo npm install -g npm@latest"
       - restore_cache:
           key: dependency-cache2-{{ checksum "package-lock.json" }}
       - run:
-          name: install-npm-wee
+          name: Install NPM
           command: npm install
       - save_cache:
           key: dependency-cache2-{{ checksum "package-lock.json" }}
@@ -29,7 +29,7 @@ jobs:
           command: npm run bootstrap
       - run:
           name: build
-          command: npm run build
+          command: source $HOME/.cargo/env && npm run build
       - run:
           name: test
           command: npm test
