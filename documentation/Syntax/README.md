@@ -373,7 +373,7 @@ You can import that file like so:
 </preview>
 ```
 
-> The <></> Syntax defines a [Fragment](#fragments).
+> The <></> Syntax defines a [Fragment](#fragments-).
 
 #### Rendering imported parts
 
