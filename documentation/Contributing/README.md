@@ -1,3 +1,9 @@
+#### Prerequisites
+
+- [Rust](https://www.rust-lang.org/)
+- [Wasm-pack](https://rustwasm.github.io/wasm-pack/installer/)
+- [NodeJS](https://nodejs.org/en/)
+
 #### Setting up this repository locally
 
 Here's a simple command you can use to set up the repository locally:
