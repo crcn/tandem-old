@@ -23,6 +23,9 @@ jobs:
           name: bootstrap
           command: npm run bootstrap
       - run:
+          name: build
+          command: npm run build
+      - run:
           name: test
           command: npm test
       - store_artifacts:
