@@ -1,5 +1,7 @@
 <!-- most important stuff up top -->
 
+Download: https://marketplace.visualstudio.com/items?itemName=crcn.paperclip-vscode-extension
+
 # Resources
 
 - [Getting Started](./documentation/Getting%20Started)
