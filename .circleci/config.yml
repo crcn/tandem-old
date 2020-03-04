@@ -7,13 +7,13 @@ jobs:
     steps:
       - checkout
       - run:
-          name: install-rust
+          name: Install Rust
           command: "curl https://sh.rustup.rs -sSf | sh -s -- -y"
       - run:
-          name: link-rust
+          name: Link Rust
           command: "source $HOME/.cargo/env"
       - run:
-          name: install-wasm-pack
+          name: Install WASM Pack
           command: "curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh -s -- -y"
       - run:
           name: update-npm
