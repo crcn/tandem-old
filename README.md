@@ -1,12 +1,11 @@
 <!-- most important stuff up top -->
 
-**Download: https://marketplace.visualstudio.com/items?itemName=crcn.paperclip-vscode-extension**
-
 # Resources
 
-- [Getting Started](./documentation/Getting%20Started)
+- [Getting started](./documentation/Getting%20Started)
 - [Syntax](./documentation/Syntax)
 - [Contributing](./documentation/Contributing)
+- [Download the VS Code extension](https://marketplace.visualstudio.com/items?itemName=crcn.paperclip-vscode-extension)
 
 <!--
 
