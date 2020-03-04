@@ -9,7 +9,7 @@ jobs:
       - checkout
       - run:
           name: install-rust
-          command: "curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh"
+          command: "curl https://sh.rustup.rs -sSf | sh -s -- -y"
       - run:
           name: install-wasm-pack
           command: "curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh"
