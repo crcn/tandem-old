@@ -435,7 +435,7 @@ In some cases, you may want to use different parts of your imported component. A
 ```
 > Notice that `todo-item` corresponds with the import ID, and everything following after the colon (:) is the `part` name defined in `todo-item.pc`. In this case we're using `todo-item:completed-preview`, and `todo-item:incomplete-preview`.
 
-> ❗️ Also note that we're defining todo items in the _preview_, and not exactly where they're being used. This is because we need an area where our `todo-list.jsx` can inject dynamic todo items.
+> ❗️ Also note that we're defining todo items in the _preview_, and not exactly where they're being used. This is because we need an area where our `todo-list.jsx` can inject dynamic todo items (`{todoItems}`).
 
 Here's what the preview looks like:
 
