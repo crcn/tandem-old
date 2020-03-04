@@ -5,7 +5,7 @@ jobs:
     docker:
       - image: circleci/node:10.16.3
     environment:
-      PATH: $HOME/.cargo/env:$PATH
+      PATH: $PATH:$HOME/.cargo/env
     steps:
       - checkout
       - run:
