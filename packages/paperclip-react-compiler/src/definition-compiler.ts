@@ -252,15 +252,17 @@ const translatePart = (part: Element, context: TranslateContext) => {
 };
 
 const translateMainView = (ast: Node, context: TranslateContext) => {
-  const children = getVisibleChildNodes(ast);
-  if (!children.length) {
-    return context;
-  }
-
   const target =
     getParts(ast).find(
       part => getAttributeStringValue("id", part) === DEFAULT_PART_ID
     ) || ast;
+
+  if (target === ast) {
+    const children = getVisibleChildNodes(ast);
+    if (!children.length) {
+      return context;
+    }
+  }
 
   const componentName = `View`;
   context = translateComponent(target, "Props", context);

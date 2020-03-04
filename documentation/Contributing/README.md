@@ -11,6 +11,9 @@ yarn install
 From there, you can start the build server:
 
 ```
+
+# needs to be called first
+yarn build
 yarn build:watch
 ```
 
