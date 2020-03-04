@@ -4,6 +4,8 @@ jobs:
     working_directory: ~/mern-starter
     docker:
       - image: circleci/node:10.16.3
+    environment:
+      PATH: "$PATH:$HOME/.cargo/env"
     steps:
       - checkout
       - run:
@@ -11,7 +13,7 @@ jobs:
           command: "curl https://sh.rustup.rs -sSf | sh -s -- -y"
       - run:
           name: Install WASM Pack
-          command: "source $HOME/.cargo/env && curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh -s -- -y"
+          command: "curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh -s -- -y"
       - run:
           name: Update NPM
           command: "sudo npm install -g npm@latest"
@@ -29,7 +31,7 @@ jobs:
           command: npm run bootstrap
       - run:
           name: build
-          command: source $HOME/.cargo/env && npm run build
+          command: npm run build
       - run:
           name: test
           command: npm test
