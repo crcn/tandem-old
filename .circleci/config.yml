@@ -4,12 +4,14 @@ jobs:
     working_directory: ~/mern-starter
     docker:
       - image: circleci/node:10.16.3
-      - image: rust:latest
     steps:
       - checkout
       - run:
           name: install-rust
           command: "curl https://sh.rustup.rs -sSf | sh -s -- -y"
+      - run:
+          name: link-rust
+          command: "source $HOME/.cargo/env"
       - run:
           name: install-wasm-pack
           command: "curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh -s -- -y"
