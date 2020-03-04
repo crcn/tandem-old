@@ -1,6 +1,6 @@
-#### Build UIs in realtime with [Papercip](http://github.com/crcn/paperclip) ⚡️
+#### Build UIs in real-time with [Paperclip](http://github.com/crcn/paperclip) ⚡️
 
-Paperclip is a template language that's designed for visual development. See what you're creating in realtime, directly within VS Code.
+Paperclip is a template language that's designed for visual development. See what you're creating in real-time, directly within VS Code.
 
 ![VSCode Demo](https://user-images.githubusercontent.com/757408/75412579-f0965200-58f0-11ea-8043-76a0b0ec1a08.gif)
 

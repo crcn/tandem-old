@@ -73,6 +73,32 @@ export function Hello() {
 }
 ```
 
+#### children slot 
+
+`{children}` is a special slot that takes children. Here's how it's used:
+
+```html
+<part id="message">
+  Hello {children}
+</part>
+
+<preview>
+  <message>
+     World
+  </message>
+</preview>
+```
+
+☝🏻This renders `Hello World`. JSX code for this would look like:
+
+```javascript
+import {Message} from "./template.pc";
+export function HelloWorldMessage() {
+  return <Message>World</Message>;
+}
+```
+
+
 ## Attribute bindings
 
 Example:

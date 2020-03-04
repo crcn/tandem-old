@@ -1,10 +1,1 @@
-This is the React compiler
-
-Examples:
-
-```
-paperclip **/*.pc --compiler=paperclip-react-compiler --omit-parts=preview
-```
-
-
-What does a compiled template look like?
+React compiler target. Can be used by [paperclip-cli](../packages/paperclip-cli), or [paperclip-loader](../packages/paperclip-loader).

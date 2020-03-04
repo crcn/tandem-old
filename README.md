@@ -1,10 +1,12 @@
 <!-- most important stuff up top -->
 
+⚠️ **This is a pre-release, so expect a few bugs and missing features!**
+
 # Resources
 
-- [Getting Started](./documentation/Getting%20Started)
+- [Getting started](./documentation/Getting%20Started)
+- [Download the VS Code extension](https://marketplace.visualstudio.com/items?itemName=crcn.paperclip-vscode-extension)
 - [Syntax](./documentation/Syntax)
-- [Integrations](./documentation/Integrations)
 - [Contributing](./documentation/Contributing)
 
 <!--
@@ -20,9 +22,9 @@ Notes:
 
 Paperclip is a template language that's designed for visual development. See what you're creating in real-time, directly within VS Code.
 
-<!-- Tooling is provided that brings a realtime preview of your application directly into your code editor. -->
+<!-- Tooling is provided that brings a real-time preview of your application directly into your code editor. -->
 
-<!-- Paperclip is a template language that runs while you're writing in it, so you can see a preview of exactly what you're creating in realtime. -->
+<!-- Paperclip is a template language that runs while you're writing in it, so you can see a preview of exactly what you're creating in real-time. -->
 
 <!-- No more wasted time juggling between the browser & code! -->
 
@@ -36,14 +38,14 @@ Paperclip is a template language that's designed for visual development. See wha
 <!-- Paperclip code runs while you're writing it, so you can build features more quickly. UIs also compile down to application code, so you can use Paperclip in your existing codebase (currently React). -->
 
 
-<!-- _See_ UIs that you're creating in realtime, directly within your code editor. Designed to integrate with your existing codebase (currently just React for now). -->
+<!-- _See_ UIs that you're creating in real-time, directly within your code editor. Designed to integrate with your existing codebase (currently just React for now). -->
 
 <!--
 Templates are also designed to compile down to your application framework of choice (currently only React).
 -->
 
 <!-- 
-_See_ UIs that you're creating in realtime, directly within your code editor. Paperclip comes with primitive UI behavior that allows you to setup the _bones_ UI 
+_See_ UIs that you're creating in real-time, directly within your code editor. Paperclip comes with primitive UI behavior that allows you to setup the _bones_ UI 
 
 -->
 
@@ -177,7 +179,7 @@ export default () => {
 };
 ```
 
-> The code for this example is also [here](https://github.com/crcn/paperclip/tree/master/examples/simple-todo-list).
+> The code for this example is also [here](./examples/react-simple-todo-list).
 
 > More compiler targets are planned for other languages and frameworks. React is just a starting point ✌🏻.
 
@@ -186,7 +188,7 @@ As you can see, `<part />` elements are exported as _dumb_ components that React
 <!-- 
 As you might have noticed, Paperclip just exports building blocks for your component. All of the logic remains in your application code, so you don't have to worry about  -->
 
-## Strongly Typed
+## Strongly Typed 🦺
 
 Templates compile down to strongly typed code, so you don't have to guess about what your templates need. Here's a generated TypesScript definition of our React app above:
 
@@ -222,7 +224,7 @@ export const TodoList: Factory<TodoListProps>;
 - Templates Integrate with your existing React application (more languages & frameworks soon).
 - Integrates with Webpack. 
 
-## Roadmap
+## Roadmap 🌄
 
 This is just the beginning! Here are just a few planned features:
 
@@ -232,7 +234,7 @@ This is just the beginning! Here are just a few planned features:
 - More visual tooling in the preview, so you can make visual changes directly.
 - Preview against different browsers directly within your code editor.
 
-## Goals
+## Goals 🎯
 
 The goal for Paperclip is to eliminate bottlenecks around HTML & CSS development, and provide tooling that helps you ship UI features quicker. More specifically:
 
