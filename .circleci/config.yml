@@ -8,10 +8,10 @@ jobs:
       - checkout
       - run:
           name: Install Rust
-          command: "curl https://sh.rustup.rs -sSf | sh -s -- -y && source $HOME/.cargo/env"
+          command: "curl https://sh.rustup.rs -sSf | sh -s -- -y"
       - run:
           name: Install WASM Pack
-          command: "curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh -s -- -y"
+          command: "source $HOME/.cargo/env && curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh -s -- -y"
       - run:
           name: update-npm
           command: "sudo npm install -g npm@latest"
