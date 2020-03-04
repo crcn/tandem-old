@@ -177,7 +177,7 @@ export default () => {
 };
 ```
 
-> The code for this example is also [here](https://github.com/crcn/paperclip/tree/master/examples/simple-todo-list).
+> The code for this example is also [here](./examples/react-simple-todo-list).
 
 > More compiler targets are planned for other languages and frameworks. React is just a starting point ✌🏻.
 
