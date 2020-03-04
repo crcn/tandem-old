@@ -28,9 +28,9 @@ TODO:
 
 ## Setting up Webpack + React
 
-For this step you'll need to be familiar with Webpack and React
+For this step, you'll need to be familiar with Webpack and React
 
-> ✨I'd recommend you take a look at the [React TodoMVC](../../examples/react-todomvc) example to have a better look about how to configure Paperclip with your React app. 
+> ✨I'd recommend you take a look at the [React TodoMVC](../../examples/react-todomvc) example to have a better look around how to configure Paperclip with your React app. 
 
 You'll need to install `paperclip-loader`, and `paperclip-react-compiler` as dev dependencies. After that, you'll need a `pcconfig.json` that looks something like:
 

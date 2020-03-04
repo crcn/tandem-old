@@ -1,0 +1,19 @@
+
+<import id="todo-item" src="./todo-item.pc">
+
+<h1>Todos:</h1>
+<input type="text" onKeyPress={onNewTodoKeyPress}>
+
+<ul>
+  {todoItems}
+</ul>
+
+<preview>
+  <self
+    todoItems={<>
+      <todo-item:completed-preview label="Clean car" />
+      <todo-item:incomplete-preview label="Walk dog" />
+      <todo-item:completed-preview label="Clean car" />
+    </>}
+  />
+</preview>
