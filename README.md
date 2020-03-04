@@ -234,7 +234,7 @@ This is just the beginning! Here are just a few planned features:
 - More visual tooling in the preview, so you can make visual changes directly.
 - Preview against different browsers directly within your code editor.
 
-## Goals
+## Goals 🎯
 
 The goal for Paperclip is to eliminate bottlenecks around HTML & CSS development, and provide tooling that helps you ship UI features quicker. More specifically:
 
