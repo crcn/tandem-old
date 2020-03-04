@@ -1,23 +1,28 @@
 version: 2.1
 jobs:
+  build_rust:
+    working_directory: ~/mern-starter
+    docker:
+      - image: rust:latest
+    steps:
+      - checkout
+      - run:
+          name: install-rust
+          command: "curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh"
+      - run:
+          name: install-wasm-pack
+          command: "curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh"
   build:
     working_directory: ~/mern-starter
     docker:
       - image: circleci/node:10.16.3
-      - image: rust:1
     steps:
       - checkout
       - run:
           name: update-npm
           command: "sudo npm install -g npm@latest"
-      - run:
-          name: install-rust
-          command: "curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh"
       - restore_cache:
           key: dependency-cache2-{{ checksum "package-lock.json" }}
-      - run:
-          name: install-wasm-pack
-          command: "curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh"
       - run:
           name: install-npm-wee
           command: npm install
