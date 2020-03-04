@@ -1,5 +1,5 @@
 #### Simple TODO app
-Installation: `npm install` <br />
+Installation: `yarn install && yarn build` <br />
 Running: `open dist/index.html`
 
 Commands:

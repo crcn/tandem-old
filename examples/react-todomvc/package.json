@@ -7,8 +7,7 @@
   "scripts": {
     "build": "npm run build:definitions && webpack",
     "build:watch": "npm run build:definitions -- --watch & webpack --watch",
-    "build:definitions": "paperclip --compiler=paperclip-react-compiler --definition --write",
-    "postinstall": "npm run build"
+    "build:definitions": "paperclip --compiler=paperclip-react-compiler --definition --write"
   },
   "author": "",
   "license": "ISC",
