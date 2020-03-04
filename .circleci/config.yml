@@ -20,6 +20,9 @@ jobs:
           paths:
             - ./node_modules
       - run:
+          name: bootstrap
+          command: npm run bootstrap
+      - run:
           name: test
           command: npm test
       - store_artifacts:
