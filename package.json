@@ -19,7 +19,7 @@
     }
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "lerna run test",
     "build": "lerna run build",
     "build:watch": "lerna run build:watch --parallel",
     "postinstall": "npm run bootstrap",

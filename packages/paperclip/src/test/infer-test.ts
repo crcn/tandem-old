@@ -7,6 +7,7 @@ describe(__filename + "#", () => {
       `{a}`,
       {
         kind: 0,
+        fromSpread: false,
         properties: {
           a: {
             kind: 2
@@ -18,9 +19,11 @@ describe(__filename + "#", () => {
       `{a.b}`,
       {
         kind: 0,
+        fromSpread: false,
         properties: {
           a: {
             kind: 0,
+            fromSpread: false,
             properties: {
               b: {
                 kind: 2
@@ -34,9 +37,11 @@ describe(__filename + "#", () => {
       `{a.b} {a.c}`,
       {
         kind: 0,
+        fromSpread: false,
         properties: {
           a: {
             kind: 0,
+            fromSpread: false,
             properties: {
               b: {
                 kind: 2
@@ -53,6 +58,7 @@ describe(__filename + "#", () => {
       `<span {a}></span>`,
       {
         kind: 0,
+        fromSpread: false,
         properties: {
           a: {
             kind: 2
@@ -64,6 +70,7 @@ describe(__filename + "#", () => {
       `<span a={a}></span>`,
       {
         kind: 0,
+        fromSpread: false,
         properties: {
           a: {
             kind: 2
@@ -75,9 +82,11 @@ describe(__filename + "#", () => {
       `<span {...a}></span>`,
       {
         kind: 0,
+        fromSpread: false,
         properties: {
           a: {
             kind: 0,
+            fromSpread: true,
             properties: {}
           }
         }
@@ -87,6 +96,7 @@ describe(__filename + "#", () => {
       `{#each items as item}{/}`,
       {
         kind: 0,
+        fromSpread: false,
         properties: {
           items: {
             kind: 1,
@@ -101,11 +111,13 @@ describe(__filename + "#", () => {
       `{#each items as item, i}{item.name} {i}{/}`,
       {
         kind: 0,
+        fromSpread: false,
         properties: {
           items: {
             kind: 1,
             value: {
               kind: 0,
+              fromSpread: false,
               properties: {
                 name: {
                   kind: 2
@@ -120,11 +132,13 @@ describe(__filename + "#", () => {
       `{#each items as item, i}{item.a} {item.b}{/}`,
       {
         kind: 0,
+        fromSpread: false,
         properties: {
           items: {
             kind: 1,
             value: {
               kind: 0,
+              fromSpread: false,
               properties: {
                 a: {
                   kind: 2
@@ -149,16 +163,19 @@ describe(__filename + "#", () => {
     `,
       {
         kind: 0,
+        fromSpread: false,
         properties: {
           people: {
             kind: 1,
             value: {
               kind: 0,
+              fromSpread: false,
               properties: {
                 friends: {
                   kind: 1,
                   value: {
                     kind: 0,
+                    fromSpread: false,
                     properties: {
                       name: {
                         kind: 2
@@ -176,6 +193,7 @@ describe(__filename + "#", () => {
       `{#if a}{/}`,
       {
         kind: 0,
+        fromSpread: false,
         properties: {
           a: {
             kind: 2
@@ -187,6 +205,7 @@ describe(__filename + "#", () => {
       `{#if a}{/else if b} {/}`,
       {
         kind: 0,
+        fromSpread: false,
         properties: {
           a: {
             kind: 2
@@ -201,6 +220,7 @@ describe(__filename + "#", () => {
       `{#if true}{cc} {/}`,
       {
         kind: 0,
+        fromSpread: false,
         properties: {
           cc: {
             kind: 2
@@ -212,6 +232,7 @@ describe(__filename + "#", () => {
       `<preview>{a}</preview>`,
       {
         kind: 0,
+        fromSpread: false,
         properties: {}
       }
     ]
