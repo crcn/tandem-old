@@ -3,9 +3,9 @@
 # Resources
 
 - [Getting started](./documentation/Getting%20Started)
+- [Download the VS Code extension](https://marketplace.visualstudio.com/items?itemName=crcn.paperclip-vscode-extension)
 - [Syntax](./documentation/Syntax)
 - [Contributing](./documentation/Contributing)
-- [Download the VS Code extension](https://marketplace.visualstudio.com/items?itemName=crcn.paperclip-vscode-extension)
 
 <!--
 
