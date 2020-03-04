@@ -27,13 +27,13 @@ jobs:
           paths:
             - ./node_modules
       - run:
-          name: bootstrap
+          name: Bootstrap
           command: npm run bootstrap
       - run:
-          name: build
+          name: Build
           command: npm run build
       - run:
-          name: test
+          name: Test
           command: npm test
       - store_artifacts:
           path: test-results.xml
