@@ -1,6 +1,6 @@
 <!-- most important stuff up top -->
 
-⚠️ **This is a pre-release, so it's not quite polished up yet!**
+⚠️ **This is a pre-release, so expect a few bugs and missing features!**
 
 # Resources
 
@@ -224,7 +224,7 @@ export const TodoList: Factory<TodoListProps>;
 - Templates Integrate with your existing React application (more languages & frameworks soon).
 - Integrates with Webpack. 
 
-## Roadmap
+## Roadmap 🌄
 
 This is just the beginning! Here are just a few planned features:
 
