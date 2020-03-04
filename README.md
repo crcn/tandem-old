@@ -1,5 +1,7 @@
 <!-- most important stuff up top -->
 
+⚠️ **This is a pre-release, so it's not quite polished up yet!**
+
 # Resources
 
 - [Getting started](./documentation/Getting%20Started)
