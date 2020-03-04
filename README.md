@@ -20,9 +20,9 @@ Notes:
 
 Paperclip is a template language that's designed for visual development. See what you're creating in real-time, directly within VS Code.
 
-<!-- Tooling is provided that brings a realtime preview of your application directly into your code editor. -->
+<!-- Tooling is provided that brings a real-time preview of your application directly into your code editor. -->
 
-<!-- Paperclip is a template language that runs while you're writing in it, so you can see a preview of exactly what you're creating in realtime. -->
+<!-- Paperclip is a template language that runs while you're writing in it, so you can see a preview of exactly what you're creating in real-time. -->
 
 <!-- No more wasted time juggling between the browser & code! -->
 
@@ -36,14 +36,14 @@ Paperclip is a template language that's designed for visual development. See wha
 <!-- Paperclip code runs while you're writing it, so you can build features more quickly. UIs also compile down to application code, so you can use Paperclip in your existing codebase (currently React). -->
 
 
-<!-- _See_ UIs that you're creating in realtime, directly within your code editor. Designed to integrate with your existing codebase (currently just React for now). -->
+<!-- _See_ UIs that you're creating in real-time, directly within your code editor. Designed to integrate with your existing codebase (currently just React for now). -->
 
 <!--
 Templates are also designed to compile down to your application framework of choice (currently only React).
 -->
 
 <!-- 
-_See_ UIs that you're creating in realtime, directly within your code editor. Paperclip comes with primitive UI behavior that allows you to setup the _bones_ UI 
+_See_ UIs that you're creating in real-time, directly within your code editor. Paperclip comes with primitive UI behavior that allows you to setup the _bones_ UI 
 
 -->
 

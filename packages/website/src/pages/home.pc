@@ -12,6 +12,6 @@
 <div class="header">
   <h1>Paperclip.</h1>
   <div class="elevator">
-    Paperclip is a tool for creating web UIs in realtime.
+    Paperclip is a tool for creating web UIs in real-time.
   </div>
 </div>

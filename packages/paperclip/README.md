@@ -1,6 +1,6 @@
 ## Goals
 
-- Realtime editing. Biggest priority is to have a bundler that
+- real-time editing. Biggest priority is to have a bundler that
 - Interoperability. Paperclip should work with any web framework.
 - Type safety.
 - Visually editable.
