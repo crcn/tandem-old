@@ -39,8 +39,26 @@ module.exports = {
 
 Next, you'll need to setup a `pcconfig.json`:
 
+```javascript
+{
 
+  // Options for the specific compiler
+  "compilerOptions": {
 
-#### Useful Resources
+    // module name of the compiler to use
+    "name": "paperclip-react-compiler"
+  },
 
-- [Integrations](../../documentation/Integrations)
+  // Module directories where import statements resolve from.
+  "moduleDirectories": ["./src"],
+
+  // File pattern for all of your Paperclip files.
+  "filesGlob": "./src/**/*.pc"
+}
+```
+
+ > Docs for this can be found [here](../../documentation/Paperclip%20Config).
+ 
+ Examples:
+ 
+ - [TodoMVC](../../examples/react-todomvc)
