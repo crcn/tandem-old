@@ -11,7 +11,7 @@
     "prepublishOnly": "npm run build"
   },
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "html-entities": "^1.2.1",
     "paperclip": "^11.0.35"

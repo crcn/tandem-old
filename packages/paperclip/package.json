@@ -12,7 +12,7 @@
     "build:wasm:node": "cd native && wasm-pack build --release --target nodejs"
   },
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "@types/mocha": "^5.2.7",
     "chai": "^4.2.0",

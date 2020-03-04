@@ -18,6 +18,6 @@
     "build:watch": "tsc --watch"
   },
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "gitHead": "396909b9e82118286559b98849b6fa3e8d3166d2"
 }

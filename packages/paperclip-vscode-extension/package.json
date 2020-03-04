@@ -87,7 +87,7 @@
     "publish:marketplace": "vsce package && vsce publish"
   },
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "devDependencies": {
     "@types/node": "^13.1.8",
     "@types/vscode": "^1.41.0",
