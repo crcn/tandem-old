@@ -12,7 +12,7 @@ jobs:
           command: "curl https://sh.rustup.rs -sSf | sh -s -- -y"
       - run:
           name: install-wasm-pack
-          command: "curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh"
+          command: "curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh -s -- -y"
       - run:
           name: update-npm
           command: "sudo npm install -g npm@latest"
