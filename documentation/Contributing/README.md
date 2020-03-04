@@ -14,7 +14,7 @@ From there, you can start the build server:
 yarn build:watch
 ```
 
-
+☝🏻This will build all packages & examples.
 
 <!-- #### Package Overview
 
