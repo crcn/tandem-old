@@ -173,7 +173,8 @@ export ({item, onChange}) => {
   return <TodoItem>
     {
       editing ? 
-        <LabelInput onChange={onChange} onBlur={onBlur} /> : <TodoLabel 
+        <LabelInput onChange={onChange} onBlur={onBlur} /> : 
+        <TodoLabel 
           onLabelClick={onLabelClick} 
           label={label} 
           completed={item.completed} 
