@@ -1,8 +1,9 @@
 version: 2.1
 jobs:
-  build_rust:
+  build:
     working_directory: ~/mern-starter
     docker:
+      - image: circleci/node:10.16.3
       - image: rust:latest
     steps:
       - checkout
@@ -12,12 +13,6 @@ jobs:
       - run:
           name: install-wasm-pack
           command: "curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh"
-  build:
-    working_directory: ~/mern-starter
-    docker:
-      - image: circleci/node:10.16.3
-    steps:
-      - checkout
       - run:
           name: update-npm
           command: "sudo npm install -g npm@latest"
